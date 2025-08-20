@@ -8,7 +8,68 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Premium Party Color System
+        // PartyOn Premium B2B Color System
+        royal: {
+          50: '#E8EEF5',
+          100: '#D1DDEB',
+          200: '#A3BBD7',
+          300: '#7599C3',
+          400: '#4777AF',
+          500: '#1A3E5C', // Royal Blue - Main
+          600: '#153249',
+          700: '#102536',
+          800: '#0B1924',
+          900: '#060C12',
+        },
+        gold: {
+          50: '#FBF9F2',
+          100: '#F7F3E5',
+          200: '#EFE7CB',
+          300: '#E7DBB1',
+          400: '#DECF97',
+          500: '#D4AF37', // Luxury Gold
+          600: '#B8962F',
+          700: '#9C7D27',
+          800: '#80641F',
+          900: '#644B17',
+        },
+        ivory: {
+          50: '#FEFEFE',
+          100: '#FCFBF9',
+          200: '#FAF8F3',
+          300: '#F7F3E9', // Main Ivory
+          400: '#F4EFDF',
+          500: '#F1EBD5',
+          600: '#E6DFC4',
+          700: '#DBD3B3',
+          800: '#D0C7A2',
+          900: '#C5BB91',
+        },
+        emerald: {
+          50: '#E6F5F1',
+          100: '#CCEBE3',
+          200: '#99D7C7',
+          300: '#66C3AB',
+          400: '#33AF8F',
+          500: '#2B8E76', // Emerald Green
+          600: '#237660',
+          700: '#1B5E4A',
+          800: '#134634',
+          900: '#0B2E1E',
+        },
+        slate: {
+          50: '#F5F6F7',
+          100: '#EBEDEE',
+          200: '#D7DBDD',
+          300: '#C3C9CC',
+          400: '#AFB7BB',
+          500: '#9BA5AA',
+          600: '#7D8A91',
+          700: '#5F6F78',
+          800: '#3E4E5E', // Slate Grey
+          900: '#1E2F3F',
+        },
+        // Premium Party Color System (legacy)
         primary: {
           50: '#FFF1ED',
           100: '#FFE3DB',
@@ -104,8 +165,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Playfair Display', 'Georgia', 'serif'],
+        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-playfair)', 'Georgia', 'serif'],
       },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-in-out',

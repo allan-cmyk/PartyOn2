@@ -26,6 +26,14 @@
     --color-austin-sunset: #FF6B35;
     --color-austin-lake: #4ECDC4;
     
+    /* Professional B2B Color Palette */
+    --color-navy-pro: #2C3E50; /* Deep Navy Blue */
+    --color-silver: #BDC3C7; /* Soft Silver */
+    --color-gold-pro: #D4AF37; /* Rich Gold */
+    --color-taupe: #A1887F; /* Warm Taupe */
+    --color-charcoal: #34495E; /* Charcoal Gray */
+    --color-amber: #F59E0B; /* Amber for CTAs */
+    
     /* Spacing - More breathing room */
     --spacing-unit: 8px;
     --section-spacing: clamp(3rem, 8vw, 6rem);
@@ -43,10 +51,29 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+  
+  /* Custom cursor pages */
+  .cursor-none {
+    cursor: none;
+  }
+  
+  .cursor-none a,
+  .cursor-none button {
+    cursor: none;
+  }
 
   /* Typography defaults */
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif font-bold tracking-tight;
+  }
+  
+  /* Professional theme typography */
+  .font-montserrat {
+    font-family: var(--font-montserrat);
+  }
+  
+  .font-lato {
+    font-family: var(--font-lato);
   }
 
   /* Premium link styling - reduced transition duration */

@@ -52,11 +52,9 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body className="antialiased bg-white text-navy-900">
         <AgeVerification />
-        <Navigation />
         <main className="min-h-screen">
           {children}
         </main>
-        <Footer />
       </body>
     </html>
   );
