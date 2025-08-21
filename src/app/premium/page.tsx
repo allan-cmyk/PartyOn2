@@ -428,9 +428,9 @@ export default function PremiumHome() {
               ))}
             </div>
             <blockquote className="text-2xl font-light text-slate-700 mb-8 leading-relaxed">
-              "PartyOn has been our exclusive bar service partner for three years. Their attention to detail, 
+              &quot;PartyOn has been our exclusive bar service partner for three years. Their attention to detail, 
               professionalism, and ability to execute flawlessly at scale has made them indispensable to our 
-              corporate events program."
+              corporate events program.&quot;
             </blockquote>
             <div className="flex items-center justify-center gap-4">
               <div className="w-16 h-16 bg-royal-100 rounded-full" />

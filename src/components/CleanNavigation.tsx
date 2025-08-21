@@ -77,7 +77,7 @@ export default function CleanNavigation() {
                     transition={{ duration: 0.2 }}
                     className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-xl overflow-hidden"
                   >
-                    {services.map((service, index) => (
+                    {services.map((service) => (
                       <Link
                         key={service.name}
                         href={service.href}

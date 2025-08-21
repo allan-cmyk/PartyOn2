@@ -14,7 +14,7 @@ export default function LuxuryPrabalPage() {
       setActiveColor((prev) => (prev + 1) % colors.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [colors.length]);
 
   return (
     <main className="min-h-screen bg-black text-white">
@@ -74,7 +74,7 @@ export default function LuxuryPrabalPage() {
                 MEETS SERVICE
               </h2>
               <p className="text-xl text-gray-300 leading-relaxed mb-8">
-                Austin's most innovative alcohol delivery service. Premium spirits, 
+                Austin&apos;s most innovative alcohol delivery service. Premium spirits, 
                 craft cocktails, and party essentials delivered in 2 hours with style.
               </p>
               <Link href="/services">

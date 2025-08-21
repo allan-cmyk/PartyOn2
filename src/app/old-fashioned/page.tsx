@@ -60,7 +60,7 @@ export default function LuxuryRitzPage() {
             <h2 className="text-4xl font-light mb-4 text-gray-900">The PartyOn Experience</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Premium alcohol delivery service bringing the finest spirits, cocktails, 
-              and party essentials to Austin's most distinguished addresses.
+              and party essentials to Austin&apos;s most distinguished addresses.
             </p>
           </div>
 
@@ -99,7 +99,7 @@ export default function LuxuryRitzPage() {
               </div>
               <h3 className="text-2xl font-light mb-4">Trusted Excellence</h3>
               <p className="text-gray-600 leading-relaxed">
-                Eight years delivering premium alcohol to Austin's finest 
+                Eight years delivering premium alcohol to Austin&apos;s finest 
                 homes, offices, and event venues.
               </p>
             </div>
@@ -186,9 +186,9 @@ export default function LuxuryRitzPage() {
           <div className="space-y-12">
             <div className="text-center">
               <p className="text-xl text-gray-700 italic mb-6 leading-relaxed">
-                "PartyOn has been our exclusive partner for all corporate events. 
+                &quot;PartyOn has been our exclusive partner for all corporate events. 
                 Their attention to detail and commitment to excellence perfectly 
-                aligns with our brand values."
+                aligns with our brand values.&quot;
               </p>
               <p className="text-gray-600">
                 <span className="font-medium">Jennifer Martinez</span>
@@ -200,8 +200,8 @@ export default function LuxuryRitzPage() {
 
             <div className="text-center">
               <p className="text-xl text-gray-700 italic mb-6 leading-relaxed">
-                "From our engagement party to our wedding day, PartyOn delivered 
-                flawless service that exceeded every expectation. Truly world-class."
+                &quot;From our engagement party to our wedding day, PartyOn delivered 
+                flawless service that exceeded every expectation. Truly world-class.&quot;
               </p>
               <p className="text-gray-600">
                 <span className="font-medium">Michael & Sarah Chen</span>
@@ -247,7 +247,7 @@ export default function LuxuryRitzPage() {
             <div className="md:col-span-2">
               <h3 className="text-2xl font-light mb-4 text-gray-900">PARTYON</h3>
               <p className="text-gray-600 max-w-sm">
-                Austin's premier luxury bar service, dedicated to creating 
+                Austin&apos;s premier luxury bar service, dedicated to creating 
                 exceptional experiences since 2016.
               </p>
             </div>

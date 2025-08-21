@@ -22,7 +22,7 @@ export default function ProfessionalHome() {
           </h1>
           <div className="w-24 h-0.5 bg-amber-500 mx-auto mb-6"></div>
           <p className="text-xl md:text-2xl mb-12 font-light text-gray-200 max-w-3xl mx-auto">
-            Premium alcohol delivery and bar services for Austin's most distinguished venues and events
+            Premium alcohol delivery and bar services for Austin&apos;s most distinguished venues and events
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <button className="bg-amber-500 text-slate-900 px-10 py-4 text-lg font-medium hover:bg-amber-400 transition-all duration-300">
@@ -228,9 +228,9 @@ export default function ProfessionalHome() {
               ))}
             </div>
             <blockquote className="text-2xl font-light text-slate-700 mb-8 leading-relaxed">
-              "PartyOn has been our exclusive bar service partner for three years. Their professionalism, 
+              &quot;PartyOn has been our exclusive bar service partner for three years. Their professionalism, 
               attention to detail, and ability to execute flawlessly under pressure has made them 
-              indispensable to our venue's success."
+              indispensable to our venue&apos;s success.&quot;
             </blockquote>
             <div>
               <p className="text-lg font-medium text-slate-800">Jennifer Martinez</p>
@@ -244,10 +244,10 @@ export default function ProfessionalHome() {
       <section className="py-24 bg-slate-900 text-white">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h2 className="text-4xl font-light mb-6">
-            Elevate Your Venue's Bar Service
+            Elevate Your Venue&apos;s Bar Service
           </h2>
           <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
-            Join Austin's premier venues in delivering exceptional beverage experiences
+            Join Austin&apos;s premier venues in delivering exceptional beverage experiences
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <button className="bg-amber-500 text-slate-900 px-10 py-4 text-lg font-medium hover:bg-amber-400 transition-all duration-300">

@@ -20,7 +20,7 @@ export default function ProfessionalHomeV2() {
         
         <div className="relative z-20 text-center text-white max-w-6xl mx-auto px-6">
           <p className="text-amber-400 uppercase tracking-widest text-sm mb-6 font-medium">
-            Austin's Premier Event Bar Service
+            Austin&apos;s Premier Event Bar Service
           </p>
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-light mb-8 tracking-tight leading-tight">
             Elevate Your
@@ -97,7 +97,7 @@ export default function ProfessionalHomeV2() {
             <div className="w-24 h-1 bg-amber-500 mx-auto mb-6"></div>
             <p className="text-xl text-slate-600 max-w-3xl mx-auto">
               From intimate board meetings to grand galas, we deliver exceptional bar experiences 
-              that reflect your brand's sophistication
+              that reflect your brand&apos;s sophistication
             </p>
           </div>
           
@@ -177,7 +177,7 @@ export default function ProfessionalHomeV2() {
               Why Industry Leaders Choose PartyOn
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Our commitment to excellence has earned us partnerships with Austin's most prestigious organizations
+              Our commitment to excellence has earned us partnerships with Austin&apos;s most prestigious organizations
             </p>
           </div>
 
@@ -240,8 +240,8 @@ export default function ProfessionalHomeV2() {
                 </div>
               </div>
               <blockquote className="text-lg text-slate-600 italic mb-8 border-l-4 border-amber-500 pl-6">
-                "PartyOn transformed our leadership summit into an unforgettable experience. 
-                Their attention to detail and professional service exceeded our highest expectations."
+                &quot;PartyOn transformed our leadership summit into an unforgettable experience. 
+                Their attention to detail and professional service exceeded our highest expectations.&quot;
               </blockquote>
               <p className="text-slate-700 font-medium">Michael Chen, VP of Corporate Events</p>
             </div>
@@ -265,7 +265,7 @@ export default function ProfessionalHomeV2() {
             Ready to Elevate Your Next Event?
           </h2>
           <p className="text-2xl mb-12 text-amber-100 max-w-3xl mx-auto">
-            Join Austin's elite venues and corporations in delivering exceptional experiences
+            Join Austin&apos;s elite venues and corporations in delivering exceptional experiences
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center mb-8">
             <button className="bg-white text-amber-600 px-12 py-5 text-xl font-medium hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg">

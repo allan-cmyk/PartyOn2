@@ -17,7 +17,7 @@ export default function ClientLogos() {
     <section className="py-16 bg-white border-y border-gray-100">
       <div className="max-w-7xl mx-auto px-6">
         <p className="text-center text-sm uppercase tracking-wider text-slate-500 mb-8">
-          Trusted by Austin's Leading Organizations
+          Trusted by Austin&apos;s Leading Organizations
         </p>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-8 items-center">
           {clients.map((client, index) => (

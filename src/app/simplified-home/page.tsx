@@ -22,7 +22,7 @@ export default function SimplifiedHome() {
             Party On Delivery
           </h1>
           <p className="text-2xl md:text-3xl mb-8 font-light">
-            Austin's Premium Alcohol Delivery & Event Service
+            Austin&apos;s Premium Alcohol Delivery & Event Service
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button className="bg-white text-black px-8 py-4 text-lg font-semibold rounded-lg hover:bg-gray-100 transition">
@@ -124,8 +124,8 @@ export default function SimplifiedHome() {
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h2 className="text-5xl font-bold mb-12">What People Say</h2>
           <blockquote className="text-2xl font-light text-gray-700 mb-8">
-            "Party On Delivery saved our wedding! They arrived with a full bar setup, 
-            professional bartenders, and even custom cocktails. Absolutely incredible service."
+            &quot;Party On Delivery saved our wedding! They arrived with a full bar setup, 
+            professional bartenders, and even custom cocktails. Absolutely incredible service.&quot;
           </blockquote>
           <p className="text-lg font-semibold">Sarah & Mike</p>
           <p className="text-gray-600">Lake Travis Wedding</p>
@@ -137,7 +137,7 @@ export default function SimplifiedHome() {
         <div className="max-w-4xl mx-auto px-6">
           <h2 className="text-5xl font-bold mb-8">Ready to Party?</h2>
           <p className="text-2xl mb-12 font-light">
-            Fast delivery or full event service. We've got you covered.
+            Fast delivery or full event service. We&apos;ve got you covered.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <button className="bg-white text-black px-12 py-5 text-xl font-semibold rounded-lg hover:bg-gray-100 transition">

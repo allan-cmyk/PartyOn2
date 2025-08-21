@@ -96,10 +96,10 @@ export default function LuxuryJimmyPage() {
             {/* Text Block */}
             <div className="flex items-center justify-center p-16 md:p-24">
               <div className="max-w-md">
-                <h2 className="text-4xl font-light mb-6 tracking-[0.05em]">AUSTIN'S FINEST DELIVERY</h2>
+                <h2 className="text-4xl font-light mb-6 tracking-[0.05em]">AUSTIN&apos;S FINEST DELIVERY</h2>
                 <p className="text-gray-600 mb-8 leading-relaxed">
                   Premium alcohol delivery within 2 hours. From rare spirits to craft cocktails, we bring the bar to you 
-                  with white-glove service for Austin's most discerning hosts.
+                  with white-glove service for Austin&apos;s most discerning hosts.
                 </p>
                 <Link href="/services">
                   <button className="text-sm tracking-[0.2em] border-b border-gray-900 pb-1 hover:pb-2 transition-all">

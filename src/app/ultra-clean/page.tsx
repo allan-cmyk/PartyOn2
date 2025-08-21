@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import CustomCursor from '@/components/CustomCursor';
-import LoadingSkeleton from '@/components/LoadingSkeleton';
 
 export default function UltraCleanHome() {
   const { scrollY } = useScroll();
@@ -242,7 +241,7 @@ export default function UltraCleanHome() {
               ))}
             </div>
             <blockquote className="text-3xl font-light mb-8 leading-relaxed">
-              "PartyOn transformed our corporate events with their exceptional service and attention to detail."
+              &quot;PartyOn transformed our corporate events with their exceptional service and attention to detail.&quot;
             </blockquote>
             <div className="flex items-center justify-center gap-4">
               <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
