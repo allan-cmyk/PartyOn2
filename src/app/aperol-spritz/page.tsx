@@ -179,7 +179,7 @@ export default function LuxuryPrabalPage() {
         <div className="relative z-10 text-center max-w-4xl mx-auto px-8">
           <h2 className="text-6xl font-bold mb-8">READY TO BE BOLD?</h2>
           <p className="text-2xl mb-12">
-            Experience Austin's boldest alcohol delivery service.
+            Experience Austin&apos;s boldest alcohol delivery service.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link href="/consultation">
