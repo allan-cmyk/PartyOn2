@@ -127,19 +127,25 @@ export default function FeatureCards({ mode = 'normal' }: FeatureCardsProps) {
           {/* Trust Indicators */}
           <div className="flex flex-wrap justify-center gap-6 mt-8">
             <div className="flex items-center space-x-2">
-              <span className="text-2xl">⭐</span>
+              <svg className="w-6 h-6 text-gold-600" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
               <span className={`font-semibold ${mode === 'party' ? 'text-primary-300' : 'text-dark'}`}>
                 500+ 5-Star Reviews
               </span>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-2xl">🎉</span>
+              <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+              </svg>
               <span className={`font-semibold ${mode === 'party' ? 'text-primary-300' : 'text-dark'}`}>
                 2,000+ Events Served
               </span>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-2xl">🏆</span>
+              <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+              </svg>
               <span className={`font-semibold ${mode === 'party' ? 'text-primary-300' : 'text-dark'}`}>
                 Austin&apos;s #1 Choice
               </span>

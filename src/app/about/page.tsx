@@ -1,0 +1,411 @@
+'use client';
+
+import React from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+
+export default function AboutPage() {
+  const values = [
+    {
+      title: "Excellence",
+      description: "Every delivery, every event, every interaction reflects our commitment to exceptional service"
+    },
+    {
+      title: "Integrity",
+      description: "Licensed, insured, and transparent in all our business practices"
+    },
+    {
+      title: "Community",
+      description: "Proudly serving Austin with deep local knowledge and genuine care"
+    },
+    {
+      title: "Innovation",
+      description: "Continuously elevating the standard for premium alcohol delivery"
+    }
+  ];
+
+  const milestones = [
+    { year: "2020", event: "Founded during challenging times with a vision to serve Austin" },
+    { year: "2021", event: "Expanded to Lake Travis and Hill Country markets" },
+    { year: "2022", event: "Launched premium wedding and corporate services" },
+    { year: "2023", event: "Celebrated 1,000+ successful events delivered" },
+    { year: "2024", event: "Recognized as Austin's premier alcohol delivery service" }
+  ];
+
+  return (
+    <div className="bg-white">
+      <OldFashionedNavigation />
+      
+      {/* Hero Section */}
+      <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
+        <Image
+          src="/images/hero/austin-skyline-golden-hour.webp"
+          alt="Austin Skyline"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 via-gray-900/30 to-gray-900/50" />
+        
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="relative text-center text-white z-10 max-w-4xl mx-auto px-8"
+        >
+          <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
+            OUR STORY
+          </h1>
+          <div className="w-24 h-px bg-gold-400 mx-auto" />
+        </motion.div>
+      </section>
+
+      {/* Introduction */}
+      <section className="py-24">
+        <div className="max-w-4xl mx-auto px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center"
+          >
+            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-8 tracking-[0.1em]">
+              Elevating Austin Since 2020
+            </h2>
+            <p className="text-lg text-gray-600 leading-relaxed mb-8">
+              PartyOn Delivery was born from a simple vision: to bring premium spirits and 
+              exceptional service directly to Austin&apos;s most memorable moments. What started 
+              as a response to changing times has evolved into the city&apos;s most trusted 
+              name in luxury alcohol delivery and event services.
+            </p>
+            <p className="text-lg text-gray-600 leading-relaxed">
+              From intimate gatherings in Westlake Hills to grand celebrations on Lake Travis, 
+              we&apos;ve had the privilege of serving thousands of satisfied customers across 
+              the greater Austin area. Our commitment to excellence, safety, and unforgettable 
+              experiences drives everything we do.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Mission & Vision */}
+      <section className="py-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-8 md:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-center lg:text-left"
+            >
+              <h3 className="font-serif text-3xl text-gray-900 mb-6 tracking-[0.1em]">
+                Our Mission
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                To deliver more than premium spirits—to deliver peace of mind, exceptional 
+                moments, and the confidence that comes from working with Austin&apos;s most 
+                professional alcohol delivery service. We handle the details so you can 
+                focus on what matters most: celebrating life&apos;s special moments.
+              </p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-center lg:text-left"
+            >
+              <h3 className="font-serif text-3xl text-gray-900 mb-6 tracking-[0.1em]">
+                Our Vision
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                To set the gold standard for premium alcohol delivery and event services 
+                across Texas. We envision a future where every celebration, from backyard 
+                gatherings to black-tie galas, is elevated by our commitment to excellence, 
+                innovation, and genuine Austin hospitality.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Values */}
+      <section className="py-24">
+        <div className="max-w-7xl mx-auto px-8 md:px-12">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+              Our Values
+            </h2>
+            <div className="w-16 h-px bg-gold-600 mx-auto" />
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {values.map((value, index) => (
+              <motion.div
+                key={value.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.1 }}
+                className="text-center"
+              >
+                <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
+                  {value.title}
+                </h3>
+                <p className="text-gray-600 leading-relaxed">
+                  {value.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Timeline */}
+      <section className="py-24 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+              Our Journey
+            </h2>
+            <div className="w-16 h-px bg-gold-600 mx-auto" />
+          </motion.div>
+
+          <div className="space-y-12">
+            {milestones.map((milestone, index) => (
+              <motion.div
+                key={milestone.year}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}
+              >
+                <div className="w-1/3 text-right pr-8">
+                  {index % 2 === 0 && (
+                    <p className="text-gray-600">{milestone.event}</p>
+                  )}
+                </div>
+                <div className="w-1/3 flex justify-center">
+                  <div className="w-24 h-24 bg-gold-600 text-white rounded-full flex items-center justify-center">
+                    <span className="font-serif text-xl">{milestone.year}</span>
+                  </div>
+                </div>
+                <div className="w-1/3 text-left pl-8">
+                  {index % 2 !== 0 && (
+                    <p className="text-gray-600">{milestone.event}</p>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Team Section */}
+      <section className="py-24">
+        <div className="max-w-7xl mx-auto px-8 md:px-12">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+              The Team Behind the Service
+            </h2>
+            <div className="w-16 h-px bg-gold-600 mx-auto mb-8" />
+            <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+              Our success is built on the dedication of our exceptional team—from our 
+              professional bartenders to our logistics specialists, each member is 
+              committed to delivering excellence with every order.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-center"
+            >
+              <div className="mb-4">
+                <svg className="w-14 h-14 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+              </div>
+              <h3 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.1em]">
+                Expert Bartenders
+              </h3>
+              <p className="text-gray-600 text-sm">
+                TABC certified professionals with years of experience in luxury events
+              </p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="text-center"
+            >
+              <div className="mb-4">
+                <svg className="w-14 h-14 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                </svg>
+              </div>
+              <h3 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.1em]">
+                Delivery Specialists
+              </h3>
+              <p className="text-gray-600 text-sm">
+                Punctual, professional, and knowledgeable about every Austin neighborhood
+              </p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-center"
+            >
+              <div className="mb-4">
+                <svg className="w-14 h-14 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <h3 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.1em]">
+                Event Coordinators
+              </h3>
+              <p className="text-gray-600 text-sm">
+                Detail-oriented professionals ensuring flawless execution of every event
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Community Section */}
+      <section className="py-24 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-8 tracking-[0.1em]">
+              Proudly Austin
+            </h2>
+            <p className="text-lg text-gray-600 leading-relaxed mb-8">
+              We&apos;re more than a delivery service—we&apos;re part of the Austin community. 
+              From supporting local events to partnering with area venues, we&apos;re committed 
+              to giving back to the city that has given us so much.
+            </p>
+            <div className="flex flex-wrap justify-center gap-8 text-sm text-gray-700">
+              <div className="flex items-center">
+                <svg className="w-4 h-4 text-gold-600 mr-2 inline-block" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                500+ Five-Star Reviews
+              </div>
+              <div className="flex items-center">
+                <svg className="w-4 h-4 text-gold-600 mr-2 inline-block" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                1,000+ Events Delivered
+              </div>
+              <div className="flex items-center">
+                <svg className="w-4 h-4 text-gold-600 mr-2 inline-block" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                72-Hour Guarantee
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-24 bg-gray-900">
+        <div className="max-w-4xl mx-auto px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h2 className="font-serif font-light text-4xl md:text-5xl text-white mb-6 tracking-[0.1em]">
+              Experience the Difference
+            </h2>
+            <p className="text-gray-300 text-lg mb-12 tracking-[0.05em]">
+              Join thousands of satisfied customers who trust PartyOn for their celebrations
+            </p>
+            <div className="flex flex-col md:flex-row gap-6 justify-center">
+              <Link href="/order">
+                <button className="px-10 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
+                  START YOUR ORDER
+                </button>
+              </Link>
+              <Link href="/contact">
+                <button className="px-10 py-4 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
+                  GET IN TOUCH
+                </button>
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-white py-16 border-t border-gray-200">
+        <div className="max-w-7xl mx-auto px-8 md:px-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.15em]">PARTYON</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Austin&apos;s premier alcohol delivery and event service since 2020.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SERVICES</h4>
+              <ul className="space-y-2">
+                <li><Link href="/weddings" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Weddings</Link></li>
+                <li><Link href="/boat-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Boat Parties</Link></li>
+                <li><Link href="/bach-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Celebrations</Link></li>
+                <li><Link href="/corporate" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Corporate</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">COMPANY</h4>
+              <ul className="space-y-2">
+                <li><Link href="/about" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">About</Link></li>
+                <li><Link href="/delivery-areas" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Delivery Areas</Link></li>
+                <li><Link href="/faqs" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">FAQs</Link></li>
+                <li><Link href="/contact" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Contact</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">CONTACT</h4>
+              <ul className="space-y-2 text-gray-600 text-sm">
+                <li>Phone: (737) 371-9700</li>
+                <li>Email: hello@partyondelivery.com</li>
+                <li>Hours: 10am - 11pm Daily</li>
+              </ul>
+            </div>
+          </div>
+          <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-500 text-sm">© 2024 PartyOn Delivery. All rights reserved.</p>
+            <div className="flex space-x-6 mt-4 md:mt-0">
+              <Link href="/terms" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Terms</Link>
+              <Link href="/privacy" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Privacy</Link>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}

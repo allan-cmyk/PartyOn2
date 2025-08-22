@@ -1,6 +1,21 @@
 import type { Metadata } from "next";
+import { Cormorant_Garamond, Inter } from 'next/font/google';
 import "./globals.css";
 import AgeVerification from "@/components/AgeVerification";
+
+const cormorantGaramond = Cormorant_Garamond({ 
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
+  variable: '--font-cormorant-garamond',
+  display: 'swap',
+});
+
+const inter = Inter({ 
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
+  variable: '--font-inter',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: "Party On Delivery - Austin's Premier Alcohol Delivery Service",
@@ -48,7 +63,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className="antialiased bg-white text-navy-900">
+      <body className={`${inter.variable} ${cormorantGaramond.variable} antialiased bg-white text-navy-900`}>
         <AgeVerification />
         <main className="min-h-screen">
           {children}
