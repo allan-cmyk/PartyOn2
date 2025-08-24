@@ -4,7 +4,15 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 export default function ShopifyTestPage() {
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<{
+    success: boolean;
+    message: string;
+    shopName?: string;
+    domain?: string;
+    tokenLength?: number;
+    domainConfigured?: string;
+    errors?: unknown;
+  } | null>(null);
   const [loading, setLoading] = useState(false);
 
   const testConnection = async () => {
@@ -13,7 +21,7 @@ export default function ShopifyTestPage() {
       const response = await fetch('/api/shopify-test');
       const data = await response.json();
       setResult(data);
-    } catch (error) {
+    } catch {
       setResult({ success: false, message: 'Failed to connect' });
     }
     setLoading(false);

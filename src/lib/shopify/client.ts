@@ -18,7 +18,7 @@ export async function shopifyFetch<T>({
   variables = {},
 }: {
   query: string;
-  variables?: Record<string, any>;
+  variables?: Record<string, unknown>;
 }): Promise<T> {
   try {
     console.log('Shopify Request Variables:', JSON.stringify(variables, null, 2));

@@ -1,14 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useParams } from 'next/navigation';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import { useProduct } from '@/lib/shopify/hooks/useProducts';
 import { useCartContext } from '@/contexts/CartContext';
-import { formatPrice, getProductImageUrl, getFirstAvailableVariant, getProductABV } from '@/lib/shopify/utils';
+import { formatPrice, getFirstAvailableVariant, getProductABV } from '@/lib/shopify/utils';
 
 export default function ProductDetailPage() {
   const params = useParams();

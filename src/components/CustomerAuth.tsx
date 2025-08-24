@@ -69,7 +69,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
           setErrors(result.errors.map(err => err.message));
         }
       }
-    } catch (error) {
+    } catch {
       setErrors(['An unexpected error occurred. Please try again.']);
     } finally {
       setLoading(false);

@@ -28,7 +28,7 @@ export function useProducts(first: number = 20) {
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchProducts = async (after?: string) => {
     try {

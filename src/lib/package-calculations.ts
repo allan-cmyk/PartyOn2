@@ -73,7 +73,16 @@ export function calculatePackageQuantity(
 }
 
 // Get unit size from product title or variant
-export function getUnitSize(product: any): number {
+export function getUnitSize(product: { 
+  title: string; 
+  variants?: { 
+    edges?: Array<{ 
+      node?: { 
+        title?: string 
+      } 
+    }> 
+  } 
+}): number {
   const title = product.title.toLowerCase();
   const variantTitle = product.variants?.edges?.[0]?.node?.title?.toLowerCase() || '';
   const combinedTitle = `${title} ${variantTitle}`;

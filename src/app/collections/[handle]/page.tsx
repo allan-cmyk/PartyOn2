@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useParams } from 'next/navigation';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
@@ -93,9 +94,9 @@ export default function CollectionPage() {
         <div className="max-w-7xl mx-auto px-8 py-16">
           <div className="text-center">
             <h2 className="font-serif text-2xl text-gray-900 mb-4">Collection Not Found</h2>
-            <a href="/products" className="text-gold-600 hover:text-gold-700">
+            <Link href="/products" className="text-gold-600 hover:text-gold-700">
               Browse All Products
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -204,9 +205,9 @@ export default function CollectionPage() {
           ) : (
             <div className="text-center py-16">
               <p className="text-gray-500 mb-8">No products found in this collection</p>
-              <a href="/products" className="text-gold-600 hover:text-gold-700">
+              <Link href="/products" className="text-gold-600 hover:text-gold-700">
                 Browse All Products
-              </a>
+              </Link>
             </div>
           )}
         </div>
@@ -225,19 +226,19 @@ export default function CollectionPage() {
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SERVICES</h4>
               <ul className="space-y-2">
-                <li><a href="/weddings" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Weddings</a></li>
-                <li><a href="/boat-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Boat Parties</a></li>
-                <li><a href="/bach-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Celebrations</a></li>
-                <li><a href="/corporate" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Corporate</a></li>
+                <li><Link href="/weddings" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Weddings</Link></li>
+                <li><Link href="/boat-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Boat Parties</Link></li>
+                <li><Link href="/bach-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Celebrations</Link></li>
+                <li><Link href="/corporate" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Corporate</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">COLLECTIONS</h4>
               <ul className="space-y-2">
-                <li><a href="/collections/wedding-packages" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Wedding Packages</a></li>
-                <li><a href="/collections/premium-spirits" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Premium Spirits</a></li>
-                <li><a href="/collections/wine-collection" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Fine Wines</a></li>
-                <li><a href="/collections/party-packages" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Party Packages</a></li>
+                <li><Link href="/collections/wedding-packages" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Wedding Packages</Link></li>
+                <li><Link href="/collections/premium-spirits" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Premium Spirits</Link></li>
+                <li><Link href="/collections/wine-collection" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Fine Wines</Link></li>
+                <li><Link href="/collections/party-packages" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Party Packages</Link></li>
               </ul>
             </div>
             <div>
@@ -252,8 +253,8 @@ export default function CollectionPage() {
           <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">© 2024 PartyOn Delivery. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="/terms" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Terms</a>
-              <a href="/privacy" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Privacy</a>
+              <Link href="/terms" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Terms</Link>
+              <Link href="/privacy" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Privacy</Link>
             </div>
           </div>
         </div>

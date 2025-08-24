@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import ProductCard from '@/components/shopify/ProductCard';
 import { useProducts } from '@/lib/shopify/hooks/useProducts';
-import { isAlcoholProduct } from '@/lib/shopify/utils';
 import { shopifyFetch } from '@/lib/shopify/client';
 import { SEARCH_PRODUCTS_QUERY } from '@/lib/shopify/queries/products';
 import { ShopifyProduct } from '@/lib/shopify/types';
@@ -18,7 +18,6 @@ export default function ProductsPage() {
   const searchQuery = searchParams.get('search');
   const { products, loading, error, hasNextPage, loadMore } = useProducts(20);
   const [searchResults, setSearchResults] = useState<ShopifyProduct[]>([]);
-  const [searchLoading, setSearchLoading] = useState(false);
   const [filter, setFilter] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
 
@@ -180,7 +179,7 @@ export default function ProductsPage() {
         <section className="bg-gray-50 py-4">
           <div className="max-w-7xl mx-auto px-8">
             <p className="text-gray-600">
-              {searchResults.length} results for <span className="font-medium text-gray-900">"{searchQuery}"</span>
+              {searchResults.length} results for <span className="font-medium text-gray-900">&quot;{searchQuery}&quot;</span>
             </p>
           </div>
         </section>
@@ -341,19 +340,19 @@ export default function ProductsPage() {
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SERVICES</h4>
               <ul className="space-y-2">
-                <li><a href="/weddings" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Weddings</a></li>
-                <li><a href="/boat-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Boat Parties</a></li>
-                <li><a href="/bach-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Celebrations</a></li>
-                <li><a href="/corporate" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Corporate</a></li>
+                <li><Link href="/weddings" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Weddings</Link></li>
+                <li><Link href="/boat-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Boat Parties</Link></li>
+                <li><Link href="/bach-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Celebrations</Link></li>
+                <li><Link href="/corporate" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Corporate</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SHOP</h4>
               <ul className="space-y-2">
-                <li><a href="/products" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">All Products</a></li>
-                <li><a href="/products?filter=spirits" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Spirits</a></li>
-                <li><a href="/products?filter=wine" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Wine</a></li>
-                <li><a href="/products?filter=packages" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Packages</a></li>
+                <li><Link href="/products" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">All Products</Link></li>
+                <li><Link href="/products?filter=spirits" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Spirits</Link></li>
+                <li><Link href="/products?filter=wine" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Wine</Link></li>
+                <li><Link href="/products?filter=packages" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Packages</Link></li>
               </ul>
             </div>
             <div>
@@ -368,8 +367,8 @@ export default function ProductsPage() {
           <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">© 2024 PartyOn Delivery. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="/terms" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Terms</a>
-              <a href="/privacy" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Privacy</a>
+              <Link href="/terms" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Terms</Link>
+              <Link href="/privacy" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Privacy</Link>
             </div>
           </div>
         </div>

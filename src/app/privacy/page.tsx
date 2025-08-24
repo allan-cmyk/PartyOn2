@@ -36,7 +36,7 @@ export default function PrivacyPage() {
           >
             <div>
               <p className="text-gray-600 leading-relaxed mb-8">
-                PartyOn Delivery ("we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.
+                PartyOn Delivery (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.
               </p>
             </div>
 
@@ -134,7 +134,7 @@ export default function PrivacyPage() {
             <div>
               <h2 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">Changes to This Policy</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
-                We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date.
+                We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the &quot;Last updated&quot; date.
               </p>
             </div>
 

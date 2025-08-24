@@ -37,7 +37,7 @@ export default function TermsPage() {
             <div>
               <h2 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">1. Service Agreement</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
-                By placing an order with PartyOn Delivery ("Company," "we," "us," or "our"), you agree to be bound by these Terms of Service. Our services are available only to individuals who are 21 years of age or older.
+                By placing an order with PartyOn Delivery (&quot;Company,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;), you agree to be bound by these Terms of Service. Our services are available only to individuals who are 21 years of age or older.
               </p>
             </div>
 

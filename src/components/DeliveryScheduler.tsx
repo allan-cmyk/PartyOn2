@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { format, addDays, isBefore, isAfter, startOfDay, setHours, setMinutes } from 'date-fns';
+import { format, addDays, isBefore, isAfter } from 'date-fns';
 
 interface DeliverySchedulerProps {
   isOpen: boolean;
@@ -65,7 +65,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, subtotal
   }
 
   const getDeliveryZone = (zip: string) => {
-    for (const [key, zone] of Object.entries(DELIVERY_ZONES)) {
+    for (const [, zone] of Object.entries(DELIVERY_ZONES)) {
       if (zone.zips.includes(zip)) {
         return zone;
       }

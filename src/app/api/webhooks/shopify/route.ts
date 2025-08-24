@@ -108,13 +108,14 @@ export async function POST(request: NextRequest) {
 }
 
 // Handler functions for each webhook type
-async function handleOrderCreated(order: any) {
+async function handleOrderCreated(order: Record<string, unknown>) {
   console.log('New order created:', order.name);
   
   // Extract delivery information from order attributes
-  const deliveryDate = order.note_attributes?.find((attr: any) => attr.name === 'delivery_date')?.value;
-  const deliveryTime = order.note_attributes?.find((attr: any) => attr.name === 'delivery_time')?.value;
-  const deliveryInstructions = order.note_attributes?.find((attr: any) => attr.name === 'delivery_instructions')?.value;
+  const noteAttributes = order.note_attributes as Array<{ name: string; value: string }> | undefined;
+  const deliveryDate = noteAttributes?.find((attr) => attr.name === 'delivery_date')?.value;
+  const deliveryTime = noteAttributes?.find((attr) => attr.name === 'delivery_time')?.value;
+  const deliveryInstructions = noteAttributes?.find((attr) => attr.name === 'delivery_instructions')?.value;
   
   // TODO: Send order confirmation email
   // TODO: Create internal delivery task
@@ -127,37 +128,37 @@ async function handleOrderCreated(order: any) {
   });
 }
 
-async function handleOrderUpdated(order: any) {
+async function handleOrderUpdated(order: Record<string, unknown>) {
   console.log('Order updated:', order.name);
   // TODO: Update internal records
   // TODO: Notify customer if significant changes
 }
 
-async function handleOrderPaid(order: any) {
+async function handleOrderPaid(order: Record<string, unknown>) {
   console.log('Order paid:', order.name);
   // TODO: Send payment confirmation
   // TODO: Trigger fulfillment process
 }
 
-async function handleOrderFulfilled(order: any) {
+async function handleOrderFulfilled(order: Record<string, unknown>) {
   console.log('Order fulfilled:', order.name);
   // TODO: Send delivery confirmation
   // TODO: Request feedback/review
 }
 
-async function handleOrderCancelled(order: any) {
+async function handleOrderCancelled(order: Record<string, unknown>) {
   console.log('Order cancelled:', order.name);
   // TODO: Send cancellation confirmation
   // TODO: Update delivery schedule
 }
 
-async function handleCustomerCreated(customer: any) {
+async function handleCustomerCreated(customer: Record<string, unknown>) {
   console.log('New customer created:', customer.email);
   // TODO: Send welcome email
   // TODO: Add to marketing list if opted in
 }
 
-async function handleCustomerUpdated(customer: any) {
+async function handleCustomerUpdated(customer: Record<string, unknown>) {
   console.log('Customer updated:', customer.email);
   // TODO: Sync customer data
 }

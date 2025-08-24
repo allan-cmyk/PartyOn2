@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import AIConcierge from '@/components/AIConcierge';
 
@@ -117,7 +117,7 @@ export default function OrderPage() {
             </h1>
             <div className="w-24 h-px bg-gold-600 mx-auto mb-8" />
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Whether you're celebrating on land or water, we'll help you create the perfect 
+              Whether you&apos;re celebrating on land or water, we&apos;ll help you create the perfect 
               beverage experience for your occasion.
             </p>
           </motion.div>

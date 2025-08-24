@@ -85,7 +85,7 @@ export async function registerWebhooks() {
   for (const config of WEBHOOK_CONFIGS) {
     // Check if webhook already exists
     const exists = existingWebhooks.some(
-      (webhook: any) => webhook.topic === config.topic && webhook.address === config.address
+      (webhook: { topic: string; address: string }) => webhook.topic === config.topic && webhook.address === config.address
     );
     
     if (exists) {

@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 
 export default function CorporateEventsPage() {
-  const [activeService, setActiveService] = useState(0);
 
   const services = [
     {
@@ -278,7 +277,7 @@ export default function CorporateEventsPage() {
                 className="text-center"
               >
                 <p className="font-serif text-2xl text-gray-700 mb-6 italic leading-relaxed">
-                  "{testimonial.quote}"
+                  &quot;{testimonial.quote}&quot;
                 </p>
                 <div>
                   <p className="font-medium text-gray-900">{testimonial.author}</p>

@@ -151,7 +151,7 @@ export default function ProductSearch({ isScrolled = true }: ProductSearchProps)
                 </div>
               ) : searchTerm.length >= 2 ? (
                 <div className="p-8 text-center text-gray-500">
-                  No products found for "{searchTerm}"
+                  No products found for &quot;{searchTerm}&quot;
                 </div>
               ) : (
                 <div className="p-8 text-center text-gray-500">

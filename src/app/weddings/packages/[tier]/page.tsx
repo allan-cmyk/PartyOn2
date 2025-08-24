@@ -1,12 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useParams, useRouter } from 'next/navigation';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
-import ProductCard from '@/components/shopify/ProductCard';
 import { useProducts } from '@/lib/shopify/hooks/useProducts';
 import { useCartContext } from '@/contexts/CartContext';
 import { ShopifyProduct } from '@/lib/shopify/types';
