@@ -11,7 +11,7 @@ export default function ShopifyTestPage() {
     domain?: string;
     tokenLength?: number;
     domainConfigured?: string;
-    errors?: unknown;
+    errors?: Record<string, unknown> | Array<unknown> | string;
   } | null>(null);
   const [loading, setLoading] = useState(false);
 
