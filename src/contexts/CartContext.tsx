@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState } from 'react';
 import { useCart } from '@/lib/shopify/hooks/useCart';
+import { ShopifyCart } from '@/lib/shopify/types';
 
 interface CartContextType extends ReturnType<typeof useCart> {
   isCartOpen: boolean;
@@ -42,13 +43,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   // Override addToCart to check age verification
-  const addToCart = async (variantId: string, quantity: number = 1) => {
+  const addToCart = async (variantId: string, quantity: number = 1): Promise<ShopifyCart> => {
     console.log('CartContext addToCart called with:', { variantId, quantity, variantIdType: typeof variantId });
     
     if (!checkAgeVerification()) {
       localStorage.removeItem('ageVerified');
       window.location.reload();
-      return;
+      throw new Error('Age verification required');
     }
     return cartHook.addToCart(variantId, quantity);
   };
