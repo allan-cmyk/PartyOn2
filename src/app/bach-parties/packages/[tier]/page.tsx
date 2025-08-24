@@ -219,7 +219,7 @@ export default function BachPartyPackagePage() {
     }
 
     // Add beers
-    if (config.categories.beer) {
+    if ('beer' in config.categories && config.categories.beer) {
       beers.slice(0, config.categories.beer.count).forEach(product => {
         const unitSize = getUnitSize(product);
         curatedPackage.push({
