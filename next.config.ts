@@ -15,6 +15,20 @@ const nextConfig: NextConfig = {
     // Enable image optimization
     dangerouslyAllowSVG: true,
     contentDispositionType: 'inline',
+    
+    // Allow external images
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.shopify.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
+    ],
   },
   
   // Enable build-time compression

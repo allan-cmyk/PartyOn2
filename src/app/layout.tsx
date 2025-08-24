@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from 'next/font/google';
 import "./globals.css";
 import AgeVerification from "@/components/AgeVerification";
+import { CartProvider } from "@/contexts/CartContext";
+import { CustomerProvider } from "@/contexts/CustomerContext";
+import Cart from "@/components/shopify/Cart";
 
 const cormorantGaramond = Cormorant_Garamond({ 
   subsets: ['latin'],
@@ -64,10 +67,15 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.variable} ${cormorantGaramond.variable} antialiased bg-white text-navy-900`}>
-        <AgeVerification />
-        <main className="min-h-screen">
-          {children}
-        </main>
+        <CustomerProvider>
+          <CartProvider>
+            <AgeVerification />
+            <Cart />
+            <main className="min-h-screen">
+              {children}
+            </main>
+          </CartProvider>
+        </CustomerProvider>
       </body>
     </html>
   );

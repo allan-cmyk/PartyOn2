@@ -10,7 +10,7 @@ export default function BoatPartiesPage() {
   const packages = [
     {
       name: "Sunset Cruise",
-      price: "$399",
+      price: "From $399",
       description: "Intimate sunset experience on Lake Travis",
       features: [
         "Premium cooler selection",
@@ -24,7 +24,7 @@ export default function BoatPartiesPage() {
     },
     {
       name: "Lake Life Luxury",
-      price: "$899",
+      price: "From $899",
       description: "Our signature package for unforgettable lake days",
       features: [
         "Multiple premium coolers",
@@ -39,7 +39,7 @@ export default function BoatPartiesPage() {
     },
     {
       name: "Regatta Ready",
-      price: "$1,599",
+      price: "From $1,599",
       description: "Ultimate luxury for yacht parties and regattas",
       features: [
         "Complete yacht bar service",
@@ -280,13 +280,13 @@ export default function BoatPartiesPage() {
                     </li>
                   ))}
                 </ul>
-                <Link href={`/book-now?package=${pkg.name.toLowerCase().replace(' ', '-')}`}>
+                <Link href={`/boat-parties/packages/${pkg.name.toLowerCase().replace(/ /g, '-')}`}>
                   <button className={`w-full py-3 tracking-[0.15em] text-sm transition-all duration-300 ${
                     pkg.featured 
                       ? 'bg-gold-600 text-white hover:bg-gold-700' 
                       : 'border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white'
                   }`}>
-                    SELECT PACKAGE
+                    CUSTOMIZE PACKAGE
                   </button>
                 </Link>
               </motion.div>

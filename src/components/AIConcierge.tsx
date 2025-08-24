@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 interface Message {
   id: string
@@ -10,16 +12,72 @@ interface Message {
 }
 
 interface AIConciergeProps {
-  mode?: 'normal' | 'party' | 'bachelor' | 'bachelorette' | 'elegant' | 'luxury' | 'boho' | 'chill' | 'wild'
+  mode?: 'normal' | 'party' | 'bachelor' | 'bachelorette' | 'elegant' | 'luxury' | 'boho' | 'chill' | 'wild' | 'event-planning'
+  isOpen?: boolean
+  onClose?: () => void
 }
 
-export default function AIConcierge({ mode = 'normal' }: AIConciergeProps) {
-  const [isOpen, setIsOpen] = useState(false)
+export default function AIConcierge({ mode = 'normal', isOpen: controlledIsOpen, onClose }: AIConciergeProps) {
+  const [internalIsOpen, setInternalIsOpen] = useState(false)
+  const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen
+  const router = useRouter()
+  
+  const handleOpen = () => {
+    if (controlledIsOpen === undefined) {
+      setInternalIsOpen(true)
+    }
+  }
+  
+  const handleClose = () => {
+    if (onClose) {
+      onClose()
+    } else {
+      setInternalIsOpen(false)
+    }
+  }
+  
+  // Parse product recommendations and packages from message
+  const parseMessage = (content: string): { 
+    text: string; 
+    products: string[]; 
+    package: { name: string; items: { quantity: number; product: string }[] } | null 
+  } => {
+    // Check for package format
+    const packageMatch = content.match(/\[PACKAGE:\s*"([^"]+)"\]([\s\S]*?)\[\/PACKAGE\]/);
+    if (packageMatch) {
+      const text = content.replace(packageMatch[0], '').trim();
+      const packageName = packageMatch[1];
+      const packageContent = packageMatch[2];
+      
+      // Parse package items (e.g., "2x Tito's Vodka (1.75L)")
+      const items: { quantity: number; product: string }[] = [];
+      const itemRegex = /(\d+)x\s+([^\n]+)/g;
+      let match;
+      while ((match = itemRegex.exec(packageContent)) !== null) {
+        items.push({
+          quantity: parseInt(match[1]),
+          product: match[2].trim()
+        });
+      }
+      
+      return { text, products: [], package: { name: packageName, items } };
+    }
+    
+    // Check for simple product list
+    const productMatch = content.match(/\[PRODUCTS:\s*([^\]]+)\]/);
+    if (productMatch) {
+      const text = content.replace(productMatch[0], '').trim();
+      const products = productMatch[1].split(',').map(p => p.trim());
+      return { text, products, package: null };
+    }
+    
+    return { text: content, products: [], package: null };
+  }
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
       role: 'assistant',
-      content: "Hey there! I'm your Party On AI Concierge! I can help you plan the perfect Austin party, recommend packages, or answer any questions about our services. What kind of celebration are you planning?",
+      content: "*Adjusts monocle* Reginald at your service. Planning another American... gathering? Tell me your guest count and preferences, and I shall curate a proper selection. Swiftly, if you please.",
       timestamp: new Date()
     }
   ])
@@ -114,7 +172,7 @@ export default function AIConcierge({ mode = 'normal' }: AIConciergeProps) {
       <div className="fixed bottom-6 right-6 z-50">
         {!isOpen ? (
           <button
-            onClick={() => setIsOpen(true)}
+            onClick={handleOpen}
             className="bg-white rounded-full shadow-lg px-4 py-3 flex items-center gap-2 
                      border border-neutral-200 hover:border-neutral-300 transition-colors 
                      hover:shadow-xl group"
@@ -128,7 +186,7 @@ export default function AIConcierge({ mode = 'normal' }: AIConciergeProps) {
           </button>
         ) : (
           <button
-            onClick={() => setIsOpen(false)}
+            onClick={handleClose}
             className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center
                      border border-neutral-200 hover:bg-neutral-50 transition-colors"
           >
@@ -141,17 +199,30 @@ export default function AIConcierge({ mode = 'normal' }: AIConciergeProps) {
 
       {/* Chat Panel - Subtle Help Box */}
       {isOpen && (
-        <div className="fixed bottom-20 right-6 w-[360px] h-[480px] bg-white rounded-2xl shadow-xl z-50 
+        <div className="fixed bottom-20 right-6 w-[480px] h-[520px] bg-white rounded-2xl shadow-xl z-50 
                       transform scale-100 border border-neutral-200">
           {/* Header - Clean ElevenLabs Style */}
           <div className="p-6 border-b border-neutral-100">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-neutral-50 to-neutral-100 rounded-xl flex items-center justify-center">
-                  <span className="text-lg">AI</span>
+                <div className="w-12 h-12 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl flex items-center justify-center relative overflow-hidden">
+                  <svg className="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    {/* Bowler hat */}
+                    <ellipse cx="12" cy="6" rx="5" ry="2" />
+                    <path d="M7 6c0-1 0-2 5-2s5 1 5 2v1.5c0 .5-2.2 1-5 1s-5-.5-5-1V6z" />
+                    {/* Head and bow tie */}
+                    <circle cx="12" cy="10" r="3" />
+                    <path d="M12 13c-3 0-5 1.5-5 3v5h10v-5c0-1.5-2-3-5-3z" />
+                    {/* Bow tie */}
+                    <path d="M9 13.5l3-1 3 1-3 1z" fill="white" opacity="0.8" />
+                    {/* Mustache */}
+                    <path d="M9 11c.5.3 1.5.5 3 0c1.5.5 2.5.3 3 0" stroke="white" strokeWidth="0.5" fill="none" />
+                  </svg>
+                  {/* Animated monocle */}
+                  <div className="absolute right-2 top-2 w-3 h-3 border-2 border-gold-500 rounded-full animate-pulse" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-neutral-900">Party AI Assistant</h3>
+                  <h3 className="font-medium text-neutral-900">Reginald - Beverage Concierge</h3>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="w-2 h-2 bg-green-400 rounded-full"></span>
                     <p className="text-xs text-neutral-500">
@@ -169,7 +240,7 @@ export default function AIConcierge({ mode = 'normal' }: AIConciergeProps) {
                 </div>
               </div>
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={handleClose}
                 className="w-8 h-8 rounded-lg bg-neutral-100 hover:bg-neutral-200 transition-colors flex items-center justify-center"
               >
                 <svg className="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -180,25 +251,108 @@ export default function AIConcierge({ mode = 'normal' }: AIConciergeProps) {
           </div>
 
           {/* Messages */}
-          <div className="h-64 overflow-y-auto p-4 space-y-3">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`
-                    max-w-[85%] px-4 py-3 rounded-2xl text-sm
-                    ${message.role === 'user' 
-                      ? 'bg-neutral-900 text-white' 
-                      : 'bg-neutral-100 text-neutral-800'
-                    }
-                  `}
-                >
-                  {message.content}
+          <div className="h-80 overflow-y-auto p-4 space-y-3">
+            {messages.map((message) => {
+              const { text, products, package: pkg } = message.role === 'assistant' ? parseMessage(message.content) : { text: message.content, products: [], package: null };
+              
+              return (
+                <div key={message.id} className="space-y-2">
+                  <div
+                    className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} gap-2`}
+                  >
+                    {/* Butler Avatar for Assistant Messages */}
+                    {message.role === 'assistant' && (
+                      <div className="flex-shrink-0 relative">
+                        <div className="w-10 h-10 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full flex items-center justify-center overflow-hidden animate-pulse">
+                          <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
+                            {/* Bowler hat */}
+                            <ellipse cx="12" cy="6" rx="5" ry="2" />
+                            <path d="M7 6c0-1 0-2 5-2s5 1 5 2v1.5c0 .5-2.2 1-5 1s-5-.5-5-1V6z" />
+                            {/* Head and bow tie */}
+                            <circle cx="12" cy="10" r="3" />
+                            <path d="M12 13c-3 0-5 1.5-5 3v5h10v-5c0-1.5-2-3-5-3z" />
+                            {/* Bow tie */}
+                            <path d="M9 13.5l3-1 3 1-3 1z" fill="white" opacity="0.8" />
+                          </svg>
+                        </div>
+                        {/* Monocle animation */}
+                        <div className="absolute -right-1 top-0 w-2.5 h-2.5 border border-gold-600 rounded-full animate-bounce bg-white/50" />
+                      </div>
+                    )}
+                    
+                    <div
+                      className={`
+                        max-w-[85%] px-4 py-3 rounded-2xl text-sm
+                        ${message.role === 'user' 
+                          ? 'bg-neutral-900 text-white' 
+                          : 'bg-neutral-100 text-neutral-800'
+                        }
+                      `}
+                    >
+                      {text}
+                    </div>
+                  </div>
+                  
+                  {/* Custom Package */}
+                  {pkg && pkg.items.length > 0 && (
+                    <div className="flex justify-start pl-10">
+                      <div className="max-w-[85%] bg-gold-50 border border-gold-200 rounded-lg p-4">
+                        <h4 className="font-serif text-sm text-gray-900 mb-2 tracking-[0.1em]">{pkg.name}</h4>
+                        <div className="space-y-1 mb-3">
+                          {pkg.items.map((item, index) => (
+                            <div key={index} className="flex items-center text-xs text-gray-700">
+                              <span className="font-medium text-gold-600 mr-2">{item.quantity}x</span>
+                              <span>{item.product}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <button
+                          onClick={() => {
+                            // Store package data in localStorage
+                            const packageData = {
+                              name: pkg.name,
+                              items: pkg.items,
+                              createdAt: new Date().toISOString()
+                            };
+                            localStorage.setItem('ai-package', JSON.stringify(packageData));
+                            
+                            // Navigate to custom package page
+                            router.push('/custom-package');
+                          }}
+                          className="w-full px-4 py-2 bg-gold-600 text-white text-xs rounded hover:bg-gold-700 transition-colors tracking-[0.1em]"
+                        >
+                          BUILD THIS PACKAGE
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Simple Product Recommendations */}
+                  {products.length > 0 && (
+                    <div className="flex justify-start pl-10">
+                      <div className="max-w-[85%] space-y-2">
+                        <p className="text-xs text-neutral-500 mb-1">Recommended products:</p>
+                        <div className="flex flex-wrap gap-2">
+                          {products.map((product, index) => (
+                            <button
+                              key={index}
+                              onClick={() => {
+                                // Extract just the product name without size
+                                const cleanProduct = product.replace(/\s*\([^)]*\)/g, '').trim();
+                                router.push(`/products?search=${encodeURIComponent(cleanProduct)}`);
+                              }}
+                              className="px-3 py-1.5 bg-gold-50 text-gold-700 rounded-full text-xs hover:bg-gold-100 transition-colors border border-gold-200"
+                            >
+                              {product} →
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
             {isLoading && (
               <div className="flex justify-start">
                 <div className="bg-neutral-100 px-4 py-3 rounded-2xl">

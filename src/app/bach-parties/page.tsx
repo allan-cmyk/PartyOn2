@@ -10,7 +10,7 @@ export default function BachPartiesPage() {
   const packages = [
     {
       name: "Essential Celebration",
-      price: "$599",
+      price: "From $599",
       description: "Perfect start to your celebration weekend",
       features: [
         "Premium spirit selection",
@@ -24,7 +24,7 @@ export default function BachPartiesPage() {
     },
     {
       name: "VIP Experience",
-      price: "$1,299",
+      price: "From $1,299",
       description: "Elevate your celebration with luxury service",
       features: [
         "Ultra-premium spirits",
@@ -40,7 +40,7 @@ export default function BachPartiesPage() {
     },
     {
       name: "Ultimate Weekend",
-      price: "$2,499",
+      price: "From $2,499",
       description: "Complete weekend party experience",
       features: [
         "Full weekend coverage",
@@ -281,13 +281,13 @@ export default function BachPartiesPage() {
                     </li>
                   ))}
                 </ul>
-                <Link href={`/book-now?package=${pkg.name.toLowerCase().replace(' ', '-')}`}>
+                <Link href={`/bach-parties/packages/${pkg.name.toLowerCase().replace(/ /g, '-')}`}>
                   <button className={`w-full py-3 tracking-[0.15em] text-sm transition-all duration-300 ${
                     pkg.featured 
                       ? 'bg-gold-600 text-white hover:bg-gold-700' 
                       : 'border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white'
                   }`}>
-                    SELECT PACKAGE
+                    CUSTOMIZE PACKAGE
                   </button>
                 </Link>
               </motion.div>

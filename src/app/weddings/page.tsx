@@ -10,7 +10,7 @@ export default function WeddingsPage() {
   const packages = [
     {
       name: "Intimate Ceremony",
-      price: "$1,299",
+      price: "From $1,299",
       description: "Perfect for smaller gatherings with distinguished service",
       features: [
         "2 Professional bartenders",
@@ -24,7 +24,7 @@ export default function WeddingsPage() {
     },
     {
       name: "Classic Reception",
-      price: "$2,499",
+      price: "From $2,499",
       description: "Our most popular package for traditional celebrations",
       features: [
         "4 Professional bartenders",
@@ -39,7 +39,7 @@ export default function WeddingsPage() {
     },
     {
       name: "Grand Celebration",
-      price: "$4,999",
+      price: "From $4,999",
       description: "Luxurious service for unforgettable celebrations",
       features: [
         "6 Master bartenders",
@@ -228,13 +228,13 @@ export default function WeddingsPage() {
                     </li>
                   ))}
                 </ul>
-                <Link href={`/book-now?package=${pkg.name.toLowerCase().replace(' ', '-')}`}>
+                <Link href={`/weddings/packages/${pkg.name.toLowerCase().replace(/ /g, '-')}`}>
                   <button className={`w-full py-3 tracking-[0.15em] text-sm transition-all duration-300 ${
                     pkg.featured 
                       ? 'bg-gold-600 text-white hover:bg-gold-700' 
                       : 'border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white'
                   }`}>
-                    SELECT PACKAGE
+                    CUSTOMIZE PACKAGE
                   </button>
                 </Link>
               </motion.div>

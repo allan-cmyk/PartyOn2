@@ -298,7 +298,7 @@ export default function PremiumHome() {
                         </li>
                       ))}
                     </ul>
-                    <Link href={`/services/${service.title.toLowerCase().replace(' ', '-')}`}>
+                    <Link href={`/services/${service.title.toLowerCase().replace(/ /g, '-')}`}>
                       <button className="mt-6 text-royal-600 hover:text-royal-700 font-medium text-sm group-hover:translate-x-2 transition-transform duration-300">
                         Learn More
                       </button>

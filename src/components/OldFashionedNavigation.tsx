@@ -4,6 +4,10 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import CartButton from '@/components/shopify/CartButton';
+import ProductSearch from '@/components/ProductSearch';
+import { useCustomerContext } from '@/contexts/CustomerContext';
+import CustomerAuth from '@/components/CustomerAuth';
 
 interface NavLinkProps {
   href: string;
@@ -32,6 +36,8 @@ export default function OldFashionedNavigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const { customer, isAuthenticated, logout } = useCustomerContext();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -64,7 +70,6 @@ export default function OldFashionedNavigation() {
             
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-10">
-              <NavLink href="/" isScrolled={isScrolled}>HOME</NavLink>
               <NavLink href="/about" isScrolled={isScrolled}>ABOUT</NavLink>
               
               {/* Services Dropdown */}
@@ -107,9 +112,63 @@ export default function OldFashionedNavigation() {
                 </AnimatePresence>
               </div>
               
-              <NavLink href="/delivery-areas" isScrolled={isScrolled}>COVERAGE</NavLink>
+              <NavLink href="/products" isScrolled={isScrolled}>PRODUCTS</NavLink>
               <NavLink href="/contact" isScrolled={isScrolled}>CONTACT</NavLink>
               
+              {/* Search */}
+              <ProductSearch isScrolled={isScrolled} />
+              
+              {/* Cart Button */}
+              <CartButton isScrolled={isScrolled} />
+
+              {/* Account Section */}
+              {isAuthenticated && customer ? (
+                <div className="relative group">
+                  <button 
+                    className={`flex items-center text-sm tracking-[0.15em] transition-all duration-300 ${
+                      isScrolled 
+                        ? 'text-gray-700 hover:text-gold-600' 
+                        : 'text-white/90 hover:text-gold-400'
+                    }`}
+                  >
+                    {customer.firstName || 'ACCOUNT'}
+                    <ChevronDownIcon className="w-4 h-4 ml-1" />
+                  </button>
+                  
+                  <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                    <Link 
+                      href="/account"
+                      className="block px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gray-50 hover:text-gold-600 transition-colors"
+                    >
+                      MY ACCOUNT
+                    </Link>
+                    <Link 
+                      href="/account/orders"
+                      className="block px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gray-50 hover:text-gold-600 transition-colors"
+                    >
+                      ORDER HISTORY
+                    </Link>
+                    <button 
+                      onClick={() => logout()}
+                      className="block w-full text-left px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gray-50 hover:text-gold-600 transition-colors border-t"
+                    >
+                      SIGN OUT
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button 
+                  onClick={() => setIsAuthOpen(true)}
+                  className={`text-sm tracking-[0.15em] transition-all duration-300 ${
+                    isScrolled 
+                      ? 'text-gray-700 hover:text-gold-600' 
+                      : 'text-white/90 hover:text-gold-400'
+                  }`}
+                >
+                  SIGN IN
+                </button>
+              )}
+
               {/* Order CTA */}
               <Link href="/order">
                 <button className={`px-8 py-3 text-sm tracking-[0.15em] border transition-all duration-300 ${
@@ -117,7 +176,7 @@ export default function OldFashionedNavigation() {
                     ? 'border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white' 
                     : 'border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-gray-900'
                 }`}>
-                  ORDER NOW
+                  PLAN MY EVENT
                 </button>
               </Link>
             </div>
@@ -160,9 +219,6 @@ export default function OldFashionedNavigation() {
               </div>
               
               <div className="flex-1 flex flex-col justify-center px-8 space-y-8">
-                <Link href="/" className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors" onClick={() => setIsMenuOpen(false)}>
-                  HOME
-                </Link>
                 <Link href="/about" className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors" onClick={() => setIsMenuOpen(false)}>
                   ABOUT
                 </Link>
@@ -184,8 +240,8 @@ export default function OldFashionedNavigation() {
                   </div>
                 </div>
                 
-                <Link href="/delivery-areas" className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors" onClick={() => setIsMenuOpen(false)}>
-                  COVERAGE
+                <Link href="/products" className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors" onClick={() => setIsMenuOpen(false)}>
+                  PRODUCTS
                 </Link>
                 <Link href="/contact" className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors" onClick={() => setIsMenuOpen(false)}>
                   CONTACT
@@ -193,7 +249,7 @@ export default function OldFashionedNavigation() {
                 
                 <Link href="/order" onClick={() => setIsMenuOpen(false)}>
                   <button className="w-full mt-8 px-8 py-4 text-sm tracking-[0.15em] border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300">
-                    ORDER NOW
+                    PLAN MY EVENT
                   </button>
                 </Link>
               </div>
@@ -201,6 +257,12 @@ export default function OldFashionedNavigation() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Customer Auth Modal */}
+      <CustomerAuth 
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+      />
     </>
   );
 }
