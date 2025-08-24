@@ -18,6 +18,7 @@ export default function ProductsPage() {
   const searchQuery = searchParams.get('search');
   const { products, loading, error, hasNextPage, loadMore } = useProducts(20);
   const [searchResults, setSearchResults] = useState<ShopifyProduct[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [filter, setFilter] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
 
@@ -248,7 +249,7 @@ export default function ProductsPage() {
       {/* Products Grid */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-8">
-          {loading && products.length === 0 ? (
+          {(loading || searchLoading) && products.length === 0 ? (
             <div className="text-center py-12">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gold-600"></div>
               <p className="mt-4 text-gray-600">Loading products...</p>
