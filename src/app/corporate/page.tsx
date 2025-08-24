@@ -164,8 +164,7 @@ export default function CorporateEventsPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="bg-white p-8 border border-gray-200 hover:border-gold-600 transition-colors cursor-pointer"
-                onClick={() => setActiveService(index)}
+                className="bg-white p-8 border border-gray-200 hover:border-gold-600 transition-colors"
               >
                 <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
                   {service.title}
