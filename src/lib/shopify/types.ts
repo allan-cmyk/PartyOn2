@@ -82,7 +82,26 @@ export interface ShopifyCart {
       node: {
         id: string;
         quantity: number;
-        merchandise: ShopifyProductVariant;
+        merchandise: {
+          id: string;
+          title: string;
+          price: {
+            amount: string;
+            currencyCode: string;
+          };
+          product: {
+            title: string;
+            handle: string;
+            images?: {
+              edges: Array<{
+                node: {
+                  url: string;
+                  altText: string | null;
+                };
+              }>;
+            };
+          };
+        };
       };
     }>;
   };
