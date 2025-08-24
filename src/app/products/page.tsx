@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -13,7 +13,7 @@ import { SEARCH_PRODUCTS_QUERY } from '@/lib/shopify/queries/products';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import AIConcierge from '@/components/AIConcierge';
 
-export default function ProductsPage() {
+function ProductsContent() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('search');
   const { products, loading, error, hasNextPage, loadMore } = useProducts(20);
@@ -378,5 +378,22 @@ export default function ProductsPage() {
       {/* AI Concierge */}
       <AIConcierge mode="elegant" />
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-white">
+        <OldFashionedNavigation />
+        <div className="pt-32 pb-16 text-center">
+          <div className="animate-pulse">
+            <div className="h-8 w-48 bg-gray-200 mx-auto rounded"></div>
+          </div>
+        </div>
+      </div>
+    }>
+      <ProductsContent />
+    </Suspense>
   );
 }
