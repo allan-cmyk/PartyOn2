@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
 import { useCustomerContext } from '@/contexts/CustomerContext';
 
-export default function CheckoutSuccessPage() {
+function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
   const { isAuthenticated, refreshCustomer } = useCustomerContext();
   const [orderNumber, setOrderNumber] = useState<string | null>(null);
@@ -137,5 +137,22 @@ export default function CheckoutSuccessPage() {
       
       <Footer />
     </>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-white">
+        <OldFashionedNavigation />
+        <div className="pt-32 pb-16 text-center">
+          <div className="animate-pulse">
+            <div className="h-8 w-48 bg-gray-200 mx-auto rounded"></div>
+          </div>
+        </div>
+      </div>
+    }>
+      <CheckoutSuccessContent />
+    </Suspense>
   );
 }
