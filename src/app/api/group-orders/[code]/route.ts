@@ -3,10 +3,10 @@ import { db } from '@/lib/group-orders/database'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { code: string } }
+  { params }: { params: Promise<{ code: string }> }
 ) {
   try {
-    const { code } = params
+    const { code } = await params
     
     const groupOrder = await db.getOrderByCode(code)
     
