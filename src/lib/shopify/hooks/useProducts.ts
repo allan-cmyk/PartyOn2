@@ -64,19 +64,19 @@ export function useProducts(first: number = 20, loadAll: boolean = false) {
       setLoading(true);
       let allProducts: ShopifyProduct[] = [];
       let cursor: string | null = null;
-      let hasNext = true;
+      let hasMore = true;
       
-      while (hasNext) {
-        const data = await shopifyFetch<ProductsResponse>({
+      while (hasMore) {
+        const response: ProductsResponse = await shopifyFetch<ProductsResponse>({
           query: PRODUCTS_QUERY,
           variables: { first: 50, after: cursor }, // Use larger batch size
         });
 
-        const newProducts = data.products.edges.map(edge => edge.node);
+        const newProducts = response.products.edges.map(edge => edge.node);
         allProducts = [...allProducts, ...newProducts];
         
-        hasNext = data.products.pageInfo.hasNextPage;
-        cursor = data.products.pageInfo.endCursor;
+        hasMore = response.products.pageInfo.hasNextPage;
+        cursor = response.products.pageInfo.endCursor;
         
         // Set intermediate results so user sees products loading
         setProducts([...allProducts]);
