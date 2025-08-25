@@ -79,21 +79,64 @@ function ProductsContent() {
     return 'standard';
   };
 
-  // Helper function to categorize spirit type
-  const getSpiritType = (product: ShopifyProduct): string => {
+  // Helper function to categorize product type
+  const getProductCategory = (product: ShopifyProduct): string => {
     const title = product.title.toLowerCase();
+    const type = product.productType?.toLowerCase() || '';
+    const tags = product.tags?.map(t => t.toLowerCase()) || [];
     
+    // Check for party supplies and non-consumables first
+    if (
+      title.includes('ice') ||
+      title.includes('cups') ||
+      title.includes('napkins') ||
+      title.includes('straws') ||
+      title.includes('mixer') ||
+      title.includes('tonic') ||
+      title.includes('soda') ||
+      title.includes('juice') ||
+      title.includes('garnish') ||
+      title.includes('lime') ||
+      title.includes('lemon') ||
+      title.includes('orange') ||
+      title.includes('cherry') ||
+      title.includes('olive') ||
+      title.includes('salt') ||
+      title.includes('sugar') ||
+      title.includes('syrup') ||
+      title.includes('bitters') ||
+      title.includes('grenadine') ||
+      title.includes('margarita mix') ||
+      title.includes('bloody mary mix') ||
+      title.includes('simple syrup') ||
+      title.includes('club soda') ||
+      title.includes('ginger beer') ||
+      title.includes('accessories') ||
+      type.includes('supplies') ||
+      type.includes('mixer') ||
+      type.includes('garnish') ||
+      tags.includes('supplies') ||
+      tags.includes('party supplies') ||
+      tags.includes('mixers')
+    ) return 'supplies';
+    
+    // Cocktail kits and gift baskets
+    if (title.includes('cocktail kit') || title.includes('gift basket') || title.includes('party kit')) return 'kits';
+    
+    // Non-alcoholic beverages
+    if (title.includes('non-alcoholic') || title.includes('mocktail') || title.includes('0%') || title.includes('zero proof')) return 'non-alcoholic';
+    
+    // Alcoholic beverages
     if (title.includes('vodka')) return 'vodka';
     if (title.includes('tequila') || title.includes('mezcal')) return 'tequila';
     if (title.includes('whiskey') || title.includes('bourbon') || title.includes('rye') || title.includes('scotch')) return 'whiskey';
     if (title.includes('rum')) return 'rum';
     if (title.includes('gin')) return 'gin';
-    if (title.includes('wine')) return 'wine';
-    if (title.includes('beer') || title.includes('seltzer')) return 'beer';
-    if (title.includes('cocktail kit') || title.includes('gift basket')) return 'kits';
-    if (title.includes('liqueur') || title.includes('bailey') || title.includes('campari')) return 'liqueur';
+    if (title.includes('wine') || title.includes('champagne') || title.includes('prosecco')) return 'wine';
+    if (title.includes('beer') || title.includes('seltzer') || title.includes('hard') || title.includes('ipa') || title.includes('lager')) return 'beer';
+    if (title.includes('liqueur') || title.includes('bailey') || title.includes('campari') || title.includes('aperol') || title.includes('kahlua')) return 'liqueur';
     if (title.includes('cognac') || title.includes('brandy')) return 'cognac';
-    if (title.includes('non-alcoholic')) return 'non-alcoholic';
+    
     return 'other';
   };
 
@@ -104,18 +147,19 @@ function ProductsContent() {
     
     // Main category filter
     if (filter !== 'all') {
-      const productSpiritType = getSpiritType(product);
-      if (filter === 'spirits' && !['vodka', 'tequila', 'whiskey', 'rum', 'gin', 'liqueur', 'cognac'].includes(productSpiritType)) return false;
-      if (filter === 'cocktail-kits' && productSpiritType !== 'kits') return false;
-      if (filter === 'beer' && productSpiritType !== 'beer') return false;
-      if (filter === 'wine' && productSpiritType !== 'wine') return false;
-      if (filter === 'non-alcoholic' && productSpiritType !== 'non-alcoholic') return false;
+      const productCategory = getProductCategory(product);
+      if (filter === 'spirits' && !['vodka', 'tequila', 'whiskey', 'rum', 'gin', 'liqueur', 'cognac'].includes(productCategory)) return false;
+      if (filter === 'cocktail-kits' && productCategory !== 'kits') return false;
+      if (filter === 'beer' && productCategory !== 'beer') return false;
+      if (filter === 'wine' && productCategory !== 'wine') return false;
+      if (filter === 'non-alcoholic' && productCategory !== 'non-alcoholic') return false;
+      if (filter === 'party-supplies' && productCategory !== 'supplies') return false;
     }
     
-    // Spirit type filter
-    if (spiritType !== 'all') {
-      const productSpiritType = getSpiritType(product);
-      if (spiritType !== productSpiritType) return false;
+    // Spirit type filter (only applicable for spirits)
+    if (spiritType !== 'all' && filter === 'spirits') {
+      const productCategory = getProductCategory(product);
+      if (spiritType !== productCategory) return false;
     }
     
     // Bottle size filter
@@ -217,6 +261,7 @@ function ProductsContent() {
               { value: 'all', label: 'All Products' },
               { value: 'spirits', label: 'Spirits' },
               { value: 'cocktail-kits', label: 'Cocktail Kits' },
+              { value: 'party-supplies', label: 'Party Supplies' },
               { value: 'wine', label: 'Wine' },
               { value: 'beer', label: 'Beer & Seltzers' },
               { value: 'non-alcoholic', label: 'Non-Alcoholic' }
