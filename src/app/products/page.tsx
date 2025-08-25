@@ -82,7 +82,6 @@ function ProductsContent() {
   // Helper function to categorize spirit type
   const getSpiritType = (product: ShopifyProduct): string => {
     const title = product.title.toLowerCase();
-    const type = product.productType?.toLowerCase() || '';
     
     if (title.includes('vodka')) return 'vodka';
     if (title.includes('tequila') || title.includes('mezcal')) return 'tequila';
