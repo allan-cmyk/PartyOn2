@@ -32,20 +32,25 @@ function NavLink({ href, children, isScrolled, onClick }: NavLinkProps) {
   );
 }
 
-export default function OldFashionedNavigation() {
-  const [isScrolled, setIsScrolled] = useState(false);
+interface OldFashionedNavigationProps {
+  forceScrolled?: boolean;
+}
+
+export default function OldFashionedNavigation({ forceScrolled = false }: OldFashionedNavigationProps) {
+  const [isScrolled, setIsScrolled] = useState(forceScrolled);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const { customer, isAuthenticated, logout } = useCustomerContext();
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(forceScrolled || window.scrollY > 50);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [forceScrolled]);
 
   const services = [
     { href: '/weddings', label: 'WEDDINGS' },
@@ -70,7 +75,46 @@ export default function OldFashionedNavigation() {
             
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-10">
-              <NavLink href="/about" isScrolled={isScrolled}>ABOUT</NavLink>
+              {/* About Dropdown */}
+              <div 
+                className="relative group"
+                onMouseEnter={() => setIsAboutOpen(true)}
+                onMouseLeave={() => setIsAboutOpen(false)}
+              >
+                <button className={`text-sm tracking-[0.15em] transition-all duration-300 flex items-center ${
+                  isScrolled 
+                    ? 'text-gray-700 hover:text-gold-600' 
+                    : 'text-white/90 hover:text-gold-400'
+                }`}>
+                  ABOUT
+                  <ChevronDownIcon className="w-4 h-4 ml-1" />
+                </button>
+                <AnimatePresence>
+                  {isAboutOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg"
+                      onMouseEnter={() => setIsAboutOpen(true)}
+                      onMouseLeave={() => setIsAboutOpen(false)}
+                    >
+                      <Link 
+                        href="/about"
+                        className="block px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gray-50 hover:text-gold-600 transition-colors"
+                      >
+                        ABOUT US
+                      </Link>
+                      <Link 
+                        href="/blog"
+                        className="block px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gray-50 hover:text-gold-600 transition-colors"
+                      >
+                        BLOG
+                      </Link>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
               
               {/* Services Dropdown */}
               <div className="relative group">
@@ -176,7 +220,7 @@ export default function OldFashionedNavigation() {
                     ? 'border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white' 
                     : 'border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-gray-900'
                 }`}>
-                  PLAN MY EVENT
+                  ORDER NOW
                 </button>
               </Link>
             </div>
@@ -219,9 +263,26 @@ export default function OldFashionedNavigation() {
               </div>
               
               <div className="flex-1 flex flex-col justify-center px-8 space-y-8">
-                <Link href="/about" className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors" onClick={() => setIsMenuOpen(false)}>
-                  ABOUT
-                </Link>
+                {/* About Section */}
+                <div className="space-y-4">
+                  <p className="text-2xl font-light tracking-[0.15em] text-gray-900">ABOUT</p>
+                  <div className="pl-6 space-y-3">
+                    <Link 
+                      href="/about"
+                      className="block text-lg font-light tracking-[0.1em] text-gray-600 hover:text-gold-600 transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      ABOUT US
+                    </Link>
+                    <Link 
+                      href="/blog"
+                      className="block text-lg font-light tracking-[0.1em] text-gray-600 hover:text-gold-600 transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      BLOG
+                    </Link>
+                  </div>
+                </div>
                 
                 {/* Services Section */}
                 <div className="space-y-4">
@@ -249,7 +310,7 @@ export default function OldFashionedNavigation() {
                 
                 <Link href="/order" onClick={() => setIsMenuOpen(false)}>
                   <button className="w-full mt-8 px-8 py-4 text-sm tracking-[0.15em] border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300">
-                    PLAN MY EVENT
+                    ORDER NOW
                   </button>
                 </Link>
               </div>

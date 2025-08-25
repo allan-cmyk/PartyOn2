@@ -45,7 +45,7 @@ export default function ProductDetailPage() {
   if (loading) {
     return (
       <div className="bg-white min-h-screen">
-        <OldFashionedNavigation />
+        <OldFashionedNavigation forceScrolled={true} />
         <div className="max-w-7xl mx-auto px-8 py-16 text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gold-600"></div>
         </div>
@@ -56,7 +56,7 @@ export default function ProductDetailPage() {
   if (error || !product) {
     return (
       <div className="bg-white min-h-screen">
-        <OldFashionedNavigation />
+        <OldFashionedNavigation forceScrolled={true} />
         <div className="max-w-7xl mx-auto px-8 py-16">
           <div className="text-center">
             <h2 className="font-serif text-2xl text-gray-900 mb-4">Product Not Found</h2>
@@ -74,7 +74,7 @@ export default function ProductDetailPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation />
+      <OldFashionedNavigation forceScrolled={true} />
       
       {/* Breadcrumb */}
       <div className="max-w-7xl mx-auto px-8 py-4 text-sm">

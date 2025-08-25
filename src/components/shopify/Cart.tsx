@@ -8,10 +8,17 @@ import CartItem from './CartItem';
 import { formatPrice } from '@/lib/shopify/utils';
 import DeliveryScheduler from '@/components/DeliveryScheduler';
 import AIConcierge from '@/components/AIConcierge';
+import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
+import CreateGroupOrderModal from '@/components/group-orders/CreateGroupOrderModal';
+import ShareGroupOrder from '@/components/group-orders/ShareGroupOrder';
 
 export default function Cart() {
   const { cart, isCartOpen, closeCart, loading, updateCartAttributes } = useCartContext();
+  const { currentGroupOrder, isInGroupOrder } = useGroupOrderContext();
   const [showDeliveryScheduler, setShowDeliveryScheduler] = useState(false);
+  const [showCreateGroupOrder, setShowCreateGroupOrder] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [newGroupOrderCode, setNewGroupOrderCode] = useState('');
 
   const subtotal = cart?.cost.subtotalAmount;
   const total = cart?.cost.totalAmount;
@@ -21,12 +28,14 @@ export default function Cart() {
     setShowDeliveryScheduler(true);
   };
 
-  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string) => {
+  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, isExpress?: boolean) => {
     // Store delivery info in cart attributes
     const attributes = [
       { key: 'delivery_date', value: date.toISOString() },
       { key: 'delivery_time', value: time },
-      { key: 'delivery_instructions', value: instructions }
+      { key: 'delivery_instructions', value: instructions },
+      { key: 'express_delivery', value: isExpress ? 'true' : 'false' },
+      { key: 'delivery_fee', value: isExpress ? '0.00' : '15.00' }
     ];
 
     if (updateCartAttributes) {
@@ -42,6 +51,12 @@ export default function Cart() {
     }
     
     setShowDeliveryScheduler(false);
+  };
+
+  const handleGroupOrderSuccess = (shareCode: string) => {
+    setNewGroupOrderCode(shareCode);
+    setShowCreateGroupOrder(false);
+    setShowShareModal(true);
   };
 
   return (
@@ -112,6 +127,20 @@ export default function Cart() {
               {/* Footer */}
               {hasItems && (
                 <div className="border-t border-gray-200 p-6 space-y-4">
+                  {/* Group Order Info */}
+                  {isInGroupOrder && currentGroupOrder && (
+                    <div className="bg-gray-50 p-4 rounded">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm tracking-[0.1em] text-gray-600">GROUP ORDER</span>
+                        <span className="text-sm font-cormorant text-gold-500">{currentGroupOrder.shareCode}</span>
+                      </div>
+                      <p className="text-sm font-cormorant">{currentGroupOrder.name}</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Delivery: {new Date(currentGroupOrder.deliveryDate).toLocaleDateString()} at {currentGroupOrder.deliveryTime}
+                      </p>
+                    </div>
+                  )}
+
                   {/* Subtotal */}
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Subtotal</span>
@@ -136,19 +165,40 @@ export default function Cart() {
 
                   {/* Notice */}
                   <div className="bg-gray-50 p-4 text-sm text-gray-600">
-                    <p className="flex items-start">
-                      <svg className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      Orders require 72-hour advance notice. ID verification required upon delivery.
-                    </p>
+                    <div className="space-y-2">
+                      <p className="flex items-start">
+                        <svg className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>
+                          <strong>Express:</strong> 3-hour delivery available on orders $50+
+                        </span>
+                      </p>
+                      <p className="flex items-start">
+                        <svg className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+                        </svg>
+                        ID verification required upon delivery
+                      </p>
+                    </div>
                   </div>
+
+                  {/* Group Order Button - Only show if not already in a group order */}
+                  {!isInGroupOrder && (
+                    <button 
+                      onClick={() => setShowCreateGroupOrder(true)}
+                      disabled={loading}
+                      className="w-full py-3 border border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-all tracking-[0.15em] text-sm disabled:opacity-50"
+                    >
+                      START GROUP ORDER
+                    </button>
+                  )}
 
                   {/* Checkout Button */}
                   <button 
                     onClick={handleProceedToCheckout}
                     disabled={loading}
-                    className="w-full py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm disabled:opacity-50"
+                    className="w-full py-4 bg-gold-500 text-white hover:bg-gold-600 transition-colors tracking-[0.15em] text-sm disabled:opacity-50"
                   >
                     PROCEED TO CHECKOUT
                   </button>
@@ -176,6 +226,22 @@ export default function Cart() {
       
       {/* AI Concierge - only show when cart is open */}
       {isCartOpen && <AIConcierge mode="party" />}
+      
+      {/* Group Order Modals */}
+      <CreateGroupOrderModal
+        isOpen={showCreateGroupOrder}
+        onClose={() => setShowCreateGroupOrder(false)}
+        onSuccess={handleGroupOrderSuccess}
+      />
+      
+      {showShareModal && (
+        <ShareGroupOrder
+          isOpen={showShareModal}
+          onClose={() => setShowShareModal(false)}
+          shareCode={newGroupOrderCode}
+          eventName={currentGroupOrder?.name || 'Group Order'}
+        />
+      )}
     </>
   );
 }

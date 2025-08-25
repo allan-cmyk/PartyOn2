@@ -1,10 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import { formatPrice, getProductImageUrl, getFirstAvailableVariant } from '@/lib/shopify/utils';
+import { useCart } from '@/lib/shopify/hooks/useCart';
 
 interface ProductCardProps {
   product: ShopifyProduct;
@@ -12,9 +13,27 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, index = 0 }: ProductCardProps) {
+  const { addToCart, loading: cartLoading } = useCart();
+  const [isAdding, setIsAdding] = useState(false);
   const imageUrl = getProductImageUrl(product);
   const variant = getFirstAvailableVariant(product);
   const price = product.priceRange.minVariantPrice;
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!variant?.id || !variant.availableForSale) return;
+    
+    setIsAdding(true);
+    try {
+      await addToCart(variant.id, 1);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    } finally {
+      setIsAdding(false);
+    }
+  };
 
   return (
     <motion.div
@@ -23,10 +42,10 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       transition={{ duration: 0.5, delay: index * 0.1 }}
       className="group"
     >
-      <Link href={`/products/${product.handle}`}>
-        <div className="bg-white border border-gray-200 hover:border-gold-600 transition-all duration-300 overflow-hidden">
-          {/* Product Image */}
-          <div className="relative aspect-[3/4] overflow-hidden bg-gray-50">
+      <div className="bg-white border border-gray-200 hover:border-gold-600 transition-all duration-300 overflow-hidden">
+        {/* Product Image - Clickable */}
+        <Link href={`/products/${product.handle}`}>
+          <div className="relative aspect-[3/4] overflow-hidden bg-gray-50 cursor-pointer">
             {imageUrl ? (
               <img
                 src={imageUrl}
@@ -55,44 +74,62 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
               </span>
             </div>
           </div>
+        </Link>
 
-          {/* Product Details */}
-          <div className="p-6">
-            {/* Vendor */}
-            {product.vendor && (
-              <p className="text-xs text-gray-500 tracking-[0.15em] mb-2">
-                {product.vendor.toUpperCase()}
-              </p>
-            )}
+        {/* Product Details */}
+        <div className="p-6">
+          {/* Vendor */}
+          {product.vendor && (
+            <p className="text-xs text-gray-500 tracking-[0.15em] mb-2">
+              {product.vendor.toUpperCase()}
+            </p>
+          )}
 
-            {/* Title */}
-            <h3 className="font-serif text-lg text-gray-900 mb-3 tracking-[0.05em] group-hover:text-gold-600 transition-colors">
+          {/* Title - Clickable */}
+          <Link href={`/products/${product.handle}`}>
+            <h3 className="font-serif text-lg text-gray-900 mb-3 tracking-[0.05em] hover:text-gold-600 transition-colors cursor-pointer">
               {product.title}
             </h3>
+          </Link>
 
-            {/* Price */}
-            <div className="flex items-baseline justify-between">
-              <p className="font-light text-xl text-gray-900 tracking-[0.05em]">
-                {formatPrice(price.amount, price.currencyCode)}
-              </p>
-              
-              {/* Product Type Badge */}
-              {product.productType && (
-                <span className="text-xs text-gray-500 tracking-[0.1em]">
-                  {product.productType.toUpperCase()}
-                </span>
-              )}
-            </div>
+          {/* Price */}
+          <div className="flex items-baseline justify-between mb-4">
+            <p className="font-light text-xl text-gray-900 tracking-[0.05em]">
+              {formatPrice(price.amount, price.currencyCode)}
+            </p>
+            
+            {/* Product Type Badge */}
+            {product.productType && (
+              <span className="text-xs text-gray-500 tracking-[0.1em]">
+                {product.productType.toUpperCase()}
+              </span>
+            )}
+          </div>
 
-            {/* Add to Cart Preview */}
-            <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          {/* Action Buttons */}
+          <div className="space-y-2">
+            {/* Add to Cart Button - Always Visible */}
+            <button
+              onClick={handleAddToCart}
+              disabled={!variant?.availableForSale || isAdding || cartLoading}
+              className={`w-full py-2 transition-colors duration-300 text-xs tracking-[0.15em] ${
+                variant?.availableForSale && !isAdding && !cartLoading
+                  ? 'bg-gold-600 text-white hover:bg-gold-700'
+                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              }`}
+            >
+              {isAdding || cartLoading ? 'ADDING...' : !variant?.availableForSale ? 'OUT OF STOCK' : 'ADD TO CART'}
+            </button>
+
+            {/* View Details Button */}
+            <Link href={`/products/${product.handle}`}>
               <button className="w-full py-2 border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-colors duration-300 text-xs tracking-[0.15em]">
                 VIEW DETAILS
               </button>
-            </div>
+            </Link>
           </div>
         </div>
-      </Link>
+      </div>
     </motion.div>
   );
 }

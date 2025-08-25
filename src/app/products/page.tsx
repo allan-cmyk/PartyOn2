@@ -19,7 +19,7 @@ function ProductsContent() {
   const { products, loading, error, hasNextPage, loadMore } = useProducts(20);
   const [searchResults, setSearchResults] = useState<ShopifyProduct[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState('spirits');
   const [sortBy, setSortBy] = useState('featured');
 
   // Search for products if search query exists
@@ -133,7 +133,7 @@ function ProductsContent() {
   if (error) {
     return (
       <div className="bg-white min-h-screen">
-        <OldFashionedNavigation />
+        <OldFashionedNavigation forceScrolled={true} />
         <div className="max-w-7xl mx-auto px-8 py-16">
           <div className="bg-red-50 border border-red-200 p-6 rounded">
             <h2 className="text-red-800 font-serif text-xl mb-2">Error Loading Products</h2>
@@ -146,10 +146,10 @@ function ProductsContent() {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation />
+      <OldFashionedNavigation forceScrolled={true} />
       
       {/* Hero Section */}
-      <section className="relative h-[40vh] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[40vh] mt-24 flex items-center justify-center overflow-hidden">
         <Image
           src="/images/products/premium-spirits-wall.webp"
           alt="Premium Spirits Collection"
@@ -187,7 +187,7 @@ function ProductsContent() {
       )}
 
       {/* Filter Bar */}
-      <section className="border-b border-gray-200 sticky top-0 bg-white z-40">
+      <section className="border-b border-gray-200 sticky top-24 bg-white z-30">
         <div className="max-w-7xl mx-auto px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             {/* Category Filters */}
@@ -385,7 +385,7 @@ export default function ProductsPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-white">
-        <OldFashionedNavigation />
+        <OldFashionedNavigation forceScrolled={true} />
         <div className="pt-32 pb-16 text-center">
           <div className="animate-pulse">
             <div className="h-8 w-48 bg-gray-200 mx-auto rounded"></div>

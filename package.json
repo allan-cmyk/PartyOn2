@@ -11,6 +11,7 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@shopify/buy-button-js": "^3.0.5",
+    "@supabase/supabase-js": "^2.56.0",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.12",
     "graphql": "^16.11.0",
@@ -18,7 +19,8 @@
     "next": "15.3.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "sharp": "^0.34.3"
+    "sharp": "^0.34.3",
+    "swr": "^2.2.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

@@ -143,7 +143,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                         value={formData.firstName}
                         onChange={handleInputChange}
                         placeholder="First Name"
-                        className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
+                        className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold-500"
                       />
                       <input
                         type="text"
@@ -151,7 +151,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                         value={formData.lastName}
                         onChange={handleInputChange}
                         placeholder="Last Name"
-                        className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
+                        className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold-500"
                       />
                     </div>
                     <input
@@ -160,7 +160,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                       value={formData.phone}
                       onChange={handleInputChange}
                       placeholder="Phone Number"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold-500"
                     />
                   </>
                 )}
@@ -183,7 +183,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                     onChange={handleInputChange}
                     placeholder="Password"
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold-500"
                   />
                 )}
 
@@ -194,7 +194,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                       name="acceptsMarketing"
                       checked={formData.acceptsMarketing}
                       onChange={handleInputChange}
-                      className="rounded border-gray-300 text-gold focus:ring-gold"
+                      className="rounded border-gray-300 text-gold-500 focus:ring-gold-500"
                     />
                     I want to receive exclusive offers and updates
                   </label>
@@ -203,7 +203,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gold text-white py-3 rounded-lg hover:bg-gold/90 transition-colors disabled:opacity-50 tracking-[0.1em]"
+                  className="w-full bg-gray-900 text-white py-3 rounded-lg hover:bg-gold-500 hover:text-white transition-all disabled:opacity-50 tracking-[0.1em] border border-gray-900"
                 >
                   {loading ? 'Processing...' : (
                     <>
@@ -220,7 +220,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                   <>
                     <button
                       onClick={() => setMode('recover')}
-                      className="text-gold hover:underline"
+                      className="text-gold-500 hover:underline"
                     >
                       Forgot password?
                     </button>
@@ -228,7 +228,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                       Don&apos;t have an account?{' '}
                       <button
                         onClick={() => setMode('register')}
-                        className="text-gold hover:underline"
+                        className="text-gold-500 hover:underline"
                       >
                         Sign up
                       </button>
@@ -240,7 +240,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                     Already have an account?{' '}
                     <button
                       onClick={() => setMode('login')}
-                      className="text-gold hover:underline"
+                      className="text-gold-500 hover:underline"
                     >
                       Sign in
                     </button>
@@ -249,7 +249,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                 {mode === 'recover' && (
                   <button
                     onClick={() => setMode('login')}
-                    className="text-gold hover:underline"
+                    className="text-gold-500 hover:underline"
                   >
                     Back to sign in
                   </button>

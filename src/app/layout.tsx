@@ -4,6 +4,7 @@ import "./globals.css";
 import AgeVerification from "@/components/AgeVerification";
 import { CartProvider } from "@/contexts/CartContext";
 import { CustomerProvider } from "@/contexts/CustomerContext";
+import { GroupOrderProvider } from "@/contexts/GroupOrderContext";
 import Cart from "@/components/shopify/Cart";
 
 const cormorantGaramond = Cormorant_Garamond({ 
@@ -69,11 +70,13 @@ export default function RootLayout({
       <body className={`${inter.variable} ${cormorantGaramond.variable} antialiased bg-white text-navy-900`}>
         <CustomerProvider>
           <CartProvider>
-            <AgeVerification />
-            <Cart />
-            <main className="min-h-screen">
-              {children}
-            </main>
+            <GroupOrderProvider>
+              <AgeVerification />
+              <Cart />
+              <main className="min-h-screen">
+                {children}
+              </main>
+            </GroupOrderProvider>
           </CartProvider>
         </CustomerProvider>
       </body>

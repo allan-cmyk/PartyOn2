@@ -7,7 +7,7 @@ import { format, addDays, isBefore, isAfter } from 'date-fns';
 interface DeliverySchedulerProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (date: Date, time: string, instructions: string) => void;
+  onConfirm: (date: Date, time: string, instructions: string, isExpress?: boolean) => void;
   subtotal: number;
 }
 
@@ -39,13 +39,14 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, subtotal
   const [address, setAddress] = useState('');
   const [instructions, setInstructions] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isExpressDelivery, setIsExpressDelivery] = useState(false);
   
-  // Get minimum date (72 hours from now)
-  const minDate = addDays(new Date(), 3);
+  // Get minimum date (3 hours for express, 72 hours for standard)
+  const minDate = isExpressDelivery ? new Date() : addDays(new Date(), 3);
   const maxDate = addDays(new Date(), 30);
 
   // Available time slots
-  const timeSlots = [
+  const standardTimeSlots = [
     '10:00 AM - 12:00 PM',
     '12:00 PM - 2:00 PM',
     '2:00 PM - 4:00 PM',
@@ -54,6 +55,15 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, subtotal
     '8:00 PM - 10:00 PM',
     '10:00 PM - 11:00 PM'
   ];
+
+  // Express time slots (within 3 hours)
+  const expressTimeSlots = [
+    'Within 3 hours',
+    'ASAP (1-2 hours)',
+    'Priority (2-3 hours)'
+  ];
+
+  const timeSlots = isExpressDelivery ? expressTimeSlots : standardTimeSlots;
 
   // Generate available dates
   const availableDates = [];
@@ -105,7 +115,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, subtotal
 
   const handleConfirm = () => {
     if (validateForm() && selectedDate) {
-      onConfirm(selectedDate, selectedTime, instructions);
+      onConfirm(selectedDate, selectedTime, instructions, isExpressDelivery);
     }
   };
 
@@ -138,7 +148,9 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, subtotal
                   Schedule Delivery
                 </h2>
                 <p className="text-gray-600 mt-2">
-                  All deliveries require 72-hour advance notice
+                  {isExpressDelivery 
+                    ? 'Express delivery within 3 hours!' 
+                    : 'All deliveries require 72-hour advance notice'}
                 </p>
               </div>
 
@@ -189,10 +201,65 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, subtotal
                   </div>
                 </div>
 
+                {/* Express Delivery Option or Notice */}
+                {subtotal < 50 && (
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <p className="text-sm text-gray-600">
+                      <span className="font-medium">Express Delivery Available!</span> Add ${(50 - subtotal).toFixed(2)} more to your order to unlock free express delivery within 3 hours.
+                    </p>
+                  </div>
+                )}
+                
+                {subtotal >= 50 && (
+                  <div className="bg-gradient-to-r from-gold-50 to-gray-50 p-6 rounded-lg">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="font-serif text-xl text-gray-900 tracking-[0.1em]">
+                            Express Delivery
+                          </h3>
+                          <span className="bg-gold-500 text-white text-xs px-2 py-1 rounded tracking-[0.1em]">
+                            NEW
+                          </span>
+                        </div>
+                        <p className="text-gray-600 text-sm mb-3">
+                          Get your order within 3 hours! Available for orders over $50.
+                        </p>
+                        <div className="flex items-center gap-3">
+                          <span className="text-gray-500 line-through text-lg">$12.00</span>
+                          <span className="text-green-600 font-semibold text-lg">FREE</span>
+                          <span className="text-green-600 text-sm bg-green-50 px-2 py-1 rounded">
+                            First Order Discount
+                          </span>
+                        </div>
+                      </div>
+                      <div className="ml-4">
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={isExpressDelivery}
+                            onChange={(e) => {
+                              setIsExpressDelivery(e.target.checked);
+                              if (e.target.checked) {
+                                // Reset date if it's too far in the future for express
+                                if (selectedDate && selectedDate > new Date()) {
+                                  setSelectedDate(new Date());
+                                }
+                              }
+                            }}
+                            className="sr-only peer"
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gold-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gold-500"></div>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Date Selection */}
                 <div>
                   <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
-                    Delivery Date
+                    {isExpressDelivery ? 'Express Delivery Date' : 'Delivery Date'}
                   </h3>
                   <div className="grid grid-cols-7 gap-2">
                     {availableDates.slice(0, 14).map((date) => (

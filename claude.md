@@ -45,12 +45,21 @@ PartyOn Delivery is an alcohol delivery service in Austin, Texas. We've redesign
 12. **Checkout Success Page** - Post-purchase confirmation with order details
 13. **Webhook Infrastructure** - Ready to receive Shopify order/customer events
 
+### ✅ Group Ordering (NEW)
+1. **Group Order Creation** - Hosts can create shareable group orders
+2. **Share System** - Unique codes and links for easy sharing
+3. **Participant Management** - Join orders, track contributions
+4. **Database Integration** - Supabase support with fallback to in-memory
+5. **Age Verification** - Required for all participants
+
 ### 📋 Todo
 1. Configure Shopify Admin API access token
 2. Register webhooks with Shopify store
 3. Email notifications for order updates
 4. SMS notifications for delivery updates
 5. Enable Customer Account API in Shopify (currently not enabled)
+6. Complete group order host dashboard
+7. Implement group checkout process
 
 ## Technical Stack
 - Next.js 15.3.5 with TypeScript
@@ -58,6 +67,8 @@ PartyOn Delivery is an alcohol delivery service in Austin, Texas. We've redesign
 - Framer Motion for animations
 - Shopify Storefront API
 - GraphQL with graphql-request
+- Supabase for group orders (optional)
+- SWR for data fetching
 
 ## Environment Variables
 ```env
@@ -98,8 +109,28 @@ SHOPIFY_API_SECRET_KEY=[configured]
 4. Add delivery scheduling
 5. Test full purchase flow
 
+## Group Ordering Architecture
+```
+/lib/group-orders/
+  ├── types.ts          # TypeScript interfaces
+  ├── api.ts            # API client
+  ├── hooks.ts          # React hooks (useGroupOrder, etc)
+  ├── database.ts       # Database abstraction layer
+  └── store.ts          # In-memory fallback store
+
+/app/api/group-orders/
+  ├── create/           # Create new group order
+  ├── [code]/           # Get by share code
+  └── id/[id]/join/     # Join group order
+
+/components/group-orders/
+  ├── CreateGroupOrderModal.tsx
+  ├── ShareGroupOrder.tsx
+  └── (more to come: Dashboard, Checkout)
+```
+
 ## Commands
-- Development: `npm run dev` (runs on port 3055)
+- Development: `npm run dev` (runs on port 3000)
 - Build: `npm run build`
 - Lint: `npm run lint`
 
