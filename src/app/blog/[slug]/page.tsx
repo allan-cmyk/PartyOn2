@@ -1,9 +1,7 @@
-'use client'
 
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
 import OldFashionedNavigation from '@/components/OldFashionedNavigation'
 import { notFound } from 'next/navigation'
 
@@ -943,19 +941,20 @@ const getRelatedPosts = (currentSlug: string, category: string) => {
 }
 
 interface BlogPostPageProps {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
-export default function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = blogPosts.find(p => p.slug === params.slug)
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const resolvedParams = await params
+  const post = blogPosts.find(p => p.slug === resolvedParams.slug)
   
   if (!post) {
     notFound()
   }
 
-  const relatedPosts = getRelatedPosts(post.slug, post.category)
+  const relatedPosts = getRelatedPosts(resolvedParams.slug, post.category)
 
   const shareUrl = typeof window !== 'undefined' ? window.location.href : ''
   const shareText = `Check out this article: ${post.title}`
@@ -986,11 +985,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-8 md:p-16">
           <div className="max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
+            <div>
               <div className="flex items-center gap-4 text-white/80 text-sm mb-4">
                 <span className="bg-white/20 backdrop-blur-sm px-3 py-1 tracking-[0.1em]">
                   {post.category.toUpperCase()}
@@ -1009,7 +1004,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
               <p className="text-xl text-white/90 max-w-3xl">
                 {post.excerpt}
               </p>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -1017,10 +1012,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
       {/* Article Content */}
       <article className="py-16 px-8">
         <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+          <div
             className="prose prose-lg max-w-none"
             dangerouslySetInnerHTML={{ __html: post.content }}
             style={{
@@ -1031,10 +1023,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
           />
           
           {/* Author Bio */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+          <div
             className="mt-16 pt-8 border-t border-gray-200"
           >
             <div className="flex items-start gap-6">
@@ -1063,13 +1052,10 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Social Sharing */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+          <div
             className="mt-12 pt-8 border-t border-gray-200"
           >
             <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">Share This Article</h3>
@@ -1102,17 +1088,14 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                 <span className="text-sm tracking-[0.1em]">LINKEDIN</span>
               </button>
             </div>
-          </motion.div>
+          </div>
         </div>
       </article>
 
       {/* Newsletter Section */}
       <section className="py-12 bg-gray-900 text-white">
         <div className="max-w-4xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+          <div
             className="text-center"
           >
             <h2 className="font-serif text-3xl mb-4 tracking-[0.1em]">
@@ -1138,28 +1121,22 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
             <p className="text-xs text-gray-400 mt-4">
               Join 5,000+ Austin party planners. Unsubscribe anytime.
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Related Posts */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+          <h2
             className="font-serif text-3xl text-center mb-12 tracking-[0.1em]"
           >
             RELATED ARTICLES
-          </motion.h2>
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {relatedPosts.map((relatedPost, index) => (
-              <motion.article
+            {relatedPosts.map((relatedPost) => (
+              <article
                 key={relatedPost.slug}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
                 className="bg-white border border-gray-200 hover:border-gold-500 transition-all duration-300 group"
               >
                 <Link href={`/blog/${relatedPost.slug}`}>
@@ -1194,7 +1171,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                     </p>
                   </div>
                 </Link>
-              </motion.article>
+              </article>
             ))}
           </div>
         </div>
@@ -1203,11 +1180,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
       {/* Footer CTA */}
       <section className="py-16 bg-gray-900 text-white text-center">
         <div className="max-w-4xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <div>
             <h2 className="font-serif text-3xl mb-4 tracking-[0.1em]">
               READY TO PLAN YOUR EVENT?
             </h2>
@@ -1226,7 +1199,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                 </button>
               </Link>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
     </div>

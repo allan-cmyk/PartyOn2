@@ -37,7 +37,7 @@ export async function POST(
       guestEmail: body.guestEmail,
       cartId: body.cartId,
       ageVerified: false, // Will be verified later
-      status: 'active',
+      status: 'active' as const,
       joinedAt: new Date().toISOString(),
       cartTotal: 0,
       itemCount: 0,

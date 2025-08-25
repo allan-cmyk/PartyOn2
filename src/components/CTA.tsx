@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 interface CTAProps {
   title: string
   description?: string
@@ -30,10 +32,11 @@ export default function CTA({
       {/* Background image overlay if provided */}
       {backgroundStyle === 'image' && backgroundImage && (
         <div className="absolute inset-0 z-0">
-          <img
+          <Image
             src={backgroundImage}
             alt=""
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
           />
           <div className="absolute inset-0 bg-navy-900/80" />
         </div>

@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
       hostCustomerId: body.customerId,
       hostName: body.customerName,
       shareCode,
-      status: 'active',
+      status: 'active' as const,
       deliveryDate: body.deliveryDate,
       deliveryTime: body.deliveryTime,
       deliveryAddress: body.deliveryAddress,

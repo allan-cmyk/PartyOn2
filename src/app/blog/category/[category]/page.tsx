@@ -1,9 +1,7 @@
-'use client'
 
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
 import { notFound } from 'next/navigation'
 import OldFashionedNavigation from '@/components/OldFashionedNavigation'
 
@@ -56,8 +54,9 @@ const categoryMap: Record<string, string> = {
   'business': 'Business'
 }
 
-export default function BlogCategoryPage({ params }: { params: { category: string } }) {
-  const categoryName = categoryMap[params.category]
+export default async function BlogCategoryPage({ params }: { params: Promise<{ category: string }> }) {
+  const resolvedParams = await params
+  const categoryName = categoryMap[resolvedParams.category]
   
   if (!categoryName) {
     notFound()
@@ -77,11 +76,7 @@ export default function BlogCategoryPage({ params }: { params: { category: strin
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <div>
             <h1 className="font-serif text-5xl md:text-6xl text-gray-900 mb-6 tracking-[0.15em]">
               {categoryName.toUpperCase()}
             </h1>
@@ -92,7 +87,7 @@ export default function BlogCategoryPage({ params }: { params: { category: strin
               {categoryName === 'Local Guides' && 'Your guide to the best of Austin\'s entertainment and venues'}
               {categoryName === 'Business Tips' && 'Professional insights for corporate events and business entertaining'}
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -101,12 +96,9 @@ export default function BlogCategoryPage({ params }: { params: { category: strin
         <div className="max-w-7xl mx-auto">
           {categoryPosts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-              {categoryPosts.map((post, index) => (
-                <motion.article
+              {categoryPosts.map((post) => (
+                <article
                   key={post.slug}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
                   className="bg-white border border-gray-200 hover:border-gold-500 transition-all duration-300 group"
                 >
                   <Link href={`/blog/${post.slug}`}>
@@ -144,7 +136,7 @@ export default function BlogCategoryPage({ params }: { params: { category: strin
                       </span>
                     </div>
                   </Link>
-                </motion.article>
+                </article>
               ))}
             </div>
           ) : (

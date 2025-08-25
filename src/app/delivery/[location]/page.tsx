@@ -1,9 +1,7 @@
-'use client'
 
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
 import { notFound } from 'next/navigation'
 import OldFashionedNavigation from '@/components/OldFashionedNavigation'
 
@@ -78,8 +76,9 @@ const locations: Record<string, {
   }
 }
 
-export default function LocationDeliveryPage({ params }: { params: { location: string } }) {
-  const locationData = locations[params.location]
+export default async function LocationDeliveryPage({ params }: { params: Promise<{ location: string }> }) {
+  const resolvedParams = await params
+  const locationData = locations[resolvedParams.location]
   
   if (!locationData) {
     notFound()
@@ -100,12 +99,7 @@ export default function LocationDeliveryPage({ params }: { params: { location: s
         />
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
         
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="relative text-center text-white z-10 max-w-4xl mx-auto px-8"
-        >
+        <div className="relative text-center text-white z-10 max-w-4xl mx-auto px-8">
           <h1 className="font-serif font-light text-4xl md:text-6xl mb-6 tracking-[0.15em]">
             {locationData.title.toUpperCase()}
           </h1>
@@ -113,7 +107,7 @@ export default function LocationDeliveryPage({ params }: { params: { location: s
           <p className="text-lg font-light tracking-[0.1em] text-gray-200 max-w-2xl mx-auto">
             {locationData.description}
           </p>
-        </motion.div>
+        </div>
       </section>
 
       {/* Service Details */}
@@ -121,11 +115,7 @@ export default function LocationDeliveryPage({ params }: { params: { location: s
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {/* Delivery Info */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-            >
+            <div>
               <h2 className="font-serif text-3xl text-gray-900 mb-6 tracking-[0.1em]">
                 DELIVERY INFORMATION
               </h2>
@@ -147,14 +137,10 @@ export default function LocationDeliveryPage({ params }: { params: { location: s
                   <span className="text-gray-900 font-medium">3-hour delivery ($50+ orders)</span>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
             {/* Service Areas */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-            >
+            <div>
               <h2 className="font-serif text-3xl text-gray-900 mb-6 tracking-[0.1em]">
                 NEIGHBORHOODS WE SERVE
               </h2>
@@ -172,7 +158,7 @@ export default function LocationDeliveryPage({ params }: { params: { location: s
                 <p className="text-sm text-gray-600 mb-2">ZIP Codes:</p>
                 <p className="text-gray-700">{locationData.zipCodes.join(', ')}</p>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -181,31 +167,23 @@ export default function LocationDeliveryPage({ params }: { params: { location: s
       {locationData.popularVenues && (
         <section className="py-16 px-8 bg-gray-50">
           <div className="max-w-6xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-12"
-            >
+            <div className="text-center mb-12">
               <h2 className="font-serif text-3xl text-gray-900 mb-4 tracking-[0.1em]">
                 POPULAR VENUES WE SERVE
               </h2>
               <div className="w-16 h-px bg-gold-600 mx-auto" />
-            </motion.div>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {locationData.popularVenues.map((venue, index) => (
-                <motion.div
+              {locationData.popularVenues.map((venue) => (
+                <div
                   key={venue}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
                   className="bg-white p-6 text-center border border-gray-200"
                 >
                   <svg className="w-8 h-8 text-gold-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
                   <p className="text-gray-900 font-medium">{venue}</p>
-                </motion.div>
+                </div>
               ))}
             </div>
           </div>
@@ -215,17 +193,12 @@ export default function LocationDeliveryPage({ params }: { params: { location: s
       {/* Services Grid */}
       <section className="py-16 px-8">
         <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
+          <div className="text-center mb-12">
             <h2 className="font-serif text-3xl text-gray-900 mb-4 tracking-[0.1em]">
               PERFECT FOR EVERY OCCASION
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </motion.div>
+          </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
@@ -250,12 +223,9 @@ export default function LocationDeliveryPage({ params }: { params: { location: s
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 )
               }
-            ].map((service, index) => (
-              <motion.div
+            ].map((service) => (
+              <div
                 key={service.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
                 className="text-center"
               >
                 <svg className="w-12 h-12 text-gold-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -265,7 +235,7 @@ export default function LocationDeliveryPage({ params }: { params: { location: s
                   {service.title}
                 </h3>
                 <p className="text-gray-600">{service.description}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -274,11 +244,7 @@ export default function LocationDeliveryPage({ params }: { params: { location: s
       {/* CTA Section */}
       <section className="py-16 bg-gray-900 text-white">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <div>
             <h2 className="font-serif text-3xl mb-4 tracking-[0.1em]">
               READY TO ORDER?
             </h2>
@@ -297,7 +263,7 @@ export default function LocationDeliveryPage({ params }: { params: { location: s
                 </button>
               </Link>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
     </div>

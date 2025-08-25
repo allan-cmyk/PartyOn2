@@ -4,6 +4,7 @@ import { GroupOrder, GroupParticipant } from './types'
 
 // Check if Supabase is configured
 const isSupabaseConfigured = !!(
+  supabase &&
   process.env.NEXT_PUBLIC_SUPABASE_URL && 
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
   process.env.NEXT_PUBLIC_SUPABASE_URL !== 'your-project-url.supabase.co'
@@ -11,7 +12,7 @@ const isSupabaseConfigured = !!(
 
 export const db = {
   async createOrder(order: GroupOrder & { participants: GroupParticipant[] }) {
-    if (isSupabaseConfigured) {
+    if (isSupabaseConfigured && supabase) {
       const { data, error } = await supabase
         .from('group_orders')
         .insert({
@@ -38,7 +39,7 @@ export const db = {
   },
 
   async getOrderByCode(shareCode: string) {
-    if (isSupabaseConfigured) {
+    if (isSupabaseConfigured && supabase) {
       // Get order
       const { data: order, error: orderError } = await supabase
         .from('group_orders')
@@ -102,7 +103,7 @@ export const db = {
   },
 
   async getOrderById(id: string) {
-    if (isSupabaseConfigured) {
+    if (isSupabaseConfigured && supabase) {
       const { data, error } = await supabase
         .from('group_orders')
         .select('*')
@@ -133,7 +134,7 @@ export const db = {
   },
 
   async addParticipant(orderId: string, participant: GroupParticipant) {
-    if (isSupabaseConfigured) {
+    if (isSupabaseConfigured && supabase) {
       const { data, error } = await supabase
         .from('group_participants')
         .insert({
@@ -159,7 +160,7 @@ export const db = {
   },
 
   async getHostOrders(hostCustomerId: string) {
-    if (isSupabaseConfigured) {
+    if (isSupabaseConfigured && supabase) {
       const { data, error } = await supabase
         .from('group_orders')
         .select('*')
