@@ -1,0 +1,151 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useCartContext } from '@/contexts/CartContext';
+import { motion, AnimatePresence } from 'framer-motion';
+
+export default function MobileNavigation() {
+  const pathname = usePathname();
+  const { cart, openCart } = useCartContext();
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  
+  const itemCount = cart?.totalQuantity || 0;
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Hide when scrolling down, show when scrolling up
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
+
+  const navItems = [
+    {
+      href: '/',
+      label: 'Home',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" 
+            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" 
+          />
+        </svg>
+      )
+    },
+    {
+      href: '/products',
+      label: 'Shop',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" 
+            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" 
+          />
+        </svg>
+      )
+    },
+    {
+      href: '/services',
+      label: 'Services',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" 
+            d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" 
+          />
+        </svg>
+      )
+    },
+    {
+      action: openCart,
+      label: 'Cart',
+      icon: (
+        <div className="relative">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" 
+              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" 
+            />
+          </svg>
+          {itemCount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-gold-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+              {itemCount}
+            </span>
+          )}
+        </div>
+      )
+    },
+    {
+      href: '/account',
+      label: 'Account',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" 
+            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" 
+          />
+        </svg>
+      )
+    }
+  ];
+
+  return (
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div
+          initial={{ y: 100 }}
+          animate={{ y: 0 }}
+          exit={{ y: 100 }}
+          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+          className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 md:hidden safe-area-bottom"
+        >
+          <nav className="flex items-center justify-around h-16">
+            {navItems.map((item, index) => {
+              const isActive = pathname === item.href;
+              
+              if (item.action) {
+                return (
+                  <button
+                    key={index}
+                    onClick={item.action}
+                    className="flex flex-col items-center justify-center px-2 py-2 flex-1"
+                  >
+                    <div className={`transition-colors ${isActive ? 'text-gold-600' : 'text-gray-600'}`}>
+                      {item.icon}
+                    </div>
+                    <span className={`text-xs mt-1 tracking-[0.05em] ${isActive ? 'text-gold-600' : 'text-gray-600'}`}>
+                      {item.label}
+                    </span>
+                  </button>
+                );
+              }
+              
+              return (
+                <Link
+                  key={index}
+                  href={item.href}
+                  className="flex flex-col items-center justify-center px-2 py-2 flex-1"
+                >
+                  <div className={`transition-colors ${isActive ? 'text-gold-600' : 'text-gray-600'}`}>
+                    {item.icon}
+                  </div>
+                  <span className={`text-xs mt-1 tracking-[0.05em] ${isActive ? 'text-gold-600' : 'text-gray-600'}`}>
+                    {item.label}
+                  </span>
+                </Link>
+              );
+            })}
+          </nav>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}

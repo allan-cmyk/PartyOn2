@@ -1,0 +1,75 @@
+/* Mobile-specific CSS utilities */
+
+/* Safe area handling for iOS devices */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+/* Better touch interaction */
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+/* Disable text selection on interactive elements */
+@media (max-width: 768px) {
+  button, a, .clickable {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Smooth scrolling with momentum */
+  .scroll-container {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+  }
+  
+  /* Prevent zoom on input focus */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  
+  /* Better active states for mobile */
+  button:active {
+    transform: scale(0.98);
+  }
+  
+  /* Hide scrollbars on mobile */
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Swipeable drawer hints */
+  .drawer-handle {
+    cursor: grab;
+  }
+  
+  .drawer-handle:active {
+    cursor: grabbing;
+  }
+  
+  /* Better image loading on mobile */
+  img {
+    will-change: transform;
+  }
+  
+  /* Optimize animations for mobile */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

@@ -5,7 +5,7 @@ import AgeVerification from "@/components/AgeVerification";
 import { CartProvider } from "@/contexts/CartContext";
 import { CustomerProvider } from "@/contexts/CustomerContext";
 import { GroupOrderProvider } from "@/contexts/GroupOrderContext";
-import Cart from "@/components/shopify/Cart";
+import ClientLayoutWrapper from "@/components/ClientLayoutWrapper";
 
 const cormorantGaramond = Cormorant_Garamond({ 
   subsets: ['latin'],
@@ -72,10 +72,9 @@ export default function RootLayout({
           <CartProvider>
             <GroupOrderProvider>
               <AgeVerification />
-              <Cart />
-              <main className="min-h-screen">
+              <ClientLayoutWrapper>
                 {children}
-              </main>
+              </ClientLayoutWrapper>
             </GroupOrderProvider>
           </CartProvider>
         </CustomerProvider>

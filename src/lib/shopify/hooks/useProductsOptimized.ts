@@ -17,7 +17,7 @@ interface ProductsResponse {
 }
 
 // Fetcher function for SWR
-const fetcher = async (query: string, variables: any) => {
+const fetcher = async (query: string, variables: Record<string, unknown>) => {
   return shopifyFetch<ProductsResponse>({
     query,
     variables,
@@ -50,7 +50,6 @@ export function useProductsOptimized(pageSize: number = 50) {
     error,
     size,
     setSize,
-    isValidating,
     isLoading,
     mutate
   } = useSWRInfinite<ProductsResponse>(
@@ -112,7 +111,7 @@ export function useProductsOptimized(pageSize: number = 50) {
 
 // Single product hook with caching
 export function useProductOptimized(handle: string) {
-  const { data, error, isLoading, mutate } = useSWR(
+  const { data, error, isLoading, mutate } = useSWR<{productByHandle: ShopifyProduct}>(
     handle ? `/product/${handle}` : null,
     () => shopifyFetch({
       query: `

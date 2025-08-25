@@ -1,3 +1,4 @@
+import React from 'react';
 import { SWRConfig } from 'swr';
 
 export const swrConfig = {
@@ -34,12 +35,13 @@ export const swrConfig = {
   },
   
   // Success handler
-  onSuccess: (data: any, key: string) => {
+  onSuccess: (data: unknown, key: string) => {
     // Could add analytics or logging here
+    console.log(`Successfully fetched ${key}`, data);
   },
   
   // Compare function for deep comparison
-  compare: (a: any, b: any) => {
+  compare: (a: unknown, b: unknown) => {
     return JSON.stringify(a) === JSON.stringify(b);
   },
 };

@@ -34,9 +34,6 @@ const nextConfig: NextConfig = {
   // Enable build-time compression
   compress: true,
   
-  // Performance optimizations
-  swcMinify: true, // Use SWC for faster minification
-  
   // Optimize CSS
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
@@ -44,7 +41,6 @@ const nextConfig: NextConfig = {
   
   // Enable experimental features for better performance
   experimental: {
-    optimizeCss: true,
     optimizePackageImports: ['framer-motion', '@heroicons/react'],
   },
   

@@ -7,11 +7,15 @@ import { motion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import ProductCard from '@/components/shopify/ProductCard';
+import CompactProductCard from '@/components/shopify/CompactProductCard';
+import MobileProductCard from '@/components/mobile/MobileProductCard';
+import MobileFilterDrawer from '@/components/mobile/MobileFilterDrawer';
 import { useProducts } from '@/lib/shopify/hooks/useProducts';
 import { shopifyFetch } from '@/lib/shopify/client';
 import { SEARCH_PRODUCTS_QUERY } from '@/lib/shopify/queries/products';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import AIConcierge from '@/components/AIConcierge';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 function ProductsContent() {
   const searchParams = useSearchParams();
@@ -25,8 +29,15 @@ function ProductsContent() {
   // Advanced filters
   const [spiritType, setSpiritType] = useState('all');
   const [bottleSize, setBottleSize] = useState('all');
-  const [priceRange, setPriceRange] = useState('all');
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
   const [brand, setBrand] = useState('all');
+  
+  // Mobile states
+  const isMobile = useIsMobile();
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+  
+  // View mode state for compact/regular view
+  const [isCompactView, setIsCompactView] = useState(true);
 
   // Infinite scroll implementation
   useEffect(() => {
@@ -169,11 +180,8 @@ function ProductsContent() {
     }
     
     // Price range filter
-    if (priceRange !== 'all') {
-      if (priceRange === 'under25' && price >= 25) return false;
-      if (priceRange === '25-50' && (price < 25 || price >= 50)) return false;
-      if (priceRange === '50-100' && (price < 50 || price >= 100)) return false;
-      if (priceRange === 'over100' && price < 100) return false;
+    if (priceRange[0] > 0 || priceRange[1] < 500) {
+      if (price < priceRange[0] || price > priceRange[1]) return false;
     }
     
     // Brand filter
@@ -253,35 +261,70 @@ function ProductsContent() {
       )}
 
       {/* Advanced Filter Bar */}
-      <section className="border-b border-gray-200 sticky top-24 bg-white z-30">
-        <div className="max-w-7xl mx-auto px-8 py-6">
-          {/* Main Category Filters */}
-          <div className="flex flex-wrap gap-3 mb-4">
-            {[
-              { value: 'all', label: 'All Products' },
-              { value: 'spirits', label: 'Spirits' },
-              { value: 'cocktail-kits', label: 'Cocktail Kits' },
-              { value: 'party-supplies', label: 'Party Supplies' },
-              { value: 'wine', label: 'Wine' },
-              { value: 'beer', label: 'Beer & Seltzers' },
-              { value: 'non-alcoholic', label: 'Non-Alcoholic' }
-            ].map((category) => (
-              <button
-                key={category.value}
-                onClick={() => {
-                  setFilter(category.value);
-                  setSpiritType('all'); // Reset spirit type when main category changes
-                }}
-                className={`px-5 py-2 text-xs tracking-[0.1em] transition-all duration-300 ${
-                  filter === category.value
-                    ? 'bg-gold-600 text-white'
-                    : 'border border-gray-300 text-gray-700 hover:border-gold-600'
-                }`}
+      <section className={`border-b border-gray-200 ${isMobile ? 'sticky top-0' : 'sticky top-24'} bg-white z-30`}>
+        <div className={`${isMobile ? 'px-4 py-3' : 'max-w-7xl mx-auto px-8 py-6'}`}>
+          {/* Mobile Filter Button */}
+          {isMobile ? (
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setShowMobileFilters(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-gold-50 text-gold-700 rounded-lg text-sm font-medium"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                      d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" 
+                    />
+                  </svg>
+                  FILTERS
+                </button>
+                <span className="text-xs text-gray-500">
+                  {sortedProducts.length} items
+                </span>
+              </div>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
               >
-                {category.label.toUpperCase()}
-              </button>
-            ))}
-          </div>
+                <option value="featured">Featured</option>
+                <option value="price-asc">Price ↑</option>
+                <option value="price-desc">Price ↓</option>
+                <option value="name-asc">A-Z</option>
+                <option value="name-desc">Z-A</option>
+              </select>
+            </div>
+          ) : (
+            <>
+              {/* Desktop Category Filters */}
+              <div className="flex flex-wrap gap-3 mb-4">
+                {[
+                  { value: 'all', label: 'All Products' },
+                  { value: 'spirits', label: 'Spirits' },
+                  { value: 'cocktail-kits', label: 'Cocktail Kits' },
+                  { value: 'party-supplies', label: 'Party Supplies' },
+                  { value: 'wine', label: 'Wine' },
+                  { value: 'beer', label: 'Beer & Seltzers' },
+                  { value: 'non-alcoholic', label: 'Non-Alcoholic' }
+                ].map((category) => (
+                  <button
+                    key={category.value}
+                    onClick={() => {
+                      setFilter(category.value);
+                      setSpiritType('all'); // Reset spirit type when main category changes
+                    }}
+                    className={`px-5 py-2 text-xs tracking-[0.1em] transition-all duration-300 ${
+                      filter === category.value
+                        ? 'bg-gold-600 text-white'
+                        : 'border border-gray-300 text-gray-700 hover:border-gold-600'
+                    }`}
+                  >
+                    {category.label.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
 
           {/* Advanced Filters Row */}
           <div className="flex flex-wrap gap-4 items-center">
@@ -317,18 +360,7 @@ function ProductsContent() {
               <option value="12-pack">12-Pack</option>
             </select>
 
-            {/* Price Range Filter */}
-            <select
-              value={priceRange}
-              onChange={(e) => setPriceRange(e.target.value)}
-              className="px-4 py-2 border border-gray-300 text-sm tracking-[0.05em] focus:border-gold-600 focus:outline-none"
-            >
-              <option value="all">All Prices</option>
-              <option value="under25">Under $25</option>
-              <option value="25-50">$25 - $50</option>
-              <option value="50-100">$50 - $100</option>
-              <option value="over100">Over $100</option>
-            </select>
+            {/* Price Range Display - Removed dropdown for now */}
 
             {/* Brand Filter */}
             {uniqueBrands.length > 0 && (
@@ -352,8 +384,42 @@ function ProductsContent() {
               {sortedProducts.length} PRODUCTS
             </div>
 
-            {/* Sort Dropdown */}
+            {/* Sort Dropdown and View Toggle */}
             <div className="flex items-center gap-4">
+              {/* View Toggle Buttons */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsCompactView(true)}
+                  className={`p-2 border transition-colors ${
+                    isCompactView 
+                      ? 'border-gold-600 bg-gold-50 text-gold-700' 
+                      : 'border-gray-300 text-gray-600 hover:border-gold-600'
+                  }`}
+                  title="Compact view"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                      d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" 
+                    />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => setIsCompactView(false)}
+                  className={`p-2 border transition-colors ${
+                    !isCompactView 
+                      ? 'border-gold-600 bg-gold-50 text-gold-700' 
+                      : 'border-gray-300 text-gray-600 hover:border-gold-600'
+                  }`}
+                  title="Regular view"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                      d="M4 6h16M4 10h16M4 14h16M4 18h16" 
+                    />
+                  </svg>
+                </button>
+              </div>
+              
               <label className="text-sm text-gray-600 tracking-[0.1em]">SORT BY:</label>
               <select
                 value={sortBy}
@@ -386,8 +452,8 @@ function ProductsContent() {
       )}
 
       {/* Products Grid */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-8">
+      <section className={isCompactView ? "py-8" : "py-16"}>
+        <div className={isCompactView ? "max-w-[1400px] mx-auto px-6" : "max-w-7xl mx-auto px-8"}>
           {(loading || searchLoading) && products.length === 0 ? (
             <div className="text-center py-12">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gold-600"></div>
@@ -395,10 +461,21 @@ function ProductsContent() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                {sortedProducts.map((product, index) => (
-                  <ProductCard key={product.id} product={product} index={index} />
-                ))}
+              <div className={
+                isMobile 
+                  ? "grid grid-cols-2 gap-3 px-4" 
+                  : isCompactView 
+                    ? "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"
+                    : "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"
+              }>
+                {sortedProducts.map((product, index) => {
+                  if (isMobile) {
+                    return <MobileProductCard key={product.id} product={product} index={index} />
+                  }
+                  return isCompactView 
+                    ? <CompactProductCard key={product.id} product={product} index={index} />
+                    : <ProductCard key={product.id} product={product} index={index} />
+                })}
               </div>
 
               {sortedProducts.length === 0 && (
@@ -522,6 +599,29 @@ function ProductsContent() {
       
       {/* AI Concierge */}
       <AIConcierge mode="elegant" />
+      
+      {/* Mobile Filter Drawer */}
+      {isMobile && (
+        <MobileFilterDrawer
+          isOpen={showMobileFilters}
+          onClose={() => setShowMobileFilters(false)}
+          selectedCategory={filter}
+          onCategoryChange={setFilter}
+          sortBy={sortBy}
+          onSortChange={setSortBy}
+          priceRange={priceRange}
+          onPriceRangeChange={setPriceRange}
+          categories={[
+            { value: 'all', label: 'All Products', count: products.length },
+            { value: 'spirits', label: 'Spirits', count: products.filter(p => getProductCategory(p) === 'spirits').length },
+            { value: 'cocktail-kits', label: 'Cocktail Kits', count: products.filter(p => getProductCategory(p) === 'cocktail-kits').length },
+            { value: 'party-supplies', label: 'Party Supplies', count: products.filter(p => getProductCategory(p) === 'party-supplies').length },
+            { value: 'wine', label: 'Wine', count: products.filter(p => getProductCategory(p) === 'wine').length },
+            { value: 'beer', label: 'Beer & Seltzers', count: products.filter(p => getProductCategory(p) === 'beer').length },
+            { value: 'non-alcoholic', label: 'Non-Alcoholic', count: products.filter(p => getProductCategory(p) === 'non-alcoholic').length }
+          ]}
+        />
+      )}
     </div>
   );
 }
