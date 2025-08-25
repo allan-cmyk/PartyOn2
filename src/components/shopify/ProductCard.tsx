@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ShopifyProduct } from '@/lib/shopify/types';
-import { formatPrice, getProductImageUrl, getFirstAvailableVariant } from '@/lib/shopify/utils';
+import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseAlcohol } from '@/lib/shopify/utils';
 import { useCart } from '@/lib/shopify/hooks/useCart';
+import AgeVerificationModal from '../AgeVerificationModal';
 
 interface ProductCardProps {
   product: ShopifyProduct;
@@ -15,6 +16,7 @@ interface ProductCardProps {
 export default function ProductCard({ product, index = 0 }: ProductCardProps) {
   const { addToCart, loading: cartLoading } = useCart();
   const [isAdding, setIsAdding] = useState(false);
+  const [showAgeVerification, setShowAgeVerification] = useState(false);
   const imageUrl = getProductImageUrl(product);
   const variant = getFirstAvailableVariant(product);
   const price = product.priceRange.minVariantPrice;
@@ -25,6 +27,12 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
     
     if (!variant?.id || !variant.availableForSale) return;
     
+    // Check if user needs age verification for alcohol products
+    if (!canPurchaseAlcohol()) {
+      setShowAgeVerification(true);
+      return;
+    }
+    
     setIsAdding(true);
     try {
       await addToCart(variant.id, 1);
@@ -32,6 +40,23 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       console.error('Error adding to cart:', error);
     } finally {
       setIsAdding(false);
+    }
+  };
+
+  const handleAgeVerified = async () => {
+    setShowAgeVerification(false);
+    localStorage.setItem('age_verified', 'true');
+    
+    // Now add to cart
+    if (variant?.id && variant.availableForSale) {
+      setIsAdding(true);
+      try {
+        await addToCart(variant.id, 1);
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+      } finally {
+        setIsAdding(false);
+      }
     }
   };
 
@@ -130,6 +155,13 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
           </div>
         </div>
       </div>
+
+      {/* Age Verification Modal */}
+      <AgeVerificationModal
+        isOpen={showAgeVerification}
+        onClose={() => setShowAgeVerification(false)}
+        onVerify={handleAgeVerified}
+      />
     </motion.div>
   );
 }

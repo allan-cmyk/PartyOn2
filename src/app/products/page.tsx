@@ -16,7 +16,7 @@ import AIConcierge from '@/components/AIConcierge';
 function ProductsContent() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('search');
-  const { products, loading, error, hasNextPage, loadMore } = useProducts(20);
+  const { products, loading, error, hasNextPage, loadMore } = useProducts(20, true);
   const [searchResults, setSearchResults] = useState<ShopifyProduct[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [filter, setFilter] = useState('spirits');
@@ -28,7 +28,7 @@ function ProductsContent() {
       setSearchLoading(true);
       shopifyFetch<{ products: { edges: Array<{ node: ShopifyProduct }> } }>({
         query: SEARCH_PRODUCTS_QUERY,
-        variables: { query: searchQuery, first: 50 },
+        variables: { query: searchQuery, first: 100 },
       })
         .then(response => {
           setSearchResults(response.products.edges.map(edge => edge.node));

@@ -149,7 +149,7 @@ export const COLLECTIONS_QUERY = gql`
 `;
 
 export const COLLECTION_BY_HANDLE_QUERY = gql`
-  query getCollectionByHandle($handle: String!, $first: Int = 20) {
+  query getCollectionByHandle($handle: String!, $first: Int = 100) {
     collectionByHandle(handle: $handle) {
       id
       handle
@@ -206,7 +206,7 @@ export const COLLECTION_BY_HANDLE_QUERY = gql`
 
 // Search products query
 export const SEARCH_PRODUCTS_QUERY = gql`
-  query searchProducts($query: String!, $first: Int = 20) {
+  query searchProducts($query: String!, $first: Int = 100) {
     products(first: $first, query: $query) {
       edges {
         node {

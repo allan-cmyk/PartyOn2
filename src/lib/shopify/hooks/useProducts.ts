@@ -19,7 +19,7 @@ interface ProductResponse {
   productByHandle: ShopifyProduct;
 }
 
-export function useProducts(first: number = 20) {
+export function useProducts(first: number = 20, loadAll: boolean = false) {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -27,8 +27,12 @@ export function useProducts(first: number = 20) {
   const [endCursor, setEndCursor] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchProducts();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    if (loadAll) {
+      fetchAllProducts();
+    } else {
+      fetchProducts();
+    }
+  }, [loadAll]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchProducts = async (after?: string) => {
     try {
@@ -48,6 +52,38 @@ export function useProducts(first: number = 20) {
 
       setHasNextPage(data.products.pageInfo.hasNextPage);
       setEndCursor(data.products.pageInfo.endCursor);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchAllProducts = async () => {
+    try {
+      setLoading(true);
+      let allProducts: ShopifyProduct[] = [];
+      let cursor: string | null = null;
+      let hasNext = true;
+      
+      while (hasNext) {
+        const data = await shopifyFetch<ProductsResponse>({
+          query: PRODUCTS_QUERY,
+          variables: { first: 50, after: cursor }, // Use larger batch size
+        });
+
+        const newProducts = data.products.edges.map(edge => edge.node);
+        allProducts = [...allProducts, ...newProducts];
+        
+        hasNext = data.products.pageInfo.hasNextPage;
+        cursor = data.products.pageInfo.endCursor;
+        
+        // Set intermediate results so user sees products loading
+        setProducts([...allProducts]);
+      }
+
+      setHasNextPage(false);
+      setEndCursor(null);
     } catch (err) {
       setError(err as Error);
     } finally {
