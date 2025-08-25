@@ -68,7 +68,7 @@ export default function Cart() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 z-50"
+            className="fixed inset-0 bg-black/50 z-[60]"
             onClick={closeCart}
           />
         )}
@@ -82,7 +82,7 @@ export default function Cart() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-xl z-50"
+            className="fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-xl z-[70]"
           >
             <div className="flex flex-col h-full">
               {/* Header */}
