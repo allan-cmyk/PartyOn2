@@ -16,11 +16,34 @@ import AIConcierge from '@/components/AIConcierge';
 function ProductsContent() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('search');
-  const { products, loading, error, hasNextPage, loadMore } = useProducts(20, true);
+  const { products, loading, error, hasNextPage, loadMore } = useProducts(50, false); // Changed back to manual loading for infinite scroll
   const [searchResults, setSearchResults] = useState<ShopifyProduct[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
-  const [filter, setFilter] = useState('spirits');
+  const [filter, setFilter] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
+  
+  // Advanced filters
+  const [spiritType, setSpiritType] = useState('all');
+  const [bottleSize, setBottleSize] = useState('all');
+  const [priceRange, setPriceRange] = useState('all');
+  const [brand, setBrand] = useState('all');
+
+  // Infinite scroll implementation
+  useEffect(() => {
+    const handleScroll = () => {
+      if (loading) return;
+      
+      const scrolledToBottom = 
+        window.innerHeight + window.scrollY >= document.documentElement.offsetHeight - 1000;
+      
+      if (scrolledToBottom && hasNextPage) {
+        loadMore();
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [loading, hasNextPage, loadMore]);
 
   // Search for products if search query exists
   useEffect(() => {
@@ -43,75 +66,75 @@ function ProductsContent() {
   // Use search results if available, otherwise use regular products
   const displayProducts = searchQuery ? searchResults : products;
 
-  // Filter products based on type
+  // Extract unique values for filter options
+  const uniqueBrands = [...new Set(displayProducts.map(p => p.vendor).filter(Boolean))].sort();
+  
+  // Helper function to get bottle size from title
+  const getBottleSize = (title: string): string => {
+    if (title.includes('1.75L') || title.includes('1750ml')) return '1.75L';
+    if (title.includes('750ml') || title.includes('750 ml')) return '750ml';
+    if (title.includes('375ml') || title.includes('375 ml')) return '375ml';
+    if (title.includes('50ml') || title.includes('50 ml')) return '50ml';
+    if (title.includes('12 Pack') || title.includes('12-Pack')) return '12-pack';
+    return 'standard';
+  };
+
+  // Helper function to categorize spirit type
+  const getSpiritType = (product: ShopifyProduct): string => {
+    const title = product.title.toLowerCase();
+    const type = product.productType?.toLowerCase() || '';
+    
+    if (title.includes('vodka')) return 'vodka';
+    if (title.includes('tequila') || title.includes('mezcal')) return 'tequila';
+    if (title.includes('whiskey') || title.includes('bourbon') || title.includes('rye') || title.includes('scotch')) return 'whiskey';
+    if (title.includes('rum')) return 'rum';
+    if (title.includes('gin')) return 'gin';
+    if (title.includes('wine')) return 'wine';
+    if (title.includes('beer') || title.includes('seltzer')) return 'beer';
+    if (title.includes('cocktail kit') || title.includes('gift basket')) return 'kits';
+    if (title.includes('liqueur') || title.includes('bailey') || title.includes('campari')) return 'liqueur';
+    if (title.includes('cognac') || title.includes('brandy')) return 'cognac';
+    if (title.includes('non-alcoholic')) return 'non-alcoholic';
+    return 'other';
+  };
+
+  // Filter products based on all criteria
   const filteredProducts = displayProducts.filter(product => {
-    if (filter === 'all') return true;
+    const productTitle = product.title;
+    const price = parseFloat(product.priceRange.minVariantPrice.amount);
     
-    const productType = product.productType?.toLowerCase() || '';
-    const productTitle = product.title.toLowerCase();
-    const productTags = product.tags || [];
-    const tagsLower = productTags.map(tag => tag.toLowerCase());
-    
-    if (filter === 'spirits') {
-      return productType.includes('liquor') || 
-             productType.includes('spirit') || 
-             productType.includes('whiskey') || 
-             productType.includes('vodka') ||
-             productType.includes('tequila') ||
-             productType.includes('rum') ||
-             productType.includes('bourbon') ||
-             productType.includes('gin') ||
-             productTitle.includes('whiskey') ||
-             productTitle.includes('vodka') ||
-             productTitle.includes('tequila') ||
-             productTitle.includes('rum') ||
-             productTitle.includes('bourbon') ||
-             productTitle.includes('gin') ||
-             productTitle.includes('mezcal') ||
-             tagsLower.some(tag => ['spirits', 'liquor', 'whiskey', 'vodka', 'tequila', 'rum', 'bourbon', 'gin'].includes(tag));
+    // Main category filter
+    if (filter !== 'all') {
+      const productSpiritType = getSpiritType(product);
+      if (filter === 'spirits' && !['vodka', 'tequila', 'whiskey', 'rum', 'gin', 'liqueur', 'cognac'].includes(productSpiritType)) return false;
+      if (filter === 'cocktail-kits' && productSpiritType !== 'kits') return false;
+      if (filter === 'beer' && productSpiritType !== 'beer') return false;
+      if (filter === 'wine' && productSpiritType !== 'wine') return false;
+      if (filter === 'non-alcoholic' && productSpiritType !== 'non-alcoholic') return false;
     }
     
-    if (filter === 'wine') {
-      return productType.includes('wine') || 
-             productType.includes('champagne') ||
-             productType.includes('prosecco') ||
-             productTitle.includes('wine') ||
-             productTitle.includes('champagne') ||
-             productTitle.includes('prosecco') ||
-             productTitle.includes('rosé') ||
-             productTitle.includes('pinot') ||
-             productTitle.includes('cabernet') ||
-             productTitle.includes('chardonnay') ||
-             productTitle.includes('sauvignon') ||
-             productTitle.includes('merlot') ||
-             tagsLower.some(tag => ['wine', 'champagne', 'prosecco', 'red wine', 'white wine', 'rosé'].includes(tag));
+    // Spirit type filter
+    if (spiritType !== 'all') {
+      const productSpiritType = getSpiritType(product);
+      if (spiritType !== productSpiritType) return false;
     }
     
-    if (filter === 'beer') {
-      return productType.includes('beer') || 
-             productType.includes('seltzer') ||
-             productTitle.includes('beer') ||
-             productTitle.includes('seltzer') ||
-             productTitle.includes('ipa') ||
-             productTitle.includes('lager') ||
-             productTitle.includes('ale') ||
-             productTitle.includes('stout') ||
-             productTitle.includes('pilsner') ||
-             productTitle.includes('corona') ||
-             productTitle.includes('ranch water') ||
-             productTitle.includes('ranch rider') ||
-             tagsLower.some(tag => ['beer', 'seltzer', 'hard seltzer', 'ipa', 'lager', 'ale'].includes(tag));
+    // Bottle size filter
+    if (bottleSize !== 'all') {
+      const productSize = getBottleSize(productTitle);
+      if (bottleSize !== productSize) return false;
     }
     
-    if (filter === 'packages') {
-      return productType.includes('package') || 
-             productType.includes('bundle') ||
-             productType.includes('pack') ||
-             productTitle.includes('pack') ||
-             productTitle.includes('bundle') ||
-             productTitle.includes('package') ||
-             productTitle.includes('case');
+    // Price range filter
+    if (priceRange !== 'all') {
+      if (priceRange === 'under25' && price >= 25) return false;
+      if (priceRange === '25-50' && (price < 25 || price >= 50)) return false;
+      if (priceRange === '50-100' && (price < 50 || price >= 100)) return false;
+      if (priceRange === 'over100' && price < 100) return false;
     }
+    
+    // Brand filter
+    if (brand !== 'all' && product.vendor !== brand) return false;
     
     return true;
   });
@@ -186,31 +209,103 @@ function ProductsContent() {
         </section>
       )}
 
-      {/* Filter Bar */}
+      {/* Advanced Filter Bar */}
       <section className="border-b border-gray-200 sticky top-24 bg-white z-30">
         <div className="max-w-7xl mx-auto px-8 py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            {/* Category Filters */}
-            <div className="flex flex-wrap gap-4">
-              {[
-                { value: 'all', label: 'All Products' },
-                { value: 'spirits', label: 'Spirits' },
-                { value: 'wine', label: 'Wine' },
-                { value: 'beer', label: 'Beer' },
-                { value: 'packages', label: 'Packages' }
-              ].map((category) => (
-                <button
-                  key={category.value}
-                  onClick={() => setFilter(category.value)}
-                  className={`px-6 py-2 text-sm tracking-[0.1em] transition-all duration-300 ${
-                    filter === category.value
-                      ? 'bg-gold-600 text-white'
-                      : 'border border-gray-300 text-gray-700 hover:border-gold-600'
-                  }`}
-                >
-                  {category.label.toUpperCase()}
-                </button>
-              ))}
+          {/* Main Category Filters */}
+          <div className="flex flex-wrap gap-3 mb-4">
+            {[
+              { value: 'all', label: 'All Products' },
+              { value: 'spirits', label: 'Spirits' },
+              { value: 'cocktail-kits', label: 'Cocktail Kits' },
+              { value: 'wine', label: 'Wine' },
+              { value: 'beer', label: 'Beer & Seltzers' },
+              { value: 'non-alcoholic', label: 'Non-Alcoholic' }
+            ].map((category) => (
+              <button
+                key={category.value}
+                onClick={() => {
+                  setFilter(category.value);
+                  setSpiritType('all'); // Reset spirit type when main category changes
+                }}
+                className={`px-5 py-2 text-xs tracking-[0.1em] transition-all duration-300 ${
+                  filter === category.value
+                    ? 'bg-gold-600 text-white'
+                    : 'border border-gray-300 text-gray-700 hover:border-gold-600'
+                }`}
+              >
+                {category.label.toUpperCase()}
+              </button>
+            ))}
+          </div>
+
+          {/* Advanced Filters Row */}
+          <div className="flex flex-wrap gap-4 items-center">
+            {/* Spirit Type Filter - Only show when spirits is selected */}
+            {filter === 'spirits' && (
+              <select
+                value={spiritType}
+                onChange={(e) => setSpiritType(e.target.value)}
+                className="px-4 py-2 border border-gray-300 text-sm tracking-[0.05em] focus:border-gold-600 focus:outline-none"
+              >
+                <option value="all">All Spirits</option>
+                <option value="vodka">Vodka</option>
+                <option value="tequila">Tequila & Mezcal</option>
+                <option value="whiskey">Whiskey & Bourbon</option>
+                <option value="rum">Rum</option>
+                <option value="gin">Gin</option>
+                <option value="liqueur">Liqueurs</option>
+                <option value="cognac">Cognac & Brandy</option>
+              </select>
+            )}
+
+            {/* Bottle Size Filter */}
+            <select
+              value={bottleSize}
+              onChange={(e) => setBottleSize(e.target.value)}
+              className="px-4 py-2 border border-gray-300 text-sm tracking-[0.05em] focus:border-gold-600 focus:outline-none"
+            >
+              <option value="all">All Sizes</option>
+              <option value="50ml">Minis (50ml)</option>
+              <option value="375ml">Half Bottle (375ml)</option>
+              <option value="750ml">Standard (750ml)</option>
+              <option value="1.75L">Handle (1.75L)</option>
+              <option value="12-pack">12-Pack</option>
+            </select>
+
+            {/* Price Range Filter */}
+            <select
+              value={priceRange}
+              onChange={(e) => setPriceRange(e.target.value)}
+              className="px-4 py-2 border border-gray-300 text-sm tracking-[0.05em] focus:border-gold-600 focus:outline-none"
+            >
+              <option value="all">All Prices</option>
+              <option value="under25">Under $25</option>
+              <option value="25-50">$25 - $50</option>
+              <option value="50-100">$50 - $100</option>
+              <option value="over100">Over $100</option>
+            </select>
+
+            {/* Brand Filter */}
+            {uniqueBrands.length > 0 && (
+              <select
+                value={brand}
+                onChange={(e) => setBrand(e.target.value)}
+                className="px-4 py-2 border border-gray-300 text-sm tracking-[0.05em] focus:border-gold-600 focus:outline-none"
+              >
+                <option value="all">All Brands</option>
+                {uniqueBrands.map(b => (
+                  <option key={b} value={b}>{b}</option>
+                ))}
+              </select>
+            )}
+
+            {/* Spacer */}
+            <div className="flex-grow" />
+            
+            {/* Product Count */}
+            <div className="text-sm text-gray-600 tracking-[0.05em]">
+              {sortedProducts.length} PRODUCTS
             </div>
 
             {/* Sort Dropdown */}
@@ -268,16 +363,22 @@ function ProductsContent() {
                 </div>
               )}
 
-              {/* Load More */}
+              {/* Infinite Scroll Loading Indicator */}
               {hasNextPage && (
                 <div className="text-center mt-12">
-                  <button
-                    onClick={loadMore}
-                    disabled={loading}
-                    className="px-8 py-3 border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-colors duration-300 tracking-[0.15em] text-sm disabled:opacity-50"
-                  >
-                    {loading ? 'LOADING...' : 'LOAD MORE'}
-                  </button>
+                  <div className="inline-flex items-center gap-3">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gold-600"></div>
+                    <span className="text-sm text-gray-600 tracking-[0.1em]">LOADING MORE PRODUCTS...</span>
+                  </div>
+                </div>
+              )}
+              
+              {/* End of products message */}
+              {!hasNextPage && sortedProducts.length > 0 && (
+                <div className="text-center mt-12">
+                  <p className="text-sm text-gray-500 tracking-[0.1em]">
+                    SHOWING ALL {sortedProducts.length} PRODUCTS
+                  </p>
                 </div>
               )}
             </>
