@@ -29,6 +29,7 @@ export default function MobileFilterDrawer({
   const [localPriceRange, setLocalPriceRange] = useState(priceRange);
 
   const sortOptions = [
+    { value: 'bestsellers', label: 'Best Sellers' },
     { value: 'featured', label: 'Featured' },
     { value: 'price-asc', label: 'Price: Low to High' },
     { value: 'price-desc', label: 'Price: High to Low' },

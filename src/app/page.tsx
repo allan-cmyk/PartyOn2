@@ -5,8 +5,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 export default function HomePage() {
+  const isMobile = useIsMobile();
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -40,18 +42,27 @@ export default function HomePage() {
           <p className="text-lg md:text-xl font-light tracking-[0.1em] mb-12 text-gray-200">
             Austin&apos;s Premier Spirits & Event Service
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          {/* Mobile: Single Order Now button, Desktop: Two buttons */}
+          {isMobile ? (
             <Link href="/products">
-              <button className="px-10 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-all duration-300 tracking-[0.15em] text-sm">
-                SHOP PRODUCTS
+              <button className="px-12 py-5 bg-gold-600 text-white hover:bg-gold-700 transition-all duration-300 tracking-[0.15em] text-base font-medium rounded-lg shadow-lg">
+                ORDER NOW
               </button>
             </Link>
-            <Link href="/order">
-              <button className="px-10 py-4 border-2 border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
-                PLAN MY EVENT
-              </button>
-            </Link>
-          </div>
+          ) : (
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/products">
+                <button className="px-10 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-all duration-300 tracking-[0.15em] text-sm">
+                  SHOP PRODUCTS
+                </button>
+              </Link>
+              <Link href="/order">
+                <button className="px-10 py-4 border-2 border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
+                  PLAN MY EVENT
+                </button>
+              </Link>
+            </div>
+          )}
         </motion.div>
         
         <motion.div 

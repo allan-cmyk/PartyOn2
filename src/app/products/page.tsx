@@ -24,7 +24,7 @@ function ProductsContent() {
   const [searchResults, setSearchResults] = useState<ShopifyProduct[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [filter, setFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('featured');
+  const [sortBy, setSortBy] = useState('bestsellers');
   
   // Advanced filters
   const [spiritType, setSpiritType] = useState('all');
@@ -190,16 +190,53 @@ function ProductsContent() {
     return true;
   });
 
+  // Define best sellers (you can update this list based on actual sales data)
+  const bestSellerHandles = [
+    'titos-vodka',
+    'don-julio-blanco',
+    'hendricks-gin',
+    'grey-goose-vodka',
+    'casamigos-reposado',
+    'patron-silver',
+    'deep-eddy-vodka',
+    'bulleit-bourbon',
+    'jameson-irish-whiskey',
+    'crown-royal'
+  ];
+
   // Sort products
   const sortedProducts = [...filteredProducts].sort((a, b) => {
+    if (sortBy === 'bestsellers') {
+      // Check if products have 'bestseller' tag or are in our curated list
+      const aIsBestSeller = a.tags?.includes('bestseller') || bestSellerHandles.includes(a.handle);
+      const bIsBestSeller = b.tags?.includes('bestseller') || bestSellerHandles.includes(b.handle);
+      
+      if (aIsBestSeller && !bIsBestSeller) return -1;
+      if (!aIsBestSeller && bIsBestSeller) return 1;
+      
+      // If both are bestsellers, sort by position in the list
+      if (aIsBestSeller && bIsBestSeller) {
+        const aIndex = bestSellerHandles.indexOf(a.handle);
+        const bIndex = bestSellerHandles.indexOf(b.handle);
+        if (aIndex !== -1 && bIndex !== -1) {
+          return aIndex - bIndex;
+        }
+      }
+      
+      // Fall back to featured sorting
+      return 0;
+    }
     if (sortBy === 'price-asc') {
       return parseFloat(a.priceRange.minVariantPrice.amount) - parseFloat(b.priceRange.minVariantPrice.amount);
     }
     if (sortBy === 'price-desc') {
       return parseFloat(b.priceRange.minVariantPrice.amount) - parseFloat(a.priceRange.minVariantPrice.amount);
     }
-    if (sortBy === 'name') {
+    if (sortBy === 'name-asc') {
       return a.title.localeCompare(b.title);
+    }
+    if (sortBy === 'name-desc') {
+      return b.title.localeCompare(a.title);
     }
     return 0; // featured
   });
@@ -287,6 +324,7 @@ function ProductsContent() {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
               >
+                <option value="bestsellers">Best Sellers</option>
                 <option value="featured">Featured</option>
                 <option value="price-asc">Price ↑</option>
                 <option value="price-desc">Price ↓</option>
@@ -426,8 +464,10 @@ function ProductsContent() {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="border border-gray-300 px-4 py-2 text-sm tracking-[0.05em] focus:border-gold-600 focus:outline-none"
               >
+                <option value="bestsellers">Best Sellers</option>
                 <option value="featured">Featured</option>
-                <option value="name">Name</option>
+                <option value="name-asc">Name: A to Z</option>
+                <option value="name-desc">Name: Z to A</option>
                 <option value="price-asc">Price: Low to High</option>
                 <option value="price-desc">Price: High to Low</option>
               </select>
