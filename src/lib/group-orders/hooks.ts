@@ -10,6 +10,14 @@ export function useGroupOrder(shareCode: string | null) {
     {
       refreshInterval: 5000, // Refresh every 5 seconds for live updates
       revalidateOnFocus: true,
+      onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
+        // Don't retry on 404s
+        if (error?.message?.includes('not found')) return
+        // Only retry 3 times
+        if (retryCount >= 3) return
+        // Retry after 5 seconds
+        setTimeout(() => revalidate({ retryCount }), 5000)
+      }
     }
   )
 

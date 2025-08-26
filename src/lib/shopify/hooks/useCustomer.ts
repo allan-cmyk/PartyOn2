@@ -91,27 +91,36 @@ export function useCustomer(): UseCustomerReturn {
         setCustomer(response.customer);
         setIsAuthenticated(true);
         setError(null);
+        return true;
       } else {
         // Token might be invalid
+        console.warn('Customer data not found, token might be invalid');
         clearToken();
+        setCustomer(null);
         setIsAuthenticated(false);
+        return false;
       }
     } catch (err) {
       console.error('Error fetching customer:', err);
       setError('Failed to fetch customer data');
-      clearToken();
+      // Don't clear token on network errors, allow retry
+      setCustomer(null);
       setIsAuthenticated(false);
+      return false;
     }
   }, [clearToken]);
 
   // Initialize on mount
   useEffect(() => {
-    const token = getStoredToken();
-    if (token) {
-      fetchCustomer(token);
-    } else {
+    const initializeCustomer = async () => {
+      const token = getStoredToken();
+      if (token) {
+        await fetchCustomer(token);
+      }
       setLoading(false);
-    }
+    };
+    
+    initializeCustomer();
   }, [getStoredToken, fetchCustomer]);
 
   // Login

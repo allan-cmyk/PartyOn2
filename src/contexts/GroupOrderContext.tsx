@@ -23,7 +23,7 @@ interface GroupOrderProviderProps {
 export function GroupOrderProvider({ children }: GroupOrderProviderProps) {
   const [groupOrderCode, setGroupOrderCode] = useState<string | null>(null)
   
-  const { groupOrder, refresh } = useGroupOrder(groupOrderCode)
+  const { groupOrder, refresh, error } = useGroupOrder(groupOrderCode)
 
   // Load saved group order code from localStorage on mount
   useEffect(() => {
@@ -33,6 +33,15 @@ export function GroupOrderProvider({ children }: GroupOrderProviderProps) {
       setGroupOrderCode(savedCode)
     }
   }, [])
+
+  // Clear invalid group order codes
+  useEffect(() => {
+    if (error?.message?.includes('not found') && groupOrderCode) {
+      console.warn('Group order not found, clearing code:', groupOrderCode)
+      setGroupOrderCode(null)
+      localStorage.removeItem('groupOrderCode')
+    }
+  }, [error, groupOrderCode])
 
   // Save group order code to localStorage when it changes
   useEffect(() => {
