@@ -2,7 +2,7 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import OldFashionedNavigation from '@/components/OldFashionedNavigation'
+import Navigation from '@/components/Navigation'
 import { notFound } from 'next/navigation'
 
 // Mock blog posts data - in production, fetch from CMS or database
@@ -971,7 +971,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation forceScrolled={true} />
+      <Navigation />
       
       {/* Hero Section with Image */}
       <section className="relative h-[60vh] min-h-[500px]">

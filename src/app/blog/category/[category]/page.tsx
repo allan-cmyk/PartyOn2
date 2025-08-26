@@ -3,7 +3,7 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import OldFashionedNavigation from '@/components/OldFashionedNavigation'
+import Navigation from '@/components/Navigation'
 
 // Mock blog posts - in production, fetch from CMS or database
 const blogPosts = [
@@ -71,7 +71,7 @@ export default async function BlogCategoryPage({ params }: { params: Promise<{ c
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation forceScrolled={true} />
+      <Navigation />
       
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-gray-50 to-white">
