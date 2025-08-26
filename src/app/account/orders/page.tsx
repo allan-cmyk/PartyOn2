@@ -54,13 +54,10 @@ export default function OrderHistoryPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen pt-32 bg-gray-50">
+      <div className="min-h-screen pt-32 bg-gradient-to-br from-gray-50 to-gray-100">
         <CustomerAuth 
           isOpen={isAuthOpen}
-          onClose={() => {
-            setIsAuthOpen(false);
-            router.push('/');
-          }}
+          onClose={() => setIsAuthOpen(false)}
           redirectTo="/account/orders"
         />
       </div>
@@ -70,9 +67,9 @@ export default function OrderHistoryPage() {
   const orders = customer?.orders?.edges || [];
 
   return (
-    <main className="min-h-screen pt-24 bg-gray-50">
+    <main className="min-h-screen pt-24 bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="max-w-7xl mx-auto px-8 md:px-12 py-12">
-          <h1 className="font-cormorant text-4xl tracking-[0.15em] text-center mb-12">
+          <h1 className="font-cormorant text-5xl tracking-[0.15em] text-center mb-12 text-gray-900">
             MY ACCOUNT
           </h1>
 
@@ -82,19 +79,19 @@ export default function OrderHistoryPage() {
               <nav className="space-y-4">
                 <Link 
                   href="/account"
-                  className="block py-2 px-4 text-sm tracking-[0.1em] text-gray-700 hover:text-gold-600 transition-colors"
+                  className="block py-3 px-4 text-sm tracking-[0.1em] text-gray-700 hover:bg-gold-50 hover:text-gold-600 transition-colors rounded-lg"
                 >
                   ACCOUNT DETAILS
                 </Link>
                 <Link 
                   href="/account/orders"
-                  className="block py-2 px-4 text-sm tracking-[0.1em] bg-gold-600 text-white"
+                  className="block py-3 px-4 text-sm tracking-[0.1em] bg-gold-600 text-white rounded-lg shadow-sm"
                 >
                   ORDER HISTORY
                 </Link>
                 <Link 
                   href="/account/addresses"
-                  className="block py-2 px-4 text-sm tracking-[0.1em] text-gray-700 hover:text-gold-600 transition-colors"
+                  className="block py-3 px-4 text-sm tracking-[0.1em] text-gray-700 hover:bg-gold-50 hover:text-gold-600 transition-colors rounded-lg"
                 >
                   ADDRESSES
                 </Link>
@@ -103,7 +100,7 @@ export default function OrderHistoryPage() {
 
             {/* Main Content */}
             <div className="md:col-span-3">
-              <div className="bg-white p-8 border border-gray-200">
+              <div className="bg-white p-8 rounded-lg shadow-md border border-gray-100">
                 <h2 className="font-cormorant text-2xl tracking-[0.1em] mb-6">
                   Order History
                 </h2>
@@ -113,7 +110,7 @@ export default function OrderHistoryPage() {
                     <p className="text-gray-600 mb-4">You haven&apos;t placed any orders yet.</p>
                     <Link 
                       href="/products"
-                      className="inline-block px-6 py-2 bg-gold text-white text-sm tracking-[0.1em] hover:bg-gold/90 transition-colors"
+                      className="inline-block px-6 py-2 bg-gold-600 text-white text-sm tracking-[0.1em] hover:bg-gold-700 transition-colors rounded"
                     >
                       START SHOPPING
                     </Link>
@@ -123,7 +120,7 @@ export default function OrderHistoryPage() {
                     {orders.map(({ node: order }) => (
                       <div 
                         key={order.id} 
-                        className="border border-gray-200 p-6 hover:border-gold transition-colors"
+                        className="border border-gray-200 p-6 rounded-lg hover:border-gold-600 hover:shadow-md transition-all"
                       >
                         <div className="flex flex-wrap justify-between items-start mb-4">
                           <div>
@@ -181,7 +178,7 @@ export default function OrderHistoryPage() {
                           <div className="flex gap-4 mt-4 pt-4 border-t">
                             <Link 
                               href={`/account/orders/${order.id.split('/').pop()}`}
-                              className="text-sm tracking-[0.1em] text-gold hover:underline"
+                              className="text-sm tracking-[0.1em] text-gold-600 hover:text-gold-700 hover:underline transition-colors"
                             >
                               VIEW DETAILS
                             </Link>
@@ -190,7 +187,7 @@ export default function OrderHistoryPage() {
                                 href={order.statusUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-sm tracking-[0.1em] text-gold hover:underline"
+                                className="text-sm tracking-[0.1em] text-gold-600 hover:text-gold-700 hover:underline transition-colors"
                               >
                                 TRACK ORDER
                               </a>

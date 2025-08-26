@@ -71,15 +71,21 @@ export default function AccountPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen pt-32 bg-gray-50">
+      <div className="min-h-screen pt-32 bg-gradient-to-br from-gray-50 to-gray-100">
         <CustomerAuth 
           isOpen={isAuthOpen}
-          onClose={() => {
-            setIsAuthOpen(false);
-            router.push('/');
-          }}
+          onClose={() => setIsAuthOpen(false)}
           redirectTo="/account"
         />
+        <div className="text-center">
+          <h2 className="text-2xl font-cormorant mb-4">Please sign in to view your account</h2>
+          <button
+            onClick={() => setIsAuthOpen(true)}
+            className="px-6 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors"
+          >
+            SIGN IN
+          </button>
+        </div>
       </div>
     );
   }
@@ -97,19 +103,19 @@ export default function AccountPage() {
               <nav className="space-y-4">
                 <Link 
                   href="/account"
-                  className="block py-2 px-4 text-sm tracking-[0.1em] bg-gold-600 text-white"
+                  className="block py-3 px-4 text-sm tracking-[0.1em] bg-gold-600 text-white rounded-lg shadow-sm"
                 >
                   ACCOUNT DETAILS
                 </Link>
                 <Link 
                   href="/account/orders"
-                  className="block py-2 px-4 text-sm tracking-[0.1em] text-gray-700 hover:text-gold-600 transition-colors"
+                  className="block py-3 px-4 text-sm tracking-[0.1em] text-gray-700 hover:bg-gold-50 hover:text-gold-600 transition-colors rounded-lg"
                 >
                   ORDER HISTORY
                 </Link>
                 <Link 
                   href="/account/addresses"
-                  className="block py-2 px-4 text-sm tracking-[0.1em] text-gray-700 hover:text-gold transition-colors"
+                  className="block py-3 px-4 text-sm tracking-[0.1em] text-gray-700 hover:bg-gold-50 hover:text-gold-600 transition-colors rounded-lg"
                 >
                   ADDRESSES
                 </Link>
@@ -118,7 +124,7 @@ export default function AccountPage() {
 
             {/* Main Content */}
             <div className="md:col-span-3">
-              <div className="bg-white p-8 border border-gray-200">
+              <div className="bg-white p-8 rounded-lg shadow-md border border-gray-100">
                 <div className="flex justify-between items-start mb-6">
                   <h2 className="font-cormorant text-2xl tracking-[0.1em]">
                     Account Details
@@ -126,7 +132,7 @@ export default function AccountPage() {
                   {!isEditing && (
                     <button 
                       onClick={() => setIsEditing(true)}
-                      className="text-sm tracking-[0.1em] text-gold hover:underline"
+                      className="text-sm tracking-[0.1em] text-gold-600 hover:text-gold-700 hover:underline transition-colors"
                     >
                       EDIT
                     </button>
@@ -155,7 +161,7 @@ export default function AccountPage() {
                           name="firstName"
                           value={formData.firstName}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-2 border border-gray-300 focus:border-gold focus:outline-none"
+                          className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
                         />
                       </div>
                       <div>
@@ -167,7 +173,7 @@ export default function AccountPage() {
                           name="lastName"
                           value={formData.lastName}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-2 border border-gray-300 focus:border-gold focus:outline-none"
+                          className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
                         />
                       </div>
                     </div>
@@ -193,7 +199,7 @@ export default function AccountPage() {
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 focus:border-gold focus:outline-none"
+                        className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
                       />
                     </div>
 
@@ -203,7 +209,7 @@ export default function AccountPage() {
                         name="acceptsMarketing"
                         checked={formData.acceptsMarketing}
                         onChange={handleInputChange}
-                        className="rounded border-gray-300 text-gold focus:ring-gold"
+                        className="rounded border-gray-300 text-gold-600 focus:ring-gold-600"
                       />
                       <span className="tracking-[0.1em]">
                         Receive exclusive offers and event updates
@@ -213,14 +219,14 @@ export default function AccountPage() {
                     <div className="flex gap-4 pt-4">
                       <button
                         type="submit"
-                        className="px-6 py-2 bg-gold text-white text-sm tracking-[0.1em] hover:bg-gold/90 transition-colors"
+                        className="px-6 py-2 bg-gold-600 text-white text-sm tracking-[0.1em] hover:bg-gold-700 transition-colors rounded"
                       >
                         SAVE CHANGES
                       </button>
                       <button
                         type="button"
                         onClick={() => setIsEditing(false)}
-                        className="px-6 py-2 border border-gray-300 text-sm tracking-[0.1em] hover:border-gray-400 transition-colors"
+                        className="px-6 py-2 border border-gray-300 text-sm tracking-[0.1em] hover:border-gray-400 hover:bg-gray-50 transition-colors rounded"
                       >
                         CANCEL
                       </button>

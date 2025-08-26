@@ -29,59 +29,97 @@ export default function AddressesPage() {
     }
   }, [isAuthenticated, router])
 
-  // Mock addresses for now - will connect to Shopify later
+  // Load addresses from localStorage (Shopify Customer API doesn't support address management yet)
   useEffect(() => {
     if (customer) {
-      setAddresses([
-        {
-          id: '1',
-          address1: '123 Main St',
-          city: 'Austin',
-          province: 'TX',
-          zip: '78701',
-          country: 'United States',
-          isDefault: true
-        }
-      ])
+      const savedAddresses = localStorage.getItem(`addresses_${customer.id}`)
+      if (savedAddresses) {
+        setAddresses(JSON.parse(savedAddresses))
+      } else {
+        // Default address if none saved
+        setAddresses([])
+      }
     }
   }, [customer])
 
-  const handleSaveAddress = (e: React.FormEvent) => {
+  // Save addresses to localStorage whenever they change
+  useEffect(() => {
+    if (customer && addresses.length > 0) {
+      localStorage.setItem(`addresses_${customer.id}`, JSON.stringify(addresses))
+    }
+  }, [addresses, customer])
+
+  const handleSaveAddress = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // Will implement save logic with Shopify API
+    const formData = new FormData(e.currentTarget)
+    
+    const newAddress: Address = {
+      id: editingId || `addr_${Date.now()}`,
+      address1: formData.get('address1') as string,
+      address2: formData.get('address2') as string || undefined,
+      city: formData.get('city') as string,
+      province: formData.get('province') as string,
+      zip: formData.get('zip') as string,
+      country: 'United States',
+      isDefault: editingId ? addresses.find(a => a.id === editingId)?.isDefault : addresses.length === 0
+    }
+
+    if (editingId) {
+      setAddresses(prev => prev.map(addr => 
+        addr.id === editingId ? newAddress : addr
+      ))
+    } else {
+      setAddresses(prev => [...prev, newAddress])
+    }
+    
     setIsAddingNew(false)
     setEditingId(null)
   }
 
+  const handleDeleteAddress = (id: string) => {
+    if (window.confirm('Are you sure you want to delete this address?')) {
+      setAddresses(prev => prev.filter(addr => addr.id !== id))
+    }
+  }
+
+  const handleSetDefault = (id: string) => {
+    setAddresses(prev => prev.map(addr => ({
+      ...addr,
+      isDefault: addr.id === id
+    })))
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 pt-24">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-24">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-4xl font-cormorant mb-2">My Addresses</h1>
-            <p className="text-gray-600">Manage your shipping and billing addresses</p>
+          <div className="text-center mb-12">
+            <h1 className="text-5xl font-cormorant mb-3 text-gray-900 tracking-[0.15em]">MY ADDRESSES</h1>
+            <p className="text-gray-600 tracking-[0.1em]">Manage your shipping and billing addresses</p>
           </div>
 
           {/* Navigation */}
-          <div className="flex space-x-6 mb-8 border-b">
-            <button
-              onClick={() => router.push('/account')}
-              className="pb-3 text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              Account Details
-            </button>
-            <button
-              onClick={() => router.push('/account/orders')}
-              className="pb-3 text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              Order History
-            </button>
-            <button
-              className="pb-3 text-gold-600 border-b-2 border-gold-600"
-            >
-              Addresses
-            </button>
+          <div className="flex justify-center mb-12">
+            <div className="bg-white rounded-lg shadow-sm p-2 flex space-x-2">
+              <button
+                onClick={() => router.push('/account')}
+                className="px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gold-50 hover:text-gold-700 transition-all rounded-md"
+              >
+                ACCOUNT DETAILS
+              </button>
+              <button
+                onClick={() => router.push('/account/orders')}
+                className="px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gold-50 hover:text-gold-700 transition-all rounded-md"
+              >
+                ORDER HISTORY
+              </button>
+              <button
+                className="px-6 py-3 text-sm tracking-[0.1em] bg-gold-600 text-white rounded-md font-medium"
+              >
+                ADDRESSES
+              </button>
+            </div>
           </div>
 
           {/* Address Grid */}
@@ -92,7 +130,7 @@ export default function AddressesPage() {
                 key={address.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white p-6 rounded-lg shadow-sm"
+                className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-100"
               >
                 {address.isDefault && (
                   <span className="inline-block px-2 py-1 bg-gold-100 text-gold-700 text-xs rounded mb-3">
@@ -103,52 +141,57 @@ export default function AddressesPage() {
                 {editingId === address.id ? (
                   <form onSubmit={handleSaveAddress} className="space-y-3">
                     <input
+                      name="address1"
                       type="text"
                       defaultValue={address.address1}
-                      className="w-full px-3 py-2 border rounded"
+                      className="w-full px-3 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
                       placeholder="Address Line 1"
                       required
                     />
                     <input
+                      name="address2"
                       type="text"
                       defaultValue={address.address2}
-                      className="w-full px-3 py-2 border rounded"
+                      className="w-full px-3 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
                       placeholder="Address Line 2 (optional)"
                     />
                     <div className="grid grid-cols-2 gap-3">
                       <input
+                        name="city"
                         type="text"
                         defaultValue={address.city}
-                        className="px-3 py-2 border rounded"
+                        className="px-3 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
                         placeholder="City"
                         required
                       />
                       <input
+                        name="province"
                         type="text"
                         defaultValue={address.province}
-                        className="px-3 py-2 border rounded"
+                        className="px-3 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
                         placeholder="State"
                         required
                       />
                     </div>
                     <input
+                      name="zip"
                       type="text"
                       defaultValue={address.zip}
-                      className="w-full px-3 py-2 border rounded"
+                      className="w-full px-3 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
                       placeholder="ZIP Code"
                       required
                     />
                     <div className="flex gap-2">
                       <button
                         type="submit"
-                        className="px-4 py-2 bg-gold-600 text-white text-sm hover:bg-gold-700"
+                        className="px-4 py-2 bg-gold-600 text-white text-sm hover:bg-gold-700 transition-colors tracking-[0.1em]"
                       >
                         SAVE
                       </button>
                       <button
                         type="button"
                         onClick={() => setEditingId(null)}
-                        className="px-4 py-2 border border-gray-300 text-sm hover:bg-gray-50"
+                        className="px-4 py-2 border border-gray-300 text-sm hover:bg-gray-50 transition-colors tracking-[0.1em]"
                       >
                         CANCEL
                       </button>
@@ -175,11 +218,17 @@ export default function AddressesPage() {
                       {!address.isDefault && (
                         <>
                           <span className="text-gray-400">•</span>
-                          <button className="text-sm text-gray-600 hover:text-gray-700">
+                          <button 
+                            onClick={() => handleSetDefault(address.id)}
+                            className="text-sm text-gray-600 hover:text-gray-700"
+                          >
                             Set as Default
                           </button>
                           <span className="text-gray-400">•</span>
-                          <button className="text-sm text-red-600 hover:text-red-700">
+                          <button 
+                            onClick={() => handleDeleteAddress(address.id)}
+                            className="text-sm text-red-600 hover:text-red-700"
+                          >
                             Delete
                           </button>
                         </>
@@ -200,47 +249,52 @@ export default function AddressesPage() {
                 <h3 className="text-lg font-medium mb-4">New Address</h3>
                 <form onSubmit={handleSaveAddress} className="space-y-3">
                   <input
+                    name="address1"
                     type="text"
-                    className="w-full px-3 py-2 border rounded"
+                    className="w-full px-3 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
                     placeholder="Address Line 1"
                     required
                   />
                   <input
+                    name="address2"
                     type="text"
-                    className="w-full px-3 py-2 border rounded"
+                    className="w-full px-3 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
                     placeholder="Address Line 2 (optional)"
                   />
                   <div className="grid grid-cols-2 gap-3">
                     <input
+                      name="city"
                       type="text"
-                      className="px-3 py-2 border rounded"
+                      className="px-3 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
                       placeholder="City"
                       required
                     />
                     <input
+                      name="province"
                       type="text"
-                      className="px-3 py-2 border rounded"
+                      className="px-3 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
                       placeholder="State"
                       required
                     />
                   </div>
                   <input
+                    name="zip"
                     type="text"
-                    className="w-full px-3 py-2 border rounded"
+                    className="w-full px-3 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
                     placeholder="ZIP Code"
                     required
                   />
                   <div className="flex gap-2">
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-gold-600 text-white text-sm hover:bg-gold-700"
+                      className="px-4 py-2 bg-gold-600 text-white text-sm hover:bg-gold-700 transition-colors tracking-[0.1em]"
                     >
                       SAVE ADDRESS
                     </button>
                     <button
                       type="button"
                       onClick={() => setIsAddingNew(false)}
-                      className="px-4 py-2 border border-gray-300 text-sm hover:bg-gray-50"
+                      className="px-4 py-2 border border-gray-300 text-sm hover:bg-gray-50 transition-colors tracking-[0.1em]"
                     >
                       CANCEL
                     </button>
