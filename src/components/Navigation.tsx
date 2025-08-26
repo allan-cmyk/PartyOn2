@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { useCartContext } from '@/contexts/CartContext'
 import { useCustomerContext } from '@/contexts/CustomerContext'
 import CustomerAuth from '@/components/CustomerAuth'
-import Cart from '@/components/Cart'
+import Cart from '@/components/shopify/Cart'
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false)
