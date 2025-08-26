@@ -3,8 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCustomerContext } from '@/contexts/CustomerContext';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
-import Footer from '@/components/Footer';
 import CustomerAuth from '@/components/CustomerAuth';
 import Link from 'next/link';
 
@@ -63,40 +61,31 @@ export default function AccountPage() {
 
   if (loading) {
     return (
-      <>
-        <OldFashionedNavigation />
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gold"></div>
-          </div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 pt-24">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gold-600"></div>
         </div>
-      </>
+      </div>
     );
   }
 
   if (!isAuthenticated) {
     return (
-      <>
-        <OldFashionedNavigation />
-        <div className="min-h-screen pt-32">
-          <CustomerAuth 
-            isOpen={isAuthOpen}
-            onClose={() => {
-              setIsAuthOpen(false);
-              router.push('/');
-            }}
-            redirectTo="/account"
-          />
-        </div>
-      </>
+      <div className="min-h-screen pt-32 bg-gray-50">
+        <CustomerAuth 
+          isOpen={isAuthOpen}
+          onClose={() => {
+            setIsAuthOpen(false);
+            router.push('/');
+          }}
+          redirectTo="/account"
+        />
+      </div>
     );
   }
 
   return (
-    <>
-      <OldFashionedNavigation />
-      
-      <main className="min-h-screen pt-32">
+    <main className="min-h-screen pt-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8 md:px-12 py-12">
           <h1 className="font-cormorant text-4xl tracking-[0.15em] text-center mb-12">
             MY ACCOUNT
@@ -108,13 +97,13 @@ export default function AccountPage() {
               <nav className="space-y-4">
                 <Link 
                   href="/account"
-                  className="block py-2 px-4 text-sm tracking-[0.1em] bg-gold text-white"
+                  className="block py-2 px-4 text-sm tracking-[0.1em] bg-gold-600 text-white"
                 >
                   ACCOUNT DETAILS
                 </Link>
                 <Link 
                   href="/account/orders"
-                  className="block py-2 px-4 text-sm tracking-[0.1em] text-gray-700 hover:text-gold transition-colors"
+                  className="block py-2 px-4 text-sm tracking-[0.1em] text-gray-700 hover:text-gold-600 transition-colors"
                 >
                   ORDER HISTORY
                 </Link>
@@ -270,8 +259,5 @@ export default function AccountPage() {
           </div>
         </div>
       </main>
-      
-      <Footer />
-    </>
   );
 }
