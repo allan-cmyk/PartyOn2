@@ -151,15 +151,15 @@ export default function AccountPage() {
           </div>
         </Link>
 
-        <Link href="/services" className="group">
+        <Link href="/corporate" className="group">
           <div className="bg-white p-6 rounded-lg border border-gray-200 hover:border-gold-600 hover:shadow-lg transition-all">
             <div className="w-12 h-12 bg-gold-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-gold-600 transition-colors">
               <svg className="w-6 h-6 text-gold-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
               </svg>
             </div>
-            <h3 className="font-medium text-gray-900 mb-1">Event Services</h3>
-            <p className="text-sm text-gray-500">Plan your next party</p>
+            <h3 className="font-medium text-gray-900 mb-1">Corporate Events</h3>
+            <p className="text-sm text-gray-500">Premium event services</p>
           </div>
         </Link>
       </div>
@@ -268,9 +268,17 @@ export default function AccountPage() {
             <p className="text-gold-100 mb-4">
               Explore our premium event services for weddings, corporate events, and parties
             </p>
-            <Link href="/services" className="inline-block px-6 py-2 bg-white text-gold-600 hover:bg-gold-50 transition-colors rounded">
-              EXPLORE SERVICES
-            </Link>
+            <div className="flex gap-3">
+              <Link href="/weddings" className="inline-block px-6 py-2 bg-white text-gold-600 hover:bg-gold-50 transition-colors rounded">
+                WEDDINGS
+              </Link>
+              <Link href="/corporate" className="inline-block px-6 py-2 bg-white text-gold-600 hover:bg-gold-50 transition-colors rounded">
+                CORPORATE
+              </Link>
+              <Link href="/bach-parties" className="inline-block px-6 py-2 bg-white text-gold-600 hover:bg-gold-50 transition-colors rounded">
+                BACH PARTIES
+              </Link>
+            </div>
           </div>
           <div className="hidden md:block">
             <svg className="w-32 h-32 text-gold-500 opacity-50" fill="currentColor" viewBox="0 0 24 24">

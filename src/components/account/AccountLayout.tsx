@@ -24,6 +24,7 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
   const pathname = usePathname()
   const { customer } = useCustomerContext()
   const [profileImage, setProfileImage] = useState<string | null>(null)
+  const [savedAddressCount, setSavedAddressCount] = useState(0)
   const fileInputRef = useRef<HTMLInputElement>(null)
   
   const navigation = [
@@ -99,12 +100,25 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
     ? ((totalSpent - currentTier.min) / (nextTier.min - currentTier.min)) * 100
     : 100
 
-  // Load profile image from localStorage on mount
+  // Load profile image and addresses count from localStorage on mount
   useState(() => {
     if (typeof window !== 'undefined' && customer) {
       const savedImage = localStorage.getItem(`profileImage_${customer.id}`)
       if (savedImage) {
         setProfileImage(savedImage)
+      }
+      
+      // Count saved addresses
+      const savedAddresses = localStorage.getItem(`addresses_${customer.id}`)
+      if (savedAddresses) {
+        try {
+          const addresses = JSON.parse(savedAddresses)
+          setSavedAddressCount(Array.isArray(addresses) ? addresses.length : 0)
+        } catch {
+          setSavedAddressCount(0)
+        }
+      } else {
+        setSavedAddressCount(0)
       }
     }
   })
@@ -215,8 +229,8 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
                   <p className="text-xs text-gray-500 tracking-[0.1em]">TIER</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-gray-900">${totalSpent.toFixed(0)}</p>
-                  <p className="text-xs text-gray-500 tracking-[0.1em]">SPENT</p>
+                  <p className="text-2xl font-bold text-gray-900">{savedAddressCount}</p>
+                  <p className="text-xs text-gray-500 tracking-[0.1em]">ADDRESSES</p>
                 </div>
               </div>
             </div>
