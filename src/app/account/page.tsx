@@ -1,13 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useCustomerContext } from '@/contexts/CustomerContext';
 import CustomerAuth from '@/components/CustomerAuth';
 import Link from 'next/link';
 
 export default function AccountPage() {
-  const router = useRouter();
   const { customer, isAuthenticated, loading, update } = useCustomerContext();
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);

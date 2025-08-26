@@ -1,14 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useCustomerContext } from '@/contexts/CustomerContext';
 import CustomerAuth from '@/components/CustomerAuth';
 import Link from 'next/link';
 import { formatPrice } from '@/lib/shopify/utils';
 
 export default function OrderHistoryPage() {
-  const router = useRouter();
   const { customer, isAuthenticated, loading } = useCustomerContext();
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
