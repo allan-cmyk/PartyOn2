@@ -517,12 +517,14 @@ function ProductsContent() {
                     : "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"
               }>
                 {sortedProducts.map((product, index) => {
+                  // Use index as part of key to avoid duplicates
+                  const uniqueKey = `${product.id}-${index}`;
                   if (isMobile) {
-                    return <MobileProductCard key={product.id} product={product} index={index} />
+                    return <MobileProductCard key={uniqueKey} product={product} index={index} />
                   }
                   return isCompactView 
-                    ? <CompactProductCard key={product.id} product={product} index={index} />
-                    : <ProductCard key={product.id} product={product} index={index} />
+                    ? <CompactProductCard key={uniqueKey} product={product} index={index} />
+                    : <ProductCard key={uniqueKey} product={product} index={index} />
                 })}
               </div>
 
