@@ -6,7 +6,7 @@ import AccountLayout from '@/components/account/AccountLayout';
 import CustomerAuth from '@/components/CustomerAuth';
 
 export default function PreferencesPage() {
-  const { customer, isAuthenticated, loading, update } = useCustomerContext();
+  const { customer, isAuthenticated, loading, update, recoverPassword } = useCustomerContext();
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [preferences, setPreferences] = useState({
     acceptsMarketing: false,
@@ -21,6 +21,13 @@ export default function PreferencesPage() {
   });
   const [updateMessage, setUpdateMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [passwordError, setPasswordError] = useState('');
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -44,6 +51,71 @@ export default function PreferencesPage() {
       ...prev,
       [key]: value
     }));
+  };
+
+  const handlePasswordChange = async () => {
+    setPasswordError('');
+    
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPasswordError('Passwords do not match');
+      return;
+    }
+    
+    if (passwordForm.newPassword.length < 8) {
+      setPasswordError('Password must be at least 8 characters');
+      return;
+    }
+    
+    // Note: Shopify Customer API doesn't support password change directly
+    // This would need to be handled through Shopify's password reset flow
+    setPasswordError('Please use the password reset link sent to your email');
+    
+    // Trigger password recovery email
+    if (customer?.email) {
+      await recoverPassword(customer.email);
+      setUpdateMessage('Password reset email sent');
+      setShowPasswordModal(false);
+    }
+  };
+
+  const handleDownloadData = () => {
+    if (!customer) return;
+    
+    const userData = {
+      profile: {
+        id: customer.id,
+        email: customer.email,
+        firstName: customer.firstName,
+        lastName: customer.lastName,
+        phone: customer.phone,
+        acceptsMarketing: customer.acceptsMarketing,
+        createdAt: customer.createdAt
+      },
+      orders: customer.orders?.edges?.map(({ node }) => ({
+        orderNumber: node.name,
+        date: node.processedAt,
+        total: node.currentTotalPrice.amount,
+        items: node.lineItems.edges.map(({ node: item }) => ({
+          title: item.title,
+          variant: item.variant.title,
+          quantity: item.quantity,
+          price: item.variant.price.amount
+        }))
+      })),
+      addresses: JSON.parse(localStorage.getItem(`addresses_${customer.id}`) || '[]'),
+      preferences: preferences
+    };
+    
+    const blob = new Blob([JSON.stringify(userData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `party-on-delivery-data-${customer.email}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    setUpdateMessage('Data downloaded successfully');
+    setTimeout(() => setUpdateMessage(''), 3000);
   };
 
   const handleSave = async () => {
@@ -310,11 +382,14 @@ export default function PreferencesPage() {
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <h3 className="font-medium text-gray-900">Account Security</h3>
-                <button className="w-full text-left p-4 border border-gray-200 rounded-lg hover:border-gold-600 transition-colors">
+                <button 
+                  onClick={() => setShowPasswordModal(true)}
+                  className="w-full text-left p-4 border border-gray-200 rounded-lg hover:border-gold-600 transition-colors"
+                >
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium text-gray-900">Change Password</p>
-                      <p className="text-sm text-gray-600">Update your account password</p>
+                      <p className="text-sm text-gray-600">Request password reset email</p>
                     </div>
                     <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -324,11 +399,14 @@ export default function PreferencesPage() {
               </div>
               <div className="space-y-4">
                 <h3 className="font-medium text-gray-900">Data Management</h3>
-                <button className="w-full text-left p-4 border border-gray-200 rounded-lg hover:border-gold-600 transition-colors">
+                <button 
+                  onClick={handleDownloadData}
+                  className="w-full text-left p-4 border border-gray-200 rounded-lg hover:border-gold-600 transition-colors"
+                >
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium text-gray-900">Download My Data</p>
-                      <p className="text-sm text-gray-600">Export your account information</p>
+                      <p className="text-sm text-gray-600">Export your account information as JSON</p>
                     </div>
                     <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -350,6 +428,54 @@ export default function PreferencesPage() {
             {isLoading ? 'SAVING...' : 'SAVE PREFERENCES'}
           </button>
         </div>
+
+        {/* Password Reset Modal */}
+        {showPasswordModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-8 rounded-lg max-w-md w-full">
+              <h2 className="text-2xl font-cormorant mb-6">Request Password Reset</h2>
+              <p className="text-gray-600 mb-6">
+                For security reasons, password changes must be done through email verification. 
+                Click below to receive a password reset link at {customer?.email}.
+              </p>
+              
+              {passwordError && (
+                <div className="mb-4 p-3 bg-red-50 text-red-600 rounded">
+                  {passwordError}
+                </div>
+              )}
+              
+              <div className="flex gap-4">
+                <button
+                  onClick={async () => {
+                    if (customer?.email) {
+                      const result = await recoverPassword(customer.email);
+                      if (result.success) {
+                        setUpdateMessage('Password reset email sent! Check your inbox.');
+                        setShowPasswordModal(false);
+                        setTimeout(() => setUpdateMessage(''), 5000);
+                      } else {
+                        setPasswordError(result.errors?.[0]?.message || 'Failed to send reset email');
+                      }
+                    }
+                  }}
+                  className="flex-1 px-4 py-2 bg-gold-600 text-white hover:bg-gold-700 transition-colors rounded"
+                >
+                  Send Reset Email
+                </button>
+                <button
+                  onClick={() => {
+                    setShowPasswordModal(false);
+                    setPasswordError('');
+                  }}
+                  className="flex-1 px-4 py-2 border border-gray-300 hover:bg-gray-50 transition-colors rounded"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </AccountLayout>
   );

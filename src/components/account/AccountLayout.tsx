@@ -123,16 +123,31 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
     }
   })
 
-  const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file && customer) {
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        const imageUrl = event.target?.result as string
-        setProfileImage(imageUrl)
-        localStorage.setItem(`profileImage_${customer.id}`, imageUrl)
+      try {
+        const formData = new FormData()
+        formData.append('file', file)
+        formData.append('customerId', customer.id)
+
+        const response = await fetch('/api/profile/upload-image', {
+          method: 'POST',
+          body: formData
+        })
+
+        const data = await response.json()
+        
+        if (data.url) {
+          setProfileImage(data.url)
+          // Store in localStorage as fallback
+          if (data.storage === 'localStorage') {
+            localStorage.setItem(`profileImage_${customer.id}`, data.url)
+          }
+        }
+      } catch (error) {
+        console.error('Failed to upload profile image:', error)
       }
-      reader.readAsDataURL(file)
     }
   }
   
