@@ -55,6 +55,51 @@ export default function AccountPage() {
     return total + parseFloat(node.currentTotalPrice.amount);
   }, 0) || 0;
 
+  // Membership tiers configuration
+  const MEMBERSHIP_TIERS = [
+    { 
+      name: 'Bronze', 
+      min: 0, 
+      max: 499, 
+      benefits: ['Standard delivery', 'Birthday discount'],
+      color: 'from-orange-400 to-orange-600'
+    },
+    { 
+      name: 'Silver', 
+      min: 500, 
+      max: 999, 
+      benefits: ['10% off all orders', 'Priority support', 'Birthday discount'],
+      color: 'from-gray-400 to-gray-600'
+    },
+    { 
+      name: 'Gold', 
+      min: 1000, 
+      max: 2499, 
+      benefits: ['15% off all orders', 'Free delivery on $100+', 'Priority support', 'Early access to sales'],
+      color: 'from-gold-400 to-gold-600'
+    },
+    { 
+      name: 'Platinum', 
+      min: 2500, 
+      max: 4999, 
+      benefits: ['20% off all orders', 'Free delivery on $75+', 'VIP support', 'Exclusive events', 'Personal concierge'],
+      color: 'from-purple-400 to-purple-600'
+    },
+    { 
+      name: 'Diamond', 
+      min: 5000, 
+      max: Infinity, 
+      benefits: ['25% off all orders', 'Free delivery always', 'VIP support 24/7', 'Exclusive events', 'Personal concierge', 'Custom orders'],
+      color: 'from-blue-400 to-blue-600'
+    }
+  ];
+
+  const getCurrentTier = () => {
+    return MEMBERSHIP_TIERS.find(tier => totalSpent >= tier.min && totalSpent <= tier.max) || MEMBERSHIP_TIERS[0];
+  };
+
+  const currentTier = getCurrentTier();
+
   return (
     <AccountLayout>
       {/* Welcome Section */}
@@ -188,32 +233,16 @@ export default function AccountPage() {
 
             {/* Membership Benefits */}
             <div>
-              <h3 className="font-medium text-gray-900 mb-3">Your Benefits</h3>
+              <h3 className="font-medium text-gray-900 mb-3">{currentTier.name} Member Benefits</h3>
               <div className="space-y-2">
-                <div className="flex items-center space-x-3">
-                  <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-sm text-gray-600">Free delivery on orders over $150</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-sm text-gray-600">Express 3-hour delivery available</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-sm text-gray-600">Exclusive member discounts</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-sm text-gray-600">Priority event booking</span>
-                </div>
+                {currentTier.benefits.map((benefit, index) => (
+                  <div key={index} className="flex items-center space-x-3">
+                    <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-sm text-gray-600">{benefit}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
