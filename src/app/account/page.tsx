@@ -3,19 +3,13 @@
 import { useEffect, useState } from 'react';
 import { useCustomerContext } from '@/contexts/CustomerContext';
 import CustomerAuth from '@/components/CustomerAuth';
+import AccountLayout from '@/components/account/AccountLayout';
 import Link from 'next/link';
+import { formatPrice } from '@/lib/shopify/utils';
 
 export default function AccountPage() {
-  const { customer, isAuthenticated, loading, update } = useCustomerContext();
+  const { customer, isAuthenticated, loading } = useCustomerContext();
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    phone: '',
-    acceptsMarketing: false
-  });
-  const [updateMessage, setUpdateMessage] = useState('');
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -23,45 +17,12 @@ export default function AccountPage() {
     }
   }, [loading, isAuthenticated]);
 
-  useEffect(() => {
-    if (customer) {
-      setFormData({
-        firstName: customer.firstName || '',
-        lastName: customer.lastName || '',
-        phone: customer.phone || '',
-        acceptsMarketing: customer.acceptsMarketing
-      });
-    }
-  }, [customer]);
-
-  const handleUpdate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setUpdateMessage('');
-    
-    const result = await update(formData);
-    
-    if (result.success) {
-      setUpdateMessage('Profile updated successfully');
-      setIsEditing(false);
-      setTimeout(() => setUpdateMessage(''), 3000);
-    } else if (result.errors) {
-      setUpdateMessage(result.errors[0].message);
-    }
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 pt-24">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 pt-24">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gold-600"></div>
+          <p className="mt-4 text-gray-600">Loading your account...</p>
         </div>
       </div>
     );
@@ -75,193 +36,220 @@ export default function AccountPage() {
           onClose={() => setIsAuthOpen(false)}
           redirectTo="/account"
         />
-        <div className="text-center">
-          <h2 className="text-2xl font-cormorant mb-4">Please sign in to view your account</h2>
+        <div className="text-center px-4">
+          <h2 className="text-3xl font-cormorant mb-4">Welcome to Your Account</h2>
+          <p className="text-gray-600 mb-8">Sign in to access your orders, addresses, and preferences</p>
           <button
             onClick={() => setIsAuthOpen(true)}
-            className="px-6 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors"
+            className="px-8 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em]"
           >
-            SIGN IN
+            SIGN IN TO CONTINUE
           </button>
         </div>
       </div>
     );
   }
 
-  return (
-    <main className="min-h-screen pt-24 bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="max-w-7xl mx-auto px-8 md:px-12 py-12">
-          <h1 className="font-cormorant text-5xl tracking-[0.15em] text-center mb-12 text-gray-900">
-            MY ACCOUNT
-          </h1>
+  const recentOrders = customer?.orders?.edges?.slice(0, 3) || [];
+  const totalSpent = customer?.orders?.edges?.reduce((total, { node }) => {
+    return total + parseFloat(node.currentTotalPrice.amount);
+  }, 0) || 0;
 
-          <div className="grid md:grid-cols-4 gap-8">
-            {/* Sidebar */}
-            <div className="md:col-span-1">
-              <nav className="space-y-4">
-                <Link 
-                  href="/account"
-                  className="block py-3 px-4 text-sm tracking-[0.1em] bg-gold-600 text-white rounded-lg shadow-sm"
-                >
-                  ACCOUNT DETAILS
+  return (
+    <AccountLayout>
+      {/* Welcome Section */}
+      <div className="bg-gradient-to-r from-gold-50 to-gold-100 rounded-lg p-8 mb-8">
+        <h2 className="text-3xl font-cormorant text-gray-900 mb-2">
+          Welcome back, {customer?.firstName || 'Valued Customer'}!
+        </h2>
+        <p className="text-gray-600">
+          Your one-stop destination for premium alcohol delivery in Austin
+        </p>
+      </div>
+
+      {/* Quick Actions Grid */}
+      <div className="grid md:grid-cols-4 gap-6 mb-8">
+        <Link href="/products" className="group">
+          <div className="bg-white p-6 rounded-lg border border-gray-200 hover:border-gold-600 hover:shadow-lg transition-all">
+            <div className="w-12 h-12 bg-gold-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-gold-600 transition-colors">
+              <svg className="w-6 h-6 text-gold-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+            </div>
+            <h3 className="font-medium text-gray-900 mb-1">Shop Products</h3>
+            <p className="text-sm text-gray-500">Browse our selection</p>
+          </div>
+        </Link>
+
+        <Link href="/order" className="group">
+          <div className="bg-white p-6 rounded-lg border border-gray-200 hover:border-gold-600 hover:shadow-lg transition-all">
+            <div className="w-12 h-12 bg-gold-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-gold-600 transition-colors">
+              <svg className="w-6 h-6 text-gold-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="font-medium text-gray-900 mb-1">Schedule Delivery</h3>
+            <p className="text-sm text-gray-500">Book your next order</p>
+          </div>
+        </Link>
+
+        <Link href="/account/addresses" className="group">
+          <div className="bg-white p-6 rounded-lg border border-gray-200 hover:border-gold-600 hover:shadow-lg transition-all">
+            <div className="w-12 h-12 bg-gold-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-gold-600 transition-colors">
+              <svg className="w-6 h-6 text-gold-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </div>
+            <h3 className="font-medium text-gray-900 mb-1">Manage Addresses</h3>
+            <p className="text-sm text-gray-500">Update delivery locations</p>
+          </div>
+        </Link>
+
+        <Link href="/services" className="group">
+          <div className="bg-white p-6 rounded-lg border border-gray-200 hover:border-gold-600 hover:shadow-lg transition-all">
+            <div className="w-12 h-12 bg-gold-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-gold-600 transition-colors">
+              <svg className="w-6 h-6 text-gold-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+              </svg>
+            </div>
+            <h3 className="font-medium text-gray-900 mb-1">Event Services</h3>
+            <p className="text-sm text-gray-500">Plan your next party</p>
+          </div>
+        </Link>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-8">
+        {/* Recent Orders */}
+        <div className="bg-white rounded-lg shadow-md border border-gray-100">
+          <div className="p-6 border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-cormorant tracking-[0.1em]">RECENT ORDERS</h2>
+              <Link href="/account/orders" className="text-sm text-gold-600 hover:text-gold-700">
+                View All →
+              </Link>
+            </div>
+          </div>
+          <div className="p-6">
+            {recentOrders.length > 0 ? (
+              <div className="space-y-4">
+                {recentOrders.map(({ node: order }) => (
+                  <div key={order.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-900">{order.name}</p>
+                      <p className="text-sm text-gray-500">
+                        {new Date(order.processedAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium">
+                        {formatPrice(order.currentTotalPrice.amount)}
+                      </p>
+                      <p className="text-xs text-green-600">{order.fulfillmentStatus}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                <p className="text-gray-500 mb-4">No orders yet</p>
+                <Link href="/products" className="text-gold-600 hover:text-gold-700 text-sm">
+                  Start Shopping →
                 </Link>
-                <Link 
-                  href="/account/orders"
-                  className="block py-3 px-4 text-sm tracking-[0.1em] text-gray-700 hover:bg-gold-50 hover:text-gold-600 transition-colors rounded-lg"
-                >
-                  ORDER HISTORY
-                </Link>
-                <Link 
-                  href="/account/addresses"
-                  className="block py-3 px-4 text-sm tracking-[0.1em] text-gray-700 hover:bg-gold-50 hover:text-gold-600 transition-colors rounded-lg"
-                >
-                  ADDRESSES
-                </Link>
-              </nav>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Account Overview */}
+        <div className="bg-white rounded-lg shadow-md border border-gray-100">
+          <div className="p-6 border-b border-gray-100">
+            <h2 className="text-xl font-cormorant tracking-[0.1em]">ACCOUNT OVERVIEW</h2>
+          </div>
+          <div className="p-6 space-y-6">
+            {/* Lifetime Stats */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-gradient-to-br from-gold-50 to-gold-100 p-4 rounded-lg">
+                <p className="text-2xl font-bold text-gray-900">
+                  ${totalSpent.toFixed(2)}
+                </p>
+                <p className="text-xs text-gray-600 tracking-[0.1em]">LIFETIME SPENT</p>
+              </div>
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg">
+                <p className="text-2xl font-bold text-gray-900">
+                  {customer?.orders?.edges?.length || 0}
+                </p>
+                <p className="text-xs text-gray-600 tracking-[0.1em]">TOTAL ORDERS</p>
+              </div>
             </div>
 
-            {/* Main Content */}
-            <div className="md:col-span-3">
-              <div className="bg-white p-8 rounded-lg shadow-md border border-gray-100">
-                <div className="flex justify-between items-start mb-6">
-                  <h2 className="font-cormorant text-2xl tracking-[0.1em]">
-                    Account Details
-                  </h2>
-                  {!isEditing && (
-                    <button 
-                      onClick={() => setIsEditing(true)}
-                      className="text-sm tracking-[0.1em] text-gold-600 hover:text-gold-700 hover:underline transition-colors"
-                    >
-                      EDIT
-                    </button>
-                  )}
+            {/* Membership Benefits */}
+            <div>
+              <h3 className="font-medium text-gray-900 mb-3">Your Benefits</h3>
+              <div className="space-y-2">
+                <div className="flex items-center space-x-3">
+                  <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-sm text-gray-600">Free delivery on orders over $150</span>
                 </div>
-
-                {updateMessage && (
-                  <div className={`mb-4 p-3 text-sm ${
-                    updateMessage.includes('success') 
-                      ? 'bg-green-50 text-green-600' 
-                      : 'bg-red-50 text-red-600'
-                  }`}>
-                    {updateMessage}
-                  </div>
-                )}
-
-                {isEditing ? (
-                  <form onSubmit={handleUpdate} className="space-y-4">
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs tracking-[0.1em] text-gray-600 mb-2">
-                          FIRST NAME
-                        </label>
-                        <input
-                          type="text"
-                          name="firstName"
-                          value={formData.firstName}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs tracking-[0.1em] text-gray-600 mb-2">
-                          LAST NAME
-                        </label>
-                        <input
-                          type="text"
-                          name="lastName"
-                          value={formData.lastName}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs tracking-[0.1em] text-gray-600 mb-2">
-                        EMAIL
-                      </label>
-                      <input
-                        type="email"
-                        value={customer?.email || ''}
-                        disabled
-                        className="w-full px-4 py-2 border border-gray-300 bg-gray-50"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs tracking-[0.1em] text-gray-600 mb-2">
-                        PHONE
-                      </label>
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
-                      />
-                    </div>
-
-                    <label className="flex items-center gap-2 text-sm">
-                      <input
-                        type="checkbox"
-                        name="acceptsMarketing"
-                        checked={formData.acceptsMarketing}
-                        onChange={handleInputChange}
-                        className="rounded border-gray-300 text-gold-600 focus:ring-gold-600"
-                      />
-                      <span className="tracking-[0.1em]">
-                        Receive exclusive offers and event updates
-                      </span>
-                    </label>
-
-                    <div className="flex gap-4 pt-4">
-                      <button
-                        type="submit"
-                        className="px-6 py-2 bg-gold-600 text-white text-sm tracking-[0.1em] hover:bg-gold-700 transition-colors rounded"
-                      >
-                        SAVE CHANGES
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setIsEditing(false)}
-                        className="px-6 py-2 border border-gray-300 text-sm tracking-[0.1em] hover:border-gray-400 hover:bg-gray-50 transition-colors rounded"
-                      >
-                        CANCEL
-                      </button>
-                    </div>
-                  </form>
-                ) : (
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-xs tracking-[0.1em] text-gray-600 mb-1">NAME</p>
-                      <p className="text-gray-900">
-                        {customer?.firstName || customer?.lastName 
-                          ? `${customer.firstName || ''} ${customer.lastName || ''}`.trim()
-                          : 'Not set'}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs tracking-[0.1em] text-gray-600 mb-1">EMAIL</p>
-                      <p className="text-gray-900">{customer?.email}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs tracking-[0.1em] text-gray-600 mb-1">PHONE</p>
-                      <p className="text-gray-900">{customer?.phone || 'Not set'}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs tracking-[0.1em] text-gray-600 mb-1">MARKETING PREFERENCES</p>
-                      <p className="text-gray-900">
-                        {customer?.acceptsMarketing 
-                          ? 'Subscribed to marketing emails' 
-                          : 'Not subscribed to marketing emails'}
-                      </p>
-                    </div>
-                  </div>
-                )}
+                <div className="flex items-center space-x-3">
+                  <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-sm text-gray-600">Express 3-hour delivery available</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-sm text-gray-600">Exclusive member discounts</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-sm text-gray-600">Priority event booking</span>
+                </div>
               </div>
+            </div>
+
+            {/* Contact Support */}
+            <div className="pt-4 border-t border-gray-100">
+              <p className="text-sm text-gray-600 mb-3">Need assistance?</p>
+              <Link href="/contact" className="inline-flex items-center space-x-2 text-gold-600 hover:text-gold-700">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                <span className="text-sm">Contact Support</span>
+              </Link>
             </div>
           </div>
         </div>
-      </main>
+      </div>
+
+      {/* Promotional Banner */}
+      <div className="mt-8 bg-gradient-to-r from-gold-600 to-gold-700 rounded-lg p-8 text-white">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-2xl font-cormorant mb-2">Planning an Event?</h3>
+            <p className="text-gold-100 mb-4">
+              Explore our premium event services for weddings, corporate events, and parties
+            </p>
+            <Link href="/services" className="inline-block px-6 py-2 bg-white text-gold-600 hover:bg-gold-50 transition-colors rounded">
+              EXPLORE SERVICES
+            </Link>
+          </div>
+          <div className="hidden md:block">
+            <svg className="w-32 h-32 text-gold-500 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M5 5v14a1 1 0 0 0 1 1h3v-2H7V6h2V4H6a1 1 0 0 0-1 1zm14.242-.97-8-2A1 1 0 0 0 10 3v18a.998.998 0 0 0 1.242.97l8-2A1 1 0 0 0 20 19V5a1 1 0 0 0-.758-.97zM15 12.188a1.001 1.001 0 0 1-2 0v-.377a1 1 0 1 1 2 .001v.376z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </AccountLayout>
   );
 }
