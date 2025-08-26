@@ -52,6 +52,14 @@ PartyOn Delivery is an alcohol delivery service in Austin, Texas. We've redesign
 4. **Database Integration** - Supabase support with fallback to in-memory
 5. **Age Verification** - Required for all participants
 
+### ✅ Latest Updates (Session: Dec 26, 2024)
+1. **Partner Program Page** - B2B partnerships with tiered benefits
+2. **Product Filtering Fixed** - Now uses actual Shopify collections and productTypes
+3. **Customer API Integration** - Full read/modify access tested and working
+4. **Loyalty Points System** - 4-tier system (Bronze/Silver/Gold/Platinum) with benefits
+5. **Complete Checkout Flow** - Full checkout page with forms, delivery scheduling, loyalty redemption
+6. **Product Categorization** - Proper mapping of Shopify data to UI categories
+
 ### 📋 Todo
 1. Configure Shopify Admin API access token
 2. Register webhooks with Shopify store
