@@ -49,7 +49,7 @@ const TIER_BENEFITS = {
   }
 };
 
-export default function LoyaltyPoints({ points, tier, lifetimeSpent, nextTierProgress }: LoyaltyPointsProps) {
+export default function LoyaltyPoints({ points, tier, lifetimeSpent }: LoyaltyPointsProps) {
   const tierInfo = TIER_BENEFITS[tier];
   const pointsToRedeem = Math.floor(points / 100) * 100; // Redeemable in increments of 100
   const redeemValue = pointsToRedeem / 10; // 100 points = $10

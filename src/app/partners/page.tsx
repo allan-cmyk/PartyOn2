@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { motion } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
@@ -560,8 +559,8 @@ export default function PartnersPage() {
                 ))}
               </div>
               <p className="text-gray-600 mb-4 italic">
-                "PartyOn transformed our resident events. The custom portal makes ordering effortless, 
-                and our residents love the exclusive access to premium selections."
+                &quot;PartyOn transformed our resident events. The custom portal makes ordering effortless, 
+                and our residents love the exclusive access to premium selections.&quot;
               </p>
               <div className="font-medium text-gray-900">Sarah Chen</div>
               <div className="text-sm text-gray-600">Luxury Property Manager</div>
@@ -581,8 +580,8 @@ export default function PartnersPage() {
                 ))}
               </div>
               <p className="text-gray-600 mb-4 italic">
-                "The partnership has elevated our wedding packages. Couples appreciate the 
-                sophisticated bar service and the seamless integration with our planning process."
+                &quot;The partnership has elevated our wedding packages. Couples appreciate the 
+                sophisticated bar service and the seamless integration with our planning process.&quot;
               </p>
               <div className="font-medium text-gray-900">Michael Torres</div>
               <div className="text-sm text-gray-600">Wedding Venue Director</div>
@@ -602,8 +601,8 @@ export default function PartnersPage() {
                 ))}
               </div>
               <p className="text-gray-600 mb-4 italic">
-                "Our corporate clients are impressed by the professional service and curated 
-                selections. It&apos;s become a key differentiator for our event offerings."
+                &quot;Our corporate clients are impressed by the professional service and curated 
+                selections. It&apos;s become a key differentiator for our event offerings.&quot;
               </p>
               <div className="font-medium text-gray-900">Jennifer Park</div>
               <div className="text-sm text-gray-600">Corporate Event Planner</div>

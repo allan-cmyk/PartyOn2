@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
@@ -12,8 +11,7 @@ import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
 import CustomerAuth from '@/components/CustomerAuth';
 
 export default function CheckoutPage() {
-  const router = useRouter();
-  const { cart, loading: cartLoading, checkoutUrl } = useCart();
+  const { cart, loading: cartLoading } = useCart();
   const { customer, isAuthenticated } = useCustomerContext();
   const { isInGroupOrder, currentGroupOrder, isHost } = useGroupOrderContext();
   
@@ -64,8 +62,11 @@ export default function CheckoutPage() {
   const tax = subtotal * 0.0825; // Texas sales tax
   
   // Calculate loyalty discount if applicable
-  const loyaltyDiscount = applyLoyaltyPoints && customer?.metafields ? 
-    Math.min(Math.floor((customer.metafields.find(m => m.key === 'points')?.value || 0) / 100) * 10, subtotal * 0.5) : 0;
+  const loyaltyPoints = customer?.metafields?.find(m => m.key === 'points')?.value;
+  const pointsValue = typeof loyaltyPoints === 'number' ? loyaltyPoints : 
+                      typeof loyaltyPoints === 'string' ? parseInt(loyaltyPoints, 10) : 0;
+  const loyaltyDiscount = applyLoyaltyPoints && pointsValue > 0 ? 
+    Math.min(Math.floor(pointsValue / 100) * 10, subtotal * 0.5) : 0;
   
   const total = subtotal + deliveryFee + tax - loyaltyDiscount;
 
@@ -91,9 +92,9 @@ export default function CheckoutPage() {
     }
 
     // For authenticated users, redirect to Shopify checkout
-    if (checkoutUrl) {
+    if (cart?.checkoutUrl) {
       // Add delivery notes to checkout attributes
-      const checkoutWithNotes = `${checkoutUrl}&attributes[delivery_date]=${deliveryDetails.date?.toISOString()}&attributes[delivery_time]=${deliveryDetails.time}&attributes[delivery_instructions]=${deliveryDetails.instructions}`;
+      const checkoutWithNotes = `${cart.checkoutUrl}&attributes[delivery_date]=${deliveryDetails.date?.toISOString()}&attributes[delivery_time]=${deliveryDetails.time}&attributes[delivery_instructions]=${deliveryDetails.instructions}`;
       
       if (isGroupCheckout && currentGroupOrder) {
         // Add group order info to checkout

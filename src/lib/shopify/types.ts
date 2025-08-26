@@ -150,6 +150,11 @@ export interface ShopifyCustomer {
       node: ShopifyOrder;
     }>;
   };
+  metafields?: Array<{
+    key: string;
+    value: string | number | boolean;
+    type?: string;
+  }>;
 }
 
 export interface ShopifyAddress {

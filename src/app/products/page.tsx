@@ -16,7 +16,7 @@ import { SEARCH_PRODUCTS_QUERY } from '@/lib/shopify/queries/products';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import AIConcierge from '@/components/AIConcierge';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { getProductCategory, FILTER_OPTIONS, getUniqueBrands } from '@/lib/shopify/categories';
+import { getProductCategory } from '@/lib/shopify/categories';
 
 function ProductsContent() {
   const searchParams = useSearchParams();
@@ -92,6 +92,7 @@ function ProductsContent() {
   };
 
   // Old categorization function - kept for fallback
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getProductCategoryFallback = (product: ShopifyProduct): string => {
     const title = product.title.toLowerCase();
     const type = product.productType?.toLowerCase() || '';
