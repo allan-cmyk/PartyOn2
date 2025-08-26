@@ -77,9 +77,9 @@ export default function Cart() {
           cartId: cart.id,
           discountCodes: [discountCode.trim().toUpperCase()]
         }
-      });
+      }) as any;
       
-      if (response.cartDiscountCodesUpdate?.userErrors?.length > 0) {
+      if (response?.cartDiscountCodesUpdate?.userErrors?.length > 0) {
         setDiscountError('Invalid discount code');
       } else {
         setDiscountCode('');
