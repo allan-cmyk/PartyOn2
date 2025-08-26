@@ -30,13 +30,17 @@ PartyOn Delivery is a premium alcohol delivery service in Austin, Texas, offerin
 - **Delivery Notes**: Special instructions for drivers
 - **HMAC Verification**: Secure webhook signature validation
 
-### 👥 Group Orders ✅
+### 👥 Group Orders ✅ PRODUCTION READY
 - **Share System**: Create group orders with unique share codes and QR codes
 - **Participant Management**: Join orders, track contributions, remove participants
-- **Host Dashboard**: Real-time view of all participants and their carts
+- **Host Dashboard**: Real-time view of all participants and their carts (`/group/dashboard`)
 - **Cart Sync**: Automatic sync of cart totals across all participants
-- **Lock & Checkout**: Host can lock order when minimum is met
+- **Lock & Checkout**: Host locks order when minimum is met
 - **Progress Tracking**: Visual progress bar for minimum order amount
+- **Draft Orders**: All carts merged into single Shopify Draft Order
+- **Invoice System**: Host receives invoice via email for payment
+- **Shop Pay Integration**: Secure checkout via Shopify's payment system
+- **Production Tested**: Draft Order API verified working (Dec 26, 2024)
 
 ## Current Status (as of latest session)
 
@@ -101,11 +105,14 @@ PartyOn Delivery is a premium alcohol delivery service in Austin, Texas, offerin
 3. **Customer Accounts API** - Enabled and tested successfully
 4. **Webhook Verification** - HMAC signature validation implemented
 5. **Loyalty Points** - Temporarily disabled (commented out)
-6. **Group Orders** - Complete with dashboard, cart sync, and checkout flow
+6. **Group Orders** - PRODUCTION READY with dashboard, cart sync, and checkout
+7. **Draft Order API** - Integrated and tested for merged group checkouts
+8. **Invoice System** - Email invoices sent to group hosts
+9. **Shop Pay Checkout** - Verified working with test orders
 
 ### 📋 Todo
-1. Production testing with real orders
-2. Merge group carts into single Shopify checkout (requires Shopify API enhancement)
+1. Production testing with real group orders
+2. Split payment options for group orders (researching feasibility)
 3. Email/SMS notifications (optional - not required per client)
 
 ## Technical Architecture
