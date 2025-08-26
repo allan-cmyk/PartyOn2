@@ -15,7 +15,7 @@ export default function Navigation() {
   const [isCartOpen, setIsCartOpen] = useState(false)
   
   const { cart } = useCartContext()
-  const { customer, logout } = useCustomerContext()
+  const { customer } = useCustomerContext()
   const pathname = usePathname()
   
   const cartItemCount = cart?.lines.reduce((total, line) => total + line.quantity, 0) || 0
