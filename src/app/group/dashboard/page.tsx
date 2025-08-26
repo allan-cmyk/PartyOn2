@@ -341,8 +341,10 @@ export default function GroupOrderDashboard() {
       {/* Share Modal */}
       {showShareModal && currentGroupOrder && (
         <ShareGroupOrder
-          groupOrder={currentGroupOrder}
+          isOpen={showShareModal}
           onClose={() => setShowShareModal(false)}
+          shareCode={currentGroupOrder.shareCode}
+          eventName={currentGroupOrder.name}
         />
       )}
     </div>

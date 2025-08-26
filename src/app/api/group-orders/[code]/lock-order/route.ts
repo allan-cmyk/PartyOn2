@@ -3,8 +3,9 @@ import { groupOrderStore } from '@/lib/group-orders/store'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { code: string } }
+  { params }: { params: Promise<{ code: string }> }
 ) {
+  const { code } = await params;
   try {
     const { hostCustomerId } = await request.json()
 
@@ -15,7 +16,7 @@ export async function POST(
       )
     }
 
-    const groupOrder = groupOrderStore.getOrderByCode(params.code)
+    const groupOrder = groupOrderStore.getOrderByCode(code)
     if (!groupOrder) {
       return NextResponse.json(
         { error: 'Group order not found' },
@@ -57,7 +58,7 @@ export async function POST(
     }
 
     // Lock the order
-    const lockedOrder = groupOrderStore.updateOrder(params.code, {
+    const lockedOrder = groupOrderStore.updateOrder(code, {
       status: 'locked' as const
     })
 
@@ -73,7 +74,7 @@ export async function POST(
       success: true,
       groupOrder: lockedOrder,
       nextStep: 'create_checkout',
-      checkoutUrl: `/group/checkout/${params.code}`
+      checkoutUrl: `/group/checkout/${code}`
     })
   } catch (error) {
     console.error('Error locking order:', error)

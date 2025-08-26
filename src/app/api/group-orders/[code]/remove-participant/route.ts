@@ -3,8 +3,9 @@ import { groupOrderStore } from '@/lib/group-orders/store'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { code: string } }
+  { params }: { params: Promise<{ code: string }> }
 ) {
+  const { code } = await params;
   try {
     const { participantId, hostCustomerId } = await request.json()
 
@@ -15,7 +16,7 @@ export async function POST(
       )
     }
 
-    const groupOrder = groupOrderStore.getOrderByCode(params.code)
+    const groupOrder = groupOrderStore.getOrderByCode(code)
     if (!groupOrder) {
       return NextResponse.json(
         { error: 'Group order not found' },
