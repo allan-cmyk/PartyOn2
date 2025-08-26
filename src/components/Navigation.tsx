@@ -12,9 +12,8 @@ export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isAuthOpen, setIsAuthOpen] = useState(false)
-  const [isCartOpen, setIsCartOpen] = useState(false)
   
-  const { cart } = useCartContext()
+  const { cart, openCart } = useCartContext()
   const { customer } = useCustomerContext()
   const pathname = usePathname()
   
@@ -102,7 +101,7 @@ export default function Navigation() {
           <div className="hidden lg:flex items-center space-x-3">
             {/* Cart Icon */}
             <button
-              onClick={() => setIsCartOpen(true)}
+              onClick={openCart}
               className={`relative p-2 transition-all duration-300 ${
                 isSolid ? 'text-gray-700 hover:text-gold-600' : 'text-white hover:text-gold-400'
               }`}
@@ -203,7 +202,7 @@ export default function Navigation() {
               <button
                 onClick={() => {
                   setIsMobileMenuOpen(false)
-                  setIsCartOpen(true)
+                  openCart()
                 }}
                 className="flex items-center justify-between w-full py-3 text-sm font-medium tracking-[0.15em] text-gray-700 hover:text-gold-600"
               >
@@ -243,8 +242,8 @@ export default function Navigation() {
         </div>
       </div>
       
-      {/* Cart Modal */}
-      <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      {/* Cart renders itself via context */}
+      <Cart />
       
       {/* Auth Modal */}
       <CustomerAuth isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
