@@ -85,9 +85,9 @@ export default function AccountPage() {
   }
 
   return (
-    <main className="min-h-screen pt-24 bg-gray-50">
+    <main className="min-h-screen pt-24 bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="max-w-7xl mx-auto px-8 md:px-12 py-12">
-          <h1 className="font-cormorant text-4xl tracking-[0.15em] text-center mb-12">
+          <h1 className="font-cormorant text-5xl tracking-[0.15em] text-center mb-12 text-gray-900">
             MY ACCOUNT
           </h1>
 

@@ -127,6 +127,14 @@ export interface ShopifyCart {
       currencyCode: string;
     };
   };
+  discountCodes?: Array<{
+    applicable: boolean;
+    code: string;
+  }>;
+  attributes?: Array<{
+    key: string;
+    value: string;
+  }>;
 }
 
 export interface ShopifyCustomer {

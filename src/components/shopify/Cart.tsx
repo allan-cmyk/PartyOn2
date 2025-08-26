@@ -11,14 +11,19 @@ import AIConcierge from '@/components/AIConcierge';
 import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
 import CreateGroupOrderModal from '@/components/group-orders/CreateGroupOrderModal';
 import ShareGroupOrder from '@/components/group-orders/ShareGroupOrder';
+import { shopifyFetch } from '@/lib/shopify/client';
+import { CART_DISCOUNT_CODES_UPDATE_MUTATION } from '@/lib/shopify/mutations/discount';
 
 export default function Cart() {
-  const { cart, isCartOpen, closeCart, loading, updateCartAttributes } = useCartContext();
+  const { cart, isCartOpen, closeCart, loading, updateCartAttributes, refreshCart } = useCartContext();
   const { currentGroupOrder, isInGroupOrder, isHost } = useGroupOrderContext();
   const [showDeliveryScheduler, setShowDeliveryScheduler] = useState(false);
   const [showCreateGroupOrder, setShowCreateGroupOrder] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [newGroupOrderCode, setNewGroupOrderCode] = useState('');
+  const [discountCode, setDiscountCode] = useState('');
+  const [isApplyingDiscount, setIsApplyingDiscount] = useState(false);
+  const [discountError, setDiscountError] = useState('');
 
   const subtotal = cart?.cost.subtotalAmount;
   const total = cart?.cost.totalAmount;
@@ -57,6 +62,54 @@ export default function Cart() {
     setNewGroupOrderCode(shareCode);
     setShowCreateGroupOrder(false);
     setShowShareModal(true);
+  };
+
+  const handleApplyDiscount = async () => {
+    if (!cart || !discountCode.trim()) return;
+    
+    setIsApplyingDiscount(true);
+    setDiscountError('');
+    
+    try {
+      const response = await shopifyFetch({
+        query: CART_DISCOUNT_CODES_UPDATE_MUTATION,
+        variables: {
+          cartId: cart.id,
+          discountCodes: [discountCode.trim().toUpperCase()]
+        }
+      });
+      
+      if (response.cartDiscountCodesUpdate?.userErrors?.length > 0) {
+        setDiscountError('Invalid discount code');
+      } else {
+        setDiscountCode('');
+        if (refreshCart) refreshCart();
+      }
+    } catch (error) {
+      setDiscountError('Failed to apply discount code');
+    } finally {
+      setIsApplyingDiscount(false);
+    }
+  };
+
+  const handleRemoveDiscount = async (code: string) => {
+    if (!cart) return;
+    
+    const currentCodes = cart.discountCodes?.filter(d => d.code !== code).map(d => d.code) || [];
+    
+    try {
+      await shopifyFetch({
+        query: CART_DISCOUNT_CODES_UPDATE_MUTATION,
+        variables: {
+          cartId: cart.id,
+          discountCodes: currentCodes
+        }
+      });
+      
+      if (refreshCart) refreshCart();
+    } catch (error) {
+      console.error('Failed to remove discount:', error);
+    }
   };
 
   return (
@@ -147,6 +200,50 @@ export default function Cart() {
                       )}
                     </div>
                   )}
+
+                  {/* Discount Code Section */}
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={discountCode}
+                        onChange={(e) => setDiscountCode(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleApplyDiscount()}
+                        placeholder="Discount code"
+                        disabled={isApplyingDiscount}
+                        className="flex-1 px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:border-gold-600"
+                      />
+                      <button
+                        onClick={handleApplyDiscount}
+                        disabled={isApplyingDiscount || !discountCode.trim()}
+                        className="px-4 py-2 bg-gray-900 text-white text-sm hover:bg-gold-600 transition-colors disabled:opacity-50"
+                      >
+                        {isApplyingDiscount ? 'APPLYING...' : 'APPLY'}
+                      </button>
+                    </div>
+                    
+                    {discountError && (
+                      <p className="text-red-600 text-xs">{discountError}</p>
+                    )}
+                    
+                    {cart?.discountCodes && cart.discountCodes.length > 0 && (
+                      <div className="space-y-1">
+                        {cart.discountCodes.map((discount) => (
+                          <div key={discount.code} className="flex items-center justify-between bg-green-50 px-3 py-2 rounded">
+                            <span className="text-sm text-green-700">
+                              {discount.code} {discount.applicable && '✓'}
+                            </span>
+                            <button
+                              onClick={() => handleRemoveDiscount(discount.code)}
+                              className="text-red-600 hover:text-red-700 text-sm"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
 
                   {/* Subtotal */}
                   <div className="flex justify-between text-sm">
