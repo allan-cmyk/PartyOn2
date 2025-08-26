@@ -85,7 +85,7 @@ export default function Cart() {
         setDiscountCode('');
         if (refreshCart) refreshCart();
       }
-    } catch (error) {
+    } catch {
       setDiscountError('Failed to apply discount code');
     } finally {
       setIsApplyingDiscount(false);
@@ -107,8 +107,8 @@ export default function Cart() {
       });
       
       if (refreshCart) refreshCart();
-    } catch (error) {
-      console.error('Failed to remove discount:', error);
+    } catch {
+      console.error('Failed to remove discount');
     }
   };
 
