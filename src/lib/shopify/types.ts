@@ -32,6 +32,14 @@ export interface ShopifyProduct {
     value: string;
     type: string;
   } | null;
+  collections?: {
+    edges: Array<{
+      node: {
+        handle: string;
+        title: string;
+      };
+    }>;
+  };
 }
 
 export interface ShopifyProductVariant {

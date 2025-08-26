@@ -16,6 +16,7 @@ import { SEARCH_PRODUCTS_QUERY } from '@/lib/shopify/queries/products';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import AIConcierge from '@/components/AIConcierge';
 import { useIsMobile } from '@/hooks/useIsMobile';
+import { getProductCategory, FILTER_OPTIONS, getUniqueBrands } from '@/lib/shopify/categories';
 
 function ProductsContent() {
   const searchParams = useSearchParams();
@@ -90,8 +91,8 @@ function ProductsContent() {
     return 'standard';
   };
 
-  // Helper function to categorize product type
-  const getProductCategory = (product: ShopifyProduct): string => {
+  // Old categorization function - kept for fallback
+  const getProductCategoryFallback = (product: ShopifyProduct): string => {
     const title = product.title.toLowerCase();
     const type = product.productType?.toLowerCase() || '';
     const tags = product.tags?.map(t => t.toLowerCase()) || [];
@@ -156,21 +157,28 @@ function ProductsContent() {
     const productTitle = product.title;
     const price = parseFloat(product.priceRange.minVariantPrice.amount);
     
-    // Main category filter
+    // Main category filter using proper Shopify data
     if (filter !== 'all') {
       const productCategory = getProductCategory(product);
-      if (filter === 'spirits' && !['vodka', 'tequila', 'whiskey', 'rum', 'gin', 'liqueur', 'cognac'].includes(productCategory)) return false;
-      if (filter === 'cocktail-kits' && productCategory !== 'kits') return false;
-      if (filter === 'beer' && productCategory !== 'beer') return false;
-      if (filter === 'wine' && productCategory !== 'wine') return false;
-      if (filter === 'non-alcoholic' && productCategory !== 'non-alcoholic') return false;
-      if (filter === 'party-supplies' && productCategory !== 'supplies') return false;
+      
+      // Map filter values to category keys
+      const filterMap: Record<string, string> = {
+        'spirits': 'spirits',
+        'wine': 'wine',
+        'beer': 'beer',
+        'mixers': 'mixers',
+        'party-supplies': 'partySupplies',
+        'liqueurs': 'liqueurs',
+        'non-alcoholic': 'mixers' // Non-alcoholic is part of mixers
+      };
+      
+      const expectedCategory = filterMap[filter];
+      if (expectedCategory && productCategory !== expectedCategory) return false;
     }
     
-    // Spirit type filter (only applicable for spirits)
+    // Spirit type filter (only applicable for spirits) - using productType
     if (spiritType !== 'all' && filter === 'spirits') {
-      const productCategory = getProductCategory(product);
-      if (spiritType !== productCategory) return false;
+      if (product.productType !== spiritType) return false;
     }
     
     // Bottle size filter

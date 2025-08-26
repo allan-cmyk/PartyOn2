@@ -58,6 +58,14 @@ export const PRODUCTS_QUERY = gql`
             value
             type
           }
+          collections(first: 5) {
+            edges {
+              node {
+                handle
+                title
+              }
+            }
+          }
         }
       }
       pageInfo {
@@ -240,6 +248,14 @@ export const SEARCH_PRODUCTS_QUERY = gql`
                   amount
                   currencyCode
                 }
+              }
+            }
+          }
+          collections(first: 5) {
+            edges {
+              node {
+                handle
+                title
               }
             }
           }
