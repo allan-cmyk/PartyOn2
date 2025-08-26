@@ -10,6 +10,19 @@ export const CUSTOMER_QUERY = `
       acceptsMarketing
       createdAt
       updatedAt
+      metafields(identifiers: [
+        {namespace: "loyalty", key: "points"},
+        {namespace: "loyalty", key: "tier"},
+        {namespace: "loyalty", key: "lifetime_spent"},
+        {namespace: "profile", key: "birthday"},
+        {namespace: "profile", key: "preferences"}
+      ]) {
+        id
+        namespace
+        key
+        value
+        type
+      }
       defaultAddress {
         id
         address1
