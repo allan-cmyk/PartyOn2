@@ -18,7 +18,7 @@ export default function Navigation() {
   const { customer } = useCustomerContext()
   const pathname = usePathname()
   
-  const cartItemCount = cart?.lines.reduce((total, line) => total + line.quantity, 0) || 0
+  const cartItemCount = cart?.lines.edges.reduce((total, edge) => total + edge.node.quantity, 0) || 0
   
   // Check if we're on a page that needs solid navigation
   const needsSolidNav = pathname.startsWith('/account') || 
