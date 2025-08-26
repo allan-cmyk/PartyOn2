@@ -78,10 +78,37 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    
+    // Format phone number as user types
+    if (name === 'phone') {
+      // Remove all non-digit characters
+      const digits = value.replace(/\D/g, '');
+      
+      // Format as (XXX) XXX-XXXX
+      let formatted = '';
+      if (digits.length > 0) {
+        if (digits.length <= 3) {
+          formatted = `(${digits}`;
+        } else if (digits.length <= 6) {
+          formatted = `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+        } else if (digits.length <= 10) {
+          formatted = `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+        } else {
+          // Don't allow more than 10 digits
+          formatted = `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+        }
+      }
+      
+      setFormData(prev => ({
+        ...prev,
+        phone: formatted
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value
+      }));
+    }
   };
 
   return (
@@ -143,6 +170,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                         value={formData.firstName}
                         onChange={handleInputChange}
                         placeholder="First Name"
+                        required
                         className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold-500"
                       />
                       <input
@@ -151,6 +179,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                         value={formData.lastName}
                         onChange={handleInputChange}
                         placeholder="Last Name"
+                        required
                         className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold-500"
                       />
                     </div>
@@ -159,7 +188,9 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      placeholder="Phone Number"
+                      placeholder="(XXX) XXX-XXXX"
+                      pattern="\([0-9]{3}\) [0-9]{3}-[0-9]{4}"
+                      title="Phone number format: (123) 456-7890"
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold-500"
                     />
                   </>
@@ -172,7 +203,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                   onChange={handleInputChange}
                   placeholder="Email Address"
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold-500"
                 />
 
                 {mode !== 'recover' && (
@@ -181,8 +212,9 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                     name="password"
                     value={formData.password}
                     onChange={handleInputChange}
-                    placeholder="Password"
+                    placeholder="Password (min. 5 characters)"
                     required
+                    minLength={5}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold-500"
                   />
                 )}

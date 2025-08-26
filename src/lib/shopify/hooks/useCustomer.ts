@@ -120,6 +120,9 @@ export function useCustomer(): UseCustomerReturn {
     setError(null);
     
     try {
+      // Trim and lowercase email
+      const cleanEmail = email.trim().toLowerCase();
+      
       const response = await shopifyFetch<{
         customerAccessTokenCreate: {
           customerAccessToken: CustomerAccessToken | null;
@@ -128,7 +131,7 @@ export function useCustomer(): UseCustomerReturn {
       }>({
         query: CUSTOMER_ACCESS_TOKEN_CREATE_MUTATION,
         variables: {
-          input: { email, password }
+          input: { email: cleanEmail, password }
         }
       });
       
@@ -183,6 +186,30 @@ export function useCustomer(): UseCustomerReturn {
     setError(null);
     
     try {
+      // Clean and format input data
+      const formattedInput = { ...input };
+      
+      // Trim whitespace from text fields
+      if (input.email) formattedInput.email = input.email.trim().toLowerCase();
+      if (input.firstName) formattedInput.firstName = input.firstName.trim();
+      if (input.lastName) formattedInput.lastName = input.lastName.trim();
+      
+      // Format phone number to E.164 if provided
+      if (input.phone) {
+        // Remove all non-digit characters
+        const digits = input.phone.replace(/\D/g, '');
+        
+        // Add US country code if not present
+        if (digits.length === 10) {
+          formattedInput.phone = `+1${digits}`;
+        } else if (digits.length === 11 && digits.startsWith('1')) {
+          formattedInput.phone = `+${digits}`;
+        } else if (!digits.startsWith('1')) {
+          // Assume it's already international format
+          formattedInput.phone = `+${digits}`;
+        }
+      }
+      
       const createResponse = await shopifyFetch<{
         customerCreate: {
           customer: ShopifyCustomer | null;
@@ -190,7 +217,7 @@ export function useCustomer(): UseCustomerReturn {
         };
       }>({
         query: CREATE_CUSTOMER_MUTATION,
-        variables: { input }
+        variables: { input: formattedInput }
       });
       
       const { customer: newCustomer, customerUserErrors: createErrors } = createResponse.customerCreate;
@@ -224,6 +251,29 @@ export function useCustomer(): UseCustomerReturn {
     setError(null);
     
     try {
+      // Clean and format input data
+      const formattedInput = { ...input };
+      
+      // Trim whitespace from text fields
+      if (input.firstName) formattedInput.firstName = input.firstName.trim();
+      if (input.lastName) formattedInput.lastName = input.lastName.trim();
+      
+      // Format phone number to E.164 if provided
+      if (input.phone) {
+        // Remove all non-digit characters
+        const digits = input.phone.replace(/\D/g, '');
+        
+        // Add US country code if not present
+        if (digits.length === 10) {
+          formattedInput.phone = `+1${digits}`;
+        } else if (digits.length === 11 && digits.startsWith('1')) {
+          formattedInput.phone = `+${digits}`;
+        } else if (!digits.startsWith('1')) {
+          // Assume it's already international format
+          formattedInput.phone = `+${digits}`;
+        }
+      }
+      
       const response = await shopifyFetch<{
         customerUpdate: {
           customer: ShopifyCustomer | null;
@@ -234,7 +284,7 @@ export function useCustomer(): UseCustomerReturn {
         query: CUSTOMER_UPDATE_MUTATION,
         variables: {
           customerAccessToken: token,
-          customer: input
+          customer: formattedInput
         }
       });
       
