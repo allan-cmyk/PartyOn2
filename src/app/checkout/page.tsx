@@ -61,14 +61,10 @@ export default function CheckoutPage() {
   const deliveryFee = deliveryDetails?.isExpress ? 50 : 25;
   const tax = subtotal * 0.0825; // Texas sales tax
   
-  // Calculate loyalty discount if applicable
-  const loyaltyPoints = customer?.metafields?.find(m => m.key === 'points')?.value;
-  const pointsValue = typeof loyaltyPoints === 'number' ? loyaltyPoints : 
-                      typeof loyaltyPoints === 'string' ? parseInt(loyaltyPoints, 10) : 0;
-  const loyaltyDiscount = applyLoyaltyPoints && pointsValue > 0 ? 
-    Math.min(Math.floor(pointsValue / 100) * 10, subtotal * 0.5) : 0;
+  // Loyalty points disabled for now
+  const loyaltyDiscount = 0;
   
-  const total = subtotal + deliveryFee + tax - loyaltyDiscount;
+  const total = subtotal + deliveryFee + tax;
 
   // Check if this is a group order checkout
   const isGroupCheckout = isInGroupOrder && isHost;
@@ -375,8 +371,8 @@ export default function CheckoutPage() {
                     <span>${tax.toFixed(2)}</span>
                   </div>
                   
-                  {/* Loyalty Points */}
-                  {isAuthenticated && customer?.metafields && (
+                  {/* Loyalty Points - Disabled for now */}
+                  {/* {isAuthenticated && customer?.metafields && (
                     <div className="pt-2 border-t">
                       <label className="flex items-center justify-between cursor-pointer">
                         <span className="text-sm">Apply Loyalty Points</span>
@@ -393,7 +389,7 @@ export default function CheckoutPage() {
                         </p>
                       )}
                     </div>
-                  )}
+                  )} */}
                   
                   <div className="flex justify-between font-medium text-lg pt-4 border-t">
                     <span>Total</span>

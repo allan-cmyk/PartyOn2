@@ -13,6 +13,7 @@
     "@shopify/buy-button-js": "^3.0.5",
     "@supabase/supabase-js": "^2.56.0",
     "date-fns": "^4.1.0",
+    "dotenv": "^17.2.1",
     "framer-motion": "^12.23.12",
     "graphql": "^16.11.0",
     "graphql-request": "^7.2.0",

@@ -60,14 +60,19 @@ PartyOn Delivery is an alcohol delivery service in Austin, Texas. We've redesign
 5. **Complete Checkout Flow** - Full checkout page with forms, delivery scheduling, loyalty redemption
 6. **Product Categorization** - Proper mapping of Shopify data to UI categories
 
+### ✅ Completed (Dec 26, 2024 - Latest Session)
+1. **Shopify Admin API** - Configured and working
+2. **Webhook Registration** - All 6 webhooks registered and verified
+3. **Customer Accounts API** - Enabled and tested successfully
+4. **Webhook Verification** - HMAC signature validation implemented
+5. **Loyalty Points** - Temporarily disabled (commented out)
+
 ### 📋 Todo
-1. Configure Shopify Admin API access token
-2. Register webhooks with Shopify store
-3. Email notifications for order updates
-4. SMS notifications for delivery updates
-5. Enable Customer Account API in Shopify (currently not enabled)
-6. Complete group order host dashboard
-7. Implement group checkout process
+1. Email notifications for order updates (SendGrid/Resend)
+2. SMS notifications for delivery updates (Twilio)
+3. Complete group order host dashboard
+4. Implement group checkout process
+5. Production testing with real orders
 
 ## Technical Stack
 - Next.js 15.3.5 with TypeScript
@@ -80,10 +85,17 @@ PartyOn Delivery is an alcohol delivery service in Austin, Texas. We've redesign
 
 ## Environment Variables
 ```env
+# Shopify Configuration
 NEXT_PUBLIC_SHOPIFY_DOMAIN=premier-concierge.myshopify.com
 NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN=[configured]
 SHOPIFY_API_KEY=[configured]
 SHOPIFY_API_SECRET_KEY=[configured]
+SHOPIFY_ADMIN_ACCESS_TOKEN=[configured]
+SHOPIFY_WEBHOOK_SECRET=[configured]
+NEXT_PUBLIC_APP_URL=https://party-on-delivery.vercel.app
+
+# AI Configuration
+OPENROUTER_API_KEY=[configured]
 ```
 
 ## Key Design Principles

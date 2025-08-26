@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import crypto from 'crypto';
+import { 
+  verifyWebhookSignature, 
+  getWebhookHeaders, 
+  validateWebhookDomain 
+} from '@/lib/shopify/webhook-verification';
 
 // Shopify webhook topics we handle
 const WEBHOOK_TOPICS = {
@@ -12,31 +16,23 @@ const WEBHOOK_TOPICS = {
   CUSTOMERS_UPDATE: 'customers/update'
 };
 
-// Verify webhook signature
-function verifyWebhookSignature(
-  rawBody: string,
-  signature: string | null,
-  secret: string
-): boolean {
-  if (!signature) return false;
-  
-  const hash = crypto
-    .createHmac('sha256', secret)
-    .update(rawBody, 'utf8')
-    .digest('base64');
-  
-  return hash === signature;
-}
-
 export async function POST(request: NextRequest) {
   try {
-    // Get webhook topic and signature
-    const topic = request.headers.get('x-shopify-topic');
-    const signature = request.headers.get('x-shopify-hmac-sha256');
-    const shopDomain = request.headers.get('x-shopify-shop-domain');
+    // Get webhook headers
+    const headers = getWebhookHeaders(request.headers);
+    const { topic, domain, signature, webhookId } = headers;
     
     // Get raw body for signature verification
     const rawBody = await request.text();
+    
+    // Verify webhook domain matches our store
+    if (!validateWebhookDomain(domain)) {
+      console.error(`Invalid webhook domain: ${domain}`);
+      return NextResponse.json(
+        { error: 'Invalid shop domain' },
+        { status: 401 }
+      );
+    }
     
     // Verify webhook is from Shopify
     const webhookSecret = process.env.SHOPIFY_WEBHOOK_SECRET;
@@ -61,7 +57,7 @@ export async function POST(request: NextRequest) {
     const data = JSON.parse(rawBody);
     
     // Log webhook receipt
-    console.log(`Received webhook: ${topic} from ${shopDomain}`);
+    console.log(`Received webhook: ${topic} from ${domain} (ID: ${webhookId})`);
     
     // Handle different webhook topics
     switch (topic) {
