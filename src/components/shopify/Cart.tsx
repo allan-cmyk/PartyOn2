@@ -15,7 +15,7 @@ import { shopifyFetch } from '@/lib/shopify/client';
 import { CART_DISCOUNT_CODES_UPDATE_MUTATION } from '@/lib/shopify/mutations/discount';
 
 export default function Cart() {
-  const { cart, isCartOpen, closeCart, loading, updateCartAttributes, refreshCart } = useCartContext();
+  const { cart, isCartOpen, closeCart, loading, updateCartAttributes } = useCartContext();
   const { currentGroupOrder, isInGroupOrder, isHost } = useGroupOrderContext();
   const [showDeliveryScheduler, setShowDeliveryScheduler] = useState(false);
   const [showCreateGroupOrder, setShowCreateGroupOrder] = useState(false);
@@ -83,7 +83,7 @@ export default function Cart() {
         setDiscountError('Invalid discount code');
       } else {
         setDiscountCode('');
-        if (refreshCart) refreshCart();
+        // Cart will auto-refresh via context
       }
     } catch {
       setDiscountError('Failed to apply discount code');
@@ -106,7 +106,7 @@ export default function Cart() {
         }
       });
       
-      if (refreshCart) refreshCart();
+      // Cart will auto-refresh via context
     } catch {
       console.error('Failed to remove discount');
     }
