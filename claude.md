@@ -1,7 +1,42 @@
-# PartyOn Delivery - Old-Fashioned Theme Redesign
+# PartyOn Delivery - Premium Alcohol Delivery Platform
 
 ## Project Overview
-PartyOn Delivery is an alcohol delivery service in Austin, Texas. We've redesigned the site with an elegant, old-fashioned luxury theme and integrated it with Shopify for e-commerce functionality.
+PartyOn Delivery is a premium alcohol delivery service in Austin, Texas, offering scheduled deliveries for events, parties, and special occasions. The platform features an elegant, luxury design aesthetic and is fully integrated with Shopify for e-commerce operations.
+
+## Core Features
+
+### 🛒 E-Commerce Platform
+- **Shopify Integration**: Full Storefront API integration for products, cart, and checkout
+- **Product Management**: Dynamic product display with categories and filtering
+- **Cart System**: Persistent shopping cart with add/remove/update functionality
+- **Checkout Flow**: Complete checkout with delivery scheduling and address validation
+
+### 👥 Customer System
+- **Authentication**: Shopify Customer Accounts API for login/signup
+- **Account Dashboard**: View orders, manage addresses, track history
+- **Age Verification**: Required modal for alcohol purchases
+- **Loyalty Points**: (Built but temporarily disabled)
+
+### 📦 Delivery System
+- **Scheduled Delivery**: 72-hour advance booking requirement
+- **Express Delivery**: 3-hour express option for premium fee
+- **Zone Coverage**: Austin area with zip code validation
+- **Time Slots**: Available delivery windows with capacity management
+- **Minimum Orders**: $100-150 depending on delivery zone
+
+### 🔔 Order Processing
+- **Webhook System**: Real-time order updates from Shopify
+- **Order Tracking**: Customer order history and status updates
+- **Delivery Notes**: Special instructions for drivers
+- **HMAC Verification**: Secure webhook signature validation
+
+### 👥 Group Orders ✅
+- **Share System**: Create group orders with unique share codes and QR codes
+- **Participant Management**: Join orders, track contributions, remove participants
+- **Host Dashboard**: Real-time view of all participants and their carts
+- **Cart Sync**: Automatic sync of cart totals across all participants
+- **Lock & Checkout**: Host can lock order when minimum is met
+- **Progress Tracking**: Visual progress bar for minimum order amount
 
 ## Current Status (as of latest session)
 
@@ -66,22 +101,35 @@ PartyOn Delivery is an alcohol delivery service in Austin, Texas. We've redesign
 3. **Customer Accounts API** - Enabled and tested successfully
 4. **Webhook Verification** - HMAC signature validation implemented
 5. **Loyalty Points** - Temporarily disabled (commented out)
+6. **Group Orders** - Complete with dashboard, cart sync, and checkout flow
 
 ### 📋 Todo
-1. Email notifications for order updates (SendGrid/Resend)
-2. SMS notifications for delivery updates (Twilio)
-3. Complete group order host dashboard
-4. Implement group checkout process
-5. Production testing with real orders
+1. Production testing with real orders
+2. Merge group carts into single Shopify checkout (requires Shopify API enhancement)
+3. Email/SMS notifications (optional - not required per client)
 
-## Technical Stack
-- Next.js 15.3.5 with TypeScript
-- Tailwind CSS
-- Framer Motion for animations
-- Shopify Storefront API
-- GraphQL with graphql-request
-- Supabase for group orders (optional)
-- SWR for data fetching
+## Technical Architecture
+
+### Frontend Stack
+- **Framework**: Next.js 15.3.5 with TypeScript
+- **Styling**: Tailwind CSS with custom luxury theme
+- **Animations**: Framer Motion for smooth transitions
+- **State Management**: React Context API for cart, customer, and group orders
+- **Data Fetching**: SWR for caching and revalidation
+
+### Backend Integration
+- **E-Commerce**: Shopify Storefront API (GraphQL)
+- **Admin Operations**: Shopify Admin API for webhooks
+- **Authentication**: Shopify Customer Accounts API
+- **Database**: Supabase (optional) with in-memory fallback
+- **Webhooks**: HMAC-verified POST endpoints
+
+### Key Integrations
+1. **Shopify Storefront API**: Product catalog, cart, checkout
+2. **Shopify Admin API**: Webhook registration, order management
+3. **Customer API**: Authentication, account management
+4. **Webhook System**: Order and customer event processing
+5. **Group Orders**: Custom API with share codes
 
 ## Environment Variables
 ```env

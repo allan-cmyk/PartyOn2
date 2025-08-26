@@ -2,12 +2,16 @@
 
 import React from 'react';
 import { useIsMobile } from '@/hooks/useIsMobile';
+import { useGroupCartSync } from '@/hooks/useGroupCartSync';
 import Cart from '@/components/shopify/Cart';
 import MobileCart from '@/components/mobile/MobileCart';
 import MobileNavigation from '@/components/mobile/MobileNavigation';
 
 export default function ClientLayoutWrapper({ children }: { children: React.ReactNode }) {
   const isMobile = useIsMobile();
+  
+  // Sync cart totals with group order if in a group
+  useGroupCartSync();
   
   return (
     <>

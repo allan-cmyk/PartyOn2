@@ -47,6 +47,33 @@ class GroupOrderStore {
     return participant
   }
 
+  updateParticipantCart(orderId: string, cartId: string, cartTotal: number, itemCount: number) {
+    const order = this.getOrderById(orderId)
+    if (!order) return null
+    
+    const participant = order.participants.find(p => p.cartId === cartId)
+    if (!participant) return null
+    
+    participant.cartTotal = cartTotal
+    participant.itemCount = itemCount
+    order.updatedAt = new Date().toISOString()
+    
+    return participant
+  }
+
+  removeParticipant(orderId: string, participantId: string) {
+    const order = this.getOrderById(orderId)
+    if (!order) return null
+    
+    const index = order.participants.findIndex(p => p.id === participantId)
+    if (index === -1) return false
+    
+    order.participants[index].status = 'removed'
+    order.updatedAt = new Date().toISOString()
+    
+    return true
+  }
+
   getOrdersByHostId(hostCustomerId: string) {
     const hostOrders: GroupOrder[] = []
     for (const order of this.orders.values()) {

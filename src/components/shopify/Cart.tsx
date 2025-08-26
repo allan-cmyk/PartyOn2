@@ -14,7 +14,7 @@ import ShareGroupOrder from '@/components/group-orders/ShareGroupOrder';
 
 export default function Cart() {
   const { cart, isCartOpen, closeCart, loading, updateCartAttributes } = useCartContext();
-  const { currentGroupOrder, isInGroupOrder } = useGroupOrderContext();
+  const { currentGroupOrder, isInGroupOrder, isHost } = useGroupOrderContext();
   const [showDeliveryScheduler, setShowDeliveryScheduler] = useState(false);
   const [showCreateGroupOrder, setShowCreateGroupOrder] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
@@ -138,6 +138,13 @@ export default function Cart() {
                       <p className="text-xs text-gray-500 mt-1">
                         Delivery: {new Date(currentGroupOrder.deliveryDate).toLocaleDateString()} at {currentGroupOrder.deliveryTime}
                       </p>
+                      {isHost && (
+                        <Link href="/group/dashboard" onClick={closeCart}>
+                          <button className="mt-2 text-xs text-gold-600 hover:text-gold-700 underline">
+                            View Dashboard →
+                          </button>
+                        </Link>
+                      )}
                     </div>
                   )}
 
