@@ -158,6 +158,7 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
               
               <NavLink href="/products" isScrolled={isScrolled}>PRODUCTS</NavLink>
               <NavLink href="/contact" isScrolled={isScrolled}>CONTACT</NavLink>
+              <NavLink href="/partners" isScrolled={isScrolled}>PARTNERS</NavLink>
               
               {/* Search */}
               <ProductSearch isScrolled={isScrolled} />
@@ -306,6 +307,9 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
                 </Link>
                 <Link href="/contact" className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors" onClick={() => setIsMenuOpen(false)}>
                   CONTACT
+                </Link>
+                <Link href="/partners" className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors" onClick={() => setIsMenuOpen(false)}>
+                  PARTNERS
                 </Link>
                 
                 <Link href="/order" onClick={() => setIsMenuOpen(false)}>
