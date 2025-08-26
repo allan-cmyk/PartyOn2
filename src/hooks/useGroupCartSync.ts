@@ -9,7 +9,7 @@ import { useGroupOrderContext } from '@/contexts/GroupOrderContext'
  */
 export function useGroupCartSync() {
   const { cart } = useCartContext()
-  const { currentGroupOrder, groupOrderCode, isInGroupOrder } = useGroupOrderContext()
+  const { groupOrderCode, isInGroupOrder } = useGroupOrderContext()
   
   useEffect(() => {
     if (!isInGroupOrder || !groupOrderCode || !cart) return
@@ -45,5 +45,6 @@ export function useGroupCartSync() {
     const timer = setTimeout(updateCartTotals, 1000)
     
     return () => clearTimeout(timer)
-  }, [cart?.totalQuantity, cart?.cost.subtotalAmount.amount, isInGroupOrder, groupOrderCode])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cart?.totalQuantity, cart?.cost.subtotalAmount.amount, cart?.id, isInGroupOrder, groupOrderCode])
 }

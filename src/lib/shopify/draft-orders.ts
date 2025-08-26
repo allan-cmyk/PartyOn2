@@ -63,23 +63,23 @@ const DRAFT_ORDER_MUTATION = `
   }
 `;
 
-const DRAFT_ORDER_COMPLETE_MUTATION = `
-  mutation draftOrderComplete($id: ID!) {
-    draftOrderComplete(draftOrderId: $id) {
-      draftOrder {
-        id
-        order {
-          id
-          name
-        }
-      }
-      userErrors {
-        field
-        message
-      }
-    }
-  }
-`;
+// const DRAFT_ORDER_COMPLETE_MUTATION = `
+//   mutation draftOrderComplete($id: ID!) {
+//     draftOrderComplete(draftOrderId: $id) {
+//       draftOrder {
+//         id
+//         order {
+//           id
+//           name
+//         }
+//       }
+//       userErrors {
+//         field
+//         message
+//       }
+//     }
+//   }
+// `;
 
 const DRAFT_ORDER_INVOICE_SEND = `
   mutation draftOrderInvoiceSend($id: ID!, $email: EmailInput!) {
@@ -197,13 +197,28 @@ export async function sendDraftOrderInvoice(
 /**
  * Create a draft order from multiple carts (for group orders)
  */
+interface CartLine {
+  id: string;
+  quantity: number;
+  merchandise: {
+    id: string;
+  };
+}
+
 export async function createGroupDraftOrder(
-  carts: Array<{ id: string; lines: any[] }>,
+  carts: Array<{ id: string; lines: CartLine[] }>,
   groupOrderDetails: {
     hostEmail: string;
     hostPhone?: string;
     hostCustomerId?: string;
-    deliveryAddress: any;
+    deliveryAddress: {
+      address1: string;
+      address2?: string;
+      city: string;
+      province: string;
+      zip: string;
+      country: string;
+    };
     deliveryDate: string;
     deliveryTime: string;
     groupName: string;

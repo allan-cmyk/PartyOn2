@@ -37,7 +37,7 @@ export default function CheckoutPage() {
     country: 'US'
   });
 
-  const [applyLoyaltyPoints, setApplyLoyaltyPoints] = useState(false);
+  // const [applyLoyaltyPoints, setApplyLoyaltyPoints] = useState(false); // Disabled for now
   const [acceptTerms, setAcceptTerms] = useState(false);
 
   // Initialize form with customer data
@@ -62,7 +62,7 @@ export default function CheckoutPage() {
   const tax = subtotal * 0.0825; // Texas sales tax
   
   // Loyalty points disabled for now
-  const loyaltyDiscount = 0;
+  // const loyaltyDiscount = 0;
   
   const total = subtotal + deliveryFee + tax;
 

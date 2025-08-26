@@ -44,8 +44,9 @@ const GET_CART_QUERY = `
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { code: string } }
+  { params }: { params: Promise<{ code: string }> }
 ) {
+  const { code } = await params;
   try {
     const { hostCustomerId, hostEmail, hostPhone } = await request.json();
 
@@ -57,7 +58,7 @@ export async function POST(
     }
 
     // Get the group order
-    const groupOrder = groupOrderStore.getOrderByCode(params.code);
+    const groupOrder = groupOrderStore.getOrderByCode(code);
     if (!groupOrder) {
       return NextResponse.json(
         { error: 'Group order not found' },
@@ -89,7 +90,10 @@ export async function POST(
       if (!participant.cartId || participant.cartTotal === 0) continue;
       
       try {
-        const cartResponse = await shopifyFetch<{ cart: any }>({
+        const cartResponse = await shopifyFetch<{ cart: {
+          id: string;
+          lines: { edges: Array<{ node: { id: string; quantity: number; merchandise: { id: string } } }> };
+        } }>({
           query: GET_CART_QUERY,
           variables: { cartId: participant.cartId },
         });
@@ -97,7 +101,7 @@ export async function POST(
         if (cartResponse.cart) {
           participantCarts.push({
             id: participant.cartId,
-            lines: cartResponse.cart.lines.edges.map((e: any) => e.node),
+            lines: cartResponse.cart.lines.edges.map((e) => e.node),
             participantName: participant.guestName || 'Guest',
           });
         }
@@ -142,7 +146,7 @@ Click the link below to complete your order.`
     }
 
     // Update group order status to completed
-    groupOrderStore.updateOrder(params.code, {
+    groupOrderStore.updateOrder(code, {
       status: 'completed' as const,
     });
 

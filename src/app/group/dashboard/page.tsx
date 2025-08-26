@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useGroupOrderContext } from '@/contexts/GroupOrderContext'
 import { useCartContext } from '@/contexts/CartContext'
-import { formatPrice } from '@/lib/shopify/utils'
+// import { formatPrice } from '@/lib/shopify/utils' // Not used currently
 import ShareGroupOrder from '@/components/group-orders/ShareGroupOrder'
 
 export default function GroupOrderDashboard() {

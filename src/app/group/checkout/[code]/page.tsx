@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { useGroupOrder } from '@/lib/group-orders/hooks'
-import { formatPrice } from '@/lib/shopify/utils'
+// import { formatPrice } from '@/lib/shopify/utils' // Not used currently
 
 export default function GroupCheckoutPage() {
   const params = useParams()
@@ -197,7 +197,7 @@ export default function GroupCheckoutPage() {
           <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
             <h2 className="text-xl font-cormorant mb-4">Billing Information</h2>
             <p className="text-sm text-gray-600 mb-4">
-              As the host, you'll receive the invoice for the entire group order.
+              As the host, you&apos;ll receive the invoice for the entire group order.
             </p>
             
             <div className="space-y-4">
@@ -275,7 +275,7 @@ export default function GroupCheckoutPage() {
                 <svg className="w-4 h-4 text-gold-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                You'll receive an invoice via email with a secure payment link
+                You&apos;ll receive an invoice via email with a secure payment link
               </li>
               <li className="flex items-start">
                 <svg className="w-4 h-4 text-gold-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
