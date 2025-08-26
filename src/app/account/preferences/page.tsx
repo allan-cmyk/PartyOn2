@@ -66,7 +66,7 @@ export default function PreferencesPage() {
       } else if (result.errors) {
         setUpdateMessage(result.errors[0].message);
       }
-    } catch (error) {
+    } catch {
       setUpdateMessage('Failed to update preferences');
     } finally {
       setIsLoading(false);
