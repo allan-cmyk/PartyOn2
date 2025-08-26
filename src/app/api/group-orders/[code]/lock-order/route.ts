@@ -68,15 +68,12 @@ export async function POST(
       )
     }
 
-    // TODO: In production, you would:
-    // 1. Create a merged Shopify checkout with all participant carts
-    // 2. Apply the group delivery details
-    // 3. Return a checkout URL
-
+    // Return the locked order - checkout creation will be a separate step
     return NextResponse.json({
       success: true,
       groupOrder: lockedOrder,
-      checkoutUrl: `/checkout?group=${params.code}` // Temporary - would be Shopify checkout URL
+      nextStep: 'create_checkout',
+      checkoutUrl: `/group/checkout/${params.code}`
     })
   } catch (error) {
     console.error('Error locking order:', error)
