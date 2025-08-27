@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
-import Navigation from '@/components/Navigation';
+import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import ProductCard from '@/components/shopify/ProductCard';
 import CompactProductCard from '@/components/shopify/CompactProductCard';
 import MobileProductCard from '@/components/mobile/MobileProductCard';
@@ -255,7 +255,7 @@ function ProductsContent() {
   if (error) {
     return (
       <div className="bg-white min-h-screen">
-        <Navigation />
+        <OldFashionedNavigation />
         <div className="max-w-7xl mx-auto px-8 py-16">
           <div className="bg-red-50 border border-red-200 p-6 rounded">
             <h2 className="text-red-800 font-serif text-xl mb-2">Error Loading Products</h2>
@@ -268,7 +268,7 @@ function ProductsContent() {
 
   return (
     <div className="bg-white min-h-screen">
-      <Navigation />
+      <OldFashionedNavigation />
       
       {/* Hero Section */}
       <section className="relative h-[40vh] mt-24 flex items-center justify-center overflow-hidden">
@@ -704,7 +704,7 @@ export default function ProductsPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-white">
-        <Navigation />
+        <OldFashionedNavigation />
         <div className="pt-32 pb-16 text-center">
           <div className="animate-pulse">
             <div className="h-8 w-48 bg-gray-200 mx-auto rounded"></div>
