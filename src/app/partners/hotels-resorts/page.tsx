@@ -3,435 +3,893 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import OldFashionedNavigation from '@/components/OldFashionedNavigation'
+import Footer from '@/components/Footer'
 import { motion } from 'framer-motion'
-import { useProducts } from '@/lib/shopify/hooks/useProducts'
-import CompactProductCard from '@/components/shopify/CompactProductCard'
+import Link from 'next/link'
 
 export default function HotelsResortsPartnerPage() {
-  const [selectedCategory, setSelectedCategory] = useState('welcome')
-  const [roomNumber, setRoomNumber] = useState('')
-  const [guestName, setGuestName] = useState('')
-  const [deliveryTime, setDeliveryTime] = useState('asap')
-  const [showOrderForm, setShowOrderForm] = useState(false)
-  
-  const { products, loading } = useProducts()
+  const [activeTab, setActiveTab] = useState('overview')
+  const [formData, setFormData] = useState({
+    hotelName: '',
+    contactName: '',
+    email: '',
+    phone: '',
+    numberOfRooms: '',
+    currentProvider: '',
+    monthlyVolume: '',
+    interests: [] as string[]
+  })
 
-  // Auto-verify age for B2B partner ordering
+  // Auto-verify age for B2B partner pages
   useEffect(() => {
     localStorage.setItem('age_verified', 'true')
   }, [])
 
-  // Filter products by category for hotel context
-  const getCategoryProducts = () => {
-    if (!products) return []
-    
-    switch(selectedCategory) {
-      case 'welcome':
-        // Champagne and premium wines for welcome packages
-        return products.filter(p => 
-          p.productType?.toLowerCase().includes('champagne') ||
-          p.productType?.toLowerCase().includes('wine') ||
-          p.title.toLowerCase().includes('champagne') ||
-          p.title.toLowerCase().includes('prosecco')
-        ).slice(0, 6)
-      
-      case 'minibar':
-        // Variety of spirits and mixers
-        return products.filter(p => 
-          p.productType?.toLowerCase().includes('vodka') ||
-          p.productType?.toLowerCase().includes('whiskey') ||
-          p.productType?.toLowerCase().includes('gin') ||
-          p.productType?.toLowerCase().includes('rum') ||
-          p.title.toLowerCase().includes('mixer')
-        ).slice(0, 8)
-      
-      case 'events':
-        // Premium spirits and champagnes for events
-        return products.filter(p => 
-          parseFloat(p.priceRange.minVariantPrice.amount) > 50 ||
-          p.productType?.toLowerCase().includes('champagne') ||
-          p.productType?.toLowerCase().includes('cognac')
-        ).slice(0, 6)
-      
-      case 'poolside':
-        // Seltzers, beers, and refreshing cocktails
-        return products.filter(p => 
-          p.productType?.toLowerCase().includes('seltzer') ||
-          p.productType?.toLowerCase().includes('beer') ||
-          p.productType?.toLowerCase().includes('tequila') ||
-          p.title.toLowerCase().includes('margarita')
-        ).slice(0, 8)
-      
-      default:
-        return products.slice(0, 8)
-    }
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
   }
 
-  const categoryProducts = getCategoryProducts()
+  const handleInterestToggle = (interest: string) => {
+    setFormData(prev => ({
+      ...prev,
+      interests: prev.interests.includes(interest)
+        ? prev.interests.filter(i => i !== interest)
+        : [...prev.interests, interest]
+    }))
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log('Partner inquiry submitted:', formData)
+    // Handle form submission
+  }
 
   return (
     <div className="bg-white min-h-screen">
       <OldFashionedNavigation />
       
-      {/* Hotel Partner Header */}
-      <section className="relative h-[40vh] flex items-center justify-center overflow-hidden">
+      {/* Hero Section with Value Proposition */}
+      <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
         <Image
           src="/images/backgrounds/rooftop-terrace-elegant-1.webp"
-          alt="The Grand Austin Hotel"
+          alt="Luxury Hotel Bar Service"
           fill
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent" />
         
-        <div className="relative z-10 text-center max-w-4xl mx-auto px-8">
+        <div className="relative z-10 max-w-7xl mx-auto px-8 grid md:grid-cols-2 gap-12">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="flex items-center justify-center mb-4">
-              <div className="w-20 h-px bg-gold-500" />
-              <span className="mx-3 text-gold-500 text-xs tracking-[0.2em]">WELCOME TO</span>
-              <div className="w-20 h-px bg-gold-500" />
+            <div className="mb-6">
+              <span className="text-gold-500 text-sm tracking-[0.2em]">HOSPITALITY PARTNERSHIP</span>
             </div>
             
-            <h1 className="font-cormorant text-5xl md:text-6xl text-white mb-3 tracking-[0.1em]">
-              THE GRAND AUSTIN
+            <h1 className="font-cormorant text-5xl md:text-6xl text-white mb-6 tracking-[0.05em]">
+              Elevate Your Guest Experience with Premium Beverage Services
             </h1>
-            <p className="text-lg text-gray-200 mb-6">
-              Luxury Spirits & Wine Delivered to Your Suite
+            
+            <p className="text-xl text-gray-200 mb-8 leading-relaxed">
+              Join 50+ luxury hotels in Austin using PartyOn to enhance guest satisfaction, 
+              increase F&B revenue, and streamline operations.
             </p>
             
-            <div className="flex justify-center gap-4 text-sm text-gray-300">
-              <span>Room Service Available 24/7</span>
-              <span className="text-gold-500">•</span>
-              <span>Express 30-Minute Delivery</span>
-              <span className="text-gold-500">•</span>
-              <span>Curated Selection</span>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button 
+                onClick={() => document.getElementById('partnership-form')?.scrollIntoView({ behavior: 'smooth' })}
+                className="px-8 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em]"
+              >
+                BECOME A PARTNER
+              </button>
+              <button className="px-8 py-3 border border-white text-white hover:bg-white hover:text-gray-900 transition-all tracking-[0.1em]">
+                DOWNLOAD CASE STUDY
+              </button>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Quick Order Bar */}
-      <section className="bg-gray-900 py-4 border-b border-gray-800">
+      {/* Trust Indicators */}
+      <section className="py-8 bg-gray-900 border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-6 text-sm text-gray-400">
-              <div className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>Delivery Hours: 10am - 2am</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>Charge to Room Available</span>
-              </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+              <p className="text-3xl font-cormorant text-gold-500">50+</p>
+              <p className="text-sm text-gray-400 tracking-[0.1em]">HOTEL PARTNERS</p>
             </div>
-            
-            <button 
-              onClick={() => setShowOrderForm(!showOrderForm)}
-              className="px-6 py-2 bg-gold-600 text-white text-sm hover:bg-gold-700 transition-colors tracking-[0.1em]"
-            >
-              {showOrderForm ? 'BROWSE MENU' : 'QUICK ORDER'}
-            </button>
+            <div>
+              <p className="text-3xl font-cormorant text-gold-500">2M+</p>
+              <p className="text-sm text-gray-400 tracking-[0.1em]">GUESTS SERVED</p>
+            </div>
+            <div>
+              <p className="text-3xl font-cormorant text-gold-500">99.5%</p>
+              <p className="text-sm text-gray-400 tracking-[0.1em]">ON-TIME DELIVERY</p>
+            </div>
+            <div>
+              <p className="text-3xl font-cormorant text-gold-500">4.9★</p>
+              <p className="text-sm text-gray-400 tracking-[0.1em]">PARTNER RATING</p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Quick Order Form */}
-      {showOrderForm && (
-        <motion.section 
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: 'auto', opacity: 1 }}
-          className="bg-gray-50 border-b border-gray-200"
-        >
-          <div className="max-w-4xl mx-auto px-8 py-6">
-            <div className="grid md:grid-cols-4 gap-4">
-              <div>
-                <label className="block text-xs text-gray-600 mb-1 tracking-[0.1em]">ROOM NUMBER</label>
-                <input
-                  type="text"
-                  value={roomNumber}
-                  onChange={(e) => setRoomNumber(e.target.value)}
-                  placeholder="e.g. 412"
-                  className="w-full px-3 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none"
-                />
-              </div>
-              <div>
-                <label className="block text-xs text-gray-600 mb-1 tracking-[0.1em]">GUEST NAME</label>
-                <input
-                  type="text"
-                  value={guestName}
-                  onChange={(e) => setGuestName(e.target.value)}
-                  placeholder="Your name"
-                  className="w-full px-3 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none"
-                />
-              </div>
-              <div>
-                <label className="block text-xs text-gray-600 mb-1 tracking-[0.1em]">DELIVERY TIME</label>
-                <select
-                  value={deliveryTime}
-                  onChange={(e) => setDeliveryTime(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none"
+      {/* Revenue Impact Section */}
+      <section className="py-20 bg-gradient-to-b from-white to-gray-50">
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="text-center mb-16">
+            <h2 className="font-cormorant text-4xl mb-4 tracking-[0.1em]">
+              PROVEN REVENUE IMPACT
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Our hotel partners see measurable improvements in guest satisfaction and F&B revenue
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <motion.div 
+              className="bg-white p-8 border border-gray-200 text-center"
+              whileHover={{ y: -5 }}
+            >
+              <div className="text-5xl font-cormorant text-gold-600 mb-4">35%</div>
+              <h3 className="font-medium text-gray-900 mb-2 tracking-[0.1em]">INCREASE IN F&B REVENUE</h3>
+              <p className="text-sm text-gray-600">
+                Average revenue growth from in-room beverage sales in first year
+              </p>
+            </motion.div>
+
+            <motion.div 
+              className="bg-white p-8 border border-gray-200 text-center"
+              whileHover={{ y: -5 }}
+            >
+              <div className="text-5xl font-cormorant text-gold-600 mb-4">87%</div>
+              <h3 className="font-medium text-gray-900 mb-2 tracking-[0.1em]">GUEST SATISFACTION</h3>
+              <p className="text-sm text-gray-600">
+                Guests rate our service as excellent or outstanding
+              </p>
+            </motion.div>
+
+            <motion.div 
+              className="bg-white p-8 border border-gray-200 text-center"
+              whileHover={{ y: -5 }}
+            >
+              <div className="text-5xl font-cormorant text-gold-600 mb-4">$45K</div>
+              <h3 className="font-medium text-gray-900 mb-2 tracking-[0.1em]">AVG MONTHLY REVENUE</h3>
+              <p className="text-sm text-gray-600">
+                Additional monthly revenue per 100-room property
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Service Offerings Tabs */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="text-center mb-12">
+            <h2 className="font-cormorant text-4xl mb-4 tracking-[0.1em]">
+              COMPREHENSIVE HOSPITALITY SOLUTIONS
+            </h2>
+            <p className="text-gray-600">
+              Tailored programs designed for luxury hospitality
+            </p>
+          </div>
+
+          {/* Tab Navigation */}
+          <div className="flex justify-center mb-12">
+            <div className="inline-flex border border-gray-200">
+              {['overview', 'integration', 'services', 'technology'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-6 py-3 text-sm tracking-[0.1em] transition-all ${
+                    activeTab === tab
+                      ? 'bg-gold-600 text-white'
+                      : 'bg-white text-gray-600 hover:bg-gray-50'
+                  }`}
                 >
-                  <option value="asap">ASAP (30 min)</option>
-                  <option value="1hour">Within 1 Hour</option>
-                  <option value="2hours">Within 2 Hours</option>
-                  <option value="scheduled">Schedule for Later</option>
-                </select>
+                  {tab.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Tab Content */}
+          <div className="bg-white border border-gray-200 p-12">
+            {activeTab === 'overview' && (
+              <div className="grid md:grid-cols-2 gap-12">
+                <div>
+                  <h3 className="font-cormorant text-2xl mb-6 tracking-[0.1em]">PARTNER BENEFITS</h3>
+                  <ul className="space-y-4">
+                    <li className="flex items-start">
+                      <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <div>
+                        <strong>Zero Inventory Risk</strong>
+                        <p className="text-sm text-gray-600 mt-1">
+                          We handle all inventory, storage, and product management
+                        </p>
+                      </div>
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <div>
+                        <strong>Revenue Share Model</strong>
+                        <p className="text-sm text-gray-600 mt-1">
+                          Earn 15-25% commission on all orders with no upfront costs
+                        </p>
+                      </div>
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <div>
+                        <strong>White-Glove Service</strong>
+                        <p className="text-sm text-gray-600 mt-1">
+                          Professional, uniformed delivery staff trained in hospitality standards
+                        </p>
+                      </div>
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <div>
+                        <strong>24/7 Support</strong>
+                        <p className="text-sm text-gray-600 mt-1">
+                          Dedicated account management and round-the-clock guest support
+                        </p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="font-cormorant text-2xl mb-6 tracking-[0.1em]">HOW IT WORKS</h3>
+                  <ol className="space-y-4">
+                    <li className="flex items-start">
+                      <span className="flex-shrink-0 w-8 h-8 bg-gold-600 text-white rounded-full flex items-center justify-center text-sm mr-3">1</span>
+                      <div>
+                        <strong>Guest Orders</strong>
+                        <p className="text-sm text-gray-600 mt-1">
+                          Through your branded portal or concierge desk
+                        </p>
+                      </div>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="flex-shrink-0 w-8 h-8 bg-gold-600 text-white rounded-full flex items-center justify-center text-sm mr-3">2</span>
+                      <div>
+                        <strong>We Fulfill</strong>
+                        <p className="text-sm text-gray-600 mt-1">
+                          30-minute delivery from our premium inventory
+                        </p>
+                      </div>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="flex-shrink-0 w-8 h-8 bg-gold-600 text-white rounded-full flex items-center justify-center text-sm mr-3">3</span>
+                      <div>
+                        <strong>Seamless Billing</strong>
+                        <p className="text-sm text-gray-600 mt-1">
+                          Charge to room or direct payment options
+                        </p>
+                      </div>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="flex-shrink-0 w-8 h-8 bg-gold-600 text-white rounded-full flex items-center justify-center text-sm mr-3">4</span>
+                      <div>
+                        <strong>You Earn</strong>
+                        <p className="text-sm text-gray-600 mt-1">
+                          Monthly revenue share with detailed reporting
+                        </p>
+                      </div>
+                    </li>
+                  </ol>
+                </div>
               </div>
-              <div>
-                <label className="block text-xs text-gray-600 mb-1 tracking-[0.1em]">BILLING</label>
-                <select className="w-full px-3 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none">
-                  <option>Charge to Room</option>
-                  <option>Pay on Delivery</option>
-                </select>
+            )}
+
+            {activeTab === 'integration' && (
+              <div className="space-y-8">
+                <div className="text-center mb-8">
+                  <h3 className="font-cormorant text-2xl mb-4 tracking-[0.1em]">SEAMLESS SYSTEM INTEGRATION</h3>
+                  <p className="text-gray-600">
+                    We integrate with all major hotel management systems
+                  </p>
+                </div>
+                <div className="grid md:grid-cols-3 gap-8">
+                  <div className="text-center">
+                    <div className="w-16 h-16 mx-auto mb-4 bg-gold-100 rounded-full flex items-center justify-center">
+                      <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                      </svg>
+                    </div>
+                    <h4 className="font-medium mb-2">PMS INTEGRATION</h4>
+                    <p className="text-sm text-gray-600">
+                      Direct integration with Opera, Amadeus, and other systems
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-16 h-16 mx-auto mb-4 bg-gold-100 rounded-full flex items-center justify-center">
+                      <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                      </svg>
+                    </div>
+                    <h4 className="font-medium mb-2">BILLING OPTIONS</h4>
+                    <p className="text-sm text-gray-600">
+                      Room charge, corporate accounts, and direct payment
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-16 h-16 mx-auto mb-4 bg-gold-100 rounded-full flex items-center justify-center">
+                      <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    </div>
+                    <h4 className="font-medium mb-2">REPORTING</h4>
+                    <p className="text-sm text-gray-600">
+                      Real-time analytics and monthly performance reports
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'services' && (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div>
+                  <div className="text-gold-600 mb-3">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m4 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                  </div>
+                  <h4 className="font-medium mb-2">IN-ROOM DELIVERY</h4>
+                  <p className="text-sm text-gray-600">
+                    Premium spirits, wines, and champagnes delivered directly to guest rooms
+                  </p>
+                </div>
+                <div>
+                  <div className="text-gold-600 mb-3">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                    </svg>
+                  </div>
+                  <h4 className="font-medium mb-2">VIP PACKAGES</h4>
+                  <p className="text-sm text-gray-600">
+                    Curated welcome amenities and celebration packages
+                  </p>
+                </div>
+                <div>
+                  <div className="text-gold-600 mb-3">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0A2.704 2.704 0 003 15.546V5h18v10.546z" />
+                    </svg>
+                  </div>
+                  <h4 className="font-medium mb-2">EVENT CATERING</h4>
+                  <p className="text-sm text-gray-600">
+                    Full bar service for conferences, weddings, and special events
+                  </p>
+                </div>
+                <div>
+                  <div className="text-gold-600 mb-3">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                  </div>
+                  <h4 className="font-medium mb-2">MINIBAR PROGRAMS</h4>
+                  <p className="text-sm text-gray-600">
+                    Automated restocking and inventory management
+                  </p>
+                </div>
+                <div>
+                  <div className="text-gold-600 mb-3">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                  <h4 className="font-medium mb-2">STAFF TRAINING</h4>
+                  <p className="text-sm text-gray-600">
+                    Complimentary training for concierge and F&B teams
+                  </p>
+                </div>
+                <div>
+                  <div className="text-gold-600 mb-3">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  <h4 className="font-medium mb-2">EXPRESS SERVICE</h4>
+                  <p className="text-sm text-gray-600">
+                    30-minute delivery guarantee for guest satisfaction
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'technology' && (
+              <div className="space-y-8">
+                <div className="text-center mb-8">
+                  <h3 className="font-cormorant text-2xl mb-4 tracking-[0.1em]">ADVANCED TECHNOLOGY PLATFORM</h3>
+                  <p className="text-gray-600">
+                    Purpose-built for hospitality operations
+                  </p>
+                </div>
+                <div className="grid md:grid-cols-2 gap-12">
+                  <div>
+                    <h4 className="font-medium mb-4 tracking-[0.1em]">PARTNER PORTAL FEATURES</h4>
+                    <ul className="space-y-3 text-sm">
+                      <li className="flex items-center">
+                        <span className="w-2 h-2 bg-gold-600 rounded-full mr-3"></span>
+                        Real-time order tracking and management
+                      </li>
+                      <li className="flex items-center">
+                        <span className="w-2 h-2 bg-gold-600 rounded-full mr-3"></span>
+                        Guest preference tracking and analytics
+                      </li>
+                      <li className="flex items-center">
+                        <span className="w-2 h-2 bg-gold-600 rounded-full mr-3"></span>
+                        Automated inventory recommendations
+                      </li>
+                      <li className="flex items-center">
+                        <span className="w-2 h-2 bg-gold-600 rounded-full mr-3"></span>
+                        Revenue and performance dashboards
+                      </li>
+                      <li className="flex items-center">
+                        <span className="w-2 h-2 bg-gold-600 rounded-full mr-3"></span>
+                        Marketing campaign management
+                      </li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-medium mb-4 tracking-[0.1em]">API CAPABILITIES</h4>
+                    <ul className="space-y-3 text-sm">
+                      <li className="flex items-center">
+                        <span className="w-2 h-2 bg-gold-600 rounded-full mr-3"></span>
+                        RESTful API for system integration
+                      </li>
+                      <li className="flex items-center">
+                        <span className="w-2 h-2 bg-gold-600 rounded-full mr-3"></span>
+                        Webhook notifications for order updates
+                      </li>
+                      <li className="flex items-center">
+                        <span className="w-2 h-2 bg-gold-600 rounded-full mr-3"></span>
+                        Batch order processing capabilities
+                      </li>
+                      <li className="flex items-center">
+                        <span className="w-2 h-2 bg-gold-600 rounded-full mr-3"></span>
+                        Custom catalog and pricing management
+                      </li>
+                      <li className="flex items-center">
+                        <span className="w-2 h-2 bg-gold-600 rounded-full mr-3"></span>
+                        White-label ordering interfaces
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Case Study */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="relative h-[500px]">
+              <Image
+                src="/images/gallery/sunset-champagne-pontoon.webp"
+                alt="Hotel Success Story"
+                fill
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+              <div className="absolute bottom-8 left-8 right-8 text-white">
+                <div className="text-sm tracking-[0.2em] mb-2">CASE STUDY</div>
+                <h3 className="font-cormorant text-2xl">Four Seasons Austin</h3>
+              </div>
+            </div>
+            
+            <div>
+              <span className="text-gold-600 text-sm tracking-[0.2em]">SUCCESS STORY</span>
+              <h2 className="font-cormorant text-4xl mt-2 mb-6 tracking-[0.1em]">
+                How Four Seasons Austin Increased F&B Revenue by 40%
+              </h2>
+              
+              <div className="space-y-6 mb-8">
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-2">THE CHALLENGE</h4>
+                  <p className="text-gray-600">
+                    Limited minibar options and slow room service were impacting guest satisfaction scores 
+                    and missing revenue opportunities during peak occupancy periods.
+                  </p>
+                </div>
+                
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-2">THE SOLUTION</h4>
+                  <p className="text-gray-600">
+                    PartyOn implemented a comprehensive beverage program including express in-room delivery, 
+                    curated VIP packages, and integrated billing through their PMS system.
+                  </p>
+                </div>
+                
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-2">THE RESULTS</h4>
+                  <ul className="space-y-2 text-gray-600">
+                    <li>• 40% increase in F&B revenue per occupied room</li>
+                    <li>• 92% guest satisfaction rating for beverage services</li>
+                    <li>• $75,000 additional monthly revenue</li>
+                    <li>• 50% reduction in minibar operational costs</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="border-l-4 border-gold-600 pl-6">
+                <p className="text-gray-700 italic mb-2">
+                  &ldquo;PartyOn has transformed our beverage service. The integration is seamless, 
+                  guests love the selection, and our F&B revenue has never been stronger.&rdquo;
+                </p>
+                <p className="text-sm text-gray-500">
+                  — Michael Chen, Director of Operations
+                </p>
               </div>
             </div>
           </div>
-        </motion.section>
-      )}
+        </div>
+      </section>
 
-      {/* Category Navigation */}
-      <section className="py-6 border-b border-gray-200 bg-white sticky top-0 z-40">
+      {/* Partnership Tiers */}
+      <section className="py-20">
         <div className="max-w-7xl mx-auto px-8">
-          <div className="flex items-center justify-center gap-8">
-            {[
-              { id: 'welcome', label: 'WELCOME PACKAGES', icon: '🥂' },
-              { id: 'minibar', label: 'SUITE MINIBAR', icon: '🥃' },
-              { id: 'events', label: 'PRIVATE EVENTS', icon: '🍾' },
-              { id: 'poolside', label: 'POOL & TERRACE', icon: '🍹' }
-            ].map(category => (
-              <button
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-                className={`pb-2 border-b-2 transition-all tracking-[0.1em] ${
-                  selectedCategory === category.id
-                    ? 'border-gold-600 text-gold-600'
-                    : 'border-transparent text-gray-600 hover:text-gold-600'
-                }`}
-              >
-                <span className="text-xs font-medium">{category.label}</span>
+          <div className="text-center mb-16">
+            <h2 className="font-cormorant text-4xl mb-4 tracking-[0.1em]">
+              PARTNERSHIP PROGRAMS
+            </h2>
+            <p className="text-gray-600">
+              Flexible solutions scaled to your property size and needs
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-white border border-gray-200 p-8">
+              <div className="text-center mb-6">
+                <h3 className="font-cormorant text-2xl mb-2 tracking-[0.1em]">SELECT</h3>
+                <p className="text-gray-600 text-sm">For boutique properties</p>
+              </div>
+              <div className="text-center mb-6">
+                <p className="text-4xl font-cormorant text-gray-900">15%</p>
+                <p className="text-sm text-gray-600">Revenue Share</p>
+              </div>
+              <ul className="space-y-3 mb-8 text-sm">
+                <li className="flex items-center">
+                  <svg className="w-4 h-4 text-gold-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Up to 100 rooms
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-4 h-4 text-gold-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Standard product catalog
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-4 h-4 text-gold-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Basic integration support
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-4 h-4 text-gold-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Monthly reporting
+                </li>
+              </ul>
+              <button className="w-full py-3 border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all text-sm tracking-[0.1em]">
+                LEARN MORE
               </button>
+            </div>
+
+            <div className="bg-white border-2 border-gold-600 p-8 relative">
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gold-600 text-white px-4 py-1 text-xs tracking-[0.1em]">
+                MOST POPULAR
+              </div>
+              <div className="text-center mb-6">
+                <h3 className="font-cormorant text-2xl mb-2 tracking-[0.1em]">PREMIER</h3>
+                <p className="text-gray-600 text-sm">For full-service hotels</p>
+              </div>
+              <div className="text-center mb-6">
+                <p className="text-4xl font-cormorant text-gray-900">20%</p>
+                <p className="text-sm text-gray-600">Revenue Share</p>
+              </div>
+              <ul className="space-y-3 mb-8 text-sm">
+                <li className="flex items-center">
+                  <svg className="w-4 h-4 text-gold-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  100-300 rooms
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-4 h-4 text-gold-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Premium catalog access
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-4 h-4 text-gold-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Full PMS integration
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-4 h-4 text-gold-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Dedicated account manager
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-4 h-4 text-gold-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Weekly analytics
+                </li>
+              </ul>
+              <button className="w-full py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors text-sm tracking-[0.1em]">
+                GET STARTED
+              </button>
+            </div>
+
+            <div className="bg-white border border-gray-200 p-8">
+              <div className="text-center mb-6">
+                <h3 className="font-cormorant text-2xl mb-2 tracking-[0.1em]">LUXURY</h3>
+                <p className="text-gray-600 text-sm">For resort properties</p>
+              </div>
+              <div className="text-center mb-6">
+                <p className="text-4xl font-cormorant text-gray-900">25%</p>
+                <p className="text-sm text-gray-600">Revenue Share</p>
+              </div>
+              <ul className="space-y-3 mb-8 text-sm">
+                <li className="flex items-center">
+                  <svg className="w-4 h-4 text-gold-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  300+ rooms
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-4 h-4 text-gold-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Exclusive selections
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-4 h-4 text-gold-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Custom integration
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-4 h-4 text-gold-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Executive partnership team
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-4 h-4 text-gold-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Real-time dashboards
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-4 h-4 text-gold-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Co-marketing support
+                </li>
+              </ul>
+              <button className="w-full py-3 border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all text-sm tracking-[0.1em]">
+                CONTACT SALES
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Partner Logos */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="text-center mb-12">
+            <p className="text-sm text-gray-600 tracking-[0.2em]">TRUSTED BY AUSTIN&apos;S FINEST HOTELS</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center opacity-60">
+            {['Four Seasons', 'W Austin', 'Fairmont', 'JW Marriott', 'The LINE'].map((hotel) => (
+              <div key={hotel} className="text-center">
+                <p className="font-cormorant text-xl text-gray-700">{hotel}</p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Category Header */}
-      <section className="py-8 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="text-center mb-8">
-            {selectedCategory === 'welcome' && (
-              <>
-                <h2 className="font-cormorant text-3xl mb-3 tracking-[0.1em]">VIP WELCOME PACKAGES</h2>
-                <p className="text-gray-600">Impress your guests with premium champagnes and curated gift sets</p>
-              </>
-            )}
-            {selectedCategory === 'minibar' && (
-              <>
-                <h2 className="font-cormorant text-3xl mb-3 tracking-[0.1em]">PREMIUM SUITE MINIBAR</h2>
-                <p className="text-gray-600">Stock your suite with top-shelf spirits and mixers</p>
-              </>
-            )}
-            {selectedCategory === 'events' && (
-              <>
-                <h2 className="font-cormorant text-3xl mb-3 tracking-[0.1em]">PRIVATE EVENT COLLECTION</h2>
-                <p className="text-gray-600">Exclusive selections for corporate gatherings and celebrations</p>
-              </>
-            )}
-            {selectedCategory === 'poolside' && (
-              <>
-                <h2 className="font-cormorant text-3xl mb-3 tracking-[0.1em]">POOL & TERRACE SERVICE</h2>
-                <p className="text-gray-600">Refreshing cocktails and seltzers for outdoor relaxation</p>
-              </>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Products Grid */}
-      <section className="py-8">
-        <div className="max-w-7xl mx-auto px-8">
-          {loading ? (
-            <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gold-600"></div>
-              <p className="mt-4 text-gray-600">Loading premium selection...</p>
-            </div>
-          ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {categoryProducts.map((product) => (
-                <div key={product.id} className="relative">
-                  <CompactProductCard product={product} />
-                  
-                  {/* Hotel-specific badges */}
-                  {selectedCategory === 'welcome' && parseFloat(product.priceRange.minVariantPrice.amount) > 100 && (
-                    <div className="absolute top-2 right-2 bg-gold-600 text-white text-xs px-2 py-1 tracking-[0.1em]">
-                      VIP CHOICE
-                    </div>
-                  )}
-                  {selectedCategory === 'minibar' && (
-                    <div className="absolute top-2 right-2 bg-gray-900 text-white text-xs px-2 py-1 tracking-[0.1em]">
-                      SUITE STOCK
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* No products fallback */}
-          {!loading && categoryProducts.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-gray-600">No products available in this category</p>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Hotel Services */}
-      <section className="py-12 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="grid md:grid-cols-4 gap-6 text-center">
-            <div>
-              <div className="w-12 h-12 mx-auto mb-3">
-                <svg className="w-full h-full text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="font-medium text-gray-900 mb-1">30-MINUTE DELIVERY</h3>
-              <p className="text-sm text-gray-600">Express service to your suite</p>
-            </div>
-            
-            <div>
-              <div className="w-12 h-12 mx-auto mb-3">
-                <svg className="w-full h-full text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                </svg>
-              </div>
-              <h3 className="font-medium text-gray-900 mb-1">CHARGE TO ROOM</h3>
-              <p className="text-sm text-gray-600">Convenient billing options</p>
-            </div>
-            
-            <div>
-              <div className="w-12 h-12 mx-auto mb-3">
-                <svg className="w-full h-full text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                </svg>
-              </div>
-              <h3 className="font-medium text-gray-900 mb-1">CUSTOM PACKAGES</h3>
-              <p className="text-sm text-gray-600">Personalized for VIP guests</p>
-            </div>
-            
-            <div>
-              <div className="w-12 h-12 mx-auto mb-3">
-                <svg className="w-full h-full text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-              </div>
-              <h3 className="font-medium text-gray-900 mb-1">CONCIERGE SERVICE</h3>
-              <p className="text-sm text-gray-600">24/7 support available</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Special Packages */}
-      <section className="py-12">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="text-center mb-8">
-            <h2 className="font-cormorant text-3xl mb-3 tracking-[0.1em]">SIGNATURE EXPERIENCES</h2>
-            <p className="text-gray-600">Curated packages for special occasions</p>
+      {/* Partnership Form */}
+      <section id="partnership-form" className="py-20">
+        <div className="max-w-4xl mx-auto px-8">
+          <div className="text-center mb-12">
+            <h2 className="font-cormorant text-4xl mb-4 tracking-[0.1em]">
+              START YOUR PARTNERSHIP
+            </h2>
+            <p className="text-gray-600">
+              Join Austin&apos;s premier hospitality beverage program
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="h-48 relative">
-                <Image
-                  src="/images/gallery/sunset-champagne-pontoon.webp"
-                  alt="Romance Package"
-                  fill
-                  className="object-cover"
+          <form onSubmit={handleSubmit} className="bg-white border border-gray-200 p-8">
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Hotel Name *</label>
+                <input
+                  type="text"
+                  name="hotelName"
+                  value={formData.hotelName}
+                  onChange={handleFormChange}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none"
                 />
               </div>
-              <div className="p-6">
-                <h3 className="font-cormorant text-xl mb-2 tracking-[0.1em]">ROMANCE PACKAGE</h3>
-                <p className="text-gray-600 text-sm mb-4">Champagne, chocolates, and rose petals</p>
-                <p className="text-2xl font-cormorant text-gold-600 mb-4">$299</p>
-                <button className="w-full py-2 border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all text-sm tracking-[0.1em]">
-                  ORDER NOW
-                </button>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Number of Rooms *</label>
+                <select
+                  name="numberOfRooms"
+                  value={formData.numberOfRooms}
+                  onChange={handleFormChange}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none"
+                >
+                  <option value="">Select range</option>
+                  <option value="<50">Less than 50</option>
+                  <option value="50-100">50-100</option>
+                  <option value="100-200">100-200</option>
+                  <option value="200-300">200-300</option>
+                  <option value="300+">300+</option>
+                </select>
               </div>
             </div>
 
-            <div className="bg-white border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="h-48 relative">
-                <Image
-                  src="/images/services/corporate/executive-cocktail-hour.webp"
-                  alt="Executive Package"
-                  fill
-                  className="object-cover"
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Contact Name *</label>
+                <input
+                  type="text"
+                  name="contactName"
+                  value={formData.contactName}
+                  onChange={handleFormChange}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none"
                 />
               </div>
-              <div className="p-6">
-                <h3 className="font-cormorant text-xl mb-2 tracking-[0.1em]">EXECUTIVE PACKAGE</h3>
-                <p className="text-gray-600 text-sm mb-4">Premium whiskey selection with cigars</p>
-                <p className="text-2xl font-cormorant text-gold-600 mb-4">$499</p>
-                <button className="w-full py-2 border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all text-sm tracking-[0.1em]">
-                  ORDER NOW
-                </button>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Title/Position</label>
+                <input
+                  type="text"
+                  name="title"
+                  className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none"
+                />
               </div>
             </div>
 
-            <div className="bg-white border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="h-48 relative">
-                <Image
-                  src="/images/gallery/elegant-waterfront-dinner.webp"
-                  alt="Celebration Package"
-                  fill
-                  className="object-cover"
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleFormChange}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none"
                 />
               </div>
-              <div className="p-6">
-                <h3 className="font-cormorant text-xl mb-2 tracking-[0.1em]">CELEBRATION PACKAGE</h3>
-                <p className="text-gray-600 text-sm mb-4">Champagne tower service for groups</p>
-                <p className="text-2xl font-cormorant text-gold-600 mb-4">$699</p>
-                <button className="w-full py-2 border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all text-sm tracking-[0.1em]">
-                  ORDER NOW
-                </button>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Phone *</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleFormChange}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none"
+                />
               </div>
             </div>
+
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Services of Interest</label>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {['In-Room Delivery', 'Minibar Program', 'Event Services', 'VIP Packages', 'Staff Training', 'Pool Service'].map((service) => (
+                  <label key={service} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={formData.interests.includes(service)}
+                      onChange={() => handleInterestToggle(service)}
+                      className="mr-2 text-gold-600 focus:ring-gold-500"
+                    />
+                    <span className="text-sm">{service}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Current Beverage Provider (if any)
+              </label>
+              <input
+                type="text"
+                name="currentProvider"
+                value={formData.currentProvider}
+                onChange={handleFormChange}
+                className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none"
+              />
+            </div>
+
+            <div className="mb-8">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Estimated Monthly Beverage Volume
+              </label>
+              <select
+                name="monthlyVolume"
+                value={formData.monthlyVolume}
+                onChange={handleFormChange}
+                className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none"
+              >
+                <option value="">Select range</option>
+                <option value="<10k">Less than $10,000</option>
+                <option value="10-25k">$10,000 - $25,000</option>
+                <option value="25-50k">$25,000 - $50,000</option>
+                <option value="50-100k">$50,000 - $100,000</option>
+                <option value="100k+">$100,000+</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button
+                type="submit"
+                className="flex-1 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em]"
+              >
+                SUBMIT PARTNERSHIP INQUIRY
+              </button>
+              <button
+                type="button"
+                className="px-8 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors tracking-[0.1em]"
+              >
+                SCHEDULE A CALL
+              </button>
+            </div>
+          </form>
+
+          <div className="text-center mt-8">
+            <p className="text-sm text-gray-600">
+              Or contact our hospitality team directly at{' '}
+              <a href="tel:512-555-0100" className="text-gold-600 hover:text-gold-700">
+                (512) 555-0100
+              </a>
+              {' '}or{' '}
+              <a href="mailto:hotels@partyondelivery.com" className="text-gold-600 hover:text-gold-700">
+                hotels@partyondelivery.com
+              </a>
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Contact Bar */}
-      <section className="py-8 bg-gray-900 text-white">
-        <div className="max-w-4xl mx-auto px-8 text-center">
-          <p className="text-sm text-gray-400 mb-2">NEED ASSISTANCE WITH YOUR ORDER?</p>
-          <div className="flex items-center justify-center gap-8">
-            <a href="tel:512-555-0100" className="flex items-center gap-2 text-gold-500 hover:text-gold-400">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-              <span>Call Concierge</span>
-            </a>
-            <span className="text-gray-600">|</span>
-            <button className="flex items-center gap-2 text-gold-500 hover:text-gold-400">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-              <span>Live Chat</span>
-            </button>
-            <span className="text-gray-600">|</span>
-            <span className="text-gray-400">Room Service Ext. 7100</span>
-          </div>
-        </div>
-      </section>
+      <Footer />
     </div>
   )
 }
