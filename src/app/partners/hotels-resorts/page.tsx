@@ -5,8 +5,6 @@ import Image from 'next/image'
 import OldFashionedNavigation from '@/components/OldFashionedNavigation'
 import { motion } from 'framer-motion'
 import { useProducts } from '@/lib/shopify/hooks/useProducts'
-import { useCart } from '@/lib/shopify/hooks/useCart'
-import { formatPrice } from '@/lib/shopify/utils'
 import CompactProductCard from '@/components/shopify/CompactProductCard'
 
 export default function HotelsResortsPartnerPage() {
@@ -17,7 +15,6 @@ export default function HotelsResortsPartnerPage() {
   const [showOrderForm, setShowOrderForm] = useState(false)
   
   const { products, loading } = useProducts()
-  const { cart, addToCart, isAddingToCart } = useCart()
 
   // Auto-verify age for B2B partner ordering
   useEffect(() => {
@@ -51,7 +48,7 @@ export default function HotelsResortsPartnerPage() {
       case 'events':
         // Premium spirits and champagnes for events
         return products.filter(p => 
-          p.priceRange.minVariantPrice.amount > 50 ||
+          parseFloat(p.priceRange.minVariantPrice.amount) > 50 ||
           p.productType?.toLowerCase().includes('champagne') ||
           p.productType?.toLowerCase().includes('cognac')
         ).slice(0, 6)
@@ -272,7 +269,7 @@ export default function HotelsResortsPartnerPage() {
                   <CompactProductCard product={product} />
                   
                   {/* Hotel-specific badges */}
-                  {selectedCategory === 'welcome' && product.priceRange.minVariantPrice.amount > 100 && (
+                  {selectedCategory === 'welcome' && parseFloat(product.priceRange.minVariantPrice.amount) > 100 && (
                     <div className="absolute top-2 right-2 bg-gold-600 text-white text-xs px-2 py-1 tracking-[0.1em]">
                       VIP CHOICE
                     </div>
