@@ -39,57 +39,68 @@ export default function PartnersPage() {
         </svg>
       ),
       title: "Hotels & Resorts",
-      description: "Elevate your guest experience with premium in-room amenities and event services"
+      description: "Elevate your guest experience with premium in-room amenities and event services",
+      available: true
     },
     {
-      href: '/partners/property-management',
+      href: '#',
       icon: (
         <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3M9 9v.01M9 12v.01M9 15v.01M9 18v.01" />
         </svg>
       ),
       title: "Property Management",
-      description: "Offer residents exclusive access to curated spirits and concierge delivery"
+      description: "Offer residents exclusive access to curated spirits and concierge delivery",
+      available: false,
+      comingSoon: true
     },
     {
-      href: '/partners/event-planners',
+      href: '#',
       icon: (
         <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
       ),
       title: "Event Planners",
-      description: "Seamless bar services and custom packages for weddings and corporate events"
+      description: "Seamless bar services and custom packages for weddings and corporate events",
+      available: false,
+      comingSoon: true
     },
     {
-      href: '/partners/restaurants-bars',
+      href: '#',
       icon: (
         <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M3 5h11M3 12h11M3 19h11M16 5l3 3-3 3M16 12h5M16 19l3-3-3-3" />
         </svg>
       ),
       title: "Restaurants & Bars",
-      description: "Reliable supply chain and exclusive selections for your establishment"
+      description: "Reliable supply chain and exclusive selections for your establishment",
+      available: false,
+      comingSoon: true
     },
     {
-      href: '/partners/corporate-offices',
+      href: '#',
       icon: (
         <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
       ),
       title: "Corporate Offices",
-      description: "Impress clients and reward teams with premium spirits and cocktail experiences"
+      description: "Impress clients and reward teams with premium spirits and cocktail experiences",
+      available: false,
+      comingSoon: true
     },
     {
-      href: '/partners/country-clubs',
+      href: '#',
       icon: (
         <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
         </svg>
       ),
       title: "Country Clubs",
-      description: "Exclusive member benefits and tournament sponsorship opportunities"
+      description: "Exclusive member benefits and tournament sponsorship opportunities",
+      available: false,
+      comingSoon: true
     }
   ];
 
@@ -207,21 +218,41 @@ export default function PartnersPage() {
           {/* Partner Types Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
             {partnerTypes.map((type, index) => (
-              <Link key={type.title} href={type.href}>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="bg-white p-8 border border-gray-200 hover:border-gold-400 transition-all h-full group cursor-pointer"
-                >
-                  <div className="text-gold-600 mb-4 group-hover:text-gold-700 transition-colors">{type.icon}</div>
-                  <h3 className="font-serif text-2xl mb-3 text-gray-900 tracking-wide group-hover:text-gold-600 transition-colors">{type.title}</h3>
-                  <p className="text-gray-600">{type.description}</p>
+              <div key={type.title}>
+                {type.available ? (
+                  <Link href={type.href}>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      className="bg-white p-8 border border-gray-200 hover:border-gold-400 transition-all h-full group cursor-pointer"
+                    >
+                      <div className="text-gold-600 mb-4 group-hover:text-gold-700 transition-colors">{type.icon}</div>
+                      <h3 className="font-serif text-2xl mb-3 text-gray-900 tracking-wide group-hover:text-gold-600 transition-colors">{type.title}</h3>
+                      <p className="text-gray-600">{type.description}</p>
+                    </motion.div>
+                  </Link>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="bg-gray-50 p-8 border border-gray-200 h-full relative"
+                  >
+                    <div className="text-gray-400 mb-4">{type.icon}</div>
+                    <h3 className="font-serif text-2xl mb-3 text-gray-500 tracking-wide">{type.title}</h3>
+                    <p className="text-gray-400">{type.description}</p>
+                    {type.comingSoon && (
+                      <div className="absolute top-4 right-4 bg-gold-600 text-white text-xs px-3 py-1 tracking-[0.1em]">
+                        COMING SOON
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </div>
                   <div className="mt-4 text-gold-600 text-sm tracking-[0.1em] group-hover:text-gold-700 transition-colors">
                     LEARN MORE →
                   </div>
-                </motion.div>
-              </Link>
             ))}
           </div>
         </div>
