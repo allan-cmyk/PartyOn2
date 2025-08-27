@@ -2,13 +2,13 @@
 
 import React from 'react'
 import Image from 'next/image'
-import Navigation from '@/components/Navigation'
+import OldFashionedNavigation from '@/components/OldFashionedNavigation'
 import { motion } from 'framer-motion'
 
 export default function PropertyManagementPartnerPage() {
   return (
     <div className="bg-white min-h-screen">
-      <Navigation />
+      <OldFashionedNavigation />
       
       {/* Hero Section */}
       <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">

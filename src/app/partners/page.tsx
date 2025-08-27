@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import Navigation from '@/components/Navigation';
+import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
 
 export default function PartnersPage() {
@@ -157,7 +157,7 @@ export default function PartnersPage() {
 
   return (
     <div className="bg-white">
-      <Navigation />
+      <OldFashionedNavigation />
 
       {/* Hero Section */}
       <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
