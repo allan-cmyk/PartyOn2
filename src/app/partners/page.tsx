@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 
 export default function PartnersPage() {
@@ -31,6 +32,7 @@ export default function PartnersPage() {
 
   const partnerTypes = [
     {
+      href: '/partners/hotels-resorts',
       icon: (
         <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m4 0v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -40,6 +42,7 @@ export default function PartnersPage() {
       description: "Elevate your guest experience with premium in-room amenities and event services"
     },
     {
+      href: '/partners/property-management',
       icon: (
         <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3M9 9v.01M9 12v.01M9 15v.01M9 18v.01" />
@@ -49,6 +52,7 @@ export default function PartnersPage() {
       description: "Offer residents exclusive access to curated spirits and concierge delivery"
     },
     {
+      href: '/partners/event-planners',
       icon: (
         <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -58,6 +62,7 @@ export default function PartnersPage() {
       description: "Seamless bar services and custom packages for weddings and corporate events"
     },
     {
+      href: '/partners/restaurants-bars',
       icon: (
         <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M3 5h11M3 12h11M3 19h11M16 5l3 3-3 3M16 12h5M16 19l3-3-3-3" />
@@ -67,6 +72,7 @@ export default function PartnersPage() {
       description: "Reliable supply chain and exclusive selections for your establishment"
     },
     {
+      href: '/partners/corporate-offices',
       icon: (
         <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -76,6 +82,7 @@ export default function PartnersPage() {
       description: "Impress clients and reward teams with premium spirits and cocktail experiences"
     },
     {
+      href: '/partners/country-clubs',
       icon: (
         <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -150,7 +157,7 @@ export default function PartnersPage() {
 
   return (
     <div className="bg-white">
-      <OldFashionedNavigation />
+      <Navigation />
 
       {/* Hero Section */}
       <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
@@ -200,17 +207,21 @@ export default function PartnersPage() {
           {/* Partner Types Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
             {partnerTypes.map((type, index) => (
-              <motion.div
-                key={type.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-white p-8 border border-gray-200 hover:border-gold-400 transition-colors"
-              >
-                <div className="text-gold-600 mb-4">{type.icon}</div>
-                <h3 className="font-serif text-2xl mb-3 text-gray-900 tracking-wide">{type.title}</h3>
-                <p className="text-gray-600">{type.description}</p>
-              </motion.div>
+              <Link key={type.title} href={type.href}>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="bg-white p-8 border border-gray-200 hover:border-gold-400 transition-all h-full group cursor-pointer"
+                >
+                  <div className="text-gold-600 mb-4 group-hover:text-gold-700 transition-colors">{type.icon}</div>
+                  <h3 className="font-serif text-2xl mb-3 text-gray-900 tracking-wide group-hover:text-gold-600 transition-colors">{type.title}</h3>
+                  <p className="text-gray-600">{type.description}</p>
+                  <div className="mt-4 text-gold-600 text-sm tracking-[0.1em] group-hover:text-gold-700 transition-colors">
+                    LEARN MORE →
+                  </div>
+                </motion.div>
+              </Link>
             ))}
           </div>
         </div>
