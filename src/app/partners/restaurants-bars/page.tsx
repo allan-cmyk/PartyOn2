@@ -2,7 +2,6 @@
 
 import React from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import Navigation from '@/components/Navigation'
 import { motion } from 'framer-motion'
 
@@ -37,7 +36,7 @@ export default function RestaurantsBarsPartnerPage() {
               MIDNIGHT COWBOY
             </h1>
             <p className="text-xl text-gray-200 mb-8 leading-relaxed">
-              Austin's Most Exclusive Speakeasy Partners with PartyOn Delivery
+              Austin&apos;s Most Exclusive Speakeasy Partners with PartyOn Delivery
               <br />for Premium Spirit Procurement and Private Event Services
             </p>
             
@@ -68,7 +67,7 @@ export default function RestaurantsBarsPartnerPage() {
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
               Reliable supply chain, exclusive selections, and expert consultation 
-              to enhance your establishment's offerings
+              to enhance your establishment&apos;s offerings
             </p>
           </div>
 
@@ -180,9 +179,9 @@ export default function RestaurantsBarsPartnerPage() {
               
               <div className="border-l-4 border-gold-500 pl-6 mb-8">
                 <p className="text-gray-700 italic mb-2">
-                  "PartyOn Delivery's expertise and industry connections made it possible for us 
+                  &ldquo;PartyOn Delivery&apos;s expertise and industry connections made it possible for us 
                   to offer something truly unique. Our private barrel program has not only increased 
-                  revenue but elevated our entire brand perception."
+                  revenue but elevated our entire brand perception.&rdquo;
                 </p>
                 <p className="text-sm text-gray-500">
                   — James Russell, Head Bartender, Midnight Cowboy
@@ -438,7 +437,7 @@ export default function RestaurantsBarsPartnerPage() {
       <section className="py-20 bg-gray-900 text-white">
         <div className="max-w-4xl mx-auto px-8 text-center">
           <h2 className="font-cormorant text-4xl mb-6 tracking-[0.1em]">
-            PARTNER WITH AUSTIN'S BEVERAGE EXPERTS
+            PARTNER WITH AUSTIN&apos;S BEVERAGE EXPERTS
           </h2>
           <p className="text-gray-300 mb-8 text-lg leading-relaxed">
             Join over 200 restaurants and bars that trust PartyOn Delivery for 

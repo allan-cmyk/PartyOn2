@@ -22,11 +22,6 @@ export default function PreferencesPage() {
   const [updateMessage, setUpdateMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const [passwordForm, setPasswordForm] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  });
   const [passwordError, setPasswordError] = useState('');
 
   useEffect(() => {
@@ -53,30 +48,6 @@ export default function PreferencesPage() {
     }));
   };
 
-  const handlePasswordChange = async () => {
-    setPasswordError('');
-    
-    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      setPasswordError('Passwords do not match');
-      return;
-    }
-    
-    if (passwordForm.newPassword.length < 8) {
-      setPasswordError('Password must be at least 8 characters');
-      return;
-    }
-    
-    // Note: Shopify Customer API doesn't support password change directly
-    // This would need to be handled through Shopify's password reset flow
-    setPasswordError('Please use the password reset link sent to your email');
-    
-    // Trigger password recovery email
-    if (customer?.email) {
-      await recoverPassword(customer.email);
-      setUpdateMessage('Password reset email sent');
-      setShowPasswordModal(false);
-    }
-  };
 
   const handleDownloadData = () => {
     if (!customer) return;

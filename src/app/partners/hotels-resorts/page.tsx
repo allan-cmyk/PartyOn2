@@ -2,7 +2,6 @@
 
 import React from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import Navigation from '@/components/Navigation'
 import { motion } from 'framer-motion'
 
@@ -37,7 +36,7 @@ export default function HotelsResortsPartnerPage() {
               THE DRISKILL HOTEL
             </h1>
             <p className="text-xl text-gray-200 mb-8 leading-relaxed">
-              Austin's Historic Landmark Partners with PartyOn Delivery for
+              Austin&apos;s Historic Landmark Partners with PartyOn Delivery for
               <br />Exclusive In-Room Amenities and Event Services
             </p>
             
@@ -170,17 +169,17 @@ export default function HotelsResortsPartnerPage() {
             <div>
               <span className="text-gold-500 text-sm tracking-[0.2em]">CASE STUDY</span>
               <h2 className="font-cormorant text-4xl mt-2 mb-6 tracking-[0.1em]">
-                NEW YEAR'S EVE GALA SUCCESS
+                NEW YEAR&apos;S EVE GALA SUCCESS
               </h2>
               <p className="text-gray-600 mb-6 leading-relaxed">
-                "PartyOn Delivery transformed our New Year's Eve celebration into an unforgettable 
+                &ldquo;PartyOn Delivery transformed our New Year&apos;s Eve celebration into an unforgettable 
                 experience. Their team curated a bespoke champagne selection and provided seamless 
-                service for over 500 guests across multiple ballrooms and our rooftop terrace."
+                service for over 500 guests across multiple ballrooms and our rooftop terrace.&rdquo;
               </p>
               <div className="border-l-4 border-gold-500 pl-6 mb-8">
                 <p className="text-gray-700 italic mb-2">
-                  "The attention to detail and quality of service exceeded our highest expectations. 
-                  Our guests are still talking about the signature cocktails."
+                  &ldquo;The attention to detail and quality of service exceeded our highest expectations. 
+                  Our guests are still talking about the signature cocktails.&rdquo;
                 </p>
                 <p className="text-sm text-gray-500">
                   — Alexandra Chen, Director of Events, The Driskill
@@ -223,7 +222,7 @@ export default function HotelsResortsPartnerPage() {
               PARTNERSHIP PROGRAMS
             </h2>
             <p className="text-gray-600">
-              Flexible solutions designed to match your property's unique needs
+              Flexible solutions designed to match your property&apos;s unique needs
             </p>
           </div>
 
@@ -288,12 +287,12 @@ export default function HotelsResortsPartnerPage() {
       <section className="py-20 bg-gray-900 text-white">
         <div className="max-w-4xl mx-auto px-8 text-center">
           <h2 className="font-cormorant text-4xl mb-6 tracking-[0.1em]">
-            JOIN AUSTIN'S PREMIER HOSPITALITY NETWORK
+            JOIN AUSTIN&apos;S PREMIER HOSPITALITY NETWORK
           </h2>
           <p className="text-gray-300 mb-8 text-lg leading-relaxed">
             Partner with PartyOn Delivery and provide your guests with an unparalleled 
             luxury experience. Our dedicated hospitality team is ready to customize a 
-            program that perfectly aligns with your property's standards.
+            program that perfectly aligns with your property&apos;s standards.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">

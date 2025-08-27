@@ -2,7 +2,6 @@
 
 import React from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import Navigation from '@/components/Navigation'
 import { motion } from 'framer-motion'
 
@@ -37,7 +36,7 @@ export default function PropertyManagementPartnerPage() {
               THE INDEPENDENT
             </h1>
             <p className="text-xl text-gray-200 mb-8 leading-relaxed">
-              Austin's Premier Residential Tower Partners with PartyOn Delivery
+              Austin&apos;s Premier Residential Tower Partners with PartyOn Delivery
               <br />for Exclusive Resident Amenities and Concierge Services
             </p>
             
@@ -188,9 +187,9 @@ export default function PropertyManagementPartnerPage() {
               
               <div className="border-l-4 border-gold-500 pl-6 mb-8">
                 <p className="text-gray-700 italic mb-2">
-                  "The PartyOn partnership has become one of our most valued amenities. 
+                  &ldquo;The PartyOn partnership has become one of our most valued amenities. 
                   Residents love the exclusive access and the quality of service is unmatched. 
-                  It's a true differentiator in Austin's competitive luxury market."
+                  It&apos;s a true differentiator in Austin&apos;s competitive luxury market.&rdquo;
                 </p>
                 <p className="text-sm text-gray-500">
                   — Michael Rodriguez, General Manager, The Independent
@@ -348,7 +347,7 @@ export default function PropertyManagementPartnerPage() {
             ELEVATE YOUR PROPERTY TODAY
           </h2>
           <p className="text-gray-300 mb-8 text-lg leading-relaxed">
-            Join Austin's leading properties in offering residents an unmatched 
+            Join Austin&apos;s leading properties in offering residents an unmatched 
             luxury amenity. Our property management team will create a custom program 
             that drives satisfaction, retention, and NOI.
           </p>

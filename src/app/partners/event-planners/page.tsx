@@ -2,7 +2,6 @@
 
 import React from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import Navigation from '@/components/Navigation'
 import { motion } from 'framer-motion'
 
@@ -179,9 +178,9 @@ export default function EventPlannersPartnerPage() {
               
               <div className="border-l-4 border-gold-500 pl-6 mb-8">
                 <p className="text-gray-700 italic mb-2">
-                  "PartyOn Delivery saved the day. Their team adapted to the new venue layout, 
-                  created a custom cocktail menu inspired by the couple's story, and delivered 
-                  service that had guests raving. They're now our exclusive beverage partner."
+                  &ldquo;PartyOn Delivery saved the day. Their team adapted to the new venue layout, 
+                  created a custom cocktail menu inspired by the couple&apos;s story, and delivered 
+                  service that had guests raving. They&apos;re now our exclusive beverage partner.&rdquo;
                 </p>
                 <p className="text-sm text-gray-500">
                   — Sarah Mitchell, Principal Planner, Austin Elegance Events
@@ -379,7 +378,7 @@ export default function EventPlannersPartnerPage() {
             BECOME A PREFERRED PARTNER
           </h2>
           <p className="text-gray-300 mb-8 text-lg leading-relaxed">
-            Join Austin's top event planners who trust PartyOn Delivery for flawless 
+            Join Austin&apos;s top event planners who trust PartyOn Delivery for flawless 
             execution. Apply today for exclusive planner benefits and preferred pricing.
           </p>
           

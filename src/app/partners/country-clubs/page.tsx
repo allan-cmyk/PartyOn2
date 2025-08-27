@@ -2,7 +2,6 @@
 
 import React from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import Navigation from '@/components/Navigation'
 import { motion } from 'framer-motion'
 
@@ -173,15 +172,15 @@ export default function CountryClubsPartnerPage() {
                 THE MASTERS INVITATIONAL
               </h2>
               <p className="text-gray-600 mb-6 leading-relaxed">
-                Austin Country Club's signature tournament elevated to new heights with 
-                PartyOn Delivery's comprehensive beverage sponsorship and execution.
+                Austin Country Club&apos;s signature tournament elevated to new heights with 
+                PartyOn Delivery&apos;s comprehensive beverage sponsorship and execution.
               </p>
               
               <div className="border-l-4 border-gold-500 pl-6 mb-8">
                 <p className="text-gray-700 italic mb-2">
-                  "The level of service and attention to detail was extraordinary. From the 
-                  morning bloody mary bar to the champion's dinner featuring rare vintages, 
-                  PartyOn Delivery made our tournament truly world-class."
+                  &ldquo;The level of service and attention to detail was extraordinary. From the 
+                  morning bloody mary bar to the champion&apos;s dinner featuring rare vintages, 
+                  PartyOn Delivery made our tournament truly world-class.&rdquo;
                 </p>
                 <p className="text-sm text-gray-500">
                   — William Hartford, General Manager, Austin Country Club
@@ -371,7 +370,7 @@ export default function CountryClubsPartnerPage() {
       <section className="py-20 bg-gray-900 text-white">
         <div className="max-w-4xl mx-auto px-8 text-center">
           <h2 className="font-cormorant text-4xl mb-6 tracking-[0.1em]">
-            ELEVATE YOUR CLUB'S DISTINCTION
+            ELEVATE YOUR CLUB&apos;S DISTINCTION
           </h2>
           <p className="text-gray-300 mb-8 text-lg leading-relaxed">
             Partner with PartyOn Delivery to provide your members with exceptional 

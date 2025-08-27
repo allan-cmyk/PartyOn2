@@ -2,7 +2,6 @@
 
 import React from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import Navigation from '@/components/Navigation'
 import { motion } from 'framer-motion'
 
@@ -67,7 +66,7 @@ export default function CorporateOfficesPartnerPage() {
               IMPRESS CLIENTS, REWARD TEAMS
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Premium beverage services that reflect your company's commitment 
+              Premium beverage services that reflect your company&apos;s commitment 
               to excellence and attention to detail
             </p>
           </div>
@@ -184,14 +183,14 @@ export default function CorporateOfficesPartnerPage() {
               <p className="text-gray-600 mb-6 leading-relaxed">
                 During SXSW 2024, Oracle Austin hosted 500 global clients for a three-day 
                 summit featuring multiple networking events, each requiring unique beverage 
-                experiences that reflected Austin's culture while maintaining corporate standards.
+                experiences that reflected Austin&apos;s culture while maintaining corporate standards.
               </p>
               
               <div className="border-l-4 border-gold-500 pl-6 mb-8">
                 <p className="text-gray-700 italic mb-2">
-                  "PartyOn Delivery managed every detail flawlessly. From the welcome reception 
+                  &ldquo;PartyOn Delivery managed every detail flawlessly. From the welcome reception 
                   featuring local craft spirits to the closing gala with premium wines, they 
-                  delivered experiences that impressed our most discerning clients."
+                  delivered experiences that impressed our most discerning clients.&rdquo;
                 </p>
                 <p className="text-sm text-gray-500">
                   — Rebecca Torres, VP of Events, Oracle Austin
@@ -395,7 +394,7 @@ export default function CorporateOfficesPartnerPage() {
           <p className="text-gray-300 mb-8 text-lg leading-relaxed">
             Join leading Austin companies in creating memorable experiences that 
             attract talent, impress clients, and celebrate success. Let our corporate 
-            team design a program that reflects your company's values and vision.
+            team design a program that reflects your company&apos;s values and vision.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
