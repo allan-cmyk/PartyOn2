@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from '@/components/Navigation';
 import ProductCard from '@/components/shopify/ProductCard';
 import CompactProductCard from '@/components/shopify/CompactProductCard';
 import MobileProductCard from '@/components/mobile/MobileProductCard';
@@ -16,7 +16,8 @@ import { SEARCH_PRODUCTS_QUERY } from '@/lib/shopify/queries/products';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import AIConcierge from '@/components/AIConcierge';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { getProductCategory } from '@/lib/shopify/categories';
+import { getProductCategory, FILTER_OPTIONS } from '@/lib/shopify/categories';
+import { CategoryIcon } from '@/components/CategoryIcons';
 
 function ProductsContent() {
   const searchParams = useSearchParams();
@@ -164,22 +165,23 @@ function ProductsContent() {
       
       // Map filter values to category keys
       const filterMap: Record<string, string> = {
-        'spirits': 'spirits',
-        'wine': 'wine',
+        'seltzers-champs': 'seltzersChamps',
         'beer': 'beer',
-        'mixers': 'mixers',
-        'party-supplies': 'partySupplies',
-        'liqueurs': 'liqueurs',
-        'non-alcoholic': 'mixers' // Non-alcoholic is part of mixers
+        'cocktails': 'cocktails',
+        'liquor': 'liquor',
+        'mixers-na': 'mixersNA',
+        'party-supplies': 'partySupplies'
       };
       
       const expectedCategory = filterMap[filter];
       if (expectedCategory && productCategory !== expectedCategory) return false;
     }
     
-    // Spirit type filter (only applicable for spirits) - using productType
-    if (spiritType !== 'all' && filter === 'spirits') {
-      if (product.productType !== spiritType) return false;
+    // Spirit type filter (only applicable for liquor) - using productType
+    if (spiritType !== 'all' && filter === 'liquor') {
+      const productType = product.productType?.toLowerCase() || '';
+      const spiritTypeLower = spiritType.toLowerCase();
+      if (!productType.includes(spiritTypeLower)) return false;
     }
     
     // Bottle size filter
@@ -253,7 +255,7 @@ function ProductsContent() {
   if (error) {
     return (
       <div className="bg-white min-h-screen">
-        <OldFashionedNavigation forceScrolled={true} />
+        <Navigation />
         <div className="max-w-7xl mx-auto px-8 py-16">
           <div className="bg-red-50 border border-red-200 p-6 rounded">
             <h2 className="text-red-800 font-serif text-xl mb-2">Error Loading Products</h2>
@@ -266,7 +268,7 @@ function ProductsContent() {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation forceScrolled={true} />
+      <Navigation />
       
       {/* Hero Section */}
       <section className="relative h-[40vh] mt-24 flex items-center justify-center overflow-hidden">
@@ -311,61 +313,78 @@ function ProductsContent() {
         <div className={`${isMobile ? 'px-4 py-3' : 'max-w-7xl mx-auto px-8 py-6'}`}>
           {/* Mobile Filter Button */}
           {isMobile ? (
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => setShowMobileFilters(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-gold-50 text-gold-700 rounded-lg text-sm font-medium"
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => setShowMobileFilters(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-gold-50 text-gold-700 rounded-lg text-sm font-medium"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                        d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" 
+                      />
+                    </svg>
+                    FILTERS
+                  </button>
+                  <span className="text-xs text-gray-500">
+                    {sortedProducts.length} items
+                  </span>
+                </div>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
-                      d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" 
-                    />
-                  </svg>
-                  FILTERS
-                </button>
-                <span className="text-xs text-gray-500">
-                  {sortedProducts.length} items
-                </span>
+                  <option value="bestsellers">Best Sellers</option>
+                  <option value="featured">Featured</option>
+                  <option value="price-asc">Price ↑</option>
+                  <option value="price-desc">Price ↓</option>
+                  <option value="name-asc">A-Z</option>
+                  <option value="name-desc">Z-A</option>
+                </select>
               </div>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
-              >
-                <option value="bestsellers">Best Sellers</option>
-                <option value="featured">Featured</option>
-                <option value="price-asc">Price ↑</option>
-                <option value="price-desc">Price ↓</option>
-                <option value="name-asc">A-Z</option>
-                <option value="name-desc">Z-A</option>
-              </select>
+              {/* Mobile Horizontal Category Scroll */}
+              <div className="overflow-x-auto -mx-4 px-4">
+                <div className="flex gap-2 pb-2">
+                  {FILTER_OPTIONS.mainCategories.map((category) => (
+                    <button
+                      key={category.value}
+                      onClick={() => {
+                        setFilter(category.value);
+                        setSpiritType('all');
+                      }}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 text-xs whitespace-nowrap transition-all ${
+                        filter === category.value
+                          ? 'bg-gold-600 text-white'
+                          : 'border border-gray-300 text-gray-700'
+                      }`}
+                    >
+                      <CategoryIcon category={category.value} className="w-3.5 h-3.5" />
+                      {category.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           ) : (
             <>
               {/* Desktop Category Filters */}
               <div className="flex flex-wrap gap-3 mb-4">
-                {[
-                  { value: 'all', label: 'All Products' },
-                  { value: 'spirits', label: 'Spirits' },
-                  { value: 'cocktail-kits', label: 'Cocktail Kits' },
-                  { value: 'party-supplies', label: 'Party Supplies' },
-                  { value: 'wine', label: 'Wine' },
-                  { value: 'beer', label: 'Beer & Seltzers' },
-                  { value: 'non-alcoholic', label: 'Non-Alcoholic' }
-                ].map((category) => (
+                {FILTER_OPTIONS.mainCategories.map((category) => (
                   <button
                     key={category.value}
                     onClick={() => {
                       setFilter(category.value);
                       setSpiritType('all'); // Reset spirit type when main category changes
                     }}
-                    className={`px-5 py-2 text-xs tracking-[0.1em] transition-all duration-300 ${
+                    className={`px-5 py-2.5 text-xs tracking-[0.1em] transition-all duration-300 flex items-center gap-2 ${
                       filter === category.value
                         ? 'bg-gold-600 text-white'
                         : 'border border-gray-300 text-gray-700 hover:border-gold-600'
                     }`}
                   >
+                    <CategoryIcon category={category.value} className="w-4 h-4" />
                     {category.label.toUpperCase()}
                   </button>
                 ))}
@@ -375,21 +394,16 @@ function ProductsContent() {
 
           {/* Advanced Filters Row */}
           <div className="flex flex-wrap gap-4 items-center">
-            {/* Spirit Type Filter - Only show when spirits is selected */}
-            {filter === 'spirits' && (
+            {/* Spirit Type Filter - Only show when liquor is selected */}
+            {filter === 'liquor' && (
               <select
                 value={spiritType}
                 onChange={(e) => setSpiritType(e.target.value)}
                 className="px-4 py-2 border border-gray-300 text-sm tracking-[0.05em] focus:border-gold-600 focus:outline-none"
               >
-                <option value="all">All Spirits</option>
-                <option value="vodka">Vodka</option>
-                <option value="tequila">Tequila & Mezcal</option>
-                <option value="whiskey">Whiskey & Bourbon</option>
-                <option value="rum">Rum</option>
-                <option value="gin">Gin</option>
-                <option value="liqueur">Liqueurs</option>
-                <option value="cognac">Cognac & Brandy</option>
+                {FILTER_OPTIONS.spiritTypes.map(type => (
+                  <option key={type.value} value={type.value}>{type.label}</option>
+                ))}
               </select>
             )}
 
@@ -662,15 +676,24 @@ function ProductsContent() {
           onSortChange={setSortBy}
           priceRange={priceRange}
           onPriceRangeChange={setPriceRange}
-          categories={[
-            { value: 'all', label: 'All Products', count: products.length },
-            { value: 'spirits', label: 'Spirits', count: products.filter(p => getProductCategory(p) === 'spirits').length },
-            { value: 'cocktail-kits', label: 'Cocktail Kits', count: products.filter(p => getProductCategory(p) === 'cocktail-kits').length },
-            { value: 'party-supplies', label: 'Party Supplies', count: products.filter(p => getProductCategory(p) === 'party-supplies').length },
-            { value: 'wine', label: 'Wine', count: products.filter(p => getProductCategory(p) === 'wine').length },
-            { value: 'beer', label: 'Beer & Seltzers', count: products.filter(p => getProductCategory(p) === 'beer').length },
-            { value: 'non-alcoholic', label: 'Non-Alcoholic', count: products.filter(p => getProductCategory(p) === 'non-alcoholic').length }
-          ]}
+          categories={FILTER_OPTIONS.mainCategories.map(cat => ({
+            value: cat.value,
+            label: cat.label,
+            count: cat.value === 'all' ? products.length : 
+                   products.filter(p => {
+                     const category = getProductCategory(p);
+                     const filterMap: Record<string, string> = {
+                       'seltzers-champs': 'seltzersChamps',
+                       'beer': 'beer', 
+                       'cocktails': 'cocktails',
+                       'liquor': 'liquor',
+                       'mixers-na': 'mixersNA',
+                       'party-supplies': 'partySupplies'
+                     };
+                     return category === filterMap[cat.value];
+                   }).length
+          }))}
+        
         />
       )}
     </div>
@@ -681,7 +704,7 @@ export default function ProductsPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-white">
-        <OldFashionedNavigation forceScrolled={true} />
+        <Navigation />
         <div className="pt-32 pb-16 text-center">
           <div className="animate-pulse">
             <div className="h-8 w-48 bg-gray-200 mx-auto rounded"></div>

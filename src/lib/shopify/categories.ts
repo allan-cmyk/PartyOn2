@@ -1,30 +1,41 @@
 // Product categorization based on actual Shopify data structure
 
 export const PRODUCT_CATEGORIES = {
-  // Main categories based on collections
-  spirits: {
-    label: 'Spirits',
-    handle: 'spirits',
-    productTypes: ['Vodka', 'Tequila', 'Whiskey', 'Bourbon', 'Gin', 'Rum', 'Liquor & Spirits'],
-    collections: ['spirits', 'gin-rum', 'tequila-mezcal', 'bourbon-rye']
-  },
-  wine: {
-    label: 'Wine & Champagne',
-    handle: 'wine-champagne',
-    productTypes: ['wine', 'champagne'],
-    collections: ['champagne', 'seltzers-wine-champagne']
+  // Main categories matching order.partyondelivery.com
+  seltzersChamps: {
+    label: 'Seltzers & Champs',
+    handle: 'seltzers-champs',
+    productTypes: ['Seltzer', 'champagne', 'Prosecco', 'Sparkling Wine'],
+    collections: ['seltzer-collection', 'seltzers-wine-champagne', 'champagne'],
+    keywords: ['seltzer', 'hard seltzer', 'champagne', 'prosecco', 'sparkling', 'cava', 'brut']
   },
   beer: {
-    label: 'Beer & Seltzers',
-    handle: 'beer-seltzers',
-    productTypes: ['beer and seltzers', 'Seltzer'],
-    collections: ['seltzer-collection', 'seltzers-wine-champagne']
+    label: 'Beer',
+    handle: 'beer',
+    productTypes: ['beer and seltzers', 'Beer', 'Lager', 'IPA', 'Ale', 'Stout'],
+    collections: ['beer', 'beer-collection'],
+    keywords: ['beer', 'lager', 'ipa', 'ale', 'stout', 'pilsner', 'porter', 'wheat beer']
   },
-  mixers: {
-    label: 'Mixers & Non-Alcoholic',
-    handle: 'mixers',
-    productTypes: ['Cocktail Mixes', 'non alcoholic', 'sparkling water', 'water', 'Juice', 'ice'],
-    collections: ['mixers-non-alcoholic', 'liqueurs-cordials-cocktail-ingredients']
+  cocktails: {
+    label: 'Cocktails',
+    handle: 'cocktails',
+    productTypes: ['Cocktail', 'Cocktail Kits', 'Ready to Drink', 'RTD', 'Canned Cocktails'],
+    collections: ['cocktails', 'ready-to-drink', 'canned-cocktails'],
+    keywords: ['cocktail', 'mixed drink', 'ready to drink', 'rtd', 'canned', 'margarita', 'mojito', 'manhattan']
+  },
+  liquor: {
+    label: 'Liquor',
+    handle: 'liquor',
+    productTypes: ['Vodka', 'Tequila', 'Whiskey', 'Bourbon', 'Gin', 'Rum', 'Liquor & Spirits', 'Cognac', 'Brandy', 'Scotch', 'Rye'],
+    collections: ['spirits', 'gin-rum', 'tequila-mezcal', 'bourbon-rye', 'vodka', 'whiskey'],
+    keywords: ['vodka', 'tequila', 'whiskey', 'bourbon', 'gin', 'rum', 'scotch', 'cognac', 'brandy', 'mezcal', 'rye']
+  },
+  mixersNA: {
+    label: 'Mixers/NA',
+    handle: 'mixers-na',
+    productTypes: ['Cocktail Mixes', 'non alcoholic', 'sparkling water', 'water', 'Juice', 'ice', 'Mixer', 'Tonic', 'Soda'],
+    collections: ['mixers-non-alcoholic', 'liqueurs-cordials-cocktail-ingredients', 'mixers'],
+    keywords: ['mixer', 'tonic', 'soda', 'juice', 'ginger beer', 'club soda', 'water', 'ice', 'non-alcoholic', 'margarita mix', 'bloody mary mix']
   },
   partySupplies: {
     label: 'Party Supplies',
@@ -35,20 +46,14 @@ export const PRODUCT_CATEGORIES = {
       'Necklaces', 'Shot Glass Necklace', 'Sashes', 'Temporary Tattoos',
       'Photo Booth Props', 'Tinsel Foil Curtains', 'Party Decoration',
       'Bachelorette Party Decoration Set', 'bag', 'cocktail shaker & tools',
-      'Tablecloths', 'Hat', 'sweetener', 'Cocktail', 'Cocktail Kits',
-      'Chill Supplies'
+      'Tablecloths', 'Hat', 'sweetener', 'Chill Supplies'
     ],
     collections: [
       'party-supplies', 'all-party-supplies', 'decorations', 'costumes',
       'hats-sunglasses', 'bachelorette-supplies', 'drinkware-bartending-tools',
       'disco-collection', 'chill-supplies'
-    ]
-  },
-  liqueurs: {
-    label: 'Liqueurs & Cordials',
-    handle: 'liqueurs',
-    productTypes: ['Liqueurs', 'Cordials'],
-    collections: ['liqueurs-cordials-cocktail-ingredients']
+    ],
+    keywords: ['cup', 'straw', 'napkin', 'decoration', 'party', 'supplies', 'accessories', 'drinkware']
   }
 };
 
@@ -57,9 +62,12 @@ export function getProductCategory(product: {
   productType?: string;
   collections?: { edges: Array<{ node: { handle: string } }> };
   tags?: string[];
+  title?: string;
 }): string {
   const productType = product.productType?.toLowerCase() || '';
   const collections = product.collections?.edges.map(e => e.node.handle) || [];
+  const title = product.title?.toLowerCase() || '';
+  const tags = product.tags?.map(t => t.toLowerCase()) || [];
   
   // Check each category
   for (const [key, category] of Object.entries(PRODUCT_CATEGORIES)) {
@@ -72,26 +80,45 @@ export function getProductCategory(product: {
     if (collections.some(c => category.collections.includes(c))) {
       return key;
     }
+    
+    // Check keywords in title
+    if (category.keywords && category.keywords.some(keyword => title.includes(keyword))) {
+      return key;
+    }
+    
+    // Check keywords in tags
+    if (category.keywords && tags.some(tag => category.keywords.some(keyword => tag.includes(keyword)))) {
+      return key;
+    }
   }
   
-  // Default fallback based on product type keywords
-  if (productType.includes('vodka') || productType.includes('tequila') || 
-      productType.includes('whiskey') || productType.includes('bourbon') ||
-      productType.includes('gin') || productType.includes('rum')) {
-    return 'spirits';
+  // Default fallback - check title for common liquor types
+  if (title.includes('vodka') || title.includes('tequila') || 
+      title.includes('whiskey') || title.includes('bourbon') ||
+      title.includes('gin') || title.includes('rum') ||
+      title.includes('scotch') || title.includes('cognac')) {
+    return 'liquor';
   }
   
-  if (productType.includes('wine') || productType.includes('champagne')) {
-    return 'wine';
+  if (title.includes('seltzer') || title.includes('champagne') || 
+      title.includes('prosecco') || title.includes('sparkling')) {
+    return 'seltzersChamps';
   }
   
-  if (productType.includes('beer') || productType.includes('seltzer')) {
+  if (title.includes('beer') || title.includes('lager') || 
+      title.includes('ipa') || title.includes('ale')) {
     return 'beer';
   }
   
-  if (productType.includes('mix') || productType.includes('non') || 
-      productType.includes('water') || productType.includes('juice')) {
-    return 'mixers';
+  if (title.includes('cocktail') || title.includes('margarita') || 
+      title.includes('mojito')) {
+    return 'cocktails';
+  }
+  
+  if (title.includes('mix') || title.includes('juice') || 
+      title.includes('water') || title.includes('tonic') ||
+      title.includes('soda') || title.includes('non-alcoholic')) {
+    return 'mixersNA';
   }
   
   // Default to party supplies for everything else
@@ -120,21 +147,23 @@ export function getUniqueProductTypes(products: Array<{ productType?: string }>)
 export const FILTER_OPTIONS = {
   mainCategories: [
     { value: 'all', label: 'All Products' },
-    { value: 'spirits', label: 'Spirits' },
-    { value: 'wine', label: 'Wine & Champagne' },
-    { value: 'beer', label: 'Beer & Seltzers' },
-    { value: 'mixers', label: 'Mixers & Non-Alcoholic' },
-    { value: 'liqueurs', label: 'Liqueurs & Cordials' },
+    { value: 'seltzers-champs', label: 'Seltzers & Champs' },
+    { value: 'beer', label: 'Beer' },
+    { value: 'cocktails', label: 'Cocktails' },
+    { value: 'liquor', label: 'Liquor' },
+    { value: 'mixers-na', label: 'Mixers/NA' },
     { value: 'party-supplies', label: 'Party Supplies' }
   ],
   spiritTypes: [
-    { value: 'all', label: 'All Spirits' },
+    { value: 'all', label: 'All Liquor' },
     { value: 'Vodka', label: 'Vodka' },
     { value: 'Tequila', label: 'Tequila' },
     { value: 'Whiskey', label: 'Whiskey' },
     { value: 'Bourbon', label: 'Bourbon' },
     { value: 'Gin', label: 'Gin' },
-    { value: 'Rum', label: 'Rum' }
+    { value: 'Rum', label: 'Rum' },
+    { value: 'Cognac', label: 'Cognac' },
+    { value: 'Scotch', label: 'Scotch' }
   ],
   sortOptions: [
     { value: 'featured', label: 'Featured' },

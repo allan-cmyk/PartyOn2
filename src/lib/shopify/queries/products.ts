@@ -12,6 +12,14 @@ export const PRODUCTS_QUERY = gql`
           vendor
           productType
           tags
+          collections(first: 5) {
+            edges {
+              node {
+                handle
+                title
+              }
+            }
+          }
           priceRange {
             minVariantPrice {
               amount
@@ -225,6 +233,14 @@ export const SEARCH_PRODUCTS_QUERY = gql`
           vendor
           productType
           tags
+          collections(first: 5) {
+            edges {
+              node {
+                handle
+                title
+              }
+            }
+          }
           priceRange {
             minVariantPrice {
               amount
