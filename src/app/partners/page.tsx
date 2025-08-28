@@ -250,9 +250,6 @@ export default function PartnersPage() {
                   </motion.div>
                 )}
               </div>
-                  <div className="mt-4 text-gold-600 text-sm tracking-[0.1em] group-hover:text-gold-700 transition-colors">
-                    LEARN MORE →
-                  </div>
             ))}
           </div>
         </div>

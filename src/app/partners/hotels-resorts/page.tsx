@@ -5,10 +5,11 @@ import Image from 'next/image'
 import OldFashionedNavigation from '@/components/OldFashionedNavigation'
 import Footer from '@/components/Footer'
 import { motion } from 'framer-motion'
-import Link from 'next/link'
 
 export default function HotelsResortsPartnerPage() {
   const [activeTab, setActiveTab] = useState('overview')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitMessage, setSubmitMessage] = useState('')
   const [formData, setFormData] = useState({
     hotelName: '',
     contactName: '',
@@ -41,10 +42,44 @@ export default function HotelsResortsPartnerPage() {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Partner inquiry submitted:', formData)
-    // Handle form submission
+    setIsSubmitting(true)
+    setSubmitMessage('')
+    
+    try {
+      const response = await fetch('/api/partners/inquiry', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        setSubmitMessage(data.message)
+        // Reset form
+        setFormData({
+          hotelName: '',
+          contactName: '',
+          email: '',
+          phone: '',
+          numberOfRooms: '',
+          currentProvider: '',
+          monthlyVolume: '',
+          interests: []
+        })
+      } else {
+        setSubmitMessage(data.error || 'Failed to submit. Please try again.')
+      }
+    } catch (error) {
+      console.error('Submit error:', error)
+      setSubmitMessage('An error occurred. Please try again later.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -861,9 +896,10 @@ export default function HotelsResortsPartnerPage() {
             <div className="flex flex-col sm:flex-row gap-4">
               <button
                 type="submit"
-                className="flex-1 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em]"
+                disabled={isSubmitting}
+                className="flex-1 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                SUBMIT PARTNERSHIP INQUIRY
+                {isSubmitting ? 'SUBMITTING...' : 'SUBMIT PARTNERSHIP INQUIRY'}
               </button>
               <button
                 type="button"
@@ -873,6 +909,12 @@ export default function HotelsResortsPartnerPage() {
               </button>
             </div>
           </form>
+          
+          {submitMessage && (
+            <div className={`mt-6 p-4 border ${submitMessage.includes('Thank you') ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+              {submitMessage}
+            </div>
+          )}
 
           <div className="text-center mt-8">
             <p className="text-sm text-gray-600">

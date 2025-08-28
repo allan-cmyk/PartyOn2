@@ -1,0 +1,116 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+// Partner Inquiries from the partner pages
+model PartnerInquiry {
+  id               String   @id @default(uuid())
+  businessName     String   @map("business_name")
+  businessType     String?  @map("business_type")
+  contactName      String   @map("contact_name")
+  email            String
+  phone            String?
+  numberOfRooms    String?  @map("number_of_rooms")
+  monthlyVolume    String?  @map("monthly_volume")
+  currentProvider  String?  @map("current_provider")
+  interests        String[]
+  message          String?
+  status           String   @default("new")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@index([email])
+  @@map("partner_inquiries")
+}
+
+// Group Orders - for group ordering feature
+model GroupOrder {
+  id                  String              @id @default(uuid())
+  name                String
+  hostCustomerId      String              @map("host_customer_id")
+  hostName            String?             @map("host_name")
+  shareCode           String              @unique @map("share_code")
+  status              GroupOrderStatus    @default(ACTIVE)
+  deliveryDate        DateTime            @map("delivery_date")
+  deliveryTime        String              @map("delivery_time")
+  deliveryAddress     Json                @map("delivery_address")
+  minimumOrderAmount  Decimal             @default(100.00) @map("minimum_order_amount")
+  expiresAt           DateTime            @map("expires_at")
+  createdAt           DateTime            @default(now()) @map("created_at")
+  updatedAt           DateTime            @updatedAt @map("updated_at")
+  
+  participants        GroupParticipant[]
+  orderAnalytics      OrderAnalytics[]
+
+  @@index([shareCode])
+  @@index([hostCustomerId])
+  @@map("group_orders")
+}
+
+// Participants in group orders
+model GroupParticipant {
+  id            String            @id @default(uuid())
+  groupOrderId  String            @map("group_order_id")
+  customerId    String?           @map("customer_id")
+  guestName     String?           @map("guest_name")
+  guestEmail    String?           @map("guest_email")
+  cartId        String            @map("cart_id")
+  ageVerified   Boolean           @default(false) @map("age_verified")
+  status        ParticipantStatus @default(ACTIVE)
+  cartTotal     Decimal           @default(0) @map("cart_total")
+  itemCount     Int               @default(0) @map("item_count")
+  joinedAt      DateTime          @default(now()) @map("joined_at")
+  
+  groupOrder    GroupOrder        @relation(fields: [groupOrderId], references: [id], onDelete: Cascade)
+
+  @@unique([groupOrderId, cartId])
+  @@index([groupOrderId])
+  @@index([cartId])
+  @@map("group_participants")
+}
+
+// Order Analytics - supplementary data for Shopify orders
+model OrderAnalytics {
+  id              String      @id @default(uuid())
+  shopifyOrderId  String?     @unique @map("shopify_order_id")
+  customerId      String      @map("customer_id")
+  orderTotal      Decimal     @map("order_total")
+  deliveryDate    DateTime?   @map("delivery_date")
+  deliveryTime    String?     @map("delivery_time")
+  deliveryAddress Json?       @map("delivery_address")
+  orderSource     OrderSource @map("order_source")
+  partnerId       String?     @map("partner_id")
+  groupOrderId    String?     @map("group_order_id")
+  createdAt       DateTime    @default(now()) @map("created_at")
+  
+  groupOrder      GroupOrder? @relation(fields: [groupOrderId], references: [id])
+
+  @@index([customerId])
+  @@map("order_analytics")
+}
+
+// Enums
+enum GroupOrderStatus {
+  ACTIVE
+  LOCKED
+  COMPLETED
+  CANCELLED
+}
+
+enum ParticipantStatus {
+  ACTIVE
+  REMOVED
+}
+
+enum OrderSource {
+  DIRECT
+  GROUP
+  PARTNER
+}
