@@ -24,10 +24,19 @@ export const isKVConfigured = () => {
   )
 }
 
-// Export a stub for KV - will be replaced with actual when configured
-export const kv = {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// KV (Redis) client
+let kvClient: any = null
+
+if (isKVConfigured()) {
+  try {
+    const { kv: vercelKv } = require('@vercel/kv')
+    kvClient = vercelKv
+  } catch (error) {
+    console.warn('KV client not available:', error)
+  }
+}
+
+export const kv = kvClient || {
   get: async (_key: string) => null,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   set: async (_key: string, _value: unknown, _options?: Record<string, unknown>) => null,
 }
