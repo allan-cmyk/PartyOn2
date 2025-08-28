@@ -144,7 +144,7 @@ export default function CheckoutSuccessPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-white">
-        <OldFashionedNavigation />
+        <OldFashionedNavigation forceScrolled={true} />
         <div className="pt-32 pb-16 text-center">
           <div className="animate-pulse">
             <div className="h-8 w-48 bg-gray-200 mx-auto rounded"></div>
