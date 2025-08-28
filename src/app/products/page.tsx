@@ -16,6 +16,7 @@ import { SEARCH_PRODUCTS_QUERY } from '@/lib/shopify/queries/products';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import AIConcierge from '@/components/AIConcierge';
 import AgeVerificationModal from '@/components/AgeVerificationModal';
+import ProductModal from '@/components/ProductModal';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { getProductCategory, FILTER_OPTIONS } from '@/lib/shopify/categories';
 import { CategoryIcon } from '@/components/CategoryIcons';
@@ -43,6 +44,10 @@ function ProductsContent() {
   
   // View mode state for compact/regular view
   const [isCompactView, setIsCompactView] = useState(true);
+  
+  // Product modal state
+  const [selectedProduct, setSelectedProduct] = useState<ShopifyProduct | null>(null);
+  const [showProductModal, setShowProductModal] = useState(false);
 
   // Check age verification on mount
   useEffect(() => {
@@ -60,6 +65,11 @@ function ProductsContent() {
     if (!isAgeVerified) {
       setShowAgeVerification(true);
     }
+  };
+
+  const handleProductClick = (product: ShopifyProduct) => {
+    setSelectedProduct(product);
+    setShowProductModal(true);
   };
 
   // Infinite scroll implementation
@@ -576,11 +586,11 @@ function ProductsContent() {
                   // Use index as part of key to avoid duplicates
                   const uniqueKey = `${product.id}-${index}`;
                   if (isMobile) {
-                    return <MobileProductCard key={uniqueKey} product={product} index={index} />
+                    return <MobileProductCard key={uniqueKey} product={product} index={index} onProductClick={handleProductClick} />
                   }
                   return isCompactView 
-                    ? <CompactProductCard key={uniqueKey} product={product} index={index} />
-                    : <ProductCard key={uniqueKey} product={product} index={index} />
+                    ? <CompactProductCard key={uniqueKey} product={product} index={index} onProductClick={handleProductClick} />
+                    : <ProductCard key={uniqueKey} product={product} index={index} onProductClick={handleProductClick} />
                 })}
               </div>
 
@@ -711,6 +721,12 @@ function ProductsContent() {
         isOpen={showAgeVerification}
         onClose={() => setShowAgeVerification(false)}
         onVerify={handleAgeVerified}
+      />
+      
+      <ProductModal
+        product={selectedProduct}
+        isOpen={showProductModal}
+        onClose={() => setShowProductModal(false)}
       />
       
       {/* Mobile Filter Drawer */}
