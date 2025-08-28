@@ -71,7 +71,7 @@ export default function CorporateEventsPage() {
       {/* Hero Section */}
       <section className="relative h-[60vh] min-h-[500px] flex items-center">
         <Image
-          src="/images/austin-skyline-golden-hour.webp"
+          src="/images/hero/austin-skyline-golden-hour.webp"
           alt="Austin skyline at golden hour"
           fill
           className="object-cover"
