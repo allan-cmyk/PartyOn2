@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface AgeVerificationModalProps {
   isOpen: boolean
@@ -9,113 +9,106 @@ interface AgeVerificationModalProps {
 }
 
 export default function AgeVerificationModal({ isOpen, onClose, onVerify }: AgeVerificationModalProps) {
-  const [birthDate, setBirthDate] = useState('')
-  const [error, setError] = useState('')
-
-  const handleVerify = (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-
-    if (!birthDate) {
-      setError('Please enter your date of birth')
-      return
-    }
-
-    const today = new Date()
-    const birth = new Date(birthDate)
-    let age = today.getFullYear() - birth.getFullYear()
-    const monthDiff = today.getMonth() - birth.getMonth()
-    
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-      age--
-    }
-
-    if (age >= 21) {
-      localStorage.setItem('ageVerified', 'true')
-      onVerify()
-      onClose()
-    } else {
-      setError('You must be 21 or older to purchase alcohol')
-    }
+  const handleYes = () => {
+    localStorage.setItem('age_verified', 'true')
+    onVerify()
+    onClose()
   }
 
-  if (!isOpen) return null
+  const handleNo = () => {
+    onClose()
+    // Optionally redirect to a different page
+    window.location.href = 'https://www.google.com'
+  }
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95">
-      <div className="bg-white max-w-md w-full mx-4 p-12 border border-gray-200">
-        {/* Logo */}
-        <div className="text-center mb-12">
-          <h1 className="font-serif text-5xl text-gray-900 tracking-[0.3em]">
-            PARTYON
-          </h1>
-          <div className="mt-2 w-24 h-px bg-gold-600 mx-auto"></div>
-        </div>
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm"
+        >
+          <motion.div 
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            transition={{ type: "spring", duration: 0.5 }}
+            className="bg-white max-w-md w-full mx-4 border border-gold-600/20 shadow-2xl"
+          >
+            {/* Elegant Header */}
+            <div className="bg-gradient-to-b from-gray-50 to-white px-12 pt-12 pb-8">
+              <div className="text-center">
+                <h1 className="font-serif text-5xl text-gray-900 tracking-[0.25em] mb-2">
+                  PARTYON
+                </h1>
+                <div className="w-20 h-px bg-gold-600 mx-auto"></div>
+              </div>
+            </div>
 
-        {/* Content */}
-        <div className="text-center space-y-4 mb-10">
-          <h2 className="font-serif text-2xl text-gray-900 tracking-[0.1em]">
-            Age Verification Required
-          </h2>
-          <p className="text-gray-600 leading-relaxed">
-            You must be 21 years or older to join this group order. Please verify your age to continue.
-          </p>
-        </div>
+            {/* Content */}
+            <div className="px-12 pb-12">
+              <div className="text-center mb-10">
+                <div className="w-20 h-20 mx-auto mb-6 bg-gold-50 rounded-full flex items-center justify-center">
+                  <svg className="w-10 h-10 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" 
+                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </div>
+                
+                <h2 className="font-serif text-2xl text-gray-900 tracking-[0.1em] mb-4">
+                  Age Verification
+                </h2>
+                
+                <p className="text-gray-600 leading-relaxed">
+                  Premium spirits and fine wines require verification
+                </p>
+              </div>
 
-        {/* Form */}
-        <form onSubmit={handleVerify} className="space-y-6">
-          <div>
-            <label htmlFor="birthdate" className="block text-sm font-light text-gray-700 mb-2 tracking-[0.1em]">
-              DATE OF BIRTH
-            </label>
-            <input
-              type="date"
-              id="birthdate"
-              value={birthDate}
-              onChange={(e) => setBirthDate(e.target.value)}
-              max={new Date().toISOString().split('T')[0]}
-              className="w-full px-4 py-3 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
-              required
-            />
-          </div>
+              {/* Question */}
+              <div className="bg-gray-50 py-8 px-6 mb-8 text-center">
+                <p className="text-lg text-gray-800 font-light tracking-wide">
+                  Are you 21 years of age or older?
+                </p>
+              </div>
 
-          {error && (
-            <p className="text-red-600 text-sm text-center">
-              {error}
-            </p>
-          )}
+              {/* Buttons */}
+              <div className="grid grid-cols-2 gap-4">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleYes}
+                  className="py-4 bg-gold-600 text-white font-medium tracking-[0.15em] text-sm hover:bg-gold-700 transition-colors"
+                >
+                  YES, I AM 21+
+                </motion.button>
+                
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleNo}
+                  className="py-4 border border-gray-300 text-gray-700 font-medium tracking-[0.15em] text-sm hover:bg-gray-50 transition-colors"
+                >
+                  NO
+                </motion.button>
+              </div>
 
-          <div className="space-y-3">
-            <button
-              type="submit"
-              className="w-full py-4 bg-gold-600 text-white tracking-[0.15em] text-sm hover:bg-gold-700 transition-colors"
-            >
-              VERIFY AGE
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="w-full py-4 border border-gray-300 text-gray-700 tracking-[0.15em] text-sm hover:border-gray-400 transition-colors"
-            >
-              CANCEL
-            </button>
-          </div>
-        </form>
+              {/* Legal Text */}
+              <p className="mt-8 text-xs text-gray-500 text-center leading-relaxed px-4">
+                By entering this site, you agree to our{' '}
+                <a href="/terms" className="underline hover:text-gold-600">Terms of Service</a>
+                {' '}and{' '}
+                <a href="/privacy" className="underline hover:text-gold-600">Privacy Policy</a>,
+                and confirm that you are of legal drinking age in your jurisdiction.
+              </p>
+            </div>
 
-        {/* Legal Text */}
-        <p className="mt-8 text-xs text-gray-500 text-center leading-relaxed">
-          By verifying your age, you confirm that you are of legal drinking age in your jurisdiction.
-        </p>
-
-        {/* Decorative Elements */}
-        <div className="mt-8 flex items-center justify-center space-x-4">
-          <div className="h-px bg-gray-300 flex-1"></div>
-          <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-          </svg>
-          <div className="h-px bg-gray-300 flex-1"></div>
-        </div>
-      </div>
-    </div>
+            {/* Decorative Bottom Border */}
+            <div className="h-1 bg-gradient-to-r from-gold-500 via-gold-600 to-gold-500"></div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }

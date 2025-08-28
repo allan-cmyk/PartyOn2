@@ -17,6 +17,8 @@ export default function CompactProductCard({ product, index = 0 }: CompactProduc
   const { addToCart, loading: cartLoading } = useCart();
   const [isAdding, setIsAdding] = useState(false);
   const [showAgeVerification, setShowAgeVerification] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [isHovered, setIsHovered] = useState(false);
   const imageUrl = getProductImageUrl(product);
   const variant = getFirstAvailableVariant(product);
   const price = product.priceRange.minVariantPrice;
@@ -34,12 +36,20 @@ export default function CompactProductCard({ product, index = 0 }: CompactProduc
     
     setIsAdding(true);
     try {
-      await addToCart(variant.id, 1);
+      await addToCart(variant.id, quantity);
+      setQuantity(1); // Reset quantity after adding
     } catch (error) {
       console.error('Error adding to cart:', error);
     } finally {
       setIsAdding(false);
     }
+  };
+
+  const handleQuantityChange = (e: React.MouseEvent, delta: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const newQuantity = Math.max(1, Math.min(99, quantity + delta));
+    setQuantity(newQuantity);
   };
 
   const handleAgeVerified = async () => {
@@ -49,7 +59,8 @@ export default function CompactProductCard({ product, index = 0 }: CompactProduc
     if (variant?.id && variant.availableForSale) {
       setIsAdding(true);
       try {
-        await addToCart(variant.id, 1);
+        await addToCart(variant.id, quantity);
+        setQuantity(1); // Reset quantity after adding
       } catch (error) {
         console.error('Error adding to cart:', error);
       } finally {
@@ -64,6 +75,8 @@ export default function CompactProductCard({ product, index = 0 }: CompactProduc
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.05 }}
       className="group"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <div className="bg-white border border-gray-200 hover:border-gold-600 transition-all duration-200 overflow-hidden">
         {/* Compact Image - Square aspect ratio */}
@@ -122,37 +135,65 @@ export default function CompactProductCard({ product, index = 0 }: CompactProduc
             </p>
           )}
 
-          {/* Price and Cart Button Row */}
-          <div className="flex items-center justify-between">
-            <p className="font-medium text-base text-gray-900">
-              {formatPrice(price.amount, price.currencyCode)}
-            </p>
-            
-            {/* Compact Cart Icon Button */}
+          {/* Price */}
+          <p className="font-medium text-base text-gray-900 mb-2">
+            {formatPrice(price.amount, price.currencyCode)}
+          </p>
+
+          {/* Quantity and Add to Cart */}
+          {isHovered || quantity > 1 ? (
+            <div className="flex items-center gap-2">
+              {/* Quantity Selector */}
+              <div className="flex items-center border border-gray-300 rounded">
+                <button
+                  onClick={(e) => handleQuantityChange(e, -1)}
+                  className="px-2 py-1 text-gray-600 hover:bg-gray-50 transition-colors"
+                  aria-label="Decrease quantity"
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H4" />
+                  </svg>
+                </button>
+                <span className="px-3 py-1 text-sm font-medium text-gray-900 min-w-[2rem] text-center">
+                  {quantity}
+                </span>
+                <button
+                  onClick={(e) => handleQuantityChange(e, 1)}
+                  className="px-2 py-1 text-gray-600 hover:bg-gray-50 transition-colors"
+                  aria-label="Increase quantity"
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                  </svg>
+                </button>
+              </div>
+              
+              {/* Add Button */}
+              <button
+                onClick={handleAddToCart}
+                disabled={!variant?.availableForSale || isAdding || cartLoading}
+                className={`flex-1 py-1.5 px-3 text-xs font-medium tracking-wider transition-colors ${
+                  variant?.availableForSale && !isAdding && !cartLoading
+                    ? 'bg-gold-600 text-white hover:bg-gold-700'
+                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                {isAdding || cartLoading ? 'ADDING...' : 'ADD'}
+              </button>
+            </div>
+          ) : (
             <button
               onClick={handleAddToCart}
               disabled={!variant?.availableForSale || isAdding || cartLoading}
-              className={`p-1.5 rounded transition-colors ${
+              className={`w-full py-1.5 text-xs font-medium tracking-wider transition-colors ${
                 variant?.availableForSale && !isAdding && !cartLoading
                   ? 'bg-gold-600 text-white hover:bg-gold-700'
                   : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
-              aria-label="Add to cart"
             >
-              {isAdding || cartLoading ? (
-                <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-              ) : (
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
-                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" 
-                  />
-                </svg>
-              )}
+              {variant?.availableForSale ? 'QUICK ADD' : 'SOLD OUT'}
             </button>
-          </div>
+          )}
         </div>
       </div>
 

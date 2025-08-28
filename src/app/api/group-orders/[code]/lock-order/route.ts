@@ -45,8 +45,8 @@ export async function POST(
       .filter(p => p.status === 'active')
       .reduce((sum, p) => sum + (p.cartTotal || 0), 0)
 
-    // Check minimum order
-    if (totalAmount < groupOrder.minimumOrderAmount) {
+    // TESTING MODE: Skip minimum order check
+    /* if (totalAmount < groupOrder.minimumOrderAmount) {
       return NextResponse.json(
         { 
           error: 'Minimum order amount not met',
@@ -55,7 +55,7 @@ export async function POST(
         },
         { status: 400 }
       )
-    }
+    } */
 
     // Lock the order
     const lockedOrder = groupOrderStore.updateOrder(code, {

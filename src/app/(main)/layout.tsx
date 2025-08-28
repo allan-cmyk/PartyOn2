@@ -1,4 +1,4 @@
-import Navigation from "@/components/Navigation";
+import OldFashionedNavigation from "@/components/OldFashionedNavigation";
 import Footer from "@/components/Footer";
 
 export default function MainLayout({
@@ -8,7 +8,7 @@ export default function MainLayout({
 }) {
   return (
     <>
-      <Navigation />
+      <OldFashionedNavigation />
       {children}
       <Footer />
     </>

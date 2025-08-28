@@ -89,7 +89,7 @@ export default function OrderPage() {
       description: 'Build your own selection from our catalog',
       image: '/images/products/premium-spirits-wall.webp',
       guestRange: 'Any size',
-      priceRange: '$100 minimum',
+      priceRange: 'No minimum', // '$100 minimum' - TESTING MODE
       link: '/products',
       features: [
         'Choose individual items',
@@ -136,7 +136,8 @@ export default function OrderPage() {
             </div>
             
             <p className="text-sm text-gray-500">
-              72-hour advance notice required • $100 minimum order
+              {/* TESTING MODE: No restrictions */}
+              Order anytime • No minimum
             </p>
           </motion.div>
         </div>

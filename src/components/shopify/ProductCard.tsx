@@ -17,6 +17,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
   const { addToCart, loading: cartLoading } = useCart();
   const [isAdding, setIsAdding] = useState(false);
   const [showAgeVerification, setShowAgeVerification] = useState(false);
+  const [quantity, setQuantity] = useState(1);
   const imageUrl = getProductImageUrl(product);
   const variant = getFirstAvailableVariant(product);
   const price = product.priceRange.minVariantPrice;
@@ -35,12 +36,18 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
     
     setIsAdding(true);
     try {
-      await addToCart(variant.id, 1);
+      await addToCart(variant.id, quantity);
+      setQuantity(1); // Reset quantity after adding
     } catch (error) {
       console.error('Error adding to cart:', error);
     } finally {
       setIsAdding(false);
     }
+  };
+
+  const handleQuantityChange = (delta: number) => {
+    const newQuantity = Math.max(1, Math.min(99, quantity + delta));
+    setQuantity(newQuantity);
   };
 
   const handleAgeVerified = async () => {
@@ -51,7 +58,8 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
     if (variant?.id && variant.availableForSale) {
       setIsAdding(true);
       try {
-        await addToCart(variant.id, 1);
+        await addToCart(variant.id, quantity);
+        setQuantity(1); // Reset quantity after adding
       } catch (error) {
         console.error('Error adding to cart:', error);
       } finally {
@@ -131,6 +139,40 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
             )}
           </div>
 
+          {/* Quantity Selector */}
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs text-gray-600 tracking-[0.1em]">QUANTITY</span>
+            <div className="flex items-center border border-gray-300">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleQuantityChange(-1);
+                }}
+                className="px-3 py-1 text-gray-600 hover:bg-gray-50 transition-colors"
+                aria-label="Decrease quantity"
+              >
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H4" />
+                </svg>
+              </button>
+              <span className="px-4 py-1 text-sm font-medium text-gray-900 min-w-[3rem] text-center">
+                {quantity}
+              </span>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleQuantityChange(1);
+                }}
+                className="px-3 py-1 text-gray-600 hover:bg-gray-50 transition-colors"
+                aria-label="Increase quantity"
+              >
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
           {/* Action Buttons */}
           <div className="space-y-2">
             {/* Add to Cart Button - Always Visible */}
@@ -143,7 +185,13 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
                   : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
             >
-              {isAdding || cartLoading ? 'ADDING...' : !variant?.availableForSale ? 'OUT OF STOCK' : 'ADD TO CART'}
+              {isAdding || cartLoading 
+                ? 'ADDING...' 
+                : !variant?.availableForSale 
+                  ? 'OUT OF STOCK' 
+                  : quantity > 1 
+                    ? `ADD ${quantity} TO CART`
+                    : 'ADD TO CART'}
             </button>
 
             {/* View Details Button */}

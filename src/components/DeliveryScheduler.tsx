@@ -42,7 +42,8 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, subtotal
   const [isExpressDelivery, setIsExpressDelivery] = useState(false);
   
   // Get minimum date (3 hours for express, 72 hours for standard)
-  const minDate = isExpressDelivery ? new Date() : addDays(new Date(), 3);
+  // TESTING MODE: No time restrictions
+  const minDate = new Date(); // isExpressDelivery ? new Date() : addDays(new Date(), 3);
   const maxDate = addDays(new Date(), 30);
 
   // Available time slots
@@ -100,14 +101,16 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, subtotal
 
     if (!zipCode.trim()) {
       newErrors.zipCode = 'Please enter your ZIP code';
-    } else {
+    } 
+    // TESTING MODE: Accept all zip codes and no minimum order
+    /* else {
       const zone = getDeliveryZone(zipCode);
       if (!zone) {
         newErrors.zipCode = 'Sorry, we do not deliver to this area';
       } else if (subtotal < zone.minimum) {
         newErrors.minimum = `Minimum order for ${zone.name} is $${zone.minimum}`;
       }
-    }
+    } */
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;

@@ -19,11 +19,11 @@ export default function FAQsPage() {
         },
         {
           q: "What is your minimum order requirement?",
-          a: "Minimum orders vary by location: $100 for central Austin, $150 for outer areas. Special events may have higher minimums depending on service requirements."
+          a: "TESTING MODE: Currently no minimum order requirements. Normally $100 for central Austin, $150 for outer areas."
         },
         {
           q: "How far in advance must I place my order?",
-          a: "All orders require 72-hour advance notice. This ensures we can properly prepare for your event and coordinate with our licensed delivery personnel."
+          a: "TESTING MODE: Orders can be placed anytime. Normally 72-hour advance notice is required."
         },
         {
           q: "What are your delivery hours?",

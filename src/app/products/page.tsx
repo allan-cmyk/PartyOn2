@@ -15,6 +15,7 @@ import { shopifyFetch } from '@/lib/shopify/client';
 import { SEARCH_PRODUCTS_QUERY } from '@/lib/shopify/queries/products';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import AIConcierge from '@/components/AIConcierge';
+import AgeVerificationModal from '@/components/AgeVerificationModal';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { getProductCategory, FILTER_OPTIONS } from '@/lib/shopify/categories';
 import { CategoryIcon } from '@/components/CategoryIcons';
@@ -27,6 +28,8 @@ function ProductsContent() {
   const [searchLoading, setSearchLoading] = useState(false);
   const [filter, setFilter] = useState('all');
   const [sortBy, setSortBy] = useState('bestsellers');
+  const [showAgeVerification, setShowAgeVerification] = useState(false);
+  const [isAgeVerified, setIsAgeVerified] = useState(false);
   
   // Advanced filters
   const [spiritType, setSpiritType] = useState('all');
@@ -40,6 +43,24 @@ function ProductsContent() {
   
   // View mode state for compact/regular view
   const [isCompactView, setIsCompactView] = useState(true);
+
+  // Check age verification on mount
+  useEffect(() => {
+    const ageVerified = localStorage.getItem('age_verified') === 'true';
+    setIsAgeVerified(ageVerified);
+  }, []);
+
+  const handleAgeVerified = () => {
+    setShowAgeVerification(false);
+    setIsAgeVerified(true);
+    localStorage.setItem('age_verified', 'true');
+  };
+
+  const handleUnlock = () => {
+    if (!isAgeVerified) {
+      setShowAgeVerification(true);
+    }
+  };
 
   // Infinite scroll implementation
   useEffect(() => {
@@ -291,9 +312,29 @@ function ProductsContent() {
             CURATED COLLECTION
           </h1>
           <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
-          <p className="text-lg font-light tracking-[0.1em] text-gray-200">
+          <p className="text-lg font-light tracking-[0.1em] text-gray-200 mb-8">
             Premium Spirits & Fine Wines for Distinguished Celebrations
           </p>
+          
+          {/* Age Verification Unlock Button */}
+          {!isAgeVerified && (
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+              onClick={handleUnlock}
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gold-600 hover:bg-gold-700 text-white font-medium tracking-[0.15em] transition-all duration-300 group"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                  d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+              </svg>
+              UNLOCK PREMIUM COLLECTION
+              <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </motion.button>
+          )}
         </motion.div>
       </section>
 
@@ -664,6 +705,13 @@ function ProductsContent() {
       
       {/* AI Concierge */}
       <AIConcierge mode="elegant" />
+      
+      {/* Age Verification Modal */}
+      <AgeVerificationModal
+        isOpen={showAgeVerification}
+        onClose={() => setShowAgeVerification(false)}
+        onVerify={handleAgeVerified}
+      />
       
       {/* Mobile Filter Drawer */}
       {isMobile && (

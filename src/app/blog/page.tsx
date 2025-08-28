@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import Navigation from '@/components/Navigation'
+import OldFashionedNavigation from '@/components/OldFashionedNavigation'
 
 // Mock blog posts - in production, fetch from CMS or database
 const blogPosts = [
@@ -116,7 +116,7 @@ export default function BlogPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <Navigation />
+      <OldFashionedNavigation />
       
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-gray-50 to-white">

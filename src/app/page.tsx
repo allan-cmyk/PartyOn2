@@ -106,7 +106,7 @@ export default function HomePage() {
               },
               {
                 title: "Swift Delivery",
-                description: "Professional service within 72 hours, ensuring your event proceeds flawlessly",
+                description: "Professional service available anytime for testing", // "within 72 hours" - TESTING MODE
                 icon: (
                   <svg className="w-14 h-14 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -425,7 +425,8 @@ export default function HomePage() {
               Begin Your Experience
             </h2>
             <p className="text-gray-300 text-lg mb-12 tracking-[0.05em]">
-              Order 72 hours in advance for guaranteed availability
+              {/* TESTING MODE: No advance notice required */}
+              Order anytime - No restrictions for testing
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link href="/order">

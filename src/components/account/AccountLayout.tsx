@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useCustomerContext } from '@/contexts/CustomerContext'
-import Navigation from '@/components/Navigation'
+import OldFashionedNavigation from '@/components/OldFashionedNavigation'
 import { useState, useRef, ChangeEvent } from 'react'
 
 interface AccountLayoutProps {
@@ -154,33 +154,23 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
   return (
     <>
       {/* Include main navigation */}
-      <Navigation />
+      <OldFashionedNavigation />
       
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-24 relative overflow-hidden">
-        {/* Background decorative elements */}
-        <div className="absolute inset-0 pointer-events-none">
-          {/* Wine bottle silhouette */}
-          <div className="absolute top-40 right-10 opacity-5 transform rotate-12">
-            <svg width="200" height="600" viewBox="0 0 200 600" fill="currentColor" className="text-gray-900">
-              <path d="M100 0C90 0 85 10 85 20V100C85 110 80 120 80 140V500C80 550 90 580 100 580C110 580 120 550 120 500V140C120 120 115 110 115 100V20C115 10 110 0 100 0Z"/>
-              <ellipse cx="100" cy="140" rx="30" ry="10"/>
-            </svg>
+      <div className="min-h-screen bg-white">
+        {/* Hero Section with Dark Background */}
+        <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 pt-32 pb-20">
+          {/* Decorative Pattern Overlay */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0" style={{
+              backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(212, 175, 55, 0.1) 35px, rgba(212, 175, 55, 0.1) 70px)`,
+            }} />
           </div>
           
-          {/* Cocktail glass */}
-          <div className="absolute bottom-20 left-20 opacity-5 transform -rotate-12">
-            <svg width="150" height="200" viewBox="0 0 150 200" fill="currentColor" className="text-gray-900">
-              <path d="M25 10L75 100L75 170M75 170L50 190L100 190L75 170M125 10L75 100" stroke="currentColor" strokeWidth="4" fill="none"/>
-            </svg>
-          </div>
+          {/* Subtle gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/50 to-transparent" />
           
-          {/* Decorative circles */}
-          <div className="absolute top-60 left-1/3 w-96 h-96 bg-gold-500 rounded-full opacity-5 blur-3xl"></div>
-          <div className="absolute bottom-40 right-1/4 w-64 h-64 bg-purple-500 rounded-full opacity-5 blur-3xl"></div>
-        </div>
-
-        {/* Header with Profile */}
-        <div className="bg-white border-b border-gray-200 relative">
+          {/* Content */}
+          <div className="relative z-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-6">
@@ -190,10 +180,10 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
                     <img 
                       src={profileImage} 
                       alt="Profile" 
-                      className="w-20 h-20 rounded-full object-cover border-4 border-white shadow-lg"
+                      className="w-24 h-24 rounded-full object-cover border-4 border-gold-600/30 shadow-2xl"
                     />
                   ) : (
-                    <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${currentTier.color} flex items-center justify-center text-white text-2xl font-cormorant shadow-lg`}>
+                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-gold-500 to-gold-700 flex items-center justify-center text-white text-3xl font-serif shadow-2xl border-4 border-gold-600/30">
                       {getInitials(customer?.firstName, customer?.lastName)}
                     </div>
                   )}
@@ -213,53 +203,53 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
                     onChange={handleImageUpload}
                     className="hidden"
                   />
-                  <div className="absolute bottom-0 right-0 w-6 h-6 bg-green-500 border-2 border-white rounded-full"></div>
+                  <div className="absolute bottom-0 right-0 w-7 h-7 bg-green-500 border-3 border-gray-900 rounded-full"></div>
                 </div>
                 
                 {/* User Info */}
                 <div>
-                  <h1 className="text-2xl font-cormorant text-gray-900">
+                  <h1 className="text-3xl font-serif text-white tracking-[0.1em]">
                     {customer?.firstName || customer?.lastName 
                       ? `${customer.firstName || ''} ${customer.lastName || ''}`.trim()
                       : 'Welcome Back'}
                   </h1>
-                  <p className="text-sm text-gray-500">{customer?.email}</p>
-                  <div className="flex items-center space-x-3 mt-1">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${currentTier.bgColor} ${currentTier.textColor}`}>
-                      {currentTier.name} Member
+                  <p className="text-gray-300 mt-1">{customer?.email}</p>
+                  <div className="flex items-center space-x-3 mt-3">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gold-600/20 text-gold-400 border border-gold-600/30 tracking-wider">
+                      {currentTier.name.toUpperCase()} MEMBER
                     </span>
-                    <span className="text-xs text-gray-400">{getMemberSince()}</span>
+                    <span className="text-xs text-gray-400 tracking-wider">{getMemberSince()}</span>
                   </div>
                 </div>
               </div>
               
               {/* Quick Stats */}
-              <div className="hidden md:flex items-center space-x-8">
+              <div className="hidden md:flex items-center space-x-12">
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-gray-900">{customer?.orders?.edges?.length || 0}</p>
-                  <p className="text-xs text-gray-500 tracking-[0.1em]">ORDERS</p>
+                  <p className="text-3xl font-bold text-white">{customer?.orders?.edges?.length || 0}</p>
+                  <p className="text-xs text-gray-400 tracking-[0.15em] mt-1">ORDERS</p>
                 </div>
                 <div className="text-center">
-                  <p className={`text-2xl font-bold ${currentTier.textColor}`}>{currentTier.name}</p>
-                  <p className="text-xs text-gray-500 tracking-[0.1em]">TIER</p>
+                  <p className="text-3xl font-bold text-gold-400">{currentTier.name}</p>
+                  <p className="text-xs text-gray-400 tracking-[0.15em] mt-1">TIER</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-gray-900">{savedAddressCount}</p>
-                  <p className="text-xs text-gray-500 tracking-[0.1em]">ADDRESSES</p>
+                  <p className="text-3xl font-bold text-white">{savedAddressCount}</p>
+                  <p className="text-xs text-gray-400 tracking-[0.15em] mt-1">ADDRESSES</p>
                 </div>
               </div>
             </div>
 
             {/* Tier Progress Bar */}
             {nextTier && (
-              <div className="mt-6">
-                <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
+              <div className="mt-8">
+                <div className="flex items-center justify-between text-xs text-gray-300 mb-2">
                   <span>{currentTier.name} Member</span>
-                  <span>${(nextTier.min - totalSpent).toFixed(0)} to {nextTier.name}</span>
+                  <span className="text-gold-400">${(nextTier.min - totalSpent).toFixed(0)} to {nextTier.name}</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
                   <div 
-                    className={`h-full bg-gradient-to-r ${currentTier.color} transition-all duration-500`}
+                    className="h-full bg-gradient-to-r from-gold-400 to-gold-600 transition-all duration-500"
                     style={{ width: `${progressToNextTier}%` }}
                   />
                 </div>
@@ -270,10 +260,11 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
               </div>
             )}
           </div>
+          </div>
         </div>
         
         {/* Navigation Tabs */}
-        <div className="bg-white border-b border-gray-200">
+        <div className="bg-white border-b border-gray-200 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <nav className="flex space-x-8">
               {navigation.map((item) => {
@@ -298,13 +289,15 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
         </div>
         
         {/* Page Content */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
-          {title && (
-            <h2 className="text-3xl font-cormorant text-gray-900 mb-6 tracking-[0.1em]">
-              {title}
-            </h2>
-          )}
-          {children}
+        <div className="bg-gray-50 min-h-[60vh]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            {title && (
+              <h2 className="text-3xl font-serif text-gray-900 mb-8 tracking-[0.1em]">
+                {title}
+              </h2>
+            )}
+            {children}
+          </div>
         </div>
       </div>
     </>
