@@ -51,7 +51,7 @@ export const db = {
         // Try KV first for fast lookup
         let orderId: string | null = null
         if (isKVConfigured()) {
-          orderId = await kv.get(`share:${shareCode}`)
+          orderId = await kv.get(`share:${shareCode}`) as string | null
         }
 
         // Get from Postgres
