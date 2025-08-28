@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/lib/shopify/hooks/useCart'
 import OldFashionedNavigation from '@/components/OldFashionedNavigation'
-import { formatPrice } from '@/lib/shopify/utils'
+// import { formatPrice } from '@/lib/shopify/utils' // Removed - unused
 
 export default function PaymentPage() {
   const router = useRouter()
@@ -12,7 +12,10 @@ export default function PaymentPage() {
   
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [checkoutInfo, setCheckoutInfo] = useState<any>(null)
+  const [checkoutInfo, setCheckoutInfo] = useState<{
+    customer: { firstName: string; lastName: string };
+    delivery: { isExpress: boolean };
+  } | null>(null)
   
   // Payment form
   const [cardNumber, setCardNumber] = useState('')

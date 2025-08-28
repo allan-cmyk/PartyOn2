@@ -40,13 +40,13 @@ export async function POST(
       )
     }
 
-    // Calculate total amount
-    const totalAmount = groupOrder.participants
+    // TESTING MODE: Skip minimum order check
+    // Calculate total amount for validation (currently disabled)
+    /* const totalAmount = groupOrder.participants
       .filter(p => p.status === 'active')
       .reduce((sum, p) => sum + (p.cartTotal || 0), 0)
-
-    // TESTING MODE: Skip minimum order check
-    /* if (totalAmount < groupOrder.minimumOrderAmount) {
+    
+    if (totalAmount < groupOrder.minimumOrderAmount) {
       return NextResponse.json(
         { 
           error: 'Minimum order amount not met',

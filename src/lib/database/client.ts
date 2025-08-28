@@ -25,10 +25,17 @@ export const isKVConfigured = () => {
 }
 
 // KV (Redis) client
-let kvClient: any = null
+interface KVClient {
+  get: (key: string) => Promise<unknown>;
+  set: (key: string, value: unknown, options?: Record<string, unknown>) => Promise<unknown>;
+}
+
+let kvClient: KVClient | null = null
 
 if (isKVConfigured()) {
   try {
+    // Dynamic import for Vercel KV
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { kv: vercelKv } = require('@vercel/kv')
     kvClient = vercelKv
   } catch (error) {
@@ -37,6 +44,6 @@ if (isKVConfigured()) {
 }
 
 export const kv = kvClient || {
-  get: async (_key: string) => null,
-  set: async (_key: string, _value: unknown, _options?: Record<string, unknown>) => null,
+  get: async () => null,
+  set: async () => null,
 }
