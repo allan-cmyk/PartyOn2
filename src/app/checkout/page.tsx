@@ -87,19 +87,22 @@ export default function CheckoutPage() {
       return;
     }
 
-    // For authenticated users, redirect to Shopify checkout
-    if (cart?.checkoutUrl) {
-      // Add delivery notes to checkout attributes
-      const checkoutWithNotes = `${cart.checkoutUrl}&attributes[delivery_date]=${deliveryDetails.date?.toISOString()}&attributes[delivery_time]=${deliveryDetails.time}&attributes[delivery_instructions]=${deliveryDetails.instructions}`;
-      
-      if (isGroupCheckout && currentGroupOrder) {
-        // Add group order info to checkout
-        const groupCheckoutUrl = `${checkoutWithNotes}&attributes[group_order_id]=${currentGroupOrder.id}&attributes[group_order_code]=${currentGroupOrder.shareCode}`;
-        window.location.href = groupCheckoutUrl;
-      } else {
-        window.location.href = checkoutWithNotes;
-      }
-    }
+    // TESTING MODE: Store order info and redirect to custom payment page
+    const orderInfo = {
+      customer: billingAddress,
+      delivery: {
+        ...deliveryDetails,
+        address: `${billingAddress.address1}${billingAddress.address2 ? ` ${billingAddress.address2}` : ''}, ${billingAddress.city}, ${billingAddress.state} ${billingAddress.zip}`
+      },
+      groupOrder: isGroupCheckout ? currentGroupOrder : null,
+      cartId: cart?.id
+    };
+    
+    // Store in localStorage for payment page
+    localStorage.setItem('checkoutInfo', JSON.stringify(orderInfo));
+    
+    // Redirect to custom payment page instead of Shopify
+    window.location.href = '/payment';
   };
 
   if (cartLoading) {
