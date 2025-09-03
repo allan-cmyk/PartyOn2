@@ -40,25 +40,29 @@ export default function Cart() {
   };
 
   const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, phone?: string) => {
-    // Store delivery info in cart attributes
-    const attributes = [
-      { key: 'delivery_date', value: date.toISOString() },
-      { key: 'delivery_time', value: time },
-      { key: 'delivery_instructions', value: instructions },
-      { key: 'delivery_phone', value: phone || '' },
-      { key: 'delivery_fee', value: '25.00' }
-    ];
+    try {
+      // Store delivery info in cart attributes
+      const attributes = [
+        { key: 'delivery_date', value: date.toISOString() },
+        { key: 'delivery_time', value: time },
+        { key: 'delivery_instructions', value: instructions },
+        { key: 'delivery_phone', value: phone || '' },
+        { key: 'delivery_fee', value: '25.00' }
+      ];
 
-    if (updateCartAttributes) {
-      await updateCartAttributes(attributes);
-    }
+      if (updateCartAttributes) {
+        await updateCartAttributes(attributes);
+      }
 
-    // Close the delivery scheduler
-    setShowDeliveryScheduler(false);
-    
-    // Redirect to Shopify checkout with delivery info stored
-    if (cart?.checkoutUrl) {
-      window.location.href = cart.checkoutUrl;
+      // Redirect to Shopify checkout with delivery info stored
+      // Don't close the modal - let the redirect handle it
+      if (cart?.checkoutUrl) {
+        window.location.href = cart.checkoutUrl;
+      }
+    } catch (error) {
+      console.error('Error during checkout:', error);
+      // If there's an error, close the scheduler so user can try again
+      setShowDeliveryScheduler(false);
     }
   };
 
