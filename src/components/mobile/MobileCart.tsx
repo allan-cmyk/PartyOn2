@@ -15,8 +15,8 @@ export default function MobileCart() {
   const controls = useAnimation();
   const constraintsRef = useRef(null);
   
-  const subtotal = cart?.cost.subtotalAmount;
-  const total = cart?.cost.totalAmount;
+  const subtotal = cart?.cost?.subtotalAmount || null;
+  const total = cart?.cost?.totalAmount || null;
   const hasItems = (cart?.totalQuantity || 0) > 0;
 
   // Calculate drawer height based on content
