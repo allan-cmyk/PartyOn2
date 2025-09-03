@@ -21,6 +21,7 @@ export default function Cart() {
   // Group order features temporarily disabled
   // const { currentGroupOrder, isInGroupOrder, isHost } = useGroupOrderContext();
   const [showDeliveryScheduler, setShowDeliveryScheduler] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   // Group order states temporarily disabled
   // const [showCreateGroupOrder, setShowCreateGroupOrder] = useState(false);
   // const [showShareModal, setShowShareModal] = useState(false);
@@ -41,6 +42,9 @@ export default function Cart() {
 
   const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, phone?: string) => {
     try {
+      // Set redirecting state to show loading
+      setIsRedirecting(true);
+      
       // Store delivery info in cart attributes
       const attributes = [
         { key: 'delivery_date', value: date.toISOString() },
@@ -54,14 +58,18 @@ export default function Cart() {
         await updateCartAttributes(attributes);
       }
 
+      // Small delay to ensure state updates complete before redirect
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       // Redirect to Shopify checkout with delivery info stored
-      // Don't close the modal - let the redirect handle it
       if (cart?.checkoutUrl) {
-        window.location.href = cart.checkoutUrl;
+        // Use window.location.replace to prevent back button issues
+        window.location.replace(cart.checkoutUrl);
       }
     } catch (error) {
       console.error('Error during checkout:', error);
       // If there's an error, close the scheduler so user can try again
+      setIsRedirecting(false);
       setShowDeliveryScheduler(false);
     }
   };
@@ -280,6 +288,16 @@ export default function Cart() {
       
       {/* AI Concierge - only show when cart is open */}
       {isCartOpen && <AIConcierge mode="party" />}
+      
+      {/* Loading overlay during redirect */}
+      {isRedirecting && (
+        <div className="fixed inset-0 bg-black/50 z-[80] flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg">
+            <div className="animate-spin h-8 w-8 border-4 border-gold-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p className="text-gray-700">Redirecting to checkout...</p>
+          </div>
+        </div>
+      )}
       
       {/* Group Order Modals - Temporarily disabled */}
       {/* <CreateGroupOrderModal
