@@ -47,24 +47,40 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm }: Delive
   const minDate = new Date(); // addDays(new Date(), 3);
   const maxDate = addDays(new Date(), 30);
 
-  // Available time slots
-  const standardTimeSlots = [
-    '10:00 AM - 12:00 PM',
-    '12:00 PM - 2:00 PM',
-    '2:00 PM - 4:00 PM',
-    '4:00 PM - 6:00 PM',
-    '6:00 PM - 8:00 PM',
-    '8:00 PM - 10:00 PM',
-    '10:00 PM - 11:00 PM'
+  // Available time slots - 10am to 9pm, every 30 minutes for 1-hour delivery windows
+  // Monday through Saturday only (handled in date selection)
+  const timeSlots = [
+    '10:00 AM - 11:00 AM',
+    '10:30 AM - 11:30 AM',
+    '11:00 AM - 12:00 PM',
+    '11:30 AM - 12:30 PM',
+    '12:00 PM - 1:00 PM',
+    '12:30 PM - 1:30 PM',
+    '1:00 PM - 2:00 PM',
+    '1:30 PM - 2:30 PM',
+    '2:00 PM - 3:00 PM',
+    '2:30 PM - 3:30 PM',
+    '3:00 PM - 4:00 PM',
+    '3:30 PM - 4:30 PM',
+    '4:00 PM - 5:00 PM',
+    '4:30 PM - 5:30 PM',
+    '5:00 PM - 6:00 PM',
+    '5:30 PM - 6:30 PM',
+    '6:00 PM - 7:00 PM',
+    '6:30 PM - 7:30 PM',
+    '7:00 PM - 8:00 PM',
+    '7:30 PM - 8:30 PM',
+    '8:00 PM - 9:00 PM'
   ];
 
-  const timeSlots = standardTimeSlots;
-
-  // Generate available dates
+  // Generate available dates (Monday-Saturday only, no Sundays)
   const availableDates = [];
   for (let i = 0; i < 30; i++) {
     const date = addDays(minDate, i);
-    if (!isBefore(date, minDate) && !isAfter(date, maxDate)) {
+    const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    
+    // Exclude Sundays (day 0)
+    if (!isBefore(date, minDate) && !isAfter(date, maxDate) && dayOfWeek !== 0) {
       availableDates.push(date);
     }
   }
@@ -270,18 +286,21 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm }: Delive
                   <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
                     Delivery Time
                   </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <p className="text-sm text-gray-600 mb-4">
+                    Available Monday-Saturday, 10:00 AM - 9:00 PM
+                  </p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-80 overflow-y-auto">
                     {timeSlots.map((slot) => (
                       <button
                         key={slot}
                         onClick={() => setSelectedTime(slot)}
-                        className={`p-3 text-center border transition-colors ${
+                        className={`p-2 text-center border transition-colors ${
                           selectedTime === slot
                             ? 'border-gold-600 bg-gold-50'
                             : 'border-gray-300 hover:border-gold-400'
                         }`}
                       >
-                        <span className="text-sm">{slot}</span>
+                        <span className="text-xs">{slot}</span>
                       </button>
                     ))}
                   </div>
