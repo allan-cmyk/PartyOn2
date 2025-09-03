@@ -218,11 +218,11 @@ export default function Cart() {
                     <span className="text-gray-500 text-xs">Calculated at checkout</span>
                   </div>
 
-                  {/* Total */}
+                  {/* Total - Show subtotal since delivery is calculated at checkout */}
                   <div className="flex justify-between font-medium text-lg pt-4 border-t border-gray-200">
-                    <span className="font-serif tracking-[0.1em]">TOTAL</span>
+                    <span className="font-serif tracking-[0.1em]">SUBTOTAL</span>
                     <span>
-                      {total && formatPrice(total.amount, total.currencyCode)}
+                      {subtotal && formatPrice(subtotal.amount, subtotal.currencyCode)}
                     </span>
                   </div>
 
