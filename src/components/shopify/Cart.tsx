@@ -31,7 +31,7 @@ export default function Cart() {
   // const [isApplyingDiscount, setIsApplyingDiscount] = useState(false);
   // const [discountError, setDiscountError] = useState('');
 
-  const subtotal = cart?.cost?.subtotalAmount;
+  const subtotal = cart?.cost?.subtotalAmount || null;
   const hasItems = (cart?.totalQuantity || 0) > 0;
 
   const handleProceedToCheckout = () => {
@@ -195,9 +195,9 @@ export default function Cart() {
                   </div>
                 ) : (
                   <div className="p-6 space-y-6">
-                    {cart?.lines.edges.map(({ node }) => (
+                    {cart?.lines?.edges?.map(({ node }) => (
                       <CartItem key={node.id} item={node} />
-                    ))}
+                    )) || []}
                   </div>
                 )}
               </div>
@@ -240,7 +240,7 @@ export default function Cart() {
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Subtotal</span>
                     <span className="text-gray-900">
-                      {subtotal && formatPrice(subtotal.amount, subtotal.currencyCode)}
+                      {subtotal ? formatPrice(subtotal.amount, subtotal.currencyCode) : '$0.00'}
                     </span>
                   </div>
 
@@ -274,7 +274,7 @@ export default function Cart() {
                   <div className="flex justify-between font-medium text-lg pt-4 border-t border-gray-200">
                     <span className="font-serif tracking-[0.1em]">SUBTOTAL</span>
                     <span>
-                      {subtotal && formatPrice(subtotal.amount, subtotal.currencyCode)}
+                      {subtotal ? formatPrice(subtotal.amount, subtotal.currencyCode) : '$0.00'}
                     </span>
                   </div>
 
