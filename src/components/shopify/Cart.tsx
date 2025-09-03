@@ -54,22 +54,30 @@ export default function Cart() {
       ];
 
       if (updateCartAttributes) {
-        await updateCartAttributes(attributes);
-      }
-
-      // Small delay to ensure state updates complete before redirect
-      await new Promise(resolve => setTimeout(resolve, 100));
-
-      // Redirect to Shopify checkout with delivery info stored
-      if (cart?.checkoutUrl) {
-        // Use window.location.replace to prevent back button issues
-        window.location.replace(cart.checkoutUrl);
+        const updatedCart = await updateCartAttributes(attributes);
+        
+        // Use the updated cart's checkout URL to ensure we have the latest
+        const checkoutUrl = updatedCart?.checkoutUrl || cart?.checkoutUrl;
+        
+        if (checkoutUrl) {
+          // Small delay to ensure all updates are complete
+          await new Promise(resolve => setTimeout(resolve, 200));
+          
+          // Clear any React state updates before redirect
+          window.location.href = checkoutUrl;
+          
+          // Prevent any further code execution
+          return;
+        } else {
+          throw new Error('No checkout URL available');
+        }
       }
     } catch (error) {
       console.error('Error during checkout:', error);
-      // If there's an error, close the scheduler so user can try again
+      // If there's an error, reset states so user can try again
       setIsRedirecting(false);
       setShowDeliveryScheduler(false);
+      alert('There was an error proceeding to checkout. Please try again.');
     }
   };
 
