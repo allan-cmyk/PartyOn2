@@ -32,7 +32,6 @@ export default function Cart() {
   // const [discountError, setDiscountError] = useState('');
 
   const subtotal = cart?.cost?.subtotalAmount;
-  const total = cart?.cost?.totalAmount;
   const hasItems = (cart?.totalQuantity || 0) > 0;
 
   const handleProceedToCheckout = () => {
