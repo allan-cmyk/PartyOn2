@@ -565,6 +565,107 @@ function ProductsContent() {
         </section>
       )}
 
+      {/* Featured Collections */}
+      {filter === 'all' && !searchQuery && (
+        <>
+          {/* Tailgate & Beer Collection */}
+          <section className={`${isMobile ? 'py-8' : 'py-12'} bg-gray-50`}>
+            <div className={`${isMobile ? 'px-4' : 'max-w-7xl mx-auto px-8'}`}>
+              <div className={`flex items-center justify-between ${isMobile ? 'mb-4' : 'mb-8'}`}>
+                <div>
+                  <h2 className={`font-serif ${isMobile ? 'text-xl' : 'text-3xl'} text-gray-900 tracking-[0.1em]`}>
+                    TAILGATE ESSENTIALS
+                  </h2>
+                  <p className={`text-gray-600 ${isMobile ? 'text-sm mt-1' : 'mt-2'}`}>
+                    {isMobile ? 'Beers & game day favorites' : 'Ice-cold beers and party favorites for game day'}
+                  </p>
+                </div>
+                <Link 
+                  href="/products?filter=beer"
+                  className={`text-gold-600 hover:text-gold-700 font-medium tracking-[0.1em] flex items-center gap-2 ${isMobile ? 'text-sm' : ''}`}
+                >
+                  VIEW ALL
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              </div>
+              
+              <div className={`grid ${isMobile ? 'grid-cols-2 gap-3' : 'grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4'}`}>
+                {displayProducts
+                  .filter(p => getProductCategory(p) === 'beer')
+                  .slice(0, 6)
+                  .map((product, index) => (
+                    isMobile ? (
+                      <MobileProductCard 
+                        key={`beer-${product.id}`} 
+                        product={product} 
+                        index={index} 
+                        onProductClick={handleProductClick} 
+                      />
+                    ) : (
+                      <CompactProductCard 
+                        key={`beer-${product.id}`} 
+                        product={product} 
+                        index={index} 
+                        onProductClick={handleProductClick} 
+                      />
+                    )
+                  ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Seltzers & Champs Collection */}
+          <section className={`${isMobile ? 'py-8' : 'py-12'} bg-white`}>
+            <div className={`${isMobile ? 'px-4' : 'max-w-7xl mx-auto px-8'}`}>
+              <div className={`flex items-center justify-between ${isMobile ? 'mb-4' : 'mb-8'}`}>
+                <div>
+                  <h2 className={`font-serif ${isMobile ? 'text-xl' : 'text-3xl'} text-gray-900 tracking-[0.1em]`}>
+                    BUBBLES & CELEBRATION
+                  </h2>
+                  <p className={`text-gray-600 ${isMobile ? 'text-sm mt-1' : 'mt-2'}`}>
+                    {isMobile ? 'Champagnes & seltzers' : 'Premium champagnes and refreshing seltzers'}
+                  </p>
+                </div>
+                <Link 
+                  href="/products?filter=seltzers-champs"
+                  className={`text-gold-600 hover:text-gold-700 font-medium tracking-[0.1em] flex items-center gap-2 ${isMobile ? 'text-sm' : ''}`}
+                >
+                  VIEW ALL
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              </div>
+              
+              <div className={`grid ${isMobile ? 'grid-cols-2 gap-3' : 'grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4'}`}>
+                {displayProducts
+                  .filter(p => getProductCategory(p) === 'seltzersChamps')
+                  .slice(0, 6)
+                  .map((product, index) => (
+                    isMobile ? (
+                      <MobileProductCard 
+                        key={`seltzer-${product.id}`} 
+                        product={product} 
+                        index={index} 
+                        onProductClick={handleProductClick} 
+                      />
+                    ) : (
+                      <CompactProductCard 
+                        key={`seltzer-${product.id}`} 
+                        product={product} 
+                        index={index} 
+                        onProductClick={handleProductClick} 
+                      />
+                    )
+                  ))}
+              </div>
+            </div>
+          </section>
+        </>
+      )}
+
       {/* Products Grid */}
       <section className={isCompactView ? "py-8" : "py-16"}>
         <div className={isCompactView ? "max-w-[1400px] mx-auto px-6" : "max-w-7xl mx-auto px-8"}>
