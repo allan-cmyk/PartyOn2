@@ -63,8 +63,13 @@ export default function Cart() {
         { key: 'delivery_fee', value: '25.00' }
       ];
 
+      console.log('Sending delivery attributes to Shopify:', attributes);
+
       if (updateCartAttributes) {
         const updatedCart = await updateCartAttributes(attributes);
+        
+        console.log('Updated cart response:', updatedCart);
+        console.log('Cart attributes after update:', updatedCart?.attributes);
         
         // Use the updated cart's checkout URL to ensure we have the latest
         const checkoutUrl = updatedCart?.checkoutUrl || cart?.checkoutUrl;

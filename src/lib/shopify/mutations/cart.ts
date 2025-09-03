@@ -7,6 +7,10 @@ export const CREATE_CART_MUTATION = gql`
         id
         checkoutUrl
         totalQuantity
+        attributes {
+          key
+          value
+        }
         lines(first: 100) {
           edges {
             node {
@@ -67,6 +71,10 @@ export const ADD_TO_CART_MUTATION = gql`
         id
         checkoutUrl
         totalQuantity
+        attributes {
+          key
+          value
+        }
         lines(first: 100) {
           edges {
             node {
@@ -127,6 +135,10 @@ export const UPDATE_CART_MUTATION = gql`
         id
         checkoutUrl
         totalQuantity
+        attributes {
+          key
+          value
+        }
         lines(first: 100) {
           edges {
             node {
@@ -187,6 +199,10 @@ export const REMOVE_FROM_CART_MUTATION = gql`
         id
         checkoutUrl
         totalQuantity
+        attributes {
+          key
+          value
+        }
         lines(first: 100) {
           edges {
             node {
@@ -265,6 +281,10 @@ export const GET_CART_QUERY = gql`
       id
       checkoutUrl
       totalQuantity
+      attributes {
+        key
+        value
+      }
       lines(first: 100) {
         edges {
           node {
