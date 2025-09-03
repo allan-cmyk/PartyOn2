@@ -183,9 +183,6 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm }: Delive
                 <h2 className="font-serif text-3xl text-gray-900 tracking-[0.1em]">
                   Schedule Delivery
                 </h2>
-                <p className="text-gray-600 mt-2">
-                  All deliveries require 72-hour advance notice
-                </p>
               </div>
 
               {/* Content */}
