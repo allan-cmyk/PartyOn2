@@ -1,13 +1,23 @@
 /** @type {import('tailwindcss').Config} */
+const colors = require('tailwindcss/colors')
+
 module.exports = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/lib/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
       colors: {
+        // Add default Tailwind colors we need
+        amber: colors.amber,
+        pink: colors.pink,
+        teal: colors.teal,
+        cyan: colors.cyan,
+        purple: colors.purple,
+        indigo: colors.indigo,
         // PartyOn Premium B2B Color System
         royal: {
           50: '#E8EEF5',
@@ -230,4 +240,46 @@ module.exports = {
     },
   },
   plugins: [],
+  safelist: [
+    // Safelist color classes for dynamic category colors
+    'bg-amber-50', 'bg-amber-100', 'bg-amber-600',
+    'text-amber-700', 'text-white',
+    'border-amber-300', 'border-amber-400', 'border-amber-600',
+    'hover:bg-amber-100', 'hover:border-amber-400', 'hover:border-amber-500',
+    
+    'bg-pink-50', 'bg-pink-100', 'bg-pink-600',
+    'text-pink-700', 'text-white',
+    'border-pink-300', 'border-pink-400', 'border-pink-600',
+    'hover:bg-pink-100', 'hover:border-pink-400', 'hover:border-pink-500',
+    
+    'bg-teal-50', 'bg-teal-100', 'bg-teal-600',
+    'text-teal-700', 'text-white',
+    'border-teal-300', 'border-teal-400', 'border-teal-600',
+    'hover:bg-teal-100', 'hover:border-teal-400', 'hover:border-teal-500',
+    
+    'bg-slate-50', 'bg-slate-100', 'bg-slate-700',
+    'text-slate-700', 'text-white',
+    'border-slate-300', 'border-slate-400', 'border-slate-700',
+    'hover:bg-slate-100', 'hover:border-slate-400', 'hover:border-slate-500',
+    
+    'bg-cyan-50', 'bg-cyan-100', 'bg-cyan-600',
+    'text-cyan-700', 'text-white',
+    'border-cyan-300', 'border-cyan-400', 'border-cyan-600',
+    'hover:bg-cyan-100', 'hover:border-cyan-400',
+    
+    'bg-purple-50', 'bg-purple-100', 'bg-purple-600',
+    'text-purple-700', 'text-white',
+    'border-purple-300', 'border-purple-400', 'border-purple-600',
+    'hover:bg-purple-100', 'hover:border-purple-400', 'hover:border-purple-500',
+    
+    'bg-indigo-50', 'bg-indigo-100', 'bg-indigo-600',
+    'text-indigo-700', 'text-white',
+    'border-indigo-300', 'border-indigo-400', 'border-indigo-600',
+    'hover:bg-indigo-100', 'hover:border-indigo-400', 'hover:border-indigo-500',
+    
+    'bg-gray-50', 'bg-gray-100', 'bg-gold-600',
+    'text-gray-700', 'text-white',
+    'border-gray-300', 'border-gold-600',
+    'hover:bg-gray-100', 'hover:border-gold-400',
+  ],
 }
