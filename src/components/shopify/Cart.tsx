@@ -35,10 +35,8 @@ export default function Cart() {
   const hasItems = (cart?.totalQuantity || 0) > 0;
 
   const handleProceedToCheckout = () => {
-    // Redirect directly to Shopify checkout
-    if (cart?.checkoutUrl) {
-      window.location.href = cart.checkoutUrl;
-    }
+    // Show delivery scheduler to collect delivery information first
+    setShowDeliveryScheduler(true);
   };
 
   const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, phone?: string) => {
@@ -55,11 +53,13 @@ export default function Cart() {
       await updateCartAttributes(attributes);
     }
 
-    // Redirect to checkout page instead of Shopify directly
-    closeCart();
-    window.location.href = '/checkout';
-    
+    // Close the delivery scheduler
     setShowDeliveryScheduler(false);
+    
+    // Redirect to Shopify checkout with delivery info stored
+    if (cart?.checkoutUrl) {
+      window.location.href = cart.checkoutUrl;
+    }
   };
 
   // Group order handler temporarily disabled
