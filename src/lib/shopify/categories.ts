@@ -125,6 +125,14 @@ export function getProductCategory(product: {
   return 'partySupplies';
 }
 
+// Check if a product belongs to a specific collection
+export function isInCollection(product: {
+  collections?: { edges: Array<{ node: { handle: string } }> };
+}, collectionHandle: string): boolean {
+  const collections = product.collections?.edges.map(e => e.node.handle) || [];
+  return collections.includes(collectionHandle);
+}
+
 // Get unique brands from products
 export function getUniqueBrands(products: Array<{ vendor?: string }>): string[] {
   const brands = new Set<string>();
@@ -143,6 +151,16 @@ export function getUniqueProductTypes(products: Array<{ productType?: string }>)
   return Array.from(types).sort();
 }
 
+// Actual Shopify collections for quick filters
+export const SHOPIFY_COLLECTIONS = [
+  { handle: 'beer-collection', label: 'Tailgate & Beer', category: 'beer' },
+  { handle: 'seltzers-wine-champagne', label: 'Bubbles & Celebration', category: 'seltzersChamps' },
+  { handle: 'spirits', label: 'Premium Spirits', category: 'liquor' },
+  { handle: 'ready-to-drink', label: 'Ready to Drink', category: 'cocktails' },
+  { handle: 'bachelorette-supplies', label: 'Bachelorette Party', category: 'partySupplies' },
+  { handle: 'disco-collection', label: 'Disco Party', category: 'partySupplies' }
+];
+
 // Filter configuration for the UI
 export const FILTER_OPTIONS = {
   mainCategories: [
@@ -153,14 +171,6 @@ export const FILTER_OPTIONS = {
     { value: 'liquor', label: 'Liquor' },
     { value: 'mixers-na', label: 'Mixers/NA' },
     { value: 'party-supplies', label: 'Party Supplies' }
-  ],
-  collections: [
-    { value: 'all', label: 'All Collections' },
-    { value: 'tailgate', label: 'Tailgate Essentials' },
-    { value: 'bubbles', label: 'Bubbles & Celebration' },
-    { value: 'game-day', label: 'Game Day Favorites' },
-    { value: 'premium-spirits', label: 'Premium Spirits' },
-    { value: 'party-packs', label: 'Party Packs' }
   ],
   spiritTypes: [
     { value: 'all', label: 'All Liquor' },

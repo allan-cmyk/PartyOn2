@@ -18,7 +18,7 @@ import AIConcierge from '@/components/AIConcierge';
 import AgeVerificationModal from '@/components/AgeVerificationModal';
 import ProductModal from '@/components/ProductModal';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { getProductCategory, FILTER_OPTIONS } from '@/lib/shopify/categories';
+import { getProductCategory, FILTER_OPTIONS, SHOPIFY_COLLECTIONS, isInCollection } from '@/lib/shopify/categories';
 import { CategoryIcon } from '@/components/CategoryIcons';
 
 function ProductsContent() {
@@ -28,6 +28,7 @@ function ProductsContent() {
   const [searchResults, setSearchResults] = useState<ShopifyProduct[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [filter, setFilter] = useState('all');
+  const [collectionFilter, setCollectionFilter] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState('bestsellers');
   const [showAgeVerification, setShowAgeVerification] = useState(false);
   const [isAgeVerified, setIsAgeVerified] = useState(false);
@@ -190,8 +191,13 @@ function ProductsContent() {
     const productTitle = product.title;
     const price = parseFloat(product.priceRange.minVariantPrice.amount);
     
+    // Collection filter (takes precedence)
+    if (collectionFilter) {
+      if (!isInCollection(product, collectionFilter)) return false;
+    }
+    
     // Main category filter using proper Shopify data
-    if (filter !== 'all') {
+    if (filter !== 'all' && !collectionFilter) {
       const productCategory = getProductCategory(product);
       
       // Map filter values to category keys
@@ -347,6 +353,59 @@ function ProductsContent() {
           )}
         </motion.div>
       </section>
+
+      {/* Collection Quick Filters */}
+      {!searchQuery && (
+        <section className="bg-gray-50 py-6 border-b border-gray-200">
+          <div className={`${isMobile ? 'px-4' : 'max-w-7xl mx-auto px-8'}`}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className={`font-serif ${isMobile ? 'text-lg' : 'text-xl'} text-gray-900 tracking-[0.1em]`}>
+                FEATURED COLLECTIONS
+              </h3>
+              {collectionFilter && (
+                <button
+                  onClick={() => {
+                    setCollectionFilter(null);
+                    setFilter('all');
+                  }}
+                  className="text-sm text-gold-600 hover:text-gold-700 tracking-[0.1em]"
+                >
+                  CLEAR FILTER
+                </button>
+              )}
+            </div>
+            <div className={`grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-3 md:grid-cols-6 gap-3'}`}>
+              {SHOPIFY_COLLECTIONS.map((collection) => (
+                <button
+                  key={collection.handle}
+                  onClick={() => {
+                    setCollectionFilter(collection.handle);
+                    setFilter('all'); // Reset category filter
+                  }}
+                  className={`
+                    px-4 py-3 text-center border transition-all
+                    ${collectionFilter === collection.handle 
+                      ? 'border-gold-600 bg-gold-50 text-gold-700' 
+                      : 'border-gray-300 bg-white hover:border-gold-400 hover:bg-gold-50'
+                    }
+                    ${isMobile ? 'text-xs' : 'text-sm'}
+                    tracking-[0.1em] font-medium
+                  `}
+                >
+                  {collection.label.toUpperCase()}
+                </button>
+              ))}
+            </div>
+            {collectionFilter && (
+              <div className="mt-4 text-sm text-gray-600">
+                Showing products from: <span className="font-medium text-gray-900">
+                  {SHOPIFY_COLLECTIONS.find(c => c.handle === collectionFilter)?.label}
+                </span>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* Search Results Heading */}
       {searchQuery && (
