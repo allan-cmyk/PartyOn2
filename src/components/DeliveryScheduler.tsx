@@ -7,7 +7,7 @@ import { format, addDays, isBefore, isAfter } from 'date-fns';
 interface DeliverySchedulerProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (date: Date, time: string, instructions: string, phone: string) => void;
+  onConfirm: (date: Date, time: string, instructions: string, phone: string, address: string, zipCode: string) => void;
   subtotal?: number; // Made optional since we're not using Express Delivery anymore
 }
 
@@ -141,7 +141,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm }: Delive
 
   const handleConfirm = () => {
     if (validateForm() && selectedDate) {
-      onConfirm(selectedDate, selectedTime, instructions, phone);
+      onConfirm(selectedDate, selectedTime, instructions, phone, address, zipCode);
     } else {
       // Scroll to first error field
       const firstErrorField = Object.keys(errors)[0];

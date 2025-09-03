@@ -39,17 +39,27 @@ export default function Cart() {
     setShowDeliveryScheduler(true);
   };
 
-  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, phone?: string) => {
+  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, phone: string, address: string, zipCode: string) => {
     try {
       // Set redirecting state to show loading
       setIsRedirecting(true);
       
+      // Format date for better display in Shopify
+      const formattedDate = new Intl.DateTimeFormat('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      }).format(date);
+      
       // Store delivery info in cart attributes
       const attributes = [
-        { key: 'delivery_date', value: date.toISOString() },
+        { key: 'delivery_date', value: formattedDate },
         { key: 'delivery_time', value: time },
-        { key: 'delivery_instructions', value: instructions },
-        { key: 'delivery_phone', value: phone || '' },
+        { key: 'delivery_instructions', value: instructions || 'None' },
+        { key: 'delivery_phone', value: phone },
+        { key: 'delivery_address', value: address },
+        { key: 'delivery_zip', value: zipCode },
         { key: 'delivery_fee', value: '25.00' }
       ];
 
