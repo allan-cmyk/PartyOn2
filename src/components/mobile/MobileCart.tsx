@@ -24,7 +24,7 @@ export default function MobileCart() {
   useEffect(() => {
     if (isCartOpen) {
       const windowHeight = window.innerHeight;
-      const maxHeight = windowHeight * 0.85; // 85% of screen height for better UX
+      const maxHeight = windowHeight * 0.95; // 95% of screen height to see everything
       setCartHeight(`${maxHeight}px`);
       controls.start({ y: 0 });
     }
