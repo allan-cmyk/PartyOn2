@@ -65,34 +65,64 @@ export default function Cart() {
 
       console.log('Sending delivery attributes to Shopify:', attributes);
 
+      // Try to update cart attributes, but proceed even if it fails
+      let checkoutUrl = cart?.checkoutUrl;
+      
       if (updateCartAttributes) {
-        const updatedCart = await updateCartAttributes(attributes);
-        
-        console.log('Updated cart response:', updatedCart);
-        console.log('Cart attributes after update:', updatedCart?.attributes);
-        
-        // Use the updated cart's checkout URL to ensure we have the latest
-        const checkoutUrl = updatedCart?.checkoutUrl || cart?.checkoutUrl;
-        
-        if (checkoutUrl) {
-          // Small delay to ensure all updates are complete
-          await new Promise(resolve => setTimeout(resolve, 200));
+        try {
+          const updatedCart = await updateCartAttributes(attributes);
+          console.log('Updated cart response:', updatedCart);
+          console.log('Cart attributes after update:', updatedCart?.attributes);
           
-          // Clear any React state updates before redirect
-          window.location.href = checkoutUrl;
-          
-          // Prevent any further code execution
-          return;
-        } else {
-          throw new Error('No checkout URL available');
+          // Use the updated cart's checkout URL if available
+          if (updatedCart?.checkoutUrl) {
+            checkoutUrl = updatedCart.checkoutUrl;
+          }
+        } catch (attrError) {
+          console.error('Error updating cart attributes, proceeding anyway:', attrError);
+          // Continue with redirect even if attributes fail
         }
+      }
+      
+      if (checkoutUrl) {
+        // Longer delay for mobile devices
+        const delay = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ? 500 : 200;
+        await new Promise(resolve => setTimeout(resolve, delay));
+        
+        // Try multiple redirect methods for better compatibility
+        try {
+          // Method 1: Direct assignment (most compatible)
+          window.location.href = checkoutUrl;
+        } catch {
+          try {
+            // Method 2: Replace (prevents back button)
+            window.location.replace(checkoutUrl);
+          } catch {
+            // Method 3: Create a link and click it
+            const link = document.createElement('a');
+            link.href = checkoutUrl;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+        }
+        
+        // Keep loading state active to prevent any further interactions
+        // Don't reset states here as the page is redirecting
+        return;
+      } else {
+        throw new Error('No checkout URL available');
       }
     } catch (error) {
       console.error('Error during checkout:', error);
       // If there's an error, reset states so user can try again
       setIsRedirecting(false);
       setShowDeliveryScheduler(false);
-      alert('There was an error proceeding to checkout. Please try again.');
+      
+      // More helpful error message
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      alert(`Unable to proceed to checkout: ${errorMessage}. Please try again or contact support if the issue persists.`);
     }
   };
 
@@ -304,7 +334,12 @@ export default function Cart() {
       {/* Delivery Scheduler */}
       <DeliveryScheduler
         isOpen={showDeliveryScheduler}
-        onClose={() => setShowDeliveryScheduler(false)}
+        onClose={() => {
+          // Don't allow closing during redirect
+          if (!isRedirecting) {
+            setShowDeliveryScheduler(false);
+          }
+        }}
         onConfirm={handleDeliveryConfirm}
       />
       
@@ -313,10 +348,11 @@ export default function Cart() {
       
       {/* Loading overlay during redirect */}
       {isRedirecting && (
-        <div className="fixed inset-0 bg-black/50 z-[80] flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg">
-            <div className="animate-spin h-8 w-8 border-4 border-gold-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p className="text-gray-700">Redirecting to checkout...</p>
+        <div className="fixed inset-0 bg-black/70 z-[100] flex items-center justify-center pointer-events-auto">
+          <div className="bg-white p-8 rounded-lg shadow-2xl">
+            <div className="animate-spin h-10 w-10 border-4 border-gold-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p className="text-gray-700 text-center font-medium">Redirecting to checkout...</p>
+            <p className="text-gray-500 text-sm text-center mt-2">Please wait</p>
           </div>
         </div>
       )}
