@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence, PanInfo, useAnimation } from 'framer-motion';
+import { motion, AnimatePresence, PanInfo, useAnimation, useDragControls } from 'framer-motion';
 import { useCartContext } from '@/contexts/CartContext';
 import CartItem from '../shopify/CartItem';
 import { formatPrice } from '@/lib/shopify/utils';
@@ -14,6 +14,7 @@ export default function MobileCart() {
   const [cartHeight, setCartHeight] = useState('auto');
   const [isRedirecting, setIsRedirecting] = useState(false);
   const controls = useAnimation();
+  const dragControls = useDragControls();
   const constraintsRef = useRef(null);
   
   const subtotal = cart?.cost?.subtotalAmount || null;
@@ -114,20 +115,26 @@ export default function MobileCart() {
                 mass: 0.8
               }}
               drag="y"
+              dragControls={dragControls}
               dragConstraints={{ top: 0 }}
               dragElastic={{ top: 0, bottom: 0.3 }}
               onDragEnd={handleDragEnd}
+              dragListener={false}
               style={{ maxHeight: cartHeight }}
-              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-[70] md:hidden overflow-hidden safe-area-bottom touch-none"
+              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-[70] md:hidden overflow-hidden safe-area-bottom"
             >
               {/* Drag Handle */}
-              <div className="sticky top-0 bg-white z-10 pb-2 cursor-grab active:cursor-grabbing">
-                <div className="flex justify-center py-3 touch-none">
-                  <div className="w-12 h-1.5 bg-gray-300 rounded-full transition-all hover:bg-gray-400" />
+              <div 
+                className="sticky top-0 bg-white z-10 pb-2"
+                onPointerDown={(e) => dragControls.start(e)}
+              >
+                <div className="flex justify-center py-5 cursor-grab active:cursor-grabbing touch-none">
+                  <div className="w-24 h-2.5 bg-gray-400 rounded-full" />
                 </div>
+              </div>
                 
-                {/* Header */}
-                <div className="flex items-center justify-between px-5 pb-3 border-b border-gray-100">
+              {/* Header */}
+              <div className="flex items-center justify-between px-5 pb-3 border-b border-gray-100">
                   <h2 className="font-serif text-xl tracking-[0.1em]">YOUR CART</h2>
                   <button
                     onClick={closeCart}
@@ -141,7 +148,7 @@ export default function MobileCart() {
               </div>
 
               {/* Cart Content */}
-              <div className="flex-1 overflow-y-auto px-5 pb-32">
+              <div className="flex-1 overflow-y-auto overscroll-contain px-5 pb-32">
                 {!hasItems ? (
                   <div className="flex flex-col items-center justify-center py-12">
                     <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

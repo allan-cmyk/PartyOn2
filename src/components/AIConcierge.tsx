@@ -167,8 +167,8 @@ export default function AIConcierge({ mode = 'normal', isOpen: controlledIsOpen,
 
   return (
     <>
-      {/* Chat Button - Subtle Help Box */}
-      <div className="fixed bottom-6 right-6 z-50">
+      {/* Chat Button - Subtle Help Box - Hidden on Mobile */}
+      <div className="fixed bottom-6 right-6 z-50 hidden md:block">
         {!isOpen ? (
           <button
             onClick={handleOpen}
