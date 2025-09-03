@@ -154,6 +154,14 @@ export const FILTER_OPTIONS = {
     { value: 'mixers-na', label: 'Mixers/NA' },
     { value: 'party-supplies', label: 'Party Supplies' }
   ],
+  collections: [
+    { value: 'all', label: 'All Collections' },
+    { value: 'tailgate', label: 'Tailgate Essentials' },
+    { value: 'bubbles', label: 'Bubbles & Celebration' },
+    { value: 'game-day', label: 'Game Day Favorites' },
+    { value: 'premium-spirits', label: 'Premium Spirits' },
+    { value: 'party-packs', label: 'Party Packs' }
+  ],
   spiritTypes: [
     { value: 'all', label: 'All Liquor' },
     { value: 'Vodka', label: 'Vodka' },
