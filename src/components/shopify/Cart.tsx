@@ -33,7 +33,9 @@ export default function Cart() {
   const hasItems = (cart?.totalQuantity || 0) > 0;
 
   const handleProceedToCheckout = () => {
-    setShowDeliveryScheduler(true);
+    // Close cart and navigate to checkout page instead of showing scheduler
+    closeCart();
+    window.location.href = '/checkout';
   };
 
   const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, phone?: string) => {
@@ -50,13 +52,9 @@ export default function Cart() {
       await updateCartAttributes(attributes);
     }
 
-    // Redirect to Shopify checkout with return URL
-    if (cart?.checkoutUrl) {
-      // Add return URL to checkout
-      const checkoutUrl = new URL(cart.checkoutUrl);
-      checkoutUrl.searchParams.set('return_to', `${window.location.origin}/checkout/success`);
-      window.location.href = checkoutUrl.toString();
-    }
+    // Redirect to checkout page instead of Shopify directly
+    closeCart();
+    window.location.href = '/checkout';
     
     setShowDeliveryScheduler(false);
   };
@@ -89,9 +87,14 @@ export default function Cart() {
       };
       
       if (response?.cartDiscountCodesUpdate?.userErrors?.length && response.cartDiscountCodesUpdate.userErrors.length > 0) {
-        setDiscountError('Invalid discount code');
+        setDiscountError('Invalid or expired discount code');
       } else {
         setDiscountCode('');
+        setDiscountError(''); // Clear any previous errors
+        // Show success briefly
+        const successMsg = `✓ Discount code "${discountCode.toUpperCase()}" applied successfully!`;
+        setDiscountError(successMsg);
+        setTimeout(() => setDiscountError(''), 3000);
         // Cart will auto-refresh via context
       }
     } catch {
@@ -232,7 +235,11 @@ export default function Cart() {
                     </div>
                     
                     {discountError && (
-                      <p className="text-red-600 text-xs">{discountError}</p>
+                      <p className={`text-xs ${
+                        discountError.startsWith('✓') ? 'text-green-600 font-medium' : 'text-red-600'
+                      }`}>
+                        {discountError}
+                      </p>
                     )}
                     
                     {cart?.discountCodes && cart.discountCodes.length > 0 && (
@@ -261,6 +268,26 @@ export default function Cart() {
                       {subtotal && formatPrice(subtotal.amount, subtotal.currencyCode)}
                     </span>
                   </div>
+
+                  {/* Discount Amount - Show if discount is applied */}
+                  {cart?.discountCodes && cart.discountCodes.length > 0 && cart.discountCodes.some(d => d.applicable) && (
+                    (() => {
+                      const discountAmount = subtotal && total ? 
+                        parseFloat(subtotal.amount) - parseFloat(total.amount) : 0;
+                      
+                      if (discountAmount > 0) {
+                        return (
+                          <div className="flex justify-between text-sm text-green-600">
+                            <span>
+                              Discount ({cart.discountCodes.filter(d => d.applicable).map(d => d.code).join(', ')})
+                            </span>
+                            <span>-{subtotal && formatPrice(discountAmount.toFixed(2), subtotal.currencyCode)}</span>
+                          </div>
+                        );
+                      }
+                      return null;
+                    })()
+                  )}
 
                   {/* Shipping */}
                   <div className="flex justify-between text-sm">

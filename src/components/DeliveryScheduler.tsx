@@ -80,27 +80,34 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm }: Delive
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
+    const fieldRefs: Record<string, string> = {};
 
     if (!selectedDate) {
       newErrors.date = 'Please select a delivery date';
+      fieldRefs.date = 'date-section';
     }
 
     if (!selectedTime) {
       newErrors.time = 'Please select a delivery time';
+      fieldRefs.time = 'time-section';
     }
 
     if (!address.trim()) {
       newErrors.address = 'Please enter your delivery address';
+      fieldRefs.address = 'address-section';
     }
 
     if (!zipCode.trim()) {
       newErrors.zipCode = 'Please enter your ZIP code';
+      fieldRefs.zipCode = 'address-section';
     }
 
     if (!phone.trim()) {
       newErrors.phone = 'Please enter your phone number';
+      fieldRefs.phone = 'address-section';
     } else if (!/^[\d\s()+-]+$/.test(phone) || phone.replace(/\D/g, '').length < 10) {
       newErrors.phone = 'Please enter a valid phone number';
+      fieldRefs.phone = 'address-section';
     } 
     // TESTING MODE: Accept all zip codes and no minimum order
     /* else {
@@ -119,6 +126,16 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm }: Delive
   const handleConfirm = () => {
     if (validateForm() && selectedDate) {
       onConfirm(selectedDate, selectedTime, instructions, phone);
+    } else {
+      // Scroll to first error field
+      const firstErrorField = Object.keys(errors)[0];
+      if (firstErrorField === 'date') {
+        document.getElementById('date-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (firstErrorField === 'time') {
+        document.getElementById('time-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (firstErrorField === 'address' || firstErrorField === 'zipCode' || firstErrorField === 'phone') {
+        document.getElementById('address-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
     }
   };
 
@@ -158,7 +175,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm }: Delive
               {/* Content */}
               <div className="p-6 space-y-6">
                 {/* Address Section */}
-                <div>
+                <div id="address-section">
                   <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
                     Delivery Address
                   </h3>
@@ -219,7 +236,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm }: Delive
 
 
                 {/* Date Selection */}
-                <div>
+                <div id="date-section">
                   <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
                     Delivery Date
                   </h3>
@@ -249,7 +266,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm }: Delive
                 </div>
 
                 {/* Time Selection */}
-                <div>
+                <div id="time-section">
                   <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
                     Delivery Time
                   </h3>
@@ -307,7 +324,19 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm }: Delive
               </div>
 
               {/* Footer */}
-              <div className="p-6 border-t border-gray-200 flex justify-end space-x-4">
+              <div className="p-6 border-t border-gray-200">
+                {/* Error Summary */}
+                {Object.keys(errors).length > 0 && (
+                  <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded">
+                    <p className="text-sm font-medium text-red-800 mb-1">Please fix the following:</p>
+                    <ul className="text-xs text-red-700 space-y-1">
+                      {Object.entries(errors).map(([field, message]) => (
+                        <li key={field}>• {message}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                <div className="flex justify-end space-x-4">
                 <button
                   onClick={onClose}
                   className="px-6 py-3 border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors tracking-[0.1em] text-sm"
@@ -320,6 +349,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm }: Delive
                 >
                   CONFIRM DELIVERY
                 </button>
+                </div>
               </div>
             </div>
           </motion.div>
