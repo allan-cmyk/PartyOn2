@@ -8,7 +8,7 @@ interface DeliverySchedulerProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (date: Date, time: string, instructions: string, phone: string) => void;
-  subtotal: number;
+  subtotal?: number; // Made optional since we're not using Express Delivery anymore
 }
 
 const DELIVERY_ZONES = {
@@ -32,7 +32,7 @@ const DELIVERY_ZONES = {
   }
 };
 
-export default function DeliveryScheduler({ isOpen, onClose, onConfirm, subtotal }: DeliverySchedulerProps) {
+export default function DeliveryScheduler({ isOpen, onClose, onConfirm }: DeliverySchedulerProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState('');
   const [zipCode, setZipCode] = useState('');

@@ -8,19 +8,22 @@ import CartItem from './CartItem';
 import { formatPrice } from '@/lib/shopify/utils';
 import DeliveryScheduler from '@/components/DeliveryScheduler';
 import AIConcierge from '@/components/AIConcierge';
-import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
-import CreateGroupOrderModal from '@/components/group-orders/CreateGroupOrderModal';
-import ShareGroupOrder from '@/components/group-orders/ShareGroupOrder';
+// Group order imports temporarily disabled
+// import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
+// import CreateGroupOrderModal from '@/components/group-orders/CreateGroupOrderModal';
+// import ShareGroupOrder from '@/components/group-orders/ShareGroupOrder';
 import { shopifyFetch } from '@/lib/shopify/client';
 import { CART_DISCOUNT_CODES_UPDATE_MUTATION } from '@/lib/shopify/mutations/discount';
 
 export default function Cart() {
   const { cart, isCartOpen, closeCart, loading, updateCartAttributes } = useCartContext();
-  const { currentGroupOrder, isInGroupOrder, isHost } = useGroupOrderContext();
+  // Group order features temporarily disabled
+  // const { currentGroupOrder, isInGroupOrder, isHost } = useGroupOrderContext();
   const [showDeliveryScheduler, setShowDeliveryScheduler] = useState(false);
-  const [showCreateGroupOrder, setShowCreateGroupOrder] = useState(false);
-  const [showShareModal, setShowShareModal] = useState(false);
-  const [newGroupOrderCode, setNewGroupOrderCode] = useState('');
+  // Group order states temporarily disabled
+  // const [showCreateGroupOrder, setShowCreateGroupOrder] = useState(false);
+  // const [showShareModal, setShowShareModal] = useState(false);
+  // const [newGroupOrderCode, setNewGroupOrderCode] = useState('');
   const [discountCode, setDiscountCode] = useState('');
   const [isApplyingDiscount, setIsApplyingDiscount] = useState(false);
   const [discountError, setDiscountError] = useState('');
@@ -58,11 +61,12 @@ export default function Cart() {
     setShowDeliveryScheduler(false);
   };
 
-  const handleGroupOrderSuccess = (shareCode: string) => {
-    setNewGroupOrderCode(shareCode);
-    setShowCreateGroupOrder(false);
-    setShowShareModal(true);
-  };
+  // Group order handler temporarily disabled
+  // const handleGroupOrderSuccess = (shareCode: string) => {
+  //   setNewGroupOrderCode(shareCode);
+  //   setShowCreateGroupOrder(false);
+  //   setShowShareModal(true);
+  // };
 
   const handleApplyDiscount = async () => {
     if (!cart || !discountCode.trim()) return;
@@ -186,7 +190,7 @@ export default function Cart() {
               {hasItems && (
                 <div className="border-t border-gray-200 p-6 space-y-4">
                   {/* Group Order Info - Hidden until Stripe setup */}
-                  {false && isInGroupOrder && currentGroupOrder && (
+                  {/* {isInGroupOrder && currentGroupOrder && (
                     <div className="bg-gray-50 p-4 rounded">
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm tracking-[0.1em] text-gray-600">GROUP ORDER</span>
@@ -204,7 +208,7 @@ export default function Cart() {
                         </Link>
                       )}
                     </div>
-                  )}
+                  )} */}
 
                   {/* Discount Code Section */}
                   <div className="space-y-2">
@@ -293,7 +297,7 @@ export default function Cart() {
                   </div>
 
                   {/* Group Order Button - Hidden until Stripe setup */}
-                  {false && !isInGroupOrder && (
+                  {/* {!isInGroupOrder && (
                     <button 
                       onClick={() => setShowCreateGroupOrder(true)}
                       disabled={loading}
@@ -301,7 +305,7 @@ export default function Cart() {
                     >
                       START GROUP ORDER
                     </button>
-                  )}
+                  )} */}
 
                   {/* Checkout Button */}
                   <button 
@@ -330,27 +334,26 @@ export default function Cart() {
         isOpen={showDeliveryScheduler}
         onClose={() => setShowDeliveryScheduler(false)}
         onConfirm={handleDeliveryConfirm}
-        subtotal={subtotal ? parseFloat(subtotal.amount) : 0}
       />
       
       {/* AI Concierge - only show when cart is open */}
       {isCartOpen && <AIConcierge mode="party" />}
       
-      {/* Group Order Modals */}
-      <CreateGroupOrderModal
+      {/* Group Order Modals - Temporarily disabled */}
+      {/* <CreateGroupOrderModal
         isOpen={showCreateGroupOrder}
         onClose={() => setShowCreateGroupOrder(false)}
         onSuccess={handleGroupOrderSuccess}
-      />
+      /> */}
       
-      {showShareModal && (
+      {/* {showShareModal && (
         <ShareGroupOrder
           isOpen={showShareModal}
           onClose={() => setShowShareModal(false)}
           shareCode={newGroupOrderCode}
           eventName={currentGroupOrder?.name || 'Group Order'}
         />
-      )}
+      )} */}
     </>
   );
 }

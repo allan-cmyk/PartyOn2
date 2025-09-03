@@ -169,7 +169,6 @@ export default function MobileCart() {
         isOpen={showDeliveryScheduler}
         onClose={() => setShowDeliveryScheduler(false)}
         onConfirm={handleDeliveryConfirm}
-        subtotal={subtotal ? parseFloat(subtotal.amount) : 0}
       />
     </>
   );

@@ -233,7 +233,7 @@ export default function CheckoutPage() {
             {/* Left Column - Forms */}
             <div className="lg:col-span-2 space-y-8">
               {/* Group Order Info - Hidden until Stripe setup */}
-              {false && isGroupCheckout && currentGroupOrder && (
+              {/* {isGroupCheckout && currentGroupOrder && (
                 <div className="bg-blue-50 border border-blue-200 p-6 rounded-lg">
                   <h3 className="font-cormorant text-xl mb-2">Group Order Checkout</h3>
                   <p className="text-gray-700">
@@ -243,7 +243,7 @@ export default function CheckoutPage() {
                     Group Code: <span className="font-mono font-bold">{currentGroupOrder.shareCode}</span>
                   </p>
                 </div>
-              )}
+              )} */}
 
               {/* Customer Information */}
               <div className="bg-white p-6 border border-gray-200">
@@ -593,7 +593,6 @@ export default function CheckoutPage() {
           setDeliveryDetails({ date, time, instructions, phone });
           setShowDeliveryScheduler(false);
         }}
-        subtotal={subtotal}
       />
 
       {/* Auth Modal */}
