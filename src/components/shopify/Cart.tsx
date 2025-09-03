@@ -25,22 +25,22 @@ export default function Cart() {
   const [isApplyingDiscount, setIsApplyingDiscount] = useState(false);
   const [discountError, setDiscountError] = useState('');
 
-  const subtotal = cart?.cost.subtotalAmount;
-  const total = cart?.cost.totalAmount;
+  const subtotal = cart?.cost?.subtotalAmount;
+  const total = cart?.cost?.totalAmount;
   const hasItems = (cart?.totalQuantity || 0) > 0;
 
   const handleProceedToCheckout = () => {
     setShowDeliveryScheduler(true);
   };
 
-  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, isExpress?: boolean) => {
+  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, phone?: string) => {
     // Store delivery info in cart attributes
     const attributes = [
       { key: 'delivery_date', value: date.toISOString() },
       { key: 'delivery_time', value: time },
       { key: 'delivery_instructions', value: instructions },
-      { key: 'express_delivery', value: isExpress ? 'true' : 'false' },
-      { key: 'delivery_fee', value: isExpress ? '0.00' : '15.00' }
+      { key: 'delivery_phone', value: phone || '' },
+      { key: 'delivery_fee', value: '25.00' }
     ];
 
     if (updateCartAttributes) {
@@ -185,8 +185,8 @@ export default function Cart() {
               {/* Footer */}
               {hasItems && (
                 <div className="border-t border-gray-200 p-6 space-y-4">
-                  {/* Group Order Info */}
-                  {isInGroupOrder && currentGroupOrder && (
+                  {/* Group Order Info - Hidden until Stripe setup */}
+                  {false && isInGroupOrder && currentGroupOrder && (
                     <div className="bg-gray-50 p-4 rounded">
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm tracking-[0.1em] text-gray-600">GROUP ORDER</span>
@@ -292,8 +292,8 @@ export default function Cart() {
                     </div>
                   </div>
 
-                  {/* Group Order Button - Only show if not already in a group order */}
-                  {!isInGroupOrder && (
+                  {/* Group Order Button - Hidden until Stripe setup */}
+                  {false && !isInGroupOrder && (
                     <button 
                       onClick={() => setShowCreateGroupOrder(true)}
                       disabled={loading}
