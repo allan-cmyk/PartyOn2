@@ -9,32 +9,34 @@ import { formatPrice } from '@/lib/shopify/utils';
 import DeliveryScheduler from '@/components/DeliveryScheduler';
 
 export default function MobileCart() {
-  const { cart, isCartOpen, closeCart, loading } = useCartContext();
+  const { cart, isCartOpen, closeCart, loading, updateCartAttributes } = useCartContext();
   const [showDeliveryScheduler, setShowDeliveryScheduler] = useState(false);
   const [cartHeight, setCartHeight] = useState('auto');
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const controls = useAnimation();
   const constraintsRef = useRef(null);
   
   const subtotal = cart?.cost?.subtotalAmount || null;
-  const total = cart?.cost?.totalAmount || null;
   const hasItems = (cart?.totalQuantity || 0) > 0;
 
   // Calculate drawer height based on content
   useEffect(() => {
     if (isCartOpen) {
       const windowHeight = window.innerHeight;
-      const maxHeight = windowHeight * 0.9; // 90% of screen height
+      const maxHeight = windowHeight * 0.85; // 85% of screen height for better UX
       setCartHeight(`${maxHeight}px`);
+      controls.start({ y: 0 });
     }
-  }, [isCartOpen]);
+  }, [isCartOpen, controls]);
 
   const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    const shouldClose = info.offset.y > 100 || info.velocity.y > 500;
+    // More responsive drag threshold for mobile
+    const shouldClose = info.offset.y > 50 || (info.velocity.y > 0 && info.velocity.y > 300);
     
     if (shouldClose) {
       closeCart();
     } else {
-      controls.start({ y: 0 });
+      controls.start({ y: 0, transition: { type: 'spring', damping: 25, stiffness: 500 } });
     }
   };
 
@@ -42,13 +44,47 @@ export default function MobileCart() {
     setShowDeliveryScheduler(true);
   };
 
-  const handleDeliveryConfirm = async () => {
-    if (cart?.checkoutUrl) {
-      const checkoutUrl = new URL(cart.checkoutUrl);
-      checkoutUrl.searchParams.set('return_to', `${window.location.origin}/checkout/success`);
-      window.location.href = checkoutUrl.toString();
+  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, phone: string, address: string, zipCode: string) => {
+    try {
+      setIsRedirecting(true);
+      
+      // Format date for Shopify
+      const formattedDate = date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      
+      // Store delivery info in cart attributes
+      const attributes = [
+        { key: 'delivery_date', value: formattedDate },
+        { key: 'delivery_time', value: time },
+        { key: 'delivery_instructions', value: instructions || 'None' },
+        { key: 'delivery_phone', value: phone },
+        { key: 'delivery_address', value: address },
+        { key: 'delivery_zip', value: zipCode },
+        { key: 'delivery_fee', value: '25.00' }
+      ];
+
+      // Update cart with delivery attributes
+      if (updateCartAttributes) {
+        const updatedCart = await updateCartAttributes(attributes);
+        
+        // Redirect to checkout with updated cart
+        if (updatedCart?.checkoutUrl) {
+          // Use location.replace for cleaner mobile redirect
+          window.location.replace(updatedCart.checkoutUrl);
+        }
+      } else if (cart?.checkoutUrl) {
+        // Fallback to direct checkout
+        window.location.replace(cart.checkoutUrl);
+      }
+    } catch (error) {
+      console.error('Error during checkout:', error);
+      setShowDeliveryScheduler(false);
+      setIsRedirecting(false);
     }
-    setShowDeliveryScheduler(false);
   };
 
   return (
@@ -71,18 +107,23 @@ export default function MobileCart() {
               initial={{ y: '100%' }}
               animate={controls}
               exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              transition={{ 
+                type: 'spring', 
+                damping: 25, 
+                stiffness: 400,
+                mass: 0.8
+              }}
               drag="y"
               dragConstraints={{ top: 0 }}
-              dragElastic={0.2}
+              dragElastic={{ top: 0, bottom: 0.3 }}
               onDragEnd={handleDragEnd}
               style={{ maxHeight: cartHeight }}
-              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-[70] md:hidden overflow-hidden safe-area-bottom"
+              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-[70] md:hidden overflow-hidden safe-area-bottom touch-none"
             >
               {/* Drag Handle */}
-              <div className="sticky top-0 bg-white z-10 pb-2">
-                <div className="flex justify-center py-3">
-                  <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
+              <div className="sticky top-0 bg-white z-10 pb-2 cursor-grab active:cursor-grabbing">
+                <div className="flex justify-center py-3 touch-none">
+                  <div className="w-12 h-1.5 bg-gray-300 rounded-full transition-all hover:bg-gray-400" />
                 </div>
                 
                 {/* Header */}
@@ -117,9 +158,9 @@ export default function MobileCart() {
                   </div>
                 ) : (
                   <div className="space-y-4 py-4">
-                    {cart?.lines.edges.map(({ node }) => (
+                    {cart?.lines?.edges?.map(({ node }) => (
                       <CartItem key={node.id} item={node} />
-                    ))}
+                    )) || []}
                   </div>
                 )}
               </div>
@@ -132,7 +173,7 @@ export default function MobileCart() {
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Subtotal</span>
                       <span className="text-gray-900 font-medium">
-                        {subtotal && formatPrice(subtotal.amount, subtotal.currencyCode)}
+                        {subtotal ? formatPrice(subtotal.amount, subtotal.currencyCode) : '$0.00'}
                       </span>
                     </div>
 
@@ -151,10 +192,10 @@ export default function MobileCart() {
                     {/* Checkout Button */}
                     <button 
                       onClick={handleProceedToCheckout}
-                      disabled={loading}
-                      className="w-full py-4 bg-gold-600 text-white rounded-lg tracking-[0.1em] text-sm font-medium disabled:opacity-50"
+                      disabled={loading || isRedirecting}
+                      className="w-full py-4 bg-gold-600 text-white rounded-lg tracking-[0.1em] text-sm font-medium disabled:opacity-50 transition-all active:scale-[0.98]"
                     >
-                      CHECKOUT • {total && formatPrice(total.amount, total.currencyCode)}
+                      {isRedirecting ? 'REDIRECTING...' : `CHECKOUT • ${subtotal && formatPrice(subtotal.amount, subtotal.currencyCode)}`}
                     </button>
                   </div>
                 </div>
@@ -170,6 +211,16 @@ export default function MobileCart() {
         onClose={() => setShowDeliveryScheduler(false)}
         onConfirm={handleDeliveryConfirm}
       />
+
+      {/* Loading Overlay for redirect */}
+      {isRedirecting && (
+        <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 flex flex-col items-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-600 mb-4"></div>
+            <p className="text-sm text-gray-600">Redirecting to checkout...</p>
+          </div>
+        </div>
+      )}
     </>
   );
 }

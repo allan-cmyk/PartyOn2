@@ -375,26 +375,29 @@ function ProductsContent() {
               )}
             </div>
             <div className={`grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-3 md:grid-cols-6 gap-3'}`}>
-              {SHOPIFY_COLLECTIONS.map((collection) => (
-                <button
-                  key={collection.handle}
-                  onClick={() => {
-                    setCollectionFilter(collection.handle);
-                    setFilter('all'); // Reset category filter
-                  }}
-                  className={`
-                    px-4 py-3 text-center border transition-all
-                    ${collectionFilter === collection.handle 
-                      ? 'border-gold-600 bg-gold-50 text-gold-700' 
-                      : 'border-gray-300 bg-white hover:border-gold-400 hover:bg-gold-50'
-                    }
-                    ${isMobile ? 'text-xs' : 'text-sm'}
-                    tracking-[0.1em] font-medium
-                  `}
-                >
-                  {collection.label.toUpperCase()}
-                </button>
-              ))}
+              {SHOPIFY_COLLECTIONS.map((collection) => {
+                const isActive = collectionFilter === collection.handle;
+                return (
+                  <button
+                    key={collection.handle}
+                    onClick={() => {
+                      setCollectionFilter(collection.handle);
+                      setFilter('all'); // Reset category filter
+                    }}
+                    className={`
+                      px-4 py-3 text-center border transition-all rounded-lg
+                      ${isActive 
+                        ? `${collection.colors.bgActive} ${collection.colors.textActive} ${collection.colors.borderActive}` 
+                        : `${collection.colors.bg} ${collection.colors.text} ${collection.colors.border}`
+                      }
+                      ${isMobile ? 'text-xs' : 'text-sm'}
+                      tracking-[0.1em] font-medium
+                    `}
+                  >
+                    {collection.label.toUpperCase()}
+                  </button>
+                );
+              })}
             </div>
             {collectionFilter && (
               <div className="mt-4 text-sm text-gray-600">
@@ -457,23 +460,26 @@ function ProductsContent() {
               {/* Mobile Horizontal Category Scroll */}
               <div className="overflow-x-auto -mx-4 px-4">
                 <div className="flex gap-2 pb-2">
-                  {FILTER_OPTIONS.mainCategories.map((category) => (
-                    <button
-                      key={category.value}
-                      onClick={() => {
-                        setFilter(category.value);
-                        setSpiritType('all');
-                      }}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 text-xs whitespace-nowrap transition-all ${
-                        filter === category.value
-                          ? 'bg-gold-600 text-white'
-                          : 'border border-gray-300 text-gray-700'
-                      }`}
-                    >
-                      <CategoryIcon category={category.value} className="w-3.5 h-3.5" />
-                      {category.label}
-                    </button>
-                  ))}
+                  {FILTER_OPTIONS.mainCategories.map((category) => {
+                    const isActive = filter === category.value;
+                    return (
+                      <button
+                        key={category.value}
+                        onClick={() => {
+                          setFilter(category.value);
+                          setSpiritType('all');
+                        }}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 text-xs whitespace-nowrap transition-all rounded-lg border ${
+                          isActive
+                            ? `${category.colors.bgActive} ${category.colors.textActive} ${category.colors.borderActive}`
+                            : `${category.colors.bg} ${category.colors.text} ${category.colors.border}`
+                        }`}
+                      >
+                        <CategoryIcon category={category.value} className="w-3.5 h-3.5" />
+                        {category.label}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -481,23 +487,26 @@ function ProductsContent() {
             <>
               {/* Desktop Category Filters */}
               <div className="flex flex-wrap gap-3 mb-4">
-                {FILTER_OPTIONS.mainCategories.map((category) => (
-                  <button
-                    key={category.value}
-                    onClick={() => {
-                      setFilter(category.value);
-                      setSpiritType('all'); // Reset spirit type when main category changes
-                    }}
-                    className={`px-5 py-2.5 text-xs tracking-[0.1em] transition-all duration-300 flex items-center gap-2 ${
-                      filter === category.value
-                        ? 'bg-gold-600 text-white'
-                        : 'border border-gray-300 text-gray-700 hover:border-gold-600'
-                    }`}
-                  >
-                    <CategoryIcon category={category.value} className="w-4 h-4" />
-                    {category.label.toUpperCase()}
-                  </button>
-                ))}
+                {FILTER_OPTIONS.mainCategories.map((category) => {
+                  const isActive = filter === category.value;
+                  return (
+                    <button
+                      key={category.value}
+                      onClick={() => {
+                        setFilter(category.value);
+                        setSpiritType('all'); // Reset spirit type when main category changes
+                      }}
+                      className={`px-5 py-2.5 text-xs tracking-[0.1em] transition-all duration-300 flex items-center gap-2 rounded-lg border ${
+                        isActive
+                          ? `${category.colors.bgActive} ${category.colors.textActive} ${category.colors.borderActive}`
+                          : `${category.colors.bg} ${category.colors.text} ${category.colors.border}`
+                      }`}
+                    >
+                      <CategoryIcon category={category.value} className="w-4 h-4" />
+                      {category.label.toUpperCase()}
+                    </button>
+                  );
+                })}
               </div>
             </>
           )}

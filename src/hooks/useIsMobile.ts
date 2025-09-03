@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 
 export function useIsMobile(breakpoint: number = 768) {
-  const [isMobile, setIsMobile] = useState(false);
+  // Initialize with undefined to avoid hydration mismatch
+  const [isMobile, setIsMobile] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
     const checkIsMobile = () => {
@@ -20,7 +21,8 @@ export function useIsMobile(breakpoint: number = 768) {
     return () => window.removeEventListener('resize', checkIsMobile);
   }, [breakpoint]);
 
-  return isMobile;
+  // Return false during SSR and initial render
+  return isMobile ?? false;
 }
 
 // Hook for touch device detection
