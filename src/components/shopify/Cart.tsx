@@ -12,8 +12,9 @@ import AIConcierge from '@/components/AIConcierge';
 // import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
 // import CreateGroupOrderModal from '@/components/group-orders/CreateGroupOrderModal';
 // import ShareGroupOrder from '@/components/group-orders/ShareGroupOrder';
-import { shopifyFetch } from '@/lib/shopify/client';
-import { CART_DISCOUNT_CODES_UPDATE_MUTATION } from '@/lib/shopify/mutations/discount';
+// Discount imports temporarily disabled - handled at Shopify checkout
+// import { shopifyFetch } from '@/lib/shopify/client';
+// import { CART_DISCOUNT_CODES_UPDATE_MUTATION } from '@/lib/shopify/mutations/discount';
 
 export default function Cart() {
   const { cart, isCartOpen, closeCart, loading, updateCartAttributes } = useCartContext();
@@ -24,18 +25,20 @@ export default function Cart() {
   // const [showCreateGroupOrder, setShowCreateGroupOrder] = useState(false);
   // const [showShareModal, setShowShareModal] = useState(false);
   // const [newGroupOrderCode, setNewGroupOrderCode] = useState('');
-  const [discountCode, setDiscountCode] = useState('');
-  const [isApplyingDiscount, setIsApplyingDiscount] = useState(false);
-  const [discountError, setDiscountError] = useState('');
+  // Discount states temporarily disabled - handled at Shopify checkout
+  // const [discountCode, setDiscountCode] = useState('');
+  // const [isApplyingDiscount, setIsApplyingDiscount] = useState(false);
+  // const [discountError, setDiscountError] = useState('');
 
   const subtotal = cart?.cost?.subtotalAmount;
   const total = cart?.cost?.totalAmount;
   const hasItems = (cart?.totalQuantity || 0) > 0;
 
   const handleProceedToCheckout = () => {
-    // Close cart and navigate to checkout page instead of showing scheduler
-    closeCart();
-    window.location.href = '/checkout';
+    // Redirect directly to Shopify checkout
+    if (cart?.checkoutUrl) {
+      window.location.href = cart.checkoutUrl;
+    }
   };
 
   const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, phone?: string) => {
@@ -66,63 +69,9 @@ export default function Cart() {
   //   setShowShareModal(true);
   // };
 
-  const handleApplyDiscount = async () => {
-    if (!cart || !discountCode.trim()) return;
-    
-    setIsApplyingDiscount(true);
-    setDiscountError('');
-    
-    try {
-      const response = await shopifyFetch({
-        query: CART_DISCOUNT_CODES_UPDATE_MUTATION,
-        variables: {
-          cartId: cart.id,
-          discountCodes: [discountCode.trim().toUpperCase()]
-        }
-      }) as {
-        cartDiscountCodesUpdate?: {
-          userErrors?: Array<{ field?: string; message?: string }>;
-          cart?: unknown;
-        };
-      };
-      
-      if (response?.cartDiscountCodesUpdate?.userErrors?.length && response.cartDiscountCodesUpdate.userErrors.length > 0) {
-        setDiscountError('Invalid or expired discount code');
-      } else {
-        setDiscountCode('');
-        setDiscountError(''); // Clear any previous errors
-        // Show success briefly
-        const successMsg = `✓ Discount code "${discountCode.toUpperCase()}" applied successfully!`;
-        setDiscountError(successMsg);
-        setTimeout(() => setDiscountError(''), 3000);
-        // Cart will auto-refresh via context
-      }
-    } catch {
-      setDiscountError('Failed to apply discount code');
-    } finally {
-      setIsApplyingDiscount(false);
-    }
-  };
-
-  const handleRemoveDiscount = async (code: string) => {
-    if (!cart) return;
-    
-    const currentCodes = cart.discountCodes?.filter(d => d.code !== code).map(d => d.code) || [];
-    
-    try {
-      await shopifyFetch({
-        query: CART_DISCOUNT_CODES_UPDATE_MUTATION,
-        variables: {
-          cartId: cart.id,
-          discountCodes: currentCodes
-        }
-      });
-      
-      // Cart will auto-refresh via context
-    } catch {
-      console.error('Failed to remove discount');
-    }
-  };
+  // Discount functions temporarily disabled - handled at Shopify checkout
+  // const handleApplyDiscount = async () => { ... };
+  // const handleRemoveDiscount = async (code: string) => { ... };
 
   return (
     <>
@@ -213,52 +162,14 @@ export default function Cart() {
                     </div>
                   )} */}
 
-                  {/* Discount Code Section */}
-                  <div className="space-y-2">
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={discountCode}
-                        onChange={(e) => setDiscountCode(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleApplyDiscount()}
-                        placeholder="Discount code"
-                        disabled={isApplyingDiscount}
-                        className="flex-1 px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:border-gold-600"
-                      />
-                      <button
-                        onClick={handleApplyDiscount}
-                        disabled={isApplyingDiscount || !discountCode.trim()}
-                        className="px-4 py-2 bg-gray-900 text-white text-sm hover:bg-gold-600 transition-colors disabled:opacity-50"
-                      >
-                        {isApplyingDiscount ? 'APPLYING...' : 'APPLY'}
-                      </button>
-                    </div>
-                    
-                    {discountError && (
-                      <p className={`text-xs ${
-                        discountError.startsWith('✓') ? 'text-green-600 font-medium' : 'text-red-600'
-                      }`}>
-                        {discountError}
-                      </p>
-                    )}
-                    
-                    {cart?.discountCodes && cart.discountCodes.length > 0 && (
-                      <div className="space-y-1">
-                        {cart.discountCodes.map((discount) => (
-                          <div key={discount.code} className="flex items-center justify-between bg-green-50 px-3 py-2 rounded">
-                            <span className="text-sm text-green-700">
-                              {discount.code} {discount.applicable && '✓'}
-                            </span>
-                            <button
-                              onClick={() => handleRemoveDiscount(discount.code)}
-                              className="text-red-600 hover:text-red-700 text-sm"
-                            >
-                              Remove
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                  {/* Discount Code Notice */}
+                  <div className="bg-gray-50 px-4 py-3 rounded">
+                    <p className="text-sm text-gray-600 text-center">
+                      <svg className="inline-block w-4 h-4 mr-1.5 align-text-bottom" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                      </svg>
+                      Discount codes can be applied at Shopify checkout
+                    </p>
                   </div>
 
                   {/* Subtotal */}
@@ -269,8 +180,8 @@ export default function Cart() {
                     </span>
                   </div>
 
-                  {/* Discount Amount - Show if discount is applied */}
-                  {cart?.discountCodes && cart.discountCodes.length > 0 && cart.discountCodes.some(d => d.applicable) && (
+                  {/* Discount Amount - Hidden, discounts applied at Shopify checkout */}
+                  {/* {cart?.discountCodes && cart.discountCodes.length > 0 && cart.discountCodes.some(d => d.applicable) && (
                     (() => {
                       const discountAmount = subtotal && total ? 
                         parseFloat(subtotal.amount) - parseFloat(total.amount) : 0;
@@ -287,7 +198,7 @@ export default function Cart() {
                       }
                       return null;
                     })()
-                  )}
+                  )} */}
 
                   {/* Shipping */}
                   <div className="flex justify-between text-sm">
