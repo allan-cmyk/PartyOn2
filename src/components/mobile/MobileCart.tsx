@@ -4,15 +4,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence, PanInfo, useAnimation, useDragControls } from 'framer-motion';
 import { useCartContext } from '@/contexts/CartContext';
-import { useCustomerContext } from '@/contexts/CustomerContext';
 import CartItem from '../shopify/CartItem';
 import { formatPrice } from '@/lib/shopify/utils';
-import { parseAddress, formatPhone } from '@/lib/utils/addressParser';
-import DeliveryScheduler from '@/components/DeliveryScheduler';
+import SimpleDeliveryScheduler from '@/components/SimpleDeliveryScheduler';
 
 export default function MobileCart() {
   const { cart, isCartOpen, closeCart, loading, updateCartAttributes } = useCartContext();
-  const { customer } = useCustomerContext();
   const [showDeliveryScheduler, setShowDeliveryScheduler] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const controls = useAnimation();
@@ -44,7 +41,7 @@ export default function MobileCart() {
     setShowDeliveryScheduler(true);
   };
 
-  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, phone: string, address: string, zipCode: string, firstName: string, lastName: string, email: string) => {
+  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string) => {
     try {
       setIsRedirecting(true);
       
@@ -56,25 +53,15 @@ export default function MobileCart() {
         day: 'numeric'
       });
       
-      // Parse the address for Shop Pay
-      const parsedAddress = parseAddress(address, zipCode);
-      const formattedPhone = formatPhone(phone);
-      
       // Create formatted note for order (visible in confirmation emails)
-      const orderNote = `DELIVERY DETAILS:\nCustomer: ${firstName} ${lastName}\nEmail: ${email}\nDate: ${formattedDate}\nTime: ${time}\nAddress: ${address}, ${zipCode}\nPhone: ${phone}${instructions ? `\nSpecial Instructions: ${instructions}` : ''}`;
+      const orderNote = `DELIVERY SCHEDULED:\nDate: ${formattedDate}\nTime: ${time}${instructions ? `\nSpecial Instructions: ${instructions}` : ''}`;
       
       // Store delivery info in cart attributes (for backup/internal use) and note (for customer visibility)
       const attributes = [
         { key: 'note', value: orderNote }, // This shows in confirmation emails
-        { key: 'customer_first_name', value: firstName },
-        { key: 'customer_last_name', value: lastName },
-        { key: 'customer_email', value: email },
         { key: 'delivery_date', value: formattedDate },
         { key: 'delivery_time', value: time },
         { key: 'delivery_instructions', value: instructions || 'None' },
-        { key: 'delivery_phone', value: phone },
-        { key: 'delivery_address', value: address },
-        { key: 'delivery_zip', value: zipCode },
         { key: 'delivery_fee', value: '25.00' }
       ];
 
@@ -87,25 +74,7 @@ export default function MobileCart() {
           // Build checkout URL with address parameters for Shop Pay
           const checkoutUrl = new URL(updatedCart.checkoutUrl);
           
-          // Don't force Shop Pay - let customer choose payment method
-          // This allows standard checkout to properly receive address parameters
-          // checkoutUrl.searchParams.append('payment', 'shop_pay');
-          
-          // Add customer info
-          checkoutUrl.searchParams.append('checkout[email]', email);
-          checkoutUrl.searchParams.append('checkout[shipping_address][first_name]', firstName);
-          checkoutUrl.searchParams.append('checkout[shipping_address][last_name]', lastName);
-          
-          // Add shipping address parameters
-          checkoutUrl.searchParams.append('checkout[shipping_address][address1]', parsedAddress.address1);
-          if (parsedAddress.address2) {
-            checkoutUrl.searchParams.append('checkout[shipping_address][address2]', parsedAddress.address2);
-          }
-          checkoutUrl.searchParams.append('checkout[shipping_address][city]', parsedAddress.city);
-          checkoutUrl.searchParams.append('checkout[shipping_address][province]', parsedAddress.province);
-          checkoutUrl.searchParams.append('checkout[shipping_address][country]', parsedAddress.country);
-          checkoutUrl.searchParams.append('checkout[shipping_address][zip]', parsedAddress.zip);
-          checkoutUrl.searchParams.append('checkout[shipping_address][phone]', formattedPhone);
+          // No address parameters needed - customer will fill out in Shopify checkout
           
           // Use location.replace for cleaner mobile redirect
           window.location.replace(checkoutUrl.toString());
@@ -259,23 +228,11 @@ export default function MobileCart() {
         )}
       </AnimatePresence>
 
-      {/* Delivery Scheduler */}
-      <DeliveryScheduler
+      {/* Simple Delivery Scheduler */}
+      <SimpleDeliveryScheduler
         isOpen={showDeliveryScheduler}
         onClose={() => setShowDeliveryScheduler(false)}
         onConfirm={handleDeliveryConfirm}
-        defaultAddress={customer?.defaultAddress ? {
-          address: [customer.defaultAddress.address1, customer.defaultAddress.address2].filter(Boolean).join(', '),
-          city: customer.defaultAddress.city,
-          province: customer.defaultAddress.province,
-          zip: customer.defaultAddress.zip,
-          phone: customer.defaultAddress.phone || customer.phone
-        } : undefined}
-        customerInfo={customer ? {
-          firstName: customer.firstName || customer.defaultAddress?.firstName,
-          lastName: customer.lastName || customer.defaultAddress?.lastName,
-          email: customer.email
-        } : undefined}
       />
 
       {/* Loading Overlay for redirect */}

@@ -4,11 +4,9 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCartContext } from '@/contexts/CartContext';
-import { useCustomerContext } from '@/contexts/CustomerContext';
 import CartItem from './CartItem';
 import { formatPrice } from '@/lib/shopify/utils';
-import { parseAddress, formatPhone } from '@/lib/utils/addressParser';
-import DeliveryScheduler from '@/components/DeliveryScheduler';
+import SimpleDeliveryScheduler from '@/components/SimpleDeliveryScheduler';
 import AIConcierge from '@/components/AIConcierge';
 // Group order imports temporarily disabled
 // import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
@@ -20,7 +18,6 @@ import AIConcierge from '@/components/AIConcierge';
 
 export default function Cart() {
   const { cart, isCartOpen, closeCart, loading, updateCartAttributes } = useCartContext();
-  const { customer } = useCustomerContext();
   // Group order features temporarily disabled
   // const { currentGroupOrder, isInGroupOrder, isHost } = useGroupOrderContext();
   const [showDeliveryScheduler, setShowDeliveryScheduler] = useState(false);
@@ -42,7 +39,7 @@ export default function Cart() {
     setShowDeliveryScheduler(true);
   };
 
-  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, phone: string, address: string, zipCode: string, firstName: string, lastName: string, email: string) => {
+  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string) => {
     try {
       // Set redirecting state to show loading
       setIsRedirecting(true);
@@ -55,25 +52,15 @@ export default function Cart() {
         day: 'numeric' 
       }).format(date);
       
-      // Parse address for Shop Pay
-      const parsedAddress = parseAddress(address, zipCode);
-      const formattedPhone = formatPhone(phone);
-      
       // Create formatted note for order (visible in confirmation emails)
-      const orderNote = `DELIVERY DETAILS:\nCustomer: ${firstName} ${lastName}\nEmail: ${email}\nDate: ${formattedDate}\nTime: ${time}\nAddress: ${address}, ${zipCode}\nPhone: ${phone}${instructions ? `\nSpecial Instructions: ${instructions}` : ''}`;
+      const orderNote = `DELIVERY SCHEDULED:\nDate: ${formattedDate}\nTime: ${time}${instructions ? `\nSpecial Instructions: ${instructions}` : ''}`;
       
       // Store delivery info in cart attributes (for backup/internal use) and note (for customer visibility)
       const attributes = [
         { key: 'note', value: orderNote }, // This shows in confirmation emails
-        { key: 'customer_first_name', value: firstName },
-        { key: 'customer_last_name', value: lastName },
-        { key: 'customer_email', value: email },
         { key: 'delivery_date', value: formattedDate },
         { key: 'delivery_time', value: time },
         { key: 'delivery_instructions', value: instructions || 'None' },
-        { key: 'delivery_phone', value: phone },
-        { key: 'delivery_address', value: address }, // Keep original for reference
-        { key: 'delivery_zip', value: zipCode },
         { key: 'delivery_fee', value: '25.00' }
       ];
 
@@ -105,25 +92,7 @@ export default function Cart() {
         try {
           const url = new URL(checkoutUrl);
           
-          // Don't force Shop Pay - let customer choose payment method
-          // This allows standard checkout to properly receive address parameters
-          // url.searchParams.append('payment', 'shop_pay');
-          
-          // Add customer info
-          url.searchParams.append('checkout[email]', email);
-          url.searchParams.append('checkout[shipping_address][first_name]', firstName);
-          url.searchParams.append('checkout[shipping_address][last_name]', lastName);
-          
-          // Add parsed address parameters
-          url.searchParams.append('checkout[shipping_address][address1]', parsedAddress.address1);
-          if (parsedAddress.address2) {
-            url.searchParams.append('checkout[shipping_address][address2]', parsedAddress.address2);
-          }
-          url.searchParams.append('checkout[shipping_address][city]', parsedAddress.city);
-          url.searchParams.append('checkout[shipping_address][province]', parsedAddress.province);
-          url.searchParams.append('checkout[shipping_address][country]', parsedAddress.country);
-          url.searchParams.append('checkout[shipping_address][zip]', parsedAddress.zip);
-          url.searchParams.append('checkout[shipping_address][phone]', formattedPhone);
+          // No address parameters needed - customer will fill out in Shopify checkout
           
           checkoutUrl = url.toString();
           console.log('Final checkout URL with parameters:', checkoutUrl);
@@ -377,8 +346,8 @@ export default function Cart() {
         )}
       </AnimatePresence>
 
-      {/* Delivery Scheduler */}
-      <DeliveryScheduler
+      {/* Simple Delivery Scheduler */}
+      <SimpleDeliveryScheduler
         isOpen={showDeliveryScheduler}
         onClose={() => {
           // Don't allow closing during redirect
@@ -387,18 +356,6 @@ export default function Cart() {
           }
         }}
         onConfirm={handleDeliveryConfirm}
-        defaultAddress={customer?.defaultAddress ? {
-          address: [customer.defaultAddress.address1, customer.defaultAddress.address2].filter(Boolean).join(', '),
-          city: customer.defaultAddress.city,
-          province: customer.defaultAddress.province,
-          zip: customer.defaultAddress.zip,
-          phone: customer.defaultAddress.phone || customer.phone
-        } : undefined}
-        customerInfo={customer ? {
-          firstName: customer.firstName || customer.defaultAddress?.firstName,
-          lastName: customer.lastName || customer.defaultAddress?.lastName,
-          email: customer.email
-        } : undefined}
       />
       
       {/* AI Concierge - only show when cart is open */}
