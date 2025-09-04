@@ -6,6 +6,7 @@ import { motion, AnimatePresence, PanInfo, useAnimation, useDragControls } from 
 import { useCartContext } from '@/contexts/CartContext';
 import CartItem from '../shopify/CartItem';
 import { formatPrice } from '@/lib/shopify/utils';
+import { parseAddress, formatPhone } from '@/lib/utils/addressParser';
 import DeliveryScheduler from '@/components/DeliveryScheduler';
 
 export default function MobileCart() {
@@ -53,7 +54,11 @@ export default function MobileCart() {
         day: 'numeric'
       });
       
-      // Store delivery info in cart attributes
+      // Parse the address for Shop Pay
+      const parsedAddress = parseAddress(address, zipCode);
+      const formattedPhone = formatPhone(phone);
+      
+      // Store delivery info in cart attributes (for backup/internal use)
       const attributes = [
         { key: 'delivery_date', value: formattedDate },
         { key: 'delivery_time', value: time },
@@ -68,14 +73,47 @@ export default function MobileCart() {
       if (updateCartAttributes) {
         const updatedCart = await updateCartAttributes(attributes);
         
-        // Redirect to checkout with updated cart
+        // Redirect to checkout with updated cart and Shop Pay parameters
         if (updatedCart?.checkoutUrl) {
+          // Build checkout URL with address parameters for Shop Pay
+          const checkoutUrl = new URL(updatedCart.checkoutUrl);
+          
+          // Add Shop Pay payment method hint
+          checkoutUrl.searchParams.append('payment', 'shop_pay');
+          
+          // Add shipping address parameters
+          checkoutUrl.searchParams.append('checkout[shipping_address][address1]', parsedAddress.address1);
+          if (parsedAddress.address2) {
+            checkoutUrl.searchParams.append('checkout[shipping_address][address2]', parsedAddress.address2);
+          }
+          checkoutUrl.searchParams.append('checkout[shipping_address][city]', parsedAddress.city);
+          checkoutUrl.searchParams.append('checkout[shipping_address][province]', parsedAddress.province);
+          checkoutUrl.searchParams.append('checkout[shipping_address][country]', parsedAddress.country);
+          checkoutUrl.searchParams.append('checkout[shipping_address][zip]', parsedAddress.zip);
+          checkoutUrl.searchParams.append('checkout[shipping_address][phone]', formattedPhone);
+          
           // Use location.replace for cleaner mobile redirect
-          window.location.replace(updatedCart.checkoutUrl);
+          window.location.replace(checkoutUrl.toString());
         }
       } else if (cart?.checkoutUrl) {
-        // Fallback to direct checkout
-        window.location.replace(cart.checkoutUrl);
+        // Fallback to direct checkout with parameters
+        const checkoutUrl = new URL(cart.checkoutUrl);
+        
+        // Add Shop Pay payment method hint
+        checkoutUrl.searchParams.append('payment', 'shop_pay');
+        
+        // Add shipping address parameters
+        checkoutUrl.searchParams.append('checkout[shipping_address][address1]', parsedAddress.address1);
+        if (parsedAddress.address2) {
+          checkoutUrl.searchParams.append('checkout[shipping_address][address2]', parsedAddress.address2);
+        }
+        checkoutUrl.searchParams.append('checkout[shipping_address][city]', parsedAddress.city);
+        checkoutUrl.searchParams.append('checkout[shipping_address][province]', parsedAddress.province);
+        checkoutUrl.searchParams.append('checkout[shipping_address][country]', parsedAddress.country);
+        checkoutUrl.searchParams.append('checkout[shipping_address][zip]', parsedAddress.zip);
+        checkoutUrl.searchParams.append('checkout[shipping_address][phone]', formattedPhone);
+        
+        window.location.replace(checkoutUrl.toString());
       }
     } catch (error) {
       console.error('Error during checkout:', error);

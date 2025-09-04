@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useCartContext } from '@/contexts/CartContext';
 import CartItem from './CartItem';
 import { formatPrice } from '@/lib/shopify/utils';
+import { parseAddress, formatPhone } from '@/lib/utils/addressParser';
 import DeliveryScheduler from '@/components/DeliveryScheduler';
 import AIConcierge from '@/components/AIConcierge';
 // Group order imports temporarily disabled
@@ -52,13 +53,17 @@ export default function Cart() {
         day: 'numeric' 
       }).format(date);
       
-      // Store delivery info in cart attributes
+      // Parse address for Shop Pay
+      const parsedAddress = parseAddress(address, zipCode);
+      const formattedPhone = formatPhone(phone);
+      
+      // Store delivery info in cart attributes (for backup/internal use)
       const attributes = [
         { key: 'delivery_date', value: formattedDate },
         { key: 'delivery_time', value: time },
         { key: 'delivery_instructions', value: instructions || 'None' },
         { key: 'delivery_phone', value: phone },
-        { key: 'delivery_address', value: address },
+        { key: 'delivery_address', value: address }, // Keep original for reference
         { key: 'delivery_zip', value: zipCode },
         { key: 'delivery_fee', value: '25.00' }
       ];
@@ -85,6 +90,32 @@ export default function Cart() {
       }
       
       if (checkoutUrl) {
+        // Build URL with Shop Pay parameters
+        console.log('Building checkout URL with address parameters');
+        
+        try {
+          const url = new URL(checkoutUrl);
+          
+          // Add Shop Pay parameter
+          url.searchParams.append('payment', 'shop_pay');
+          
+          // Add parsed address parameters
+          url.searchParams.append('checkout[shipping_address][address1]', parsedAddress.address1);
+          if (parsedAddress.address2) {
+            url.searchParams.append('checkout[shipping_address][address2]', parsedAddress.address2);
+          }
+          url.searchParams.append('checkout[shipping_address][city]', parsedAddress.city);
+          url.searchParams.append('checkout[shipping_address][province]', parsedAddress.province);
+          url.searchParams.append('checkout[shipping_address][country]', parsedAddress.country);
+          url.searchParams.append('checkout[shipping_address][zip]', parsedAddress.zip);
+          url.searchParams.append('checkout[shipping_address][phone]', formattedPhone);
+          
+          checkoutUrl = url.toString();
+          console.log('Final checkout URL with parameters:', checkoutUrl);
+        } catch (urlError) {
+          console.error('Error building URL parameters:', urlError);
+        }
+        
         // Longer delay for mobile devices
         const delay = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ? 500 : 200;
         await new Promise(resolve => setTimeout(resolve, delay));
