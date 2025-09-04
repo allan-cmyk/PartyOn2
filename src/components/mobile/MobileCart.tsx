@@ -60,8 +60,12 @@ export default function MobileCart() {
       const parsedAddress = parseAddress(address, zipCode);
       const formattedPhone = formatPhone(phone);
       
-      // Store delivery info in cart attributes (for backup/internal use)
+      // Create formatted note for order (visible in confirmation emails)
+      const orderNote = `DELIVERY DETAILS:\nDate: ${formattedDate}\nTime: ${time}\nAddress: ${address}, ${zipCode}\nPhone: ${phone}${instructions ? `\nSpecial Instructions: ${instructions}` : ''}`;
+      
+      // Store delivery info in cart attributes (for backup/internal use) and note (for customer visibility)
       const attributes = [
+        { key: 'note', value: orderNote }, // This shows in confirmation emails
         { key: 'delivery_date', value: formattedDate },
         { key: 'delivery_time', value: time },
         { key: 'delivery_instructions', value: instructions || 'None' },
