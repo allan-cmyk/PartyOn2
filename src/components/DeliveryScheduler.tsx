@@ -7,7 +7,7 @@ import { format, addDays, isBefore, isAfter } from 'date-fns';
 interface DeliverySchedulerProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (date: Date, time: string, instructions: string, phone: string, address: string, zipCode: string) => void;
+  onConfirm: (date: Date, time: string, instructions: string, phone: string, address: string, zipCode: string, firstName: string, lastName: string, email: string) => void;
   subtotal?: number; // Made optional since we're not using Express Delivery anymore
   defaultAddress?: {
     address?: string;
@@ -15,6 +15,11 @@ interface DeliverySchedulerProps {
     province?: string;
     zip?: string;
     phone?: string;
+  };
+  customerInfo?: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
   };
 }
 
@@ -39,13 +44,16 @@ const DELIVERY_ZONES = {
   }
 };
 
-export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultAddress }: DeliverySchedulerProps) {
+export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultAddress, customerInfo }: DeliverySchedulerProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState('');
   const [zipCode, setZipCode] = useState(defaultAddress?.zip || '');
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState(defaultAddress?.phone || '');
   const [instructions, setInstructions] = useState('');
+  const [firstName, setFirstName] = useState(customerInfo?.firstName || '');
+  const [lastName, setLastName] = useState(customerInfo?.lastName || '');
+  const [email, setEmail] = useState(customerInfo?.email || '');
   const [errors, setErrors] = useState<Record<string, string>>({});
   
   // Build full address from defaultAddress when component mounts or defaultAddress changes
@@ -124,6 +132,22 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
     const newErrors: Record<string, string> = {};
     const fieldRefs: Record<string, string> = {};
 
+    if (!firstName.trim()) {
+      newErrors.firstName = 'Please enter your first name';
+      fieldRefs.firstName = 'customer-section';
+    }
+    if (!lastName.trim()) {
+      newErrors.lastName = 'Please enter your last name';
+      fieldRefs.lastName = 'customer-section';
+    }
+    if (!email.trim()) {
+      newErrors.email = 'Please enter your email';
+      fieldRefs.email = 'customer-section';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = 'Please enter a valid email';
+      fieldRefs.email = 'customer-section';
+    }
+
     if (!selectedDate) {
       newErrors.date = 'Please select a delivery date';
       fieldRefs.date = 'date-section';
@@ -167,7 +191,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
 
   const handleConfirm = () => {
     if (validateForm() && selectedDate) {
-      onConfirm(selectedDate, selectedTime, instructions, phone, address, zipCode);
+      onConfirm(selectedDate, selectedTime, instructions, phone, address, zipCode, firstName, lastName, email);
     } else {
       // Scroll to first error field
       const firstErrorField = Object.keys(errors)[0];
@@ -177,6 +201,8 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
         document.getElementById('time-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       } else if (firstErrorField === 'address' || firstErrorField === 'zipCode' || firstErrorField === 'phone') {
         document.getElementById('address-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (firstErrorField === 'firstName' || firstErrorField === 'lastName' || firstErrorField === 'email') {
+        document.getElementById('customer-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }
   };
@@ -213,6 +239,62 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
 
               {/* Content */}
               <div className="p-6 space-y-6">
+                {/* Customer Info Section */}
+                <div id="customer-section">
+                  <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
+                    Customer Information
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-light text-gray-700 mb-2 tracking-[0.1em]">
+                          FIRST NAME
+                        </label>
+                        <input
+                          type="text"
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
+                          className="w-full px-4 py-3 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
+                          placeholder="John"
+                        />
+                        {errors.firstName && (
+                          <p className="text-red-600 text-sm mt-1">{errors.firstName}</p>
+                        )}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-light text-gray-700 mb-2 tracking-[0.1em]">
+                          LAST NAME
+                        </label>
+                        <input
+                          type="text"
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
+                          className="w-full px-4 py-3 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
+                          placeholder="Doe"
+                        />
+                        {errors.lastName && (
+                          <p className="text-red-600 text-sm mt-1">{errors.lastName}</p>
+                        )}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-light text-gray-700 mb-2 tracking-[0.1em]">
+                        EMAIL
+                      </label>
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
+                        placeholder="john@example.com"
+                      />
+                      {errors.email && (
+                        <p className="text-red-600 text-sm mt-1">{errors.email}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
                 {/* Address Section */}
                 <div id="address-section">
                   <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">

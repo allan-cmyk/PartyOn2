@@ -42,7 +42,7 @@ export default function Cart() {
     setShowDeliveryScheduler(true);
   };
 
-  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, phone: string, address: string, zipCode: string) => {
+  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, phone: string, address: string, zipCode: string, firstName: string, lastName: string, email: string) => {
     try {
       // Set redirecting state to show loading
       setIsRedirecting(true);
@@ -60,11 +60,14 @@ export default function Cart() {
       const formattedPhone = formatPhone(phone);
       
       // Create formatted note for order (visible in confirmation emails)
-      const orderNote = `DELIVERY DETAILS:\nDate: ${formattedDate}\nTime: ${time}\nAddress: ${address}, ${zipCode}\nPhone: ${phone}${instructions ? `\nSpecial Instructions: ${instructions}` : ''}`;
+      const orderNote = `DELIVERY DETAILS:\nCustomer: ${firstName} ${lastName}\nEmail: ${email}\nDate: ${formattedDate}\nTime: ${time}\nAddress: ${address}, ${zipCode}\nPhone: ${phone}${instructions ? `\nSpecial Instructions: ${instructions}` : ''}`;
       
       // Store delivery info in cart attributes (for backup/internal use) and note (for customer visibility)
       const attributes = [
         { key: 'note', value: orderNote }, // This shows in confirmation emails
+        { key: 'customer_first_name', value: firstName },
+        { key: 'customer_last_name', value: lastName },
+        { key: 'customer_email', value: email },
         { key: 'delivery_date', value: formattedDate },
         { key: 'delivery_time', value: time },
         { key: 'delivery_instructions', value: instructions || 'None' },
@@ -105,6 +108,11 @@ export default function Cart() {
           // Don't force Shop Pay - let customer choose payment method
           // This allows standard checkout to properly receive address parameters
           // url.searchParams.append('payment', 'shop_pay');
+          
+          // Add customer info
+          url.searchParams.append('checkout[email]', email);
+          url.searchParams.append('checkout[shipping_address][first_name]', firstName);
+          url.searchParams.append('checkout[shipping_address][last_name]', lastName);
           
           // Add parsed address parameters
           url.searchParams.append('checkout[shipping_address][address1]', parsedAddress.address1);
@@ -385,6 +393,11 @@ export default function Cart() {
           province: customer.defaultAddress.province,
           zip: customer.defaultAddress.zip,
           phone: customer.defaultAddress.phone || customer.phone
+        } : undefined}
+        customerInfo={customer ? {
+          firstName: customer.firstName || customer.defaultAddress?.firstName,
+          lastName: customer.lastName || customer.defaultAddress?.lastName,
+          email: customer.email
         } : undefined}
       />
       
