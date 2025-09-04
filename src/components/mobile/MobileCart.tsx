@@ -11,7 +11,6 @@ import DeliveryScheduler from '@/components/DeliveryScheduler';
 export default function MobileCart() {
   const { cart, isCartOpen, closeCart, loading, updateCartAttributes } = useCartContext();
   const [showDeliveryScheduler, setShowDeliveryScheduler] = useState(false);
-  const [cartHeight, setCartHeight] = useState('auto');
   const [isRedirecting, setIsRedirecting] = useState(false);
   const controls = useAnimation();
   const dragControls = useDragControls();
@@ -23,9 +22,6 @@ export default function MobileCart() {
   // Calculate drawer height based on content
   useEffect(() => {
     if (isCartOpen) {
-      const windowHeight = window.innerHeight;
-      const maxHeight = windowHeight * 0.95; // 95% of screen height to see everything
-      setCartHeight(`${maxHeight}px`);
       controls.start({ y: 0 });
     }
   }, [isCartOpen, controls]);
@@ -120,8 +116,7 @@ export default function MobileCart() {
               dragElastic={{ top: 0, bottom: 0.3 }}
               onDragEnd={handleDragEnd}
               dragListener={false}
-              style={{ maxHeight: cartHeight }}
-              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-[70] md:hidden overflow-hidden safe-area-bottom"
+              className="fixed inset-x-0 bottom-0 h-[90vh] bg-white rounded-t-3xl shadow-2xl z-[70] md:hidden flex flex-col safe-area-bottom"
             >
               {/* Drag Handle */}
               <div 
@@ -147,7 +142,7 @@ export default function MobileCart() {
               </div>
 
               {/* Cart Content */}
-              <div className="flex-1 overflow-y-auto overscroll-contain px-5 pb-32">
+              <div className="flex-1 overflow-y-auto overscroll-contain px-5 py-4">
                 {!hasItems ? (
                   <div className="flex flex-col items-center justify-center py-12">
                     <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -173,7 +168,7 @@ export default function MobileCart() {
 
               {/* Footer - Fixed at bottom */}
               {hasItems && (
-                <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 safe-area-bottom">
+                <div className="bg-white border-t border-gray-200 safe-area-bottom mt-auto">
                   <div className="px-5 py-4 space-y-3">
                     {/* Subtotal */}
                     <div className="flex justify-between text-sm">
