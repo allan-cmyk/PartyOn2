@@ -9,6 +9,13 @@ interface DeliverySchedulerProps {
   onClose: () => void;
   onConfirm: (date: Date, time: string, instructions: string, phone: string, address: string, zipCode: string) => void;
   subtotal?: number; // Made optional since we're not using Express Delivery anymore
+  defaultAddress?: {
+    address?: string;
+    city?: string;
+    province?: string;
+    zip?: string;
+    phone?: string;
+  };
 }
 
 const DELIVERY_ZONES = {
@@ -32,14 +39,33 @@ const DELIVERY_ZONES = {
   }
 };
 
-export default function DeliveryScheduler({ isOpen, onClose, onConfirm }: DeliverySchedulerProps) {
+export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultAddress }: DeliverySchedulerProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState('');
-  const [zipCode, setZipCode] = useState('');
+  const [zipCode, setZipCode] = useState(defaultAddress?.zip || '');
   const [address, setAddress] = useState('');
-  const [phone, setPhone] = useState('');
+  const [phone, setPhone] = useState(defaultAddress?.phone || '');
   const [instructions, setInstructions] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
+  
+  // Build full address from defaultAddress when component mounts or defaultAddress changes
+  React.useEffect(() => {
+    if (defaultAddress && defaultAddress.address) {
+      // Construct full address from parts
+      const parts = [];
+      if (defaultAddress.address) parts.push(defaultAddress.address);
+      if (defaultAddress.city) parts.push(defaultAddress.city);
+      if (defaultAddress.province) parts.push(defaultAddress.province);
+      if (defaultAddress.zip && !parts.some(p => p?.includes(defaultAddress.zip!))) {
+        parts.push(defaultAddress.zip);
+      }
+      setAddress(parts.filter(Boolean).join(', '));
+      
+      // Set zip and phone if available
+      if (defaultAddress.zip) setZipCode(defaultAddress.zip);
+      if (defaultAddress.phone) setPhone(defaultAddress.phone);
+    }
+  }, [defaultAddress]);
   // Express delivery removed - using standard delivery only
   
   // Get minimum date (72 hours for standard)

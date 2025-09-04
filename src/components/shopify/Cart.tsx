@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCartContext } from '@/contexts/CartContext';
+import { useCustomerContext } from '@/contexts/CustomerContext';
 import CartItem from './CartItem';
 import { formatPrice } from '@/lib/shopify/utils';
 import { parseAddress, formatPhone } from '@/lib/utils/addressParser';
@@ -19,6 +20,7 @@ import AIConcierge from '@/components/AIConcierge';
 
 export default function Cart() {
   const { cart, isCartOpen, closeCart, loading, updateCartAttributes } = useCartContext();
+  const { customer } = useCustomerContext();
   // Group order features temporarily disabled
   // const { currentGroupOrder, isInGroupOrder, isHost } = useGroupOrderContext();
   const [showDeliveryScheduler, setShowDeliveryScheduler] = useState(false);
@@ -96,8 +98,9 @@ export default function Cart() {
         try {
           const url = new URL(checkoutUrl);
           
-          // Add Shop Pay parameter
-          url.searchParams.append('payment', 'shop_pay');
+          // Don't force Shop Pay - let customer choose payment method
+          // This allows standard checkout to properly receive address parameters
+          // url.searchParams.append('payment', 'shop_pay');
           
           // Add parsed address parameters
           url.searchParams.append('checkout[shipping_address][address1]', parsedAddress.address1);
@@ -372,6 +375,13 @@ export default function Cart() {
           }
         }}
         onConfirm={handleDeliveryConfirm}
+        defaultAddress={customer?.defaultAddress ? {
+          address: [customer.defaultAddress.address1, customer.defaultAddress.address2].filter(Boolean).join(', '),
+          city: customer.defaultAddress.city,
+          province: customer.defaultAddress.province,
+          zip: customer.defaultAddress.zip,
+          phone: customer.defaultAddress.phone || customer.phone
+        } : undefined}
       />
       
       {/* AI Concierge - only show when cart is open */}

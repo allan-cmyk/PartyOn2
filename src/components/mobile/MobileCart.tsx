@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence, PanInfo, useAnimation, useDragControls } from 'framer-motion';
 import { useCartContext } from '@/contexts/CartContext';
+import { useCustomerContext } from '@/contexts/CustomerContext';
 import CartItem from '../shopify/CartItem';
 import { formatPrice } from '@/lib/shopify/utils';
 import { parseAddress, formatPhone } from '@/lib/utils/addressParser';
@@ -11,6 +12,7 @@ import DeliveryScheduler from '@/components/DeliveryScheduler';
 
 export default function MobileCart() {
   const { cart, isCartOpen, closeCart, loading, updateCartAttributes } = useCartContext();
+  const { customer } = useCustomerContext();
   const [showDeliveryScheduler, setShowDeliveryScheduler] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const controls = useAnimation();
@@ -78,8 +80,9 @@ export default function MobileCart() {
           // Build checkout URL with address parameters for Shop Pay
           const checkoutUrl = new URL(updatedCart.checkoutUrl);
           
-          // Add Shop Pay payment method hint
-          checkoutUrl.searchParams.append('payment', 'shop_pay');
+          // Don't force Shop Pay - let customer choose payment method
+          // This allows standard checkout to properly receive address parameters
+          // checkoutUrl.searchParams.append('payment', 'shop_pay');
           
           // Add shipping address parameters
           checkoutUrl.searchParams.append('checkout[shipping_address][address1]', parsedAddress.address1);
@@ -249,6 +252,13 @@ export default function MobileCart() {
         isOpen={showDeliveryScheduler}
         onClose={() => setShowDeliveryScheduler(false)}
         onConfirm={handleDeliveryConfirm}
+        defaultAddress={customer?.defaultAddress ? {
+          address: [customer.defaultAddress.address1, customer.defaultAddress.address2].filter(Boolean).join(', '),
+          city: customer.defaultAddress.city,
+          province: customer.defaultAddress.province,
+          zip: customer.defaultAddress.zip,
+          phone: customer.defaultAddress.phone || customer.phone
+        } : undefined}
       />
 
       {/* Loading Overlay for redirect */}
