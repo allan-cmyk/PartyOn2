@@ -80,24 +80,8 @@ export default function MobileCart() {
           window.location.replace(checkoutUrl.toString());
         }
       } else if (cart?.checkoutUrl) {
-        // Fallback to direct checkout with parameters
-        const checkoutUrl = new URL(cart.checkoutUrl);
-        
-        // Add Shop Pay payment method hint
-        checkoutUrl.searchParams.append('payment', 'shop_pay');
-        
-        // Add shipping address parameters
-        checkoutUrl.searchParams.append('checkout[shipping_address][address1]', parsedAddress.address1);
-        if (parsedAddress.address2) {
-          checkoutUrl.searchParams.append('checkout[shipping_address][address2]', parsedAddress.address2);
-        }
-        checkoutUrl.searchParams.append('checkout[shipping_address][city]', parsedAddress.city);
-        checkoutUrl.searchParams.append('checkout[shipping_address][province]', parsedAddress.province);
-        checkoutUrl.searchParams.append('checkout[shipping_address][country]', parsedAddress.country);
-        checkoutUrl.searchParams.append('checkout[shipping_address][zip]', parsedAddress.zip);
-        checkoutUrl.searchParams.append('checkout[shipping_address][phone]', formattedPhone);
-        
-        window.location.replace(checkoutUrl.toString());
+        // Fallback to direct checkout
+        window.location.replace(cart.checkoutUrl);
       }
     } catch (error) {
       console.error('Error during checkout:', error);
