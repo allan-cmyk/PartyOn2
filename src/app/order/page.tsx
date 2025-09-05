@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import AIConcierge from '@/components/AIConcierge';
+import LuxuryCard from '@/components/LuxuryCard';
 
 interface EventOption {
   id: string;
@@ -164,18 +165,21 @@ export default function OrderPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="bg-gray-50 p-6 text-center hover:shadow-lg transition-shadow"
             >
-              <svg className="w-12 h-12 text-gold-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v6m0 0v2m0-2h2m-2 0h-2" />
-              </svg>
-              <h3 className="font-medium text-lg mb-2 tracking-[0.1em]">QUICK ORDER</h3>
-              <p className="text-gray-600 text-sm mb-4">Know what you want? Jump straight to shopping</p>
-              <Link href="/products">
-                <button className="px-6 py-2 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white font-semibold text-sm tracking-[0.1em] transition-all">
-                  SHOP NOW →
-                </button>
-              </Link>
+              <LuxuryCard backgroundImage="/images/order/quick-order.webp">
+                <div className="p-6 text-center">
+                  <svg className="w-12 h-12 text-gold-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v6m0 0v2m0-2h2m-2 0h-2" />
+                  </svg>
+                  <h3 className="font-medium text-lg mb-2 tracking-[0.1em]">QUICK ORDER</h3>
+                  <p className="text-gray-600 text-sm mb-4">Know what you want? Jump straight to shopping</p>
+                  <Link href="/products">
+                    <button className="px-6 py-2 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white font-semibold text-sm tracking-[0.1em] transition-all">
+                      SHOP NOW →
+                    </button>
+                  </Link>
+                </div>
+              </LuxuryCard>
             </motion.div>
 
             {/* AI Concierge Option */}
@@ -183,19 +187,22 @@ export default function OrderPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="bg-gray-50 p-6 text-center hover:shadow-lg transition-shadow"
             >
-              <svg className="w-12 h-12 text-gold-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-              </svg>
-              <h3 className="font-medium text-lg mb-2 tracking-[0.1em]">AI CONCIERGE</h3>
-              <p className="text-gray-600 text-sm mb-4">Get personalized recommendations for your event</p>
-              <button 
-                onClick={() => setIsConciergeOpen(true)}
-                className="px-6 py-2 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white font-semibold text-sm tracking-[0.1em] transition-all"
-              >
-                START CHAT →
-              </button>
+              <LuxuryCard backgroundImage="/images/order/ai-concierge.webp">
+                <div className="p-6 text-center">
+                  <svg className="w-12 h-12 text-gold-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                  </svg>
+                  <h3 className="font-medium text-lg mb-2 tracking-[0.1em]">AI CONCIERGE</h3>
+                  <p className="text-gray-600 text-sm mb-4">Get personalized recommendations for your event</p>
+                  <button 
+                    onClick={() => setIsConciergeOpen(true)}
+                    className="px-6 py-2 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white font-semibold text-sm tracking-[0.1em] transition-all"
+                  >
+                    START CHAT →
+                  </button>
+                </div>
+              </LuxuryCard>
             </motion.div>
 
             {/* Browse Packages Option */}
@@ -203,16 +210,19 @@ export default function OrderPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              className="bg-gray-50 p-6 text-center hover:shadow-lg transition-shadow"
             >
-              <svg className="w-12 h-12 text-gold-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-              </svg>
-              <h3 className="font-medium text-lg mb-2 tracking-[0.1em]">EVENT PACKAGES</h3>
-              <p className="text-gray-600 text-sm mb-4">Explore curated packages for every occasion</p>
-              <a href="#packages" className="inline-block px-6 py-2 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white font-semibold text-sm tracking-[0.1em] transition-all">
-                VIEW PACKAGES →
-              </a>
+              <LuxuryCard backgroundImage="/images/order/event-packages.webp">
+                <div className="p-6 text-center">
+                  <svg className="w-12 h-12 text-gold-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                  </svg>
+                  <h3 className="font-medium text-lg mb-2 tracking-[0.1em]">EVENT PACKAGES</h3>
+                  <p className="text-gray-600 text-sm mb-4">Explore curated packages for every occasion</p>
+                  <a href="#packages" className="inline-block px-6 py-2 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white font-semibold text-sm tracking-[0.1em] transition-all">
+                    VIEW PACKAGES →
+                  </a>
+                </div>
+              </LuxuryCard>
             </motion.div>
           </div>
         </div>

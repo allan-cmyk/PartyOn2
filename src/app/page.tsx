@@ -1,14 +1,29 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import { useIsMobile } from '@/hooks/useIsMobile';
 
 export default function HomePage() {
   const isMobile = useIsMobile();
+  const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+  
+  const heroImages = [
+    { src: '/images/hero/austin-skyline-hero.webp', alt: 'Austin Skyline' },
+    { src: '/images/hero/homepage-hero-sunset.webp', alt: 'Austin sunset from Lady Bird Lake' },
+    { src: '/images/hero/homepage-hero-rooftop.webp', alt: 'Rooftop bar in downtown Austin' },
+    { src: '/images/hero/homepage-hero-luxury.webp', alt: 'Luxury penthouse bar setup' }
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -19,14 +34,42 @@ export default function HomePage() {
       
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <Image
-          src="/images/hero/austin-skyline-hero.webp"
-          alt="Austin Skyline"
-          fill
-          className="object-cover"
-          priority
-        />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentHeroIndex}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={heroImages[currentHeroIndex].src}
+              alt={heroImages[currentHeroIndex].alt}
+              fill
+              className="object-cover"
+              priority
+              onError={(e) => {
+                // Fallback to original image if new ones don't exist yet
+                e.currentTarget.src = '/images/hero/austin-skyline-hero.webp';
+              }}
+            />
+          </motion.div>
+        </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
+        
+        {/* Hero Dots Navigation */}
+        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentHeroIndex(index)}
+              className={`w-2 h-2 rounded-full transition-all ${
+                index === currentHeroIndex ? 'bg-gold-400 w-8' : 'bg-white/50'
+              }`}
+            />
+          ))}
+        </div>
         
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
@@ -122,23 +165,55 @@ export default function HomePage() {
                   </svg>
                 )
               }
-            ].map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
-                className="text-center"
-              >
-                <div className="mb-6">{feature.icon}</div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {feature.description}
-                </p>
-              </motion.div>
-            ))}
+            ].map((feature, index) => {
+              const backgroundImages = [
+                '/images/experience/curated-spirits-display.webp',
+                '/images/experience/delivery-driver-premium.webp',
+                '/images/experience/five-star-service.webp'
+              ];
+              
+              return (
+                <motion.div
+                  key={feature.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: index * 0.2 }}
+                  className="relative overflow-hidden rounded-lg group cursor-pointer transform hover:-translate-y-1 transition-all duration-300"
+                >
+                  {/* Background Image */}
+                  <div className="absolute inset-0 -z-10">
+                    <Image
+                      src={backgroundImages[index]}
+                      alt={feature.title}
+                      fill
+                      className="object-cover opacity-30 scale-125 transition-all duration-1000 group-hover:scale-110 group-hover:opacity-40"
+                      onError={(e) => {
+                        // Use a fallback texture if the specific image doesn't exist
+                        const fallbacks = [
+                          '/images/textures/gold-liquid-abstract.webp',
+                          '/images/textures/crystal-ice-texture.webp',
+                          '/images/textures/whiskey-amber-swirl.webp'
+                        ];
+                        e.currentTarget.src = fallbacks[index % fallbacks.length];
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-white/80 to-white/90" />
+                    {/* Add subtle gold shimmer on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-gold-600/0 via-gold-600/5 to-gold-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                  </div>
+                  
+                  <div className="relative p-8 text-center">
+                    <div className="mb-6">{feature.icon}</div>
+                    <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
+                      {feature.title}
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed">
+                      {feature.description}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>

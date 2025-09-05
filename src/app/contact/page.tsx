@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import LuxuryCard from '@/components/LuxuryCard';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -37,7 +38,7 @@ export default function ContactPage() {
       {/* Hero Section */}
       <section className="relative h-[50vh] flex items-center justify-center overflow-hidden">
         <Image
-          src="/images/hero/austin-6th-street-neon.webp"
+          src="/images/hero/contact-hero-austin.webp"
           alt="Austin Downtown"
           fill
           className="object-cover"
@@ -74,71 +75,74 @@ export default function ContactPage() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-center"
+            <LuxuryCard
+              backgroundImage="/images/contact/phone-support.webp"
+              index={0}
+              className="rounded-lg"
             >
-              <div className="w-20 h-20 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
+              <div className="p-8 text-center">
+                <div className="w-20 h-20 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                </div>
+                <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
+                  Call Us
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Immediate assistance for your event needs
+                </p>
+                <a href="tel:7373719700" className="text-gold-600 hover:text-gold-700 tracking-[0.1em] text-lg">
+                  (737) 371-9700
+                </a>
               </div>
-              <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
-                Call Us
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Immediate assistance for your event needs
-              </p>
-              <a href="tel:7373719700" className="text-gold-600 hover:text-gold-700 tracking-[0.1em] text-lg">
-                (737) 371-9700
-              </a>
-            </motion.div>
+            </LuxuryCard>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="text-center"
+            <LuxuryCard
+              backgroundImage="/images/contact/email-contact.webp"
+              index={1}
+              className="rounded-lg"
             >
-              <div className="w-20 h-20 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
+              <div className="p-8 text-center">
+                <div className="w-20 h-20 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
+                  Email Us
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Detailed inquiries and custom requests
+                </p>
+                <a href="mailto:hello@partyondelivery.com" className="text-gold-600 hover:text-gold-700 tracking-[0.1em]">
+                  hello@partyondelivery.com
+                </a>
               </div>
-              <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
-                Email Us
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Detailed inquiries and custom requests
-              </p>
-              <a href="mailto:hello@partyondelivery.com" className="text-gold-600 hover:text-gold-700 tracking-[0.1em]">
-                hello@partyondelivery.com
-              </a>
-            </motion.div>
+            </LuxuryCard>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-center"
+            <LuxuryCard
+              backgroundImage="/images/contact/visit-location.webp"
+              index={2}
+              className="rounded-lg"
             >
-              <div className="w-20 h-20 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+              <div className="p-8 text-center">
+                <div className="w-20 h-20 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
+                  Service Hours
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Available daily for your celebrations
+                </p>
+                <p className="text-gray-700">
+                  10:00 AM - 11:00 PM
+                </p>
               </div>
-              <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
-                Service Hours
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Available daily for your celebrations
-              </p>
-              <p className="text-gray-700">
-                10:00 AM - 11:00 PM
-              </p>
-            </motion.div>
+            </LuxuryCard>
           </div>
 
           <motion.div
@@ -363,36 +367,6 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Map Section */}
-      <section className="py-24">
-        <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="font-serif font-light text-3xl text-gray-900 mb-4 tracking-[0.1em]">
-              Serving All of Austin
-            </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto mb-8" />
-            <p className="text-gray-600">
-              From Downtown to Lake Travis, we deliver excellence across the greater Austin area
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
-            className="relative h-96 bg-gray-200"
-          >
-            <div className="absolute inset-0 flex items-center justify-center">
-              <p className="text-gray-500">Interactive map coming soon</p>
-            </div>
-          </motion.div>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="bg-white py-16 border-t border-gray-200">
