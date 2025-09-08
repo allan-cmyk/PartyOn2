@@ -42,15 +42,41 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const { customer, isAuthenticated, logout } = useCustomerContext();
 
   useEffect(() => {
+    setIsMounted(true);
+    
     const handleScroll = () => {
       setIsScrolled(forceScrolled || window.scrollY > 50);
     };
+    
+    // Set initial scroll state
+    handleScroll();
+    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [forceScrolled]);
+
+  // Prevent hydration mismatch by using consistent initial state
+  if (!isMounted) {
+    return (
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
+        forceScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent'
+      }`}>
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex justify-between items-center h-20">
+            <Link href="/" className={`font-serif text-2xl tracking-[0.15em] transition-colors ${
+              forceScrolled ? 'text-gray-900' : 'text-white'
+            }`}>
+              PARTYON
+            </Link>
+          </div>
+        </div>
+      </nav>
+    );
+  }
 
   const services = [
     { href: '/weddings', label: 'WEDDINGS' },

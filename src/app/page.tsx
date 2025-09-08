@@ -5,12 +5,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
-import { useIsMobile } from '@/hooks/useIsMobile';
 
 export default function HomePage() {
-  const isMobile = useIsMobile();
   const scrollToSection = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    if (typeof window !== 'undefined') {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
@@ -35,34 +35,27 @@ export default function HomePage() {
           className="relative text-center text-white z-10 max-w-4xl mx-auto px-8"
         >
           <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
-            DISTINGUISHED
-            <span className="block text-gold-400 mt-2">ALCOHOL DELIVERY</span>
+            <span className="block text-gold-400">Skip The Liquor Run - Get Your Bar Delivered.</span>
           </h1>
           <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
           <p className="text-lg md:text-xl font-light tracking-[0.1em] mb-12 text-gray-200">
-            Austin&apos;s Premier Spirits & Event Service
+            Cold drinks, party rentals, and bar setups—delivered on time and stress-free anywhere in Austin.
           </p>
-          {/* Mobile: Single Order Now button, Desktop: Two buttons */}
-          {isMobile ? (
+          {/* Responsive button layout using CSS classes */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {/* Mobile: Show only ORDER NOW, Desktop: Show both buttons */}
             <Link href="/products">
-              <button className="px-12 py-5 bg-gold-600 text-white hover:bg-gold-700 transition-all duration-300 tracking-[0.15em] text-base font-medium rounded-lg shadow-lg">
-                ORDER NOW
+              <button className="px-10 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-all duration-300 tracking-[0.15em] text-sm sm:inline-block">
+                <span className="sm:hidden">ORDER NOW</span>
+                <span className="hidden sm:inline">SHOP PRODUCTS</span>
               </button>
             </Link>
-          ) : (
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/products">
-                <button className="px-10 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-all duration-300 tracking-[0.15em] text-sm">
-                  SHOP PRODUCTS
-                </button>
-              </Link>
-              <Link href="/order">
-                <button className="px-10 py-4 border-2 border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
-                  PLAN MY EVENT
-                </button>
-              </Link>
-            </div>
-          )}
+            <Link href="/order">
+              <button className="hidden sm:inline-block px-10 py-4 border-2 border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
+                PLAN MY EVENT
+              </button>
+            </Link>
+          </div>
         </motion.div>
         
         <motion.div 
@@ -96,8 +89,8 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {[
               {
-                title: "Curated Selection",
-                description: "Premium spirits and wines selected by our sommeliers for the most discerning palates",
+                title: "Local Concierge",
+                description: "We're Austin-based and know what works. From great cocktails to venue selection - we'll help plan the perfect bar",
                 icon: (
                   <svg className="w-14 h-14 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
