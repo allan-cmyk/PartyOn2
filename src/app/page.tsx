@@ -89,8 +89,8 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {[
               {
-                title: "Local Concierge",
-                description: "We're Austin-based and know what works. From great cocktails to venue selection - we'll help plan the perfect bar",
+                title: "Your Local Concierge",
+                description: "We're Austin-based and know what works. From great cocktails to venue selection - we'll help plan the perfect bar!",
                 icon: (
                   <svg className="w-14 h-14 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
@@ -98,8 +98,8 @@ export default function HomePage() {
                 )
               },
               {
-                title: "Swift Delivery",
-                description: "Professional service available anytime for testing", // "within 72 hours" - TESTING MODE
+                title: "White Glove Service",
+                description: "Cold drinks and on-time delivery, guaranteed. We handle ice, cups, mixers and we'll even help with setup.",
                 icon: (
                   <svg className="w-14 h-14 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -108,7 +108,7 @@ export default function HomePage() {
               },
               {
                 title: "Trusted Excellence",
-                description: "Licensed, insured, and TABC certified with over 500 five-star reviews",
+                description: "Licensed, insured and TABC certified. Thousands served and 4.9 stars on google.",
                 icon: (
                   <svg className="w-14 h-14 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -146,12 +146,9 @@ export default function HomePage() {
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
-              Signature Services
+              For whatever you&apos;re planning, get the perfect drink menu on easy mode
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Elevating Austin&apos;s most memorable moments with unparalleled service and sophistication
-            </p>
           </motion.div>
 
           {/* Service 1: Weddings */}
@@ -172,24 +169,23 @@ export default function HomePage() {
             </div>
             <div className="lg:pl-12">
               <h3 className="font-serif text-3xl text-gray-900 mb-6 tracking-[0.1em]">
-                Wedding Excellence
+                Perfect Wedding Bars, Zero Stress
               </h3>
               <p className="text-gray-600 mb-6 leading-relaxed">
-                Transform your special day into an unforgettable celebration. Our licensed bartenders 
-                and premium spirits selection ensure every toast is perfect.
+                Take one more thing off your plate and never worry if the bar is stocked or if you ordered too much.
               </p>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-start">
                   <span className="text-gold-600 mr-3">•</span>
-                  <span className="text-gray-700">Professional bartenders & servers</span>
+                  <span className="text-gray-700">Recommendations for what and how much to buy</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-gold-600 mr-3">•</span>
-                  <span className="text-gray-700">Custom cocktail menu design</span>
+                  <span className="text-gray-700">Guaranteed delivery, coordination with venue</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-gold-600 mr-3">•</span>
-                  <span className="text-gray-700">Complete setup & breakdown</span>
+                  <span className="text-gray-700">100% refund on unopened items</span>
                 </li>
               </ul>
               <Link href="/weddings">
@@ -209,24 +205,19 @@ export default function HomePage() {
           >
             <div className="lg:pr-12 order-2 lg:order-1">
               <h3 className="font-serif text-3xl text-gray-900 mb-6 tracking-[0.1em]">
-                Lake Travis Luxury
+                Direct-to-Boat Delivery
               </h3>
               <p className="text-gray-600 mb-6 leading-relaxed">
-                Elevate your Lake Travis experience with our exclusive boat party packages. 
-                Premium spirits delivered directly to your vessel.
+                Go straight to the boat, drinks delivered directly to the dock.
               </p>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-start">
                   <span className="text-gold-600 mr-3">•</span>
-                  <span className="text-gray-700">Dock or water delivery</span>
+                  <span className="text-gray-700">Arrives cold and on-time</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-gold-600 mr-3">•</span>
-                  <span className="text-gray-700">Coolers & ice included</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-gold-600 mr-3">•</span>
-                  <span className="text-gray-700">Safety-focused service</span>
+                  <span className="text-gray-700">Ice, water, and boat-friendly cocktail kits</span>
                 </li>
               </ul>
               <Link href="/boat-parties">
@@ -264,7 +255,7 @@ export default function HomePage() {
             </div>
             <div className="lg:pl-12">
               <h3 className="font-serif text-3xl text-gray-900 mb-6 tracking-[0.1em]">
-                Corporate Distinction
+                Professional Fun
               </h3>
               <p className="text-gray-600 mb-6 leading-relaxed">
                 Impress clients and celebrate success with our executive bar service. 
