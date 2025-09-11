@@ -1,20 +1,20 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseAlcohol } from '@/lib/shopify/utils';
-import { useCart } from '@/lib/shopify/hooks/useCart';
+import { useCartContext } from '@/contexts/CartContext';
 import AgeVerificationModal from '../AgeVerificationModal';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface MobileProductCardProps {
   product: ShopifyProduct;
   index?: number;
+  onProductClick?: (product: ShopifyProduct) => void;
 }
 
-export default function MobileProductCard({ product, index = 0 }: MobileProductCardProps) {
-  const { addToCart, loading: cartLoading } = useCart();
+export default function MobileProductCard({ product, index = 0, onProductClick }: MobileProductCardProps) {
+  const { addToCart, loading: cartLoading, openCart } = useCartContext();
   const [isAdding, setIsAdding] = useState(false);
   const [showAgeVerification, setShowAgeVerification] = useState(false);
   const [showQuickAdd, setShowQuickAdd] = useState(false);
@@ -43,6 +43,7 @@ export default function MobileProductCard({ product, index = 0 }: MobileProductC
       }
       // Show success feedback
       setShowQuickAdd(false);
+      openCart(); // Open cart to show the newly added item
     } catch (error) {
       console.error('Error adding to cart:', error);
     } finally {
@@ -64,8 +65,9 @@ export default function MobileProductCard({ product, index = 0 }: MobileProductC
         transition={{ duration: 0.3, delay: index * 0.05 }}
         className="bg-white border border-gray-200 rounded-lg overflow-hidden touch-manipulation"
       >
-        <Link href={`/products/${product.handle}`}>
-          <div className="relative aspect-square bg-gray-50">
+        <div 
+          onClick={() => onProductClick?.(product)}
+          className="relative aspect-square bg-gray-50 cursor-pointer">
             {imageUrl ? (
               <img
                 src={imageUrl}
@@ -106,7 +108,6 @@ export default function MobileProductCard({ product, index = 0 }: MobileProductC
               </button>
             )}
           </div>
-        </Link>
 
         <div className="p-4">
           {/* Vendor */}
@@ -117,11 +118,11 @@ export default function MobileProductCard({ product, index = 0 }: MobileProductC
           )}
 
           {/* Title */}
-          <Link href={`/products/${product.handle}`}>
-            <h3 className="font-serif text-base text-gray-900 mb-2 line-clamp-2">
-              {product.title}
-            </h3>
-          </Link>
+          <h3 
+            onClick={() => onProductClick?.(product)}
+            className="font-serif text-base text-gray-900 mb-2 line-clamp-2 cursor-pointer">
+            {product.title}
+          </h3>
 
           {/* Price and Type */}
           <div className="flex items-center justify-between">

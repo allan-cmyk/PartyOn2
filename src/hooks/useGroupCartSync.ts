@@ -14,9 +14,9 @@ export function useGroupCartSync() {
   useEffect(() => {
     if (!isInGroupOrder || !groupOrderCode || !cart) return
     
-    // Calculate total and item count
-    const cartTotal = parseFloat(cart.cost.subtotalAmount.amount)
-    const itemCount = cart.totalQuantity
+    // Calculate total and item count with null checks
+    const cartTotal = cart?.cost?.subtotalAmount?.amount ? parseFloat(cart.cost.subtotalAmount.amount) : 0
+    const itemCount = cart?.totalQuantity || 0
     
     // Update cart totals in backend
     const updateCartTotals = async () => {
@@ -46,5 +46,5 @@ export function useGroupCartSync() {
     
     return () => clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cart?.totalQuantity, cart?.cost.subtotalAmount.amount, cart?.id, isInGroupOrder, groupOrderCode])
+  }, [cart?.totalQuantity, cart?.cost?.subtotalAmount?.amount, cart?.id, isInGroupOrder, groupOrderCode])
 }

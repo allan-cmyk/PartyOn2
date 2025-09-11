@@ -1,12 +1,28 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import LuxuryCard from '@/components/LuxuryCard';
 
 export default function CorporateEventsPage() {
+  const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+  
+  const heroImages = [
+    { src: '/images/hero/austin-skyline-golden-hour.webp', alt: 'Austin skyline at golden hour' },
+    { src: '/images/hero/corporate-hero-conference.webp', alt: 'Corporate conference at JW Marriott' },
+    { src: '/images/hero/corporate-hero-tech.webp', alt: 'Tech company rooftop event' },
+    { src: '/images/hero/corporate-hero-gala.webp', alt: 'Corporate gala at Long Center' }
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
 
   const services = [
     {
@@ -70,13 +86,40 @@ export default function CorporateEventsPage() {
       
       {/* Hero Section */}
       <section className="relative h-[60vh] min-h-[500px] flex items-center">
-        <Image
-          src="/images/austin-skyline-golden-hour.webp"
-          alt="Austin skyline at golden hour"
-          fill
-          className="object-cover"
-          priority
-        />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentHeroIndex}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={heroImages[currentHeroIndex].src}
+              alt={heroImages[currentHeroIndex].alt}
+              fill
+              className="object-cover"
+              priority
+              onError={(e) => {
+                e.currentTarget.src = '/images/hero/austin-skyline-golden-hour.webp';
+              }}
+            />
+          </motion.div>
+        </AnimatePresence>
+        
+        {/* Hero Dots Navigation */}
+        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentHeroIndex(index)}
+              className={`w-2 h-2 rounded-full transition-all ${
+                index === currentHeroIndex ? 'bg-gold-400 w-8' : 'bg-white/50'
+              }`}
+            />
+          ))}
+        </div>
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/40" />
         
         <motion.div 
@@ -158,31 +201,30 @@ export default function CorporateEventsPage() {
 
           <div className="grid md:grid-cols-2 gap-8">
             {services.map((service, index) => (
-              <motion.div
+              <LuxuryCard
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="bg-white p-8 border border-gray-200 hover:border-gold-600 transition-colors"
+                index={index + 2}
+                className="rounded-lg"
               >
-                <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
-                  {service.title}
-                </h3>
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  {service.description}
-                </p>
-                <ul className="space-y-2">
-                  {service.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-start">
-                      <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span className="text-gray-700">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
+                <div className="p-8">
+                  <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
+                    {service.title}
+                  </h3>
+                  <p className="text-gray-600 mb-6 leading-relaxed">
+                    {service.description}
+                  </p>
+                  <ul className="space-y-2">
+                    {service.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-start">
+                        <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-gray-700">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </LuxuryCard>
             ))}
           </div>
         </div>

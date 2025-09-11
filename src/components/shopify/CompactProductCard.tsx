@@ -1,20 +1,20 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseAlcohol } from '@/lib/shopify/utils';
-import { useCart } from '@/lib/shopify/hooks/useCart';
+import { useCartContext } from '@/contexts/CartContext';
 import AgeVerificationModal from '../AgeVerificationModal';
 
 interface CompactProductCardProps {
   product: ShopifyProduct;
   index?: number;
+  onProductClick?: (product: ShopifyProduct) => void;
 }
 
-export default function CompactProductCard({ product, index = 0 }: CompactProductCardProps) {
-  const { addToCart, loading: cartLoading } = useCart();
+export default function CompactProductCard({ product, index = 0, onProductClick }: CompactProductCardProps) {
+  const { addToCart, loading: cartLoading, openCart } = useCartContext();
   const [isAdding, setIsAdding] = useState(false);
   const [showAgeVerification, setShowAgeVerification] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -38,6 +38,7 @@ export default function CompactProductCard({ product, index = 0 }: CompactProduc
     try {
       await addToCart(variant.id, quantity);
       setQuantity(1); // Reset quantity after adding
+      openCart(); // Open cart to show the newly added item
     } catch (error) {
       console.error('Error adding to cart:', error);
     } finally {
@@ -61,6 +62,7 @@ export default function CompactProductCard({ product, index = 0 }: CompactProduc
       try {
         await addToCart(variant.id, quantity);
         setQuantity(1); // Reset quantity after adding
+        openCart(); // Open cart to show the newly added item
       } catch (error) {
         console.error('Error adding to cart:', error);
       } finally {
@@ -80,8 +82,9 @@ export default function CompactProductCard({ product, index = 0 }: CompactProduc
     >
       <div className="bg-white border border-gray-200 hover:border-gold-600 transition-all duration-200 overflow-hidden">
         {/* Compact Image - Square aspect ratio */}
-        <Link href={`/products/${product.handle}`}>
-          <div className="relative aspect-square overflow-hidden bg-gray-50 cursor-pointer">
+        <div 
+          onClick={() => onProductClick?.(product)}
+          className="relative aspect-square overflow-hidden bg-gray-50 cursor-pointer">
             {imageUrl ? (
               <img
                 src={imageUrl}
@@ -117,16 +120,15 @@ export default function CompactProductCard({ product, index = 0 }: CompactProduc
               </button>
             </div>
           </div>
-        </Link>
 
         {/* Compact Product Details */}
         <div className="p-3">
           {/* Title - Smaller and truncated */}
-          <Link href={`/products/${product.handle}`}>
-            <h3 className="font-serif text-sm text-gray-900 mb-1 line-clamp-2 hover:text-gold-600 transition-colors cursor-pointer">
-              {product.title}
-            </h3>
-          </Link>
+          <h3 
+            onClick={() => onProductClick?.(product)}
+            className="font-serif text-sm text-gray-900 mb-1 line-clamp-2 hover:text-gold-600 transition-colors cursor-pointer">
+            {product.title}
+          </h3>
 
           {/* Vendor - Very small */}
           {product.vendor && (

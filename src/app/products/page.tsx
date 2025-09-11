@@ -16,8 +16,9 @@ import { SEARCH_PRODUCTS_QUERY } from '@/lib/shopify/queries/products';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import AIConcierge from '@/components/AIConcierge';
 import AgeVerificationModal from '@/components/AgeVerificationModal';
+import ProductModal from '@/components/ProductModal';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { getProductCategory, FILTER_OPTIONS } from '@/lib/shopify/categories';
+import { getProductCategory, FILTER_OPTIONS, SHOPIFY_COLLECTIONS, isInCollection } from '@/lib/shopify/categories';
 import { CategoryIcon } from '@/components/CategoryIcons';
 
 function ProductsContent() {
@@ -27,6 +28,7 @@ function ProductsContent() {
   const [searchResults, setSearchResults] = useState<ShopifyProduct[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [filter, setFilter] = useState('all');
+  const [collectionFilter, setCollectionFilter] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState('bestsellers');
   const [showAgeVerification, setShowAgeVerification] = useState(false);
   const [isAgeVerified, setIsAgeVerified] = useState(false);
@@ -43,6 +45,10 @@ function ProductsContent() {
   
   // View mode state for compact/regular view
   const [isCompactView, setIsCompactView] = useState(true);
+  
+  // Product modal state
+  const [selectedProduct, setSelectedProduct] = useState<ShopifyProduct | null>(null);
+  const [showProductModal, setShowProductModal] = useState(false);
 
   // Check age verification on mount
   useEffect(() => {
@@ -60,6 +66,11 @@ function ProductsContent() {
     if (!isAgeVerified) {
       setShowAgeVerification(true);
     }
+  };
+
+  const handleProductClick = (product: ShopifyProduct) => {
+    setSelectedProduct(product);
+    setShowProductModal(true);
   };
 
   // Infinite scroll implementation
@@ -180,8 +191,13 @@ function ProductsContent() {
     const productTitle = product.title;
     const price = parseFloat(product.priceRange.minVariantPrice.amount);
     
+    // Collection filter (takes precedence)
+    if (collectionFilter) {
+      if (!isInCollection(product, collectionFilter)) return false;
+    }
+    
     // Main category filter using proper Shopify data
-    if (filter !== 'all') {
+    if (filter !== 'all' && !collectionFilter) {
       const productCategory = getProductCategory(product);
       
       // Map filter values to category keys
@@ -276,7 +292,7 @@ function ProductsContent() {
   if (error) {
     return (
       <div className="bg-white min-h-screen">
-        <OldFashionedNavigation />
+        <OldFashionedNavigation forceScrolled={true} />
         <div className="max-w-7xl mx-auto px-8 py-16">
           <div className="bg-red-50 border border-red-200 p-6 rounded">
             <h2 className="text-red-800 font-serif text-xl mb-2">Error Loading Products</h2>
@@ -289,7 +305,7 @@ function ProductsContent() {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation />
+      <OldFashionedNavigation forceScrolled={true} />
       
       {/* Hero Section */}
       <section className="relative h-[40vh] mt-24 flex items-center justify-center overflow-hidden">
@@ -337,6 +353,62 @@ function ProductsContent() {
           )}
         </motion.div>
       </section>
+
+      {/* Collection Quick Filters */}
+      {!searchQuery && (
+        <section className="bg-gray-50 py-6 border-b border-gray-200">
+          <div className={`${isMobile ? 'px-4' : 'max-w-7xl mx-auto px-8'}`}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className={`font-serif ${isMobile ? 'text-lg' : 'text-xl'} text-gray-900 tracking-[0.1em]`}>
+                FEATURED COLLECTIONS
+              </h3>
+              {collectionFilter && (
+                <button
+                  onClick={() => {
+                    setCollectionFilter(null);
+                    setFilter('all');
+                  }}
+                  className="text-sm text-gold-600 hover:text-gold-700 tracking-[0.1em]"
+                >
+                  CLEAR FILTER
+                </button>
+              )}
+            </div>
+            <div className={`grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-3 md:grid-cols-6 gap-3'}`}>
+              {SHOPIFY_COLLECTIONS.map((collection) => {
+                const isActive = collectionFilter === collection.handle;
+                return (
+                  <button
+                    key={collection.handle}
+                    onClick={() => {
+                      setCollectionFilter(collection.handle);
+                      setFilter('all'); // Reset category filter
+                    }}
+                    className={`
+                      px-4 py-3 text-center border transition-all rounded-lg
+                      ${isActive 
+                        ? `${collection.colors.bgActive} ${collection.colors.textActive} ${collection.colors.borderActive}` 
+                        : `${collection.colors.bg} ${collection.colors.text} ${collection.colors.border}`
+                      }
+                      ${isMobile ? 'text-xs' : 'text-sm'}
+                      tracking-[0.1em] font-medium
+                    `}
+                  >
+                    {collection.label.toUpperCase()}
+                  </button>
+                );
+              })}
+            </div>
+            {collectionFilter && (
+              <div className="mt-4 text-sm text-gray-600">
+                Showing products from: <span className="font-medium text-gray-900">
+                  {SHOPIFY_COLLECTIONS.find(c => c.handle === collectionFilter)?.label}
+                </span>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* Search Results Heading */}
       {searchQuery && (
@@ -388,23 +460,26 @@ function ProductsContent() {
               {/* Mobile Horizontal Category Scroll */}
               <div className="overflow-x-auto -mx-4 px-4">
                 <div className="flex gap-2 pb-2">
-                  {FILTER_OPTIONS.mainCategories.map((category) => (
-                    <button
-                      key={category.value}
-                      onClick={() => {
-                        setFilter(category.value);
-                        setSpiritType('all');
-                      }}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 text-xs whitespace-nowrap transition-all ${
-                        filter === category.value
-                          ? 'bg-gold-600 text-white'
-                          : 'border border-gray-300 text-gray-700'
-                      }`}
-                    >
-                      <CategoryIcon category={category.value} className="w-3.5 h-3.5" />
-                      {category.label}
-                    </button>
-                  ))}
+                  {FILTER_OPTIONS.mainCategories.map((category) => {
+                    const isActive = filter === category.value;
+                    return (
+                      <button
+                        key={category.value}
+                        onClick={() => {
+                          setFilter(category.value);
+                          setSpiritType('all');
+                        }}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 text-xs whitespace-nowrap transition-all rounded-lg border ${
+                          isActive
+                            ? `${category.colors.bgActive} ${category.colors.textActive} ${category.colors.borderActive}`
+                            : `${category.colors.bg} ${category.colors.text} ${category.colors.border}`
+                        }`}
+                      >
+                        <CategoryIcon category={category.value} className="w-3.5 h-3.5" />
+                        {category.label}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -412,23 +487,26 @@ function ProductsContent() {
             <>
               {/* Desktop Category Filters */}
               <div className="flex flex-wrap gap-3 mb-4">
-                {FILTER_OPTIONS.mainCategories.map((category) => (
-                  <button
-                    key={category.value}
-                    onClick={() => {
-                      setFilter(category.value);
-                      setSpiritType('all'); // Reset spirit type when main category changes
-                    }}
-                    className={`px-5 py-2.5 text-xs tracking-[0.1em] transition-all duration-300 flex items-center gap-2 ${
-                      filter === category.value
-                        ? 'bg-gold-600 text-white'
-                        : 'border border-gray-300 text-gray-700 hover:border-gold-600'
-                    }`}
-                  >
-                    <CategoryIcon category={category.value} className="w-4 h-4" />
-                    {category.label.toUpperCase()}
-                  </button>
-                ))}
+                {FILTER_OPTIONS.mainCategories.map((category) => {
+                  const isActive = filter === category.value;
+                  return (
+                    <button
+                      key={category.value}
+                      onClick={() => {
+                        setFilter(category.value);
+                        setSpiritType('all'); // Reset spirit type when main category changes
+                      }}
+                      className={`px-5 py-2.5 text-xs tracking-[0.1em] transition-all duration-300 flex items-center gap-2 rounded-lg border ${
+                        isActive
+                          ? `${category.colors.bgActive} ${category.colors.textActive} ${category.colors.borderActive}`
+                          : `${category.colors.bg} ${category.colors.text} ${category.colors.border}`
+                      }`}
+                    >
+                      <CategoryIcon category={category.value} className="w-4 h-4" />
+                      {category.label.toUpperCase()}
+                    </button>
+                  );
+                })}
               </div>
             </>
           )}
@@ -576,11 +654,11 @@ function ProductsContent() {
                   // Use index as part of key to avoid duplicates
                   const uniqueKey = `${product.id}-${index}`;
                   if (isMobile) {
-                    return <MobileProductCard key={uniqueKey} product={product} index={index} />
+                    return <MobileProductCard key={uniqueKey} product={product} index={index} onProductClick={handleProductClick} />
                   }
                   return isCompactView 
-                    ? <CompactProductCard key={uniqueKey} product={product} index={index} />
-                    : <ProductCard key={uniqueKey} product={product} index={index} />
+                    ? <CompactProductCard key={uniqueKey} product={product} index={index} onProductClick={handleProductClick} />
+                    : <ProductCard key={uniqueKey} product={product} index={index} onProductClick={handleProductClick} />
                 })}
               </div>
 
@@ -713,6 +791,12 @@ function ProductsContent() {
         onVerify={handleAgeVerified}
       />
       
+      <ProductModal
+        product={selectedProduct}
+        isOpen={showProductModal}
+        onClose={() => setShowProductModal(false)}
+      />
+      
       {/* Mobile Filter Drawer */}
       {isMobile && (
         <MobileFilterDrawer
@@ -752,7 +836,7 @@ export default function ProductsPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-white">
-        <OldFashionedNavigation />
+        <OldFashionedNavigation forceScrolled={true} />
         <div className="pt-32 pb-16 text-center">
           <div className="animate-pulse">
             <div className="h-8 w-48 bg-gray-200 mx-auto rounded"></div>

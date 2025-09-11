@@ -1,12 +1,28 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import LuxuryCard from '@/components/LuxuryCard';
 
 export default function WeddingsPage() {
+  const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+  
+  const heroImages = [
+    { src: '/images/services/weddings/outdoor-bar-setup.webp', alt: 'Elegant Wedding Bar Setup' },
+    { src: '/images/hero/wedding-hero-vineyard.webp', alt: 'Texas Hill Country vineyard wedding' },
+    { src: '/images/hero/wedding-hero-ballroom.webp', alt: 'Driskill Hotel ballroom reception' },
+    { src: '/images/hero/wedding-hero-garden.webp', alt: 'Laguna Gloria garden wedding' }
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
   const packages = [
     {
       name: "Intimate Ceremony",
@@ -61,14 +77,41 @@ export default function WeddingsPage() {
       
       {/* Hero Section */}
       <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
-        <Image
-          src="/images/services/weddings/outdoor-bar-setup.webp"
-          alt="Elegant Wedding Bar Setup"
-          fill
-          className="object-cover"
-          priority
-        />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentHeroIndex}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={heroImages[currentHeroIndex].src}
+              alt={heroImages[currentHeroIndex].alt}
+              fill
+              className="object-cover"
+              priority
+              onError={(e) => {
+                e.currentTarget.src = '/images/services/weddings/outdoor-bar-setup.webp';
+              }}
+            />
+          </motion.div>
+        </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 via-gray-900/30 to-gray-900/50" />
+        
+        {/* Hero Dots Navigation */}
+        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentHeroIndex(index)}
+              className={`w-2 h-2 rounded-full transition-all ${
+                index === currentHeroIndex ? 'bg-gold-400 w-8' : 'bg-white/50'
+              }`}
+            />
+          ))}
+        </div>
         
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
@@ -195,49 +238,48 @@ export default function WeddingsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {packages.map((pkg, index) => (
-              <motion.div
+              <LuxuryCard
                 key={pkg.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
-                className={`bg-white p-8 ${
-                  pkg.featured ? 'ring-2 ring-gold-600 shadow-lg' : 'border border-gray-200'
-                }`}
+                featured={pkg.featured}
+                index={index}
+                className="rounded-lg"
               >
-                {pkg.featured && (
-                  <div className="text-center mb-4">
-                    <span className="text-gold-600 text-sm tracking-[0.15em]">MOST POPULAR</span>
-                  </div>
-                )}
-                <h3 className="font-serif text-2xl text-gray-900 mb-2 tracking-[0.1em] text-center">
-                  {pkg.name}
-                </h3>
-                <p className="text-3xl text-gold-600 font-light text-center mb-4">
-                  {pkg.price}
-                </p>
-                <p className="text-gray-600 text-center mb-8">
-                  {pkg.description}
-                </p>
-                <ul className="space-y-3 mb-8">
-                  {pkg.features.map((feature, i) => (
-                    <li key={i} className="flex items-start">
-                      <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                      <span className="text-gray-700 text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link href={`/weddings/packages/${pkg.name.toLowerCase().replace(/ /g, '-')}`}>
-                  <button className={`w-full py-3 tracking-[0.15em] text-sm transition-all duration-300 ${
-                    pkg.featured 
-                      ? 'bg-gold-600 text-white hover:bg-gold-700' 
-                      : 'border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white'
-                  }`}>
-                    CUSTOMIZE PACKAGE
-                  </button>
-                </Link>
-              </motion.div>
+                <div className="p-8">
+                  {pkg.featured && (
+                    <div className="text-center mb-4">
+                      <span className="text-gold-600 text-sm tracking-[0.15em]">MOST POPULAR</span>
+                    </div>
+                  )}
+                  <h3 className="font-serif text-2xl text-gray-900 mb-2 tracking-[0.1em] text-center">
+                    {pkg.name}
+                  </h3>
+                  <p className="text-4xl text-gold-600 font-semibold text-center mb-4">
+                    {pkg.price}
+                  </p>
+                  <p className="text-gray-600 text-center mb-8">
+                    {pkg.description}
+                  </p>
+                  <ul className="space-y-3 mb-8">
+                    {pkg.features.map((feature, i) => (
+                      <li key={i} className="flex items-start">
+                        <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                        <span className="text-gray-700 text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href={`/weddings/packages/${pkg.name.toLowerCase().replace(/ /g, '-')}`}>
+                    <button className={`w-full py-3 tracking-[0.15em] text-sm transition-all duration-300 ${
+                      pkg.featured 
+                        ? 'bg-gold-600 text-white hover:bg-gold-700' 
+                        : 'border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white'
+                    }`}>
+                      CUSTOMIZE PACKAGE
+                    </button>
+                  </Link>
+                </div>
+              </LuxuryCard>
             ))}
           </div>
         </div>

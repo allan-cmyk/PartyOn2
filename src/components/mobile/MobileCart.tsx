@@ -2,39 +2,38 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence, PanInfo, useAnimation } from 'framer-motion';
+import { motion, AnimatePresence, PanInfo, useAnimation, useDragControls } from 'framer-motion';
 import { useCartContext } from '@/contexts/CartContext';
 import CartItem from '../shopify/CartItem';
 import { formatPrice } from '@/lib/shopify/utils';
-import DeliveryScheduler from '@/components/DeliveryScheduler';
+import SimpleDeliveryScheduler from '@/components/SimpleDeliveryScheduler';
 
 export default function MobileCart() {
-  const { cart, isCartOpen, closeCart, loading } = useCartContext();
+  const { cart, isCartOpen, closeCart, loading, updateCartAttributes } = useCartContext();
   const [showDeliveryScheduler, setShowDeliveryScheduler] = useState(false);
-  const [cartHeight, setCartHeight] = useState('auto');
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const controls = useAnimation();
+  const dragControls = useDragControls();
   const constraintsRef = useRef(null);
   
-  const subtotal = cart?.cost.subtotalAmount;
-  const total = cart?.cost.totalAmount;
+  const subtotal = cart?.cost?.subtotalAmount || null;
   const hasItems = (cart?.totalQuantity || 0) > 0;
 
   // Calculate drawer height based on content
   useEffect(() => {
     if (isCartOpen) {
-      const windowHeight = window.innerHeight;
-      const maxHeight = windowHeight * 0.9; // 90% of screen height
-      setCartHeight(`${maxHeight}px`);
+      controls.start({ y: 0 });
     }
-  }, [isCartOpen]);
+  }, [isCartOpen, controls]);
 
   const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    const shouldClose = info.offset.y > 100 || info.velocity.y > 500;
+    // More responsive drag threshold for mobile
+    const shouldClose = info.offset.y > 50 || (info.velocity.y > 0 && info.velocity.y > 300);
     
     if (shouldClose) {
       closeCart();
     } else {
-      controls.start({ y: 0 });
+      controls.start({ y: 0, transition: { type: 'spring', damping: 25, stiffness: 500 } });
     }
   };
 
@@ -42,13 +41,53 @@ export default function MobileCart() {
     setShowDeliveryScheduler(true);
   };
 
-  const handleDeliveryConfirm = async () => {
-    if (cart?.checkoutUrl) {
-      const checkoutUrl = new URL(cart.checkoutUrl);
-      checkoutUrl.searchParams.set('return_to', `${window.location.origin}/checkout/success`);
-      window.location.href = checkoutUrl.toString();
+  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string) => {
+    try {
+      setIsRedirecting(true);
+      
+      // Format date for Shopify
+      const formattedDate = date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      
+      // Create formatted note for order (visible in confirmation emails)
+      const orderNote = `DELIVERY SCHEDULED:\nDate: ${formattedDate}\nTime: ${time}${instructions ? `\nSpecial Instructions: ${instructions}` : ''}`;
+      
+      // Store delivery info in cart attributes (for backup/internal use) and note (for customer visibility)
+      const attributes = [
+        { key: 'note', value: orderNote }, // This shows in confirmation emails
+        { key: 'delivery_date', value: formattedDate },
+        { key: 'delivery_time', value: time },
+        { key: 'delivery_instructions', value: instructions || 'None' },
+        { key: 'delivery_fee', value: '25.00' }
+      ];
+
+      // Update cart with delivery attributes
+      if (updateCartAttributes) {
+        const updatedCart = await updateCartAttributes(attributes);
+        
+        // Redirect to checkout with updated cart and Shop Pay parameters
+        if (updatedCart?.checkoutUrl) {
+          // Build checkout URL with address parameters for Shop Pay
+          const checkoutUrl = new URL(updatedCart.checkoutUrl);
+          
+          // No address parameters needed - customer will fill out in Shopify checkout
+          
+          // Use location.replace for cleaner mobile redirect
+          window.location.replace(checkoutUrl.toString());
+        }
+      } else if (cart?.checkoutUrl) {
+        // Fallback to direct checkout
+        window.location.replace(cart.checkoutUrl);
+      }
+    } catch (error) {
+      console.error('Error during checkout:', error);
+      setShowDeliveryScheduler(false);
+      setIsRedirecting(false);
     }
-    setShowDeliveryScheduler(false);
   };
 
   return (
@@ -71,22 +110,32 @@ export default function MobileCart() {
               initial={{ y: '100%' }}
               animate={controls}
               exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              transition={{ 
+                type: 'spring', 
+                damping: 25, 
+                stiffness: 400,
+                mass: 0.8
+              }}
               drag="y"
+              dragControls={dragControls}
               dragConstraints={{ top: 0 }}
-              dragElastic={0.2}
+              dragElastic={{ top: 0, bottom: 0.3 }}
               onDragEnd={handleDragEnd}
-              style={{ maxHeight: cartHeight }}
-              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-[70] md:hidden overflow-hidden safe-area-bottom"
+              dragListener={false}
+              className="fixed inset-x-0 bottom-0 h-[90vh] bg-white rounded-t-3xl shadow-2xl z-[70] md:hidden flex flex-col safe-area-bottom"
             >
               {/* Drag Handle */}
-              <div className="sticky top-0 bg-white z-10 pb-2">
-                <div className="flex justify-center py-3">
-                  <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
+              <div 
+                className="sticky top-0 bg-white z-10 pb-2"
+                onPointerDown={(e) => dragControls.start(e)}
+              >
+                <div className="flex justify-center py-5 cursor-grab active:cursor-grabbing touch-none">
+                  <div className="w-24 h-2.5 bg-gray-400 rounded-full" />
                 </div>
+              </div>
                 
-                {/* Header */}
-                <div className="flex items-center justify-between px-5 pb-3 border-b border-gray-100">
+              {/* Header */}
+              <div className="flex items-center justify-between px-5 pb-3 border-b border-gray-100">
                   <h2 className="font-serif text-xl tracking-[0.1em]">YOUR CART</h2>
                   <button
                     onClick={closeCart}
@@ -96,11 +145,10 @@ export default function MobileCart() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
-                </div>
               </div>
 
               {/* Cart Content */}
-              <div className="flex-1 overflow-y-auto px-5 pb-32">
+              <div className="flex-1 overflow-y-auto overscroll-contain px-5 py-4">
                 {!hasItems ? (
                   <div className="flex flex-col items-center justify-center py-12">
                     <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -117,22 +165,22 @@ export default function MobileCart() {
                   </div>
                 ) : (
                   <div className="space-y-4 py-4">
-                    {cart?.lines.edges.map(({ node }) => (
+                    {cart?.lines?.edges?.map(({ node }) => (
                       <CartItem key={node.id} item={node} />
-                    ))}
+                    )) || []}
                   </div>
                 )}
               </div>
 
               {/* Footer - Fixed at bottom */}
               {hasItems && (
-                <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 safe-area-bottom">
+                <div className="bg-white border-t border-gray-200 safe-area-bottom mt-auto">
                   <div className="px-5 py-4 space-y-3">
                     {/* Subtotal */}
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Subtotal</span>
                       <span className="text-gray-900 font-medium">
-                        {subtotal && formatPrice(subtotal.amount, subtotal.currencyCode)}
+                        {subtotal ? formatPrice(subtotal.amount, subtotal.currencyCode) : '$0.00'}
                       </span>
                     </div>
 
@@ -151,10 +199,10 @@ export default function MobileCart() {
                     {/* Checkout Button */}
                     <button 
                       onClick={handleProceedToCheckout}
-                      disabled={loading}
-                      className="w-full py-4 bg-gold-600 text-white rounded-lg tracking-[0.1em] text-sm font-medium disabled:opacity-50"
+                      disabled={loading || isRedirecting}
+                      className="w-full py-4 bg-gold-600 text-white rounded-lg tracking-[0.1em] text-sm font-medium disabled:opacity-50 transition-all active:scale-[0.98]"
                     >
-                      CHECKOUT • {total && formatPrice(total.amount, total.currencyCode)}
+                      {isRedirecting ? 'REDIRECTING...' : `CHECKOUT • ${subtotal && formatPrice(subtotal.amount, subtotal.currencyCode)}`}
                     </button>
                   </div>
                 </div>
@@ -164,13 +212,22 @@ export default function MobileCart() {
         )}
       </AnimatePresence>
 
-      {/* Delivery Scheduler */}
-      <DeliveryScheduler
+      {/* Simple Delivery Scheduler */}
+      <SimpleDeliveryScheduler
         isOpen={showDeliveryScheduler}
         onClose={() => setShowDeliveryScheduler(false)}
         onConfirm={handleDeliveryConfirm}
-        subtotal={subtotal ? parseFloat(subtotal.amount) : 0}
       />
+
+      {/* Loading Overlay for redirect */}
+      {isRedirecting && (
+        <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 flex flex-col items-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-600 mb-4"></div>
+            <p className="text-sm text-gray-600">Redirecting to checkout...</p>
+          </div>
+        </div>
+      )}
     </>
   );
 }

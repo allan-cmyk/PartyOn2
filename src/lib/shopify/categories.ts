@@ -125,6 +125,14 @@ export function getProductCategory(product: {
   return 'partySupplies';
 }
 
+// Check if a product belongs to a specific collection
+export function isInCollection(product: {
+  collections?: { edges: Array<{ node: { handle: string } }> };
+}, collectionHandle: string): boolean {
+  const collections = product.collections?.edges.map(e => e.node.handle) || [];
+  return collections.includes(collectionHandle);
+}
+
 // Get unique brands from products
 export function getUniqueBrands(products: Array<{ vendor?: string }>): string[] {
   const brands = new Set<string>();
@@ -143,16 +151,175 @@ export function getUniqueProductTypes(products: Array<{ productType?: string }>)
   return Array.from(types).sort();
 }
 
-// Filter configuration for the UI
+// Actual Shopify collections for quick filters with color schemes
+export const SHOPIFY_COLLECTIONS = [
+  { 
+    handle: 'beer-collection', 
+    label: 'Tailgate & Beer', 
+    category: 'beer',
+    colors: {
+      bg: 'bg-amber-50 hover:bg-amber-100',
+      bgActive: 'bg-amber-600',
+      text: 'text-amber-700',
+      textActive: 'text-white',
+      border: 'border-amber-400 hover:border-amber-500',
+      borderActive: 'border-amber-600'
+    }
+  },
+  { 
+    handle: 'seltzers-wine-champagne', 
+    label: 'Bubbles & Celebration', 
+    category: 'seltzersChamps',
+    colors: {
+      bg: 'bg-pink-50 hover:bg-pink-100',
+      bgActive: 'bg-pink-600',
+      text: 'text-pink-700',
+      textActive: 'text-white',
+      border: 'border-pink-400 hover:border-pink-500',
+      borderActive: 'border-pink-600'
+    }
+  },
+  { 
+    handle: 'spirits', 
+    label: 'Premium Spirits', 
+    category: 'liquor',
+    colors: {
+      bg: 'bg-slate-50 hover:bg-slate-100',
+      bgActive: 'bg-slate-700',
+      text: 'text-slate-700',
+      textActive: 'text-white',
+      border: 'border-slate-400 hover:border-slate-500',
+      borderActive: 'border-slate-700'
+    }
+  },
+  { 
+    handle: 'ready-to-drink', 
+    label: 'Ready to Drink', 
+    category: 'cocktails',
+    colors: {
+      bg: 'bg-teal-50 hover:bg-teal-100',
+      bgActive: 'bg-teal-600',
+      text: 'text-teal-700',
+      textActive: 'text-white',
+      border: 'border-teal-400 hover:border-teal-500',
+      borderActive: 'border-teal-600'
+    }
+  },
+  { 
+    handle: 'bachelorette-supplies', 
+    label: 'Bachelorette Party', 
+    category: 'partySupplies',
+    colors: {
+      bg: 'bg-purple-50 hover:bg-purple-100',
+      bgActive: 'bg-purple-600',
+      text: 'text-purple-700',
+      textActive: 'text-white',
+      border: 'border-purple-400 hover:border-purple-500',
+      borderActive: 'border-purple-600'
+    }
+  },
+  { 
+    handle: 'disco-collection', 
+    label: 'Disco Party', 
+    category: 'partySupplies',
+    colors: {
+      bg: 'bg-indigo-50 hover:bg-indigo-100',
+      bgActive: 'bg-indigo-600',
+      text: 'text-indigo-700',
+      textActive: 'text-white',
+      border: 'border-indigo-400 hover:border-indigo-500',
+      borderActive: 'border-indigo-600'
+    }
+  }
+];
+
+// Filter configuration for the UI with color schemes
 export const FILTER_OPTIONS = {
   mainCategories: [
-    { value: 'all', label: 'All Products' },
-    { value: 'seltzers-champs', label: 'Seltzers & Champs' },
-    { value: 'beer', label: 'Beer' },
-    { value: 'cocktails', label: 'Cocktails' },
-    { value: 'liquor', label: 'Liquor' },
-    { value: 'mixers-na', label: 'Mixers/NA' },
-    { value: 'party-supplies', label: 'Party Supplies' }
+    { 
+      value: 'all', 
+      label: 'All Products',
+      colors: {
+        bg: 'bg-gray-50 hover:bg-gray-100',
+        bgActive: 'bg-gold-600',
+        text: 'text-gray-700',
+        textActive: 'text-white',
+        border: 'border-gray-300 hover:border-gold-400',
+        borderActive: 'border-gold-600'
+      }
+    },
+    { 
+      value: 'seltzers-champs', 
+      label: 'Seltzers & Champs',
+      colors: {
+        bg: 'bg-pink-50 hover:bg-pink-100',
+        bgActive: 'bg-pink-600',
+        text: 'text-pink-700',
+        textActive: 'text-white',
+        border: 'border-pink-300 hover:border-pink-400',
+        borderActive: 'border-pink-600'
+      }
+    },
+    { 
+      value: 'beer', 
+      label: 'Beer',
+      colors: {
+        bg: 'bg-amber-50 hover:bg-amber-100',
+        bgActive: 'bg-amber-600',
+        text: 'text-amber-700',
+        textActive: 'text-white',
+        border: 'border-amber-300 hover:border-amber-400',
+        borderActive: 'border-amber-600'
+      }
+    },
+    { 
+      value: 'cocktails', 
+      label: 'Cocktails',
+      colors: {
+        bg: 'bg-teal-50 hover:bg-teal-100',
+        bgActive: 'bg-teal-600',
+        text: 'text-teal-700',
+        textActive: 'text-white',
+        border: 'border-teal-300 hover:border-teal-400',
+        borderActive: 'border-teal-600'
+      }
+    },
+    { 
+      value: 'liquor', 
+      label: 'Liquor',
+      colors: {
+        bg: 'bg-slate-50 hover:bg-slate-100',
+        bgActive: 'bg-slate-700',
+        text: 'text-slate-700',
+        textActive: 'text-white',
+        border: 'border-slate-300 hover:border-slate-400',
+        borderActive: 'border-slate-700'
+      }
+    },
+    { 
+      value: 'mixers-na', 
+      label: 'Mixers/NA',
+      colors: {
+        bg: 'bg-cyan-50 hover:bg-cyan-100',
+        bgActive: 'bg-cyan-600',
+        text: 'text-cyan-700',
+        textActive: 'text-white',
+        border: 'border-cyan-300 hover:border-cyan-400',
+        borderActive: 'border-cyan-600'
+      }
+    },
+    { 
+      value: 'party-supplies', 
+      label: 'Party Supplies',
+      colors: {
+        bg: 'bg-purple-50 hover:bg-purple-100',
+        bgActive: 'bg-purple-600',
+        text: 'text-purple-700',
+        textActive: 'text-white',
+        border: 'border-purple-300 hover:border-purple-400',
+        borderActive: 'border-purple-600'
+      }
+    }
   ],
   spiritTypes: [
     { value: 'all', label: 'All Liquor' },

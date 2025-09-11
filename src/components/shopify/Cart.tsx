@@ -6,116 +6,151 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useCartContext } from '@/contexts/CartContext';
 import CartItem from './CartItem';
 import { formatPrice } from '@/lib/shopify/utils';
-import DeliveryScheduler from '@/components/DeliveryScheduler';
+import SimpleDeliveryScheduler from '@/components/SimpleDeliveryScheduler';
 import AIConcierge from '@/components/AIConcierge';
-import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
-import CreateGroupOrderModal from '@/components/group-orders/CreateGroupOrderModal';
-import ShareGroupOrder from '@/components/group-orders/ShareGroupOrder';
-import { shopifyFetch } from '@/lib/shopify/client';
-import { CART_DISCOUNT_CODES_UPDATE_MUTATION } from '@/lib/shopify/mutations/discount';
+// Group order imports temporarily disabled
+// import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
+// import CreateGroupOrderModal from '@/components/group-orders/CreateGroupOrderModal';
+// import ShareGroupOrder from '@/components/group-orders/ShareGroupOrder';
+// Discount imports temporarily disabled - handled at Shopify checkout
+// import { shopifyFetch } from '@/lib/shopify/client';
+// import { CART_DISCOUNT_CODES_UPDATE_MUTATION } from '@/lib/shopify/mutations/discount';
 
 export default function Cart() {
   const { cart, isCartOpen, closeCart, loading, updateCartAttributes } = useCartContext();
-  const { currentGroupOrder, isInGroupOrder, isHost } = useGroupOrderContext();
+  // Group order features temporarily disabled
+  // const { currentGroupOrder, isInGroupOrder, isHost } = useGroupOrderContext();
   const [showDeliveryScheduler, setShowDeliveryScheduler] = useState(false);
-  const [showCreateGroupOrder, setShowCreateGroupOrder] = useState(false);
-  const [showShareModal, setShowShareModal] = useState(false);
-  const [newGroupOrderCode, setNewGroupOrderCode] = useState('');
-  const [discountCode, setDiscountCode] = useState('');
-  const [isApplyingDiscount, setIsApplyingDiscount] = useState(false);
-  const [discountError, setDiscountError] = useState('');
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  // Group order states temporarily disabled
+  // const [showCreateGroupOrder, setShowCreateGroupOrder] = useState(false);
+  // const [showShareModal, setShowShareModal] = useState(false);
+  // const [newGroupOrderCode, setNewGroupOrderCode] = useState('');
+  // Discount states temporarily disabled - handled at Shopify checkout
+  // const [discountCode, setDiscountCode] = useState('');
+  // const [isApplyingDiscount, setIsApplyingDiscount] = useState(false);
+  // const [discountError, setDiscountError] = useState('');
 
-  const subtotal = cart?.cost.subtotalAmount;
-  const total = cart?.cost.totalAmount;
+  const subtotal = cart?.cost?.subtotalAmount || null;
   const hasItems = (cart?.totalQuantity || 0) > 0;
 
   const handleProceedToCheckout = () => {
+    // Show delivery scheduler to collect delivery information first
     setShowDeliveryScheduler(true);
   };
 
-  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, isExpress?: boolean) => {
-    // Store delivery info in cart attributes
-    const attributes = [
-      { key: 'delivery_date', value: date.toISOString() },
-      { key: 'delivery_time', value: time },
-      { key: 'delivery_instructions', value: instructions },
-      { key: 'express_delivery', value: isExpress ? 'true' : 'false' },
-      { key: 'delivery_fee', value: isExpress ? '0.00' : '15.00' }
-    ];
-
-    if (updateCartAttributes) {
-      await updateCartAttributes(attributes);
-    }
-
-    // Redirect to Shopify checkout with return URL
-    if (cart?.checkoutUrl) {
-      // Add return URL to checkout
-      const checkoutUrl = new URL(cart.checkoutUrl);
-      checkoutUrl.searchParams.set('return_to', `${window.location.origin}/checkout/success`);
-      window.location.href = checkoutUrl.toString();
-    }
-    
-    setShowDeliveryScheduler(false);
-  };
-
-  const handleGroupOrderSuccess = (shareCode: string) => {
-    setNewGroupOrderCode(shareCode);
-    setShowCreateGroupOrder(false);
-    setShowShareModal(true);
-  };
-
-  const handleApplyDiscount = async () => {
-    if (!cart || !discountCode.trim()) return;
-    
-    setIsApplyingDiscount(true);
-    setDiscountError('');
-    
+  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string) => {
     try {
-      const response = await shopifyFetch({
-        query: CART_DISCOUNT_CODES_UPDATE_MUTATION,
-        variables: {
-          cartId: cart.id,
-          discountCodes: [discountCode.trim().toUpperCase()]
-        }
-      }) as {
-        cartDiscountCodesUpdate?: {
-          userErrors?: Array<{ field?: string; message?: string }>;
-          cart?: unknown;
-        };
-      };
+      // Set redirecting state to show loading
+      setIsRedirecting(true);
       
-      if (response?.cartDiscountCodesUpdate?.userErrors?.length && response.cartDiscountCodesUpdate.userErrors.length > 0) {
-        setDiscountError('Invalid discount code');
-      } else {
-        setDiscountCode('');
-        // Cart will auto-refresh via context
+      // Format date for better display in Shopify
+      const formattedDate = new Intl.DateTimeFormat('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      }).format(date);
+      
+      // Create formatted note for order (visible in confirmation emails)
+      const orderNote = `DELIVERY SCHEDULED:\nDate: ${formattedDate}\nTime: ${time}${instructions ? `\nSpecial Instructions: ${instructions}` : ''}`;
+      
+      // Store delivery info in cart attributes (for backup/internal use) and note (for customer visibility)
+      const attributes = [
+        { key: 'note', value: orderNote }, // This shows in confirmation emails
+        { key: 'delivery_date', value: formattedDate },
+        { key: 'delivery_time', value: time },
+        { key: 'delivery_instructions', value: instructions || 'None' },
+        { key: 'delivery_fee', value: '25.00' }
+      ];
+
+      console.log('Sending delivery attributes to Shopify:', attributes);
+
+      // Try to update cart attributes, but proceed even if it fails
+      let checkoutUrl = cart?.checkoutUrl;
+      
+      if (updateCartAttributes) {
+        try {
+          const updatedCart = await updateCartAttributes(attributes);
+          console.log('Updated cart response:', updatedCart);
+          console.log('Cart attributes after update:', updatedCart?.attributes);
+          
+          // Use the updated cart's checkout URL if available
+          if (updatedCart?.checkoutUrl) {
+            checkoutUrl = updatedCart.checkoutUrl;
+          }
+        } catch (attrError) {
+          console.error('Error updating cart attributes, proceeding anyway:', attrError);
+          // Continue with redirect even if attributes fail
+        }
       }
-    } catch {
-      setDiscountError('Failed to apply discount code');
-    } finally {
-      setIsApplyingDiscount(false);
+      
+      if (checkoutUrl) {
+        // Build URL with Shop Pay parameters
+        console.log('Building checkout URL with address parameters');
+        
+        try {
+          const url = new URL(checkoutUrl);
+          
+          // No address parameters needed - customer will fill out in Shopify checkout
+          
+          checkoutUrl = url.toString();
+          console.log('Final checkout URL with parameters:', checkoutUrl);
+        } catch (urlError) {
+          console.error('Error building URL parameters:', urlError);
+        }
+        
+        // Longer delay for mobile devices
+        const delay = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ? 500 : 200;
+        await new Promise(resolve => setTimeout(resolve, delay));
+        
+        // Try multiple redirect methods for better compatibility
+        try {
+          // Method 1: Direct assignment (most compatible)
+          window.location.href = checkoutUrl;
+        } catch {
+          try {
+            // Method 2: Replace (prevents back button)
+            window.location.replace(checkoutUrl);
+          } catch {
+            // Method 3: Create a link and click it
+            const link = document.createElement('a');
+            link.href = checkoutUrl;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+        }
+        
+        // Keep loading state active to prevent any further interactions
+        // Don't reset states here as the page is redirecting
+        return;
+      } else {
+        throw new Error('No checkout URL available');
+      }
+    } catch (error) {
+      console.error('Error during checkout:', error);
+      // If there's an error, reset states so user can try again
+      setIsRedirecting(false);
+      setShowDeliveryScheduler(false);
+      
+      // More helpful error message
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      alert(`Unable to proceed to checkout: ${errorMessage}. Please try again or contact support if the issue persists.`);
     }
   };
 
-  const handleRemoveDiscount = async (code: string) => {
-    if (!cart) return;
-    
-    const currentCodes = cart.discountCodes?.filter(d => d.code !== code).map(d => d.code) || [];
-    
-    try {
-      await shopifyFetch({
-        query: CART_DISCOUNT_CODES_UPDATE_MUTATION,
-        variables: {
-          cartId: cart.id,
-          discountCodes: currentCodes
-        }
-      });
-      
-      // Cart will auto-refresh via context
-    } catch {
-      console.error('Failed to remove discount');
-    }
-  };
+  // Group order handler temporarily disabled
+  // const handleGroupOrderSuccess = (shareCode: string) => {
+  //   setNewGroupOrderCode(shareCode);
+  //   setShowCreateGroupOrder(false);
+  //   setShowShareModal(true);
+  // };
+
+  // Discount functions temporarily disabled - handled at Shopify checkout
+  // const handleApplyDiscount = async () => { ... };
+  // const handleRemoveDiscount = async (code: string) => { ... };
 
   return (
     <>
@@ -175,9 +210,9 @@ export default function Cart() {
                   </div>
                 ) : (
                   <div className="p-6 space-y-6">
-                    {cart?.lines.edges.map(({ node }) => (
+                    {cart?.lines?.edges?.map(({ node }) => (
                       <CartItem key={node.id} item={node} />
-                    ))}
+                    )) || []}
                   </div>
                 )}
               </div>
@@ -185,8 +220,8 @@ export default function Cart() {
               {/* Footer */}
               {hasItems && (
                 <div className="border-t border-gray-200 p-6 space-y-4">
-                  {/* Group Order Info */}
-                  {isInGroupOrder && currentGroupOrder && (
+                  {/* Group Order Info - Hidden until Stripe setup */}
+                  {/* {isInGroupOrder && currentGroupOrder && (
                     <div className="bg-gray-50 p-4 rounded">
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm tracking-[0.1em] text-gray-600">GROUP ORDER</span>
@@ -204,59 +239,45 @@ export default function Cart() {
                         </Link>
                       )}
                     </div>
-                  )}
+                  )} */}
 
-                  {/* Discount Code Section */}
-                  <div className="space-y-2">
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={discountCode}
-                        onChange={(e) => setDiscountCode(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleApplyDiscount()}
-                        placeholder="Discount code"
-                        disabled={isApplyingDiscount}
-                        className="flex-1 px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:border-gold-600"
-                      />
-                      <button
-                        onClick={handleApplyDiscount}
-                        disabled={isApplyingDiscount || !discountCode.trim()}
-                        className="px-4 py-2 bg-gray-900 text-white text-sm hover:bg-gold-600 transition-colors disabled:opacity-50"
-                      >
-                        {isApplyingDiscount ? 'APPLYING...' : 'APPLY'}
-                      </button>
-                    </div>
-                    
-                    {discountError && (
-                      <p className="text-red-600 text-xs">{discountError}</p>
-                    )}
-                    
-                    {cart?.discountCodes && cart.discountCodes.length > 0 && (
-                      <div className="space-y-1">
-                        {cart.discountCodes.map((discount) => (
-                          <div key={discount.code} className="flex items-center justify-between bg-green-50 px-3 py-2 rounded">
-                            <span className="text-sm text-green-700">
-                              {discount.code} {discount.applicable && '✓'}
-                            </span>
-                            <button
-                              onClick={() => handleRemoveDiscount(discount.code)}
-                              className="text-red-600 hover:text-red-700 text-sm"
-                            >
-                              Remove
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                  {/* Discount Code Notice */}
+                  <div className="bg-gray-50 px-4 py-3 rounded">
+                    <p className="text-sm text-gray-600 text-center">
+                      <svg className="inline-block w-4 h-4 mr-1.5 align-text-bottom" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                      </svg>
+                      Discount codes can be applied at Shopify checkout
+                    </p>
                   </div>
 
                   {/* Subtotal */}
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Subtotal</span>
                     <span className="text-gray-900">
-                      {subtotal && formatPrice(subtotal.amount, subtotal.currencyCode)}
+                      {subtotal ? formatPrice(subtotal.amount, subtotal.currencyCode) : '$0.00'}
                     </span>
                   </div>
+
+                  {/* Discount Amount - Hidden, discounts applied at Shopify checkout */}
+                  {/* {cart?.discountCodes && cart.discountCodes.length > 0 && cart.discountCodes.some(d => d.applicable) && (
+                    (() => {
+                      const discountAmount = subtotal && total ? 
+                        parseFloat(subtotal.amount) - parseFloat(total.amount) : 0;
+                      
+                      if (discountAmount > 0) {
+                        return (
+                          <div className="flex justify-between text-sm text-green-600">
+                            <span>
+                              Discount ({cart.discountCodes.filter(d => d.applicable).map(d => d.code).join(', ')})
+                            </span>
+                            <span>-{subtotal && formatPrice(discountAmount.toFixed(2), subtotal.currencyCode)}</span>
+                          </div>
+                        );
+                      }
+                      return null;
+                    })()
+                  )} */}
 
                   {/* Shipping */}
                   <div className="flex justify-between text-sm">
@@ -264,11 +285,11 @@ export default function Cart() {
                     <span className="text-gray-500 text-xs">Calculated at checkout</span>
                   </div>
 
-                  {/* Total */}
+                  {/* Total - Show subtotal since delivery is calculated at checkout */}
                   <div className="flex justify-between font-medium text-lg pt-4 border-t border-gray-200">
-                    <span className="font-serif tracking-[0.1em]">TOTAL</span>
+                    <span className="font-serif tracking-[0.1em]">SUBTOTAL</span>
                     <span>
-                      {total && formatPrice(total.amount, total.currencyCode)}
+                      {subtotal ? formatPrice(subtotal.amount, subtotal.currencyCode) : '$0.00'}
                     </span>
                   </div>
 
@@ -292,8 +313,8 @@ export default function Cart() {
                     </div>
                   </div>
 
-                  {/* Group Order Button - Only show if not already in a group order */}
-                  {!isInGroupOrder && (
+                  {/* Group Order Button - Hidden until Stripe setup */}
+                  {/* {!isInGroupOrder && (
                     <button 
                       onClick={() => setShowCreateGroupOrder(true)}
                       disabled={loading}
@@ -301,7 +322,7 @@ export default function Cart() {
                     >
                       START GROUP ORDER
                     </button>
-                  )}
+                  )} */}
 
                   {/* Checkout Button */}
                   <button 
@@ -325,32 +346,47 @@ export default function Cart() {
         )}
       </AnimatePresence>
 
-      {/* Delivery Scheduler */}
-      <DeliveryScheduler
+      {/* Simple Delivery Scheduler */}
+      <SimpleDeliveryScheduler
         isOpen={showDeliveryScheduler}
-        onClose={() => setShowDeliveryScheduler(false)}
+        onClose={() => {
+          // Don't allow closing during redirect
+          if (!isRedirecting) {
+            setShowDeliveryScheduler(false);
+          }
+        }}
         onConfirm={handleDeliveryConfirm}
-        subtotal={subtotal ? parseFloat(subtotal.amount) : 0}
       />
       
       {/* AI Concierge - only show when cart is open */}
       {isCartOpen && <AIConcierge mode="party" />}
       
-      {/* Group Order Modals */}
-      <CreateGroupOrderModal
+      {/* Loading overlay during redirect */}
+      {isRedirecting && (
+        <div className="fixed inset-0 bg-black/70 z-[100] flex items-center justify-center pointer-events-auto">
+          <div className="bg-white p-8 rounded-lg shadow-2xl">
+            <div className="animate-spin h-10 w-10 border-4 border-gold-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p className="text-gray-700 text-center font-medium">Redirecting to checkout...</p>
+            <p className="text-gray-500 text-sm text-center mt-2">Please wait</p>
+          </div>
+        </div>
+      )}
+      
+      {/* Group Order Modals - Temporarily disabled */}
+      {/* <CreateGroupOrderModal
         isOpen={showCreateGroupOrder}
         onClose={() => setShowCreateGroupOrder(false)}
         onSuccess={handleGroupOrderSuccess}
-      />
+      /> */}
       
-      {showShareModal && (
+      {/* {showShareModal && (
         <ShareGroupOrder
           isOpen={showShareModal}
           onClose={() => setShowShareModal(false)}
           shareCode={newGroupOrderCode}
           eventName={currentGroupOrder?.name || 'Group Order'}
         />
-      )}
+      )} */}
     </>
   );
 }

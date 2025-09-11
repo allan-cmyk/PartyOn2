@@ -9,6 +9,8 @@ import { useCart } from '@/lib/shopify/hooks/useCart';
 import { useCustomerContext } from '@/contexts/CustomerContext';
 import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
 import CustomerAuth from '@/components/CustomerAuth';
+import { shopifyFetch } from '@/lib/shopify/client';
+import { CART_DISCOUNT_CODES_UPDATE_MUTATION } from '@/lib/shopify/mutations/discount';
 
 export default function CheckoutPage() {
   const { cart, loading: cartLoading } = useCart();
@@ -21,7 +23,7 @@ export default function CheckoutPage() {
     date: Date | null;
     time: string;
     instructions: string;
-    isExpress: boolean;
+    phone: string;
   } | null>(null);
   
   const [billingAddress, setBillingAddress] = useState({
@@ -39,6 +41,9 @@ export default function CheckoutPage() {
 
   // const [applyLoyaltyPoints, setApplyLoyaltyPoints] = useState(false); // Disabled for now
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [discountCode, setDiscountCode] = useState('');
+  const [isApplyingDiscount, setIsApplyingDiscount] = useState(false);
+  const [discountFeedback, setDiscountFeedback] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
 
   // Initialize form with customer data
   useEffect(() => {
@@ -53,21 +58,96 @@ export default function CheckoutPage() {
     }
   }, [customer]);
 
-  // Calculate totals
-  const subtotal = cart?.lines.edges.reduce((total, { node }) => {
-    return total + (parseFloat(node.merchandise.price.amount) * node.quantity);
-  }, 0) || 0;
+  // Calculate totals - with proper null checks to prevent subtotalAmount error
+  const subtotal = cart?.cost?.subtotalAmount ? parseFloat(cart.cost.subtotalAmount.amount) : 
+    (cart?.lines?.edges?.reduce((total, { node }) => {
+      return total + (parseFloat(node.merchandise.price?.amount || '0') * (node.quantity || 0));
+    }, 0) || 0);
 
-  const deliveryFee = deliveryDetails?.isExpress ? 50 : 25;
+  const deliveryFee = 25; // Standard delivery fee
   const tax = subtotal * 0.0825; // Texas sales tax
+  
+  // Calculate discount amount from cart
+  const discountAmount = cart?.cost?.totalAmount && cart?.cost?.subtotalAmount ? 
+    parseFloat(cart.cost.subtotalAmount.amount) - parseFloat(cart.cost.totalAmount.amount) + deliveryFee + tax : 0;
   
   // Loyalty points disabled for now
   // const loyaltyDiscount = 0;
   
-  const total = subtotal + deliveryFee + tax;
+  const total = subtotal + deliveryFee + tax - Math.abs(discountAmount);
 
   // Check if this is a group order checkout
   const isGroupCheckout = isInGroupOrder && isHost;
+
+  const handleApplyDiscount = async () => {
+    if (!cart || !discountCode.trim()) return;
+    
+    setIsApplyingDiscount(true);
+    setDiscountFeedback({ type: null, message: '' });
+    
+    try {
+      const response = await shopifyFetch({
+        query: CART_DISCOUNT_CODES_UPDATE_MUTATION,
+        variables: {
+          cartId: cart.id,
+          discountCodes: [...(cart.discountCodes?.map(d => d.code) || []), discountCode.trim().toUpperCase()]
+        }
+      }) as {
+        cartDiscountCodesUpdate?: {
+          userErrors?: Array<{ field?: string; message?: string }>;
+          cart?: unknown;
+        };
+      };
+      
+      if (response?.cartDiscountCodesUpdate?.userErrors?.length && response.cartDiscountCodesUpdate.userErrors.length > 0) {
+        setDiscountFeedback({ 
+          type: 'error', 
+          message: 'Invalid or expired discount code' 
+        });
+      } else {
+        setDiscountFeedback({ 
+          type: 'success', 
+          message: `Discount code "${discountCode.toUpperCase()}" applied successfully!` 
+        });
+        setDiscountCode('');
+        // Cart will auto-refresh via context
+      }
+    } catch {
+      setDiscountFeedback({ 
+        type: 'error', 
+        message: 'Failed to apply discount code. Please try again.' 
+      });
+    } finally {
+      setIsApplyingDiscount(false);
+    }
+  };
+
+  const handleRemoveDiscount = async (code: string) => {
+    if (!cart) return;
+    
+    const currentCodes = cart.discountCodes?.filter(d => d.code !== code).map(d => d.code) || [];
+    
+    try {
+      await shopifyFetch({
+        query: CART_DISCOUNT_CODES_UPDATE_MUTATION,
+        variables: {
+          cartId: cart.id,
+          discountCodes: currentCodes
+        }
+      });
+      
+      setDiscountFeedback({ 
+        type: 'success', 
+        message: `Discount code "${code}" removed` 
+      });
+      // Cart will auto-refresh via context
+    } catch {
+      setDiscountFeedback({ 
+        type: 'error', 
+        message: 'Failed to remove discount code' 
+      });
+    }
+  };
 
   const handleProceedToPayment = async () => {
     // Validate form
@@ -89,7 +169,10 @@ export default function CheckoutPage() {
 
     // TESTING MODE: Store order info and redirect to custom payment page
     const orderInfo = {
-      customer: billingAddress,
+      customer: {
+        ...billingAddress,
+        phone: deliveryDetails.phone || billingAddress.phone // Use delivery phone if provided
+      },
       delivery: {
         ...deliveryDetails,
         address: `${billingAddress.address1}${billingAddress.address2 ? ` ${billingAddress.address2}` : ''}, ${billingAddress.city}, ${billingAddress.state} ${billingAddress.zip}`
@@ -149,8 +232,8 @@ export default function CheckoutPage() {
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Left Column - Forms */}
             <div className="lg:col-span-2 space-y-8">
-              {/* Group Order Info */}
-              {isGroupCheckout && currentGroupOrder && (
+              {/* Group Order Info - Hidden until Stripe setup */}
+              {/* {isGroupCheckout && currentGroupOrder && (
                 <div className="bg-blue-50 border border-blue-200 p-6 rounded-lg">
                   <h3 className="font-cormorant text-xl mb-2">Group Order Checkout</h3>
                   <p className="text-gray-700">
@@ -160,7 +243,7 @@ export default function CheckoutPage() {
                     Group Code: <span className="font-mono font-bold">{currentGroupOrder.shareCode}</span>
                   </p>
                 </div>
-              )}
+              )} */}
 
               {/* Customer Information */}
               <div className="bg-white p-6 border border-gray-200">
@@ -317,6 +400,9 @@ export default function CheckoutPage() {
                     <p className="text-gray-700">
                       <span className="font-medium">Time:</span> {deliveryDetails.time}
                     </p>
+                    <p className="text-gray-700">
+                      <span className="font-medium">Phone:</span> {deliveryDetails.phone}
+                    </p>
                     {deliveryDetails.instructions && (
                       <p className="text-gray-700">
                         <span className="font-medium">Instructions:</span> {deliveryDetails.instructions}
@@ -360,6 +446,56 @@ export default function CheckoutPage() {
                   ))}
                 </div>
 
+                {/* Discount Code Section */}
+                <div className="mb-4">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={discountCode}
+                      onChange={(e) => setDiscountCode(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleApplyDiscount()}
+                      placeholder="Discount code"
+                      disabled={isApplyingDiscount}
+                      className="flex-1 px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:border-gold-600"
+                    />
+                    <button
+                      onClick={handleApplyDiscount}
+                      disabled={isApplyingDiscount || !discountCode.trim()}
+                      className="px-4 py-2 bg-gray-900 text-white text-sm hover:bg-gold-600 transition-colors disabled:opacity-50"
+                    >
+                      {isApplyingDiscount ? 'APPLYING...' : 'APPLY'}
+                    </button>
+                  </div>
+                  
+                  {/* Discount Feedback */}
+                  {discountFeedback.type && (
+                    <p className={`text-xs mt-2 ${
+                      discountFeedback.type === 'success' ? 'text-green-600' : 'text-red-600'
+                    }`}>
+                      {discountFeedback.message}
+                    </p>
+                  )}
+                  
+                  {/* Applied Discounts */}
+                  {cart?.discountCodes && cart.discountCodes.length > 0 && (
+                    <div className="mt-2 space-y-1">
+                      {cart.discountCodes.map((discount) => (
+                        <div key={discount.code} className="flex items-center justify-between bg-green-50 px-3 py-2 rounded">
+                          <span className="text-sm text-green-700">
+                            {discount.code} {discount.applicable && '✓ Applied'}
+                          </span>
+                          <button
+                            onClick={() => handleRemoveDiscount(discount.code)}
+                            className="text-red-600 hover:text-red-700 text-sm"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
                 <div className="border-t pt-4 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span>Subtotal</span>
@@ -373,6 +509,14 @@ export default function CheckoutPage() {
                     <span>Tax</span>
                     <span>${tax.toFixed(2)}</span>
                   </div>
+                  
+                  {/* Show discount amount if applied */}
+                  {discountAmount > 0 && (
+                    <div className="flex justify-between text-sm text-green-600">
+                      <span>Discount</span>
+                      <span>-${Math.abs(discountAmount).toFixed(2)}</span>
+                    </div>
+                  )}
                   
                   {/* Loyalty Points - Disabled for now */}
                   {/* {isAuthenticated && customer?.metafields && (
@@ -445,11 +589,10 @@ export default function CheckoutPage() {
       <DeliveryScheduler
         isOpen={showDeliveryScheduler}
         onClose={() => setShowDeliveryScheduler(false)}
-        onConfirm={(date, time, instructions, isExpress) => {
-          setDeliveryDetails({ date, time, instructions, isExpress: isExpress || false });
+        onConfirm={(date, time, instructions, phone) => {
+          setDeliveryDetails({ date, time, instructions, phone });
           setShowDeliveryScheduler(false);
         }}
-        subtotal={subtotal}
       />
 
       {/* Auth Modal */}

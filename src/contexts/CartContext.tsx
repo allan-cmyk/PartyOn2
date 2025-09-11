@@ -18,13 +18,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   const checkAgeVerification = () => {
-    const ageVerified = localStorage.getItem('ageVerified');
+    // Check both possible keys for backwards compatibility
+    const ageVerified = localStorage.getItem('age_verified') || localStorage.getItem('ageVerified');
     return ageVerified === 'true';
   };
 
   const openCart = () => {
     if (!checkAgeVerification()) {
       // Reload the page to show age verification modal
+      localStorage.removeItem('age_verified');
       localStorage.removeItem('ageVerified');
       window.location.reload();
       return;
@@ -35,6 +37,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const closeCart = () => setIsCartOpen(false);
   const toggleCart = () => {
     if (!checkAgeVerification()) {
+      localStorage.removeItem('age_verified');
       localStorage.removeItem('ageVerified');
       window.location.reload();
       return;
@@ -47,6 +50,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     console.log('CartContext addToCart called with:', { variantId, quantity, variantIdType: typeof variantId });
     
     if (!checkAgeVerification()) {
+      localStorage.removeItem('age_verified');
       localStorage.removeItem('ageVerified');
       window.location.reload();
       throw new Error('Age verification required');

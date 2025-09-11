@@ -14,7 +14,12 @@ export default function PaymentPage() {
   const [error, setError] = useState('')
   const [checkoutInfo, setCheckoutInfo] = useState<{
     customer: { firstName: string; lastName: string };
-    delivery: { isExpress: boolean };
+    delivery: { 
+      isExpress: boolean;
+      address?: string;
+      date?: string;
+      time?: string;
+    };
   } | null>(null)
   
   // Payment form
@@ -37,7 +42,8 @@ export default function PaymentPage() {
   
   // Calculate totals
   const subtotal = cart?.lines?.edges?.reduce((sum, { node }) => {
-    return sum + (parseFloat(node.cost.totalAmount.amount) || 0)
+    const price = parseFloat(node.merchandise.price.amount) || 0
+    return sum + (price * node.quantity)
   }, 0) || 0
   
   const deliveryFee = checkoutInfo?.delivery?.isExpress ? 0 : 25
@@ -89,15 +95,15 @@ export default function PaymentPage() {
       // Create mock order
       const orderData = {
         orderNumber: `POD${Date.now().toString().slice(-8)}`,
-        customer: checkoutInfo.customer,
-        delivery: checkoutInfo.delivery,
+        customer: checkoutInfo!.customer,
+        delivery: checkoutInfo!.delivery,
         items: cart?.lines?.edges?.map(({ node }) => ({
           id: node.id,
           title: node.merchandise.product.title,
           variant: node.merchandise.title !== 'Default Title' ? node.merchandise.title : '',
           quantity: node.quantity,
-          price: node.cost.totalAmount.amount,
-          image: node.merchandise.product.featuredImage?.url
+          price: (parseFloat(node.merchandise.price.amount) * node.quantity).toFixed(2),
+          image: node.merchandise.product.images?.edges?.[0]?.node.url
         })),
         totals: {
           subtotal: subtotal.toFixed(2),
@@ -306,24 +312,24 @@ export default function PaymentPage() {
                   {/* Delivery Info */}
                   <div className="mb-6 pb-6 border-b border-gray-200">
                     <h3 className="text-sm font-medium text-gray-700 mb-3 tracking-[0.1em]">DELIVERY TO</h3>
-                    <p className="text-sm text-gray-600">{checkoutInfo.delivery.address}</p>
+                    <p className="text-sm text-gray-600">{checkoutInfo.delivery.address || 'Address not provided'}</p>
                     <p className="text-sm text-gray-600 mt-2">
-                      {new Date(checkoutInfo.delivery.date).toLocaleDateString('en-US', { 
+                      {checkoutInfo.delivery.date ? new Date(checkoutInfo.delivery.date).toLocaleDateString('en-US', { 
                         weekday: 'long', 
                         month: 'long', 
                         day: 'numeric' 
-                      })}
+                      }) : 'Date not selected'}
                     </p>
-                    <p className="text-sm text-gray-600">{checkoutInfo.delivery.time}</p>
+                    <p className="text-sm text-gray-600">{checkoutInfo.delivery.time || 'Time not selected'}</p>
                   </div>
                   
                   {/* Items */}
                   <div className="space-y-3 mb-6 max-h-48 overflow-y-auto">
                     {cart.lines.edges.map(({ node }) => (
                       <div key={node.id} className="flex items-start space-x-3">
-                        {node.merchandise.product.featuredImage && (
+                        {node.merchandise.product.images?.edges?.[0]?.node && (
                           <img
-                            src={node.merchandise.product.featuredImage.url}
+                            src={node.merchandise.product.images?.edges?.[0]?.node.url}
                             alt={node.merchandise.product.title}
                             className="w-12 h-12 object-cover"
                           />
@@ -336,7 +342,7 @@ export default function PaymentPage() {
                           <p className="text-xs text-gray-500">Qty: {node.quantity}</p>
                         </div>
                         <p className="text-sm text-gray-900">
-                          ${parseFloat(node.cost.totalAmount.amount).toFixed(2)}
+                          ${(parseFloat(node.merchandise.price.amount) * node.quantity).toFixed(2)}
                         </p>
                       </div>
                     ))}

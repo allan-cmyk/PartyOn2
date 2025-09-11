@@ -107,7 +107,7 @@ export default function FAQsPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation />
+      <OldFashionedNavigation forceScrolled={true} />
       
       {/* Header */}
       <section className="pt-32 pb-16 px-8 bg-gray-50">

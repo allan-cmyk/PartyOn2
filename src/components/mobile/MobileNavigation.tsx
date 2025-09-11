@@ -1,18 +1,32 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCartContext } from '@/contexts/CartContext';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 
 export default function MobileNavigation() {
   const pathname = usePathname();
   const { cart, openCart } = useCartContext();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const cartIconControls = useAnimation();
+  const prevItemCount = useRef(0);
   
   const itemCount = cart?.totalQuantity || 0;
+
+  // Animate cart icon when item count changes
+  useEffect(() => {
+    if (itemCount > prevItemCount.current && itemCount > 0) {
+      // Item was added - bounce animation
+      cartIconControls.start({
+        scale: [1, 1.2, 0.9, 1.1, 1],
+        transition: { duration: 0.5, type: "spring" }
+      });
+    }
+    prevItemCount.current = itemCount;
+  }, [itemCount, cartIconControls]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -70,18 +84,22 @@ export default function MobileNavigation() {
       action: openCart,
       label: 'Cart',
       icon: (
-        <div className="relative">
+        <motion.div className="relative" animate={cartIconControls}>
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" 
               d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" 
             />
           </svg>
           {itemCount > 0 && (
-            <span className="absolute -top-2 -right-2 bg-gold-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+            <motion.span 
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="absolute -top-2 -right-2 bg-gold-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium"
+            >
               {itemCount}
-            </span>
+            </motion.span>
           )}
-        </div>
+        </motion.div>
       )
     },
     {
@@ -104,10 +122,10 @@ export default function MobileNavigation() {
           initial={{ y: 100 }}
           animate={{ y: 0 }}
           exit={{ y: 100 }}
-          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 md:hidden safe-area-bottom"
+          transition={{ type: 'spring', damping: 25, stiffness: 400 }}
+          className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 md:hidden safe-area-bottom shadow-lg"
         >
-          <nav className="flex items-center justify-around h-16">
+          <nav className="flex items-center justify-around h-[72px]">
             {navItems.map((item, index) => {
               const isActive = pathname === item.href;
               
@@ -116,12 +134,12 @@ export default function MobileNavigation() {
                   <button
                     key={index}
                     onClick={item.action}
-                    className="flex flex-col items-center justify-center px-2 py-2 flex-1"
+                    className="flex flex-col items-center justify-center px-3 py-2 flex-1 min-w-0 active:bg-gray-50 transition-colors rounded-lg"
                   >
                     <div className={`transition-colors ${isActive ? 'text-gold-600' : 'text-gray-600'}`}>
                       {item.icon}
                     </div>
-                    <span className={`text-xs mt-1 tracking-[0.05em] ${isActive ? 'text-gold-600' : 'text-gray-600'}`}>
+                    <span className={`text-xs mt-1 tracking-[0.05em] font-medium ${isActive ? 'text-gold-600' : 'text-gray-600'}`}>
                       {item.label}
                     </span>
                   </button>
@@ -132,12 +150,12 @@ export default function MobileNavigation() {
                 <Link
                   key={index}
                   href={item.href}
-                  className="flex flex-col items-center justify-center px-2 py-2 flex-1"
+                  className="flex flex-col items-center justify-center px-3 py-2 flex-1 min-w-0 active:bg-gray-50 transition-colors rounded-lg"
                 >
                   <div className={`transition-colors ${isActive ? 'text-gold-600' : 'text-gray-600'}`}>
                     {item.icon}
                   </div>
-                  <span className={`text-xs mt-1 tracking-[0.05em] ${isActive ? 'text-gold-600' : 'text-gray-600'}`}>
+                  <span className={`text-xs mt-1 tracking-[0.05em] font-medium ${isActive ? 'text-gold-600' : 'text-gray-600'}`}>
                     {item.label}
                   </span>
                 </Link>

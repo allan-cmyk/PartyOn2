@@ -1,0 +1,104 @@
+'use client';
+
+import React from 'react';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
+
+interface LuxuryCardProps {
+  children: React.ReactNode;
+  featured?: boolean;
+  index?: number;
+  backgroundImage?: string;
+  className?: string;
+}
+
+const backgroundImages = [
+  '/images/textures/gold-liquid-abstract.webp',
+  '/images/textures/crystal-ice-texture.webp',
+  '/images/textures/whiskey-amber-swirl.webp',
+  '/images/textures/marble-gold-veins.webp',
+  '/images/textures/champagne-bubbles-bokeh.webp',
+  '/images/textures/vintage-leather-luxury.webp',
+  '/images/textures/premium-wood-grain.webp',
+  '/images/textures/silk-fabric-gold.webp',
+  '/images/textures/crystal-prism-light.webp',
+  '/images/textures/brushed-metal-gold.webp',
+];
+
+const fallbackImages = [
+  '/images/products/premium-spirits-wall.webp',
+  '/images/gallery/sunset-champagne-pontoon.webp',
+  '/images/services/boat-parties/luxury-yacht-deck.webp',
+];
+
+export default function LuxuryCard({ 
+  children, 
+  featured = false, 
+  index = 0, 
+  backgroundImage,
+  className = ''
+}: LuxuryCardProps) {
+  // Select background image
+  const bgImage = backgroundImage || backgroundImages[index % backgroundImages.length];
+  const fallbackImage = fallbackImages[index % fallbackImages.length];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay: index * 0.1 }}
+      whileHover={{ y: -4, transition: { duration: 0.3 } }}
+      className={`relative bg-white overflow-hidden group ${
+        featured ? 'ring-2 ring-gold-600 shadow-xl' : 'border border-gray-200 hover:shadow-lg'
+      } transition-all duration-500 ${className}`}
+    >
+      {/* Primary texture background */}
+      <div className="absolute inset-0 opacity-[0.15] group-hover:opacity-[0.25] transition-opacity duration-700">
+        <Image
+          src={bgImage}
+          alt=""
+          fill
+          className="object-cover scale-150 group-hover:scale-125 transition-transform duration-1500"
+          aria-hidden="true"
+          onError={(e) => {
+            // Fallback to existing images if texture doesn't exist yet
+            e.currentTarget.src = fallbackImage;
+          }}
+        />
+      </div>
+
+      {/* Gradient overlays for depth */}
+      <div className="absolute inset-0">
+        {/* Base gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/92 via-white/88 to-white/92" />
+        
+        {/* Gold shimmer for featured cards */}
+        {featured && (
+          <div className="absolute inset-0 bg-gradient-to-tr from-gold-600/5 via-transparent to-gold-600/5" />
+        )}
+        
+        {/* Hover effect gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-gold-600/0 via-gold-600/0 to-gold-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      </div>
+
+      {/* Light reflection effect */}
+      <div className="absolute -inset-40 opacity-0 group-hover:opacity-100 transition-opacity duration-1000">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform rotate-12 translate-x-full group-hover:translate-x-0 transition-transform duration-1000" />
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10">
+        {children}
+      </div>
+
+      {/* Premium corner accent for featured */}
+      {featured && (
+        <div className="absolute top-0 right-0 w-20 h-20 overflow-hidden">
+          <div className="absolute transform rotate-45 bg-gold-600 text-white text-xs font-light tracking-wider py-1 right-[-25px] top-[15px] w-[100px] text-center">
+            PREMIUM
+          </div>
+        </div>
+      )}
+    </motion.div>
+  );
+}

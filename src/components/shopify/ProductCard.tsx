@@ -1,20 +1,20 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseAlcohol } from '@/lib/shopify/utils';
-import { useCart } from '@/lib/shopify/hooks/useCart';
+import { useCartContext } from '@/contexts/CartContext';
 import AgeVerificationModal from '../AgeVerificationModal';
 
 interface ProductCardProps {
   product: ShopifyProduct;
   index?: number;
+  onProductClick?: (product: ShopifyProduct) => void;
 }
 
-export default function ProductCard({ product, index = 0 }: ProductCardProps) {
-  const { addToCart, loading: cartLoading } = useCart();
+export default function ProductCard({ product, index = 0, onProductClick }: ProductCardProps) {
+  const { addToCart, loading: cartLoading, openCart } = useCartContext();
   const [isAdding, setIsAdding] = useState(false);
   const [showAgeVerification, setShowAgeVerification] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -38,6 +38,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
     try {
       await addToCart(variant.id, quantity);
       setQuantity(1); // Reset quantity after adding
+      openCart(); // Open cart to show the newly added item
     } catch (error) {
       console.error('Error adding to cart:', error);
     } finally {
@@ -60,6 +61,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       try {
         await addToCart(variant.id, quantity);
         setQuantity(1); // Reset quantity after adding
+        openCart(); // Open cart to show the newly added item
       } catch (error) {
         console.error('Error adding to cart:', error);
       } finally {
@@ -77,8 +79,9 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
     >
       <div className="bg-white border border-gray-200 hover:border-gold-600 transition-all duration-300 overflow-hidden">
         {/* Product Image - Clickable */}
-        <Link href={`/products/${product.handle}`}>
-          <div className="relative aspect-[3/4] overflow-hidden bg-gray-50 cursor-pointer">
+        <div 
+          onClick={() => onProductClick?.(product)}
+          className="relative aspect-[3/4] overflow-hidden bg-gray-50 cursor-pointer">
             {imageUrl ? (
               <img
                 src={imageUrl}
@@ -107,7 +110,6 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
               </span>
             </div>
           </div>
-        </Link>
 
         {/* Product Details */}
         <div className="p-6">
@@ -119,11 +121,11 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
           )}
 
           {/* Title - Clickable */}
-          <Link href={`/products/${product.handle}`}>
-            <h3 className="font-serif text-lg text-gray-900 mb-3 tracking-[0.05em] hover:text-gold-600 transition-colors cursor-pointer">
-              {product.title}
-            </h3>
-          </Link>
+          <h3 
+            onClick={() => onProductClick?.(product)}
+            className="font-serif text-lg text-gray-900 mb-3 tracking-[0.05em] hover:text-gold-600 transition-colors cursor-pointer">
+            {product.title}
+          </h3>
 
           {/* Price */}
           <div className="flex items-baseline justify-between mb-4">
@@ -195,11 +197,11 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
             </button>
 
             {/* View Details Button */}
-            <Link href={`/products/${product.handle}`}>
-              <button className="w-full py-2 border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-colors duration-300 text-xs tracking-[0.15em]">
-                VIEW DETAILS
-              </button>
-            </Link>
+            <button 
+              onClick={() => onProductClick?.(product)}
+              className="w-full py-2 border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-colors duration-300 text-xs tracking-[0.15em]">
+              VIEW DETAILS
+            </button>
           </div>
         </div>
       </div>

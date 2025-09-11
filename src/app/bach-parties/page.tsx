@@ -1,12 +1,29 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import LuxuryCard from '@/components/LuxuryCard';
+import HeroOverlay from '@/components/HeroOverlay';
 
 export default function BachPartiesPage() {
+  const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+  
+  const heroImages = [
+    { src: '/images/services/bach-parties/bachelor-party-epic.webp', alt: 'Epic bachelor party celebration' },
+    { src: '/images/hero/bach-hero-rainey.webp', alt: 'Rainey Street nightlife' },
+    { src: '/images/hero/bach-hero-party-bus.webp', alt: 'Luxury party bus' },
+    { src: '/images/hero/bach-hero-brewery.webp', alt: 'Austin brewery celebration' }
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
   const packages = [
     {
       name: "Essential Celebration",
@@ -62,14 +79,41 @@ export default function BachPartiesPage() {
       
       {/* Hero Section */}
       <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
-        <Image
-          src="/images/services/bach-parties/bachelor-party-epic.webp"
-          alt="Celebration Setup"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 via-gray-900/30 to-gray-900/50" />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentHeroIndex}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={heroImages[currentHeroIndex].src}
+              alt={heroImages[currentHeroIndex].alt}
+              fill
+              className="object-cover"
+              priority
+              onError={(e) => {
+                e.currentTarget.src = '/images/services/bach-parties/bachelor-party-epic.webp';
+              }}
+            />
+          </motion.div>
+        </AnimatePresence>
+        <HeroOverlay variant="luxury" />
+        
+        {/* Hero Dots Navigation */}
+        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentHeroIndex(index)}
+              className={`w-2 h-2 rounded-full transition-all ${
+                index === currentHeroIndex ? 'bg-gold-400 w-8' : 'bg-white/50'
+              }`}
+            />
+          ))}
+        </div>
         
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
@@ -128,43 +172,50 @@ export default function BachPartiesPage() {
             {[
               {
                 area: "Rainey Street",
-                description: "Historic bungalows turned trendy bars, perfect for bar hopping celebrations"
+                description: "Historic bungalows turned trendy bars, perfect for bar hopping celebrations",
+                image: "/images/destinations/rainey-street-nightlife.webp"
               },
               {
                 area: "6th Street",
-                description: "Austin's entertainment district with endless nightlife options"
+                description: "Austin's entertainment district with endless nightlife options",
+                image: "/images/destinations/6th-street-entertainment.webp"
               },
               {
                 area: "The Domain",
-                description: "Upscale shopping and dining for sophisticated celebrations"
+                description: "Upscale shopping and dining for sophisticated celebrations",
+                image: "/images/destinations/the-domain-upscale.webp"
               },
               {
                 area: "East Austin",
-                description: "Hip breweries and unique venues for memorable experiences"
+                description: "Hip breweries and unique venues for memorable experiences",
+                image: "/images/destinations/east-austin-brewery.webp"
               },
               {
                 area: "Lake Travis",
-                description: "Waterfront venues and boat parties for sun-soaked celebrations"
+                description: "Waterfront venues and boat parties for sun-soaked celebrations",
+                image: "/images/destinations/lake-travis-boats.webp"
               },
               {
                 area: "Hill Country",
-                description: "Wineries and ranches for exclusive private events"
+                description: "Wineries and ranches for exclusive private events",
+                image: "/images/destinations/hill-country-winery.webp"
               }
             ].map((destination, index) => (
-              <motion.div
+              <LuxuryCard
                 key={destination.area}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                className="bg-gray-50 p-6 text-center"
+                backgroundImage={destination.image}
+                index={index}
+                className="rounded-lg"
               >
-                <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
-                  {destination.area}
-                </h3>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  {destination.description}
-                </p>
-              </motion.div>
+                <div className="p-6 text-center">
+                  <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                    {destination.area}
+                  </h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    {destination.description}
+                  </p>
+                </div>
+              </LuxuryCard>
             ))}
           </div>
         </div>
@@ -248,49 +299,48 @@ export default function BachPartiesPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {packages.map((pkg, index) => (
-              <motion.div
+              <LuxuryCard
                 key={pkg.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
-                className={`bg-white p-8 ${
-                  pkg.featured ? 'ring-2 ring-gold-600 shadow-lg' : 'border border-gray-200'
-                }`}
+                featured={pkg.featured}
+                index={index + 3}
+                className="rounded-lg"
               >
-                {pkg.featured && (
-                  <div className="text-center mb-4">
-                    <span className="text-gold-600 text-sm tracking-[0.15em]">MOST POPULAR</span>
-                  </div>
-                )}
-                <h3 className="font-serif text-2xl text-gray-900 mb-2 tracking-[0.1em] text-center">
-                  {pkg.name}
-                </h3>
-                <p className="text-3xl text-gold-600 font-light text-center mb-4">
-                  {pkg.price}
-                </p>
-                <p className="text-gray-600 text-center mb-8">
-                  {pkg.description}
-                </p>
-                <ul className="space-y-3 mb-8">
-                  {pkg.features.map((feature, i) => (
-                    <li key={i} className="flex items-start">
-                      <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                      <span className="text-gray-700 text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link href={`/bach-parties/packages/${pkg.name.toLowerCase().replace(/ /g, '-')}`}>
-                  <button className={`w-full py-3 tracking-[0.15em] text-sm transition-all duration-300 ${
-                    pkg.featured 
-                      ? 'bg-gold-600 text-white hover:bg-gold-700' 
-                      : 'border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white'
-                  }`}>
-                    CUSTOMIZE PACKAGE
-                  </button>
-                </Link>
-              </motion.div>
+                <div className="p-8">
+                  {pkg.featured && (
+                    <div className="text-center mb-4">
+                      <span className="text-gold-600 text-sm tracking-[0.15em]">MOST POPULAR</span>
+                    </div>
+                  )}
+                  <h3 className="font-serif text-2xl text-gray-900 mb-2 tracking-[0.1em] text-center">
+                    {pkg.name}
+                  </h3>
+                  <p className="text-4xl text-gold-600 font-semibold text-center mb-4">
+                    {pkg.price}
+                  </p>
+                  <p className="text-gray-600 text-center mb-8">
+                    {pkg.description}
+                  </p>
+                  <ul className="space-y-3 mb-8">
+                    {pkg.features.map((feature, i) => (
+                      <li key={i} className="flex items-start">
+                        <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                        <span className="text-gray-700 text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href={`/bach-parties/packages/${pkg.name.toLowerCase().replace(/ /g, '-')}`}>
+                    <button className={`w-full py-3 tracking-[0.15em] text-sm transition-all duration-300 ${
+                      pkg.featured 
+                        ? 'bg-gold-600 text-white hover:bg-gold-700' 
+                        : 'border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white'
+                    }`}>
+                      CUSTOMIZE PACKAGE
+                    </button>
+                  </Link>
+                </div>
+              </LuxuryCard>
             ))}
           </div>
         </div>
@@ -313,25 +363,26 @@ export default function BachPartiesPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {[
-              { service: "Party Bus Bar", price: "+$299" },
-              { service: "Private Mixologist", price: "+$399" },
-              { service: "Champagne Tower", price: "+$199" },
-              { service: "Recovery Brunch", price: "+$249" }
+              { service: "Party Bus Bar", price: "+$299", image: "/images/addons/party-bus-bar.webp" },
+              { service: "Private Mixologist", price: "+$399", image: "/images/addons/private-mixologist.webp" },
+              { service: "Champagne Tower", price: "+$199", image: "/images/addons/champagne-tower.webp" },
+              { service: "Recovery Brunch", price: "+$249", image: "/images/addons/recovery-brunch.webp" }
             ].map((addon, index) => (
-              <motion.div
+              <LuxuryCard
                 key={addon.service}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-white p-6 text-center border border-gray-200 hover:border-gold-600 transition-colors"
+                backgroundImage={addon.image}
+                index={index}
+                className="rounded-lg"
               >
-                <h4 className="font-light text-gray-900 mb-2 tracking-[0.1em]">
-                  {addon.service}
-                </h4>
-                <p className="text-gold-600 text-lg">
-                  {addon.price}
-                </p>
-              </motion.div>
+                <div className="p-6 text-center">
+                  <h4 className="font-light text-gray-900 mb-2 tracking-[0.1em]">
+                    {addon.service}
+                  </h4>
+                  <p className="text-gold-600 text-2xl font-semibold">
+                    {addon.price}
+                  </p>
+                </div>
+              </LuxuryCard>
             ))}
           </div>
         </div>

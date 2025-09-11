@@ -1,12 +1,41 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import LuxuryCard from '@/components/LuxuryCard';
 
 export default function BoatPartiesPage() {
+  const [currentHeroImage, setCurrentHeroImage] = useState(0);
+  
+  const heroImages = [
+    {
+      src: '/images/boat-heroes/boat-party-epic-sunset.webp',
+      alt: 'Epic Lake Travis sunset party',
+      fallback: '/images/services/boat-parties/luxury-yacht-deck.webp'
+    },
+    {
+      src: '/images/boat-heroes/boat-party-epic-cove.webp',
+      alt: 'Devils Cove party scene',
+      fallback: '/images/services/boat-parties/multiple-yachts-party.webp'
+    },
+    {
+      src: '/images/boat-heroes/boat-party-epic-night.webp',
+      alt: 'Night yacht party on Lake Travis',
+      fallback: '/images/gallery/sunset-champagne-pontoon.webp'
+    }
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentHeroImage((prev) => (prev + 1) % heroImages.length);
+    }, 5000); // Change image every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   const packages = [
     {
       name: "Sunset Cruise",
@@ -59,16 +88,46 @@ export default function BoatPartiesPage() {
     <div className="bg-white">
       <OldFashionedNavigation />
       
-      {/* Hero Section */}
+      {/* Hero Section with Image Slider */}
       <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
-        <Image
-          src="/images/services/boat-parties/luxury-yacht-deck.webp"
-          alt="Luxury Yacht on Lake Travis"
-          fill
-          className="object-cover"
-          priority
-        />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentHeroImage}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={heroImages[currentHeroImage].src}
+              alt={heroImages[currentHeroImage].alt}
+              fill
+              className="object-cover"
+              priority
+              onError={(e) => {
+                e.currentTarget.src = heroImages[currentHeroImage].fallback;
+              }}
+            />
+          </motion.div>
+        </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 via-gray-900/30 to-gray-900/50" />
+        
+        {/* Slider Dots */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentHeroImage(index)}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                index === currentHeroImage 
+                  ? 'bg-gold-400 w-8' 
+                  : 'bg-white/50 hover:bg-white/75'
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
         
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
@@ -185,43 +244,50 @@ export default function BoatPartiesPage() {
             {[
               {
                 name: "The Oasis",
-                description: "Sunset views & premium service at Austin's iconic lakeside destination"
+                description: "Sunset views & premium service at Austin's iconic lakeside destination",
+                image: "/images/lake-travis/the-oasis-sunset.webp"
               },
               {
                 name: "Devil's Cove",
-                description: "Party cove deliveries with safety-first approach and cold refreshments"
+                description: "Party cove deliveries with safety-first approach and cold refreshments",
+                image: "/images/lake-travis/devils-cove-party.webp"
               },
               {
                 name: "Volente Beach",
-                description: "Water park adjacent deliveries for family-friendly lake adventures"
+                description: "Water park adjacent deliveries for family-friendly lake adventures",
+                image: "/images/lake-travis/volente-beach.webp"
               },
               {
                 name: "Hudson Bend",
-                description: "Quiet cove service for those seeking tranquil lake experiences"
+                description: "Quiet cove service for those seeking tranquil lake experiences",
+                image: "/images/lake-travis/hudson-bend-quiet.webp"
               },
               {
                 name: "Lakeway Marina",
-                description: "Full-service dock deliveries with professional setup assistance"
+                description: "Full-service dock deliveries with professional setup assistance",
+                image: "/images/lake-travis/lakeway-marina.webp"
               },
               {
                 name: "Point Venture",
-                description: "Exclusive community access with discreet, luxury service"
+                description: "Exclusive community access with discreet, luxury service",
+                image: "/images/lake-travis/point-venture.webp"
               }
             ].map((location, index) => (
-              <motion.div
+              <LuxuryCard
                 key={location.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                className="text-center"
+                backgroundImage={location.image}
+                index={index}
+                className="rounded-lg"
               >
-                <h3 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.1em]">
-                  {location.name}
-                </h3>
-                <p className="text-gray-600 text-sm">
-                  {location.description}
-                </p>
-              </motion.div>
+                <div className="p-6 text-center">
+                  <h3 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.1em]">
+                    {location.name}
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    {location.description}
+                  </p>
+                </div>
+              </LuxuryCard>
             ))}
           </div>
         </div>
@@ -247,49 +313,53 @@ export default function BoatPartiesPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {packages.map((pkg, index) => (
-              <motion.div
+              <LuxuryCard
                 key={pkg.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
-                className={`bg-white p-8 ${
-                  pkg.featured ? 'ring-2 ring-gold-600 shadow-lg' : 'border border-gray-200'
-                }`}
+                featured={pkg.featured}
+                backgroundImage={
+                  index === 0 ? '/images/gallery/sunset-champagne-pontoon.webp' :
+                  index === 1 ? '/images/services/boat-parties/luxury-yacht-deck.webp' :
+                  '/images/services/boat-parties/multiple-yachts-party.webp'
+                }
+                index={index}
+                className="rounded-lg"
               >
-                {pkg.featured && (
-                  <div className="text-center mb-4">
-                    <span className="text-gold-600 text-sm tracking-[0.15em]">MOST POPULAR</span>
-                  </div>
-                )}
-                <h3 className="font-serif text-2xl text-gray-900 mb-2 tracking-[0.1em] text-center">
-                  {pkg.name}
-                </h3>
-                <p className="text-3xl text-gold-600 font-light text-center mb-4">
-                  {pkg.price}
-                </p>
-                <p className="text-gray-600 text-center mb-8">
-                  {pkg.description}
-                </p>
-                <ul className="space-y-3 mb-8">
-                  {pkg.features.map((feature, i) => (
-                    <li key={i} className="flex items-start">
-                      <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                      <span className="text-gray-700 text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link href={`/boat-parties/packages/${pkg.name.toLowerCase().replace(/ /g, '-')}`}>
-                  <button className={`w-full py-3 tracking-[0.15em] text-sm transition-all duration-300 ${
-                    pkg.featured 
-                      ? 'bg-gold-600 text-white hover:bg-gold-700' 
-                      : 'border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white'
-                  }`}>
-                    CUSTOMIZE PACKAGE
-                  </button>
-                </Link>
-              </motion.div>
+                <div className="p-8">
+                  {pkg.featured && (
+                    <div className="text-center mb-4">
+                      <span className="text-gold-600 text-sm tracking-[0.15em]">MOST POPULAR</span>
+                    </div>
+                  )}
+                  <h3 className="font-serif text-2xl text-gray-900 mb-2 tracking-[0.1em] text-center">
+                    {pkg.name}
+                  </h3>
+                  <p className="text-4xl text-gold-600 font-semibold text-center mb-4">
+                    {pkg.price}
+                  </p>
+                  <p className="text-gray-600 text-center mb-8">
+                    {pkg.description}
+                  </p>
+                  <ul className="space-y-3 mb-8">
+                    {pkg.features.map((feature, i) => (
+                      <li key={i} className="flex items-start">
+                        <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                        <span className="text-gray-700 text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href={`/boat-parties/packages/${pkg.name.toLowerCase().replace(/ /g, '-')}`}>
+                    <button className={`w-full py-3 tracking-[0.15em] text-sm transition-all duration-300 ${
+                      pkg.featured 
+                        ? 'bg-gold-600 text-white hover:bg-gold-700' 
+                        : 'border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white'
+                    }`}>
+                      CUSTOMIZE PACKAGE
+                    </button>
+                  </Link>
+                </div>
+              </LuxuryCard>
             ))}
           </div>
         </div>

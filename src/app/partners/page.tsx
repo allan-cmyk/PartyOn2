@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
+import LuxuryCard from '@/components/LuxuryCard';
 
 export default function PartnersPage() {
   const [formData, setFormData] = useState({
@@ -40,7 +41,8 @@ export default function PartnersPage() {
       ),
       title: "Hotels & Resorts",
       description: "Elevate your guest experience with premium in-room amenities and event services",
-      available: true
+      available: true,
+      image: '/images/partners/hotel-partner.webp'
     },
     {
       href: '#',
@@ -52,7 +54,8 @@ export default function PartnersPage() {
       title: "Property Management",
       description: "Offer residents exclusive access to curated spirits and concierge delivery",
       available: false,
-      comingSoon: true
+      comingSoon: true,
+      image: '/images/textures/marble-surface.webp'
     },
     {
       href: '#',
@@ -64,7 +67,8 @@ export default function PartnersPage() {
       title: "Event Planners",
       description: "Seamless bar services and custom packages for weddings and corporate events",
       available: false,
-      comingSoon: true
+      comingSoon: true,
+      image: '/images/partners/venue-partner.webp'
     },
     {
       href: '#',
@@ -76,7 +80,8 @@ export default function PartnersPage() {
       title: "Restaurants & Bars",
       description: "Reliable supply chain and exclusive selections for your establishment",
       available: false,
-      comingSoon: true
+      comingSoon: true,
+      image: '/images/partners/restaurant-partner.webp'
     },
     {
       href: '#',
@@ -88,7 +93,8 @@ export default function PartnersPage() {
       title: "Corporate Offices",
       description: "Impress clients and reward teams with premium spirits and cocktail experiences",
       available: false,
-      comingSoon: true
+      comingSoon: true,
+      image: '/images/partners/corporate-partner.webp'
     },
     {
       href: '#',
@@ -100,7 +106,8 @@ export default function PartnersPage() {
       title: "Country Clubs",
       description: "Exclusive member benefits and tournament sponsorship opportunities",
       available: false,
-      comingSoon: true
+      comingSoon: true,
+      image: '/images/textures/gold-liquid-abstract.webp'
     }
   ];
 
@@ -225,11 +232,14 @@ export default function PartnersPage() {
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: index * 0.1 }}
-                      className="bg-white p-8 border border-gray-200 hover:border-gold-400 transition-all h-full group cursor-pointer"
                     >
-                      <div className="text-gold-600 mb-4 group-hover:text-gold-700 transition-colors">{type.icon}</div>
-                      <h3 className="font-serif text-2xl mb-3 text-gray-900 tracking-wide group-hover:text-gold-600 transition-colors">{type.title}</h3>
-                      <p className="text-gray-600">{type.description}</p>
+                      <LuxuryCard backgroundImage={type.image}>
+                        <div className="p-8">
+                          <div className="text-gold-600 mb-4 group-hover:text-gold-700 transition-colors">{type.icon}</div>
+                          <h3 className="font-serif text-2xl mb-3 text-gray-900 tracking-wide group-hover:text-gold-600 transition-colors">{type.title}</h3>
+                          <p className="text-gray-600">{type.description}</p>
+                        </div>
+                      </LuxuryCard>
                     </motion.div>
                   </Link>
                 ) : (
@@ -237,16 +247,19 @@ export default function PartnersPage() {
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="bg-gray-50 p-8 border border-gray-200 h-full relative"
                   >
-                    <div className="text-gray-400 mb-4">{type.icon}</div>
-                    <h3 className="font-serif text-2xl mb-3 text-gray-500 tracking-wide">{type.title}</h3>
-                    <p className="text-gray-400">{type.description}</p>
-                    {type.comingSoon && (
-                      <div className="absolute top-4 right-4 bg-gold-600 text-white text-xs px-3 py-1 tracking-[0.1em]">
-                        COMING SOON
+                    <LuxuryCard backgroundImage={type.image} disabled>
+                      <div className="p-8">
+                        <div className="text-gray-400 mb-4">{type.icon}</div>
+                        <h3 className="font-serif text-2xl mb-3 text-gray-500 tracking-wide">{type.title}</h3>
+                        <p className="text-gray-400">{type.description}</p>
+                        {type.comingSoon && (
+                          <div className="absolute top-4 right-4 bg-gold-600 text-white text-xs px-3 py-1 tracking-[0.1em]">
+                            COMING SOON
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </LuxuryCard>
                   </motion.div>
                 )}
               </div>

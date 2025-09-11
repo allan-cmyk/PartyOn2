@@ -90,7 +90,7 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
         isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent'
       }`}>
-        <div className="max-w-7xl mx-auto px-8 md:px-12">
+        <div className="max-w-7xl mx-auto px-8 md:px-16 lg:px-20">
           <div className="flex items-center justify-between h-24">
             {/* Logo */}
             <Link href="/" className={`text-2xl font-light tracking-[0.3em] transition-colors ${
@@ -100,7 +100,7 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
             </Link>
             
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-10">
+            <div className="hidden md:flex items-center space-x-12">
               {/* About Dropdown */}
               <div 
                 className="relative group"

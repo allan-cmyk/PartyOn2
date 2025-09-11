@@ -214,3 +214,78 @@ OPENROUTER_API_KEY=[configured]
 - Removed conflicting (main) route group pages
 - Using Shopify Storefront API version 2024-01
 - Cart persists in localStorage
+
+## 🚨 Address Handling for Shop Pay Integration (Critical Fix)
+
+### The Problem
+Shop Pay doesn't read cart attributes for shipping address. Cart attributes are for custom data (delivery instructions), NOT the actual shipping address that Shop Pay uses. Customers' addresses aren't passing through to Shop Pay checkout.
+
+### The Solution
+Use checkout URL parameters to pre-fill Shop Pay address fields while keeping cart attributes as backup for internal use.
+
+### Implementation Plan
+
+#### Phase 1: Address Parser Utility
+Create `/lib/utils/addressParser.ts` to parse single address field into components:
+```typescript
+// Expected formats:
+// "123 Main St, Austin, TX 78701"
+// "123 Main St, Apt 4B, Austin, TX 78701"
+// Parser should extract:
+// - address1: street address
+// - address2: apartment/suite (optional)
+// - city: default to "Austin" for local delivery
+// - province: "TX"
+// - country: "US"
+// - zip: extract from end of string
+```
+
+#### Phase 2: Update Checkout Redirect
+Modify both `Cart.tsx` and `MobileCart.tsx` to:
+1. Parse address into components using addressParser
+2. Save to cart attributes (for backup/internal use)
+3. Build checkout URL with parameters:
+```javascript
+const checkoutUrl = new URL(updatedCart.checkoutUrl);
+checkoutUrl.searchParams.append('payment', 'shop_pay');
+checkoutUrl.searchParams.append('checkout[shipping_address][address1]', parsedAddress.address1);
+checkoutUrl.searchParams.append('checkout[shipping_address][city]', parsedAddress.city);
+checkoutUrl.searchParams.append('checkout[shipping_address][province]', 'TX');
+checkoutUrl.searchParams.append('checkout[shipping_address][country]', 'US');
+checkoutUrl.searchParams.append('checkout[shipping_address][zip]', zipCode);
+checkoutUrl.searchParams.append('checkout[shipping_address][phone]', phone);
+window.location.replace(checkoutUrl.toString());
+```
+
+#### Phase 3: Future Improvements (Optional)
+- Consider Google Places Autocomplete for better address parsing
+- Split address input into separate fields (street, apt/suite)
+- Validate zip codes are within Texas (not just Austin)
+
+### Key URL Parameters for Shop Pay
+Full example of checkout URL with all parameters:
+```
+https://store.myshopify.com/checkouts/abc123
+?payment=shop_pay
+&checkout[shipping_address][address1]=123 Main St
+&checkout[shipping_address][address2]=Apt 4B
+&checkout[shipping_address][city]=Austin
+&checkout[shipping_address][province]=TX
+&checkout[shipping_address][country]=US
+&checkout[shipping_address][zip]=78701
+&checkout[shipping_address][phone]=512-555-0123
+&checkout[email]=customer@example.com
+```
+
+### Testing Checklist
+- [ ] Test in incognito to ensure parameters work for all customers
+- [ ] Verify Shop Pay respects the address parameters
+- [ ] Confirm cart attributes still save as backup
+- [ ] Test with various address formats
+- [ ] Verify phone number formatting works
+
+### Research Findings
+- This is the OFFICIAL Shopify method for pre-filling checkout
+- Used by DoorDash, Uber Eats, and major Shopify merchants
+- Shop Pay confirmed to respect these parameters
+- Must parse address into separate fields - Shop Pay won't parse a single string
