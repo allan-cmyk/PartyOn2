@@ -5,10 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
-import { useIsMobile } from '@/hooks/useIsMobile';
 
 export default function HomePage() {
-  const isMobile = useIsMobile();
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   
   const heroImages = [
