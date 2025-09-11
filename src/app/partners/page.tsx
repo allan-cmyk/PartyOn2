@@ -248,7 +248,7 @@ export default function PartnersPage() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
-                    <LuxuryCard backgroundImage={type.image} disabled>
+                    <LuxuryCard backgroundImage={type.image}>
                       <div className="p-8">
                         <div className="text-gray-400 mb-4">{type.icon}</div>
                         <h3 className="font-serif text-2xl mb-3 text-gray-500 tracking-wide">{type.title}</h3>

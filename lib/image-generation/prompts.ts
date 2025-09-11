@@ -51,7 +51,7 @@ export const imagePrompts: ImagePrompt[] = [
     filename: 'downtown-penthouse-terrace.webp',
     category: 'rooftop',
     priority: 1,
-    currentPath: null,
+    currentPath: undefined,
     description: 'New rooftop terrace scene for services',
     prompt: `Ultra-luxury rooftop terrace party in downtown Austin, shot with Sony A7R V and 35mm f/1.4 during blue hour. Sophisticated penthouse setting with floor-to-ceiling glass railings overlooking the illuminated Austin skyline including Frost Bank Tower and State Capitol. Elegant group of 15 affluent guests enjoying premium cocktail service with professional bartenders, top-shelf spirits displayed in backlit shelving, and artisanal ice service. Modern outdoor furniture with gold accent lighting (#D4AF37) and sophisticated landscape design. Color grading emphasizes the contrast between warm interior/party lighting and cool blue Austin skyline. Professional event photography with perfect exposure capturing both intimate party details and spectacular city views. Atmosphere suggests exclusive Austin lifestyle and premium entertainment. 16:9 aspect ratio, 2912x1632 resolution.`
   },
@@ -62,7 +62,7 @@ export const imagePrompts: ImagePrompt[] = [
     filename: 'hill-country-wedding.webp',
     category: 'wedding',
     priority: 2,
-    currentPath: null,
+    currentPath: undefined,
     description: 'Luxury wedding reception in Texas Hill Country',
     prompt: `Luxury wedding reception at Texas Hill Country estate venue, shot with Phase One XT and 85mm lens during golden hour. Elegant outdoor celebration under century-old oak trees with premium bar service stations featuring crystal glassware, champagne towers with gold-rimmed coupes, and top-shelf spirit displays. Professional catering staff in formal attire providing white-glove alcohol service to 100+ well-dressed guests. Background showcases rolling Texas hills, limestone outcroppings, and authentic Hill Country landscape. Color grading emphasizes warm golds (#D4AF37), natural greens, and elegant wedding whites. Professional event photography with perfect lighting that captures both intimate celebration moments and premium alcohol service details. Represents PartyOn Delivery's capability for high-end Austin wedding market. 16:9 aspect ratio, 2912x1632 resolution.`
   },
@@ -71,7 +71,7 @@ export const imagePrompts: ImagePrompt[] = [
     filename: 'corporate-loft-event.webp',
     category: 'corporate',
     priority: 2,
-    currentPath: null,
+    currentPath: undefined,
     description: 'Sophisticated corporate event in downtown loft',
     prompt: `Sophisticated corporate event in converted downtown Austin loft space, photographed with Sony A7R V and 24-105mm f/4. Industrial-chic venue with exposed brick walls, polished concrete floors, and floor-to-ceiling windows overlooking the Austin skyline. Premium alcohol service with multiple bar stations, professional bartenders in crisp white shirts and black vests, and elegant presentation of craft cocktails and premium spirits. Group of 75 professionally dressed attendees networking in an upscale business atmosphere. Modern lighting design creates warm ambiance with gold accents (#D4AF37) while showcasing the premium alcohol displays and Austin's urban architecture through large windows. Color palette features sophisticated grays, warm brass accents, and dramatic Austin skyline lighting. Commercial event photography suitable for B2B marketing to Austin's corporate community. 16:9 aspect ratio, 2912x1632 resolution.`
   },
@@ -80,7 +80,7 @@ export const imagePrompts: ImagePrompt[] = [
     filename: 'lake-austin-pavilion.webp',
     category: 'wedding',
     priority: 2,
-    currentPath: null,
+    currentPath: undefined,
     description: 'Lakefront wedding pavilion celebration',
     prompt: `Exclusive lakefront wedding reception at luxury Lake Austin venue, captured with Canon R6 Mark II and 70-200mm f/2.8. Elegant waterfront pavilion with premium alcohol service overlooking Lake Austin's pristine waters and limestone cliffs. Professional bar service with champagne service, craft cocktail stations featuring gold-accented barware, and premium spirit displays in a sophisticated outdoor setting. Group of 80 elegantly dressed wedding guests celebrating against the backdrop of Lake Austin's natural beauty and luxury waterfront homes. Shot during blue hour with professional event lighting creating warm celebration atmosphere with gold uplighting (#D4AF37). Color grading emphasizes luxury golds, deep blues from the lake, and elegant celebration lighting. Represents the pinnacle of Austin luxury event services and appeals to affluent couples planning sophisticated celebrations. 16:9 aspect ratio, 2912x1632 resolution.`
   },
@@ -89,7 +89,7 @@ export const imagePrompts: ImagePrompt[] = [
     filename: 'sixth-street-upscale.webp',
     category: 'nightlife',
     priority: 2,
-    currentPath: null,
+    currentPath: undefined,
     description: 'Upscale 6th Street cocktail lounge',
     prompt: `Sophisticated 6th Street cocktail lounge interior, shot with Fujifilm GFX 100S and 35mm f/2. Upscale bar environment with exposed brick walls, Edison bulb lighting creating warm golden ambiance, and premium spirit displays behind a polished copper bar with gold accents (#D4AF37). Well-dressed Austin professionals enjoying craft cocktails and premium alcohol service in an intimate, sophisticated atmosphere. Warm lighting creates golden ambiance while neon signs from historic 6th Street provide authentic Austin character visible through large windows. Color palette emphasizes warm brass/gold accents, rich leather textures, and dramatic lighting contrasts. Professional nightlife photography with perfect exposure balancing interior warmth and exterior neon character. Represents elevated Austin nightlife that appeals to affluent residents seeking sophisticated entertainment. 16:9 aspect ratio, 2912x1632 resolution.`
   },
@@ -98,7 +98,7 @@ export const imagePrompts: ImagePrompt[] = [
     filename: 'austin-aerial-luxury.webp',
     category: 'hero',
     priority: 2,
-    currentPath: null,
+    currentPath: undefined,
     description: 'Aerial view of downtown Austin',
     prompt: `Ultra-high-end aerial photograph of Austin's downtown core, shot with DJI Inspire 3 and Hasselblad X9 camera system. Bird's-eye view captures the geometric beauty of Austin's urban planning with the Colorado River winding through downtown, flanked by Lady Bird Lake Hike and Bike Trail. The iconic buildings - Frost Bank Tower, Austonian, Google Tower - appear as architectural jewels in perfect composition. Shot during magic hour with warm, directional lighting that emphasizes building textures and creates long, elegant shadows. Color palette features sophisticated golds (#D4AF37), deep blues from the water, and warm limestone tones. Professional commercial drone photography with perfect exposure and tack-sharp details throughout the frame. Evokes exclusivity and the premium Austin lifestyle from a unique perspective. 16:9 aspect ratio, 2912x1632 resolution.`
   },
@@ -109,7 +109,7 @@ export const imagePrompts: ImagePrompt[] = [
     filename: 'morning-brunch-cruise.webp',
     category: 'boat-party',
     priority: 3,
-    currentPath: null,
+    currentPath: undefined,
     description: 'Sophisticated morning yacht brunch',
     prompt: `Sophisticated morning yacht party on Lake Travis, photographed with Fujifilm GFX 100S and 85mm f/2. Elegant brunch cruise with 10-12 well-dressed guests enjoying mimosas with gold-rimmed champagne flutes, Bloody Marys, and premium champagne service on a pristine white yacht. Professional service staff attending to guests with silver serving trays and crystal glassware. Background showcases the serene morning beauty of Lake Travis with mist rising from the water and limestone cliffs bathed in soft morning light. The yacht features luxury amenities - polished teak, elegant seating areas with gold accent cushions, and professional bar setup with premium spirits displayed. Color palette emphasizes clean whites, sophisticated golds (#D4AF37), soft morning blues, and natural limestone tones. Perfect exposure with professional lighting that captures both the luxury details and stunning Austin lake scenery. 16:9 aspect ratio, 2912x1632 resolution.`
   },
@@ -127,7 +127,7 @@ export const imagePrompts: ImagePrompt[] = [
     filename: 'rainey-street-luxury.webp',
     category: 'nightlife',
     priority: 3,
-    currentPath: null,
+    currentPath: undefined,
     description: 'Upscale Rainey Street bungalow bar',
     prompt: `Upscale converted bungalow bar on Austin's Rainey Street, photographed with Canon R5 and 35mm f/1.4 during blue hour. Historic house transformed into sophisticated cocktail destination with string lights creating warm golden ambiance, premium outdoor bar service on wraparound porch, and elegant patio furniture. Well-dressed Austin professionals enjoying craft cocktails and premium spirits served in gold-accented glassware (#D4AF37). Professional bartenders behind restored vintage bar with backlit premium spirit displays. Background shows contrast between historic Rainey Street character and modern Austin high-rises. Color palette features warm golden lighting, rich wood textures, and sophisticated outdoor entertainment atmosphere. Professional hospitality photography capturing Austin's unique blend of historic charm and modern luxury. 16:9 aspect ratio, 2912x1632 resolution.`
   }
