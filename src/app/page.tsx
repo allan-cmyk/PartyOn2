@@ -35,7 +35,7 @@ export default function HomePage() {
           className="relative text-center text-white z-10 max-w-4xl mx-auto px-8"
         >
           <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
-            <span className="block text-gold-400">Skip The Liquor Run - Get Your Bar Delivered.</span>
+            <span className="block text-gold-400">Skip The Liquor Run.</span>
           </h1>
           <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
           <p className="text-lg md:text-xl font-light tracking-[0.1em] mb-12 text-gray-200">
