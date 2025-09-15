@@ -9,6 +9,20 @@ import LuxuryCard from '@/components/LuxuryCard';
 
 export default function BoatPartiesPage() {
   const [currentHeroImage, setCurrentHeroImage] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const heroSection = document.querySelector('section');
+      if (heroSection) {
+        const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
+        setIsScrolled(window.scrollY > heroBottom);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   
   const heroImages = [
     {
@@ -136,12 +150,12 @@ export default function BoatPartiesPage() {
           className="relative text-center text-white z-10 max-w-4xl mx-auto px-8"
         >
           <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
-            LAKE TRAVIS
-            <span className="block text-gold-400 mt-2">LUXURY</span>
+            Cold Drinks to Your
+            <span className="block text-gold-400 mt-2">BOAT—ON TIME</span>
           </h1>
           <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
           <p className="text-lg md:text-xl font-light tracking-[0.1em] text-gray-200 mb-8">
-            Premium Spirits Delivered to Your Vessel
+            Dock and cove delivery with captain coordination—everything cold, stocked, and ready to pour.
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
             <Link href="/boat-parties/products">
@@ -149,95 +163,210 @@ export default function BoatPartiesPage() {
                 ORDER NOW
               </button>
             </Link>
-            <Link href="/boat-parties/packages/luxury">
+            <Link href="/contact">
               <button className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
-                VIEW PACKAGES
+                SCHEDULE 15-MIN PLANNING CALL
               </button>
             </Link>
           </div>
+          <p className="text-sm text-gray-300 mt-4 tracking-[0.05em]">
+            TABC-certified • Marine-safety trained • Insured & licensed
+          </p>
         </motion.div>
       </section>
 
-      {/* Introduction */}
+      {/* Choose Your Path */}
       <section className="py-24 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-8 text-center">
+        <div className="max-w-6xl mx-auto px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
+            className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
-              Elevate Your Lake Experience
+              Choose Your Path
             </h2>
-            <p className="text-lg text-gray-600 leading-relaxed">
-              From sunrise cruises to sunset celebrations, we deliver premium spirits 
-              and exceptional service directly to your vessel. Our Lake Travis specialists 
-              understand the unique needs of waterfront entertaining, ensuring your day 
-              on the water is nothing short of extraordinary.
+            <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            {/* Delivery-Only Path */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="bg-white p-8 rounded-lg shadow-lg"
+            >
+              <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
+                Delivery-Only
+              </h3>
+              <ul className="space-y-3 mb-8 text-gray-600">
+                <li className="flex items-start">
+                  <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Dock or cove handoff with ice, coolers, and mixers
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  You handle setup or bring your own crew
+                </li>
+              </ul>
+              <Link href="/boat-parties/products">
+                <button className="w-full py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                  ORDER NOW
+                </button>
+              </Link>
+            </motion.div>
+
+            {/* Full-Service Path */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="bg-white p-8 rounded-lg shadow-lg border-2 border-gold-600"
+            >
+              <div className="text-center mb-4">
+                <span className="text-gold-600 text-sm tracking-[0.15em] font-medium">MOST POPULAR</span>
+              </div>
+              <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
+                Full-Service
+              </h3>
+              <ul className="space-y-3 mb-8 text-gray-600">
+                <li className="flex items-start">
+                  <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Setup crew with optional TABC-certified bartender
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Perfect for yacht charters and premium events
+                </li>
+              </ul>
+              <Link href="/contact">
+                <button className="w-full py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                  SCHEDULE A CONSULTATION
+                </button>
+              </Link>
+            </motion.div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="text-center mt-8"
+          >
+            <p className="text-gray-600 tracking-[0.05em]">
+              Local Lake Travis and Hill Country route expertise since 2020
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Service Features */}
+      {/* Benefits */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+              Why Lake Crews Book Us
+            </h2>
+            <div className="w-16 h-px bg-gold-600 mx-auto" />
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              className="relative h-[500px]"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="text-center"
             >
-              <Image
-                src="/images/services/boat-parties/sunset-champagne-pontoon.webp"
-                alt="Premium Lake Service"
-                fill
-                className="object-cover rounded-lg"
-              />
+              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v18m0-18a9 9 0 010 18M3 12h18" />
+                </svg>
+              </div>
+              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                Never Leave the Water
+              </h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Dock or in-cove handoff keeps you anchored
+              </p>
             </motion.div>
+
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              className="space-y-8"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-center"
             >
-              <div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
-                  Dock & Water Delivery
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Whether you&apos;re docked at the marina or anchored in a cove, 
-                  our specialized delivery team brings your premium selections directly 
-                  to you. Safety and convenience are our priorities.
-                </p>
+              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
               </div>
-              <div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
-                  Marine-Grade Equipment
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  All coolers, ice provisions, and bar accessories are selected specifically 
-                  for marine environments. Your beverages stay perfectly chilled from 
-                  departure to sunset.
-                </p>
+              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                Cold from First Pour
+              </h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Marine-grade coolers and boat-safe ice options
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="text-center"
+            >
+              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
               </div>
-              <div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
-                  Lake Travis Expertise
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Our team knows every marina, cove, and hotspot on Lake Travis. 
-                  We coordinate with captains and crews to ensure seamless service 
-                  that enhances your lake day experience.
-                </p>
+              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                Local Lake Pros
+              </h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Know marinas, coves, and optimal timing
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-center"
+            >
+              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                </svg>
               </div>
+              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                Staffed When Needed
+              </h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                TABC partners for premium yacht experiences
+              </p>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Popular Destinations */}
+      {/* Where We Deliver */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
           <motion.div 
@@ -247,59 +376,52 @@ export default function BoatPartiesPage() {
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
-              Serving Lake Travis&apos;s Finest
+              Lake Travis Delivery Locations
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto" />
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {[
               {
                 name: "The Oasis",
-                description: "Sunset views & premium service at Austin's iconic lakeside destination",
-                image: "/images/lake-travis/the-oasis-sunset.webp"
+                instructions: "Meet at fuel dock • Preferred window: :15–:45 past the hour",
               },
               {
                 name: "Devil's Cove",
-                description: "Party cove deliveries with safety-first approach and cold refreshments",
-                image: "/images/lake-travis/devils-cove-party.webp"
+                instructions: "Text on approach • Safe handoff in designated area",
               },
               {
                 name: "Volente Beach",
-                description: "Water park adjacent deliveries for family-friendly lake adventures",
-                image: "/images/lake-travis/volente-beach.webp"
+                instructions: "Marina office coordination • Family-friendly protocols",
               },
               {
                 name: "Hudson Bend",
-                description: "Quiet cove service for those seeking tranquil lake experiences",
-                image: "/images/lake-travis/hudson-bend-quiet.webp"
+                instructions: "Quiet cove service • Text GPS coordinates",
               },
               {
                 name: "Lakeway Marina",
-                description: "Full-service dock deliveries with professional setup assistance",
-                image: "/images/lake-travis/lakeway-marina.webp"
+                instructions: "Full-service dock • Setup assistance available",
               },
               {
                 name: "Point Venture",
-                description: "Exclusive community access with discreet, luxury service",
-                image: "/images/lake-travis/point-venture.webp"
+                instructions: "Exclusive access • Discreet luxury service",
               }
             ].map((location, index) => (
-              <LuxuryCard
+              <motion.div
                 key={location.name}
-                backgroundImage={location.image}
-                index={index}
-                className="rounded-lg"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.1 }}
+                className="bg-white p-6 rounded-lg shadow-lg border border-gray-200"
               >
-                <div className="p-6 text-center">
-                  <h3 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.1em]">
-                    {location.name}
-                  </h3>
-                  <p className="text-gray-600 text-sm">
-                    {location.description}
-                  </p>
-                </div>
-              </LuxuryCard>
+                <h3 className="font-serif text-lg text-gray-900 mb-2 tracking-[0.1em]">
+                  {location.name}
+                </h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  {location.instructions}
+                </p>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -315,7 +437,7 @@ export default function BoatPartiesPage() {
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
-              Lake Packages
+              Boat Party Packages (Full-Service & Premium)
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
@@ -361,19 +483,36 @@ export default function BoatPartiesPage() {
                       </li>
                     ))}
                   </ul>
-                  <Link href={`/boat-parties/packages/${pkg.name.toLowerCase().replace(/ /g, '-')}`}>
+                  <Link href="/contact">
                     <button className={`w-full py-3 tracking-[0.15em] text-sm transition-all duration-300 ${
                       pkg.featured 
                         ? 'bg-gold-600 text-white hover:bg-gold-700' 
                         : 'border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white'
                     }`}>
-                      CUSTOMIZE PACKAGE
+                      PLAN THIS PACKAGE (CONSULTATION)
                     </button>
                   </Link>
                 </div>
               </LuxuryCard>
             ))}
           </div>
+
+          {/* Delivery-Only Callout */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="mt-16 bg-white p-8 rounded-lg shadow-lg border border-gray-200 text-center max-w-4xl mx-auto"
+          >
+            <p className="text-lg text-gray-700 mb-6 tracking-[0.05em]">
+              <strong>Just need delivery?</strong> Build your boat-day cart in minutes.
+            </p>
+            <Link href="/boat-parties/products">
+              <button className="px-8 py-3 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+                ORDER DELIVERY-ONLY
+              </button>
+            </Link>
+          </motion.div>
         </div>
       </section>
 
@@ -415,6 +554,109 @@ export default function BoatPartiesPage() {
               </div>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-24">
+        <div className="max-w-4xl mx-auto px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+              Frequently Asked Questions
+            </h2>
+            <div className="w-16 h-px bg-gold-600 mx-auto" />
+          </motion.div>
+
+          <div className="space-y-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="bg-gray-50 p-6 rounded-lg"
+            >
+              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                Dock vs. cove delivery?
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Both—we do slip handoffs or in-cove delivery to your anchored location.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="bg-gray-50 p-6 rounded-lg"
+            >
+              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                How far ahead to book?
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                72 hours recommended; peak lake weekends fill fast.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="bg-gray-50 p-6 rounded-lg"
+            >
+              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                Can you provide a bartender?
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Yes for premium/yacht events via TABC-certified partners.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="bg-gray-50 p-6 rounded-lg"
+            >
+              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                Glassware on the lake?
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Boat-safe options available; disposables recommended for safety.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="bg-gray-50 p-6 rounded-lg"
+            >
+              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                Only need ice & cans?
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Use <strong>Order Now</strong> → Lake Day Essentials for quick delivery.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="bg-gray-50 p-6 rounded-lg"
+            >
+              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                Are you insured/licensed?
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Yes, fully insured and licensed for marine delivery.
+              </p>
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -522,6 +764,32 @@ export default function BoatPartiesPage() {
           </div>
         </div>
       </footer>
+
+      {/* Sticky Bottom Bar - Mobile Only */}
+      <AnimatePresence>
+        {isScrolled && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-50 md:hidden"
+          >
+            <div className="flex gap-3">
+              <Link href="/order" className="flex-1">
+                <button className="w-full py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors text-sm tracking-[0.1em]">
+                  ORDER NOW
+                </button>
+              </Link>
+              <a href="tel:7373719700" className="flex-1">
+                <button className="w-full py-3 border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all text-sm tracking-[0.1em]">
+                  CALL
+                </button>
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
