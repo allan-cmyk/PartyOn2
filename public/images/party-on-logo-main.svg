@@ -1,0 +1,38 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Party On text at top -->
+  <text x="100" y="40" font-family="Arial, sans-serif" font-size="28" font-weight="bold" text-anchor="middle" fill="#2E7D9A" style="font-style: italic;">Party On</text>
+  
+  <!-- Location Pin Background Circle -->
+  <circle cx="100" cy="100" r="45" fill="#F4C430" stroke="#4A5568" stroke-width="4"/>
+  
+  <!-- Location Pin Shape -->
+  <path d="M100 60 C85 60 73 72 73 87 C73 102 100 130 100 130 C100 130 127 102 127 87 C127 72 115 60 100 60 Z" 
+        fill="#F4C430" stroke="#4A5568" stroke-width="4"/>
+  
+  <!-- Wine Glass Icon -->
+  <g transform="translate(100, 85)">
+    <!-- Glass bowl -->
+    <path d="M-8 -5 L-8 3 Q-8 8 -4 8 L4 8 Q8 8 8 3 L8 -5 Z" 
+          fill="white" stroke="#4A5568" stroke-width="2"/>
+    <!-- Glass stem -->
+    <line x1="0" y1="8" x2="0" y2="15" stroke="#4A5568" stroke-width="2"/>
+    <!-- Glass base -->
+    <line x1="-6" y1="15" x2="6" y2="15" stroke="#4A5568" stroke-width="2"/>
+  </g>
+  
+  <!-- Blue star accent -->
+  <path d="M100 50 L102 58 L110 58 L104 63 L106 71 L100 67 L94 71 L96 63 L90 58 L98 58 Z" 
+        fill="#2E7D9A"/>
+  
+  <!-- Left curved bracket -->
+  <path d="M30 80 Q25 100 30 120" stroke="#4A5568" stroke-width="6" fill="none" stroke-linecap="round"/>
+  
+  <!-- Right curved bracket -->
+  <path d="M170 80 Q175 100 170 120" stroke="#4A5568" stroke-width="6" fill="none" stroke-linecap="round"/>
+  
+  <!-- DELIVERY text at bottom (curved) -->
+  <path id="bottomCurve" d="M 20 160 Q 100 180 180 160" stroke="none" fill="none"/>
+  <text font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#2E7D9A" style="font-style: italic;">
+    <textPath href="#bottomCurve" startOffset="50%" text-anchor="middle">DELIVERY</textPath>
+  </text>
+</svg>

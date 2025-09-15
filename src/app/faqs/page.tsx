@@ -215,7 +215,11 @@ export default function FAQsPage() {
         <div className="max-w-7xl mx-auto px-8 md:px-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.15em]">PARTYON</h3>
+              <img 
+                src="/images/party-on-logo.svg" 
+                alt="Party On Delivery"
+                className="h-16 w-auto mb-4"
+              />
               <p className="text-gray-600 text-sm leading-relaxed">
                 Austin&apos;s premier alcohol delivery and event service since 2020.
               </p>
