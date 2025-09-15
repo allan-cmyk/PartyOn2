@@ -116,13 +116,13 @@ function ProductsContent() {
   const filteredProducts = displayProducts.filter(product => {
     const price = parseFloat(product.priceRange.minVariantPrice.amount);
 
-    // Collection filter (takes precedence)
+    // Collection filter
     if (collectionFilter) {
       if (!isInCollection(product, collectionFilter)) return false;
     }
 
-    // Main category filter using Shopify data
-    if (filter !== 'all' && !collectionFilter) {
+    // Main category filter using Shopify data (works alongside collection filter)
+    if (filter !== 'all') {
       const productCategory = getProductCategory(product);
 
       // Map filter values to category keys
@@ -263,11 +263,11 @@ function ProductsContent() {
                 <button
                   onClick={() => {
                     setCollectionFilter(null);
-                    setFilter('all');
+                    // Don't reset category filter
                   }}
                   className="text-sm text-gold-600 hover:text-gold-700 tracking-[0.1em]"
                 >
-                  CLEAR FILTER
+                  CLEAR COLLECTION
                 </button>
               )}
             </div>
@@ -279,7 +279,7 @@ function ProductsContent() {
                     key={collection.handle}
                     onClick={() => {
                       setCollectionFilter(collection.handle);
-                      setFilter('all'); // Reset category filter
+                      // Don't reset category filter - allow both to work together
                     }}
                     className={`
                       px-4 py-3 text-center border transition-all rounded-lg
@@ -296,11 +296,19 @@ function ProductsContent() {
                 );
               })}
             </div>
-            {collectionFilter && (
+            {(collectionFilter || filter !== 'all') && (
               <div className="mt-4 text-sm text-gray-600">
-                Showing products from: <span className="font-medium text-gray-900">
-                  {SHOPIFY_COLLECTIONS.find(c => c.handle === collectionFilter)?.label}
-                </span>
+                Active filters:
+                {collectionFilter && (
+                  <span className="ml-2 px-2 py-1 bg-gold-100 text-gold-800 rounded-md">
+                    {SHOPIFY_COLLECTIONS.find(c => c.handle === collectionFilter)?.label}
+                  </span>
+                )}
+                {filter !== 'all' && (
+                  <span className="ml-2 px-2 py-1 bg-gray-100 text-gray-800 rounded-md">
+                    {FILTER_OPTIONS.mainCategories.find(c => c.value === filter)?.label}
+                  </span>
+                )}
               </div>
             )}
           </div>
