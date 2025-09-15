@@ -1,41 +1,36 @@
-// Product categorization based on actual Shopify data structure
+// Shopify native data structure - no keyword matching
 
 export const PRODUCT_CATEGORIES = {
-  // Main categories matching order.partyondelivery.com
+  // Categories based purely on Shopify productType and collections
   seltzersChamps: {
     label: 'Seltzers & Champs',
     handle: 'seltzers-champs',
     productTypes: ['Seltzer', 'champagne', 'Prosecco', 'Sparkling Wine'],
-    collections: ['seltzer-collection', 'seltzers-wine-champagne', 'champagne'],
-    keywords: ['seltzer', 'hard seltzer', 'champagne', 'prosecco', 'sparkling', 'cava', 'brut']
+    collections: ['seltzer-collection', 'seltzers-wine-champagne', 'champagne']
   },
   beer: {
     label: 'Beer',
     handle: 'beer',
     productTypes: ['beer and seltzers', 'Beer', 'Lager', 'IPA', 'Ale', 'Stout'],
-    collections: ['beer', 'beer-collection'],
-    keywords: ['beer', 'lager', 'ipa', 'ale', 'stout', 'pilsner', 'porter', 'wheat beer']
+    collections: ['beer', 'beer-collection']
   },
   cocktails: {
     label: 'Cocktails',
     handle: 'cocktails',
     productTypes: ['Cocktail', 'Cocktail Kits', 'Ready to Drink', 'RTD', 'Canned Cocktails'],
-    collections: ['cocktails', 'ready-to-drink', 'canned-cocktails'],
-    keywords: ['cocktail', 'mixed drink', 'ready to drink', 'rtd', 'canned', 'margarita', 'mojito', 'manhattan']
+    collections: ['cocktails', 'ready-to-drink', 'canned-cocktails']
   },
   liquor: {
     label: 'Liquor',
     handle: 'liquor',
     productTypes: ['Vodka', 'Tequila', 'Whiskey', 'Bourbon', 'Gin', 'Rum', 'Liquor & Spirits', 'Cognac', 'Brandy', 'Scotch', 'Rye'],
-    collections: ['spirits', 'gin-rum', 'tequila-mezcal', 'bourbon-rye', 'vodka', 'whiskey'],
-    keywords: ['vodka', 'tequila', 'whiskey', 'bourbon', 'gin', 'rum', 'scotch', 'cognac', 'brandy', 'mezcal', 'rye']
+    collections: ['spirits', 'gin-rum', 'tequila-mezcal', 'bourbon-rye', 'vodka', 'whiskey']
   },
   mixersNA: {
     label: 'Mixers/NA',
     handle: 'mixers-na',
     productTypes: ['Cocktail Mixes', 'non alcoholic', 'sparkling water', 'water', 'Juice', 'ice', 'Mixer', 'Tonic', 'Soda'],
-    collections: ['mixers-non-alcoholic', 'liqueurs-cordials-cocktail-ingredients', 'mixers'],
-    keywords: ['mixer', 'tonic', 'soda', 'juice', 'ginger beer', 'club soda', 'water', 'ice', 'non-alcoholic', 'margarita mix', 'bloody mary mix']
+    collections: ['mixers-non-alcoholic', 'liqueurs-cordials-cocktail-ingredients', 'mixers']
   },
   partySupplies: {
     label: 'Party Supplies',
@@ -52,77 +47,33 @@ export const PRODUCT_CATEGORIES = {
       'party-supplies', 'all-party-supplies', 'decorations', 'costumes',
       'hats-sunglasses', 'bachelorette-supplies', 'drinkware-bartending-tools',
       'disco-collection', 'chill-supplies'
-    ],
-    keywords: ['cup', 'straw', 'napkin', 'decoration', 'party', 'supplies', 'accessories', 'drinkware']
+    ]
   }
 };
 
-// Helper function to categorize a product
+// Simplified categorization using only Shopify data
 export function getProductCategory(product: {
   productType?: string;
   collections?: { edges: Array<{ node: { handle: string } }> };
-  tags?: string[];
-  title?: string;
 }): string {
   const productType = product.productType?.toLowerCase() || '';
   const collections = product.collections?.edges.map(e => e.node.handle) || [];
-  const title = product.title?.toLowerCase() || '';
-  const tags = product.tags?.map(t => t.toLowerCase()) || [];
-  
-  // Check each category
+
+  // Check each category using only Shopify data
   for (const [key, category] of Object.entries(PRODUCT_CATEGORIES)) {
     // Check if product type matches
     if (category.productTypes.some(type => type.toLowerCase() === productType)) {
       return key;
     }
-    
+
     // Check if product is in any of the category's collections
     if (collections.some(c => category.collections.includes(c))) {
       return key;
     }
-    
-    // Check keywords in title
-    if (category.keywords && category.keywords.some(keyword => title.includes(keyword))) {
-      return key;
-    }
-    
-    // Check keywords in tags
-    if (category.keywords && tags.some(tag => category.keywords.some(keyword => tag.includes(keyword)))) {
-      return key;
-    }
   }
-  
-  // Default fallback - check title for common liquor types
-  if (title.includes('vodka') || title.includes('tequila') || 
-      title.includes('whiskey') || title.includes('bourbon') ||
-      title.includes('gin') || title.includes('rum') ||
-      title.includes('scotch') || title.includes('cognac')) {
-    return 'liquor';
-  }
-  
-  if (title.includes('seltzer') || title.includes('champagne') || 
-      title.includes('prosecco') || title.includes('sparkling')) {
-    return 'seltzersChamps';
-  }
-  
-  if (title.includes('beer') || title.includes('lager') || 
-      title.includes('ipa') || title.includes('ale')) {
-    return 'beer';
-  }
-  
-  if (title.includes('cocktail') || title.includes('margarita') || 
-      title.includes('mojito')) {
-    return 'cocktails';
-  }
-  
-  if (title.includes('mix') || title.includes('juice') || 
-      title.includes('water') || title.includes('tonic') ||
-      title.includes('soda') || title.includes('non-alcoholic')) {
-    return 'mixersNA';
-  }
-  
-  // Default to party supplies for everything else
-  return 'partySupplies';
+
+  // Default to uncategorized (will be filtered out or shown as "Other")
+  return 'other';
 }
 
 // Check if a product belongs to a specific collection
@@ -133,13 +84,13 @@ export function isInCollection(product: {
   return collections.includes(collectionHandle);
 }
 
-// Get unique brands from products
-export function getUniqueBrands(products: Array<{ vendor?: string }>): string[] {
-  const brands = new Set<string>();
+// Get unique tags from products (for filtering)
+export function getUniqueTags(products: Array<{ tags?: string[] }>): string[] {
+  const tags = new Set<string>();
   products.forEach(p => {
-    if (p.vendor) brands.add(p.vendor);
+    p.tags?.forEach(tag => tags.add(tag));
   });
-  return Array.from(brands).sort();
+  return Array.from(tags).sort();
 }
 
 // Get unique product types
@@ -233,6 +184,7 @@ export const SHOPIFY_COLLECTIONS = [
   }
 ];
 
+// Remove spirit types filter since we're using pure Shopify data
 // Filter configuration for the UI with color schemes
 export const FILTER_OPTIONS = {
   mainCategories: [
@@ -320,17 +272,6 @@ export const FILTER_OPTIONS = {
         borderActive: 'border-purple-600'
       }
     }
-  ],
-  spiritTypes: [
-    { value: 'all', label: 'All Liquor' },
-    { value: 'Vodka', label: 'Vodka' },
-    { value: 'Tequila', label: 'Tequila' },
-    { value: 'Whiskey', label: 'Whiskey' },
-    { value: 'Bourbon', label: 'Bourbon' },
-    { value: 'Gin', label: 'Gin' },
-    { value: 'Rum', label: 'Rum' },
-    { value: 'Cognac', label: 'Cognac' },
-    { value: 'Scotch', label: 'Scotch' }
   ],
   sortOptions: [
     { value: 'featured', label: 'Featured' },

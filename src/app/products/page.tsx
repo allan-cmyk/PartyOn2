@@ -18,7 +18,7 @@ import AIConcierge from '@/components/AIConcierge';
 import AgeVerificationModal from '@/components/AgeVerificationModal';
 import ProductModal from '@/components/ProductModal';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { getProductCategory, FILTER_OPTIONS, SHOPIFY_COLLECTIONS, isInCollection } from '@/lib/shopify/categories';
+import { getProductCategory, FILTER_OPTIONS, SHOPIFY_COLLECTIONS, isInCollection, getUniqueTags, getUniqueProductTypes } from '@/lib/shopify/categories';
 import { CategoryIcon } from '@/components/CategoryIcons';
 
 function ProductsContent() {
@@ -33,11 +33,9 @@ function ProductsContent() {
   const [showAgeVerification, setShowAgeVerification] = useState(false);
   const [isAgeVerified, setIsAgeVerified] = useState(false);
   
-  // Advanced filters
-  const [spiritType, setSpiritType] = useState('all');
-  const [bottleSize, setBottleSize] = useState('all');
+  // Shopify-based filters
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
-  const [brand, setBrand] = useState('all');
   
   // Mobile states
   const isMobile = useIsMobile();
@@ -111,95 +109,23 @@ function ProductsContent() {
   // Use search results if available, otherwise use regular products
   const displayProducts = searchQuery ? searchResults : products;
 
-  // Extract unique values for filter options
-  const uniqueBrands = [...new Set(displayProducts.map(p => p.vendor).filter(Boolean))].sort();
-  
-  // Helper function to get bottle size from title
-  const getBottleSize = (title: string): string => {
-    if (title.includes('1.75L') || title.includes('1750ml')) return '1.75L';
-    if (title.includes('750ml') || title.includes('750 ml')) return '750ml';
-    if (title.includes('375ml') || title.includes('375 ml')) return '375ml';
-    if (title.includes('50ml') || title.includes('50 ml')) return '50ml';
-    if (title.includes('12 Pack') || title.includes('12-Pack')) return '12-pack';
-    return 'standard';
-  };
+  // Extract unique values for filter options from Shopify data
+  const uniqueTags = getUniqueTags(displayProducts);
+  const uniqueProductTypes = getUniqueProductTypes(displayProducts);
 
-  // Old categorization function - kept for fallback
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getProductCategoryFallback = (product: ShopifyProduct): string => {
-    const title = product.title.toLowerCase();
-    const type = product.productType?.toLowerCase() || '';
-    const tags = product.tags?.map(t => t.toLowerCase()) || [];
-    
-    // Check for party supplies and non-consumables first
-    if (
-      title.includes('ice') ||
-      title.includes('cups') ||
-      title.includes('napkins') ||
-      title.includes('straws') ||
-      title.includes('mixer') ||
-      title.includes('tonic') ||
-      title.includes('soda') ||
-      title.includes('juice') ||
-      title.includes('garnish') ||
-      title.includes('lime') ||
-      title.includes('lemon') ||
-      title.includes('orange') ||
-      title.includes('cherry') ||
-      title.includes('olive') ||
-      title.includes('salt') ||
-      title.includes('sugar') ||
-      title.includes('syrup') ||
-      title.includes('bitters') ||
-      title.includes('grenadine') ||
-      title.includes('margarita mix') ||
-      title.includes('bloody mary mix') ||
-      title.includes('simple syrup') ||
-      title.includes('club soda') ||
-      title.includes('ginger beer') ||
-      title.includes('accessories') ||
-      type.includes('supplies') ||
-      type.includes('mixer') ||
-      type.includes('garnish') ||
-      tags.includes('supplies') ||
-      tags.includes('party supplies') ||
-      tags.includes('mixers')
-    ) return 'supplies';
-    
-    // Cocktail kits and gift baskets
-    if (title.includes('cocktail kit') || title.includes('gift basket') || title.includes('party kit')) return 'kits';
-    
-    // Non-alcoholic beverages
-    if (title.includes('non-alcoholic') || title.includes('mocktail') || title.includes('0%') || title.includes('zero proof')) return 'non-alcoholic';
-    
-    // Alcoholic beverages
-    if (title.includes('vodka')) return 'vodka';
-    if (title.includes('tequila') || title.includes('mezcal')) return 'tequila';
-    if (title.includes('whiskey') || title.includes('bourbon') || title.includes('rye') || title.includes('scotch')) return 'whiskey';
-    if (title.includes('rum')) return 'rum';
-    if (title.includes('gin')) return 'gin';
-    if (title.includes('wine') || title.includes('champagne') || title.includes('prosecco')) return 'wine';
-    if (title.includes('beer') || title.includes('seltzer') || title.includes('hard') || title.includes('ipa') || title.includes('lager')) return 'beer';
-    if (title.includes('liqueur') || title.includes('bailey') || title.includes('campari') || title.includes('aperol') || title.includes('kahlua')) return 'liqueur';
-    if (title.includes('cognac') || title.includes('brandy')) return 'cognac';
-    
-    return 'other';
-  };
-
-  // Filter products based on all criteria
+  // Filter products based on Shopify data only
   const filteredProducts = displayProducts.filter(product => {
-    const productTitle = product.title;
     const price = parseFloat(product.priceRange.minVariantPrice.amount);
-    
+
     // Collection filter (takes precedence)
     if (collectionFilter) {
       if (!isInCollection(product, collectionFilter)) return false;
     }
-    
-    // Main category filter using proper Shopify data
+
+    // Main category filter using Shopify data
     if (filter !== 'all' && !collectionFilter) {
       const productCategory = getProductCategory(product);
-      
+
       // Map filter values to category keys
       const filterMap: Record<string, string> = {
         'seltzers-champs': 'seltzersChamps',
@@ -209,68 +135,40 @@ function ProductsContent() {
         'mixers-na': 'mixersNA',
         'party-supplies': 'partySupplies'
       };
-      
+
       const expectedCategory = filterMap[filter];
-      if (expectedCategory && productCategory !== expectedCategory) return false;
+      if (expectedCategory && productCategory !== expectedCategory) {
+        // Also check if it's 'other' and filter is not 'all'
+        if (productCategory === 'other') return false;
+        return false;
+      }
     }
-    
-    // Spirit type filter (only applicable for liquor) - using productType
-    if (spiritType !== 'all' && filter === 'liquor') {
-      const productType = product.productType?.toLowerCase() || '';
-      const spiritTypeLower = spiritType.toLowerCase();
-      if (!productType.includes(spiritTypeLower)) return false;
+
+    // Tag filters
+    if (selectedTags.length > 0) {
+      const productTags = product.tags || [];
+      const hasAllTags = selectedTags.every(tag => productTags.includes(tag));
+      if (!hasAllTags) return false;
     }
-    
-    // Bottle size filter
-    if (bottleSize !== 'all') {
-      const productSize = getBottleSize(productTitle);
-      if (bottleSize !== productSize) return false;
-    }
-    
+
     // Price range filter
     if (priceRange[0] > 0 || priceRange[1] < 500) {
       if (price < priceRange[0] || price > priceRange[1]) return false;
     }
-    
-    // Brand filter
-    if (brand !== 'all' && product.vendor !== brand) return false;
-    
+
     return true;
   });
 
-  // Define best sellers (you can update this list based on actual sales data)
-  const bestSellerHandles = [
-    'titos-vodka',
-    'don-julio-blanco',
-    'hendricks-gin',
-    'grey-goose-vodka',
-    'casamigos-reposado',
-    'patron-silver',
-    'deep-eddy-vodka',
-    'bulleit-bourbon',
-    'jameson-irish-whiskey',
-    'crown-royal'
-  ];
-
-  // Sort products
+  // Sort products using Shopify data
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     if (sortBy === 'bestsellers') {
-      // Check if products have 'bestseller' tag or are in our curated list
-      const aIsBestSeller = a.tags?.includes('bestseller') || bestSellerHandles.includes(a.handle);
-      const bIsBestSeller = b.tags?.includes('bestseller') || bestSellerHandles.includes(b.handle);
-      
+      // Use Shopify tags for bestseller status
+      const aIsBestSeller = a.tags?.includes('bestseller') || a.tags?.includes('best-seller');
+      const bIsBestSeller = b.tags?.includes('bestseller') || b.tags?.includes('best-seller');
+
       if (aIsBestSeller && !bIsBestSeller) return -1;
       if (!aIsBestSeller && bIsBestSeller) return 1;
-      
-      // If both are bestsellers, sort by position in the list
-      if (aIsBestSeller && bIsBestSeller) {
-        const aIndex = bestSellerHandles.indexOf(a.handle);
-        const bIndex = bestSellerHandles.indexOf(b.handle);
-        if (aIndex !== -1 && bIndex !== -1) {
-          return aIndex - bIndex;
-        }
-      }
-      
+
       // Fall back to featured sorting
       return 0;
     }
@@ -467,7 +365,6 @@ function ProductsContent() {
                         key={category.value}
                         onClick={() => {
                           setFilter(category.value);
-                          setSpiritType('all');
                         }}
                         className={`flex items-center gap-1.5 px-3 py-1.5 text-xs whitespace-nowrap transition-all rounded-lg border ${
                           isActive
@@ -494,7 +391,6 @@ function ProductsContent() {
                       key={category.value}
                       onClick={() => {
                         setFilter(category.value);
-                        setSpiritType('all'); // Reset spirit type when main category changes
                       }}
                       className={`px-5 py-2.5 text-xs tracking-[0.1em] transition-all duration-300 flex items-center gap-2 rounded-lg border ${
                         isActive
@@ -511,49 +407,39 @@ function ProductsContent() {
             </>
           )}
 
-          {/* Advanced Filters Row */}
+          {/* Tag Filters Row */}
           <div className="flex flex-wrap gap-4 items-center">
-            {/* Spirit Type Filter - Only show when liquor is selected */}
-            {filter === 'liquor' && (
-              <select
-                value={spiritType}
-                onChange={(e) => setSpiritType(e.target.value)}
-                className="px-4 py-2 border border-gray-300 text-sm tracking-[0.05em] focus:border-gold-600 focus:outline-none"
+            {/* Show popular tags as quick filters */}
+            {uniqueTags.filter(tag =>
+              ['bestseller', 'best-seller', 'featured', 'new', 'sale', 'limited-edition'].includes(tag.toLowerCase())
+            ).map(tag => (
+              <button
+                key={tag}
+                onClick={() => {
+                  setSelectedTags(prev =>
+                    prev.includes(tag)
+                      ? prev.filter(t => t !== tag)
+                      : [...prev, tag]
+                  );
+                }}
+                className={`px-3 py-1.5 text-xs tracking-[0.05em] rounded-full border transition-all ${
+                  selectedTags.includes(tag)
+                    ? 'bg-gold-600 text-white border-gold-600'
+                    : 'bg-white text-gray-700 border-gray-300 hover:border-gold-400'
+                }`}
               >
-                {FILTER_OPTIONS.spiritTypes.map(type => (
-                  <option key={type.value} value={type.value}>{type.label}</option>
-                ))}
-              </select>
-            )}
+                {tag.toUpperCase()}
+              </button>
+            ))}
 
-            {/* Bottle Size Filter */}
-            <select
-              value={bottleSize}
-              onChange={(e) => setBottleSize(e.target.value)}
-              className="px-4 py-2 border border-gray-300 text-sm tracking-[0.05em] focus:border-gold-600 focus:outline-none"
-            >
-              <option value="all">All Sizes</option>
-              <option value="50ml">Minis (50ml)</option>
-              <option value="375ml">Half Bottle (375ml)</option>
-              <option value="750ml">Standard (750ml)</option>
-              <option value="1.75L">Handle (1.75L)</option>
-              <option value="12-pack">12-Pack</option>
-            </select>
-
-            {/* Price Range Display - Removed dropdown for now */}
-
-            {/* Brand Filter */}
-            {uniqueBrands.length > 0 && (
-              <select
-                value={brand}
-                onChange={(e) => setBrand(e.target.value)}
-                className="px-4 py-2 border border-gray-300 text-sm tracking-[0.05em] focus:border-gold-600 focus:outline-none"
+            {/* Clear Tags Button */}
+            {selectedTags.length > 0 && (
+              <button
+                onClick={() => setSelectedTags([])}
+                className="text-xs text-gold-600 hover:text-gold-700 tracking-[0.05em]"
               >
-                <option value="all">All Brands</option>
-                {uniqueBrands.map(b => (
-                  <option key={b} value={b}>{b}</option>
-                ))}
-              </select>
+                CLEAR TAGS
+              </button>
             )}
 
             {/* Spacer */}
