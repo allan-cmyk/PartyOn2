@@ -4,13 +4,11 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
 import { useCart } from '@/lib/shopify/hooks/useCart';
-import { FILTER_OPTIONS, SHOPIFY_COLLECTIONS } from '@/lib/shopify/categories';
 
 export default function VacationRentalsPartnerPage() {
-  const { cart, addToCart } = useCart();
+  const { cart } = useCart();
   const [showSuccess, setShowSuccess] = useState(false);
 
   const handleQuickAdd = async (productId: string, productTitle: string) => {
