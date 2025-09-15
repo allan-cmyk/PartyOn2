@@ -45,7 +45,19 @@ export default function PartnersPage() {
       image: '/images/partners/hotel-partner.webp'
     },
     {
-      href: '#',
+      href: '/partners/vacation-rentals',
+      icon: (
+        <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+      ),
+      title: "Vacation Rentals",
+      description: "Premium spirits and curated packages delivered to your Austin rental properties",
+      available: true,
+      image: '/images/hero/luxury-home-interior.webp'
+    },
+    {
+      href: '/partners/property-management',
       icon: (
         <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3M9 9v.01M9 12v.01M9 15v.01M9 18v.01" />
@@ -53,8 +65,7 @@ export default function PartnersPage() {
       ),
       title: "Property Management",
       description: "Offer residents exclusive access to curated spirits and concierge delivery",
-      available: false,
-      comingSoon: true,
+      available: true,
       image: '/images/textures/marble-surface.webp'
     },
     {

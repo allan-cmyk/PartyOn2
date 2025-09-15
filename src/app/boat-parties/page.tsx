@@ -140,9 +140,21 @@ export default function BoatPartiesPage() {
             <span className="block text-gold-400 mt-2">LUXURY</span>
           </h1>
           <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
-          <p className="text-lg md:text-xl font-light tracking-[0.1em] text-gray-200">
+          <p className="text-lg md:text-xl font-light tracking-[0.1em] text-gray-200 mb-8">
             Premium Spirits Delivered to Your Vessel
           </p>
+          <div className="flex flex-col md:flex-row gap-4 justify-center">
+            <Link href="/boat-parties/products">
+              <button className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                ORDER NOW
+              </button>
+            </Link>
+            <Link href="/boat-parties/packages/luxury">
+              <button className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+                VIEW PACKAGES
+              </button>
+            </Link>
+          </div>
         </motion.div>
       </section>
 

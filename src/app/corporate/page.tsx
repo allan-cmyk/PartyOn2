@@ -135,11 +135,18 @@ export default function CorporateEventsPage() {
           <p className="text-xl max-w-2xl leading-relaxed mb-8">
             Elevate your business gatherings with Austin&apos;s premier corporate beverage service
           </p>
-          <Link href="/order">
-            <button className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em]">
-              REQUEST PROPOSAL
-            </button>
-          </Link>
+          <div className="flex flex-col md:flex-row gap-4 justify-center">
+            <Link href="/corporate/products">
+              <button className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                ORDER NOW
+              </button>
+            </Link>
+            <Link href="/contact">
+              <button className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+                REQUEST PROPOSAL
+              </button>
+            </Link>
+          </div>
         </motion.div>
       </section>
 
