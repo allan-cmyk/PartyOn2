@@ -9,6 +9,20 @@ import LuxuryCard from '@/components/LuxuryCard';
 
 export default function WeddingsPage() {
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const heroSection = document.querySelector('section');
+      if (heroSection) {
+        const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
+        setShowStickyBar(window.scrollY > heroBottom);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   
   const heroImages = [
     { src: '/images/services/weddings/outdoor-bar-setup.webp', alt: 'Elegant Wedding Bar Setup' },
@@ -120,38 +134,127 @@ export default function WeddingsPage() {
           className="relative text-center text-white z-10 max-w-4xl mx-auto px-8"
         >
           <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
-            WEDDING
-            <span className="block text-gold-400 mt-2">EXCELLENCE</span>
+            Your Austin Wedding,
+            <span className="block text-gold-400 mt-2">PERFECTLY SERVED</span>
           </h1>
           <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
-          <p className="text-lg md:text-xl font-light tracking-[0.1em] text-gray-200">
-            Elevating Austin&apos;s Most Beautiful Celebrations
+          <p className="text-lg md:text-xl font-light tracking-[0.1em] text-gray-200 mb-8">
+            Curated bar service with venue coordination, cold delivery, and TABC-certified bartenders for Austin, Hill Country, and Lake Travis weddings.
+          </p>
+          <div className="flex flex-col md:flex-row gap-4 justify-center">
+            <Link href="/order">
+              <button className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                ORDER NOW
+              </button>
+            </Link>
+            <Link href="/contact">
+              <button className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+                SCHEDULE 15-MIN PLANNING CALL
+              </button>
+            </Link>
+          </div>
+          <p className="text-sm text-gray-300 mt-4 tracking-[0.05em]">
+            Licensed & insured • 72-hour notice recommended • 500+ Austin weddings served
           </p>
         </motion.div>
       </section>
 
-      {/* Introduction */}
+      {/* Choose Your Path */}
       <section className="py-24 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-8 text-center">
+        <div className="max-w-6xl mx-auto px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
+            className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
-              Your Special Day Deserves Excellence
+              Choose Your Path
             </h2>
-            <p className="text-lg text-gray-600 leading-relaxed">
-              From intimate Hill Country ceremonies to grand Lake Travis receptions, 
-              we bring sophistication and impeccable service to your wedding celebration. 
-              Our professional bartenders ensure every toast is perfect and every guest 
-              is served with distinction.
+            <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            {/* Delivery-Only Path */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="bg-white p-8 rounded-lg shadow-lg"
+            >
+              <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
+                Delivery-Only
+              </h3>
+              <ul className="space-y-3 mb-8 text-gray-600">
+                <li className="flex items-start">
+                  <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Curated spirits, beer, wine delivered cold to your venue
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  You handle setup or use your own bartender
+                </li>
+              </ul>
+              <Link href="/order">
+                <button className="w-full py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                  ORDER NOW
+                </button>
+              </Link>
+            </motion.div>
+
+            {/* Full-Service Path */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="bg-white p-8 rounded-lg shadow-lg border-2 border-gold-600"
+            >
+              <div className="text-center mb-4">
+                <span className="text-gold-600 text-sm tracking-[0.15em] font-medium">MOST POPULAR</span>
+              </div>
+              <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
+                Full-Service
+              </h3>
+              <ul className="space-y-3 mb-8 text-gray-600">
+                <li className="flex items-start">
+                  <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Complete bar service with TABC-certified bartenders
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Setup, service, and breakdown included
+                </li>
+              </ul>
+              <Link href="/contact">
+                <button className="w-full py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                  SCHEDULE A CONSULTATION
+                </button>
+              </Link>
+            </motion.div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="text-center mt-8"
+          >
+            <p className="text-gray-600 tracking-[0.05em]">
+              Trusted for Lake Travis, Hill Country, and downtown Austin venues since 2020
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Service Highlights */}
+      {/* Benefits */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
           <motion.div 
@@ -161,58 +264,87 @@ export default function WeddingsPage() {
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
-              The PartyOn Difference
+              Why Austin Couples Book Us
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto" />
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              className="space-y-8"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="text-center"
             >
-              <div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
-                  Premium Spirits Selection
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Curated collection of top-shelf spirits, fine wines, and craft cocktails. 
-                  Every selection chosen to complement your celebration perfectly.
-                </p>
+              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
-              <div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
-                  Professional Service Team
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  TABC-certified bartenders with years of experience in luxury events. 
-                  Dressed in formal attire to match your wedding&apos;s elegance.
-                </p>
-              </div>
-              <div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
-                  Seamless Coordination
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  We work directly with your venue and wedding planner to ensure 
-                  flawless execution. Setup and breakdown handled with precision.
-                </p>
-              </div>
+              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                Seamless Venue Coordination
+              </h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                We work directly with your venue for smooth delivery and setup
+              </p>
             </motion.div>
+
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              className="relative h-[500px]"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-center"
             >
-              <Image
-                src="/images/services/weddings/signature-cocktails-closeup.webp"
-                alt="Signature Wedding Cocktails"
-                fill
-                className="object-cover rounded-lg"
-              />
+              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                </svg>
+              </div>
+              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                TABC-Certified Professionals
+              </h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Licensed bartenders through our vetted partner network
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="text-center"
+            >
+              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              </div>
+              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                Curated Local Selection
+              </h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Austin favorites plus premium spirits, perfectly chilled
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-center"
+            >
+              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                Lake Travis Expertise
+              </h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Specialized routes and timing for Hill Country and lakeside venues
+              </p>
             </motion.div>
           </div>
         </div>
@@ -228,7 +360,7 @@ export default function WeddingsPage() {
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
-              Wedding Packages
+              Bar Service Packages (Full-Service)
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
@@ -269,19 +401,36 @@ export default function WeddingsPage() {
                       </li>
                     ))}
                   </ul>
-                  <Link href={`/weddings/packages/${pkg.name.toLowerCase().replace(/ /g, '-')}`}>
+                  <Link href="/contact">
                     <button className={`w-full py-3 tracking-[0.15em] text-sm transition-all duration-300 ${
                       pkg.featured 
                         ? 'bg-gold-600 text-white hover:bg-gold-700' 
                         : 'border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white'
                     }`}>
-                      CUSTOMIZE PACKAGE
+                      PLAN THIS PACKAGE (CONSULTATION)
                     </button>
                   </Link>
                 </div>
               </LuxuryCard>
             ))}
           </div>
+
+          {/* Delivery-Only Callout */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="mt-16 bg-white p-8 rounded-lg shadow-lg border border-gray-200 text-center max-w-4xl mx-auto"
+          >
+            <p className="text-lg text-gray-700 mb-6 tracking-[0.05em]">
+              <strong>Just need delivery?</strong> Build your cart in minutes and we'll coordinate drop-off with your venue.
+            </p>
+            <Link href="/order">
+              <button className="px-8 py-3 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+                ORDER DELIVERY-ONLY
+              </button>
+            </Link>
+          </motion.div>
         </div>
       </section>
 
@@ -322,6 +471,109 @@ export default function WeddingsPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-24 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+              Frequently Asked Questions
+            </h2>
+            <div className="w-16 h-px bg-gold-600 mx-auto" />
+          </motion.div>
+
+          <div className="space-y-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="bg-white p-6 rounded-lg shadow-sm"
+            >
+              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                Do you provide bartenders?
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Yes, via vetted TABC-certified partners for full-service packages.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="bg-white p-6 rounded-lg shadow-sm"
+            >
+              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                How far in advance should we book?
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                72 hours minimum recommended; peak wedding dates fill fast.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="bg-white p-6 rounded-lg shadow-sm"
+            >
+              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                Do you deliver to Lake Travis/Hill Country venues?
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Yes, we specialize in Austin, Hill Country, and Lake Travis locations.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="bg-white p-6 rounded-lg shadow-sm"
+            >
+              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                What about glassware & equipment?
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Included with full-service packages; disposable upgrades available for delivery-only.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="bg-white p-6 rounded-lg shadow-sm"
+            >
+              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                Are you licensed & insured?
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Yes, fully licensed and insured for events.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="bg-white p-6 rounded-lg shadow-sm"
+            >
+              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                Already have a bartender?
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Perfect! Use our Delivery-Only option for curated alcohol delivery.
+              </p>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -430,6 +682,44 @@ export default function WeddingsPage() {
           </div>
         </div>
       </footer>
+
+      {/* Sticky Bottom Bar */}
+      <AnimatePresence>
+        {showStickyBar && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 md:hidden"
+          >
+            <div className="px-4 py-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-900 tracking-[0.05em]">
+                    Planning a wedding?
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    2-minute form • Fast availability check
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Link href="/order">
+                    <button className="px-4 py-2 bg-gold-600 text-white text-xs tracking-[0.1em] font-medium">
+                      ORDER NOW
+                    </button>
+                  </Link>
+                  <Link href="/contact">
+                    <button className="px-4 py-2 border border-gold-600 text-gold-600 text-xs tracking-[0.1em] font-medium">
+                      SCHEDULE CALL
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
