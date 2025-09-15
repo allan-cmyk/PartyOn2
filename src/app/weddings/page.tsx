@@ -423,7 +423,7 @@ export default function WeddingsPage() {
             className="mt-16 bg-white p-8 rounded-lg shadow-lg border border-gray-200 text-center max-w-4xl mx-auto"
           >
             <p className="text-lg text-gray-700 mb-6 tracking-[0.05em]">
-              <strong>Just need delivery?</strong> Build your cart in minutes and we'll coordinate drop-off with your venue.
+              <strong>Just need delivery?</strong> Build your cart in minutes and we&apos;ll coordinate drop-off with your venue.
             </p>
             <Link href="/order">
               <button className="px-8 py-3 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm font-medium">
