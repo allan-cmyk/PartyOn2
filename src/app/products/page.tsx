@@ -18,7 +18,7 @@ import AIConcierge from '@/components/AIConcierge';
 import AgeVerificationModal from '@/components/AgeVerificationModal';
 import ProductModal from '@/components/ProductModal';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { getProductCategory, FILTER_OPTIONS, SHOPIFY_COLLECTIONS, isInCollection, getUniqueTags, getUniqueProductTypes } from '@/lib/shopify/categories';
+import { getProductCategory, FILTER_OPTIONS, SHOPIFY_COLLECTIONS, isInCollection, getUniqueTags } from '@/lib/shopify/categories';
 import { CategoryIcon } from '@/components/CategoryIcons';
 
 function ProductsContent() {
@@ -111,7 +111,6 @@ function ProductsContent() {
 
   // Extract unique values for filter options from Shopify data
   const uniqueTags = getUniqueTags(displayProducts);
-  const uniqueProductTypes = getUniqueProductTypes(displayProducts);
 
   // Filter products based on Shopify data only
   const filteredProducts = displayProducts.filter(product => {
