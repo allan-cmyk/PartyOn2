@@ -9,7 +9,7 @@ import Footer from '@/components/Footer';
 import { useCart } from '@/lib/shopify/hooks/useCart';
 
 export default function BoatPartiesProductsPage() {
-  const { cart, addToCart } = useCart();
+  const { cart } = useCart();
   const [addingToCart, setAddingToCart] = useState<{ [key: string]: boolean }>({});
 
   const handleAddToCart = async (productId: string) => {
