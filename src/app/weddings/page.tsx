@@ -114,24 +114,11 @@ export default function WeddingsPage() {
         </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 via-gray-900/30 to-gray-900/50" />
         
-        {/* Hero Dots Navigation */}
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
-          {heroImages.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentHeroIndex(index)}
-              className={`w-2 h-2 rounded-full transition-all ${
-                index === currentHeroIndex ? 'bg-gold-400 w-8' : 'bg-white/50'
-              }`}
-            />
-          ))}
-        </div>
-        
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="relative text-center text-white z-10 max-w-4xl mx-auto px-8"
+          className="relative text-center text-white z-10 max-w-4xl mx-auto px-8 pb-20"
         >
           <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
             Your Austin Wedding,
@@ -157,6 +144,19 @@ export default function WeddingsPage() {
             Licensed & insured • 72-hour notice recommended • 500+ Austin weddings served
           </p>
         </motion.div>
+        
+        {/* Hero Dots Navigation */}
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentHeroIndex(index)}
+              className={`w-2 h-2 rounded-full transition-all ${
+                index === currentHeroIndex ? 'bg-gold-400 w-8' : 'bg-white/50'
+              }`}
+            />
+          ))}
+        </div>
       </section>
 
       {/* Choose Your Path */}
