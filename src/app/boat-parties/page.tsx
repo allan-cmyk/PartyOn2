@@ -147,7 +147,7 @@ export default function BoatPartiesPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="relative text-center text-white z-10 max-w-4xl mx-auto px-8 mt-[100px] md:mt-0"
+          className="relative text-center text-white z-10 max-w-4xl mx-auto px-8 mt-[60px] md:mt-0"
         >
           <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
             Cold Drinks to Your
