@@ -78,7 +78,7 @@ export default function BachPartiesPage() {
       <OldFashionedNavigation />
       
       {/* Hero Section */}
-      <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[100vh] flex items-center justify-center overflow-hidden pt-[200px] pb-[100px] md:pt-20 md:pb-12">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentHeroIndex}
@@ -119,7 +119,7 @@ export default function BachPartiesPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="relative text-center text-white z-10 max-w-4xl mx-auto px-8"
+          className="relative text-center text-white z-10 max-w-4xl mx-auto px-6 md:px-8"
         >
           <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
             UNFORGETTABLE

@@ -126,7 +126,7 @@ export default function CorporateEventsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="relative z-10 max-w-7xl mx-auto px-8 text-white"
+          className="relative z-10 max-w-7xl mx-auto px-8 text-white mt-[120px] mb-[80px] md:mt-0 md:mb-0"
         >
           <p className="text-gold-400 tracking-[0.2em] mb-4">PROFESSIONAL BAR SERVICE</p>
           <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl mb-6 tracking-[0.1em]">

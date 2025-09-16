@@ -147,7 +147,7 @@ export default function BoatPartiesPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="relative text-center text-white z-10 max-w-4xl mx-auto px-8 mt-[60px] md:mt-0"
+          className="relative text-center text-white z-10 max-w-4xl mx-auto px-8 mt-[120px] mb-[80px] md:mt-0 md:mb-0"
         >
           <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
             Cold Drinks to Your
@@ -155,7 +155,7 @@ export default function BoatPartiesPage() {
           </h1>
           <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
           <p className="text-lg md:text-xl font-light tracking-[0.1em] text-gray-200 mb-8">
-            Dock and cove delivery with captain coordination—everything cold, stocked, and ready to pour.
+            Dock and boat delivery with captain coordination—everything cold, stocked, and ready to pour.
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
             <Link href="/boat-parties/products">
@@ -196,8 +196,13 @@ export default function BoatPartiesPage() {
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              className="bg-white p-8 rounded-lg shadow-lg"
+              className="bg-white p-8 rounded-lg shadow-lg relative"
             >
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                <span className="bg-gold-600 text-white px-4 py-1 rounded-full text-xs font-medium tracking-[0.1em]">
+                  MOST POPULAR
+                </span>
+              </div>
               <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
                 Delivery-Only
               </h3>
@@ -206,7 +211,7 @@ export default function BoatPartiesPage() {
                   <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
-                  Dock or cove handoff with ice, coolers, and mixers
+                  Dock or boat handoff with ice, coolers, and mixers
                 </li>
                 <li className="flex items-start">
                   <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -264,7 +269,7 @@ export default function BoatPartiesPage() {
             className="text-center mt-8"
           >
             <p className="text-gray-600 tracking-[0.05em]">
-              Local Lake Travis and Hill Country route expertise since 2020
+              Lake Travis and Austin experts since 2009
             </p>
           </motion.div>
         </div>
@@ -280,7 +285,7 @@ export default function BoatPartiesPage() {
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
-              Why Lake Crews Book Us
+              Boat Parties on Easy Mode
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto" />
           </motion.div>
@@ -298,10 +303,10 @@ export default function BoatPartiesPage() {
                 </svg>
               </div>
               <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
-                Never Leave the Water
+                Just Show Up
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
-                Dock or in-cove handoff keeps you anchored
+                Dock or Direct-to-Boat Delivery
               </p>
             </motion.div>
 
@@ -340,7 +345,7 @@ export default function BoatPartiesPage() {
                 Local Lake Pros
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
-                Know marinas, coves, and optimal timing
+                Know marinas, boats, and optimal timing
               </p>
             </motion.div>
 
@@ -376,7 +381,7 @@ export default function BoatPartiesPage() {
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
-              Lake Travis Delivery Locations
+              Lake Travis & Austin Delivery Locations
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto" />
           </motion.div>
@@ -388,7 +393,7 @@ export default function BoatPartiesPage() {
                 instructions: "Meet at fuel dock • Preferred window: :15–:45 past the hour",
               },
               {
-                name: "Devil's Cove",
+                name: "Devil's Boat",
                 instructions: "Text on approach • Safe handoff in designated area",
               },
               {
@@ -397,7 +402,7 @@ export default function BoatPartiesPage() {
               },
               {
                 name: "Hudson Bend",
-                instructions: "Quiet cove service • Text GPS coordinates",
+                instructions: "Quiet boat service • Text GPS coordinates",
               },
               {
                 name: "Lakeway Marina",
@@ -580,10 +585,10 @@ export default function BoatPartiesPage() {
               className="bg-gray-50 p-6 rounded-lg"
             >
               <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
-                Dock vs. cove delivery?
+                Dock vs. boat delivery?
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                Both—we do slip handoffs or in-cove delivery to your anchored location.
+                Both—we do slip handoffs or boat delivery to your anchored location.
               </p>
             </motion.div>
 
