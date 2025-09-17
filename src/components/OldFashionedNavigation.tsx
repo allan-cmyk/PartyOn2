@@ -40,7 +40,6 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
   const [isScrolled, setIsScrolled] = useState(forceScrolled);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
-  const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { customer, isAuthenticated, logout } = useCustomerContext();
@@ -105,46 +104,6 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
             
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-12">
-              {/* About Dropdown */}
-              <div 
-                className="relative group"
-                onMouseEnter={() => setIsAboutOpen(true)}
-                onMouseLeave={() => setIsAboutOpen(false)}
-              >
-                <button className={`text-sm tracking-[0.15em] transition-all duration-300 flex items-center ${
-                  isScrolled 
-                    ? 'text-gray-700 hover:text-gold-600' 
-                    : 'text-white/90 hover:text-gold-400'
-                }`}>
-                  ABOUT
-                  <ChevronDownIcon className="w-4 h-4 ml-1" />
-                </button>
-                <AnimatePresence>
-                  {isAboutOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg"
-                      onMouseEnter={() => setIsAboutOpen(true)}
-                      onMouseLeave={() => setIsAboutOpen(false)}
-                    >
-                      <Link 
-                        href="/about"
-                        className="block px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gray-50 hover:text-gold-600 transition-colors"
-                      >
-                        ABOUT US
-                      </Link>
-                      <Link 
-                        href="/blog"
-                        className="block px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gray-50 hover:text-gold-600 transition-colors"
-                      >
-                        BLOG
-                      </Link>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
               
               {/* Services Dropdown */}
               <div className="relative group">
@@ -298,26 +257,6 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
               </div>
               
               <div className="flex-1 flex flex-col justify-center px-8 space-y-8">
-                {/* About Section */}
-                <div className="space-y-4">
-                  <p className="text-2xl font-light tracking-[0.15em] text-gray-900">ABOUT</p>
-                  <div className="pl-6 space-y-3">
-                    <Link 
-                      href="/about"
-                      className="block text-lg font-light tracking-[0.1em] text-gray-600 hover:text-gold-600 transition-colors"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      ABOUT US
-                    </Link>
-                    <Link 
-                      href="/blog"
-                      className="block text-lg font-light tracking-[0.1em] text-gray-600 hover:text-gold-600 transition-colors"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      BLOG
-                    </Link>
-                  </div>
-                </div>
                 
                 {/* Services Section */}
                 <div className="space-y-4">
