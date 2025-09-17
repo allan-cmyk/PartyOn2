@@ -227,7 +227,7 @@ export default function Footer() {
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-grow px-4 py-3 bg-white/10 border border-white/20 rounded-full text-white placeholder:text-neutral-400 focus:outline-none focus:border-gold-500 transition-colors duration-300"
+                className="flex-grow px-4 py-3 bg-white/10 border border-white/20 rounded-full text-white placeholder:text-neutral-300 focus:outline-none focus:border-gold-500 transition-colors duration-300"
               />
               <button
                 type="submit"

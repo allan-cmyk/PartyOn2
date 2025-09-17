@@ -19,9 +19,60 @@ export default function PartnersPage() {
     message: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Partner inquiry submitted:', formData);
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+    setErrorMessage('');
+
+    // Validate form
+    if (!formData.businessName || !formData.contactName || !formData.email ||
+        !formData.phone || !formData.businessType || !formData.monthlyVolume) {
+      setErrorMessage('Please fill in all required fields.');
+      setSubmitStatus('error');
+      setIsSubmitting(false);
+      // Scroll to top of form
+      const formElement = document.getElementById('partner-form');
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setErrorMessage('Please enter a valid email address.');
+      setSubmitStatus('error');
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Simulate form submission
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      console.log('Partner inquiry submitted:', formData);
+      setSubmitStatus('success');
+      // Reset form
+      setFormData({
+        businessName: '',
+        contactName: '',
+        email: '',
+        phone: '',
+        businessType: '',
+        monthlyVolume: '',
+        message: ''
+      });
+    } catch {
+      setErrorMessage('Something went wrong. Please try again.');
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -261,9 +312,9 @@ export default function PartnersPage() {
                   >
                     <LuxuryCard backgroundImage={type.image}>
                       <div className="p-8">
-                        <div className="text-gray-400 mb-4">{type.icon}</div>
-                        <h3 className="font-serif text-2xl mb-3 text-gray-500 tracking-wide">{type.title}</h3>
-                        <p className="text-gray-400">{type.description}</p>
+                        <div className="text-gray-600 mb-4">{type.icon}</div>
+                        <h3 className="font-serif text-2xl mb-3 text-gray-700 tracking-wide">{type.title}</h3>
+                        <p className="text-gray-600">{type.description}</p>
                         {type.comingSoon && (
                           <div className="absolute top-4 right-4 bg-gold-600 text-white text-xs px-3 py-1 tracking-[0.1em]">
                             COMING SOON
@@ -455,16 +506,38 @@ export default function PartnersPage() {
           </motion.div>
 
           <motion.form
+            id="partner-form"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             onSubmit={handleSubmit}
-            className="bg-white p-8 md:p-12 shadow-lg"
+            className="bg-white p-8 md:p-12 shadow-lg relative"
           >
+            {/* Status Messages */}
+            {submitStatus === 'error' && (
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded">
+                <div className="flex items-center">
+                  <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                  <span>{errorMessage}</span>
+                </div>
+              </div>
+            )}
+            {submitStatus === 'success' && (
+              <div className="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded">
+                <div className="flex items-center">
+                  <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span>Thank you! Your partnership inquiry has been submitted successfully. We&apos;ll be in touch within 24 hours.</span>
+                </div>
+              </div>
+            )}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 tracking-wider">
-                  BUSINESS NAME
+                  BUSINESS NAME <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -472,13 +545,14 @@ export default function PartnersPage() {
                   value={formData.businessName}
                   onChange={handleChange}
                   required
+                  aria-required="true"
                   className="w-full px-4 py-3 border border-gray-300 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 tracking-wider">
-                  CONTACT NAME
+                  CONTACT NAME <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -486,6 +560,7 @@ export default function PartnersPage() {
                   value={formData.contactName}
                   onChange={handleChange}
                   required
+                  aria-required="true"
                   className="w-full px-4 py-3 border border-gray-300 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors"
                 />
               </div>
@@ -580,9 +655,14 @@ export default function PartnersPage() {
 
             <button
               type="submit"
-              className="w-full px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium"
+              disabled={isSubmitting}
+              className={`w-full px-8 py-4 transition-colors tracking-[0.15em] text-sm font-medium ${
+                isSubmitting
+                  ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                  : 'bg-gold-600 text-white hover:bg-gold-700'
+              }`}
             >
-              SUBMIT PARTNERSHIP INQUIRY
+              {isSubmitting ? 'SUBMITTING...' : 'SUBMIT PARTNERSHIP INQUIRY'}
             </button>
 
             <p className="text-sm text-gray-600 mt-6 text-center">
