@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
-import LuxuryCard from '@/components/LuxuryCard';
 import HeroOverlay from '@/components/HeroOverlay';
 
 export default function BachPartiesPage() {
@@ -251,7 +250,7 @@ export default function BachPartiesPage() {
               We Deliver Everywhere Bach Groups Go
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Cold alcohol delivered to any Austin location with 48-hour notice. Here's what bach groups book most.
+              Cold alcohol delivered to any Austin location with 48-hour notice. Here&apos;s what bach groups book most.
             </p>
           </motion.div>
 
@@ -374,7 +373,7 @@ export default function BachPartiesPage() {
               What Bach Groups Tell Us
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Real outcomes from 500+ Austin bach parties we've delivered to over the past 3 years.
+              Real outcomes from 500+ Austin bach parties we&apos;ve delivered to over the past 3 years.
             </p>
           </motion.div>
 
@@ -391,7 +390,7 @@ export default function BachPartiesPage() {
                 </svg>
               </div>
               <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
-                "Saved Us 4+ Hours"
+                &ldquo;Saved Us 4+ Hours&rdquo;
               </h3>
               <p className="text-gray-600 leading-relaxed">
                 No Walmart runs, no gas station stops, no warm beer crisis at 2 PM. Everything cold and ready when you arrive.
@@ -410,10 +409,10 @@ export default function BachPartiesPage() {
                 </svg>
               </div>
               <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
-                "Zero Group Drama"
+                &ldquo;Zero Group Drama&rdquo;
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                No arguing about who pays for what or who's buying the next round. Everyone knows the plan and cost upfront.
+                No arguing about who pays for what or who&apos;s buying the next round. Everyone knows the plan and cost upfront.
               </p>
             </motion.div>
 
@@ -429,7 +428,7 @@ export default function BachPartiesPage() {
                 </svg>
               </div>
               <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
-                "Actually Relaxed"
+                &ldquo;Actually Relaxed&rdquo;
               </h3>
               <p className="text-gray-600 leading-relaxed">
                 The maid of honor gets to actually enjoy the party instead of playing logistics coordinator all weekend.
@@ -443,7 +442,7 @@ export default function BachPartiesPage() {
                 Real Review from Last Weekend
               </h3>
               <blockquote className="text-lg text-gray-700 italic mb-4 max-w-4xl mx-auto">
-                "OMG thank you!! We were staying at different Airbnbs and moving between Lake Travis and downtown, and you guys somehow had everything waiting for us at every stop. The bride had no idea we coordinated this and she cried happy tears when the champagne showed up at the boat dock. 10/10 would book again for my own bach!"
+                &ldquo;OMG thank you!! We were staying at different Airbnbs and moving between Lake Travis and downtown, and you guys somehow had everything waiting for us at every stop. The bride had no idea we coordinated this and she cried happy tears when the champagne showed up at the boat dock. 10/10 would book again for my own bach!&rdquo;
               </blockquote>
               <cite className="text-gold-600 font-medium">— Sarah M., Maid of Honor (Austin bach party, March 2024)</cite>
             </div>
@@ -503,7 +502,7 @@ export default function BachPartiesPage() {
                 </p>
                 
                 <div className="space-y-2 mb-6">
-                  <h4 className="text-sm font-medium text-gray-900 mb-3">What's included:</h4>
+                  <h4 className="text-sm font-medium text-gray-900 mb-3">What&apos;s included:</h4>
                   {bundle.items.map((item, i) => (
                     <div key={i} className="flex items-start text-sm text-gray-700">
                       <span className="text-gold-400 mr-2 mt-1">•</span>
@@ -636,10 +635,10 @@ export default function BachPartiesPage() {
           
           <div className="bg-white rounded-lg p-8 shadow-lg text-center">
             <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
-              Can't Decide? Get Them All
+              Can&apos;t Decide? Get Them All
             </h3>
             <p className="text-gray-600 mb-6">
-              Bundle all 4 add-ons and save $50. Most bach groups say "I wish we had ordered everything."
+              Bundle all 4 add-ons and save $50. Most bach groups say &ldquo;I wish we had ordered everything.&rdquo;
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <div className="text-center">
@@ -791,7 +790,7 @@ export default function BachPartiesPage() {
                 className="h-16 w-auto mb-4"
               />
               <p className="text-gray-600 text-sm leading-relaxed">
-                Austin's premier celebration service since 2020.
+                Austin&apos;s premier celebration service since 2020.
               </p>
             </div>
             <div>
