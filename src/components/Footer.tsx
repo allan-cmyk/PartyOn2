@@ -198,8 +198,8 @@ export default function Footer() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                 </svg>
               </div>
-              <h4 className="font-sans font-bold text-sm text-gold-400">5-Star Rated</h4>
-              <p className="font-sans text-xs text-neutral-400">500+ Google Reviews</p>
+              <h4 className="font-sans font-bold text-sm text-gold-400">4.9★ Rated</h4>
+              <p className="font-sans text-xs text-neutral-400">1000+ Deliveries</p>
             </div>
             
             <div className="text-center space-y-2">

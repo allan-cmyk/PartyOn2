@@ -517,7 +517,7 @@ export default function BoatPartyPackagePage() {
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">CONTACT</h4>
               <ul className="space-y-2 text-gray-600 text-sm">
                 <li>Phone: (737) 371-9700</li>
-                <li>Email: lake@partyondelivery.com</li>
+                <li>Email: info@partyondelivery.com</li>
                 <li>Marina Hours: 8am - 8pm</li>
               </ul>
             </div>

@@ -923,8 +923,8 @@ export default function HotelsResortsPartnerPage() {
                 (512) 555-0100
               </a>
               {' '}or{' '}
-              <a href="mailto:hotels@partyondelivery.com" className="text-gold-600 hover:text-gold-700">
-                hotels@partyondelivery.com
+              <a href="mailto:info@partyondelivery.com" className="text-gold-600 hover:text-gold-700">
+                info@partyondelivery.com
               </a>
             </p>
           </div>

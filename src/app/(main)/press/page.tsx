@@ -54,7 +54,7 @@ const mediaKit = {
   facts: [
     "Founded in 2020 in Austin, Texas",
     "Served over 5,000 events",
-    "500+ 5-star Google reviews",
+    "1000+ Deliveries, 4.9★",
     "First to offer AI party planning",
     "Licensed TABC provider",
     "Average delivery time: 27 minutes"
@@ -173,7 +173,7 @@ export default function PressPage() {
             </p>
             <div className="space-y-2 mb-6">
               <p className="text-dark">
-                <span className="font-semibold">Email:</span> press@partyondelivery.com
+                <span className="font-semibold">Email:</span> info@partyondelivery.com
               </p>
               <p className="text-dark">
                 <span className="font-semibold">Phone:</span> (737) 371-9700 ext. 3
@@ -182,7 +182,7 @@ export default function PressPage() {
                 <span className="font-semibold">Response Time:</span> Within 24 hours
               </p>
             </div>
-            <a href="mailto:press@partyondelivery.com" className="btn-primary">
+            <a href="mailto:info@partyondelivery.com" className="btn-primary">
               Contact Press Team
             </a>
           </div>

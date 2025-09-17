@@ -160,7 +160,7 @@ export default function TABCPage() {
               </li>
             </ul>
             <p className="text-xs text-white/60">
-              For questions about our licensing or compliance practices, contact compliance@partyondelivery.com
+              For questions about our licensing or compliance practices, contact info@partyondelivery.com
             </p>
           </div>
         </div>

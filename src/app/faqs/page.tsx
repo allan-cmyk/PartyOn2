@@ -246,7 +246,7 @@ export default function FAQsPage() {
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">CONTACT</h4>
               <ul className="space-y-2 text-gray-600 text-sm">
                 <li>Phone: (737) 371-9700</li>
-                <li>Email: hello@partyondelivery.com</li>
+                <li>Email: info@partyondelivery.com</li>
                 <li>Hours: 10am - 11pm Daily</li>
               </ul>
             </div>

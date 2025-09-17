@@ -127,8 +127,8 @@ function CheckoutSuccessContent() {
                 (512) 555-0123
               </a>
               {' '}or email{' '}
-              <a href="mailto:orders@partyondelivery.com" className="text-gold hover:underline">
-                orders@partyondelivery.com
+              <a href="mailto:info@partyondelivery.com" className="text-gold hover:underline">
+                info@partyondelivery.com
               </a>
             </p>
           </div>

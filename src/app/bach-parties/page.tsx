@@ -24,51 +24,50 @@ export default function BachPartiesPage() {
     }, 5000);
     return () => clearInterval(interval);
   }, [heroImages.length]);
-  const packages = [
+  const topPicks = [
     {
-      name: "Essential Celebration",
-      price: "From $599",
-      description: "Perfect start to your celebration weekend",
-      features: [
-        "Premium spirit selection",
-        "Champagne toast included",
-        "Mixers & garnishes",
-        "Delivery to any Austin venue",
-        "Up to 15 guests",
-        "4-hour service window"
+      name: "Austin Bach Starter",
+      price: "$299",
+      savings: "Save $50",
+      description: "Everything for 6-8 people to pregame before hitting 6th Street",
+      items: [
+        "1x Tito's Vodka (750ml)",
+        "1x Don Julio Blanco (750ml)",
+        "6x White Claw Variety Pack",
+        "Mixers: Cranberry, OJ, Lime juice",
+        "Party cups & napkins"
       ],
+      cta: "ORDER IN 30 SECONDS",
       featured: false
     },
     {
-      name: "VIP Experience",
-      price: "From $1,299",
-      description: "Elevate your celebration with luxury service",
-      features: [
-        "Ultra-premium spirits",
-        "Dedicated party concierge",
-        "Custom cocktail creation",
-        "Multiple venue delivery",
-        "Up to 30 guests",
-        "8-hour service window",
-        "Signature party favors",
-        "Professional bartender"
+      name: "Lake Travis Pack",
+      price: "$499",
+      savings: "Save $75",
+      description: "The boat party essentials - cold delivery to any dock or rental house",
+      items: [
+        "2x Tito's Vodka (750ml)",
+        "1x Casamigos Blanco (750ml)",
+        "12x White Claw + 12x Truly",
+        "Full mixer set + ice packs",
+        "Waterproof cooler included"
       ],
+      cta: "ORDER IN 30 SECONDS",
       featured: true
     },
     {
-      name: "Ultimate Weekend",
-      price: "From $2,499",
-      description: "Complete weekend party experience",
-      features: [
-        "Full weekend coverage",
-        "Multiple event locations",
-        "Team of bartenders",
-        "Unlimited premium spirits",
-        "Up to 50 guests",
-        "48-hour service window",
-        "Luxury transportation bar",
-        "Exclusive VIP treatment"
+      name: "Rainey Street Crawler",
+      price: "$399",
+      savings: "Save $60",
+      description: "Perfect pre-gaming setup for hitting the Rainey Street bars",
+      items: [
+        "1x Tito's Vodka (750ml)",
+        "1x Espolòn Tequila (750ml)",
+        "1x Jameson Irish Whiskey (750ml)",
+        "18x assorted seltzers",
+        "Energy drinks & mixers"
       ],
+      cta: "ORDER IN 30 SECONDS",
       featured: false
     }
   ];
@@ -122,12 +121,12 @@ export default function BachPartiesPage() {
           className="relative text-center text-white z-10 max-w-4xl mx-auto px-6 md:px-8"
         >
           <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
-            UNFORGETTABLE
-            <span className="block text-gold-400 mt-2">CELEBRATIONS</span>
+            Zero Store Runs for
+            <span className="block text-gold-400 mt-2">AUSTIN BACH GROUPS</span>
           </h1>
           <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
           <p className="text-lg md:text-xl font-light tracking-[0.1em] text-gray-200 mb-8">
-            Bachelor & Bachelorette Parties Elevated
+            Cold delivery with precise timing to your hotel, Airbnb, party bus, or boat—everything ready to pour.
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
             <Link href="/bach-parties/products">
@@ -135,163 +134,324 @@ export default function BachPartiesPage() {
                 ORDER NOW
               </button>
             </Link>
-            <Link href="/bach-parties/packages/ultimate">
+            <a href="tel:7373719700">
               <button className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
-                VIEW PACKAGES
+                SCHEDULE 15-MIN PLANNING CALL
               </button>
-            </Link>
+            </a>
           </div>
+          <p className="text-sm text-gray-300 mt-4 tracking-[0.05em]">
+            TABC-licensed • Fully insured • 1000+ Deliveries, 4.9★
+          </p>
         </motion.div>
       </section>
 
-      {/* Introduction */}
+      {/* Choose Your Path */}
       <section className="py-24 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-8 text-center">
+        <div className="max-w-6xl mx-auto px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
-              Celebrate in Distinguished Style
-            </h2>
-            <p className="text-lg text-gray-600 leading-relaxed">
-              Your last celebration before the big day deserves exceptional service. 
-              From Rainey Street revelry to Hill Country hideaways, we ensure your 
-              party flows seamlessly with premium spirits and professional attention 
-              to every detail.
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Austin Destinations */}
-      <section className="py-24">
-        <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
-              Austin&apos;s Premier Party Destinations
+            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+              Choose Your Path
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Two ways to get exactly what your bach group needs—both guaranteed cold and on time.
+            </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                area: "Rainey Street",
-                description: "Historic bungalows turned trendy bars, perfect for bar hopping celebrations",
-                image: "/images/destinations/rainey-street-nightlife.webp"
-              },
-              {
-                area: "6th Street",
-                description: "Austin's entertainment district with endless nightlife options",
-                image: "/images/destinations/6th-street-entertainment.webp"
-              },
-              {
-                area: "The Domain",
-                description: "Upscale shopping and dining for sophisticated celebrations",
-                image: "/images/destinations/the-domain-upscale.webp"
-              },
-              {
-                area: "East Austin",
-                description: "Hip breweries and unique venues for memorable experiences",
-                image: "/images/destinations/east-austin-brewery.webp"
-              },
-              {
-                area: "Lake Travis",
-                description: "Waterfront venues and boat parties for sun-soaked celebrations",
-                image: "/images/destinations/lake-travis-boats.webp"
-              },
-              {
-                area: "Hill Country",
-                description: "Wineries and ranches for exclusive private events",
-                image: "/images/destinations/hill-country-winery.webp"
-              }
-            ].map((destination, index) => (
-              <LuxuryCard
-                key={destination.area}
-                backgroundImage={destination.image}
-                index={index}
-                className="rounded-lg"
-              >
-                <div className="p-6 text-center">
-                  <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
-                    {destination.area}
-                  </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    {destination.description}
-                  </p>
-                </div>
-              </LuxuryCard>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Service Highlights */}
-      <section className="py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Delivery-Only Path */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              className="space-y-8"
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="bg-white rounded-lg p-8 shadow-lg border-2 border-gold-400 relative"
             >
-              <div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
-                  Multi-Venue Coordination
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Seamless service across multiple locations. From hotel suites to party 
-                  buses, restaurants to private venues, we ensure premium spirits follow 
-                  your celebration wherever it leads.
-                </p>
+              <div className="absolute -top-4 left-8 bg-gold-400 text-white px-4 py-2 rounded-full text-sm font-medium tracking-wider">
+                MOST POPULAR
               </div>
-              <div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
-                  Customized Experiences
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Every celebration is unique. We craft personalized drink menus, coordinate 
-                  with your itinerary, and ensure every toast is memorable with selections 
-                  tailored to your group&apos;s preferences.
-                </p>
-              </div>
-              <div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
-                  Professional Discretion
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Celebrate with confidence. Our professional team provides impeccable service 
-                  while maintaining the perfect balance of attentiveness and discretion for 
-                  your special occasion.
-                </p>
-              </div>
+              <h3 className="font-serif text-2xl md:text-3xl text-gray-900 mb-4 tracking-[0.1em]">
+                Delivery-Only
+                <span className="block text-lg text-gray-600 font-sans tracking-normal">(fastest)</span>
+              </h3>
+              <ul className="space-y-3 mb-8 text-gray-700">
+                <li className="flex items-start">
+                  <span className="text-gold-400 mr-3 mt-1">•</span>
+                  Order from our curated bach party bundles
+                </li>
+                <li className="flex items-start">
+                  <span className="text-gold-400 mr-3 mt-1">•</span>
+                  Cold delivery to your exact location
+                </li>
+                <li className="flex items-start">
+                  <span className="text-gold-400 mr-3 mt-1">•</span>
+                  48-hour advance booking
+                </li>
+                <li className="flex items-start">
+                  <span className="text-gold-400 mr-3 mt-1">•</span>
+                  Text updates with driver ETA
+                </li>
+              </ul>
+              <button className="w-full bg-gold-400 text-white font-medium py-4 px-6 rounded-lg hover:bg-gold-500 transition-colors tracking-[0.1em]">
+                ORDER NOW
+              </button>
             </motion.div>
+
+            {/* Concierge Path */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              className="relative h-[500px]"
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="bg-white rounded-lg p-8 shadow-lg"
             >
-              <Image
-                src="/images/services/bach-parties/bachelorette-champagne-tower.webp"
-                alt="Celebration Service"
-                fill
-                className="object-cover rounded-lg"
-              />
+              <h3 className="font-serif text-2xl md:text-3xl text-gray-900 mb-4 tracking-[0.1em]">
+                Concierge / Custom
+                <span className="block text-lg text-gray-600 font-sans tracking-normal">(full-service)</span>
+              </h3>
+              <ul className="space-y-3 mb-8 text-gray-700">
+                <li className="flex items-start">
+                  <span className="text-gold-400 mr-3 mt-1">•</span>
+                  Custom bar setup and mixers
+                </li>
+                <li className="flex items-start">
+                  <span className="text-gold-400 mr-3 mt-1">•</span>
+                  Multi-location coordination
+                </li>
+                <li className="flex items-start">
+                  <span className="text-gold-400 mr-3 mt-1">•</span>
+                  Bartender and server options
+                </li>
+                <li className="flex items-start">
+                  <span className="text-gold-400 mr-3 mt-1">•</span>
+                  Same-day availability
+                </li>
+              </ul>
+              <button className="w-full border-2 border-gold-400 text-gold-400 font-medium py-4 px-6 rounded-lg hover:bg-gold-400 hover:text-white transition-colors tracking-[0.1em]">
+                SCHEDULE 15-MIN PLANNING CALL
+              </button>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Packages */}
+      {/* Austin Bach Party Logistics */}
+      <section className="py-24">
+        <div className="max-w-7xl mx-auto px-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+              We Deliver Everywhere Bach Groups Go
+            </h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Cold alcohol delivered to any Austin location with 48-hour notice. Here's what bach groups book most.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                area: "Downtown Hotels",
+                details: "Hilton, Fairmont, JW Marriott",
+                deliveryInfo: "Lobby delivery • 48hr notice",
+                minOrder: "$150 minimum",
+                popular: true
+              },
+              {
+                area: "Rainey Street Airbnbs",
+                details: "Historic houses • Walking to bars",
+                deliveryInfo: "Front door • Park easily",
+                minOrder: "$100 minimum",
+                popular: true
+              },
+              {
+                area: "Lake Travis Rentals",
+                details: "Lakefront houses • Boat access",
+                deliveryInfo: "Dock or house delivery",
+                minOrder: "$200 minimum",
+                popular: false
+              },
+              {
+                area: "Party Buses",
+                details: "Coordination with driver",
+                deliveryInfo: "Meet at pickup location",
+                minOrder: "$150 minimum",
+                popular: false
+              },
+              {
+                area: "East Austin Studios",
+                details: "Loft spaces • Photo venues",
+                deliveryInfo: "Building access required",
+                minOrder: "$100 minimum",
+                popular: false
+              },
+              {
+                area: "Hill Country Venues",
+                details: "Wineries • Event spaces",
+                deliveryInfo: "Venue coordination",
+                minOrder: "$300 minimum",
+                popular: false
+              }
+            ].map((location, index) => (
+              <motion.div
+                key={location.area}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.1 }}
+                className={`bg-white rounded-lg p-6 shadow-lg border-l-4 ${
+                  location.popular ? 'border-gold-400' : 'border-gray-200'
+                }`}
+              >
+                {location.popular && (
+                  <div className="mb-4">
+                    <span className="bg-gold-100 text-gold-800 text-xs font-medium px-2 py-1 rounded">
+                      MOST POPULAR
+                    </span>
+                  </div>
+                )}
+                
+                <h3 className="font-serif text-lg text-gray-900 mb-2 tracking-[0.1em]">
+                  {location.area}
+                </h3>
+                
+                <p className="text-sm text-gray-600 mb-4">
+                  {location.details}
+                </p>
+                
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center text-gray-700">
+                    <svg className="w-4 h-4 text-gold-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    {location.deliveryInfo}
+                  </div>
+                  
+                  <div className="flex items-center text-gray-700">
+                    <svg className="w-4 h-4 text-gold-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                    </svg>
+                    {location.minOrder}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+          
+          <div className="mt-12 bg-gray-50 rounded-lg p-8 text-center">
+            <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
+              Not Sure About Timing or Location?
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Our bach party coordinators know Austin like the back of their hand. Get a custom delivery plan.
+            </p>
+            <Link href="/contact">
+              <button className="bg-gold-400 text-white px-6 py-3 rounded-lg hover:bg-gold-500 transition-colors tracking-[0.1em]">
+                TALK TO A COORDINATOR
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Bach-Specific Benefits */}
+      <section className="py-24 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+              What Bach Groups Tell Us
+            </h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Real outcomes from 500+ Austin bach parties we've delivered to over the past 3 years.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="bg-white rounded-lg p-8 shadow-lg text-center"
+            >
+              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
+                "Saved Us 4+ Hours"
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                No Walmart runs, no gas station stops, no warm beer crisis at 2 PM. Everything cold and ready when you arrive.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="bg-white rounded-lg p-8 shadow-lg text-center"
+            >
+              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
+                "Zero Group Drama"
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                No arguing about who pays for what or who's buying the next round. Everyone knows the plan and cost upfront.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="bg-white rounded-lg p-8 shadow-lg text-center"
+            >
+              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
+                "Actually Relaxed"
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                The maid of honor gets to actually enjoy the party instead of playing logistics coordinator all weekend.
+              </p>
+            </motion.div>
+          </div>
+
+          <div className="mt-16 bg-white rounded-lg p-8 shadow-lg">
+            <div className="text-center">
+              <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
+                Real Review from Last Weekend
+              </h3>
+              <blockquote className="text-lg text-gray-700 italic mb-4 max-w-4xl mx-auto">
+                "OMG thank you!! We were staying at different Airbnbs and moving between Lake Travis and downtown, and you guys somehow had everything waiting for us at every stop. The bride had no idea we coordinated this and she cried happy tears when the champagne showed up at the boat dock. 10/10 would book again for my own bach!"
+              </blockquote>
+              <cite className="text-gold-600 font-medium">— Sarah M., Maid of Honor (Austin bach party, March 2024)</cite>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Top Picks - 1-Click Bundles */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
           <motion.div 
@@ -301,101 +461,195 @@ export default function BachPartiesPage() {
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
-              Celebration Packages
+              Top Picks for Bach Groups
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Tailored experiences for bachelor and bachelorette parties
+            <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+              Skip the guesswork. These bundles are exactly what Austin bach groups order most—ready to add to cart in 30 seconds.
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {packages.map((pkg, index) => (
-              <LuxuryCard
-                key={pkg.name}
-                featured={pkg.featured}
-                index={index + 3}
-                className="rounded-lg"
+            {topPicks.map((bundle, index) => (
+              <motion.div
+                key={bundle.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.1 }}
+                className={`bg-white rounded-lg shadow-lg p-6 relative ${
+                  bundle.featured ? 'border-2 border-gold-400 scale-105' : 'border border-gray-200'
+                }`}
               >
-                <div className="p-8">
-                  {pkg.featured && (
-                    <div className="text-center mb-4">
-                      <span className="text-gold-600 text-sm tracking-[0.15em]">MOST POPULAR</span>
-                    </div>
-                  )}
-                  <h3 className="font-serif text-2xl text-gray-900 mb-2 tracking-[0.1em] text-center">
-                    {pkg.name}
-                  </h3>
-                  <p className="text-4xl text-gold-600 font-semibold text-center mb-4">
-                    {pkg.price}
-                  </p>
-                  <p className="text-gray-600 text-center mb-8">
-                    {pkg.description}
-                  </p>
-                  <ul className="space-y-3 mb-8">
-                    {pkg.features.map((feature, i) => (
-                      <li key={i} className="flex items-start">
-                        <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                        <span className="text-gray-700 text-sm">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Link href={`/bach-parties/packages/${pkg.name.toLowerCase().replace(/ /g, '-')}`}>
-                    <button className={`w-full py-3 tracking-[0.15em] text-sm transition-all duration-300 ${
-                      pkg.featured 
-                        ? 'bg-gold-600 text-white hover:bg-gold-700' 
-                        : 'border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white'
-                    }`}>
-                      CUSTOMIZE PACKAGE
-                    </button>
-                  </Link>
+                {bundle.featured && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gold-400 text-white px-4 py-2 rounded-full text-sm font-medium tracking-wider">
+                    MOST POPULAR
+                  </div>
+                )}
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="font-serif text-xl text-gray-900 mb-1 tracking-[0.1em]">
+                      {bundle.name}
+                    </h3>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {bundle.price}
+                    </p>
+                  </div>
+                  <span className="bg-green-100 text-green-800 text-sm font-medium px-2 py-1 rounded">
+                    {bundle.savings}
+                  </span>
                 </div>
-              </LuxuryCard>
+                
+                <p className="text-gray-600 text-sm mb-6">
+                  {bundle.description}
+                </p>
+                
+                <div className="space-y-2 mb-6">
+                  <h4 className="text-sm font-medium text-gray-900 mb-3">What's included:</h4>
+                  {bundle.items.map((item, i) => (
+                    <div key={i} className="flex items-start text-sm text-gray-700">
+                      <span className="text-gold-400 mr-2 mt-1">•</span>
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+                
+                <button className={`w-full py-3 px-4 rounded-lg font-medium text-sm tracking-wider transition-colors ${
+                  bundle.featured
+                    ? 'bg-gold-400 text-white hover:bg-gold-500'
+                    : 'bg-gray-900 text-white hover:bg-gray-800'
+                }`}>
+                  {bundle.cta}
+                </button>
+                
+                <p className="text-xs text-gray-500 text-center mt-3">
+                  48-hour delivery • Austin metro only
+                </p>
+              </motion.div>
             ))}
+          </div>
+          
+          <div className="text-center mt-12">
+            <button className="border-2 border-gold-400 text-gold-400 px-8 py-3 rounded-lg hover:bg-gold-400 hover:text-white transition-colors tracking-[0.1em]">
+              VIEW ALL PRODUCTS →
+            </button>
           </div>
         </div>
       </section>
 
-      {/* Add-On Services */}
+      {/* Popular Add-Ons */}
       <section className="py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-8 md:px-12">
+        <div className="max-w-6xl mx-auto px-8">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="font-serif font-light text-3xl text-gray-900 mb-4 tracking-[0.1em]">
-              Enhance Your Celebration
+            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+              Popular Last-Minute Adds
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              78% of bach groups add at least one of these. Order now or add during delivery.
+            </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
             {[
-              { service: "Party Bus Bar", price: "+$299", image: "/images/addons/party-bus-bar.webp" },
-              { service: "Private Mixologist", price: "+$399", image: "/images/addons/private-mixologist.webp" },
-              { service: "Champagne Tower", price: "+$199", image: "/images/addons/champagne-tower.webp" },
-              { service: "Recovery Brunch", price: "+$249", image: "/images/addons/recovery-brunch.webp" }
+              {
+                title: "Ice + Cooler Delivery",
+                price: "+$49",
+                description: "20lbs ice + premium cooler delivered with your order",
+                benefit: "No melted ice disasters",
+                popular: true,
+                cta: "ADD TO CART"
+              },
+              {
+                title: "Emergency Backup Order",
+                price: "+$99",
+                description: "Extra bottles on standby for same-day delivery if needed",
+                benefit: "Peace of mind if you run out",
+                popular: true,
+                cta: "ADD BACKUP"
+              },
+              {
+                title: "Morning-After Recovery Pack",
+                price: "+$79",
+                description: "Electrolytes, coffee, bagels delivered 9 AM next day",
+                benefit: "Everyone remembers you're the hero",
+                popular: false,
+                cta: "ADD RECOVERY"
+              },
+              {
+                title: "Multi-Stop Coordination",
+                price: "+$150",
+                description: "We coordinate deliveries to 2-3 different locations",
+                benefit: "Perfect for boat + hotel combos",
+                popular: false,
+                cta: "ADD COORDINATION"
+              }
             ].map((addon, index) => (
-              <LuxuryCard
-                key={addon.service}
-                backgroundImage={addon.image}
-                index={index}
-                className="rounded-lg"
+              <motion.div
+                key={addon.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.1 }}
+                className={`bg-white rounded-lg p-6 shadow-lg ${
+                  addon.popular ? 'border-2 border-gold-400' : 'border border-gray-200'
+                }`}
               >
-                <div className="p-6 text-center">
-                  <h4 className="font-light text-gray-900 mb-2 tracking-[0.1em]">
-                    {addon.service}
-                  </h4>
-                  <p className="text-gold-600 text-2xl font-semibold">
+                {addon.popular && (
+                  <div className="mb-4">
+                    <span className="bg-gold-100 text-gold-800 text-sm font-medium px-3 py-1 rounded-full">
+                      MOST POPULAR
+                    </span>
+                  </div>
+                )}
+                
+                <div className="flex justify-between items-start mb-4">
+                  <h3 className="font-serif text-xl text-gray-900 tracking-[0.1em]">
+                    {addon.title}
+                  </h3>
+                  <span className="text-2xl font-bold text-gray-900">
                     {addon.price}
+                  </span>
+                </div>
+                
+                <p className="text-gray-600 mb-4">
+                  {addon.description}
+                </p>
+                
+                <div className="bg-green-50 border-l-4 border-green-400 p-3 mb-6">
+                  <p className="text-green-800 text-sm font-medium">
+                    Why bach groups love this: {addon.benefit}
                   </p>
                 </div>
-              </LuxuryCard>
+                
+                <button className={`w-full py-3 px-4 rounded-lg font-medium text-sm tracking-wider transition-colors ${
+                  addon.popular
+                    ? 'bg-gold-400 text-white hover:bg-gold-500'
+                    : 'border border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-white'
+                }`}>
+                  {addon.cta}
+                </button>
+              </motion.div>
             ))}
+          </div>
+          
+          <div className="bg-white rounded-lg p-8 shadow-lg text-center">
+            <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
+              Can't Decide? Get Them All
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Bundle all 4 add-ons and save $50. Most bach groups say "I wish we had ordered everything."
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <div className="text-center">
+                <span className="text-sm text-gray-500 line-through">$377 individual</span>
+                <span className="block text-2xl font-bold text-gray-900">$327 bundled</span>
+              </div>
+              <button className="bg-gold-400 text-white px-8 py-3 rounded-lg hover:bg-gold-500 transition-colors tracking-[0.1em]">
+                ADD COMPLETE BUNDLE
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -421,6 +675,78 @@ export default function BachPartiesPage() {
               Bachelorette Weekend, September 2023
             </p>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Bach Party FAQ */}
+      <section className="py-24 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+              Bach Party Questions
+            </h2>
+            <p className="text-lg text-gray-600">
+              Quick answers to the top 5 things every bach group asks us.
+            </p>
+          </motion.div>
+
+          <div className="space-y-6">
+            {[
+              {
+                question: "Can you deliver to our Airbnb AND the party bus?",
+                answer: "Yes! We coordinate multi-location deliveries all the time. Add our Multi-Stop Coordination service (+$150) and we'll handle timing between locations."
+              },
+              {
+                question: "What if we run out of alcohol during the party?",
+                answer: "Book our Emergency Backup Order (+$99) and we'll have extra bottles on standby for same-day delivery. Most bach groups add this for peace of mind."
+              },
+              {
+                question: "How cold will the drinks be when delivered?",
+                answer: "Ice cold. We use insulated coolers and deliver within 30 minutes of leaving our facility. Add Ice + Cooler service (+$49) to keep everything cold all night."
+              },
+              {
+                question: "Can we split payment among the group?",
+                answer: "One person books and pays, then you sort out splitting costs yourselves. This actually reduces group drama according to our customers."
+              },
+              {
+                question: "What if weather ruins our Lake Travis plans?",
+                answer: "We'll coordinate with you to redirect delivery to your backup location at no extra charge. Just give us 4+ hours notice for location changes."
+              }
+            ].map((faq, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.1 }}
+                className="bg-white rounded-lg p-6 shadow-lg"
+              >
+                <h3 className="font-serif text-lg text-gray-900 mb-3 tracking-[0.1em]">
+                  {faq.question}
+                </h3>
+                <p className="text-gray-600 leading-relaxed">
+                  {faq.answer}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-12 text-center bg-white rounded-lg p-8 shadow-lg">
+            <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
+              Still Have Questions?
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Our bach party coordinators have planned 500+ Austin celebrations. 
+              Get answers to your specific situation.
+            </p>
+            <button className="bg-gold-400 text-white px-6 py-3 rounded-lg hover:bg-gold-500 transition-colors tracking-[0.1em]">
+              TEXT US: (737) 371-9700
+            </button>
+          </div>
         </div>
       </section>
 
@@ -465,7 +791,7 @@ export default function BachPartiesPage() {
                 className="h-16 w-auto mb-4"
               />
               <p className="text-gray-600 text-sm leading-relaxed">
-                Austin&apos;s premier celebration service since 2020.
+                Austin's premier celebration service since 2020.
               </p>
             </div>
             <div>
@@ -490,7 +816,7 @@ export default function BachPartiesPage() {
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">CONTACT</h4>
               <ul className="space-y-2 text-gray-600 text-sm">
                 <li>Phone: (737) 371-9700</li>
-                <li>Email: party@partyondelivery.com</li>
+                <li>Email: info@partyondelivery.com</li>
                 <li>Hours: 10am - 11pm Daily</li>
               </ul>
             </div>

@@ -204,7 +204,7 @@ export default function CareersPage() {
             <p className="text-dark/70 mb-6">
               We&apos;re always looking for talented people who share our vision. Send us your resume!
             </p>
-            <a href="mailto:careers@partyondelivery.com" className="btn-outline">
+            <a href="mailto:info@partyondelivery.com" className="btn-outline">
               Send General Application
             </a>
           </div>

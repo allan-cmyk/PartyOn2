@@ -115,8 +115,8 @@ export default function ContactPage() {
                 <p className="text-gray-600 mb-4">
                   Detailed inquiries and custom requests
                 </p>
-                <a href="mailto:hello@partyondelivery.com" className="text-gold-600 hover:text-gold-700 tracking-[0.1em]">
-                  hello@partyondelivery.com
+                <a href="mailto:info@partyondelivery.com" className="text-gold-600 hover:text-gold-700 tracking-[0.1em]">
+                  info@partyondelivery.com
                 </a>
               </div>
             </LuxuryCard>
@@ -404,7 +404,7 @@ export default function ContactPage() {
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">CONTACT</h4>
               <ul className="space-y-2 text-gray-600 text-sm">
                 <li>Phone: (737) 371-9700</li>
-                <li>Email: hello@partyondelivery.com</li>
+                <li>Email: info@partyondelivery.com</li>
                 <li>Hours: 10am - 11pm Daily</li>
               </ul>
             </div>
