@@ -664,7 +664,7 @@ function ProductsContent() {
               <ul className="space-y-2 text-gray-600 text-sm">
                 <li>Phone: (737) 371-9700</li>
                 <li>Email: info@partyondelivery.com</li>
-                <li>Hours: 10am - 11pm Daily</li>
+                <li>Hours: 10am - 9pm (except Sundays)</li>
               </ul>
             </div>
           </div>

@@ -27,7 +27,7 @@ export default function FAQsPage() {
         },
         {
           q: "What are your delivery hours?",
-          a: "We deliver daily from 10am to 11pm. Special arrangements can be made for early morning or late-night events with advance notice."
+          a: "We deliver 10am - 9pm (except Sundays). Special arrangements can be made for early morning or late-night events with advance notice."
         }
       ]
     },
@@ -247,7 +247,7 @@ export default function FAQsPage() {
               <ul className="space-y-2 text-gray-600 text-sm">
                 <li>Phone: (737) 371-9700</li>
                 <li>Email: info@partyondelivery.com</li>
-                <li>Hours: 10am - 11pm Daily</li>
+                <li>Hours: 10am - 9pm (except Sundays)</li>
               </ul>
             </div>
           </div>
