@@ -118,11 +118,11 @@ export default function WeddingsPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="relative text-center text-white z-10 max-w-4xl mx-auto px-8"
+          className="relative text-center text-white z-10 max-w-4xl mx-auto px-8 mt-[120px] mb-[80px] md:mt-0 md:mb-0 pb-20"
         >
           <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
-            <span className="block text-white">Your Austin Wedding,</span>
-            <span className="block text-gold-400">PERFECTLY SERVED</span>
+            Your Austin Wedding,
+            <span className="block text-gold-400 mt-2">PERFECTLY SERVED</span>
           </h1>
           <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
           <p className="text-lg md:text-xl font-light tracking-[0.1em] text-gray-200 mb-8">
