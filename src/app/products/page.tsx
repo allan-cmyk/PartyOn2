@@ -10,7 +10,7 @@ import ProductCard from '@/components/shopify/ProductCard';
 import CompactProductCard from '@/components/shopify/CompactProductCard';
 import MobileProductCard from '@/components/mobile/MobileProductCard';
 import MobileFilterDrawer from '@/components/mobile/MobileFilterDrawer';
-import { useProducts } from '@/lib/shopify/hooks/useProducts';
+import { useCollectionProducts } from '@/lib/shopify/hooks/useCollectionProducts';
 import { shopifyFetch } from '@/lib/shopify/client';
 import { SEARCH_PRODUCTS_QUERY } from '@/lib/shopify/queries/products';
 import { ShopifyProduct } from '@/lib/shopify/types';
@@ -23,7 +23,7 @@ import { getProductCategory, FILTER_OPTIONS, SHOPIFY_COLLECTIONS, isInCollection
 function ProductsContent() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('search');
-  const { products, loading, error, hasNextPage, loadMore } = useProducts(50, false); // Changed back to manual loading for infinite scroll
+  const { products, loading, error, hasNextPage, loadMore } = useCollectionProducts(collectionFilter, 30); // Optimized collection loading
   const [searchResults, setSearchResults] = useState<ShopifyProduct[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [filter, setFilter] = useState('all');
@@ -115,10 +115,10 @@ function ProductsContent() {
   const filteredProducts = displayProducts.filter(product => {
     const price = parseFloat(product.priceRange.minVariantPrice.amount);
 
-    // Collection filter
-    if (collectionFilter) {
-      if (!isInCollection(product, collectionFilter)) return false;
-    }
+    // Collection filter is now handled by the API query, so skip this check
+    // if (collectionFilter) {
+    //   if (!isInCollection(product, collectionFilter)) return false;
+    // }
 
     // Main category filter using Shopify data (works alongside collection filter)
     if (filter !== 'all') {
@@ -266,7 +266,7 @@ function ProductsContent() {
                 <button
                   onClick={() => {
                     setCollectionFilter(null);
-                    // Don't reset category filter
+                    setFilter('all');
                   }}
                   className="text-sm text-gold-600 hover:text-gold-700 tracking-[0.1em]"
                 >
@@ -281,18 +281,24 @@ function ProductsContent() {
                   <button
                     key={collection.handle}
                     onClick={() => {
-                      setCollectionFilter(collection.handle);
-                      // Don't reset category filter - allow both to work together
+                      if (collectionFilter === collection.handle) {
+                        setCollectionFilter(null); // Toggle off if same collection clicked
+                      } else {
+                        setCollectionFilter(collection.handle);
+                      }
+                      setFilter('all'); // Reset category filter when collection changes
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
                     className={`
-                      px-4 py-3 text-center border transition-all rounded-lg
-                      ${isActive 
-                        ? `${collection.colors.bgActive} ${collection.colors.textActive} ${collection.colors.borderActive}` 
-                        : `${collection.colors.bg} ${collection.colors.text} ${collection.colors.border}`
+                      px-4 py-3 text-center border transition-all rounded-lg relative
+                      ${isActive
+                        ? `${collection.colors.bgActive} ${collection.colors.textActive} ${collection.colors.borderActive} shadow-lg scale-105`
+                        : `${collection.colors.bg} ${collection.colors.text} ${collection.colors.border} hover:scale-102`
                       }
                       ${isMobile ? 'text-xs' : 'text-sm'}
                       tracking-[0.1em] font-medium
                     `}
+                    disabled={loading && collectionFilter !== collection.handle}
                   >
                     {collection.label.toUpperCase()}
                   </button>
@@ -470,7 +476,15 @@ function ProductsContent() {
       {/* Products Grid */}
       <section className={isCompactView ? "py-8" : "py-16"}>
         <div className={isCompactView ? "max-w-[1400px] mx-auto px-6" : "max-w-7xl mx-auto px-8"}>
-          {(loading || searchLoading) && products.length === 0 ? (
+          {loading && collectionFilter ? (
+            // Show a cleaner loading state when switching collections
+            <div className="min-h-[400px] flex items-center justify-center">
+              <div className="text-center">
+                <div className="inline-block animate-spin rounded-full h-10 w-10 border-2 border-gold-600 border-t-transparent"></div>
+                <p className="mt-4 text-gray-600 font-light tracking-[0.1em]">Loading collection...</p>
+              </div>
+            </div>
+          ) : (loading || searchLoading) && products.length === 0 ? (
             <div className="text-center py-12">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gold-600"></div>
               <p className="mt-4 text-gray-600">Loading products...</p>
