@@ -19,7 +19,6 @@ import AgeVerificationModal from '@/components/AgeVerificationModal';
 import ProductModal from '@/components/ProductModal';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { getProductCategory, FILTER_OPTIONS, SHOPIFY_COLLECTIONS, isInCollection, getUniqueTags } from '@/lib/shopify/categories';
-import { CategoryIcon } from '@/components/CategoryIcons';
 
 function ProductsContent() {
   const searchParams = useSearchParams();
