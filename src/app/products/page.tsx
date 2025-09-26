@@ -296,21 +296,6 @@ function ProductsContent() {
                 );
               })}
             </div>
-            {(collectionFilter || filter !== 'all') && (
-              <div className="mt-4 text-sm text-gray-600">
-                Active filters:
-                {collectionFilter && (
-                  <span className="ml-2 px-2 py-1 bg-gold-100 text-gold-800 rounded-md">
-                    {SHOPIFY_COLLECTIONS.find(c => c.handle === collectionFilter)?.label}
-                  </span>
-                )}
-                {filter !== 'all' && (
-                  <span className="ml-2 px-2 py-1 bg-gray-100 text-gray-800 rounded-md">
-                    {FILTER_OPTIONS.mainCategories.find(c => c.value === filter)?.label}
-                  </span>
-                )}
-              </div>
-            )}
           </div>
         </section>
       )}

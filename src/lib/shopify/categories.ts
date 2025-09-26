@@ -104,9 +104,35 @@ export function getUniqueProductTypes(products: Array<{ productType?: string }>)
 
 // Actual Shopify collections for quick filters with color schemes
 export const SHOPIFY_COLLECTIONS = [
-  { 
-    handle: 'beer-collection', 
-    label: 'Tailgate & Beer', 
+  {
+    handle: 'bachelor-favorites',
+    label: 'Bachelor Favorites',
+    category: 'partySupplies',
+    colors: {
+      bg: 'bg-blue-50 hover:bg-blue-100',
+      bgActive: 'bg-blue-600',
+      text: 'text-blue-700',
+      textActive: 'text-white',
+      border: 'border-blue-400 hover:border-blue-500',
+      borderActive: 'border-blue-600'
+    }
+  },
+  {
+    handle: 'bachelorette-booze',
+    label: 'Bachelorette Favorites',
+    category: 'partySupplies',
+    colors: {
+      bg: 'bg-pink-50 hover:bg-pink-100',
+      bgActive: 'bg-pink-600',
+      text: 'text-pink-700',
+      textActive: 'text-white',
+      border: 'border-pink-400 hover:border-pink-500',
+      borderActive: 'border-pink-600'
+    }
+  },
+  {
+    handle: 'tailgate-beer',
+    label: 'Beers',
     category: 'beer',
     colors: {
       bg: 'bg-amber-50 hover:bg-amber-100',
@@ -117,22 +143,35 @@ export const SHOPIFY_COLLECTIONS = [
       borderActive: 'border-amber-600'
     }
   },
-  { 
-    handle: 'seltzers-wine-champagne', 
-    label: 'Bubbles & Celebration', 
+  {
+    handle: 'seltzer-collection',
+    label: 'Seltzers',
     category: 'seltzersChamps',
     colors: {
-      bg: 'bg-pink-50 hover:bg-pink-100',
-      bgActive: 'bg-pink-600',
-      text: 'text-pink-700',
+      bg: 'bg-cyan-50 hover:bg-cyan-100',
+      bgActive: 'bg-cyan-600',
+      text: 'text-cyan-700',
       textActive: 'text-white',
-      border: 'border-pink-400 hover:border-pink-500',
-      borderActive: 'border-pink-600'
+      border: 'border-cyan-400 hover:border-cyan-500',
+      borderActive: 'border-cyan-600'
     }
   },
-  { 
-    handle: 'spirits', 
-    label: 'Premium Spirits', 
+  {
+    handle: 'champagne',
+    label: 'Wine and Champagne',
+    category: 'seltzersChamps',
+    colors: {
+      bg: 'bg-purple-50 hover:bg-purple-100',
+      bgActive: 'bg-purple-600',
+      text: 'text-purple-700',
+      textActive: 'text-white',
+      border: 'border-purple-400 hover:border-purple-500',
+      borderActive: 'border-purple-600'
+    }
+  },
+  {
+    handle: 'spirits',
+    label: 'Spirits',
     category: 'liquor',
     colors: {
       bg: 'bg-slate-50 hover:bg-slate-100',
@@ -143,43 +182,17 @@ export const SHOPIFY_COLLECTIONS = [
       borderActive: 'border-slate-700'
     }
   },
-  { 
-    handle: 'ready-to-drink', 
-    label: 'Ready to Drink', 
-    category: 'cocktails',
+  {
+    handle: 'mixers-non-alcoholic',
+    label: 'Mixers & Non-Alcoholic',
+    category: 'mixersNA',
     colors: {
-      bg: 'bg-teal-50 hover:bg-teal-100',
-      bgActive: 'bg-teal-600',
-      text: 'text-teal-700',
+      bg: 'bg-green-50 hover:bg-green-100',
+      bgActive: 'bg-green-600',
+      text: 'text-green-700',
       textActive: 'text-white',
-      border: 'border-teal-400 hover:border-teal-500',
-      borderActive: 'border-teal-600'
-    }
-  },
-  { 
-    handle: 'bachelorette-supplies', 
-    label: 'Bachelorette Party', 
-    category: 'partySupplies',
-    colors: {
-      bg: 'bg-purple-50 hover:bg-purple-100',
-      bgActive: 'bg-purple-600',
-      text: 'text-purple-700',
-      textActive: 'text-white',
-      border: 'border-purple-400 hover:border-purple-500',
-      borderActive: 'border-purple-600'
-    }
-  },
-  { 
-    handle: 'disco-collection', 
-    label: 'Disco Party', 
-    category: 'partySupplies',
-    colors: {
-      bg: 'bg-indigo-50 hover:bg-indigo-100',
-      bgActive: 'bg-indigo-600',
-      text: 'text-indigo-700',
-      textActive: 'text-white',
-      border: 'border-indigo-400 hover:border-indigo-500',
-      borderActive: 'border-indigo-600'
+      border: 'border-green-400 hover:border-green-500',
+      borderActive: 'border-green-600'
     }
   }
 ];
