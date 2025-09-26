@@ -1,0 +1,21 @@
+# https://partyondelivery.com/robots.txt
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /account/
+Disallow: /checkout/
+Disallow: /group/dashboard
+
+# Sitemap
+Sitemap: https://partyondelivery.com/sitemap.xml
+
+# Crawl-delay for bots
+User-agent: SemrushBot
+Crawl-delay: 10
+
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: MJ12bot
+Disallow: /

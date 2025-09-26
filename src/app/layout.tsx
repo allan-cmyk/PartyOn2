@@ -6,6 +6,7 @@ import { CartProvider } from "@/contexts/CartContext";
 import { CustomerProvider } from "@/contexts/CustomerContext";
 import { GroupOrderProvider } from "@/contexts/GroupOrderContext";
 import ClientLayoutWrapper from "@/components/ClientLayoutWrapper";
+import { structuredData } from "./structured-data";
 
 const cormorantGaramond = Cormorant_Garamond({ 
   subsets: ['latin'],
@@ -22,9 +23,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://partyondelivery.com'),
   title: "Party On Delivery - Austin's Premier Alcohol Delivery Service",
   description: "Premium alcohol delivery for weddings, boat parties, and events in Austin. From Lake Travis to downtown, we bring the party to you. Licensed, insured, and ready in 30 minutes.",
   keywords: "alcohol delivery austin, wedding bar service, lake travis boat party, austin party delivery, premium spirits delivery",
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     title: "Party On Delivery - Austin's Premier Alcohol Delivery Service",
     description: "Premium alcohol delivery for weddings, boat parties, and events in Austin. Licensed, insured, and ready in 30 minutes.",
@@ -67,6 +72,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+      </head>
       <body className={`${inter.variable} ${cormorantGaramond.variable} antialiased bg-white text-navy-900`}>
         <CustomerProvider>
           <CartProvider>

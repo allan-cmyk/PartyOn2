@@ -9,7 +9,7 @@ interface ShareButtonsProps {
 
 export default function ShareButtons({ title, slug }: ShareButtonsProps) {
   const handleShare = (platform: string) => {
-    const shareUrl = typeof window !== 'undefined' ? window.location.href : `${process.env.NEXT_PUBLIC_APP_URL || 'https://party-on-delivery.vercel.app'}/blog/${slug}`
+    const shareUrl = typeof window !== 'undefined' ? window.location.href : `${process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com'}/blog/${slug}`
     const shareText = `Check out this article: ${title}`
 
     const urls = {
