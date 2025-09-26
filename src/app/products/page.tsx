@@ -29,7 +29,7 @@ function ProductsContent() {
   const [searchLoading, setSearchLoading] = useState(false);
   const [filter, setFilter] = useState('all');
   const [collectionFilter, setCollectionFilter] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState('bestsellers');
+  const [sortBy, setSortBy] = useState('featured');
   const [showAgeVerification, setShowAgeVerification] = useState(false);
   const [isAgeVerified, setIsAgeVerified] = useState(false);
   
@@ -160,6 +160,10 @@ function ProductsContent() {
 
   // Sort products using Shopify data
   const sortedProducts = [...filteredProducts].sort((a, b) => {
+    if (sortBy === 'featured') {
+      // Use manual/featured sorting (default Shopify order)
+      return 0;
+    }
     if (sortBy === 'bestsellers') {
       // Use Shopify tags for bestseller status
       const aIsBestSeller = a.tags?.includes('bestseller') || a.tags?.includes('best-seller');
@@ -271,7 +275,7 @@ function ProductsContent() {
                 </button>
               )}
             </div>
-            <div className={`grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-3 md:grid-cols-6 gap-3'}`}>
+            <div className={`grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-7 gap-2'}`}>
               {SHOPIFY_COLLECTIONS.map((collection) => {
                 const isActive = collectionFilter === collection.handle;
                 return (
@@ -339,64 +343,17 @@ function ProductsContent() {
                   onChange={(e) => setSortBy(e.target.value)}
                   className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
                 >
-                  <option value="bestsellers">Best Sellers</option>
                   <option value="featured">Featured</option>
+                  <option value="bestsellers">Best Sellers</option>
                   <option value="price-asc">Price ↑</option>
                   <option value="price-desc">Price ↓</option>
                   <option value="name-asc">A-Z</option>
                   <option value="name-desc">Z-A</option>
                 </select>
               </div>
-              {/* Mobile Horizontal Category Scroll */}
-              <div className="overflow-x-auto -mx-4 px-4">
-                <div className="flex gap-2 pb-2">
-                  {FILTER_OPTIONS.mainCategories.map((category) => {
-                    const isActive = filter === category.value;
-                    return (
-                      <button
-                        key={category.value}
-                        onClick={() => {
-                          setFilter(category.value);
-                        }}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 text-xs whitespace-nowrap transition-all rounded-lg border ${
-                          isActive
-                            ? `${category.colors.bgActive} ${category.colors.textActive} ${category.colors.borderActive}`
-                            : `${category.colors.bg} ${category.colors.text} ${category.colors.border}`
-                        }`}
-                      >
-                        <CategoryIcon category={category.value} className="w-3.5 h-3.5" />
-                        {category.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
             </div>
           ) : (
-            <>
-              {/* Desktop Category Filters */}
-              <div className="flex flex-wrap gap-3 mb-4">
-                {FILTER_OPTIONS.mainCategories.map((category) => {
-                  const isActive = filter === category.value;
-                  return (
-                    <button
-                      key={category.value}
-                      onClick={() => {
-                        setFilter(category.value);
-                      }}
-                      className={`px-5 py-2.5 text-xs tracking-[0.1em] transition-all duration-300 flex items-center gap-2 rounded-lg border ${
-                        isActive
-                          ? `${category.colors.bgActive} ${category.colors.textActive} ${category.colors.borderActive}`
-                          : `${category.colors.bg} ${category.colors.text} ${category.colors.border}`
-                      }`}
-                    >
-                      <CategoryIcon category={category.value} className="w-4 h-4" />
-                      {category.label.toUpperCase()}
-                    </button>
-                  );
-                })}
-              </div>
-            </>
+            <></>
           )}
 
           {/* Tag Filters Row */}
