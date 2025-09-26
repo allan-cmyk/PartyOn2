@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { format, addDays, isBefore, isAfter } from 'date-fns';
+import { format, addDays } from 'date-fns';
 
 interface DeliverySchedulerProps {
   isOpen: boolean;
@@ -75,11 +75,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
     }
   }, [defaultAddress]);
   // Express delivery removed - using standard delivery only
-  
-  // Get minimum date (72 hours for standard)
-  // TESTING MODE: No time restrictions
-  const minDate = new Date(); // addDays(new Date(), 3);
-  const maxDate = addDays(new Date(), 30);
+  // Note: Date filtering is now handled in the getAvailableTimeSlots function
 
   // Available time slots - 10am to 9pm, every 30 minutes for 1-hour delivery windows
   // Monday through Saturday only (handled in date selection)
@@ -109,12 +105,15 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
 
   // Generate available dates (Monday-Saturday only, no Sundays)
   const availableDates = [];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Start of today
+
   for (let i = 0; i < 30; i++) {
-    const date = addDays(minDate, i);
+    const date = addDays(today, i);
     const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, etc.
-    
+
     // Exclude Sundays (day 0)
-    if (!isBefore(date, minDate) && !isAfter(date, maxDate) && dayOfWeek !== 0) {
+    if (dayOfWeek !== 0) {
       availableDates.push(date);
     }
   }
@@ -126,6 +125,42 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
       }
     }
     return null;
+  };
+
+  // Get available time slots for a specific date
+  const getAvailableTimeSlots = (date: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const selectedDay = new Date(date);
+    selectedDay.setHours(0, 0, 0, 0);
+
+    // If not today, return all time slots
+    if (selectedDay.getTime() !== today.getTime()) {
+      return timeSlots;
+    }
+
+    // For today, filter out slots that are within 3 hours
+    const now = new Date();
+    const threeHoursFromNow = new Date(now.getTime() + (3 * 60 * 60 * 1000));
+
+    return timeSlots.filter(slot => {
+      // Parse the start time from the slot (e.g., "10:00 AM - 11:00 AM" -> "10:00 AM")
+      const startTime = slot.split(' - ')[0];
+
+      // Create a date object for this time slot today
+      const slotDate = new Date();
+      const [time, period] = startTime.split(' ');
+      const [hours, minutes] = time.split(':').map(Number);
+
+      let hour24 = hours;
+      if (period === 'PM' && hours !== 12) hour24 += 12;
+      if (period === 'AM' && hours === 12) hour24 = 0;
+
+      slotDate.setHours(hour24, minutes, 0, 0);
+
+      // Return true if this slot is at least 3 hours from now
+      return slotDate.getTime() >= threeHoursFromNow.getTime();
+    });
   };
 
   const validateForm = () => {
@@ -365,7 +400,10 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
                     {availableDates.slice(0, 14).map((date) => (
                       <button
                         key={date.toISOString()}
-                        onClick={() => setSelectedDate(date)}
+                        onClick={() => {
+                          setSelectedDate(date);
+                          setSelectedTime(''); // Clear selected time when date changes
+                        }}
                         className={`p-3 text-center border transition-colors ${
                           selectedDate?.toDateString() === date.toDateString()
                             ? 'border-gold-600 bg-gold-50'
@@ -393,22 +431,43 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
                   </h3>
                   <p className="text-sm text-gray-600 mb-4">
                     Available Monday-Saturday, 10:00 AM - 9:00 PM
+                    {selectedDate && (
+                      <>
+                        <br />
+                        {selectedDate.toDateString() === new Date().toDateString()
+                          ? 'Same-day delivery available with 3-hour advance notice'
+                          : 'All time slots available for future dates'
+                        }
+                      </>
+                    )}
                   </p>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-80 overflow-y-auto">
-                    {timeSlots.map((slot) => (
-                      <button
-                        key={slot}
-                        onClick={() => setSelectedTime(slot)}
-                        className={`p-2 text-center border transition-colors ${
-                          selectedTime === slot
-                            ? 'border-gold-600 bg-gold-50'
-                            : 'border-gray-300 hover:border-gold-400'
-                        }`}
-                      >
-                        <span className="text-xs">{slot}</span>
-                      </button>
-                    ))}
-                  </div>
+                  {selectedDate ? (
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-80 overflow-y-auto">
+                      {getAvailableTimeSlots(selectedDate).length > 0 ? (
+                        getAvailableTimeSlots(selectedDate).map((slot) => (
+                          <button
+                            key={slot}
+                            onClick={() => setSelectedTime(slot)}
+                            className={`p-2 text-center border transition-colors ${
+                              selectedTime === slot
+                                ? 'border-gold-600 bg-gold-50'
+                                : 'border-gray-300 hover:border-gold-400'
+                            }`}
+                          >
+                            <span className="text-xs">{slot}</span>
+                          </button>
+                        ))
+                      ) : (
+                        <div className="col-span-full text-center py-8 text-gray-500">
+                          No time slots available for today. Please select a future date.
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      Please select a delivery date first
+                    </div>
+                  )}
                   {errors.time && (
                     <p className="text-red-600 text-sm mt-2">{errors.time}</p>
                   )}
