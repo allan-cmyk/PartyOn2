@@ -1,0 +1,26 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Simplified Party On logo for favicon - just the central pin with wine glass -->
+  <g transform="translate(16, 16)">
+    <!-- Pin body -->
+    <path d="M0 -12 C-6 -12 -10 -8 -10 -2 C-10 4 0 12 0 12 C0 12 10 4 10 -2 C10 -8 6 -12 0 -12 Z"
+          fill="#F4C430" stroke="#4A5568" stroke-width="1"/>
+
+    <!-- Wine glass inside pin -->
+    <g transform="translate(0, -4)">
+      <!-- Glass bowl -->
+      <path d="M-3 -2 L-3 1 Q-3 2 -1.5 2 L1.5 2 Q3 2 3 1 L3 -2 Z"
+            fill="white" stroke="#4A5568" stroke-width="0.5"/>
+      <!-- Glass stem -->
+      <line x1="0" y1="2" x2="0" y2="4" stroke="#4A5568" stroke-width="0.5"/>
+      <!-- Glass base -->
+      <line x1="-2" y1="4" x2="2" y2="4" stroke="#4A5568" stroke-width="0.5"/>
+      <!-- Wine/liquid -->
+      <path d="M-2.5 -1.5 L-2.5 0 Q-2.5 1.5 -1.5 1.5 L1.5 1.5 Q2.5 1.5 2.5 0 L2.5 -1.5 Z"
+            fill="#8B0000" opacity="0.8"/>
+    </g>
+
+    <!-- Small star accent on pin -->
+    <path d="M0 -8 L0.5 -6 L2 -6 L1 -5 L1.5 -3.5 L0 -4.5 L-1.5 -3.5 L-1 -5 L-2 -6 L-0.5 -6 Z"
+          fill="#2E7D9A"/>
+  </g>
+</svg>

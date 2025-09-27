@@ -1,0 +1,21 @@
+{
+  "name": "Party On Delivery",
+  "short_name": "Party On",
+  "description": "Premium alcohol delivery service in Austin, Texas",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8F9FA",
+  "theme_color": "#F4C430",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/apple-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml"
+    }
+  ]
+}
