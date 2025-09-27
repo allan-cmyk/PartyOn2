@@ -105,6 +105,19 @@ export function getUniqueProductTypes(products: Array<{ productType?: string }>)
 // Actual Shopify collections for quick filters with color schemes
 export const SHOPIFY_COLLECTIONS = [
   {
+    handle: 'favorites-home-page',
+    label: 'Favorites - Home Page',
+    category: 'featured',
+    colors: {
+      bg: 'bg-gold-50 hover:bg-gold-100',
+      bgActive: 'bg-gold-600',
+      text: 'text-gold-700',
+      textActive: 'text-white',
+      border: 'border-gold-400 hover:border-gold-500',
+      borderActive: 'border-gold-600'
+    }
+  },
+  {
     handle: 'bachelor-favorites',
     label: 'Bachelor Favorites',
     category: 'partySupplies',

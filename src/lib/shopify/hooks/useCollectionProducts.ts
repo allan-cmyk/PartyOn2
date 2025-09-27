@@ -33,6 +33,50 @@ interface ProductsResponse {
   };
 }
 
+// Add simple cache for collection data
+const collectionCache = new Map<string, {
+  products: ShopifyProduct[],
+  timestamp: number,
+  ttl: number
+}>();
+
+// Preload popular collections (favorites-home-page first since it's the default)
+const POPULAR_COLLECTIONS = ['favorites-home-page', 'seltzer-collection', 'bachelor-favorites', 'champagne', 'spirits'];
+
+// Preload function to warm cache
+async function preloadCollection(handle: string) {
+  try {
+    const data = await shopifyFetch<CollectionProductsResponse>({
+      query: COLLECTION_BY_HANDLE_QUERY,
+      variables: { handle, first: 100 },
+    });
+
+    if (data.collectionByHandle) {
+      const products = data.collectionByHandle.products.edges.map(edge => edge.node);
+      collectionCache.set(handle, {
+        products,
+        timestamp: Date.now(),
+        ttl: 5 * 60 * 1000 // 5 minutes
+      });
+      console.log(`Preloaded collection: ${handle} (${products.length} products)`);
+    }
+  } catch (err) {
+    console.warn(`Failed to preload collection ${handle}:`, err);
+  }
+}
+
+// Initialize preloading on module load (only in browser)
+if (typeof window !== 'undefined') {
+  // Delay preloading to not block initial page load
+  setTimeout(() => {
+    POPULAR_COLLECTIONS.forEach(handle => {
+      if (!collectionCache.has(handle)) {
+        preloadCollection(handle);
+      }
+    });
+  }, 2000); // Wait 2 seconds after page load
+}
+
 export function useCollectionProducts(collectionHandle: string | null, initialLoadCount: number = 50) {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
@@ -53,6 +97,21 @@ export function useCollectionProducts(collectionHandle: string | null, initialLo
       setLoading(true);
       setError(null);
 
+      // Check cache first (5 minute TTL)
+      const cached = collectionCache.get(handle);
+      const now = Date.now();
+      const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+      if (cached && (now - cached.timestamp) < CACHE_TTL) {
+        console.log(`Using cached data for collection: ${handle}`);
+        setProducts(cached.products);
+        setHasNextPage(false);
+        setEndCursor(null);
+        setLoading(false);
+        return;
+      }
+
+      console.log(`Fetching fresh data for collection: ${handle}`);
       const data = await shopifyFetch<CollectionProductsResponse>({
         query: COLLECTION_BY_HANDLE_QUERY,
         variables: { handle, first: 100 }, // Get more products for collections
@@ -63,6 +122,14 @@ export function useCollectionProducts(collectionHandle: string | null, initialLo
       }
 
       const newProducts = data.collectionByHandle.products.edges.map(edge => edge.node);
+
+      // Cache the results
+      collectionCache.set(handle, {
+        products: newProducts,
+        timestamp: now,
+        ttl: CACHE_TTL
+      });
+
       setProducts(newProducts);
 
       // Collection queries don't have pagination in our current setup

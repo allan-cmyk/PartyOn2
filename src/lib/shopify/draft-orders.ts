@@ -3,6 +3,20 @@
  * Used to create merged checkouts for group orders
  */
 
+/**
+ * Fix invoice URLs to use the reliable Shopify store domain
+ * Replaces custom domain with myshopify.com domain for invoice URLs
+ */
+function fixInvoiceUrl(invoiceUrl: string | null | undefined): string | null {
+  if (!invoiceUrl) return null;
+
+  const customDomain = 'partyondelivery.com';
+  const storeDomain = process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN || 'premier-concierge.myshopify.com';
+
+  // Replace custom domain with store domain for invoice URLs
+  return invoiceUrl.replace(customDomain, storeDomain);
+}
+
 interface DraftOrderLineItem {
   variantId: string;
   quantity: number;
@@ -134,7 +148,14 @@ export async function createDraftOrder(input: DraftOrderInput) {
       throw new Error('Failed to create draft order');
     }
 
-    return data.data.draftOrderCreate.draftOrder;
+    const draftOrder = data.data.draftOrderCreate.draftOrder;
+
+    // Fix invoice URL to use store domain instead of custom domain
+    if (draftOrder.invoiceUrl) {
+      draftOrder.invoiceUrl = fixInvoiceUrl(draftOrder.invoiceUrl);
+    }
+
+    return draftOrder;
   } catch (error) {
     console.error('Error creating draft order:', error);
     throw error;
@@ -187,7 +208,14 @@ export async function sendDraftOrderInvoice(
       throw new Error(`Failed to send invoice: ${errors[0].message}`);
     }
 
-    return data.data?.draftOrderInvoiceSend?.draftOrder;
+    const draftOrder = data.data?.draftOrderInvoiceSend?.draftOrder;
+
+    // Fix invoice URL to use store domain instead of custom domain
+    if (draftOrder?.invoiceUrl) {
+      draftOrder.invoiceUrl = fixInvoiceUrl(draftOrder.invoiceUrl);
+    }
+
+    return draftOrder;
   } catch (error) {
     console.error('Error sending draft order invoice:', error);
     throw error;

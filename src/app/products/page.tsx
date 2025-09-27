@@ -23,11 +23,11 @@ import { getProductCategory, FILTER_OPTIONS, SHOPIFY_COLLECTIONS, isInCollection
 function ProductsContent() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('search');
-  const { products, loading, error, hasNextPage, loadMore } = useCollectionProducts(collectionFilter, 30); // Optimized collection loading
   const [searchResults, setSearchResults] = useState<ShopifyProduct[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [filter, setFilter] = useState('all');
-  const [collectionFilter, setCollectionFilter] = useState<string | null>(null);
+  const [collectionFilter, setCollectionFilter] = useState<string | null>('favorites-home-page'); // Default to Favorites - Home Page collection
+  const { products, loading, error, hasNextPage, loadMore } = useCollectionProducts(collectionFilter, 30); // Fixed: collectionFilter now declared before use
   const [sortBy, setSortBy] = useState('featured');
   const [showAgeVerification, setShowAgeVerification] = useState(false);
   const [isAgeVerified, setIsAgeVerified] = useState(false);
@@ -477,11 +477,27 @@ function ProductsContent() {
       <section className={isCompactView ? "py-8" : "py-16"}>
         <div className={isCompactView ? "max-w-[1400px] mx-auto px-6" : "max-w-7xl mx-auto px-8"}>
           {loading && collectionFilter ? (
-            // Show a cleaner loading state when switching collections
-            <div className="min-h-[400px] flex items-center justify-center">
-              <div className="text-center">
-                <div className="inline-block animate-spin rounded-full h-10 w-10 border-2 border-gold-600 border-t-transparent"></div>
-                <p className="mt-4 text-gray-600 font-light tracking-[0.1em]">Loading collection...</p>
+            // Show a cleaner loading state when switching collections with skeleton
+            <div className="min-h-[400px]">
+              <div className="text-center mb-8">
+                <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-gold-600 border-t-transparent"></div>
+                <p className="mt-2 text-gray-600 font-light tracking-[0.1em] text-sm">Loading collection...</p>
+              </div>
+              {/* Skeleton loading grid */}
+              <div className={
+                isMobile
+                  ? "grid grid-cols-2 gap-3 px-4"
+                  : isCompactView
+                    ? "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"
+                    : "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"
+              }>
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="bg-gray-200 aspect-square rounded mb-3"></div>
+                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                  </div>
+                ))}
               </div>
             </div>
           ) : (loading || searchLoading) && products.length === 0 ? (
