@@ -40,8 +40,8 @@ const collectionCache = new Map<string, {
   ttl: number
 }>();
 
-// Preload popular collections (favorites-home-page first since it's the default)
-const POPULAR_COLLECTIONS = ['favorites-home-page', 'seltzer-collection', 'bachelor-favorites', 'champagne', 'spirits'];
+// Preload popular collections (bachelor-favorites first since it's the default)
+const POPULAR_COLLECTIONS = ['bachelor-favorites', 'seltzer-collection', 'bachelorette-booze', 'champagne', 'spirits'];
 
 // Preload function to warm cache
 async function preloadCollection(handle: string) {
