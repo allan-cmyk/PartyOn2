@@ -1,5 +1,6 @@
 // SEO Schema generators for different page types
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function generateProductSchema(product: any) {
   return {
     '@context': 'https://schema.org',
