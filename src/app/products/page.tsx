@@ -28,6 +28,13 @@ function ProductsContent() {
   const [filter, setFilter] = useState('all');
   const [collectionFilter, setCollectionFilter] = useState<string | null>('favorites-home-page'); // Default to Favorites - Home Page collection (verified exists)
   const { products, loading, error, hasNextPage, loadMore } = useCollectionProducts(collectionFilter, 30); // Fixed: collectionFilter now declared before use
+
+  // Debug logging
+  useEffect(() => {
+    console.log('🔍 Current collectionFilter:', collectionFilter);
+    console.log('🔍 Products count:', products.length);
+    console.log('🔍 SHOPIFY_COLLECTIONS:', SHOPIFY_COLLECTIONS.map(c => c.handle));
+  }, [collectionFilter, products]);
   const [sortBy, setSortBy] = useState('featured');
   const [showAgeVerification, setShowAgeVerification] = useState(false);
   const [isAgeVerified, setIsAgeVerified] = useState(false);
@@ -277,6 +284,7 @@ function ProductsContent() {
             <div className={`grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-7 gap-2'}`}>
               {SHOPIFY_COLLECTIONS.map((collection) => {
                 const isActive = collectionFilter === collection.handle;
+                console.log(`🔍 Collection: ${collection.handle}, isActive: ${isActive}, current filter: ${collectionFilter}`);
                 return (
                   <button
                     key={collection.handle}
