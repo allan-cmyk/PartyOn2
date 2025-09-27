@@ -13,7 +13,8 @@
       "WebFetch(domain:shopify.dev)",
       "WebFetch(domain:premier-concierge.myshopify.com)",
       "Bash(node:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "WebFetch(domain:localhost)"
     ],
     "deny": [],
     "ask": []

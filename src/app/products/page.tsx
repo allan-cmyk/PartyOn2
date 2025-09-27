@@ -26,7 +26,7 @@ function ProductsContent() {
   const [searchResults, setSearchResults] = useState<ShopifyProduct[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [filter, setFilter] = useState('all');
-  const [collectionFilter, setCollectionFilter] = useState<string | null>('favorites-home-page'); // Default to Favorites - Home Page collection
+  const [collectionFilter, setCollectionFilter] = useState<string | null>('favorites-home-page'); // Default to Favorites - Home Page collection (verified exists)
   const { products, loading, error, hasNextPage, loadMore } = useCollectionProducts(collectionFilter, 30); // Fixed: collectionFilter now declared before use
   const [sortBy, setSortBy] = useState('featured');
   const [showAgeVerification, setShowAgeVerification] = useState(false);
