@@ -12,7 +12,8 @@
       "WebSearch",
       "WebFetch(domain:shopify.dev)",
       "WebFetch(domain:premier-concierge.myshopify.com)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []
