@@ -23,11 +23,11 @@ import { getProductCategory, FILTER_OPTIONS, SHOPIFY_COLLECTIONS, getUniqueTags 
 function ProductsContent() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('search');
-  const { products, loading, error, hasNextPage, loadMore } = useCollectionProducts(collectionFilter, 30); // Optimized collection loading
   const [searchResults, setSearchResults] = useState<ShopifyProduct[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [filter, setFilter] = useState('all');
   const [collectionFilter, setCollectionFilter] = useState<string | null>(null);
+  const { products, loading, error, hasNextPage, loadMore } = useCollectionProducts(collectionFilter, 30); // Optimized collection loading
   const [sortBy, setSortBy] = useState('featured');
   const [showAgeVerification, setShowAgeVerification] = useState(false);
   const [isAgeVerified, setIsAgeVerified] = useState(false);
