@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
     } else {
       // Build Shopify query with server-side filtering
       const filters: ProductFilters = {
-        searchTerm,
+        searchTerm: searchTerm || undefined,
         tags,
         priceMin,
         priceMax,
