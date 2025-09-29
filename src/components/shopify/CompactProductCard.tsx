@@ -92,7 +92,7 @@ export default function CompactProductCard({ product, index = 0, onProductClick 
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 loading="lazy"
                 decoding="async"
-                fetchpriority={index < 6 ? "high" : "low"}
+                fetchPriority={index < 6 ? "high" : "low"}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">

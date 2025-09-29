@@ -74,7 +74,7 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
                 className="w-full h-full object-cover"
                 loading="lazy"
                 decoding="async"
-                fetchpriority={index < 4 ? "high" : "low"}
+                fetchPriority={index < 4 ? "high" : "low"}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
