@@ -6,10 +6,12 @@ import { buildShopifyQuery, buildCategoryQuery, combineQueries, ProductFilters }
 // Cache products for 5 minutes
 export const revalidate = 300;
 
+import { ShopifyProduct } from '@/lib/shopify/types';
+
 interface ProductsResponse {
   products: {
     edges: Array<{
-      node: any;
+      node: ShopifyProduct;
     }>;
     pageInfo: {
       hasNextPage: boolean;
@@ -26,7 +28,7 @@ interface CollectionResponse {
     description: string;
     products: {
       edges: Array<{
-        node: any;
+        node: ShopifyProduct;
       }>;
     };
   };
@@ -97,7 +99,7 @@ export async function GET(request: NextRequest) {
       const finalQuery = combineQueries(...queries);
 
       // Fetch all products with server-side filtering
-      const variables: Record<string, any> = { first };
+      const variables: Record<string, string | number> = { first };
 
       if (after) {
         variables.after = after;
