@@ -1,125 +1,89 @@
-import { useState, useEffect } from 'react';
-import { shopifyFetch } from '../client';
-import { COLLECTION_BY_HANDLE_QUERY, PRODUCTS_QUERY } from '../queries/products';
+import { useState, useEffect, useCallback } from 'react';
+import useSWR from 'swr';
 import { ShopifyProduct } from '../types';
 
-interface CollectionProductsResponse {
-  collectionByHandle: {
-    id: string;
-    handle: string;
-    title: string;
-    description: string;
-    products: {
-      edges: Array<{
-        node: ShopifyProduct;
-      }>;
-      pageInfo?: {
-        hasNextPage: boolean;
-        endCursor: string;
-      };
-    };
-  };
-}
-
-interface ProductsResponse {
+interface ProductsApiResponse {
   products: {
     edges: Array<{
       node: ShopifyProduct;
     }>;
-    pageInfo: {
+    pageInfo?: {
       hasNextPage: boolean;
       endCursor: string;
     };
   };
+  collection?: {
+    id: string;
+    handle: string;
+    title: string;
+    description: string;
+  };
 }
 
-export function useCollectionProducts(collectionHandle: string | null, initialLoadCount: number = 50) {
-  const [products, setProducts] = useState<ShopifyProduct[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [hasNextPage, setHasNextPage] = useState(false);
+const fetcher = async (url: string) => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Failed to fetch products');
+  }
+  return response.json();
+};
+
+export function useCollectionProducts(collectionHandle: string | null, initialLoadCount: number = 20) {
+  const [allProducts, setAllProducts] = useState<ShopifyProduct[]>([]);
   const [endCursor, setEndCursor] = useState<string | null>(null);
+  const [hasNextPage, setHasNextPage] = useState(false);
 
+  // Build API URL
+  const apiUrl = collectionHandle
+    ? `/api/products?collection=${collectionHandle}&first=${initialLoadCount}`
+    : `/api/products?first=${initialLoadCount}`;
+
+  // Use SWR for caching and revalidation
+  const { data, error, isLoading } = useSWR<ProductsApiResponse>(
+    apiUrl,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      dedupingInterval: 300000, // 5 minutes
+      keepPreviousData: true, // Keep previous data while loading new data
+    }
+  );
+
+  // Update products when data changes
   useEffect(() => {
-    if (collectionHandle) {
-      fetchCollectionProducts(collectionHandle);
-    } else {
-      fetchAllProducts();
-    }
-  }, [collectionHandle]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const fetchCollectionProducts = async (handle: string) => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const data = await shopifyFetch<CollectionProductsResponse>({
-        query: COLLECTION_BY_HANDLE_QUERY,
-        variables: { handle, first: 100 }, // Get more products for collections
-      });
-
-      if (!data.collectionByHandle) {
-        throw new Error(`Collection ${handle} not found`);
-      }
-
-      const newProducts = data.collectionByHandle.products.edges.map(edge => edge.node);
-      setProducts(newProducts);
-
-      // Collection queries don't have pagination in our current setup
-      setHasNextPage(false);
-      setEndCursor(null);
-    } catch (err) {
-      setError(err as Error);
-      console.error(`Failed to fetch collection ${handle}:`, err);
-      // Fall back to empty array on error
-      setProducts([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchAllProducts = async (after?: string) => {
-    try {
-      if (!after) {
-        setLoading(true);
-        setError(null);
-      }
-
-      const data = await shopifyFetch<ProductsResponse>({
-        query: PRODUCTS_QUERY,
-        variables: { first: initialLoadCount, after },
-      });
-
+    if (data) {
       const newProducts = data.products.edges.map(edge => edge.node);
+      setAllProducts(newProducts);
+      setHasNextPage(data.products.pageInfo?.hasNextPage || false);
+      setEndCursor(data.products.pageInfo?.endCursor || null);
+    }
+  }, [data]);
 
-      if (after) {
-        setProducts(prev => [...prev, ...newProducts]);
-      } else {
-        setProducts(newProducts);
-      }
+  // Load more products (for pagination)
+  const loadMore = useCallback(async () => {
+    if (!hasNextPage || !endCursor || collectionHandle) return;
 
-      setHasNextPage(data.products.pageInfo.hasNextPage);
-      setEndCursor(data.products.pageInfo.endCursor);
+    try {
+      const url = `/api/products?first=${initialLoadCount}&after=${endCursor}`;
+      const response = await fetch(url);
+      const moreData: ProductsApiResponse = await response.json();
+
+      const newProducts = moreData.products.edges.map(edge => edge.node);
+      setAllProducts(prev => [...prev, ...newProducts]);
+      setHasNextPage(moreData.products.pageInfo?.hasNextPage || false);
+      setEndCursor(moreData.products.pageInfo?.endCursor || null);
     } catch (err) {
-      setError(err as Error);
-      console.error('Failed to fetch products:', err);
-    } finally {
-      setLoading(false);
+      console.error('Failed to load more products:', err);
     }
-  };
-
-  const loadMore = () => {
-    // Only load more for "all products" view
-    if (!collectionHandle && hasNextPage && endCursor) {
-      fetchAllProducts(endCursor);
-    }
-  };
+  }, [hasNextPage, endCursor, collectionHandle, initialLoadCount]);
 
   return {
-    products,
-    loading,
-    error,
+    products: allProducts,
+    loading: isLoading && allProducts.length === 0, // Only show loading on initial load
+    error: error ? new Error(error.message) : null,
     hasNextPage: !collectionHandle ? hasNextPage : false,
-    loadMore
+    loadMore,
+    collection: data?.collection,
   };
 }

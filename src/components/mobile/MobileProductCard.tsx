@@ -60,9 +60,8 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
   return (
     <>
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: index * 0.05 }}
+        initial={false}
+        animate={{ opacity: 1 }}
         className="bg-white border border-gray-200 rounded-lg overflow-hidden touch-manipulation"
       >
         <div 
@@ -74,6 +73,8 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
                 alt={product.title}
                 className="w-full h-full object-cover"
                 loading="lazy"
+                decoding="async"
+                fetchpriority={index < 4 ? "high" : "low"}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">

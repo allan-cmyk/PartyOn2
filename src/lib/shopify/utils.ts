@@ -1,4 +1,5 @@
 import { ShopifyProduct, ShopifyProductVariant } from './types';
+import { getProductCardImage } from './image-utils';
 
 // Format price for display
 export function formatPrice(amount: string, currencyCode: string = 'USD'): string {
@@ -17,8 +18,17 @@ export function getFirstAvailableVariant(product: ShopifyProduct): ShopifyProduc
   return availableVariant?.node || null;
 }
 
-// Get product image URL
-export function getProductImageUrl(product: ShopifyProduct, index: number = 0): string {
+// Get product image URL (optimized for display)
+export function getProductImageUrl(product: ShopifyProduct, index: number = 0, isMobile: boolean = false): string {
+  const image = product.images.edges[index]?.node;
+  if (!image?.url) return '/images/placeholder-product.png';
+
+  // Use optimized image transformation for Shopify CDN images
+  return getProductCardImage(image.url, isMobile);
+}
+
+// Get raw product image URL (without transformations)
+export function getRawProductImageUrl(product: ShopifyProduct, index: number = 0): string {
   const image = product.images.edges[index]?.node;
   return image?.url || '/images/placeholder-product.png';
 }
