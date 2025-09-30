@@ -4,11 +4,12 @@ import { useEffect } from 'react';
 import { useParams } from 'next/navigation';
 
 /**
- * Invoice redirect handler
- * Redirects invoice URLs from custom domain to reliable Shopify store domain
+ * Store-specific invoice redirect handler
+ * Handles URLs like /53817671858/invoices/abc123
  */
-export default function InvoiceRedirect() {
+export default function StoreInvoiceRedirect() {
   const params = useParams();
+  const storeId = params.storeId as string;
   const slug = params.slug as string[];
 
   useEffect(() => {
@@ -16,36 +17,21 @@ export default function InvoiceRedirect() {
       // Construct the correct Shopify store domain URL
       // Note: Using hardcoded domain since this needs to work on client-side
       const storeDomain = 'premier-concierge.myshopify.com';
-
-      // Handle different URL patterns:
-      // 1. /invoices/abc123 -> direct invoice ID
-      // 2. /53817671858/invoices/abc123 -> store ID + invoice ID (need to extract just invoice ID)
-      let invoiceId = '';
-
-      if (slug.length === 1) {
-        // Direct invoice ID: /invoices/abc123
-        invoiceId = slug[0];
-      } else if (slug.length === 3 && slug[1] === 'invoices') {
-        // Store ID + invoices + ID: /53817671858/invoices/abc123
-        invoiceId = slug[2];
-      } else {
-        // Fallback: join all parts
-        invoiceId = slug[slug.length - 1];
-      }
-
+      const invoiceId = slug[0]; // First slug part is the invoice ID
       const correctUrl = `https://${storeDomain}/invoices/${invoiceId}`;
 
-      console.log('🔄 Redirecting invoice URL:', {
+      console.log('🔄 Redirecting store-specific invoice URL:', {
         from: window.location.href,
         to: correctUrl,
-        extractedInvoiceId: invoiceId,
+        storeId,
+        invoiceId,
         slugParts: slug
       });
 
       // Redirect to the correct Shopify invoice URL
       window.location.replace(correctUrl);
     }
-  }, [slug]);
+  }, [storeId, slug]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
