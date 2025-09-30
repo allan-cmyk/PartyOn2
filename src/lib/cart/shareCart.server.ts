@@ -51,9 +51,9 @@ export async function getSharedCart(shortId: string): Promise<SharedCartData | n
     return null;
   }
 
-  // Check if expired (optional - 30 days)
-  const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
-  if (cartRecord.createdAt < thirtyDaysAgo) {
+  // Check if expired (optional - 60 days)
+  const sixtyDaysAgo = Date.now() - (60 * 24 * 60 * 60 * 1000);
+  if (cartRecord.createdAt < sixtyDaysAgo) {
     // Cart is expired, remove it and return null
     sharedCarts.delete(shortId);
     return null;
@@ -66,11 +66,11 @@ export async function getSharedCart(shortId: string): Promise<SharedCartData | n
  * Clean up expired shared carts (can be called periodically)
  */
 export async function cleanupExpiredCarts(): Promise<number> {
-  const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+  const sixtyDaysAgo = Date.now() - (60 * 24 * 60 * 60 * 1000);
 
   let removedCount = 0;
   for (const [shortId, cartRecord] of sharedCarts.entries()) {
-    if (cartRecord.createdAt < thirtyDaysAgo) {
+    if (cartRecord.createdAt < sixtyDaysAgo) {
       sharedCarts.delete(shortId);
       removedCount++;
     }

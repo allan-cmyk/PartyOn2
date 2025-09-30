@@ -8,7 +8,7 @@ export interface SharedCartVariant {
 export interface SharedCartData {
   variants: SharedCartVariant[];
   timestamp: number;   // When cart was shared
-  expiresAt?: number;  // Optional expiration (30 days)
+  expiresAt?: number;  // Optional expiration (60 days)
 }
 
 export interface CartShareRecord {

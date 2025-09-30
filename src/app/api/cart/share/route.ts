@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     const cartData: SharedCartData = {
       variants,
       timestamp: Date.now(),
-      expiresAt: Date.now() + (30 * 24 * 60 * 60 * 1000), // 30 days from now
+      expiresAt: Date.now() + (60 * 24 * 60 * 60 * 1000), // 60 days from now
     };
 
     // Save cart and get short ID
