@@ -8,7 +8,10 @@
       "Bash(git commit:*)",
       "WebFetch(domain:party-on2.vercel.app)",
       "Bash(git push:*)",
-      "Bash(git cherry-pick:*)"
+      "Bash(git cherry-pick:*)",
+      "Bash(xargs ls:*)",
+      "Bash(npx next:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []
