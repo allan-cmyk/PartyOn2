@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 interface Feature {
   title: string
@@ -251,8 +252,8 @@ export default function FeatureCards({ mode = 'normal' }: FeatureCardsProps) {
             }`}>
               Ready to experience the difference?
             </p>
-            <a 
-              href="/book-now" 
+            <Link
+              href="/book-now"
               className={`btn-primary inline-flex items-center space-x-2 ${
                 mode === 'party' ? 'animate-pulse-slow' : ''
               }`}
@@ -261,7 +262,7 @@ export default function FeatureCards({ mode = 'normal' }: FeatureCardsProps) {
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
-            </a>
+            </Link>
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
+import Link from 'next/link'
 
 interface AgeVerificationModalProps {
   isOpen: boolean
@@ -97,9 +98,9 @@ export default function AgeVerificationModal({ isOpen, onClose, onVerify }: AgeV
               {/* Legal Text */}
               <p className="mt-8 text-xs text-gray-500 text-center leading-relaxed px-4">
                 By entering this site, you agree to our{' '}
-                <a href="/terms" className="underline hover:text-gold-600">Terms of Service</a>
+                <Link href="/terms" className="underline hover:text-gold-600">Terms of Service</Link>
                 {' '}and{' '}
-                <a href="/privacy" className="underline hover:text-gold-600">Privacy Policy</a>,
+                <Link href="/privacy" className="underline hover:text-gold-600">Privacy Policy</Link>,
                 and confirm that you are of legal drinking age in your jurisdiction.
               </p>
             </div>
