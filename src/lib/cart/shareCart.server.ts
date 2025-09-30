@@ -1,16 +1,66 @@
 import { generateShortId, type SharedCartData, type CartShareRecord } from './shareCart';
+import { promises as fs } from 'fs';
+import path from 'path';
+import { tmpdir } from 'os';
 
-// In-memory storage for shared carts (works on Vercel serverless)
-// Note: This will reset when the serverless function cold starts, but that's acceptable
-// for temporary cart sharing. For persistent storage, we'd need a database.
+// Fallback in-memory storage for when file operations fail
 const sharedCarts = new Map<string, CartShareRecord>();
 
+// File-based storage directory (uses tmpdir which persists longer on Vercel)
+const STORAGE_DIR = path.join(tmpdir(), 'shared-carts');
 
 /**
- * Save shared cart to in-memory storage
+ * Ensure storage directory exists
+ */
+async function ensureStorageDir(): Promise<void> {
+  try {
+    await fs.mkdir(STORAGE_DIR, { recursive: true });
+  } catch {
+    // Directory might already exist, ignore error
+  }
+}
+
+/**
+ * Save shared cart to file storage with fallback to memory
  */
 async function saveCartRecord(id: string, cart: CartShareRecord): Promise<void> {
-  sharedCarts.set(id, cart);
+  try {
+    await ensureStorageDir();
+    const filePath = path.join(STORAGE_DIR, `${id}.json`);
+    await fs.writeFile(filePath, JSON.stringify(cart), 'utf8');
+  } catch (error) {
+    console.warn('File storage failed, using memory fallback:', error);
+    // Fallback to in-memory storage
+    sharedCarts.set(id, cart);
+  }
+}
+
+/**
+ * Load shared cart from file storage with fallback to memory
+ */
+async function loadCartRecord(id: string): Promise<CartShareRecord | null> {
+  try {
+    const filePath = path.join(STORAGE_DIR, `${id}.json`);
+    const data = await fs.readFile(filePath, 'utf8');
+    return JSON.parse(data) as CartShareRecord;
+  } catch {
+    // File not found or error, try memory fallback
+    return sharedCarts.get(id) || null;
+  }
+}
+
+/**
+ * Delete shared cart from file storage
+ */
+async function deleteCartRecord(id: string): Promise<void> {
+  try {
+    const filePath = path.join(STORAGE_DIR, `${id}.json`);
+    await fs.unlink(filePath);
+  } catch {
+    // File might not exist, ignore error
+  }
+  // Also remove from memory
+  sharedCarts.delete(id);
 }
 
 /**
@@ -26,7 +76,10 @@ export async function saveSharedCart(cartData: SharedCartData): Promise<string> 
     if (attempts > 10) {
       throw new Error('Unable to generate unique cart ID');
     }
-  } while (sharedCarts.has(shortId));
+    // Check both file storage and memory for collisions
+    const existing = await loadCartRecord(shortId);
+    if (!existing) break;
+  } while (attempts <= 10);
 
   // Create cart record
   const cartRecord: CartShareRecord = {
@@ -35,7 +88,7 @@ export async function saveSharedCart(cartData: SharedCartData): Promise<string> 
     createdAt: Date.now(),
   };
 
-  // Save to in-memory storage
+  // Save to file storage with memory fallback
   await saveCartRecord(shortId, cartRecord);
 
   return shortId;
@@ -45,7 +98,7 @@ export async function saveSharedCart(cartData: SharedCartData): Promise<string> 
  * Retrieve a shared cart by short ID
  */
 export async function getSharedCart(shortId: string): Promise<SharedCartData | null> {
-  const cartRecord = sharedCarts.get(shortId);
+  const cartRecord = await loadCartRecord(shortId);
 
   if (!cartRecord) {
     return null;
@@ -55,7 +108,7 @@ export async function getSharedCart(shortId: string): Promise<SharedCartData | n
   const sixtyDaysAgo = Date.now() - (60 * 24 * 60 * 60 * 1000);
   if (cartRecord.createdAt < sixtyDaysAgo) {
     // Cart is expired, remove it and return null
-    sharedCarts.delete(shortId);
+    await deleteCartRecord(shortId);
     return null;
   }
 
@@ -67,12 +120,31 @@ export async function getSharedCart(shortId: string): Promise<SharedCartData | n
  */
 export async function cleanupExpiredCarts(): Promise<number> {
   const sixtyDaysAgo = Date.now() - (60 * 24 * 60 * 60 * 1000);
-
   let removedCount = 0;
-  for (const [shortId, cartRecord] of sharedCarts.entries()) {
-    if (cartRecord.createdAt < sixtyDaysAgo) {
-      sharedCarts.delete(shortId);
-      removedCount++;
+
+  try {
+    await ensureStorageDir();
+    const files = await fs.readdir(STORAGE_DIR);
+
+    for (const file of files) {
+      if (file.endsWith('.json')) {
+        const shortId = file.replace('.json', '');
+        const cartRecord = await loadCartRecord(shortId);
+
+        if (cartRecord && cartRecord.createdAt < sixtyDaysAgo) {
+          await deleteCartRecord(shortId);
+          removedCount++;
+        }
+      }
+    }
+  } catch (error) {
+    console.warn('File cleanup failed, cleaning memory only:', error);
+    // Fallback: clean memory storage
+    for (const [shortId, cartRecord] of sharedCarts.entries()) {
+      if (cartRecord.createdAt < sixtyDaysAgo) {
+        sharedCarts.delete(shortId);
+        removedCount++;
+      }
     }
   }
 
