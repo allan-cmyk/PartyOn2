@@ -5,16 +5,36 @@
 
 /**
  * Fix invoice URLs to use the reliable Shopify store domain
- * Replaces custom domain with myshopify.com domain for invoice URLs
+ * Handles multiple domain patterns and ensures reliable invoice access
  */
 function fixInvoiceUrl(invoiceUrl: string | null | undefined): string | null {
   if (!invoiceUrl) return null;
 
-  const customDomain = 'partyondelivery.com';
   const storeDomain = process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN || 'premier-concierge.myshopify.com';
 
-  // Replace custom domain with store domain for invoice URLs
-  return invoiceUrl.replace(customDomain, storeDomain);
+  // List of custom domains that might cause issues
+  const customDomains = [
+    'partyondelivery.com',
+    'party-on-delivery.com',
+    'www.partyondelivery.com',
+    'www.party-on-delivery.com'
+  ];
+
+  let fixedUrl = invoiceUrl;
+
+  // Replace any custom domain with the reliable store domain
+  for (const customDomain of customDomains) {
+    fixedUrl = fixedUrl.replace(new RegExp(`https?://${customDomain.replace('.', '\\.')}`, 'gi'), `https://${storeDomain}`);
+  }
+
+  // Ensure the URL uses HTTPS
+  if (fixedUrl.startsWith('http://')) {
+    fixedUrl = fixedUrl.replace('http://', 'https://');
+  }
+
+  console.log('🔧 Invoice URL fix:', { original: invoiceUrl, fixed: fixedUrl });
+
+  return fixedUrl;
 }
 
 interface DraftOrderLineItem {
