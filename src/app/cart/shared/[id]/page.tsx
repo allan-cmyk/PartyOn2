@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useCartContext } from '@/contexts/CartContext';
-import { type SharedCartData, decodeCartData } from '@/lib/cart/shareCart';
+import { type SharedCartData } from '@/lib/cart/shareCart';
 
 export default function SharedCartPage() {
   const params = useParams();
@@ -27,24 +27,7 @@ export default function SharedCartPage() {
         setLoading(true);
         setError(null);
 
-        // Try to decode cart data directly from URL first (new method)
-        const cartData = decodeCartData(shareId);
-
-        if (cartData) {
-          // Check if expired
-          const now = Date.now();
-          if (cartData.expiresAt && now > cartData.expiresAt) {
-            setError('This cart link has expired');
-            setLoading(false);
-            return;
-          }
-
-          setSharedCart(cartData);
-          await addItemsToCart(cartData);
-          return;
-        }
-
-        // Fallback: Try legacy API approach for existing short IDs
+        // Fetch shared cart data from API
         const response = await fetch(`/api/cart/share/${shareId}`);
 
         if (!response.ok) {
@@ -66,6 +49,8 @@ export default function SharedCartPage() {
         }
 
         setSharedCart(data.cartData);
+
+        // Add items to user's cart
         await addItemsToCart(data.cartData);
 
       } catch (err) {
@@ -76,7 +61,7 @@ export default function SharedCartPage() {
     }
 
     loadSharedCart();
-  }, [shareId]);
+  }, [shareId, addToCart, openCart, router]);
 
   async function addItemsToCart(cartData: SharedCartData) {
     try {
