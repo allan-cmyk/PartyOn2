@@ -8,6 +8,7 @@ import CartItem from './CartItem';
 import { formatPrice } from '@/lib/shopify/utils';
 import SimpleDeliveryScheduler from '@/components/SimpleDeliveryScheduler';
 import AIConcierge from '@/components/AIConcierge';
+import { copyToClipboard, type SharedCartVariant } from '@/lib/cart/shareCart';
 // Group order imports temporarily disabled
 // import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
 // import CreateGroupOrderModal from '@/components/group-orders/CreateGroupOrderModal';
@@ -22,6 +23,8 @@ export default function Cart() {
   // const { currentGroupOrder, isInGroupOrder, isHost } = useGroupOrderContext();
   const [showDeliveryScheduler, setShowDeliveryScheduler] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
+  const [shareSuccess, setShareSuccess] = useState(false);
   // Group order states temporarily disabled
   // const [showCreateGroupOrder, setShowCreateGroupOrder] = useState(false);
   // const [showShareModal, setShowShareModal] = useState(false);
@@ -138,6 +141,61 @@ export default function Cart() {
       // More helpful error message
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       alert(`Unable to proceed to checkout: ${errorMessage}. Please try again or contact support if the issue persists.`);
+    }
+  };
+
+  const handleShareCart = async () => {
+    if (!cart || !hasItems) return;
+
+    try {
+      setIsSharing(true);
+      setShareSuccess(false);
+
+      // Extract cart items for sharing
+      const variants: SharedCartVariant[] = cart.lines?.edges?.map(({ node }) => ({
+        id: node.merchandise.id,
+        quantity: node.quantity,
+      })) || [];
+
+      if (variants.length === 0) {
+        throw new Error('No items to share');
+      }
+
+      // Call API to create shared cart
+      const response = await fetch('/api/cart/share', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ variants }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create share link');
+      }
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to create share link');
+      }
+
+      // Copy share URL to clipboard
+      const copied = await copyToClipboard(data.shareUrl);
+
+      if (copied) {
+        setShareSuccess(true);
+        setTimeout(() => setShareSuccess(false), 3000);
+      } else {
+        // Fallback: show the URL for manual copying
+        alert(`Copy this link to share your cart:\n\n${data.shareUrl}`);
+      }
+
+    } catch (error) {
+      console.error('Error sharing cart:', error);
+      alert('Failed to create share link. Please try again.');
+    } finally {
+      setIsSharing(false);
     }
   };
 
@@ -331,6 +389,34 @@ export default function Cart() {
                     className="w-full py-4 bg-gold-500 text-white hover:bg-gold-600 transition-colors tracking-[0.15em] text-sm disabled:opacity-50"
                   >
                     PROCEED TO CHECKOUT
+                  </button>
+
+                  {/* Share Cart Button */}
+                  <button
+                    onClick={handleShareCart}
+                    disabled={isSharing || !hasItems}
+                    className="w-full py-3 border border-gray-300 text-gray-700 hover:border-gold-600 hover:text-gold-700 transition-colors tracking-[0.1em] text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                  >
+                    {isSharing ? (
+                      <>
+                        <div className="animate-spin h-4 w-4 border-2 border-gray-400 border-t-transparent rounded-full"></div>
+                        <span>CREATING LINK...</span>
+                      </>
+                    ) : shareSuccess ? (
+                      <>
+                        <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-green-600">LINK COPIED!</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                        </svg>
+                        <span>SHARE CART</span>
+                      </>
+                    )}
                   </button>
 
                   {/* Continue Shopping */}
