@@ -18,7 +18,7 @@ import AIConcierge from '@/components/AIConcierge';
 import AgeVerificationModal from '@/components/AgeVerificationModal';
 import ProductModal from '@/components/ProductModal';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { getProductCategory, FILTER_OPTIONS, SHOPIFY_COLLECTIONS, isInCollection, getUniqueTags } from '@/lib/shopify/categories';
+import { getProductCategory, FILTER_OPTIONS, SHOPIFY_COLLECTIONS, getUniqueTags } from '@/lib/shopify/categories';
 
 function ProductsContent() {
   const searchParams = useSearchParams();
