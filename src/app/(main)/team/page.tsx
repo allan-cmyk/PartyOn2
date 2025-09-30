@@ -1,6 +1,7 @@
 import Hero from '@/components/Hero'
 import Section from '@/components/Section'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const teamMembers = [
   {
@@ -143,9 +144,9 @@ export default function TeamPage() {
           <div className="text-center mt-12">
             <h3 className="font-display text-2xl text-dark mb-4">Want to Join the Party?</h3>
             <p className="text-dark/70 mb-6">We&apos;re always looking for talented Austin locals who share our passion.</p>
-            <a href="/careers" className="btn-primary">
+            <Link href="/careers" className="btn-primary">
               View Open Positions
-            </a>
+            </Link>
           </div>
         </div>
       </Section>
