@@ -1,6 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { groupOrderStore } from '@/lib/group-orders/store';
 import { createGroupDraftOrder, sendDraftOrderInvoice } from '@/lib/shopify/draft-orders';
+
+/**
+ * Additional invoice URL fix for API responses
+ * Ensures invoice URLs are always using the reliable Shopify domain
+ */
+function ensureReliableInvoiceUrl(invoiceUrl: string | null | undefined): string | null {
+  if (!invoiceUrl) return null;
+
+  const storeDomain = process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN || 'premier-concierge.myshopify.com';
+
+  // List of custom domains that might cause issues
+  const customDomains = [
+    'partyondelivery.com',
+    'party-on-delivery.com',
+    'www.partyondelivery.com',
+    'www.party-on-delivery.com'
+  ];
+
+  let fixedUrl = invoiceUrl;
+
+  // Replace any custom domain with the reliable store domain
+  for (const customDomain of customDomains) {
+    fixedUrl = fixedUrl.replace(new RegExp(`https?://${customDomain.replace('.', '\\.')}`, 'gi'), `https://${storeDomain}`);
+  }
+
+  // Ensure the URL uses HTTPS
+  if (fixedUrl.startsWith('http://')) {
+    fixedUrl = fixedUrl.replace('http://', 'https://');
+  }
+
+  return fixedUrl;
+}
 import { shopifyFetch } from '@/lib/shopify/client';
 
 const GET_CART_QUERY = `
@@ -150,15 +182,18 @@ Click the link below to complete your order.`
       status: 'completed' as const,
     });
 
+    // Ensure invoice URLs are reliable for customer access
+    const reliableInvoiceUrl = ensureReliableInvoiceUrl(draftOrder.invoiceUrl);
+
     return NextResponse.json({
       success: true,
       draftOrder: {
         id: draftOrder.id,
         name: draftOrder.name,
-        invoiceUrl: draftOrder.invoiceUrl,
+        invoiceUrl: reliableInvoiceUrl,
         totalPrice: draftOrder.totalPrice,
       },
-      checkoutUrl: draftOrder.invoiceUrl,
+      checkoutUrl: reliableInvoiceUrl,
     });
   } catch (error) {
     console.error('Error creating group checkout:', error);
