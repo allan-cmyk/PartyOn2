@@ -33,9 +33,42 @@ export function generateShortId(): string {
 // These are separated to avoid importing Node.js modules in client-side code
 
 /**
- * Generate the complete shareable URL for a short ID
+ * Encode cart data directly into URL (base64 encoded JSON)
  */
-export function generateShareUrl(shortId: string): string {
+export function encodeCartData(cartData: SharedCartData): string {
+  const jsonString = JSON.stringify(cartData);
+  return btoa(jsonString).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+}
+
+/**
+ * Decode cart data from URL
+ */
+export function decodeCartData(encoded: string): SharedCartData | null {
+  try {
+    // Add padding back and restore URL-safe characters
+    const padded = encoded + '='.repeat((4 - encoded.length % 4) % 4);
+    const base64 = padded.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonString = atob(base64);
+    return JSON.parse(jsonString) as SharedCartData;
+  } catch (error) {
+    console.error('Failed to decode cart data:', error);
+    return null;
+  }
+}
+
+/**
+ * Generate the complete shareable URL with encoded cart data
+ */
+export function generateShareUrl(cartData: SharedCartData): string {
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';
+  const encoded = encodeCartData(cartData);
+  return `${baseUrl}/cart/shared/${encoded}`;
+}
+
+/**
+ * Legacy: Generate the complete shareable URL for a short ID (keeping for backward compatibility)
+ */
+export function generateShareUrlFromId(shortId: string): string {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';
   return `${baseUrl}/cart/shared/${shortId}`;
 }
