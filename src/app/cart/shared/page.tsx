@@ -8,7 +8,7 @@ import { type SharedCartData, parseCartFromUrl } from '@/lib/cart/shareCart';
 function SharedCartContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { addToCart, openCart } = useCartContext();
+  const { createCartWithItems, openCart } = useCartContext();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sharedCart, setSharedCart] = useState<SharedCartData | null>(null);
@@ -63,36 +63,24 @@ function SharedCartContent() {
 
   async function addItemsToCart(cartData: SharedCartData) {
     try {
-      console.log('🛒 ===== ADDING ITEMS TO CART =====');
+      console.log('🛒 ===== CREATING CART WITH ALL ITEMS =====');
       console.log('📦 Total variants to add:', cartData.variants.length);
 
-      // Add the first item to create the cart
-      const firstVariant = cartData.variants[0];
-      console.log('➕ Creating cart with first item:', {
-        id: firstVariant.id,
-        quantity: firstVariant.quantity
-      });
+      // Convert SharedCartVariant to the format expected by createCartWithItems
+      const cartItems = cartData.variants.map(variant => ({
+        merchandiseId: variant.id,
+        quantity: variant.quantity
+      }));
 
-      await addToCart(firstVariant.id, firstVariant.quantity);
-      console.log('✅ Successfully created cart with first item');
+      console.log('🔄 Creating cart with all items at once:', cartItems);
 
-      // Add remaining items to the existing cart
-      for (let i = 1; i < cartData.variants.length; i++) {
-        const variant = cartData.variants[i];
-        console.log(`➕ Adding item ${i + 1}/${cartData.variants.length} to existing cart:`, {
-          id: variant.id,
-          quantity: variant.quantity
-        });
+      // Create cart with all items in a single API call
+      const newCart = await createCartWithItems(cartItems);
 
-        try {
-          // Add a small delay to ensure cart state is updated
-          await new Promise(resolve => setTimeout(resolve, 100));
-          await addToCart(variant.id, variant.quantity);
-          console.log(`✅ Successfully added item ${i + 1}`);
-        } catch (itemError) {
-          console.error(`❌ Failed to add item ${i + 1}:`, itemError);
-        }
-      }
+      console.log('✅ Successfully created cart with all items');
+      console.log('📊 Cart ID:', newCart.id);
+      console.log('📊 Total quantity:', newCart.totalQuantity);
+      console.log('📊 Items in cart:', newCart.lines?.edges?.length || 0);
 
       // Open cart drawer to show the added items
       setTimeout(() => {
