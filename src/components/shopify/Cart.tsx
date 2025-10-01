@@ -157,6 +157,18 @@ export default function Cart() {
         quantity: node.quantity,
       })) || [];
 
+      console.clear();
+      console.log('🛒 ===== SHARE CART DEBUG =====');
+      console.log('📊 Total cart lines:', cart.lines?.edges?.length || 0);
+      console.log('📦 Extracted variants:', variants.length);
+      console.log('🔍 Cart data:', cart.lines?.edges?.map(({ node }) => ({
+        id: node.merchandise.id,
+        quantity: node.quantity,
+        title: node.merchandise.product?.title
+      })));
+      console.log('📤 Variants to share:', variants);
+      console.log('🛒 ===========================');
+
       if (variants.length === 0) {
         throw new Error('No items to share');
       }
