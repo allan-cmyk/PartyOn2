@@ -126,18 +126,11 @@ export default function CompactProductCard({ product, index = 0, onProductClick 
         {/* Compact Product Details */}
         <div className="p-3">
           {/* Title - Smaller and truncated */}
-          <h3 
+          <h3
             onClick={() => onProductClick?.(product)}
             className="font-serif text-sm text-gray-900 mb-1 line-clamp-2 hover:text-gold-600 transition-colors cursor-pointer">
             {product.title}
           </h3>
-
-          {/* Vendor - Very small */}
-          {product.vendor && (
-            <p className="text-xs text-gray-500 mb-2">
-              {product.vendor}
-            </p>
-          )}
 
           {/* Price */}
           <p className="font-medium text-base text-gray-900 mb-2">

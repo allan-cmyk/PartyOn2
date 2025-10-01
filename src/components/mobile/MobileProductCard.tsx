@@ -111,13 +111,6 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
           </div>
 
         <div className="p-4">
-          {/* Vendor */}
-          {product.vendor && (
-            <p className="text-xs text-gray-500 tracking-[0.1em] mb-1">
-              {product.vendor.toUpperCase()}
-            </p>
-          )}
-
           {/* Title */}
           <h3 
             onClick={() => onProductClick?.(product)}

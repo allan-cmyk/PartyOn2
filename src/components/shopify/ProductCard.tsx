@@ -113,13 +113,6 @@ export default function ProductCard({ product, index = 0, onProductClick }: Prod
 
         {/* Product Details */}
         <div className="p-6">
-          {/* Vendor */}
-          {product.vendor && (
-            <p className="text-xs text-gray-500 tracking-[0.15em] mb-2">
-              {product.vendor.toUpperCase()}
-            </p>
-          )}
-
           {/* Title - Clickable */}
           <h3 
             onClick={() => onProductClick?.(product)}

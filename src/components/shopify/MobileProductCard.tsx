@@ -109,18 +109,11 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
         {/* Product Details - Compact for mobile */}
         <div className="p-3">
           {/* Title */}
-          <h3 
+          <h3
             onClick={() => onProductClick?.(product)}
             className="font-medium text-sm text-gray-900 mb-1 line-clamp-2">
             {product.title}
           </h3>
-
-          {/* Vendor */}
-          {product.vendor && (
-            <p className="text-xs text-gray-500 mb-2">
-              {product.vendor}
-            </p>
-          )}
 
           {/* Price and Quick Add */}
           <div className="flex items-center justify-between">
