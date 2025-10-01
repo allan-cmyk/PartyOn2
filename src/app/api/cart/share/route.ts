@@ -37,8 +37,11 @@ export async function POST(request: NextRequest) {
       expiresAt: Date.now() + (60 * 24 * 60 * 60 * 1000), // 60 days from now
     };
 
+    // Get base URL from request
+    const baseUrl = `${request.nextUrl.protocol}//${request.nextUrl.host}`;
+
     // Generate shareable URL with parameters (no storage needed)
-    const shareUrl = generateShareUrl(cartData);
+    const shareUrl = generateShareUrl(cartData, baseUrl);
 
     return NextResponse.json({
       success: true,

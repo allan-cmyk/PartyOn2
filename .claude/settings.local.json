@@ -11,7 +11,9 @@
       "Bash(git cherry-pick:*)",
       "Bash(xargs ls:*)",
       "Bash(npx next:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(pkill:*)",
+      "Bash(taskkill:*)"
     ],
     "deny": [],
     "ask": []

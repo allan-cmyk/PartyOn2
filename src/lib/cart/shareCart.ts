@@ -35,8 +35,8 @@ export function generateShortId(): string {
 /**
  * Generate the complete shareable URL with cart data as URL parameters
  */
-export function generateShareUrl(cartData: SharedCartData): string {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';
+export function generateShareUrl(cartData: SharedCartData, customBaseUrl?: string): string {
+  const baseUrl = customBaseUrl || process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';
 
   // Convert cart data to URL parameters
   const params = new URLSearchParams();
