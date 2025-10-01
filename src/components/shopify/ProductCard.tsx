@@ -77,7 +77,7 @@ export default function ProductCard({ product, index = 0, onProductClick }: Prod
       transition={{ duration: 0.5, delay: index * 0.1 }}
       className="group"
     >
-      <div className="bg-white border border-gray-200 hover:border-gold-600 transition-all duration-300 overflow-hidden">
+      <div className="bg-white border border-gray-200 hover:border-gold-600 transition-all duration-300 overflow-hidden h-full flex flex-col">
         {/* Product Image - Clickable */}
         <div 
           onClick={() => onProductClick?.(product)}
@@ -112,7 +112,7 @@ export default function ProductCard({ product, index = 0, onProductClick }: Prod
           </div>
 
         {/* Product Details */}
-        <div className="p-6">
+        <div className="p-6 flex-1 flex flex-col">
           {/* Title - Clickable */}
           <h3 
             onClick={() => onProductClick?.(product)}
@@ -162,7 +162,7 @@ export default function ProductCard({ product, index = 0, onProductClick }: Prod
           </div>
 
           {/* Action Buttons */}
-          <div className="space-y-2">
+          <div className="space-y-2 mt-auto">
             {/* Add to Cart Button - Always Visible */}
             <button
               onClick={handleAddToCart}

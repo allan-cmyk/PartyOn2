@@ -78,7 +78,7 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
       transition={{ duration: 0.3, delay: index * 0.05 }}
       className="touch-manipulation"
     >
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden active:shadow-md transition-shadow">
+      <div className="bg-white rounded-lg shadow-sm overflow-hidden active:shadow-md transition-shadow h-full flex flex-col">
         {/* Product Image - Optimized for mobile */}
         <div 
           onClick={() => onProductClick?.(product)}
@@ -107,7 +107,7 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
         </div>
 
         {/* Product Details - Compact for mobile */}
-        <div className="p-3">
+        <div className="p-3 flex-1 flex flex-col">
           {/* Title */}
           <h3
             onClick={() => onProductClick?.(product)}
@@ -116,7 +116,7 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
           </h3>
 
           {/* Price and Quick Add */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mt-auto">
             <p className="font-semibold text-lg text-gray-900">
               {formatPrice(price.amount, price.currencyCode)}
             </p>

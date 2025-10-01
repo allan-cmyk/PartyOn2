@@ -62,7 +62,7 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
       <motion.div
         initial={false}
         animate={{ opacity: 1 }}
-        className="bg-white border border-gray-200 rounded-lg overflow-hidden touch-manipulation"
+        className="bg-white border border-gray-200 rounded-lg overflow-hidden touch-manipulation h-full flex flex-col"
       >
         <div 
           onClick={() => onProductClick?.(product)}
@@ -110,7 +110,7 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
             )}
           </div>
 
-        <div className="p-4">
+        <div className="p-4 flex-1 flex flex-col">
           {/* Title */}
           <h3 
             onClick={() => onProductClick?.(product)}
@@ -119,7 +119,7 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
           </h3>
 
           {/* Price */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mt-auto">
             <p className="font-medium text-lg text-gray-900">
               {formatPrice(price.amount, price.currencyCode)}
             </p>
