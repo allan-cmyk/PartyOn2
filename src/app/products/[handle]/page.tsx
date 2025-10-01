@@ -7,7 +7,7 @@ import { useParams } from 'next/navigation';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import { useProduct } from '@/lib/shopify/hooks/useProducts';
 import { useCartContext } from '@/contexts/CartContext';
-import { formatPrice, getFirstAvailableVariant, getProductABV } from '@/lib/shopify/utils';
+import { formatPrice, getFirstAvailableVariant } from '@/lib/shopify/utils';
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -70,7 +70,6 @@ export default function ProductDetailPage() {
   }
 
   const selectedVariant = product.variants.edges.find(({ node }) => node.id === selectedVariantId)?.node;
-  const abv = getProductABV(product);
 
   return (
     <div className="bg-white min-h-screen">
