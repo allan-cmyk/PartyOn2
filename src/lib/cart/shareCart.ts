@@ -69,7 +69,10 @@ export function parseCartFromUrl(searchParams: URLSearchParams): SharedCartData 
     while (searchParams.has(`v${index}`)) {
       const variantData = searchParams.get(`v${index}`);
       if (variantData) {
-        const [id, quantityStr] = variantData.split(':');
+        // Split from the right side since Shopify GIDs contain colons (gid://shopify/ProductVariant/ID)
+        const lastColonIndex = variantData.lastIndexOf(':');
+        const id = variantData.substring(0, lastColonIndex);
+        const quantityStr = variantData.substring(lastColonIndex + 1);
         const quantity = parseInt(quantityStr, 10);
 
         if (id && !isNaN(quantity) && quantity > 0) {
