@@ -28,6 +28,9 @@ function SharedCartContent() {
         console.log('📦 Parsed cart data:', cartData);
         console.log('📊 Number of variants to add:', cartData?.variants?.length || 0);
 
+        // Also show an alert so we can see it without console (remove for production)
+        // alert(`SHARED CART DEBUG:\nVariants found: ${cartData?.variants?.length || 0}\nURL: ${searchParams.toString()}`);
+
         if (!cartData) {
           console.log('❌ No cart data parsed');
           setError('Invalid share link');
@@ -63,15 +66,27 @@ function SharedCartContent() {
       console.log('🛒 ===== ADDING ITEMS TO CART =====');
       console.log('📦 Total variants to add:', cartData.variants.length);
 
-      // If no cart exists, the addToCart function will create one
-      for (let i = 0; i < cartData.variants.length; i++) {
+      // Add the first item to create the cart
+      const firstVariant = cartData.variants[0];
+      console.log('➕ Creating cart with first item:', {
+        id: firstVariant.id,
+        quantity: firstVariant.quantity
+      });
+
+      await addToCart(firstVariant.id, firstVariant.quantity);
+      console.log('✅ Successfully created cart with first item');
+
+      // Add remaining items to the existing cart
+      for (let i = 1; i < cartData.variants.length; i++) {
         const variant = cartData.variants[i];
-        console.log(`➕ Adding item ${i + 1}/${cartData.variants.length}:`, {
+        console.log(`➕ Adding item ${i + 1}/${cartData.variants.length} to existing cart:`, {
           id: variant.id,
           quantity: variant.quantity
         });
 
         try {
+          // Add a small delay to ensure cart state is updated
+          await new Promise(resolve => setTimeout(resolve, 100));
           await addToCart(variant.id, variant.quantity);
           console.log(`✅ Successfully added item ${i + 1}`);
         } catch (itemError) {
