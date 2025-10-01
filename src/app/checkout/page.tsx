@@ -418,7 +418,7 @@ export default function CheckoutPage() {
                 ) : (
                   <button
                     onClick={() => setShowDeliveryScheduler(true)}
-                    className="w-full py-3 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-colors"
+                    className="w-full py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-colors"
                   >
                     SELECT DELIVERY DATE & TIME
                   </button>

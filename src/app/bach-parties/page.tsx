@@ -770,7 +770,7 @@ export default function BachPartiesPage() {
                 </button>
               </Link>
               <Link href="/contact">
-                <button className="px-10 py-4 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
                   CUSTOM PACKAGE
                 </button>
               </Link>

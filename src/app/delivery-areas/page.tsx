@@ -151,7 +151,7 @@ export default function DeliveryAreasPage() {
                 className={`px-6 py-3 tracking-[0.1em] text-sm transition-all duration-300 ${
                   activeArea === key
                     ? 'bg-gold-600 text-white'
-                    : 'border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white'
+                    : 'border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white'
                 }`}
               >
                 {area.name.toUpperCase()}
@@ -330,7 +330,7 @@ export default function DeliveryAreasPage() {
                 </button>
               </Link>
               <a href="tel:7373719700">
-                <button className="px-10 py-4 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
                   CALL FOR DETAILS
                 </button>
               </a>

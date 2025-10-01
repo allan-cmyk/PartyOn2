@@ -180,7 +180,7 @@ export default function HomePage() {
                 </li>
               </ul>
               <Link href="/order">
-                <button className="w-full px-8 py-4 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
+                <button className="w-full px-8 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
                   SCHEDULE A 15-MIN PLANNING CALL
                 </button>
               </Link>
@@ -410,7 +410,7 @@ export default function HomePage() {
                   </button>
                 </Link>
                 <Link href="/order">
-                  <button className="px-6 py-3 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.1em] text-sm">
+                  <button className="px-6 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.1em] text-sm">
                     PLAN MY WEDDING
                   </button>
                 </Link>
@@ -439,7 +439,7 @@ export default function HomePage() {
                   </button>
                 </Link>
                 <Link href="/order">
-                  <button className="px-6 py-3 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.1em] text-sm">
+                  <button className="px-6 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.1em] text-sm">
                     PLAN A YACHT BAR
                   </button>
                 </Link>
@@ -489,7 +489,7 @@ export default function HomePage() {
                   </button>
                 </Link>
                 <Link href="/order">
-                  <button className="px-6 py-3 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.1em] text-sm">
+                  <button className="px-6 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.1em] text-sm">
                     BOOK A CORPORATE CONSULT
                   </button>
                 </Link>
@@ -815,7 +815,7 @@ export default function HomePage() {
                 </button>
               </Link>
               <Link href="/order">
-                <button className="px-10 py-4 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
                   PLAN MY EVENT
                 </button>
               </Link>

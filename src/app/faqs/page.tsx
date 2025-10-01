@@ -201,7 +201,7 @@ export default function FAQsPage() {
                 </button>
               </Link>
               <a href="tel:7373719700">
-                <button className="px-8 py-3 border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-colors tracking-[0.15em] text-sm">
+                <button className="px-8 py-3 border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-colors tracking-[0.15em] text-sm">
                   CALL (737) 371-9700
                 </button>
               </a>

@@ -174,7 +174,7 @@ export default function OrderPage() {
                   <h3 className="font-medium text-lg mb-2 tracking-[0.1em]">QUICK ORDER</h3>
                   <p className="text-gray-600 text-sm mb-4">Know what you want? Jump straight to shopping</p>
                   <Link href="/products">
-                    <button className="px-6 py-2 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white font-semibold text-sm tracking-[0.1em] transition-all">
+                    <button className="px-6 py-2 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white font-semibold text-sm tracking-[0.1em] transition-all">
                       SHOP NOW →
                     </button>
                   </Link>
@@ -195,9 +195,9 @@ export default function OrderPage() {
                   </svg>
                   <h3 className="font-medium text-lg mb-2 tracking-[0.1em]">AI CONCIERGE</h3>
                   <p className="text-gray-600 text-sm mb-4">Get personalized recommendations for your event</p>
-                  <button 
+                  <button
                     onClick={() => setIsConciergeOpen(true)}
-                    className="px-6 py-2 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white font-semibold text-sm tracking-[0.1em] transition-all"
+                    className="px-6 py-2 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white font-semibold text-sm tracking-[0.1em] transition-all"
                   >
                     START CHAT →
                   </button>
@@ -218,7 +218,7 @@ export default function OrderPage() {
                   </svg>
                   <h3 className="font-medium text-lg mb-2 tracking-[0.1em]">EVENT PACKAGES</h3>
                   <p className="text-gray-600 text-sm mb-4">Explore curated packages for every occasion</p>
-                  <a href="#packages" className="inline-block px-6 py-2 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white font-semibold text-sm tracking-[0.1em] transition-all">
+                  <a href="#packages" className="inline-block px-6 py-2 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white font-semibold text-sm tracking-[0.1em] transition-all">
                     VIEW PACKAGES →
                   </a>
                 </div>

@@ -403,9 +403,9 @@ export default function WeddingsPage() {
                   </ul>
                   <Link href="/contact">
                     <button className={`w-full py-3 tracking-[0.15em] text-sm transition-all duration-300 ${
-                      pkg.featured 
-                        ? 'bg-gold-600 text-white hover:bg-gold-700' 
-                        : 'border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white'
+                      pkg.featured
+                        ? 'bg-gold-600 text-white hover:bg-gold-700'
+                        : 'border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white'
                     }`}>
                       PLAN THIS PACKAGE (CONSULTATION)
                     </button>
@@ -426,7 +426,7 @@ export default function WeddingsPage() {
               <strong>Just need delivery?</strong> Build your cart in minutes and we&apos;ll coordinate drop-off with your venue.
             </p>
             <Link href="/order">
-              <button className="px-8 py-3 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm font-medium">
                 ORDER DELIVERY-ONLY
               </button>
             </Link>
@@ -623,7 +623,7 @@ export default function WeddingsPage() {
                 </button>
               </Link>
               <Link href="/contact">
-                <button className="px-10 py-4 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
                   VIEW AVAILABILITY
                 </button>
               </Link>

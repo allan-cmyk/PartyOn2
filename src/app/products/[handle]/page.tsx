@@ -142,13 +142,6 @@ export default function ProductDetailPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              {/* Vendor */}
-              {product.vendor && (
-                <p className="text-sm text-gray-500 tracking-[0.15em] mb-2">
-                  {product.vendor.toUpperCase()}
-                </p>
-              )}
-
               {/* Title */}
               <h1 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.05em]">
                 {product.title}
@@ -157,7 +150,7 @@ export default function ProductDetailPage() {
               {/* Price */}
               <div className="mb-6">
                 <p className="font-light text-3xl text-gray-900 tracking-[0.05em]">
-                  {selectedVariant 
+                  {selectedVariant
                     ? formatPrice(selectedVariant.price.amount, selectedVariant.price.currencyCode)
                     : formatPrice(product.priceRange.minVariantPrice.amount, product.priceRange.minVariantPrice.currencyCode)
                   }
@@ -166,20 +159,6 @@ export default function ProductDetailPage() {
                   <p className="text-gray-500 line-through">
                     {formatPrice(selectedVariant.compareAtPrice.amount, selectedVariant.compareAtPrice.currencyCode)}
                   </p>
-                )}
-              </div>
-
-              {/* Product Type & ABV */}
-              <div className="flex flex-wrap gap-4 mb-6">
-                {product.productType && (
-                  <span className="px-4 py-2 bg-gray-100 text-gray-700 text-sm tracking-[0.1em]">
-                    {product.productType.toUpperCase()}
-                  </span>
-                )}
-                {abv && (
-                  <span className="px-4 py-2 bg-gray-100 text-gray-700 text-sm tracking-[0.1em]">
-                    {abv} ABV
-                  </span>
                 )}
               </div>
 

@@ -492,7 +492,7 @@ export default function BoatPartiesPage() {
                     <button className={`w-full py-3 tracking-[0.15em] text-sm transition-all duration-300 ${
                       pkg.featured 
                         ? 'bg-gold-600 text-white hover:bg-gold-700' 
-                        : 'border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white'
+                        : 'border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white'
                     }`}>
                       PLAN THIS PACKAGE (CONSULTATION)
                     </button>
@@ -513,7 +513,7 @@ export default function BoatPartiesPage() {
               <strong>Just need delivery?</strong> Build your boat-day cart in minutes.
             </p>
             <Link href="/boat-parties/products">
-              <button className="px-8 py-3 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm font-medium">
                 ORDER DELIVERY-ONLY
               </button>
             </Link>
@@ -710,7 +710,7 @@ export default function BoatPartiesPage() {
                 </button>
               </Link>
               <a href="tel:7373719700">
-                <button className="px-10 py-4 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
                   CALL CAPTAIN&apos;S LINE
                 </button>
               </a>
@@ -787,7 +787,7 @@ export default function BoatPartiesPage() {
                 </button>
               </Link>
               <a href="tel:7373719700" className="flex-1">
-                <button className="w-full py-3 border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all text-sm tracking-[0.1em]">
+                <button className="w-full py-3 border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all text-sm tracking-[0.1em]">
                   CALL
                 </button>
               </a>

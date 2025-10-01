@@ -628,7 +628,7 @@ export default function HotelsResortsPartnerPage() {
                   Monthly reporting
                 </li>
               </ul>
-              <button className="w-full py-3 border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all text-sm tracking-[0.1em]">
+              <button className="w-full py-3 border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all text-sm tracking-[0.1em]">
                 LEARN MORE
               </button>
             </div>
@@ -729,7 +729,7 @@ export default function HotelsResortsPartnerPage() {
                   Co-marketing support
                 </li>
               </ul>
-              <button className="w-full py-3 border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all text-sm tracking-[0.1em]">
+              <button className="w-full py-3 border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all text-sm tracking-[0.1em]">
                 CONTACT SALES
               </button>
             </div>

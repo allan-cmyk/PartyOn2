@@ -134,7 +134,7 @@ export default function GroupOrderDashboard() {
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowShareModal(true)}
-                  className="px-4 py-2 border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-colors tracking-[0.1em]"
+                  className="px-4 py-2 border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-colors tracking-[0.1em]"
                 >
                   SHARE
                 </button>

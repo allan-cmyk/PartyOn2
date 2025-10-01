@@ -183,9 +183,9 @@ export default function ProductCard({ product, index = 0, onProductClick }: Prod
             </button>
 
             {/* View Details Button */}
-            <button 
+            <button
               onClick={() => onProductClick?.(product)}
-              className="w-full py-2 border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-colors duration-300 text-xs tracking-[0.15em]">
+              className="w-full py-2 border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-colors duration-300 text-xs tracking-[0.15em]">
               VIEW DETAILS
             </button>
           </div>
