@@ -22,7 +22,14 @@ function SharedCartContent() {
         // Parse cart data from URL parameters
         const cartData = parseCartFromUrl(searchParams);
 
+        console.clear();
+        console.log('🔍 ===== SHARED CART LOADING DEBUG =====');
+        console.log('📋 Raw search params:', searchParams.toString());
+        console.log('📦 Parsed cart data:', cartData);
+        console.log('📊 Number of variants to add:', cartData?.variants?.length || 0);
+
         if (!cartData) {
+          console.log('❌ No cart data parsed');
           setError('Invalid share link');
           setLoading(false);
           return;
@@ -53,9 +60,23 @@ function SharedCartContent() {
 
   async function addItemsToCart(cartData: SharedCartData) {
     try {
+      console.log('🛒 ===== ADDING ITEMS TO CART =====');
+      console.log('📦 Total variants to add:', cartData.variants.length);
+
       // If no cart exists, the addToCart function will create one
-      for (const variant of cartData.variants) {
-        await addToCart(variant.id, variant.quantity);
+      for (let i = 0; i < cartData.variants.length; i++) {
+        const variant = cartData.variants[i];
+        console.log(`➕ Adding item ${i + 1}/${cartData.variants.length}:`, {
+          id: variant.id,
+          quantity: variant.quantity
+        });
+
+        try {
+          await addToCart(variant.id, variant.quantity);
+          console.log(`✅ Successfully added item ${i + 1}`);
+        } catch (itemError) {
+          console.error(`❌ Failed to add item ${i + 1}:`, itemError);
+        }
       }
 
       // Open cart drawer to show the added items
