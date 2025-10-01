@@ -19,7 +19,8 @@
       "Bash(__NEW_LINE__ echo \"1. Testing API endpoint with multiple items...\")",
       "WebFetch(domain:party-on2-git-dev-infinite-burn-rate.vercel.app)",
       "Bash(findstr:*)",
-      "Bash(gh pr create:*)"
+      "Bash(gh pr create:*)",
+      "Bash(git merge:*)"
     ],
     "deny": [],
     "ask": []
