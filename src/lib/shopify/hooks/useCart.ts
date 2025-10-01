@@ -80,6 +80,28 @@ export function useCart() {
     }
   };
 
+  const createCartWithItems = useCallback(async (items: Array<{ merchandiseId: string; quantity: number }>) => {
+    try {
+      console.log('createCartWithItems called with:', items);
+
+      // Clear existing cart first
+      clearCart();
+
+      // Create cart with all items at once
+      const cartLines: CartLine[] = items.map(item => ({
+        merchandiseId: item.merchandiseId,
+        quantity: item.quantity
+      }));
+
+      const newCart = await createCart(cartLines);
+      console.log('✅ Created cart with all items:', newCart.id, 'Total items:', newCart.totalQuantity);
+      return newCart;
+    } catch (err) {
+      setError(err as Error);
+      throw err;
+    }
+  }, []);
+
   const addToCart = useCallback(async (merchandiseId: string, quantity: number = 1) => {
     try {
       setLoading(true);
@@ -236,6 +258,7 @@ export function useCart() {
     loading,
     error,
     addToCart,
+    createCartWithItems,
     updateCartItem,
     removeFromCart,
     clearCart,

@@ -1,7 +1,8 @@
 // SEO Schema generators for different page types
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function generateProductSchema(product: any) {
+import { ShopifyProduct } from '../shopify/types';
+
+export function generateProductSchema(product: ShopifyProduct) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Product',

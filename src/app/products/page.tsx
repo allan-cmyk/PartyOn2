@@ -19,32 +19,28 @@ import AgeVerificationModal from '@/components/AgeVerificationModal';
 import ProductModal from '@/components/ProductModal';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { getProductCategory, FILTER_OPTIONS, SHOPIFY_COLLECTIONS, getUniqueTags } from '@/lib/shopify/categories';
+import { ProductCardSkeletonGrid } from '@/components/skeletons/ProductCardSkeleton';
+import { MobileProductCardSkeletonGrid } from '@/components/skeletons/MobileProductCardSkeleton';
 
 function ProductsContent() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('search');
+  const isMobile = useIsMobile();
+  const initialLoadCount = isMobile ? 12 : 20;
   const [searchResults, setSearchResults] = useState<ShopifyProduct[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [filter, setFilter] = useState('all');
-  const [collectionFilter, setCollectionFilter] = useState<string | null>('favorites-home-page'); // Default to Favorites - Home Page collection (verified exists)
-  const { products, loading, error, hasNextPage, loadMore } = useCollectionProducts(collectionFilter, 30); // Fixed: collectionFilter now declared before use
-
-  // Debug logging
-  useEffect(() => {
-    console.log('🔍 Current collectionFilter:', collectionFilter);
-    console.log('🔍 Products count:', products.length);
-    console.log('🔍 SHOPIFY_COLLECTIONS:', SHOPIFY_COLLECTIONS.map(c => c.handle));
-  }, [collectionFilter, products]);
+  const [collectionFilter, setCollectionFilter] = useState<string | null>(null);
+  const { products, loading, error, hasNextPage, loadMore } = useCollectionProducts(collectionFilter, initialLoadCount);
   const [sortBy, setSortBy] = useState('featured');
   const [showAgeVerification, setShowAgeVerification] = useState(false);
   const [isAgeVerified, setIsAgeVerified] = useState(false);
-  
+
   // Shopify-based filters
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
-  
+
   // Mobile states
-  const isMobile = useIsMobile();
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   
   // View mode state for compact/regular view
@@ -59,6 +55,14 @@ function ProductsContent() {
     const ageVerified = localStorage.getItem('age_verified') === 'true';
     setIsAgeVerified(ageVerified);
   }, []);
+
+  // Set default collection to bachelor-favorites on initial load
+  useEffect(() => {
+    // Only set default if no search query and no collection filter is already set
+    if (!searchQuery && !collectionFilter) {
+      setCollectionFilter('bachelor-favorites');
+    }
+  }, [searchQuery, collectionFilter]);
 
   const handleAgeVerified = () => {
     setShowAgeVerification(false);
@@ -100,7 +104,7 @@ function ProductsContent() {
       setSearchLoading(true);
       shopifyFetch<{ products: { edges: Array<{ node: ShopifyProduct }> } }>({
         query: SEARCH_PRODUCTS_QUERY,
-        variables: { query: searchQuery, first: 100 },
+        variables: { query: searchQuery, first: 50 },
       })
         .then(response => {
           setSearchResults(response.products.edges.map(edge => edge.node));
@@ -284,7 +288,6 @@ function ProductsContent() {
             <div className={`grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-7 gap-2'}`}>
               {SHOPIFY_COLLECTIONS.map((collection) => {
                 const isActive = collectionFilter === collection.handle;
-                console.log(`🔍 Collection: ${collection.handle}, isActive: ${isActive}, current filter: ${collectionFilter}`);
                 return (
                   <button
                     key={collection.handle}
@@ -484,34 +487,20 @@ function ProductsContent() {
       {/* Products Grid */}
       <section className={isCompactView ? "py-8" : "py-16"}>
         <div className={isCompactView ? "max-w-[1400px] mx-auto px-6" : "max-w-7xl mx-auto px-8"}>
-          {loading && collectionFilter ? (
-            // Show a cleaner loading state when switching collections with skeleton
-            <div className="min-h-[400px]">
-              <div className="text-center mb-8">
-                <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-gold-600 border-t-transparent"></div>
-                <p className="mt-2 text-gray-600 font-light tracking-[0.1em] text-sm">Loading collection...</p>
-              </div>
-              {/* Skeleton loading grid */}
-              <div className={
-                isMobile
-                  ? "grid grid-cols-2 gap-3 px-4"
-                  : isCompactView
-                    ? "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"
-                    : "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"
-              }>
-                {Array.from({ length: 12 }).map((_, i) => (
-                  <div key={i} className="animate-pulse">
-                    <div className="bg-gray-200 aspect-square rounded mb-3"></div>
-                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-3 bg-gray-200 rounded w-3/4"></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (loading || searchLoading) && products.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gold-600"></div>
-              <p className="mt-4 text-gray-600">Loading products...</p>
+          {(loading || searchLoading) && products.length === 0 ? (
+            // Show skeleton loaders
+            <div className={
+              isMobile
+                ? "grid grid-cols-2 gap-3 px-4"
+                : isCompactView
+                  ? "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"
+                  : "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"
+            }>
+              {isMobile ? (
+                <MobileProductCardSkeletonGrid count={initialLoadCount} />
+              ) : (
+                <ProductCardSkeletonGrid count={initialLoadCount} />
+              )}
             </div>
           ) : (
             <>

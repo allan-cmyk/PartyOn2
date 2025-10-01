@@ -67,7 +67,7 @@ export default function ProductSearch({ isScrolled = true }: ProductSearchProps)
       }
     };
 
-    const debounceTimer = setTimeout(searchProducts, 300);
+    const debounceTimer = setTimeout(searchProducts, 500);
     return () => clearTimeout(debounceTimer);
   }, [searchTerm]);
 

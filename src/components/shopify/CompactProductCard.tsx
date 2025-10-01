@@ -80,7 +80,7 @@ export default function CompactProductCard({ product, index = 0, onProductClick 
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="bg-white border border-gray-200 hover:border-gold-600 transition-all duration-200 overflow-hidden">
+      <div className="bg-white border border-gray-200 hover:border-gold-600 transition-all duration-200 overflow-hidden h-full flex flex-col">
         {/* Compact Image - Square aspect ratio */}
         <div 
           onClick={() => onProductClick?.(product)}
@@ -91,6 +91,8 @@ export default function CompactProductCard({ product, index = 0, onProductClick 
                 alt={product.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 loading="lazy"
+                decoding="async"
+                fetchPriority={index < 6 ? "high" : "low"}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
@@ -122,20 +124,13 @@ export default function CompactProductCard({ product, index = 0, onProductClick 
           </div>
 
         {/* Compact Product Details */}
-        <div className="p-3">
+        <div className="p-3 flex-1 flex flex-col">
           {/* Title - Smaller and truncated */}
-          <h3 
+          <h3
             onClick={() => onProductClick?.(product)}
             className="font-serif text-sm text-gray-900 mb-1 line-clamp-2 hover:text-gold-600 transition-colors cursor-pointer">
             {product.title}
           </h3>
-
-          {/* Vendor - Very small */}
-          {product.vendor && (
-            <p className="text-xs text-gray-500 mb-2">
-              {product.vendor}
-            </p>
-          )}
 
           {/* Price */}
           <p className="font-medium text-base text-gray-900 mb-2">
@@ -143,6 +138,7 @@ export default function CompactProductCard({ product, index = 0, onProductClick 
           </p>
 
           {/* Quantity and Add to Cart */}
+          <div className="mt-auto">
           {isHovered || quantity > 1 ? (
             <div className="flex items-center gap-2">
               {/* Quantity Selector */}
@@ -196,6 +192,7 @@ export default function CompactProductCard({ product, index = 0, onProductClick 
               {variant?.availableForSale ? 'QUICK ADD' : 'SOLD OUT'}
             </button>
           )}
+          </div>
         </div>
       </div>
 

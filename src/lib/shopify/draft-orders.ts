@@ -37,6 +37,30 @@ function fixInvoiceUrl(invoiceUrl: string | null | undefined): string | null {
   return fixedUrl;
 }
 
+/**
+ * Generate a custom invoice email body with corrected URLs
+ */
+function generateCustomInvoiceMessage(draftOrderId: string, defaultMessage?: string): string {
+  const storeDomain = process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN || 'premier-concierge.myshopify.com';
+
+  // Extract just the ID part for the invoice URL
+  const invoiceId = draftOrderId.replace('gid://shopify/DraftOrder/', '');
+  const correctInvoiceUrl = `https://${storeDomain}/invoices/${invoiceId}`;
+
+  return `${defaultMessage || 'Please complete your Party On Delivery group order payment.'}
+
+To complete your purchase, please click the link below:
+${correctInvoiceUrl}
+
+If the link doesn't work, you can copy and paste this URL into your browser:
+${correctInvoiceUrl}
+
+Thank you for choosing Party On Delivery!
+
+---
+Party On Delivery Team
+Austin's Premier Alcohol Delivery Service`;
+}
 interface DraftOrderLineItem {
   variantId: string;
   quantity: number;
@@ -183,7 +207,7 @@ export async function createDraftOrder(input: DraftOrderInput) {
 }
 
 /**
- * Send invoice for a draft order
+ * Send invoice for a draft order with corrected invoice URL
  */
 export async function sendDraftOrderInvoice(
   draftOrderId: string,
@@ -213,8 +237,8 @@ export async function sendDraftOrderInvoice(
             id: draftOrderId,
             email: {
               to: email,
-              subject: subject || 'Your Party On Delivery Group Order',
-              message: message || 'Please complete your group order payment.',
+              subject: subject || 'Your Party On Delivery Group Order - Complete Payment',
+              message: generateCustomInvoiceMessage(draftOrderId, message),
             },
           },
         }),

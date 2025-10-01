@@ -60,10 +60,9 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
   return (
     <>
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: index * 0.05 }}
-        className="bg-white border border-gray-200 rounded-lg overflow-hidden touch-manipulation"
+        initial={false}
+        animate={{ opacity: 1 }}
+        className="bg-white border border-gray-200 rounded-lg overflow-hidden touch-manipulation h-full flex flex-col"
       >
         <div 
           onClick={() => onProductClick?.(product)}
@@ -74,6 +73,8 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
                 alt={product.title}
                 className="w-full h-full object-cover"
                 loading="lazy"
+                decoding="async"
+                fetchPriority={index < 4 ? "high" : "low"}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
@@ -109,14 +110,7 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
             )}
           </div>
 
-        <div className="p-4">
-          {/* Vendor */}
-          {product.vendor && (
-            <p className="text-xs text-gray-500 tracking-[0.1em] mb-1">
-              {product.vendor.toUpperCase()}
-            </p>
-          )}
-
+        <div className="p-4 flex-1 flex flex-col">
           {/* Title */}
           <h3 
             onClick={() => onProductClick?.(product)}
@@ -124,17 +118,11 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
             {product.title}
           </h3>
 
-          {/* Price and Type */}
-          <div className="flex items-center justify-between">
+          {/* Price */}
+          <div className="flex items-center justify-between mt-auto">
             <p className="font-medium text-lg text-gray-900">
               {formatPrice(price.amount, price.currencyCode)}
             </p>
-            
-            {product.productType && (
-              <span className="text-xs text-gray-500 tracking-[0.05em]">
-                {product.productType.toUpperCase()}
-              </span>
-            )}
           </div>
         </div>
 
