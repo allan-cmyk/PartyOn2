@@ -243,7 +243,7 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
               <div className="flex justify-between items-center p-8">
                 <Link href="/" className="flex items-center">
                   <img 
-                    src="/images/party-on-logo.svg" 
+                    src="/images/POD Logo 2025.svg" 
                     alt="Party On Delivery"
                     className="h-12 w-auto"
                   />

@@ -129,7 +129,7 @@ export function generateServiceSchema() {
       url: 'https://partyondelivery.com',
       telephone: '(737) 371-9700',
       priceRange: '$$',
-      image: 'https://partyondelivery.com/images/party-on-logo.svg'
+      image: 'https://partyondelivery.com/images/POD Logo 2025.svg'
     },
     areaServed: {
       '@type': 'City',

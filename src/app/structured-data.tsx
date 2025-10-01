@@ -55,7 +55,7 @@ export const structuredData = {
     'https://www.instagram.com/partyondelivery/',
     'https://www.facebook.com/partyondelivery',
   ],
-  image: 'https://partyondelivery.com/images/party-on-logo.svg',
+  image: 'https://partyondelivery.com/images/POD Logo 2025.svg',
   aggregateRating: {
     '@type': 'AggregateRating',
     ratingValue: '4.9',
