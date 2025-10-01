@@ -125,13 +125,6 @@ export default function ProductCard({ product, index = 0, onProductClick }: Prod
             <p className="font-light text-xl text-gray-900 tracking-[0.05em]">
               {formatPrice(price.amount, price.currencyCode)}
             </p>
-            
-            {/* Product Type Badge */}
-            {product.productType && (
-              <span className="text-xs text-gray-500 tracking-[0.1em]">
-                {product.productType.toUpperCase()}
-              </span>
-            )}
           </div>
 
           {/* Quantity Selector */}

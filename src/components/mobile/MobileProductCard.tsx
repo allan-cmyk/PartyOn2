@@ -118,17 +118,11 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
             {product.title}
           </h3>
 
-          {/* Price and Type */}
+          {/* Price */}
           <div className="flex items-center justify-between">
             <p className="font-medium text-lg text-gray-900">
               {formatPrice(price.amount, price.currencyCode)}
             </p>
-            
-            {product.productType && (
-              <span className="text-xs text-gray-500 tracking-[0.05em]">
-                {product.productType.toUpperCase()}
-              </span>
-            )}
           </div>
         </div>
 
