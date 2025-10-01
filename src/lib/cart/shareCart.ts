@@ -33,11 +33,68 @@ export function generateShortId(): string {
 // These are separated to avoid importing Node.js modules in client-side code
 
 /**
- * Generate the complete shareable URL for a short ID
+ * Generate the complete shareable URL with cart data as URL parameters
  */
-export function generateShareUrl(shortId: string): string {
+export function generateShareUrl(cartData: SharedCartData): string {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';
-  return `${baseUrl}/cart/shared/${shortId}`;
+
+  // Convert cart data to URL parameters
+  const params = new URLSearchParams();
+
+  // Add each variant as a parameter
+  cartData.variants.forEach((variant, index) => {
+    params.append(`v${index}`, `${variant.id}:${variant.quantity}`);
+  });
+
+  // Add timestamp
+  params.append('t', cartData.timestamp.toString());
+
+  // Add expiration if present
+  if (cartData.expiresAt) {
+    params.append('e', cartData.expiresAt.toString());
+  }
+
+  return `${baseUrl}/cart/shared?${params.toString()}`;
+}
+
+/**
+ * Parse cart data from URL parameters
+ */
+export function parseCartFromUrl(searchParams: URLSearchParams): SharedCartData | null {
+  try {
+    const variants: SharedCartVariant[] = [];
+
+    // Parse all variant parameters
+    let index = 0;
+    while (searchParams.has(`v${index}`)) {
+      const variantData = searchParams.get(`v${index}`);
+      if (variantData) {
+        const [id, quantityStr] = variantData.split(':');
+        const quantity = parseInt(quantityStr, 10);
+
+        if (id && !isNaN(quantity) && quantity > 0) {
+          variants.push({ id, quantity });
+        }
+      }
+      index++;
+    }
+
+    if (variants.length === 0) {
+      return null;
+    }
+
+    const timestamp = parseInt(searchParams.get('t') || '0', 10);
+    const expiresAt = searchParams.get('e') ? parseInt(searchParams.get('e')!, 10) : undefined;
+
+    return {
+      variants,
+      timestamp: timestamp || Date.now(),
+      expiresAt
+    };
+  } catch (error) {
+    console.error('Failed to parse cart from URL:', error);
+    return null;
+  }
 }
 
 
