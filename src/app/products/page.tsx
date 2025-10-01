@@ -56,6 +56,14 @@ function ProductsContent() {
     setIsAgeVerified(ageVerified);
   }, []);
 
+  // Set default collection to bachelor-favorites on initial load
+  useEffect(() => {
+    // Only set default if no search query and no collection filter is already set
+    if (!searchQuery && !collectionFilter) {
+      setCollectionFilter('bachelor-favorites');
+    }
+  }, [searchQuery, collectionFilter]);
+
   const handleAgeVerified = () => {
     setShowAgeVerification(false);
     setIsAgeVerified(true);
