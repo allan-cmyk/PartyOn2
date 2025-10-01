@@ -17,7 +17,8 @@
       "Bash(node:*)",
       "Bash(rm:*)",
       "Bash(__NEW_LINE__ echo \"1. Testing API endpoint with multiple items...\")",
-      "WebFetch(domain:party-on2-git-dev-infinite-burn-rate.vercel.app)"
+      "WebFetch(domain:party-on2-git-dev-infinite-burn-rate.vercel.app)",
+      "Bash(findstr:*)"
     ],
     "deny": [],
     "ask": []
