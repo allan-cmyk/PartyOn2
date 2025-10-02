@@ -92,7 +92,7 @@ export default function ContactPage() {
                 <p className="text-gray-600 mb-4">
                   Immediate assistance for your event needs
                 </p>
-                <a href="tel:7373719700" className="text-gold-600 hover:text-gold-700 tracking-[0.1em] text-lg">
+                <a href="tel:7373719700" className="text-gray-900 hover:text-gold-700 tracking-[0.1em] text-lg font-medium">
                   (737) 371-9700
                 </a>
               </div>
@@ -115,7 +115,7 @@ export default function ContactPage() {
                 <p className="text-gray-600 mb-4">
                   Detailed inquiries and custom requests
                 </p>
-                <a href="mailto:info@partyondelivery.com" className="text-gold-600 hover:text-gold-700 tracking-[0.1em]">
+                <a href="mailto:info@partyondelivery.com" className="text-gray-900 hover:text-gold-700 tracking-[0.1em] font-medium">
                   info@partyondelivery.com
                 </a>
               </div>
