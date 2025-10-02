@@ -129,6 +129,34 @@ export default function ContactPage() {
               <div className="p-8 text-center">
                 <div className="w-20 h-20 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6">
                   <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
+                  Schedule a Quick Call
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  We'll call you at your convenience
+                </p>
+                <a
+                  href="https://123.partyondelivery.com/planning-call"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block px-6 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
+                >
+                  BOOK A CALL
+                </a>
+              </div>
+            </LuxuryCard>
+
+            <LuxuryCard
+              backgroundImage="/images/contact/visit-location.webp"
+              index={3}
+              className="rounded-lg"
+            >
+              <div className="p-8 text-center">
+                <div className="w-20 h-20 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
