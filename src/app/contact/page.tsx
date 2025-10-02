@@ -74,25 +74,22 @@ export default function ContactPage() {
             <div className="w-16 h-px bg-gold-600 mx-auto" />
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             <LuxuryCard
               backgroundImage="/images/contact/phone-support.webp"
               index={0}
               className="rounded-lg"
             >
-              <div className="p-8 text-center">
-                <div className="w-20 h-20 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              <div className="p-6 text-center">
+                <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.685.049V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
+                <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
                   Call Us
                 </h3>
-                <p className="text-gray-600 mb-4">
-                  Immediate assistance for your event needs
-                </p>
-                <a href="tel:7373719700" className="text-gold-600 hover:text-gold-700 tracking-[0.1em] text-lg">
+                <a href="tel:7373719700" className="text-gray-900 hover:text-gold-700 tracking-[0.1em] text-lg font-medium">
                   (737) 371-9700
                 </a>
               </div>
@@ -103,19 +100,16 @@ export default function ContactPage() {
               index={1}
               className="rounded-lg"
             >
-              <div className="p-8 text-center">
-                <div className="w-20 h-20 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-6 text-center">
+                <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
+                <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
                   Email Us
                 </h3>
-                <p className="text-gray-600 mb-4">
-                  Detailed inquiries and custom requests
-                </p>
-                <a href="mailto:info@partyondelivery.com" className="text-gold-600 hover:text-gold-700 tracking-[0.1em]">
+                <a href="mailto:info@partyondelivery.com" className="text-gray-900 hover:text-gold-700 tracking-[0.1em] font-medium">
                   info@partyondelivery.com
                 </a>
               </div>
@@ -126,35 +120,46 @@ export default function ContactPage() {
               index={2}
               className="rounded-lg"
             >
-              <div className="p-8 text-center">
-                <div className="w-20 h-20 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-6 text-center">
+                <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
+                  Schedule a Quick Call
+                </h3>
+                <a
+                  href="https://123.partyondelivery.com/planning-call"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block px-6 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
+                >
+                  BOOK A CALL
+                </a>
+              </div>
+            </LuxuryCard>
+
+            <LuxuryCard
+              backgroundImage="/images/contact/visit-location.webp"
+              index={3}
+              className="rounded-lg"
+            >
+              <div className="p-6 text-center">
+                <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
+                <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
                   Service Hours
                 </h3>
-                <p className="text-gray-600 mb-4">
-                  Available daily for your celebrations
-                </p>
-                <p className="text-gray-700">
-                  10:00 AM - 11:00 PM
+                <p className="text-gray-700 font-medium">
+                  10AM - 9PM (except Sundays)
                 </p>
               </div>
             </LuxuryCard>
           </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
-          >
-            <p className="text-gray-600 italic">
-              72-hour advance ordering required • Licensed & insured • TABC certified
-            </p>
-          </motion.div>
         </div>
       </section>
 
@@ -374,7 +379,7 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <img 
-                src="/images/party-on-logo.svg" 
+                src="/images/POD Logo 2025.svg" 
                 alt="Party On Delivery"
                 className="h-16 w-auto mb-4"
               />
@@ -405,7 +410,7 @@ export default function ContactPage() {
               <ul className="space-y-2 text-gray-600 text-sm">
                 <li>Phone: (737) 371-9700</li>
                 <li>Email: info@partyondelivery.com</li>
-                <li>Hours: 10am - 11pm Daily</li>
+                <li>Hours: 10AM - 9PM (except Sundays)</li>
               </ul>
             </div>
           </div>

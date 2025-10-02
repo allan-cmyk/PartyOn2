@@ -65,7 +65,7 @@ const features: Feature[] = [
     descriptionParty: "Elite party commandos who AMPLIFY every celebration to 11!",
     image: "/images/services/bach-parties/bachelorette-champagne-tower.webp",
     color: "dark",
-    stats: "4.9★ rating",
+    stats: "5.0★ rating",
     icon: (
       <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -132,7 +132,7 @@ export default function FeatureCards({ mode = 'normal' }: FeatureCardsProps) {
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
               </svg>
               <span className={`font-semibold ${mode === 'party' ? 'text-primary-300' : 'text-dark'}`}>
-                1000+ Deliveries, 4.9★
+                1000+ Deliveries, 5.0★
               </span>
             </div>
             <div className="flex items-center space-x-2">

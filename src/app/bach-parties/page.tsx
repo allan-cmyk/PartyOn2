@@ -140,7 +140,7 @@ export default function BachPartiesPage() {
             </a>
           </div>
           <p className="text-sm text-gray-300 mt-4 tracking-[0.05em]">
-            TABC-licensed • Fully insured • 1000+ Deliveries, 4.9★
+            TABC-licensed • Fully insured • 1000+ Deliveries, 5.0★
           </p>
         </motion.div>
       </section>
@@ -770,7 +770,7 @@ export default function BachPartiesPage() {
                 </button>
               </Link>
               <Link href="/contact">
-                <button className="px-10 py-4 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
                   CUSTOM PACKAGE
                 </button>
               </Link>
@@ -785,7 +785,7 @@ export default function BachPartiesPage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <img 
-                src="/images/party-on-logo.svg" 
+                src="/images/POD Logo 2025.svg" 
                 alt="Party On Delivery"
                 className="h-16 w-auto mb-4"
               />
@@ -816,7 +816,7 @@ export default function BachPartiesPage() {
               <ul className="space-y-2 text-gray-600 text-sm">
                 <li>Phone: (737) 371-9700</li>
                 <li>Email: info@partyondelivery.com</li>
-                <li>Hours: 10am - 11pm Daily</li>
+                <li>Hours: 10AM - 9PM (except Sundays)</li>
               </ul>
             </div>
           </div>

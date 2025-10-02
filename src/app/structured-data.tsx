@@ -25,11 +25,10 @@ export const structuredData = {
       'Wednesday',
       'Thursday',
       'Friday',
-      'Saturday',
-      'Sunday'
+      'Saturday'
     ],
     opens: '10:00',
-    closes: '23:00',
+    closes: '21:00',
   },
   priceRange: '$$',
   servesCuisine: 'Alcohol Delivery',
@@ -55,10 +54,10 @@ export const structuredData = {
     'https://www.instagram.com/partyondelivery/',
     'https://www.facebook.com/partyondelivery',
   ],
-  image: 'https://partyondelivery.com/images/party-on-logo.svg',
+  image: 'https://partyondelivery.com/images/POD Logo 2025.svg',
   aggregateRating: {
     '@type': 'AggregateRating',
-    ratingValue: '4.9',
+    ratingValue: '5.0',
     reviewCount: '200',
   },
 }

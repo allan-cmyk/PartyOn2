@@ -129,7 +129,7 @@ export function generateServiceSchema() {
       url: 'https://partyondelivery.com',
       telephone: '(737) 371-9700',
       priceRange: '$$',
-      image: 'https://partyondelivery.com/images/party-on-logo.svg'
+      image: 'https://partyondelivery.com/images/POD Logo 2025.svg'
     },
     areaServed: {
       '@type': 'City',
@@ -147,9 +147,9 @@ export function generateServiceSchema() {
     },
     hoursAvailable: {
       '@type': 'OpeningHoursSpecification',
-      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
       opens: '10:00',
-      closes: '23:00'
+      closes: '21:00'
     },
     offers: {
       '@type': 'Offer',

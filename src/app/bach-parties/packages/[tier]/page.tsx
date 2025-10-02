@@ -544,7 +544,7 @@ export default function BachPartyPackagePage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <img 
-                src="/images/party-on-logo.svg" 
+                src="/images/POD Logo 2025.svg" 
                 alt="Party On Delivery"
                 className="h-16 w-auto mb-4"
               />
@@ -573,7 +573,7 @@ export default function BachPartyPackagePage() {
               <ul className="space-y-2 text-gray-600 text-sm">
                 <li>Phone: (737) 371-9700</li>
                 <li>Email: info@partyondelivery.com</li>
-                <li>Hours: 10am - 11pm Daily</li>
+                <li>Hours: 10AM - 9PM (except Sundays)</li>
               </ul>
             </div>
           </div>

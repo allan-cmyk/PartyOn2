@@ -213,7 +213,7 @@ export default function AboutPage() {
             >
               <div className="mb-4">
                 <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h5.015c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h5.014a1 1 0 00.951-.69l1.519-4.674z" />
                 </svg>
               </div>
               <h4 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.1em]">500+ Events</h4>
@@ -474,7 +474,7 @@ export default function AboutPage() {
                 <svg className="w-4 h-4 text-gold-600 mr-2 inline-block" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
-                1000+ Deliveries, 4.9★
+                1000+ Deliveries, 5.0★
               </div>
               <div className="flex items-center">
                 <svg className="w-4 h-4 text-gold-600 mr-2 inline-block" fill="currentColor" viewBox="0 0 20 20">
@@ -514,7 +514,7 @@ export default function AboutPage() {
                 </button>
               </Link>
               <Link href="/contact">
-                <button className="px-10 py-4 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
                   GET IN TOUCH
                 </button>
               </Link>
@@ -529,7 +529,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <img 
-                src="/images/party-on-logo.svg" 
+                src="/images/POD Logo 2025.svg" 
                 alt="Party On Delivery"
                 className="h-16 w-auto mb-4"
               />
@@ -560,7 +560,7 @@ export default function AboutPage() {
               <ul className="space-y-2 text-gray-600 text-sm">
                 <li>Phone: (737) 371-9700</li>
                 <li>Email: info@partyondelivery.com</li>
-                <li>Hours: 10am - 11pm Daily</li>
+                <li>Hours: 10AM - 9PM (except Sundays)</li>
               </ul>
             </div>
           </div>

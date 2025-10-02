@@ -195,8 +195,8 @@ export default function ProfessionalHomeV2() {
               },
               {
                 icon: '🌟',
-                title: '4.9★ Rated',
-                description: '1000+ Deliveries, 4.9★ rating from corporate clients'
+                title: '5.0★ Rated',
+                description: '1000+ Deliveries, 5.0★ rating from corporate clients'
               },
               {
                 icon: '🤝',

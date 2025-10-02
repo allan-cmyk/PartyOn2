@@ -86,7 +86,7 @@ export default function HomePage() {
             From house parties to Lake Travis weddings—everything arrives cold with ice, cups, and mixers handled.
           </p>
           <div className="text-sm text-gray-300 mb-8 tracking-[0.05em]">
-            Licensed • Insured • TABC-certified • 4.9★ on Google
+            Licensed • Insured • TABC-certified • 5.0★ on Google
           </div>
           {/* Primary CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -179,8 +179,8 @@ export default function HomePage() {
                   <span className="text-gray-700">Optional TABC-certified bartender staffing via vetted partners</span>
                 </li>
               </ul>
-              <Link href="/order">
-                <button className="w-full px-8 py-4 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
+              <Link href="/contact">
+                <button className="w-full px-8 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
                   SCHEDULE A 15-MIN PLANNING CALL
                 </button>
               </Link>
@@ -400,9 +400,6 @@ export default function HomePage() {
               <p className="text-gray-600 mb-6 leading-relaxed">
                 Make your special day stress-free with coordinated bar service and setup.
               </p>
-              <div className="bg-gold-50 border border-gold-200 rounded p-3 mb-6">
-                <span className="text-gold-700 text-sm font-medium">100% refund on unopened</span>
-              </div>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link href="/weddings">
                   <button className="px-6 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm">
@@ -410,7 +407,7 @@ export default function HomePage() {
                   </button>
                 </Link>
                 <Link href="/order">
-                  <button className="px-6 py-3 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.1em] text-sm">
+                  <button className="px-6 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.1em] text-sm">
                     PLAN MY WEDDING
                   </button>
                 </Link>
@@ -439,7 +436,7 @@ export default function HomePage() {
                   </button>
                 </Link>
                 <Link href="/order">
-                  <button className="px-6 py-3 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.1em] text-sm">
+                  <button className="px-6 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.1em] text-sm">
                     PLAN A YACHT BAR
                   </button>
                 </Link>
@@ -479,9 +476,6 @@ export default function HomePage() {
               <p className="text-gray-600 mb-6 leading-relaxed">
                 Professional office bars and team events with invoice billing available.
               </p>
-              <div className="bg-gold-50 border border-gold-200 rounded p-3 mb-6">
-                <span className="text-gold-700 text-sm font-medium">Note: invoice billing</span>
-              </div>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link href="/corporate">
                   <button className="px-6 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm">
@@ -489,7 +483,7 @@ export default function HomePage() {
                   </button>
                 </Link>
                 <Link href="/order">
-                  <button className="px-6 py-3 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.1em] text-sm">
+                  <button className="px-6 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.1em] text-sm">
                     BOOK A CORPORATE CONSULT
                   </button>
                 </Link>
@@ -615,7 +609,7 @@ export default function HomePage() {
               className="text-center pt-8 border-t border-gray-200"
             >
               <p className="text-gray-600 tracking-[0.05em]">
-                Open since 2023 • Thousands served • 4.9★ on Google
+                Open since 2023 • Thousands served • 5.0★ on Google
               </p>
             </motion.div>
           </div>
@@ -815,7 +809,7 @@ export default function HomePage() {
                 </button>
               </Link>
               <Link href="/order">
-                <button className="px-10 py-4 border-2 border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
                   PLAN MY EVENT
                 </button>
               </Link>
@@ -830,7 +824,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <img 
-                src="/images/party-on-logo.svg" 
+                src="/images/POD Logo 2025.svg" 
                 alt="Party On Delivery"
                 className="h-16 w-auto mb-4"
               />
@@ -861,7 +855,7 @@ export default function HomePage() {
               <ul className="space-y-2 text-gray-600 text-sm">
                 <li>Phone: (737) 371-9700</li>
                 <li>Email: info@partyondelivery.com</li>
-                <li>Hours: 10am - 11pm Daily</li>
+                <li>Hours: 10AM - 9PM (except Sundays)</li>
               </ul>
             </div>
           </div>

@@ -54,7 +54,7 @@ const mediaKit = {
   facts: [
     "Founded in 2020 in Austin, Texas",
     "Served over 5,000 events",
-    "1000+ Deliveries, 4.9★",
+    "1000+ Deliveries, 5.0★",
     "First to offer AI party planning",
     "Licensed TABC provider",
     "Average delivery time: 27 minutes"

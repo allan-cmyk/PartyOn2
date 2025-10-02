@@ -7,7 +7,7 @@ import { useParams } from 'next/navigation';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import { useProduct } from '@/lib/shopify/hooks/useProducts';
 import { useCartContext } from '@/contexts/CartContext';
-import { formatPrice, getFirstAvailableVariant, getProductABV } from '@/lib/shopify/utils';
+import { formatPrice, getFirstAvailableVariant } from '@/lib/shopify/utils';
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -70,7 +70,6 @@ export default function ProductDetailPage() {
   }
 
   const selectedVariant = product.variants.edges.find(({ node }) => node.id === selectedVariantId)?.node;
-  const abv = getProductABV(product);
 
   return (
     <div className="bg-white min-h-screen">
@@ -142,13 +141,6 @@ export default function ProductDetailPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              {/* Vendor */}
-              {product.vendor && (
-                <p className="text-sm text-gray-500 tracking-[0.15em] mb-2">
-                  {product.vendor.toUpperCase()}
-                </p>
-              )}
-
               {/* Title */}
               <h1 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.05em]">
                 {product.title}
@@ -157,7 +149,7 @@ export default function ProductDetailPage() {
               {/* Price */}
               <div className="mb-6">
                 <p className="font-light text-3xl text-gray-900 tracking-[0.05em]">
-                  {selectedVariant 
+                  {selectedVariant
                     ? formatPrice(selectedVariant.price.amount, selectedVariant.price.currencyCode)
                     : formatPrice(product.priceRange.minVariantPrice.amount, product.priceRange.minVariantPrice.currencyCode)
                   }
@@ -166,20 +158,6 @@ export default function ProductDetailPage() {
                   <p className="text-gray-500 line-through">
                     {formatPrice(selectedVariant.compareAtPrice.amount, selectedVariant.compareAtPrice.currencyCode)}
                   </p>
-                )}
-              </div>
-
-              {/* Product Type & ABV */}
-              <div className="flex flex-wrap gap-4 mb-6">
-                {product.productType && (
-                  <span className="px-4 py-2 bg-gray-100 text-gray-700 text-sm tracking-[0.1em]">
-                    {product.productType.toUpperCase()}
-                  </span>
-                )}
-                {abv && (
-                  <span className="px-4 py-2 bg-gray-100 text-gray-700 text-sm tracking-[0.1em]">
-                    {abv} ABV
-                  </span>
                 )}
               </div>
 
@@ -310,8 +288,8 @@ export default function ProductDetailPage() {
         <div className="max-w-7xl mx-auto px-8 md:px-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <img 
-                src="/images/party-on-logo.svg" 
+              <img
+                src="/images/POD Logo 2025.svg"
                 alt="Party On Delivery"
                 className="h-16 w-auto mb-4"
               />
@@ -342,7 +320,7 @@ export default function ProductDetailPage() {
               <ul className="space-y-2 text-gray-600 text-sm">
                 <li>Phone: (737) 371-9700</li>
                 <li>Email: info@partyondelivery.com</li>
-                <li>Hours: 10am - 11pm Daily</li>
+                <li>Hours: 10AM - 9PM (except Sundays)</li>
               </ul>
             </div>
           </div>

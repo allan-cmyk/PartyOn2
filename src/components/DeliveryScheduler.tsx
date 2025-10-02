@@ -430,16 +430,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
                     Delivery Time
                   </h3>
                   <p className="text-sm text-gray-600 mb-4">
-                    Available Monday-Saturday, 10:00 AM - 9:00 PM
-                    {selectedDate && (
-                      <>
-                        <br />
-                        {selectedDate.toDateString() === new Date().toDateString()
-                          ? 'Same-day delivery available with 3-hour advance notice'
-                          : 'All time slots available for future dates'
-                        }
-                      </>
-                    )}
+                    Available Monday-Saturday, 10AM - 9PM
                   </p>
                   {selectedDate ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-80 overflow-y-auto">

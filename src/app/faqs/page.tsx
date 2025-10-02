@@ -27,7 +27,7 @@ export default function FAQsPage() {
         },
         {
           q: "What are your delivery hours?",
-          a: "We deliver daily from 10am to 11pm. Special arrangements can be made for early morning or late-night events with advance notice."
+          a: "We deliver 10AM - 9PM (except Sundays). Special arrangements can be made for early morning or late-night events with advance notice."
         }
       ]
     },
@@ -201,7 +201,7 @@ export default function FAQsPage() {
                 </button>
               </Link>
               <a href="tel:7373719700">
-                <button className="px-8 py-3 border border-gold-600 text-gold-600 hover:bg-gold-600 hover:text-white transition-colors tracking-[0.15em] text-sm">
+                <button className="px-8 py-3 border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-colors tracking-[0.15em] text-sm">
                   CALL (737) 371-9700
                 </button>
               </a>
@@ -215,8 +215,8 @@ export default function FAQsPage() {
         <div className="max-w-7xl mx-auto px-8 md:px-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <img 
-                src="/images/party-on-logo.svg" 
+              <img
+                src="/images/POD Logo 2025.svg"
                 alt="Party On Delivery"
                 className="h-16 w-auto mb-4"
               />
@@ -247,7 +247,7 @@ export default function FAQsPage() {
               <ul className="space-y-2 text-gray-600 text-sm">
                 <li>Phone: (737) 371-9700</li>
                 <li>Email: info@partyondelivery.com</li>
-                <li>Hours: 10am - 11pm Daily</li>
+                <li>Hours: 10AM - 9PM (except Sundays)</li>
               </ul>
             </div>
           </div>
