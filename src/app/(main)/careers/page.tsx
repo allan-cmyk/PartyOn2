@@ -184,7 +184,7 @@ export default function CareersPage() {
                 <p className="text-sm text-dark/60">Events Monthly</p>
               </div>
               <div>
-                <div className="text-4xl font-bold text-primary-500">4.9★</div>
+                <div className="text-4xl font-bold text-primary-500">5.0★</div>
                 <p className="text-sm text-dark/60">Employee Rating</p>
               </div>
               <div>

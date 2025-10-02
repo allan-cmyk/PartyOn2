@@ -5,7 +5,7 @@ export const AVERAGE_PRODUCT_PRICES = {
   spirits: 35.99,    // Average price per bottle
   wine: 18.99,       // Average price per bottle
   beer: 15.99,       // Average price per pack
-  champagne: 24.99,  // Average price per bottle
+  champagne: 25.09,  // Average price per bottle
   mixers: 8.99       // Average price per bottle
 };
 

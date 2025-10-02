@@ -140,7 +140,7 @@ export default function BachPartiesPage() {
             </a>
           </div>
           <p className="text-sm text-gray-300 mt-4 tracking-[0.05em]">
-            TABC-licensed • Fully insured • 1000+ Deliveries, 4.9★
+            TABC-licensed • Fully insured • 1000+ Deliveries, 5.0★
           </p>
         </motion.div>
       </section>

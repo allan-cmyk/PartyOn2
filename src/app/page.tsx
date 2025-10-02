@@ -86,7 +86,7 @@ export default function HomePage() {
             From house parties to Lake Travis weddings—everything arrives cold with ice, cups, and mixers handled.
           </p>
           <div className="text-sm text-gray-300 mb-8 tracking-[0.05em]">
-            Licensed • Insured • TABC-certified • 4.9★ on Google
+            Licensed • Insured • TABC-certified • 5.0★ on Google
           </div>
           {/* Primary CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -615,7 +615,7 @@ export default function HomePage() {
               className="text-center pt-8 border-t border-gray-200"
             >
               <p className="text-gray-600 tracking-[0.05em]">
-                Open since 2023 • Thousands served • 4.9★ on Google
+                Open since 2023 • Thousands served • 5.0★ on Google
               </p>
             </motion.div>
           </div>

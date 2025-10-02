@@ -54,10 +54,10 @@ export default function FastDeliveryPage() {
   ]
 
   const popularItems = [
-    { name: "Tito's Vodka", time: "30 min", price: "$24.99" },
+    { name: "Tito's Vodka", time: "30 min", price: "$25.09" },
     { name: "High Noon Variety", time: "30 min", price: "$19.99" },
     { name: "Modelo 12-Pack", time: "30 min", price: "$16.99" },
-    { name: "Casamigos Tequila", time: "30 min", price: "$44.99" },
+    { name: "Casamigos Tequila", time: "30 min", price: "$45.09" },
     { name: "White Claw Pack", time: "30 min", price: "$17.99" },
     { name: "Josh Cabernet", time: "30 min", price: "$13.99" }
   ]
@@ -155,7 +155,7 @@ export default function FastDeliveryPage() {
                   <p className="font-sans text-sm text-neutral-600">Monthly deliveries</p>
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-md">
-                  <p className="font-display text-5xl text-gold-500">4.9</p>
+                  <p className="font-display text-5xl text-gold-500">5.0</p>
                   <p className="font-sans text-sm text-neutral-600">Star rating</p>
                 </div>
               </div>

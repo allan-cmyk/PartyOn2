@@ -89,7 +89,7 @@ export default function CTA({
                 <p className="font-sans text-sm uppercase tracking-wider">Events Delivered</p>
               </div>
               <div className="space-y-2">
-                <p className="font-display text-4xl text-gold-400">4.9★</p>
+                <p className="font-display text-4xl text-gold-400">5.0★</p>
                 <p className="font-sans text-sm uppercase tracking-wider">Customer Rating</p>
               </div>
               <div className="space-y-2">

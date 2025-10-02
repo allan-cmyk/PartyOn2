@@ -58,7 +58,7 @@ export const structuredData = {
   image: 'https://partyondelivery.com/images/POD Logo 2025.svg',
   aggregateRating: {
     '@type': 'AggregateRating',
-    ratingValue: '4.9',
+    ratingValue: '5.0',
     reviewCount: '200',
   },
 }
