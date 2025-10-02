@@ -147,9 +147,9 @@ export function generateServiceSchema() {
     },
     hoursAvailable: {
       '@type': 'OpeningHoursSpecification',
-      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
       opens: '10:00',
-      closes: '23:00'
+      closes: '21:00'
     },
     offers: {
       '@type': 'Offer',

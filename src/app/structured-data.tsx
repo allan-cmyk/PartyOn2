@@ -25,11 +25,10 @@ export const structuredData = {
       'Wednesday',
       'Thursday',
       'Friday',
-      'Saturday',
-      'Sunday'
+      'Saturday'
     ],
     opens: '10:00',
-    closes: '23:00',
+    closes: '21:00',
   },
   priceRange: '$$',
   servesCuisine: 'Alcohol Delivery',

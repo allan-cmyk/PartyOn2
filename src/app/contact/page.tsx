@@ -136,10 +136,10 @@ export default function ContactPage() {
                   Service Hours
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  Available daily for your celebrations
+                  Available for your celebrations
                 </p>
                 <p className="text-gray-700">
-                  10:00 AM - 11:00 PM
+                  10AM - 9PM (except Sundays)
                 </p>
               </div>
             </LuxuryCard>
@@ -405,7 +405,7 @@ export default function ContactPage() {
               <ul className="space-y-2 text-gray-600 text-sm">
                 <li>Phone: (737) 371-9700</li>
                 <li>Email: info@partyondelivery.com</li>
-                <li>Hours: 10am - 11pm Daily</li>
+                <li>Hours: 10AM - 9PM (except Sundays)</li>
               </ul>
             </div>
           </div>

@@ -20,7 +20,10 @@
       "WebFetch(domain:party-on2-git-dev-infinite-burn-rate.vercel.app)",
       "Bash(findstr:*)",
       "Bash(gh pr create:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "Bash(git fetch:*)",
+      "Bash(git pull:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []
