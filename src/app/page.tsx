@@ -479,9 +479,6 @@ export default function HomePage() {
               <p className="text-gray-600 mb-6 leading-relaxed">
                 Professional office bars and team events with invoice billing available.
               </p>
-              <div className="bg-gold-50 border border-gold-200 rounded p-3 mb-6">
-                <span className="text-gold-700 text-sm font-medium">Note: invoice billing</span>
-              </div>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link href="/corporate">
                   <button className="px-6 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm">
