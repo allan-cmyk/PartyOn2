@@ -38,17 +38,14 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-1 space-y-6">
             <Link href="/" className="inline-block group">
-              <div className="flex items-center space-x-2">
-                <span className="font-display text-3xl text-gradient-gold">
-                  PARTY ON
-                </span>
-                <span className="font-sans font-bold text-sm text-gold-400">
-                  DELIVERY
-                </span>
-              </div>
+              <img
+                src="/images/POD Logo 2025.svg"
+                alt="Party On Delivery"
+                className="h-16 w-auto"
+              />
             </Link>
             <p className="font-sans text-sm text-neutral-300 leading-relaxed">
-              Austin&apos;s premier alcohol delivery service. From boat parties on Lake Travis to 
+              Austin&apos;s premier alcohol delivery service. From boat parties on Lake Travis to
               weddings in the Hill Country, we bring the party to you.
             </p>
             {/* Social Links */}
