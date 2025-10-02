@@ -136,7 +136,7 @@ export default function ContactPage() {
                   Schedule a Quick Call
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  We'll call you at your convenience
+                  We&apos;ll call you at your convenience
                 </p>
                 <a
                   href="https://123.partyondelivery.com/planning-call"
