@@ -179,7 +179,7 @@ export default function HomePage() {
                   <span className="text-gray-700">Optional TABC-certified bartender staffing via vetted partners</span>
                 </li>
               </ul>
-              <Link href="/order">
+              <Link href="/contact">
                 <button className="w-full px-8 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
                   SCHEDULE A 15-MIN PLANNING CALL
                 </button>
