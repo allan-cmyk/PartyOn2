@@ -17,6 +17,8 @@ export default function ContactPage() {
     guestCount: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
@@ -25,10 +27,43 @@ export default function ContactPage() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log('Form submitted:', formData);
+    setIsSubmitting(true);
+    setSubmitMessage('');
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSubmitMessage(data.message);
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          eventType: '',
+          eventDate: '',
+          guestCount: '',
+          message: ''
+        });
+      } else {
+        setSubmitMessage(data.error || 'Failed to submit. Please try again.');
+      }
+    } catch (error) {
+      console.error('Submit error:', error);
+      setSubmitMessage('An error occurred. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -296,12 +331,19 @@ export default function ContactPage() {
               />
             </div>
 
+            {submitMessage && (
+              <div className={`p-4 rounded-lg ${submitMessage.includes('error') || submitMessage.includes('Failed') ? 'bg-red-50 text-red-800' : 'bg-green-50 text-green-800'}`}>
+                <p className="text-center">{submitMessage}</p>
+              </div>
+            )}
+
             <div className="text-center">
               <button
                 type="submit"
-                className="px-12 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm"
+                disabled={isSubmitting}
+                className="px-12 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                SEND INQUIRY
+                {isSubmitting ? 'SENDING...' : 'SEND INQUIRY'}
               </button>
             </div>
           </motion.form>
