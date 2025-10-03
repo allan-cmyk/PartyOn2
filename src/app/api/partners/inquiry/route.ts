@@ -19,8 +19,8 @@ export async function POST(request: NextRequest) {
       message: body.message,
     })
 
-    // Send to Zapier webhook
-    const zapierWebhookUrl = process.env.ZAPIER_PARTNER_INQUIRY_WEBHOOK_URL;
+    // Send to Zapier webhook (use specific URL or fallback to shared URL)
+    const zapierWebhookUrl = process.env.ZAPIER_PARTNER_INQUIRY_WEBHOOK_URL || process.env.ZAPIER_WEBHOOK_URL;
 
     if (zapierWebhookUrl) {
       try {
