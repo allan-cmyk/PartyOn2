@@ -7,13 +7,16 @@ import { format, addDays, isBefore, isAfter, startOfMonth, endOfMonth, eachDayOf
 interface SimpleDeliverySchedulerProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (date: Date, time: string, instructions: string) => void;
+  onConfirm: (date: Date, time: string, instructions: string, address: string, zipCode: string, phone: string) => void;
 }
 
 export default function SimpleDeliveryScheduler({ isOpen, onClose, onConfirm }: SimpleDeliverySchedulerProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState('');
   const [instructions, setInstructions] = useState('');
+  const [address, setAddress] = useState('');
+  const [zipCode, setZipCode] = useState('');
+  const [phone, setPhone] = useState('');
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [errors, setErrors] = useState<Record<string, string>>({});
   
@@ -66,6 +69,15 @@ export default function SimpleDeliveryScheduler({ isOpen, onClose, onConfirm }: 
     if (!selectedTime) {
       newErrors.time = 'Please select a delivery time';
     }
+    if (!address.trim()) {
+      newErrors.address = 'Please enter a delivery address';
+    }
+    if (!zipCode.trim() || !/^\d{5}$/.test(zipCode)) {
+      newErrors.zipCode = 'Please enter a valid 5-digit ZIP code';
+    }
+    if (!phone.trim() || !/^\d{10}$|^\d{3}-\d{3}-\d{4}$|^\(\d{3}\)\s?\d{3}-\d{4}$/.test(phone.replace(/\s/g, ''))) {
+      newErrors.phone = 'Please enter a valid phone number';
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -73,7 +85,7 @@ export default function SimpleDeliveryScheduler({ isOpen, onClose, onConfirm }: 
 
   const handleConfirm = () => {
     if (validateForm() && selectedDate) {
-      onConfirm(selectedDate, selectedTime, instructions);
+      onConfirm(selectedDate, selectedTime, instructions, address, zipCode, phone);
     }
   };
 
@@ -234,6 +246,66 @@ export default function SimpleDeliveryScheduler({ isOpen, onClose, onConfirm }: 
                   </motion.div>
                 )}
 
+                {/* Delivery Address */}
+                {selectedDate && selectedTime && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-6 space-y-4"
+                  >
+                    <div>
+                      <label className="block text-sm font-light text-gray-700 mb-2 tracking-[0.1em]">
+                        DELIVERY ADDRESS *
+                      </label>
+                      <input
+                        type="text"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gold-600 focus:outline-none transition-colors"
+                        placeholder="123 Main St, Apt 4B"
+                      />
+                      {errors.address && (
+                        <p className="text-red-600 text-sm mt-1">{errors.address}</p>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-light text-gray-700 mb-2 tracking-[0.1em]">
+                          ZIP CODE *
+                        </label>
+                        <input
+                          type="text"
+                          value={zipCode}
+                          onChange={(e) => setZipCode(e.target.value.replace(/\D/g, '').slice(0, 5))}
+                          maxLength={5}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gold-600 focus:outline-none transition-colors"
+                          placeholder="78701"
+                        />
+                        {errors.zipCode && (
+                          <p className="text-red-600 text-sm mt-1">{errors.zipCode}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-light text-gray-700 mb-2 tracking-[0.1em]">
+                          PHONE *
+                        </label>
+                        <input
+                          type="tel"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gold-600 focus:outline-none transition-colors"
+                          placeholder="512-555-0123"
+                        />
+                        {errors.phone && (
+                          <p className="text-red-600 text-sm mt-1">{errors.phone}</p>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
                 {/* Special Instructions */}
                 {selectedDate && selectedTime && (
                   <motion.div
@@ -281,9 +353,9 @@ export default function SimpleDeliveryScheduler({ isOpen, onClose, onConfirm }: 
                   </button>
                   <button
                     onClick={handleConfirm}
-                    disabled={!selectedDate || !selectedTime}
+                    disabled={!selectedDate || !selectedTime || !address || !zipCode || !phone}
                     className={`px-8 py-3 rounded-lg tracking-[0.1em] text-sm font-medium transition-colors ${
-                      selectedDate && selectedTime
+                      selectedDate && selectedTime && address && zipCode && phone
                         ? 'bg-gold-600 text-white hover:bg-gold-700'
                         : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                     }`}

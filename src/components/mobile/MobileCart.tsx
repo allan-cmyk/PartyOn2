@@ -7,6 +7,7 @@ import { useCartContext } from '@/contexts/CartContext';
 import CartItem from '../shopify/CartItem';
 import { formatPrice } from '@/lib/shopify/utils';
 import SimpleDeliveryScheduler from '@/components/SimpleDeliveryScheduler';
+import { parseAddress, formatPhone } from '@/lib/utils/addressParser';
 
 export default function MobileCart() {
   const { cart, isCartOpen, closeCart, loading, updateCartAttributes } = useCartContext();
@@ -41,10 +42,10 @@ export default function MobileCart() {
     setShowDeliveryScheduler(true);
   };
 
-  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string) => {
+  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, address: string, zipCode: string, phone: string) => {
     try {
       setIsRedirecting(true);
-      
+
       // Format date for Shopify
       const formattedDate = date.toLocaleDateString('en-US', {
         weekday: 'long',
@@ -52,15 +53,31 @@ export default function MobileCart() {
         month: 'long',
         day: 'numeric'
       });
-      
+
+      // Parse address into components for Shop Pay
+      let parsedAddress;
+      try {
+        parsedAddress = parseAddress(address, zipCode);
+        console.log('Parsed address:', parsedAddress);
+      } catch (parseError) {
+        console.error('Error parsing address:', parseError);
+        throw new Error('Invalid address format. Please check your address and try again.');
+      }
+
+      // Format phone number
+      const formattedPhone = formatPhone(phone);
+
       // Create formatted note for order (visible in confirmation emails)
-      const orderNote = `DELIVERY SCHEDULED:\nDate: ${formattedDate}\nTime: ${time}${instructions ? `\nSpecial Instructions: ${instructions}` : ''}`;
-      
+      const orderNote = `DELIVERY SCHEDULED:\nDate: ${formattedDate}\nTime: ${time}\nAddress: ${address}, ${parsedAddress.city}, ${parsedAddress.province} ${parsedAddress.zip}\nPhone: ${formattedPhone}${instructions ? `\nSpecial Instructions: ${instructions}` : ''}`;
+
       // Store delivery info in cart attributes (for backup/internal use) and note (for customer visibility)
       const attributes = [
         { key: 'note', value: orderNote }, // This shows in confirmation emails
         { key: 'delivery_date', value: formattedDate },
         { key: 'delivery_time', value: time },
+        { key: 'delivery_address', value: address },
+        { key: 'delivery_zip', value: zipCode },
+        { key: 'delivery_phone', value: formattedPhone },
         { key: 'delivery_instructions', value: instructions || 'None' },
         { key: 'delivery_fee', value: '25.00' }
       ];
@@ -68,14 +85,25 @@ export default function MobileCart() {
       // Update cart with delivery attributes
       if (updateCartAttributes) {
         const updatedCart = await updateCartAttributes(attributes);
-        
+
         // Redirect to checkout with updated cart and Shop Pay parameters
         if (updatedCart?.checkoutUrl) {
-          // Build checkout URL with address parameters for Shop Pay
+          // Build checkout URL with Shop Pay address parameters
           const checkoutUrl = new URL(updatedCart.checkoutUrl);
-          
-          // No address parameters needed - customer will fill out in Shopify checkout
-          
+
+          // Add Shop Pay address parameters (OFFICIAL Shopify method)
+          checkoutUrl.searchParams.append('checkout[shipping_address][address1]', parsedAddress.address1);
+          if (parsedAddress.address2) {
+            checkoutUrl.searchParams.append('checkout[shipping_address][address2]', parsedAddress.address2);
+          }
+          checkoutUrl.searchParams.append('checkout[shipping_address][city]', parsedAddress.city);
+          checkoutUrl.searchParams.append('checkout[shipping_address][province]', parsedAddress.province);
+          checkoutUrl.searchParams.append('checkout[shipping_address][country]', parsedAddress.country);
+          checkoutUrl.searchParams.append('checkout[shipping_address][zip]', parsedAddress.zip);
+          checkoutUrl.searchParams.append('checkout[shipping_address][phone]', formattedPhone);
+
+          console.log('Final checkout URL with Shop Pay parameters:', checkoutUrl.toString());
+
           // Use location.replace for cleaner mobile redirect
           window.location.replace(checkoutUrl.toString());
         }
@@ -87,6 +115,10 @@ export default function MobileCart() {
       console.error('Error during checkout:', error);
       setShowDeliveryScheduler(false);
       setIsRedirecting(false);
+
+      // More helpful error message
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      alert(`Unable to proceed to checkout: ${errorMessage}. Please try again or contact support if the issue persists.`);
     }
   };
 

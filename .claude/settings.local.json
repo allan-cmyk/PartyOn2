@@ -23,7 +23,8 @@
       "Bash(git merge:*)",
       "Bash(git fetch:*)",
       "Bash(git pull:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(dir \"C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\src\\lib\")"
     ],
     "deny": [],
     "ask": []

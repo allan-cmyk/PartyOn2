@@ -9,6 +9,7 @@ import { formatPrice } from '@/lib/shopify/utils';
 import SimpleDeliveryScheduler from '@/components/SimpleDeliveryScheduler';
 import AIConcierge from '@/components/AIConcierge';
 import { copyToClipboard, type SharedCartVariant } from '@/lib/cart/shareCart';
+import { parseAddress, formatPhone } from '@/lib/utils/addressParser';
 // Group order imports temporarily disabled
 // import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
 // import CreateGroupOrderModal from '@/components/group-orders/CreateGroupOrderModal';
@@ -42,27 +43,43 @@ export default function Cart() {
     setShowDeliveryScheduler(true);
   };
 
-  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string) => {
+  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, address: string, zipCode: string, phone: string) => {
     try {
       // Set redirecting state to show loading
       setIsRedirecting(true);
-      
+
       // Format date for better display in Shopify
-      const formattedDate = new Intl.DateTimeFormat('en-US', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
+      const formattedDate = new Intl.DateTimeFormat('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
       }).format(date);
-      
+
+      // Parse address into components for Shop Pay
+      let parsedAddress;
+      try {
+        parsedAddress = parseAddress(address, zipCode);
+        console.log('Parsed address:', parsedAddress);
+      } catch (parseError) {
+        console.error('Error parsing address:', parseError);
+        throw new Error('Invalid address format. Please check your address and try again.');
+      }
+
+      // Format phone number
+      const formattedPhone = formatPhone(phone);
+
       // Create formatted note for order (visible in confirmation emails)
-      const orderNote = `DELIVERY SCHEDULED:\nDate: ${formattedDate}\nTime: ${time}${instructions ? `\nSpecial Instructions: ${instructions}` : ''}`;
-      
+      const orderNote = `DELIVERY SCHEDULED:\nDate: ${formattedDate}\nTime: ${time}\nAddress: ${address}, ${parsedAddress.city}, ${parsedAddress.province} ${parsedAddress.zip}\nPhone: ${formattedPhone}${instructions ? `\nSpecial Instructions: ${instructions}` : ''}`;
+
       // Store delivery info in cart attributes (for backup/internal use) and note (for customer visibility)
       const attributes = [
         { key: 'note', value: orderNote }, // This shows in confirmation emails
         { key: 'delivery_date', value: formattedDate },
         { key: 'delivery_time', value: time },
+        { key: 'delivery_address', value: address },
+        { key: 'delivery_zip', value: zipCode },
+        { key: 'delivery_phone', value: formattedPhone },
         { key: 'delivery_instructions', value: instructions || 'None' },
         { key: 'delivery_fee', value: '25.00' }
       ];
@@ -71,13 +88,13 @@ export default function Cart() {
 
       // Try to update cart attributes, but proceed even if it fails
       let checkoutUrl = cart?.checkoutUrl;
-      
+
       if (updateCartAttributes) {
         try {
           const updatedCart = await updateCartAttributes(attributes);
           console.log('Updated cart response:', updatedCart);
           console.log('Cart attributes after update:', updatedCart?.attributes);
-          
+
           // Use the updated cart's checkout URL if available
           if (updatedCart?.checkoutUrl) {
             checkoutUrl = updatedCart.checkoutUrl;
@@ -87,26 +104,35 @@ export default function Cart() {
           // Continue with redirect even if attributes fail
         }
       }
-      
+
       if (checkoutUrl) {
         // Build URL with Shop Pay parameters
         console.log('Building checkout URL with address parameters');
-        
+
         try {
           const url = new URL(checkoutUrl);
-          
-          // No address parameters needed - customer will fill out in Shopify checkout
-          
+
+          // Add Shop Pay address parameters (OFFICIAL Shopify method)
+          url.searchParams.append('checkout[shipping_address][address1]', parsedAddress.address1);
+          if (parsedAddress.address2) {
+            url.searchParams.append('checkout[shipping_address][address2]', parsedAddress.address2);
+          }
+          url.searchParams.append('checkout[shipping_address][city]', parsedAddress.city);
+          url.searchParams.append('checkout[shipping_address][province]', parsedAddress.province);
+          url.searchParams.append('checkout[shipping_address][country]', parsedAddress.country);
+          url.searchParams.append('checkout[shipping_address][zip]', parsedAddress.zip);
+          url.searchParams.append('checkout[shipping_address][phone]', formattedPhone);
+
           checkoutUrl = url.toString();
-          console.log('Final checkout URL with parameters:', checkoutUrl);
+          console.log('Final checkout URL with Shop Pay parameters:', checkoutUrl);
         } catch (urlError) {
           console.error('Error building URL parameters:', urlError);
         }
-        
+
         // Longer delay for mobile devices
         const delay = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ? 500 : 200;
         await new Promise(resolve => setTimeout(resolve, delay));
-        
+
         // Try multiple redirect methods for better compatibility
         try {
           // Method 1: Direct assignment (most compatible)
@@ -125,7 +151,7 @@ export default function Cart() {
             document.body.removeChild(link);
           }
         }
-        
+
         // Keep loading state active to prevent any further interactions
         // Don't reset states here as the page is redirecting
         return;
@@ -137,7 +163,7 @@ export default function Cart() {
       // If there's an error, reset states so user can try again
       setIsRedirecting(false);
       setShowDeliveryScheduler(false);
-      
+
       // More helpful error message
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       alert(`Unable to proceed to checkout: ${errorMessage}. Please try again or contact support if the issue persists.`);
