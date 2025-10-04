@@ -1,8 +1,14 @@
 import { MetadataRoute } from 'next'
+import blogPosts from '@/data/blog-posts/posts.json'
+
+interface BlogPost {
+  slug: string;
+  publishedAt: string;
+}
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://partyondelivery.com'
-  
+
   // Static pages
   const staticPages = [
     '',
@@ -12,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/products',
     '/collections',
     '/blog',
+    '/blogs/news',
     '/weddings',
     '/boat-parties',
     '/bach-parties',
@@ -44,20 +51,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7
   }))
 
-  // Blog posts (in production, fetch from CMS)
-  const blogPosts = [
-    '/blog/ultimate-guide-austin-boat-parties',
-    '/blog/signature-wedding-cocktails-texas-heat',
-    '/blog/bachelor-party-ideas-austin-2024',
-    '/blog/corporate-event-bar-service-tips'
-  ].map(route => ({
-    url: `${baseUrl}${route}`,
-    lastModified: new Date(),
+  // Migrated blog posts from Shopify (preserving exact URLs for SEO)
+  const migratedBlogPosts = (blogPosts as BlogPost[]).map(post => ({
+    url: `${baseUrl}/blogs/news/${post.slug}`,
+    lastModified: new Date(post.publishedAt),
     changeFrequency: 'monthly' as const,
-    priority: 0.6
+    priority: 0.7
   }))
 
-  // Blog categories
+  // Blog categories (keeping for backward compatibility)
   const blogCategories = [
     '/blog/category/event-planning',
     '/blog/category/cocktail-recipes',
@@ -73,7 +75,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     ...staticPages,
     ...locationPages,
-    ...blogPosts,
+    ...migratedBlogPosts,
     ...blogCategories
   ]
 }

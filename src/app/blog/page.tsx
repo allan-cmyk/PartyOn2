@@ -5,82 +5,22 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import OldFashionedNavigation from '@/components/OldFashionedNavigation'
+import migratedPosts from '@/data/blog-posts/posts.json'
 
-// Mock blog posts - in production, fetch from CMS or database
-const blogPosts = [
-  {
-    slug: 'ultimate-guide-austin-boat-parties',
-    title: 'The Ultimate Guide to Austin Boat Parties',
-    excerpt: 'Everything you need to know about hosting the perfect boat party on Lake Travis, from planning to execution.',
-    image: '/images/hero/lake-travis-yacht-sunset.webp',
-    category: 'Event Planning',
-    date: '2024-03-15',
-    readTime: '8 min read'
-  },
-  {
-    slug: 'signature-wedding-cocktails-texas-heat',
-    title: 'Signature Wedding Cocktails for Texas Heat',
-    excerpt: 'Beat the Texas sun with these refreshing cocktail recipes perfect for outdoor weddings.',
-    image: '/images/services/weddings/signature-cocktails-closeup.webp',
-    category: 'Cocktail Recipes',
-    date: '2024-03-10',
-    readTime: '5 min read'
-  },
-  {
-    slug: 'bachelor-party-ideas-austin-2024',
-    title: 'Top 10 Bachelor Party Ideas in Austin for 2024',
-    excerpt: 'From brewery tours to lake adventures, discover the best ways to celebrate in the Live Music Capital.',
-    image: '/images/gallery/sunset-champagne-pontoon.webp',
-    category: 'Event Ideas',
-    date: '2024-03-05',
-    readTime: '10 min read'
-  },
-  {
-    slug: 'corporate-event-bar-service-tips',
-    title: 'Professional Bar Service for Corporate Events',
-    excerpt: 'Impress clients and colleagues with these expert tips for corporate event beverage service.',
-    image: '/images/backgrounds/rooftop-terrace-elegant-1.webp',
-    category: 'Business',
-    date: '2024-02-28',
-    readTime: '6 min read'
-  },
-  {
-    slug: 'the-night-we-saved-wedding-laguna-gloria',
-    title: 'The Night We Saved a Wedding at Laguna Gloria',
-    excerpt: 'A bartender\'s firsthand account of turning a catering crisis into an unforgettable celebration.',
-    image: '/images/backgrounds/lake-travis-wedding-venue.webp',
-    category: 'Event Planning',
-    date: '2024-03-20',
-    readTime: '7 min read'
-  },
-  {
-    slug: 'rainey-street-ranch-weddings-cocktail-culture',
-    title: 'From Rainey Street to Ranch Weddings: Austin\'s Cocktail Evolution',
-    excerpt: 'How Austin\'s drinking culture has transformed post-pandemic and what it means for your event.',
-    image: '/images/hero/austin-skyline-golden-hour.webp',
-    category: 'Local Guides',
-    date: '2024-03-18',
-    readTime: '9 min read'
-  },
-  {
-    slug: 'lake-travis-hidden-party-coves',
-    title: 'Lake Travis Locals Share Their Secret Party Spots',
-    excerpt: 'Beyond Devil\'s Cove: discover the hidden gems where Austin\'s boat party insiders anchor.',
-    image: '/images/hero/lake-life-hero.webp',
-    category: 'Local Guides',
-    date: '2024-03-12',
-    readTime: '8 min read'
-  },
-  {
-    slug: 'maid-of-honor-bachelorette-bar-stress',
-    title: 'Why Your Maid of Honor is Secretly Stressed About the Bar',
-    excerpt: 'The untold anxieties of planning bachelorette party drinks - and how to solve them.',
-    image: '/images/services/bach-parties/bachelorette-champagne-tower.webp',
-    category: 'Event Planning',
-    date: '2024-03-08',
-    readTime: '6 min read'
-  }
-]
+interface BlogPost {
+  slug: string;
+  title: string;
+  excerpt: string;
+  publishedAt: string;
+  image?: {
+    url: string;
+    alt: string;
+  };
+  tags: string[];
+}
+
+// Use migrated Shopify blog posts
+const blogPosts = (migratedPosts as BlogPost[]).slice(0, 12) // Show first 12 posts
 
 export default function BlogPage() {
   const [email, setEmail] = useState('')
@@ -181,51 +121,54 @@ export default function BlogPage() {
       <section className="py-16 px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-            {blogPosts.map((post, index) => (
-              <motion.article
-                key={post.slug}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-white border border-gray-200 hover:border-gold-500 transition-all duration-300 group"
-              >
-                <Link href={`/blog/${post.slug}`}>
-                  <div className="relative h-64 overflow-hidden">
-                    <Image
-                      src={post.image}
-                      alt={post.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span className="bg-white px-3 py-1 text-xs tracking-[0.1em] text-gray-700">
-                        {post.category.toUpperCase()}
+            {blogPosts.map((post, index) => {
+              const category = post.tags[0] || 'Article';
+              const imageUrl = post.image?.url || '/images/hero/lake-travis-yacht-sunset.webp';
+
+              return (
+                <motion.article
+                  key={post.slug}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  className="bg-white border border-gray-200 hover:border-gold-500 transition-all duration-300 group"
+                >
+                  <Link href={`/blogs/news/${post.slug}`}>
+                    <div className="relative h-64 overflow-hidden">
+                      <Image
+                        src={imageUrl}
+                        alt={post.image?.alt || post.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      />
+                      <div className="absolute top-4 left-4">
+                        <span className="bg-white px-3 py-1 text-xs tracking-[0.1em] text-gray-700">
+                          {category.toUpperCase()}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-6">
+                      <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
+                        <time>{new Date(post.publishedAt).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}</time>
+                      </div>
+                      <h2 className="font-serif text-2xl text-gray-900 mb-3 group-hover:text-gold-500 transition-colors">
+                        {post.title}
+                      </h2>
+                      <p className="text-gray-600 mb-4 line-clamp-3">
+                        {post.excerpt}
+                      </p>
+                      <span className="inline-block mt-2 px-4 py-2 border border-gold-500 text-gold-600 group-hover:bg-gold-600 group-hover:text-white font-medium text-sm tracking-[0.1em] transition-all">
+                        READ MORE →
                       </span>
                     </div>
-                  </div>
-                  <div className="p-6">
-                    <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                      <time>{new Date(post.date).toLocaleDateString('en-US', { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                      })}</time>
-                      <span>•</span>
-                      <span>{post.readTime}</span>
-                    </div>
-                    <h2 className="font-serif text-2xl text-gray-900 mb-3 group-hover:text-gold-500 transition-colors">
-                      {post.title}
-                    </h2>
-                    <p className="text-gray-600 mb-4 line-clamp-3">
-                      {post.excerpt}
-                    </p>
-                    <span className="inline-block mt-2 px-4 py-2 border border-gold-500 text-gold-600 group-hover:bg-gold-600 group-hover:text-white font-medium text-sm tracking-[0.1em] transition-all">
-                      READ MORE →
-                    </span>
-                  </div>
-                </Link>
-              </motion.article>
-            ))}
+                  </Link>
+                </motion.article>
+              );
+            })}
           </div>
         </div>
       </section>

@@ -24,7 +24,11 @@
       "Bash(git fetch:*)",
       "Bash(git pull:*)",
       "Bash(find:*)",
-      "Bash(dir \"C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\src\\lib\")"
+      "Bash(dir \"C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\src\\lib\")",
+      "WebFetch(domain:premier-concierge.myshopify.com)",
+      "Bash(npx tsx:*)",
+      "Bash(npm install:*)",
+      "Bash(dir \"C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\src\\app\\blog\")"
     ],
     "deny": [],
     "ask": []
