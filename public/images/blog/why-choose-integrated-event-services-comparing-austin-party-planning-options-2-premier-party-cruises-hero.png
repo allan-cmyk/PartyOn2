@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    
+    <!-- FALLBACK SEO TAGS (overridden by React Helmet) -->
+    <title>Premier Party Cruises - Austin Lake Travis Boat Rentals & Party Cruises</title>
+    <meta name="description" content="Austin's premier boat rental and party cruise experience on Lake Travis. Private charters, disco cruises, bachelor parties, bachelorette parties, and corporate events since 2009." />
+    <meta name="keywords" content="Austin boat rental, Lake Travis cruises, party boat Austin, bachelor party boat, bachelorette party Austin, corporate events, private charter" />
+
+    <!-- Open Graph Fallback -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://premierpartycruises.com" />
+    <meta property="og:title" content="Premier Party Cruises - Austin Lake Travis Party Boats" />
+    <meta property="og:description" content="Austin's premier boat rental and party cruise experience on Lake Travis. Private charters, disco cruises, bachelor parties, and corporate events." />
+    <meta property="og:image" content="https://premierpartycruises.com/og-default.jpg" />
+    <meta property="og:site_name" content="Premier Party Cruises" />
+
+    <!-- Twitter Card Fallback -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Premier Party Cruises - Austin Lake Travis Party Boats" />
+    <meta name="twitter:description" content="Austin's premier boat rental and party cruise experience on Lake Travis." />
+    <meta name="twitter:image" content="https://premierpartycruises.com/og-default.jpg" />
+
+    <!-- FAQ Schema - Route-specific schemas loaded via React Helmet, this is fallback for search engines -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What types of party boat services do you offer in Austin?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We offer two main types of party boat experiences on Lake Travis: Private Charters (exclusive boat rentals for your group with boats holding 14-75 people) and ATX Disco Cruises (shared party boat experiences with professional DJ and photographer starting at $85/person). Both include professional captains, premium sound systems, coolers with ice, and depart from Anderson Mill Marina."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much does a party boat rental cost in Austin?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Austin party boat pricing varies by experience type. Private charters start at $275/hour for our 14-person boat with 4-hour minimums. ATX Disco Cruise packages start at $85/person for Basic Bach, $95/person for Disco Queen/King, and $105/person for Platinum packages. Weekend rates are higher than weekday rates."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where do Austin party boats depart from?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "All Premier Party Cruises depart from Anderson Mill Marina located at 13993 FM2769, Leander, TX 78641 on Lake Travis. The marina is conveniently located just 30 minutes from downtown Austin. Free parking is available at the marina."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can we bring our own alcohol on the party boat?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes! All our party boats are BYOB (Bring Your Own Booze). We provide large coolers with ice for your beverages. We also partner with Party On Delivery who delivers alcohol directly to your boat at the marina."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How far in advance should we book our Austin party boat?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We recommend booking 4-6 weeks in advance, especially for weekend dates and during peak season (April-September). ATX Disco Cruises for bachelorette and bachelor parties sell out the fastest."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- Article Schema for blog posts is now injected server-side per-post for unique SEO -->
+
+    <!-- Branding & Theme -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Fira+Code:wght@300..700&family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400..700;1,400..700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Outfit:wght@100..900&family=Oxanium:wght@200..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <script type="module" crossorigin src="/assets/index-C8-JSejI.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BqUYhv3t.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Conditionally disable Vite overlay and runtime error modal for embed routes -->
+  </body>
+</html>
