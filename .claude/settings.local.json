@@ -28,7 +28,8 @@
       "WebFetch(domain:premier-concierge.myshopify.com)",
       "Bash(npx tsx:*)",
       "Bash(npm install:*)",
-      "Bash(dir \"C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\src\\app\\blog\")"
+      "Bash(dir \"C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\src\\app\\blog\")",
+      "Bash(dir \"C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\blog\\corporate-team-building-on-austin-party-houses-alcohol-coordination-for-professional-events-0-cocktail-pics-7.png\")"
     ],
     "deny": [],
     "ask": []

@@ -175,6 +175,7 @@ export default async function BlogPostPage({ params }: Props) {
                 fill
                 className="object-cover"
                 priority
+                unoptimized
               />
             </div>
           )}
@@ -245,6 +246,7 @@ export default async function BlogPostPage({ params }: Props) {
                           alt={relatedPost.image.alt}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          unoptimized
                         />
                       </div>
                     )}
