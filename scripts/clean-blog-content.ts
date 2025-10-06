@@ -110,11 +110,18 @@ function generateFilename(url: string, slug: string, index: number): string {
 }
 
 /**
- * Remove all img tags from HTML content
+ * Remove all img tags and markdown image syntax from content
  */
 function removeImages(html: string): string {
+  let cleaned = html;
+
   // Remove all <img> tags (both self-closing and regular)
-  return html.replace(/<img[^>]*>/gi, '');
+  cleaned = cleaned.replace(/<img[^>]*>/gi, '');
+
+  // Remove markdown image syntax: ![alt text](url)
+  cleaned = cleaned.replace(/!\[([^\]]*)\]\([^\)]+\)/g, '');
+
+  return cleaned;
 }
 
 /**
@@ -152,11 +159,11 @@ async function processPost(post: BlogPost): Promise<BlogPost> {
   // Keep existing featured image (those were downloaded correctly from Shopify API)
   const featuredImage = post.image;
 
-  // Clean excerpt (remove HTML, markdown, etc)
-  let cleanExcerpt = post.excerpt
+  // Generate clean excerpt from the cleaned content (not original excerpt)
+  let cleanExcerpt = updatedContent
     .replace(/<[^>]*>/g, '') // Remove HTML tags
     .replace(/#{1,6}\s*/g, '') // Remove markdown headers
-    .replace(/!\[.*?\]\(.*?\)/g, '') // Remove markdown images
+    .replace(/!\[([^\]]*)\]\([^\)]+\)/g, '') // Remove markdown images
     .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // Convert markdown links to text
     .replace(/\s+/g, ' ') // Normalize whitespace
     .trim();
