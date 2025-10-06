@@ -2,10 +2,9 @@
  * Clean Blog Content Script
  *
  * Fixes HTML content issues from Shopify migration:
- * - Downloads embedded images from Shopify CDN
- * - Replaces broken image URLs with local paths
+ * - Removes broken embedded images from content
  * - Cleans malformed HTML tags
- * - Extracts featured images from content if missing
+ * - Keeps featured images (those work correctly)
  */
 
 import fs from 'fs';
@@ -111,10 +110,21 @@ function generateFilename(url: string, slug: string, index: number): string {
 }
 
 /**
+ * Remove all img tags from HTML content
+ */
+function removeImages(html: string): string {
+  // Remove all <img> tags (both self-closing and regular)
+  return html.replace(/<img[^>]*>/gi, '');
+}
+
+/**
  * Clean HTML content
  */
 function cleanHtml(html: string): string {
   let cleaned = html;
+
+  // Remove all broken embedded images
+  cleaned = removeImages(cleaned);
 
   // Fix malformed heading tags (e.g., #<h1> should be <h1>)
   cleaned = cleaned.replace(/#<h(\d)>/g, '<h$1>');
@@ -126,9 +136,6 @@ function cleanHtml(html: string): string {
   const endTagsRegex = /(<\/h\d>\s*)+$/;
   cleaned = cleaned.replace(endTagsRegex, '');
 
-  // Fix self-closing tags in HTML content
-  cleaned = cleaned.replace(/<img([^>]*)\/>/g, '<img$1>');
-
   return cleaned;
 }
 
@@ -138,43 +145,12 @@ function cleanHtml(html: string): string {
 async function processPost(post: BlogPost): Promise<BlogPost> {
   console.log(`\nProcessing: ${post.title}`);
 
-  // Extract image URLs from content
-  const imageUrls = extractImageUrls(post.content);
-  console.log(`  Found ${imageUrls.length} embedded images`);
+  // Clean HTML (removes embedded images and fixes formatting)
+  const updatedContent = cleanHtml(post.content);
+  console.log(`  ✓ Removed embedded images and cleaned HTML`);
 
-  let updatedContent = post.content;
-  const imageMap = new Map<string, string>();
-
-  // Download all images and build replacement map
-  for (let i = 0; i < imageUrls.length; i++) {
-    const url = imageUrls[i];
-    try {
-      const filename = generateFilename(url, post.slug, i);
-      const localPath = await downloadImage(url, filename);
-      imageMap.set(url, localPath);
-    } catch (error) {
-      console.error(`  ✗ Failed to download image: ${url}`);
-    }
-  }
-
-  // Replace all image URLs with local paths
-  for (const [oldUrl, newUrl] of imageMap.entries()) {
-    updatedContent = updatedContent.replace(new RegExp(oldUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), newUrl);
-  }
-
-  // Clean HTML
-  updatedContent = cleanHtml(updatedContent);
-
-  // If post doesn't have a featured image, try to extract first one from content
-  let featuredImage = post.image;
-  if (!featuredImage && imageMap.size > 0) {
-    const firstLocalImage = Array.from(imageMap.values())[0];
-    featuredImage = {
-      url: firstLocalImage,
-      alt: post.title
-    };
-    console.log(`  ✓ Set featured image from content: ${firstLocalImage}`);
-  }
+  // Keep existing featured image (those were downloaded correctly from Shopify API)
+  const featuredImage = post.image;
 
   // Clean excerpt (remove HTML, markdown, etc)
   let cleanExcerpt = post.excerpt
