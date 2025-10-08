@@ -7,6 +7,7 @@ import { CustomerProvider } from "@/contexts/CustomerContext";
 import { GroupOrderProvider } from "@/contexts/GroupOrderContext";
 import ClientLayoutWrapper from "@/components/ClientLayoutWrapper";
 import { structuredData } from "./structured-data";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 const cormorantGaramond = Cormorant_Garamond({ 
   subsets: ['latin'],
@@ -73,6 +74,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
+        <GoogleAnalytics />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
