@@ -1,0 +1,17 @@
+Redirect from,Redirect to,similarity_score
+/delivery/south-austin,/areas/east-austin,0.783
+/boat-parties,/partners,0.6
+/delivery/east-austin,/areas/east-austin,1.0
+/order,/order-now?tier=party,0.714
+/collections,/collections/wine-collection,0.869
+/delivery/north-austin,/areas/east-austin,0.696
+/products,/products?filter=wine,1.1
+/weddings,/collections/wedding-packages,0.667
+/blog/category/event-planning,/blog/category/event-ideas,0.66
+/terms,/team,0.667
+/delivery/downtown-austin,/areas/downtown,0.696
+/delivery/west-austin,/areas/east-austin,0.909
+/delivery/lake-travis,/areas/lake-travis,1.0
+,/,1.0
+/account/orders,/order-now?tier=party,0.667
+/bach-parties,/partners,0.6

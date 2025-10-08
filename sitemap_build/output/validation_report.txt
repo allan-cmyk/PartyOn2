@@ -1,0 +1,28 @@
+
+Sitemap Build Report
+======================================================================
+Generated: 2025-10-08 20:20:02 UTC
+
+Summary:
+  Total URLs: 90
+  Categories: 2
+  Sitemap files: 2
+  Sitemap index: sitemap_index.xml.gz
+
+Breakdown by Category:
+category
+blogs    68
+pages    22
+
+Generated Files:
+  - sitemap-blogs-1.xml.gz
+  - sitemap-pages-1.xml.gz
+
+Index File:
+  - sitemap_index.xml.gz
+
+Next Steps:
+  1. Run validate_sitemaps.py to verify correctness
+  2. Upload files to production /public/ directory
+  3. Update robots.txt with: Sitemap: https://partyondelivery.com/sitemap_index.xml.gz
+  4. Submit to Google/Bing using submit_search_engines.sh

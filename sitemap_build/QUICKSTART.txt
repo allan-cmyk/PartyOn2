@@ -1,0 +1,43 @@
+================================================================================
+PARTYONDELIVERY.COM - SITEMAP REBUILD QUICK START
+================================================================================
+
+1. SETUP (One-time)
+   cd "C:\Party On Delivery\WEBSITE FILES\PartyOn2\sitemap_build"
+   python -m venv .venv
+   .venv\Scripts\activate
+   python -m pip install --upgrade pip
+   python -m pip install -r requirements.txt
+
+2. GET OLD SITEMAP
+   Download from: https://partyondelivery.com/sitemap.xml
+   Save as: old_sitemap.xml (in this directory)
+
+3. RUN WORKFLOW
+   python crawl_and_merge.py        # Discover & merge URLs
+   python map_redirects.py          # Generate redirects
+   python build_sitemaps.py         # Build XML sitemaps
+   python validate_sitemaps.py      # Validate everything
+
+4. DEPLOY
+   - Upload output/sitemap*.xml.gz to production /public/
+   - Add to robots.txt: Sitemap: https://partyondelivery.com/sitemap_index.xml.gz
+   - Import output/redirects.csv to Shopify > Navigation > URL Redirects
+
+5. SUBMIT
+   - Google: https://www.google.com/ping?sitemap=https://partyondelivery.com/sitemap_index.xml.gz
+   - Bing: https://www.bing.com/ping?sitemap=https://partyondelivery.com/sitemap_index.xml.gz
+   - Or run: bash submit_search_engines.sh
+
+OUTPUTS:
+  output/sitemap_index.xml.gz          → Upload to production
+  output/sitemap-pages-1.xml.gz        → Upload to production
+  output/sitemap-products-1.xml.gz     → Upload to production
+  output/sitemap-blogs-1.xml.gz        → Upload to production
+  output/redirects.csv                 → Import to Shopify
+  output/orphans.csv                   → Review manually
+  output/validation_report.txt         → Check for issues
+
+NEED HELP? See README.md for full step-by-step guide
+
+================================================================================
