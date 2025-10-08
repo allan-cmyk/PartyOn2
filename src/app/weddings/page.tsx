@@ -90,7 +90,7 @@ export default function WeddingsPage() {
       <OldFashionedNavigation />
       
       {/* Hero Section */}
-      <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[70vh] flex items-center justify-center overflow-hidden pt-20">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentHeroIndex}
@@ -598,36 +598,6 @@ export default function WeddingsPage() {
             <p className="text-gold-600 text-sm tracking-[0.1em]">
               Westlake Hills Wedding, October 2023
             </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-24 bg-gray-900">
-        <div className="max-w-4xl mx-auto px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-white mb-6 tracking-[0.1em]">
-              Begin Planning Your Perfect Day
-            </h2>
-            <p className="text-gray-300 text-lg mb-12 tracking-[0.05em]">
-              Let&apos;s discuss how we can make your wedding celebration extraordinary
-            </p>
-            <div className="flex flex-col md:flex-row gap-6 justify-center">
-              <Link href="/book-now">
-                <button className="px-10 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
-                  BOOK CONSULTATION
-                </button>
-              </Link>
-              <Link href="/contact">
-                <button className="px-10 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
-                  VIEW AVAILABILITY
-                </button>
-              </Link>
-            </div>
           </motion.div>
         </div>
       </section>
