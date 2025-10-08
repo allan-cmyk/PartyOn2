@@ -7,6 +7,156 @@ import { motion, AnimatePresence } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import LuxuryCard from '@/components/LuxuryCard';
 
+// Testimonial Carousel Component
+function TestimonialCarousel() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+
+  const testimonials = [
+    {
+      name: "Nick Gorman",
+      review: "Party on Delivery did an amazing job! They saved us from the stress of delivering our alcohol to our wedding and provided a clear list on what was being delivered based off what we chose. Everything arrived on time and it was quick and easy. I would highly recommend them!",
+      date: "4 months ago",
+      rating: 5
+    },
+    {
+      name: "Paul Puchta",
+      review: "We used Party on Delivery for our wedding reception and they were perfect from start to finish. Their pricing was fair, transparent, and easy to follow. On the day of our event, they arrived on time and helped prep the keg buckets and ice, taps, etc. They were very professional throughout the whole process, and I would recommend them to anyone looking for alcohol delivery services. Thank you again!",
+      date: "10 months ago",
+      rating: 5
+    },
+    {
+      name: "Tatianna Ramon",
+      review: "I met Allan at an Open House at Ranch Austin and his team has been very communicative and helpful while placing an alcohol order for my wedding clients. They were flexible and made the process easy! They delivered to the venue and even offered to chill some of the wine and beer for us. I'd recommend them to anyone and will definitely be using their services again!",
+      date: "11 months ago",
+      rating: 5,
+      badge: "Local Guide"
+    },
+    {
+      name: "Michelle Guillot",
+      review: "We used party on delivery for our wedding reception and everything was a breeze from the ordering process, to the delivery, to the pick up!!! We dealt with one of the owners, Brian, who was fun, courteous, prompt and made sure all the details were worked out and that we were taken care of from start to finish. It was nice not to have to worry about running around town in Austin traffic to get all the booze we needed and just to have it show up on time without lifting a finger!!! I highly recommend them for all your party needs!!!!! Just do it and save yourself the hassle!",
+      date: "1 year ago",
+      rating: 5
+    },
+    {
+      name: "James Burt",
+      review: "Party On Delivery is an awesome concept with top-notch customer service. We've been working with them for a matter of months now, and the fact they make everything so seamless makes everybody's life a breeze when it comes to party planning, which we know can be very stressful with all the moving parts. I highly recommend Party On Delivery for anybody who wants to take the stress out of the alcohol ordering. Keep up the good work, Allan and Brian!",
+      date: "10 months ago",
+      rating: 5,
+      badge: "Local Guide"
+    }
+  ];
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStart - touchEnd > 75) {
+      nextSlide();
+    }
+    if (touchStart - touchEnd < -75) {
+      prevSlide();
+    }
+  };
+
+  return (
+    <div className="relative">
+      <div
+        className="overflow-hidden"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentIndex}
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -100 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white p-8 md:p-12 rounded-lg shadow-lg"
+          >
+            {/* Star Rating */}
+            <div className="flex justify-center mb-6">
+              {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
+                <svg key={i} className="w-5 h-5 text-gold-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
+            </div>
+
+            {/* Review Text */}
+            <p className="text-xl md:text-2xl text-gray-700 italic mb-8 leading-relaxed text-center">
+              &ldquo;{testimonials[currentIndex].review}&rdquo;
+            </p>
+
+            {/* Reviewer Info */}
+            <div className="text-center">
+              <p className="text-gray-900 font-medium tracking-[0.1em] mb-1">
+                {testimonials[currentIndex].name}
+                {testimonials[currentIndex].badge && (
+                  <span className="ml-2 text-xs text-gold-600 font-normal">• {testimonials[currentIndex].badge}</span>
+                )}
+              </p>
+              <p className="text-gold-600 text-sm tracking-[0.05em]">
+                {testimonials[currentIndex].date}
+              </p>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Navigation Arrows */}
+      <button
+        onClick={prevSlide}
+        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 bg-white rounded-full p-3 shadow-lg hover:bg-gray-50 transition-colors"
+        aria-label="Previous testimonial"
+      >
+        <svg className="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <button
+        onClick={nextSlide}
+        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 bg-white rounded-full p-3 shadow-lg hover:bg-gray-50 transition-colors"
+        aria-label="Next testimonial"
+      >
+        <svg className="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+      {/* Dots Indicator */}
+      <div className="flex justify-center gap-2 mt-8">
+        {testimonials.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentIndex(index)}
+            className={`w-2 h-2 rounded-full transition-all ${
+              index === currentIndex ? 'bg-gold-600 w-8' : 'bg-gray-300'
+            }`}
+            aria-label={`Go to testimonial ${index + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function WeddingsPage() {
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [showStickyBar, setShowStickyBar] = useState(false);
@@ -90,7 +240,7 @@ export default function WeddingsPage() {
       <OldFashionedNavigation />
       
       {/* Hero Section */}
-      <section className="relative h-[70vh] flex items-center justify-center overflow-hidden pt-20">
+      <section className="relative h-[80vh] flex items-center justify-center overflow-hidden py-32">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentHeroIndex}
@@ -120,8 +270,8 @@ export default function WeddingsPage() {
           transition={{ duration: 1 }}
           className="relative text-center text-white z-10 max-w-4xl mx-auto px-8"
         >
-          <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
-            <span className="block text-white">Your Austin Wedding,</span>
+          <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em] leading-tight md:leading-tight">
+            <span className="block text-white mb-2">Your Austin Wedding,</span>
             <span className="block text-gold-400">PERFECTLY SERVED</span>
           </h1>
           <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
@@ -578,27 +728,22 @@ export default function WeddingsPage() {
         </div>
       </section>
 
-      {/* Testimonial */}
+      {/* Testimonials Carousel */}
       <section className="py-24 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-8">
+        <div className="max-w-6xl mx-auto px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center"
+            className="text-center mb-12"
           >
-            <p className="text-2xl text-gray-700 italic mb-8 leading-relaxed">
-              &ldquo;PartyOn made our Lake Travis wedding absolutely perfect. The bartenders 
-              were professional, the drinks were exceptional, and every detail was handled 
-              with care. Our guests are still raving about the signature cocktails!&rdquo;
-            </p>
-            <p className="text-gray-900 font-light tracking-[0.1em]">
-              Sarah & Michael Thompson
-            </p>
-            <p className="text-gold-600 text-sm tracking-[0.1em]">
-              Westlake Hills Wedding, October 2023
-            </p>
+            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+              What Our Clients Say
+            </h2>
+            <div className="w-16 h-px bg-gold-600 mx-auto" />
           </motion.div>
+
+          <TestimonialCarousel />
         </div>
       </section>
 
