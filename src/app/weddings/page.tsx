@@ -240,7 +240,7 @@ export default function WeddingsPage() {
       <OldFashionedNavigation />
       
       {/* Hero Section */}
-      <section className="relative h-[80vh] flex items-center justify-center overflow-hidden py-32">
+      <section className="relative h-[80vh] flex items-center justify-center overflow-hidden pt-40 pb-20">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentHeroIndex}
@@ -625,6 +625,25 @@ export default function WeddingsPage() {
         </div>
       </section>
 
+      {/* Testimonials Carousel */}
+      <section className="py-24 bg-white">
+        <div className="max-w-6xl mx-auto px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-12"
+          >
+            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+              What Our Clients Say
+            </h2>
+            <div className="w-16 h-px bg-gold-600 mx-auto" />
+          </motion.div>
+
+          <TestimonialCarousel />
+        </div>
+      </section>
+
       {/* FAQ Section */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-4xl mx-auto px-8">
@@ -725,25 +744,6 @@ export default function WeddingsPage() {
               </p>
             </motion.div>
           </div>
-        </div>
-      </section>
-
-      {/* Testimonials Carousel */}
-      <section className="py-24 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-12"
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
-              What Our Clients Say
-            </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </motion.div>
-
-          <TestimonialCarousel />
         </div>
       </section>
 
