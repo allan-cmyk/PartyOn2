@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateShareUrl, type SharedCartData } from '@/lib/cart/shareCart';
+import { type SharedCartData } from '@/lib/cart/shareCart';
+import { storeCart } from '@/lib/cart/shortUrlStorage';
 
 export async function POST(request: NextRequest) {
   try {
@@ -37,15 +38,19 @@ export async function POST(request: NextRequest) {
       expiresAt: Date.now() + (60 * 24 * 60 * 60 * 1000), // 60 days from now
     };
 
+    // Store cart data and get short ID
+    const shortId = storeCart(cartData);
+
     // Get base URL from request
     const baseUrl = `${request.nextUrl.protocol}//${request.nextUrl.host}`;
 
-    // Generate shareable URL with parameters (no storage needed)
-    const shareUrl = generateShareUrl(cartData, baseUrl);
+    // Generate short shareable URL
+    const shareUrl = `${baseUrl}/cart/s/${shortId}`;
 
     return NextResponse.json({
       success: true,
       shareUrl,
+      shortId,
       expiresAt: cartData.expiresAt,
     });
 
