@@ -68,7 +68,7 @@ export default function BlogListingPage() {
                         alt={post.image.alt}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        unoptimized
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
                       />
                     </div>
                   ) : (
