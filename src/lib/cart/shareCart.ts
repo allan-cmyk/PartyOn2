@@ -65,11 +65,21 @@ export function generateShareUrl(cartData: SharedCartData, customBaseUrl?: strin
     .map(v => `${extractVariantId(v.id)},${v.quantity}`)
     .join('|');
 
-  // Base64 encode for URL safety (and slight additional compression)
-  const encoded = Buffer.from(compactData).toString('base64')
-    .replace(/\+/g, '-')  // URL-safe replacements
-    .replace(/\//g, '_')
-    .replace(/=+$/, '');  // Remove padding
+  // Base64 encode for URL safety (browser-compatible)
+  let encoded: string;
+  if (typeof window !== 'undefined') {
+    // Browser environment
+    encoded = btoa(compactData)
+      .replace(/\+/g, '-')  // URL-safe replacements
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');  // Remove padding
+  } else {
+    // Node.js environment (API routes)
+    encoded = Buffer.from(compactData).toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+  }
 
   const params = new URLSearchParams();
   params.append('c', encoded);  // 'c' for cart
@@ -90,7 +100,7 @@ export function parseCartFromUrl(searchParams: URLSearchParams): SharedCartData 
     // Check for new compressed format (c parameter)
     const compressed = searchParams.get('c');
     if (compressed) {
-      // Decode base64
+      // Decode base64 (browser-compatible)
       const decoded = compressed
         .replace(/-/g, '+')
         .replace(/_/g, '/');
@@ -99,7 +109,15 @@ export function parseCartFromUrl(searchParams: URLSearchParams): SharedCartData 
       const padding = (4 - (decoded.length % 4)) % 4;
       const padded = decoded + '='.repeat(padding);
 
-      const compactData = Buffer.from(padded, 'base64').toString('utf-8');
+      // Decode using browser or Node.js API
+      let compactData: string;
+      if (typeof window !== 'undefined') {
+        // Browser environment
+        compactData = atob(padded);
+      } else {
+        // Node.js environment
+        compactData = Buffer.from(padded, 'base64').toString('utf-8');
+      }
 
       // Parse format: ID1,QTY1|ID2,QTY2|ID3,QTY3
       const items = compactData.split('|');
