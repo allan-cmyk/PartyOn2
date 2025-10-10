@@ -16,6 +16,11 @@ export default function WeddingDrinkCalculator() {
   const [winePercent, setWinePercent] = useState<number>(40);
   const [beerPercent, setBeerPercent] = useState<number>(30);
 
+  // Lock states for each slider
+  const [liquorLocked, setLiquorLocked] = useState<boolean>(false);
+  const [wineLocked, setWineLocked] = useState<boolean>(false);
+  const [beerLocked, setBeerLocked] = useState<boolean>(false);
+
   // Calculate total drinks based on drinking level
   const getTotalDrinks = (): number => {
     if (guests <= 0 || hours <= 0) return 0;
@@ -41,59 +46,101 @@ export default function WeddingDrinkCalculator() {
 
   // Handle slider changes with locking mechanism
   const handleLiquorChange = (value: number) => {
+    if (liquorLocked) return;
+
     const newLiquor = Math.max(0, Math.min(100, value));
     setLiquorPercent(newLiquor);
 
-    // Distribute remaining percentage between wine and beer proportionally
+    // Distribute remaining percentage between unlocked sliders
     const remaining = 100 - newLiquor;
-    const currentOthers = winePercent + beerPercent;
 
-    if (currentOthers > 0) {
-      const wineRatio = winePercent / currentOthers;
-      const beerRatio = beerPercent / currentOthers;
-      setWinePercent(Math.round(remaining * wineRatio));
-      setBeerPercent(Math.round(remaining * beerRatio));
+    if (wineLocked && beerLocked) {
+      // Both locked - can't adjust
+      return;
+    } else if (wineLocked) {
+      // Only wine locked - all remaining goes to beer
+      setBeerPercent(remaining - winePercent);
+    } else if (beerLocked) {
+      // Only beer locked - all remaining goes to wine
+      setWinePercent(remaining - beerPercent);
     } else {
-      setWinePercent(Math.round(remaining / 2));
-      setBeerPercent(remaining - Math.round(remaining / 2));
+      // Both unlocked - distribute proportionally
+      const currentOthers = winePercent + beerPercent;
+      if (currentOthers > 0) {
+        const wineRatio = winePercent / currentOthers;
+        const beerRatio = beerPercent / currentOthers;
+        setWinePercent(Math.round(remaining * wineRatio));
+        setBeerPercent(Math.round(remaining * beerRatio));
+      } else {
+        setWinePercent(Math.round(remaining / 2));
+        setBeerPercent(remaining - Math.round(remaining / 2));
+      }
     }
   };
 
   const handleWineChange = (value: number) => {
+    if (wineLocked) return;
+
     const newWine = Math.max(0, Math.min(100, value));
     setWinePercent(newWine);
 
-    // Distribute remaining percentage between liquor and beer proportionally
+    // Distribute remaining percentage between unlocked sliders
     const remaining = 100 - newWine;
-    const currentOthers = liquorPercent + beerPercent;
 
-    if (currentOthers > 0) {
-      const liquorRatio = liquorPercent / currentOthers;
-      const beerRatio = beerPercent / currentOthers;
-      setLiquorPercent(Math.round(remaining * liquorRatio));
-      setBeerPercent(Math.round(remaining * beerRatio));
+    if (liquorLocked && beerLocked) {
+      // Both locked - can't adjust
+      return;
+    } else if (liquorLocked) {
+      // Only liquor locked - all remaining goes to beer
+      setBeerPercent(remaining - liquorPercent);
+    } else if (beerLocked) {
+      // Only beer locked - all remaining goes to liquor
+      setLiquorPercent(remaining - beerPercent);
     } else {
-      setLiquorPercent(Math.round(remaining / 2));
-      setBeerPercent(remaining - Math.round(remaining / 2));
+      // Both unlocked - distribute proportionally
+      const currentOthers = liquorPercent + beerPercent;
+      if (currentOthers > 0) {
+        const liquorRatio = liquorPercent / currentOthers;
+        const beerRatio = beerPercent / currentOthers;
+        setLiquorPercent(Math.round(remaining * liquorRatio));
+        setBeerPercent(Math.round(remaining * beerRatio));
+      } else {
+        setLiquorPercent(Math.round(remaining / 2));
+        setBeerPercent(remaining - Math.round(remaining / 2));
+      }
     }
   };
 
   const handleBeerChange = (value: number) => {
+    if (beerLocked) return;
+
     const newBeer = Math.max(0, Math.min(100, value));
     setBeerPercent(newBeer);
 
-    // Distribute remaining percentage between liquor and wine proportionally
+    // Distribute remaining percentage between unlocked sliders
     const remaining = 100 - newBeer;
-    const currentOthers = liquorPercent + winePercent;
 
-    if (currentOthers > 0) {
-      const liquorRatio = liquorPercent / currentOthers;
-      const wineRatio = winePercent / currentOthers;
-      setLiquorPercent(Math.round(remaining * liquorRatio));
-      setWinePercent(Math.round(remaining * wineRatio));
+    if (liquorLocked && wineLocked) {
+      // Both locked - can't adjust
+      return;
+    } else if (liquorLocked) {
+      // Only liquor locked - all remaining goes to wine
+      setWinePercent(remaining - liquorPercent);
+    } else if (wineLocked) {
+      // Only wine locked - all remaining goes to liquor
+      setLiquorPercent(remaining - winePercent);
     } else {
-      setLiquorPercent(Math.round(remaining / 2));
-      setWinePercent(remaining - Math.round(remaining / 2));
+      // Both unlocked - distribute proportionally
+      const currentOthers = liquorPercent + winePercent;
+      if (currentOthers > 0) {
+        const liquorRatio = liquorPercent / currentOthers;
+        const wineRatio = winePercent / currentOthers;
+        setLiquorPercent(Math.round(remaining * liquorRatio));
+        setWinePercent(Math.round(remaining * wineRatio));
+      } else {
+        setLiquorPercent(Math.round(remaining / 2));
+        setWinePercent(remaining - Math.round(remaining / 2));
+      }
     }
   };
 
@@ -212,9 +259,26 @@ export default function WeddingDrinkCalculator() {
 
             {/* Liquor Slider */}
             <div className="mb-6">
-              <div className="flex justify-between mb-2">
+              <div className="flex justify-between items-center mb-2">
                 <span className="text-sm text-gray-700">Liquor</span>
-                <span className="text-sm font-medium text-gray-900">{liquorPercent}%</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-gray-900">{liquorPercent}%</span>
+                  <button
+                    onClick={() => setLiquorLocked(!liquorLocked)}
+                    className={`p-1 rounded transition-colors ${
+                      liquorLocked ? 'bg-gold-600 text-white' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                    }`}
+                    title={liquorLocked ? 'Unlock' : 'Lock'}
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      {liquorLocked ? (
+                        <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                      ) : (
+                        <path d="M10 2a5 5 0 00-5 5v2a2 2 0 00-2 2v5a2 2 0 002 2h10a2 2 0 002-2v-5a2 2 0 00-2-2H7V7a3 3 0 015.905-.75 1 1 0 001.937-.5A5.002 5.002 0 0010 2z" />
+                      )}
+                    </svg>
+                  </button>
+                </div>
               </div>
               <input
                 type="range"
@@ -222,15 +286,35 @@ export default function WeddingDrinkCalculator() {
                 max="100"
                 value={liquorPercent}
                 onChange={(e) => handleLiquorChange(parseInt(e.target.value))}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gold-600"
+                disabled={liquorLocked}
+                className={`w-full h-2 bg-gray-200 rounded-lg appearance-none ${
+                  liquorLocked ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                } accent-gold-600`}
               />
             </div>
 
             {/* Wine Slider */}
             <div className="mb-6">
-              <div className="flex justify-between mb-2">
+              <div className="flex justify-between items-center mb-2">
                 <span className="text-sm text-gray-700">Wine</span>
-                <span className="text-sm font-medium text-gray-900">{winePercent}%</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-gray-900">{winePercent}%</span>
+                  <button
+                    onClick={() => setWineLocked(!wineLocked)}
+                    className={`p-1 rounded transition-colors ${
+                      wineLocked ? 'bg-gold-600 text-white' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                    }`}
+                    title={wineLocked ? 'Unlock' : 'Lock'}
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      {wineLocked ? (
+                        <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                      ) : (
+                        <path d="M10 2a5 5 0 00-5 5v2a2 2 0 00-2 2v5a2 2 0 002 2h10a2 2 0 002-2v-5a2 2 0 00-2-2H7V7a3 3 0 015.905-.75 1 1 0 001.937-.5A5.002 5.002 0 0010 2z" />
+                      )}
+                    </svg>
+                  </button>
+                </div>
               </div>
               <input
                 type="range"
@@ -238,15 +322,35 @@ export default function WeddingDrinkCalculator() {
                 max="100"
                 value={winePercent}
                 onChange={(e) => handleWineChange(parseInt(e.target.value))}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gold-600"
+                disabled={wineLocked}
+                className={`w-full h-2 bg-gray-200 rounded-lg appearance-none ${
+                  wineLocked ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                } accent-gold-600`}
               />
             </div>
 
             {/* Beer Slider */}
             <div>
-              <div className="flex justify-between mb-2">
+              <div className="flex justify-between items-center mb-2">
                 <span className="text-sm text-gray-700">Beer</span>
-                <span className="text-sm font-medium text-gray-900">{beerPercent}%</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-gray-900">{beerPercent}%</span>
+                  <button
+                    onClick={() => setBeerLocked(!beerLocked)}
+                    className={`p-1 rounded transition-colors ${
+                      beerLocked ? 'bg-gold-600 text-white' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                    }`}
+                    title={beerLocked ? 'Unlock' : 'Lock'}
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      {beerLocked ? (
+                        <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                      ) : (
+                        <path d="M10 2a5 5 0 00-5 5v2a2 2 0 00-2 2v5a2 2 0 002 2h10a2 2 0 002-2v-5a2 2 0 00-2-2H7V7a3 3 0 015.905-.75 1 1 0 001.937-.5A5.002 5.002 0 0010 2z" />
+                      )}
+                    </svg>
+                  </button>
+                </div>
               </div>
               <input
                 type="range"
@@ -254,7 +358,10 @@ export default function WeddingDrinkCalculator() {
                 max="100"
                 value={beerPercent}
                 onChange={(e) => handleBeerChange(parseInt(e.target.value))}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gold-600"
+                disabled={beerLocked}
+                className={`w-full h-2 bg-gray-200 rounded-lg appearance-none ${
+                  beerLocked ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                } accent-gold-600`}
               />
             </div>
 
