@@ -241,7 +241,7 @@ export default function WeddingsPage() {
       <OldFashionedNavigation />
       
       {/* Hero Section */}
-      <section className="relative h-[80vh] flex items-center justify-center overflow-hidden pt-40 pb-20">
+      <section className="relative h-[100vh] flex items-center justify-center overflow-hidden pt-[200px] pb-[100px] md:pt-20 md:pb-12">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentHeroIndex}
