@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import LuxuryCard from '@/components/LuxuryCard';
+import WeddingDrinkCalculator from '@/components/WeddingDrinkCalculator';
 
 // Testimonial Carousel Component
 function TestimonialCarousel() {
@@ -580,6 +581,19 @@ export default function WeddingsPage() {
                 ORDER DELIVERY-ONLY
               </button>
             </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Drink Calculator */}
+      <section className="py-24">
+        <div className="max-w-7xl mx-auto px-8 md:px-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <WeddingDrinkCalculator />
           </motion.div>
         </div>
       </section>
