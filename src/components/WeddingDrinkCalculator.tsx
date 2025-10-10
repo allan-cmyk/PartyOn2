@@ -41,7 +41,6 @@ export default function WeddingDrinkCalculator() {
 
   // Handle slider changes with locking mechanism
   const handleLiquorChange = (value: number) => {
-    setActiveSlider('liquor');
     const newLiquor = Math.max(0, Math.min(100, value));
     setLiquorPercent(newLiquor);
 
@@ -61,7 +60,6 @@ export default function WeddingDrinkCalculator() {
   };
 
   const handleWineChange = (value: number) => {
-    setActiveSlider('wine');
     const newWine = Math.max(0, Math.min(100, value));
     setWinePercent(newWine);
 
@@ -81,7 +79,6 @@ export default function WeddingDrinkCalculator() {
   };
 
   const handleBeerChange = (value: number) => {
-    setActiveSlider('beer');
     const newBeer = Math.max(0, Math.min(100, value));
     setBeerPercent(newBeer);
 
