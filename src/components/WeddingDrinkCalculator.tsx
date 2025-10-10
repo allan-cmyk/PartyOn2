@@ -153,7 +153,7 @@ export default function WeddingDrinkCalculator() {
               {[
                 { value: 'light', label: 'Light Drinkers' },
                 { value: 'average', label: 'Average' },
-                { value: 'crazy', label: "We&apos;re Crazy" }
+                { value: 'crazy', label: 'We\'re Crazy' }
               ].map((option) => (
                 <label
                   key={option.value}
