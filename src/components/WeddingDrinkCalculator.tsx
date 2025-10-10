@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 type DrinkingLevel = 'light' | 'average' | 'crazy';
@@ -15,9 +15,6 @@ export default function WeddingDrinkCalculator() {
   const [liquorPercent, setLiquorPercent] = useState<number>(30);
   const [winePercent, setWinePercent] = useState<number>(40);
   const [beerPercent, setBeerPercent] = useState<number>(30);
-
-  // Track which slider is being actively dragged
-  const [activeSlider, setActiveSlider] = useState<'liquor' | 'wine' | 'beer' | null>(null);
 
   // Calculate total drinks based on drinking level
   const getTotalDrinks = (): number => {
@@ -159,7 +156,7 @@ export default function WeddingDrinkCalculator() {
               {[
                 { value: 'light', label: 'Light Drinkers' },
                 { value: 'average', label: 'Average' },
-                { value: 'crazy', label: "We're Crazy" }
+                { value: 'crazy', label: "We&apos;re Crazy" }
               ].map((option) => (
                 <label
                   key={option.value}
