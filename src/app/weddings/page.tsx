@@ -450,6 +450,9 @@ export default function WeddingsPage() {
               <p className="text-gray-600 text-sm leading-relaxed">
                 We work directly with your venue for smooth delivery and setup
               </p>
+              <p className="text-gray-600 text-sm leading-relaxed mt-2">
+                Don&apos;t trust groomsmen #5 with the entire bar
+              </p>
             </motion.div>
 
             <motion.div
@@ -486,7 +489,7 @@ export default function WeddingsPage() {
                 Curated Local Selection
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
-                Austin favorites plus premium spirits, perfectly chilled
+                The best of all local breweries and distilleries
               </p>
             </motion.div>
 
@@ -503,10 +506,10 @@ export default function WeddingsPage() {
                 </svg>
               </div>
               <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
-                Lake Travis Expertise
+                Austin Area Expertise
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
-                Specialized routes and timing for Hill Country and lakeside venues
+                Relationships with many local venues and vendors
               </p>
             </motion.div>
           </div>
