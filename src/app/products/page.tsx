@@ -236,11 +236,13 @@ function ProductsContent() {
           className="relative text-center text-white z-10 max-w-4xl mx-auto px-8"
         >
           <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
-            CURATED COLLECTION
+            CURATED COLLECTIONS
           </h1>
           <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
           <p className="text-lg font-light tracking-[0.1em] text-gray-200 mb-8">
-            Premium Spirits & Fine Wines for Distinguished Celebrations
+            For whatever you&apos;re planning
+            <br />
+            Find something everyone will enjoy
           </p>
           
           {/* Age Verification Unlock Button */}
