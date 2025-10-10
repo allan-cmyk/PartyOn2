@@ -190,47 +190,38 @@ export default function WeddingsPage() {
   }, [heroImages.length]);
   const packages = [
     {
-      name: "Intimate Ceremony",
-      price: "From $1,299",
-      description: "Perfect for smaller gatherings with distinguished service",
+      name: "Beer and Wine Special",
+      price: "From $800 (for 100 people)",
+      description: "Perfect for laid back occasions",
       features: [
-        "2 Professional bartenders",
-        "Premium spirit selection",
-        "Champagne toast service",
-        "Up to 50 guests",
-        "4 hours of service",
-        "Setup & breakdown included"
+        "Will work with any budget",
+        "Choose any drinks from our selection",
+        "Also perfect for other wedding events (i.e. welcome party, day-after brunch)",
+        "Add cooler rentals, cups, ice, and custom koozies!"
       ],
       featured: false
     },
     {
       name: "Classic Reception",
-      price: "From $2,499",
+      price: "From $1,100 (for 100 people)",
       description: "Our most popular package for traditional celebrations",
       features: [
-        "4 Professional bartenders",
-        "Full premium bar selection",
+        "Choose anything from the full premium bar selection",
         "Signature cocktail menu",
-        "Up to 150 guests",
-        "6 hours of service",
-        "Multiple bar stations",
-        "Complete setup & breakdown"
+        "Delivery, bar setup, and rental returns included",
+        "Add barware rental and bartending service if needed"
       ],
       featured: true
     },
     {
-      name: "Grand Celebration",
-      price: "From $4,999",
+      name: "The All Out",
+      price: "From $2,000 (for 100 people)",
       description: "Luxurious service for unforgettable celebrations",
       features: [
-        "6 Master bartenders",
-        "Ultra-premium spirits",
-        "Custom cocktail creation",
-        "Up to 300 guests",
-        "8 hours of service",
-        "Multiple luxury bar stations",
-        "Gold-rimmed glassware",
-        "Dedicated service captain"
+        "Choose any alcohol available in Central TX (we honor all reasonable requests)",
+        "Top-shelf spirits and bar service",
+        "Custom bespoke cocktails",
+        "Delivery, setup, breakdown, glassware and additional bars available"
       ],
       featured: false
     }
@@ -526,11 +517,13 @@ export default function WeddingsPage() {
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
-              Bar Service Packages (Full-Service)
+              Example Packages
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Thoughtfully designed packages to match your celebration size and style
+              Thoughtfully designed bar packages to match any style and budget
+              <br />
+              Ask about our vetted bartending partners
             </p>
           </motion.div>
 
