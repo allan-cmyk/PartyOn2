@@ -112,7 +112,7 @@ export default function WeddingDrinkCalculator() {
         </h2>
         <div className="w-16 h-px bg-gold-600 mx-auto mb-4" />
         <p className="text-gray-600 tracking-[0.05em] max-w-2xl mx-auto">
-          Get an estimate of how much alcohol you'll need for your celebration
+          Get an estimate of how much alcohol you&apos;ll need for your celebration
         </p>
       </div>
 
