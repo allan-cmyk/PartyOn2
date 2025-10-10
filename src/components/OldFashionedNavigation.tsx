@@ -257,13 +257,18 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
               </div>
               
               <div className="flex-1 flex flex-col justify-center px-8 space-y-8">
-                
+
+                {/* Search Bar for Mobile */}
+                <div className="pt-4">
+                  <ProductSearch isScrolled={true} />
+                </div>
+
                 {/* Services Section */}
                 <div className="space-y-4">
                   <p className="text-2xl font-light tracking-[0.15em] text-gray-900">SERVICES</p>
                   <div className="pl-6 space-y-3">
                     {services.map((service) => (
-                      <Link 
+                      <Link
                         key={service.href}
                         href={service.href}
                         className="block text-lg font-light tracking-[0.1em] text-gray-600 hover:text-gold-600 transition-colors"
