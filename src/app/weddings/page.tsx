@@ -326,7 +326,7 @@ export default function WeddingsPage() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            {/* Delivery-Only Path */}
+            {/* I'm Ready to Order Path */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -334,14 +334,20 @@ export default function WeddingsPage() {
               className="bg-white p-8 rounded-lg shadow-lg"
             >
               <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
-                Delivery-Only
+                I&apos;m Ready to Order
               </h3>
               <ul className="space-y-3 mb-8 text-gray-600">
                 <li className="flex items-start">
                   <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
-                  Curated spirits, beer, wine delivered cold to your venue
+                  Order online and schedule delivery
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Everything delivered directly to venue (cold if needed)
                 </li>
                 <li className="flex items-start">
                   <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -357,7 +363,7 @@ export default function WeddingsPage() {
               </Link>
             </motion.div>
 
-            {/* Full-Service Path */}
+            {/* Get a Free Consultation Path */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -368,20 +374,26 @@ export default function WeddingsPage() {
                 <span className="text-gold-600 text-sm tracking-[0.15em] font-medium">MOST POPULAR</span>
               </div>
               <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
-                Full-Service
+                Get a Free Consultation
               </h3>
               <ul className="space-y-3 mb-8 text-gray-600">
                 <li className="flex items-start">
                   <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
-                  Complete bar service with TABC-certified bartenders
+                  Custom recommendations for how much and what to buy
                 </li>
                 <li className="flex items-start">
                   <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
-                  Setup, service, and breakdown included
+                  Receive a proposal and schedule delivery
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Ask about other options including bartenders, transportation, and rental items
                 </li>
               </ul>
               <Link href="/contact">
@@ -399,7 +411,7 @@ export default function WeddingsPage() {
             className="text-center mt-8"
           >
             <p className="text-gray-600 tracking-[0.05em]">
-              Trusted for Lake Travis, Hill Country, and downtown Austin venues since 2020
+              Trusted for Lake Travis, Hill Country, and downtown Austin venues since 2022
             </p>
           </motion.div>
         </div>
