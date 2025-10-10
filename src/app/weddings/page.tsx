@@ -271,7 +271,7 @@ export default function WeddingsPage() {
             Curated bar service with venue coordination, cold delivery, and TABC-certified bartenders for Austin, Hill Country, and Lake Travis weddings.
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
-            <Link href="/weddings/products">
+            <Link href="/products">
               <button className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
                 ORDER NOW
               </button>
