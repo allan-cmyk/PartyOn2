@@ -106,7 +106,7 @@ export function getUniqueProductTypes(products: Array<{ productType?: string }>)
 export const SHOPIFY_COLLECTIONS = [
   {
     handle: 'favorites-home-page',
-    label: 'Favorites - Home Page',
+    label: 'Austin\'s Favorites',
     category: 'featured',
     colors: {
       bg: 'bg-gold-50 hover:bg-gold-100',

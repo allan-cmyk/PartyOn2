@@ -56,11 +56,11 @@ function ProductsContent() {
     setIsAgeVerified(ageVerified);
   }, []);
 
-  // Set default collection to bachelor-favorites on initial load
+  // Set default collection to favorites-home-page on initial load
   useEffect(() => {
     // Only set default if no search query and no collection filter is already set
     if (!searchQuery && !collectionFilter) {
-      setCollectionFilter('bachelor-favorites');
+      setCollectionFilter('favorites-home-page');
     }
   }, [searchQuery, collectionFilter]);
 
