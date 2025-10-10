@@ -53,7 +53,7 @@ export default function LuxuryCard({
       } transition-all duration-500 ${className}`}
     >
       {/* Primary texture background */}
-      <div className="absolute inset-0 opacity-[0.15] group-hover:opacity-[0.25] transition-opacity duration-700">
+      <div className="absolute inset-0 opacity-[0.08] group-hover:opacity-[0.15] transition-opacity duration-700">
         <Image
           src={bgImage}
           alt=""
@@ -70,7 +70,7 @@ export default function LuxuryCard({
       {/* Gradient overlays for depth */}
       <div className="absolute inset-0">
         {/* Base gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/92 via-white/88 to-white/92" />
+        <div className="absolute inset-0 bg-gradient-to-br from-white/96 via-white/94 to-white/96" />
         
         {/* Gold shimmer for featured cards */}
         {featured && (
