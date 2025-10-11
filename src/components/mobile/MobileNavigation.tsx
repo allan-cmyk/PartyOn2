@@ -5,15 +5,17 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCartContext } from '@/contexts/CartContext';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
+import MobileSearchModal from './MobileSearchModal';
 
 export default function MobileNavigation() {
   const pathname = usePathname();
   const { cart, openCart } = useCartContext();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const cartIconControls = useAnimation();
   const prevItemCount = useRef(0);
-  
+
   const itemCount = cart?.totalQuantity || 0;
 
   // Animate cart icon when item count changes
@@ -70,7 +72,7 @@ export default function MobileNavigation() {
       )
     },
     {
-      href: '/products?search=true',
+      action: () => setIsSearchOpen(true),
       label: 'Search',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -116,24 +118,41 @@ export default function MobileNavigation() {
   ];
 
   return (
-    <AnimatePresence>
-      {isVisible && (
-        <motion.div
-          initial={{ y: 100 }}
-          animate={{ y: 0 }}
-          exit={{ y: 100 }}
-          transition={{ type: 'spring', damping: 25, stiffness: 400 }}
-          className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 md:hidden safe-area-bottom shadow-lg"
-        >
-          <nav className="flex items-center justify-around h-[72px]">
-            {navItems.map((item, index) => {
-              const isActive = pathname === item.href;
-              
-              if (item.action) {
+    <>
+      <AnimatePresence>
+        {isVisible && (
+          <motion.div
+            initial={{ y: 100 }}
+            animate={{ y: 0 }}
+            exit={{ y: 100 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 400 }}
+            className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 md:hidden safe-area-bottom shadow-lg"
+          >
+            <nav className="flex items-center justify-around h-[72px]">
+              {navItems.map((item, index) => {
+                const isActive = pathname === item.href;
+
+                if (item.action) {
+                  return (
+                    <button
+                      key={index}
+                      onClick={item.action}
+                      className="flex flex-col items-center justify-center px-3 py-2 flex-1 min-w-0 active:bg-gray-50 transition-colors rounded-lg"
+                    >
+                      <div className={`transition-colors ${isActive ? 'text-gold-600' : 'text-gray-600'}`}>
+                        {item.icon}
+                      </div>
+                      <span className={`text-xs mt-1 tracking-[0.05em] font-medium ${isActive ? 'text-gold-600' : 'text-gray-600'}`}>
+                        {item.label}
+                      </span>
+                    </button>
+                  );
+                }
+
                 return (
-                  <button
+                  <Link
                     key={index}
-                    onClick={item.action}
+                    href={item.href}
                     className="flex flex-col items-center justify-center px-3 py-2 flex-1 min-w-0 active:bg-gray-50 transition-colors rounded-lg"
                   >
                     <div className={`transition-colors ${isActive ? 'text-gold-600' : 'text-gray-600'}`}>
@@ -142,28 +161,19 @@ export default function MobileNavigation() {
                     <span className={`text-xs mt-1 tracking-[0.05em] font-medium ${isActive ? 'text-gold-600' : 'text-gray-600'}`}>
                       {item.label}
                     </span>
-                  </button>
+                  </Link>
                 );
-              }
-              
-              return (
-                <Link
-                  key={index}
-                  href={item.href}
-                  className="flex flex-col items-center justify-center px-3 py-2 flex-1 min-w-0 active:bg-gray-50 transition-colors rounded-lg"
-                >
-                  <div className={`transition-colors ${isActive ? 'text-gold-600' : 'text-gray-600'}`}>
-                    {item.icon}
-                  </div>
-                  <span className={`text-xs mt-1 tracking-[0.05em] font-medium ${isActive ? 'text-gold-600' : 'text-gray-600'}`}>
-                    {item.label}
-                  </span>
-                </Link>
-              );
-            })}
-          </nav>
-        </motion.div>
-      )}
-    </AnimatePresence>
+              })}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Search Modal */}
+      <MobileSearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+      />
+    </>
   );
 }
