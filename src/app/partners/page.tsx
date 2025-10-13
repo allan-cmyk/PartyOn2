@@ -227,39 +227,31 @@ export default function PartnersPage() {
 
   const tiers = [
     {
-      name: "Select Partner",
-      volume: "$5,000+/month",
-      discount: "10% discount",
+      name: "Tier 1 Partner",
+      volume: "$0 - $5,000 in referred orders",
+      discount: "5% Commission",
       features: [
-        "Dedicated account manager",
-        "Monthly invoicing",
-        "Priority delivery",
-        "Event consultation"
+        "Free delivery for clients"
       ]
     },
     {
-      name: "Premier Partner",
-      volume: "$15,000+/month",
-      discount: "15% discount",
+      name: "Tier 2 Partner",
+      volume: "$10,000 - $20,000 in referred orders",
+      discount: "8% Commission",
       features: [
-        "Everything in Select",
-        "Custom storefront",
-        "Co-branded materials",
-        "Exclusive allocations",
-        "Quarterly business reviews"
+        "Everything in Tier 1",
+        "Custom storefront on our website",
+        "Social media collaborations"
       ]
     },
     {
-      name: "Elite Partner",
-      volume: "$30,000+/month",
-      discount: "25% discount",
+      name: "Tier 3 Partner",
+      volume: "$20,000+ in referred orders",
+      discount: "10% Commission",
       features: [
-        "Everything in Premier",
-        "White-label solution",
-        "API integration",
-        "Custom product curation",
-        "Revenue sharing program",
-        "VIP event access"
+        "Everything in Tier 2",
+        "Preferred vendor list",
+        "Free Boat Party on our sister company's biggest boat (premierpartycruises.com)!"
       ]
     }
   ];
