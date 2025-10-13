@@ -206,38 +206,30 @@ export default function MobileBartenderPartnerPage() {
     {
       icon: (
         <svg className="w-16 h-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          <path d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
         </svg>
       ),
-      title: "Share Your Link",
-      description: "Get your custom partner link and QR code. Share it with clients before their events."
+      title: "Join Our Affiliate Network",
+      description: "Sign up below and get your unique discount code to share with clients. We track your commission and the client gets FREE DELIVERY."
     },
     {
       icon: (
         <svg className="w-16 h-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+          <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
         </svg>
       ),
-      title: "Clients Order",
-      description: "They browse our curated selection and place orders for their party. We handle payment and logistics."
+      title: "Clients Order Thru Us",
+      description: "You send what the client needs to us via email. We email the client an invoice and keep you in the loop."
     },
     {
       icon: (
         <svg className="w-16 h-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+          <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+          <path d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-4-1a1 1 0 001 1h3M9 17h1" />
         </svg>
       ),
       title: "We Deliver Everything",
-      description: "Premium spirits, beer, wine, mixers, ice, and supplies arrive cold and on-time to the venue."
-    },
-    {
-      icon: (
-        <svg className="w-16 h-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
-      title: "You Pour, Earn Commission",
-      description: "Focus on what you do best—crafting amazing drinks. Get paid automatically for every order you referred."
+      description: "Spirits, beer, wine, mixers, ice, and rental items arrive cold and on-time to the venue."
     }
   ];
 
@@ -493,11 +485,11 @@ export default function MobileBartenderPartnerPage() {
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Four simple steps to start earning commission on every event
+              Three simple steps to start earning commission on every event
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {howItWorksSteps.map((step, index) => (
               <motion.div
                 key={step.title}
