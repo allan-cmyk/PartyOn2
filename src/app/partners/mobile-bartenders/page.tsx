@@ -228,6 +228,15 @@ export default function MobileBartenderPartnerPage() {
       ),
       title: "We Deliver Everything",
       description: "Spirits, beer, wine, mixers, ice, and rental items arrive cold and on-time to the venue."
+    },
+    {
+      icon: (
+        <svg className="w-16 h-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+      title: "You Pour, Earn Commission",
+      description: "Focus on what you do best—crafting amazing drinks. Get paid automatically for every order you referred."
     }
   ];
 
@@ -483,11 +492,11 @@ export default function MobileBartenderPartnerPage() {
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Three simple steps to start earning commission on every event
+              Four simple steps to start earning commission on every event
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {howItWorksSteps.map((step, index) => (
               <motion.div
                 key={step.title}
