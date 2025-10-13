@@ -510,8 +510,8 @@ export default function MobileBartenderPartnerPage() {
         </div>
       </section>
 
-      {/* Earnings & Perks */}
-      <section className="py-20 bg-white">
+      {/* Partnership Tiers */}
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -520,60 +520,120 @@ export default function MobileBartenderPartnerPage() {
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
-              Earnings & Partner Perks
+              Partnership Tiers
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              The more you refer, the more you earn
+            </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="text-center bg-gray-50 p-8"
+              className="bg-white p-8 border-2 border-gray-200"
             >
-              <div className="text-5xl font-serif text-gold-600 mb-3">{BASE_COMMISSION}%</div>
-              <h3 className="text-lg font-medium mb-2 text-gray-900">Starting Commission</h3>
-              <p className="text-gray-600">Earn on every order you refer. Tiers increase with volume.</p>
+              <h3 className="font-serif text-2xl mb-2 text-gray-900">Tier 1 Partner</h3>
+              <p className="text-gray-600 mb-2">$0 - $5,000 in referred orders</p>
+              <p className="text-3xl font-light text-gold-600 mb-6">5% Commission</p>
+              <ul className="space-y-3">
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-gray-700">Free delivery for clients</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-gray-700">Dedicated account manager</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-gray-700">Monthly invoicing</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-gray-700">Priority delivery</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-gray-700">Event consultation</span>
+                </li>
+              </ul>
             </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-center bg-gray-50 p-8"
+              className="bg-white p-8 border-2 border-gold-400 shadow-xl"
             >
-              <svg className="w-12 h-12 text-gold-600 mx-auto mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <h3 className="text-lg font-medium mb-2 text-gray-900">Custom Discount Codes</h3>
-              <p className="text-gray-600">Give clients exclusive deals while you still earn full commission.</p>
+              <div className="bg-gold-400 text-white text-center py-2 -mt-8 -mx-8 mb-6 tracking-wider">
+                MOST POPULAR
+              </div>
+              <h3 className="font-serif text-2xl mb-2 text-gray-900">Tier 2 Partner</h3>
+              <p className="text-gray-600 mb-2">$10,000 - $20,000 in referred orders</p>
+              <p className="text-3xl font-light text-gold-600 mb-6">8% Commission</p>
+              <ul className="space-y-3">
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-gray-700">Everything in Tier 1</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-gray-700">Custom storefront on our website</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-gray-700">Social media collaborations</span>
+                </li>
+              </ul>
             </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-center bg-gray-50 p-8"
+              className="bg-white p-8 border-2 border-gray-200"
             >
-              <svg className="w-12 h-12 text-gold-600 mx-auto mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <h3 className="text-lg font-medium mb-2 text-gray-900">Fast Payouts</h3>
-              <p className="text-gray-600">Twice-monthly direct deposit. No waiting 90 days for your money.</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="text-center bg-gray-50 p-8"
-            >
-              <svg className="w-12 h-12 text-gold-600 mx-auto mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-              <h3 className="text-lg font-medium mb-2 text-gray-900">Priority Support</h3>
-              <p className="text-gray-600">Direct chat line to our dispatch team for real-time assistance.</p>
+              <h3 className="font-serif text-2xl mb-2 text-gray-900">Tier 3 Partner</h3>
+              <p className="text-gray-600 mb-2">$20,000+ in referred orders</p>
+              <p className="text-3xl font-light text-gold-600 mb-6">10% Commission</p>
+              <ul className="space-y-3">
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-gray-700">Everything in Tier 2</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-gray-700">Preferred vendor list</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-gray-700">Free Boat Party on our sister company&apos;s biggest boat (premierpartycruises.com)!</span>
+                </li>
+              </ul>
             </motion.div>
           </div>
         </div>
