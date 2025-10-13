@@ -231,7 +231,11 @@ export default function PartnersPage() {
       volume: "$0 - $5,000 in referred orders",
       discount: "5% Commission",
       features: [
-        "Free delivery for clients"
+        "Free delivery for clients",
+        "Dedicated account manager",
+        "Monthly invoicing",
+        "Priority delivery",
+        "Event consultation"
       ]
     },
     {
