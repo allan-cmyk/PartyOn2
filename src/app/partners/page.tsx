@@ -84,6 +84,18 @@ export default function PartnersPage() {
 
   const partnerTypes = [
     {
+      href: '#',
+      icon: (
+        <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+        </svg>
+      ),
+      title: "Mobile Bartenders",
+      description: "Help your clients and make additional revenue on every party",
+      available: true,
+      image: '/images/hero/bartender-service.webp'
+    },
+    {
       href: '/partners/hotels-resorts',
       icon: (
         <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -175,24 +187,41 @@ export default function PartnersPage() {
 
   const benefits = [
     {
-      title: "Volume Discounts",
-      percentage: "Up to 25%",
-      description: "Tiered pricing based on monthly order volume"
+      title: "Revenue Share",
+      icon: (
+        <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+      description: "Earn commission on referred customers"
+    },
+    {
+      title: "Dedicated Delivery",
+      icon: (
+        <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+          <path d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-4-1a1 1 0 001 1h3M9 17h1" />
+        </svg>
+      ),
+      description: "Dedicated delivery service to anywhere in the county"
     },
     {
       title: "Custom Storefront",
-      percentage: "100%",
+      icon: (
+        <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+        </svg>
+      ),
       description: "White-labeled ordering portal with your branding"
     },
     {
       title: "Priority Service",
-      percentage: "24/7",
+      icon: (
+        <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
       description: "Dedicated account manager and express delivery"
-    },
-    {
-      title: "Revenue Share",
-      percentage: "15%",
-      description: "Earn commission on referred customers"
     }
   ];
 
@@ -257,7 +286,7 @@ export default function PartnersPage() {
           className="relative text-center text-white z-10 max-w-4xl mx-auto px-8"
         >
           <h1 className="font-serif font-light text-5xl md:text-6xl mb-6 tracking-[0.15em]">
-            PARTNER PROGRAM
+            PARTNER WITH US
           </h1>
           <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
           <p className="text-xl font-light tracking-[0.1em] mb-8 text-gray-200">
@@ -354,7 +383,7 @@ export default function PartnersPage() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="text-center"
               >
-                <div className="text-4xl font-serif text-gold-600 mb-3">{benefit.percentage}</div>
+                <div className="text-gold-600 mb-3 flex justify-center">{benefit.icon}</div>
                 <h3 className="text-xl font-medium mb-2 text-gray-900 tracking-wide">{benefit.title}</h3>
                 <p className="text-gray-600">{benefit.description}</p>
               </motion.div>
