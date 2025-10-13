@@ -8,8 +8,8 @@ import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
 
 export default function MobileBartenderPartnerPage() {
-  // TODO: Replace these placeholder values before production
-  const BASE_COMMISSION = "[BASE_COMMISSION]"; // e.g., "10"
+  // Commission configuration
+  const BASE_COMMISSION = "5";
   const BONUS_PERCENT = "[BONUS]"; // e.g., "5"
   const BONUS_ORDERS = "[N]"; // e.g., "10"
 
@@ -293,7 +293,7 @@ export default function MobileBartenderPartnerPage() {
   const faqs = [
     {
       question: "How much commission do I earn as a partner?",
-      answer: `Partners start at ${BASE_COMMISSION}% commission on all referred orders. The more orders you send, the higher your commission tier. Plus, join this month and get a ${BONUS_PERCENT}% boost on your first ${BONUS_ORDERS} orders.`
+      answer: `Partners start at ${BASE_COMMISSION}% commission on all referred orders. The more orders you send, the higher your commission tier.`
     },
     {
       question: "How do I get paid?",
@@ -441,15 +441,6 @@ export default function MobileBartenderPartnerPage() {
             </button>
           </div>
         </motion.div>
-      </section>
-
-      {/* Special Offer Banner */}
-      <section className="bg-gold-600 text-white py-4">
-        <div className="max-w-7xl mx-auto px-8 text-center">
-          <p className="text-lg tracking-wider">
-            <strong>Limited Time:</strong> Join this month and get a <strong>{BONUS_PERCENT}% boost</strong> on your first <strong>{BONUS_ORDERS} orders</strong>
-          </p>
-        </div>
       </section>
 
       {/* Benefits Grid */}
