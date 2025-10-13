@@ -10,8 +10,6 @@ import Footer from '@/components/Footer';
 export default function MobileBartenderPartnerPage() {
   // Commission configuration
   const BASE_COMMISSION = "5";
-  const BONUS_PERCENT = "[BONUS]"; // e.g., "5"
-  const BONUS_ORDERS = "[N]"; // e.g., "10"
 
   const [formData, setFormData] = useState({
     firstName: '',
