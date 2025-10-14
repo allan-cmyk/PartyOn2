@@ -293,21 +293,21 @@ export default function MobileBartenderPartnerPage() {
 
   const testimonials = [
     {
-      quote: "I used to spend 3 hours before every event loading my car at Total Wine. Now I show up, set up my bar, and everything's already there cold. Plus the commission checks are a nice bonus.",
-      author: "Marcus T.",
-      role: "Local Bartender, ATX",
+      quote: "Party On Delivery is an awesome concept with top-notch customer service. We've been working with them for a matter of months now, and the fact they make everything so seamless makes everybody's life a breeze when it comes to party planning...",
+      author: "James Burt",
+      role: "Local Guide · 10 months ago",
       image: "/images/testimonials/bartender-1-placeholder.jpg" // TODO: Replace with generated image
     },
     {
-      quote: "Party On saved my boat party business. Getting alcohol to the dock was always a nightmare. Now it just shows up, and my clients love the selection. Easiest partnership ever.",
-      author: "Mix Masters ATX",
-      role: "Mobile Bar Service",
+      quote: "If you need alcohol for your event, call POD! Allan at Ranch Austin was amazing at taking our order and making sure it was all there in time for the wedding! They were truly helpful and the service was ABOVE and beyond in every way.",
+      author: "Tatianna Ramon",
+      role: "Local Guide · a year ago",
       image: "/images/testimonials/bartender-2-placeholder.jpg" // TODO: Replace with generated image
     },
     {
-      quote: "The commission alone covers my gas and mileage. Everything else is profit. My clients get better prices than retail, and I get paid for making an intro. Total win-win.",
-      author: "DJ & Bartending Co.",
-      role: "Austin Event Services",
+      quote: "For the first time in 10 years, I didn't have to buy the booze for the company boat party on Lake Travis. This is the best kept secret on the whole lake. 100% coming back year after year. Thank you POD!",
+      author: "Dane Witbeck",
+      role: "13 reviews · a year ago",
       image: "/images/testimonials/bartender-3-placeholder.jpg" // TODO: Replace with generated image
     }
   ];
