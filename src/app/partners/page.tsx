@@ -435,15 +435,8 @@ export default function PartnersPage() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className={`bg-white p-8 border-2 ${
-                  index === 1 ? 'border-gold-400 shadow-xl' : 'border-gray-200'
-                }`}
+                className="bg-white p-8 border-2 border-gray-200"
               >
-                {index === 1 && (
-                  <div className="bg-gold-400 text-white text-center py-2 -mt-8 -mx-8 mb-6 tracking-wider">
-                    MOST POPULAR
-                  </div>
-                )}
                 <h3 className="font-serif text-2xl mb-2 text-gray-900">{tier.name}</h3>
                 <p className="text-gray-600 mb-2">{tier.volume}</p>
                 <p className="text-3xl font-light text-gold-600 mb-6">{tier.discount}</p>
