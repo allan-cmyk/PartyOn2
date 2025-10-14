@@ -746,11 +746,10 @@ export default function PartnersPage() {
                 ))}
               </div>
               <p className="text-gray-600 mb-4 italic">
-                &quot;PartyOn transformed our resident events. The custom portal makes ordering effortless, 
-                and our residents love the exclusive access to premium selections.&quot;
+                &quot;Party On Delivery is an awesome concept with top-notch customer service. We&apos;ve been working with them for a matter of months now, and the fact they make everything so seamless makes everybody&apos;s life a breeze when it comes to party planning, which we know can be very stressful with all the moving parts. I highly recommend Party On Delivery for anybody who wants to take the stress out of the alcohol ordering. Keep up the good work, Allan and Brian!&quot;
               </p>
-              <div className="font-medium text-gray-900">Sarah Chen</div>
-              <div className="text-sm text-gray-600">Luxury Property Manager</div>
+              <div className="font-medium text-gray-900">James Burt</div>
+              <div className="text-sm text-gray-600">Local Guide · 10 months ago</div>
             </motion.div>
 
             <motion.div
@@ -767,11 +766,10 @@ export default function PartnersPage() {
                 ))}
               </div>
               <p className="text-gray-600 mb-4 italic">
-                &quot;The partnership has elevated our wedding packages. Couples appreciate the 
-                sophisticated bar service and the seamless integration with our planning process.&quot;
+                &quot;I met Allan at an Open House at Ranch Austin and his team has been very communicative and helpful while placing an alcohol order for my wedding clients. They were flexible and made the process easy! They delivered to the venue and even offered to chill some of the wine and beer for us. I&apos;d recommend them to anyone and will definitely be using their services again!&quot;
               </p>
-              <div className="font-medium text-gray-900">Michael Torres</div>
-              <div className="text-sm text-gray-600">Wedding Venue Director</div>
+              <div className="font-medium text-gray-900">Tatianna Ramon</div>
+              <div className="text-sm text-gray-600">Local Guide · a year ago</div>
             </motion.div>
 
             <motion.div
@@ -788,11 +786,10 @@ export default function PartnersPage() {
                 ))}
               </div>
               <p className="text-gray-600 mb-4 italic">
-                &quot;Our corporate clients are impressed by the professional service and curated 
-                selections. It&apos;s become a key differentiator for our event offerings.&quot;
+                &quot;I ordered from here for our company party on Lake Travis. They delivered with all the drinks chilled and kept cold in a big cooler. Great communication. Got everything we needed, even some things not on the website. Right on time! Will definitely buy from them again.&quot;
               </p>
-              <div className="font-medium text-gray-900">Jennifer Park</div>
-              <div className="text-sm text-gray-600">Corporate Event Planner</div>
+              <div className="font-medium text-gray-900">Dane Witbeck</div>
+              <div className="text-sm text-gray-600">13 reviews · a year ago</div>
             </motion.div>
           </div>
         </div>
