@@ -153,38 +153,23 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
               
               {/* Details Section */}
               <div className="w-full md:w-1/2 lg:w-2/5 p-8 overflow-y-auto">
-                {/* Vendor */}
-                {product.vendor && (
-                  <p className="text-xs text-gray-500 tracking-[0.15em] mb-2">
-                    {product.vendor.toUpperCase()}
-                  </p>
-                )}
-                
                 {/* Title */}
                 <h2 className="font-serif text-3xl text-gray-900 mb-4 tracking-[0.05em]">
                   {product.title}
                 </h2>
-                
+
                 {/* Price */}
                 <p className="font-light text-2xl text-gray-900 mb-6 tracking-[0.05em]">
                   {formatPrice(price.amount, price.currencyCode)}
                 </p>
-                
+
                 {/* Description */}
                 {product.description && (
-                  <div className="prose prose-sm text-gray-600 mb-6">
+                  <div className="prose prose-sm text-gray-600 mb-6 leading-relaxed">
                     <p>{product.description}</p>
                   </div>
                 )}
-                
-                {/* Product Type */}
-                {product.productType && (
-                  <div className="mb-6">
-                    <span className="text-xs text-gray-500 tracking-[0.1em]">TYPE</span>
-                    <p className="text-sm text-gray-700 mt-1">{product.productType}</p>
-                  </div>
-                )}
-                
+
                 {/* Quantity Selector */}
                 <div className="mb-6">
                   <label className="block text-xs text-gray-600 tracking-[0.1em] mb-2">QUANTITY</label>
