@@ -52,10 +52,32 @@ export default function PartnersPage() {
       return;
     }
 
-    // Simulate form submission
+    // Submit to Zapier webhook
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      console.log('Partner inquiry submitted:', formData);
+      const zapierWebhookUrl = process.env.NEXT_PUBLIC_ZAPIER_PARTNER_WEBHOOK_URL;
+
+      if (!zapierWebhookUrl) {
+        console.error('Zapier webhook URL not configured');
+        throw new Error('Form submission not configured');
+      }
+
+      const response = await fetch(zapierWebhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          partnerType: 'General Partnership',
+          source: 'partners-main-page',
+          submittedAt: new Date().toISOString(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit form');
+      }
+
       setSubmitStatus('success');
       // Reset form
       setFormData({
@@ -67,8 +89,9 @@ export default function PartnersPage() {
         monthlyVolume: '',
         message: ''
       });
-    } catch {
-      setErrorMessage('Something went wrong. Please try again.');
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setErrorMessage('Something went wrong. Please try again or call us at (512) 555-0100.');
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);

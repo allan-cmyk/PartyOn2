@@ -46,37 +46,48 @@ export default function HotelsResortsPartnerPage() {
     e.preventDefault()
     setIsSubmitting(true)
     setSubmitMessage('')
-    
+
     try {
-      const response = await fetch('/api/partners/inquiry', {
+      const zapierWebhookUrl = process.env.NEXT_PUBLIC_ZAPIER_PARTNER_WEBHOOK_URL;
+
+      if (!zapierWebhookUrl) {
+        console.error('Zapier webhook URL not configured');
+        throw new Error('Form submission not configured');
+      }
+
+      const response = await fetch(zapierWebhookUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          interests: formData.interests.join(', '), // Convert array to comma-separated string
+          partnerType: 'Hotels & Resorts',
+          source: 'hotels-resorts-page',
+          submittedAt: new Date().toISOString(),
+        }),
       })
-      
-      const data = await response.json()
-      
-      if (data.success) {
-        setSubmitMessage(data.message)
-        // Reset form
-        setFormData({
-          hotelName: '',
-          contactName: '',
-          email: '',
-          phone: '',
-          numberOfRooms: '',
-          currentProvider: '',
-          monthlyVolume: '',
-          interests: []
-        })
-      } else {
-        setSubmitMessage(data.error || 'Failed to submit. Please try again.')
+
+      if (!response.ok) {
+        throw new Error('Failed to submit form');
       }
+
+      setSubmitMessage('Thank you! Your partnership inquiry has been submitted successfully. We\'ll contact you within 24 hours.');
+      // Reset form
+      setFormData({
+        hotelName: '',
+        contactName: '',
+        email: '',
+        phone: '',
+        numberOfRooms: '',
+        currentProvider: '',
+        monthlyVolume: '',
+        interests: []
+      })
     } catch (error) {
       console.error('Submit error:', error)
-      setSubmitMessage('An error occurred. Please try again later.')
+      setSubmitMessage('An error occurred. Please try again or call us at (512) 555-0100.')
     } finally {
       setIsSubmitting(false)
     }

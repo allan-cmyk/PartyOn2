@@ -81,7 +81,7 @@ export default function MobileBartenderPartnerPage() {
 
     try {
       // Send form data to Zapier webhook
-      const zapierWebhookUrl = process.env.NEXT_PUBLIC_ZAPIER_BARTENDER_WEBHOOK_URL;
+      const zapierWebhookUrl = process.env.NEXT_PUBLIC_ZAPIER_PARTNER_WEBHOOK_URL;
 
       if (!zapierWebhookUrl) {
         console.error('Zapier webhook URL not configured');
@@ -96,6 +96,7 @@ export default function MobileBartenderPartnerPage() {
         body: JSON.stringify({
           ...formData,
           eventTypes: formData.eventTypes.join(', '), // Convert array to comma-separated string
+          partnerType: 'Mobile Bartenders',
           submittedAt: new Date().toISOString(),
         }),
       });
