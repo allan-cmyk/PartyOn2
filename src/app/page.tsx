@@ -64,7 +64,7 @@ export default function HomePage() {
                   SCHEDULE A 15-MIN PLANNING CALL
                 </button>
               </Link>
-            </motion.div>
+            </div>
           </div>
 
           <div className="text-center mt-8">
@@ -78,18 +78,13 @@ export default function HomePage() {
       {/* Top Picks Grid */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
+          <div className="text-center mb-16">
             <h2 className="font-serif text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               Top Picks (2-minute order)
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
             <p className="text-gray-600">Change quantities at checkout</p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
             {[
@@ -101,12 +96,9 @@ export default function HomePage() {
               { title: 'Ice & Disposables', desc: 'Cups, napkins, stirrers, coolers' },
               { title: 'Coolers & Gear', desc: 'Keep drinks cold all day long' },
               { title: 'Party Essentials', desc: 'Complete setup packages' }
-            ].map((item, index) => (
-              <motion.div
+            ].map((item) => (
+              <div
                 key={item.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
                 className="bg-gray-50 rounded-lg p-6 border border-gray-200 hover:shadow-lg transition-all hover:-translate-y-1"
               >
                 <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
@@ -118,7 +110,7 @@ export default function HomePage() {
                 <button className="w-full px-4 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors text-sm tracking-[0.1em]">
                   ADD TO CART
                 </button>
-              </motion.div>
+              </div>
             ))}
           </div>
 
@@ -133,23 +125,21 @@ export default function HomePage() {
       {/* Why Austin Books Party On */}
       <section id="experience" className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <div 
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               Why Austin books Party On
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
                 title: "On-time, cold delivery",
                 description: "Ice, cups, mixers handled so you don't stress",
+                gradient: "from-blue-50 to-gray-50",
                 icon: (
                   <svg className="w-14 h-14 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -159,6 +149,7 @@ export default function HomePage() {
               {
                 title: "Local concierge",
                 description: "We know venues, marinas, and event planners personally",
+                gradient: "from-amber-50 to-gray-50",
                 icon: (
                   <svg className="w-14 h-14 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
@@ -168,6 +159,7 @@ export default function HomePage() {
               {
                 title: "Licensed & insured",
                 description: "TABC-certified service you can trust completely",
+                gradient: "from-emerald-50 to-gray-50",
                 icon: (
                   <svg className="w-14 h-14 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -177,62 +169,31 @@ export default function HomePage() {
               {
                 title: "No overbuy anxiety",
                 description: "Weddings: 100% refund on unopened",
+                gradient: "from-rose-50 to-gray-50",
                 icon: (
                   <svg className="w-14 h-14 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 )
               }
-            ].map((feature, index) => {
-              const backgroundImages = [
-                '/images/experience/curated-spirits-display.webp',
-                '/images/experience/delivery-driver-premium.webp',
-                '/images/experience/five-star-service.webp',
-                '/images/experience/premium-guarantee.webp'
-              ];
-              
-              return (
-                <motion.div
-                  key={feature.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: index * 0.2 }}
-                  className="relative overflow-hidden rounded-lg group cursor-pointer transform hover:-translate-y-1 transition-all duration-300"
-                >
-                  {/* Background Image */}
-                  <div className="absolute inset-0 -z-10">
-                    <Image
-                      src={backgroundImages[index]}
-                      alt={feature.title}
-                      fill
-                      className="object-cover opacity-30 scale-125 transition-all duration-1000 group-hover:scale-110 group-hover:opacity-40"
-                      onError={(e) => {
-                        // Use a fallback texture if the specific image doesn't exist
-                        const fallbacks = [
-                          '/images/textures/gold-liquid-abstract.webp',
-                          '/images/textures/crystal-ice-texture.webp',
-                          '/images/textures/whiskey-amber-swirl.webp'
-                        ];
-                        e.currentTarget.src = fallbacks[index % fallbacks.length];
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-white/80 to-white/90" />
-                    {/* Add subtle gold shimmer on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-gold-600/0 via-gold-600/5 to-gold-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                  </div>
-                  
-                  <div className="relative p-8 text-center">
-                    <div className="mb-6">{feature.icon}</div>
-                    <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
-                      {feature.title}
-                    </h3>
-                    <p className="text-gray-600 leading-relaxed">
-                      {feature.description}
-                    </p>
-                  </div>
-                </motion.div>
-              );
-            })}
+            ].map((feature) => (
+              <div
+                key={feature.title}
+                className={`relative overflow-hidden rounded-lg group cursor-pointer transform hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br ${feature.gradient} border border-gray-200`}
+              >
+                <div className="relative p-8 text-center">
+                  <div className="mb-6">{feature.icon}</div>
+                  <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
+                {/* Subtle gold shimmer on hover */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-gold-600/0 via-gold-600/5 to-gold-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -240,23 +201,17 @@ export default function HomePage() {
       {/* Signature Services */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <div 
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               For whatever you&apos;re planning, get the perfect drink menu on easy mode
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
-          </motion.div>
+          </div>
 
           {/* Service 1: Weddings */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
+          <div
             className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-24"
           >
             <div className="relative h-96 overflow-hidden">
@@ -265,6 +220,9 @@ export default function HomePage() {
                 alt="Wedding Bar Service"
                 fill
                 className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                loading="lazy"
+                quality={80}
               />
               <div className="absolute inset-0 bg-gradient-to-r from-gray-900/20 to-transparent" />
             </div>
@@ -288,13 +246,10 @@ export default function HomePage() {
                 </Link>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Service 2: Boat Parties */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
+          <div
             className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-24"
           >
             <div className="lg:pr-12 order-2 lg:order-1">
@@ -323,16 +278,16 @@ export default function HomePage() {
                 alt="Boat Party Service"
                 fill
                 className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                loading="lazy"
+                quality={80}
               />
               <div className="absolute inset-0 bg-gradient-to-l from-gray-900/20 to-transparent" />
             </div>
-          </motion.div>
+          </div>
 
           {/* Service 3: Corporate Events */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
+          <div
             className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
           >
             <div className="relative h-96 overflow-hidden">
@@ -341,6 +296,9 @@ export default function HomePage() {
                 alt="Corporate Event Service"
                 fill
                 className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                loading="lazy"
+                quality={80}
               />
               <div className="absolute inset-0 bg-gradient-to-r from-gray-900/20 to-transparent" />
             </div>
@@ -364,17 +322,14 @@ export default function HomePage() {
                 </Link>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Austin Coverage */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <div 
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
@@ -384,13 +339,10 @@ export default function HomePage() {
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
               From Lake Travis to Downtown, we deliver excellence to every corner of Austin
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
+            <div
             >
               <h3 className="font-serif text-2xl text-gray-900 mb-6 tracking-[0.1em]">
                 Downtown & Central
@@ -405,11 +357,8 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
+            </div>
+            <div
             >
               <h3 className="font-serif text-2xl text-gray-900 mb-6 tracking-[0.1em]">
                 Lake & Hills
@@ -424,7 +373,7 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -432,17 +381,14 @@ export default function HomePage() {
       {/* Testimonials */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <div 
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               Client Testimonials
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </motion.div>
+          </div>
 
           <div className="max-w-4xl mx-auto space-y-12">
             {[
@@ -457,11 +403,8 @@ export default function HomePage() {
                 role: "Lake Travis Regular, Summer"
               }
             ].map((testimonial, index) => (
-              <motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
                 className="text-center"
               >
                 <p className="text-xl text-gray-700 italic mb-6 leading-relaxed">
@@ -474,19 +417,16 @@ export default function HomePage() {
                   {testimonial.role}
                 </p>
                 {index < 1 && <div className="w-24 h-px bg-gray-300 mx-auto mt-12" />}
-              </motion.div>
+              </div>
             ))}
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
+            <div
               className="text-center pt-8 border-t border-gray-200"
             >
               <p className="text-gray-600 tracking-[0.05em]">
                 Open since 2023 • Thousands served • 5.0★ on Google
               </p>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -494,17 +434,14 @@ export default function HomePage() {
       {/* How It Works */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-6xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <div
             className="text-center mb-16"
           >
             <h2 className="font-serif text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               How it works
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
@@ -529,11 +466,8 @@ export default function HomePage() {
                 description: "Celebrate stress-free"
               }
             ].map((item, index) => (
-              <motion.div
+              <div
                 key={item.step}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
                 className="text-center"
               >
                 <div className="w-16 h-16 bg-gold-600 text-white rounded-full flex items-center justify-center text-xl font-light mx-auto mb-6">
@@ -545,7 +479,7 @@ export default function HomePage() {
                 <p className="text-gray-600 text-sm">
                   {item.description}
                 </p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -554,10 +488,7 @@ export default function HomePage() {
       {/* Service Areas - Logistics Help */}
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <div
             className="text-center mb-12"
           >
             <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
@@ -567,7 +498,7 @@ export default function HomePage() {
             <p className="text-gray-600 max-w-2xl mx-auto">
               Austin, Lake Travis, Hill Country coverage with specialized delivery expertise
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[
@@ -588,11 +519,8 @@ export default function HomePage() {
                 description: "Corporate-friendly logistics and payment"
               }
             ].map((item, index) => (
-              <motion.div
+              <div
                 key={item.title}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
                 className="flex items-start space-x-4"
               >
                 <div className="w-2 h-2 bg-gold-600 rounded-full mt-2 flex-shrink-0"></div>
@@ -600,7 +528,7 @@ export default function HomePage() {
                   <h3 className="font-medium text-gray-900 mb-2">{item.title}</h3>
                   <p className="text-gray-600 text-sm">{item.description}</p>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -609,17 +537,14 @@ export default function HomePage() {
       {/* Mini-FAQ */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <div
             className="text-center mb-12"
           >
             <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
               Quick Questions
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </motion.div>
+          </div>
 
           <div className="space-y-8">
             {[
@@ -648,16 +573,13 @@ export default function HomePage() {
                 answer: "Yes—TABC certified + $2M insurance. Fully licensed operation."
               }
             ].map((faq, index) => (
-              <motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
                 className="bg-white rounded-lg p-6 border border-gray-200"
               >
                 <h3 className="font-medium text-gray-900 mb-3">{faq.question}</h3>
                 <p className="text-gray-600">{faq.answer}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -666,10 +588,7 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="py-24 bg-gray-900">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <div
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-white mb-6 tracking-[0.1em]">
               Ready to stock your party?
@@ -689,7 +608,7 @@ export default function HomePage() {
                 </button>
               </Link>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
