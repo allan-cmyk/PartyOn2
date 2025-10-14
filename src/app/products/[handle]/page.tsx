@@ -78,11 +78,37 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-// Generate static params for popular products (optional but recommended)
+// Generate static params for top products to pre-render at build time
 export async function generateStaticParams() {
-  // For now, return empty array - can be populated with top products later
-  // This allows dynamic rendering for all products while still being SEO-friendly
-  return [];
+  try {
+    // Fetch top 50 most popular products to pre-render
+    // This significantly improves SEO as Google can crawl pre-rendered HTML
+    const response = await shopifyFetch<{
+      products: {
+        edges: Array<{ node: { handle: string } }>;
+      };
+    }>({
+      query: `
+        query getTopProducts {
+          products(first: 50, sortKey: BEST_SELLING) {
+            edges {
+              node {
+                handle
+              }
+            }
+          }
+        }
+      `,
+    });
+
+    return response.products.edges.map(({ node }) => ({
+      handle: node.handle,
+    }));
+  } catch (error) {
+    console.error('Error fetching products for static generation:', error);
+    // Return empty array if fetch fails - pages will render on-demand
+    return [];
+  }
 }
 
 // Main Server Component
