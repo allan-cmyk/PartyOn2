@@ -80,11 +80,32 @@ export default function MobileBartenderPartnerPage() {
     }
 
     try {
-      // TODO: Replace with actual form submission endpoint
-      // {{FORM_ACTION}} - Connect to GoHighLevel, Shopify, or custom webhook
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      console.log('Mobile bartender inquiry submitted:', formData);
+      // Send form data to Zapier webhook
+      const zapierWebhookUrl = process.env.NEXT_PUBLIC_ZAPIER_BARTENDER_WEBHOOK_URL;
+
+      if (!zapierWebhookUrl) {
+        console.error('Zapier webhook URL not configured');
+        throw new Error('Form submission not configured');
+      }
+
+      const response = await fetch(zapierWebhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          eventTypes: formData.eventTypes.join(', '), // Convert array to comma-separated string
+          submittedAt: new Date().toISOString(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit form');
+      }
+
       setSubmitStatus('success');
+
       // Reset form
       setFormData({
         firstName: '',
@@ -105,7 +126,8 @@ export default function MobileBartenderPartnerPage() {
         utm_content: formData.utm_content,
         source: 'bartender-landing'
       });
-    } catch {
+    } catch (error) {
+      console.error('Form submission error:', error);
       setErrorMessage('Something went wrong. Please try again or call us at (512) 555-0100.');
       setSubmitStatus('error');
     } finally {
