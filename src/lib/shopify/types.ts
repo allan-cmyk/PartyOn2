@@ -7,6 +7,7 @@ export interface ShopifyProduct {
   vendor: string;
   productType: string;
   tags: string[];
+  availableForSale?: boolean;
   priceRange: {
     minVariantPrice: {
       amount: string;
