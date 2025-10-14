@@ -36,6 +36,12 @@ yarn-error.log*
 # vercel
 .vercel
 
+# macOS system files
+__MACOSX/
+
+# image generator tool (contains API keys)
+image-generator-tool/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
