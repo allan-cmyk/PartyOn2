@@ -96,7 +96,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-4 md:inset-10 lg:inset-20 bg-white z-[9999] overflow-hidden flex flex-col md:flex-row"
+              className="fixed inset-4 md:inset-10 lg:inset-20 bg-white z-[9999] flex flex-col md:flex-row"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close Button */}
@@ -111,9 +111,9 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
               </button>
               
               {/* Image Section */}
-              <div className="w-full md:w-1/2 lg:w-3/5 bg-gray-50 p-8 flex flex-col">
+              <div className="w-full md:w-1/2 lg:w-3/5 bg-gray-50 p-8 flex flex-col overflow-hidden">
                 {/* Main Image */}
-                <div className="flex-1 flex items-center justify-center mb-4">
+                <div className="flex-1 flex items-center justify-center mb-4 overflow-hidden">
                   {mainImage.url ? (
                     <img
                       src={mainImage.url}
