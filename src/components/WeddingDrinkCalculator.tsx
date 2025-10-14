@@ -165,16 +165,25 @@ export default function WeddingDrinkCalculator() {
         <div className="space-y-6">
           {/* Number of Guests */}
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2 tracking-[0.05em]">
-              Number of Guests
-            </label>
+            <div className="flex justify-between items-center mb-2">
+              <label className="text-sm font-medium text-gray-900 tracking-[0.05em]">
+                Number of Guests
+              </label>
+              <span className="text-lg font-semibold text-gold-600">{guests}</span>
+            </div>
             <input
-              type="number"
-              min="1"
+              type="range"
+              min="10"
+              max="500"
+              step="10"
               value={guests}
-              onChange={(e) => setGuests(parseInt(e.target.value) || 0)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-600 focus:border-transparent"
+              onChange={(e) => setGuests(parseInt(e.target.value))}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gold-600"
             />
+            <div className="flex justify-between text-xs text-gray-500 mt-1">
+              <span>10</span>
+              <span>500</span>
+            </div>
           </div>
 
           {/* Hours of Event */}
