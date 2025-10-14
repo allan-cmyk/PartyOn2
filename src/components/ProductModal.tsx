@@ -19,13 +19,29 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
   const [showAgeVerification, setShowAgeVerification] = useState(false);
-  
+
   if (!product) return null;
-  
+
   const variant = getFirstAvailableVariant(product);
   const price = product.priceRange.minVariantPrice;
   const images = product.images?.edges?.map(edge => edge.node) || [];
   const mainImage = images[selectedImageIndex] || { url: getProductImageUrl(product) || '', altText: product.title };
+
+  // Keyboard navigation for carousel
+  React.useEffect(() => {
+    if (!isOpen || images.length <= 1) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        setSelectedImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+      } else if (e.key === 'ArrowRight') {
+        setSelectedImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, images.length]);
 
   const handleAddToCart = async () => {
     if (!variant?.id || !variant.availableForSale) return;
@@ -112,14 +128,52 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
               
               {/* Image Section */}
               <div className="w-full md:w-1/2 lg:w-3/5 bg-gray-50 p-8 flex flex-col overflow-hidden">
-                {/* Main Image */}
-                <div className="flex-1 flex items-center justify-center mb-4 overflow-hidden">
+                {/* Main Image with Carousel Controls */}
+                <div className="flex-1 flex items-center justify-center mb-4 overflow-hidden relative">
                   {mainImage.url ? (
-                    <img
-                      src={mainImage.url}
-                      alt={mainImage.altText || product.title}
-                      className="max-w-full max-h-full object-contain"
-                    />
+                    <>
+                      <motion.img
+                        key={selectedImageIndex}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                        src={mainImage.url}
+                        alt={mainImage.altText || product.title}
+                        className="max-w-full max-h-full object-contain"
+                      />
+
+                      {/* Carousel Navigation Arrows */}
+                      {images.length > 1 && (
+                        <>
+                          {/* Previous Button */}
+                          <button
+                            onClick={() => setSelectedImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))}
+                            className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white rounded-full shadow-lg transition-all duration-200 hover:scale-110"
+                            aria-label="Previous image"
+                          >
+                            <svg className="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                          </button>
+
+                          {/* Next Button */}
+                          <button
+                            onClick={() => setSelectedImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white rounded-full shadow-lg transition-all duration-200 hover:scale-110"
+                            aria-label="Next image"
+                          >
+                            <svg className="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                          </button>
+
+                          {/* Image Counter */}
+                          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-black/60 text-white text-xs rounded-full">
+                            {selectedImageIndex + 1} / {images.length}
+                          </div>
+                        </>
+                      )}
+                    </>
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
                       <svg className="w-24 h-24 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -128,16 +182,18 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                     </div>
                   )}
                 </div>
-                
+
                 {/* Image Thumbnails */}
                 {images.length > 1 && (
-                  <div className="flex gap-2 overflow-x-auto py-2">
+                  <div className="flex gap-2 overflow-x-auto py-2 scrollbar-hide">
                     {images.map((image, index) => (
                       <button
                         key={index}
                         onClick={() => setSelectedImageIndex(index)}
-                        className={`flex-shrink-0 w-20 h-20 border-2 transition-colors ${
-                          selectedImageIndex === index ? 'border-gold-600' : 'border-gray-200 hover:border-gray-400'
+                        className={`flex-shrink-0 w-20 h-20 border-2 transition-all duration-200 ${
+                          selectedImageIndex === index
+                            ? 'border-gold-600 ring-2 ring-gold-600 ring-offset-2'
+                            : 'border-gray-200 hover:border-gray-400'
                         }`}
                       >
                         <img
