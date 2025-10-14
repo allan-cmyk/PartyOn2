@@ -29,7 +29,17 @@
       "Bash(npx tsx:*)",
       "Bash(npm install:*)",
       "Bash(dir \"C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\src\\app\\blog\")",
-      "Bash(dir \"C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\blog\\corporate-team-building-on-austin-party-houses-alcohol-coordination-for-professional-events-0-cocktail-pics-7.png\")"
+      "Bash(dir \"C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\blog\\corporate-team-building-on-austin-party-houses-alcohol-coordination-for-professional-events-0-cocktail-pics-7.png\")",
+      "Bash(cat:*)",
+      "WebFetch(domain:www.google.com)",
+      "Bash(dir:*)",
+      "Bash(python:*)",
+      "Bash(.venv/Scripts/python.exe -m pip install:*)",
+      "Bash(.venv/Scripts/python.exe:*)",
+      "Bash(.venvScriptspython.exe crawl_and_merge.py)",
+      "Bash(curl -s \"https://www.google.com/ping?sitemap=https://partyondelivery.com/sitemap_index.xml.gz\")",
+      "Bash(curl -s \"https://www.bing.com/ping?sitemap=https://partyondelivery.com/sitemap_index.xml.gz\")",
+      "Bash(git reset:*)"
     ],
     "deny": [],
     "ask": []
