@@ -465,7 +465,7 @@ export default function HomePage() {
                 title: "Everything arrives cold",
                 description: "Celebrate stress-free"
               }
-            ].map((item, index) => (
+            ].map((item) => (
               <div
                 key={item.step}
                 className="text-center"
@@ -518,7 +518,7 @@ export default function HomePage() {
                 title: "Office load-in / invoice billing",
                 description: "Corporate-friendly logistics and payment"
               }
-            ].map((item, index) => (
+            ].map((item) => (
               <div
                 key={item.title}
                 className="flex items-start space-x-4"
