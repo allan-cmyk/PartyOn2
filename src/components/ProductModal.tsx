@@ -23,7 +23,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
   const variant = product ? getFirstAvailableVariant(product) : null;
   const price = product?.priceRange.minVariantPrice;
   const images = product?.images?.edges?.map(edge => edge.node) || [];
-  const mainImage = images[selectedImageIndex] || { url: getProductImageUrl(product) || '', altText: product?.title || '' };
+  const mainImage = images[selectedImageIndex] || { url: (product ? getProductImageUrl(product) : '') || '', altText: product?.title || '' };
 
   // Keyboard navigation for carousel
   React.useEffect(() => {
