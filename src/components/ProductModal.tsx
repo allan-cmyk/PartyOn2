@@ -20,12 +20,10 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
   const [isAdding, setIsAdding] = useState(false);
   const [showAgeVerification, setShowAgeVerification] = useState(false);
 
-  if (!product) return null;
-
-  const variant = getFirstAvailableVariant(product);
-  const price = product.priceRange.minVariantPrice;
-  const images = product.images?.edges?.map(edge => edge.node) || [];
-  const mainImage = images[selectedImageIndex] || { url: getProductImageUrl(product) || '', altText: product.title };
+  const variant = product ? getFirstAvailableVariant(product) : null;
+  const price = product?.priceRange.minVariantPrice;
+  const images = product?.images?.edges?.map(edge => edge.node) || [];
+  const mainImage = images[selectedImageIndex] || { url: getProductImageUrl(product) || '', altText: product?.title || '' };
 
   // Keyboard navigation for carousel
   React.useEffect(() => {
@@ -42,6 +40,8 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, images.length]);
+
+  if (!product) return null;
 
   const handleAddToCart = async () => {
     if (!variant?.id || !variant.availableForSale) return;
@@ -215,9 +215,11 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                 </h2>
 
                 {/* Price */}
-                <p className="font-light text-2xl text-gray-900 mb-6 tracking-[0.05em]">
-                  {formatPrice(price.amount, price.currencyCode)}
-                </p>
+                {price && (
+                  <p className="font-light text-2xl text-gray-900 mb-6 tracking-[0.05em]">
+                    {formatPrice(price.amount, price.currencyCode)}
+                  </p>
+                )}
 
                 {/* Description */}
                 {product.description && (
