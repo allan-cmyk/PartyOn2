@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseAlcohol } from '@/lib/shopify/utils';
 import { useCartContext } from '@/contexts/CartContext';
 import AgeVerificationModal from '../AgeVerificationModal';
-import { motion, AnimatePresence } from 'framer-motion';
 
 interface MobileProductCardProps {
   product: ShopifyProduct;
@@ -59,22 +59,22 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
 
   return (
     <>
-      <motion.div
-        initial={false}
-        animate={{ opacity: 1 }}
+      <div
         className="bg-white border border-gray-200 rounded-lg overflow-hidden touch-manipulation h-full flex flex-col"
       >
-        <div 
+        <div
           onClick={() => onProductClick?.(product)}
           className="relative aspect-square bg-gray-50 cursor-pointer">
             {imageUrl ? (
-              <img
+              <Image
                 src={imageUrl}
                 alt={product.title}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
                 loading="lazy"
-                decoding="async"
-                fetchPriority={index < 4 ? "high" : "low"}
+                quality={50}
+                sizes="(max-width: 768px) 50vw, 25vw"
+                priority={index < 2}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
@@ -127,15 +127,15 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
         </div>
 
         {/* Quick Add Panel */}
-        <AnimatePresence>
-          {showQuickAdd && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="border-t border-gray-200 overflow-hidden"
-            >
-              <div className="p-4 bg-gray-50">
+        {showQuickAdd && (
+          <div
+            className="border-t border-gray-200 overflow-hidden transition-all duration-200 ease-in-out"
+            style={{
+              maxHeight: showQuickAdd ? '200px' : '0',
+              opacity: showQuickAdd ? 1 : 0
+            }}
+          >
+            <div className="p-4 bg-gray-50">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-sm text-gray-600">Quick Add</span>
                   <button
@@ -164,10 +164,9 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
                   {isAdding || cartLoading ? 'ADDING...' : 'ADD TO CART'}
                 </button>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
+            </div>
+        )}
+      </div>
 
       {/* Age Verification Modal */}
       <AgeVerificationModal

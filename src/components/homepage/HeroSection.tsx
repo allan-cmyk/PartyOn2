@@ -48,8 +48,8 @@ export default function HeroSection() {
             className="object-cover"
             priority={index === 0} // Only first image gets priority
             loading={index === 0 ? 'eager' : 'lazy'}
-            quality={60} // Reduced from 75 for faster load
-            sizes="100vw"
+            quality={index === 0 ? 60 : 50} // Lower quality for non-priority images
+            sizes="(max-width: 768px) 100vw, 100vw"
             fetchPriority={index === 0 ? 'high' : 'low'}
           />
         </div>
