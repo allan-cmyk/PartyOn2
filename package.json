@@ -11,9 +11,14 @@
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "generate-blog": "tsx scripts/automated-daily-blog.ts",
+    "generate-daily": "tsx scripts/automated-daily-blog.ts",
+    "test-blog-images": "tsx scripts/test-gemini.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.66.0",
+    "@google/generative-ai": "^0.24.1",
     "@heroicons/react": "^2.2.0",
     "@prisma/client": "^6.15.0",
     "@shopify/buy-button-js": "^3.0.5",
@@ -24,7 +29,10 @@
     "framer-motion": "^12.23.12",
     "graphql": "^16.11.0",
     "graphql-request": "^7.2.0",
+    "gray-matter": "^4.0.3",
+    "marked": "^16.4.0",
     "next": "15.3.5",
+    "next-mdx-remote": "^5.0.0",
     "node-fetch": "^3.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -43,6 +51,7 @@
     "prisma": "^6.15.0",
     "sharp": "^0.34.3",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.20.6",
     "typescript": "^5"
   }
 }

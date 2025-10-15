@@ -5,6 +5,9 @@ import Image from 'next/image'
 import OldFashionedNavigation from '@/components/OldFashionedNavigation'
 import ShareButtons from '@/components/blog/ShareButtons'
 import { notFound } from 'next/navigation'
+import { getMDXPost } from '@/lib/blog-mdx'
+import { serialize } from 'next-mdx-remote/serialize'
+import MDXContent from '@/components/blog/MDXContent'
 
 // Mock blog posts data - in production, fetch from CMS or database
 const blogPosts = [
@@ -949,6 +952,143 @@ interface BlogPostPageProps {
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const resolvedParams = await params
+
+  // First, check if it's an MDX post
+  const mdxPost = getMDXPost(resolvedParams.slug)
+
+  if (mdxPost) {
+    // Render MDX post
+    const mdxSource = await serialize(mdxPost.content)
+
+    return (
+      <div className="bg-white min-h-screen">
+        <OldFashionedNavigation />
+
+        {/* Hero Section with Image */}
+        <section className="relative h-[60vh] min-h-[500px]">
+          <Image
+            src={mdxPost.image}
+            alt={mdxPost.title}
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-8 md:p-16">
+            <div className="max-w-4xl mx-auto">
+              <div>
+                <div className="flex items-center gap-4 text-white/80 text-sm mb-4">
+                  <span className="bg-white/20 backdrop-blur-sm px-3 py-1 tracking-[0.1em]">
+                    {mdxPost.category.toUpperCase()}
+                  </span>
+                  <span>{new Date(mdxPost.date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}</span>
+                </div>
+                <h1 className="font-serif text-4xl md:text-6xl text-white mb-4 tracking-[0.1em]">
+                  {mdxPost.title}
+                </h1>
+                <p className="text-xl text-white/90 max-w-3xl">
+                  {mdxPost.excerpt}
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Article Content */}
+        <article className="py-16 px-8">
+          <div className="max-w-4xl mx-auto">
+            <MDXContent source={mdxSource} />
+
+            {/* Author Bio */}
+            <div className="mt-16 pt-8 border-t border-gray-200">
+              <div className="flex items-start gap-6">
+                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">
+                  <svg className="w-10 h-10 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-serif text-2xl text-gray-900 mb-2">{mdxPost.author}</h3>
+                  <p className="text-gray-600 mb-4">
+                    Content writer at Party On Delivery, sharing expert tips and insights for Austin events.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Social Sharing */}
+            <div className="mt-12 pt-8 border-t border-gray-200">
+              <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">Share This Article</h3>
+              <ShareButtons title={mdxPost.title} slug={mdxPost.slug} />
+            </div>
+          </div>
+        </article>
+
+        {/* Newsletter Section */}
+        <section className="py-12 bg-gray-900 text-white">
+          <div className="max-w-4xl mx-auto px-8">
+            <div className="text-center">
+              <h2 className="font-serif text-3xl mb-4 tracking-[0.1em]">
+                JOIN OUR INNER CIRCLE
+              </h2>
+              <p className="text-gray-300 mb-8">
+                Get exclusive discounts, party planning tips, and be the first to know about new offerings
+              </p>
+              <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                <input
+                  type="email"
+                  placeholder="Your email address"
+                  className="flex-1 px-4 py-3 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gold-500"
+                  required
+                />
+                <button
+                  type="submit"
+                  className="px-8 py-3 bg-gold-500 text-white hover:bg-gold-600 transition-colors tracking-[0.1em]"
+                >
+                  SUBSCRIBE
+                </button>
+              </form>
+              <p className="text-xs text-gray-400 mt-4">
+                Join 5,000+ Austin party planners. Unsubscribe anytime.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Footer CTA */}
+        <section className="py-16 bg-gray-900 text-white text-center">
+          <div className="max-w-4xl mx-auto px-8">
+            <div>
+              <h2 className="font-serif text-3xl mb-4 tracking-[0.1em]">
+                READY TO PLAN YOUR EVENT?
+              </h2>
+              <p className="text-gray-300 mb-8">
+                Let our experts help you create the perfect beverage experience
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link href="/order">
+                  <button className="px-8 py-3 bg-gold-500 text-white hover:bg-gold-600 transition-colors tracking-[0.15em]">
+                    ORDER NOW
+                  </button>
+                </Link>
+                <Link href="/contact">
+                  <button className="px-8 py-3 border border-white text-white hover:bg-white hover:text-gray-900 transition-all tracking-[0.15em]">
+                    GET IN TOUCH
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    )
+  }
+
+  // Fall back to mock blog posts
   const post = blogPosts.find(p => p.slug === resolvedParams.slug)
 
   if (!post) {
