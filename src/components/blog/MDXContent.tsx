@@ -1,7 +1,6 @@
 'use client'
 
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'
-import Image from 'next/image'
 
 interface MDXContentProps {
   source: MDXRemoteSerializeResult
