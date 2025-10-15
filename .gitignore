@@ -45,3 +45,4 @@ image-generator-tool/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.env.local

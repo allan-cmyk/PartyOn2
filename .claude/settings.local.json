@@ -39,7 +39,9 @@
       "Bash(.venvScriptspython.exe crawl_and_merge.py)",
       "Bash(curl -s \"https://www.google.com/ping?sitemap=https://partyondelivery.com/sitemap_index.xml.gz\")",
       "Bash(curl -s \"https://www.bing.com/ping?sitemap=https://partyondelivery.com/sitemap_index.xml.gz\")",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "WebFetch(domain:pagespeed.web.dev)",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []
