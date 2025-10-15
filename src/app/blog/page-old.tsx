@@ -1,10 +1,11 @@
-import React from 'react'
+'use client'
+
+import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { motion } from 'framer-motion'
 import OldFashionedNavigation from '@/components/OldFashionedNavigation'
 import migratedPosts from '@/data/blog-posts/posts.json'
-import { getAllMDXPosts, mdxPostToLegacyFormat } from '@/lib/blog-mdx'
-import BlogPageClient from './BlogPageClient'
 
 interface BlogPost {
   slug: string;
@@ -18,32 +19,53 @@ interface BlogPost {
   tags: string[];
 }
 
+// Use migrated Shopify blog posts
+const blogPosts = (migratedPosts as BlogPost[]).slice(0, 12) // Show first 12 posts
+
 export default function BlogPage() {
-  // Get MDX posts from filesystem
-  const mdxPosts = getAllMDXPosts()
+  const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState('')
 
-  // Convert MDX posts to legacy format
-  const mdxPostsLegacy = mdxPosts.map(mdxPostToLegacyFormat)
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setMessage('')
 
-  // Combine Shopify migrated posts with MDX posts
-  const allPosts = [
-    ...mdxPostsLegacy,
-    ...(migratedPosts as BlogPost[])
-  ]
+    try {
+      const response = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      })
 
-  // Sort by date (newest first) and take first 12
-  const sortedPosts = allPosts
-    .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
-    .slice(0, 12)
+      const data = await response.json()
+
+      if (response.ok) {
+        setMessage('Thank you for subscribing!')
+        setEmail('')
+      } else {
+        setMessage(data.error || 'Something went wrong')
+      }
+    } catch {
+      setMessage('Failed to subscribe. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="bg-white min-h-screen">
       <OldFashionedNavigation forceScrolled={true} />
-
+      
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
             <h1 className="font-serif text-5xl md:text-6xl text-gray-900 mb-6 tracking-[0.15em]">
               THE BLOG
             </h1>
@@ -51,27 +73,67 @@ export default function BlogPage() {
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Expert tips, cocktail recipes, and event inspiration for your next Austin celebration
             </p>
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Newsletter Section - Client Component */}
-      <BlogPageClient />
+      {/* Newsletter Section */}
+      <section className="py-12 bg-gray-900 text-white">
+        <div className="max-w-4xl mx-auto px-8">
+          <div className="text-center">
+            <h2 className="font-serif text-3xl mb-4 tracking-[0.1em]">
+              JOIN OUR INNER CIRCLE
+            </h2>
+            <p className="text-gray-300 mb-8">
+              Get exclusive discounts, party planning tips, and be the first to know about new offerings
+            </p>
+            <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+              <input
+                type="email"
+                placeholder="Your email address"
+                className="flex-1 px-4 py-3 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gold-500"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                disabled={loading}
+              />
+              <button
+                type="submit"
+                className="px-8 py-3 bg-gold-500 text-white hover:bg-gold-600 transition-colors tracking-[0.1em] disabled:opacity-50"
+                disabled={loading}
+              >
+                {loading ? 'SUBSCRIBING...' : 'SUBSCRIBE'}
+              </button>
+            </form>
+            {message && (
+              <p className={`text-sm mt-4 ${message.includes('Thank you') ? 'text-green-400' : 'text-red-400'}`}>
+                {message}
+              </p>
+            )}
+            <p className="text-xs text-gray-400 mt-4">
+              Join 5,000+ Austin party planners. Unsubscribe anytime.
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* Blog Posts Grid */}
       <section className="py-16 px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-            {sortedPosts.map((post) => {
+            {blogPosts.map((post, index) => {
               const category = post.tags[0] || 'Article';
               const imageUrl = post.image?.url || '/images/hero/lake-travis-yacht-sunset.webp';
 
               return (
-                <article
+                <motion.article
                   key={post.slug}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
                   className="bg-white border border-gray-200 hover:border-gold-500 transition-all duration-300 group"
                 >
-                  <Link href={`/blog/${post.slug}`}>
+                  <Link href={`/blogs/news/${post.slug}`}>
                     <div className="relative h-64 overflow-hidden">
                       <Image
                         src={imageUrl}
@@ -104,7 +166,7 @@ export default function BlogPage() {
                       </span>
                     </div>
                   </Link>
-                </article>
+                </motion.article>
               );
             })}
           </div>
