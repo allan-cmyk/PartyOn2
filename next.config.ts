@@ -39,14 +39,9 @@ const nextConfig: NextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
 
-  // Enable SWC minification for smaller bundles
-  swcMinify: true,
-
   // Enable experimental features for better performance
   experimental: {
     optimizePackageImports: ['@heroicons/react', 'date-fns'],
-    // Optimize CSS
-    optimizeCss: true,
   },
 
   // Production source maps for better debugging (can disable for smaller bundles)
