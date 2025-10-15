@@ -41,7 +41,8 @@
       "Bash(curl -s \"https://www.bing.com/ping?sitemap=https://partyondelivery.com/sitemap_index.xml.gz\")",
       "Bash(git reset:*)",
       "WebFetch(domain:pagespeed.web.dev)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(npm run generate-blog)"
     ],
     "deny": [],
     "ask": []

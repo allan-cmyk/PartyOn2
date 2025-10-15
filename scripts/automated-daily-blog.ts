@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 
-import Anthropic from '@anthropic-ai/sdk';
+import 'dotenv/config';
 import fs from 'fs';
 import path from 'path';
 import { generateWithRetry } from '../image-generator-tool/lib/api';
 import { saveImageFromBase64 } from '../image-generator-tool/lib/image';
+import { config } from 'dotenv';
 
-// Initialize Anthropic client
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY || '',
-});
+// Load environment variables from .env.local
+config({ path: path.join(process.cwd(), '.env.local') });
+
+// Using OpenRouter API (same as image generation)
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || process.env.GOOGLE_API_KEY || '';
 
 interface Topic {
   id: number;
@@ -72,9 +74,9 @@ function markTopicPublished(topics: TopicsData, topicId: number): void {
   }
 }
 
-// Generate blog content with Claude
+// Generate blog content with Claude via OpenRouter
 async function generateBlogContent(topic: Topic): Promise<string> {
-  console.log(`🤖 Generating blog content with Claude...`);
+  console.log(`🤖 Generating blog content with Claude via OpenRouter...`);
 
   const prompt = `You are an expert content writer for Party On Delivery, an Austin-based premium alcohol delivery service specializing in weddings, bachelor/bachelorette parties, boat parties, and corporate events.
 
@@ -102,23 +104,32 @@ STRUCTURE:
 
 Write the blog post in Markdown format:`;
 
-  const message = await anthropic.messages.create({
-    model: 'claude-3-5-sonnet-20241022',
-    max_tokens: 4096,
-    messages: [
-      {
-        role: 'user',
-        content: prompt,
-      },
-    ],
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': 'https://partyondelivery.com',
+      'X-Title': 'Party On Delivery Blog Generator'
+    },
+    body: JSON.stringify({
+      model: 'anthropic/claude-3.5-sonnet',
+      messages: [
+        {
+          role: 'user',
+          content: prompt
+        }
+      ],
+      max_tokens: 8192
+    })
   });
 
-  const content = message.content[0];
-  if (content.type === 'text') {
-    return content.text;
+  if (!response.ok) {
+    throw new Error(`OpenRouter API error: ${response.statusText}`);
   }
 
-  throw new Error('Failed to generate content');
+  const data = await response.json();
+  return data.choices[0].message.content;
 }
 
 // Generate images for the blog post
