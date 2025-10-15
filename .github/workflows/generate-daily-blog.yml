@@ -1,0 +1,66 @@
+name: Generate Daily Blog Post
+
+on:
+  schedule:
+    # Runs every day at 9 AM EST (2 PM UTC)
+    - cron: '0 14 * * *'
+  workflow_dispatch: # Allows manual triggering from GitHub UI
+
+jobs:
+  generate-blog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Generate blog post
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: npm run generate-blog
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add content/blog/posts/
+          git add public/images/blog/
+          git add scripts/topics.json
+          git diff --staged --quiet || git commit -m "🤖 Auto-generate daily blog post [skip ci]"
+          git push origin dev
+
+      - name: Create Pull Request to Main
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: auto-blog-${{ github.run_number }}
+          base: main
+          title: "🤖 Daily Blog Post - $(date +'%Y-%m-%d')"
+          body: |
+            Automated daily blog post generation
+
+            - Generated new blog post
+            - Updated topics.json
+            - Added AI-generated images
+
+            **Review the content before merging to production!**
+          labels: automated, blog
+
+      - name: Trigger Vercel deployment
+        run: echo "Blog post committed and PR created. Vercel will auto-deploy when merged."
