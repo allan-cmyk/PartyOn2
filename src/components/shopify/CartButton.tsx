@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { useCartContext } from '@/contexts/CartContext';
 
 interface CartButtonProps {
@@ -21,17 +20,28 @@ export default function CartButton({ isScrolled = true }: CartButtonProps) {
       <svg className={`w-6 h-6 transition-colors ${isScrolled ? 'text-gray-700 group-hover:text-gold-600' : 'text-white/90 group-hover:text-gold-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
       </svg>
-      
-      {/* Item Count Badge */}
+
+      {/* Item Count Badge - CSS animation instead of Framer Motion */}
       {itemCount > 0 && (
-        <motion.span
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          className="absolute -top-1 -right-1 bg-gold-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium"
+        <span
+          className="absolute -top-1 -right-1 bg-gold-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium animate-[scale-in_0.2s_ease-out]"
+          style={{
+            animation: 'scale-in 0.2s ease-out'
+          }}
         >
           {itemCount}
-        </motion.span>
+        </span>
       )}
+      <style jsx>{`
+        @keyframes scale-in {
+          from {
+            transform: scale(0);
+          }
+          to {
+            transform: scale(1);
+          }
+        }
+      `}</style>
     </button>
   );
 }

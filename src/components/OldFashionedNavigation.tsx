@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import CartButton from '@/components/shopify/CartButton';
 import ProductSearch from '@/components/ProductSearch';
@@ -105,12 +104,12 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-12">
               
-              {/* Services Dropdown */}
+              {/* Services Dropdown - CSS animations instead of Framer Motion */}
               <div className="relative group">
-                <button 
+                <button
                   className={`flex items-center text-sm tracking-[0.15em] transition-all duration-300 ${
-                    isScrolled 
-                      ? 'text-gray-700 hover:text-gold-600' 
+                    isScrolled
+                      ? 'text-gray-700 hover:text-gold-600'
                       : 'text-white/90 hover:text-gold-400'
                   }`}
                   onMouseEnter={() => setIsServicesOpen(true)}
@@ -119,30 +118,25 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
                   SERVICES
                   <ChevronDownIcon className="w-4 h-4 ml-1" />
                 </button>
-                
-                {/* Dropdown Menu */}
-                <AnimatePresence>
-                  {isServicesOpen && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg"
-                      onMouseEnter={() => setIsServicesOpen(true)}
-                      onMouseLeave={() => setIsServicesOpen(false)}
+
+                {/* Dropdown Menu with CSS transition */}
+                <div
+                  className={`absolute top-full left-0 mt-2 w-48 bg-white shadow-lg transition-all duration-200 ${
+                    isServicesOpen ? 'opacity-100 translate-y-0 visible' : 'opacity-0 -translate-y-2 invisible'
+                  }`}
+                  onMouseEnter={() => setIsServicesOpen(true)}
+                  onMouseLeave={() => setIsServicesOpen(false)}
+                >
+                  {services.map((service) => (
+                    <Link
+                      key={service.href}
+                      href={service.href}
+                      className="block px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gray-50 hover:text-gold-600 transition-colors"
                     >
-                      {services.map((service) => (
-                        <Link 
-                          key={service.href}
-                          href={service.href}
-                          className="block px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gray-50 hover:text-gold-600 transition-colors"
-                        >
-                          {service.label}
-                        </Link>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                      {service.label}
+                    </Link>
+                  ))}
+                </div>
               </div>
               
               <NavLink href="/products" isScrolled={isScrolled}>PRODUCTS</NavLink>
@@ -230,76 +224,82 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
         </div>
       </nav>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            className="fixed inset-0 bg-white z-[100] md:hidden"
-          >
-            <div className="flex flex-col h-full">
-              <div className="flex justify-between items-center p-8">
-                <Link href="/" className="flex items-center">
-                  <img 
-                    src="/images/POD Logo 2025.svg" 
-                    alt="Party On Delivery"
-                    className="h-12 w-auto"
-                  />
-                </Link>
-                <button
-                  onClick={() => setIsMenuOpen(false)}
-                  className="text-gray-900 text-3xl font-light"
-                >
-                  ×
-                </button>
-              </div>
-              
-              <div className="flex-1 flex flex-col justify-center px-8 space-y-8">
+      {/* Mobile Menu - CSS animations instead of Framer Motion */}
+      <div
+        className={`fixed inset-0 bg-white z-[100] md:hidden transition-all duration-300 ${
+          isMenuOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className="flex flex-col h-full">
+          <div className="flex justify-between items-center p-8">
+            <Link href="/" className="flex items-center">
+              <img
+                src="/images/POD Logo 2025.svg"
+                alt="Party On Delivery"
+                className="h-12 w-auto"
+              />
+            </Link>
+            <button
+              onClick={() => setIsMenuOpen(false)}
+              className="text-gray-900 text-3xl font-light"
+            >
+              ×
+            </button>
+          </div>
 
-                {/* Search Bar for Mobile */}
-                <div className="pt-4">
-                  <ProductSearch isScrolled={true} />
-                </div>
+          <div className="flex-1 flex flex-col justify-center px-8 space-y-8">
+            {/* Search Bar for Mobile */}
+            <div className="pt-4">
+              <ProductSearch isScrolled={true} />
+            </div>
 
-                {/* Services Section */}
-                <div className="space-y-4">
-                  <p className="text-2xl font-light tracking-[0.15em] text-gray-900">SERVICES</p>
-                  <div className="pl-6 space-y-3">
-                    {services.map((service) => (
-                      <Link
-                        key={service.href}
-                        href={service.href}
-                        className="block text-lg font-light tracking-[0.1em] text-gray-600 hover:text-gold-600 transition-colors"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        {service.label}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-                
-                <Link href="/products" className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors" onClick={() => setIsMenuOpen(false)}>
-                  PRODUCTS
-                </Link>
-                <Link href="/contact" className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors" onClick={() => setIsMenuOpen(false)}>
-                  CONTACT
-                </Link>
-                <Link href="/partners" className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors" onClick={() => setIsMenuOpen(false)}>
-                  PARTNERS
-                </Link>
-                
-                <Link href="/order" onClick={() => setIsMenuOpen(false)}>
-                  <button className="w-full mt-8 px-8 py-4 text-sm tracking-[0.15em] border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300">
-                    ORDER NOW
-                  </button>
-                </Link>
+            {/* Services Section */}
+            <div className="space-y-4">
+              <p className="text-2xl font-light tracking-[0.15em] text-gray-900">SERVICES</p>
+              <div className="pl-6 space-y-3">
+                {services.map((service) => (
+                  <Link
+                    key={service.href}
+                    href={service.href}
+                    className="block text-lg font-light tracking-[0.1em] text-gray-600 hover:text-gold-600 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {service.label}
+                  </Link>
+                ))}
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
+            <Link
+              href="/products"
+              className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              PRODUCTS
+            </Link>
+            <Link
+              href="/contact"
+              className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              CONTACT
+            </Link>
+            <Link
+              href="/partners"
+              className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              PARTNERS
+            </Link>
+
+            <Link href="/order" onClick={() => setIsMenuOpen(false)}>
+              <button className="w-full mt-8 px-8 py-4 text-sm tracking-[0.15em] border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300">
+                ORDER NOW
+              </button>
+            </Link>
+          </div>
+        </div>
+      </div>
 
       {/* Customer Auth Modal */}
       <CustomerAuth 

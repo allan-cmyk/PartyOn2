@@ -222,7 +222,7 @@ export default function HomePage() {
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 loading="lazy"
-                quality={80}
+                quality={60}
               />
               <div className="absolute inset-0 bg-gradient-to-r from-gray-900/20 to-transparent" />
             </div>
@@ -280,7 +280,7 @@ export default function HomePage() {
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 loading="lazy"
-                quality={80}
+                quality={60}
               />
               <div className="absolute inset-0 bg-gradient-to-l from-gray-900/20 to-transparent" />
             </div>
@@ -298,7 +298,7 @@ export default function HomePage() {
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 loading="lazy"
-                quality={80}
+                quality={60}
               />
               <div className="absolute inset-0 bg-gradient-to-r from-gray-900/20 to-transparent" />
             </div>

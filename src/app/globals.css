@@ -1,5 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;700;900&display=swap');
+/* Mobile CSS inlined to reduce HTTP requests */
 @import '../styles/mobile.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -204,46 +205,6 @@
     @apply backdrop-blur-sm bg-white/10 border border-white/20;
   }
 
-  /* Fun hover effects */
-  .hover-lift {
-    @apply transition-all duration-200 hover:-translate-y-1 hover:shadow-lg;
-  }
-  
-  .hover-wiggle:hover {
-    animation: wiggle 0.5s ease-in-out;
-  }
-  
-  @keyframes wiggle {
-    0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(-3deg); }
-    75% { transform: rotate(3deg); }
-  }
-
-  /* Smooth scroll behavior */
-  .scroll-smooth {
-    scroll-behavior: smooth;
-  }
-  
-  /* Fun CTAs */
-  .cta-float {
-    animation: float-subtle 3s ease-in-out infinite;
-  }
-  
-  @keyframes float-subtle {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-5px); }
-  }
-  
-  /* Party mode effects */
-  .party-time {
-    animation: party-colors 3s ease-in-out infinite;
-  }
-  
-  @keyframes party-colors {
-    0%, 100% { filter: hue-rotate(0deg); }
-    50% { filter: hue-rotate(30deg); }
-  }
-
   /* Hide scrollbar but maintain functionality */
   .scrollbar-hide {
     -ms-overflow-style: none;
@@ -278,89 +239,6 @@
     .btn {
       @apply min-h-[44px] min-w-[44px];
     }
-  }
-  
-  /* Parallax scrolling effects */
-  .parallax-container {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .parallax-element {
-    will-change: transform;
-    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  /* Neon shadow for party mode */
-  .shadow-neon {
-    box-shadow: 
-      0 0 20px rgba(255, 107, 53, 0.5),
-      0 0 40px rgba(78, 205, 196, 0.3),
-      0 0 60px rgba(255, 230, 109, 0.2);
-  }
-
-  /* Enhanced animations */
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
-  }
-
-  @keyframes glow {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-  }
-
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
-
-  .animate-glow {
-    animation: glow 2s ease-in-out infinite;
-  }
-
-  /* Refined micro-interactions */
-  .card-3d {
-    transform-style: preserve-3d;
-    transition: transform 0.6s;
-  }
-
-  .card-3d:hover {
-    transform: rotateY(5deg) rotateX(5deg);
-  }
-
-  /* Smooth reveal animations */
-  .reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .reveal.active {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* Premium gradient overlays */
-  .gradient-overlay {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 107, 53, 0.1) 0%,
-      rgba(78, 205, 196, 0.1) 50%,
-      rgba(255, 230, 109, 0.1) 100%
-    );
-  }
-  
-  /* Parallax depth layers */
-  .parallax-bg {
-    transform: translateZ(-1px) scale(2);
-  }
-  
-  .parallax-mid {
-    transform: translateZ(-0.5px) scale(1.5);
-  }
-  
-  .parallax-front {
-    transform: translateZ(0);
   }
 
   /* Blog Post Styles */

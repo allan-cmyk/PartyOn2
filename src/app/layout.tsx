@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from 'next/font/google';
+import dynamic from 'next/dynamic';
 import "./globals.css";
 import AgeVerification from "@/components/AgeVerification";
 import { CartProvider } from "@/contexts/CartContext";
 import { CustomerProvider } from "@/contexts/CustomerContext";
-import { GroupOrderProvider } from "@/contexts/GroupOrderContext";
 import ClientLayoutWrapper from "@/components/ClientLayoutWrapper";
 import { structuredData } from "./structured-data";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+
+// Lazy load GroupOrderProvider - only needed on specific pages
+const GroupOrderProvider = dynamic(
+  () => import('@/contexts/GroupOrderContext').then(mod => mod.GroupOrderProvider),
+  { ssr: true }
+);
 
 const cormorantGaramond = Cormorant_Garamond({ 
   subsets: ['latin'],
@@ -79,6 +85,21 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
+        {/* Preconnect to external domains for faster resource loading */}
+        <link rel="preconnect" href="https://cdn.shopify.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://cdn.shopify.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+
+        {/* Preload critical fonts */}
+        <link
+          rel="preload"
+          href="/_next/static/media/cormorant-garamond-latin-300-normal.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+
         <GoogleAnalytics />
         <script
           type="application/ld+json"

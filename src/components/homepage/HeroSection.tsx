@@ -3,10 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
 
 export default function HeroSection() {
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const heroImages = [
     { src: '/images/hero/austin-skyline-hero.webp', alt: 'Austin Skyline' },
@@ -16,6 +16,9 @@ export default function HeroSection() {
   ];
 
   useEffect(() => {
+    // Trigger fade-in animation after mount
+    setIsLoaded(true);
+
     const interval = setInterval(() => {
       setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length);
     }, 5000);
@@ -30,33 +33,28 @@ export default function HeroSection() {
 
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
-      {/* First image loads with priority, others lazy */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentHeroIndex}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1 }}
-          className="absolute inset-0"
+      {/* Hero images - use CSS transitions instead of Framer Motion */}
+      {heroImages.map((image, index) => (
+        <div
+          key={image.src}
+          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+            index === currentHeroIndex ? 'opacity-100' : 'opacity-0'
+          }`}
         >
           <Image
-            src={heroImages[currentHeroIndex].src}
-            alt={heroImages[currentHeroIndex].alt}
+            src={image.src}
+            alt={image.alt}
             fill
             className="object-cover"
-            priority={currentHeroIndex === 0} // Only first image gets priority
-            loading={currentHeroIndex === 0 ? 'eager' : 'lazy'}
-            quality={75} // Reduce quality for faster load
+            priority={index === 0} // Only first image gets priority
+            loading={index === 0 ? 'eager' : 'lazy'}
+            quality={60} // Reduced from 75 for faster load
             sizes="100vw"
-            placeholder="blur"
-            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-            onError={(e) => {
-              e.currentTarget.src = '/images/hero/austin-skyline-hero.webp';
-            }}
+            fetchPriority={index === 0 ? 'high' : 'low'}
           />
-        </motion.div>
-      </AnimatePresence>
+        </div>
+      ))}
+
       <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
 
       {/* Hero Dots Navigation */}
@@ -65,18 +63,19 @@ export default function HeroSection() {
           <button
             key={index}
             onClick={() => setCurrentHeroIndex(index)}
-            className={`w-2 h-2 rounded-full transition-all ${
-              index === currentHeroIndex ? 'bg-gold-400 w-8' : 'bg-white/50'
+            aria-label={`View hero image ${index + 1}`}
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              index === currentHeroIndex ? 'bg-gold-400 w-8' : 'bg-white/50 hover:bg-white/70'
             }`}
           />
         ))}
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-        className="relative text-center text-white z-10 max-w-4xl mx-auto px-8"
+      {/* Hero content with CSS animation */}
+      <div
+        className={`relative text-center text-white z-10 max-w-4xl mx-auto px-8 transition-all duration-1000 ${
+          isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+        }`}
       >
         <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
           <span className="block text-white">Drinks, Ice, Bar Setups</span>
@@ -102,19 +101,19 @@ export default function HeroSection() {
             </button>
           </Link>
         </div>
-      </motion.div>
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 1 }}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer"
+      {/* Scroll indicator with CSS animation */}
+      <div
+        className={`absolute bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer transition-opacity duration-1000 delay-1000 ${
+          isLoaded ? 'opacity-100' : 'opacity-0'
+        }`}
         onClick={() => scrollToSection('experience')}
       >
         <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
           <div className="w-1 h-3 bg-white/50 rounded-full mt-2 animate-bounce" />
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }
