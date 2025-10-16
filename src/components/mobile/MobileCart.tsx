@@ -8,11 +8,13 @@ import CartItem from '../shopify/CartItem';
 import { formatPrice } from '@/lib/shopify/utils';
 import SimpleDeliveryScheduler from '@/components/SimpleDeliveryScheduler';
 import { parseAddress, formatPhone } from '@/lib/utils/addressParser';
+import { copyToClipboard, type SharedCartVariant } from '@/lib/cart/shareCart';
 
 export default function MobileCart() {
   const { cart, isCartOpen, closeCart, loading, updateCartAttributes, clearCart } = useCartContext();
   const [showDeliveryScheduler, setShowDeliveryScheduler] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [shareSuccess, setShareSuccess] = useState(false);
   const controls = useAnimation();
   const dragControls = useDragControls();
   const constraintsRef = useRef(null);
@@ -122,6 +124,60 @@ export default function MobileCart() {
     }
   };
 
+  const handleShareCart = async () => {
+    try {
+      console.log('📤 Sharing cart...');
+      console.log('📦 Current cart:', cart);
+
+      setShareSuccess(false);
+
+      const variants: SharedCartVariant[] = cart.lines?.edges?.map(({ node }) => ({
+        variantId: node.merchandise.id,
+        quantity: node.quantity,
+        title: node.merchandise.product.title,
+        variantTitle: node.merchandise.title !== 'Default Title' ? node.merchandise.title : '',
+        price: node.merchandise.price.amount,
+        image: node.merchandise.image?.url || node.merchandise.product.featuredImage?.url || ''
+      })) || [];
+
+      console.log('📤 Variants to share:', variants);
+
+      if (variants.length === 0) {
+        throw new Error('No items to share');
+      }
+
+      // Call API to create shared cart
+      const response = await fetch('/api/cart/share', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ variants })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create share link');
+      }
+
+      const data = await response.json();
+
+      if (!data.shareUrl) {
+        throw new Error(data.error || 'Failed to create share link');
+      }
+
+      // Copy share URL to clipboard
+      const copied = await copyToClipboard(data.shareUrl);
+
+      if (copied) {
+        setShareSuccess(true);
+        setTimeout(() => setShareSuccess(false), 3000);
+      } else {
+        alert(`Copy this link to share your cart:\n\n${data.shareUrl}`);
+      }
+    } catch (error) {
+      console.error('Failed to share cart:', error);
+      alert('Failed to create share link. Please try again.');
+    }
+  };
+
   return (
     <>
       <AnimatePresence>
@@ -171,20 +227,40 @@ export default function MobileCart() {
                   <h2 className="font-serif text-xl tracking-[0.1em]">YOUR CART</h2>
                   <div className="flex items-center gap-1">
                     {hasItems && (
-                      <button
-                        onClick={() => {
-                          if (window.confirm('Are you sure you want to clear your cart?')) {
-                            clearCart();
-                          }
-                        }}
-                        className="p-2 hover:bg-red-50 transition-colors rounded-full text-gray-500 hover:text-red-600"
-                        aria-label="Clear cart"
-                        title="Clear cart"
-                      >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
+                      <>
+                        {/* Share Cart Button */}
+                        <button
+                          onClick={handleShareCart}
+                          className="p-2 hover:bg-gold-50 transition-colors rounded-full text-gray-500 hover:text-gold-600"
+                          aria-label="Share cart"
+                          title={shareSuccess ? "Link copied!" : "Share cart"}
+                        >
+                          {shareSuccess ? (
+                            <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                          ) : (
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                            </svg>
+                          )}
+                        </button>
+                        {/* Clear Cart Button */}
+                        <button
+                          onClick={() => {
+                            if (window.confirm('Are you sure you want to clear your cart?')) {
+                              clearCart();
+                            }
+                          }}
+                          className="p-2 hover:bg-red-50 transition-colors rounded-full text-gray-500 hover:text-red-600"
+                          aria-label="Clear cart"
+                          title="Clear cart"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </>
                     )}
                     <button
                       onClick={closeCart}
