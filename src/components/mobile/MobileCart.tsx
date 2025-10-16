@@ -131,7 +131,7 @@ export default function MobileCart() {
 
       setShareSuccess(false);
 
-      const variants: SharedCartVariant[] = cart.lines?.edges?.map(({ node }) => ({
+      const variants: SharedCartVariant[] = cart?.lines?.edges?.map(({ node }) => ({
         id: node.merchandise.id,
         quantity: node.quantity
       })) || [];
