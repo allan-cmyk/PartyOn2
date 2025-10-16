@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllMDXPosts } from '@/lib/blog-mdx';
 import fs from 'fs';
 import path from 'path';
 
