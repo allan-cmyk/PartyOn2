@@ -132,12 +132,8 @@ export default function MobileCart() {
       setShareSuccess(false);
 
       const variants: SharedCartVariant[] = cart.lines?.edges?.map(({ node }) => ({
-        variantId: node.merchandise.id,
-        quantity: node.quantity,
-        title: node.merchandise.product.title,
-        variantTitle: node.merchandise.title !== 'Default Title' ? node.merchandise.title : '',
-        price: node.merchandise.price.amount,
-        image: node.merchandise.image?.url || node.merchandise.product.featuredImage?.url || ''
+        id: node.merchandise.id,
+        quantity: node.quantity
       })) || [];
 
       console.log('📤 Variants to share:', variants);
