@@ -639,6 +639,7 @@ export default function HomePage() {
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">COMPANY</h4>
               <ul className="space-y-2">
                 <li><Link href="/about" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">About</Link></li>
+                <li><Link href="/blog" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Blog</Link></li>
                 <li><Link href="/delivery-areas" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Delivery Areas</Link></li>
                 <li><Link href="/faqs" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">FAQs</Link></li>
                 <li><Link href="/contact" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Contact</Link></li>
