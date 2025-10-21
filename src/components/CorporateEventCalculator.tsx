@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 type DrinkingLevel = 'light' | 'average' | 'lively';
 
@@ -463,12 +464,12 @@ export default function CorporateEventCalculator() {
             <p className="text-xs text-gray-500 leading-relaxed mb-4">
               *Estimates based on standard corporate events. Actual needs may vary.
             </p>
-            <a
+            <Link
               href="/contact"
               className="inline-block px-6 py-3 bg-gold-600 text-white rounded-md hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
             >
               Get a Custom Quote
-            </a>
+            </Link>
           </div>
         </div>
       </div>
