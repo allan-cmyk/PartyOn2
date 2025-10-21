@@ -1,6 +1,7 @@
 'use client'
 
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'
+import CorporateEventCalculator from '@/components/CorporateEventCalculator'
 
 interface MDXContentProps {
   source: MDXRemoteSerializeResult
@@ -8,6 +9,8 @@ interface MDXContentProps {
 
 // Custom components for MDX rendering
 const components = {
+  // Custom React components
+  CorporateEventCalculator,
   // Custom image component
   img: (props: React.ImgHTMLAttributes<HTMLImageElement>) => {
     if (!props.src) return null
