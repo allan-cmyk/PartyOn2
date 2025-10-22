@@ -87,11 +87,24 @@ export default function MobileBartenderPartnerPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          // Contact Information
+          firstName: formData.firstName,
+          lastName: formData.lastName,
           businessName: formData.businessName || `${formData.firstName} ${formData.lastName}`,
           businessType: 'Mobile Bartender',
           contactName: `${formData.firstName} ${formData.lastName}`,
           email: formData.email,
           phone: formData.phone,
+          website: formData.website,
+
+          // Service Details
+          serviceArea: formData.serviceArea,
+          eventTypes: formData.eventTypes,
+          guestCount: formData.guestCount,
+          timeframe: formData.timeframe,
+          notes: formData.notes,
+
+          // Common fields
           interests: formData.eventTypes,
           message: `Service Area: ${formData.serviceArea || 'Not specified'}
 Guest Count: ${formData.guestCount || 'Not specified'}
@@ -104,6 +117,15 @@ UTM Medium: ${formData.utm_medium || 'none'}
 UTM Campaign: ${formData.utm_campaign || 'none'}
 Source: ${formData.source}`,
           partnerType: 'Mobile Bartenders',
+
+          // Tracking fields
+          utm_source: formData.utm_source,
+          utm_medium: formData.utm_medium,
+          utm_campaign: formData.utm_campaign,
+          utm_content: formData.utm_content,
+          source: formData.source,
+
+          // System fields
           submittedAt: new Date().toISOString(),
         }),
       });

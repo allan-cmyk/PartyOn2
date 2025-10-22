@@ -30,17 +30,42 @@ export async function POST(request: NextRequest) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
+            // Contact Information
+            firstName: body.firstName || '',
+            lastName: body.lastName || '',
             businessName: body.hotelName || body.businessName,
             businessType: body.businessType || 'hotel',
             contactName: body.contactName,
             email: body.email,
             phone: body.phone || '',
+            website: body.website || '',
+
+            // Hotel/Resort specific fields
             numberOfRooms: body.numberOfRooms || '',
             monthlyVolume: body.monthlyVolume || '',
             currentProvider: body.currentProvider || '',
+
+            // Mobile Bartender specific fields
+            serviceArea: body.serviceArea || '',
+            eventTypes: body.eventTypes || body.interests || [],
+            guestCount: body.guestCount || '',
+            timeframe: body.timeframe || '',
+            notes: body.notes || '',
+
+            // Common fields
             interests: body.interests || [],
             message: body.message || '',
-            submittedAt: new Date().toISOString(),
+            partnerType: body.partnerType || 'Partner',
+
+            // Tracking fields
+            utm_source: body.utm_source || '',
+            utm_medium: body.utm_medium || '',
+            utm_campaign: body.utm_campaign || '',
+            utm_content: body.utm_content || '',
+            source: body.source || '',
+
+            // System fields
+            submittedAt: body.submittedAt || new Date().toISOString(),
             formType: 'partner_inquiry'
           }),
         });
