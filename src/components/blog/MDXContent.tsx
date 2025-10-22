@@ -54,10 +54,20 @@ const components = {
     <li className="text-gray-700" {...props} />
   ),
 
-  // Link styling
-  a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
-    <a className="text-gold-600 hover:text-gold-700 underline" {...props} />
-  ),
+  // Link styling - external links open in new tab
+  a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
+    const isExternal = props.href?.startsWith('http')
+    return (
+      <a
+        className="text-gold-600 hover:text-gold-700 underline"
+        {...props}
+        {...(isExternal && {
+          target: '_blank',
+          rel: 'noopener noreferrer'
+        })}
+      />
+    )
+  },
 
   // Blockquote styling
   blockquote: (props: React.BlockquoteHTMLAttributes<HTMLQuoteElement>) => (
