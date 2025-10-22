@@ -884,7 +884,7 @@ export default function CorporateLandingPage() {
             <p className="text-lg mb-8 text-gray-300 max-w-2xl mx-auto">
               Read our complete guide to corporate event planning—venues, budgets, catering, team building, and more.
             </p>
-            <Link href="/blog/corporate-events-austin-guide">
+            <Link href="/corporate-events-guide">
               <button className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium">
                 READ THE FULL GUIDE
               </button>
