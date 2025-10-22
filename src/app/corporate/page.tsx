@@ -258,7 +258,7 @@ export default function CorporateLandingPage() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
         </svg>
       ),
-      title: 'Scales from 20 to 200+ Guests',
+      title: 'Scales from 20 to 500+ Guests',
       description: 'Small team gatherings to large company-wide events—we handle groups of any size.',
     },
     {
@@ -397,7 +397,7 @@ export default function CorporateLandingPage() {
             Austin&apos;s Easiest Way to Stock the Bar for Company Parties.
           </h1>
           <p className="text-xl md:text-2xl max-w-3xl leading-relaxed mb-8">
-            From 20 to 200+ guests—beer, wine, spirits, mixers, and ice delivered cold and on time. Simple planning, zero stress.
+            From 20 to 500+ guests—beer, wine, spirits, mixers, and ice delivered cold and on time. Simple planning, zero stress.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <button
