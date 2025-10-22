@@ -148,7 +148,7 @@ export default function CorporateLandingPage() {
   };
 
   return (
-    <>
+    <div className="bg-white min-h-screen">
       <Script
         id="service-schema"
         type="application/ld+json"
@@ -160,8 +160,7 @@ export default function CorporateLandingPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      <div className="bg-white min-h-screen">
-        <OldFashionedNavigation />
+      <OldFashionedNavigation />
 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-gray-50 to-white py-20 md:py-32">
@@ -859,7 +858,6 @@ export default function CorporateLandingPage() {
             - All links working
             - Testimonials approved (currently placeholders)
       */}
-      </div>
-    </>
+    </div>
   );
 }
