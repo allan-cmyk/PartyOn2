@@ -3,7 +3,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import Script from 'next/script';
 import { motion } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
@@ -31,6 +30,24 @@ export default function CorporateLandingPage() {
   // Auto-verify age for B2B corporate page
   useEffect(() => {
     localStorage.setItem('age_verified', 'true');
+
+    // Inject JSON-LD schemas
+    const serviceScript = document.createElement('script');
+    serviceScript.type = 'application/ld+json';
+    serviceScript.text = JSON.stringify(serviceSchema);
+    serviceScript.id = 'service-schema';
+    document.head.appendChild(serviceScript);
+
+    const faqScript = document.createElement('script');
+    faqScript.type = 'application/ld+json';
+    faqScript.text = JSON.stringify(faqSchema);
+    faqScript.id = 'faq-schema';
+    document.head.appendChild(faqScript);
+
+    return () => {
+      document.getElementById('service-schema')?.remove();
+      document.getElementById('faq-schema')?.remove();
+    };
   }, []);
 
   const scrollToForm = () => {
@@ -149,17 +166,6 @@ export default function CorporateLandingPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <Script
-        id="service-schema"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
-      />
-      <Script
-        id="faq-schema"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-
       <OldFashionedNavigation />
 
       {/* Hero Section */}
