@@ -1,9 +1,10 @@
 import { Metadata } from 'next'
-import { serialize } from 'next-mdx-remote/serialize'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
+import Link from 'next/link'
+import Image from 'next/image'
 import OldFashionedNavigation from '@/components/OldFashionedNavigation'
 import Footer from '@/components/Footer'
 import CorporateEventCalculator from '@/components/CorporateEventCalculator'
@@ -11,16 +12,16 @@ import CorporateEventCalculator from '@/components/CorporateEventCalculator'
 // MDX components that can be used in the content
 const components = {
   CorporateEventCalculator,
-  h1: (props: any) => <h1 className="font-serif text-4xl md:text-5xl font-light text-gray-900 mb-6 tracking-[0.1em]" {...props} />,
-  h2: (props: any) => <h2 className="font-serif text-3xl md:text-4xl font-light text-gray-900 mt-12 mb-4 tracking-[0.08em]" {...props} />,
-  h3: (props: any) => <h3 className="font-serif text-2xl md:text-3xl font-light text-gray-900 mt-8 mb-3 tracking-[0.06em]" {...props} />,
-  p: (props: any) => <p className="text-gray-700 leading-relaxed mb-4" {...props} />,
-  ul: (props: any) => <ul className="list-disc list-inside space-y-2 mb-4 text-gray-700" {...props} />,
-  ol: (props: any) => <ol className="list-decimal list-inside space-y-2 mb-4 text-gray-700" {...props} />,
-  li: (props: any) => <li className="ml-4" {...props} />,
-  a: (props: any) => <a className="text-gold-600 hover:underline" {...props} />,
-  strong: (props: any) => <strong className="font-semibold text-gray-900" {...props} />,
-  blockquote: (props: any) => <blockquote className="border-l-4 border-gold-600 pl-4 italic text-gray-600 my-6" {...props} />,
+  h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => <h1 className="font-serif text-4xl md:text-5xl font-light text-gray-900 mb-6 tracking-[0.1em]" {...props} />,
+  h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => <h2 className="font-serif text-3xl md:text-4xl font-light text-gray-900 mt-12 mb-4 tracking-[0.08em]" {...props} />,
+  h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => <h3 className="font-serif text-2xl md:text-3xl font-light text-gray-900 mt-8 mb-3 tracking-[0.06em]" {...props} />,
+  p: (props: React.HTMLAttributes<HTMLParagraphElement>) => <p className="text-gray-700 leading-relaxed mb-4" {...props} />,
+  ul: (props: React.HTMLAttributes<HTMLUListElement>) => <ul className="list-disc list-inside space-y-2 mb-4 text-gray-700" {...props} />,
+  ol: (props: React.HTMLAttributes<HTMLOListElement>) => <ol className="list-decimal list-inside space-y-2 mb-4 text-gray-700" {...props} />,
+  li: (props: React.HTMLAttributes<HTMLLIElement>) => <li className="ml-4" {...props} />,
+  a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => <a className="text-gold-600 hover:underline" {...props} />,
+  strong: (props: React.HTMLAttributes<HTMLElement>) => <strong className="font-semibold text-gray-900" {...props} />,
+  blockquote: (props: React.BlockquoteHTMLAttributes<HTMLQuoteElement>) => <blockquote className="border-l-4 border-gold-600 pl-4 italic text-gray-600 my-6" {...props} />,
 }
 
 export const metadata: Metadata = {
@@ -90,18 +91,18 @@ export default async function CorporateEventsGuidePage() {
             Let Party On Delivery handle your event alcohol delivery and coordination. Professional service for corporate events of any size.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
+            <Link
               href="/order-now"
               className="bg-gold-600 text-white px-8 py-4 text-center tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium"
             >
               GET A QUOTE
-            </a>
-            <a
+            </Link>
+            <Link
               href="/contact"
               className="border-2 border-gray-900 text-gray-900 px-8 py-4 text-center tracking-[0.15em] hover:bg-gray-900 hover:text-white transition-colors font-medium"
             >
               CONTACT US
-            </a>
+            </Link>
           </div>
         </div>
       </article>
