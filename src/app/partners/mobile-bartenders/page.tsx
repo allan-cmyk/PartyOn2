@@ -80,29 +80,38 @@ export default function MobileBartenderPartnerPage() {
     }
 
     try {
-      // Send form data to Zapier webhook
-      const zapierWebhookUrl = process.env.NEXT_PUBLIC_ZAPIER_PARTNER_WEBHOOK_URL;
-
-      if (!zapierWebhookUrl) {
-        console.error('Zapier webhook URL not configured');
-        throw new Error('Form submission not configured');
-      }
-
-      const response = await fetch(zapierWebhookUrl, {
+      // Send form data to partner inquiry API
+      const response = await fetch('/api/partners/inquiry', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ...formData,
-          eventTypes: formData.eventTypes.join(', '), // Convert array to comma-separated string
+          businessName: formData.businessName || `${formData.firstName} ${formData.lastName}`,
+          businessType: 'Mobile Bartender',
+          contactName: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          phone: formData.phone,
+          interests: formData.eventTypes,
+          message: `Service Area: ${formData.serviceArea || 'Not specified'}
+Guest Count: ${formData.guestCount || 'Not specified'}
+Timeframe: ${formData.timeframe || 'Not specified'}
+Website/Instagram: ${formData.website || 'Not provided'}
+Additional Notes: ${formData.notes || 'None'}
+
+UTM Source: ${formData.utm_source || 'direct'}
+UTM Medium: ${formData.utm_medium || 'none'}
+UTM Campaign: ${formData.utm_campaign || 'none'}
+Source: ${formData.source}`,
           partnerType: 'Mobile Bartenders',
           submittedAt: new Date().toISOString(),
         }),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to submit form');
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || 'Failed to submit form');
       }
 
       setSubmitStatus('success');
@@ -129,7 +138,7 @@ export default function MobileBartenderPartnerPage() {
       });
     } catch (error) {
       console.error('Form submission error:', error);
-      setErrorMessage('Something went wrong. Please try again or call us at (512) 555-0100.');
+      setErrorMessage('Something went wrong. Please try again or call us at (737) 371-9700.');
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -380,7 +389,7 @@ export default function MobileBartenderPartnerPage() {
             },
             "contactPoint": {
               "@type": "ContactPoint",
-              "telephone": "+1-512-555-0100",
+              "telephone": "+1-737-371-9700",
               "contactType": "Partner Inquiries"
             }
           })
@@ -1076,7 +1085,7 @@ export default function MobileBartenderPartnerPage() {
             </button>
 
             <p className="text-sm text-gray-600 mt-6 text-center">
-              Questions? Call us at <a href="tel:+15125550100" className="text-gold-600 hover:underline">(512) 555-0100</a> or email{' '}
+              Questions? Call us at <a href="tel:+17373719700" className="text-gold-600 hover:underline">(737) 371-9700</a> or email{' '}
               <a href="mailto:partners@partyondelivery.com" className="text-gold-600 hover:underline">partners@partyondelivery.com</a>
             </p>
           </motion.form>
