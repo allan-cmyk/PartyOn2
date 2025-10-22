@@ -359,7 +359,7 @@ Total estimated drinks: ${results.totalDrinks}`;
             <p className="text-sm text-gray-700">
               <strong>Total estimated drinks: {results.totalDrinks}</strong>
               <br />
-              These are estimates only. We'll finalize exact quantities after a quick consultation call.
+              These are estimates only. We&apos;ll finalize exact quantities after a quick consultation call.
             </p>
           </div>
         </div>
