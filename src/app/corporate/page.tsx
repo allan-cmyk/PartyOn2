@@ -27,83 +27,6 @@ export default function CorporateLandingPage() {
   const [submitMessage, setSubmitMessage] = useState('');
   const formRef = useRef<HTMLDivElement>(null);
 
-  // Auto-verify age for B2B corporate page
-  useEffect(() => {
-    localStorage.setItem('age_verified', 'true');
-
-    // Inject JSON-LD schemas
-    const serviceScript = document.createElement('script');
-    serviceScript.type = 'application/ld+json';
-    serviceScript.text = JSON.stringify(serviceSchema);
-    serviceScript.id = 'service-schema';
-    document.head.appendChild(serviceScript);
-
-    const faqScript = document.createElement('script');
-    faqScript.type = 'application/ld+json';
-    faqScript.text = JSON.stringify(faqSchema);
-    faqScript.id = 'faq-schema';
-    document.head.appendChild(faqScript);
-
-    return () => {
-      document.getElementById('service-schema')?.remove();
-      document.getElementById('faq-schema')?.remove();
-    };
-  }, []);
-
-  const scrollToForm = () => {
-    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-
-  const handleCalculatorAddToQuote = (results: string) => {
-    setFormData(prev => ({
-      ...prev,
-      notes: results
-    }));
-    scrollToForm();
-  };
-
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitMessage('');
-
-    try {
-      // {{FORM_ACTION}} - Configure this with your form endpoint
-      // Options: Zapier webhook, Shopify, email service, etc.
-      console.log('Form submitted:', formData);
-
-      // Placeholder for actual submission
-      setSubmitMessage('Thank you! We\'ll contact you within 24 hours to discuss your event.');
-
-      // Reset form
-      setFormData({
-        firstName: '',
-        lastName: '',
-        company: '',
-        email: '',
-        phone: '',
-        eventDate: '',
-        guestCount: '',
-        location: '',
-        eventType: '',
-        notes: '',
-        consent: false
-      });
-    } catch (error) {
-      setSubmitMessage('There was an error submitting your request. Please call us at (737) 371-9700.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   const serviceSchema = {
     '@context': 'https://schema.org',
     '@type': 'Service',
@@ -162,6 +85,83 @@ export default function CorporateLandingPage() {
         }
       }
     ]
+  };
+
+  // Auto-verify age for B2B corporate page
+  useEffect(() => {
+    localStorage.setItem('age_verified', 'true');
+
+    // Inject JSON-LD schemas
+    const serviceScript = document.createElement('script');
+    serviceScript.type = 'application/ld+json';
+    serviceScript.text = JSON.stringify(serviceSchema);
+    serviceScript.id = 'service-schema';
+    document.head.appendChild(serviceScript);
+
+    const faqScript = document.createElement('script');
+    faqScript.type = 'application/ld+json';
+    faqScript.text = JSON.stringify(faqSchema);
+    faqScript.id = 'faq-schema';
+    document.head.appendChild(faqScript);
+
+    return () => {
+      document.getElementById('service-schema')?.remove();
+      document.getElementById('faq-schema')?.remove();
+    };
+  }, [serviceSchema, faqSchema]);
+
+  const scrollToForm = () => {
+    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const handleCalculatorAddToQuote = (results: string) => {
+    setFormData(prev => ({
+      ...prev,
+      notes: results
+    }));
+    scrollToForm();
+  };
+
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitMessage('');
+
+    try {
+      // {{FORM_ACTION}} - Configure this with your form endpoint
+      // Options: Zapier webhook, Shopify, email service, etc.
+      console.log('Form submitted:', formData);
+
+      // Placeholder for actual submission
+      setSubmitMessage('Thank you! We\'ll contact you within 24 hours to discuss your event.');
+
+      // Reset form
+      setFormData({
+        firstName: '',
+        lastName: '',
+        company: '',
+        email: '',
+        phone: '',
+        eventDate: '',
+        guestCount: '',
+        location: '',
+        eventType: '',
+        notes: '',
+        consent: false
+      });
+    } catch (error) {
+      setSubmitMessage('There was an error submitting your request. Please call us at (737) 371-9700.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
