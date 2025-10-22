@@ -1,6 +1,7 @@
 'use client'
 
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'
+import CorporateEventCalculator from '@/components/CorporateEventCalculator'
 
 interface MDXContentProps {
   source: MDXRemoteSerializeResult
@@ -8,6 +9,8 @@ interface MDXContentProps {
 
 // Custom components for MDX rendering
 const components = {
+  // Custom React components
+  CorporateEventCalculator,
   // Custom image component
   img: (props: React.ImgHTMLAttributes<HTMLImageElement>) => {
     if (!props.src) return null
@@ -51,10 +54,20 @@ const components = {
     <li className="text-gray-700" {...props} />
   ),
 
-  // Link styling
-  a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
-    <a className="text-gold-600 hover:text-gold-700 underline" {...props} />
-  ),
+  // Link styling - external links open in new tab
+  a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
+    const isExternal = props.href?.startsWith('http')
+    return (
+      <a
+        className="text-gold-600 hover:text-gold-700 underline"
+        {...props}
+        {...(isExternal && {
+          target: '_blank',
+          rel: 'noopener noreferrer'
+        })}
+      />
+    )
+  },
 
   // Blockquote styling
   blockquote: (props: React.BlockquoteHTMLAttributes<HTMLQuoteElement>) => (

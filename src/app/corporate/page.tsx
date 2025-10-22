@@ -3,297 +3,453 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
-import LuxuryCard from '@/components/LuxuryCard';
+import CorporateEventCalculatorLanding from '@/components/CorporateEventCalculatorLanding';
 
-export default function CorporateEventsPage() {
-  const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
-  
-  const heroImages = [
-    { src: '/images/hero/austin-skyline-golden-hour.webp', alt: 'Austin skyline at golden hour' },
-    { src: '/images/hero/corporate-hero-conference.webp', alt: 'Corporate conference at JW Marriott' },
-    { src: '/images/hero/corporate-hero-tech.webp', alt: 'Tech company rooftop event' },
-    { src: '/images/hero/corporate-hero-gala.webp', alt: 'Corporate gala at Long Center' }
-  ];
+export default function CorporateLandingPage() {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    company: '',
+    email: '',
+    phone: '',
+    eventDate: '',
+    guestCount: '',
+    venue: '',
+    eventType: '',
+    notes: '',
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState('');
+  const [showFAQ, setShowFAQ] = useState<number | null>(null);
 
+  // Auto-verify age for B2B corporate page
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [heroImages.length]);
+    localStorage.setItem('age_verified', 'true');
 
-  const services = [
-    {
-      title: "Executive Meetings",
-      description: "Professional bar service for board meetings, executive gatherings, and high-stakes negotiations",
-      features: [
-        "Premium spirits selection",
-        "Discreet, professional bartenders",
-        "Custom cocktail menus",
-        "Executive lounge setup"
-      ]
-    },
-    {
-      title: "Client Entertainment",
-      description: "Impress clients with sophisticated beverage service for dinners, receptions, and networking events",
-      features: [
-        "Curated wine pairings",
-        "Signature cocktails",
-        "Champagne service",
-        "Premium glassware"
-      ]
-    },
-    {
-      title: "Company Celebrations",
-      description: "Mark milestones and achievements with elevated bar service for your team",
-      features: [
-        "Full bar packages",
-        "Craft cocktail stations",
-        "Non-alcoholic options",
-        "Professional presentation"
-      ]
-    },
-    {
-      title: "Conference & Trade Shows",
-      description: "Stand out at industry events with premium beverage service at your booth or hospitality suite",
-      features: [
-        "Portable bar setups",
-        "Brand-themed cocktails",
-        "Licensed service staff",
-        "Flexible scheduling"
-      ]
+    // Set page title and meta description
+    document.title = 'Corporate Event Alcohol Delivery – Party On Delivery Austin';
+
+    // Update or create meta description
+    let metaDescription = document.querySelector('meta[name="description"]');
+    if (!metaDescription) {
+      metaDescription = document.createElement('meta');
+      metaDescription.setAttribute('name', 'description');
+      document.head.appendChild(metaDescription);
     }
+    metaDescription.setAttribute('content', 'Simplify your next Austin company event. Party On Delivery delivers alcohol, mixers, and ice for offices, venues, and offsites — cold and on time.');
+
+    // Add JSON-LD schemas
+    const organizationSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'Party On Delivery',
+      url: 'https://partyondelivery.com',
+      logo: 'https://partyondelivery.com/images/POD%20Logo%202025.svg',
+      description: 'Premium alcohol delivery service for corporate events in Austin, Texas',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Austin',
+        addressRegion: 'TX',
+        addressCountry: 'US',
+      },
+      telephone: '(737) 371-9700',
+    };
+
+    const serviceSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      name: 'Corporate Event Alcohol Delivery',
+      description: 'Professional alcohol delivery service for company events, office parties, and corporate gatherings in Austin, TX. Includes beer, wine, spirits, mixers, ice, and disposables.',
+      provider: {
+        '@type': 'Organization',
+        name: 'Party On Delivery',
+      },
+      areaServed: {
+        '@type': 'City',
+        name: 'Austin',
+        addressRegion: 'TX',
+      },
+      serviceType: 'Alcohol Delivery for Corporate Events',
+    };
+
+    const faqSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'What areas do you serve for corporate events?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'We deliver throughout Austin and surrounding areas including downtown offices, venues, and offsite locations. Contact us to confirm your specific address.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'How much advance notice do you need?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'We require 72 hours advance notice for standard delivery. For rush orders, call us at (737) 371-9700 to check availability.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Do you provide mixers, ice, and disposables?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Yes! We provide mixers, ice, cups, napkins, and other bar essentials. Everything arrives cold and ready to serve.',
+          },
+        },
+      ],
+    };
+
+    // Inject schemas
+    const scriptOrg = document.createElement('script');
+    scriptOrg.type = 'application/ld+json';
+    scriptOrg.text = JSON.stringify(organizationSchema);
+    document.head.appendChild(scriptOrg);
+
+    const scriptService = document.createElement('script');
+    scriptService.type = 'application/ld+json';
+    scriptService.text = JSON.stringify(serviceSchema);
+    document.head.appendChild(scriptService);
+
+    const scriptFAQ = document.createElement('script');
+    scriptFAQ.type = 'application/ld+json';
+    scriptFAQ.text = JSON.stringify(faqSchema);
+    document.head.appendChild(scriptFAQ);
+
+    // Capture UTM parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const utmSource = urlParams.get('utm_source') || '';
+    const utmMedium = urlParams.get('utm_medium') || '';
+    const utmCampaign = urlParams.get('utm_campaign') || '';
+
+    sessionStorage.setItem('utm_source', utmSource);
+    sessionStorage.setItem('utm_medium', utmMedium);
+    sessionStorage.setItem('utm_campaign', utmCampaign);
+  }, []);
+
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleCalculatorAddToQuote = (calculatorResults: string) => {
+    setFormData(prev => ({
+      ...prev,
+      notes: calculatorResults,
+    }));
+
+    // Smooth scroll to form
+    const formElement = document.getElementById('inquiry-form');
+    if (formElement) {
+      formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const handleScheduleCall = () => {
+    const formElement = document.getElementById('inquiry-form');
+    if (formElement) {
+      formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitMessage('');
+
+    try {
+      const zapierWebhookUrl = process.env.NEXT_PUBLIC_ZAPIER_PARTNER_WEBHOOK_URL;
+
+      if (!zapierWebhookUrl) {
+        console.error('Zapier webhook URL not configured');
+        throw new Error('Form submission not configured');
+      }
+
+      const response = await fetch(zapierWebhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          partnerType: 'Corporate Events',
+          source: 'corporate-landing-page',
+          submittedAt: new Date().toISOString(),
+          utm_source: sessionStorage.getItem('utm_source') || '',
+          utm_medium: sessionStorage.getItem('utm_medium') || '',
+          utm_campaign: sessionStorage.getItem('utm_campaign') || '',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit form');
+      }
+
+      setSubmitMessage('Thank you! Your inquiry has been submitted. We&apos;ll contact you within 24 hours to finalize your event details.');
+
+      // Reset form
+      setFormData({
+        firstName: '',
+        lastName: '',
+        company: '',
+        email: '',
+        phone: '',
+        eventDate: '',
+        guestCount: '',
+        venue: '',
+        eventType: '',
+        notes: '',
+      });
+    } catch (error) {
+      console.error('Submit error:', error);
+      setSubmitMessage('An error occurred. Please call us at (737) 371-9700 or try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const benefits = [
+    {
+      icon: (
+        <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+      ),
+      title: 'One Vendor, Everything You Need',
+      description: 'Beer, wine, spirits, mixers, ice, cups, and disposables—all from a single reliable source.',
+    },
+    {
+      icon: (
+        <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+      title: 'Delivered Cold, Right on Schedule',
+      description: 'We coordinate with your venue and deliver during your preferred window—everything arrives cold.',
+    },
+    {
+      icon: (
+        <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      ),
+      title: 'Stress-Free Planning',
+      description: 'One quick call or online quote. We handle the details so you can focus on your event.',
+    },
+    {
+      icon: (
+        <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+      ),
+      title: 'Local & Licensed',
+      description: 'Austin-based team with all permits and insurance. ID-verified delivery every time.',
+    },
+    {
+      icon: (
+        <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      ),
+      title: 'Scales from 20 to 500+ Guests',
+      description: 'Small team gatherings to large company-wide events—we handle groups of any size.',
+    },
+    {
+      icon: (
+        <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      ),
+      title: 'Reliable Support',
+      description: 'Fast responses, easy changes, and clear communication from quote to delivery.',
+    },
   ];
 
-  const testimonials = [
+  const howItWorks = [
     {
-      quote: "PartyOn Delivery elevated our client dinner to an unforgettable experience. The attention to detail was impeccable.",
-      author: "Sarah Mitchell",
-      title: "CEO, Austin Tech Ventures"
+      step: '1',
+      title: 'Tell Us About the Event',
+      description: 'Share your date, guest count, location, and any special requests.',
     },
     {
-      quote: "Their professional service and premium selection helped us close our biggest deal of the year.",
-      author: "Robert Chen",
-      title: "Managing Partner, Hill Country Capital"
-    }
+      step: '2',
+      title: 'We Propose a Custom Drink Plan',
+      description: 'We recommend the right mix of beer, wine, spirits, and mixers based on your group.',
+    },
+    {
+      step: '3',
+      title: 'We Deliver Cold & On-Time',
+      description: 'Everything arrives during your window, cold and ready for bar staff or self-serve.',
+    },
+    {
+      step: '4',
+      title: 'Enjoy Your Event',
+      description: 'No store runs, no worries, no stress—just a great event for your team.',
+    },
+  ];
+
+  const useCases = [
+    {
+      title: 'Team Offsites',
+      description: 'Build connections outside the office with curated drinks that keep everyone engaged.',
+      image: '/images/hero/corporate-hero-tech.webp',
+    },
+    {
+      title: 'Holiday Parties',
+      description: 'Celebrate the season with hassle-free bar service for your entire company.',
+      image: '/images/hero/corporate-hero-gala.webp',
+    },
+    {
+      title: 'Launch Celebrations',
+      description: 'Toast new products, features, or milestones with professional beverage service.',
+      image: '/images/hero/corporate-hero-conference.webp',
+    },
+    {
+      title: 'Corporate Retreats',
+      description: 'Elevate multi-day retreats with thoughtful drink planning and reliable delivery.',
+      image: '/images/hero/austin-skyline-golden-hour.webp',
+    },
+    {
+      title: 'Networking Mixers',
+      description: 'Create comfortable networking environments with quality drinks and seamless service.',
+      image: '/images/hero/corporate-hero-tech.webp',
+    },
+    {
+      title: 'Client Appreciation',
+      description: 'Impress clients and partners with curated selections and flawless execution.',
+      image: '/images/hero/corporate-hero-gala.webp',
+    },
+  ];
+
+  const faqs = [
+    {
+      question: 'What areas do you serve for corporate events?',
+      answer: 'We deliver throughout Austin and surrounding areas including downtown offices, venues, and offsite locations. This includes the Domain, downtown Austin, South Congress, East Austin, and nearby suburbs. Contact us to confirm your specific address.',
+    },
+    {
+      question: 'How much advance notice do you need?',
+      answer: 'We require 72 hours advance notice for standard delivery to ensure we can source everything you need and coordinate with your venue. For rush orders or last-minute events, call us at (737) 371-9700 to check availability—we&apos;ll do our best to accommodate.',
+    },
+    {
+      question: 'Can you handle last-minute changes?',
+      answer: 'Yes! We understand event guest counts and plans can change. Contact us as soon as possible and we&apos;ll work with you to adjust your order. For changes within 48 hours of delivery, additional fees may apply.',
+    },
+    {
+      question: 'What types of alcohol do you provide?',
+      answer: 'We offer beer (domestic, craft, and imports), wine (red, white, rosé, and sparkling), and spirits (vodka, whiskey, tequila, rum, gin). We can customize selections based on your preferences and budget.',
+    },
+    {
+      question: 'Do you provide mixers, ice, and disposables?',
+      answer: 'Yes! We provide mixers (tonic, club soda, cola, juice), bagged ice, plastic cups, napkins, cocktail straws, and other bar essentials. Everything arrives cold and ready to serve.',
+    },
+    {
+      question: 'What delivery windows are available?',
+      answer: 'We offer flexible delivery windows between 10 AM and 8 PM, Monday through Saturday. We coordinate directly with your venue or office to ensure delivery during your preferred time. Sunday deliveries may be available by special request.',
+    },
+    {
+      question: 'Are you licensed and compliant?',
+      answer: 'Yes, we are fully licensed by TABC (Texas Alcoholic Beverage Commission) and carry comprehensive insurance. All deliveries require valid ID verification and compliance with Texas alcohol laws.',
+    },
+    {
+      question: 'How does payment work?',
+      answer: 'We accept all major credit cards, corporate cards, and can set up NET payment terms for established corporate clients. Purchase orders are welcome. Payment is due before or at delivery.',
+    },
   ];
 
   return (
     <div className="bg-white min-h-screen">
       <OldFashionedNavigation />
-      
+
       {/* Hero Section */}
-      <section className="relative h-[60vh] min-h-[500px] flex items-center">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentHeroIndex}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1 }}
-            className="absolute inset-0"
-          >
-            <Image
-              src={heroImages[currentHeroIndex].src}
-              alt={heroImages[currentHeroIndex].alt}
-              fill
-              className="object-cover"
-              priority
-              onError={(e) => {
-                e.currentTarget.src = '/images/hero/austin-skyline-golden-hour.webp';
-              }}
-            />
-          </motion.div>
-        </AnimatePresence>
-        
-        {/* Hero Dots Navigation */}
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
-          {heroImages.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentHeroIndex(index)}
-              className={`w-2 h-2 rounded-full transition-all ${
-                index === currentHeroIndex ? 'bg-gold-400 w-8' : 'bg-white/50'
-              }`}
-            />
-          ))}
+      <section className="relative h-[70vh] min-h-[600px] flex items-center">
+        <div className="absolute inset-0">
+          <Image
+            src="/images/hero/corporate-hero-conference.webp"
+            alt="Corporate event in Austin with professional bar service"
+            fill
+            className="object-cover"
+            priority
+            onError={(e) => {
+              e.currentTarget.src = '/images/hero/austin-skyline-golden-hour.webp';
+            }}
+          />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/40" />
-        
-        <motion.div 
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-black/50" />
+
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="relative z-10 max-w-7xl mx-auto px-8 text-white mt-[120px] mb-[80px] md:mt-0 md:mb-0"
+          className="relative z-10 max-w-7xl mx-auto px-8 text-white"
         >
-          <p className="text-gold-400 tracking-[0.2em] mb-4">PROFESSIONAL BAR SERVICE</p>
-          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl mb-6 tracking-[0.1em]">
-            Corporate Events
+          {/* H1 Options (others in comments) */}
+          {/* Option 1: "Corporate Events, Simplified." */}
+          {/* Option 3: "Cold Drinks. Zero Stress. Perfect for Every Office Event." */}
+
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl mb-6 tracking-[0.05em] max-w-4xl leading-tight">
+            Austin&apos;s Easiest Way to Stock the Bar for Company Parties.
           </h1>
-          <p className="text-xl max-w-2xl leading-relaxed mb-8">
-            Elevate your business gatherings with Austin&apos;s premier corporate beverage service
+          <p className="text-xl md:text-2xl max-w-3xl leading-relaxed mb-8">
+            From 20 to 500+ guests—beer, wine, spirits, mixers, and ice delivered cold and on time. Simple planning, zero stress.
           </p>
-          <div className="flex flex-col md:flex-row gap-4 justify-center">
-            <Link href="/corporate/products">
-              <button className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
-                ORDER NOW
-              </button>
-            </Link>
-            <Link href="/contact">
-              <button className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
-                REQUEST PROPOSAL
-              </button>
-            </Link>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <button
+              onClick={handleScheduleCall}
+              className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
+            >
+              SCHEDULE A CALL
+            </button>
+            <button
+              onClick={handleScheduleCall}
+              className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.1em] text-sm font-medium"
+            >
+              GET A QUOTE
+            </button>
           </div>
         </motion.div>
       </section>
 
-      {/* Value Proposition */}
+      {/* Why Companies Choose Us */}
       <section className="py-20 px-8">
         <div className="max-w-7xl mx-auto">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="font-serif text-4xl text-gray-900 mb-6 tracking-[0.1em]">
-              Where Business Meets Sophistication
+            <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+              Why Companies Choose Us
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              In the competitive Austin business landscape, every detail matters. Our premium bar service transforms 
-              ordinary corporate gatherings into memorable experiences that strengthen relationships and close deals.
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Reliable service that saves time and eliminates stress
             </p>
           </motion.div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20">
-            {[
-              { number: "500+", label: "Corporate Events" },
-              { number: "98%", label: "Client Retention" },
-              { number: "24/7", label: "Event Support" },
-              { number: "5★", label: "Average Rating" }
-            ].map((stat, index) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {benefits.map((benefit, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="text-center"
+                className="text-center p-6"
               >
-                <p className="font-serif text-4xl text-gold-600 mb-2">{stat.number}</p>
-                <p className="text-sm text-gray-600 tracking-[0.1em]">{stat.label.toUpperCase()}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Services Grid */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-8">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="font-serif text-4xl text-center text-gray-900 mb-16 tracking-[0.1em]"
-          >
-            Tailored Corporate Solutions
-          </motion.h2>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {services.map((service, index) => (
-              <LuxuryCard
-                key={index}
-                index={index + 2}
-                className="rounded-lg"
-              >
-                <div className="p-8">
-                  <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
-                    {service.title}
-                  </h3>
-                  <p className="text-gray-600 mb-6 leading-relaxed">
-                    {service.description}
-                  </p>
-                  <ul className="space-y-2">
-                    {service.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start">
-                        <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span className="text-gray-700">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </LuxuryCard>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Premium Features */}
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-8">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="font-serif text-4xl text-center text-gray-900 mb-16 tracking-[0.1em]"
-          >
-            The Corporate Advantage
-          </motion.h2>
-
-          <div className="grid md:grid-cols-3 gap-12">
-            {[
-              {
-                icon: (
-                  <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                ),
-                title: "Licensed & Insured",
-                description: "Full liability coverage and all required permits for corporate events"
-              },
-              {
-                icon: (
-                  <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                ),
-                title: "Flexible Billing",
-                description: "Corporate accounts, purchase orders, and NET payment terms available"
-              },
-              {
-                icon: (
-                  <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                  </svg>
-                ),
-                title: "Venue Partnerships",
-                description: "Preferred vendor at Austin&apos;s top corporate venues and hotels"
-              }
-            ].map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="text-center"
-              >
-                {feature.icon}
-                <h3 className="font-serif text-2xl text-gray-900 mt-6 mb-4 tracking-[0.1em]">
-                  {feature.title}
+                {benefit.icon}
+                <h3 className="font-serif text-xl text-gray-900 mt-6 mb-3 tracking-[0.05em]">
+                  {benefit.title}
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
-                  {feature.description}
+                  {benefit.description}
                 </p>
               </motion.div>
             ))}
@@ -301,21 +457,26 @@ export default function CorporateEventsPage() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* How It Works */}
       <section className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-8">
-          <motion.h2 
+        <div className="max-w-6xl mx-auto px-8">
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="font-serif text-4xl text-center text-gray-900 mb-16 tracking-[0.1em]"
+            className="text-center mb-16"
           >
-            Client Success Stories
-          </motion.h2>
+            <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+              How It Works
+            </h2>
+            <p className="text-lg text-gray-600">
+              Four simple steps to perfect event drinks
+            </p>
+          </motion.div>
 
-          <div className="space-y-12">
-            {testimonials.map((testimonial, index) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {howItWorks.map((step, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -324,12 +485,68 @@ export default function CorporateEventsPage() {
                 viewport={{ once: true }}
                 className="text-center"
               >
-                <p className="font-serif text-2xl text-gray-700 mb-6 italic leading-relaxed">
-                  &quot;{testimonial.quote}&quot;
+                <div className="w-16 h-16 mx-auto mb-6 bg-gold-600 text-white rounded-full flex items-center justify-center">
+                  <span className="font-serif text-2xl">{step.step}</span>
+                </div>
+                <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+                  {step.title}
+                </h3>
+                <p className="text-gray-600 leading-relaxed">
+                  {step.description}
                 </p>
-                <div>
-                  <p className="font-medium text-gray-900">{testimonial.author}</p>
-                  <p className="text-sm text-gray-600">{testimonial.title}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Use Cases */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+              Perfect For Every Occasion
+            </h2>
+            <p className="text-lg text-gray-600">
+              Professional bar service tailored to your event type
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {useCases.map((useCase, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <div className="relative h-64">
+                  <Image
+                    src={useCase.image}
+                    alt={useCase.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    onError={(e) => {
+                      e.currentTarget.src = '/images/hero/austin-skyline-golden-hour.webp';
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20" />
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                  <h3 className="font-serif text-2xl mb-2 tracking-[0.05em]">
+                    {useCase.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed">
+                    {useCase.description}
+                  </p>
                 </div>
               </motion.div>
             ))}
@@ -337,27 +554,422 @@ export default function CorporateEventsPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Calculator Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+              Estimate Your Event Needs
+            </h2>
+            <p className="text-lg text-gray-600">
+              Get instant quantities for your guest count and duration
+            </p>
+          </motion.div>
+
+          <CorporateEventCalculatorLanding
+            onAddToQuote={handleCalculatorAddToQuote}
+            onScheduleCall={handleScheduleCall}
+          />
+        </div>
+      </section>
+
+      {/* Pricing Band */}
+      <section className="py-16 bg-gold-600 text-white">
+        <div className="max-w-6xl mx-auto px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <h3 className="font-serif text-3xl mb-6 tracking-[0.1em]">
+              Simple, Transparent Pricing
+            </h3>
+            <div className="flex flex-wrap justify-center gap-8 text-lg">
+              <div className="flex items-center">
+                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Packages starting at $500 for groups of 20+
+              </div>
+              <div className="flex items-center">
+                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Mixers, ice, cups & disposables available
+              </div>
+              <div className="flex items-center">
+                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Custom quotes for larger events
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Mid-Page Conversion Band */}
+      <section className="py-16 bg-white border-y border-gray-200">
+        <div className="max-w-4xl mx-auto px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+              Ready to Make Planning Painless?
+            </h2>
+            <p className="text-lg text-gray-600 mb-8">
+              Get a custom quote in minutes or schedule a quick call to discuss your event
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={handleScheduleCall}
+                className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
+              >
+                SCHEDULE A CALL
+              </button>
+              <button
+                onClick={handleScheduleCall}
+                className="px-8 py-4 border-2 border-gold-600 text-gold-600 hover:bg-gold-50 transition-colors tracking-[0.1em] text-sm font-medium"
+              >
+                GET A QUOTE
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Inquiry Form */}
+      <section id="inquiry-form" className="py-20 bg-gray-50">
+        <div className="max-w-3xl mx-auto px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+              Get Your Custom Quote
+            </h2>
+            <p className="text-lg text-gray-600">
+              Tell us about your event and we&apos;ll respond within 24 hours
+            </p>
+          </motion.div>
+
+          <motion.form
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+            onSubmit={handleSubmit}
+            className="bg-white rounded-lg shadow-lg p-8"
+          >
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
+                  First Name *
+                </label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  required
+                  value={formData.firstName}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
+                  Last Name *
+                </label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  required
+                  value={formData.lastName}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
+                Company Name *
+              </label>
+              <input
+                type="text"
+                id="company"
+                name="company"
+                required
+                value={formData.company}
+                onChange={handleFormChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+              />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  value={formData.email}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  required
+                  value={formData.phone}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label htmlFor="eventDate" className="block text-sm font-medium text-gray-700 mb-2">
+                  Event Date *
+                </label>
+                <input
+                  type="date"
+                  id="eventDate"
+                  name="eventDate"
+                  required
+                  value={formData.eventDate}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label htmlFor="guestCount" className="block text-sm font-medium text-gray-700 mb-2">
+                  Guest Count *
+                </label>
+                <input
+                  type="number"
+                  id="guestCount"
+                  name="guestCount"
+                  required
+                  min="20"
+                  value={formData.guestCount}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <label htmlFor="venue" className="block text-sm font-medium text-gray-700 mb-2">
+                Venue / Location *
+              </label>
+              <input
+                type="text"
+                id="venue"
+                name="venue"
+                required
+                placeholder="Office address or venue name"
+                value={formData.venue}
+                onChange={handleFormChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+              />
+            </div>
+
+            <div className="mb-6">
+              <label htmlFor="eventType" className="block text-sm font-medium text-gray-700 mb-2">
+                Event Type *
+              </label>
+              <select
+                id="eventType"
+                name="eventType"
+                required
+                value={formData.eventType}
+                onChange={handleFormChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+              >
+                <option value="">Select event type</option>
+                <option value="Holiday Party">Holiday Party</option>
+                <option value="Team Offsite">Team Offsite</option>
+                <option value="Corporate Retreat">Corporate Retreat</option>
+                <option value="Launch Celebration">Launch Celebration</option>
+                <option value="Networking Mixer">Networking Mixer</option>
+                <option value="Client Appreciation">Client Appreciation</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div className="mb-6">
+              <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-2">
+                Additional Notes
+              </label>
+              <textarea
+                id="notes"
+                name="notes"
+                rows={5}
+                placeholder="Any special requests or calculator results..."
+                value={formData.notes}
+                onChange={handleFormChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+              />
+            </div>
+
+            <div className="mb-6">
+              <label className="flex items-start">
+                <input
+                  type="checkbox"
+                  required
+                  className="w-5 h-5 text-gold-500 border-gray-300 rounded focus:ring-gold-500 mt-1 mr-3"
+                />
+                <span className="text-sm text-gray-600">
+                  I consent to Party On Delivery contacting me about my corporate event inquiry.
+                  I understand all deliveries require valid ID verification and compliance with Texas alcohol laws.
+                </span>
+              </label>
+            </div>
+
+            {submitMessage && (
+              <div className={`mb-6 p-4 rounded-md ${submitMessage.includes('error') ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-700'}`}>
+                {submitMessage}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? 'SUBMITTING...' : 'SUBMIT INQUIRY'}
+            </button>
+          </motion.form>
+        </div>
+      </section>
+
+      {/* Blog Link Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-lg p-12 text-white text-center"
+          >
+            <h2 className="font-serif text-3xl md:text-4xl mb-4 tracking-[0.1em]">
+              Planning a Corporate Event in Austin?
+            </h2>
+            <p className="text-lg mb-8 text-gray-300 max-w-2xl mx-auto">
+              Read our complete guide to corporate event planning—venues, budgets, catering, team building, and more.
+            </p>
+            <Link href="/blog/corporate-events-austin-guide">
+              <button className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium">
+                READ THE FULL GUIDE
+              </button>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-lg text-gray-600">
+              Everything you need to know about our corporate event service
+            </p>
+          </motion.div>
+
+          <div className="space-y-4">
+            {faqs.map((faq, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.05 }}
+                viewport={{ once: true }}
+                className="bg-white rounded-lg shadow-md overflow-hidden"
+              >
+                <button
+                  onClick={() => setShowFAQ(showFAQ === index ? null : index)}
+                  className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors"
+                >
+                  <span className="font-medium text-gray-900 pr-4">{faq.question}</span>
+                  <svg
+                    className={`w-5 h-5 text-gold-600 flex-shrink-0 transform transition-transform ${
+                      showFAQ === index ? 'rotate-180' : ''
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {showFAQ === index && (
+                  <div className="px-6 pb-4">
+                    <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Closing CTA */}
       <section className="py-20 bg-gold-600 text-white">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <h2 className="font-serif text-4xl mb-6 tracking-[0.1em]">
-            Ready to Elevate Your Next Corporate Event?
-          </h2>
-          <p className="text-xl mb-8 leading-relaxed">
-            Let&apos;s discuss how our premium bar service can enhance your business gatherings
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/order">
-              <button className="px-8 py-4 bg-white text-gold-600 hover:bg-gray-100 transition-colors tracking-[0.15em]">
-                REQUEST PROPOSAL
-              </button>
-            </Link>
-            <Link href="/contact">
-              <button className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gold-600 transition-colors tracking-[0.15em]">
-                SCHEDULE CONSULTATION
-              </button>
-            </Link>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="font-serif text-4xl md:text-5xl mb-6 tracking-[0.1em]">
+              Let&apos;s Make Your Event Easy
+            </h2>
+            <p className="text-xl mb-8 leading-relaxed">
+              One call, one vendor, zero stress. Get started with a custom quote today.
+            </p>
+            <button
+              onClick={handleScheduleCall}
+              className="px-8 py-4 bg-white text-gold-600 hover:bg-gray-100 transition-colors tracking-[0.1em] text-sm font-medium"
+            >
+              SCHEDULE A CALL
+            </button>
+          </motion.div>
         </div>
       </section>
 
@@ -366,31 +978,64 @@ export default function CorporateEventsPage() {
         <div className="max-w-7xl mx-auto px-8 md:px-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <img 
-                src="/images/POD Logo 2025.svg" 
+              <img
+                src="/images/POD Logo 2025.svg"
                 alt="Party On Delivery"
                 className="h-16 w-auto mb-4"
               />
               <p className="text-gray-600 text-sm leading-relaxed">
                 Austin&apos;s premier alcohol delivery and event service since 2020.
+                Fully licensed by TABC.
               </p>
             </div>
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SERVICES</h4>
               <ul className="space-y-2">
-                <li><Link href="/weddings" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Weddings</Link></li>
-                <li><Link href="/boat-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Boat Parties</Link></li>
-                <li><Link href="/bach-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Celebrations</Link></li>
-                <li><Link href="/corporate" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Corporate</Link></li>
+                <li>
+                  <Link href="/weddings" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">
+                    Weddings
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/boat-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">
+                    Boat Parties
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/bach-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">
+                    Celebrations
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/corporate" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">
+                    Corporate
+                  </Link>
+                </li>
               </ul>
             </div>
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SHOP</h4>
               <ul className="space-y-2">
-                <li><Link href="/products" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">All Products</Link></li>
-                <li><Link href="/products?filter=spirits" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Spirits</Link></li>
-                <li><Link href="/products?filter=wine" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Wine</Link></li>
-                <li><Link href="/products?filter=packages" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Packages</Link></li>
+                <li>
+                  <Link href="/products" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">
+                    All Products
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/products?filter=spirits" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">
+                    Spirits
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/products?filter=wine" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">
+                    Wine
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/products?filter=packages" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">
+                    Packages
+                  </Link>
+                </li>
               </ul>
             </div>
             <div>
@@ -405,8 +1050,12 @@ export default function CorporateEventsPage() {
           <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">© 2024 PartyOn Delivery. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="/terms" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Terms</Link>
-              <Link href="/privacy" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Privacy</Link>
+              <Link href="/terms" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">
+                Terms
+              </Link>
+              <Link href="/privacy" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">
+                Privacy
+              </Link>
             </div>
           </div>
         </div>

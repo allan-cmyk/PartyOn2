@@ -267,27 +267,27 @@ export default function MobileBartenderPartnerPage() {
     {
       title: "Weddings",
       description: "Signature cocktails for 100+ guests",
-      image: "/images/services/wedding-placeholder.jpg" // TODO: Replace with generated image
+      image: "/images/hero/lake-travis-wedding-sunset-1.webp"
     },
     {
       title: "Bachelor/ette Parties",
       description: "All-night celebrations on 6th Street or Lake Travis",
-      image: "/images/services/bach-placeholder.jpg" // TODO: Replace with generated image
+      image: "/images/hero/bach-hero-rainey.webp"
     },
     {
       title: "Corporate Events",
       description: "Professional happy hours and team building",
-      image: "/images/services/corporate-placeholder.jpg" // TODO: Replace with generated image
+      image: "/images/hero/corporate-hero-tech.webp"
     },
     {
       title: "Boat Parties",
       description: "Lake Travis cruises with premium bar service",
-      image: "/images/services/boat-placeholder.jpg" // TODO: Replace with generated image
+      image: "/images/hero/lake-travis-yacht-sunset.webp"
     },
     {
       title: "Vacation Rentals",
       description: "Private home parties across Austin",
-      image: "/images/services/rental-placeholder.jpg" // TODO: Replace with generated image
+      image: "/images/hero/luxury-wedding-estate-1.webp"
     }
   ];
 
