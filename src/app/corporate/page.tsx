@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Script from 'next/script';
 import { motion } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
@@ -86,44 +87,81 @@ export default function CorporateLandingPage() {
     }
   };
 
-  return (
-    <div className="bg-white min-h-screen">
-      <OldFashionedNavigation />
+  const serviceSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    'serviceType': 'Corporate Event Alcohol Delivery',
+    'provider': {
+      '@type': 'LocalBusiness',
+      'name': 'Party On Delivery',
+      'description': 'Premium alcohol delivery service for corporate events in Austin, Texas',
+      'telephone': '(737) 371-9700',
+      'email': 'info@partyondelivery.com',
+      'address': {
+        '@type': 'PostalAddress',
+        'addressLocality': 'Austin',
+        'addressRegion': 'TX',
+        'addressCountry': 'US'
+      },
+      'areaServed': {
+        '@type': 'City',
+        'name': 'Austin',
+        'state': 'Texas'
+      }
+    },
+    'offers': {
+      '@type': 'Offer',
+      'description': 'Corporate event alcohol delivery packages',
+      'priceRange': 'Starting at $500'
+    }
+  };
 
-      {/* JSON-LD Schema for SEO */}
-      <script
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    'mainEntity': [
+      {
+        '@type': 'Question',
+        'name': 'What areas of Austin do you serve?',
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': 'We deliver throughout the Austin metro area, including downtown, East Austin, South Congress, Lake Travis, and surrounding communities.'
+        }
+      },
+      {
+        '@type': 'Question',
+        'name': 'How far in advance do I need to order?',
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': 'We require a 72-hour minimum notice for all corporate orders. For larger events (100+ guests) or peak seasons, we recommend booking 2-4 weeks in advance.'
+        }
+      },
+      {
+        '@type': 'Question',
+        'name': 'Are you licensed and compliant?',
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': 'We are fully licensed by TABC (Texas Alcoholic Beverage Commission) and verify ID for every delivery. We maintain all required insurance and compliance standards.'
+        }
+      }
+    ]
+  };
+
+  return (
+    <>
+      <Script
+        id="service-schema"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'Service',
-            'serviceType': 'Corporate Event Alcohol Delivery',
-            'provider': {
-              '@type': 'LocalBusiness',
-              'name': 'Party On Delivery',
-              'description': 'Premium alcohol delivery service for corporate events in Austin, Texas',
-              'telephone': '(737) 371-9700',
-              'email': 'info@partyondelivery.com',
-              'address': {
-                '@type': 'PostalAddress',
-                'addressLocality': 'Austin',
-                'addressRegion': 'TX',
-                'addressCountry': 'US'
-              },
-              'areaServed': {
-                '@type': 'City',
-                'name': 'Austin',
-                'state': 'Texas'
-              }
-            },
-            'offers': {
-              '@type': 'Offer',
-              'description': 'Corporate event alcohol delivery packages',
-              'priceRange': 'Starting at $500'
-            }
-          })
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
       />
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+
+      <div className="bg-white min-h-screen">
+        <OldFashionedNavigation />
 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-gray-50 to-white py-20 md:py-32">
@@ -752,43 +790,6 @@ export default function CorporateLandingPage() {
         </div>
       </section>
 
-      {/* FAQ Schema for SEO */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'FAQPage',
-            'mainEntity': [
-              {
-                '@type': 'Question',
-                'name': 'What areas of Austin do you serve?',
-                'acceptedAnswer': {
-                  '@type': 'Answer',
-                  'text': 'We deliver throughout the Austin metro area, including downtown, East Austin, South Congress, Lake Travis, and surrounding communities.'
-                }
-              },
-              {
-                '@type': 'Question',
-                'name': 'How far in advance do I need to order?',
-                'acceptedAnswer': {
-                  '@type': 'Answer',
-                  'text': 'We require a 72-hour minimum notice for all corporate orders. For larger events (100+ guests) or peak seasons, we recommend booking 2-4 weeks in advance.'
-                }
-              },
-              {
-                '@type': 'Question',
-                'name': 'Are you licensed and compliant?',
-                'acceptedAnswer': {
-                  '@type': 'Answer',
-                  'text': 'We are fully licensed by TABC (Texas Alcoholic Beverage Commission) and verify ID for every delivery. We maintain all required insurance and compliance standards.'
-                }
-              }
-            ]
-          })
-        }}
-      />
-
       {/* Closing CTA */}
       <section className="py-20 bg-gradient-to-br from-gold-500 to-gold-600 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -858,6 +859,7 @@ export default function CorporateLandingPage() {
             - All links working
             - Testimonials approved (currently placeholders)
       */}
-    </div>
+      </div>
+    </>
   );
 }
