@@ -76,7 +76,7 @@ export default async function CorporateEventsGuidePage() {
       </section>
 
       {/* Content */}
-      <article className="max-w-4xl mx-auto px-8 py-16">
+      <article className="max-w-6xl mx-auto px-8 py-16">
         <div className="prose prose-lg max-w-none">
           <MDXRemote source={content} components={components} />
         </div>
