@@ -375,18 +375,71 @@ export default function CorporateEventCalculator() {
         </div>
 
         {/* Results Section */}
-        <div className="bg-gradient-to-br from-gold-50 to-gray-50 rounded-lg p-8">
-          <h3 className="font-serif text-2xl text-gray-900 mb-6 tracking-[0.1em] text-center">
+        <div className="bg-gradient-to-br from-gold-50 to-gray-50 rounded-lg p-4 md:p-8">
+          <h3 className="font-serif text-xl md:text-2xl text-gray-900 mb-4 md:mb-6 tracking-[0.1em] text-center">
             Estimated Quantities
           </h3>
 
-          <div className="space-y-6">
-            {/* Total Drinks Info */}
-            <div className="bg-white rounded-lg p-4 text-center border border-gray-200">
-              <p className="text-sm text-gray-600 mb-1">Total Drinks Needed</p>
-              <p className="text-3xl font-semibold text-gold-600">{Math.ceil(totalDrinks)}</p>
-            </div>
+          {/* Total Drinks - Always show */}
+          <div className="bg-white rounded-lg p-3 md:p-4 text-center border border-gray-200 mb-4">
+            <p className="text-xs md:text-sm text-gray-600 mb-1">Total Drinks Needed</p>
+            <p className="text-2xl md:text-3xl font-semibold text-gold-600">{Math.ceil(totalDrinks)}</p>
+          </div>
 
+          {/* Compact Table View - Mobile */}
+          <div className="md:hidden bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="text-left py-2 px-3 font-medium text-gray-700">Item</th>
+                  <th className="text-center py-2 px-3 font-medium text-gray-700">Qty</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                <tr>
+                  <td className="py-2 px-3">
+                    <div className="font-medium text-gray-900">Wine Bottles</div>
+                    <div className="text-xs text-gray-500">750ml each (4 glasses per bottle)</div>
+                  </td>
+                  <td className="text-center py-2 px-3">
+                    <span className="text-xl font-semibold text-gray-900">{wineBottles}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2 px-3">
+                    <div className="font-medium text-gray-900">Liquor Bottles</div>
+                    <div className="text-xs text-gray-500">750ml each (12 drinks per bottle)</div>
+                  </td>
+                  <td className="text-center py-2 px-3">
+                    <span className="text-xl font-semibold text-gray-900">{liquorBottles}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2 px-3">
+                    <div className="font-medium text-gray-900">Beer Cans/Bottles</div>
+                    <div className="text-xs text-gray-500">12oz each</div>
+                  </td>
+                  <td className="text-center py-2 px-3">
+                    <span className="text-xl font-semibold text-gray-900">{beers}</span>
+                  </td>
+                </tr>
+                {champagneToast && (
+                  <tr className="bg-gold-50">
+                    <td className="py-2 px-3">
+                      <div className="font-medium text-gray-900">Champagne Bottles</div>
+                      <div className="text-xs text-gray-500">For toast (750ml, 5 glasses each)</div>
+                    </td>
+                    <td className="text-center py-2 px-3">
+                      <span className="text-xl font-semibold text-gold-600">{champagneBottles}</span>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Card View - Desktop */}
+          <div className="hidden md:block space-y-6">
             {/* Wine Bottles */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
