@@ -78,31 +78,139 @@ function markTopicPublished(topics: TopicsData, topicId: number): void {
 async function generateBlogContent(topic: Topic): Promise<string> {
   console.log(`🤖 Generating blog content with Claude via OpenRouter...`);
 
-  const prompt = `You are an expert content writer for Party On Delivery, an Austin-based premium alcohol delivery service specializing in weddings, bachelor/bachelorette parties, boat parties, and corporate events.
+  const prompt = `You are an expert SEO content writer for Party On Delivery, an Austin-based premium alcohol delivery service specializing in weddings, bachelor/bachelorette parties, boat parties, and corporate events.
 
-Write a comprehensive, engaging 2,000+ word blog post about: "${topic.title}"
+Write a comprehensive, SEO-optimized 2,000+ word blog post about: "${topic.title}"
 
-IMPORTANT GUIDELINES:
+CONTENT GUIDELINES:
 - Write in a conversational, friendly tone with authentic Austin/Texas personality
-- Include specific Austin locations, venues, and local references
+- Include specific Austin locations, venues, and local references (with addresses when relevant)
 - Add practical tips, actionable advice, and insider knowledge
 - Include real scenarios and examples (can be fictionalized but realistic)
 - Naturally mention Party On Delivery services where relevant (not salesy)
-- Use subheadings (##) to break up content
-- Include bullet points and numbered lists where appropriate
-- End with a clear next step or call-to-action related to Party On Delivery
-- Target keywords: ${topic.keywords.join(', ')}
+- Use descriptive subheadings (##) to break up content
+- Target keywords naturally throughout: ${topic.keywords.join(', ')}
+- End with a clear next step or call-to-action
 
-The blog should be informative, entertaining, and genuinely helpful to readers planning events in Austin.
+SEO & STRUCTURED DATA REQUIREMENTS:
+- Create HTML tables (not Markdown) for ANY comparison with 3+ items
+- Use proper semantic markup: <table>, <thead>, <tbody>, <th scope="col">
+- Add Schema.org microdata to tables: itemScope, itemType, itemProp attributes
+- Include a FAQ section (## Frequently Asked Questions) with 3-5 Q&As
+- Use clear question format (### Q: ...) and answer format (A: ...)
+- Provide direct, factual answers optimized for AI search engines
 
-STRUCTURE:
+TABLE TRIGGERS (automatically create HTML tables for):
+- Pricing comparisons (packages, tiers, options with costs)
+- Venue comparisons (capacity, location, amenities, pricing)
+- Timeline planning (booking windows, lead times, deadlines)
+- Package inclusions (what's included in each service tier)
+- Budget breakdowns (itemized cost estimates)
+- Service area coverage (zip codes, neighborhoods, delivery fees)
+- Any comparison with 3+ numerical data points
+
+HTML TABLE FORMAT (use this exact structure):
+<div itemScope itemType="https://schema.org/Table">
+  <table className="comparison-table">
+    <caption>Descriptive Table Caption</caption>
+    <thead>
+      <tr>
+        <th scope="col">Column 1</th>
+        <th scope="col">Column 2</th>
+        <th scope="col">Column 3</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr itemScope itemType="https://schema.org/Offer">
+        <td><strong itemProp="name">Item Name</strong></td>
+        <td><span itemProp="price">$XX-XX</span></td>
+        <td>Additional details</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+REQUIRED SECTIONS:
 1. Engaging introduction with a hook
-2. 5-7 main sections with descriptive subheadings
-3. Practical tips and actionable advice throughout
-4. Natural mentions of Party On Delivery where relevant
-5. Conclusion with call-to-action
+2. 5-7 main content sections with descriptive ## subheadings
+3. AT LEAST ONE HTML table comparing options/pricing/venues
+4. Practical tips throughout with bullet points
+5. FAQ section with 3-5 questions (use ### Q: format)
+6. Conclusion with clear call-to-action
+7. Schema.org JSON-LD block at the very end (see format below)
 
-Write the blog post in Markdown format:`;
+SCHEMA.ORG JSON-LD (add this at the END of the blog post):
+\`\`\`json
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "@id": "https://partyondelivery.com/blog/${createSlug(topic.title)}",
+      "headline": "${topic.title}",
+      "description": "[First 160 characters of intro]",
+      "author": {
+        "@type": "Organization",
+        "name": "Party On Delivery",
+        "url": "https://partyondelivery.com"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Party On Delivery",
+        "url": "https://partyondelivery.com"
+      },
+      "datePublished": "${formatDate(new Date())}",
+      "keywords": "${topic.keywords.join(', ')}"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "[Question 1 from FAQ section]",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "[Answer 1 from FAQ section]"
+          }
+        }
+      ]
+    },
+    {
+      "@type": "LocalBusiness",
+      "name": "Party On Delivery",
+      "@id": "https://partyondelivery.com",
+      "url": "https://partyondelivery.com",
+      "telephone": "",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Austin",
+        "addressRegion": "TX",
+        "addressCountry": "US"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "30.2672",
+        "longitude": "-97.7431"
+      },
+      "priceRange": "$$",
+      "servesCuisine": "Alcohol Delivery",
+      "areaServed": {
+        "@type": "City",
+        "name": "Austin"
+      }
+    }
+  ]
+}
+\`\`\`
+
+IMPORTANT:
+- Keep tables simple (max 4 columns for mobile readability)
+- Ensure all pricing includes context (per person, per hour, etc.)
+- FAQ answers should be 2-4 sentences, direct and factual
+- Schema JSON-LD must be valid and complete
+- Write in MDX format (HTML tables are allowed in MDX)
+
+Write the blog post now:`;
 
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
