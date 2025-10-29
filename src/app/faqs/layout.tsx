@@ -49,6 +49,10 @@ export const metadata: Metadata = {
     url: 'https://partyondelivery.com/faqs',
     type: 'website',
   },
+  robots: {
+    index: true,
+    follow: true,
+  },
 }
 
 export default function FAQsLayout({

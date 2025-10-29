@@ -1,5 +1,25 @@
 import LuxuryNavigation from '@/components/LuxuryNavigation';
 import { Crimson_Text, Inter } from 'next/font/google';
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Gin Martini Delivery | Premium Gin & Vermouth | Party On Delivery Austin',
+  description: 'Premium gin, vermouth, and martini essentials delivered to your door in Austin. Craft the perfect martini with top-shelf ingredients.',
+  keywords: 'Gin Martini delivery Austin, premium gin delivery, vermouth delivery, martini ingredients Austin, craft cocktail delivery',
+  alternates: {
+    canonical: '/gin-martini',
+  },
+  openGraph: {
+    title: 'Gin Martini Delivery | Party On Delivery Austin',
+    description: 'Premium gin and vermouth for perfect martinis delivered in Austin.',
+    url: 'https://partyondelivery.com/gin-martini',
+    type: 'website',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+}
 
 const crimson = Crimson_Text({ 
   subsets: ['latin'],
