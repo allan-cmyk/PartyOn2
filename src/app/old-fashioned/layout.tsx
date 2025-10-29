@@ -1,5 +1,25 @@
 import LuxuryNavigation from '@/components/LuxuryNavigation';
 import { Cormorant_Garamond, Inter } from 'next/font/google';
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Old Fashioned Delivery | Premium Bourbon & Rye | Party On Delivery Austin',
+  description: 'Premium bourbon, rye whiskey, bitters, and Old Fashioned essentials delivered to your door in Austin. Classic cocktail ingredients from top distilleries.',
+  keywords: 'Old Fashioned delivery Austin, bourbon delivery, rye whiskey delivery, whiskey cocktail ingredients, premium spirits Austin',
+  alternates: {
+    canonical: '/old-fashioned',
+  },
+  openGraph: {
+    title: 'Old Fashioned Delivery | Party On Delivery Austin',
+    description: 'Premium bourbon and rye whiskey for perfect Old Fashioneds delivered in Austin.',
+    url: 'https://partyondelivery.com/old-fashioned',
+    type: 'website',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+}
 
 const cormorant = Cormorant_Garamond({ 
   subsets: ['latin'],
