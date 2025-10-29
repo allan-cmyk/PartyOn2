@@ -42,7 +42,16 @@
       "Bash(git reset:*)",
       "WebFetch(domain:pagespeed.web.dev)",
       "Bash(npx tsc:*)",
-      "Bash(npm run generate-blog)"
+      "Bash(npm run generate-blog)",
+      "Bash(curl:*)",
+      "Bash(netstat:*)",
+      "Bash(git log:*)",
+      "Bash(if not exist \".claude\" mkdir \".claude\")",
+      "WebFetch(domain:partyondelivery.com)",
+      "Bash(test:*)",
+      "WebSearch",
+      "Bash(image-generator-tool generate:*)",
+      "Bash(del \"C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\src\\app\\corporate\\metadata.ts\")"
     ],
     "deny": [],
     "ask": []
