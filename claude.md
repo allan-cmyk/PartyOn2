@@ -1,5 +1,27 @@
 # PartyOn Delivery - Premium Alcohol Delivery Platform
 
+---
+## ⚠️ CRITICAL: Session Initialization Rules
+
+**Claude Code: At the start of EVERY new session, you MUST read these global rule files:**
+1. `global-rules/core/universal-principles.md` - Universal standards (KISS, YAGNI, DRY, file limits, security)
+2. `global-rules/workflows/prp-methodology.md` - PRP workflow and development methodology
+3. `global-rules/archon/CLAUDE.md` - **ARCHON-FIRST task management rule** (check Archon before TodoWrite)
+4. `global-rules/nextjs/rasmus--nextjs-rules.md` - Next.js 15 patterns and requirements
+5. `global-rules/react/rasmus--react-rules.md` - React 19 component standards and documentation
+
+**DO NOT proceed with any coding tasks until these files are read and understood.**
+
+**Key Requirements from Global Rules:**
+- 500 line max per file, 200 lines per component, 50 lines per function
+- NEVER use `any` type, MUST use `ReactElement` not `JSX.Element`
+- Zod validation for ALL external data
+- 80% minimum test coverage - NO EXCEPTIONS
+- Complete JSDoc documentation for ALL exports
+- Archon-first for task management (TodoWrite is secondary only)
+
+---
+
 ## Project Overview
 PartyOn Delivery is a premium alcohol delivery service in Austin, Texas, offering scheduled deliveries for events, parties, and special occasions. The platform features an elegant, luxury design aesthetic and is fully integrated with Shopify for e-commerce operations.
 
@@ -250,10 +272,62 @@ Optimized Response (~80KB vs 400KB before)
   └── (more to come: Dashboard, Checkout)
 ```
 
+## Blog Generation System
+
+### **SEO-Optimized Content Generation**
+
+The automated blog system uses **Claude 3.5 Sonnet via OpenRouter** to generate SEO-optimized, 2,000+ word blog posts with comprehensive structured data.
+
+**Key Features:**
+- **HTML Tables with Schema.org Markup** - All comparisons use semantic tables with microdata
+- **Comprehensive Structured Data** - Article, FAQPage, and LocalBusiness schemas
+- **AI Search Optimized** - Direct answers, FAQ sections, factual data presentation
+- **Mobile-First Design** - Max 4 columns per table for readability
+- **Austin Local SEO** - Geo-coordinates, local business markup, neighborhood references
+
+**Automatic Table Generation for:**
+- Pricing comparisons (packages, tiers, service options)
+- Venue comparisons (capacity, location, amenities, costs)
+- Timeline planning (booking windows, deadlines)
+- Package inclusions (what's in each tier)
+- Budget breakdowns (itemized cost estimates)
+- Service area coverage (zip codes, delivery fees)
+
+**Required Sections:**
+1. Engaging introduction with Austin personality
+2. 5-7 main content sections with descriptive H2 headings
+3. At least ONE HTML comparison table
+4. FAQ section with 3-5 Q&A pairs
+5. Conclusion with clear CTA
+6. Schema.org JSON-LD block with Article, FAQPage, LocalBusiness schemas
+
+**Schema.org Implementation:**
+```json
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "Article", ... },
+    { "@type": "FAQPage", ... },
+    { "@type": "LocalBusiness", ... }
+  ]
+}
+```
+
+**Run Blog Generation:**
+```bash
+npm run generate-blog
+```
+
+**Documentation:**
+- Full setup guide: `BLOG_AUTOMATION_SETUP.md`
+- Topics list: `scripts/topics.json`
+- Script: `scripts/automated-daily-blog.ts`
+
 ## Commands
 - Development: `npm run dev` (runs on port 3000)
 - Build: `npm run build`
 - Lint: `npm run lint`
+- Generate Blog: `npm run generate-blog`
 
 ## Important Notes
 - All images reference existing assets in `/public/images/`
@@ -335,3 +409,201 @@ https://store.myshopify.com/checkouts/abc123
 - Used by DoorDash, Uber Eats, and major Shopify merchants
 - Shop Pay confirmed to respect these parameters
 - Must parse address into separate fields - Shop Pay won't parse a single string
+
+
+### Global Rules
+This file contains universal development principles and workflows that apply to **ALL projects**, regardless of technology stack. Project-specific rules are loaded conditionally based on the technologies you're using. Additional resources can be found in the /.claude folder
+
+---
+
+## 🎯 Core Development Principles
+
+![[global-rules/core/universal-principles.md]]
+
+---
+
+## 🔄 PRP Development Workflow
+
+![[global-rules/workflows/prp-methodology.md]]
+
+---
+
+## 🏛️ Archon Integration
+
+![[global-rules/archon/CLAUDE.md]]
+
+---
+
+## 📚 Language & Framework-Specific Rules
+
+The following rules are loaded based on your project's technology stack. Claude Code will use these when working with the respective technologies.
+
+### Python Development
+
+![[global-rules/python/rasmus--python-rules.md]]
+
+### Pydantic AI Agents
+
+**Use when building AI agents with Pydantic AI:**
+
+![[global-rules/pydantic-ai/pydantic-ai-rules.md]]
+
+### Next.js Development
+
+**Use when building Next.js applications:**
+
+![[global-rules/nextjs/rasmus--nextjs-rules.md]]
+
+### React Development
+
+**Use when working with React components:**
+
+![[global-rules/react/rasmus--react-rules.md]]
+
+### Node.js Backend Development
+
+**Use when building Node.js APIs or backend services:**
+
+![[global-rules/node/rasmus--node-rules.md]]
+
+### Astro Static Sites
+
+**Use when building Astro websites:**
+
+![[global-rules/astro/rasmus--astro-rules.md]]
+
+---
+
+## 🎯 Project Type Detection
+
+Claude Code automatically adapts based on project context:
+
+- **Detects Python projects** → Applies Python rules + relevant framework rules
+- **Detects Next.js/React** → Applies JavaScript/TypeScript + framework rules
+- **Detects AI agent development** → Applies Pydantic AI specialized rules
+- **Detects Node.js APIs** → Applies Node.js backend patterns
+- **Detects Astro projects** → Applies static site generation rules
+
+You can also explicitly tell Claude what you're building:
+- "I'm building a Next.js app with..."
+- "This is a Pydantic AI agent for..."
+- "Working on a Node.js API that..."
+
+---
+
+## 🚀 Quick Start Guide
+
+### For New Projects
+
+1. **Define Requirements**: Create `PRPs/INITIAL.md`
+2. **Generate PRP**: Run `/generate-prp PRPs/INITIAL.md`
+3. **Review PRP**: Validate completeness
+4. **Execute**: Run `/execute-prp PRPs/generated-prp.md`
+5. **Validate**: Run validation gates
+
+### For Existing Codebases
+
+1. **Explore**: Run `/primer` or ask Claude to investigate
+2. **Plan**: Collaborate on approach and architecture
+3. **Create PRP**: Generate focused PRP for feature
+4. **Execute**: Implement following PRP blueprint
+5. **Validate**: Ensure all tests pass
+
+---
+
+## 📂 Project Organization
+
+```
+your-project/
+├── .claude/
+│   ├── commands/          # Custom slash commands
+│   └── settings.local.json # Permissions
+├── PRPs/
+│   ├── INITIAL.md        # Requirements (new projects)
+│   ├── templates/        # PRP templates by project type
+│   └── *.md             # Generated PRPs
+├── global-rules/         # Imported global rules (optional)
+├── CLAUDE.md            # This file
+├── .env.example         # Environment variable template
+└── README.md            # Project documentation
+```
+
+---
+
+## ✅ Universal Quality Standards
+
+Every project, regardless of type, should meet these standards:
+
+- **Code Quality**
+  - Files < 500 lines
+  - Functions < 50 lines
+  - Clear naming conventions
+  - Comprehensive error handling
+
+- **Security**
+  - No hardcoded secrets
+  - Environment variables in .env
+  - Input validation
+  - Secure dependencies
+
+- **Testing**
+  - Minimum 80% coverage
+  - Unit + integration tests
+  - Edge case handling
+  - Validation gates in PRPs
+
+- **Documentation**
+  - Clear README
+  - Inline comments for complex logic
+  - API documentation
+  - Setup instructions
+
+---
+
+## 🔧 Available Tools & Workflows
+
+### Slash Commands
+
+- `/generate-prp` - Create comprehensive PRP from INITIAL.md
+- `/execute-prp` - Implement feature from PRP
+- `/primer` - Explore and understand codebase
+- `/generate-pydantic-ai-prp` - Specialized AI agent PRP
+- `/execute-pydantic-ai-prp` - Implement AI agent from PRP
+- `/hackathon-prp-parallel` - Rapid parallel development
+
+### MCP Servers
+
+- **Archon** - Knowledge management, task tracking, RAG
+- (Add other MCP servers as you integrate them)
+
+### Development Tools
+
+- **TodoWrite** - Track multi-step tasks within sessions
+- **WebSearch** - Research documentation and examples
+- **Glob/Grep** - Explore codebase patterns
+
+---
+
+## 🎓 Philosophy
+
+This universal framework is built on these principles:
+
+1. **PRP-Driven Development** - Structured planning enables one-pass implementation
+2. **Context Engineering** - Comprehensive context yields quality results
+3. **Progressive Validation** - Test early, test often, catch issues fast
+4. **Technology Agnostic** - Core principles apply across all stacks
+5. **Modular Loading** - Use only the rules relevant to your project
+6. **Continuous Learning** - Refine PRPs and patterns based on experience
+
+---
+
+## 💡 Best Practices
+
+- **Start with universal principles** - They apply to every project
+- **Load framework rules as needed** - Don't overwhelm context with irrelevant rules
+- **Create focused PRPs** - Target specific features, not entire systems
+- **Validate progressively** - Syntax → Types → Tests → Integration
+- **Document decisions** - Capture rationale in PRPs and commit messages
+- **Iterate and improve** - Refine your PRP templates over time
+
+---
