@@ -440,13 +440,14 @@ Source: ${formData.source}`,
 
       {/* Hero Section */}
       <section className="relative h-[70vh] min-h-[600px] flex items-center justify-center overflow-hidden">
-        {/* TODO: Replace with generated hero image - mobile bartender at outdoor Austin event */}
+        {/* Professional mobile bartender at outdoor event with string lights */}
         <Image
-          src="/images/hero/bartender-hero-placeholder.jpg"
-          alt="Mobile bartender serving drinks at Austin event"
+          src="/images/hero/mobile-bartender-outdoor-event.webp"
+          alt="Professional mobile bartender serving cocktails at elegant outdoor Austin event under string lights"
           fill
           className="object-cover"
           priority
+          sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/80 via-gray-900/60 to-gray-900/80" />
 
