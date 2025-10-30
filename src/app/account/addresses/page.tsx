@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useCustomerContext } from '@/contexts/CustomerContext'
 import AccountLayout from '@/components/account/AccountLayout'
 import CustomerAuth from '@/components/CustomerAuth'
-import { motion } from 'framer-motion'
+
 
 interface Address {
   id: string
@@ -159,11 +159,9 @@ export default function AddressesPage() {
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Existing Addresses */}
         {addresses.map((address) => (
-          <motion.div
+          <div
             key={address.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-100"
+            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-100 hero-fade-in"
           >
             <div className="flex items-start justify-between mb-4">
               <div>
@@ -282,16 +280,12 @@ export default function AddressesPage() {
                 </div>
               </>
             )}
-          </motion.div>
+          </div>
         ))}
 
         {/* Add New Address Card */}
         {isAddingNew ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white p-6 rounded-lg shadow-md border border-gray-100"
-          >
+          <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100 hero-fade-in">
             <h3 className="text-lg font-medium mb-4">New Address</h3>
             <form onSubmit={handleSaveAddress} className="space-y-3">
               <input
@@ -346,19 +340,17 @@ export default function AddressesPage() {
                 </button>
               </div>
             </form>
-          </motion.div>
+          </div>
         ) : (
-          <motion.button
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+          <button
             onClick={() => setIsAddingNew(true)}
-            className="bg-white p-6 rounded-lg shadow-md border-2 border-dashed border-gray-300 hover:border-gold-600 transition-colors flex flex-col items-center justify-center min-h-[280px] group"
+            className="bg-white p-6 rounded-lg shadow-md border-2 border-dashed border-gray-300 hover:border-gold-600 transition-colors flex flex-col items-center justify-center min-h-[280px] group hero-fade-in"
           >
             <svg className="w-12 h-12 text-gray-400 mb-4 group-hover:text-gold-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
             <span className="text-gray-600 group-hover:text-gold-600 tracking-[0.1em]">ADD NEW ADDRESS</span>
-          </motion.button>
+          </button>
         )}
       </div>
 

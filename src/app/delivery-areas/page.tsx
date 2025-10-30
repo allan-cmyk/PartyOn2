@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 export default function DeliveryAreasPage() {
   const [activeArea, setActiveArea] = useState('downtown');
@@ -92,55 +92,41 @@ export default function DeliveryAreasPage() {
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
-        
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="relative text-center text-white z-10 max-w-4xl mx-auto px-8"
-        >
+
+        <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8">
           <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
             DELIVERY AREAS
           </h1>
           <div className="w-24 h-px bg-gold-400 mx-auto" />
-        </motion.div>
+        </div>
       </section>
 
       {/* Introduction */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
+          <ScrollRevealCSS duration={800}>
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
               Serving Greater Austin
             </h2>
             <p className="text-lg text-gray-600 leading-relaxed">
-              From the vibrant streets of downtown to the serene shores of Lake Travis, 
-              we deliver premium spirits and exceptional service throughout the Austin 
-              metropolitan area. Our extensive coverage ensures that wherever your 
+              From the vibrant streets of downtown to the serene shores of Lake Travis,
+              we deliver premium spirits and exceptional service throughout the Austin
+              metropolitan area. Our extensive coverage ensures that wherever your
               celebration takes place, PartyOn is there to serve you.
             </p>
-          </motion.div>
+          </ScrollRevealCSS>
         </div>
       </section>
 
       {/* Area Selector */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
+          <ScrollRevealCSS duration={800} className="text-center mb-16">
             <h2 className="font-serif font-light text-3xl text-gray-900 mb-4 tracking-[0.1em]">
               Select Your Area
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </motion.div>
+          </ScrollRevealCSS>
 
           {/* Area Buttons */}
           <div className="flex flex-wrap justify-center gap-4 mb-16">
@@ -160,20 +146,22 @@ export default function DeliveryAreasPage() {
           </div>
 
           {/* Neighborhoods Grid */}
-          <motion.div
+          <div
             key={activeArea}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            style={{
+              animation: 'result-fade-in 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards'
+            }}
           >
             {areas[activeArea as keyof typeof areas].neighborhoods.map((neighborhood, index) => (
-              <motion.div
+              <div
                 key={neighborhood.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.05 }}
                 className="bg-gray-50 p-6"
+                style={{
+                  animation: `result-fade-in 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards`,
+                  animationDelay: `${index * 50}ms`,
+                  opacity: 0
+                }}
               >
                 <h3 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.1em]">
                   {neighborhood.name}
@@ -181,34 +169,24 @@ export default function DeliveryAreasPage() {
                 <p className="text-gray-600 text-sm">
                   {neighborhood.description}
                 </p>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Service Details */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
+          <ScrollRevealCSS duration={800} className="text-center mb-16">
             <h2 className="font-serif font-light text-3xl text-gray-900 mb-4 tracking-[0.1em]">
               Delivery Information
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </motion.div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-center"
-            >
+            <ScrollRevealCSS duration={800} className="text-center">
               <div className="mb-4">
                 <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -220,14 +198,9 @@ export default function DeliveryAreasPage() {
               <p className="text-gray-600">
                 All orders require 72-hour advance booking to ensure availability and proper preparation
               </p>
-            </motion.div>
+            </ScrollRevealCSS>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="text-center"
-            >
+            <ScrollRevealCSS duration={800} delay={100} className="text-center">
               <div className="mb-4">
                 <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
@@ -239,14 +212,9 @@ export default function DeliveryAreasPage() {
               <p className="text-gray-600">
                 Our trained team arrives on time with everything needed for your event&apos;s success
               </p>
-            </motion.div>
+            </ScrollRevealCSS>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-center"
-            >
+            <ScrollRevealCSS duration={800} delay={200} className="text-center">
               <div className="mb-4">
                 <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -258,7 +226,7 @@ export default function DeliveryAreasPage() {
               <p className="text-gray-600">
                 TABC certified with comprehensive insurance for your peace of mind
               </p>
-            </motion.div>
+            </ScrollRevealCSS>
           </div>
         </div>
       </section>
@@ -266,21 +234,16 @@ export default function DeliveryAreasPage() {
       {/* Special Services */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
+          <ScrollRevealCSS duration={800} className="text-center mb-16">
             <h2 className="font-serif font-light text-3xl text-gray-900 mb-4 tracking-[0.1em]">
               Venue Partnerships
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto mb-8" />
             <p className="text-gray-600 max-w-2xl mx-auto">
-              We maintain partnerships with Austin&apos;s premier venues to ensure seamless service 
+              We maintain partnerships with Austin&apos;s premier venues to ensure seamless service
               at your chosen location
             </p>
-          </motion.div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {[
@@ -293,17 +256,16 @@ export default function DeliveryAreasPage() {
               'Rooftop Spaces',
               'Historic Sites'
             ].map((venue, index) => (
-              <motion.div
+              <ScrollRevealCSS
                 key={venue}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.05 }}
+                duration={500}
+                delay={index * 50}
                 className="bg-white p-4 text-center border border-gray-200"
               >
                 <p className="text-gray-700 font-light tracking-[0.1em]">
                   {venue}
                 </p>
-              </motion.div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>
@@ -312,11 +274,7 @@ export default function DeliveryAreasPage() {
       {/* CTA Section */}
       <section className="py-24 bg-gray-900">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
+          <ScrollRevealCSS duration={800}>
             <h2 className="font-serif font-light text-4xl md:text-5xl text-white mb-6 tracking-[0.1em]">
               Ready to Celebrate?
             </h2>
@@ -335,7 +293,7 @@ export default function DeliveryAreasPage() {
                 </button>
               </a>
             </div>
-          </motion.div>
+          </ScrollRevealCSS>
         </div>
       </section>
 

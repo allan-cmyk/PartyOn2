@@ -2,14 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import CustomCursor from '@/components/CustomCursor';
 
 export default function UltraCleanHome() {
-  const { scrollY } = useScroll();
-  const heroParallax = useTransform(scrollY, [0, 500], [0, 150]);
-  const textParallax = useTransform(scrollY, [0, 300], [0, -50]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -19,39 +14,70 @@ export default function UltraCleanHome() {
 
   return (
     <>
-      <CustomCursor />
-      
       {/* Loading State */}
-      <AnimatePresence>
-        {isLoading && (
-          <motion.div
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="fixed inset-0 bg-white z-50 flex items-center justify-center"
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 1.2, opacity: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-center"
-            >
-              <h1 className="text-4xl font-display text-royal-800 mb-4">PARTYON</h1>
-              <div className="w-20 h-1 bg-gold-500 mx-auto animate-pulse"></div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {isLoading && (
+        <div
+          className="fixed inset-0 bg-white z-50 flex items-center justify-center animate-fade-out"
+          style={{ animation: isLoading ? 'none' : 'fade-out 0.5s ease-out forwards' }}
+        >
+          <style>{`
+            @keyframes fade-out {
+              from { opacity: 1; }
+              to { opacity: 0; }
+            }
+            @keyframes scale-in {
+              from { transform: scale(0.8); opacity: 0; }
+              to { transform: scale(1); opacity: 1; }
+            }
+            .loading-spinner {
+              animation: scale-in 0.5s ease-out forwards;
+            }
+          `}</style>
+          <div className="text-center loading-spinner">
+            <h1 className="text-4xl font-display text-royal-800 mb-4">PARTYON</h1>
+            <div className="w-20 h-1 bg-gold-500 mx-auto animate-pulse"></div>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes hero-fade-in {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fade-in-delay {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes scroll-bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(10px); }
+        }
+        @keyframes parallax-bg {
+          0% { transform: translateY(0); }
+          100% { transform: translateY(150px); }
+        }
+        .hero-content {
+          animation: hero-fade-in 1s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+        }
+        .hero-buttons {
+          animation: fade-in-delay 0.8s ease-out 0.4s forwards;
+          opacity: 0;
+        }
+        .scroll-indicator {
+          animation: fade-in-delay 1s ease-out 1s forwards;
+          opacity: 0;
+        }
+        .scroll-arrow {
+          animation: scroll-bounce 2s ease-in-out infinite;
+        }
+      `}</style>
 
       <main className="min-h-screen bg-white overflow-x-hidden cursor-none">
       {/* Hero Section with Parallax */}
       <section className="relative h-screen flex items-center justify-center">
         {/* Parallax Background */}
-        <motion.div 
-          style={{ y: heroParallax }}
-          className="absolute inset-0 z-0"
-        >
+        <div className="absolute inset-0 z-0">
           <Image
             src="/images/services/corporate/penthouse-suite-setup.webp"
             alt="Premium Event Service"
@@ -61,18 +87,11 @@ export default function UltraCleanHome() {
             quality={100}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-royal-900/80 via-royal-900/60 to-royal-900/80" />
-        </motion.div>
+        </div>
 
         {/* Hero Content */}
-        <motion.div 
-          style={{ y: textParallax }}
-          className="relative z-10 text-center text-white max-w-4xl mx-auto px-6"
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
-          >
+        <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-6">
+          <div className="hero-content">
             <h1 className="font-display text-6xl md:text-7xl lg:text-8xl mb-6 leading-tight">
               Elevate Your
               <span className="block text-gold-400">Events</span>
@@ -80,13 +99,8 @@ export default function UltraCleanHome() {
             <p className="text-xl md:text-2xl text-white/90 mb-10 font-light max-w-2xl mx-auto">
               Premium bar services for Fortune 500 companies and luxury venues
             </p>
-            
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center"
-            >
+
+            <div className="hero-buttons flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/consultation">
                 <button className="px-10 py-4 bg-gold-500 hover:bg-gold-600 text-royal-900 font-semibold rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
                   Schedule Consultation
@@ -97,30 +111,36 @@ export default function UltraCleanHome() {
                   Explore Services
                 </button>
               </Link>
-            </motion.div>
-          </motion.div>
-        </motion.div>
+            </div>
+          </div>
+        </div>
 
         {/* Scroll Indicator */}
-        <motion.div
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1 }}
-        >
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          >
+        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 scroll-indicator">
+          <div className="scroll-arrow">
             <svg className="w-6 h-6 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </section>
 
       {/* Clean Stats Section */}
       <section className="py-20 bg-gray-50">
+        <style>{`
+          @keyframes ScrollRevealCSS {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          .stat-item {
+            animation: ScrollRevealCSS 0.5s ease-out forwards;
+            opacity: 0;
+          }
+          .stat-item:nth-child(1) { animation-delay: 0s; }
+          .stat-item:nth-child(2) { animation-delay: 0.1s; }
+          .stat-item:nth-child(3) { animation-delay: 0.2s; }
+          .stat-item:nth-child(4) { animation-delay: 0.3s; }
+        `}</style>
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
@@ -128,18 +148,14 @@ export default function UltraCleanHome() {
               { value: '$5M', label: 'Insurance' },
               { value: '98%', label: 'Retention' },
               { value: '24/7', label: 'Support' }
-            ].map((stat, index) => (
-              <motion.div
+            ].map((stat) => (
+              <div
                 key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="text-center"
+                className="stat-item text-center"
               >
                 <div className="text-4xl font-light text-royal-800 mb-2">{stat.value}</div>
                 <div className="text-sm uppercase tracking-wider text-gray-600">{stat.label}</div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -147,17 +163,33 @@ export default function UltraCleanHome() {
 
       {/* Services with Parallax Cards */}
       <section className="py-24">
+        <style>{`
+          @keyframes service-card-reveal {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          .services-heading {
+            animation: ScrollRevealCSS 0.8s ease-out forwards;
+            opacity: 0;
+          }
+          .service-card {
+            animation: service-card-reveal 0.6s ease-out forwards;
+            opacity: 0;
+          }
+          .service-card:nth-child(1) { animation-delay: 0s; }
+          .service-card:nth-child(2) { animation-delay: 0.2s; }
+          .service-card:nth-child(3) { animation-delay: 0.4s; }
+          .service-card:hover {
+            transform: translateY(-10px);
+          }
+        `}</style>
         <div className="max-w-7xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
+          <div
+            className="services-heading text-center mb-16"
           >
             <h2 className="font-display text-5xl text-royal-800 mb-4">Our Services</h2>
             <div className="w-20 h-1 bg-gold-500 mx-auto"></div>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
@@ -176,15 +208,10 @@ export default function UltraCleanHome() {
                 description: 'Exclusive service for country clubs and yacht clubs',
                 image: '/images/services/boat-parties/luxury-yacht-deck.webp'
               }
-            ].map((service, index) => (
-              <motion.div
+            ].map((service) => (
+              <div
                 key={service.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -10 }}
-                className="group cursor-pointer"
+                className="service-card group cursor-pointer transition-transform duration-500"
               >
                 <div className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
                   <div className="relative h-64 overflow-hidden">
@@ -205,7 +232,7 @@ export default function UltraCleanHome() {
                     </span>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -213,10 +240,17 @@ export default function UltraCleanHome() {
 
       {/* Testimonial with Parallax Background */}
       <section className="relative py-32 overflow-hidden">
-        <motion.div 
-          style={{ y: useTransform(scrollY, [0, 2000], [0, -100]) }}
-          className="absolute inset-0"
-        >
+        <style>{`
+          @keyframes testimonial-reveal {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          .testimonial-content {
+            animation: testimonial-reveal 0.8s ease-out forwards;
+            opacity: 0;
+          }
+        `}</style>
+        <div className="absolute inset-0">
           <Image
             src="/images/backgrounds/rooftop-terrace-elegant-1.webp"
             alt="Elegant Event"
@@ -224,15 +258,10 @@ export default function UltraCleanHome() {
             className="object-cover"
           />
           <div className="absolute inset-0 bg-royal-900/90" />
-        </motion.div>
+        </div>
 
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center text-white">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
+          <div className="testimonial-content">
             <div className="flex justify-center gap-1 mb-6">
               {[...Array(5)].map((_, i) => (
                 <svg key={i} className="w-6 h-6 text-gold-400 fill-current" viewBox="0 0 20 20">
@@ -252,19 +281,24 @@ export default function UltraCleanHome() {
                 <p className="text-gold-300">Director of Events, Oracle</p>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Simple CTA */}
       <section className="py-24 bg-gradient-to-br from-royal-800 to-royal-900">
+        <style>{`
+          @keyframes cta-reveal {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          .cta-content {
+            animation: cta-reveal 0.8s ease-out forwards;
+            opacity: 0;
+          }
+        `}</style>
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
+          <div className="cta-content">
             <h2 className="font-display text-5xl text-white mb-6">
               Ready to Get Started?
             </h2>
@@ -276,7 +310,7 @@ export default function UltraCleanHome() {
                 Schedule Your Consultation
               </button>
             </Link>
-          </motion.div>
+          </div>
         </div>
       </section>
     </main>

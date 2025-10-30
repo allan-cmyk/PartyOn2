@@ -3,9 +3,10 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+
 import Footer from '@/components/Footer';
 import { useCart } from '@/lib/shopify/hooks/useCart';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 export default function PropertyManagementPartnerPage() {
   const { cart } = useCart();
@@ -103,12 +104,8 @@ export default function PropertyManagementPartnerPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="relative text-center text-white z-10 max-w-4xl mx-auto px-8"
-        >
+        <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8">
+
           <h1 className="font-serif font-light text-4xl md:text-6xl mb-4 tracking-[0.1em]">
             Elevate Your Resident Experience
           </h1>
@@ -129,7 +126,7 @@ export default function PropertyManagementPartnerPage() {
               SHOP ALL PRODUCTS
             </Link>
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Value Props */}
@@ -190,15 +187,10 @@ export default function PropertyManagementPartnerPage() {
 
           <div className="space-y-16">
             {amenities.map((amenity, index) => (
-              <motion.div
-                key={amenity.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
-              >
-                {/* Image */}
-                <div className={`relative h-[400px] ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
+              <ScrollRevealCSS key={amenity.title} duration={800} delay={(index % 8) * 100} y={30}>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                  {/* Image */}
+                  <div className={`relative h-[400px] ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
                   <Image
                     src={amenity.image}
                     alt={amenity.title}
@@ -243,7 +235,8 @@ export default function PropertyManagementPartnerPage() {
                     </svg>
                   </Link>
                 </div>
-              </motion.div>
+                </div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>

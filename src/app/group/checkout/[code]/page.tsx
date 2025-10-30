@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
 import { useGroupOrder } from '@/lib/group-orders/hooks'
 // import { formatPrice } from '@/lib/shopify/utils' // Not used currently
 
@@ -113,11 +112,7 @@ export default function GroupCheckoutPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-3xl mx-auto"
-        >
+        <div className="max-w-3xl mx-auto fade-in-up">
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-4xl font-cormorant text-gray-900 mb-2">
@@ -297,7 +292,7 @@ export default function GroupCheckoutPage() {
               </li>
             </ul>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   )

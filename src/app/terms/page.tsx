@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 
 export default function TermsPage() {
@@ -12,26 +12,20 @@ export default function TermsPage() {
       
       {/* Header */}
       <section className="pt-32 pb-16 px-8 bg-gray-50">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-4xl mx-auto text-center"
-        >
+        <div className="hero-fade-in max-w-4xl mx-auto text-center">
           <h1 className="font-serif text-5xl text-gray-900 mb-4 tracking-[0.1em]">
             Terms of Service
           </h1>
           <p className="text-gray-600">Last updated: January 2024</p>
-        </motion.div>
+        </div>
       </section>
 
       {/* Content */}
       <section className="py-16 px-8">
         <div className="max-w-4xl mx-auto prose prose-lg">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+          <ScrollRevealCSS
+            delay={200}
+            duration={600}
             className="space-y-8"
           >
             <div>
@@ -113,7 +107,7 @@ export default function TermsPage() {
                 <p>Email: info@partyondelivery.com</p>
               </div>
             </div>
-          </motion.div>
+          </ScrollRevealCSS>
         </div>
       </section>
 

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
 import { useCart } from '@/lib/shopify/hooks/useCart';
@@ -141,12 +141,7 @@ export default function CorporateProductsPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="relative text-center text-white z-10 max-w-4xl mx-auto px-8"
-        >
+        <div className="relative text-center text-white z-10 max-w-4xl mx-auto px-8 hero-fade-in">
           <h1 className="font-serif font-light text-4xl md:text-6xl mb-4 tracking-[0.15em]">
             CORPORATE COLLECTION
           </h1>
@@ -154,7 +149,7 @@ export default function CorporateProductsPage() {
           <p className="text-lg font-light tracking-[0.1em] text-gray-200">
             Premium selections for business excellence
           </p>
-        </motion.div>
+        </div>
       </section>
 
       {/* Quick Actions Bar */}
@@ -186,10 +181,9 @@ export default function CorporateProductsPage() {
       {curatedCollections.map((collection, collectionIndex) => (
         <section key={collection.title} className={`py-16 ${collectionIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
           <div className="max-w-7xl mx-auto px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
+            <ScrollRevealCSS
+              duration={800}
+              y={20}
               className="text-center mb-12"
             >
               <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
@@ -198,15 +192,15 @@ export default function CorporateProductsPage() {
               <p className="text-gray-600 max-w-2xl mx-auto">
                 {collection.description}
               </p>
-            </motion.div>
+            </ScrollRevealCSS>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {collection.products.map((product, index) => (
-                <motion.div
+                <ScrollRevealCSS
                   key={product.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  duration={500}
+                  y={20}
+                  delay={index * 100}
                   className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
                 >
                   <div className="relative h-64">
@@ -235,7 +229,7 @@ export default function CorporateProductsPage() {
                       </button>
                     </div>
                   </div>
-                </motion.div>
+                </ScrollRevealCSS>
               ))}
             </div>
           </div>

@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 export default function MobileBartenderPartnerPage() {
   // Commission configuration
@@ -451,12 +451,8 @@ Source: ${formData.source}`,
         />
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/80 via-gray-900/60 to-gray-900/80" />
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="relative text-center text-white z-10 max-w-5xl mx-auto px-8"
-        >
+        <div className="hero-fade-in relative text-center text-white z-10 max-w-5xl mx-auto px-8">
+
           {/* Primary H1 */}
           <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
             You Pour. We Deliver.
@@ -494,40 +490,33 @@ Source: ${formData.source}`,
               HOW IT WORKS
             </button>
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Benefits Grid */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
-              Why Partner With Us
-            </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Join Austin&apos;s most trusted alcohol delivery network and start earning more while doing less heavy lifting.
-            </p>
-          </motion.div>
+          <ScrollRevealCSS duration={800} delay={0} y={30}>
+            <div className="text-center mb-16">
+              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+                Why Partner With Us
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                Join Austin&apos;s most trusted alcohol delivery network and start earning more while doing less heavy lifting.
+              </p>
+            </div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {benefits.map((benefit, index) => (
-              <motion.div
-                key={benefit.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-gray-50 p-8 text-center"
-              >
-                <div className="text-gold-600 mb-4 flex justify-center">{benefit.icon}</div>
-                <h3 className="text-xl font-medium mb-3 text-gray-900 tracking-wide">{benefit.title}</h3>
-                <p className="text-gray-600">{benefit.description}</p>
-              </motion.div>
+              <ScrollRevealCSS key={benefit.title} duration={800} delay={(index % 8) * 100} y={30}>
+                <div className="bg-gray-50 p-8 text-center">
+                  <div className="text-gold-600 mb-4 flex justify-center">{benefit.icon}</div>
+                  <h3 className="text-xl font-medium mb-3 text-gray-900 tracking-wide">{benefit.title}</h3>
+                  <p className="text-gray-600">{benefit.description}</p>
+                </div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>
@@ -536,37 +525,30 @@ Source: ${formData.source}`,
       {/* How It Works */}
       <section id="how-it-works" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
-              How It Works
-            </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Four simple steps to start earning commission on every event
-            </p>
-          </motion.div>
+          <ScrollRevealCSS duration={800} delay={0} y={30}>
+            <div className="text-center mb-16">
+              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+                How It Works
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Four simple steps to start earning commission on every event
+              </p>
+            </div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {howItWorksSteps.map((step, index) => (
-              <motion.div
-                key={step.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.15 }}
-                className="text-center"
-              >
-                <div className="bg-white rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6 shadow-lg">
-                  <div className="text-gold-600">{step.icon}</div>
+              <ScrollRevealCSS key={step.title} duration={800} delay={(index % 8) * 100} y={30}>
+                <div className="text-center">
+                  <div className="bg-white rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6 shadow-lg">
+                    <div className="text-gold-600">{step.icon}</div>
+                  </div>
+                  <div className="text-3xl font-serif text-gold-600 mb-3">{index + 1}</div>
+                  <h3 className="text-xl font-medium mb-3 text-gray-900">{step.title}</h3>
+                  <p className="text-gray-600">{step.description}</p>
                 </div>
-                <div className="text-3xl font-serif text-gold-600 mb-3">{index + 1}</div>
-                <h3 className="text-xl font-medium mb-3 text-gray-900">{step.title}</h3>
-                <p className="text-gray-600">{step.description}</p>
-              </motion.div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>
@@ -575,27 +557,21 @@ Source: ${formData.source}`,
       {/* Partnership Tiers */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
-              Partnership Tiers
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              The more you refer, the more you earn
-            </p>
-          </motion.div>
+          <ScrollRevealCSS duration={800} delay={0} y={30}>
+            <div className="text-center mb-16">
+              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+                Partnership Tiers
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                The more you refer, the more you earn
+              </p>
+            </div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="bg-white p-8 border-2 border-gray-200"
-            >
+            <ScrollRevealCSS duration={800} delay={0} y={30}>
+              <div className="bg-white p-8 border-2 border-gray-200">
+
               <h3 className="font-serif text-2xl mb-2 text-gray-900">Tier 1 Partner</h3>
               <p className="text-gray-600 mb-2">$0 - $5,000 in referred orders</p>
               <p className="text-3xl font-light text-gold-600 mb-6">5% Commission</p>
@@ -631,14 +607,12 @@ Source: ${formData.source}`,
                   <span className="text-gray-700">Event consultation</span>
                 </li>
               </ul>
-            </motion.div>
+              </div>
+            </ScrollRevealCSS>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="bg-white p-8 border-2 border-gray-200"
-            >
+            <ScrollRevealCSS duration={800} delay={100} y={30}>
+              <div className="bg-white p-8 border-2 border-gray-200">
+
               <h3 className="font-serif text-2xl mb-2 text-gray-900">Tier 2 Partner</h3>
               <p className="text-gray-600 mb-2">$10,000 - $20,000 in referred orders</p>
               <p className="text-3xl font-light text-gold-600 mb-6">8% Commission</p>
@@ -662,14 +636,12 @@ Source: ${formData.source}`,
                   <span className="text-gray-700">Social media collaborations</span>
                 </li>
               </ul>
-            </motion.div>
+              </div>
+            </ScrollRevealCSS>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="bg-white p-8 border-2 border-gray-200"
-            >
+            <ScrollRevealCSS duration={800} delay={200} y={30}>
+              <div className="bg-white p-8 border-2 border-gray-200">
+
               <h3 className="font-serif text-2xl mb-2 text-gray-900">Tier 3 Partner</h3>
               <p className="text-gray-600 mb-2">$20,000+ in referred orders</p>
               <p className="text-3xl font-light text-gold-600 mb-6">10% Commission</p>
@@ -693,7 +665,8 @@ Source: ${formData.source}`,
                   <span className="text-gray-700">Free Boat Party on our sister company&apos;s biggest boat (premierpartycruises.com)!</span>
                 </li>
               </ul>
-            </motion.div>
+              </div>
+            </ScrollRevealCSS>
           </div>
         </div>
       </section>
@@ -701,30 +674,22 @@ Source: ${formData.source}`,
       {/* Use Cases */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
-              Events We Serve Together
-            </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              From intimate gatherings to 500-person celebrations, we&apos;ve got the logistics covered
-            </p>
-          </motion.div>
+          <ScrollRevealCSS duration={800} delay={0} y={30}>
+            <div className="text-center mb-16">
+              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+                Events We Serve Together
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                From intimate gatherings to 500-person celebrations, we&apos;ve got the logistics covered
+              </p>
+            </div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
             {useCases.map((useCase, index) => (
-              <motion.div
-                key={useCase.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="relative h-64 overflow-hidden group"
-              >
+              <ScrollRevealCSS key={useCase.title} duration={800} delay={(index % 8) * 100} y={30}>
+                <div className="relative h-64 overflow-hidden group">
                 {/* TODO: Replace with generated lifestyle images */}
                 <Image
                   src={useCase.image}
@@ -737,7 +702,8 @@ Source: ${formData.source}`,
                   <h3 className="font-serif text-2xl mb-2">{useCase.title}</h3>
                   <p className="text-sm text-gray-200">{useCase.description}</p>
                 </div>
-              </motion.div>
+                </div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>
@@ -755,13 +721,9 @@ Source: ${formData.source}`,
         <div className="absolute inset-0 bg-gradient-to-r from-gray-900/95 via-gray-900/85 to-gray-900/95" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-8 text-white">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-3xl"
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl mb-6 tracking-[0.1em]">
+          <ScrollRevealCSS duration={800} delay={0} y={30}>
+            <div className="max-w-3xl">
+              <h2 className="font-serif font-light text-4xl md:text-5xl mb-6 tracking-[0.1em]">
               Austin Born & Raised
             </h2>
             <div className="w-16 h-px bg-gold-400 mb-8" />
@@ -777,34 +739,27 @@ Source: ${formData.source}`,
             >
               BECOME A PARTNER
             </button>
-          </motion.div>
+            </div>
+          </ScrollRevealCSS>
         </div>
       </section>
 
       {/* Testimonials */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
-              What Bartenders Say
-            </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </motion.div>
+          <ScrollRevealCSS duration={800} delay={0} y={30}>
+            <div className="text-center mb-16">
+              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+                What Bartenders Say
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto" />
+            </div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <motion.div
-                key={testimonial.author}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-gray-50 p-8"
-              >
+              <ScrollRevealCSS key={testimonial.author} duration={800} delay={(index % 8) * 100} y={30}>
+                <div className="bg-gray-50 p-8">
                 <div className="flex items-center mb-4">
                   {[...Array(5)].map((_, i) => (
                     <svg key={i} className="w-5 h-5 text-gold-400 fill-current" viewBox="0 0 20 20">
@@ -828,7 +783,8 @@ Source: ${formData.source}`,
                     <div className="text-sm text-gray-600">{testimonial.role}</div>
                   </div>
                 </div>
-              </motion.div>
+                </div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>
@@ -837,28 +793,24 @@ Source: ${formData.source}`,
       {/* Partner Form */}
       <section id="partner-form" className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-12"
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
-              Apply to Partner
-            </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
-            <p className="text-lg text-gray-600">
-              Join Austin&apos;s premier mobile bartender network. We&apos;ll review your application within 24 hours.
-            </p>
-          </motion.div>
+          <ScrollRevealCSS duration={800} delay={0} y={30}>
+            <div className="text-center mb-12">
+              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+                Apply to Partner
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+              <p className="text-lg text-gray-600">
+                Join Austin&apos;s premier mobile bartender network. We&apos;ll review your application within 24 hours.
+              </p>
+            </div>
+          </ScrollRevealCSS>
 
-          <motion.form
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            onSubmit={handleSubmit}
-            className="bg-white p-8 md:p-12 shadow-lg"
-          >
+          <ScrollRevealCSS duration={800} delay={100} y={30}>
+
+            <form
+              onSubmit={handleSubmit}
+              className="bg-white p-8 md:p-12 shadow-lg"
+            >
             {/* Status Messages */}
             {submitStatus === 'error' && (
               <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded">
@@ -1111,37 +1063,31 @@ Source: ${formData.source}`,
               Questions? Call us at <a href="tel:+17373719700" className="text-gold-600 hover:underline">(737) 371-9700</a> or email{' '}
               <a href="mailto:partners@partyondelivery.com" className="text-gold-600 hover:underline">partners@partyondelivery.com</a>
             </p>
-          </motion.form>
+            </form>
+          </ScrollRevealCSS>
         </div>
       </section>
 
       {/* FAQ Section */}
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
-              Frequently Asked Questions
-            </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </motion.div>
+          <ScrollRevealCSS duration={800} delay={0} y={30}>
+            <div className="text-center mb-16">
+              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+                Frequently Asked Questions
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto" />
+            </div>
+          </ScrollRevealCSS>
 
           <div className="space-y-6">
             {faqs.map((faq, index) => (
-              <motion.div
-                key={faq.question}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.05 }}
-                className="bg-gray-50 p-6"
-              >
-                <h3 className="text-lg font-medium text-gray-900 mb-3">{faq.question}</h3>
-                <p className="text-gray-600">{faq.answer}</p>
-              </motion.div>
+              <ScrollRevealCSS key={faq.question} duration={800} delay={(index % 8) * 100} y={30}>
+                <div className="bg-gray-50 p-6">
+                  <h3 className="text-lg font-medium text-gray-900 mb-3">{faq.question}</h3>
+                  <p className="text-gray-600">{faq.answer}</p>
+                </div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>
@@ -1150,12 +1096,9 @@ Source: ${formData.source}`,
       {/* Final CTA */}
       <section className="py-20 bg-gray-900 text-white">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl mb-6 tracking-[0.1em]">
+          <ScrollRevealCSS duration={800} delay={0} y={30}>
+            <div>
+              <h2 className="font-serif font-light text-4xl md:text-5xl mb-6 tracking-[0.1em]">
               Ready to Pour Smarter, Not Harder?
             </h2>
             <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
@@ -1169,7 +1112,8 @@ Source: ${formData.source}`,
             >
               APPLY TO PARTNER NOW
             </button>
-          </motion.div>
+            </div>
+          </ScrollRevealCSS>
         </div>
       </section>
 

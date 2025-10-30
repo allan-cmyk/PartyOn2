@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 interface LuxuryCardProps {
   children: React.ReactNode;
@@ -43,15 +43,16 @@ export default function LuxuryCard({
   const fallbackImage = fallbackImages[index % fallbackImages.length];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: index * 0.1 }}
-      whileHover={{ y: -4, transition: { duration: 0.3 } }}
-      className={`relative bg-white overflow-hidden group ${
-        featured ? 'ring-2 ring-gold-600 shadow-xl' : 'border border-gray-200 hover:shadow-lg'
-      } transition-all duration-500 ${className}`}
+    <ScrollRevealCSS
+      duration={800}
+      delay={index * 100}
+      y={20}
     >
+      <div
+        className={`relative bg-white overflow-hidden group ${
+          featured ? 'ring-2 ring-gold-600 shadow-xl' : 'border border-gray-200 hover:shadow-lg'
+        } transition-all duration-500 hover:-translate-y-1 ${className}`}
+      >
       {/* Primary texture background */}
       <div className="absolute inset-0 opacity-[0.08] group-hover:opacity-[0.15] transition-opacity duration-700">
         <Image
@@ -99,6 +100,7 @@ export default function LuxuryCard({
           </div>
         </div>
       )}
-    </motion.div>
+      </div>
+    </ScrollRevealCSS>
   );
 }

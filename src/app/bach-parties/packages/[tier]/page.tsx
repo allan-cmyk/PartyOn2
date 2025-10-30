@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { useParams, useRouter } from 'next/navigation';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import { useProducts } from '@/lib/shopify/hooks/useProducts';
 import { useCartContext } from '@/contexts/CartContext';
 import { ShopifyProduct } from '@/lib/shopify/types';
@@ -334,12 +334,7 @@ export default function BachPartyPackagePage() {
       {/* Header */}
       <section className="pt-32 pb-16 px-8 bg-gradient-to-b from-pink-50 to-white">
         <div className="max-w-7xl mx-auto">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
+          <div className="text-center mb-12 hero-fade-in">
             <h1 className="font-serif text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               {config.name}
             </h1>
@@ -362,7 +357,7 @@ export default function BachPartyPackagePage() {
                 <p className="font-medium text-lg capitalize">{config.serviceType.replace('-', ' ')}</p>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -402,13 +397,8 @@ export default function BachPartyPackagePage() {
                 {items.map((item, index) => {
                   const globalIndex = packageItems.indexOf(item);
                   return (
-                    <motion.div
-                      key={item.product.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: index * 0.1 }}
-                      className="bg-white border border-gray-200 p-6"
-                    >
+                    <ScrollRevealCSS key={item.product.id} delay={index * 100}>
+                      <div className="bg-white border border-gray-200 p-6">
                       <div className="flex items-center gap-6">
                         {/* Product Image */}
                         <div className="w-24 h-24 flex-shrink-0">
@@ -483,7 +473,8 @@ export default function BachPartyPackagePage() {
                           </svg>
                         </button>
                       </div>
-                    </motion.div>
+                      </div>
+                    </ScrollRevealCSS>
                   );
                 })}
               </div>

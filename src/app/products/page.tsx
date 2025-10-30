@@ -3,9 +3,9 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import ProductCard from '@/components/shopify/ProductCard';
 import CompactProductCard from '@/components/shopify/CompactProductCard';
 import MobileProductCard from '@/components/mobile/MobileProductCard';
@@ -229,12 +229,7 @@ function ProductsContent() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
         
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="relative text-center text-white z-10 max-w-4xl mx-auto px-8"
-        >
+        <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8">
           <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
             CURATED COLLECTIONS
           </h1>
@@ -244,27 +239,25 @@ function ProductsContent() {
             <br />
             Find something everyone will enjoy
           </p>
-          
+
           {/* Age Verification Unlock Button */}
           {!isAgeVerified && (
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.6 }}
+            <button
               onClick={handleUnlock}
               className="inline-flex items-center gap-3 px-8 py-4 bg-gold-600 hover:bg-gold-700 text-white font-medium tracking-[0.15em] transition-all duration-300 group"
+              style={{ animationDelay: '500ms' }}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                   d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
               </svg>
               UNLOCK PREMIUM COLLECTION
               <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
               </svg>
-            </motion.button>
+            </button>
           )}
-        </motion.div>
+        </div>
       </section>
 
       {/* Collection Quick Filters */}
@@ -558,41 +551,29 @@ function ProductsContent() {
       <section className="py-16 bg-gray-50">
         <div className="max-w-5xl mx-auto px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
+            <ScrollRevealCSS delay={0} duration={800}>
               <svg className="w-12 h-12 mx-auto text-gold-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <h3 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.1em]">72-Hour Notice</h3>
               <p className="text-gray-600 text-sm">Advance booking ensures availability for your celebration</p>
-            </motion.div>
+            </ScrollRevealCSS>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-            >
+            <ScrollRevealCSS delay={100} duration={800}>
               <svg className="w-12 h-12 mx-auto text-gold-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
               <h3 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.1em]">Age Verified</h3>
               <p className="text-gray-600 text-sm">Secure ID verification for all alcohol deliveries</p>
-            </motion.div>
+            </ScrollRevealCSS>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
+            <ScrollRevealCSS delay={200} duration={800}>
               <svg className="w-12 h-12 mx-auto text-gold-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
               <h3 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.1em]">Austin Coverage</h3>
               <p className="text-gray-600 text-sm">Delivering excellence throughout greater Austin</p>
-            </motion.div>
+            </ScrollRevealCSS>
           </div>
         </div>
       </section>
