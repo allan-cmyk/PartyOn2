@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
@@ -111,28 +111,22 @@ export default function FAQsPage() {
       
       {/* Header */}
       <section className="pt-32 pb-16 px-8 bg-gray-50">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-4xl mx-auto text-center"
-        >
+        <div className="hero-fade-in max-w-4xl mx-auto text-center">
           <h1 className="font-serif text-5xl text-gray-900 mb-4 tracking-[0.1em]">
             Frequently Asked Questions
           </h1>
           <p className="text-gray-600 text-lg">Everything you need to know about our services</p>
-        </motion.div>
+        </div>
       </section>
 
       {/* FAQs */}
       <section className="py-16 px-8">
         <div className="max-w-4xl mx-auto">
           {faqs.map((category, categoryIndex) => (
-            <motion.div
+            <ScrollRevealCSS
               key={categoryIndex}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: categoryIndex * 0.1 }}
+              delay={categoryIndex * 100}
+              duration={600}
               className="mb-12"
             >
               <h2 className="font-serif text-2xl text-gray-900 mb-6 tracking-[0.1em]">
@@ -159,33 +153,26 @@ export default function FAQsPage() {
                           }`}
                         />
                       </button>
-                      <AnimatePresence>
-                        {isOpen && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="overflow-hidden"
-                          >
-                            <p className="px-6 pb-4 text-gray-600 leading-relaxed">
-                              {faq.a}
-                            </p>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                      {isOpen && (
+                        <div
+                          className="overflow-hidden accordion-expand"
+                        >
+                          <p className="px-6 pb-4 text-gray-600 leading-relaxed">
+                            {faq.a}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
               </div>
-            </motion.div>
+            </ScrollRevealCSS>
           ))}
 
           {/* Contact CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
+          <ScrollRevealCSS
+            delay={500}
+            duration={600}
             className="mt-16 p-8 bg-gray-50 text-center"
           >
             <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
@@ -206,7 +193,7 @@ export default function FAQsPage() {
                 </button>
               </a>
             </div>
-          </motion.div>
+          </ScrollRevealCSS>
         </div>
       </section>
 

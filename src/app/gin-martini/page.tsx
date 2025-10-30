@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 import Link from 'next/link';
 
 export default function LuxuryGoyardPage() {
@@ -19,13 +18,9 @@ export default function LuxuryGoyardPage() {
             priority
           />
         </div>
-        
+
         <div className="relative z-10 text-center max-w-4xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-          >
+          <div className="hero-fade-in">
             <p className="text-sm tracking-[0.3em] text-gray-700 mb-8">ESTABLISHED 2016</p>
             <h1 className="text-6xl md:text-8xl font-serif text-gray-900 mb-6">PARTYON</h1>
             <p className="text-xl text-gray-700 tracking-[0.1em] mb-12 max-w-2xl mx-auto">
@@ -44,7 +39,7 @@ export default function LuxuryGoyardPage() {
                 </button>
               </Link>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* Decorative border */}

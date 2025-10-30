@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import { useGroupOrderContext } from '@/contexts/GroupOrderContext'
 import { useCartContext } from '@/contexts/CartContext'
 // import { formatPrice } from '@/lib/shopify/utils' // Not used currently
@@ -115,11 +114,7 @@ export default function GroupOrderDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-6xl mx-auto"
-        >
+        <div className="max-w-6xl mx-auto fade-in-up">
           {/* Header */}
           <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
@@ -335,7 +330,7 @@ export default function GroupOrderDashboard() {
               </button>
             )}
           </div>
-        </motion.div>
+        </div>
       </div>
 
       {/* Share Modal */}

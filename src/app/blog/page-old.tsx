@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
+
 import OldFashionedNavigation from '@/components/OldFashionedNavigation'
 import migratedPosts from '@/data/blog-posts/posts.json'
 
@@ -61,11 +61,7 @@ export default function BlogPage() {
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="hero-fade-in">
             <h1 className="font-serif text-5xl md:text-6xl text-gray-900 mb-6 tracking-[0.15em]">
               THE BLOG
             </h1>
@@ -73,7 +69,7 @@ export default function BlogPage() {
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Expert tips, cocktail recipes, and event inspiration for your next Austin celebration
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -126,12 +122,10 @@ export default function BlogPage() {
               const imageUrl = post.image?.url || '/images/hero/lake-travis-yacht-sunset.webp';
 
               return (
-                <motion.article
+                <article
                   key={post.slug}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="bg-white border border-gray-200 hover:border-gold-500 transition-all duration-300 group"
+                  className="bg-white border border-gray-200 hover:border-gold-500 transition-all duration-300 group hero-fade-in"
+                  style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <Link href={`/blogs/news/${post.slug}`}>
                     <div className="relative h-64 overflow-hidden">
@@ -166,7 +160,7 @@ export default function BlogPage() {
                       </span>
                     </div>
                   </Link>
-                </motion.article>
+                </article>
               );
             })}
           </div>

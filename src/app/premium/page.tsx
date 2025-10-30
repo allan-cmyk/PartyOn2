@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 import Link from 'next/link';
 
 export default function PremiumHome() {
@@ -22,44 +21,24 @@ export default function PremiumHome() {
             {/* Content Section */}
             <div className="text-center lg:text-left">
               {/* Badge */}
-              <motion.div 
-                className="inline-flex items-center gap-2 bg-gold-100/50 backdrop-blur-sm px-4 py-2 rounded-full mb-8"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-              >
+              <div className="inline-flex items-center gap-2 bg-gold-100/50 backdrop-blur-sm px-4 py-2 rounded-full mb-8 hero-fade-in">
                 <div className="w-2 h-2 bg-gold-500 rounded-full animate-pulse" />
                 <span className="text-royal-700 text-sm font-medium tracking-wide">AUSTIN&apos;S PREMIER • EST. 2016</span>
-              </motion.div>
+              </div>
 
               {/* Main Heading */}
-              <motion.h1 
-                className="font-display text-5xl md:text-6xl lg:text-7xl text-royal-800 mb-6 leading-[1.1]"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-              >
+              <h1 className="font-display text-5xl md:text-6xl lg:text-7xl text-royal-800 mb-6 leading-[1.1] hero-fade-in">
                 Elevate Your
                 <span className="block text-gold-500">Corporate Events</span>
-              </motion.h1>
+              </h1>
 
               {/* Subheading */}
-              <motion.p 
-                className="text-xl md:text-2xl text-slate-700 mb-8 max-w-xl mx-auto lg:mx-0 font-light"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-              >
+              <p className="text-xl md:text-2xl text-slate-700 mb-8 max-w-xl mx-auto lg:mx-0 font-light hero-fade-in">
                 Premium bar services and alcohol delivery for Austin&apos;s most distinguished venues and Fortune 500 companies.
-              </motion.p>
+              </p>
 
               {/* Service Highlights */}
-              <motion.div 
-                className="flex flex-wrap justify-center lg:justify-start gap-6 mb-10"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
-              >
+              <div className="flex flex-wrap justify-center lg:justify-start gap-6 mb-10 hero-fade-in">
                 <div className="flex items-center gap-2 text-slate-700">
                   <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -78,15 +57,10 @@ export default function PremiumHome() {
                   </svg>
                   <span>White Glove Service</span>
                 </div>
-              </motion.div>
+              </div>
 
               {/* Primary CTA */}
-              <motion.div 
-                className="space-y-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.8 }}
-              >
+              <div className="space-y-4 hero-fade-in">
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <Link href="/consultation">
                     <button className="group bg-royal-500 hover:bg-royal-600 text-white px-10 py-5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-3 text-lg font-medium">
@@ -109,15 +83,10 @@ export default function PremiumHome() {
                     Download capabilities deck
                   </Link>
                 </p>
-              </motion.div>
+              </div>
 
               {/* Social Proof */}
-              <motion.div 
-                className="mt-10 pt-10 border-t border-gold-200"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.8, delay: 1 }}
-              >
+              <div className="mt-10 pt-10 border-t border-gold-200 hero-fade-in">
                 <div className="flex items-center justify-center lg:justify-start gap-8">
                   <div className="flex items-center gap-2">
                     <div className="flex gap-1">
@@ -133,16 +102,11 @@ export default function PremiumHome() {
                     <span className="font-semibold text-royal-800">500+</span> Corporate Events
                   </div>
                 </div>
-              </motion.div>
+              </div>
             </div>
 
             {/* Image Section */}
-            <motion.div 
-              className="relative lg:ml-12"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: 0.3 }}
-            >
+            <div className="relative lg:ml-12 hero-fade-in">
               <div className="relative aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl bg-gold-100">
                 <Image 
                   src="/images/services/corporate/penthouse-suite-setup.webp"
@@ -154,48 +118,35 @@ export default function PremiumHome() {
                 />
                 {/* Gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-royal-900/20 via-transparent to-transparent" />
-                
+
                 {/* Floating card */}
-                <motion.div 
-                  className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-sm rounded-xl p-6 shadow-xl"
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.8, delay: 1.2 }}
-                >
+                <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-sm rounded-xl p-6 shadow-xl hero-fade-in">
                   <p className="text-royal-600 font-semibold text-lg mb-2">Next Day Availability</p>
                   <p className="text-slate-600 text-sm mb-3">Full bar service for your executive meetings</p>
                   <Link href="/book" className="text-sm text-gold-600 hover:text-gold-700 inline-flex items-center gap-1 font-medium">
                     Check Availability
                   </Link>
-                </motion.div>
+                </div>
               </div>
 
               {/* Decorative elements */}
               <div className="absolute -top-10 -right-10 w-40 h-40 bg-gold-100 rounded-full blur-3xl opacity-40" />
               <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-emerald-100 rounded-full blur-3xl opacity-30" />
-            </motion.div>
+            </div>
           </div>
         </div>
 
         {/* Scroll Indicator */}
-        <motion.div 
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.2 }}
-        >
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center hero-fade-in">
           <div className="flex flex-col items-center gap-2">
             <span className="text-sm text-slate-500 font-medium tracking-wide">DISCOVER MORE</span>
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            >
+            <div className="animate-bounce">
               <svg className="w-5 h-5 text-royal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
               </svg>
-            </motion.div>
+            </div>
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Trust Bar */}
@@ -206,16 +157,13 @@ export default function PremiumHome() {
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-8 items-center">
             {['Four Seasons', 'Dell Technologies', 'Oracle', 'Tesla', 'Whole Foods', 'Indeed', 'The Driskill', 'W Hotel'].map((client, index) => (
-              <motion.div 
-                key={index} 
-                className="text-center text-slate-400 font-light text-sm hover:text-slate-600 transition-colors"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
+              <div
+                key={index}
+                className="text-center text-slate-400 font-light text-sm hover:text-slate-600 transition-colors hero-fade-in"
+                style={{ animationDelay: `${index * 100}ms` }}
               >
                 {client}
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -224,13 +172,7 @@ export default function PremiumHome() {
       {/* Services Section */}
       <section className="py-24 bg-gradient-to-b from-white to-ivory-200">
         <div className="max-w-7xl mx-auto px-6">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
+          <div className="text-center mb-16 hero-fade-in">
             <h2 className="font-display text-5xl md:text-6xl text-royal-800 mb-4">
               Tailored Solutions
             </h2>
@@ -238,7 +180,7 @@ export default function PremiumHome() {
             <p className="text-xl text-slate-600 max-w-3xl mx-auto">
               From intimate board meetings to grand galas, we deliver exceptional experiences that reflect your brand&apos;s sophistication
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
@@ -264,13 +206,10 @@ export default function PremiumHome() {
                 features: ['Member events', 'Tournament service', 'Seasonal programs', 'VIP experiences']
               }
             ].map((service, index) => (
-              <motion.div
+              <div
                 key={index}
-                className="group"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
-                viewport={{ once: true }}
+                className="group hero-fade-in"
+                style={{ animationDelay: `${index * 200}ms` }}
               >
                 <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden">
                   <div className="relative h-64 overflow-hidden">
@@ -305,7 +244,7 @@ export default function PremiumHome() {
                     </Link>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -320,20 +259,14 @@ export default function PremiumHome() {
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-6">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
+          <div className="text-center mb-16 hero-fade-in">
             <h2 className="font-display text-5xl md:text-6xl mb-4">
               The PartyOn Difference
             </h2>
             <p className="text-xl text-gold-400 max-w-3xl mx-auto">
               Why industry leaders choose us for their most important events
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
@@ -358,13 +291,10 @@ export default function PremiumHome() {
                 description: 'Our clients return year after year for exceptional service'
               }
             ].map((item, index) => (
-              <motion.div
+              <div
                 key={index}
-                className="text-center"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                viewport={{ once: true }}
+                className="text-center hero-fade-in"
+                style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   {item.icon === 'award' && (
@@ -390,36 +320,24 @@ export default function PremiumHome() {
                 </div>
                 <h3 className="text-xl font-medium mb-3 text-gold-400">{item.title}</h3>
                 <p className="text-gray-300">{item.description}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
 
-          <motion.div 
-            className="mt-16 text-center"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            viewport={{ once: true }}
-          >
+          <div className="mt-16 text-center hero-fade-in">
             <Link href="/about">
               <button className="bg-gold-500 hover:bg-gold-600 text-royal-900 px-10 py-4 rounded-full font-medium transition-all duration-300">
                 Learn About Our Story
               </button>
             </Link>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Testimonial Section */}
       <section className="py-24 bg-gradient-to-b from-ivory-200 to-white">
         <div className="max-w-4xl mx-auto px-6">
-          <motion.div 
-            className="bg-white rounded-2xl shadow-xl p-12 text-center"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
+          <div className="bg-white rounded-2xl shadow-xl p-12 text-center hero-fade-in">
             <div className="flex justify-center gap-1 mb-6">
               {[...Array(5)].map((_, i) => (
                 <svg key={i} className="w-6 h-6 text-gold-500 fill-current" viewBox="0 0 20 20">
@@ -428,8 +346,8 @@ export default function PremiumHome() {
               ))}
             </div>
             <blockquote className="text-2xl font-light text-slate-700 mb-8 leading-relaxed">
-              &quot;PartyOn has been our exclusive bar service partner for three years. Their attention to detail, 
-              professionalism, and ability to execute flawlessly at scale has made them indispensable to our 
+              &quot;PartyOn has been our exclusive bar service partner for three years. Their attention to detail,
+              professionalism, and ability to execute flawlessly at scale has made them indispensable to our
               corporate events program.&quot;
             </blockquote>
             <div className="flex items-center justify-center gap-4">
@@ -439,7 +357,7 @@ export default function PremiumHome() {
                 <p className="text-slate-600">VP of Corporate Events, Dell Technologies</p>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -447,12 +365,7 @@ export default function PremiumHome() {
       <section className="py-32 bg-gradient-to-br from-royal-800 to-royal-900 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-gold-500/10"></div>
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
+          <div className="hero-fade-in">
             <h2 className="font-display text-5xl md:text-6xl mb-8">
               Ready to Elevate Your Next Event?
             </h2>
@@ -472,12 +385,12 @@ export default function PremiumHome() {
               </Link>
             </div>
             <p className="mt-10 text-gold-300">
-              Or call our executive team: 
+              Or call our executive team:
               <a href="tel:5125550100" className="text-white font-medium ml-2 hover:text-gold-400 transition-colors">
                 (512) 555-0100
               </a>
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
     </main>

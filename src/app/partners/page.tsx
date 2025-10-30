@@ -3,10 +3,10 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
 import LuxuryCard from '@/components/LuxuryCard';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 export default function PartnersPage() {
   const [formData, setFormData] = useState({
@@ -301,11 +301,8 @@ export default function PartnersPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/70 via-gray-900/50 to-gray-900/70" />
         
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="relative text-center text-white z-10 max-w-4xl mx-auto px-8"
+        <div
+          className="relative text-center text-white z-10 max-w-4xl mx-auto px-8 hero-fade-in"
         >
           <h1 className="font-serif font-light text-5xl md:text-6xl mb-6 tracking-[0.15em]">
             PARTNER WITH US
@@ -314,38 +311,31 @@ export default function PartnersPage() {
           <p className="text-xl font-light tracking-[0.1em] mb-8 text-gray-200">
             Elevate Your Business with Austin&apos;s Premier Alcohol Delivery Service
           </p>
-        </motion.div>
+        </div>
       </section>
 
       {/* Value Proposition */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
-              Transform Your Hospitality Experience
-            </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Join Austin&apos;s most distinguished establishments in offering guests and clients 
-              seamless access to premium spirits, craft cocktails, and white-glove delivery service.
-            </p>
-          </motion.div>
+          <ScrollRevealCSS duration={800} y={30}>
+            <div className="text-center mb-16">
+              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+                Transform Your Hospitality Experience
+              </h2>
+              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                Join Austin&apos;s most distinguished establishments in offering guests and clients
+                seamless access to premium spirits, craft cocktails, and white-glove delivery service.
+              </p>
+            </div>
+          </ScrollRevealCSS>
 
           {/* Partner Types Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
             {partnerTypes.map((type, index) => (
-              <div key={type.title}>
-                {type.available ? (
-                  <Link href={type.href}>
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                    >
+              <ScrollRevealCSS key={type.title} duration={800} delay={index * 100} y={30}>
+                <div>
+                  {type.available ? (
+                    <Link href={type.href}>
                       <LuxuryCard backgroundImage={type.image}>
                         <div className="p-8">
                           <div className="text-gold-600 mb-4 group-hover:text-gold-700 transition-colors">{type.icon}</div>
@@ -353,14 +343,8 @@ export default function PartnersPage() {
                           <p className="text-gray-600">{type.description}</p>
                         </div>
                       </LuxuryCard>
-                    </motion.div>
-                  </Link>
-                ) : (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                  >
+                    </Link>
+                  ) : (
                     <LuxuryCard backgroundImage={type.image}>
                       <div className="p-8">
                         <div className="text-gray-600 mb-4">{type.icon}</div>
@@ -373,9 +357,9 @@ export default function PartnersPage() {
                         )}
                       </div>
                     </LuxuryCard>
-                  </motion.div>
-                )}
-              </div>
+                  )}
+                </div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>
@@ -384,31 +368,24 @@ export default function PartnersPage() {
       {/* Benefits Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-8">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
-              Partner Benefits
-            </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </motion.div>
+          <ScrollRevealCSS duration={800} y={30}>
+            <div className="text-center mb-16">
+              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+                Partner Benefits
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto" />
+            </div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
             {benefits.map((benefit, index) => (
-              <motion.div
-                key={benefit.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="text-center"
-              >
-                <div className="text-gold-600 mb-3 flex justify-center">{benefit.icon}</div>
-                <h3 className="text-xl font-medium mb-2 text-gray-900 tracking-wide">{benefit.title}</h3>
-                <p className="text-gray-600">{benefit.description}</p>
-              </motion.div>
+              <ScrollRevealCSS key={benefit.title} duration={800} delay={index * 100} y={30}>
+                <div className="text-center">
+                  <div className="text-gold-600 mb-3 flex justify-center">{benefit.icon}</div>
+                  <h3 className="text-xl font-medium mb-2 text-gray-900 tracking-wide">{benefit.title}</h3>
+                  <p className="text-gray-600">{benefit.description}</p>
+                </div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>
@@ -417,43 +394,36 @@ export default function PartnersPage() {
       {/* Partnership Tiers */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
-              Partnership Tiers
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Choose the partnership level that aligns with your business needs
-            </p>
-          </motion.div>
+          <ScrollRevealCSS duration={800} y={30}>
+            <div className="text-center mb-16">
+              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+                Partnership Tiers
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Choose the partnership level that aligns with your business needs
+              </p>
+            </div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {tiers.map((tier, index) => (
-              <motion.div
-                key={tier.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-white p-8 border-2 border-gray-200"
-              >
-                <h3 className="font-serif text-2xl mb-2 text-gray-900">{tier.name}</h3>
-                <p className="text-gray-600 mb-2">{tier.volume}</p>
-                <p className="text-3xl font-light text-gold-600 mb-6">{tier.discount}</p>
-                <ul className="space-y-3">
-                  {tier.features.map((feature) => (
-                    <li key={feature} className="flex items-start">
-                      <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                      <span className="text-gray-700">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
+              <ScrollRevealCSS key={tier.name} duration={800} delay={index * 100} y={30}>
+                <div className="bg-white p-8 border-2 border-gray-200">
+                  <h3 className="font-serif text-2xl mb-2 text-gray-900">{tier.name}</h3>
+                  <p className="text-gray-600 mb-2">{tier.volume}</p>
+                  <p className="text-3xl font-light text-gold-600 mb-6">{tier.discount}</p>
+                  <ul className="space-y-3">
+                    {tier.features.map((feature) => (
+                      <li key={feature} className="flex items-start">
+                        <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                        <span className="text-gray-700">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>
@@ -463,71 +433,66 @@ export default function PartnersPage() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
-                Custom Branded Solutions
-              </h2>
-              <p className="text-lg text-gray-600 mb-8">
-                Create a seamless experience for your customers with our white-label platform. 
-                Your brand, our expertise.
-              </p>
-              <ul className="space-y-4 mb-8">
-                <li className="flex items-start">
-                  <svg className="w-6 h-6 text-gold-600 mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <div>
-                    <h4 className="font-medium text-gray-900 mb-1">Custom Storefront</h4>
-                    <p className="text-gray-600">Fully branded ordering portal matching your visual identity</p>
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <svg className="w-6 h-6 text-gold-600 mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <div>
-                    <h4 className="font-medium text-gray-900 mb-1">API Integration</h4>
-                    <p className="text-gray-600">Seamless connection to your existing systems and platforms</p>
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <svg className="w-6 h-6 text-gold-600 mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <div>
-                    <h4 className="font-medium text-gray-900 mb-1">Curated Collections</h4>
-                    <p className="text-gray-600">Custom product selections tailored to your clientele</p>
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <svg className="w-6 h-6 text-gold-600 mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <div>
-                    <h4 className="font-medium text-gray-900 mb-1">Analytics Dashboard</h4>
-                    <p className="text-gray-600">Real-time insights into orders, preferences, and trends</p>
-                  </div>
-                </li>
-              </ul>
-            </motion.div>
+            <ScrollRevealCSS duration={800} y={30}>
+              <div>
+                <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+                  Custom Branded Solutions
+                </h2>
+                <p className="text-lg text-gray-600 mb-8">
+                  Create a seamless experience for your customers with our white-label platform.
+                  Your brand, our expertise.
+                </p>
+                <ul className="space-y-4 mb-8">
+                  <li className="flex items-start">
+                    <svg className="w-6 h-6 text-gold-600 mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-1">Custom Storefront</h4>
+                      <p className="text-gray-600">Fully branded ordering portal matching your visual identity</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-6 h-6 text-gold-600 mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-1">API Integration</h4>
+                      <p className="text-gray-600">Seamless connection to your existing systems and platforms</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-6 h-6 text-gold-600 mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-1">Curated Collections</h4>
+                      <p className="text-gray-600">Custom product selections tailored to your clientele</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <svg className="w-6 h-6 text-gold-600 mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-1">Analytics Dashboard</h4>
+                      <p className="text-gray-600">Real-time insights into orders, preferences, and trends</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </ScrollRevealCSS>
 
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              className="relative h-[500px]"
-            >
-              <Image
-                src="/images/gallery/ai-recommended-setup.webp"
-                alt="Custom Solutions"
-                fill
-                className="object-cover rounded-lg"
-              />
-            </motion.div>
+            <ScrollRevealCSS duration={800} delay={100} y={30}>
+              <div className="relative h-[500px]">
+                <Image
+                  src="/images/gallery/ai-recommended-setup.webp"
+                  alt="Custom Solutions"
+                  fill
+                  className="object-cover rounded-lg"
+                />
+              </div>
+            </ScrollRevealCSS>
           </div>
         </div>
       </section>
@@ -535,28 +500,23 @@ export default function PartnersPage() {
       {/* Contact Form */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-8">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-12"
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
-              Become a Partner
-            </h2>
-            <p className="text-lg text-gray-600">
-              Join Austin&apos;s premier network of distinguished establishments
-            </p>
-          </motion.div>
+          <ScrollRevealCSS duration={800} y={30}>
+            <div className="text-center mb-12">
+              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+                Become a Partner
+              </h2>
+              <p className="text-lg text-gray-600">
+                Join Austin&apos;s premier network of distinguished establishments
+              </p>
+            </div>
+          </ScrollRevealCSS>
 
-          <motion.form
-            id="partner-form"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            onSubmit={handleSubmit}
-            className="bg-white p-8 md:p-12 shadow-lg relative"
-          >
+          <ScrollRevealCSS duration={800} delay={100} y={30}>
+            <form
+              id="partner-form"
+              onSubmit={handleSubmit}
+              className="bg-white p-8 md:p-12 shadow-lg relative"
+            >
             {/* Status Messages */}
             {submitStatus === 'error' && (
               <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded">
@@ -712,85 +672,74 @@ export default function PartnersPage() {
             <p className="text-sm text-gray-600 mt-6 text-center">
               A partnership specialist will contact you within 24 hours to discuss your needs
             </p>
-          </motion.form>
+            </form>
+          </ScrollRevealCSS>
         </div>
       </section>
 
       {/* Success Stories */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-8">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
-              Success Stories
-            </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </motion.div>
+          <ScrollRevealCSS duration={800} y={30}>
+            <div className="text-center mb-16">
+              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+                Success Stories
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto" />
+            </div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="bg-gray-50 p-8"
-            >
-              <div className="flex items-center mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-5 h-5 text-gold-400 fill-current" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
+            <ScrollRevealCSS duration={800} y={30}>
+              <div className="bg-gray-50 p-8">
+                <div className="flex items-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-5 h-5 text-gold-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-gray-600 mb-4 italic">
+                  &quot;Party On Delivery is an awesome concept with top-notch customer service. We&apos;ve been working with them for a matter of months now, and the fact they make everything so seamless makes everybody&apos;s life a breeze when it comes to party planning, which we know can be very stressful with all the moving parts. I highly recommend Party On Delivery for anybody who wants to take the stress out of the alcohol ordering. Keep up the good work, Allan and Brian!&quot;
+                </p>
+                <div className="font-medium text-gray-900">James Burt</div>
+                <div className="text-sm text-gray-600">Local Guide · 10 months ago</div>
               </div>
-              <p className="text-gray-600 mb-4 italic">
-                &quot;Party On Delivery is an awesome concept with top-notch customer service. We&apos;ve been working with them for a matter of months now, and the fact they make everything so seamless makes everybody&apos;s life a breeze when it comes to party planning, which we know can be very stressful with all the moving parts. I highly recommend Party On Delivery for anybody who wants to take the stress out of the alcohol ordering. Keep up the good work, Allan and Brian!&quot;
-              </p>
-              <div className="font-medium text-gray-900">James Burt</div>
-              <div className="text-sm text-gray-600">Local Guide · 10 months ago</div>
-            </motion.div>
+            </ScrollRevealCSS>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="bg-gray-50 p-8"
-            >
-              <div className="flex items-center mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-5 h-5 text-gold-400 fill-current" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
+            <ScrollRevealCSS duration={800} delay={100} y={30}>
+              <div className="bg-gray-50 p-8">
+                <div className="flex items-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-5 h-5 text-gold-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-gray-600 mb-4 italic">
+                  &quot;I met Allan at an Open House at Ranch Austin and his team has been very communicative and helpful while placing an alcohol order for my wedding clients. They were flexible and made the process easy! They delivered to the venue and even offered to chill some of the wine and beer for us. I&apos;d recommend them to anyone and will definitely be using their services again!&quot;
+                </p>
+                <div className="font-medium text-gray-900">Tatianna Ramon</div>
+                <div className="text-sm text-gray-600">Local Guide · a year ago</div>
               </div>
-              <p className="text-gray-600 mb-4 italic">
-                &quot;I met Allan at an Open House at Ranch Austin and his team has been very communicative and helpful while placing an alcohol order for my wedding clients. They were flexible and made the process easy! They delivered to the venue and even offered to chill some of the wine and beer for us. I&apos;d recommend them to anyone and will definitely be using their services again!&quot;
-              </p>
-              <div className="font-medium text-gray-900">Tatianna Ramon</div>
-              <div className="text-sm text-gray-600">Local Guide · a year ago</div>
-            </motion.div>
+            </ScrollRevealCSS>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="bg-gray-50 p-8"
-            >
-              <div className="flex items-center mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-5 h-5 text-gold-400 fill-current" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
+            <ScrollRevealCSS duration={800} delay={200} y={30}>
+              <div className="bg-gray-50 p-8">
+                <div className="flex items-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-5 h-5 text-gold-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-gray-600 mb-4 italic">
+                  &quot;I ordered from here for our company party on Lake Travis. They delivered with all the drinks chilled and kept cold in a big cooler. Great communication. Got everything we needed, even some things not on the website. Right on time! Will definitely buy from them again.&quot;
+                </p>
+                <div className="font-medium text-gray-900">Dane Witbeck</div>
+                <div className="text-sm text-gray-600">13 reviews · a year ago</div>
               </div>
-              <p className="text-gray-600 mb-4 italic">
-                &quot;I ordered from here for our company party on Lake Travis. They delivered with all the drinks chilled and kept cold in a big cooler. Great communication. Got everything we needed, even some things not on the website. Right on time! Will definitely buy from them again.&quot;
-              </p>
-              <div className="font-medium text-gray-900">Dane Witbeck</div>
-              <div className="text-sm text-gray-600">13 reviews · a year ago</div>
-            </motion.div>
+            </ScrollRevealCSS>
           </div>
         </div>
       </section>

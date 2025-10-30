@@ -3,9 +3,9 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import LuxuryCard from '@/components/LuxuryCard';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -81,33 +81,27 @@ export default function ContactPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
         
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="relative text-center text-white z-10 max-w-4xl mx-auto px-8"
-        >
+        <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8">
           <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
             GET IN TOUCH
           </h1>
           <div className="w-24 h-px bg-gold-400 mx-auto" />
-        </motion.div>
+        </div>
       </section>
 
       {/* Contact Options */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <ScrollRevealCSS
+            duration={800}
+            y={20}
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               How Can We Serve You?
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </motion.div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             <LuxuryCard
@@ -201,10 +195,9 @@ export default function ContactPage() {
       {/* Contact Form */}
       <section className="py-24">
         <div className="max-w-4xl mx-auto px-8">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <ScrollRevealCSS
+            duration={800}
+            y={20}
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
@@ -214,15 +207,16 @@ export default function ContactPage() {
             <p className="text-gray-600 text-lg">
               Tell us about your event and we&apos;ll create a custom proposal
             </p>
-          </motion.div>
+          </ScrollRevealCSS>
 
-          <motion.form
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            onSubmit={handleSubmit}
-            className="space-y-8"
+          <ScrollRevealCSS
+            duration={800}
+            y={20}
           >
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-8"
+            >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <label className="block text-sm font-light text-gray-700 mb-2 tracking-[0.1em]">
@@ -346,24 +340,24 @@ export default function ContactPage() {
                 {isSubmitting ? 'SENDING...' : 'SEND INQUIRY'}
               </button>
             </div>
-          </motion.form>
+            </form>
+          </ScrollRevealCSS>
         </div>
       </section>
 
       {/* Quick Links */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <ScrollRevealCSS
+            duration={800}
+            y={20}
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-3xl text-gray-900 mb-4 tracking-[0.1em]">
               Quick Links
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </motion.div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             {[
@@ -372,11 +366,11 @@ export default function ContactPage() {
               { title: "FAQs", link: "/faqs" },
               { title: "Book Now", link: "/book-now" }
             ].map((item, index) => (
-              <motion.div
+              <ScrollRevealCSS
                 key={item.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
+                duration={800}
+                y={20}
+                delay={index * 100}
               >
                 <Link href={item.link}>
                   <div className="bg-white p-6 text-center border border-gray-200 hover:border-gold-600 transition-colors group">
@@ -408,7 +402,7 @@ export default function ContactPage() {
                     </h3>
                   </div>
                 </Link>
-              </motion.div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>

@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import OldFashionedNavigation from '@/components/OldFashionedNavigation'
 import Footer from '@/components/Footer'
-import { motion } from 'framer-motion'
 
 export default function HotelsResortsPartnerPage() {
   const [activeTab, setActiveTab] = useState('overview')
@@ -108,11 +107,8 @@ export default function HotelsResortsPartnerPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent" />
         
         <div className="relative z-10 max-w-7xl mx-auto px-8 grid md:grid-cols-2 gap-12">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-          >
+          <div className="hero-fade-in">
+
             <div className="mb-6">
               <span className="text-gold-500 text-sm tracking-[0.2em]">HOSPITALITY PARTNERSHIP</span>
             </div>
@@ -137,7 +133,7 @@ export default function HotelsResortsPartnerPage() {
                 DOWNLOAD CASE STUDY
               </button>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -178,38 +174,30 @@ export default function HotelsResortsPartnerPage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <motion.div 
-              className="bg-white p-8 border border-gray-200 text-center"
-              whileHover={{ y: -5 }}
-            >
+            <div className="bg-white p-8 border border-gray-200 text-center hover:shadow-lg transition-shadow">
+
               <div className="text-5xl font-cormorant text-gold-600 mb-4">35%</div>
               <h3 className="font-medium text-gray-900 mb-2 tracking-[0.1em]">INCREASE IN F&B REVENUE</h3>
               <p className="text-sm text-gray-600">
                 Average revenue growth from in-room beverage sales in first year
               </p>
-            </motion.div>
+            </div>
 
-            <motion.div 
-              className="bg-white p-8 border border-gray-200 text-center"
-              whileHover={{ y: -5 }}
-            >
+            <div className="bg-white p-8 border border-gray-200 text-center hover:shadow-lg transition-shadow">
               <div className="text-5xl font-cormorant text-gold-600 mb-4">87%</div>
               <h3 className="font-medium text-gray-900 mb-2 tracking-[0.1em]">GUEST SATISFACTION</h3>
               <p className="text-sm text-gray-600">
                 Guests rate our service as excellent or outstanding
               </p>
-            </motion.div>
+            </div>
 
-            <motion.div 
-              className="bg-white p-8 border border-gray-200 text-center"
-              whileHover={{ y: -5 }}
-            >
+            <div className="bg-white p-8 border border-gray-200 text-center hover:shadow-lg transition-shadow">
               <div className="text-5xl font-cormorant text-gold-600 mb-4">$45K</div>
               <h3 className="font-medium text-gray-900 mb-2 tracking-[0.1em]">AVG MONTHLY REVENUE</h3>
               <p className="text-sm text-gray-600">
                 Additional monthly revenue per 100-room property
               </p>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>

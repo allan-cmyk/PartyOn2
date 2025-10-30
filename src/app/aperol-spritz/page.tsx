@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 export default function LuxuryPrabalPage() {
   const [activeColor, setActiveColor] = useState(0);
@@ -20,36 +20,21 @@ export default function LuxuryPrabalPage() {
     <main className="min-h-screen bg-black text-white">
       {/* Bold Hero with Color Transitions */}
       <section className="relative h-screen overflow-hidden">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeColor}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1 }}
-            className="absolute inset-0"
-            style={{ backgroundColor: colors[activeColor] }}
-          />
-        </AnimatePresence>
+        <div
+          className="absolute inset-0 transition-colors duration-1000"
+          style={{ backgroundColor: colors[activeColor] }}
+        />
 
         <div className="relative z-10 h-full flex items-center justify-center">
           <div className="text-center">
-            <motion.h1
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
-              className="text-7xl md:text-9xl font-bold tracking-tighter mb-6"
-            >
+            <h1 className="text-7xl md:text-9xl font-bold tracking-tighter mb-6 hero-fade-in">
               PARTYON
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.2 }}
-              className="text-2xl md:text-3xl font-light tracking-wider"
-            >
-              REDEFINING ALCOHOL DELIVERY
-            </motion.p>
+            </h1>
+            <ScrollRevealCSS duration={800} delay={0} y={30}>
+              <p className="text-2xl md:text-3xl font-light tracking-wider">
+                REDEFINING ALCOHOL DELIVERY
+              </p>
+            </ScrollRevealCSS>
           </div>
         </div>
 
@@ -155,10 +140,9 @@ export default function LuxuryPrabalPage() {
               'holographic-cocktail-menu',
               'ai-party-setup-flatlay'
             ].map((image, i) => (
-              <motion.div
+              <div
                 key={i}
-                whileHover={{ scale: 1.05 }}
-                className="relative h-64 overflow-hidden"
+                className="relative h-64 overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer"
               >
                 <Image
                   src={`/images/gallery/${image}.webp`}
@@ -167,7 +151,7 @@ export default function LuxuryPrabalPage() {
                   className="object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>

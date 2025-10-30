@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import CorporateEventCalculatorLanding from '@/components/CorporateEventCalculatorLanding';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 export default function CorporateLandingPage() {
   const [formData, setFormData] = useState({
@@ -290,12 +290,7 @@ export default function CorporateLandingPage() {
         </div>
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-black/50" />
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="relative z-10 max-w-7xl mx-auto px-8 text-white"
-        >
+        <div className="hero-fade-in relative z-10 max-w-7xl mx-auto px-8 text-white">
           {/* H1 Options (others in comments) */}
           {/* Option 1: "Corporate Events, Simplified." */}
           {/* Option 3: "Cold Drinks. Zero Stress. Perfect for Every Office Event." */}
@@ -320,35 +315,28 @@ export default function CorporateLandingPage() {
               GET A QUOTE
             </button>
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Why Companies Choose Us */}
       <section className="py-20 px-8">
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
+          <ScrollRevealCSS duration={600} y={20} className="text-center mb-16">
             <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
               Why Companies Choose Us
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Reliable service that saves time and eliminates stress
             </p>
-          </motion.div>
+          </ScrollRevealCSS>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {benefits.map((benefit, index) => (
-              <motion.div
+              <ScrollRevealCSS
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
+                duration={600}
+                delay={index * 100}
+                y={20}
                 className="text-center p-6"
               >
                 {benefit.icon}
@@ -358,7 +346,7 @@ export default function CorporateLandingPage() {
                 <p className="text-gray-600 leading-relaxed">
                   {benefit.description}
                 </p>
-              </motion.div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>
@@ -367,29 +355,22 @@ export default function CorporateLandingPage() {
       {/* How It Works */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
+          <ScrollRevealCSS duration={600} y={20} className="text-center mb-16">
             <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
               How It Works
             </h2>
             <p className="text-lg text-gray-600">
               Four simple steps to perfect event drinks
             </p>
-          </motion.div>
+          </ScrollRevealCSS>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {howItWorks.map((step, index) => (
-              <motion.div
+              <ScrollRevealCSS
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
+                duration={600}
+                delay={index * 100}
+                y={20}
                 className="text-center"
               >
                 <div className="w-16 h-16 mx-auto mb-6 bg-gold-600 text-white rounded-full flex items-center justify-center">
@@ -401,7 +382,7 @@ export default function CorporateLandingPage() {
                 <p className="text-gray-600 leading-relaxed">
                   {step.description}
                 </p>
-              </motion.div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>
@@ -410,29 +391,22 @@ export default function CorporateLandingPage() {
       {/* Use Cases */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
+          <ScrollRevealCSS duration={600} y={20} className="text-center mb-16">
             <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
               Perfect For Every Occasion
             </h2>
             <p className="text-lg text-gray-600">
               Professional bar service tailored to your event type
             </p>
-          </motion.div>
+          </ScrollRevealCSS>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {useCases.map((useCase, index) => (
-              <motion.div
+              <ScrollRevealCSS
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
+                duration={600}
+                delay={index * 100}
+                y={20}
                 className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow"
               >
                 <div className="relative h-64">
@@ -455,7 +429,7 @@ export default function CorporateLandingPage() {
                     {useCase.description}
                   </p>
                 </div>
-              </motion.div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>
@@ -464,20 +438,14 @@ export default function CorporateLandingPage() {
       {/* Calculator Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
+          <ScrollRevealCSS duration={600} y={20} className="text-center mb-12">
             <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
               Estimate Your Event Needs
             </h2>
             <p className="text-lg text-gray-600">
               Get instant quantities for your guest count and duration
             </p>
-          </motion.div>
+          </ScrollRevealCSS>
 
           <CorporateEventCalculatorLanding
             onAddToQuote={handleCalculatorAddToQuote}
@@ -489,12 +457,7 @@ export default function CorporateLandingPage() {
       {/* Pricing Band */}
       <section className="py-16 bg-gold-600 text-white">
         <div className="max-w-6xl mx-auto px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
+          <ScrollRevealCSS duration={600} y={20}>
             <h3 className="font-serif text-3xl mb-6 tracking-[0.1em]">
               Simple, Transparent Pricing
             </h3>
@@ -518,19 +481,14 @@ export default function CorporateLandingPage() {
                 Custom quotes for larger events
               </div>
             </div>
-          </motion.div>
+          </ScrollRevealCSS>
         </div>
       </section>
 
       {/* Mid-Page Conversion Band */}
       <section className="py-16 bg-white border-y border-gray-200">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
+          <ScrollRevealCSS duration={600} y={20}>
             <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
               Ready to Make Planning Painless?
             </h2>
@@ -551,36 +509,27 @@ export default function CorporateLandingPage() {
                 GET A QUOTE
               </button>
             </div>
-          </motion.div>
+          </ScrollRevealCSS>
         </div>
       </section>
 
       {/* Inquiry Form */}
       <section id="inquiry-form" className="py-20 bg-gray-50">
         <div className="max-w-3xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
+          <ScrollRevealCSS duration={600} y={20} className="text-center mb-12">
             <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
               Get Your Custom Quote
             </h2>
             <p className="text-lg text-gray-600">
               Tell us about your event and we&apos;ll respond within 24 hours
             </p>
-          </motion.div>
+          </ScrollRevealCSS>
 
-          <motion.form
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: true }}
-            onSubmit={handleSubmit}
-            className="bg-white rounded-lg shadow-lg p-8"
-          >
+          <ScrollRevealCSS duration={600} delay={200} y={20}>
+            <form
+              onSubmit={handleSubmit}
+              className="bg-white rounded-lg shadow-lg p-8"
+            >
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div>
                 <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
@@ -771,20 +720,15 @@ export default function CorporateLandingPage() {
             >
               {isSubmitting ? 'SUBMITTING...' : 'SUBMIT INQUIRY'}
             </button>
-          </motion.form>
+          </form>
+          </ScrollRevealCSS>
         </div>
       </section>
 
       {/* Blog Link Section */}
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-lg p-12 text-white text-center"
-          >
+          <ScrollRevealCSS duration={600} y={20} className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-lg p-12 text-white text-center">
             <h2 className="font-serif text-3xl md:text-4xl mb-4 tracking-[0.1em]">
               Planning a Corporate Event in Austin?
             </h2>
@@ -796,36 +740,29 @@ export default function CorporateLandingPage() {
                 READ THE FULL GUIDE
               </button>
             </Link>
-          </motion.div>
+          </ScrollRevealCSS>
         </div>
       </section>
 
       {/* FAQ Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
+          <ScrollRevealCSS duration={600} y={20} className="text-center mb-12">
             <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
               Frequently Asked Questions
             </h2>
             <p className="text-lg text-gray-600">
               Everything you need to know about our corporate event service
             </p>
-          </motion.div>
+          </ScrollRevealCSS>
 
           <div className="space-y-4">
             {faqs.map((faq, index) => (
-              <motion.div
+              <ScrollRevealCSS
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.05 }}
-                viewport={{ once: true }}
+                duration={600}
+                delay={index * 50}
+                y={20}
                 className="bg-white rounded-lg shadow-md overflow-hidden"
               >
                 <button
@@ -849,7 +786,7 @@ export default function CorporateLandingPage() {
                     <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
                   </div>
                 )}
-              </motion.div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>
@@ -858,12 +795,7 @@ export default function CorporateLandingPage() {
       {/* Closing CTA */}
       <section className="py-20 bg-gold-600 text-white">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
+          <ScrollRevealCSS duration={600} y={20}>
             <h2 className="font-serif text-4xl md:text-5xl mb-6 tracking-[0.1em]">
               Let&apos;s Make Your Event Easy
             </h2>
@@ -876,7 +808,7 @@ export default function CorporateLandingPage() {
             >
               SCHEDULE A CALL
             </button>
-          </motion.div>
+          </ScrollRevealCSS>
         </div>
       </section>
 

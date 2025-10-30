@@ -3,8 +3,8 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 export default function AboutPage() {
   const values = [
@@ -49,44 +49,38 @@ export default function AboutPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 via-gray-900/30 to-gray-900/50" />
         
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="relative text-center text-white z-10 max-w-4xl mx-auto px-8"
-        >
+        <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8">
           <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
             OUR STORY
           </h1>
           <div className="w-24 h-px bg-gold-400 mx-auto" />
-        </motion.div>
+        </div>
       </section>
 
       {/* Introduction */}
       <section className="py-24">
         <div className="max-w-4xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <ScrollRevealCSS
+            duration={800}
+            y={20}
             className="text-center"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-8 tracking-[0.1em]">
               Elevating Austin Since 2020
             </h2>
             <p className="text-lg text-gray-600 leading-relaxed mb-8">
-              PartyOn Delivery was born from a simple vision: to bring premium spirits and 
-              exceptional service directly to Austin&apos;s most memorable moments. What started 
-              as a response to changing times has evolved into the city&apos;s most trusted 
+              PartyOn Delivery was born from a simple vision: to bring premium spirits and
+              exceptional service directly to Austin&apos;s most memorable moments. What started
+              as a response to changing times has evolved into the city&apos;s most trusted
               name in luxury alcohol delivery and event services.
             </p>
             <p className="text-lg text-gray-600 leading-relaxed">
-              From intimate gatherings in Westlake Hills to grand celebrations on Lake Travis, 
-              we&apos;ve had the privilege of serving thousands of satisfied customers across 
-              the greater Austin area. Our commitment to excellence, safety, and unforgettable 
+              From intimate gatherings in Westlake Hills to grand celebrations on Lake Travis,
+              we&apos;ve had the privilege of serving thousands of satisfied customers across
+              the greater Austin area. Our commitment to excellence, safety, and unforgettable
               experiences drives everything we do.
             </p>
-          </motion.div>
+          </ScrollRevealCSS>
         </div>
       </section>
 
@@ -94,38 +88,37 @@ export default function AboutPage() {
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
+            <ScrollRevealCSS
+              duration={800}
+              y={20}
               className="text-center lg:text-left"
             >
               <h3 className="font-serif text-3xl text-gray-900 mb-6 tracking-[0.1em]">
                 Our Mission
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                To deliver more than premium spirits—to deliver peace of mind, exceptional 
-                moments, and the confidence that comes from working with Austin&apos;s most 
-                professional alcohol delivery service. We handle the details so you can 
+                To deliver more than premium spirits—to deliver peace of mind, exceptional
+                moments, and the confidence that comes from working with Austin&apos;s most
+                professional alcohol delivery service. We handle the details so you can
                 focus on what matters most: celebrating life&apos;s special moments.
               </p>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
+            </ScrollRevealCSS>
+            <ScrollRevealCSS
+              duration={800}
+              y={20}
+              delay={100}
               className="text-center lg:text-left"
             >
               <h3 className="font-serif text-3xl text-gray-900 mb-6 tracking-[0.1em]">
                 Our Vision
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                To set the gold standard for premium alcohol delivery and event services 
-                across Texas. We envision a future where every celebration, from backyard 
-                gatherings to black-tie galas, is elevated by our commitment to excellence, 
+                To set the gold standard for premium alcohol delivery and event services
+                across Texas. We envision a future where every celebration, from backyard
+                gatherings to black-tie galas, is elevated by our commitment to excellence,
                 innovation, and genuine Austin hospitality.
               </p>
-            </motion.div>
+            </ScrollRevealCSS>
           </div>
         </div>
       </section>
@@ -133,10 +126,9 @@ export default function AboutPage() {
       {/* Our Team */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <ScrollRevealCSS
+            duration={800}
+            y={20}
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
@@ -146,12 +138,11 @@ export default function AboutPage() {
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
               Austin&apos;s elite bartending professionals, committed to exceptional service
             </p>
-          </motion.div>
-          
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 1 }}
+          </ScrollRevealCSS>
+
+          <ScrollRevealCSS
+            duration={1000}
+            y={20}
             className="relative h-[500px] rounded-lg overflow-hidden mb-12"
           >
             <Image
@@ -172,13 +163,12 @@ export default function AboutPage() {
                 finest establishments, ensuring your event receives five-star service.
               </p>
             </div>
-          </motion.div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
+            <ScrollRevealCSS
+              duration={800}
+              y={20}
               className="text-center"
             >
               <div className="mb-4">
@@ -188,12 +178,12 @@ export default function AboutPage() {
               </div>
               <h4 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.1em]">TABC Certified</h4>
               <p className="text-gray-600">Every team member is fully licensed and certified</p>
-            </motion.div>
-            
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
+            </ScrollRevealCSS>
+
+            <ScrollRevealCSS
+              duration={800}
+              y={20}
+              delay={100}
               className="text-center"
             >
               <div className="mb-4">
@@ -203,12 +193,12 @@ export default function AboutPage() {
               </div>
               <h4 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.1em]">10+ Years Experience</h4>
               <p className="text-gray-600">Seasoned professionals from luxury hospitality</p>
-            </motion.div>
-            
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+            </ScrollRevealCSS>
+
+            <ScrollRevealCSS
+              duration={800}
+              y={20}
+              delay={200}
               className="text-center"
             >
               <div className="mb-4">
@@ -218,7 +208,7 @@ export default function AboutPage() {
               </div>
               <h4 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.1em]">500+ Events</h4>
               <p className="text-gray-600">Trusted by Austin&apos;s most discerning hosts</p>
-            </motion.div>
+            </ScrollRevealCSS>
           </div>
         </div>
       </section>
@@ -226,10 +216,9 @@ export default function AboutPage() {
       {/* Operations Excellence */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <ScrollRevealCSS
+            duration={800}
+            y={20}
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
@@ -239,20 +228,19 @@ export default function AboutPage() {
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
               State-of-the-art facilities ensuring quality from warehouse to doorstep
             </p>
-          </motion.div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
+            <ScrollRevealCSS
+              duration={800}
+              y={20}
             >
               <h3 className="font-serif text-3xl text-gray-900 mb-6 tracking-[0.1em]">
                 Premium Storage Facility
               </h3>
               <p className="text-gray-600 mb-6 leading-relaxed">
-                Our temperature-controlled warehouse maintains optimal conditions for every bottle 
-                in our collection. From rare whiskeys to delicate champagnes, each product is 
+                Our temperature-controlled warehouse maintains optimal conditions for every bottle
+                in our collection. From rare whiskeys to delicate champagnes, each product is
                 stored with meticulous care.
               </p>
               <ul className="space-y-3 mb-8">
@@ -269,12 +257,12 @@ export default function AboutPage() {
                   <span className="text-gray-700">Quality assurance protocols</span>
                 </li>
               </ul>
-            </motion.div>
-            
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
+            </ScrollRevealCSS>
+
+            <ScrollRevealCSS
+              duration={800}
+              y={20}
+              delay={100}
               className="relative h-96 rounded-lg overflow-hidden"
             >
               <Image
@@ -288,7 +276,7 @@ export default function AboutPage() {
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-r from-gray-900/20 to-transparent" />
-            </motion.div>
+            </ScrollRevealCSS>
           </div>
         </div>
       </section>
@@ -296,25 +284,24 @@ export default function AboutPage() {
       {/* Values */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <ScrollRevealCSS
+            duration={800}
+            y={20}
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               Our Values
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </motion.div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => (
-              <motion.div
+              <ScrollRevealCSS
                 key={value.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
+                duration={800}
+                y={20}
+                delay={index * 100}
                 className="text-center"
               >
                 <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
@@ -323,7 +310,7 @@ export default function AboutPage() {
                 <p className="text-gray-600 leading-relaxed">
                   {value.description}
                 </p>
-              </motion.div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>
@@ -332,25 +319,23 @@ export default function AboutPage() {
       {/* Timeline */}
       <section className="py-24">
         <div className="max-w-4xl mx-auto px-8">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <ScrollRevealCSS
+            duration={800}
+            y={20}
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               Our Journey
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </motion.div>
+          </ScrollRevealCSS>
 
           <div className="space-y-12">
             {milestones.map((milestone, index) => (
-              <motion.div
+              <ScrollRevealCSS
                 key={milestone.year}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
+                duration={800}
+                y={20}
                 className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}
               >
                 <div className="w-1/3 text-right pr-8">
@@ -368,7 +353,7 @@ export default function AboutPage() {
                     <p className="text-gray-600">{milestone.event}</p>
                   )}
                 </div>
-              </motion.div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>
@@ -377,10 +362,9 @@ export default function AboutPage() {
       {/* Team Section */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <ScrollRevealCSS
+            duration={800}
+            y={20}
             className="text-center mb-16"
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
@@ -388,17 +372,16 @@ export default function AboutPage() {
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto mb-8" />
             <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-              Our success is built on the dedication of our exceptional team—from our 
-              professional bartenders to our logistics specialists, each member is 
+              Our success is built on the dedication of our exceptional team—from our
+              professional bartenders to our logistics specialists, each member is
               committed to delivering excellence with every order.
             </p>
-          </motion.div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
+            <ScrollRevealCSS
+              duration={800}
+              y={20}
               className="text-center"
             >
               <div className="mb-4">
@@ -412,11 +395,11 @@ export default function AboutPage() {
               <p className="text-gray-600 text-sm">
                 TABC certified professionals with years of experience in luxury events
               </p>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
+            </ScrollRevealCSS>
+            <ScrollRevealCSS
+              duration={800}
+              y={20}
+              delay={100}
               className="text-center"
             >
               <div className="mb-4">
@@ -430,11 +413,11 @@ export default function AboutPage() {
               <p className="text-gray-600 text-sm">
                 Punctual, professional, and knowledgeable about every Austin neighborhood
               </p>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+            </ScrollRevealCSS>
+            <ScrollRevealCSS
+              duration={800}
+              y={20}
+              delay={200}
               className="text-center"
             >
               <div className="mb-4">
@@ -448,7 +431,7 @@ export default function AboutPage() {
               <p className="text-gray-600 text-sm">
                 Detail-oriented professionals ensuring flawless execution of every event
               </p>
-            </motion.div>
+            </ScrollRevealCSS>
           </div>
         </div>
       </section>
@@ -456,17 +439,16 @@ export default function AboutPage() {
       {/* Community Section */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <ScrollRevealCSS
+            duration={800}
+            y={20}
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-8 tracking-[0.1em]">
               Proudly Austin
             </h2>
             <p className="text-lg text-gray-600 leading-relaxed mb-8">
-              We&apos;re more than a delivery service—we&apos;re part of the Austin community. 
-              From supporting local events to partnering with area venues, we&apos;re committed 
+              We&apos;re more than a delivery service—we&apos;re part of the Austin community.
+              From supporting local events to partnering with area venues, we&apos;re committed
               to giving back to the city that has given us so much.
             </p>
             <div className="flex flex-wrap justify-center gap-8 text-sm text-gray-700">
@@ -489,17 +471,16 @@ export default function AboutPage() {
                 72-Hour Guarantee
               </div>
             </div>
-          </motion.div>
+          </ScrollRevealCSS>
         </div>
       </section>
 
       {/* CTA Section */}
       <section className="py-24 bg-gray-900">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <ScrollRevealCSS
+            duration={800}
+            y={20}
           >
             <h2 className="font-serif font-light text-4xl md:text-5xl text-white mb-6 tracking-[0.1em]">
               Experience the Difference
@@ -519,7 +500,7 @@ export default function AboutPage() {
                 </button>
               </Link>
             </div>
-          </motion.div>
+          </ScrollRevealCSS>
         </div>
       </section>
 

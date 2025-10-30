@@ -3,10 +3,10 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import AIConcierge from '@/components/AIConcierge';
 import LuxuryCard from '@/components/LuxuryCard';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 interface EventOption {
   id: string;
@@ -108,11 +108,7 @@ export default function OrderPage() {
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="hero-fade-in">
             <h1 className="font-serif text-5xl md:text-6xl text-gray-900 mb-6 tracking-[0.15em]">
               ORDER NOW
             </h1>
@@ -120,7 +116,7 @@ export default function OrderPage() {
             <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-12">
               Start shopping our premium selection or let our AI concierge help you create the perfect order
             </p>
-            
+
             {/* Primary CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               <Link href="/products">
@@ -128,44 +124,35 @@ export default function OrderPage() {
                   BROWSE PRODUCTS
                 </button>
               </Link>
-              <button 
+              <button
                 onClick={() => setIsConciergeOpen(true)}
                 className="px-12 py-4 border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-all duration-300 tracking-[0.15em] text-lg w-full sm:w-auto"
               >
                 AI CONCIERGE
               </button>
             </div>
-            
+
             <p className="text-sm text-gray-500">
               {/* TESTING MODE: No restrictions */}
               Order anytime • No minimum
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Quick Options Section */}
       <section className="py-12 bg-white">
         <div className="max-w-6xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-center mb-10"
-          >
+          <div className="hero-fade-in text-center mb-10" style={{ animationDelay: '300ms' }}>
             <h2 className="font-serif text-3xl text-gray-900 mb-4 tracking-[0.1em]">
               CHOOSE YOUR PATH
             </h2>
             <div className="w-16 h-px bg-gold-500 mx-auto" />
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Quick Order Option */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
+            <div className="hero-fade-in" style={{ animationDelay: '400ms' }}>
               <LuxuryCard backgroundImage="/images/order/quick-order.webp">
                 <div className="p-6 text-center">
                   <svg className="w-12 h-12 text-gold-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -180,14 +167,10 @@ export default function OrderPage() {
                   </Link>
                 </div>
               </LuxuryCard>
-            </motion.div>
+            </div>
 
             {/* AI Concierge Option */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-            >
+            <div className="hero-fade-in" style={{ animationDelay: '500ms' }}>
               <LuxuryCard backgroundImage="/images/order/ai-concierge.webp">
                 <div className="p-6 text-center">
                   <svg className="w-12 h-12 text-gold-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -203,14 +186,10 @@ export default function OrderPage() {
                   </button>
                 </div>
               </LuxuryCard>
-            </motion.div>
+            </div>
 
             {/* Browse Packages Option */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-            >
+            <div className="hero-fade-in" style={{ animationDelay: '600ms' }}>
               <LuxuryCard backgroundImage="/images/order/event-packages.webp">
                 <div className="p-6 text-center">
                   <svg className="w-12 h-12 text-gold-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -223,7 +202,7 @@ export default function OrderPage() {
                   </a>
                 </div>
               </LuxuryCard>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -231,12 +210,7 @@ export default function OrderPage() {
       {/* Event Selection Grid */}
       <section id="packages" className="py-16 px-8 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
+          <ScrollRevealCSS delay={0} duration={600} className="text-center mb-12">
             <h2 className="font-serif text-3xl text-gray-900 mb-4 tracking-[0.1em]">
               EVENT PACKAGES
             </h2>
@@ -244,17 +218,15 @@ export default function OrderPage() {
             <p className="text-gray-600 max-w-2xl mx-auto">
               Choose from our curated packages designed for specific events, or build your own custom order
             </p>
-          </motion.div>
+          </ScrollRevealCSS>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {eventOptions.map((event, index) => (
-              <motion.div
+              <div
                 key={event.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className={`bg-white border ${
+                className={`hero-fade-in bg-white border ${
                   selectedEvent === event.id ? 'border-gold-600' : 'border-gray-200'
                 } hover:border-gold-600 transition-all duration-300 cursor-pointer`}
+                style={{ animationDelay: `${index * 100}ms` }}
                 onClick={() => setSelectedEvent(event.id)}
               >
                 {/* Image */}
@@ -306,7 +278,7 @@ export default function OrderPage() {
                     </button>
                   </Link>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
 
@@ -316,17 +288,12 @@ export default function OrderPage() {
       {/* Quick Info Section */}
       <section className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
+          <ScrollRevealCSS delay={0} duration={600} className="text-center mb-12">
             <h2 className="font-serif text-3xl text-gray-900 mb-4 tracking-[0.1em]">
               How It Works
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </motion.div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {[
@@ -351,11 +318,10 @@ export default function OrderPage() {
                 description: 'Professional delivery and optional bartending'
               }
             ].map((item, index) => (
-              <motion.div
+              <ScrollRevealCSS
                 key={item.step}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
+                delay={index * 100}
+                duration={600}
                 className="text-center"
               >
                 <div className="w-12 h-12 bg-gold-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 font-serif text-lg">
@@ -367,7 +333,7 @@ export default function OrderPage() {
                 <p className="text-sm text-gray-600">
                   {item.description}
                 </p>
-              </motion.div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>

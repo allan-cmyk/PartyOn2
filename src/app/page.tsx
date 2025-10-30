@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import HeroSection from '@/components/homepage/HeroSection';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 export default function HomePage() {
   return (
@@ -14,57 +15,63 @@ export default function HomePage() {
       {/* Choose Your Path Fork */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-8">
-          <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
-              Choose Your Path
-            </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </div>
+          <ScrollRevealCSS duration={800} y={30}>
+            <div className="text-center mb-12">
+              <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+                Choose Your Path
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto" />
+            </div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {/* Delivery Now */}
-            <div className="bg-white rounded-lg p-8 border border-gray-200 hover:shadow-lg transition-shadow">
-              <h3 className="font-serif text-2xl text-gray-900 mb-6 tracking-[0.1em]">
-                Delivery Now <span className="text-gold-600">(fastest)</span>
-              </h3>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-start">
-                  <span className="text-gold-600 mr-3 mt-1">•</span>
-                  <span className="text-gray-700">Build your cart in minutes—beer, spirits, cocktail kits, ice & disposables</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-gold-600 mr-3 mt-1">•</span>
-                  <span className="text-gray-700">Everything arrives cold with coordinated handoff</span>
-                </li>
-              </ul>
-              <Link href="/products">
-                <button className="w-full px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
-                  SHOP BEST SELLERS
-                </button>
-              </Link>
-            </div>
+            <ScrollRevealCSS duration={800} delay={100} y={30}>
+              <div className="bg-white rounded-lg p-8 border border-gray-200 hover:shadow-lg transition-shadow">
+                <h3 className="font-serif text-2xl text-gray-900 mb-6 tracking-[0.1em]">
+                  Delivery Now <span className="text-gold-600">(fastest)</span>
+                </h3>
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-start">
+                    <span className="text-gold-600 mr-3 mt-1">•</span>
+                    <span className="text-gray-700">Build your cart in minutes—beer, spirits, cocktail kits, ice & disposables</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-gold-600 mr-3 mt-1">•</span>
+                    <span className="text-gray-700">Everything arrives cold with coordinated handoff</span>
+                  </li>
+                </ul>
+                <Link href="/products">
+                  <button className="w-full px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
+                    SHOP BEST SELLERS
+                  </button>
+                </Link>
+              </div>
+            </ScrollRevealCSS>
 
             {/* Plan an Event */}
-            <div className="bg-white rounded-lg p-8 border border-gray-200 hover:shadow-lg transition-shadow">
-              <h3 className="font-serif text-2xl text-gray-900 mb-6 tracking-[0.1em]">
-                Plan an Event <span className="text-gold-600">(concierge)</span>
-              </h3>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-start">
-                  <span className="text-gold-600 mr-3 mt-1">•</span>
-                  <span className="text-gray-700">Full wedding, boat party, and corporate bar coordination</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-gold-600 mr-3 mt-1">•</span>
-                  <span className="text-gray-700">Optional TABC-certified bartender staffing via vetted partners</span>
-                </li>
-              </ul>
-              <Link href="/contact">
-                <button className="w-full px-8 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
-                  GET HELP
-                </button>
-              </Link>
-            </div>
+            <ScrollRevealCSS duration={800} delay={200} y={30}>
+              <div className="bg-white rounded-lg p-8 border border-gray-200 hover:shadow-lg transition-shadow">
+                <h3 className="font-serif text-2xl text-gray-900 mb-6 tracking-[0.1em]">
+                  Plan an Event <span className="text-gold-600">(concierge)</span>
+                </h3>
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-start">
+                    <span className="text-gold-600 mr-3 mt-1">•</span>
+                    <span className="text-gray-700">Full wedding, boat party, and corporate bar coordination</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-gold-600 mr-3 mt-1">•</span>
+                    <span className="text-gray-700">Optional TABC-certified bartender staffing via vetted partners</span>
+                  </li>
+                </ul>
+                <Link href="/contact">
+                  <button className="w-full px-8 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
+                    GET HELP
+                  </button>
+                </Link>
+              </div>
+            </ScrollRevealCSS>
           </div>
 
           <div className="text-center mt-8">
@@ -78,13 +85,15 @@ export default function HomePage() {
       {/* Top Picks Grid */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-8">
-          <div className="text-center mb-16">
-            <h2 className="font-serif text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
-              Top Picks (2-minute order)
-            </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
-            <p className="text-gray-600">Change quantities at checkout</p>
-          </div>
+          <ScrollRevealCSS duration={800} y={30}>
+            <div className="text-center mb-16">
+              <h2 className="font-serif text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+                Top Picks (2-minute order)
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+              <p className="text-gray-600">Change quantities at checkout</p>
+            </div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
             {[
@@ -96,21 +105,20 @@ export default function HomePage() {
               { title: 'Ice & Disposables', desc: 'Cups, napkins, stirrers, coolers' },
               { title: 'Coolers & Gear', desc: 'Keep drinks cold all day long' },
               { title: 'Party Essentials', desc: 'Complete setup packages' }
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="bg-gray-50 rounded-lg p-6 border border-gray-200 hover:shadow-lg transition-all hover:-translate-y-1"
-              >
-                <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
-                  {item.title}
-                </h3>
-                <p className="text-gray-600 text-sm mb-6">
-                  {item.desc}
-                </p>
-                <button className="w-full px-4 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors text-sm tracking-[0.1em]">
-                  ADD TO CART
-                </button>
-              </div>
+            ].map((item, index) => (
+              <ScrollRevealCSS key={item.title} duration={800} delay={index * 100} y={20}>
+                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200 hover:shadow-lg transition-all hover:-translate-y-1">
+                  <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-6">
+                    {item.desc}
+                  </p>
+                  <button className="w-full px-4 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors text-sm tracking-[0.1em]">
+                    ADD TO CART
+                  </button>
+                </div>
+              </ScrollRevealCSS>
             ))}
           </div>
 
@@ -125,14 +133,14 @@ export default function HomePage() {
       {/* Why Austin Books Party On */}
       <section id="experience" className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <div 
-            className="text-center mb-16"
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
-              Why Austin books Party On
-            </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </div>
+          <ScrollRevealCSS duration={800} y={30}>
+            <div className="text-center mb-16">
+              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+                Why Austin books Party On
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto" />
+            </div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
@@ -176,23 +184,22 @@ export default function HomePage() {
                   </svg>
                 )
               }
-            ].map((feature) => (
-              <div
-                key={feature.title}
-                className={`relative overflow-hidden rounded-lg group cursor-pointer transform hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br ${feature.gradient} border border-gray-200`}
-              >
-                <div className="relative p-8 text-center">
-                  <div className="mb-6">{feature.icon}</div>
-                  <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    {feature.description}
-                  </p>
+            ].map((feature, index) => (
+              <ScrollRevealCSS key={feature.title} duration={800} delay={index * 100} y={20}>
+                <div className={`relative overflow-hidden rounded-lg group cursor-pointer transform hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br ${feature.gradient} border border-gray-200`}>
+                  <div className="relative p-8 text-center">
+                    <div className="mb-6">{feature.icon}</div>
+                    <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
+                      {feature.title}
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed">
+                      {feature.description}
+                    </p>
+                  </div>
+                  {/* Subtle gold shimmer on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-gold-600/0 via-gold-600/5 to-gold-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                 </div>
-                {/* Subtle gold shimmer on hover */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-gold-600/0 via-gold-600/5 to-gold-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-              </div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>
@@ -201,19 +208,18 @@ export default function HomePage() {
       {/* Signature Services */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <div 
-            className="text-center mb-16"
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
-              For whatever you&apos;re planning, get the perfect drink menu on easy mode
-            </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
-          </div>
+          <ScrollRevealCSS duration={800} y={30}>
+            <div className="text-center mb-16">
+              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+                For whatever you&apos;re planning, get the perfect drink menu on easy mode
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+            </div>
+          </ScrollRevealCSS>
 
           {/* Service 1: Weddings */}
-          <div
-            className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-24"
-          >
+          <ScrollRevealCSS duration={800} delay={100} y={30}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-24">
             <div className="relative h-96 overflow-hidden">
               <Image
                 src="/images/services/weddings/outdoor-bar-setup.webp"
@@ -246,12 +252,12 @@ export default function HomePage() {
                 </Link>
               </div>
             </div>
-          </div>
+            </div>
+          </ScrollRevealCSS>
 
           {/* Service 2: Boat Parties */}
-          <div
-            className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-24"
-          >
+          <ScrollRevealCSS duration={800} delay={200} y={30}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-24">
             <div className="lg:pr-12 order-2 lg:order-1">
               <h3 className="font-serif text-3xl text-gray-900 mb-6 tracking-[0.1em]">
                 Boat Parties
@@ -284,12 +290,12 @@ export default function HomePage() {
               />
               <div className="absolute inset-0 bg-gradient-to-l from-gray-900/20 to-transparent" />
             </div>
-          </div>
+            </div>
+          </ScrollRevealCSS>
 
           {/* Service 3: Corporate Events */}
-          <div
-            className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
-          >
+          <ScrollRevealCSS duration={800} delay={300} y={30}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="relative h-96 overflow-hidden">
               <Image
                 src="/images/services/corporate/penthouse-suite-setup.webp"
@@ -322,28 +328,29 @@ export default function HomePage() {
                 </Link>
               </div>
             </div>
-          </div>
+            </div>
+          </ScrollRevealCSS>
         </div>
       </section>
 
       {/* Austin Coverage */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <div 
-            className="text-center mb-16"
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
-              Serving Austin&apos;s Finest
-            </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              From Lake Travis to Downtown, we deliver excellence to every corner of Austin
-            </p>
-          </div>
+          <ScrollRevealCSS duration={800} y={30}>
+            <div className="text-center mb-16">
+              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+                Serving Austin&apos;s Finest
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+              <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+                From Lake Travis to Downtown, we deliver excellence to every corner of Austin
+              </p>
+            </div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto">
-            <div
-            >
+            <ScrollRevealCSS duration={800} delay={100} y={30}>
+              <div>
               <h3 className="font-serif text-2xl text-gray-900 mb-6 tracking-[0.1em]">
                 Downtown & Central
               </h3>
@@ -357,9 +364,10 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
-            </div>
-            <div
-            >
+              </div>
+            </ScrollRevealCSS>
+            <ScrollRevealCSS duration={800} delay={200} y={30}>
+              <div>
               <h3 className="font-serif text-2xl text-gray-900 mb-6 tracking-[0.1em]">
                 Lake & Hills
               </h3>
@@ -373,7 +381,8 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
-            </div>
+              </div>
+            </ScrollRevealCSS>
           </div>
         </div>
       </section>
@@ -381,14 +390,14 @@ export default function HomePage() {
       {/* Testimonials */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <div 
-            className="text-center mb-16"
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
-              Client Testimonials
-            </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </div>
+          <ScrollRevealCSS duration={800} y={30}>
+            <div className="text-center mb-16">
+              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+                Client Testimonials
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto" />
+            </div>
+          </ScrollRevealCSS>
 
           <div className="max-w-4xl mx-auto space-y-12">
             {[
@@ -403,30 +412,29 @@ export default function HomePage() {
                 role: "Lake Travis Regular, Summer"
               }
             ].map((testimonial, index) => (
-              <div
-                key={index}
-                className="text-center"
-              >
-                <p className="text-xl text-gray-700 italic mb-6 leading-relaxed">
-                  &ldquo;{testimonial.text}&rdquo;
-                </p>
-                <p className="text-gray-900 font-light tracking-[0.1em]">
-                  {testimonial.author}
-                </p>
-                <p className="text-gold-600 text-sm tracking-[0.1em]">
-                  {testimonial.role}
-                </p>
-                {index < 1 && <div className="w-24 h-px bg-gray-300 mx-auto mt-12" />}
-              </div>
+              <ScrollRevealCSS key={index} duration={800} delay={index * 100} y={30}>
+                <div className="text-center">
+                  <p className="text-xl text-gray-700 italic mb-6 leading-relaxed">
+                    &ldquo;{testimonial.text}&rdquo;
+                  </p>
+                  <p className="text-gray-900 font-light tracking-[0.1em]">
+                    {testimonial.author}
+                  </p>
+                  <p className="text-gold-600 text-sm tracking-[0.1em]">
+                    {testimonial.role}
+                  </p>
+                  {index < 1 && <div className="w-24 h-px bg-gray-300 mx-auto mt-12" />}
+                </div>
+              </ScrollRevealCSS>
             ))}
 
-            <div
-              className="text-center pt-8 border-t border-gray-200"
-            >
+            <ScrollRevealCSS duration={800} delay={300} y={30}>
+              <div className="text-center pt-8 border-t border-gray-200">
               <p className="text-gray-600 tracking-[0.05em]">
                 Open since 2023 • Thousands served • 5.0★ on Google
               </p>
-            </div>
+              </div>
+            </ScrollRevealCSS>
           </div>
         </div>
       </section>
@@ -434,14 +442,14 @@ export default function HomePage() {
       {/* How It Works */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-6xl mx-auto px-8">
-          <div
-            className="text-center mb-16"
-          >
-            <h2 className="font-serif text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
-              How it works
-            </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </div>
+          <ScrollRevealCSS duration={800} y={30}>
+            <div className="text-center mb-16">
+              <h2 className="font-serif text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+                How it works
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto" />
+            </div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
@@ -465,21 +473,20 @@ export default function HomePage() {
                 title: "Everything arrives cold",
                 description: "Celebrate stress-free"
               }
-            ].map((item) => (
-              <div
-                key={item.step}
-                className="text-center"
-              >
-                <div className="w-16 h-16 bg-gold-600 text-white rounded-full flex items-center justify-center text-xl font-light mx-auto mb-6">
-                  {item.step}
+            ].map((item, index) => (
+              <ScrollRevealCSS key={item.step} duration={800} delay={index * 100} y={30}>
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gold-600 text-white rounded-full flex items-center justify-center text-xl font-light mx-auto mb-6">
+                    {item.step}
+                  </div>
+                  <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    {item.description}
+                  </p>
                 </div>
-                <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
-                  {item.title}
-                </h3>
-                <p className="text-gray-600 text-sm">
-                  {item.description}
-                </p>
-              </div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>
@@ -488,20 +495,21 @@ export default function HomePage() {
       {/* Service Areas - Logistics Help */}
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-8">
-          <div
-            className="text-center mb-12"
-          >
-            <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
-              We Handle the Logistics
-            </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Austin, Lake Travis, Hill Country coverage with specialized delivery expertise
-            </p>
-          </div>
+          <ScrollRevealCSS duration={800} y={30}>
+            <div className="text-center mb-12">
+              <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+                We Handle the Logistics
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                Austin, Lake Travis, Hill Country coverage with specialized delivery expertise
+              </p>
+            </div>
+          </ScrollRevealCSS>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {[
+          <ScrollRevealCSS duration={800} delay={100} y={30}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {[
               {
                 title: "Hotel bell desk handoff",
                 description: "No waiting in lobby; we coordinate with staff"
@@ -530,21 +538,22 @@ export default function HomePage() {
                 </div>
               </div>
             ))}
-          </div>
+            </div>
+          </ScrollRevealCSS>
         </div>
       </section>
 
       {/* Mini-FAQ */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-8">
-          <div
-            className="text-center mb-12"
-          >
-            <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
-              Quick Questions
-            </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
-          </div>
+          <ScrollRevealCSS duration={800} y={30}>
+            <div className="text-center mb-12">
+              <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+                Quick Questions
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto" />
+            </div>
+          </ScrollRevealCSS>
 
           <div className="space-y-8">
             {[
@@ -573,13 +582,12 @@ export default function HomePage() {
                 answer: "Yes—TABC certified + $2M insurance. Fully licensed operation."
               }
             ].map((faq, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-lg p-6 border border-gray-200"
-              >
-                <h3 className="font-medium text-gray-900 mb-3">{faq.question}</h3>
-                <p className="text-gray-600">{faq.answer}</p>
-              </div>
+              <ScrollRevealCSS key={index} duration={800} delay={index * 80} y={20}>
+                <div className="bg-white rounded-lg p-6 border border-gray-200">
+                  <h3 className="font-medium text-gray-900 mb-3">{faq.question}</h3>
+                  <p className="text-gray-600">{faq.answer}</p>
+                </div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>
@@ -588,27 +596,28 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="py-24 bg-gray-900">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <div
-          >
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-white mb-6 tracking-[0.1em]">
-              Ready to stock your party?
-            </h2>
-            <p className="text-gray-300 text-lg mb-12 tracking-[0.05em]">
-              2-minute order • Fast availability check • (737) 371-9700
-            </p>
-            <div className="flex flex-col md:flex-row gap-6 justify-center">
-              <Link href="/products">
-                <button className="px-10 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
-                  ORDER NOW
-                </button>
-              </Link>
-              <Link href="/order">
-                <button className="px-10 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
-                  PLAN MY EVENT
-                </button>
-              </Link>
+          <ScrollRevealCSS duration={800} y={30}>
+            <div>
+              <h2 className="font-serif font-light text-4xl md:text-5xl text-white mb-6 tracking-[0.1em]">
+                Ready to stock your party?
+              </h2>
+              <p className="text-gray-300 text-lg mb-12 tracking-[0.05em]">
+                2-minute order • Fast availability check • (737) 371-9700
+              </p>
+              <div className="flex flex-col md:flex-row gap-6 justify-center">
+                <Link href="/products">
+                  <button className="px-10 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
+                    ORDER NOW
+                  </button>
+                </Link>
+                <Link href="/order">
+                  <button className="px-10 py-4 border-2 border-gold-600 text-white hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
+                    PLAN MY EVENT
+                  </button>
+                </Link>
+              </div>
             </div>
-          </div>
+          </ScrollRevealCSS>
         </div>
       </section>
 

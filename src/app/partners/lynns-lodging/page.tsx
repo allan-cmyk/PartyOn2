@@ -2,13 +2,13 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import { useProducts } from '@/lib/shopify/hooks/useProducts';
 import MobileProductCard from '@/components/mobile/MobileProductCard';
 import CompactProductCard from '@/components/shopify/CompactProductCard';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { getProductCategory } from '@/lib/shopify/categories';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 export default function LynnsLodgingPartnerPage() {
   const { products, loading } = useProducts(50, false);
@@ -62,24 +62,15 @@ export default function LynnsLodgingPartnerPage() {
           }} />
         </div>
         
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="relative text-center z-10 max-w-5xl mx-auto px-8"
-        >
+        <div className="hero-fade-in relative text-center z-10 max-w-5xl mx-auto px-8">
+
           {/* Partner Badge */}
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="inline-flex items-center gap-2 bg-[#fff8ed] px-4 py-2 rounded-full mb-6"
-          >
+          <div className="hero-fade-in inline-flex items-center gap-2 bg-[#fff8ed] px-4 py-2 rounded-full mb-6" style={{ animationDelay: '0.3s' }}>
             <svg className="w-4 h-4 text-[#1b4235]" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
             <span className="text-sm font-medium text-[#1b4235] tracking-wider">EXCLUSIVE PARTNER</span>
-          </motion.div>
+          </div>
 
           <h1 className="mb-6">
             <span className="block font-serif text-[#fff8ed] text-2xl mb-3 tracking-[0.15em] font-light">
@@ -101,26 +92,22 @@ export default function LynnsLodgingPartnerPage() {
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <motion.a
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            <a
               href="#packages"
-              className="px-8 py-3 bg-[#fff8ed] text-[#1b4235] font-semibold tracking-wider hover:bg-white transition-colors"
+              className="px-8 py-3 bg-[#fff8ed] text-[#1b4235] font-semibold tracking-wider hover:bg-white hover:scale-105 transition-all"
             >
               VIEW PACKAGES
-            </motion.a>
-            <motion.a
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            </a>
+            <a
               href="https://lynnslodging.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-8 py-3 border-2 border-[#fff8ed] text-[#fff8ed] font-semibold tracking-wider hover:bg-[#fff8ed] hover:text-[#1b4235] transition-all"
+              className="px-8 py-3 border-2 border-[#fff8ed] text-[#fff8ed] font-semibold tracking-wider hover:bg-[#fff8ed] hover:text-[#1b4235] hover:scale-105 transition-all"
             >
               BOOK YOUR STAY
-            </motion.a>
+            </a>
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Trust Bar */}
@@ -152,29 +139,22 @@ export default function LynnsLodgingPartnerPage() {
       {/* Special Packages */}
       <section id="packages" className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-12"
-          >
-            <h2 className="font-serif text-4xl text-[#1b4235] mb-4 tracking-[0.1em]">
-              Curated Packages for Every Stay
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Pre-arrival delivery ensures your vacation starts the moment you walk through the door
-            </p>
-          </motion.div>
+          <ScrollRevealCSS duration={800} delay={0} y={30}>
+            <div className="text-center mb-12">
+              <h2 className="font-serif text-4xl text-[#1b4235] mb-4 tracking-[0.1em]">
+                Curated Packages for Every Stay
+              </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                Pre-arrival delivery ensures your vacation starts the moment you walk through the door
+              </p>
+            </div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             {/* Welcome Package */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="bg-white p-8 shadow-lg hover:shadow-xl transition-shadow"
-            >
-              <div className="w-16 h-16 bg-[#fff8ed] rounded-full flex items-center justify-center mb-6">
+            <ScrollRevealCSS duration={800} delay={0} y={30}>
+              <div className="bg-white p-8 shadow-lg hover:shadow-xl transition-shadow">
+                <div className="w-16 h-16 bg-[#fff8ed] rounded-full flex items-center justify-center mb-6">
                 <svg className="w-8 h-8 text-[#1b4235]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" 
                     d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
@@ -205,15 +185,13 @@ export default function LynnsLodgingPartnerPage() {
                 </li>
               </ul>
               <p className="text-2xl font-bold text-[#1b4235]">From $150</p>
-            </motion.div>
+              </div>
+            </ScrollRevealCSS>
 
             {/* Bachelor/Bachelorette Package */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="bg-white p-8 shadow-lg hover:shadow-xl transition-shadow relative"
-            >
+            <ScrollRevealCSS duration={800} delay={100} y={30}>
+              <div className="bg-white p-8 shadow-lg hover:shadow-xl transition-shadow relative">
+
               <div className="absolute -top-3 -right-3 bg-gold-600 text-white px-4 py-1 text-xs tracking-wider">
                 MOST POPULAR
               </div>
@@ -248,15 +226,13 @@ export default function LynnsLodgingPartnerPage() {
                 </li>
               </ul>
               <p className="text-2xl font-bold text-[#1b4235]">From $350</p>
-            </motion.div>
+              </div>
+            </ScrollRevealCSS>
 
             {/* Weekend Getaway */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="bg-white p-8 shadow-lg hover:shadow-xl transition-shadow"
-            >
+            <ScrollRevealCSS duration={800} delay={200} y={30}>
+              <div className="bg-white p-8 shadow-lg hover:shadow-xl transition-shadow">
+
               <div className="w-16 h-16 bg-[#fff8ed] rounded-full flex items-center justify-center mb-6">
                 <svg className="w-8 h-8 text-[#1b4235]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" 
@@ -288,7 +264,8 @@ export default function LynnsLodgingPartnerPage() {
                 </li>
               </ul>
               <p className="text-2xl font-bold text-[#1b4235]">From $250</p>
-            </motion.div>
+              </div>
+            </ScrollRevealCSS>
           </div>
         </div>
       </section>
@@ -398,22 +375,18 @@ export default function LynnsLodgingPartnerPage() {
                 )
               }
             ].map((item, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="text-center"
-              >
-                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <svg className="w-8 h-8 text-[#1b4235]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    {item.icon}
-                  </svg>
+              <ScrollRevealCSS key={idx} duration={800} delay={idx * 100} y={30}>
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <svg className="w-8 h-8 text-[#1b4235]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      {item.icon}
+                    </svg>
+                  </div>
+                  <div className="text-3xl font-bold text-[#1b4235] mb-2">{item.step}</div>
+                  <h3 className="font-semibold text-[#1b4235] mb-2">{item.title}</h3>
+                  <p className="text-sm text-[#1b4235]/80">{item.desc}</p>
                 </div>
-                <div className="text-3xl font-bold text-[#1b4235] mb-2">{item.step}</div>
-                <h3 className="font-semibold text-[#1b4235] mb-2">{item.title}</h3>
-                <p className="text-sm text-[#1b4235]/80">{item.desc}</p>
-              </motion.div>
+              </ScrollRevealCSS>
             ))}
           </div>
         </div>
@@ -430,22 +403,16 @@ export default function LynnsLodgingPartnerPage() {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/order">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 bg-[#fff8ed] text-[#1b4235] font-semibold tracking-wider hover:bg-white transition-colors"
-              >
+              <button className="px-8 py-4 bg-[#fff8ed] text-[#1b4235] font-semibold tracking-wider hover:bg-white hover:scale-105 transition-all">
+
                 ORDER NOW
-              </motion.button>
+              </button>
             </Link>
             <a href="tel:737-371-9700">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 border-2 border-[#fff8ed] text-[#fff8ed] font-semibold tracking-wider hover:bg-[#fff8ed] hover:text-[#1b4235] transition-all"
-              >
+              <button className="px-8 py-4 border-2 border-[#fff8ed] text-[#fff8ed] font-semibold tracking-wider hover:bg-[#fff8ed] hover:text-[#1b4235] hover:scale-105 transition-all">
+
                 CALL CONCIERGE
-              </motion.button>
+              </button>
             </a>
           </div>
         </div>

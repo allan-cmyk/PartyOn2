@@ -3,9 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion'; // Kept for carousel only
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import HeroOverlay from '@/components/HeroOverlay';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 export default function BachPartiesPage() {
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
@@ -113,12 +114,7 @@ export default function BachPartiesPage() {
           ))}
         </div>
         
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="relative text-center text-white z-10 max-w-4xl mx-auto px-6 md:px-8"
-        >
+        <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-6 md:px-8">
           <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
             Zero Store Runs for
             <span className="block text-gold-400 mt-2">AUSTIN BACH GROUPS</span>
@@ -142,34 +138,24 @@ export default function BachPartiesPage() {
           <p className="text-sm text-gray-300 mt-4 tracking-[0.05em]">
             TABC-licensed • Fully insured • 1000+ Deliveries, 5.0★
           </p>
-        </motion.div>
+        </div>
       </section>
 
       {/* Choose Your Path */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-6xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
+          <ScrollRevealCSS duration={800} y={20} className="text-center mb-16">
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
               Choose Your Path
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
               Two ways to get exactly what your bach group needs—both guaranteed cold and on time.
             </p>
-          </motion.div>
+          </ScrollRevealCSS>
 
           <div className="grid md:grid-cols-2 gap-8">
             {/* Delivery-Only Path */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="bg-white rounded-lg p-8 shadow-lg border-2 border-gold-400 relative"
-            >
+            <ScrollRevealCSS duration={800} y={20} delay={200} className="bg-white rounded-lg p-8 shadow-lg border-2 border-gold-400 relative">
               <div className="absolute -top-4 left-8 bg-gold-400 text-white px-4 py-2 rounded-full text-sm font-medium tracking-wider">
                 MOST POPULAR
               </div>
@@ -198,15 +184,10 @@ export default function BachPartiesPage() {
               <button className="w-full bg-gold-400 text-white font-medium py-4 px-6 rounded-lg hover:bg-gold-500 transition-colors tracking-[0.1em]">
                 ORDER NOW
               </button>
-            </motion.div>
+            </ScrollRevealCSS>
 
             {/* Concierge Path */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="bg-white rounded-lg p-8 shadow-lg"
-            >
+            <ScrollRevealCSS duration={800} y={20} delay={400} className="bg-white rounded-lg p-8 shadow-lg">
               <h3 className="font-serif text-2xl md:text-3xl text-gray-900 mb-4 tracking-[0.1em]">
                 Concierge / Custom
                 <span className="block text-lg text-gray-600 font-sans tracking-normal">(full-service)</span>
@@ -232,7 +213,7 @@ export default function BachPartiesPage() {
               <button className="w-full border-2 border-gold-400 text-gold-400 font-medium py-4 px-6 rounded-lg hover:bg-gold-400 hover:text-white transition-colors tracking-[0.1em]">
                 SCHEDULE 15-MIN PLANNING CALL
               </button>
-            </motion.div>
+            </ScrollRevealCSS>
           </div>
         </div>
       </section>
@@ -240,19 +221,14 @@ export default function BachPartiesPage() {
       {/* Austin Bach Party Logistics */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-8">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
+          <ScrollRevealCSS duration={800} y={20} className="text-center mb-16">
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
               We Deliver Everywhere Bach Groups Go
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
               Cold alcohol delivered to any Austin location with 48-hour notice. Here&apos;s what bach groups book most.
             </p>
-          </motion.div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
@@ -299,11 +275,11 @@ export default function BachPartiesPage() {
                 popular: false
               }
             ].map((location, index) => (
-              <motion.div
+              <ScrollRevealCSS
                 key={location.area}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
+                duration={800}
+                y={20}
+                delay={index * 100}
                 className={`bg-white rounded-lg p-6 shadow-lg border-l-4 ${
                   location.popular ? 'border-gold-400' : 'border-gray-200'
                 }`}
@@ -340,7 +316,7 @@ export default function BachPartiesPage() {
                     {location.minOrder}
                   </div>
                 </div>
-              </motion.div>
+              </ScrollRevealCSS>
             ))}
           </div>
           
@@ -363,27 +339,17 @@ export default function BachPartiesPage() {
       {/* Bach-Specific Benefits */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-6xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
+          <ScrollRevealCSS duration={800} y={20} className="text-center mb-16">
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
               What Bach Groups Tell Us
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
               Real outcomes from 500+ Austin bach parties we&apos;ve delivered to over the past 3 years.
             </p>
-          </motion.div>
+          </ScrollRevealCSS>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="bg-white rounded-lg p-8 shadow-lg text-center"
-            >
+            <ScrollRevealCSS duration={800} y={20} delay={100} className="bg-white rounded-lg p-8 shadow-lg text-center">
               <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -395,14 +361,9 @@ export default function BachPartiesPage() {
               <p className="text-gray-600 leading-relaxed">
                 No Walmart runs, no gas station stops, no warm beer crisis at 2 PM. Everything cold and ready when you arrive.
               </p>
-            </motion.div>
+            </ScrollRevealCSS>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="bg-white rounded-lg p-8 shadow-lg text-center"
-            >
+            <ScrollRevealCSS duration={800} y={20} delay={200} className="bg-white rounded-lg p-8 shadow-lg text-center">
               <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -414,14 +375,9 @@ export default function BachPartiesPage() {
               <p className="text-gray-600 leading-relaxed">
                 No arguing about who pays for what or who&apos;s buying the next round. Everyone knows the plan and cost upfront.
               </p>
-            </motion.div>
+            </ScrollRevealCSS>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="bg-white rounded-lg p-8 shadow-lg text-center"
-            >
+            <ScrollRevealCSS duration={800} y={20} delay={300} className="bg-white rounded-lg p-8 shadow-lg text-center">
               <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -433,7 +389,7 @@ export default function BachPartiesPage() {
               <p className="text-gray-600 leading-relaxed">
                 The maid of honor gets to actually enjoy the party instead of playing logistics coordinator all weekend.
               </p>
-            </motion.div>
+            </ScrollRevealCSS>
           </div>
 
           <div className="mt-16 bg-white rounded-lg p-8 shadow-lg">
@@ -453,27 +409,22 @@ export default function BachPartiesPage() {
       {/* Top Picks - 1-Click Bundles */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
+          <ScrollRevealCSS duration={800} y={20} className="text-center mb-16">
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               Top Picks for Bach Groups
             </h2>
             <p className="text-gray-600 text-lg max-w-3xl mx-auto">
               Skip the guesswork. These bundles are exactly what Austin bach groups order most—ready to add to cart in 30 seconds.
             </p>
-          </motion.div>
+          </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {topPicks.map((bundle, index) => (
-              <motion.div
+              <ScrollRevealCSS
                 key={bundle.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
+                duration={800}
+                y={20}
+                delay={index * 100}
                 className={`bg-white rounded-lg shadow-lg p-6 relative ${
                   bundle.featured ? 'border-2 border-gold-400 scale-105' : 'border border-gray-200'
                 }`}
@@ -522,7 +473,7 @@ export default function BachPartiesPage() {
                 <p className="text-xs text-gray-500 text-center mt-3">
                   48-hour delivery • Austin metro only
                 </p>
-              </motion.div>
+              </ScrollRevealCSS>
             ))}
           </div>
           
@@ -537,19 +488,14 @@ export default function BachPartiesPage() {
       {/* Popular Add-Ons */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-6xl mx-auto px-8">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
+          <ScrollRevealCSS duration={800} y={20} className="text-center mb-16">
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
               Popular Last-Minute Adds
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
               78% of bach groups add at least one of these. Order now or add during delivery.
             </p>
-          </motion.div>
+          </ScrollRevealCSS>
 
           <div className="grid md:grid-cols-2 gap-8 mb-12">
             {[
@@ -586,11 +532,11 @@ export default function BachPartiesPage() {
                 cta: "ADD COORDINATION"
               }
             ].map((addon, index) => (
-              <motion.div
+              <ScrollRevealCSS
                 key={addon.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
+                duration={800}
+                y={20}
+                delay={index * 100}
                 className={`bg-white rounded-lg p-6 shadow-lg ${
                   addon.popular ? 'border-2 border-gold-400' : 'border border-gray-200'
                 }`}
@@ -629,7 +575,7 @@ export default function BachPartiesPage() {
                 }`}>
                   {addon.cta}
                 </button>
-              </motion.div>
+              </ScrollRevealCSS>
             ))}
           </div>
           
@@ -656,12 +602,7 @@ export default function BachPartiesPage() {
       {/* Testimonial */}
       <section className="py-24">
         <div className="max-w-4xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
-          >
+          <ScrollRevealCSS duration={800} y={20} className="text-center">
             <p className="text-2xl text-gray-700 italic mb-8 leading-relaxed">
               &ldquo;PartyOn made my bachelorette weekend absolutely perfect! They coordinated 
               deliveries to three different venues, created custom cocktails for our group, 
@@ -673,26 +614,21 @@ export default function BachPartiesPage() {
             <p className="text-gold-600 text-sm tracking-[0.1em]">
               Bachelorette Weekend, September 2023
             </p>
-          </motion.div>
+          </ScrollRevealCSS>
         </div>
       </section>
 
       {/* Bach Party FAQ */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-4xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
+          <ScrollRevealCSS duration={800} y={20} className="text-center mb-16">
             <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
               Bach Party Questions
             </h2>
             <p className="text-lg text-gray-600">
               Quick answers to the top 5 things every bach group asks us.
             </p>
-          </motion.div>
+          </ScrollRevealCSS>
 
           <div className="space-y-6">
             {[
@@ -717,11 +653,11 @@ export default function BachPartiesPage() {
                 answer: "We'll coordinate with you to redirect delivery to your backup location at no extra charge. Just give us 4+ hours notice for location changes."
               }
             ].map((faq, index) => (
-              <motion.div
+              <ScrollRevealCSS
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
+                duration={800}
+                y={20}
+                delay={index * 100}
                 className="bg-white rounded-lg p-6 shadow-lg"
               >
                 <h3 className="font-serif text-lg text-gray-900 mb-3 tracking-[0.1em]">
@@ -730,7 +666,7 @@ export default function BachPartiesPage() {
                 <p className="text-gray-600 leading-relaxed">
                   {faq.answer}
                 </p>
-              </motion.div>
+              </ScrollRevealCSS>
             ))}
           </div>
 
@@ -752,11 +688,7 @@ export default function BachPartiesPage() {
       {/* CTA Section */}
       <section className="py-24 bg-gray-900">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
+          <ScrollRevealCSS duration={800} y={20}>
             <h2 className="font-serif font-light text-4xl md:text-5xl text-white mb-6 tracking-[0.1em]">
               Make It Legendary
             </h2>
@@ -775,7 +707,7 @@ export default function BachPartiesPage() {
                 </button>
               </Link>
             </div>
-          </motion.div>
+          </ScrollRevealCSS>
         </div>
       </section>
 

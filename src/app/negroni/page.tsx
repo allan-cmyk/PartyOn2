@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 export default function LuxuryJimmyPage() {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -30,48 +30,30 @@ export default function LuxuryJimmyPage() {
     <main className="min-h-screen bg-white">
       {/* Hero - Jimmy Choo Style */}
       <section className="relative h-screen">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeSlide}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1 }}
-            className="absolute inset-0"
-          >
-            <Image
-              src={slides[activeSlide].image}
-              alt={slides[activeSlide].title}
-              fill
-              className="object-cover"
-              priority
-              quality={100}
-            />
-            <div className="absolute inset-0 bg-black/30" />
-          </motion.div>
-        </AnimatePresence>
+        <div
+          className="absolute inset-0 transition-opacity duration-1000"
+          style={{
+            backgroundImage: `url(${slides[activeSlide].image})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        >
+          <div className="absolute inset-0 bg-black/30" />
+        </div>
 
         {/* Content Overlay */}
         <div className="relative z-10 h-full flex flex-col justify-between p-12">
           <div className="text-center pt-32">
-            <motion.h1
-              key={slides[activeSlide].title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-5xl md:text-7xl font-light text-white tracking-[0.2em] mb-4"
+            <h1
+              className="text-5xl md:text-7xl font-light text-white tracking-[0.2em] mb-4 hero-fade-in"
             >
               {slides[activeSlide].title}
-            </motion.h1>
-            <motion.p
-              key={slides[activeSlide].subtitle}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-lg text-white/80 tracking-[0.15em]"
-            >
-              {slides[activeSlide].subtitle}
-            </motion.p>
+            </h1>
+            <ScrollRevealCSS duration={800} delay={0} y={30}>
+              <p className="text-lg text-white/80 tracking-[0.15em]">
+                {slides[activeSlide].subtitle}
+              </p>
+            </ScrollRevealCSS>
           </div>
 
           {/* Slide Navigation */}

@@ -6,7 +6,6 @@ import Link from 'next/link'
 import { useGroupOrder, useJoinGroupOrder } from '@/lib/group-orders/hooks'
 import { useGroupOrderContext } from '@/contexts/GroupOrderContext'
 import { useCartContext } from '@/contexts/CartContext'
-import { motion } from 'framer-motion'
 import AgeVerificationModal from '@/components/AgeVerificationModal'
 
 export default function GroupOrderLandingPage() {
@@ -88,11 +87,7 @@ export default function GroupOrderLandingPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8"
-        >
+        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8 fade-in-up">
           {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-gold-500 bg-opacity-10 rounded-full mb-4">
@@ -225,7 +220,7 @@ export default function GroupOrderLandingPage() {
               </Link>
             </div>
           )}
-        </motion.div>
+        </div>
       </div>
 
       {/* Age Verification Modal */}

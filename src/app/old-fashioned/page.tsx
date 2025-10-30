@@ -2,8 +2,8 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 import Link from 'next/link';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 export default function LuxuryRitzPage() {
   return (
@@ -18,37 +18,29 @@ export default function LuxuryRitzPage() {
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60" />
-        
+
         <div className="relative z-10 h-full flex flex-col justify-between">
           <div className="flex-1 flex items-center justify-center">
-            <div className="text-center text-white">
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1 }}
-              >
-                <h1 className="text-5xl md:text-7xl font-light tracking-[0.2em] mb-6">
-                  PARTYON
-                </h1>
-                <div className="w-32 h-px bg-gold-400 mx-auto mb-6" />
-                <p className="text-xl tracking-[0.15em] text-white/90">
-                  DISTINGUISHED ALCOHOL DELIVERY
-                </p>
-              </motion.div>
+            <div className="text-center text-white hero-fade-in">
+              <h1 className="text-5xl md:text-7xl font-light tracking-[0.2em] mb-6">
+                PARTYON
+              </h1>
+              <div className="w-32 h-px bg-gold-400 mx-auto mb-6" />
+              <p className="text-xl tracking-[0.15em] text-white/90">
+                DISTINGUISHED ALCOHOL DELIVERY
+              </p>
             </div>
           </div>
-          
+
           <div className="text-center pb-12">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 0.5 }}
-            >
-              <p className="text-white/70 mb-4">Discover Excellence</p>
-              <svg className="w-6 h-6 mx-auto text-white/70 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-              </svg>
-            </motion.div>
+            <ScrollRevealCSS duration={800} delay={0} y={30}>
+              <div>
+                <p className="text-white/70 mb-4">Discover Excellence</p>
+                <svg className="w-6 h-6 mx-auto text-white/70 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </div>
+            </ScrollRevealCSS>
           </div>
         </div>
       </section>
