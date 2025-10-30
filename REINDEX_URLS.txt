@@ -1,0 +1,64 @@
+# Party On Delivery - URLs to Submit for Re-Indexing
+# Submit these 43 URLs via Google Search Console URL Inspection Tool
+# Priority: P0 (Critical) → P1 (High) → P2 (Medium)
+
+## P0 - Critical Pages (9 pages) - SUBMIT FIRST
+https://partyondelivery.com/
+https://partyondelivery.com/products
+https://partyondelivery.com/products/[handle]
+https://partyondelivery.com/about
+https://partyondelivery.com/contact
+https://partyondelivery.com/services
+https://partyondelivery.com/weddings
+https://partyondelivery.com/boat-parties
+https://partyondelivery.com/bach-parties
+
+## P1 - High-Priority Pages (10 pages) - SUBMIT SECOND
+https://partyondelivery.com/weddings/products
+https://partyondelivery.com/boat-parties/products
+https://partyondelivery.com/bach-parties/products
+https://partyondelivery.com/corporate
+https://partyondelivery.com/corporate/products
+https://partyondelivery.com/partner
+https://partyondelivery.com/book-consultation
+https://partyondelivery.com/testimonials
+https://partyondelivery.com/terms
+https://partyondelivery.com/privacy
+
+## P2 - Medium-Priority Pages (24 pages) - SUBMIT THIRD
+https://partyondelivery.com/checkout
+https://partyondelivery.com/collections
+https://partyondelivery.com/collections/[handle]
+https://partyondelivery.com/delivery-areas
+https://partyondelivery.com/delivery/[location]
+https://partyondelivery.com/search
+https://partyondelivery.com/custom-package
+https://partyondelivery.com/faqs
+https://partyondelivery.com/blog
+https://partyondelivery.com/blog/[slug]
+https://partyondelivery.com/blog/category/[category]
+https://partyondelivery.com/cart/shared
+https://partyondelivery.com/book-now
+https://partyondelivery.com/corporate-events-guide
+https://partyondelivery.com/aperol-spritz
+https://partyondelivery.com/gin-martini
+https://partyondelivery.com/negroni
+https://partyondelivery.com/old-fashioned
+https://partyondelivery.com/partners/mobile-bartenders
+https://partyondelivery.com/partners/hotels-resorts
+https://partyondelivery.com/partners/vacation-rentals
+https://partyondelivery.com/partners/property-management
+https://partyondelivery.com/partners/lynns-lodging
+
+## Instructions:
+1. Go to: https://search.google.com/search-console
+2. Select your property: partyondelivery.com
+3. Use "URL Inspection" tool (top search bar)
+4. Paste each URL one at a time
+5. Click "Request Indexing" for each URL
+6. Google limits: ~10-15 requests per day, so spread over 3-4 days
+
+## Expected Timeline:
+- Week 1: 80-100+ pages indexed (from ~0 currently)
+- Week 2: 150-180+ pages indexed
+- Week 4: Full recovery to 225+ pages

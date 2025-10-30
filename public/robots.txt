@@ -1,6 +1,7 @@
 # https://partyondelivery.com/robots.txt
 
 # Google and Bing - Full access with optimized crawling
+# Crawl-delay removed temporarily for faster re-indexing (SEO crisis recovery)
 User-agent: Googlebot
 Allow: /
 Disallow: /api/
@@ -8,7 +9,7 @@ Disallow: /account/
 Disallow: /checkout/
 Disallow: /group/dashboard
 Disallow: /cart/shared/
-Crawl-delay: 0.5
+# Crawl-delay: 0 (no delay during re-indexing period)
 
 User-agent: Bingbot
 Allow: /
