@@ -14,7 +14,15 @@
     "db:studio": "prisma studio",
     "generate-blog": "tsx scripts/automated-daily-blog.ts",
     "generate-daily": "tsx scripts/automated-daily-blog.ts",
-    "test-blog-images": "tsx scripts/test-gemini.ts"
+    "test-blog-images": "tsx scripts/test-gemini.ts",
+    "deploy": "bash scripts/deploy-and-ping.sh production",
+    "deploy:staging": "bash scripts/deploy-and-ping.sh staging",
+    "deploy:windows": "powershell -ExecutionPolicy Bypass -File scripts/deploy-and-ping.ps1 production",
+    "deploy:staging:windows": "powershell -ExecutionPolicy Bypass -File scripts/deploy-and-ping.ps1 staging",
+    "sitemap:check": "tsx scripts/sitemap-health-check.ts",
+    "sitemap:check:prod": "tsx scripts/sitemap-health-check.ts --url=https://partyondelivery.com/sitemap.xml",
+    "sitemap:check:sample": "tsx scripts/sitemap-health-check.ts --sample=50",
+    "sitemap:ping": "curl -s https://www.google.com/ping?sitemap=https://partyondelivery.com/sitemap.xml && curl -s https://www.bing.com/ping?sitemap=https://partyondelivery.com/sitemap.xml"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.66.0",
@@ -43,6 +51,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/xml2js": "^0.4.14",
     "autoprefixer": "^10.4.21",
     "dotenv": "^17.2.3",
     "eslint": "^9",
@@ -52,6 +61,7 @@
     "sharp": "^0.34.3",
     "tailwindcss": "^3.4.17",
     "tsx": "^4.20.6",
-    "typescript": "^5"
+    "typescript": "^5",
+    "xml2js": "^0.6.2"
   }
 }

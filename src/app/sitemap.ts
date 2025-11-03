@@ -1,3 +1,17 @@
+/**
+ * Sitemap generation for PartyOn Delivery
+ *
+ * Generates dynamic sitemap including:
+ * - Static pages (excluding /account blocked by robots.txt)
+ * - Shopify products (auto-paginated)
+ * - Shopify collections
+ * - Dynamic delivery location pages
+ * - Migrated blog posts from Shopify
+ * - Dynamic blog category pages
+ *
+ * Last updated: Nov 2024 - Fixed Google Search Console warnings
+ */
+
 import { MetadataRoute } from 'next'
 import blogPosts from '@/data/blog-posts/posts.json'
 import { shopifyFetch } from '@/lib/shopify/client'
@@ -9,13 +23,16 @@ interface BlogPost {
 }
 
 // Query to get all product handles for sitemap
+// Only includes active, available products to prevent 404s
 const ALL_PRODUCTS_HANDLES_QUERY = gql`
   query getAllProductHandles {
-    products(first: 250) {
+    products(first: 250, query: "status:active") {
       edges {
         node {
           handle
           updatedAt
+          availableForSale
+          status
         }
       }
       pageInfo {
@@ -43,6 +60,8 @@ const ALL_COLLECTIONS_HANDLES_QUERY = gql`
 interface ProductNode {
   handle: string;
   updatedAt: string;
+  availableForSale: boolean;
+  status: string;
 }
 
 interface CollectionNode {
@@ -77,11 +96,13 @@ async function getProducts(): Promise<ProductNode[]> {
       }>({
         query: gql`
           query getAllProductHandles($after: String) {
-            products(first: 250, after: $after) {
+            products(first: 250, after: $after, query: "status:active") {
               edges {
                 node {
                   handle
                   updatedAt
+                  availableForSale
+                  status
                 }
               }
               pageInfo {
@@ -99,7 +120,13 @@ async function getProducts(): Promise<ProductNode[]> {
       endCursor = nextResponse.products.pageInfo.endCursor;
     }
 
-    return allProducts;
+    // Filter to only include products that are available for sale
+    // This prevents 404s and warnings in Google Search Console
+    const availableProducts = allProducts.filter(product => product.availableForSale);
+
+    console.log(`Sitemap: Fetched ${allProducts.length} products, ${availableProducts.length} available for sale`);
+
+    return availableProducts;
   } catch (error) {
     console.error('Error fetching products for sitemap:', error);
     return [];
@@ -131,7 +158,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const products = await getProducts();
   const collections = await getCollections();
 
-  // Static pages
+  // Static pages (excluding /account pages blocked by robots.txt)
   const staticPages = [
     '',
     '/about',
@@ -149,8 +176,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/terms',
     '/privacy',
     '/faqs',
-    '/account',
-    '/account/orders',
     '/partners'
   ].map(route => ({
     url: `${baseUrl}${route}`,
@@ -175,16 +200,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7
   }))
 
-  // Location pages for SEO
-  const locationPages = [
-    '/delivery/downtown-austin',
-    '/delivery/lake-travis',
-    '/delivery/west-austin',
-    '/delivery/south-austin',
-    '/delivery/east-austin',
-    '/delivery/north-austin'
-  ].map(route => ({
-    url: `${baseUrl}${route}`,
+  // Location pages for SEO (dynamic routes)
+  const locationSlugs = [
+    'downtown-austin',
+    'lake-travis',
+    'west-austin',
+    'south-austin',
+    'east-austin',
+    'north-austin'
+  ];
+
+  const locationPages = locationSlugs.map(slug => ({
+    url: `${baseUrl}/delivery/${slug}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: 0.7
@@ -198,14 +225,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6
   }))
 
-  // Blog categories (keeping for backward compatibility)
-  const blogCategories = [
-    '/blog/category/event-planning',
-    '/blog/category/cocktail-recipes',
-    '/blog/category/local-guides',
-    '/blog/category/business-tips'
-  ].map(route => ({
-    url: `${baseUrl}${route}`,
+  // Blog categories (dynamic routes - using actual category slugs)
+  const categorySlugs = [
+    'event-planning',
+    'cocktail-recipes',
+    'local-guides',
+    'business-tips'
+  ];
+
+  const blogCategories = categorySlugs.map(slug => ({
+    url: `${baseUrl}/blog/category/${slug}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.5
