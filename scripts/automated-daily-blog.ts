@@ -348,10 +348,18 @@ function insertImagesIntoContent(content: string, imagePaths: string[]): string 
   return newLines.join('\n');
 }
 
+// Select random author with weighted distribution
+function selectAuthor(): string {
+  // 75% Allan Henslee, 25% Brian Hill
+  const random = Math.random();
+  return random < 0.75 ? "Allan Henslee" : "Brian Hill";
+}
+
 // Create MDX file with frontmatter
 function createMDXFile(topic: Topic, content: string, imagePaths: string[]): string {
   const slug = createSlug(topic.title);
   const date = formatDate(new Date());
+  const author = selectAuthor();
 
   const contentWithImages = insertImagesIntoContent(content, imagePaths);
 
@@ -362,7 +370,7 @@ category: "${topic.category}"
 excerpt: "${content.substring(0, 160).replace(/"/g, '\\"')}..."
 image: "${imagePaths[0] || '/images/hero/lake-travis-sunset.webp'}"
 keywords: ${JSON.stringify(topic.keywords)}
-author: "Party On Delivery Team"
+author: "${author}"
 ---
 
 `;
