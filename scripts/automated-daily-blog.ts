@@ -92,6 +92,24 @@ CONTENT GUIDELINES:
 - Target keywords naturally throughout: ${topic.keywords.join(', ')}
 - End with a clear next step or call-to-action
 
+EXTERNAL BUSINESS REFERENCES (CRITICAL):
+- ALWAYS hyperlink any business, venue, restaurant, or service you mention
+- Use real, publicly available websites for all businesses mentioned
+- Format: [Business Name](https://actual-website.com)
+- Include the full website URL (not placeholder links)
+- Examples:
+  * [Fairmont Austin](https://www.fairmont.com/austin/)
+  * [The Oasis on Lake Travis](https://www.oasis-austin.com/)
+  * [Franklin Barbecue](https://franklinbbq.com/)
+- If you mention a business without a website, note their location/contact info instead
+
+PUBLIC IMAGES FOR BUSINESSES (WHEN RELEVANT):
+- When featuring specific venues/businesses prominently, reference their publicly available images
+- Use actual image URLs from their websites or public sources
+- Format: ![Venue Name](https://actual-image-url.jpg)
+- Only include external images if they're publicly accessible and relevant
+- Do NOT use placeholder or generic image URLs
+
 SEO & STRUCTURED DATA REQUIREMENTS:
 - Create HTML tables (not Markdown) for ANY comparison with 3+ items
 - Use proper semantic markup: <table>, <thead>, <tbody>, <th scope="col">
