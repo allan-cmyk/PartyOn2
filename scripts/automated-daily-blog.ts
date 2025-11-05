@@ -30,7 +30,7 @@ const CONFIG = {
   contentDir: path.join(process.cwd(), 'content', 'blog', 'posts'),
   imagesDir: path.join(process.cwd(), 'public', 'images', 'blog'),
   topicsFile: path.join(process.cwd(), 'scripts', 'topics.json'),
-  targetWordCount: 2000,
+  targetWordCount: 1200,
   imagesPerPost: 4,
 };
 
@@ -80,7 +80,7 @@ async function generateBlogContent(topic: Topic): Promise<string> {
 
   const prompt = `You are an expert SEO content writer for Party On Delivery, an Austin-based premium alcohol delivery service specializing in weddings, bachelor/bachelorette parties, boat parties, and corporate events.
 
-Write a comprehensive, SEO-optimized 2,000+ word blog post about: "${topic.title}"
+Write a comprehensive, SEO-optimized 1,000-1,200 word blog post about: "${topic.title}"
 
 CONTENT GUIDELINES:
 - Write in a conversational, friendly tone with authentic Austin/Texas personality

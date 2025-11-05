@@ -58,7 +58,7 @@
         "logistics",
         "austin"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 26,
@@ -131,7 +131,7 @@
         "lunch",
         "restaurants"
       ],
-      "published": true
+      "published": false
     },
     {
       "id": 2,
