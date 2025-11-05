@@ -1,6 +1,126 @@
 {
   "topics": [
     {
+      "id": 21,
+      "title": "How to Choose the Right Venue for Your Austin Corporate Event",
+      "category": "Corporate Events",
+      "keywords": [
+        "corporate event",
+        "venue selection",
+        "austin",
+        "business"
+      ],
+      "published": true
+    },
+    {
+      "id": 22,
+      "title": "Top Corporate Catering Options for Austin Business Events",
+      "category": "Corporate Events",
+      "keywords": [
+        "corporate catering",
+        "business events",
+        "austin",
+        "food"
+      ],
+      "published": true
+    },
+    {
+      "id": 23,
+      "title": "Fun Team-Building Activities Around Austin",
+      "category": "Corporate Events",
+      "keywords": [
+        "team building",
+        "corporate",
+        "austin",
+        "activities"
+      ],
+      "published": true
+    },
+    {
+      "id": 24,
+      "title": "Corporate Holiday Party Ideas for Austin Companies",
+      "category": "Corporate Events",
+      "keywords": [
+        "corporate",
+        "holiday party",
+        "austin",
+        "company events"
+      ],
+      "published": true
+    },
+    {
+      "id": 25,
+      "title": "How to Organize Transportation for Large Company Events",
+      "category": "Corporate Events",
+      "keywords": [
+        "corporate",
+        "transportation",
+        "logistics",
+        "austin"
+      ],
+      "published": false
+    },
+    {
+      "id": 26,
+      "title": "Professional Bar Service and Responsible Drinking for Events",
+      "category": "Corporate Events",
+      "keywords": [
+        "corporate",
+        "bar service",
+        "responsible drinking",
+        "professional"
+      ],
+      "published": false
+    },
+    {
+      "id": 27,
+      "title": "Best Live Entertainment Ideas for Austin Corporate Functions",
+      "category": "Corporate Events",
+      "keywords": [
+        "corporate",
+        "entertainment",
+        "austin",
+        "live music"
+      ],
+      "published": false
+    },
+    {
+      "id": 28,
+      "title": "How to Budget for a Mid-Size Austin Corporate Event",
+      "category": "Corporate Events",
+      "keywords": [
+        "corporate",
+        "budget",
+        "planning",
+        "austin"
+      ],
+      "published": false
+    },
+    {
+      "id": 29,
+      "title": "Austin Venues with Built-In A/V and Networking Spaces",
+      "category": "Corporate Events",
+      "keywords": [
+        "corporate venues",
+        "av equipment",
+        "networking",
+        "austin"
+      ],
+      "published": false
+    },
+    {
+      "id": 30,
+      "title": "How to Create Branded Photo Moments for Corporate Events",
+      "category": "Corporate Events",
+      "keywords": [
+        "corporate",
+        "branding",
+        "photo opportunities",
+        "marketing"
+      ],
+      "published": false
+    },
+    {
       "id": 1,
       "title": "Best BBQ Spots for a Bachelor Party Lunch in Austin",
       "category": "Bachelor Parties",
@@ -24,7 +144,7 @@
         "weekend",
         "austin"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 3,
@@ -36,7 +156,7 @@
         "craft beer",
         "bachelor party"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 4,
@@ -244,126 +364,6 @@
         "pool party",
         "lake travis",
         "austin"
-      ],
-      "published": false
-    },
-    {
-      "id": 21,
-      "title": "How to Choose the Right Venue for Your Austin Corporate Event",
-      "category": "Corporate Events",
-      "keywords": [
-        "corporate event",
-        "venue selection",
-        "austin",
-        "business"
-      ],
-      "published": true
-    },
-    {
-      "id": 22,
-      "title": "Top Corporate Catering Options for Austin Business Events",
-      "category": "Corporate Events",
-      "keywords": [
-        "corporate catering",
-        "business events",
-        "austin",
-        "food"
-      ],
-      "published": false
-    },
-    {
-      "id": 23,
-      "title": "Fun Team-Building Activities Around Austin",
-      "category": "Corporate Events",
-      "keywords": [
-        "team building",
-        "corporate",
-        "austin",
-        "activities"
-      ],
-      "published": false
-    },
-    {
-      "id": 24,
-      "title": "Corporate Holiday Party Ideas for Austin Companies",
-      "category": "Corporate Events",
-      "keywords": [
-        "corporate",
-        "holiday party",
-        "austin",
-        "company events"
-      ],
-      "published": false
-    },
-    {
-      "id": 25,
-      "title": "How to Organize Transportation for Large Company Events",
-      "category": "Corporate Events",
-      "keywords": [
-        "corporate",
-        "transportation",
-        "logistics",
-        "austin"
-      ],
-      "published": false
-    },
-    {
-      "id": 26,
-      "title": "Professional Bar Service and Responsible Drinking for Events",
-      "category": "Corporate Events",
-      "keywords": [
-        "corporate",
-        "bar service",
-        "responsible drinking",
-        "professional"
-      ],
-      "published": false
-    },
-    {
-      "id": 27,
-      "title": "Best Live Entertainment Ideas for Austin Corporate Functions",
-      "category": "Corporate Events",
-      "keywords": [
-        "corporate",
-        "entertainment",
-        "austin",
-        "live music"
-      ],
-      "published": false
-    },
-    {
-      "id": 28,
-      "title": "How to Budget for a Mid-Size Austin Corporate Event",
-      "category": "Corporate Events",
-      "keywords": [
-        "corporate",
-        "budget",
-        "planning",
-        "austin"
-      ],
-      "published": false
-    },
-    {
-      "id": 29,
-      "title": "Austin Venues with Built-In A/V and Networking Spaces",
-      "category": "Corporate Events",
-      "keywords": [
-        "corporate venues",
-        "av equipment",
-        "networking",
-        "austin"
-      ],
-      "published": false
-    },
-    {
-      "id": 30,
-      "title": "How to Create Branded Photo Moments for Corporate Events",
-      "category": "Corporate Events",
-      "keywords": [
-        "corporate",
-        "branding",
-        "photo opportunities",
-        "marketing"
       ],
       "published": false
     },
