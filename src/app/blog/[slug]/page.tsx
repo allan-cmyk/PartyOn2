@@ -1006,15 +1006,27 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {/* Author Bio */}
             <div className="mt-16 pt-8 border-t border-gray-200">
               <div className="flex items-start gap-6">
-                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">
-                  <svg className="w-10 h-10 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                  </svg>
+                <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0">
+                  <Image
+                    src={mdxPost.author === 'Allan Henslee'
+                      ? '/images/authors/allan-henslee.png'
+                      : mdxPost.author === 'Brian Hill'
+                      ? '/images/authors/brian-hill.png'
+                      : '/images/authors/allan-henslee.png'}
+                    alt={mdxPost.author}
+                    width={80}
+                    height={80}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="flex-1">
                   <h3 className="font-serif text-2xl text-gray-900 mb-2">{mdxPost.author}</h3>
                   <p className="text-gray-600 mb-4">
-                    Content writer at Party On Delivery, sharing expert tips and insights for Austin events.
+                    {mdxPost.author === 'Allan Henslee'
+                      ? 'Founder & CEO of Party On Delivery, helping Austin celebrate in style since 2023.'
+                      : mdxPost.author === 'Brian Hill'
+                      ? 'Co-founder of Party On Delivery, specializing in premium event experiences across Austin.'
+                      : 'Content writer at Party On Delivery, sharing expert tips and insights for Austin events.'}
                   </p>
                 </div>
               </div>
