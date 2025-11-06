@@ -91,6 +91,7 @@ export default function BachPartiesPage() {
               src={heroImages[currentHeroIndex].src}
               alt={heroImages[currentHeroIndex].alt}
               fill
+              sizes="100vw"
               className="object-cover"
               priority
               onError={(e) => {
