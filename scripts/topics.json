@@ -94,7 +94,7 @@
         "planning",
         "austin"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 29,
@@ -106,7 +106,7 @@
         "networking",
         "austin"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 30,
@@ -118,7 +118,7 @@
         "photo opportunities",
         "marketing"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 1,
@@ -131,7 +131,7 @@
         "lunch",
         "restaurants"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 2,

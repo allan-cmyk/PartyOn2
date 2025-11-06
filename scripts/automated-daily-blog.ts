@@ -92,16 +92,20 @@ CONTENT GUIDELINES:
 - Target keywords naturally throughout: ${topic.keywords.join(', ')}
 - End with a clear next step or call-to-action
 
-EXTERNAL BUSINESS REFERENCES (CRITICAL):
+EXTERNAL BUSINESS REFERENCES (CRITICAL - MINIMUM 5-7 REQUIRED):
+- MUST include at least 5-7 real external business links per blog post
 - ALWAYS hyperlink any business, venue, restaurant, or service you mention
 - Use real, publicly available websites for all businesses mentioned
 - Format: [Business Name](https://actual-website.com)
 - Include the full website URL (not placeholder links)
-- Examples:
-  * [Fairmont Austin](https://www.fairmont.com/austin/)
-  * [The Oasis on Lake Travis](https://www.oasis-austin.com/)
-  * [Franklin Barbecue](https://franklinbbq.com/)
+- Examples of businesses to link:
+  * Venues: [Fairmont Austin](https://www.fairmont.com/austin/)
+  * Restaurants: [Franklin Barbecue](https://franklinbbq.com/)
+  * Attractions: [The Oasis on Lake Travis](https://www.oasis-austin.com/)
+  * Event spaces: [Brazos Hall](https://brazoshall.com/)
+  * Transportation: [Longhorn Charter Bus](https://www.longhorn-charter.com/)
 - If you mention a business without a website, note their location/contact info instead
+- TARGET: 5-7 hyperlinked businesses minimum per post
 
 PUBLIC IMAGES FOR BUSINESSES (WHEN RELEVANT):
 - When featuring specific venues/businesses prominently, reference their publicly available images
@@ -110,10 +114,14 @@ PUBLIC IMAGES FOR BUSINESSES (WHEN RELEVANT):
 - Only include external images if they're publicly accessible and relevant
 - Do NOT use placeholder or generic image URLs
 
-SEO & STRUCTURED DATA REQUIREMENTS:
+SEO & STRUCTURED DATA REQUIREMENTS (ALL TABLES MUST HAVE SCHEMA.ORG):
 - Create HTML tables (not Markdown) for ANY comparison with 3+ items
 - Use proper semantic markup: <table>, <thead>, <tbody>, <th scope="col">
-- Add Schema.org microdata to tables: itemScope, itemType, itemProp attributes
+- REQUIRED: ALL tables MUST have Schema.org microdata attributes
+- Table wrapper: itemScope itemType="https://schema.org/Table"
+- Pricing rows: itemScope itemType="https://schema.org/Offer"
+- Item names: itemProp="name"
+- Prices: itemProp="price"
 - Include a FAQ section (## Frequently Asked Questions) with 3-5 Q&As
 - Use clear question format (### Q: ...) and answer format (A: ...)
 - Provide direct, factual answers optimized for AI search engines
@@ -127,7 +135,7 @@ TABLE TRIGGERS (automatically create HTML tables for):
 - Service area coverage (zip codes, neighborhoods, delivery fees)
 - Any comparison with 3+ numerical data points
 
-HTML TABLE FORMAT (use this exact structure):
+HTML TABLE FORMAT (COPY THIS EXACT STRUCTURE - SCHEMA.ORG REQUIRED):
 <div itemScope itemType="https://schema.org/Table">
   <table className="comparison-table">
     <caption>Descriptive Table Caption</caption>
@@ -144,9 +152,20 @@ HTML TABLE FORMAT (use this exact structure):
         <td><span itemProp="price">$XX-XX</span></td>
         <td>Additional details</td>
       </tr>
+      <tr itemScope itemType="https://schema.org/Offer">
+        <td><strong itemProp="name">Second Item</strong></td>
+        <td><span itemProp="price">$YY-YY</span></td>
+        <td>More details</td>
+      </tr>
     </tbody>
   </table>
 </div>
+
+CRITICAL: Do NOT create tables without Schema.org attributes. Every table MUST have:
+- Wrapper div with: itemScope itemType="https://schema.org/Table"
+- Each row with: itemScope itemType="https://schema.org/Offer"
+- Item names with: itemProp="name"
+- Prices with: itemProp="price"
 
 REQUIRED SECTIONS:
 1. Engaging introduction with a hook
@@ -198,7 +217,8 @@ SCHEMA.ORG JSON-LD (add this at the END of the blog post):
       "name": "Party On Delivery",
       "@id": "https://partyondelivery.com",
       "url": "https://partyondelivery.com",
-      "telephone": "",
+      "telephone": "(737) 371-9700",
+      "email": "info@partyondelivery.com",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Austin",

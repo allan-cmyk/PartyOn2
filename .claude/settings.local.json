@@ -51,7 +51,22 @@
       "Bash(test:*)",
       "WebSearch",
       "Bash(image-generator-tool generate:*)",
-      "Bash(del \"C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\src\\app\\corporate\\metadata.ts\")"
+      "Bash(del \"C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\src\\app\\corporate\\metadata.ts\")",
+      "Bash(git stash:*)",
+      "Bash(git show:*)",
+      "Read(//tmp/**)",
+      "Read(//c/Users/allan/Downloads/**)",
+      "Read(//c/Users/allan/AppData/Roaming/Claude/**)",
+      "Read(//c/Users/allan/AppData/Roaming/**)",
+      "Read(//c/Party On Delivery/WEBSITE FILES/.claude/**)",
+      "Bash(timeout 180 npm run build:*)",
+      "Bash(chmod:*)",
+      "Bash(git rm:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File \"C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\scripts\\deploy-and-ping.ps1\" production)",
+      "Bash(vercel:*)",
+      "Bash(sort:*)",
+      "Bash(for file in *.mdx)",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []
