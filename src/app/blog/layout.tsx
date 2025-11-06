@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description: 'Expert advice on event planning, cocktail recipes, party hosting, and alcohol selection. Tips for weddings, bachelorette parties, corporate events, and more in Austin.',
   keywords: 'event planning blog Austin, cocktail recipes, party planning tips, bachelorette party ideas, wedding alcohol planning, corporate event tips',
   alternates: {
-    canonical: '/blog',
+    canonical: 'https://partyondelivery.com/blog',
   },
   openGraph: {
     title: 'Blog | Event Planning & Cocktail Tips | Party On Delivery',

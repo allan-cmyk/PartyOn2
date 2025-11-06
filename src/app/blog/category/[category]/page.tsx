@@ -67,7 +67,7 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
     title: `${categoryName} | Blog | Party On Delivery Austin`,
     description: `Browse articles about ${categoryName.toLowerCase()}, event planning, and party hosting in Austin, Texas.`,
     alternates: {
-      canonical: `/blog/category/${resolvedParams.category}`,
+      canonical: `https://partyondelivery.com/blog/category/${resolvedParams.category}`,
     },
     openGraph: {
       title: `${categoryName} | Blog | Party On Delivery Austin`,

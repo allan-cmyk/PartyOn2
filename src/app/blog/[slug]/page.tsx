@@ -10,6 +10,7 @@ import { getMDXPost } from '@/lib/blog-mdx'
 import { serialize } from 'next-mdx-remote/serialize'
 import MDXContent from '@/components/blog/MDXContent'
 import blogPostsData from '@/data/blog-posts/posts.json'
+import { seoConfig } from '@/lib/seo/config'
 
 interface BlogPost {
   id: string
@@ -997,7 +998,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     description: post.seo?.description || post.excerpt,
     keywords: post.seo?.keywords || post.tags,
     alternates: {
-      canonical: `/blog/${slug}`,
+      canonical: `${seoConfig.siteUrl}/blog/${slug}`,
     },
     openGraph: {
       title: post.seo?.title || post.title,
