@@ -1,0 +1,896 @@
+{
+  "summary": {
+    "totalImages": 138,
+    "imagesWithDimensions": 13,
+    "imagesMissingDimensions": 125,
+    "percentageMissing": 91
+  },
+  "issues": {
+    "src/components/ProductSearch.tsx": [
+      {
+        "file": "src/components/ProductSearch.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n                            src={product.images.edges[0].node.url}\n                            ...",
+        "severity": "error"
+      }
+    ],
+    "src/components/ProductModal.tsx": [
+      {
+        "file": "src/components/ProductModal.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n                          src={image.url}\n                          alt={image.altText || `${pr...",
+        "severity": "error"
+      }
+    ],
+    "src/components/OldFashionedNavigation.tsx": [
+      {
+        "file": "src/components/OldFashionedNavigation.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                src=\"/images/POD Logo 2025.svg\" \n                alt=\"Party On Delivery\"\n     ...",
+        "severity": "error"
+      },
+      {
+        "file": "src/components/OldFashionedNavigation.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                src=\"/images/POD Logo 2025.svg\" \n                alt=\"Party On Delivery\"\n     ...",
+        "severity": "error"
+      },
+      {
+        "file": "src/components/OldFashionedNavigation.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                    src=\"/images/POD Logo 2025.svg\" \n                    alt=\"Party On Deliver...",
+        "severity": "error"
+      }
+    ],
+    "src/components/LuxuryCard.tsx": [
+      {
+        "file": "src/components/LuxuryCard.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src={bgImage}\n          alt=\"\"\n          fill\n          className=\"object-cover sca...",
+        "severity": "warning"
+      }
+    ],
+    "src/components/Hero.tsx": [
+      {
+        "file": "src/components/Hero.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src={backgroundImage}\n          alt={title}\n          fill\n          className=\"obj...",
+        "severity": "warning"
+      }
+    ],
+    "src/components/Footer.tsx": [
+      {
+        "file": "src/components/Footer.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n                src=\"/images/POD Logo 2025.svg\"\n                alt=\"Party On Delivery\"\n       ...",
+        "severity": "error"
+      }
+    ],
+    "src/components/CTA.tsx": [
+      {
+        "file": "src/components/CTA.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n            src={backgroundImage}\n            alt=\"\"\n            fill\n            className=\"...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/page.tsx": [
+      {
+        "file": "src/app/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                src=\"/images/POD Logo 2025.svg\" \n                alt=\"Party On Delivery\"\n     ...",
+        "severity": "error"
+      }
+    ],
+    "src/components/shopify/ProductCard.tsx": [
+      {
+        "file": "src/components/shopify/ProductCard.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n                src={imageUrl}\n                alt={product.title}\n                className=\"w...",
+        "severity": "error"
+      }
+    ],
+    "src/components/shopify/MobileProductCard.tsx": [
+      {
+        "file": "src/components/shopify/MobileProductCard.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n                src={imageUrl}\n                alt={product.title}\n                className=\"w...",
+        "severity": "error"
+      }
+    ],
+    "src/components/shopify/CompactProductCard.tsx": [
+      {
+        "file": "src/components/shopify/CompactProductCard.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n                src={imageUrl}\n                alt={product.title}\n                className=\"w...",
+        "severity": "error"
+      }
+    ],
+    "src/components/shopify/CartItem.tsx": [
+      {
+        "file": "src/components/shopify/CartItem.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n            src={imageUrl}\n            alt={item.merchandise.product.title}\n            classNa...",
+        "severity": "error"
+      }
+    ],
+    "src/components/products/ProductDetailClient.tsx": [
+      {
+        "file": "src/components/products/ProductDetailClient.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n                  src={product.images.edges[selectedImageIndex]?.node.url}\n                  al...",
+        "severity": "error"
+      },
+      {
+        "file": "src/components/products/ProductDetailClient.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n                      src={image.node.url}\n                      alt={`${product.title} ${index...",
+        "severity": "error"
+      },
+      {
+        "file": "src/components/products/ProductDetailClient.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n                src=\"/images/POD Logo 2025.svg\"\n                alt=\"Party On Delivery\"\n       ...",
+        "severity": "error"
+      }
+    ],
+    "src/components/mobile/MobileSearchModal.tsx": [
+      {
+        "file": "src/components/mobile/MobileSearchModal.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n                            src={product.images.edges[0].node.url}\n                            ...",
+        "severity": "error"
+      }
+    ],
+    "src/components/mobile/MobileProductCard.tsx": [
+      {
+        "file": "src/components/mobile/MobileProductCard.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n                src={imageUrl}\n                alt={product.title}\n                className=\"w...",
+        "severity": "error"
+      }
+    ],
+    "src/components/blog/MDXContent.tsx": [
+      {
+        "file": "src/components/blog/MDXContent.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n          src={props.src}\n          alt={props.alt || ''}\n          className=\"w-full h-auto ro...",
+        "severity": "error"
+      }
+    ],
+    "src/components/account/AccountLayout.tsx": [
+      {
+        "file": "src/components/account/AccountLayout.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                      src={profileImage} \n                      alt=\"Profile\" \n               ...",
+        "severity": "error"
+      }
+    ],
+    "src/app/weddings/page.tsx": [
+      {
+        "file": "src/app/weddings/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n              src={heroImages[currentHeroIndex].src}\n              alt={heroImages[currentHer...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/weddings/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                  src={image.src}\n                  alt={image.alt}\n                  fill\n  ...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/weddings/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                src=\"/images/POD Logo 2025.svg\" \n                alt=\"Party On Delivery\"\n     ...",
+        "severity": "error"
+      }
+    ],
+    "src/app/ultra-clean/page.tsx": [
+      {
+        "file": "src/app/ultra-clean/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n            src=\"/images/services/corporate/penthouse-suite-setup.webp\"\n            alt=\"Prem...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/ultra-clean/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                      src={service.image}\n                      alt={service.title}\n         ...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/ultra-clean/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n            src=\"/images/backgrounds/rooftop-terrace-elegant-1.webp\"\n            alt=\"Elegant...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/terms/page.tsx": [
+      {
+        "file": "src/app/terms/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                src=\"/images/POD Logo 2025.svg\" \n                alt=\"Party On Delivery\"\n     ...",
+        "severity": "error"
+      }
+    ],
+    "src/app/simplified-home/page.tsx": [
+      {
+        "file": "src/app/simplified-home/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n            src=\"/images/hero/austin-skyline-golden-hour.webp\"\n            alt=\"Austin Skylin...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/simplified-home/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                  src=\"/images/services/fast-delivery/speed-delivery-action.webp\"\n           ...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/simplified-home/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                  src=\"/images/services/weddings/signature-cocktails-rings.webp\"\n            ...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/simplified-home/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                  src=\"/images/services/boat-parties/sunset-champagne-pontoon.webp\"\n         ...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/professional-home-v2/page.tsx": [
+      {
+        "file": "src/app/professional-home-v2/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n            src=\"/images/hero/luxury-wedding-estate-1.webp\"\n            alt=\"Premium Event Se...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/professional-home-v2/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                    src={service.image}\n                    alt={service.title}\n             ...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/professional-home-v2/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                src=\"/images/gallery/headquarters-entrance.webp\"\n                alt=\"Dell Te...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/professional-home/page.tsx": [
+      {
+        "file": "src/app/professional-home/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n            src=\"/images/hero/luxury-wedding-estate-1.webp\"\n            alt=\"Luxury Event Ser...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/professional-home/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                  src=\"/images/services/corporate/penthouse-suite-setup.webp\"\n               ...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/professional-home/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                  src=\"/images/services/weddings/outdoor-bar-setup.webp\"\n                  al...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/professional-home/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                  src=\"/images/services/boat-parties/luxury-yacht-deck.webp\"\n                ...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/professional-home/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                src=\"/images/products/premium-spirits-wall.webp\"\n                alt=\"Premium...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/products-test/page.tsx": [
+      {
+        "file": "src/app/products-test/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n                      src={imageUrl}\n                      alt={product.title}\n                ...",
+        "severity": "error"
+      }
+    ],
+    "src/app/products/page.tsx": [
+      {
+        "file": "src/app/products/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src=\"/images/products/premium-spirits-wall.webp\"\n          alt=\"Premium Spirits Col...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/products/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                src=\"/images/POD Logo 2025.svg\" \n                alt=\"Party On Delivery\"\n     ...",
+        "severity": "error"
+      }
+    ],
+    "src/app/privacy/page.tsx": [
+      {
+        "file": "src/app/privacy/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                src=\"/images/POD Logo 2025.svg\" \n                alt=\"Party On Delivery\"\n     ...",
+        "severity": "error"
+      }
+    ],
+    "src/app/premium/page.tsx": [
+      {
+        "file": "src/app/premium/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image \n                  src=\"/images/services/corporate/penthouse-suite-setup.webp\"\n              ...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/premium/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                      src={service.image}\n                      alt={service.title}\n         ...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/polished/page.tsx": [
+      {
+        "file": "src/app/polished/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n            src=\"/images/services/corporate/penthouse-suite-setup.webp\"\n            alt=\"Prem...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/polished/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                          src={service.image}\n                          alt={service.title}\n ...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/payment/page.tsx": [
+      {
+        "file": "src/app/payment/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n                            src={node.merchandise.product.images?.edges?.[0]?.node.url}\n       ...",
+        "severity": "error"
+      }
+    ],
+    "src/app/partners/page.tsx": [
+      {
+        "file": "src/app/partners/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src=\"/images/gallery/headquarters-entrance.webp\"\n          alt=\"Partner with PartyO...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/partners/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                  src=\"/images/gallery/ai-recommended-setup.webp\"\n                  alt=\"Cust...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/order/page.tsx": [
+      {
+        "file": "src/app/order/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                    src={event.image}\n                    alt={event.title}\n                 ...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/order/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                src=\"/images/POD Logo 2025.svg\" \n                alt=\"Party On Delivery\"\n     ...",
+        "severity": "error"
+      }
+    ],
+    "src/app/old-fashioned/page.tsx": [
+      {
+        "file": "src/app/old-fashioned/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src=\"/images/hero/austin-skyline-golden-hour.webp\"\n          alt=\"Luxury Experience...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/old-fashioned/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                src=\"/images/services/corporate/penthouse-suite-setup.webp\"\n                a...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/old-fashioned/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                src=\"/images/services/weddings/boho-hill-country-1.webp\"\n                alt=...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/negroni/page.tsx": [
+      {
+        "file": "src/app/negroni/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                src=\"/images/services/corporate/penthouse-suite-setup.webp\"\n                a...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/negroni/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                src=\"/images/products/premium-spirits-wall.webp\"\n                alt=\"Premium...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/negroni/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src=\"/images/backgrounds/rooftop-terrace-elegant-1.webp\"\n          alt=\"Luxury Expe...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/gin-martini/page.tsx": [
+      {
+        "file": "src/app/gin-martini/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n            src=\"/images/hero/austin-skyline-golden-hour.webp\"\n            alt=\"Austin Herita...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/gin-martini/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                  src=\"/images/gallery/headquarters-entrance.webp\"\n                  alt=\"Her...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/final/page.tsx": [
+      {
+        "file": "src/app/final/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n            src=\"/images/services/corporate/penthouse-suite-setup.webp\"\n            alt=\"Prem...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/final/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                        src={service.image}\n                        alt={service.title}\n     ...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/faqs/page.tsx": [
+      {
+        "file": "src/app/faqs/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n                src=\"/images/POD Logo 2025.svg\"\n                alt=\"Party On Delivery\"\n       ...",
+        "severity": "error"
+      }
+    ],
+    "src/app/delivery-areas/page.tsx": [
+      {
+        "file": "src/app/delivery-areas/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src=\"/images/hero/austin-skyline-golden-hour.webp\"\n          alt=\"Austin Aerial Vie...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/delivery-areas/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                src=\"/images/POD Logo 2025.svg\" \n                alt=\"Party On Delivery\"\n     ...",
+        "severity": "error"
+      }
+    ],
+    "src/app/custom-package/page.tsx": [
+      {
+        "file": "src/app/custom-package/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                              src={product.images.edges[0].node.url}\n                        ...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/corporate-events-guide/page.tsx": [
+      {
+        "file": "src/app/corporate-events-guide/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n          src={frontmatter.image || '/images/hero/lake-travis-yacht-sunset.webp'}\n          alt...",
+        "severity": "error"
+      }
+    ],
+    "src/app/corporate/page.tsx": [
+      {
+        "file": "src/app/corporate/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n            src=\"/images/hero/corporate-hero-conference.webp\"\n            alt=\"Corporate even...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/corporate/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                    src={useCase.image}\n                    alt={useCase.title}\n             ...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/corporate/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n                src=\"/images/POD Logo 2025.svg\"\n                alt=\"Party On Delivery\"\n       ...",
+        "severity": "error"
+      }
+    ],
+    "src/app/contact/page.tsx": [
+      {
+        "file": "src/app/contact/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src=\"/images/hero/contact-hero-austin.webp\"\n          alt=\"Austin Downtown\"\n       ...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/contact/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                src=\"/images/POD Logo 2025.svg\" \n                alt=\"Party On Delivery\"\n     ...",
+        "severity": "error"
+      }
+    ],
+    "src/app/collections/page.tsx": [
+      {
+        "file": "src/app/collections/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src=\"/images/products/premium-spirits-wall.webp\"\n          alt=\"Premium Collections...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/collections/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n            src={collection.image}\n            alt={collection.title}\n            fill\n      ...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/collections/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                src=\"/images/POD Logo 2025.svg\" \n                alt=\"Party On Delivery\"\n     ...",
+        "severity": "error"
+      }
+    ],
+    "src/app/boat-parties/page.tsx": [
+      {
+        "file": "src/app/boat-parties/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n              src={heroImages[currentHeroImage].src}\n              alt={heroImages[currentHer...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/boat-parties/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                src=\"/images/POD Logo 2025.svg\" \n                alt=\"Party On Delivery\"\n     ...",
+        "severity": "error"
+      }
+    ],
+    "src/app/blog/page.tsx": [
+      {
+        "file": "src/app/blog/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                        src={imageUrl}\n                        alt={post.image?.alt || post.t...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/blog/page-old.tsx": [
+      {
+        "file": "src/app/blog/page-old.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                        src={imageUrl}\n                        alt={post.image?.alt || post.t...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/bach-parties/page.tsx": [
+      {
+        "file": "src/app/bach-parties/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n              src={heroImages[currentHeroIndex].src}\n              alt={heroImages[currentHer...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/bach-parties/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                src=\"/images/POD Logo 2025.svg\" \n                alt=\"Party On Delivery\"\n     ...",
+        "severity": "error"
+      }
+    ],
+    "src/app/aperol-spritz/page.tsx": [
+      {
+        "file": "src/app/aperol-spritz/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                src=\"/images/services/corporate/penthouse-suite-setup.webp\"\n                a...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/aperol-spritz/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                  src={`/images/gallery/${image}.webp`}\n                  alt={`Portfolio ${i...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/about/page.tsx": [
+      {
+        "file": "src/app/about/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src=\"/images/hero/austin-skyline-golden-hour.webp\"\n          alt=\"Austin Skyline\"\n ...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/about/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n              src=\"/images/about/professional-bartender-team.webp\"\n              alt=\"PartyOn...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/about/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                src=\"/images/about/premium-warehouse-facility.webp\"\n                alt=\"Prem...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/about/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                src=\"/images/POD Logo 2025.svg\" \n                alt=\"Party On Delivery\"\n     ...",
+        "severity": "error"
+      }
+    ],
+    "src/app/weddings/products/page.tsx": [
+      {
+        "file": "src/app/weddings/products/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src=\"/images/services/weddings/outdoor-bar-setup.webp\"\n          alt=\"Wedding Bar S...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/weddings/products/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                      src={product.image}\n                      alt={product.title}\n         ...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/partners/vacation-rentals/page.tsx": [
+      {
+        "file": "src/app/partners/vacation-rentals/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src=\"/images/hero/luxury-home-interior.webp\"\n          alt=\"Luxury Vacation Rental\"...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/partners/vacation-rentals/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                    src={category.image}\n                    alt={category.title}\n           ...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/partners/property-management/page.tsx": [
+      {
+        "file": "src/app/partners/property-management/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src=\"/images/hero/luxury-apartment-building.webp\"\n          alt=\"Luxury Property Ma...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/partners/property-management/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                    src={amenity.image}\n                    alt={amenity.title}\n             ...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/partners/mobile-bartenders/page.tsx": [
+      {
+        "file": "src/app/partners/mobile-bartenders/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src=\"/images/hero/bartender-hero-placeholder.jpg\"\n          alt=\"Mobile bartender s...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/partners/mobile-bartenders/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                  src={useCase.image}\n                  alt={useCase.title}\n                 ...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/partners/mobile-bartenders/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src=\"/images/backgrounds/austin-skyline-placeholder.jpg\"\n          alt=\"Austin skyl...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/partners/mobile-bartenders/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                      src={testimonial.image}\n                      alt={testimonial.author}\n...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/partners/hotels-resorts/page.tsx": [
+      {
+        "file": "src/app/partners/hotels-resorts/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src=\"/images/backgrounds/rooftop-terrace-elegant-1.webp\"\n          alt=\"Luxury Hote...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/partners/hotels-resorts/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                src=\"/images/gallery/sunset-champagne-pontoon.webp\"\n                alt=\"Hote...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/delivery/[location]/page.tsx": [
+      {
+        "file": "src/app/delivery/[location]/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src=\"/images/hero/luxury-bar-setup.webp\"\n          alt={`${locationData.name} Alcoh...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/corporate/products/page.tsx": [
+      {
+        "file": "src/app/corporate/products/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src=\"/images/services/corporate/executive-bar.webp\"\n          alt=\"Corporate Bar Se...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/corporate/products/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                      src={product.image}\n                      alt={product.title}\n         ...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/collections/[handle]/page.tsx": [
+      {
+        "file": "src/app/collections/[handle]/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src={collectionInfo.image}\n          alt={collectionInfo.title}\n          fill\n    ...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/collections/[handle]/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                src=\"/images/POD Logo 2025.svg\" \n                alt=\"Party On Delivery\"\n     ...",
+        "severity": "error"
+      }
+    ],
+    "src/app/boat-parties/products/page.tsx": [
+      {
+        "file": "src/app/boat-parties/products/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src=\"/images/services/boat-parties/yacht-bar-setup.webp\"\n          alt=\"Boat Party ...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/boat-parties/products/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                      src={product.image}\n                      alt={product.title}\n         ...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/blog/[slug]/page.tsx": [
+      {
+        "file": "src/app/blog/[slug]/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n            src={mdxPost.image}\n            alt={mdxPost.title}\n            fill\n            ...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/blog/[slug]/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src={post.image?.url || '/images/hero/lake-travis-yacht-sunset.webp'}\n          alt...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/blog/[slug]/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                      src={relatedPost.image?.url || '/images/hero/lake-travis-yacht-sunset.w...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/blog/[slug]/page-mdx.tsx": [
+      {
+        "file": "src/app/blog/[slug]/page-mdx.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src={post.image}\n          alt={post.title}\n          fill\n          className=\"obj...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/bach-parties/products/page.tsx": [
+      {
+        "file": "src/app/bach-parties/products/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n          src=\"/images/services/bach-parties/party-setup.webp\"\n          alt=\"Bach Party Setu...",
+        "severity": "warning"
+      },
+      {
+        "file": "src/app/bach-parties/products/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                      src={product.image}\n                      alt={product.title}\n         ...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/account/orders/page.tsx": [
+      {
+        "file": "src/app/account/orders/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                            src={item.variant.image.url} \n                            alt={ite...",
+        "severity": "error"
+      }
+    ],
+    "src/app/(main)/team/page.tsx": [
+      {
+        "file": "src/app/(main)/team/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                        src={member.image}\n                        alt={member.name}\n        ...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/(main)/fast-delivery/page.tsx": [
+      {
+        "file": "src/app/(main)/fast-delivery/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n                src=\"/images/services/fast-delivery/speed-focused-delivery.webp\"\n              ...",
+        "severity": "error"
+      },
+      {
+        "file": "src/app/(main)/fast-delivery/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n                src=\"/images/services/fast-delivery/motion-blur-delivery.webp\"\n                ...",
+        "severity": "error"
+      }
+    ],
+    "src/app/(main)/ai-party-planner/page.tsx": [
+      {
+        "file": "src/app/(main)/ai-party-planner/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                      src={mode === 'wild' \n                        ? \"/images/ai-assistant/b...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/weddings/packages/[tier]/page.tsx": [
+      {
+        "file": "src/app/weddings/packages/[tier]/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n                              src={item.product.images.edges[0].node.url}\n                     ...",
+        "severity": "error"
+      },
+      {
+        "file": "src/app/weddings/packages/[tier]/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                src=\"/images/POD Logo 2025.svg\" \n                alt=\"Party On Delivery\"\n     ...",
+        "severity": "error"
+      }
+    ],
+    "src/app/boat-parties/packages/[tier]/page.tsx": [
+      {
+        "file": "src/app/boat-parties/packages/[tier]/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n                              src={item.product.images.edges[0].node.url}\n                     ...",
+        "severity": "error"
+      },
+      {
+        "file": "src/app/boat-parties/packages/[tier]/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                src=\"/images/POD Logo 2025.svg\" \n                alt=\"Party On Delivery\"\n     ...",
+        "severity": "error"
+      }
+    ],
+    "src/app/blog/category/[category]/page.tsx": [
+      {
+        "file": "src/app/blog/category/[category]/page.tsx",
+        "type": "Next.js Image with fill but no sizes",
+        "code": "<Image\n                        src={post.image}\n                        alt={post.title}\n           ...",
+        "severity": "warning"
+      }
+    ],
+    "src/app/bach-parties/packages/[tier]/page.tsx": [
+      {
+        "file": "src/app/bach-parties/packages/[tier]/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img\n                              src={item.product.images.edges[0].node.url}\n                     ...",
+        "severity": "error"
+      },
+      {
+        "file": "src/app/bach-parties/packages/[tier]/page.tsx",
+        "type": "Regular <img> missing dimensions",
+        "code": "<img \n                src=\"/images/POD Logo 2025.svg\" \n                alt=\"Party On Delivery\"\n     ...",
+        "severity": "error"
+      }
+    ]
+  }
+}

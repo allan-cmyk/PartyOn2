@@ -67,10 +67,12 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center h-20">
             <Link href="/" className="flex items-center -ml-4">
-              <img 
-                src="/images/POD Logo 2025.svg" 
+              <img
+                src="/images/POD Logo 2025.svg"
                 alt="Party On Delivery"
                 className="h-16 w-auto"
+                width="64"
+                height="64"
               />
             </Link>
           </div>
@@ -95,10 +97,12 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
           <div className="flex items-center justify-between h-24">
             {/* Logo */}
             <Link href="/" className="flex items-center -ml-4">
-              <img 
-                src="/images/POD Logo 2025.svg" 
+              <img
+                src="/images/POD Logo 2025.svg"
                 alt="Party On Delivery"
                 className="h-20 w-auto"
+                width="80"
+                height="80"
               />
             </Link>
             
@@ -242,10 +246,12 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
             <div className="flex flex-col h-full">
               <div className="flex justify-between items-center p-8">
                 <Link href="/" className="flex items-center">
-                  <img 
-                    src="/images/POD Logo 2025.svg" 
+                  <img
+                    src="/images/POD Logo 2025.svg"
                     alt="Party On Delivery"
                     className="h-12 w-auto"
+                    width="48"
+                    height="48"
                   />
                 </Link>
                 <button

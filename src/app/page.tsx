@@ -626,10 +626,12 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-8 md:px-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <img 
-                src="/images/POD Logo 2025.svg" 
+              <img
+                src="/images/POD Logo 2025.svg"
                 alt="Party On Delivery"
                 className="h-16 w-auto mb-4"
+                width="64"
+                height="64"
               />
               <p className="text-gray-600 text-sm leading-relaxed">
                 Austin&apos;s premier alcohol delivery and event service since 2023.
