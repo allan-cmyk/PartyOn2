@@ -2,9 +2,11 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Script from 'next/script';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { generateFAQSchema } from '@/lib/seo/schemas';
 
 export default function FAQsPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -105,8 +107,23 @@ export default function FAQsPage() {
     }
   ];
 
+  // Flatten FAQ structure for schema
+  const allFAQs = faqs.flatMap(category =>
+    category.questions.map(q => ({
+      question: q.q,
+      answer: q.a
+    }))
+  );
+
+  const faqSchema = generateFAQSchema(allFAQs);
+
   return (
     <div className="bg-white min-h-screen">
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <OldFashionedNavigation forceScrolled={true} />
       
       {/* Header */}

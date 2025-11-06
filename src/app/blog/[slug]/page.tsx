@@ -11,6 +11,7 @@ import { serialize } from 'next-mdx-remote/serialize'
 import MDXContent from '@/components/blog/MDXContent'
 import blogPostsData from '@/data/blog-posts/posts.json'
 import { seoConfig } from '@/lib/seo/config'
+import { generateArticleSchema } from '@/lib/seo/schemas'
 
 interface BlogPost {
   id: string
@@ -1027,8 +1028,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     // Render MDX post
     const mdxSource = await serialize(mdxPost.content)
 
+    const articleSchema = generateArticleSchema({
+      title: mdxPost.title,
+      description: mdxPost.excerpt,
+      image: `${seoConfig.siteUrl}${mdxPost.image}`,
+      datePublished: mdxPost.date,
+      dateModified: mdxPost.date,
+      author: mdxPost.author,
+      url: `${seoConfig.siteUrl}/blog/${resolvedParams.slug}`,
+    })
+
     return (
       <div className="bg-white min-h-screen">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        />
         <OldFashionedNavigation />
 
         {/* Hero Section with Image */}
@@ -1165,8 +1180,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   const relatedPosts = getRelatedPosts(resolvedParams.slug, post.category || '')
 
+  const articleSchema = generateArticleSchema({
+    title: post.seo?.title || post.title,
+    description: post.seo?.description || post.excerpt,
+    image: `${seoConfig.siteUrl}${post.image?.url || '/images/hero/lake-travis-yacht-sunset.webp'}`,
+    datePublished: post.publishedAt || post.date || new Date().toISOString(),
+    dateModified: post.publishedAt || post.date || new Date().toISOString(),
+    author: post.author,
+    url: `${seoConfig.siteUrl}/blog/${resolvedParams.slug}`,
+  })
+
   return (
     <div className="bg-white min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       <OldFashionedNavigation />
       
       {/* Hero Section with Image */}
