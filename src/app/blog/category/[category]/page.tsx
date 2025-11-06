@@ -130,6 +130,7 @@ export default async function BlogCategoryPage({ params }: { params: Promise<{ c
                         src={post.image}
                         alt={post.title}
                         fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
                         className="object-cover group-hover:scale-105 transition-transform duration-700"
                       />
                       <div className="absolute top-4 left-4">

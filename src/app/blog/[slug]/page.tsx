@@ -1037,6 +1037,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             src={mdxPost.image}
             alt={mdxPost.title}
             fill
+            sizes="100vw"
             className="object-cover"
             priority
           />
@@ -1174,6 +1175,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           src={post.image?.url || '/images/hero/lake-travis-yacht-sunset.webp'}
           alt={post.image?.alt || post.title}
           fill
+          sizes="100vw"
           className="object-cover"
           priority
         />
