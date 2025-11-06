@@ -41,7 +41,7 @@ export default function AgeVerificationModal({ isOpen, onClose, onVerify }: AgeV
             {/* Elegant Header */}
             <div className="bg-gradient-to-b from-gray-50 to-white px-12 pt-12 pb-8">
               <div className="text-center">
-                <div className="font-serif text-5xl text-gray-900 tracking-[0.25em] mb-2" role="heading" aria-level={1}>
+                <div className="font-serif text-5xl text-gray-900 tracking-[0.25em] mb-2" aria-label="Party On Delivery">
                   PARTYON
                 </div>
                 <div className="w-20 h-px bg-gold-600 mx-auto"></div>
