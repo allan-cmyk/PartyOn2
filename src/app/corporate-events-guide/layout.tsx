@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Corporate Events Guide | Professional Alcohol Service | Party On Delivery Austin',
+  title: 'Austin Corporate Events - Alcohol Service Guide',
   description: 'Complete guide to planning alcohol service for corporate events in Austin. Expert tips for team building, client entertainment, and professional gatherings.',
   keywords: 'corporate event alcohol Austin, business event planning, corporate party alcohol, professional event alcohol, team building drinks',
   alternates: {

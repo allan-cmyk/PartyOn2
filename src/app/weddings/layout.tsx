@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { generateEventSchema, generateBreadcrumbSchema } from '@/lib/seo/schemas'
 
 export const metadata: Metadata = {
-  title: 'Wedding Bar Service & Alcohol Delivery | Party On Delivery Austin',
+  title: 'Wedding Bar Service Austin - Alcohol Delivery',
   description: 'Elegant bar service for Austin weddings. Premium spirits, signature cocktails, champagne service, and TABC-certified bartenders for your special day.',
   keywords: 'wedding bar service austin, wedding alcohol delivery, austin wedding bartender, lake travis wedding bar, wedding cocktails austin, wedding champagne service',
   alternates: {

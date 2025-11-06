@@ -3,7 +3,7 @@ import { Montserrat, Playfair_Display } from 'next/font/google';
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Negroni Delivery | Campari, Gin & Vermouth | Party On Delivery Austin',
+  title: 'Negroni Delivery Austin - Campari & Gin',
   description: 'Get Campari, gin, sweet vermouth, and everything for perfect Negroni cocktails delivered in Austin. Premium Italian cocktail ingredients.',
   keywords: 'Negroni delivery Austin, Campari delivery, Italian cocktail delivery, Negroni ingredients Austin, premium cocktail delivery',
   alternates: {

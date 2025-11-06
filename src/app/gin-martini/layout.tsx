@@ -3,7 +3,7 @@ import { Crimson_Text, Inter } from 'next/font/google';
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Gin Martini Delivery | Premium Gin & Vermouth | Party On Delivery Austin',
+  title: 'Gin Martini Delivery Austin - Premium Spirits',
   description: 'Premium gin, vermouth, and martini essentials delivered to your door in Austin. Craft the perfect martini with top-shelf ingredients.',
   keywords: 'Gin Martini delivery Austin, premium gin delivery, vermouth delivery, martini ingredients Austin, craft cocktail delivery',
   alternates: {
