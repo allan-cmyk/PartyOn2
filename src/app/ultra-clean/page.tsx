@@ -34,7 +34,7 @@ export default function UltraCleanHome() {
             }
           `}</style>
           <div className="text-center loading-spinner">
-            <h1 className="text-4xl font-display text-royal-800 mb-4">PARTYON</h1>
+            <h1 className="text-4xl font-display text-royal-800 mb-4">Ultra Clean Vodka Cocktails</h1>
             <div className="w-20 h-1 bg-gold-500 mx-auto animate-pulse"></div>
           </div>
         </div>

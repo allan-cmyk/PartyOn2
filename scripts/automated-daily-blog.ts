@@ -30,7 +30,7 @@ const CONFIG = {
   contentDir: path.join(process.cwd(), 'content', 'blog', 'posts'),
   imagesDir: path.join(process.cwd(), 'public', 'images', 'blog'),
   topicsFile: path.join(process.cwd(), 'scripts', 'topics.json'),
-  targetWordCount: 2000,
+  targetWordCount: 1200,
   imagesPerPost: 4,
 };
 
@@ -80,7 +80,7 @@ async function generateBlogContent(topic: Topic): Promise<string> {
 
   const prompt = `You are an expert SEO content writer for Party On Delivery, an Austin-based premium alcohol delivery service specializing in weddings, bachelor/bachelorette parties, boat parties, and corporate events.
 
-Write a comprehensive, SEO-optimized 2,000+ word blog post about: "${topic.title}"
+Write a comprehensive, SEO-optimized 1,000-1,200 word blog post about: "${topic.title}"
 
 CONTENT GUIDELINES:
 - Write in a conversational, friendly tone with authentic Austin/Texas personality
@@ -92,10 +92,36 @@ CONTENT GUIDELINES:
 - Target keywords naturally throughout: ${topic.keywords.join(', ')}
 - End with a clear next step or call-to-action
 
-SEO & STRUCTURED DATA REQUIREMENTS:
+EXTERNAL BUSINESS REFERENCES (CRITICAL - MINIMUM 5-7 REQUIRED):
+- MUST include at least 5-7 real external business links per blog post
+- ALWAYS hyperlink any business, venue, restaurant, or service you mention
+- Use real, publicly available websites for all businesses mentioned
+- Format: [Business Name](https://actual-website.com)
+- Include the full website URL (not placeholder links)
+- Examples of businesses to link:
+  * Venues: [Fairmont Austin](https://www.fairmont.com/austin/)
+  * Restaurants: [Franklin Barbecue](https://franklinbbq.com/)
+  * Attractions: [The Oasis on Lake Travis](https://www.oasis-austin.com/)
+  * Event spaces: [Brazos Hall](https://brazoshall.com/)
+  * Transportation: [Longhorn Charter Bus](https://www.longhorn-charter.com/)
+- If you mention a business without a website, note their location/contact info instead
+- TARGET: 5-7 hyperlinked businesses minimum per post
+
+PUBLIC IMAGES FOR BUSINESSES (WHEN RELEVANT):
+- When featuring specific venues/businesses prominently, reference their publicly available images
+- Use actual image URLs from their websites or public sources
+- Format: ![Venue Name](https://actual-image-url.jpg)
+- Only include external images if they're publicly accessible and relevant
+- Do NOT use placeholder or generic image URLs
+
+SEO & STRUCTURED DATA REQUIREMENTS (ALL TABLES MUST HAVE SCHEMA.ORG):
 - Create HTML tables (not Markdown) for ANY comparison with 3+ items
 - Use proper semantic markup: <table>, <thead>, <tbody>, <th scope="col">
-- Add Schema.org microdata to tables: itemScope, itemType, itemProp attributes
+- REQUIRED: ALL tables MUST have Schema.org microdata attributes
+- Table wrapper: itemScope itemType="https://schema.org/Table"
+- Pricing rows: itemScope itemType="https://schema.org/Offer"
+- Item names: itemProp="name"
+- Prices: itemProp="price"
 - Include a FAQ section (## Frequently Asked Questions) with 3-5 Q&As
 - Use clear question format (### Q: ...) and answer format (A: ...)
 - Provide direct, factual answers optimized for AI search engines
@@ -109,7 +135,7 @@ TABLE TRIGGERS (automatically create HTML tables for):
 - Service area coverage (zip codes, neighborhoods, delivery fees)
 - Any comparison with 3+ numerical data points
 
-HTML TABLE FORMAT (use this exact structure):
+HTML TABLE FORMAT (COPY THIS EXACT STRUCTURE - SCHEMA.ORG REQUIRED):
 <div itemScope itemType="https://schema.org/Table">
   <table className="comparison-table">
     <caption>Descriptive Table Caption</caption>
@@ -126,9 +152,20 @@ HTML TABLE FORMAT (use this exact structure):
         <td><span itemProp="price">$XX-XX</span></td>
         <td>Additional details</td>
       </tr>
+      <tr itemScope itemType="https://schema.org/Offer">
+        <td><strong itemProp="name">Second Item</strong></td>
+        <td><span itemProp="price">$YY-YY</span></td>
+        <td>More details</td>
+      </tr>
     </tbody>
   </table>
 </div>
+
+CRITICAL: Do NOT create tables without Schema.org attributes. Every table MUST have:
+- Wrapper div with: itemScope itemType="https://schema.org/Table"
+- Each row with: itemScope itemType="https://schema.org/Offer"
+- Item names with: itemProp="name"
+- Prices with: itemProp="price"
 
 REQUIRED SECTIONS:
 1. Engaging introduction with a hook
@@ -180,7 +217,8 @@ SCHEMA.ORG JSON-LD (add this at the END of the blog post):
       "name": "Party On Delivery",
       "@id": "https://partyondelivery.com",
       "url": "https://partyondelivery.com",
-      "telephone": "",
+      "telephone": "(737) 371-9700",
+      "email": "info@partyondelivery.com",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Austin",
@@ -330,10 +368,18 @@ function insertImagesIntoContent(content: string, imagePaths: string[]): string 
   return newLines.join('\n');
 }
 
+// Select random author with weighted distribution
+function selectAuthor(): string {
+  // 75% Allan Henslee, 25% Brian Hill
+  const random = Math.random();
+  return random < 0.75 ? "Allan Henslee" : "Brian Hill";
+}
+
 // Create MDX file with frontmatter
 function createMDXFile(topic: Topic, content: string, imagePaths: string[]): string {
   const slug = createSlug(topic.title);
   const date = formatDate(new Date());
+  const author = selectAuthor();
 
   const contentWithImages = insertImagesIntoContent(content, imagePaths);
 
@@ -344,7 +390,7 @@ category: "${topic.category}"
 excerpt: "${content.substring(0, 160).replace(/"/g, '\\"')}..."
 image: "${imagePaths[0] || '/images/hero/lake-travis-sunset.webp'}"
 keywords: ${JSON.stringify(topic.keywords)}
-author: "Party On Delivery Team"
+author: "${author}"
 ---
 
 `;

@@ -24,7 +24,7 @@ const components = {
 }
 
 export const metadata: Metadata = {
-  title: 'The Complete Guide to Corporate & Company Events in Austin, Texas',
+  title: 'Austin Corporate Events Guide - Complete Planning',
   description: 'The ultimate resource for planning corporate events in Austin. Learn about venue selection, catering, team building, budgets, and professional bar service for company gatherings of any size.',
   keywords: ['Austin corporate event planning', 'corporate events Austin', 'company party planning', 'business event venues Austin', 'corporate catering Austin', 'team building activities Austin'],
   openGraph: {

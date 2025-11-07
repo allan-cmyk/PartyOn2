@@ -28,7 +28,7 @@ export default function LuxuryPrabalPage() {
         <div className="relative z-10 h-full flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-7xl md:text-9xl font-bold tracking-tighter mb-6 hero-fade-in">
-              PARTYON
+              Aperol Spritz Recipe
             </h1>
             <ScrollRevealCSS duration={800} delay={0} y={30}>
               <p className="text-2xl md:text-3xl font-light tracking-wider">

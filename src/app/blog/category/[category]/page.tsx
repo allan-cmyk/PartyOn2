@@ -3,6 +3,7 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
+import { Metadata } from 'next'
 import OldFashionedNavigation from '@/components/OldFashionedNavigation'
 
 // Mock blog posts - in production, fetch from CMS or database
@@ -52,6 +53,28 @@ const categoryMap: Record<string, string> = {
   'business-tips': 'Business Tips',
   'event-ideas': 'Event Ideas',
   'business': 'Business'
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
+  const resolvedParams = await params
+  const categoryName = categoryMap[resolvedParams.category]
+
+  if (!categoryName) {
+    return { title: 'Category Not Found' }
+  }
+
+  return {
+    title: `${categoryName} | Blog | Party On Delivery Austin`,
+    description: `Browse articles about ${categoryName.toLowerCase()}, event planning, and party hosting in Austin, Texas.`,
+    alternates: {
+      canonical: `https://partyondelivery.com/blog/category/${resolvedParams.category}`,
+    },
+    openGraph: {
+      title: `${categoryName} | Blog | Party On Delivery Austin`,
+      description: `Browse articles about ${categoryName.toLowerCase()} and party hosting in Austin.`,
+      type: 'website',
+    },
+  }
 }
 
 export default async function BlogCategoryPage({ params }: { params: Promise<{ category: string }> }) {
@@ -107,6 +130,7 @@ export default async function BlogCategoryPage({ params }: { params: Promise<{ c
                         src={post.image}
                         alt={post.title}
                         fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
                         className="object-cover group-hover:scale-105 transition-transform duration-700"
                       />
                       <div className="absolute top-4 left-4">

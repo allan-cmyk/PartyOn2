@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Shop Collections | Premium Spirits, Wine & Beer | Party On Delivery Austin',
+  title: 'Premium Spirits & Wine - Austin Collections',
   description: 'Browse our curated collections of premium spirits, wines, craft beers, and cocktail ingredients. Same-day and scheduled alcohol delivery in Austin, Texas.',
   keywords: 'alcohol collections Austin, premium spirits collection, wine collections, craft beer Austin, cocktail ingredients, liquor delivery collections',
   alternates: {

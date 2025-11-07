@@ -43,6 +43,8 @@ export default function Footer() {
                 src="/images/POD Logo 2025.svg"
                 alt="Party On Delivery"
                 className="h-16 w-auto"
+                width="64"
+                height="64"
               />
             </Link>
             <p className="font-sans text-sm text-neutral-300 leading-relaxed">

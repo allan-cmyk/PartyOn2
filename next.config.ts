@@ -91,9 +91,57 @@ const nextConfig: NextConfig = {
     return config;
   },
 
-  // Headers for caching and performance
+  // Headers for caching, performance, and security
   async headers() {
     return [
+      // Security headers for all routes
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' *.shopify.com *.google-analytics.com *.googletagmanager.com cdn.vercel-insights.com vercel.live",
+              "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
+              "font-src 'self' fonts.gstatic.com data:",
+              "img-src 'self' data: blob: https: *.shopify.com images.unsplash.com",
+              "connect-src 'self' *.shopify.com *.google-analytics.com *.googletagmanager.com vitals.vercel-insights.com",
+              "frame-src 'self' *.shopify.com",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self' *.shopify.com",
+              "frame-ancestors 'self'",
+              "upgrade-insecure-requests"
+            ].join('; '),
+          },
+        ],
+      },
+      // Cache headers for images
       {
         source: '/:all*(svg|jpg|jpeg|png|gif|ico|webp|avif)',
         headers: [
@@ -103,6 +151,7 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      // Cache headers for static files
       {
         source: '/_next/static/:path*',
         headers: [

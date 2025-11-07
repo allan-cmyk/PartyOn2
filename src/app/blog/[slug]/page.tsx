@@ -2,15 +2,50 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { Metadata } from 'next'
 import OldFashionedNavigation from '@/components/OldFashionedNavigation'
 import ShareButtons from '@/components/blog/ShareButtons'
 import { notFound } from 'next/navigation'
 import { getMDXPost } from '@/lib/blog-mdx'
-import { serialize } from 'next-mdx-remote/serialize'
-import MDXContent from '@/components/blog/MDXContent'
+import MDXContentRSC from '@/components/blog/MDXContentRSC'
+import blogPostsData from '@/data/blog-posts/posts.json'
+import { seoConfig } from '@/lib/seo/config'
+import { generateArticleSchema } from '@/lib/seo/schemas'
 
-// Mock blog posts data - in production, fetch from CMS or database
-const blogPosts = [
+interface BlogPost {
+  id: string
+  slug: string
+  title: string
+  excerpt: string
+  content: string
+  publishedAt?: string
+  date?: string
+  author: string
+  tags: string[]
+  image?: {
+    url: string
+    alt: string
+  }
+  seo?: {
+    title: string
+    description: string
+    keywords: string[]
+  }
+  schema?: {
+    questionsAnswered: string[]
+    topics: string[]
+  }
+  category?: string
+  readTime?: string
+  authorImage?: string
+}
+
+// Use actual blog posts from JSON instead of hardcoded data
+const blogPosts = blogPostsData as BlogPost[]
+
+// Keep legacy hardcoded posts for backward compatibility (DEPRECATED - use posts.json)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _legacyBlogPosts = [
   {
     slug: 'ultimate-guide-austin-boat-parties',
     title: 'The Ultimate Guide to Austin Boat Parties',
@@ -950,6 +985,38 @@ interface BlogPostPageProps {
   }>
 }
 
+export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+  const { slug } = await params
+  const post = blogPosts.find(p => p.slug === slug)
+
+  if (!post) {
+    return { title: 'Post Not Found' }
+  }
+
+  return {
+    title: post.seo?.title || post.title,
+    description: post.seo?.description || post.excerpt,
+    keywords: post.seo?.keywords || post.tags,
+    alternates: {
+      canonical: `${seoConfig.siteUrl}/blog/${slug}`,
+    },
+    openGraph: {
+      title: post.seo?.title || post.title,
+      description: post.seo?.description || post.excerpt,
+      type: 'article',
+      publishedTime: post.publishedAt || post.date,
+      authors: [post.author],
+      images: post.image?.url ? [{ url: post.image.url, alt: post.image.alt }] : [],
+    },
+  }
+}
+
+export async function generateStaticParams() {
+  return blogPosts.map((post) => ({
+    slug: post.slug,
+  }))
+}
+
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const resolvedParams = await params
 
@@ -957,11 +1024,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const mdxPost = getMDXPost(resolvedParams.slug)
 
   if (mdxPost) {
-    // Render MDX post
-    const mdxSource = await serialize(mdxPost.content)
+    const articleSchema = generateArticleSchema({
+      title: mdxPost.title,
+      description: mdxPost.excerpt,
+      image: `${seoConfig.siteUrl}${mdxPost.image}`,
+      datePublished: mdxPost.date,
+      dateModified: mdxPost.date,
+      author: mdxPost.author,
+      url: `${seoConfig.siteUrl}/blog/${resolvedParams.slug}`,
+    })
 
     return (
       <div className="bg-white min-h-screen">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        />
         <OldFashionedNavigation />
 
         {/* Hero Section with Image */}
@@ -970,6 +1048,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             src={mdxPost.image}
             alt={mdxPost.title}
             fill
+            sizes="100vw"
             className="object-cover"
             priority
           />
@@ -1001,20 +1080,32 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         {/* Article Content */}
         <article className="py-16 px-8">
           <div className="max-w-4xl mx-auto">
-            <MDXContent source={mdxSource} />
+            <MDXContentRSC source={mdxPost.content} />
 
             {/* Author Bio */}
             <div className="mt-16 pt-8 border-t border-gray-200">
               <div className="flex items-start gap-6">
-                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">
-                  <svg className="w-10 h-10 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                  </svg>
+                <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0">
+                  <Image
+                    src={mdxPost.author === 'Allan Henslee'
+                      ? '/images/authors/allan-henslee.png'
+                      : mdxPost.author === 'Brian Hill'
+                      ? '/images/authors/brian-hill.png'
+                      : '/images/authors/allan-henslee.png'}
+                    alt={mdxPost.author}
+                    width={80}
+                    height={80}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="flex-1">
                   <h3 className="font-serif text-2xl text-gray-900 mb-2">{mdxPost.author}</h3>
                   <p className="text-gray-600 mb-4">
-                    Content writer at Party On Delivery, sharing expert tips and insights for Austin events.
+                    {mdxPost.author === 'Allan Henslee'
+                      ? 'Founder & CEO of Party On Delivery, helping Austin celebrate in style since 2023.'
+                      : mdxPost.author === 'Brian Hill'
+                      ? 'Co-founder of Party On Delivery, specializing in premium event experiences across Austin.'
+                      : 'Content writer at Party On Delivery, sharing expert tips and insights for Austin events.'}
                   </p>
                 </div>
               </div>
@@ -1095,18 +1186,33 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound()
   }
 
-  const relatedPosts = getRelatedPosts(resolvedParams.slug, post.category)
+  const relatedPosts = getRelatedPosts(resolvedParams.slug, post.category || '')
+
+  const articleSchema = generateArticleSchema({
+    title: post.seo?.title || post.title,
+    description: post.seo?.description || post.excerpt,
+    image: `${seoConfig.siteUrl}${post.image?.url || '/images/hero/lake-travis-yacht-sunset.webp'}`,
+    datePublished: post.publishedAt || post.date || new Date().toISOString(),
+    dateModified: post.publishedAt || post.date || new Date().toISOString(),
+    author: post.author,
+    url: `${seoConfig.siteUrl}/blog/${resolvedParams.slug}`,
+  })
 
   return (
     <div className="bg-white min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       <OldFashionedNavigation />
       
       {/* Hero Section with Image */}
       <section className="relative h-[60vh] min-h-[500px]">
         <Image
-          src={post.image}
-          alt={post.title}
+          src={post.image?.url || '/images/hero/lake-travis-yacht-sunset.webp'}
+          alt={post.image?.alt || post.title}
           fill
+          sizes="100vw"
           className="object-cover"
           priority
         />
@@ -1115,16 +1221,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="max-w-4xl mx-auto">
             <div>
               <div className="flex items-center gap-4 text-white/80 text-sm mb-4">
-                <span className="bg-white/20 backdrop-blur-sm px-3 py-1 tracking-[0.1em]">
-                  {post.category.toUpperCase()}
-                </span>
-                <span>{new Date(post.date).toLocaleDateString('en-US', { 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
+                {post.category && (
+                  <span className="bg-white/20 backdrop-blur-sm px-3 py-1 tracking-[0.1em]">
+                    {post.category.toUpperCase()}
+                  </span>
+                )}
+                <span>{new Date(post.date || post.publishedAt || Date.now()).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
                 })}</span>
-                <span>•</span>
-                <span>{post.readTime}</span>
+                {post.readTime && (
+                  <>
+                    <span>•</span>
+                    <span>{post.readTime}</span>
+                  </>
+                )}
               </div>
               <h1 className="font-serif text-4xl md:text-6xl text-white mb-4 tracking-[0.1em]">
                 {post.title}
@@ -1242,26 +1354,32 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 <Link href={`/blog/${relatedPost.slug}`}>
                   <div className="relative h-48 overflow-hidden">
                     <Image
-                      src={relatedPost.image}
-                      alt={relatedPost.title}
+                      src={relatedPost.image?.url || '/images/hero/lake-travis-yacht-sunset.webp'}
+                      alt={relatedPost.image?.alt || relatedPost.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute top-4 left-4">
-                      <span className="bg-white px-3 py-1 text-xs tracking-[0.1em] text-gray-700">
-                        {relatedPost.category.toUpperCase()}
-                      </span>
-                    </div>
+                    {relatedPost.category && (
+                      <div className="absolute top-4 left-4">
+                        <span className="bg-white px-3 py-1 text-xs tracking-[0.1em] text-gray-700">
+                          {relatedPost.category.toUpperCase()}
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <div className="p-6">
                     <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                      <time>{new Date(relatedPost.date).toLocaleDateString('en-US', { 
-                        year: 'numeric', 
-                        month: 'short', 
-                        day: 'numeric' 
+                      <time>{new Date(relatedPost.date || relatedPost.publishedAt || Date.now()).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
                       })}</time>
-                      <span>•</span>
-                      <span>{relatedPost.readTime}</span>
+                      {relatedPost.readTime && (
+                        <>
+                          <span>•</span>
+                          <span>{relatedPost.readTime}</span>
+                        </>
+                      )}
                     </div>
                     <h3 className="font-serif text-xl text-gray-900 mb-3 group-hover:text-gold-500 transition-colors">
                       {relatedPost.title}

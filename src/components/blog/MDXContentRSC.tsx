@@ -1,0 +1,121 @@
+import { compileMDX } from 'next-mdx-remote/rsc'
+import CorporateEventCalculator from '@/components/CorporateEventCalculator'
+
+interface MDXContentRSCProps {
+  source: string
+}
+
+// Custom components for MDX rendering (RSC-compatible)
+const components = {
+  // Custom React components
+  CorporateEventCalculator,
+
+  // Custom image component
+  img: (props: React.ImgHTMLAttributes<HTMLImageElement>) => {
+    if (!props.src) return null
+
+    return (
+      <div className="my-8">
+        <img
+          src={props.src}
+          alt={props.alt || ''}
+          className="w-full h-auto rounded-lg"
+          loading="lazy"
+        />
+      </div>
+    )
+  },
+
+  // Custom heading components with styling
+  h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
+    <h1 className="font-serif text-4xl md:text-5xl text-gray-900 mb-6 mt-12 tracking-[0.1em]" {...props} />
+  ),
+  h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
+    <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 mt-10 tracking-[0.1em]" {...props} />
+  ),
+  h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
+    <h3 className="font-serif text-2xl md:text-3xl text-gray-900 mb-3 mt-8 tracking-[0.1em]" {...props} />
+  ),
+
+  // Paragraph styling
+  p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
+    <p className="text-gray-700 text-lg leading-relaxed mb-6" {...props} />
+  ),
+
+  // List styling
+  ul: (props: React.HTMLAttributes<HTMLUListElement>) => (
+    <ul className="list-disc list-inside text-gray-700 text-lg space-y-2 mb-6 ml-4" {...props} />
+  ),
+  ol: (props: React.OlHTMLAttributes<HTMLOListElement>) => (
+    <ol className="list-decimal list-inside text-gray-700 text-lg space-y-2 mb-6 ml-4" {...props} />
+  ),
+  li: (props: React.LiHTMLAttributes<HTMLLIElement>) => (
+    <li className="text-gray-700" {...props} />
+  ),
+
+  // Link styling - external links open in new tab
+  a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
+    const isExternal = props.href?.startsWith('http')
+    return (
+      <a
+        className="text-gold-600 hover:text-gold-700 underline"
+        {...props}
+        {...(isExternal && {
+          target: '_blank',
+          rel: 'noopener noreferrer'
+        })}
+      />
+    )
+  },
+
+  // Blockquote styling
+  blockquote: (props: React.BlockquoteHTMLAttributes<HTMLQuoteElement>) => (
+    <blockquote className="border-l-4 border-gold-500 pl-6 py-2 my-6 italic text-gray-700" {...props} />
+  ),
+
+  // Code styling
+  code: (props: React.HTMLAttributes<HTMLElement>) => (
+    <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono text-gray-800" {...props} />
+  ),
+  pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
+    <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto mb-6" {...props} />
+  ),
+
+  // Table styling for comparison tables
+  table: (props: React.TableHTMLAttributes<HTMLTableElement>) => (
+    <div className="overflow-x-auto my-8">
+      <table className="min-w-full border-collapse border border-gray-300" {...props} />
+    </div>
+  ),
+  thead: (props: React.HTMLAttributes<HTMLTableSectionElement>) => (
+    <thead className="bg-gray-100" {...props} />
+  ),
+  tbody: (props: React.HTMLAttributes<HTMLTableSectionElement>) => (
+    <tbody {...props} />
+  ),
+  tr: (props: React.HTMLAttributes<HTMLTableRowElement>) => (
+    <tr className="border-b border-gray-300" {...props} />
+  ),
+  th: (props: React.ThHTMLAttributes<HTMLTableCellElement>) => (
+    <th className="px-4 py-3 text-left font-semibold text-gray-900 border border-gray-300" {...props} />
+  ),
+  td: (props: React.TdHTMLAttributes<HTMLTableCellElement>) => (
+    <td className="px-4 py-3 text-gray-700 border border-gray-300" {...props} />
+  ),
+}
+
+export default async function MDXContentRSC({ source }: MDXContentRSCProps) {
+  const { content } = await compileMDX({
+    source,
+    components,
+    options: {
+      parseFrontmatter: false,
+    },
+  })
+
+  return (
+    <div className="prose prose-lg max-w-none">
+      {content}
+    </div>
+  )
+}

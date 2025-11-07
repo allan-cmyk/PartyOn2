@@ -118,6 +118,7 @@ export default function BoatPartiesPage() {
               src={heroImages[currentHeroImage].src}
               alt={heroImages[currentHeroImage].alt}
               fill
+              sizes="100vw"
               className="object-cover"
               priority
               onError={(e) => {

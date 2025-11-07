@@ -59,6 +59,7 @@ export default function LuxuryCard({
           src={bgImage}
           alt=""
           fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className="object-cover scale-150 group-hover:scale-125 transition-transform duration-1500"
           aria-hidden="true"
           onError={(e) => {
