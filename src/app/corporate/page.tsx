@@ -305,7 +305,7 @@ export default function CorporateLandingPage() {
           <div className="flex flex-col sm:flex-row gap-4">
             <button
               onClick={handleScheduleCall}
-              className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
+              className="px-8 py-4 bg-gold-600 text-black hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
             >
               SCHEDULE A CALL
             </button>
