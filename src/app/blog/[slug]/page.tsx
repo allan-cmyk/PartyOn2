@@ -7,8 +7,7 @@ import OldFashionedNavigation from '@/components/OldFashionedNavigation'
 import ShareButtons from '@/components/blog/ShareButtons'
 import { notFound } from 'next/navigation'
 import { getMDXPost } from '@/lib/blog-mdx'
-import { serialize } from 'next-mdx-remote/serialize'
-import MDXContent from '@/components/blog/MDXContent'
+import MDXContentRSC from '@/components/blog/MDXContentRSC'
 import blogPostsData from '@/data/blog-posts/posts.json'
 import { seoConfig } from '@/lib/seo/config'
 import { generateArticleSchema } from '@/lib/seo/schemas'
@@ -1025,9 +1024,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const mdxPost = getMDXPost(resolvedParams.slug)
 
   if (mdxPost) {
-    // Render MDX post
-    const mdxSource = await serialize(mdxPost.content)
-
     const articleSchema = generateArticleSchema({
       title: mdxPost.title,
       description: mdxPost.excerpt,
@@ -1084,7 +1080,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         {/* Article Content */}
         <article className="py-16 px-8">
           <div className="max-w-4xl mx-auto">
-            <MDXContent source={mdxSource} />
+            <MDXContentRSC source={mdxPost.content} />
 
             {/* Author Bio */}
             <div className="mt-16 pt-8 border-t border-gray-200">
