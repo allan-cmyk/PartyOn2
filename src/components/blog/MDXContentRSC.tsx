@@ -1,5 +1,4 @@
 import { compileMDX } from 'next-mdx-remote/rsc'
-import Image from 'next/image'
 import CorporateEventCalculator from '@/components/CorporateEventCalculator'
 
 interface MDXContentRSCProps {
@@ -11,17 +10,15 @@ const components = {
   // Custom React components
   CorporateEventCalculator,
 
-  // Custom image component using Next.js Image
+  // Custom image component
   img: (props: React.ImgHTMLAttributes<HTMLImageElement>) => {
     if (!props.src) return null
 
     return (
       <div className="my-8">
-        <Image
+        <img
           src={props.src}
           alt={props.alt || ''}
-          width={800}
-          height={600}
           className="w-full h-auto rounded-lg"
           loading="lazy"
         />
