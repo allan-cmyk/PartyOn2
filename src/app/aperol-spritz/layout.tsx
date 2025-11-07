@@ -3,7 +3,7 @@ import { Oswald, Inter } from 'next/font/google';
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Aperol Spritz Delivery | Premium Cocktail Ingredients | Party On Delivery Austin',
+  title: 'Aperol Spritz Delivery Austin - Premium Cocktails',
   description: 'Get Aperol, prosecco, and everything you need for perfect Aperol Spritz cocktails delivered to your door in Austin. Premium ingredients with fast delivery.',
   keywords: 'Aperol Spritz delivery Austin, Aperol delivery, prosecco delivery, cocktail ingredients Austin, Italian aperitif delivery',
   alternates: {

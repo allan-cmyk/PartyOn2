@@ -23,7 +23,7 @@ export default function LuxuryRitzPage() {
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center text-white hero-fade-in">
               <h1 className="text-5xl md:text-7xl font-light tracking-[0.2em] mb-6">
-                PARTYON
+                Old Fashioned Cocktail Recipe
               </h1>
               <div className="w-32 h-px bg-gold-400 mx-auto mb-6" />
               <p className="text-xl tracking-[0.15em] text-white/90">

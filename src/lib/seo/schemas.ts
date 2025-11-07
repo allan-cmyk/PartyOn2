@@ -32,6 +32,51 @@ export function generateProductSchema(product: ShopifyProduct) {
   };
 }
 
+export function generateArticleSchema({
+  title,
+  description,
+  image,
+  datePublished,
+  dateModified,
+  author,
+  url,
+}: {
+  title: string
+  description: string
+  image: string
+  datePublished: string
+  dateModified?: string
+  author: string
+  url: string
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description: description,
+    image: image,
+    datePublished: datePublished,
+    dateModified: dateModified || datePublished,
+    author: {
+      '@type': 'Person',
+      name: author,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Party On Delivery',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://partyondelivery.com/images/POD Logo 2025.svg',
+      },
+    },
+    url: url,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': url,
+    },
+  }
+}
+
 export function generateBreadcrumbSchema(items: Array<{ name: string; url: string }>) {
   return {
     '@context': 'https://schema.org',

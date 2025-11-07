@@ -22,7 +22,7 @@ export default function LuxuryGoyardPage() {
         <div className="relative z-10 text-center max-w-4xl mx-auto px-8">
           <div className="hero-fade-in">
             <p className="text-sm tracking-[0.3em] text-gray-700 mb-8">ESTABLISHED 2016</p>
-            <h1 className="text-6xl md:text-8xl font-serif text-gray-900 mb-6">PARTYON</h1>
+            <h1 className="text-6xl md:text-8xl font-serif text-gray-900 mb-6">Classic Gin Martini Recipe</h1>
             <p className="text-xl text-gray-700 tracking-[0.1em] mb-12 max-w-2xl mx-auto">
               Austin&apos;s Premier Alcohol Delivery Service
             </p>

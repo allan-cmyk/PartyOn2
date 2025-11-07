@@ -3,7 +3,7 @@ import { Cormorant_Garamond, Inter } from 'next/font/google';
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Old Fashioned Delivery | Premium Bourbon & Rye | Party On Delivery Austin',
+  title: 'Old Fashioned Delivery Austin - Premium Bourbon',
   description: 'Premium bourbon, rye whiskey, bitters, and Old Fashioned essentials delivered to your door in Austin. Classic cocktail ingredients from top distilleries.',
   keywords: 'Old Fashioned delivery Austin, bourbon delivery, rye whiskey delivery, whiskey cocktail ingredients, premium spirits Austin',
   alternates: {

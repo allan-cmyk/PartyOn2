@@ -35,6 +35,7 @@ export default function Hero({
           src={backgroundImage}
           alt={title}
           fill
+          sizes="100vw"
           className="object-cover"
           priority
           quality={90}

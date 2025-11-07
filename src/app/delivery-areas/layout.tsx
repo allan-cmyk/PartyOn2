@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Austin Delivery Areas | Alcohol Delivery Coverage Map | Party On Delivery',
+  title: 'Austin Alcohol Delivery Areas - Coverage Map',
   description: 'Premium alcohol delivery serving all of Austin, TX. Check if we deliver to your neighborhood - Downtown, South Congress, East Austin, Westlake, and more. View delivery zones and fees.',
   keywords: 'Austin alcohol delivery areas, alcohol delivery Downtown Austin, South Congress liquor delivery, East Austin beer delivery, Westlake wine delivery, delivery zones Austin',
   alternates: {

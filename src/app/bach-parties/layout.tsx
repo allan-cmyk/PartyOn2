@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { generateEventSchema, generateBreadcrumbSchema } from '@/lib/seo/schemas'
 
 export const metadata: Metadata = {
-  title: 'Austin Bachelorette Party Alcohol Delivery | Party On Delivery',
+  title: 'Austin Bachelorette Party Alcohol Delivery',
   description: 'Premium alcohol delivery for Austin bachelorette parties. Signature cocktails, champagne, party packages delivered to hotels, Airbnbs, and party venues.',
   keywords: 'austin bachelorette party, bach party alcohol delivery, bachelorette party drinks austin, party supplies delivery, bach weekend austin',
   alternates: {

@@ -281,6 +281,7 @@ export default function CorporateLandingPage() {
             src="/images/hero/corporate-hero-conference.webp"
             alt="Corporate event in Austin with professional bar service"
             fill
+            sizes="100vw"
             className="object-cover"
             priority
             onError={(e) => {
@@ -414,6 +415,7 @@ export default function CorporateLandingPage() {
                     src={useCase.image}
                     alt={useCase.title}
                     fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                     onError={(e) => {
                       e.currentTarget.src = '/images/hero/austin-skyline-golden-hour.webp';

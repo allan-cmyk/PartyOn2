@@ -36,6 +36,7 @@ export default function CTA({
             src={backgroundImage}
             alt=""
             fill
+            sizes="100vw"
             className="object-cover"
           />
           <div className="absolute inset-0 bg-navy-900/80" />

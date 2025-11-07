@@ -247,6 +247,7 @@ export default function WeddingsPage() {
               src={heroImages[currentHeroIndex].src}
               alt={heroImages[currentHeroIndex].alt}
               fill
+              sizes="100vw"
               className="object-cover"
               priority
               onError={(e) => {
