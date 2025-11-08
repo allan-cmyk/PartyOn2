@@ -179,7 +179,7 @@ export default function AustinAlcoholDeliveryPage() {
                   )
                 }
               ].map((area, index) => (
-                <LuxuryCard key={index} delay={index * 0.1}>
+                <LuxuryCard key={index} index={index}>
                   <div className="p-6">
                     <div className="mb-4">{area.icon}</div>
                     <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
@@ -246,7 +246,7 @@ export default function AustinAlcoholDeliveryPage() {
                   ]
                 }
               ].map((category, index) => (
-                <LuxuryCard key={index} delay={index * 0.1}>
+                <LuxuryCard key={index} index={index}>
                   <div className="p-6">
                     <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
                       {category.title}
@@ -305,7 +305,7 @@ export default function AustinAlcoholDeliveryPage() {
                   linkText: 'Lake Travis Delivery'
                 }
               ].map((event, index) => (
-                <LuxuryCard key={index} delay={index * 0.1}>
+                <LuxuryCard key={index} index={index}>
                   <div className="p-8">
                     <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
                       {event.title}
@@ -379,7 +379,7 @@ export default function AustinAlcoholDeliveryPage() {
 
             <div className="space-y-6">
               {faqs.map((faq, index) => (
-                <LuxuryCard key={index} delay={index * 0.05}>
+                <LuxuryCard key={index} index={index}>
                   <div className="p-6">
                     <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
                       {faq.question}
