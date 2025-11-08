@@ -130,7 +130,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
               "font-src 'self' fonts.gstatic.com data:",
               "img-src 'self' data: blob: https: *.shopify.com images.unsplash.com",
-              "connect-src 'self' *.shopify.com *.google-analytics.com *.googletagmanager.com vitals.vercel-insights.com",
+              "connect-src 'self' *.shopify.com *.google-analytics.com *.googletagmanager.com vitals.vercel-insights.com hooks.zapier.com",
               "frame-src 'self' *.shopify.com",
               "object-src 'none'",
               "base-uri 'self'",
