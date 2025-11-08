@@ -79,24 +79,34 @@ export default function CorporateLandingPage() {
         throw new Error('Form submission not configured');
       }
 
+      const payload = {
+        ...formData,
+        partnerType: 'Corporate Events',
+        source: 'corporate-landing-page',
+        submittedAt: new Date().toISOString(),
+        utm_source: sessionStorage.getItem('utm_source') || '',
+        utm_medium: sessionStorage.getItem('utm_medium') || '',
+        utm_campaign: sessionStorage.getItem('utm_campaign') || '',
+      };
+
+      console.log('Submitting to Zapier:', zapierWebhookUrl);
+      console.log('Payload:', payload);
+
       const response = await fetch(zapierWebhookUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...formData,
-          partnerType: 'Corporate Events',
-          source: 'corporate-landing-page',
-          submittedAt: new Date().toISOString(),
-          utm_source: sessionStorage.getItem('utm_source') || '',
-          utm_medium: sessionStorage.getItem('utm_medium') || '',
-          utm_campaign: sessionStorage.getItem('utm_campaign') || '',
-        }),
+        body: JSON.stringify(payload),
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+
       if (!response.ok) {
-        throw new Error('Failed to submit form');
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        throw new Error(`Failed to submit form: ${response.status} ${response.statusText}`);
       }
 
       setSubmitMessage('Thank you! Your inquiry has been submitted. We&apos;ll contact you within 24 hours to finalize your event details.');
