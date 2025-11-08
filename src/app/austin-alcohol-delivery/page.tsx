@@ -6,7 +6,6 @@ import Link from 'next/link';
 import Script from 'next/script';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import LuxuryCard from '@/components/LuxuryCard';
-import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import { generateFAQSchema, generateServiceSchema } from '@/lib/seo/schemas';
 
 export default function AustinAlcoholDeliveryPage() {
@@ -47,7 +46,6 @@ export default function AustinAlcoholDeliveryPage() {
 
   return (
     <>
-      <ScrollRevealCSS />
       <OldFashionedNavigation />
 
       {/* Schema.org Structured Data */}
