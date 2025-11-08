@@ -72,7 +72,12 @@ export default function CorporateLandingPage() {
     setSubmitMessage('');
 
     try {
-      const zapierWebhookUrl = process.env.NEXT_PUBLIC_ZAPIER_PARTNER_WEBHOOK_URL;
+      // Use environment variable with hardcoded fallback
+      const zapierWebhookUrl = process.env.NEXT_PUBLIC_ZAPIER_PARTNER_WEBHOOK_URL ||
+        'https://hooks.zapier.com/hooks/catch/19709726/urgzdc8/';
+
+      console.log('Environment variable:', process.env.NEXT_PUBLIC_ZAPIER_PARTNER_WEBHOOK_URL);
+      console.log('Using webhook URL:', zapierWebhookUrl);
 
       if (!zapierWebhookUrl) {
         console.error('Zapier webhook URL not configured');
@@ -126,7 +131,9 @@ export default function CorporateLandingPage() {
       });
     } catch (error) {
       console.error('Submit error:', error);
-      setSubmitMessage('An error occurred. Please call us at (737) 371-9700 or try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Error details:', errorMessage);
+      setSubmitMessage(`An error occurred: ${errorMessage}. Please call us at (737) 371-9700 or try again.`);
     } finally {
       setIsSubmitting(false);
     }
