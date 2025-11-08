@@ -378,7 +378,8 @@
    ============================================ */
 
 .scroll-reveal {
-  display: contents; /* Allow wrapper to be transparent to grid/flex layouts */
+  /* Note: display:contents breaks transform/opacity animations */
+  /* Using display:block to maintain box model for animations */
   opacity: 0;
   transform: translateY(var(--scroll-reveal-distance, 30px));
   transition:
