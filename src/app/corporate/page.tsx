@@ -275,7 +275,7 @@ export default function CorporateLandingPage() {
       <OldFashionedNavigation />
 
       {/* Hero Section */}
-      <section className="relative h-[70vh] min-h-[600px] flex items-center">
+      <section className="relative min-h-[500px] sm:h-[70vh] sm:min-h-[600px] flex items-center">
         <div className="absolute inset-0">
           <Image
             src="/images/hero/corporate-hero-conference.webp"
@@ -291,18 +291,18 @@ export default function CorporateLandingPage() {
         </div>
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-black/50" />
 
-        <div className="hero-fade-in relative z-10 max-w-7xl mx-auto px-8 text-white">
+        <div className="hero-fade-in relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-0 text-white">
           {/* H1 Options (others in comments) */}
           {/* Option 1: "Corporate Events, Simplified." */}
           {/* Option 3: "Cold Drinks. Zero Stress. Perfect for Every Office Event." */}
 
-          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl mb-6 tracking-[0.05em] max-w-4xl leading-tight">
+          <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-6 tracking-tight sm:tracking-[0.05em] max-w-4xl leading-snug sm:leading-tight">
             Austin&apos;s Easiest Way to Stock the Bar for Company Parties.
           </h1>
-          <p className="text-xl md:text-2xl max-w-3xl leading-relaxed mb-8">
+          <p className="text-lg sm:text-xl md:text-2xl max-w-3xl leading-relaxed mb-8">
             From 20 to 500+ guests—beer, wine, spirits, mixers, and ice delivered cold and on time. Simple planning, zero stress.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-2">
             <button
               onClick={handleScheduleCall}
               className="px-8 py-4 bg-gold-600 text-black hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
