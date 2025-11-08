@@ -83,7 +83,7 @@ export default function AustinAlcoholDeliveryPage() {
               Weddings • Events • Parties
             </h2>
             <p className="text-lg md:text-xl text-white/90 mb-10 max-w-3xl mx-auto leading-relaxed scroll-reveal">
-              Austin's premier alcohol delivery service for weddings, corporate events, bachelorette parties, and special occasions.
+              Austin&apos;s premier alcohol delivery service for weddings, corporate events, bachelorette parties, and special occasions.
               Beer kegs, wine, champagne, spirits, and party supplies delivered throughout the greater Austin area.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center scroll-reveal">
