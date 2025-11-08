@@ -378,6 +378,7 @@
    ============================================ */
 
 .scroll-reveal {
+  display: contents; /* Allow wrapper to be transparent to grid/flex layouts */
   opacity: 0;
   transform: translateY(var(--scroll-reveal-distance, 30px));
   transition:
