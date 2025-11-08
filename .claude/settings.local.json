@@ -51,7 +51,8 @@
       "Bash(test:*)",
       "WebSearch",
       "Bash(image-generator-tool generate:*)",
-      "Bash(del \"C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\src\\app\\corporate\\metadata.ts\")"
+      "Bash(del \"C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\src\\app\\corporate\\metadata.ts\")",
+      "Bash(ls -la \"C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\src\\app\"\" | grep -E \"^d \")"
     ],
     "deny": [],
     "ask": []
