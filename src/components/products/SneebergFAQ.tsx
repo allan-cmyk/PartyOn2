@@ -50,7 +50,7 @@ export default function SneebergFAQ() {
 
           <div className="space-y-4">
             {faqs.map((faq, index) => (
-              <LuxuryCard key={index} delay={index * 0.05}>
+              <LuxuryCard key={index} index={index}>
                 <div className="p-6">
                   <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
                     {faq.question}
