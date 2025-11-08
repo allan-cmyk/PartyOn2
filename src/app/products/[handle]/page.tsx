@@ -4,6 +4,8 @@ import { shopifyFetch } from '@/lib/shopify/client';
 import { PRODUCT_BY_HANDLE_QUERY } from '@/lib/shopify/queries/products';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import ProductDetailClient from '@/components/products/ProductDetailClient';
+import SneebergFAQ from '@/components/products/SneebergFAQ';
+import SneebergWhereToBuy from '@/components/products/SneebergWhereToBuy';
 import { formatPrice } from '@/lib/shopify/utils';
 
 interface Props {
@@ -147,6 +149,11 @@ export default async function ProductDetailPage({ params }: Props) {
     category: product.productType || 'Beverage',
   };
 
+  // Check if this is a Schneeberg product
+  const isSchneebergProduct = handle.toLowerCase().includes('schneeberg') ||
+                               handle.toLowerCase().includes('poschl') ||
+                               handle.toLowerCase().includes('weiss');
+
   return (
     <>
       {/* JSON-LD Structured Data */}
@@ -157,6 +164,14 @@ export default async function ProductDetailPage({ params }: Props) {
 
       {/* Client Component for Interactive Features */}
       <ProductDetailClient product={product} />
+
+      {/* Schneeberg-specific SEO content */}
+      {isSchneebergProduct && (
+        <>
+          <SneebergWhereToBuy />
+          <SneebergFAQ />
+        </>
+      )}
     </>
   );
 }

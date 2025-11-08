@@ -63,6 +63,11 @@ export const seoConfig = {
       description: 'Professional bar service for corporate events, conferences, and business celebrations. Licensed, insured, and reliable.',
       keywords: 'corporate bar service austin, business event alcohol, company party drinks, professional bartending',
     },
+    austinAlcoholDelivery: {
+      title: 'Austin Event Alcohol Delivery | Weddings, Corporate & Parties',
+      description: "Austin's premier alcohol delivery for weddings, corporate events, bachelorette parties & special occasions. Beer kegs, wine, spirits & party supplies delivered throughout Austin.",
+      keywords: 'austin alcohol delivery, event alcohol delivery austin, wedding alcohol delivery, corporate alcohol delivery, bachelorette party drinks, lake travis alcohol delivery, alcohol delivery downtown austin',
+    },
     about: {
       title: 'About Us - Licensed Austin Alcohol Delivery',
       description: 'Family-owned Austin business providing premium alcohol delivery since 2020. Licensed, insured, and committed to exceptional service.',
