@@ -575,13 +575,12 @@ export default function CorporateLandingPage() {
 
             <div className="mb-6">
               <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
-                Company Name *
+                Company Name
               </label>
               <input
                 type="text"
                 id="company"
                 name="company"
-                required
                 value={formData.company}
                 onChange={handleFormChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
@@ -622,13 +621,12 @@ export default function CorporateLandingPage() {
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div>
                 <label htmlFor="eventDate" className="block text-sm font-medium text-gray-700 mb-2">
-                  Event Date *
+                  Event Date
                 </label>
                 <input
                   type="date"
                   id="eventDate"
                   name="eventDate"
-                  required
                   value={formData.eventDate}
                   onChange={handleFormChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
@@ -636,13 +634,12 @@ export default function CorporateLandingPage() {
               </div>
               <div>
                 <label htmlFor="guestCount" className="block text-sm font-medium text-gray-700 mb-2">
-                  Guest Count *
+                  Guest Count
                 </label>
                 <input
                   type="number"
                   id="guestCount"
                   name="guestCount"
-                  required
                   min="20"
                   value={formData.guestCount}
                   onChange={handleFormChange}
@@ -653,13 +650,12 @@ export default function CorporateLandingPage() {
 
             <div className="mb-6">
               <label htmlFor="venue" className="block text-sm font-medium text-gray-700 mb-2">
-                Venue / Location *
+                Venue / Location
               </label>
               <input
                 type="text"
                 id="venue"
                 name="venue"
-                required
                 placeholder="Office address or venue name"
                 value={formData.venue}
                 onChange={handleFormChange}
@@ -669,12 +665,11 @@ export default function CorporateLandingPage() {
 
             <div className="mb-6">
               <label htmlFor="eventType" className="block text-sm font-medium text-gray-700 mb-2">
-                Event Type *
+                Event Type
               </label>
               <select
                 id="eventType"
                 name="eventType"
-                required
                 value={formData.eventType}
                 onChange={handleFormChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
