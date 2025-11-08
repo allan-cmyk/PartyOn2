@@ -107,7 +107,7 @@ export default function AustinAlcoholDeliveryPage() {
         <section className="py-16 md:py-24 px-4 md:px-8 max-w-7xl mx-auto">
           <div className="max-w-4xl mx-auto text-center scroll-reveal">
             <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
-              Party On Delivery is Austin's premier alcohol delivery service, specializing in weddings, corporate events,
+              Party On Delivery is Austin&apos;s premier alcohol delivery service, specializing in weddings, corporate events,
               bachelorette parties, and special occasions. We deliver beer kegs, wine, champagne, spirits, and party supplies
               throughout the greater Austin area with professional service and reliable timing.
             </p>
@@ -353,7 +353,7 @@ export default function AustinAlcoholDeliveryPage() {
                 {
                   number: '3',
                   title: 'We Deliver',
-                  description: "Professional delivery to your location throughout Austin. We'll coordinate with your event timeline."
+                  description: "Professional delivery to your location throughout Austin. We&apos;ll coordinate with your event timeline."
                 }
               ].map((step, index) => (
                 <div key={index} className="text-center scroll-reveal">
@@ -426,7 +426,7 @@ export default function AustinAlcoholDeliveryPage() {
         <section className="py-12 px-4 md:px-8 bg-gray-50">
           <div className="max-w-6xl mx-auto">
             <p className="text-sm text-gray-500 text-center italic leading-relaxed">
-              Party On Delivery is Austin's premier alcohol delivery service, providing beer kegs, wine, champagne, spirits,
+              Party On Delivery is Austin&apos;s premier alcohol delivery service, providing beer kegs, wine, champagne, spirits,
               and party supplies for weddings, corporate events, bachelorette parties, and special occasions throughout the
               greater Austin area including Downtown, South Austin, Lake Travis, and surrounding communities.
             </p>

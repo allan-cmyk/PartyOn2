@@ -33,7 +33,7 @@ export default function SneebergWhereToBuy() {
           WHERE TO BUY SCHNEEBERG SNUFF IN AUSTIN
         </h2>
         <p className="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
-          Looking for Schneeberg powder near you? Party On Delivery is Austin's premier source for Pöschl Schneeberg
+          Looking for Schneeberg powder near you? Party On Delivery is Austin&apos;s premier source for Pöschl Schneeberg
           Weiss tobacco-free snuff.
         </p>
 
