@@ -6,7 +6,6 @@ import { ShopifyProduct } from '@/lib/shopify/types';
 import ProductDetailClient from '@/components/products/ProductDetailClient';
 import SneebergFAQ from '@/components/products/SneebergFAQ';
 import SneebergWhereToBuy from '@/components/products/SneebergWhereToBuy';
-import SneebergReviews from '@/components/products/SneebergReviews';
 import ProductBreadcrumbs from '@/components/products/ProductBreadcrumbs';
 import { formatPrice } from '@/lib/shopify/utils';
 
@@ -229,12 +228,7 @@ export default async function ProductDetailPage({ params }: Props) {
         name: 'Origin',
         value: 'Germany'
       }
-    ],
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.8',
-      reviewCount: '4'
-    }
+    ]
   } : baseStructuredData;
 
   return (
@@ -259,7 +253,6 @@ export default async function ProductDetailPage({ params }: Props) {
       {isSchneebergProduct && (
         <>
           <SneebergWhereToBuy />
-          <SneebergReviews />
           <SneebergFAQ />
         </>
       )}
