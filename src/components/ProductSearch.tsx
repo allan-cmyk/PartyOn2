@@ -51,11 +51,15 @@ export default function ProductSearch({ isScrolled = true }: ProductSearchProps)
 
       setLoading(true);
       try {
+        // Format search query for Shopify - use wildcards for partial matching
+        // Search across title, vendor, tags, and product type
+        const formattedQuery = `title:*${searchTerm}* OR vendor:*${searchTerm}* OR tag:*${searchTerm}* OR product_type:*${searchTerm}*`;
+
         const response = await shopifyFetch<SearchResult>({
           query: SEARCH_PRODUCTS_QUERY,
-          variables: { 
-            query: searchTerm,
-            first: 10 
+          variables: {
+            query: formattedQuery,
+            first: 10
           },
         });
 
