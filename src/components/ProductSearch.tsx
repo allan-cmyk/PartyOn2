@@ -9,10 +9,8 @@ import { ShopifyProduct } from '@/lib/shopify/types';
 import { formatPrice } from '@/lib/shopify/utils';
 
 interface SearchResult {
-  search: {
-    edges: Array<{
-      node: ShopifyProduct;
-    }>;
+  predictiveSearch: {
+    products: ShopifyProduct[];
   };
 }
 
@@ -51,17 +49,16 @@ export default function ProductSearch({ isScrolled = true }: ProductSearchProps)
 
       setLoading(true);
       try {
-        // Use Shopify's search query for natural text search
+        // Use Shopify's predictiveSearch for real-time fuzzy search
         const response = await shopifyFetch<SearchResult>({
           query: STOREFRONT_SEARCH_QUERY,
           variables: {
             query: searchTerm,
-            first: 50
+            first: 10
           },
         });
 
-        const products = response.search.edges.map(edge => edge.node);
-        setResults(products.slice(0, 10));  // Limit to 10 results
+        setResults(response.predictiveSearch.products);
       } catch (error) {
         console.error('Search error:', error);
         setResults([]);

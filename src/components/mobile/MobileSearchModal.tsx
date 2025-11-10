@@ -14,10 +14,8 @@ interface MobileSearchModalProps {
 }
 
 interface SearchResult {
-  search: {
-    edges: Array<{
-      node: ShopifyProduct;
-    }>;
+  predictiveSearch: {
+    products: ShopifyProduct[];
   };
 }
 
@@ -52,7 +50,7 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
           },
         });
 
-        setResults(response.search.edges.map(edge => edge.node));
+        setResults(response.predictiveSearch.products);
       } catch (error) {
         console.error('Search error:', error);
         setResults([]);

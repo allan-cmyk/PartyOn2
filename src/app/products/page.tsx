@@ -102,12 +102,12 @@ function ProductsContent() {
   useEffect(() => {
     if (searchQuery) {
       setSearchLoading(true);
-      shopifyFetch<{ search: { edges: Array<{ node: ShopifyProduct }> } }>({
+      shopifyFetch<{ predictiveSearch: { products: ShopifyProduct[] } }>({
         query: STOREFRONT_SEARCH_QUERY,
         variables: { query: searchQuery, first: 50 },
       })
         .then(response => {
-          setSearchResults(response.search.edges.map(edge => edge.node));
+          setSearchResults(response.predictiveSearch.products);
         })
         .catch(console.error)
         .finally(() => setSearchLoading(false));
