@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseAlcohol } from '@/lib/shopify/utils';
@@ -209,10 +210,12 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
               
               {/* Details Section */}
               <div className="w-full md:w-1/2 lg:w-2/5 p-8 overflow-y-auto">
-                {/* Title */}
-                <h2 className="font-serif text-3xl text-gray-900 mb-4 tracking-[0.05em]">
-                  {product.title}
-                </h2>
+                {/* Title - Clickable to product page */}
+                <Link href={`/products/${product.handle}`}>
+                  <h2 className="font-serif text-3xl text-gray-900 mb-4 tracking-[0.05em] hover:text-gold-600 transition-colors cursor-pointer">
+                    {product.title}
+                  </h2>
+                </Link>
 
                 {/* Price */}
                 {price && (
