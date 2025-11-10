@@ -2,7 +2,14 @@
   "permissions": {
     "allow": [
       "Bash(timeout /t 3 /nobreak)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "WebSearch",
+      "WebFetch(domain:shopify.dev)",
+      "WebFetch(domain:vercel.com)",
+      "WebFetch(domain:party-on2-git-main-infinite-burn-rate.vercel.app)",
+      "WebFetch(domain:party-on2-g7q74osn5-infinite-burn-rate.vercel.app)"
     ],
     "deny": [],
     "ask": []

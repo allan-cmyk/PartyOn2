@@ -4,13 +4,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { shopifyFetch } from '@/lib/shopify/client';
-import { STOREFRONT_SEARCH_QUERY } from '@/lib/shopify/queries/products';
+import { SEARCH_PRODUCTS_QUERY } from '@/lib/shopify/queries/products';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import { formatPrice } from '@/lib/shopify/utils';
 
 interface SearchResult {
-  predictiveSearch: {
-    products: ShopifyProduct[];
+  products: {
+    edges: Array<{
+      node: ShopifyProduct;
+    }>;
   };
 }
 
@@ -49,16 +51,16 @@ export default function ProductSearch({ isScrolled = true }: ProductSearchProps)
 
       setLoading(true);
       try {
-        // Use Shopify's predictiveSearch for real-time fuzzy search
+        // Use standard products query which we know works
         const response = await shopifyFetch<SearchResult>({
-          query: STOREFRONT_SEARCH_QUERY,
+          query: SEARCH_PRODUCTS_QUERY,
           variables: {
             query: searchTerm,
-            limit: 10
+            first: 10
           },
         });
 
-        setResults(response.predictiveSearch.products);
+        setResults(response.products.edges.map(edge => edge.node));
       } catch (error) {
         console.error('Search error:', error);
         setResults([]);
