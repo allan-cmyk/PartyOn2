@@ -1,4 +1,6 @@
 import { Metadata } from 'next'
+import OldFashionedNavigation from "@/components/OldFashionedNavigation";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: 'Premium Spirits & Wine Collection | Party On Delivery Austin',
@@ -28,5 +30,11 @@ export default function ProductsLayout({
 }: {
   children: React.ReactNode
 }) {
-  return children
+  return (
+    <>
+      <OldFashionedNavigation />
+      {children}
+      <Footer />
+    </>
+  )
 }
