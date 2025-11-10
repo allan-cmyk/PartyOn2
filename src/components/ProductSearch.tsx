@@ -6,14 +6,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import { formatPrice } from '@/lib/shopify/utils';
 
-interface SearchResult {
-  products: {
-    edges: Array<{
-      node: ShopifyProduct;
-    }>;
-  };
-}
-
 interface ProductSearchProps {
   isScrolled?: boolean;
 }

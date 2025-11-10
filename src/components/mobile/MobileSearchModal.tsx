@@ -11,14 +11,6 @@ interface MobileSearchModalProps {
   onClose: () => void;
 }
 
-interface SearchResult {
-  products: {
-    edges: Array<{
-      node: ShopifyProduct;
-    }>;
-  };
-}
-
 export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModalProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState<ShopifyProduct[]>([]);
