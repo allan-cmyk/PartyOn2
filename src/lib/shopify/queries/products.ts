@@ -364,8 +364,8 @@ export const SEARCH_PRODUCTS_QUERY = gql`
 
 // Storefront Search Query - Uses Shopify's predictiveSearch for real-time search
 export const STOREFRONT_SEARCH_QUERY = gql`
-  query storefrontSearch($query: String!, $first: Int = 50) {
-    predictiveSearch(query: $query, limit: $first, types: PRODUCT) {
+  query storefrontSearch($query: String!, $limit: Int = 10) {
+    predictiveSearch(query: $query, limit: $limit, types: [PRODUCT]) {
       products {
         id
         handle

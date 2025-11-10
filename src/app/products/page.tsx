@@ -104,7 +104,7 @@ function ProductsContent() {
       setSearchLoading(true);
       shopifyFetch<{ predictiveSearch: { products: ShopifyProduct[] } }>({
         query: STOREFRONT_SEARCH_QUERY,
-        variables: { query: searchQuery, first: 50 },
+        variables: { query: searchQuery, limit: 10 },
       })
         .then(response => {
           setSearchResults(response.predictiveSearch.products);

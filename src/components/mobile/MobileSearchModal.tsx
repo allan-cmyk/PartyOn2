@@ -46,7 +46,7 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
           query: STOREFRONT_SEARCH_QUERY,
           variables: {
             query: searchTerm,
-            first: 20
+            limit: 10
           },
         });
 

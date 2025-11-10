@@ -54,7 +54,7 @@ export default function ProductSearch({ isScrolled = true }: ProductSearchProps)
           query: STOREFRONT_SEARCH_QUERY,
           variables: {
             query: searchTerm,
-            first: 10
+            limit: 10
           },
         });
 
