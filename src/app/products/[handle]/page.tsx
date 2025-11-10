@@ -6,6 +6,8 @@ import { ShopifyProduct } from '@/lib/shopify/types';
 import ProductDetailClient from '@/components/products/ProductDetailClient';
 import SneebergFAQ from '@/components/products/SneebergFAQ';
 import SneebergWhereToBuy from '@/components/products/SneebergWhereToBuy';
+import SneebergReviews from '@/components/products/SneebergReviews';
+import ProductBreadcrumbs from '@/components/products/ProductBreadcrumbs';
 import { formatPrice } from '@/lib/shopify/utils';
 
 interface Props {
@@ -50,6 +52,44 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? plainDescription.substring(0, 157) + '...'
     : plainDescription;
 
+  // Check if this is Schneeberg product for custom SEO optimization
+  const isSchneebergProduct = handle.toLowerCase().includes('schneeberg') ||
+                               handle.toLowerCase().includes('poschl') ||
+                               handle.toLowerCase().includes('weiss');
+
+  // Schneeberg-specific optimized metadata
+  if (isSchneebergProduct) {
+    return {
+      title: 'Pöschl Schneeberg Snuff Austin | Tobacco-Free | Fast Delivery',
+      description: 'Buy Pöschl Schneeberg Weiss tobacco-free herbal snuff in Austin. Refreshing peppermint nasal snuff, no tobacco or nicotine. Same-day delivery available. Order now!',
+      keywords: 'schneeberg snuff, schneeberg powder, poschl schneeberg, schneeberg austin, tobacco free snuff, nicotine free snuff, herbal snuff austin, peppermint snuff, bavarian nasal mint powder, schneeberg snuff where to buy, schneeberg weiss',
+      openGraph: {
+        title: 'Pöschl Schneeberg Weiss - Tobacco-Free Herbal Snuff | Austin Delivery',
+        description: 'Premium tobacco-free, nicotine-free peppermint snuff delivered in Austin. Authentic Pöschl Schneeberg Weiss with same-day delivery.',
+        type: 'product',
+        url: `https://partyondelivery.com/products/${handle}`,
+        images: [
+          {
+            url: image,
+            width: 1200,
+            height: 1200,
+            alt: 'Pöschl Schneeberg Weiss tobacco-free herbal snuff tin',
+          },
+        ],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Pöschl Schneeberg Snuff - Tobacco-Free Herbal Snuff',
+        description: 'Refreshing peppermint herbal snuff. No tobacco, no nicotine. Fast Austin delivery.',
+        images: [image],
+      },
+      alternates: {
+        canonical: `/products/${handle}`,
+      },
+    };
+  }
+
+  // Default metadata for all other products
   return {
     title: `${product.title} - ${price} | Party On Delivery Austin`,
     description: truncatedDescription || `Buy ${product.title} for delivery in Austin. Premium alcohol delivery for weddings, parties, and events.`,
@@ -122,8 +162,13 @@ export default async function ProductDetailPage({ params }: Props) {
     notFound();
   }
 
+  // Check if this is a Schneeberg product
+  const isSchneebergProduct = handle.toLowerCase().includes('schneeberg') ||
+                               handle.toLowerCase().includes('poschl') ||
+                               handle.toLowerCase().includes('weiss');
+
   // Generate Product Schema.org structured data
-  const structuredData = {
+  const baseStructuredData = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product.title,
@@ -141,6 +186,11 @@ export default async function ProductDetailPage({ params }: Props) {
         '@type': 'Organization',
         name: 'Party On Delivery',
       },
+      areaServed: {
+        '@type': 'City',
+        name: 'Austin',
+        '@id': 'https://en.wikipedia.org/wiki/Austin,_Texas'
+      }
     },
     brand: {
       '@type': 'Brand',
@@ -149,10 +199,43 @@ export default async function ProductDetailPage({ params }: Props) {
     category: product.productType || 'Beverage',
   };
 
-  // Check if this is a Schneeberg product
-  const isSchneebergProduct = handle.toLowerCase().includes('schneeberg') ||
-                               handle.toLowerCase().includes('poschl') ||
-                               handle.toLowerCase().includes('weiss');
+  // Enhanced structured data for Schneeberg with additional properties
+  const structuredData = isSchneebergProduct ? {
+    ...baseStructuredData,
+    name: 'Pöschl Schneeberg Weiss Tobacco-Free Herbal Snuff',
+    additionalProperty: [
+      {
+        '@type': 'PropertyValue',
+        name: 'Tobacco Content',
+        value: 'Tobacco-Free'
+      },
+      {
+        '@type': 'PropertyValue',
+        name: 'Nicotine Content',
+        value: 'Nicotine-Free'
+      },
+      {
+        '@type': 'PropertyValue',
+        name: 'Flavor',
+        value: 'Peppermint'
+      },
+      {
+        '@type': 'PropertyValue',
+        name: 'Type',
+        value: 'Herbal Snuff'
+      },
+      {
+        '@type': 'PropertyValue',
+        name: 'Origin',
+        value: 'Germany'
+      }
+    ],
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '4.8',
+      reviewCount: '4'
+    }
+  } : baseStructuredData;
 
   return (
     <>
@@ -162,6 +245,13 @@ export default async function ProductDetailPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
+      {/* Breadcrumb Navigation */}
+      <ProductBreadcrumbs
+        productName={product.title}
+        productHandle={handle}
+        category={product.productType}
+      />
+
       {/* Client Component for Interactive Features */}
       <ProductDetailClient product={product} />
 
@@ -169,6 +259,7 @@ export default async function ProductDetailPage({ params }: Props) {
       {isSchneebergProduct && (
         <>
           <SneebergWhereToBuy />
+          <SneebergReviews />
           <SneebergFAQ />
         </>
       )}

@@ -9,21 +9,40 @@ import LuxuryCard from '../LuxuryCard';
 export default function SneebergWhereToBuy() {
   const deliveryAreas = [
     'Downtown Austin',
-    'South Austin',
+    'South Austin (Zilker, South Lamar, South Congress)',
     'East Austin',
-    'West Austin',
-    'North Austin',
+    'West Austin (Tarrytown, Clarksville)',
+    'North Austin (Hyde Park, Mueller)',
     'Lake Travis',
     'Round Rock',
-    'Cedar Park'
+    'Cedar Park',
+    'Pflugerville',
+    'Georgetown',
+    'Leander',
+    'Bee Cave'
   ];
 
   const benefits = [
-    'Authentic Pöschl Schneeberg Weiss',
-    'Same-day delivery available',
-    'Competitive pricing',
-    'Convenient online ordering',
-    'Large selection of herbal and traditional snuffs'
+    {
+      title: '100% Authentic Products',
+      description: 'Genuine Pöschl Schneeberg Weiss imported directly from Germany'
+    },
+    {
+      title: 'Fast Austin Delivery',
+      description: 'Same-day delivery available throughout the Austin metropolitan area'
+    },
+    {
+      title: 'Competitive Pricing',
+      description: 'Great prices on Schneeberg and all herbal snuff products'
+    },
+    {
+      title: 'Easy Ordering',
+      description: 'Order online, by phone, or by text message for your convenience'
+    },
+    {
+      title: 'Wide Selection',
+      description: 'Large selection of herbal and traditional snuffs beyond Schneeberg'
+    }
   ];
 
   return (
@@ -77,13 +96,16 @@ export default function SneebergWhereToBuy() {
                   Why Buy from Party On Delivery?
                 </h3>
               </div>
-              <ul className="space-y-4">
+              <ul className="space-y-6">
                 {benefits.map((benefit, index) => (
-                  <li key={index} className="text-gray-700 flex items-start">
+                  <li key={index} className="flex items-start">
                     <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
-                    <span className="text-base">{benefit}</span>
+                    <div>
+                      <strong className="text-gray-900 text-base block">{benefit.title}</strong>
+                      <span className="text-gray-600 text-sm">{benefit.description}</span>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -106,6 +128,13 @@ export default function SneebergWhereToBuy() {
             >
               CONTACT US
             </Link>
+          </div>
+
+          {/* Additional SEO-rich content */}
+          <div className="mt-12 max-w-4xl mx-auto bg-gray-50 p-8 rounded-lg">
+            <p className="text-gray-600 leading-relaxed text-left">
+              <strong className="text-gray-900">Can&apos;t find Schneeberg snuff at local stores in Austin?</strong> Skip the search and order directly from Party On Delivery. We stock authentic Pöschl Schneeberg Weiss and other premium herbal snuffs for convenient delivery throughout the Austin metropolitan area. Whether you&apos;re in downtown high-rises, South Congress shops, East Austin neighborhoods, or Lake Travis waterfront homes, we deliver Schneeberg powder right to your door. Our tobacco-free, nicotine-free herbal snuff selection includes hard-to-find imported products that local Austin retailers rarely carry. Order the refreshing peppermint Schneeberg snuff today and experience why it&apos;s become one of our most popular specialty products for Austin customers seeking tobacco alternatives.
+            </p>
           </div>
         </div>
       </div>
