@@ -51,19 +51,53 @@ export default function ProductSearch({ isScrolled = true }: ProductSearchProps)
 
       setLoading(true);
       try {
-        // Format search query for Shopify - use wildcards for partial matching
-        // Search across title, vendor, tags, and product type
-        const formattedQuery = `title:*${searchTerm}* OR vendor:*${searchTerm}* OR tag:*${searchTerm}* OR product_type:*${searchTerm}*`;
-
-        const response = await shopifyFetch<SearchResult>({
+        // Try multiple search strategies
+        // 1. Try exact term
+        let response = await shopifyFetch<SearchResult>({
           query: SEARCH_PRODUCTS_QUERY,
           variables: {
-            query: formattedQuery,
-            first: 10
+            query: searchTerm,
+            first: 50  // Increased to get more results for client-side filtering
           },
         });
 
-        setResults(response.products.edges.map(edge => edge.node));
+        let products = response.products.edges.map(edge => edge.node);
+
+        // 2. If no results, try with wildcard
+        if (products.length === 0) {
+          response = await shopifyFetch<SearchResult>({
+            query: SEARCH_PRODUCTS_QUERY,
+            variables: {
+              query: `${searchTerm}*`,
+              first: 50
+            },
+          });
+          products = response.products.edges.map(edge => edge.node);
+        }
+
+        // 3. Client-side fuzzy filter as final fallback
+        if (products.length === 0) {
+          // Get all products and filter client-side
+          response = await shopifyFetch<SearchResult>({
+            query: SEARCH_PRODUCTS_QUERY,
+            variables: {
+              query: '',  // Empty query to get all products
+              first: 250
+            },
+          });
+
+          const allProducts = response.products.edges.map(edge => edge.node);
+          const searchLower = searchTerm.toLowerCase();
+
+          products = allProducts.filter(product =>
+            product.title.toLowerCase().includes(searchLower) ||
+            product.description?.toLowerCase().includes(searchLower) ||
+            product.vendor?.toLowerCase().includes(searchLower) ||
+            product.tags?.some(tag => tag.toLowerCase().includes(searchLower))
+          );
+        }
+
+        setResults(products.slice(0, 10));  // Limit to 10 results
       } catch (error) {
         console.error('Search error:', error);
       } finally {
