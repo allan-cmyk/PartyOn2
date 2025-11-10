@@ -3,8 +3,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { shopifyFetch } from '@/lib/shopify/client';
-import { SEARCH_PRODUCTS_QUERY } from '@/lib/shopify/queries/products';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import { formatPrice } from '@/lib/shopify/utils';
 
@@ -44,15 +42,11 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
 
       setLoading(true);
       try {
-        const response = await shopifyFetch<SearchResult>({
-          query: SEARCH_PRODUCTS_QUERY,
-          variables: {
-            query: searchTerm,
-            first: 20
-          },
-        });
+        // Use the working API route that properly formats search queries
+        const response = await fetch(`/api/products?search=${encodeURIComponent(searchTerm)}&first=20`);
+        const data = await response.json();
 
-        setResults(response.products.edges.map(edge => edge.node));
+        setResults(data.products.edges.map((edge: { node: ShopifyProduct }) => edge.node));
       } catch (error) {
         console.error('Search error:', error);
         setResults([]);

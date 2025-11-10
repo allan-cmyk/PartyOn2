@@ -11,8 +11,6 @@ import CompactProductCard from '@/components/shopify/CompactProductCard';
 import MobileProductCard from '@/components/mobile/MobileProductCard';
 import MobileFilterDrawer from '@/components/mobile/MobileFilterDrawer';
 import { useCollectionProducts } from '@/lib/shopify/hooks/useCollectionProducts';
-import { shopifyFetch } from '@/lib/shopify/client';
-import { SEARCH_PRODUCTS_QUERY } from '@/lib/shopify/queries/products';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import AIConcierge from '@/components/AIConcierge';
 import AgeVerificationModal from '@/components/AgeVerificationModal';
@@ -102,12 +100,11 @@ function ProductsContent() {
   useEffect(() => {
     if (searchQuery) {
       setSearchLoading(true);
-      shopifyFetch<{ products: { edges: Array<{ node: ShopifyProduct }> } }>({
-        query: SEARCH_PRODUCTS_QUERY,
-        variables: { query: searchQuery, first: 50 },
-      })
-        .then(response => {
-          setSearchResults(response.products.edges.map(edge => edge.node));
+      // Use the working API route that properly formats search queries
+      fetch(`/api/products?search=${encodeURIComponent(searchQuery)}&first=50`)
+        .then(response => response.json())
+        .then(data => {
+          setSearchResults(data.products.edges.map((edge: { node: ShopifyProduct }) => edge.node));
         })
         .catch(console.error)
         .finally(() => setSearchLoading(false));
