@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       openGraph: {
         title: 'Pöschl Schneeberg Weiss - Tobacco-Free Herbal Snuff | Austin Delivery',
         description: 'Premium tobacco-free, nicotine-free peppermint snuff delivered in Austin. Authentic Pöschl Schneeberg Weiss with same-day delivery.',
-        type: 'product',
+        type: 'website',
         url: `https://partyondelivery.com/products/${handle}`,
         images: [
           {
