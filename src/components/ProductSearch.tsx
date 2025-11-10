@@ -4,12 +4,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { shopifyFetch } from '@/lib/shopify/client';
-import { SEARCH_PRODUCTS_QUERY } from '@/lib/shopify/queries/products';
+import { STOREFRONT_SEARCH_QUERY } from '@/lib/shopify/queries/products';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import { formatPrice } from '@/lib/shopify/utils';
 
 interface SearchResult {
-  products: {
+  search: {
     edges: Array<{
       node: ShopifyProduct;
     }>;
@@ -51,55 +51,20 @@ export default function ProductSearch({ isScrolled = true }: ProductSearchProps)
 
       setLoading(true);
       try {
-        // Try multiple search strategies
-        // 1. Try exact term
-        let response = await shopifyFetch<SearchResult>({
-          query: SEARCH_PRODUCTS_QUERY,
+        // Use Shopify's search query for natural text search
+        const response = await shopifyFetch<SearchResult>({
+          query: STOREFRONT_SEARCH_QUERY,
           variables: {
             query: searchTerm,
-            first: 50  // Increased to get more results for client-side filtering
+            first: 50
           },
         });
 
-        let products = response.products.edges.map(edge => edge.node);
-
-        // 2. If no results, try with wildcard
-        if (products.length === 0) {
-          response = await shopifyFetch<SearchResult>({
-            query: SEARCH_PRODUCTS_QUERY,
-            variables: {
-              query: `${searchTerm}*`,
-              first: 50
-            },
-          });
-          products = response.products.edges.map(edge => edge.node);
-        }
-
-        // 3. Client-side fuzzy filter as final fallback
-        if (products.length === 0) {
-          // Get all products and filter client-side
-          response = await shopifyFetch<SearchResult>({
-            query: SEARCH_PRODUCTS_QUERY,
-            variables: {
-              query: '',  // Empty query to get all products
-              first: 250
-            },
-          });
-
-          const allProducts = response.products.edges.map(edge => edge.node);
-          const searchLower = searchTerm.toLowerCase();
-
-          products = allProducts.filter(product =>
-            product.title.toLowerCase().includes(searchLower) ||
-            product.description?.toLowerCase().includes(searchLower) ||
-            product.vendor?.toLowerCase().includes(searchLower) ||
-            product.tags?.some(tag => tag.toLowerCase().includes(searchLower))
-          );
-        }
-
+        const products = response.search.edges.map(edge => edge.node);
         setResults(products.slice(0, 10));  // Limit to 10 results
       } catch (error) {
         console.error('Search error:', error);
+        setResults([]);
       } finally {
         setLoading(false);
       }

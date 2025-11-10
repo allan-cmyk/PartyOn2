@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { shopifyFetch } from '@/lib/shopify/client';
-import { SEARCH_PRODUCTS_QUERY } from '@/lib/shopify/queries/products';
+import { STOREFRONT_SEARCH_QUERY } from '@/lib/shopify/queries/products';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import { formatPrice } from '@/lib/shopify/utils';
 
@@ -14,7 +14,7 @@ interface MobileSearchModalProps {
 }
 
 interface SearchResult {
-  products: {
+  search: {
     edges: Array<{
       node: ShopifyProduct;
     }>;
@@ -45,16 +45,17 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
       setLoading(true);
       try {
         const response = await shopifyFetch<SearchResult>({
-          query: SEARCH_PRODUCTS_QUERY,
+          query: STOREFRONT_SEARCH_QUERY,
           variables: {
             query: searchTerm,
             first: 20
           },
         });
 
-        setResults(response.products.edges.map(edge => edge.node));
+        setResults(response.search.edges.map(edge => edge.node));
       } catch (error) {
         console.error('Search error:', error);
+        setResults([]);
       } finally {
         setLoading(false);
       }

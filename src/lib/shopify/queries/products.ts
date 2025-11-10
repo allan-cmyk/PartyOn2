@@ -361,3 +361,50 @@ export const SEARCH_PRODUCTS_QUERY = gql`
     }
   }
 `;
+
+// Storefront Search Query - Uses Shopify's search endpoint for natural language queries
+export const STOREFRONT_SEARCH_QUERY = gql`
+  query storefrontSearch($query: String!, $first: Int = 50) {
+    search(query: $query, first: $first, types: PRODUCT) {
+      edges {
+        node {
+          ... on Product {
+            id
+            handle
+            title
+            description
+            vendor
+            productType
+            tags
+            priceRange {
+              minVariantPrice {
+                amount
+                currencyCode
+              }
+            }
+            images(first: 1) {
+              edges {
+                node {
+                  url
+                  altText
+                }
+              }
+            }
+            variants(first: 1) {
+              edges {
+                node {
+                  id
+                  availableForSale
+                  price {
+                    amount
+                    currencyCode
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
