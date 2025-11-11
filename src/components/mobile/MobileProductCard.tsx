@@ -43,7 +43,7 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
       }
       // Show success feedback
       setShowQuickAdd(false);
-      openCart(); // Open cart to show the newly added item
+      // Cart updates automatically, no need to open it
     } catch (error) {
       console.error('Error adding to cart:', error);
     } finally {

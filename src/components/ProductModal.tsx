@@ -46,19 +46,19 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
 
   const handleAddToCart = async () => {
     if (!variant?.id || !variant.availableForSale) return;
-    
+
     // Check if user needs age verification for alcohol products
     if (!canPurchaseAlcohol()) {
       setShowAgeVerification(true);
       return;
     }
-    
+
     setIsAdding(true);
     try {
       await addToCart(variant.id, quantity);
-      openCart(); // Open cart to show the newly added item
+      // Cart updates automatically, no need to open it
       setTimeout(() => {
-        onClose(); // Close modal after cart opens
+        onClose(); // Close modal after adding to cart
       }, 300);
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -70,15 +70,15 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
   const handleAgeVerified = async () => {
     setShowAgeVerification(false);
     localStorage.setItem('age_verified', 'true');
-    
+
     // Now add to cart
     if (variant?.id && variant.availableForSale) {
       setIsAdding(true);
       try {
         await addToCart(variant.id, quantity);
-        openCart(); // Open cart to show the newly added item
+        // Cart updates automatically, no need to open it
         setTimeout(() => {
-          onClose(); // Close modal after cart opens
+          onClose(); // Close modal after adding to cart
         }, 300);
       } catch (error) {
         console.error('Error adding to cart:', error);

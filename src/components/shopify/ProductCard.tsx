@@ -38,7 +38,7 @@ export default function ProductCard({ product, index = 0, onProductClick }: Prod
     try {
       await addToCart(variant.id, quantity);
       setQuantity(1); // Reset quantity after adding
-      openCart(); // Open cart to show the newly added item
+      // Cart updates automatically, no need to open it
     } catch (error) {
       console.error('Error adding to cart:', error);
     } finally {
@@ -54,14 +54,14 @@ export default function ProductCard({ product, index = 0, onProductClick }: Prod
   const handleAgeVerified = async () => {
     setShowAgeVerification(false);
     localStorage.setItem('age_verified', 'true');
-    
+
     // Now add to cart
     if (variant?.id && variant.availableForSale) {
       setIsAdding(true);
       try {
         await addToCart(variant.id, quantity);
         setQuantity(1); // Reset quantity after adding
-        openCart(); // Open cart to show the newly added item
+        // Cart updates automatically, no need to open it
       } catch (error) {
         console.error('Error adding to cart:', error);
       } finally {
