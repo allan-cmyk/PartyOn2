@@ -15,7 +15,7 @@ interface ProductModalProps {
 }
 
 export default function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
-  const { addToCart, loading: cartLoading, openCart } = useCartContext();
+  const { addToCart, loading: cartLoading } = useCartContext();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);

@@ -14,7 +14,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, index = 0, onProductClick }: ProductCardProps) {
-  const { addToCart, loading: cartLoading, openCart } = useCartContext();
+  const { addToCart, loading: cartLoading } = useCartContext();
   const [isAdding, setIsAdding] = useState(false);
   const [showAgeVerification, setShowAgeVerification] = useState(false);
   const [quantity, setQuantity] = useState(1);

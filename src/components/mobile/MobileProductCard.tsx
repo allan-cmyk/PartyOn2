@@ -14,7 +14,7 @@ interface MobileProductCardProps {
 }
 
 export default function MobileProductCard({ product, index = 0, onProductClick }: MobileProductCardProps) {
-  const { addToCart, loading: cartLoading, openCart } = useCartContext();
+  const { addToCart, loading: cartLoading } = useCartContext();
   const [isAdding, setIsAdding] = useState(false);
   const [showAgeVerification, setShowAgeVerification] = useState(false);
   const [showQuickAdd, setShowQuickAdd] = useState(false);

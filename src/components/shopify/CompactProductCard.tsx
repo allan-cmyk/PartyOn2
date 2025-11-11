@@ -14,7 +14,7 @@ interface CompactProductCardProps {
 }
 
 export default function CompactProductCard({ product, index = 0, onProductClick }: CompactProductCardProps) {
-  const { addToCart, loading: cartLoading, openCart } = useCartContext();
+  const { addToCart, loading: cartLoading } = useCartContext();
   const [isAdding, setIsAdding] = useState(false);
   const [showAgeVerification, setShowAgeVerification] = useState(false);
   const [quantity, setQuantity] = useState(1);
