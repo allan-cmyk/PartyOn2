@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import Script from 'next/script';
 import { generateFAQSchema } from '@/lib/seo/schemas';
 import LuxuryCard from '../LuxuryCard';
@@ -84,18 +85,18 @@ export default function PinthouseElectricJellyfishFAQ() {
               Order Pinthouse Electric Jellyfish IPA delivered throughout Austin. Award-winning local craft beer perfect for parties, weddings, and events. Same-day delivery available.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
+              <Link
                 href="#add-to-cart"
                 className="px-8 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium rounded text-center"
               >
                 ORDER ELECTRIC JELLYFISH
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/contact"
                 className="px-8 py-3 bg-gray-100 text-gray-900 hover:bg-gray-200 transition-colors tracking-[0.1em] text-sm font-medium rounded text-center"
               >
                 CONTACT US
-              </a>
+              </Link>
             </div>
           </div>
         </div>

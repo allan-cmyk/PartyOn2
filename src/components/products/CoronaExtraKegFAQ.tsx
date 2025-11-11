@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import Script from 'next/script';
 import { generateFAQSchema } from '@/lib/seo/schemas';
 import LuxuryCard from '../LuxuryCard';
@@ -92,18 +93,18 @@ export default function CoronaExtraKegFAQ() {
               Corona Extra kegs delivered to Lake Travis, Austin, and surrounding areas. Perfect for boat parties, summer celebrations, and outdoor events. Order with tap and tub rental for the complete party setup.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
+              <Link
                 href="#add-to-cart"
                 className="px-8 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium rounded text-center"
               >
                 ORDER CORONA KEG
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/contact"
                 className="px-8 py-3 bg-white text-gray-900 hover:bg-gray-100 transition-colors tracking-[0.1em] text-sm font-medium rounded text-center border border-gray-300"
               >
                 CONTACT US
-              </a>
+              </Link>
             </div>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import Script from 'next/script';
 import { generateFAQSchema } from '@/lib/seo/schemas';
 import LuxuryCard from '../LuxuryCard';
@@ -57,7 +58,7 @@ export default function FatEsMatorMixFAQ() {
       <section className="py-16 px-4 md:px-8 bg-gray-50">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-8 tracking-[0.15em] text-center">
-            FAT E'S SPICY MATOR MIX - FREQUENTLY ASKED QUESTIONS
+            FAT E&apos;S SPICY MATOR MIX - FREQUENTLY ASKED QUESTIONS
           </h2>
 
           <div className="space-y-4">
@@ -78,24 +79,24 @@ export default function FatEsMatorMixFAQ() {
           {/* Austin Delivery CTA */}
           <div className="mt-12 text-center bg-white p-8 rounded-lg border border-gray-200">
             <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
-              READY TO ORDER FAT E'S IN AUSTIN?
+              READY TO ORDER FAT E&apos;S IN AUSTIN?
             </h3>
             <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-              Get Fat E's Spicy Mator Mix delivered throughout Austin for your brunch party, wedding bloody mary bar, or special event. Same-day delivery available.
+              Get Fat E&apos;s Spicy Mator Mix delivered throughout Austin for your brunch party, wedding bloody mary bar, or special event. Same-day delivery available.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
+              <Link
                 href="#add-to-cart"
                 className="px-8 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium rounded"
               >
                 ADD TO CART
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/contact"
                 className="px-8 py-3 bg-gray-100 text-gray-900 hover:bg-gray-200 transition-colors tracking-[0.1em] text-sm font-medium rounded"
               >
                 CONTACT US
-              </a>
+              </Link>
             </div>
           </div>
         </div>
