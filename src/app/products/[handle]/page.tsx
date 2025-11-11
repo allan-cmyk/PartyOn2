@@ -5,6 +5,11 @@ import { PRODUCT_BY_HANDLE_QUERY } from '@/lib/shopify/queries/products';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import ProductDetailClient from '@/components/products/ProductDetailClient';
 import SneebergFAQ from '@/components/products/SneebergFAQ';
+import FatEsMatorMixFAQ from '@/components/products/FatEsMatorMixFAQ';
+import MillerLiteKegFAQ from '@/components/products/MillerLiteKegFAQ';
+import PinthouseElectricJellyfishFAQ from '@/components/products/PinthouseElectricJellyfishFAQ';
+import CoronaExtraKegFAQ from '@/components/products/CoronaExtraKegFAQ';
+import BorrascaBrutCavaFAQ from '@/components/products/BorrascaBrutCavaFAQ';
 import ProductBreadcrumbs from '@/components/products/ProductBreadcrumbs';
 import { formatPrice } from '@/lib/shopify/utils';
 
@@ -54,6 +59,121 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const isSchneebergProduct = handle.toLowerCase().includes('schneeberg') ||
                                handle.toLowerCase().includes('poschl') ||
                                handle.toLowerCase().includes('weiss');
+
+  // Miller Lite Keg - High-traffic product optimization
+  if (handle === 'miller-lite-keg') {
+    return {
+      title: 'Miller Lite Keg Austin | 1/2 Barrel (15.5 gal) | Party On Delivery',
+      description: 'Miller Lite keg delivery in Austin. 1/2 barrel serves 165 drinks. Perfect for parties, weddings, tailgates. Same-day Austin delivery available. Order now!',
+      keywords: 'miller lite keg, miller lite keg austin, miller lite keg delivery, beer keg austin, half barrel keg, party keg delivery austin, wedding keg austin',
+      openGraph: {
+        title: 'Miller Lite Keg Austin | 1/2 Barrel Keg Delivery',
+        description: 'Miller Lite 1/2 barrel keg delivered throughout Austin. Serves 165 drinks. Perfect for weddings, corporate events, and parties.',
+        type: 'website',
+        url: `https://partyondelivery.com/products/${handle}`,
+        images: [{ url: image, width: 1200, height: 1200, alt: 'Miller Lite half barrel keg for Austin parties and events' }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Miller Lite Keg Austin | Party Keg Delivery',
+        description: 'Miller Lite keg delivery in Austin. 165 servings. Perfect for weddings and parties.',
+        images: [image],
+      },
+      alternates: { canonical: `/products/${handle}` },
+    };
+  }
+
+  // Pinthouse Electric Jellyfish - High-traffic product optimization
+  if (handle === 'pinthouse-electric-jellyfish-16oz-4-pack-can') {
+    return {
+      title: 'Pinthouse Electric Jellyfish IPA Austin | 16oz 4-Pack | Local Delivery',
+      description: 'Buy Pinthouse Electric Jellyfish IPA in Austin. Award-winning local IPA. 16oz 4-pack cans delivered throughout Austin. Support local breweries. Order today!',
+      keywords: 'electric jellyfish beer, pinthouse beer, pinthouse electric jellyfish, austin ipa, local austin beer, craft beer austin delivery, pinthouse brewery',
+      openGraph: {
+        title: 'Pinthouse Electric Jellyfish IPA | Austin Craft Beer Delivery',
+        description: 'Award-winning Pinthouse Electric Jellyfish IPA delivered in Austin. Support local Austin breweries with fast delivery.',
+        type: 'website',
+        url: `https://partyondelivery.com/products/${handle}`,
+        images: [{ url: image, width: 1200, height: 1200, alt: 'Pinthouse Electric Jellyfish IPA 16oz 4-pack cans' }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Pinthouse Electric Jellyfish IPA | Austin Beer Delivery',
+        description: 'Award-winning local Austin IPA delivered fast. Support Pinthouse Brewery.',
+        images: [image],
+      },
+      alternates: { canonical: `/products/${handle}` },
+    };
+  }
+
+  // Fat E's Spicy Mator Mix - High-traffic product optimization
+  if (handle === 'fat-es-spicy-mator-mix') {
+    return {
+      title: "Fat E's Spicy Mator Mix Austin | Bloody Mary Mix | Fast Delivery",
+      description: "Fat E's Spicy Mator Mix delivered in Austin. Premium bloody mary mix with bold, spicy flavor. Perfect for brunch, parties, weddings. Order online!",
+      keywords: "fat e bloody mary mix, bloody mary mix austin, spicy bloody mary mix, brunch bloody mary, fat e's mator mix, austin bloody mary delivery",
+      openGraph: {
+        title: "Fat E's Spicy Mator Mix | Premium Bloody Mary Mix Austin",
+        description: "Premium spicy bloody mary mix delivered in Austin. Perfect for brunch parties, weddings, and events.",
+        type: 'website',
+        url: `https://partyondelivery.com/products/${handle}`,
+        images: [{ url: image, width: 1200, height: 1200, alt: "Fat E's Spicy Mator Mix bloody mary mix bottle" }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: "Fat E's Spicy Mator Mix | Bloody Mary Mix Austin",
+        description: 'Bold, spicy bloody mary mix delivered in Austin. Perfect for brunch.',
+        images: [image],
+      },
+      alternates: { canonical: `/products/${handle}` },
+    };
+  }
+
+  // Borrasca Brut Cava - High-traffic product optimization
+  if (handle === 'borrasca-brut-cava') {
+    return {
+      title: 'Borrasca Brut Cava Austin | Spanish Sparkling Wine | Delivered',
+      description: 'Buy Borrasca Brut Cava sparkling wine in Austin. Crisp, dry Spanish cava perfect for celebrations, toasts, weddings. Austin delivery available. Order now!',
+      keywords: 'borrasca cava, brut cava austin, spanish sparkling wine, cava delivery austin, sparkling wine austin, champagne alternative, wedding sparkling wine',
+      openGraph: {
+        title: 'Borrasca Brut Cava | Spanish Sparkling Wine Austin Delivery',
+        description: 'Premium Spanish cava delivered in Austin. Crisp, elegant sparkling wine perfect for weddings and celebrations.',
+        type: 'website',
+        url: `https://partyondelivery.com/products/${handle}`,
+        images: [{ url: image, width: 1200, height: 1200, alt: 'Borrasca Brut Cava Spanish sparkling wine bottle' }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Borrasca Brut Cava | Spanish Sparkling Wine Austin',
+        description: 'Elegant Spanish cava delivered in Austin. Perfect for celebrations.',
+        images: [image],
+      },
+      alternates: { canonical: `/products/${handle}` },
+    };
+  }
+
+  // Corona Extra Keg - High-traffic product optimization
+  if (handle === 'corona-extra-1-2-barrel') {
+    return {
+      title: 'Corona Extra Keg Austin | 1/2 Barrel | Perfect for Parties',
+      description: 'Corona Extra keg delivery in Austin. 1/2 barrel serves 165 drinks. Perfect for lake parties, tailgates, weddings. Austin-wide delivery. Order online!',
+      keywords: 'corona keg, corona extra keg austin, corona keg delivery, lake travis keg, beach party keg, corona keg lake travis, austin keg delivery',
+      openGraph: {
+        title: 'Corona Extra Keg Austin | 1/2 Barrel Keg Delivery',
+        description: 'Corona Extra keg delivered in Austin. Perfect for Lake Travis parties, tailgates, and summer events. Serves 165 drinks.',
+        type: 'website',
+        url: `https://partyondelivery.com/products/${handle}`,
+        images: [{ url: image, width: 1200, height: 1200, alt: 'Corona Extra half barrel keg for Austin lake parties' }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Corona Extra Keg Austin | Lake Party Keg Delivery',
+        description: 'Corona keg for Austin lake parties. 165 servings. Summer party ready.',
+        images: [image],
+      },
+      alternates: { canonical: `/products/${handle}` },
+    };
+  }
 
   // Schneeberg-specific optimized metadata
   if (isSchneebergProduct) {
@@ -248,12 +368,15 @@ export default async function ProductDetailPage({ params }: Props) {
       {/* Client Component for Interactive Features */}
       <ProductDetailClient product={product} />
 
+      {/* Product-specific FAQ sections for high-traffic products */}
+      {handle === 'fat-es-spicy-mator-mix' && <FatEsMatorMixFAQ />}
+      {handle === 'miller-lite-keg' && <MillerLiteKegFAQ />}
+      {handle === 'pinthouse-electric-jellyfish-16oz-4-pack-can' && <PinthouseElectricJellyfishFAQ />}
+      {handle === 'corona-extra-1-2-barrel' && <CoronaExtraKegFAQ />}
+      {handle === 'borrasca-brut-cava' && <BorrascaBrutCavaFAQ />}
+
       {/* Schneeberg-specific SEO content */}
-      {isSchneebergProduct && (
-        <>
-          <SneebergFAQ />
-        </>
-      )}
+      {isSchneebergProduct && <SneebergFAQ />}
     </>
   );
 }
