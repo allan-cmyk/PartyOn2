@@ -82,53 +82,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Top Picks Grid */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-8">
-          <ScrollRevealCSS duration={800} y={30}>
-            <div className="text-center mb-16">
-              <h2 className="font-serif text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
-                Top Picks (2-minute order)
-              </h2>
-              <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
-              <p className="text-gray-600">Change quantities at checkout</p>
-            </div>
-          </ScrollRevealCSS>
+      {/*
+        TODO: RESTORE THIS SECTION AROUND FEBRUARY 10, 2025 (2 weeks from removal)
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
-            {[
-              { title: 'Party Packs', desc: 'Pre-curated bundles for 10-50 guests' },
-              { title: 'Premium Spirits', desc: 'Tito\'s, Don Julio, top-shelf favorites' },
-              { title: 'Craft Beer', desc: 'Local Austin breweries + crowd favorites' },
-              { title: 'Wine Selection', desc: 'Prosecco, rosé, reds for every occasion' },
-              { title: 'Cocktail Kits', desc: 'Everything for margaritas, old fashioned, signatures' },
-              { title: 'Ice & Disposables', desc: 'Cups, napkins, stirrers, coolers' },
-              { title: 'Coolers & Gear', desc: 'Keep drinks cold all day long' },
-              { title: 'Party Essentials', desc: 'Complete setup packages' }
-            ].map((item, index) => (
-              <ScrollRevealCSS key={item.title} duration={800} delay={index * 100} y={20}>
-                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200 hover:shadow-lg transition-all hover:-translate-y-1">
-                  <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
-                    {item.title}
-                  </h3>
-                  <p className="text-gray-600 text-sm mb-6">
-                    {item.desc}
-                  </p>
-                  <button className="w-full px-4 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors text-sm tracking-[0.1em]">
-                    ADD TO CART
-                  </button>
-                </div>
-              </ScrollRevealCSS>
-            ))}
-          </div>
+        "Top Picks (2-minute order)" section was temporarily removed on January 27, 2025
+        This section includes:
+        - Party Packs, Premium Spirits, Craft Beer, Wine Selection
+        - Cocktail Kits, Ice & Disposables, Coolers & Gear, Party Essentials
 
-          <div className="text-center">
-            <Link href="/products" className="text-gold-600 hover:text-gold-700 tracking-[0.1em] text-sm transition-colors">
-              See all best sellers →
-            </Link>
-          </div>
-        </div>
-      </section>
+        TO RESTORE: git show HEAD~1:src/app/page.tsx and copy lines 85-131
+      */}
 
       {/* Why Austin Books Party On */}
       <section id="experience" className="py-24 bg-gray-50">
