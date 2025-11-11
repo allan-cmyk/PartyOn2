@@ -79,7 +79,6 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
   }
 
   const services = [
-    { href: '/austin-alcohol-delivery', label: 'ALCOHOL DELIVERY' },
     { href: '/weddings', label: 'WEDDINGS' },
     { href: '/boat-parties', label: 'BOAT PARTIES' },
     { href: '/bach-parties', label: 'CELEBRATIONS' },
