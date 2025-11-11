@@ -198,7 +198,7 @@ Total estimated drinks: ${results.totalDrinks}`;
               onClick={() => setDrinkingLevel(level)}
               className={`px-4 py-2 rounded-md font-medium transition-colors ${
                 drinkingLevel === level
-                  ? 'bg-gold-500 text-white'
+                  ? 'bg-gold-500 text-gray-900'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
@@ -368,7 +368,7 @@ Total estimated drinks: ${results.totalDrinks}`;
         <div className="flex flex-col sm:flex-row gap-3">
           <button
             onClick={handleAddToQuote}
-            className="flex-1 bg-gold-500 text-white px-6 py-3 rounded-md hover:bg-gold-600 transition-colors font-medium tracking-[0.05em]"
+            className="flex-1 bg-gold-500 text-gray-900 px-6 py-3 rounded-md hover:bg-gold-600 transition-colors font-medium tracking-[0.05em]"
           >
             Add to Quote Request
           </button>

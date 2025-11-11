@@ -91,7 +91,7 @@ export default function HeroSection() {
         {/* Primary CTAs */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/products">
-            <button className="px-10 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-all duration-300 tracking-[0.15em] text-sm">
+            <button className="px-10 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-all duration-300 tracking-[0.15em] text-sm">
               ORDER NOW
             </button>
           </Link>

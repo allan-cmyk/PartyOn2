@@ -87,7 +87,7 @@ export default function AustinAlcoholDeliveryPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center scroll-reveal">
               <Link
                 href="/products"
-                className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium rounded"
+                className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium rounded"
               >
                 SHOP NOW
               </Link>
@@ -355,7 +355,7 @@ export default function AustinAlcoholDeliveryPage() {
                 }
               ].map((step, index) => (
                 <div key={index} className="text-center scroll-reveal">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gold-600 text-white font-serif text-2xl mb-6">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gold-600 text-gray-900 font-serif text-2xl mb-6">
                     {step.number}
                   </div>
                   <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
@@ -406,7 +406,7 @@ export default function AustinAlcoholDeliveryPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center scroll-reveal">
               <Link
                 href="/products"
-                className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium rounded"
+                className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium rounded"
               >
                 SHOP NOW
               </Link>

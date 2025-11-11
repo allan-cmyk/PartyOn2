@@ -65,7 +65,7 @@ export default function OrderHistoryPage() {
           <p className="text-gray-600 mb-8">Please sign in to view your order history</p>
           <button
             onClick={() => setIsAuthOpen(true)}
-            className="px-8 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em]"
+            className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em]"
           >
             SIGN IN TO CONTINUE
           </button>
@@ -88,7 +88,7 @@ export default function OrderHistoryPage() {
             <p className="text-gray-600 mb-6">Start shopping to see your orders appear here</p>
             <Link 
               href="/products"
-              className="inline-block px-8 py-3 bg-gold-600 text-white text-sm tracking-[0.1em] hover:bg-gold-700 transition-colors rounded"
+              className="inline-block px-8 py-3 bg-gold-600 text-gray-900 text-sm tracking-[0.1em] hover:bg-gold-700 transition-colors rounded"
             >
               BROWSE PRODUCTS
             </Link>

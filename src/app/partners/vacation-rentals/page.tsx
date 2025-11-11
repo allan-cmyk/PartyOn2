@@ -98,7 +98,7 @@ export default function VacationRentalsPartnerPage() {
             {/* Cart button */}
             <Link
               href="/checkout"
-              className="flex items-center gap-2 px-4 py-2 bg-gold-600 text-white hover:bg-gold-700 transition-colors rounded-lg"
+              className="flex items-center gap-2 px-4 py-2 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors rounded-lg"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -131,7 +131,7 @@ export default function VacationRentalsPartnerPage() {
           <div className="flex gap-4 justify-center">
             <Link
               href="#packages"
-              className="px-8 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-all duration-300 tracking-wider"
+              className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-all duration-300 tracking-wider"
             >
               BROWSE PACKAGES
             </Link>
@@ -232,7 +232,7 @@ export default function VacationRentalsPartnerPage() {
                           <span className="font-serif text-lg text-gray-900">{product.price}</span>
                           <button
                             onClick={() => handleQuickAdd(product.id, product.title)}
-                            className="px-4 py-2 bg-gold-600 text-white text-sm hover:bg-gold-700 transition-colors rounded"
+                            className="px-4 py-2 bg-gold-600 text-gray-900 text-sm hover:bg-gold-700 transition-colors rounded"
                           >
                             ADD
                           </button>
@@ -270,7 +270,7 @@ export default function VacationRentalsPartnerPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/products"
-              className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-wider font-medium"
+              className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-wider font-medium"
             >
               SHOP ALL PRODUCTS
             </Link>

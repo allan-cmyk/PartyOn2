@@ -95,7 +95,7 @@ export default function BlogPage() {
               />
               <button
                 type="submit"
-                className="px-8 py-3 bg-gold-500 text-white hover:bg-gold-600 transition-colors tracking-[0.1em] disabled:opacity-50"
+                className="px-8 py-3 bg-gold-500 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.1em] disabled:opacity-50"
                 disabled={loading}
               >
                 {loading ? 'SUBSCRIBING...' : 'SUBSCRIBE'}
@@ -155,7 +155,7 @@ export default function BlogPage() {
                       <p className="text-gray-600 mb-4 line-clamp-3">
                         {post.excerpt}
                       </p>
-                      <span className="inline-block mt-2 px-4 py-2 border border-gold-500 text-gold-600 group-hover:bg-gold-600 group-hover:text-white font-medium text-sm tracking-[0.1em] transition-all">
+                      <span className="inline-block mt-2 px-4 py-2 border border-gold-500 text-gold-600 group-hover:bg-gold-600 group-hover:text-gray-900 font-medium text-sm tracking-[0.1em] transition-all">
                         READ MORE →
                       </span>
                     </div>
@@ -198,7 +198,7 @@ export default function BlogPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/order">
-              <button className="px-8 py-3 bg-gold-500 text-white hover:bg-gold-600 transition-colors tracking-[0.15em]">
+              <button className="px-8 py-3 bg-gold-500 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.15em]">
                 ORDER NOW
               </button>
             </Link>

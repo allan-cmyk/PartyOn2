@@ -161,7 +161,7 @@ export default function OrderPage() {
                   <h3 className="font-medium text-lg mb-2 tracking-[0.1em]">QUICK ORDER</h3>
                   <p className="text-gray-600 text-sm mb-4">Know what you want? Jump straight to shopping</p>
                   <Link href="/products">
-                    <button className="px-6 py-2 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white font-semibold text-sm tracking-[0.1em] transition-all">
+                    <button className="px-6 py-2 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 font-semibold text-sm tracking-[0.1em] transition-all">
                       SHOP NOW →
                     </button>
                   </Link>
@@ -180,7 +180,7 @@ export default function OrderPage() {
                   <p className="text-gray-600 text-sm mb-4">Get personalized recommendations for your event</p>
                   <button
                     onClick={() => setIsConciergeOpen(true)}
-                    className="px-6 py-2 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white font-semibold text-sm tracking-[0.1em] transition-all"
+                    className="px-6 py-2 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 font-semibold text-sm tracking-[0.1em] transition-all"
                   >
                     START CHAT →
                   </button>
@@ -197,7 +197,7 @@ export default function OrderPage() {
                   </svg>
                   <h3 className="font-medium text-lg mb-2 tracking-[0.1em]">EVENT PACKAGES</h3>
                   <p className="text-gray-600 text-sm mb-4">Explore curated packages for every occasion</p>
-                  <a href="#packages" className="inline-block px-6 py-2 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white font-semibold text-sm tracking-[0.1em] transition-all">
+                  <a href="#packages" className="inline-block px-6 py-2 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 font-semibold text-sm tracking-[0.1em] transition-all">
                     VIEW PACKAGES →
                   </a>
                 </div>
@@ -273,7 +273,7 @@ export default function OrderPage() {
 
                   {/* CTA */}
                   <Link href={event.link}>
-                    <button className="w-full py-3 bg-gold-500 text-white hover:bg-gold-600 transition-colors tracking-[0.15em] text-sm">
+                    <button className="w-full py-3 bg-gold-500 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.15em] text-sm">
                       EXPLORE {event.title.toUpperCase()}
                     </button>
                   </Link>
@@ -324,7 +324,7 @@ export default function OrderPage() {
                 duration={600}
                 className="text-center"
               >
-                <div className="w-12 h-12 bg-gold-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 font-serif text-lg">
+                <div className="w-12 h-12 bg-gold-500 text-gray-900 rounded-full flex items-center justify-center mx-auto mb-4 font-serif text-lg">
                   {item.step}
                 </div>
                 <h3 className="font-medium text-gray-900 mb-2 tracking-[0.1em]">

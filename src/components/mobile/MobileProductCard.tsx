@@ -158,7 +158,7 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
                   className={`w-full py-3 rounded-lg text-sm font-medium tracking-[0.1em] transition-colors ${
                     isAdding || cartLoading
                       ? 'bg-gray-300 text-gray-500'
-                      : 'bg-gold-600 text-white active:bg-gold-700'
+                      : 'bg-gold-600 text-gray-900 active:bg-gold-700 active:text-gray-900'
                   }`}
                 >
                   {isAdding || cartLoading ? 'ADDING...' : 'ADD TO CART'}

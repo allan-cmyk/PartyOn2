@@ -326,7 +326,7 @@ export default function BoatPartyPackagePage() {
             <button
               onClick={handleAddAllToCart}
               disabled={packageItems.length === 0 || addingAll || cartLoading}
-              className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm disabled:opacity-50"
+              className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm disabled:opacity-50"
             >
               {addingAll ? 'ADDING TO CART...' : 'ADD ALL TO CART'}
             </button>
@@ -461,7 +461,7 @@ export default function BoatPartyPackagePage() {
             <button
               onClick={handleAddAllToCart}
               disabled={packageItems.length === 0 || addingAll || cartLoading}
-              className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm disabled:opacity-50"
+              className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm disabled:opacity-50"
             >
               {addingAll ? 'ADDING TO CART...' : 'ADD PACKAGE TO CART'}
             </button>

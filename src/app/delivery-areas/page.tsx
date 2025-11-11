@@ -136,8 +136,8 @@ export default function DeliveryAreasPage() {
                 onClick={() => setActiveArea(key)}
                 className={`px-6 py-3 tracking-[0.1em] text-sm transition-all duration-300 ${
                   activeArea === key
-                    ? 'bg-gold-600 text-white'
-                    : 'border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white'
+                    ? 'bg-gold-600 text-gray-900'
+                    : 'border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900'
                 }`}
               >
                 {area.name.toUpperCase()}
@@ -283,12 +283,12 @@ export default function DeliveryAreasPage() {
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link href="/contact">
-                <button className="px-10 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
                   CHECK AVAILABILITY
                 </button>
               </Link>
               <a href="tel:7373719700">
-                <button className="px-10 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
                   CALL FOR DETAILS
                 </button>
               </a>

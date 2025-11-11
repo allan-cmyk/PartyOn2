@@ -200,12 +200,12 @@ export default function FAQsPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/contact">
-                <button className="px-8 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
+                <button className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
                   CONTACT US
                 </button>
               </Link>
               <a href="tel:7373719700">
-                <button className="px-8 py-3 border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-colors tracking-[0.15em] text-sm">
+                <button className="px-8 py-3 border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-colors tracking-[0.15em] text-sm">
                   CALL (737) 371-9700
                 </button>
               </a>

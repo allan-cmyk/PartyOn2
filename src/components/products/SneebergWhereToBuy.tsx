@@ -119,7 +119,7 @@ export default function SneebergWhereToBuy() {
             Ready to order Schneeberg snuff for delivery in Austin?
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium rounded">
+            <button className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium rounded">
               ADD TO CART
             </button>
             <Link

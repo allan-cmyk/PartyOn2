@@ -92,7 +92,7 @@ function CheckoutSuccessContent() {
             {isAuthenticated ? (
               <Link 
                 href="/account/orders"
-                className="inline-block px-8 py-3 bg-gold text-white text-sm tracking-[0.15em] hover:bg-gold/90 transition-colors"
+                className="inline-block px-8 py-3 bg-gold text-gray-900 text-sm tracking-[0.15em] hover:bg-gold/90 transition-colors"
               >
                 VIEW ORDER DETAILS
               </Link>
@@ -103,7 +103,7 @@ function CheckoutSuccessContent() {
                 </p>
                 <Link 
                   href="/account"
-                  className="inline-block px-8 py-3 bg-gold text-white text-sm tracking-[0.15em] hover:bg-gold/90 transition-colors"
+                  className="inline-block px-8 py-3 bg-gold text-gray-900 text-sm tracking-[0.15em] hover:bg-gold/90 transition-colors"
                 >
                   CREATE ACCOUNT
                 </Link>

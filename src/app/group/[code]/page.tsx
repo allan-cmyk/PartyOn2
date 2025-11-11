@@ -198,7 +198,7 @@ export default function GroupOrderLandingPage() {
                   <button
                     onClick={handleJoinOrder}
                     disabled={isJoining}
-                    className="w-full bg-gold-500 text-white py-4 tracking-[0.15em] hover:bg-gold-600 transition-colors disabled:opacity-50"
+                    className="w-full bg-gold-500 text-gray-900 py-4 tracking-[0.15em] hover:bg-gold-600 transition-colors disabled:opacity-50"
                   >
                     {isJoining ? 'JOINING...' : 'JOIN THIS ORDER'}
                   </button>

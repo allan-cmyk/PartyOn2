@@ -168,7 +168,7 @@ export default function BachPartiesProductsPage() {
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">Cart ({cart?.totalQuantity || 0})</span>
               <Link href="/checkout">
-                <button className="px-4 py-2 bg-gold-600 text-white text-sm hover:bg-gold-700 transition-colors">
+                <button className="px-4 py-2 bg-gold-600 text-gray-900 text-sm hover:bg-gold-700 transition-colors">
                   CHECKOUT
                 </button>
               </Link>
@@ -222,7 +222,7 @@ export default function BachPartiesProductsPage() {
                         className={`px-4 py-2 text-sm font-medium transition-all ${
                           addingToCart[product.id]
                             ? 'bg-green-600 text-white'
-                            : 'bg-gold-600 text-white hover:bg-gold-700'
+                            : 'bg-gold-600 text-gray-900 hover:bg-gold-700'
                         }`}
                       >
                         {addingToCart[product.id] ? 'ADDED!' : 'ADD TO CART'}
@@ -247,7 +247,7 @@ export default function BachPartiesProductsPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/contact">
-              <button className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] font-medium">
+              <button className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] font-medium">
                 GET PARTY QUOTE
               </button>
             </Link>

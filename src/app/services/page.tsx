@@ -132,12 +132,12 @@ export default function ServicesPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/order">
-              <button className="px-8 py-3 bg-gold-600 text-white tracking-[0.1em] hover:bg-gold-700 transition-colors">
+              <button className="px-8 py-3 bg-gold-600 text-gray-900 tracking-[0.1em] hover:bg-gold-700 transition-colors">
                 BOOK NOW
               </button>
             </Link>
             <Link href="/contact">
-              <button className="px-8 py-3 border-2 border-gold-600 text-gold-600 tracking-[0.1em] hover:bg-gold-600 hover:text-white transition-colors">
+              <button className="px-8 py-3 border-2 border-gold-600 text-gold-600 tracking-[0.1em] hover:bg-gold-600 hover:text-gray-900 transition-colors">
                 CONTACT US
               </button>
             </Link>

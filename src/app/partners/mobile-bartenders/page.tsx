@@ -476,7 +476,7 @@ Source: ${formData.source}`,
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button
               onClick={scrollToForm}
-              className="bg-gold-600 text-white px-10 py-4 text-lg tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium"
+              className="bg-gold-600 text-gray-900 px-10 py-4 text-lg tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium"
             >
               APPLY TO PARTNER
             </button>
@@ -735,7 +735,7 @@ Source: ${formData.source}`,
             </p>
             <button
               onClick={scrollToForm}
-              className="bg-gold-600 text-white px-10 py-4 text-lg tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium"
+              className="bg-gold-600 text-gray-900 px-10 py-4 text-lg tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium"
             >
               BECOME A PARTNER
             </button>
@@ -1053,7 +1053,7 @@ Source: ${formData.source}`,
               className={`w-full px-8 py-4 transition-colors tracking-[0.15em] text-sm font-medium ${
                 isSubmitting
                   ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
-                  : 'bg-gold-600 text-white hover:bg-gold-700'
+                  : 'bg-gold-600 text-gray-900 hover:bg-gold-700'
               }`}
             >
               {isSubmitting ? 'SUBMITTING...' : 'SUBMIT APPLICATION'}
@@ -1108,7 +1108,7 @@ Source: ${formData.source}`,
             </p>
             <button
               onClick={scrollToForm}
-              className="bg-gold-600 text-white px-12 py-5 text-lg tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium"
+              className="bg-gold-600 text-gray-900 px-12 py-5 text-lg tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium"
             >
               APPLY TO PARTNER NOW
             </button>

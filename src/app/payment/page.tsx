@@ -174,7 +174,7 @@ export default function PaymentPage() {
               </div>
               <div className="w-16 h-px bg-gray-300 mx-4" />
               <div className="flex items-center">
-                <div className="w-8 h-8 bg-gold-600 rounded-full flex items-center justify-center text-white text-sm">
+                <div className="w-8 h-8 bg-gold-600 rounded-full flex items-center justify-center text-gray-900 text-sm">
                   3
                 </div>
                 <span className="ml-3 text-gray-900 font-medium tracking-[0.1em] text-sm">PAYMENT</span>
@@ -284,7 +284,7 @@ export default function PaymentPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <span className="flex items-center justify-center">

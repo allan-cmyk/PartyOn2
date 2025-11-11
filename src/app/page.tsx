@@ -42,7 +42,7 @@ export default function HomePage() {
                   </li>
                 </ul>
                 <Link href="/products">
-                  <button className="w-full px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
+                  <button className="w-full px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
                     SHOP BEST SELLERS
                   </button>
                 </Link>
@@ -66,7 +66,7 @@ export default function HomePage() {
                   </li>
                 </ul>
                 <Link href="/contact">
-                  <button className="w-full px-8 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
+                  <button className="w-full px-8 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
                     GET HELP
                   </button>
                 </Link>
@@ -114,7 +114,7 @@ export default function HomePage() {
                   <p className="text-gray-600 text-sm mb-6">
                     {item.desc}
                   </p>
-                  <button className="w-full px-4 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors text-sm tracking-[0.1em]">
+                  <button className="w-full px-4 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors text-sm tracking-[0.1em]">
                     ADD TO CART
                   </button>
                 </div>
@@ -241,12 +241,12 @@ export default function HomePage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link href="/weddings">
-                  <button className="px-6 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm">
+                  <button className="px-6 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm">
                     EXPLORE PACKAGES
                   </button>
                 </Link>
                 <Link href="/order">
-                  <button className="px-6 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.1em] text-sm">
+                  <button className="px-6 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.1em] text-sm">
                     PLAN MY WEDDING
                   </button>
                 </Link>
@@ -267,12 +267,12 @@ export default function HomePage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link href="/boat-parties">
-                  <button className="px-6 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm">
+                  <button className="px-6 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm">
                     ORDER LAKE DAY ESSENTIALS
                   </button>
                 </Link>
                 <Link href="/order">
-                  <button className="px-6 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.1em] text-sm">
+                  <button className="px-6 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.1em] text-sm">
                     PLAN A YACHT BAR
                   </button>
                 </Link>
@@ -317,12 +317,12 @@ export default function HomePage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link href="/corporate">
-                  <button className="px-6 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm">
+                  <button className="px-6 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm">
                     ORDER OFFICE BAR
                   </button>
                 </Link>
                 <Link href="/order">
-                  <button className="px-6 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.1em] text-sm">
+                  <button className="px-6 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.1em] text-sm">
                     BOOK A CORPORATE CONSULT
                   </button>
                 </Link>
@@ -476,7 +476,7 @@ export default function HomePage() {
             ].map((item, index) => (
               <ScrollRevealCSS key={item.step} duration={800} delay={index * 100} y={30}>
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-gold-600 text-white rounded-full flex items-center justify-center text-xl font-light mx-auto mb-6">
+                  <div className="w-16 h-16 bg-gold-600 text-gray-900 rounded-full flex items-center justify-center text-xl font-light mx-auto mb-6">
                     {item.step}
                   </div>
                   <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
@@ -606,12 +606,12 @@ export default function HomePage() {
               </p>
               <div className="flex flex-col md:flex-row gap-6 justify-center">
                 <Link href="/products">
-                  <button className="px-10 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
+                  <button className="px-10 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
                     ORDER NOW
                   </button>
                 </Link>
                 <Link href="/order">
-                  <button className="px-10 py-4 border-2 border-gold-600 text-white hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
+                  <button className="px-10 py-4 border-2 border-gold-600 text-white hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
                     PLAN MY EVENT
                   </button>
                 </Link>

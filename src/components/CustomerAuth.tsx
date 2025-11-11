@@ -235,7 +235,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gray-900 text-white py-3 rounded-lg hover:bg-gold-500 hover:text-white transition-all disabled:opacity-50 tracking-[0.1em] border border-gray-900"
+                  className="w-full bg-gray-900 text-white py-3 rounded-lg hover:bg-gold-500 hover:text-gray-900 transition-all disabled:opacity-50 tracking-[0.1em] border border-gray-900"
                 >
                   {loading ? 'Processing...' : (
                     <>

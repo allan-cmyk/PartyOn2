@@ -183,7 +183,7 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
                 <Link
                   href={`/products?search=${encodeURIComponent(searchTerm)}`}
                   onClick={handleClose}
-                  className="block text-center py-3 px-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
+                  className="block text-center py-3 px-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
                 >
                   VIEW ALL {results.length} RESULTS
                 </Link>

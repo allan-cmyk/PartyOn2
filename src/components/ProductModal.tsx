@@ -265,7 +265,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                   disabled={!variant?.availableForSale || isAdding || cartLoading}
                   className={`w-full py-3 transition-colors duration-300 text-sm tracking-[0.15em] ${
                     variant?.availableForSale && !isAdding && !cartLoading
-                      ? 'bg-gold-600 text-white hover:bg-gold-700'
+                      ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
                       : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                   }`}
                 >

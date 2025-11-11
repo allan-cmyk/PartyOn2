@@ -232,7 +232,7 @@ export default function CorporateEventCalculator() {
                 onClick={() => setChampagneToast(true)}
                 className={`px-6 py-2 rounded-md transition-all ${
                   champagneToast
-                    ? 'bg-gold-600 text-white'
+                    ? 'bg-gold-600 text-gray-900'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
@@ -242,7 +242,7 @@ export default function CorporateEventCalculator() {
                 onClick={() => setChampagneToast(false)}
                 className={`px-6 py-2 rounded-md transition-all ${
                   !champagneToast
-                    ? 'bg-gold-600 text-white'
+                    ? 'bg-gold-600 text-gray-900'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
@@ -266,7 +266,7 @@ export default function CorporateEventCalculator() {
                   <button
                     onClick={() => setLiquorLocked(!liquorLocked)}
                     className={`p-1 rounded transition-colors ${
-                      liquorLocked ? 'bg-gold-600 text-white' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                      liquorLocked ? 'bg-gold-600 text-gray-900' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                     }`}
                     title={liquorLocked ? 'Unlock' : 'Lock'}
                   >
@@ -302,7 +302,7 @@ export default function CorporateEventCalculator() {
                   <button
                     onClick={() => setWineLocked(!wineLocked)}
                     className={`p-1 rounded transition-colors ${
-                      wineLocked ? 'bg-gold-600 text-white' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                      wineLocked ? 'bg-gold-600 text-gray-900' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                     }`}
                     title={wineLocked ? 'Unlock' : 'Lock'}
                   >
@@ -338,7 +338,7 @@ export default function CorporateEventCalculator() {
                   <button
                     onClick={() => setBeerLocked(!beerLocked)}
                     className={`p-1 rounded transition-colors ${
-                      beerLocked ? 'bg-gold-600 text-white' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                      beerLocked ? 'bg-gold-600 text-gray-900' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                     }`}
                     title={beerLocked ? 'Unlock' : 'Lock'}
                   >
@@ -519,7 +519,7 @@ export default function CorporateEventCalculator() {
             </p>
             <Link
               href="/contact"
-              className="inline-block px-6 py-3 bg-gold-600 text-white rounded-md hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
+              className="inline-block px-6 py-3 bg-gold-600 text-gray-900 rounded-md hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
             >
               Get a Custom Quote
             </Link>

@@ -126,7 +126,7 @@ export default function AddressesPage() {
           <p className="text-gray-600 mb-8">Please sign in to manage your addresses</p>
           <button
             onClick={() => setIsAuthOpen(true)}
-            className="px-8 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em]"
+            className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em]"
           >
             SIGN IN TO CONTINUE
           </button>
@@ -226,7 +226,7 @@ export default function AddressesPage() {
                 <div className="flex gap-2">
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-gold-600 text-white text-sm hover:bg-gold-700 transition-colors tracking-[0.1em] rounded"
+                    className="px-4 py-2 bg-gold-600 text-gray-900 text-sm hover:bg-gold-700 transition-colors tracking-[0.1em] rounded"
                   >
                     SAVE
                   </button>
@@ -327,7 +327,7 @@ export default function AddressesPage() {
               <div className="flex gap-2">
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-gold-600 text-white text-sm hover:bg-gold-700 transition-colors tracking-[0.1em] rounded"
+                  className="px-4 py-2 bg-gold-600 text-gray-900 text-sm hover:bg-gold-700 transition-colors tracking-[0.1em] rounded"
                 >
                   SAVE ADDRESS
                 </button>

@@ -24,7 +24,7 @@ export default function CartButton({ isScrolled = true }: CartButtonProps) {
       {/* Item Count Badge - CSS animation instead of Framer Motion */}
       {itemCount > 0 && (
         <span
-          className="absolute -top-1 -right-1 bg-gold-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium animate-[scale-in_0.2s_ease-out]"
+          className="absolute -top-1 -right-1 bg-gold-600 text-gray-900 text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium animate-[scale-in_0.2s_ease-out]"
           style={{
             animation: 'scale-in 0.2s ease-out'
           }}

@@ -241,7 +241,7 @@ function ProductsContent() {
           {!isAgeVerified && (
             <button
               onClick={handleUnlock}
-              className="inline-flex items-center gap-3 px-8 py-4 bg-gold-600 hover:bg-gold-700 text-white font-medium tracking-[0.15em] transition-all duration-300 group"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gold-600 hover:bg-gold-700 text-gray-900 font-medium tracking-[0.15em] transition-all duration-300 group"
               style={{ animationDelay: '500ms' }}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -381,7 +381,7 @@ function ProductsContent() {
                 }}
                 className={`px-3 py-1.5 text-xs tracking-[0.05em] rounded-full border transition-all ${
                   selectedTags.includes(tag)
-                    ? 'bg-gold-600 text-white border-gold-600'
+                    ? 'bg-gold-600 text-gray-900 border-gold-600'
                     : 'bg-white text-gray-700 border-gray-300 hover:border-gold-400'
                 }`}
               >

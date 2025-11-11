@@ -201,7 +201,7 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
               <Link href="/order">
                 <button className={`px-8 py-3 text-sm tracking-[0.15em] border transition-all duration-300 ${
                   isScrolled 
-                    ? 'border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white' 
+                    ? 'border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900' 
                     : 'border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-gray-900'
                 }`}>
                   ORDER NOW
@@ -293,7 +293,7 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
             </Link>
 
             <Link href="/order" onClick={() => setIsMenuOpen(false)}>
-              <button className="w-full mt-8 px-8 py-4 text-sm tracking-[0.15em] border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300">
+              <button className="w-full mt-8 px-8 py-4 text-sm tracking-[0.15em] border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all duration-300">
                 ORDER NOW
               </button>
             </Link>

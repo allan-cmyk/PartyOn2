@@ -269,7 +269,7 @@ export default function WeddingsPage() {
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
             <Link href="/order">
-              <button className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
                 ORDER NOW
               </button>
             </Link>
@@ -335,7 +335,7 @@ export default function WeddingsPage() {
                 </li>
               </ul>
               <Link href="/products">
-                <button className="w-full py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="w-full py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
                   ORDER NOW
                 </button>
               </Link>
@@ -370,7 +370,7 @@ export default function WeddingsPage() {
                 </li>
               </ul>
               <Link href="/contact">
-                <button className="w-full py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="w-full py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
                   SCHEDULE A CONSULTATION
                 </button>
               </Link>
@@ -510,8 +510,8 @@ export default function WeddingsPage() {
                   <Link href="/contact">
                     <button className={`w-full py-3 tracking-[0.15em] text-sm transition-all duration-300 ${
                       pkg.featured
-                        ? 'bg-gold-600 text-white hover:bg-gold-700'
-                        : 'border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white'
+                        ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
+                        : 'border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900'
                     }`}>
                       PLAN THIS PACKAGE (CONSULTATION)
                     </button>
@@ -527,7 +527,7 @@ export default function WeddingsPage() {
               <strong>Just need delivery?</strong> Build your cart in minutes and we&apos;ll coordinate drop-off with your venue.
             </p>
             <Link href="/order">
-              <button className="px-8 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
                 ORDER DELIVERY-ONLY
               </button>
             </Link>
@@ -735,7 +735,7 @@ export default function WeddingsPage() {
                 </div>
                 <div className="flex gap-2">
                   <Link href="/order">
-                    <button className="px-4 py-2 bg-gold-600 text-white text-xs tracking-[0.1em] font-medium">
+                    <button className="px-4 py-2 bg-gold-600 text-gray-900 text-xs tracking-[0.1em] font-medium">
                       ORDER NOW
                     </button>
                   </Link>

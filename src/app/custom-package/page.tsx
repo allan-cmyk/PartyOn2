@@ -227,7 +227,7 @@ export default function CustomPackagePage() {
                         <button
                           onClick={() => handleAddToCart(product, match.item.quantity)}
                           disabled={addingToCart === product.id || cartLoading}
-                          className="w-full py-2 bg-gold-600 text-white text-sm hover:bg-gold-700 transition-colors tracking-[0.1em] disabled:opacity-50"
+                          className="w-full py-2 bg-gold-600 text-gray-900 text-sm hover:bg-gold-700 transition-colors tracking-[0.1em] disabled:opacity-50"
                         >
                           {addingToCart === product.id ? 'ADDING...' : `ADD ${match.item.quantity} TO CART`}
                         </button>
@@ -259,7 +259,7 @@ export default function CustomPackagePage() {
               BACK TO CHAT
             </button>
             <Link href="/products">
-              <button className="px-8 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em]">
+              <button className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em]">
                 BROWSE ALL PRODUCTS
               </button>
             </Link>

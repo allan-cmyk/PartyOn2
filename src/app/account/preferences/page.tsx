@@ -140,7 +140,7 @@ export default function PreferencesPage() {
           <p className="text-gray-600 mb-8">Please sign in to manage your preferences</p>
           <button
             onClick={() => setIsAuthOpen(true)}
-            className="px-8 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em]"
+            className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em]"
           >
             SIGN IN TO CONTINUE
           </button>
@@ -394,7 +394,7 @@ export default function PreferencesPage() {
           <button
             onClick={handleSave}
             disabled={isLoading}
-            className="px-8 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] rounded disabled:opacity-50"
+            className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] rounded disabled:opacity-50"
           >
             {isLoading ? 'SAVING...' : 'SAVE PREFERENCES'}
           </button>
@@ -430,7 +430,7 @@ export default function PreferencesPage() {
                       }
                     }
                   }}
-                  className="flex-1 px-4 py-2 bg-gold-600 text-white hover:bg-gold-700 transition-colors rounded"
+                  className="flex-1 px-4 py-2 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors rounded"
                 >
                   Send Reset Email
                 </button>

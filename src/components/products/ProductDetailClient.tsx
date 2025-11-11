@@ -196,7 +196,7 @@ export default function ProductDetailClient({ product }: Props) {
                   disabled={!selectedVariant?.availableForSale || cartLoading}
                   className={`w-full py-4 transition-all duration-300 tracking-[0.15em] text-sm ${
                     selectedVariant?.availableForSale
-                      ? 'bg-gold-600 text-white hover:bg-gold-700'
+                      ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
                 >

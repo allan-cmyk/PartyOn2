@@ -41,7 +41,7 @@ export default function AccountPage() {
           <p className="text-gray-600 mb-8">Sign in to access your orders, addresses, and preferences</p>
           <button
             onClick={() => setIsAuthOpen(true)}
-            className="px-8 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em]"
+            className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em]"
           >
             SIGN IN TO CONTINUE
           </button>

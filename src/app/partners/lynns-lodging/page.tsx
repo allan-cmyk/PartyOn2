@@ -192,7 +192,7 @@ export default function LynnsLodgingPartnerPage() {
             <ScrollRevealCSS duration={800} delay={100} y={30}>
               <div className="bg-white p-8 shadow-lg hover:shadow-xl transition-shadow relative">
 
-              <div className="absolute -top-3 -right-3 bg-gold-600 text-white px-4 py-1 text-xs tracking-wider">
+              <div className="absolute -top-3 -right-3 bg-gold-600 text-gray-900 px-4 py-1 text-xs tracking-wider">
                 MOST POPULAR
               </div>
               <div className="w-16 h-16 bg-[#fff8ed] rounded-full flex items-center justify-center mb-6">

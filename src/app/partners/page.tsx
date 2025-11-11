@@ -351,7 +351,7 @@ export default function PartnersPage() {
                         <h3 className="font-serif text-2xl mb-3 text-gray-700 tracking-wide">{type.title}</h3>
                         <p className="text-gray-600">{type.description}</p>
                         {type.comingSoon && (
-                          <div className="absolute top-4 right-4 bg-gold-600 text-white text-xs px-3 py-1 tracking-[0.1em]">
+                          <div className="absolute top-4 right-4 bg-gold-600 text-gray-900 text-xs px-3 py-1 tracking-[0.1em]">
                             COMING SOON
                           </div>
                         )}
@@ -663,7 +663,7 @@ export default function PartnersPage() {
               className={`w-full px-8 py-4 transition-colors tracking-[0.15em] text-sm font-medium ${
                 isSubmitting
                   ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
-                  : 'bg-gold-600 text-white hover:bg-gold-700'
+                  : 'bg-gold-600 text-gray-900 hover:bg-gold-700'
               }`}
             >
               {isSubmitting ? 'SUBMITTING...' : 'SUBMIT PARTNERSHIP INQUIRY'}

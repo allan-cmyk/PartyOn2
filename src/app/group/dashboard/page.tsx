@@ -129,7 +129,7 @@ export default function GroupOrderDashboard() {
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowShareModal(true)}
-                  className="px-4 py-2 border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-colors tracking-[0.1em]"
+                  className="px-4 py-2 border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-colors tracking-[0.1em]"
                 >
                   SHARE
                 </button>
@@ -138,7 +138,7 @@ export default function GroupOrderDashboard() {
                   disabled={!minimumMet || isLocking || currentGroupOrder.status !== 'active'}
                   className={`px-6 py-2 tracking-[0.1em] transition-colors ${
                     minimumMet && !isLocking
-                      ? 'bg-gold-600 text-white hover:bg-gold-700'
+                      ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
                 >
@@ -235,7 +235,7 @@ export default function GroupOrderDashboard() {
                 <p className="text-gray-500 mb-4">No participants yet. Share the group order to get started!</p>
                 <button
                   onClick={() => setShowShareModal(true)}
-                  className="bg-gold-600 text-white px-6 py-2 hover:bg-gold-700 transition-colors tracking-[0.1em]"
+                  className="bg-gold-600 text-gray-900 px-6 py-2 hover:bg-gold-700 transition-colors tracking-[0.1em]"
                 >
                   SHARE ORDER
                 </button>
@@ -324,7 +324,7 @@ export default function GroupOrderDashboard() {
               <button
                 onClick={handleLockOrder}
                 disabled={isLocking}
-                className="px-8 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em]"
+                className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em]"
               >
                 {isLocking ? 'PREPARING CHECKOUT...' : 'PROCEED TO CHECKOUT'}
               </button>

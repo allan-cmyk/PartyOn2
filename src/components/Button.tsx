@@ -28,7 +28,7 @@ export default function Button({
   const variants = {
     primary: 'bg-gradient-gold text-white hover:shadow-premium-hover focus:ring-gold-500',
     secondary: 'bg-gradient-navy text-white hover:shadow-premium-hover focus:ring-navy-500',
-    outline: 'border-2 border-gold-500 text-gold-500 hover:bg-gold-500 hover:text-white focus:ring-gold-500',
+    outline: 'border-2 border-gold-500 text-gold-500 hover:bg-gold-500 hover:text-gray-900 focus:ring-gold-500',
     ghost: 'text-navy-500 hover:bg-neutral-100 focus:ring-navy-500'
   }
 

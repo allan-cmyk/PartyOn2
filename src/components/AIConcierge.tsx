@@ -318,7 +318,7 @@ export default function AIConcierge({ mode = 'normal', isOpen: controlledIsOpen,
                             // Navigate to custom package page
                             router.push('/custom-package');
                           }}
-                          className="w-full px-4 py-2 bg-gold-600 text-white text-xs rounded hover:bg-gold-700 transition-colors tracking-[0.1em]"
+                          className="w-full px-4 py-2 bg-gold-600 text-gray-900 text-xs rounded hover:bg-gold-700 transition-colors tracking-[0.1em]"
                         >
                           BUILD THIS PACKAGE
                         </button>

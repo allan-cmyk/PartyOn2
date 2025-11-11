@@ -391,7 +391,7 @@ export default function CorporateLandingPage() {
                 y={20}
                 className="text-center"
               >
-                <div className="w-16 h-16 mx-auto mb-6 bg-gold-600 text-white rounded-full flex items-center justify-center">
+                <div className="w-16 h-16 mx-auto mb-6 bg-gold-600 text-gray-900 rounded-full flex items-center justify-center">
                   <span className="font-serif text-2xl">{step.step}</span>
                 </div>
                 <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
@@ -474,7 +474,7 @@ export default function CorporateLandingPage() {
       </section>
 
       {/* Pricing Band */}
-      <section className="py-16 bg-gold-600 text-white">
+      <section className="py-16 bg-gold-600 text-gray-900">
         <div className="max-w-6xl mx-auto px-8 text-center">
           <ScrollRevealCSS duration={600} y={20}>
             <h3 className="font-serif text-3xl mb-6 tracking-[0.1em]">
@@ -517,7 +517,7 @@ export default function CorporateLandingPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={handleScheduleCall}
-                className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
+                className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
               >
                 SCHEDULE A CALL
               </button>
@@ -730,7 +730,7 @@ export default function CorporateLandingPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? 'SUBMITTING...' : 'SUBMIT INQUIRY'}
             </button>
@@ -750,7 +750,7 @@ export default function CorporateLandingPage() {
               Read our complete guide to corporate event planning—venues, budgets, catering, team building, and more.
             </p>
             <Link href="/corporate-events-guide">
-              <button className="px-8 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium">
+              <button className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium">
                 READ THE FULL GUIDE
               </button>
             </Link>
@@ -807,7 +807,7 @@ export default function CorporateLandingPage() {
       </section>
 
       {/* Closing CTA */}
-      <section className="py-20 bg-gold-600 text-white">
+      <section className="py-20 bg-gold-600 text-gray-900">
         <div className="max-w-4xl mx-auto px-8 text-center">
           <ScrollRevealCSS duration={600} y={20}>
             <h2 className="font-serif text-4xl md:text-5xl mb-6 tracking-[0.1em]">

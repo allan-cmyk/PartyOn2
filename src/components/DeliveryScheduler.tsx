@@ -519,7 +519,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
                 </button>
                 <button
                   onClick={handleConfirm}
-                  className="px-6 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm"
+                  className="px-6 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm"
                 >
                   CONFIRM DELIVERY
                 </button>

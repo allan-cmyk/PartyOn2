@@ -344,7 +344,7 @@ export default function AboutPage() {
                   )}
                 </div>
                 <div className="w-1/3 flex justify-center">
-                  <div className="w-24 h-24 bg-gold-600 text-white rounded-full flex items-center justify-center">
+                  <div className="w-24 h-24 bg-gold-600 text-gray-900 rounded-full flex items-center justify-center">
                     <span className="font-serif text-xl">{milestone.year}</span>
                   </div>
                 </div>
@@ -490,12 +490,12 @@ export default function AboutPage() {
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link href="/order">
-                <button className="px-10 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
                   START YOUR ORDER
                 </button>
               </Link>
               <Link href="/contact">
-                <button className="px-10 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
                   GET IN TOUCH
                 </button>
               </Link>

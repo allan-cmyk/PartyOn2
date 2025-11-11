@@ -194,7 +194,7 @@ export default function MobileFilterDrawer({
               </button>
               <button
                 onClick={handleApplyFilters}
-                className="flex-1 py-3 bg-gold-600 text-white rounded-lg text-sm font-medium tracking-[0.1em]"
+                className="flex-1 py-3 bg-gold-600 text-gray-900 rounded-lg text-sm font-medium tracking-[0.1em]"
               >
                 APPLY FILTERS
               </button>

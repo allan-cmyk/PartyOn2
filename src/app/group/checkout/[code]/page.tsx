@@ -92,7 +92,7 @@ export default function GroupCheckoutPage() {
           <p className="text-gray-600 mb-6">This group order is not ready for checkout.</p>
           <button 
             onClick={() => router.push('/group/dashboard')}
-            className="bg-gold-600 text-white px-6 py-3 hover:bg-gold-700 transition-colors tracking-[0.1em]"
+            className="bg-gold-600 text-gray-900 px-6 py-3 hover:bg-gold-700 transition-colors tracking-[0.1em]"
           >
             BACK TO DASHBOARD
           </button>
@@ -255,7 +255,7 @@ export default function GroupCheckoutPage() {
               className={`px-8 py-3 tracking-[0.1em] transition-colors ${
                 isCreatingCheckout || !hostEmail || !!checkoutUrl
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-gold-600 text-white hover:bg-gold-700'
+                  : 'bg-gold-600 text-gray-900 hover:bg-gold-700'
               }`}
             >
               {isCreatingCheckout ? 'CREATING CHECKOUT...' : 'PROCEED TO PAYMENT'}

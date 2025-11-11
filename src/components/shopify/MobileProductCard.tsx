@@ -127,7 +127,7 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
               disabled={!variant?.availableForSale || isAdding || cartLoading}
               className={`px-4 py-2 rounded-full text-xs font-medium transition-all active:scale-95 ${
                 variant?.availableForSale && !isAdding && !cartLoading
-                  ? 'bg-gold-600 text-white active:bg-gold-700'
+                  ? 'bg-gold-600 text-gray-900 active:bg-gold-700 active:text-gray-900'
                   : 'bg-gray-200 text-gray-400'
               }`}
             >

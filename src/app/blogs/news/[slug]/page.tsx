@@ -269,7 +269,7 @@ export default async function BlogPostPage({ params }: Props) {
         )}
 
         {/* CTA Section */}
-        <section className="bg-gold-600 text-white py-16">
+        <section className="bg-gold-600 text-gray-900 py-16">
           <div className="container mx-auto px-4 text-center max-w-3xl">
             <h2 className="font-serif text-3xl mb-4 tracking-tight">Ready to Plan Your Event?</h2>
             <p className="text-gold-100 mb-8 text-lg">

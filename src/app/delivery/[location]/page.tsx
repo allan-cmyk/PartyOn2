@@ -253,7 +253,7 @@ export default async function LocationDeliveryPage({ params }: { params: Promise
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/order">
-                <button className="px-8 py-3 bg-gold-500 text-white hover:bg-gold-600 transition-colors tracking-[0.15em]">
+                <button className="px-8 py-3 bg-gold-500 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.15em]">
                   ORDER NOW
                 </button>
               </Link>

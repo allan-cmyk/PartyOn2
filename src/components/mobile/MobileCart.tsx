@@ -280,7 +280,7 @@ export default function MobileCart() {
                     </svg>
                     <p className="text-gray-500 mb-6 text-center">Your cart is empty</p>
                     <Link href="/products" onClick={closeCart}>
-                      <button className="px-6 py-3 bg-gold-600 text-white rounded-lg tracking-[0.1em] text-sm">
+                      <button className="px-6 py-3 bg-gold-600 text-gray-900 rounded-lg tracking-[0.1em] text-sm">
                         SHOP PRODUCTS
                       </button>
                     </Link>
@@ -322,7 +322,7 @@ export default function MobileCart() {
                     <button 
                       onClick={handleProceedToCheckout}
                       disabled={loading || isRedirecting}
-                      className="w-full py-4 bg-gold-600 text-white rounded-lg tracking-[0.1em] text-sm font-medium disabled:opacity-50 transition-all active:scale-[0.98]"
+                      className="w-full py-4 bg-gold-600 text-gray-900 rounded-lg tracking-[0.1em] text-sm font-medium disabled:opacity-50 transition-all active:scale-[0.98]"
                     >
                       {isRedirecting ? 'REDIRECTING...' : `CHECKOUT • ${subtotal && formatPrice(subtotal.amount, subtotal.currencyCode)}`}
                     </button>

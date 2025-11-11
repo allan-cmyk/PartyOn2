@@ -162,7 +162,7 @@ export default function ContactPage() {
                   href="https://123.partyondelivery.com/planning-call"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block px-6 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
+                  className="inline-block px-6 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
                 >
                   BOOK A CALL
                 </a>
@@ -335,7 +335,7 @@ export default function ContactPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-12 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-12 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'SENDING...' : 'SEND INQUIRY'}
               </button>

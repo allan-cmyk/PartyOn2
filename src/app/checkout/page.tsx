@@ -208,7 +208,7 @@ export default function CheckoutPage() {
             <h1 className="font-cormorant text-4xl mb-4">Your Cart is Empty</h1>
             <p className="text-gray-600 mb-8">Add some products to your cart to proceed with checkout.</p>
             <Link href="/products">
-              <button className="px-8 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors">
+              <button className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors">
                 SHOP PRODUCTS
               </button>
             </Link>
@@ -418,7 +418,7 @@ export default function CheckoutPage() {
                 ) : (
                   <button
                     onClick={() => setShowDeliveryScheduler(true)}
-                    className="w-full py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-colors"
+                    className="w-full py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-colors"
                   >
                     SELECT DELIVERY DATE & TIME
                   </button>
@@ -566,7 +566,7 @@ export default function CheckoutPage() {
                   disabled={!acceptTerms || !deliveryDetails}
                   className={`w-full mt-6 py-4 font-medium tracking-[0.15em] transition-colors ${
                     acceptTerms && deliveryDetails
-                      ? 'bg-gold-600 text-white hover:bg-gold-700'
+                      ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
                 >

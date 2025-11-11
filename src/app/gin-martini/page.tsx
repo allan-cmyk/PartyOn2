@@ -187,7 +187,7 @@ export default function LuxuryGoyardPage() {
               </button>
             </Link>
             <Link href="/order-now">
-              <button className="px-12 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em]">
+              <button className="px-12 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em]">
                 ORDER NOW
               </button>
             </Link>

@@ -109,7 +109,7 @@ export default function CollectionsPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gold-600 text-white">
+      <section className="py-20 bg-gold-600 text-gray-900">
         <div className="max-w-4xl mx-auto px-8 text-center">
           <h2 className="font-serif text-4xl mb-6 tracking-[0.1em]">
             Can&apos;t Find What You&apos;re Looking For?

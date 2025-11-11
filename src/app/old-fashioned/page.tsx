@@ -214,7 +214,7 @@ export default function LuxuryRitzPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link href="/consultation">
-              <button className="px-10 py-4 bg-gold-600 text-white hover:bg-gold-700 transition-colors">
+              <button className="px-10 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors">
                 Schedule Consultation
               </button>
             </Link>

@@ -80,7 +80,7 @@ export default function AgeVerificationModal({ isOpen, onClose, onVerify }: AgeV
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleYes}
-                  className="py-4 bg-gold-600 text-white font-medium tracking-[0.15em] text-sm hover:bg-gold-700 transition-colors"
+                  className="py-4 bg-gold-600 text-gray-900 font-medium tracking-[0.15em] text-sm hover:bg-gold-700 transition-colors"
                 >
                   YES, I AM 21+
                 </motion.button>

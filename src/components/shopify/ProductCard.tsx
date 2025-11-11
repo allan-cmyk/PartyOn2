@@ -169,7 +169,7 @@ export default function ProductCard({ product, index = 0, onProductClick }: Prod
               disabled={!variant?.availableForSale || isAdding || cartLoading}
               className={`w-full py-2 transition-colors duration-300 text-xs tracking-[0.15em] ${
                 variant?.availableForSale && !isAdding && !cartLoading
-                  ? 'bg-gold-600 text-white hover:bg-gold-700'
+                  ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
                   : 'bg-gray-300 text-gray-700 cursor-not-allowed'
               }`}
             >
@@ -185,7 +185,7 @@ export default function ProductCard({ product, index = 0, onProductClick }: Prod
             {/* View Details Button */}
             <button
               onClick={() => onProductClick?.(product)}
-              className="w-full py-2 border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-colors duration-300 text-xs tracking-[0.15em]">
+              className="w-full py-2 border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-colors duration-300 text-xs tracking-[0.15em]">
               VIEW DETAILS
             </button>
           </div>

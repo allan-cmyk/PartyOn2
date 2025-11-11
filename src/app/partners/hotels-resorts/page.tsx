@@ -125,7 +125,7 @@ export default function HotelsResortsPartnerPage() {
             <div className="flex flex-col sm:flex-row gap-4">
               <button 
                 onClick={() => document.getElementById('partnership-form')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-8 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em]"
+                className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em]"
               >
                 BECOME A PARTNER
               </button>
@@ -223,7 +223,7 @@ export default function HotelsResortsPartnerPage() {
                   onClick={() => setActiveTab(tab)}
                   className={`px-6 py-3 text-sm tracking-[0.1em] transition-all ${
                     activeTab === tab
-                      ? 'bg-gold-600 text-white'
+                      ? 'bg-gold-600 text-gray-900'
                       : 'bg-white text-gray-600 hover:bg-gray-50'
                   }`}
                 >
@@ -290,7 +290,7 @@ export default function HotelsResortsPartnerPage() {
                   <h3 className="font-cormorant text-2xl mb-6 tracking-[0.1em]">HOW IT WORKS</h3>
                   <ol className="space-y-4">
                     <li className="flex items-start">
-                      <span className="flex-shrink-0 w-8 h-8 bg-gold-600 text-white rounded-full flex items-center justify-center text-sm mr-3">1</span>
+                      <span className="flex-shrink-0 w-8 h-8 bg-gold-600 text-gray-900 rounded-full flex items-center justify-center text-sm mr-3">1</span>
                       <div>
                         <strong>Guest Orders</strong>
                         <p className="text-sm text-gray-600 mt-1">
@@ -299,7 +299,7 @@ export default function HotelsResortsPartnerPage() {
                       </div>
                     </li>
                     <li className="flex items-start">
-                      <span className="flex-shrink-0 w-8 h-8 bg-gold-600 text-white rounded-full flex items-center justify-center text-sm mr-3">2</span>
+                      <span className="flex-shrink-0 w-8 h-8 bg-gold-600 text-gray-900 rounded-full flex items-center justify-center text-sm mr-3">2</span>
                       <div>
                         <strong>We Fulfill</strong>
                         <p className="text-sm text-gray-600 mt-1">
@@ -308,7 +308,7 @@ export default function HotelsResortsPartnerPage() {
                       </div>
                     </li>
                     <li className="flex items-start">
-                      <span className="flex-shrink-0 w-8 h-8 bg-gold-600 text-white rounded-full flex items-center justify-center text-sm mr-3">3</span>
+                      <span className="flex-shrink-0 w-8 h-8 bg-gold-600 text-gray-900 rounded-full flex items-center justify-center text-sm mr-3">3</span>
                       <div>
                         <strong>Seamless Billing</strong>
                         <p className="text-sm text-gray-600 mt-1">
@@ -317,7 +317,7 @@ export default function HotelsResortsPartnerPage() {
                       </div>
                     </li>
                     <li className="flex items-start">
-                      <span className="flex-shrink-0 w-8 h-8 bg-gold-600 text-white rounded-full flex items-center justify-center text-sm mr-3">4</span>
+                      <span className="flex-shrink-0 w-8 h-8 bg-gold-600 text-gray-900 rounded-full flex items-center justify-center text-sm mr-3">4</span>
                       <div>
                         <strong>You Earn</strong>
                         <p className="text-sm text-gray-600 mt-1">
@@ -627,13 +627,13 @@ export default function HotelsResortsPartnerPage() {
                   Monthly reporting
                 </li>
               </ul>
-              <button className="w-full py-3 border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all text-sm tracking-[0.1em]">
+              <button className="w-full py-3 border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all text-sm tracking-[0.1em]">
                 LEARN MORE
               </button>
             </div>
 
             <div className="bg-white border-2 border-gold-600 p-8 relative">
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gold-600 text-white px-4 py-1 text-xs tracking-[0.1em]">
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gold-600 text-gray-900 px-4 py-1 text-xs tracking-[0.1em]">
                 MOST POPULAR
               </div>
               <div className="text-center mb-6">
@@ -676,7 +676,7 @@ export default function HotelsResortsPartnerPage() {
                   Weekly analytics
                 </li>
               </ul>
-              <button className="w-full py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors text-sm tracking-[0.1em]">
+              <button className="w-full py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors text-sm tracking-[0.1em]">
                 GET STARTED
               </button>
             </div>
@@ -728,7 +728,7 @@ export default function HotelsResortsPartnerPage() {
                   Co-marketing support
                 </li>
               </ul>
-              <button className="w-full py-3 border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all text-sm tracking-[0.1em]">
+              <button className="w-full py-3 border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all text-sm tracking-[0.1em]">
                 CONTACT SALES
               </button>
             </div>
@@ -896,7 +896,7 @@ export default function HotelsResortsPartnerPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'SUBMITTING...' : 'SUBMIT PARTNERSHIP INQUIRY'}
               </button>

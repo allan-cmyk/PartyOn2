@@ -96,7 +96,7 @@ export default function LuxuryCard({
       {/* Premium corner accent for featured */}
       {featured && (
         <div className="absolute top-0 right-0 w-20 h-20 overflow-hidden">
-          <div className="absolute transform rotate-45 bg-gold-600 text-white text-xs font-light tracking-wider py-1 right-[-25px] top-[15px] w-[100px] text-center">
+          <div className="absolute transform rotate-45 bg-gold-600 text-gray-900 text-xs font-light tracking-wider py-1 right-[-25px] top-[15px] w-[100px] text-center">
             PREMIUM
           </div>
         </div>

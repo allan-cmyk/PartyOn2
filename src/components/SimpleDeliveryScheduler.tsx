@@ -242,7 +242,7 @@ export default function SimpleDeliveryScheduler({ isOpen, onClose, onConfirm }: 
                               disabled={!isAvailable}
                               className={`w-full h-full flex items-center justify-center rounded-lg transition-colors ${
                                 isSelected
-                                  ? 'bg-gold-600 text-white'
+                                  ? 'bg-gold-600 text-gray-900'
                                   : isAvailable
                                   ? 'hover:bg-gold-50 hover:border-gold-400 border border-gray-200'
                                   : 'text-gray-300 cursor-not-allowed'
@@ -417,7 +417,7 @@ export default function SimpleDeliveryScheduler({ isOpen, onClose, onConfirm }: 
                     disabled={!selectedDate || !selectedTime || !address || !zipCode || !phone}
                     className={`px-8 py-3 rounded-lg tracking-[0.1em] text-sm font-medium transition-colors ${
                       selectedDate && selectedTime && address && zipCode && phone
-                        ? 'bg-gold-600 text-white hover:bg-gold-700'
+                        ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
                         : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                     }`}
                   >

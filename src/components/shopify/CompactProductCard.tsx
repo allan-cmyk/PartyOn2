@@ -172,7 +172,7 @@ export default function CompactProductCard({ product, index = 0, onProductClick 
                 disabled={!variant?.availableForSale || isAdding || cartLoading}
                 className={`flex-1 py-1.5 px-3 text-xs font-medium tracking-wider transition-colors ${
                   variant?.availableForSale && !isAdding && !cartLoading
-                    ? 'bg-gold-600 text-white hover:bg-gold-700'
+                    ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                 }`}
               >
@@ -185,7 +185,7 @@ export default function CompactProductCard({ product, index = 0, onProductClick 
               disabled={!variant?.availableForSale || isAdding || cartLoading}
               className={`w-full py-1.5 text-xs font-medium tracking-wider transition-colors ${
                 variant?.availableForSale && !isAdding && !cartLoading
-                  ? 'bg-gold-600 text-white hover:bg-gold-700'
+                  ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
                   : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
             >

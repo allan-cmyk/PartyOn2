@@ -56,7 +56,7 @@ export default function BlogPageClient() {
             />
             <button
               type="submit"
-              className="px-8 py-3 bg-gold-500 text-white hover:bg-gold-600 transition-colors tracking-[0.1em] disabled:opacity-50"
+              className="px-8 py-3 bg-gold-500 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.1em] disabled:opacity-50"
               disabled={loading}
             >
               {loading ? 'SUBSCRIBING...' : 'SUBSCRIBE'}

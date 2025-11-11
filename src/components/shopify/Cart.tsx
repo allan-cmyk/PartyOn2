@@ -317,7 +317,7 @@ export default function Cart() {
                     </svg>
                     <p className="text-gray-500 mb-6 text-center">Your cart is empty</p>
                     <Link href="/products" onClick={closeCart}>
-                      <button className="px-6 py-3 bg-gold-600 text-white hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm">
+                      <button className="px-6 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm">
                         SHOP PRODUCTS
                       </button>
                     </Link>
@@ -432,7 +432,7 @@ export default function Cart() {
                   <button 
                     onClick={handleProceedToCheckout}
                     disabled={loading}
-                    className="w-full py-4 bg-gold-500 text-white hover:bg-gold-600 transition-colors tracking-[0.15em] text-sm disabled:opacity-50"
+                    className="w-full py-4 bg-gold-500 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.15em] text-sm disabled:opacity-50"
                   >
                     PROCEED TO CHECKOUT
                   </button>

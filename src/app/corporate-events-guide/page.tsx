@@ -92,7 +92,7 @@ export default async function CorporateEventsGuidePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/order-now"
-              className="bg-gold-600 text-white px-8 py-4 text-center tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium"
+              className="bg-gold-600 text-gray-900 px-8 py-4 text-center tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium"
             >
               GET A QUOTE
             </Link>
