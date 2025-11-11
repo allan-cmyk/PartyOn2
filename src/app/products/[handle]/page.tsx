@@ -5,7 +5,6 @@ import { PRODUCT_BY_HANDLE_QUERY } from '@/lib/shopify/queries/products';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import ProductDetailClient from '@/components/products/ProductDetailClient';
 import SneebergFAQ from '@/components/products/SneebergFAQ';
-import SneebergWhereToBuy from '@/components/products/SneebergWhereToBuy';
 import ProductBreadcrumbs from '@/components/products/ProductBreadcrumbs';
 import { formatPrice } from '@/lib/shopify/utils';
 
@@ -252,7 +251,6 @@ export default async function ProductDetailPage({ params }: Props) {
       {/* Schneeberg-specific SEO content */}
       {isSchneebergProduct && (
         <>
-          <SneebergWhereToBuy />
           <SneebergFAQ />
         </>
       )}
