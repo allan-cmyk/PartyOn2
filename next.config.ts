@@ -91,16 +91,181 @@ const nextConfig: NextConfig = {
     return config;
   },
 
-  // 301 Redirects for SEO (add broken URLs from SEMrush audit here)
+  // 301 Redirects for SEO (from SEMrush audit - January 2025)
   async redirects() {
     return [
-      // Example redirects - replace with actual broken URLs from SEMrush report
-      // {
-      //   source: '/old-page-url',
-      //   destination: '/new-page-url',
-      //   permanent: true, // 301 redirect
-      // },
-      // Add redirects for 4xx pages here
+      // Blog URL truncations and malformed URLs (redirect to correct blog posts)
+      {
+        source: '/blog/austin-venues-with-built-in-a-v-and-networking-spaces:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/best-bbq-spots-for-a-bachelor-party-lunch-in-austin:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/best-live-entertainment-ideas-for-austin-corporate-functi:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/best-live-entertainme:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/corporate-holiday-party-ideas-for-austin-companies:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/corporate-holiday-par:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/fun-team-building-activities-around-austin:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/fun-team-building-ac:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/how-to-choose-the-right-venue-for-your-austin-corporate-event:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/how-to-choose-the-ri:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/how-to-create-branded-photo-moments-for-corporate-events:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/how-to-create-brand:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/how-to-organize-transportation-for-large-company-events:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/how-to-organize-trans:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/how-to-plan-a-brewery-crawl-on-austin-s-east-side:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/professional-bar-service-and-responsible-drinking-for-events:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/professional-bar-serv:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/top-corporate-catering-options-for-austin-business-events:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/top-party-boat-rentals-for-austin-bachelor-weekends:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/corporate-event-bar-service-tips',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/signature-wedding-cocktails-texas-heat',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/ultimate-guide-austin-boat-parties',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog/category/local-guides:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/blog:suffix*',
+        destination: '/blog',
+        permanent: true,
+      },
+
+      // Truncated partial URLs
+      {
+        source: '/bach-parties/products:suffix*',
+        destination: '/bach-parties',
+        permanent: true,
+      },
+      {
+        source: '/boat-partie:suffix*',
+        destination: '/boat-parties',
+        permanent: true,
+      },
+
+      // Non-existent pages - redirect to relevant sections
+      {
+        source: '/captains',
+        destination: '/boat-parties',
+        permanent: true,
+      },
+      {
+        source: '/download-app',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/downloa:suffix*',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/fast-deliver:suffix*',
+        destination: '/delivery-areas',
+        permanent: true,
+      },
+      {
+        source: '/safety',
+        destination: '/about',
+        permanent: true,
+      },
+      {
+        source: '/weather',
+        destination: '/',
+        permanent: true,
+      },
+
+      // Catch-all for blog truncations with various patterns
+      {
+        source: '/blog/:slug(.*)(November|0.06|0.07|0.04|0.01|2)',
+        destination: '/blog',
+        permanent: true,
+      },
     ];
   },
 
