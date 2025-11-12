@@ -1,9 +1,22 @@
-'use client';
-
+import type { Metadata } from 'next';
 import React from 'react';
 import Link from 'next/link';
-import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+
+export const metadata: Metadata = {
+  title: 'Terms of Service | Party On Delivery',
+  description: 'Terms of Service for Party On Delivery - Austin\'s premium alcohol delivery service. Review our policies on age verification, delivery, cancellations, and responsible service.',
+  alternates: {
+    canonical: 'https://partyondelivery.com/terms',
+  },
+  openGraph: {
+    title: 'Terms of Service | Party On Delivery',
+    description: 'Terms of Service for Party On Delivery - Austin\'s premium alcohol delivery service.',
+    url: 'https://partyondelivery.com/terms',
+    siteName: 'Party On Delivery',
+    type: 'website',
+  },
+};
 
 export default function TermsPage() {
   return (
@@ -23,11 +36,7 @@ export default function TermsPage() {
       {/* Content */}
       <section className="py-16 px-8">
         <div className="max-w-4xl mx-auto prose prose-lg">
-          <ScrollRevealCSS
-            delay={200}
-            duration={600}
-            className="space-y-8"
-          >
+          <div className="space-y-8">
             <div>
               <h2 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">1. Service Agreement</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
@@ -107,7 +116,7 @@ export default function TermsPage() {
                 <p>Email: info@partyondelivery.com</p>
               </div>
             </div>
-          </ScrollRevealCSS>
+          </div>
         </div>
       </section>
 

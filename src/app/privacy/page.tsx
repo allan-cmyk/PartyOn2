@@ -1,9 +1,22 @@
-'use client';
-
+import type { Metadata } from 'next';
 import React from 'react';
 import Link from 'next/link';
-import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy | Party On Delivery',
+  description: 'Privacy Policy for Party On Delivery - Learn how we collect, use, and protect your personal information for our Austin alcohol delivery service.',
+  alternates: {
+    canonical: 'https://partyondelivery.com/privacy',
+  },
+  openGraph: {
+    title: 'Privacy Policy | Party On Delivery',
+    description: 'Privacy Policy for Party On Delivery - Learn how we collect, use, and protect your personal information.',
+    url: 'https://partyondelivery.com/privacy',
+    siteName: 'Party On Delivery',
+    type: 'website',
+  },
+};
 
 export default function PrivacyPage() {
   return (
@@ -23,11 +36,7 @@ export default function PrivacyPage() {
       {/* Content */}
       <section className="py-16 px-8">
         <div className="max-w-4xl mx-auto prose prose-lg">
-          <ScrollRevealCSS
-            delay={200}
-            duration={600}
-            className="space-y-8"
-          >
+          <div className="space-y-8">
             <div>
               <p className="text-gray-600 leading-relaxed mb-8">
                 PartyOn Delivery (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.
@@ -144,7 +153,7 @@ export default function PrivacyPage() {
                 <p>Email: info@partyondelivery.com</p>
               </div>
             </div>
-          </ScrollRevealCSS>
+          </div>
         </div>
       </section>
 
