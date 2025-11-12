@@ -8,6 +8,8 @@ import { CustomerProvider } from "@/contexts/CustomerContext";
 import ClientLayoutWrapper from "@/components/ClientLayoutWrapper";
 import { structuredData } from "./structured-data";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 // Lazy load GroupOrderProvider - only needed on specific pages
 const GroupOrderProvider = dynamic(
@@ -118,6 +120,8 @@ export default function RootLayout({
             </GroupOrderProvider>
           </CartProvider>
         </CustomerProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

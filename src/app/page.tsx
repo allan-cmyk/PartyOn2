@@ -1,12 +1,51 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import Script from 'next/script';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import HeroSection from '@/components/homepage/HeroSection';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
+import { generateFAQSchema } from '@/lib/seo/schemas';
 
 export default function HomePage() {
+  // Homepage FAQ data for schema markup
+  const homepageFAQs = [
+    {
+      question: "Do you deliver to venues, Airbnbs, offices, or boats?",
+      answer: "Yes—coordinated handoff so you're not waiting around."
+    },
+    {
+      question: "How far ahead should I book?",
+      answer: "72 hours recommended; peak dates fill fast so book early."
+    },
+    {
+      question: "Can you staff bartenders?",
+      answer: "Yes via vetted TABC-certified partners for full-service events."
+    },
+    {
+      question: "Do you bring ice and disposables?",
+      answer: "Yes—add cups, napkins, stirrers, and ice to your cart."
+    },
+    {
+      question: "Refunds on unopened items for weddings?",
+      answer: "100% refund policy—we want your day perfect, not wasteful."
+    },
+    {
+      question: "Are you licensed and insured?",
+      answer: "Yes—TABC certified + $2M insurance. Fully licensed operation."
+    }
+  ];
+
+  const faqSchema = generateFAQSchema(homepageFAQs);
+
   return (
     <div className="bg-white">
+      {/* FAQ Schema for Homepage */}
+      <Script
+        id="homepage-faq-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+
       <OldFashionedNavigation />
 
       {/* Hero Section - Client Component */}
@@ -519,32 +558,7 @@ export default function HomePage() {
           </ScrollRevealCSS>
 
           <div className="space-y-8">
-            {[
-              {
-                question: "Do you deliver to venues, Airbnbs, offices, or boats?",
-                answer: "Yes—coordinated handoff so you're not waiting around."
-              },
-              {
-                question: "How far ahead should I book?",
-                answer: "72 hours recommended; peak dates fill fast so book early."
-              },
-              {
-                question: "Can you staff bartenders?",
-                answer: "Yes via vetted TABC-certified partners for full-service events."
-              },
-              {
-                question: "Do you bring ice and disposables?",
-                answer: "Yes—add cups, napkins, stirrers, and ice to your cart."
-              },
-              {
-                question: "Refunds on unopened items for weddings?",
-                answer: "100% refund policy—we want your day perfect, not wasteful."
-              },
-              {
-                question: "Are you licensed and insured?",
-                answer: "Yes—TABC certified + $2M insurance. Fully licensed operation."
-              }
-            ].map((faq, index) => (
+            {homepageFAQs.map((faq, index) => (
               <ScrollRevealCSS key={index} duration={800} delay={index * 80} y={20}>
                 <div className="bg-white rounded-lg p-6 border border-gray-200">
                   <h3 className="font-medium text-gray-900 mb-3">{faq.question}</h3>
