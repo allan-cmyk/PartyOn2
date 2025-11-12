@@ -133,7 +133,7 @@ export default function BoatPartiesProductsPage() {
       {/* Hero Section */}
       <section className="relative h-[40vh] flex items-center justify-center overflow-hidden">
         <Image
-          src="/images/services/boat-parties/yacht-bar-setup.webp"
+          src="/images/services/boat-parties/sunset-champagne-pontoon.webp"
           alt="Boat Party Bar"
           fill
           className="object-cover"

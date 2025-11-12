@@ -26,7 +26,7 @@ const COLLECTION_INFO = {
   'wedding-packages': {
     title: 'Wedding Packages',
     description: 'Curated bar packages for your special day',
-    image: '/images/weddings/wedding-bar-setup-golden.webp'
+    image: '/images/hero/wedding-hero-garden.webp'
   },
   'premium-spirits': {
     title: 'Premium Spirits',
@@ -36,7 +36,7 @@ const COLLECTION_INFO = {
   'wine-collection': {
     title: 'Fine Wines',
     description: 'Carefully selected wines from renowned vineyards',
-    image: '/images/hero/wine-glasses.webp'
+    image: '/images/products/wine-collection-cellar.webp'
   },
   'craft-beer': {
     title: 'Craft Beer',
@@ -46,7 +46,7 @@ const COLLECTION_INFO = {
   'party-packages': {
     title: 'Party Packages',
     description: 'Everything you need for the perfect celebration',
-    image: '/images/boat-parties/boat-party-bar-setup.webp'
+    image: '/images/services/boat-parties/luxury-yacht-deck.webp'
   }
 };
 

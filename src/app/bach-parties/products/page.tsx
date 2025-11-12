@@ -37,7 +37,7 @@ export default function BachPartiesProductsPage() {
           id: 'bach-cocktail-1',
           title: 'Aperol Spritz Kit',
           price: '$95',
-          image: '/images/products/aperol-kit.webp',
+          image: '/images/products/premium-spirits-lifestyle.webp',
           description: 'Aperol + Prosecco + soda'
         },
         {
@@ -133,7 +133,7 @@ export default function BachPartiesProductsPage() {
       {/* Hero Section */}
       <section className="relative h-[40vh] flex items-center justify-center overflow-hidden">
         <Image
-          src="/images/services/bach-parties/party-setup.webp"
+          src="/images/services/bach-parties/bachelorette-champagne-tower.webp"
           alt="Bach Party Setup"
           fill
           className="object-cover"

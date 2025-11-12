@@ -12,7 +12,7 @@ const COLLECTIONS = [
     handle: 'wedding-packages',
     title: 'Wedding Packages',
     description: 'Complete bar service solutions for your special day',
-    image: '/images/weddings/wedding-bar-setup-golden.webp',
+    image: '/images/hero/wedding-hero-garden.webp',
     featured: true
   },
   {
@@ -26,7 +26,7 @@ const COLLECTIONS = [
     handle: 'wine-collection',
     title: 'Fine Wine Collection',
     description: 'Curated selection of reds, whites, and champagnes',
-    image: '/images/hero/wine-glasses.webp',
+    image: '/images/products/wine-collection-cellar.webp',
     featured: true
   },
   {
@@ -40,7 +40,7 @@ const COLLECTIONS = [
     handle: 'party-packages',
     title: 'Party Packages',
     description: 'Pre-selected bundles for every celebration',
-    image: '/images/boat-parties/boat-party-bar-setup.webp',
+    image: '/images/services/boat-parties/luxury-yacht-deck.webp',
     featured: true
   },
   {
