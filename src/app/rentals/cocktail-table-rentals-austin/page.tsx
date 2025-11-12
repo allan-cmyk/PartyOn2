@@ -144,8 +144,8 @@ export default function CocktailTableRentalsAustinPage() {
                   Cocktail Tables
                 </h3>
                 <p className="text-gray-600 mb-6 leading-relaxed">
-                  High-top cocktail tables (42" tall) perfect for standing receptions, networking events,
-                  and wedding cocktail hours. Available in 30" and 36" diameter.
+                  High-top cocktail tables (42&quot; tall) perfect for standing receptions, networking events,
+                  and wedding cocktail hours. Available in 30&quot; and 36&quot; diameter.
                 </p>
                 <ul className="space-y-3 text-gray-700">
                   <li className="flex items-start">
@@ -180,7 +180,7 @@ export default function CocktailTableRentalsAustinPage() {
                   Banquet Tables
                 </h3>
                 <p className="text-gray-600 mb-6 leading-relaxed">
-                  Standard 30" height rectangular tables for seated dinners, buffets, and displays.
+                  Standard 30&quot; height rectangular tables for seated dinners, buffets, and displays.
                   Sturdy and professional for Austin weddings and corporate events.
                 </p>
                 <ul className="space-y-3 text-gray-700">
