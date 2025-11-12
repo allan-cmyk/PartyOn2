@@ -4,7 +4,6 @@
  * Generates dynamic sitemap including:
  * - Static pages (excluding /account blocked by robots.txt)
  * - Shopify products (auto-paginated)
- * - Shopify collections
  * - Dynamic delivery location pages
  * - Migrated blog posts from Shopify
  * - Dynamic blog category pages
@@ -43,30 +42,11 @@ const ALL_PRODUCTS_HANDLES_QUERY = gql`
   }
 `;
 
-// Query to get all collection handles
-const ALL_COLLECTIONS_HANDLES_QUERY = gql`
-  query getAllCollectionHandles {
-    collections(first: 50) {
-      edges {
-        node {
-          handle
-          updatedAt
-        }
-      }
-    }
-  }
-`;
-
 interface ProductNode {
   handle: string;
   updatedAt: string;
   availableForSale: boolean;
   status: string;
-}
-
-interface CollectionNode {
-  handle: string;
-  updatedAt: string;
 }
 
 // Fetch products from Shopify
@@ -133,30 +113,11 @@ async function getProducts(): Promise<ProductNode[]> {
   }
 }
 
-// Fetch collections from Shopify
-async function getCollections(): Promise<CollectionNode[]> {
-  try {
-    const response = await shopifyFetch<{
-      collections: {
-        edges: Array<{ node: CollectionNode }>;
-      };
-    }>({
-      query: ALL_COLLECTIONS_HANDLES_QUERY,
-    });
-
-    return response.collections.edges.map(edge => edge.node);
-  } catch (error) {
-    console.error('Error fetching collections for sitemap:', error);
-    return [];
-  }
-}
-
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://partyondelivery.com'
 
   // Fetch dynamic data
   const products = await getProducts();
-  const collections = await getCollections();
 
   // Static pages (excluding /account pages blocked by robots.txt)
   const staticPages = [
@@ -165,7 +126,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/contact',
     '/order',
     '/products',
-    '/collections',
     '/blog',
     '/blogs/news',
     '/weddings',
@@ -190,14 +150,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(product.updatedAt),
     changeFrequency: 'daily' as const,
     priority: 0.8
-  }))
-
-  // Collection pages (dynamic)
-  const collectionPages = collections.map(collection => ({
-    url: `${baseUrl}/collections/${collection.handle}`,
-    lastModified: new Date(collection.updatedAt),
-    changeFrequency: 'weekly' as const,
-    priority: 0.7
   }))
 
   // Location pages for SEO (dynamic routes)
@@ -243,7 +195,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticPages,
     ...productPages,
-    ...collectionPages,
     ...locationPages,
     ...migratedBlogPosts,
     ...blogCategories
