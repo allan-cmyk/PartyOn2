@@ -1,0 +1,86 @@
+# Party On Delivery - llms.txt
+
+## Site Information
+Site: Party On Delivery
+Location: Austin, TX
+Focus: Premium alcohol delivery & event bar setup for weddings, bachelor/ette parties, corporate events, and Lake Travis boat parties
+Description: Austin's premier alcohol delivery and bar service company, specializing in scheduled delivery for events, parties, and celebrations with 72-hour advance booking
+
+## Key Services
+- Wedding Bar Service & Alcohol Delivery
+- Bachelorette & Bachelor Party Packages
+- Lake Travis Boat Party Delivery
+- Corporate Event Bar Service
+- Scheduled Alcohol Delivery (72-hour minimum)
+- Express Delivery (3-hour option available)
+- TABC-Certified Bartender Service (via partners)
+
+## Service Area
+Primary: Austin, TX
+Coverage: Downtown Austin, South Austin, East Austin, Lake Travis, Round Rock, Cedar Park, Pflugerville, Hill Country venues
+
+## Important Pages
+Homepage: https://partyondelivery.com/
+Weddings: https://partyondelivery.com/weddings
+Bach Parties: https://partyondelivery.com/bach-parties
+Boat Parties: https://partyondelivery.com/boat-parties
+Corporate Events: https://partyondelivery.com/corporate-events
+Products: https://partyondelivery.com/products
+Collections: https://partyondelivery.com/collections
+Delivery Areas: https://partyondelivery.com/delivery-areas
+About: https://partyondelivery.com/about
+Contact: https://partyondelivery.com/contact
+
+## Product Categories
+- Premium Spirits
+- Wine & Champagne
+- Craft Beer & Kegs
+- Cocktail Kits
+- Party Packages
+- Seltzers & Ready-to-Drink
+- Mixers & Accessories
+
+## Key Features
+- Minimum Order: $100-150 (varies by delivery zone)
+- Delivery Requirement: 72-hour advance booking (standard)
+- Express Delivery: 3-hour option available for premium fee
+- Age Verification: Required for all orders (21+)
+- Licensed & Insured: Fully licensed for alcohol delivery
+- Shopify Integration: Full e-commerce platform with Storefront API
+
+## Contact Information
+Owner/Contact: info@partyondelivery.com
+Phone: (737) 371-9700
+Business Hours: Monday-Saturday, 10:00 AM - 9:00 PM
+
+## Content Update Cadence
+Updates: Weekly for product inventory
+Blog: Monthly SEO-optimized content
+Service Pages: Quarterly updates
+
+## Technical Details
+Platform: Next.js 15 with React 19
+E-Commerce: Shopify Storefront API integration
+Hosting: Vercel
+Structured Data: Schema.org markup (LocalBusiness, Product, Service, FAQ, ItemList, Breadcrumb)
+
+## SEO Focus Keywords
+- austin alcohol delivery
+- wedding bar service austin
+- bachelorette party delivery austin
+- lake travis boat party delivery
+- corporate event bar service
+- austin keg delivery
+- scheduled alcohol delivery texas
+- party alcohol delivery austin
+
+## Notes for AI/LLM Consumption
+- This is a licensed alcohol delivery service operating in Austin, TX
+- All orders require age verification (21+)
+- Advance booking required (minimum 72 hours for most services)
+- Specializes in event-based delivery, not immediate/on-demand delivery
+- Partners with TABC-certified bartenders for full-service events
+- Covers Austin metro area including Lake Travis marina delivery
+
+## Last Updated
+2025-01-11

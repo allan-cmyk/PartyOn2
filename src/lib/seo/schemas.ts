@@ -163,18 +163,91 @@ export function generateEventSchema(eventType: 'wedding' | 'party' | 'corporate'
   };
 }
 
-export function generateServiceSchema() {
+export function generateItemListSchema(items: Array<{ name: string; url: string; image?: string; price?: string }>) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'Product',
+        name: item.name,
+        url: item.url,
+        ...(item.image && { image: item.image }),
+        ...(item.price && {
+          offers: {
+            '@type': 'Offer',
+            price: item.price,
+            priceCurrency: 'USD'
+          }
+        })
+      }
+    }))
+  };
+}
+
+export function generateServiceSchema(serviceType?: 'wedding' | 'party' | 'corporate' | 'boat') {
+  const services = {
+    wedding: {
+      serviceType: 'Wedding Bar Service',
+      name: 'Austin Wedding Bar Service & Alcohol Delivery',
+      description: 'Premium bar service and alcohol delivery for Austin weddings. TABC-certified bartenders, signature cocktails, champagne service, and full bar packages for your special day.',
+      url: 'https://partyondelivery.com/weddings',
+      category: 'Wedding Service'
+    },
+    party: {
+      serviceType: 'Bachelorette Party Delivery',
+      name: 'Austin Bachelorette Party Alcohol Delivery',
+      description: 'Premium alcohol delivery for Austin bachelor and bachelorette parties. Signature cocktails, party packages, and supplies delivered to hotels, Airbnbs, and venues.',
+      url: 'https://partyondelivery.com/bach-parties',
+      category: 'Party Service'
+    },
+    boat: {
+      serviceType: 'Lake Travis Boat Party Delivery',
+      name: 'Lake Travis Boat Party Alcohol Delivery',
+      description: 'Premium alcohol delivery to Lake Travis marinas and boats. Perfect for yacht parties, bachelor parties, and waterfront celebrations with 72-hour advance booking.',
+      url: 'https://partyondelivery.com/boat-parties',
+      category: 'Delivery Service'
+    },
+    corporate: {
+      serviceType: 'Corporate Event Bar Service',
+      name: 'Austin Corporate Event Bar Service',
+      description: 'Professional bar service for corporate events, meetings, and company celebrations. TABC-certified staff and premium beverage packages.',
+      url: 'https://partyondelivery.com/corporate-events',
+      category: 'Corporate Service'
+    }
+  };
+
+  const serviceDetails = serviceType ? services[serviceType] : {
+    serviceType: 'Alcohol Delivery Service',
+    name: 'Party On Delivery - Austin Alcohol Delivery',
+    description: 'Premium alcohol delivery and bar service for events in Austin, TX',
+    url: 'https://partyondelivery.com',
+    category: 'Delivery Service'
+  };
+
   return {
     '@context': 'https://schema.org',
     '@type': 'Service',
-    serviceType: 'Alcohol Delivery Service',
+    serviceType: serviceDetails.serviceType,
+    name: serviceDetails.name,
+    description: serviceDetails.description,
+    url: serviceDetails.url,
+    category: serviceDetails.category,
     provider: {
       '@type': 'LocalBusiness',
       name: 'Party On Delivery',
       url: 'https://partyondelivery.com',
       telephone: '(737) 371-9700',
       priceRange: '$$',
-      image: 'https://partyondelivery.com/images/POD Logo 2025.svg'
+      image: 'https://partyondelivery.com/images/POD Logo 2025.svg',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Austin',
+        addressRegion: 'TX',
+        addressCountry: 'US'
+      }
     },
     areaServed: {
       '@type': 'City',
@@ -183,7 +256,7 @@ export function generateServiceSchema() {
     },
     availableChannel: {
       '@type': 'ServiceChannel',
-      serviceUrl: 'https://partyondelivery.com/order',
+      serviceUrl: serviceDetails.url,
       servicePhone: '(737) 371-9700',
       availableLanguage: {
         '@type': 'Language',
@@ -204,6 +277,11 @@ export function generateServiceSchema() {
         '@type': 'Place',
         name: 'Austin Metropolitan Area'
       }
+    },
+    termsOfService: 'https://partyondelivery.com/terms',
+    audience: {
+      '@type': 'Audience',
+      audienceType: 'Customers 21+ years old'
     }
   };
 }

@@ -4,13 +4,45 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion'; // Kept for carousel and sticky bar
+import Script from 'next/script';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import LuxuryCard from '@/components/LuxuryCard';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
+import { generateFAQSchema } from '@/lib/seo/schemas';
 
 export default function BoatPartiesPage() {
   const [currentHeroImage, setCurrentHeroImage] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
+
+  // FAQ Data for Schema
+  const faqs = [
+    {
+      question: "Dock vs. boat delivery?",
+      answer: "Both—we do slip handoffs or boat delivery to your anchored location."
+    },
+    {
+      question: "How far ahead to book?",
+      answer: "72 hours recommended; peak lake weekends fill fast."
+    },
+    {
+      question: "Can you provide a bartender?",
+      answer: "Yes for premium/yacht events via TABC-certified partners."
+    },
+    {
+      question: "Glassware on the lake?",
+      answer: "Boat-safe options available; disposables recommended for safety."
+    },
+    {
+      question: "Only need ice & cans?",
+      answer: "Use Order Now → Lake Day Essentials for quick delivery."
+    },
+    {
+      question: "Are you insured/licensed?",
+      answer: "Yes, fully insured and licensed for marine delivery."
+    }
+  ];
+
+  const faqSchema = generateFAQSchema(faqs);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -101,6 +133,13 @@ export default function BoatPartiesPage() {
 
   return (
     <div className="bg-white">
+      {/* FAQ Schema */}
+      <Script
+        id="boat-parties-faq-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+
       <OldFashionedNavigation />
       
       {/* Hero Section with Image Slider */}

@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { generateEventSchema, generateBreadcrumbSchema } from '@/lib/seo/schemas'
+import { generateServiceSchema, generateBreadcrumbSchema } from '@/lib/seo/schemas'
 
 export const metadata: Metadata = {
   title: 'Austin Bachelorette Party Alcohol Delivery',
@@ -33,7 +33,7 @@ export default function BachPartiesLayout({
 }: {
   children: React.ReactNode
 }) {
-  const eventSchema = generateEventSchema('party')
+  const serviceSchema = generateServiceSchema('party')
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: 'Home', url: '/' },
     { name: 'Services', url: '/services' },
@@ -44,7 +44,7 @@ export default function BachPartiesLayout({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
       />
       <script
         type="application/ld+json"

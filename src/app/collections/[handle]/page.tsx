@@ -10,6 +10,7 @@ import ProductCard from '@/components/shopify/ProductCard';
 import { shopifyFetch } from '@/lib/shopify/client';
 import { COLLECTION_BY_HANDLE_QUERY } from '@/lib/shopify/queries/products';
 import { ShopifyProduct, ShopifyCollection } from '@/lib/shopify/types';
+import { generateItemListSchema } from '@/lib/seo/schemas';
 
 interface CollectionResponse {
   collection: ShopifyCollection & {
@@ -75,6 +76,42 @@ export default function CollectionPage() {
 
     fetchCollection();
   }, [handle]);
+
+  // Inject ItemList schema after collection data loads
+  useEffect(() => {
+    if (!collection || !collection.products?.edges) return;
+
+    // Generate schema data from products
+    const items = collection.products.edges.map(({ node }) => ({
+      name: node.title,
+      url: `https://partyondelivery.com/products/${node.handle}`,
+      image: node.images?.edges?.[0]?.node?.url,
+      price: node.priceRange?.minVariantPrice?.amount
+    }));
+
+    const schema = generateItemListSchema(items);
+
+    // Remove existing schema if present
+    const existingScript = document.getElementById('collection-schema');
+    if (existingScript) {
+      existingScript.remove();
+    }
+
+    // Inject new schema
+    const script = document.createElement('script');
+    script.id = 'collection-schema';
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(schema);
+    document.head.appendChild(script);
+
+    return () => {
+      // Cleanup on unmount
+      const scriptToRemove = document.getElementById('collection-schema');
+      if (scriptToRemove) {
+        scriptToRemove.remove();
+      }
+    };
+  }, [collection]);
 
   if (loading) {
     return (

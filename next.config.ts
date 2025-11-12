@@ -91,6 +91,19 @@ const nextConfig: NextConfig = {
     return config;
   },
 
+  // 301 Redirects for SEO (add broken URLs from SEMrush audit here)
+  async redirects() {
+    return [
+      // Example redirects - replace with actual broken URLs from SEMrush report
+      // {
+      //   source: '/old-page-url',
+      //   destination: '/new-page-url',
+      //   permanent: true, // 301 redirect
+      // },
+      // Add redirects for 4xx pages here
+    ];
+  },
+
   // Headers for caching, performance, and security
   async headers() {
     return [
@@ -116,7 +129,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Strict-Transport-Security',
-            value: 'max-age=31536000; includeSubDomains',
+            value: 'max-age=31536000; includeSubDomains; preload',
           },
           {
             key: 'Permissions-Policy',

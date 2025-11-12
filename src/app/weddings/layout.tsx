@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { generateEventSchema, generateBreadcrumbSchema } from '@/lib/seo/schemas'
+import { generateServiceSchema, generateBreadcrumbSchema } from '@/lib/seo/schemas'
 
 export const metadata: Metadata = {
   title: 'Wedding Bar Service Austin - Alcohol Delivery',
@@ -29,7 +29,7 @@ export default function WeddingsLayout({
 }: {
   children: React.ReactNode
 }) {
-  const eventSchema = generateEventSchema('wedding')
+  const serviceSchema = generateServiceSchema('wedding')
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: 'Home', url: '/' },
     { name: 'Services', url: '/services' },
@@ -40,7 +40,7 @@ export default function WeddingsLayout({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
       />
       <script
         type="application/ld+json"
