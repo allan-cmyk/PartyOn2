@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Script from 'next/script';
-import Image from 'next/image';
 import { generateFAQSchema, generateServiceSchema } from '@/lib/seo/schemas';
 
 export const metadata: Metadata = {
