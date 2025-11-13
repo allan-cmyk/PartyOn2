@@ -48,6 +48,9 @@ function ProductsContent() {
   const [selectedProduct, setSelectedProduct] = useState<ShopifyProduct | null>(null);
   const [showProductModal, setShowProductModal] = useState(false);
 
+  // Sticky collections state for mobile
+  const [isCollectionsSticky, setIsCollectionsSticky] = useState(false);
+
   // Check age verification on mount
   useEffect(() => {
     const ageVerified = localStorage.getItem('age_verified') === 'true';
@@ -79,14 +82,32 @@ function ProductsContent() {
     setShowProductModal(true);
   };
 
+  // Sticky collections detection for mobile
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const handleScroll = () => {
+      // Hero section is about 40vh + navigation is 24 (96px), so roughly 350-400px
+      // Collections section starts after hero, so around 400px from top
+      const heroHeight = window.innerHeight * 0.4 + 96; // 40vh + nav height
+      const scrollY = window.scrollY;
+
+      // Make sticky when scrolled past the hero section
+      setIsCollectionsSticky(scrollY > heroHeight);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isMobile]);
+
   // Infinite scroll implementation
   useEffect(() => {
     const handleScroll = () => {
       if (loading) return;
-      
-      const scrolledToBottom = 
+
+      const scrolledToBottom =
         window.innerHeight + window.scrollY >= document.documentElement.offsetHeight - 1000;
-      
+
       if (scrolledToBottom && hasNextPage) {
         loadMore();
       }
@@ -259,25 +280,38 @@ function ProductsContent() {
 
       {/* Collection Quick Filters */}
       {!searchQuery && (
-        <section className="bg-gray-50 py-6 border-b border-gray-200">
+        <section className={`bg-gray-50 border-b border-gray-200 transition-all duration-300 ${
+          isMobile && isCollectionsSticky
+            ? 'sticky top-0 z-40 py-3 shadow-md'
+            : 'py-6'
+        }`}>
           <div className={`${isMobile ? 'px-4' : 'max-w-7xl mx-auto px-8'}`}>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className={`font-serif ${isMobile ? 'text-lg' : 'text-xl'} text-gray-900 tracking-[0.1em]`}>
-                FEATURED COLLECTIONS
-              </h3>
-              {collectionFilter && (
-                <button
-                  onClick={() => {
-                    setCollectionFilter(null);
-                    setFilter('all');
-                  }}
-                  className="text-sm text-gold-600 hover:text-gold-700 tracking-[0.1em]"
-                >
-                  CLEAR COLLECTION
-                </button>
-              )}
-            </div>
-            <div className={`grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-7 gap-2'}`}>
+            {/* Header - hide when sticky on mobile */}
+            {!(isMobile && isCollectionsSticky) && (
+              <div className="flex items-center justify-between mb-4">
+                <h3 className={`font-serif ${isMobile ? 'text-lg' : 'text-xl'} text-gray-900 tracking-[0.1em]`}>
+                  FEATURED COLLECTIONS
+                </h3>
+                {collectionFilter && (
+                  <button
+                    onClick={() => {
+                      setCollectionFilter(null);
+                      setFilter('all');
+                    }}
+                    className="text-sm text-gold-600 hover:text-gold-700 tracking-[0.1em]"
+                  >
+                    CLEAR COLLECTION
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Collections Grid/Horizontal Scroll */}
+            <div className={
+              isMobile && isCollectionsSticky
+                ? 'flex overflow-x-auto gap-2 pb-2 -mx-4 px-4 scrollbar-hide snap-x snap-mandatory'
+                : `grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-7 gap-2'}`
+            }>
               {SHOPIFY_COLLECTIONS.map((collection) => {
                 const isActive = collectionFilter === collection.handle;
                 return (
@@ -295,10 +329,11 @@ function ProductsContent() {
                     className={`
                       px-4 py-3 text-center border transition-all rounded-lg relative
                       ${isActive
-                        ? `${collection.colors.bgActive} ${collection.colors.textActive} ${collection.colors.borderActive} shadow-lg scale-105`
+                        ? `${collection.colors.bgActive} ${collection.colors.textActive} ${collection.colors.borderActive} shadow-lg ${isMobile && isCollectionsSticky ? '' : 'scale-105'}`
                         : `${collection.colors.bg} ${collection.colors.text} ${collection.colors.border} hover:scale-102`
                       }
                       ${isMobile ? 'text-xs' : 'text-sm'}
+                      ${isMobile && isCollectionsSticky ? 'flex-shrink-0 snap-start whitespace-nowrap' : ''}
                       tracking-[0.1em] font-medium
                     `}
                     disabled={loading && collectionFilter !== collection.handle}
