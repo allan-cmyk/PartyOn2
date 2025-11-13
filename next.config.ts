@@ -210,11 +210,6 @@ const nextConfig: NextConfig = {
         destination: '/blog',
         permanent: true,
       },
-      {
-        source: '/blog:suffix*',
-        destination: '/blog',
-        permanent: true,
-      },
 
       // Truncated partial URLs
       {
