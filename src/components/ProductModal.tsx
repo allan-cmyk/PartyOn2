@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseAlcohol } from '@/lib/shopify/utils';
 import { useCartContext } from '@/contexts/CartContext';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import AgeVerificationModal from './AgeVerificationModal';
 
 interface ProductModalProps {
@@ -20,6 +21,9 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
   const [showAgeVerification, setShowAgeVerification] = useState(false);
+
+  // Lock body scroll when modal is open
+  useBodyScrollLock(isOpen);
 
   const variant = product ? getFirstAvailableVariant(product) : null;
   const price = product?.priceRange.minVariantPrice;

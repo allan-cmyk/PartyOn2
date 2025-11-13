@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence, PanInfo, useAnimation, useDragControls } from 'framer-motion';
 import { useCartContext } from '@/contexts/CartContext';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import CartItem from '../shopify/CartItem';
 import { formatPrice } from '@/lib/shopify/utils';
 import SimpleDeliveryScheduler from '@/components/SimpleDeliveryScheduler';
@@ -18,9 +19,12 @@ export default function MobileCart() {
   const controls = useAnimation();
   const dragControls = useDragControls();
   const constraintsRef = useRef(null);
-  
+
   const subtotal = cart?.cost?.subtotalAmount || null;
   const hasItems = (cart?.totalQuantity || 0) > 0;
+
+  // Lock body scroll when cart is open
+  useBodyScrollLock(isCartOpen);
 
   // Calculate drawer height based on content
   useEffect(() => {
