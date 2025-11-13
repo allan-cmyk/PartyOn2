@@ -39,6 +39,7 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
   const [isScrolled, setIsScrolled] = useState(forceScrolled);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isRentalsOpen, setIsRentalsOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { customer, isAuthenticated, logout } = useCustomerContext();
@@ -83,6 +84,12 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
     { href: '/boat-parties', label: 'BOAT PARTIES' },
     { href: '/bach-parties', label: 'CELEBRATIONS' },
     { href: '/corporate', label: 'CORPORATE' },
+  ];
+
+  const rentals = [
+    { href: '/rentals/chair-rentals-austin', label: 'CHAIR RENTALS' },
+    { href: '/rentals/cocktail-table-rentals-austin', label: 'TABLE RENTALS' },
+    { href: '/rentals/cooler-rentals-austin', label: 'COOLER RENTALS' },
   ];
 
   return (
@@ -138,7 +145,42 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
                   ))}
                 </div>
               </div>
-              
+
+              {/* Rentals Dropdown */}
+              <div className="relative group">
+                <button
+                  className={`flex items-center text-sm tracking-[0.15em] transition-all duration-300 ${
+                    isScrolled
+                      ? 'text-gray-700 hover:text-gold-600'
+                      : 'text-white/90 hover:text-gold-400'
+                  }`}
+                  onMouseEnter={() => setIsRentalsOpen(true)}
+                  onMouseLeave={() => setIsRentalsOpen(false)}
+                >
+                  RENTALS
+                  <ChevronDownIcon className="w-4 h-4 ml-1" />
+                </button>
+
+                {/* Dropdown Menu with CSS transition */}
+                <div
+                  className={`absolute top-full left-0 mt-2 w-56 bg-white shadow-lg transition-all duration-200 ${
+                    isRentalsOpen ? 'opacity-100 translate-y-0 visible' : 'opacity-0 -translate-y-2 invisible'
+                  }`}
+                  onMouseEnter={() => setIsRentalsOpen(true)}
+                  onMouseLeave={() => setIsRentalsOpen(false)}
+                >
+                  {rentals.map((rental) => (
+                    <Link
+                      key={rental.href}
+                      href={rental.href}
+                      className="block px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gray-50 hover:text-gold-600 transition-colors"
+                    >
+                      {rental.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
               <NavLink href="/products" isScrolled={isScrolled}>PRODUCTS</NavLink>
               <NavLink href="/contact" isScrolled={isScrolled}>CONTACT</NavLink>
               <NavLink href="/partners" isScrolled={isScrolled}>PARTNERS</NavLink>
@@ -265,6 +307,23 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {service.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Rentals Section */}
+            <div className="space-y-4">
+              <p className="text-2xl font-light tracking-[0.15em] text-gray-900">RENTALS</p>
+              <div className="pl-6 space-y-3">
+                {rentals.map((rental) => (
+                  <Link
+                    key={rental.href}
+                    href={rental.href}
+                    className="block text-lg font-light tracking-[0.1em] text-gray-600 hover:text-gold-600 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {rental.label}
                   </Link>
                 ))}
               </div>
