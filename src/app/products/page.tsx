@@ -51,6 +51,7 @@ function ProductsContent() {
   // Sticky collections state for mobile
   const [isCollectionsSticky, setIsCollectionsSticky] = useState(false);
   const collectionsRef = useRef<HTMLElement>(null);
+  const collectionsInitialTopRef = useRef<number>(0);
 
   // Check age verification on mount
   useEffect(() => {
@@ -83,23 +84,28 @@ function ProductsContent() {
     setShowProductModal(true);
   };
 
-  // Sticky collections detection for mobile
+  // Store initial position of collections section
   useEffect(() => {
     if (!isMobile || !collectionsRef.current) return;
 
-    const handleScroll = () => {
-      if (!collectionsRef.current) return;
+    // Store the initial top position (only once on mount)
+    const rect = collectionsRef.current.getBoundingClientRect();
+    collectionsInitialTopRef.current = rect.top + window.scrollY;
+  }, [isMobile]);
 
-      // Get the actual position of the collections section
-      const collectionsTop = collectionsRef.current.getBoundingClientRect().top + window.scrollY;
+  // Sticky collections detection for mobile
+  useEffect(() => {
+    if (!isMobile || collectionsInitialTopRef.current === 0) return;
+
+    const handleScroll = () => {
       const scrollY = window.scrollY;
 
-      // Make sticky when scrolled past the original position of collections section
-      // Add a small buffer (collectionsRef.current.offsetHeight) so it sticks right when it would go out of view
-      setIsCollectionsSticky(scrollY > collectionsTop);
+      // Use the stored initial position, not the current position
+      // This prevents the bouncing issue
+      setIsCollectionsSticky(scrollY > collectionsInitialTopRef.current);
     };
 
-    // Run once on mount to set initial state
+    // Set initial state
     handleScroll();
 
     window.addEventListener('scroll', handleScroll, { passive: true });
