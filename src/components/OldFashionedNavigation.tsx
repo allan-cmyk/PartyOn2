@@ -110,7 +110,9 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
             
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-12">
-              
+
+              <NavLink href="/products" isScrolled={isScrolled}>PRODUCTS</NavLink>
+
               {/* Services Dropdown - CSS animations instead of Framer Motion */}
               <div className="relative group">
                 <button
@@ -181,7 +183,6 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
                 </div>
               </div>
 
-              <NavLink href="/products" isScrolled={isScrolled}>PRODUCTS</NavLink>
               <NavLink href="/contact" isScrolled={isScrolled}>CONTACT</NavLink>
               <NavLink href="/partners" isScrolled={isScrolled}>PARTNERS</NavLink>
               
@@ -295,6 +296,14 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
               <ProductSearch isScrolled={true} />
             </div>
 
+            <Link
+              href="/products"
+              className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              PRODUCTS
+            </Link>
+
             {/* Services Section */}
             <div className="space-y-4">
               <p className="text-2xl font-light tracking-[0.15em] text-gray-900">SERVICES</p>
@@ -328,14 +337,6 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
                 ))}
               </div>
             </div>
-
-            <Link
-              href="/products"
-              className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              PRODUCTS
-            </Link>
             <Link
               href="/contact"
               className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors"
