@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -50,6 +50,7 @@ function ProductsContent() {
 
   // Sticky collections state for mobile
   const [isCollectionsSticky, setIsCollectionsSticky] = useState(false);
+  const collectionsRef = useRef<HTMLElement>(null);
 
   // Check age verification on mount
   useEffect(() => {
@@ -84,19 +85,24 @@ function ProductsContent() {
 
   // Sticky collections detection for mobile
   useEffect(() => {
-    if (!isMobile) return;
+    if (!isMobile || !collectionsRef.current) return;
 
     const handleScroll = () => {
-      // Hero section is about 40vh + navigation is 24 (96px), so roughly 350-400px
-      // Collections section starts after hero, so around 400px from top
-      const heroHeight = window.innerHeight * 0.4 + 96; // 40vh + nav height
+      if (!collectionsRef.current) return;
+
+      // Get the actual position of the collections section
+      const collectionsTop = collectionsRef.current.getBoundingClientRect().top + window.scrollY;
       const scrollY = window.scrollY;
 
-      // Make sticky when scrolled past the hero section
-      setIsCollectionsSticky(scrollY > heroHeight);
+      // Make sticky when scrolled past the original position of collections section
+      // Add a small buffer (collectionsRef.current.offsetHeight) so it sticks right when it would go out of view
+      setIsCollectionsSticky(scrollY > collectionsTop);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    // Run once on mount to set initial state
+    handleScroll();
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isMobile]);
 
@@ -280,11 +286,14 @@ function ProductsContent() {
 
       {/* Collection Quick Filters */}
       {!searchQuery && (
-        <section className={`bg-gray-50 border-b border-gray-200 transition-all duration-300 ${
-          isMobile && isCollectionsSticky
-            ? 'sticky top-0 z-40 py-3 shadow-md'
-            : 'py-6'
-        }`}>
+        <section
+          ref={collectionsRef}
+          className={`bg-gray-50 border-b border-gray-200 transition-all duration-300 ${
+            isMobile && isCollectionsSticky
+              ? 'sticky top-0 z-40 py-3 shadow-md'
+              : 'py-6'
+          }`}
+        >
           <div className={`${isMobile ? 'px-4' : 'max-w-7xl mx-auto px-8'}`}>
             {/* Header - hide when sticky on mobile */}
             {!(isMobile && isCollectionsSticky) && (
