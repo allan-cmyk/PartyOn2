@@ -6,7 +6,7 @@ import { Metadata } from 'next'
 import OldFashionedNavigation from '@/components/OldFashionedNavigation'
 import ShareButtons from '@/components/blog/ShareButtons'
 import { notFound } from 'next/navigation'
-import { getMDXPost } from '@/lib/blog-mdx'
+import { getMDXPost, getAllMDXPosts } from '@/lib/blog-mdx'
 import MDXContentRSC from '@/components/blog/MDXContentRSC'
 import blogPostsData from '@/data/blog-posts/posts.json'
 import { seoConfig } from '@/lib/seo/config'
@@ -42,6 +42,10 @@ interface BlogPost {
 
 // Use actual blog posts from JSON instead of hardcoded data
 const blogPosts = blogPostsData as BlogPost[]
+
+// Tell Next.js to allow dynamic params not in generateStaticParams
+// This is REQUIRED in Next.js 15 when using generateStaticParams
+export const dynamicParams = true
 
 // Keep legacy hardcoded posts for backward compatibility (DEPRECATED - use posts.json)
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -1012,9 +1016,14 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 }
 
 export async function generateStaticParams() {
-  return blogPosts.map((post) => ({
-    slug: post.slug,
-  }))
+  // Get all MDX posts from filesystem
+  const mdxPosts = getAllMDXPosts()
+
+  // Combine JSON posts and MDX posts
+  return [
+    ...blogPosts.map((post) => ({ slug: post.slug })),
+    ...mdxPosts.map((post) => ({ slug: post.slug }))
+  ]
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
