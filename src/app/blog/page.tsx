@@ -31,10 +31,9 @@ export default function BlogPage() {
     ...(migratedPosts as BlogPost[])
   ]
 
-  // Sort by date (newest first) and take first 12
+  // Sort by date (newest first) - show all posts for SEO and discoverability
   const sortedPosts = allPosts
     .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
-    .slice(0, 12)
 
   return (
     <div className="bg-white min-h-screen">
