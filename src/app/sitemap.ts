@@ -5,14 +5,15 @@
  * - Static pages (excluding /account blocked by robots.txt)
  * - Shopify products (auto-paginated)
  * - Dynamic delivery location pages
- * - Migrated blog posts from Shopify
+ * - ALL blog posts (JSON + MDX)
  * - Dynamic blog category pages
  *
- * Last updated: Nov 2024 - Fixed Google Search Console warnings
+ * Last updated: Jan 2025 - Added MDX posts and fixed blog URLs
  */
 
 import { MetadataRoute } from 'next'
 import blogPosts from '@/data/blog-posts/posts.json'
+import { getAllMDXPosts } from '@/lib/blog-mdx'
 import { shopifyFetch } from '@/lib/shopify/client'
 import { gql } from 'graphql-request'
 
@@ -169,13 +170,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7
   }))
 
-  // Migrated blog posts from Shopify (preserving exact URLs for SEO)
-  const migratedBlogPosts = (blogPosts as BlogPost[]).map(post => ({
-    url: `${baseUrl}/blogs/news/${post.slug}`,
+  // ALL blog posts (JSON + MDX) - using /blog/ URL format
+  const mdxPosts = getAllMDXPosts();
+
+  // JSON blog posts
+  const jsonBlogPosts = (blogPosts as BlogPost[]).map(post => ({
+    url: `${baseUrl}/blog/${post.slug}`,
     lastModified: new Date(post.publishedAt),
     changeFrequency: 'monthly' as const,
     priority: 0.6
   }))
+
+  // MDX blog posts
+  const mdxBlogPosts = mdxPosts.map(post => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: new Date(post.publishedAt),
+    changeFrequency: 'monthly' as const,
+    priority: 0.6
+  }))
+
+  console.log(`Sitemap: Including ${jsonBlogPosts.length} JSON blog posts + ${mdxBlogPosts.length} MDX blog posts = ${jsonBlogPosts.length + mdxBlogPosts.length} total`)
 
   // Blog categories (dynamic routes - using actual category slugs)
   const categorySlugs = [
@@ -196,7 +210,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...staticPages,
     ...productPages,
     ...locationPages,
-    ...migratedBlogPosts,
+    ...jsonBlogPosts,
+    ...mdxBlogPosts,
     ...blogCategories
   ]
 }
