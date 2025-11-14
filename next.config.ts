@@ -190,21 +190,10 @@ const nextConfig: NextConfig = {
         destination: '/blog',
         permanent: true,
       },
-      {
-        source: '/blog/corporate-event-bar-service-tips',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/blog/signature-wedding-cocktails-texas-heat',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/blog/ultimate-guide-austin-boat-parties',
-        destination: '/blog',
-        permanent: true,
-      },
+      // REMOVED: These were blocking real blog posts!
+      // - /blog/corporate-event-bar-service-tips
+      // - /blog/signature-wedding-cocktails-texas-heat
+      // - /blog/ultimate-guide-austin-boat-parties
       {
         source: '/blog/category/local-guides:suffix*',
         destination: '/blog',
@@ -218,7 +207,7 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: '/boat-partie:suffix*',
+        source: '/boat-partie(s)?$',  // Only match /boat-partie or /boat-parties at root (not /blog/boat-parties)
         destination: '/boat-parties',
         permanent: true,
       },
@@ -255,9 +244,9 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
 
-      // Catch-all for blog truncations with various patterns
+      // Catch-all for blog truncations with various patterns (only match obvious truncation artifacts)
       {
-        source: '/blog/:slug(.*)(November|0.06|0.07|0.04|0.01|2)',
+        source: '/blog/:slug*(November[0-9]|0\\.06|0\\.07|0\\.04|0\\.01)$',
         destination: '/blog',
         permanent: true,
       },
