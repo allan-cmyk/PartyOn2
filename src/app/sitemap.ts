@@ -184,7 +184,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // MDX blog posts
   const mdxBlogPosts = mdxPosts.map(post => ({
     url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: new Date(post.publishedAt),
+    lastModified: new Date(post.date),
     changeFrequency: 'monthly' as const,
     priority: 0.6
   }))
