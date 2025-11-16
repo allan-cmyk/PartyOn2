@@ -159,11 +159,17 @@ function extractSearchKeywords(productName: string): { keywords: string; size?: 
     keywords = 'topo chico'; // Prefer Topo Chico brand for sparkling water
   } else if (cleaned.toLowerCase().includes('sprite')) {
     keywords = 'sprite';
+  } else if (cleaned.toLowerCase().includes('lemonade')) {
+    keywords = 'lemonade';
+  } else if (cleaned.toLowerCase().includes('unsweet') && cleaned.toLowerCase().includes('tea')) {
+    keywords = 'texas unsweet tea';
+  } else if (cleaned.toLowerCase().includes('iced tea') || cleaned.toLowerCase().includes('ice tea')) {
+    keywords = 'iced tea';
   } else if (cleaned.toLowerCase().includes('dispenser') || cleaned.toLowerCase().includes('pitcher')) {
     keywords = 'drink dispenser';
   } else {
     // Default: use cleaned name
-    keywords = cleaned.replace(/\d+(?:\.\d+)?s*(ml|oz|l|gallon|liter)/gi, '').trim();
+    keywords = cleaned.replace(/\d+(?:\.\d+)?\s*(ml|oz|l|gallon|liter)/gi, '').trim();
   }
 
   return { keywords, size, isSingle };
@@ -190,11 +196,21 @@ function scoreProductMatch(product: ShopifyProduct, searchInfo: { keywords: stri
   }
 
   // Penalize flavored products when plain is more appropriate
-  const flavorKeywords = ['lemon', 'lime', 'berry', 'cherry', 'orange', 'grape', 'mango', 'peach', 'grapefruit', 'twist'];
+  const flavorKeywords = ['strawberry', 'lemon', 'lime', 'berry', 'cherry', 'orange', 'grape', 'mango', 'peach', 'grapefruit', 'twist', 'blackberry', 'blueberry', 'raspberry'];
   const isFlavoredWater = title.includes('water') && flavorKeywords.some(flavor => title.includes(flavor));
+  const isFlavoredLemonade = title.includes('lemonade') && flavorKeywords.some(flavor => title.includes(flavor) && flavor !== 'lemon');
 
   if ((searchInfo.keywords.includes('topo chico') || searchInfo.keywords.includes('sparkling water')) && isFlavoredWater) {
     score -= 40; // Penalize flavored water when plain sparkling water is wanted
+  }
+
+  if (searchInfo.keywords.includes('lemonade') && isFlavoredLemonade) {
+    score -= 50; // Penalize flavored lemonade when plain lemonade is wanted
+  }
+
+  // Penalize hydration/recovery/sports drinks when looking for plain beverages
+  if (title.includes('hydration') || title.includes('recovery') || title.includes('electrolyte')) {
+    score -= 60;
   }
 
   // Reward "regular" or "original" for plain sparkling water
@@ -203,9 +219,9 @@ function scoreProductMatch(product: ShopifyProduct, searchInfo: { keywords: stri
     score += 30;
   }
 
-  // Reward size match
+  // Reward size match (strong reward for exact match)
   if (searchInfo.size && title.includes(searchInfo.size)) {
-    score += 20;
+    score += 50; // Increased from 20 to heavily favor exact size matches
   }
 
   // Penalize if size is very different
@@ -239,10 +255,12 @@ async function searchProduct(searchTerm: string): Promise<ShopifyProduct | null>
   try {
     // Extract keywords and metadata for better searching
     const searchInfo = extractSearchKeywords(searchTerm);
-    const encodedTerm = encodeURIComponent(searchInfo.keywords);
+    // Include size in search query for better results
+    const searchQuery = searchInfo.size ? `${searchInfo.keywords} ${searchInfo.size}` : searchInfo.keywords;
+    const encodedTerm = encodeURIComponent(searchQuery);
     const url = `${LOCAL_API_URL}/api/products?search=${encodedTerm}&first=10`;
 
-    console.log(`   → Searching API: ${searchInfo.keywords}${searchInfo.isSingle ? ' (single item)' : ''}${searchInfo.size ? ' ' + searchInfo.size : ''}`);
+    console.log(`   → Searching API: ${searchQuery}${searchInfo.isSingle ? ' (single item)' : ''}`);
     const response = await fetch(url);
 
     if (!response.ok) {
