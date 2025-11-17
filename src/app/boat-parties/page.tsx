@@ -8,7 +8,7 @@ import Script from 'next/script';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import LuxuryCard from '@/components/LuxuryCard';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
-import { generateFAQSchema } from '@/lib/seo/schemas';
+import { generateFAQSchema, generateEventSchema } from '@/lib/seo/schemas';
 
 export default function BoatPartiesPage() {
   const [currentHeroImage, setCurrentHeroImage] = useState(0);
@@ -43,6 +43,7 @@ export default function BoatPartiesPage() {
   ];
 
   const faqSchema = generateFAQSchema(faqs);
+  const eventSchema = generateEventSchema('boat');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -138,6 +139,13 @@ export default function BoatPartiesPage() {
         id="boat-parties-faq-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+
+      {/* Event Schema */}
+      <Script
+        id="boat-parties-event-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventSchema) }}
       />
 
       <OldFashionedNavigation />

@@ -8,7 +8,7 @@ import Script from 'next/script';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import HeroOverlay from '@/components/HeroOverlay';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
-import { generateFAQSchema } from '@/lib/seo/schemas';
+import { generateFAQSchema, generateEventSchema } from '@/lib/seo/schemas';
 
 export default function BachPartiesPage() {
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
@@ -38,6 +38,7 @@ export default function BachPartiesPage() {
   ];
 
   const faqSchema = generateFAQSchema(faqs);
+  const eventSchema = generateEventSchema('party');
 
   const heroImages = [
     { src: '/images/services/bach-parties/bachelor-party-epic.webp', alt: 'Epic bachelor party celebration' },
@@ -107,6 +108,13 @@ export default function BachPartiesPage() {
         id="bach-parties-faq-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+
+      {/* Event Schema */}
+      <Script
+        id="bach-parties-event-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventSchema) }}
       />
 
       <OldFashionedNavigation />

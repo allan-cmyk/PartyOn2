@@ -1,130 +1,69 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
 import { useCart } from '@/lib/shopify/hooks/useCart';
+import { useTaggedProducts } from '@/lib/shopify/hooks/useTaggedProducts';
+import { ShopifyProduct } from '@/lib/shopify/types';
 
 export default function BachPartiesProductsPage() {
-  const { cart } = useCart();
+  const { cart, addToCart } = useCart();
   const [addingToCart, setAddingToCart] = useState<{ [key: string]: boolean }>({});
 
-  const handleAddToCart = async (productId: string) => {
+  // Fetch products tagged with bach party related tags
+  const { products, loading, error } = useTaggedProducts({
+    tags: ['bach-party', 'bachelorette', 'bachelor', 'party-package'],
+  });
+
+  const handleAddToCart = async (variantId: string, productId: string) => {
     setAddingToCart({ ...addingToCart, [productId]: true });
-    // This will be connected to actual Shopify products later
-    console.log(`Adding product ${productId} to cart`);
-    setTimeout(() => {
+    try {
+      await addToCart(variantId, 1);
+      setTimeout(() => {
+        setAddingToCart({ ...addingToCart, [productId]: false });
+      }, 1500);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
       setAddingToCart({ ...addingToCart, [productId]: false });
-    }, 1000);
+    }
   };
 
-  const curatedCollections = [
-    {
-      title: "Bachelorette Favorites",
-      description: "Pretty drinks for the perfect party",
-      products: [
-        {
-          id: 'bach-champagne-1',
-          title: 'Rosé Champagne Collection',
-          price: '$185',
-          image: '/images/products/champagne-rose.webp',
-          description: '3 bottles of pink bubbly'
-        },
-        {
-          id: 'bach-cocktail-1',
-          title: 'Aperol Spritz Kit',
-          price: '$95',
-          image: '/images/products/premium-spirits-lifestyle.webp',
-          description: 'Aperol + Prosecco + soda'
-        },
-        {
-          id: 'bach-wine-1',
-          title: 'Girls Night Wine Set',
-          price: '$150',
-          image: '/images/products/wine-variety.webp',
-          description: '6 bottles of favorites'
-        },
-        {
-          id: 'bach-vodka-1',
-          title: 'Pink Whitney Bundle',
-          price: '$75',
-          image: '/images/products/pink-whitney.webp',
-          description: 'Fun pink lemonade vodka'
-        }
-      ]
-    },
-    {
-      title: "Bachelor Party Essentials",
-      description: "Bold choices for the boys",
-      products: [
-        {
-          id: 'bachelor-whiskey-1',
-          title: 'Whiskey Tasting Flight',
-          price: '$225',
-          image: '/images/products/whiskey-flight.webp',
-          description: '5 premium whiskeys'
-        },
-        {
-          id: 'bachelor-beer-1',
-          title: 'Craft Beer Collection',
-          price: '$120',
-          image: '/images/products/beer-craft.webp',
-          description: '48 local craft beers'
-        },
-        {
-          id: 'bachelor-tequila-1',
-          title: 'Tequila & Mezcal Set',
-          price: '$195',
-          image: '/images/products/tequila-mezcal.webp',
-          description: 'Premium agave spirits'
-        },
-        {
-          id: 'bachelor-bourbon-1',
-          title: 'Bourbon Collection',
-          price: '$280',
-          image: '/images/products/bourbon-collection.webp',
-          description: 'Texas & Kentucky finest'
-        }
-      ]
-    },
-    {
-      title: "Party Packages",
-      description: "Complete solutions for your celebration",
-      products: [
-        {
-          id: 'bach-package-1',
-          title: 'Bachelorette Weekend (12 guests)',
-          price: '$799',
-          image: '/images/products/package-bachelorette.webp',
-          description: 'Champagne, wine, and cocktails'
-        },
-        {
-          id: 'bach-package-2',
-          title: 'Bachelor Party Pack (12 guests)',
-          price: '$899',
-          image: '/images/products/package-bachelor.webp',
-          description: 'Beer, whiskey, and shots'
-        },
-        {
-          id: 'bach-package-3',
-          title: 'Pool Party Collection',
-          price: '$499',
-          image: '/images/products/package-pool-party.webp',
-          description: 'Seltzers, cocktails, and floats'
-        },
-        {
-          id: 'bach-package-4',
-          title: 'Night Out Pregame',
-          price: '$299',
-          image: '/images/products/package-pregame.webp',
-          description: 'Shots and energy drinks'
-        }
-      ]
-    }
-  ];
+  // Group products into curated collections based on tags
+  const curatedCollections = useMemo(() => {
+    const bacheloretteProducts = products.filter((p: ShopifyProduct) =>
+      p.tags.some((tag: string) => tag.toLowerCase().includes('bachelorette') || tag.toLowerCase().includes('bach-party'))
+    );
+
+    const bachelorProducts = products.filter((p: ShopifyProduct) =>
+      p.tags.some((tag: string) => tag.toLowerCase().includes('bachelor') && !tag.toLowerCase().includes('bachelorette'))
+    );
+
+    const packageProducts = products.filter((p: ShopifyProduct) =>
+      p.tags.some((tag: string) => tag.toLowerCase().includes('package') || tag.toLowerCase().includes('party-package'))
+    );
+
+    return [
+      {
+        title: 'Bachelorette Favorites',
+        description: 'Pretty drinks for the perfect party',
+        products: bacheloretteProducts.slice(0, 4),
+      },
+      {
+        title: 'Bachelor Party Essentials',
+        description: 'Bold choices for the boys',
+        products: bachelorProducts.slice(0, 4),
+      },
+      {
+        title: 'Party Packages',
+        description: 'Complete solutions for your celebration',
+        products: packageProducts.slice(0, 4),
+      },
+    ].filter(collection => collection.products.length > 0);
+  }, [products]);
 
   return (
     <div className="bg-white">
@@ -177,8 +116,31 @@ export default function BachPartiesProductsPage() {
         </div>
       </section>
 
+      {/* Loading State */}
+      {loading && (
+        <section className="py-16">
+          <div className="max-w-7xl mx-auto px-8">
+            <div className="text-center">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-gold-600"></div>
+              <p className="mt-4 text-gray-600">Loading products...</p>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Error State */}
+      {error && (
+        <section className="py-16">
+          <div className="max-w-7xl mx-auto px-8">
+            <div className="text-center bg-red-50 border border-red-200 rounded-lg p-8">
+              <p className="text-red-800">Failed to load products. Please try again later.</p>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Curated Collections */}
-      {curatedCollections.map((collection, collectionIndex) => (
+      {!loading && !error && curatedCollections.map((collection, collectionIndex) => (
         <section key={collection.title} className={`py-16 ${collectionIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
           <div className="max-w-7xl mx-auto px-8">
             <ScrollRevealCSS
@@ -195,46 +157,88 @@ export default function BachPartiesProductsPage() {
             </ScrollRevealCSS>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {collection.products.map((product, index) => (
-                <ScrollRevealCSS
-                  key={product.id}
-                  duration={500}
-                  y={20}
-                  delay={index * 100}
-                  className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
-                >
-                  <div className="relative h-64">
-                    <Image
-                      src={product.image}
-                      alt={product.title}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <h3 className="font-serif text-xl text-gray-900 mb-2">{product.title}</h3>
-                    <p className="text-gray-600 text-sm mb-4">{product.description}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="font-serif text-2xl text-gold-600">{product.price}</span>
-                      <button
-                        onClick={() => handleAddToCart(product.id)}
-                        disabled={addingToCart[product.id]}
-                        className={`px-4 py-2 text-sm font-medium transition-all ${
-                          addingToCart[product.id]
-                            ? 'bg-green-600 text-white'
-                            : 'bg-gold-600 text-gray-900 hover:bg-gold-700'
-                        }`}
-                      >
-                        {addingToCart[product.id] ? 'ADDED!' : 'ADD TO CART'}
-                      </button>
+              {collection.products.map((product: ShopifyProduct, index: number) => {
+                const firstVariant = product.variants.edges[0]?.node;
+                const firstImage = product.images.edges[0]?.node;
+                const price = firstVariant?.price;
+
+                return (
+                  <ScrollRevealCSS
+                    key={product.id}
+                    duration={500}
+                    y={20}
+                    delay={index * 100}
+                    className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
+                  >
+                    <Link href={`/products/${product.handle}`}>
+                      <div className="relative h-64 cursor-pointer">
+                        {firstImage ? (
+                          <Image
+                            src={firstImage.url}
+                            alt={firstImage.altText || product.title}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                            <span className="text-gray-400">No image</span>
+                          </div>
+                        )}
+                      </div>
+                    </Link>
+                    <div className="p-6">
+                      <h3 className="font-serif text-xl text-gray-900 mb-2">{product.title}</h3>
+                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                        {product.productType || 'Premium alcohol delivery'}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <span className="font-serif text-2xl text-gold-600">
+                          ${parseFloat(price?.amount || '0').toFixed(2)}
+                        </span>
+                        {firstVariant && firstVariant.availableForSale ? (
+                          <button
+                            onClick={() => handleAddToCart(firstVariant.id, product.id)}
+                            disabled={addingToCart[product.id]}
+                            className={`px-4 py-2 text-sm font-medium transition-all ${
+                              addingToCart[product.id]
+                                ? 'bg-green-600 text-white'
+                                : 'bg-gold-600 text-gray-900 hover:bg-gold-700'
+                            }`}
+                          >
+                            {addingToCart[product.id] ? 'ADDED!' : 'ADD TO CART'}
+                          </button>
+                        ) : (
+                          <span className="text-sm text-gray-500">Out of Stock</span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </ScrollRevealCSS>
-              ))}
+                  </ScrollRevealCSS>
+                );
+              })}
             </div>
           </div>
         </section>
       ))}
+
+      {/* Empty State */}
+      {!loading && !error && curatedCollections.length === 0 && (
+        <section className="py-16">
+          <div className="max-w-7xl mx-auto px-8">
+            <div className="text-center">
+              <h2 className="font-serif text-3xl text-gray-900 mb-4">No Products Available</h2>
+              <p className="text-gray-600 mb-8">
+                Check back soon or browse all products
+              </p>
+              <Link href="/products">
+                <button className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors">
+                  VIEW ALL PRODUCTS
+                </button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Call to Action */}
       <section className="py-16 bg-gradient-to-br from-pink-50 to-purple-50">

@@ -9,7 +9,7 @@ import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import LuxuryCard from '@/components/LuxuryCard';
 import WeddingDrinkCalculator from '@/components/WeddingDrinkCalculator';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
-import { generateFAQSchema } from '@/lib/seo/schemas';
+import { generateFAQSchema, generateEventSchema } from '@/lib/seo/schemas';
 
 // Testimonial Carousel Component
 function TestimonialCarousel() {
@@ -194,6 +194,7 @@ export default function WeddingsPage() {
   ];
 
   const faqSchema = generateFAQSchema(faqs);
+  const eventSchema = generateEventSchema('wedding');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -267,6 +268,13 @@ export default function WeddingsPage() {
         id="weddings-faq-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+
+      {/* Event Schema */}
+      <Script
+        id="weddings-event-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventSchema) }}
       />
 
       <OldFashionedNavigation />

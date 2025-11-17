@@ -12,8 +12,7 @@ export default function robots(): MetadataRoute.Robots {
           '/checkout/',
           '/group/dashboard',
           '/cart/shared/'
-        ],
-        crawlDelay: 0.5
+        ]
       },
       {
         userAgent: 'Bingbot',
@@ -24,8 +23,7 @@ export default function robots(): MetadataRoute.Robots {
           '/checkout/',
           '/group/dashboard',
           '/cart/shared/'
-        ],
-        crawlDelay: 1
+        ]
       },
       {
         userAgent: '*',
