@@ -1,9 +1,9 @@
-import Script from 'next/script';
 import { generateFAQSchema, generateEventSchema } from '@/lib/seo/schemas';
 
 /**
  * Server-side schemas for weddings page
- * Must be a server component to ensure schemas are in initial HTML for crawlers
+ * Uses regular script tags (not Next.js Script component) to ensure schemas
+ * are in initial HTML for search engine crawlers
  */
 export default function WeddingsSchemas() {
   // FAQ Data for Schema
@@ -35,20 +35,16 @@ export default function WeddingsSchemas() {
 
   return (
     <>
-      {/* FAQ Schema */}
-      <Script
-        id="weddings-faq-schema"
+      {/* FAQ Schema - static HTML for crawlers */}
+      <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-        strategy="beforeInteractive"
       />
 
-      {/* Event Schema */}
-      <Script
-        id="weddings-event-schema"
+      {/* Event Schema - static HTML for crawlers */}
+      <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(eventSchema) }}
-        strategy="beforeInteractive"
       />
     </>
   );
