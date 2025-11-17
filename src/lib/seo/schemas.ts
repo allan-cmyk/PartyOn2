@@ -183,6 +183,13 @@ export function generateEventSchema(eventType: 'wedding' | 'party' | 'corporate'
     }
   };
 
+  const urlMap = {
+    wedding: 'https://partyondelivery.com/weddings',
+    party: 'https://partyondelivery.com/bach-parties',
+    boat: 'https://partyondelivery.com/boat-parties',
+    corporate: 'https://partyondelivery.com/corporate-events'
+  };
+
   return {
     '@context': 'https://schema.org',
     '@type': 'Event',
@@ -197,7 +204,7 @@ export function generateEventSchema(eventType: 'wedding' | 'party' | 'corporate'
     },
     offers: {
       '@type': 'Offer',
-      url: `https://partyondelivery.com/${eventType === 'party' ? 'bach-parties' : eventType === 'boat' ? 'boat-parties' : eventType}-${eventType === 'corporate' ? 'events' : ''}`,
+      url: urlMap[eventType],
       price: '0',
       priceCurrency: 'USD',
       availability: 'https://schema.org/InStock',
