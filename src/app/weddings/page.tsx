@@ -4,12 +4,11 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion'; // Kept for carousel and sticky bar
-import Script from 'next/script';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import LuxuryCard from '@/components/LuxuryCard';
 import WeddingDrinkCalculator from '@/components/WeddingDrinkCalculator';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
-import { generateFAQSchema } from '@/lib/seo/schemas';
+import WeddingsSchemas from '@/components/seo/WeddingsSchemas';
 
 // Testimonial Carousel Component
 function TestimonialCarousel() {
@@ -165,36 +164,6 @@ export default function WeddingsPage() {
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [showStickyBar, setShowStickyBar] = useState(false);
 
-  // FAQ Data for Schema
-  const faqs = [
-    {
-      question: "Do you provide bartenders?",
-      answer: "Yes, via vetted TABC-certified partners for full-service packages."
-    },
-    {
-      question: "How far in advance should we book?",
-      answer: "72 hours minimum recommended; peak wedding dates fill fast."
-    },
-    {
-      question: "Do you deliver to Lake Travis/Hill Country venues?",
-      answer: "Yes, we specialize in Austin, Hill Country, and Lake Travis locations."
-    },
-    {
-      question: "What about glassware & equipment?",
-      answer: "Included with full-service packages; disposable upgrades available for delivery-only."
-    },
-    {
-      question: "Are you licensed & insured?",
-      answer: "Yes, fully licensed and insured for events."
-    },
-    {
-      question: "Already have a bartender?",
-      answer: "Perfect! Use our Delivery-Only option for curated alcohol delivery."
-    }
-  ];
-
-  const faqSchema = generateFAQSchema(faqs);
-
   useEffect(() => {
     const handleScroll = () => {
       const heroSection = document.querySelector('section');
@@ -262,12 +231,8 @@ export default function WeddingsPage() {
 
   return (
     <div className="bg-white">
-      {/* FAQ Schema */}
-      <Script
-        id="weddings-faq-schema"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
+      {/* SEO Schemas - Server-rendered for crawlers */}
+      <WeddingsSchemas />
 
       <OldFashionedNavigation />
       

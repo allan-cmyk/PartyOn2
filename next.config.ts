@@ -97,9 +97,9 @@ const nextConfig: NextConfig = {
       // ALL blog URL truncation redirects REMOVED - they were blocking real blog posts
       // The :suffix* pattern matches ZERO or more chars, so it was catching exact URLs
 
-      // Truncated partial URLs
+      // Truncated partial URLs (only match if there's actual truncation, not the valid /products page)
       {
-        source: '/bach-parties/products:suffix*',
+        source: '/bach-parties/products:suffix+',  // Changed from * to + (requires at least 1 char)
         destination: '/bach-parties',
         permanent: true,
       },

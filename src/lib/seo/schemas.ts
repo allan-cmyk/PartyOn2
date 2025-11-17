@@ -105,60 +105,110 @@ export function generateFAQSchema(faqs: Array<{ question: string; answer: string
   };
 }
 
-export function generateEventSchema(eventType: 'wedding' | 'party' | 'corporate') {
+export function generateEventSchema(eventType: 'wedding' | 'party' | 'corporate' | 'boat') {
+  // Generate current year date range for ongoing service availability
+  const currentYear = new Date().getFullYear();
+  const startDate = `${currentYear}-01-01T00:00:00-06:00`; // Central Time
+  const endDate = `${currentYear}-12-31T23:59:59-06:00`;
+
   const events = {
     wedding: {
-      name: 'Wedding Bar Service',
-      description: 'Premium alcohol delivery and bar service for Austin weddings',
+      name: 'Wedding Bar Service in Austin, Texas',
+      description: 'Premium alcohol delivery and bar service for Austin weddings with TABC-certified bartenders, signature cocktails, and full bar packages.',
       eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      eventStatus: 'https://schema.org/EventScheduled',
       location: {
         '@type': 'Place',
-        name: 'Austin, TX',
+        name: 'Austin Wedding Venues',
         address: {
           '@type': 'PostalAddress',
           addressLocality: 'Austin',
-          addressRegion: 'TX'
+          addressRegion: 'TX',
+          addressCountry: 'US'
         }
       }
     },
     party: {
-      name: 'Party Alcohol Delivery',
-      description: 'Alcohol delivery for bachelor/bachelorette parties and celebrations',
+      name: 'Bachelor & Bachelorette Party Alcohol Delivery - Austin',
+      description: 'Alcohol delivery for bachelor and bachelorette parties in Austin. Premium spirits, party packages, and supplies delivered to hotels, Airbnbs, and venues.',
       eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      eventStatus: 'https://schema.org/EventScheduled',
       location: {
         '@type': 'Place',
-        name: 'Lake Travis & Austin',
+        name: 'Austin Party Locations',
         address: {
           '@type': 'PostalAddress',
           addressLocality: 'Austin',
-          addressRegion: 'TX'
+          addressRegion: 'TX',
+          addressCountry: 'US'
+        }
+      }
+    },
+    boat: {
+      name: 'Lake Travis Boat Party Alcohol Delivery',
+      description: 'Premium alcohol delivery to Lake Travis marinas and boats for yacht parties, bachelor parties, and waterfront celebrations.',
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      eventStatus: 'https://schema.org/EventScheduled',
+      location: {
+        '@type': 'Place',
+        name: 'Lake Travis Marinas',
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: 'Austin',
+          addressRegion: 'TX',
+          addressCountry: 'US'
+        },
+        geo: {
+          '@type': 'GeoCoordinates',
+          latitude: '30.3893',
+          longitude: '-97.9228'
         }
       }
     },
     corporate: {
-      name: 'Corporate Event Bar Service',
-      description: 'Professional bar service for corporate events and meetings',
+      name: 'Corporate Event Bar Service - Austin',
+      description: 'Professional bar service for corporate events, meetings, and company celebrations with TABC-certified staff and premium beverage packages.',
       eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      eventStatus: 'https://schema.org/EventScheduled',
       location: {
         '@type': 'Place',
         name: 'Austin Business District',
         address: {
           '@type': 'PostalAddress',
           addressLocality: 'Austin',
-          addressRegion: 'TX'
+          addressRegion: 'TX',
+          addressCountry: 'US'
         }
       }
     }
+  };
+
+  const urlMap = {
+    wedding: 'https://partyondelivery.com/weddings',
+    party: 'https://partyondelivery.com/bach-parties',
+    boat: 'https://partyondelivery.com/boat-parties',
+    corporate: 'https://partyondelivery.com/corporate-events'
   };
 
   return {
     '@context': 'https://schema.org',
     '@type': 'Event',
     ...events[eventType],
+    startDate,
+    endDate,
     organizer: {
       '@type': 'Organization',
       name: 'Party On Delivery',
-      url: 'https://partyondelivery.com'
+      url: 'https://partyondelivery.com',
+      telephone: '(737) 371-9700'
+    },
+    offers: {
+      '@type': 'Offer',
+      url: urlMap[eventType],
+      price: '0',
+      priceCurrency: 'USD',
+      availability: 'https://schema.org/InStock',
+      validFrom: startDate
     }
   };
 }

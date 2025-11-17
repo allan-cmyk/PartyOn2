@@ -4,40 +4,13 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion'; // Kept for carousel only
-import Script from 'next/script';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import HeroOverlay from '@/components/HeroOverlay';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
-import { generateFAQSchema } from '@/lib/seo/schemas';
+import BachPartiesSchemas from '@/components/seo/BachPartiesSchemas';
 
 export default function BachPartiesPage() {
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
-
-  // FAQ Data for Schema
-  const faqs = [
-    {
-      question: "Can you deliver to our Airbnb AND the party bus?",
-      answer: "Yes! We coordinate multi-location deliveries all the time. Add our Multi-Stop Coordination service (+$150) and we'll handle timing between locations."
-    },
-    {
-      question: "What if we run out of alcohol during the party?",
-      answer: "Book our Emergency Backup Order (+$99) and we'll have extra bottles on standby for same-day delivery. Most bach groups add this for peace of mind."
-    },
-    {
-      question: "How cold will the drinks be when delivered?",
-      answer: "Ice cold. We use insulated coolers and deliver within 30 minutes of leaving our facility. Add Ice + Cooler service (+$49) to keep everything cold all night."
-    },
-    {
-      question: "Can we split payment among the group?",
-      answer: "One person books and pays, then you sort out splitting costs yourselves. This actually reduces group drama according to our customers."
-    },
-    {
-      question: "What if weather ruins our Lake Travis plans?",
-      answer: "We'll coordinate with you to redirect delivery to your backup location at no extra charge. Just give us 4+ hours notice for location changes."
-    }
-  ];
-
-  const faqSchema = generateFAQSchema(faqs);
 
   const heroImages = [
     { src: '/images/services/bach-parties/bachelor-party-epic.webp', alt: 'Epic bachelor party celebration' },
@@ -102,12 +75,8 @@ export default function BachPartiesPage() {
 
   return (
     <div className="bg-white">
-      {/* FAQ Schema */}
-      <Script
-        id="bach-parties-faq-schema"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
+      {/* SEO Schemas - Server-rendered for crawlers */}
+      <BachPartiesSchemas />
 
       <OldFashionedNavigation />
       

@@ -168,7 +168,7 @@
         "austin",
         "activities"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 5,
@@ -1202,6 +1202,45 @@
         "wedding planning",
         "transition",
         "timeline"
+      ],
+      "published": false
+    },
+    {
+      "id": 101,
+      "title": "Corporate Event Bar Service Tips for Austin Businesses",
+      "category": "Corporate Events",
+      "keywords": [
+        "corporate event",
+        "bar service",
+        "austin",
+        "business events",
+        "bartender"
+      ],
+      "published": false
+    },
+    {
+      "id": 102,
+      "title": "Signature Wedding Cocktails Perfect for Texas Heat",
+      "category": "Weddings",
+      "keywords": [
+        "wedding cocktails",
+        "signature drinks",
+        "texas",
+        "austin weddings",
+        "summer drinks"
+      ],
+      "published": false
+    },
+    {
+      "id": 103,
+      "title": "Ultimate Guide to Austin Boat Parties on Lake Travis",
+      "category": "Boat Parties",
+      "keywords": [
+        "boat party",
+        "lake travis",
+        "austin",
+        "yacht party",
+        "water party"
       ],
       "published": false
     }
