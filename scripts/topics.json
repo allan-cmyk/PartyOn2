@@ -180,7 +180,7 @@
         "austin neighborhoods",
         "accommodations"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 6,
@@ -192,7 +192,7 @@
         "planning",
         "austin"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 7,
