@@ -106,10 +106,13 @@ export function generateFAQSchema(faqs: Array<{ question: string; answer: string
 }
 
 export function generateEventSchema(eventType: 'wedding' | 'party' | 'corporate' | 'boat') {
-  // Generate current year date range for ongoing service availability
-  const currentYear = new Date().getFullYear();
-  const startDate = `${currentYear}-01-01T00:00:00-06:00`; // Central Time
-  const endDate = `${currentYear}-12-31T23:59:59-06:00`;
+  // Generate future date range for ongoing service availability
+  // Start from today, end 1 year from today (valid future date range)
+  const today = new Date();
+  const startDate = today.toISOString();
+  const futureDate = new Date();
+  futureDate.setFullYear(futureDate.getFullYear() + 1);
+  const endDate = futureDate.toISOString();
 
   const events = {
     wedding: {

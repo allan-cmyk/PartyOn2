@@ -638,9 +638,9 @@ export default function BoatPartiesPage() {
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">LAKE TRAVIS</h4>
               <ul className="space-y-2">
                 <li><Link href="/delivery-areas#lake-travis" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Marinas</Link></li>
-                <li><Link href="/safety" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Safety Info</Link></li>
-                <li><Link href="/captains" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Captain Partners</Link></li>
-                <li><Link href="/weather" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Lake Conditions</Link></li>
+                <li><Link href="/faqs" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">FAQs</Link></li>
+                <li><Link href="/contact" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Contact Us</Link></li>
+                <li><Link href="/delivery-areas" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Delivery Areas</Link></li>
               </ul>
             </div>
             <div>
