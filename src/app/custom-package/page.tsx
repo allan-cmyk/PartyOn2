@@ -147,7 +147,7 @@ export default function CustomPackagePage() {
           </h1>
           <div className="w-24 h-px bg-gold-600 mx-auto mb-6" />
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Curated by Reginald, your distinguished beverage concierge
+            Curated by Wayne, your Texas Party Pro
           </p>
         </div>
       </section>

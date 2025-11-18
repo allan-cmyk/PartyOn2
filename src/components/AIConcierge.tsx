@@ -76,7 +76,7 @@ export default function AIConcierge({ mode = 'normal', isOpen: controlledIsOpen,
     {
       id: '1',
       role: 'assistant',
-      content: "*Adjusts monocle* Reginald at your service. Planning another American... gathering? Tell me your guest count and preferences, and I shall curate a proper selection. Swiftly, if you please.",
+      content: "Howdy! I'm Wayne, your friendly Texas party planning professional, what can I help you with?",
       timestamp: new Date()
     }
   ])
@@ -221,13 +221,13 @@ export default function AIConcierge({ mode = 'normal', isOpen: controlledIsOpen,
                   <div className="absolute right-2 top-2 w-3 h-3 border-2 border-gold-500 rounded-full animate-pulse" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-neutral-900">Reginald - Beverage Concierge</h3>
+                  <h3 className="font-medium text-neutral-900">Wayne - Texas Party Pro</h3>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="w-2 h-2 bg-green-400 rounded-full"></span>
                     <p className="text-xs text-neutral-500">
-                      {mode === 'bachelor' ? 'Bachelor Mode' : 
-                       mode === 'bachelorette' ? 'Bachelorette Mode' : 
-                       mode === 'party' ? 'Party Mode' : 
+                      {mode === 'bachelor' ? 'Bachelor Mode' :
+                       mode === 'bachelorette' ? 'Bachelorette Mode' :
+                       mode === 'party' ? 'Party Mode' :
                        mode === 'luxury' ? 'Luxury Mode' :
                        mode === 'elegant' ? 'Elegant Mode' :
                        mode === 'boho' ? 'Boho Mode' :
