@@ -261,7 +261,7 @@ function ProductsContent() {
         
         <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8">
           <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
-            CURATED COLLECTIONS
+            Premium Spirits & Party Essentials
           </h1>
           <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
           <p className="text-lg font-light tracking-[0.1em] text-gray-200 mb-8">
@@ -621,6 +621,61 @@ function ProductsContent() {
               <h3 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.1em]">Austin Coverage</h3>
               <p className="text-gray-600 text-sm">Delivering excellence throughout greater Austin</p>
             </ScrollRevealCSS>
+          </div>
+        </div>
+      </section>
+
+      {/* Rich Content Section for SEO */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-8">
+          <div className="prose prose-lg max-w-none">
+            <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-6 tracking-[0.1em] text-center">
+              Premium Beverage Selection for Every Austin Event
+            </h2>
+            <div className="w-16 h-px bg-gold-600 mx-auto mb-8" />
+
+            <p className="text-gray-700 leading-relaxed mb-6">
+              Our carefully curated product catalog brings together the best of Austin&apos;s local craft scene with premium domestic and imported selections. Whether you&apos;re stocking a <Link href="/weddings" className="text-gold-600 hover:text-gold-700 underline">wedding bar</Link>, planning a <Link href="/corporate" className="text-gold-600 hover:text-gold-700 underline">corporate happy hour</Link>, or hosting an intimate dinner party, we provide the quality and variety your event deserves.
+            </p>
+
+            <h3 className="font-serif text-2xl text-gray-900 mt-8 mb-4 tracking-[0.08em]">
+              Local Austin Craft Beer & Spirits
+            </h3>
+            <p className="text-gray-700 leading-relaxed mb-6">
+              We proudly feature selections from Austin&apos;s renowned craft breweries including Live Oak Brewing, Austin Beerworks, Zilker Brewing Company, and more. Our spirits collection showcases Texas distilleries like Tito&apos;s Handmade Vodka, Treaty Oak Distilling, Still Austin Whiskey Co., and Garrison Brothers. Supporting local isn&apos;t just good business—it&apos;s what makes Austin events truly special.
+            </p>
+
+            <h3 className="font-serif text-2xl text-gray-900 mt-8 mb-4 tracking-[0.08em]">
+              Complete Event Bar Supplies
+            </h3>
+            <p className="text-gray-700 leading-relaxed mb-6">
+              Beyond beverages, we stock everything needed for a professional bar setup. Our inventory includes mixers (tonic, club soda, cola, ginger beer, fresh juices), garnishes, bagged ice, premium disposable cups and glassware, cocktail napkins, bar tools, and specialty items like custom koozies for weddings and corporate events. We can also arrange keg rentals with tap systems and ice tubs for beer-forward events.
+            </p>
+
+            <h3 className="font-serif text-2xl text-gray-900 mt-8 mb-4 tracking-[0.08em]">
+              Wine Selection for Every Palate
+            </h3>
+            <p className="text-gray-700 leading-relaxed mb-6">
+              Our wine program features carefully selected bottles from Texas Hill Country wineries, California estates, and international vineyards. From crisp Sauvignon Blanc and elegant Pinot Noir to celebratory Champagne and Prosecco, we help you choose wines that complement your event&apos;s cuisine and atmosphere. Need guidance? Our team provides personalized recommendations based on your menu, guest preferences, and budget.
+            </p>
+
+            <h3 className="font-serif text-2xl text-gray-900 mt-8 mb-4 tracking-[0.08em]">
+              Flexible Ordering & Delivery
+            </h3>
+            <p className="text-gray-700 leading-relaxed mb-6">
+              Browse our online catalog, add items to your cart, and schedule delivery directly to your venue or event location. We offer flexible delivery windows throughout Austin, Lake Travis, and the Hill Country. All beverages are delivered cold and ready to serve. Have questions about quantities or selections? <Link href="/contact" className="text-gold-600 hover:text-gold-700 underline">Contact our team</Link> for expert guidance tailored to your specific event needs.
+            </p>
+
+            <div className="mt-8 p-6 bg-white border-2 border-gold-600 rounded-lg text-center">
+              <p className="text-lg text-gray-800 mb-4">
+                <strong>Need help planning your bar?</strong> Our beverage experts provide complimentary consultations for all events.
+              </p>
+              <Link href="/contact">
+                <button className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                  SCHEDULE A CONSULTATION
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
