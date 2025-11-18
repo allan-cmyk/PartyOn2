@@ -105,7 +105,7 @@ export default async function BlogCategoryPage({ params }: { params: Promise<{ c
               {categoryPosts.map((post) => {
                 const category = post.tags[0] || 'Article';
                 const imageUrl = typeof post.image === 'string' ? post.image : (post.image?.url || '/images/hero/lake-travis-yacht-sunset.webp');
-                const postDate = post.publishedAt || post.date || new Date().toISOString();
+                const postDate = post.publishedAt || (post as any).date || new Date().toISOString();
 
                 return (
                   <article
