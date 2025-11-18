@@ -5,46 +5,21 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import OldFashionedNavigation from '@/components/OldFashionedNavigation'
+import migratedPosts from '@/data/blog-posts/posts.json'
+import { getAllMDXPosts, mdxPostToLegacyFormat } from '@/lib/blog-mdx'
 
-// Mock blog posts - in production, fetch from CMS or database
-const blogPosts = [
-  {
-    slug: 'ultimate-guide-austin-boat-parties',
-    title: 'The Ultimate Guide to Austin Boat Parties',
-    excerpt: 'Everything you need to know about hosting the perfect boat party on Lake Travis, from planning to execution.',
-    image: '/images/hero/lake-travis-yacht-sunset.webp',
-    category: 'Event Planning',
-    date: '2024-03-15',
-    readTime: '8 min read'
-  },
-  {
-    slug: 'signature-wedding-cocktails-texas-heat',
-    title: 'Signature Wedding Cocktails for Texas Heat',
-    excerpt: 'Beat the Texas sun with these refreshing cocktail recipes perfect for outdoor weddings.',
-    image: '/images/services/weddings/signature-cocktails-closeup.webp',
-    category: 'Cocktail Recipes',
-    date: '2024-03-10',
-    readTime: '5 min read'
-  },
-  {
-    slug: 'bachelor-party-ideas-austin-2024',
-    title: 'Top 10 Bachelor Party Ideas in Austin for 2024',
-    excerpt: 'From brewery tours to lake adventures, discover the best ways to celebrate in the Live Music Capital.',
-    image: '/images/gallery/sunset-champagne-pontoon.webp',
-    category: 'Event Ideas',
-    date: '2024-03-05',
-    readTime: '10 min read'
-  },
-  {
-    slug: 'corporate-event-bar-service-tips',
-    title: 'Professional Bar Service for Corporate Events',
-    excerpt: 'Impress clients and colleagues with these expert tips for corporate event beverage service.',
-    image: '/images/backgrounds/rooftop-terrace-elegant-1.webp',
-    category: 'Business',
-    date: '2024-02-28',
-    readTime: '6 min read'
-  }
-]
+interface BlogPost {
+  slug: string;
+  title: string;
+  excerpt: string;
+  publishedAt?: string;
+  date?: string;
+  image?: {
+    url: string;
+    alt: string;
+  } | string;
+  tags: string[];
+}
 
 const categoryMap: Record<string, string> = {
   'event-planning': 'Event Planning',
@@ -80,16 +55,24 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
 export default async function BlogCategoryPage({ params }: { params: Promise<{ category: string }> }) {
   const resolvedParams = await params
   const categoryName = categoryMap[resolvedParams.category]
-  
+
   if (!categoryName) {
     notFound()
   }
 
-  // Filter posts by category
-  const categoryPosts = blogPosts.filter(post => 
-    post.category.toLowerCase() === categoryName.toLowerCase() ||
-    (categoryName === 'Business Tips' && post.category === 'Business') ||
-    (categoryName === 'Event Ideas' && post.category.includes('Event'))
+  // Get MDX posts from filesystem
+  const mdxPosts = getAllMDXPosts()
+  const mdxPostsLegacy = mdxPosts.map(mdxPostToLegacyFormat)
+
+  // Combine all posts
+  const allPosts = [
+    ...mdxPostsLegacy,
+    ...(migratedPosts as BlogPost[])
+  ]
+
+  // Filter posts by category tag
+  const categoryPosts = allPosts.filter(post =>
+    post.tags.some(tag => tag.toLowerCase() === categoryName.toLowerCase())
   )
 
   return (
@@ -119,49 +102,53 @@ export default async function BlogCategoryPage({ params }: { params: Promise<{ c
         <div className="max-w-7xl mx-auto">
           {categoryPosts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-              {categoryPosts.map((post) => (
-                <article
-                  key={post.slug}
-                  className="bg-white border border-gray-200 hover:border-gold-500 transition-all duration-300 group"
-                >
-                  <Link href={`/blog/${post.slug}`}>
-                    <div className="relative h-64 overflow-hidden">
-                      <Image
-                        src={post.image}
-                        alt={post.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
-                      <div className="absolute top-4 left-4">
-                        <span className="bg-white px-3 py-1 text-xs tracking-[0.1em] text-gray-700">
-                          {post.category.toUpperCase()}
+              {categoryPosts.map((post) => {
+                const category = post.tags[0] || 'Article';
+                const imageUrl = typeof post.image === 'string' ? post.image : (post.image?.url || '/images/hero/lake-travis-yacht-sunset.webp');
+                const postDate = post.publishedAt || post.date || new Date().toISOString();
+
+                return (
+                  <article
+                    key={post.slug}
+                    className="bg-white border border-gray-200 hover:border-gold-500 transition-all duration-300 group"
+                  >
+                    <Link href={`/blog/${post.slug}`}>
+                      <div className="relative h-64 overflow-hidden">
+                        <Image
+                          src={imageUrl}
+                          alt={typeof post.image === 'object' ? (post.image?.alt || post.title) : post.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-700"
+                        />
+                        <div className="absolute top-4 left-4">
+                          <span className="bg-white px-3 py-1 text-xs tracking-[0.1em] text-gray-700">
+                            {category.toUpperCase()}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="p-6">
+                        <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
+                          <time>{new Date(postDate).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}</time>
+                        </div>
+                        <h2 className="font-serif text-2xl text-gray-900 mb-3 group-hover:text-gold-500 transition-colors">
+                          {post.title}
+                        </h2>
+                        <p className="text-gray-600 mb-4 line-clamp-3">
+                          {post.excerpt}
+                        </p>
+                        <span className="inline-block mt-2 px-4 py-2 border border-gold-500 text-gold-600 group-hover:bg-gold-600 group-hover:text-gray-900 font-medium text-sm tracking-[0.1em] transition-all">
+                          READ MORE →
                         </span>
                       </div>
-                    </div>
-                    <div className="p-6">
-                      <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                        <time>{new Date(post.date).toLocaleDateString('en-US', { 
-                          year: 'numeric', 
-                          month: 'long', 
-                          day: 'numeric' 
-                        })}</time>
-                        <span>•</span>
-                        <span>{post.readTime}</span>
-                      </div>
-                      <h2 className="font-serif text-2xl text-gray-900 mb-3 group-hover:text-gold-500 transition-colors">
-                        {post.title}
-                      </h2>
-                      <p className="text-gray-600 mb-4 line-clamp-3">
-                        {post.excerpt}
-                      </p>
-                      <span className="inline-block mt-2 px-4 py-2 border border-gold-500 text-gold-600 group-hover:bg-gold-600 group-hover:text-gray-900 font-medium text-sm tracking-[0.1em] transition-all">
-                        READ MORE →
-                      </span>
-                    </div>
-                  </Link>
-                </article>
-              ))}
+                    </Link>
+                  </article>
+                );
+              })}
             </div>
           ) : (
             <div className="text-center py-12">
