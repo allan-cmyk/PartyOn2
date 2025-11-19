@@ -87,6 +87,8 @@ function markTopicPublished(topics: TopicsData, topicId: number): void {
 async function generateBlogContent(topic: Topic): Promise<string> {
   console.log(`🤖 Generating blog content with Claude via Anthropic API...`);
 
+  const serviceInfo = getCategoryServiceInfo(topic.category);
+
   const prompt = `You are an expert SEO content writer for Party On Delivery, an Austin-based premium alcohol delivery service specializing in weddings, bachelor/bachelorette parties, boat parties, and corporate events.
 
 Write a comprehensive, SEO-optimized 1,000-1,200 word blog post about: "${topic.title}"
@@ -100,6 +102,14 @@ CONTENT GUIDELINES:
 - Use descriptive subheadings (##) to break up content
 - Target keywords naturally throughout: ${topic.keywords.join(', ')}
 - End with a clear next step or call-to-action
+
+CATEGORY-SPECIFIC CALL-TO-ACTION (CRITICAL):
+This blog post is about "${topic.category}". The conclusion MUST:
+- Link to our ${topic.category.toLowerCase()} service page: ${serviceInfo.url}
+- Mention our specific ${topic.category.toLowerCase()} services: ${serviceInfo.description}
+- Use a natural, contextual CTA that relates to the article topic
+- Format: [text about our service](${serviceInfo.url})
+Example: "Ready to elevate your ${topic.category.toLowerCase().replace('parties', 'party')}? [Explore our ${serviceInfo.description}](${serviceInfo.url}) and let Party On Delivery handle the details."
 
 EXTERNAL BUSINESS REFERENCES (CRITICAL - MINIMUM 5-7 REQUIRED):
 - MUST include at least 5-7 real external business links per blog post
@@ -375,6 +385,37 @@ function insertImagesIntoContent(content: string, imagePaths: string[]): string 
   }
 
   return newLines.join('\n');
+}
+
+// Get category-specific service page info for CTAs
+function getCategoryServiceInfo(category: string): { url: string; description: string } {
+  const categoryMap: Record<string, { url: string; description: string }> = {
+    'Corporate Events': {
+      url: 'https://partyondelivery.com/corporate',
+      description: 'premium bar service for corporate events, team building activities, client appreciation events, and professional happy hours in Austin'
+    },
+    'Weddings': {
+      url: 'https://partyondelivery.com/weddings',
+      description: 'wedding bar service, signature cocktails, reception beverage packages, and day-of alcohol delivery for Austin weddings'
+    },
+    'Bachelor Parties': {
+      url: 'https://partyondelivery.com/bach-parties',
+      description: 'bachelor party packages, premium alcohol delivery, and party supplies for epic Austin bachelor weekends'
+    },
+    'Bachelorette Parties': {
+      url: 'https://partyondelivery.com/bach-parties',
+      description: 'bachelorette party packages, curated bar setups, and premium beverage delivery for unforgettable Austin bachelorette weekends'
+    },
+    'Boat Parties': {
+      url: 'https://partyondelivery.com/boat-parties',
+      description: 'boat party alcohol delivery, cooler packages, and premium beverage service for Lake Travis and Lake Austin boat parties'
+    }
+  };
+
+  return categoryMap[category] || {
+    url: 'https://partyondelivery.com/',
+    description: 'premium alcohol delivery, curated beverage packages, and exceptional service for all your Austin events and celebrations'
+  };
 }
 
 // Select random author with weighted distribution
