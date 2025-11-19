@@ -10,7 +10,8 @@ import { config } from 'dotenv';
 // Load environment variables from .env.local
 config({ path: path.join(process.cwd(), '.env.local') });
 
-// Using OpenRouter API (same as image generation)
+// Using Anthropic API directly (more reliable than OpenRouter)
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || process.env.GOOGLE_API_KEY || '';
 
 interface Topic {
@@ -61,9 +62,17 @@ function saveTopics(topics: TopicsData): void {
   fs.writeFileSync(CONFIG.topicsFile, JSON.stringify(topics, null, 2));
 }
 
-// Get next unpublished topic
-function getNextTopic(topics: TopicsData): Topic | null {
-  return topics.topics.find(t => !t.published) || null;
+// Get next unpublished topic (optionally filtered by category)
+function getNextTopic(topics: TopicsData, categoryFilter?: string): Topic | null {
+  return topics.topics.find(t => {
+    if (!t.published) {
+      if (categoryFilter) {
+        return t.category === categoryFilter;
+      }
+      return true;
+    }
+    return false;
+  }) || null;
 }
 
 // Mark topic as published
@@ -74,9 +83,11 @@ function markTopicPublished(topics: TopicsData, topicId: number): void {
   }
 }
 
-// Generate blog content with Claude via OpenRouter
+// Generate blog content with Claude via Anthropic API
 async function generateBlogContent(topic: Topic): Promise<string> {
-  console.log(`🤖 Generating blog content with Claude via OpenRouter...`);
+  console.log(`🤖 Generating blog content with Claude via Anthropic API...`);
+
+  const serviceInfo = getCategoryServiceInfo(topic.category);
 
   const prompt = `You are an expert SEO content writer for Party On Delivery, an Austin-based premium alcohol delivery service specializing in weddings, bachelor/bachelorette parties, boat parties, and corporate events.
 
@@ -91,6 +102,14 @@ CONTENT GUIDELINES:
 - Use descriptive subheadings (##) to break up content
 - Target keywords naturally throughout: ${topic.keywords.join(', ')}
 - End with a clear next step or call-to-action
+
+CATEGORY-SPECIFIC CALL-TO-ACTION (CRITICAL):
+This blog post is about "${topic.category}". The conclusion MUST:
+- Link to our ${topic.category.toLowerCase()} service page: ${serviceInfo.url}
+- Mention our specific ${topic.category.toLowerCase()} services: ${serviceInfo.description}
+- Use a natural, contextual CTA that relates to the article topic
+- Format: [text about our service](${serviceInfo.url})
+Example: "Ready to elevate your ${topic.category.toLowerCase().replace('parties', 'party')}? [Explore our ${serviceInfo.description}](${serviceInfo.url}) and let Party On Delivery handle the details."
 
 EXTERNAL BUSINESS REFERENCES (CRITICAL - MINIMUM 5-7 REQUIRED):
 - MUST include at least 5-7 real external business links per blog post
@@ -250,32 +269,32 @@ IMPORTANT:
 
 Write the blog post now:`;
 
-  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-      'Content-Type': 'application/json',
-      'HTTP-Referer': 'https://partyondelivery.com',
-      'X-Title': 'Party On Delivery Blog Generator'
+      'x-api-key': ANTHROPIC_API_KEY,
+      'anthropic-version': '2023-06-01',
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      model: 'anthropic/claude-3.5-sonnet',
+      model: 'claude-3-haiku-20240307',
+      max_tokens: 4096,
       messages: [
         {
           role: 'user',
           content: prompt
         }
-      ],
-      max_tokens: 8192
+      ]
     })
   });
 
   if (!response.ok) {
-    throw new Error(`OpenRouter API error: ${response.statusText}`);
+    const errorText = await response.text();
+    throw new Error(`Anthropic API error: ${response.statusText} - ${errorText}`);
   }
 
   const data = await response.json();
-  return data.choices[0].message.content;
+  return data.content[0].text;
 }
 
 // Generate images for the blog post
@@ -368,6 +387,37 @@ function insertImagesIntoContent(content: string, imagePaths: string[]): string 
   return newLines.join('\n');
 }
 
+// Get category-specific service page info for CTAs
+function getCategoryServiceInfo(category: string): { url: string; description: string } {
+  const categoryMap: Record<string, { url: string; description: string }> = {
+    'Corporate Events': {
+      url: 'https://partyondelivery.com/corporate',
+      description: 'premium bar service for corporate events, team building activities, client appreciation events, and professional happy hours in Austin'
+    },
+    'Weddings': {
+      url: 'https://partyondelivery.com/weddings',
+      description: 'wedding bar service, signature cocktails, reception beverage packages, and day-of alcohol delivery for Austin weddings'
+    },
+    'Bachelor Parties': {
+      url: 'https://partyondelivery.com/bach-parties',
+      description: 'bachelor party packages, premium alcohol delivery, and party supplies for epic Austin bachelor weekends'
+    },
+    'Bachelorette Parties': {
+      url: 'https://partyondelivery.com/bach-parties',
+      description: 'bachelorette party packages, curated bar setups, and premium beverage delivery for unforgettable Austin bachelorette weekends'
+    },
+    'Boat Parties': {
+      url: 'https://partyondelivery.com/boat-parties',
+      description: 'boat party alcohol delivery, cooler packages, and premium beverage service for Lake Travis and Lake Austin boat parties'
+    }
+  };
+
+  return categoryMap[category] || {
+    url: 'https://partyondelivery.com/',
+    description: 'premium alcohol delivery, curated beverage packages, and exceptional service for all your Austin events and celebrations'
+  };
+}
+
 // Select random author with weighted distribution
 function selectAuthor(): string {
   // 75% Allan Henslee, 25% Brian Hill
@@ -417,11 +467,20 @@ async function generateDailyBlog(): Promise<void> {
   console.log('\n🚀 Starting automated blog generation...\n');
   console.log('='.repeat(60));
 
+  // Check for category filter from command line arguments
+  const categoryFilter = process.argv.includes('--category')
+    ? process.argv[process.argv.indexOf('--category') + 1]
+    : undefined;
+
+  if (categoryFilter) {
+    console.log(`🎯 Filtering for category: ${categoryFilter}`);
+  }
+
   try {
     // STEP 1: Load topics and select next
     console.log('\n📋 STEP 1/6: Loading topics...');
     const topicsData = loadTopics();
-    const topic = getNextTopic(topicsData);
+    const topic = getNextTopic(topicsData, categoryFilter);
 
     if (!topic) {
       console.log('❌ No unpublished topics remaining!');

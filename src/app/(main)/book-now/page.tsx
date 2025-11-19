@@ -48,14 +48,18 @@ function BookNowContent() {
   return (
     <>
       {/* Epic Video Hero */}
-      <VideoHero
-        title="Book Your Party On Experience"
-        subtitle="Let's Make It Legendary"
-        description="Fast delivery or full-service events - we've got you covered"
-        videoSrc="/videos/backgrounds/upscale-bachelorette.mp4"
-        fallbackImage="/images/hero/neon-nights-hero.webp"
-        height="medium"
-      />
+      <div className="relative">
+        <VideoHero
+          title="Book Your Party On Experience"
+          subtitle="Let's Make It Legendary"
+          description="Fast delivery or full-service events - we've got you covered"
+          videoSrc="/videos/backgrounds/upscale-bachelorette.mp4"
+          fallbackImage="/images/hero/neon-nights-hero.webp"
+          height="medium"
+        />
+        {/* SEO H1 (visually hidden but accessible) */}
+        <h1 className="sr-only">Book Alcohol Delivery or Event Service in Austin</h1>
+      </div>
 
       {/* Booking Form */}
       <Section>

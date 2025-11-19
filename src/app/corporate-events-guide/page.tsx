@@ -11,7 +11,7 @@ import CorporateEventCalculator from '@/components/CorporateEventCalculator'
 // MDX components that can be used in the content
 const components = {
   CorporateEventCalculator,
-  h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => <h1 className="font-serif text-4xl md:text-5xl font-light text-gray-900 mb-6 tracking-[0.1em]" {...props} />,
+  h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => <h2 className="font-serif text-4xl md:text-5xl font-light text-gray-900 mb-6 tracking-[0.1em]" {...props} />,
   h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => <h2 className="font-serif text-3xl md:text-4xl font-light text-gray-900 mt-12 mb-4 tracking-[0.08em]" {...props} />,
   h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => <h3 className="font-serif text-2xl md:text-3xl font-light text-gray-900 mt-8 mb-3 tracking-[0.06em]" {...props} />,
   p: (props: React.HTMLAttributes<HTMLParagraphElement>) => <p className="text-gray-700 leading-relaxed mb-4" {...props} />,

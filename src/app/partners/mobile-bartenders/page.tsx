@@ -6,6 +6,7 @@ import Link from 'next/link';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
+import YouTubeEmbed from '@/components/YouTubeEmbed';
 
 export default function MobileBartenderPartnerPage() {
   // Commission configuration
@@ -493,6 +494,41 @@ Source: ${formData.source}`,
         </div>
       </section>
 
+      {/* Video Showcase Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-5xl mx-auto px-8">
+          <ScrollRevealCSS duration={800} delay={0} y={30}>
+            <div className="text-center mb-12">
+              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+                See How It Works
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Watch how Austin&apos;s top mobile bartenders are earning more with Party On Delivery
+              </p>
+            </div>
+          </ScrollRevealCSS>
+
+          <ScrollRevealCSS duration={800} delay={200} y={30}>
+            <YouTubeEmbed
+              videoId="8s5WsAs7IGA"
+              title="Mobile Bartender Partnership Program - Party On Delivery"
+            />
+          </ScrollRevealCSS>
+
+          <ScrollRevealCSS duration={800} delay={300} y={30}>
+            <div className="mt-8 text-center">
+              <button
+                onClick={scrollToForm}
+                className="bg-gold-600 text-gray-900 px-10 py-4 text-lg tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium"
+              >
+                APPLY TO PARTNER
+              </button>
+            </div>
+          </ScrollRevealCSS>
+        </div>
+      </section>
+
       {/* Benefits Grid */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-8">
@@ -711,36 +747,55 @@ Source: ${formData.source}`,
 
       {/* Local Advantage */}
       <section className="relative py-20 overflow-hidden">
-        {/* TODO: Replace with Austin skyline or Lake Travis background */}
         <Image
-          src="/images/backgrounds/austin-skyline-placeholder.jpg"
-          alt="Austin skyline"
+          src="/images/hero/austin-skyline-golden-hour.webp"
+          alt="Austin skyline at sunset with vibrant colors reflecting on Lady Bird Lake"
           fill
           className="object-cover"
+          priority
+          sizes="100vw"
+          quality={90}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/95 via-gray-900/85 to-gray-900/95" />
+        {/* Darker overlay for better text readability against colorful sunset */}
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-900/80 to-gray-900/90" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-8 text-white">
-          <ScrollRevealCSS duration={800} delay={0} y={30}>
-            <div className="max-w-3xl">
-              <h2 className="font-serif font-light text-4xl md:text-5xl mb-6 tracking-[0.1em]">
-              Austin Born & Raised
-            </h2>
-            <div className="w-16 h-px bg-gold-400 mb-8" />
-            <p className="text-xl mb-6 leading-relaxed">
-              We know the difference between downtown traffic at 4pm on a Friday and getting to Lakeway before sunset. We understand TABC compliance, venue delivery protocols, and exactly how much ice melts on a 95-degree July afternoon.
-            </p>
-            <p className="text-xl mb-8 leading-relaxed">
-              Every delivery arrives cold, on-time, and handled by people who actually care about your event&apos;s success. Because we live here too.
-            </p>
-            <button
-              onClick={scrollToForm}
-              className="bg-gold-600 text-gray-900 px-10 py-4 text-lg tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium"
-            >
-              BECOME A PARTNER
-            </button>
-            </div>
-          </ScrollRevealCSS>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Text Content */}
+            <ScrollRevealCSS duration={800} delay={0} y={30}>
+              <div>
+                <h2 className="font-serif font-light text-4xl md:text-5xl mb-6 tracking-[0.1em]">
+                  Austin Born & Raised
+                </h2>
+                <div className="w-16 h-px bg-gold-400 mb-8" />
+                <p className="text-xl mb-6 leading-relaxed">
+                  We know the difference between downtown traffic at 4pm on a Friday and getting to Lakeway before sunset. We understand TABC compliance, venue delivery protocols, and exactly how much ice melts on a 95-degree July afternoon.
+                </p>
+                <p className="text-xl mb-8 leading-relaxed">
+                  Every delivery arrives cold, on-time, and handled by people who actually care about your event&apos;s success. Because we live here too.
+                </p>
+                <button
+                  onClick={scrollToForm}
+                  className="bg-gold-600 text-gray-900 px-10 py-4 text-lg tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium"
+                >
+                  BECOME A PARTNER
+                </button>
+              </div>
+            </ScrollRevealCSS>
+
+            {/* Founders Image */}
+            <ScrollRevealCSS duration={800} delay={200} y={30}>
+              <div className="relative aspect-square max-w-md mx-auto lg:ml-auto lg:mr-0">
+                <Image
+                  src="/images/about/founders-austin-team.jpg"
+                  alt="Party On Delivery founders - Austin locals who understand the city's event scene"
+                  fill
+                  className="object-cover rounded-lg shadow-2xl"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              </div>
+            </ScrollRevealCSS>
+          </div>
         </div>
       </section>
 

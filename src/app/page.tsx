@@ -545,6 +545,48 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Rich Content Section for SEO */}
+      <section className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-8">
+          <ScrollRevealCSS duration={800} y={30}>
+            <div className="prose prose-lg max-w-none">
+              <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-6 tracking-[0.1em] text-center">
+                Austin&apos;s Premier Alcohol Delivery & Event Bar Service
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto mb-8" />
+
+              <p className="text-gray-700 leading-relaxed mb-6">
+                Since 2023, Party On Delivery has been Austin&apos;s trusted partner for premium alcohol delivery and full-service bar coordination. Whether you&apos;re planning an intimate gathering, a <Link href="/corporate" className="text-gold-600 hover:text-gold-700 underline">corporate celebration</Link>, or a grand <Link href="/weddings" className="text-gold-600 hover:text-gold-700 underline">wedding reception</Link>, we provide the expertise, selection, and seamless execution that elevates every occasion.
+              </p>
+
+              <h3 className="font-serif text-2xl text-gray-900 mt-8 mb-4 tracking-[0.08em]">
+                Comprehensive Beverage Selection
+              </h3>
+              <p className="text-gray-700 leading-relaxed mb-6">
+                Our <Link href="/products" className="text-gold-600 hover:text-gold-700 underline">curated catalog</Link> features everything from local Austin craft breweries to premium imported spirits. We stock an extensive selection of beer (domestic, craft, and imported), wine (red, white, rosé, and sparkling), and spirits (vodka, whiskey, tequila, rum, gin, and more). Looking for something special? We can source unique selections from Central Texas distributors to match your event&apos;s exact vision.
+              </p>
+
+              <h3 className="font-serif text-2xl text-gray-900 mt-8 mb-4 tracking-[0.08em]">
+                Full-Service Event Coordination
+              </h3>
+              <p className="text-gray-700 leading-relaxed mb-6">
+                Planning a <Link href="/weddings" className="text-gold-600 hover:text-gold-700 underline">wedding at a Lake Travis vineyard</Link>? Hosting a <Link href="/corporate" className="text-gold-600 hover:text-gold-700 underline">corporate retreat in the Hill Country</Link>? Throwing a <Link href="/bach-parties" className="text-gold-600 hover:text-gold-700 underline">bachelor party on Rainey Street</Link>? Our team coordinates directly with your venue to ensure flawless delivery timing, proper temperature control, and professional setup. We handle the logistics so you can focus on enjoying your event. Optional TABC-certified bartender staffing is available through our vetted partner network for full-service experiences.
+              </p>
+
+              <h3 className="font-serif text-2xl text-gray-900 mt-8 mb-4 tracking-[0.08em]">
+                Why Austin Events Choose Party On Delivery
+              </h3>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                Our success comes from understanding Austin&apos;s unique event landscape. We know the venues, from The Driskill Hotel downtown to ranch properties in Dripping Springs. We understand Texas regulations and maintain full TABC licensing with comprehensive insurance coverage. Most importantly, we treat every event—whether it&apos;s serving 20 guests or 500—with the same attention to detail and commitment to excellence.
+              </p>
+              <p className="text-gray-700 leading-relaxed mb-6">
+                Our 72-hour advance booking recommendation ensures we can source specialty items and coordinate complex logistics, though we always try to accommodate shorter timelines when possible. <Link href="/delivery-areas" className="text-gold-600 hover:text-gold-700 underline">Delivery zones</Link> include all of Austin, Lake Travis, Westlake Hills, Bee Cave, Lakeway, and surrounding Hill Country communities. View our <Link href="/faqs" className="text-gold-600 hover:text-gold-700 underline">frequently asked questions</Link> or <Link href="/contact" className="text-gold-600 hover:text-gold-700 underline">contact our team</Link> for personalized guidance.
+              </p>
+            </div>
+          </ScrollRevealCSS>
+        </div>
+      </section>
+
       {/* Mini-FAQ */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-8">

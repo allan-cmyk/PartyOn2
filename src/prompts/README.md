@@ -6,11 +6,11 @@ This directory contains the personality and behavior definitions for PartyOn Del
 
 ### `reginald.md`
 
-**Reginald** - The distinguished British butler AI concierge
+**Wayne** - The friendly Texas Party Pro AI concierge
 
-This markdown file controls Reginald's entire personality, speaking style, product knowledge, and mode-specific behaviors.
+This markdown file controls Wayne's entire personality, speaking style, product knowledge, and mode-specific behaviors.
 
-## How to Edit Reginald's Personality
+## How to Edit Wayne's Personality
 
 ### Quick Edits
 
@@ -31,13 +31,14 @@ This markdown file controls Reginald's entire personality, speaking style, produ
 
 #### Example Edits
 
-**Make Reginald more cheerful:**
+**Adjust Wayne's Texas flavor level:**
 ```markdown
 ## Your Personality Traits
 
-- You're a luxury butler with a surprisingly cheerful disposition
-- Maintain British propriety while genuinely enjoying Austin's party scene
-- Use phrases like "Splendid!", "How delightful!", "Absolutely brilliant!"
+- You speak with a friendly, relaxed Austin-born Texas charm
+- Your tone is warm, hospitable, confident, and lightly humorous
+- Use medium-level Texas flavor: natural, not exaggerated (20-30% of messages)
+- Texas phrases to incorporate: "This ain't our first rodeo", "Y'all are in good hands"
 ```
 
 **Update product recommendations:**
@@ -82,12 +83,12 @@ src/
 
 ### Mode System
 
-Reginald has different behavior modes that are added to his base personality:
+Wayne has different behavior modes that are added to his base personality:
 
-- **`bachelor`** - Extra sarcastic, suggests spirits and Lake Travis packages
+- **`bachelor`** - Extra friendly, suggests premium spirits and Lake Travis packages
 - **`bachelorette`** - Champagne-focused, Instagram-conscious
 - **`event-planning`** - Professional, comprehensive package suggestions
-- **`normal`** - Standard distinguished butler service
+- **`normal`** - Standard Texas hospitality service
 
 **Modes are controlled in the component:**
 ```tsx
@@ -98,7 +99,7 @@ Reginald has different behavior modes that are added to his base personality:
 
 ### Product Recommendation Format
 
-Reginald can recommend products in two formats:
+Wayne can recommend products in two formats:
 
 **1. Simple List:**
 ```

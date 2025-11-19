@@ -33,8 +33,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://partyondelivery.com'),
-  title: "Austin Event Alcohol Delivery | Party On Delivery | Weddings, Corporate & Bach Parties",
-  description: "Austin's premier alcohol delivery for weddings, corporate events, bachelorette parties & special occasions. Beer kegs, wine, spirits & party supplies delivered. Serving Downtown, Lake Travis & all of Austin. 🎉",
+  title: "Party On Delivery | Premium Alcohol Delivery in Austin",
+  description: "Austin's premier alcohol delivery for weddings, corporate events, bachelorette parties & special occasions. Beer kegs, wine, spirits & party supplies delivered. Serving Downtown, Lake Travis & all of Austin.",
   keywords: "alcohol delivery austin, wedding bar service, lake travis boat party, austin party delivery, premium spirits delivery",
   viewport: {
     width: 'device-width',
@@ -45,8 +45,8 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: "Austin Event Alcohol Delivery | Party On Delivery | Weddings, Corporate & Bach Parties",
-    description: "Austin's premier alcohol delivery for weddings, corporate events, bachelorette parties & special occasions. Beer kegs, wine, spirits & party supplies delivered. Serving Downtown, Lake Travis & all of Austin. 🎉",
+    title: "Party On Delivery | Premium Alcohol Delivery in Austin",
+    description: "Austin's premier alcohol delivery for weddings, corporate events, bachelorette parties & special occasions. Beer kegs, wine, spirits & party supplies delivered. Serving Downtown, Lake Travis & all of Austin.",
     url: "https://partyondelivery.com",
     siteName: "Party On Delivery",
     images: [
@@ -62,8 +62,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Austin Event Alcohol Delivery | Party On Delivery | Weddings, Corporate & Bach Parties",
-    description: "Austin's premier alcohol delivery for weddings, corporate events, bachelorette parties & special occasions. Beer kegs, wine, spirits & party supplies delivered. Serving Downtown, Lake Travis & all of Austin. 🎉",
+    title: "Party On Delivery | Premium Alcohol Delivery in Austin",
+    description: "Austin's premier alcohol delivery for weddings, corporate events, bachelorette parties & special occasions. Beer kegs, wine, spirits & party supplies delivered. Serving Downtown, Lake Travis & all of Austin.",
     images: ["/images/hero/lake-travis-sunset.webp"],
   },
   robots: {
