@@ -14,6 +14,7 @@
     "db:studio": "prisma studio",
     "generate-blog": "tsx scripts/automated-daily-blog.ts",
     "generate-daily": "tsx scripts/automated-daily-blog.ts",
+    "generate-blog-images": "tsx scripts/generate-blog-images.ts",
     "test-blog-images": "tsx scripts/test-gemini.ts",
     "deploy": "bash scripts/deploy-and-ping.sh production",
     "deploy:staging": "bash scripts/deploy-and-ping.sh staging",

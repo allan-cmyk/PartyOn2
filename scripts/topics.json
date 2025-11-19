@@ -1216,7 +1216,7 @@
         "business events",
         "bartender"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 102,
@@ -1243,6 +1243,58 @@
         "water party"
       ],
       "published": false
+    },
+    {
+      "id": 104,
+      "title": "How to Plan a Successful Corporate Networking Event in Austin",
+      "category": "Corporate Events",
+      "keywords": [
+        "corporate networking",
+        "business event",
+        "austin",
+        "professional mixer",
+        "networking party"
+      ],
+      "published": true
+    },
+    {
+      "id": 105,
+      "title": "Essential Bar Setup Checklist for Austin Office Parties",
+      "category": "Corporate Events",
+      "keywords": [
+        "office party",
+        "bar setup",
+        "corporate event",
+        "austin",
+        "party planning"
+      ],
+      "published": true
+    },
+    {
+      "id": 106,
+      "title": "Corporate Client Appreciation Event Ideas in Austin",
+      "category": "Corporate Events",
+      "keywords": [
+        "client appreciation",
+        "corporate event",
+        "austin",
+        "business entertaining",
+        "thank you event"
+      ],
+      "published": true
+    },
+    {
+      "id": 107,
+      "title": "How to Host a Professional Happy Hour for Your Austin Team",
+      "category": "Corporate Events",
+      "keywords": [
+        "happy hour",
+        "corporate event",
+        "team building",
+        "austin",
+        "after work drinks"
+      ],
+      "published": true
     }
   ]
 }

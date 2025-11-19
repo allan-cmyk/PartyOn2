@@ -10,7 +10,8 @@ import { config } from 'dotenv';
 // Load environment variables from .env.local
 config({ path: path.join(process.cwd(), '.env.local') });
 
-// Using OpenRouter API (same as image generation)
+// Using Anthropic API directly (more reliable than OpenRouter)
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || process.env.GOOGLE_API_KEY || '';
 
 interface Topic {
@@ -61,9 +62,17 @@ function saveTopics(topics: TopicsData): void {
   fs.writeFileSync(CONFIG.topicsFile, JSON.stringify(topics, null, 2));
 }
 
-// Get next unpublished topic
-function getNextTopic(topics: TopicsData): Topic | null {
-  return topics.topics.find(t => !t.published) || null;
+// Get next unpublished topic (optionally filtered by category)
+function getNextTopic(topics: TopicsData, categoryFilter?: string): Topic | null {
+  return topics.topics.find(t => {
+    if (!t.published) {
+      if (categoryFilter) {
+        return t.category === categoryFilter;
+      }
+      return true;
+    }
+    return false;
+  }) || null;
 }
 
 // Mark topic as published
@@ -74,9 +83,9 @@ function markTopicPublished(topics: TopicsData, topicId: number): void {
   }
 }
 
-// Generate blog content with Claude via OpenRouter
+// Generate blog content with Claude via Anthropic API
 async function generateBlogContent(topic: Topic): Promise<string> {
-  console.log(`🤖 Generating blog content with Claude via OpenRouter...`);
+  console.log(`🤖 Generating blog content with Claude via Anthropic API...`);
 
   const prompt = `You are an expert SEO content writer for Party On Delivery, an Austin-based premium alcohol delivery service specializing in weddings, bachelor/bachelorette parties, boat parties, and corporate events.
 
@@ -250,32 +259,32 @@ IMPORTANT:
 
 Write the blog post now:`;
 
-  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-      'Content-Type': 'application/json',
-      'HTTP-Referer': 'https://partyondelivery.com',
-      'X-Title': 'Party On Delivery Blog Generator'
+      'x-api-key': ANTHROPIC_API_KEY,
+      'anthropic-version': '2023-06-01',
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      model: 'anthropic/claude-3.5-sonnet',
+      model: 'claude-3-haiku-20240307',
+      max_tokens: 4096,
       messages: [
         {
           role: 'user',
           content: prompt
         }
-      ],
-      max_tokens: 8192
+      ]
     })
   });
 
   if (!response.ok) {
-    throw new Error(`OpenRouter API error: ${response.statusText}`);
+    const errorText = await response.text();
+    throw new Error(`Anthropic API error: ${response.statusText} - ${errorText}`);
   }
 
   const data = await response.json();
-  return data.choices[0].message.content;
+  return data.content[0].text;
 }
 
 // Generate images for the blog post
@@ -417,11 +426,20 @@ async function generateDailyBlog(): Promise<void> {
   console.log('\n🚀 Starting automated blog generation...\n');
   console.log('='.repeat(60));
 
+  // Check for category filter from command line arguments
+  const categoryFilter = process.argv.includes('--category')
+    ? process.argv[process.argv.indexOf('--category') + 1]
+    : undefined;
+
+  if (categoryFilter) {
+    console.log(`🎯 Filtering for category: ${categoryFilter}`);
+  }
+
   try {
     // STEP 1: Load topics and select next
     console.log('\n📋 STEP 1/6: Loading topics...');
     const topicsData = loadTopics();
-    const topic = getNextTopic(topicsData);
+    const topic = getNextTopic(topicsData, categoryFilter);
 
     if (!topic) {
       console.log('❌ No unpublished topics remaining!');
