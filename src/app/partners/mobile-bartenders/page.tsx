@@ -6,6 +6,7 @@ import Link from 'next/link';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
+import YouTubeEmbed from '@/components/YouTubeEmbed';
 
 export default function MobileBartenderPartnerPage() {
   // Commission configuration
@@ -490,6 +491,42 @@ Source: ${formData.source}`,
               HOW IT WORKS
             </button>
           </div>
+        </div>
+      </section>
+
+      {/* Video Showcase Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-5xl mx-auto px-8">
+          <ScrollRevealCSS duration={800} delay={0} y={30}>
+            <div className="text-center mb-12">
+              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+                See How It Works
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Watch how Austin&apos;s top mobile bartenders are earning more with Party On Delivery
+              </p>
+            </div>
+          </ScrollRevealCSS>
+
+          <ScrollRevealCSS duration={800} delay={200} y={30}>
+            {/* Replace 'YOUR_VIDEO_ID' with your actual YouTube video ID */}
+            <YouTubeEmbed
+              videoId="YOUR_VIDEO_ID"
+              title="Mobile Bartender Partnership Program - Party On Delivery"
+            />
+          </ScrollRevealCSS>
+
+          <ScrollRevealCSS duration={800} delay={300} y={30}>
+            <div className="mt-8 text-center">
+              <button
+                onClick={scrollToForm}
+                className="bg-gold-600 text-gray-900 px-10 py-4 text-lg tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium"
+              >
+                APPLY TO PARTNER
+              </button>
+            </div>
+          </ScrollRevealCSS>
         </div>
       </section>
 
