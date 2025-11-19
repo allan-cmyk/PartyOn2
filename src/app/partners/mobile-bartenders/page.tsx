@@ -748,7 +748,7 @@ Source: ${formData.source}`,
       {/* Local Advantage */}
       <section className="relative py-20 overflow-hidden">
         <Image
-          src="/images/backgrounds/austin-skyline-sunset.jpg"
+          src="/images/hero/austin-skyline-golden-hour.webp"
           alt="Austin skyline at sunset with vibrant colors reflecting on Lady Bird Lake"
           fill
           className="object-cover"
