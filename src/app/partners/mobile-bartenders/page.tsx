@@ -747,14 +747,17 @@ Source: ${formData.source}`,
 
       {/* Local Advantage */}
       <section className="relative py-20 overflow-hidden">
-        {/* TODO: Replace with Austin skyline or Lake Travis background */}
         <Image
-          src="/images/backgrounds/austin-skyline-placeholder.jpg"
-          alt="Austin skyline"
+          src="/images/backgrounds/austin-skyline-sunset.jpg"
+          alt="Austin skyline at sunset with vibrant colors reflecting on Lady Bird Lake"
           fill
           className="object-cover"
+          priority
+          sizes="100vw"
+          quality={90}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/95 via-gray-900/85 to-gray-900/95" />
+        {/* Darker overlay for better text readability against colorful sunset */}
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-900/80 to-gray-900/90" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-8 text-white">
           <ScrollRevealCSS duration={800} delay={0} y={30}>
