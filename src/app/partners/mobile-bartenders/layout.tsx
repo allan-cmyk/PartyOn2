@@ -14,10 +14,10 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://partyondelivery.com/images/hero/mobile-bartender-outdoor-event.webp',
-        width: 1200,
-        height: 630,
-        alt: 'Mobile bartender serving drinks at outdoor Austin event',
+        url: 'https://img.youtube.com/vi/8s5WsAs7IGA/maxresdefault.jpg',
+        width: 1280,
+        height: 720,
+        alt: 'Mobile Bartender Partnership Video - Party On Delivery',
       },
     ],
   },
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Mobile Bartender Partnership - Party On Delivery Austin',
     description: 'Partner with us for alcohol supply coordination and event logistics support.',
-    images: ['https://partyondelivery.com/images/hero/mobile-bartender-outdoor-event.webp'],
+    images: ['https://img.youtube.com/vi/8s5WsAs7IGA/maxresdefault.jpg'],
   },
   robots: {
     index: true,
