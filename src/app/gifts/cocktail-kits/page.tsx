@@ -4,8 +4,9 @@ import Image from 'next/image'
 import ChristmasDeadlineBanner from '@/components/ChristmasDeadlineBanner'
 import ProductCard from '@/components/shopify/ProductCard'
 import LuxuryCard from '@/components/LuxuryCard'
-import { fetchProducts } from '@/lib/shopify/queries/products'
-import { Product } from '@/lib/shopify/types'
+import { shopifyFetch } from '@/lib/shopify/client'
+import { PRODUCTS_GRID_QUERY } from '@/lib/shopify/queries/products'
+import { ShopifyProduct } from '@/lib/shopify/types'
 
 export const metadata: Metadata = {
   title: 'Christmas Cocktail Kit Gifts | Austin Delivery | Party On Delivery',
@@ -20,22 +21,27 @@ export const metadata: Metadata = {
 
 export default async function CocktailKitsGiftPage() {
   // Fetch cocktail kit products from Shopify
-  const allProducts = await fetchProducts({ first: 50 })
+  const response = await shopifyFetch<{ products: { edges: Array<{ node: ShopifyProduct }> } }>({
+    query: PRODUCTS_GRID_QUERY,
+    variables: { first: 50 }
+  })
+
+  const allProducts = response.products.edges.map((edge: { node: ShopifyProduct }) => edge.node)
 
   // Filter for cocktail kits
-  const cocktailKits = allProducts.filter((product: Product) =>
+  const cocktailKits = allProducts.filter((product: ShopifyProduct) =>
     product.productType?.toLowerCase().includes('cocktail') ||
     product.title.toLowerCase().includes('kit') ||
     product.tags?.some(tag => tag.toLowerCase().includes('cocktail'))
   )
 
   // Find Austin Rita as hero product
-  const austinRitaKit = cocktailKits.find((p: Product) =>
+  const austinRitaKit = cocktailKits.find((p: ShopifyProduct) =>
     p.title.toLowerCase().includes('austin rita')
   )
 
   // Other kits (excluding Austin Rita)
-  const otherKits = cocktailKits.filter((p: Product) =>
+  const otherKits = cocktailKits.filter((p: ShopifyProduct) =>
     p.id !== austinRitaKit?.id
   ).slice(0, 5)
 
@@ -155,7 +161,7 @@ export default async function CocktailKitsGiftPage() {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {otherKits.map((product: Product) => (
+              {otherKits.map((product: ShopifyProduct) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
@@ -237,7 +243,7 @@ export default async function CocktailKitsGiftPage() {
               How Cocktail Kit Gifting Works
             </h2>
             <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
-              Sending a cocktail kit gift is easy. Here's how:
+              Sending a cocktail kit gift is easy. Here&apos;s how:
             </p>
           </div>
 
@@ -277,7 +283,7 @@ export default async function CocktailKitsGiftPage() {
                 Schedule Delivery
               </h3>
               <p className="text-neutral-600 leading-relaxed">
-                Enter their address and choose a delivery date. We'll handle the rest and deliver with care.
+                Enter their address and choose a delivery date. We&apos;ll handle the rest and deliver with care.
               </p>
             </div>
           </div>
@@ -341,13 +347,13 @@ export default async function CocktailKitsGiftPage() {
                 </svg>
               </summary>
               <p className="mt-4 text-neutral-600 leading-relaxed">
-                Yes! During checkout, you can add a personalized gift card with your message. We'll include it with the delivery in an elegant presentation.
+                Yes! During checkout, you can add a personalized gift card with your message. We&apos;ll include it with the delivery in an elegant presentation.
               </p>
             </details>
 
             <details className="group border-b border-neutral-200 pb-6">
               <summary className="flex justify-between items-center cursor-pointer text-lg font-semibold text-neutral-900 hover:text-gold-600 transition-colors">
-                What if the recipient isn't home for delivery?
+                What if the recipient isn&apos;t home for delivery?
                 <svg className="w-5 h-5 text-gold-500 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
