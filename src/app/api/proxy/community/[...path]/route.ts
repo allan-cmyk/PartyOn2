@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  context: { params: Promise<{ path: string[] }> }
 ) {
   const shopifyDomain = process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN;
 
@@ -16,6 +16,9 @@ export async function GET(
       { status: 500 }
     );
   }
+
+  // Await params in Next.js 15
+  const params = await context.params;
 
   // Construct the full path
   const path = params.path?.join('/') || '';
@@ -57,7 +60,7 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  context: { params: Promise<{ path: string[] }> }
 ) {
   const shopifyDomain = process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN;
 
@@ -67,6 +70,9 @@ export async function POST(
       { status: 500 }
     );
   }
+
+  // Await params in Next.js 15
+  const params = await context.params;
 
   // Construct the full path
   const path = params.path?.join('/') || '';
