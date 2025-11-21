@@ -96,11 +96,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/community/:path*',
-        destination: 'https://premier-concierge.myshopify.com/community/:path*',
-      },
-      {
-        source: '/apps/:path*',
-        destination: 'https://premier-concierge.myshopify.com/apps/:path*',
+        destination: '/api/proxy/community/:path*',
       },
     ];
   },
