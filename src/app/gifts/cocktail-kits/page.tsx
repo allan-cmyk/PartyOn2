@@ -359,7 +359,7 @@ export default async function CocktailKitsGiftPage() {
                 </svg>
               </summary>
               <p className="mt-4 text-neutral-600 leading-relaxed">
-                We'll contact the recipient to arrange a convenient delivery time. You can also provide special delivery instructions during checkout for safe drop-off locations.
+                We&apos;ll contact the recipient to arrange a convenient delivery time. You can also provide special delivery instructions during checkout for safe drop-off locations.
               </p>
             </details>
 
