@@ -140,7 +140,6 @@ export default async function CocktailKitsGiftPage() {
             <div className="max-w-5xl mx-auto">
               <ProductCard
                 product={austinRitaKit}
-                featured={true}
               />
             </div>
           </div>
