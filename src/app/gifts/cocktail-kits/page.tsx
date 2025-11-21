@@ -190,46 +190,70 @@ export default async function CocktailKitsGiftPage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <LuxuryCard
-              icon={
-                <svg className="w-12 h-12 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-              }
-              title="Everything in One Box"
-              description="No store trips needed. Premium tequila, mixers, and garnishes—all included and perfectly portioned."
-            />
+            <LuxuryCard>
+              <div className="p-6 text-center">
+                <div className="flex justify-center mb-4">
+                  <svg className="w-12 h-12 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                  </svg>
+                </div>
+                <h3 className="font-serif text-xl text-neutral-900 mb-2 tracking-wide">
+                  Everything in One Box
+                </h3>
+                <p className="text-neutral-600">
+                  No store trips needed. Premium tequila, mixers, and garnishes—all included and perfectly portioned.
+                </p>
+              </div>
+            </LuxuryCard>
 
-            <LuxuryCard
-              icon={
-                <svg className="w-12 h-12 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-                </svg>
-              }
-              title="Makes 20-30 Drinks"
-              description="Way more value than a single bottle. Perfect for parties, gatherings, or enjoying over multiple occasions."
-            />
+            <LuxuryCard>
+              <div className="p-6 text-center">
+                <div className="flex justify-center mb-4">
+                  <svg className="w-12 h-12 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                  </svg>
+                </div>
+                <h3 className="font-serif text-xl text-neutral-900 mb-2 tracking-wide">
+                  Makes 20-30 Drinks
+                </h3>
+                <p className="text-neutral-600">
+                  Way more value than a single bottle. Perfect for parties, gatherings, or enjoying over multiple occasions.
+                </p>
+              </div>
+            </LuxuryCard>
 
-            <LuxuryCard
-              icon={
-                <svg className="w-12 h-12 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              }
-              title="Austin Local Ingredients"
-              description="Featuring Texas-made spirits and locally-sourced ingredients. Support Austin businesses with every gift."
-            />
+            <LuxuryCard>
+              <div className="p-6 text-center">
+                <div className="flex justify-center mb-4">
+                  <svg className="w-12 h-12 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <h3 className="font-serif text-xl text-neutral-900 mb-2 tracking-wide">
+                  Austin Local Ingredients
+                </h3>
+                <p className="text-neutral-600">
+                  Featuring Texas-made spirits and locally-sourced ingredients. Support Austin businesses with every gift.
+                </p>
+              </div>
+            </LuxuryCard>
 
-            <LuxuryCard
-              icon={
-                <svg className="w-12 h-12 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-                </svg>
-              }
-              title="Gift-Ready Delivery"
-              description="Delivered with gift card and bottle bag. Schedule delivery for any date, or send same-day."
-            />
+            <LuxuryCard>
+              <div className="p-6 text-center">
+                <div className="flex justify-center mb-4">
+                  <svg className="w-12 h-12 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                  </svg>
+                </div>
+                <h3 className="font-serif text-xl text-neutral-900 mb-2 tracking-wide">
+                  Gift-Ready Delivery
+                </h3>
+                <p className="text-neutral-600">
+                  Delivered with gift card and bottle bag. Schedule delivery for any date, or send same-day.
+                </p>
+              </div>
+            </LuxuryCard>
           </div>
         </div>
       </section>
