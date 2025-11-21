@@ -91,6 +91,16 @@ const nextConfig: NextConfig = {
     return config;
   },
 
+  // Rewrites for Shopify app routes (e.g., recomsale affiliate program)
+  async rewrites() {
+    return [
+      {
+        source: '/community/:path*',
+        destination: '/api/proxy/community/:path*',
+      },
+    ];
+  },
+
   // 301 Redirects for SEO (from SEMrush audit - January 2025)
   async redirects() {
     return [
