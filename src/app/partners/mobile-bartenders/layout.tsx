@@ -12,6 +12,20 @@ export const metadata: Metadata = {
     description: 'Partner with us for alcohol supply coordination and event logistics support.',
     url: 'https://partyondelivery.com/partners/mobile-bartenders',
     type: 'website',
+    images: [
+      {
+        url: 'https://img.youtube.com/vi/8s5WsAs7IGA/maxresdefault.jpg',
+        width: 1280,
+        height: 720,
+        alt: 'Mobile Bartender Partnership Video - Party On Delivery',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Mobile Bartender Partnership - Party On Delivery Austin',
+    description: 'Partner with us for alcohol supply coordination and event logistics support.',
+    images: ['https://img.youtube.com/vi/8s5WsAs7IGA/maxresdefault.jpg'],
   },
   robots: {
     index: true,

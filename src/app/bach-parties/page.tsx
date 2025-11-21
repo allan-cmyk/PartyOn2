@@ -186,7 +186,7 @@ export default function BachPartiesPage() {
                   Text updates with driver ETA
                 </li>
               </ul>
-              <button className="w-full bg-gold-400 text-white font-medium py-4 px-6 rounded-lg hover:bg-gold-500 transition-colors tracking-[0.1em]">
+              <button className="w-full bg-gold-600 text-white font-medium py-4 px-6 rounded-lg hover:bg-gold-700 transition-colors tracking-[0.1em]">
                 ORDER NOW
               </button>
             </ScrollRevealCSS>
@@ -215,7 +215,7 @@ export default function BachPartiesPage() {
                   Same-day availability
                 </li>
               </ul>
-              <button className="w-full border-2 border-gold-400 text-gold-400 font-medium py-4 px-6 rounded-lg hover:bg-gold-400 hover:text-white transition-colors tracking-[0.1em]">
+              <button className="w-full bg-gray-900 text-white font-medium py-4 px-6 rounded-lg hover:bg-gray-800 transition-colors tracking-[0.1em]">
                 SCHEDULE 15-MIN PLANNING CALL
               </button>
             </ScrollRevealCSS>
