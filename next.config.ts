@@ -91,6 +91,20 @@ const nextConfig: NextConfig = {
     return config;
   },
 
+  // Rewrites for Shopify app routes (e.g., recomsale affiliate program)
+  async rewrites() {
+    return [
+      {
+        source: '/community/:path*',
+        destination: 'https://premier-concierge.myshopify.com/community/:path*',
+      },
+      {
+        source: '/apps/:path*',
+        destination: 'https://premier-concierge.myshopify.com/apps/:path*',
+      },
+    ];
+  },
+
   // 301 Redirects for SEO (from SEMrush audit - January 2025)
   async redirects() {
     return [
