@@ -91,7 +91,7 @@ export default async function CocktailKitsGiftPage() {
               {austinRitaKit && (
                 <div className="relative aspect-square rounded-lg overflow-hidden shadow-2xl">
                   <Image
-                    src={austinRitaKit.images[0]?.url || '/images/products/classic-austin-margarita-kit.webp'}
+                    src={austinRitaKit.images.edges[0]?.node.url || '/images/products/classic-austin-margarita-kit.webp'}
                     alt={austinRitaKit.title}
                     fill
                     className="object-cover"
