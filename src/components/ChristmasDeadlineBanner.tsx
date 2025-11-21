@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { X } from 'lucide-react'
+import { XMarkIcon } from '@heroicons/react/24/outline'
 
 interface ChristmasDeadlineBannerProps {
   deadline?: string
@@ -61,7 +61,7 @@ export default function ChristmasDeadlineBanner({
               className="flex-shrink-0 p-1 rounded-full hover:bg-white/20 transition-colors"
               aria-label="Dismiss banner"
             >
-              <X className="w-5 h-5 text-white" />
+              <XMarkIcon className="w-5 h-5 text-white" />
             </button>
           )}
         </div>
