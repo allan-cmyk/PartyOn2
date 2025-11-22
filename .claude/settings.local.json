@@ -1,15 +1,23 @@
 {
   "permissions": {
     "allow": [
-      "Bash(timeout /t 3 /nobreak)",
+      "WebFetch(domain:ubersuggest.com)",
+      "WebFetch(domain:neilpatel.com)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git push:*)",
+      "Bash(ls:*)",
       "WebSearch",
-      "WebFetch(domain:shopify.dev)",
-      "WebFetch(domain:vercel.com)",
-      "WebFetch(domain:party-on2-git-main-infinite-burn-rate.vercel.app)",
-      "WebFetch(domain:party-on2-g7q74osn5-infinite-burn-rate.vercel.app)"
+      "WebFetch(domain:partyondelivery.com)",
+      "Bash(git checkout:*)",
+      "Bash(git merge:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run build:*)",
+      "Bash(test:*)",
+      "Bash(curl:*)",
+      "WebFetch(domain:party-on2-p3sd0vlxr-infinite-burn-rate.vercel.app)",
+      "Bash(git pull:*)",
+      "WebFetch(domain:docs.recomsale.com)"
     ],
     "deny": [],
     "ask": []
