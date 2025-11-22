@@ -20,7 +20,7 @@ export default function AffiliateSignupPage() {
             Join Our Affiliate Program
           </h1>
           <p className="text-center text-lg max-w-2xl mx-auto">
-            Earn commissions by promoting Austin's premier alcohol delivery service
+            Earn commissions by promoting Austin&apos;s premier alcohol delivery service
           </p>
         </div>
       </div>
