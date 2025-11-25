@@ -190,7 +190,7 @@ const nextConfig: NextConfig = {
               "font-src 'self' fonts.gstatic.com data:",
               "img-src 'self' data: blob: https: *.shopify.com *.myshopify.com images.unsplash.com",
               "connect-src 'self' *.shopify.com *.myshopify.com *.google-analytics.com *.googletagmanager.com vitals.vercel-insights.com hooks.zapier.com",
-              "frame-src 'self' *.shopify.com *.myshopify.com *.youtube.com *.youtube-nocookie.com",
+              "frame-src 'self' *.shopify.com *.myshopify.com *.youtube.com *.youtube-nocookie.com *.recomsale.com",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self' *.shopify.com *.myshopify.com",
