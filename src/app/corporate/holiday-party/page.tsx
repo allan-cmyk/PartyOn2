@@ -366,8 +366,89 @@ export default function CorporateHolidayPartyPage() {
         </div>
       </section>
 
-      {/* How It Works */}
+      {/* Testimonials */}
       <section className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-8">
+          <ScrollRevealCSS duration={600} y={20} className="text-center mb-16">
+            <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+              Reviews from Real Austin Companies
+            </h2>
+            <div className="flex justify-center items-center gap-1 mb-2">
+              {[...Array(5)].map((_, i) => (
+                <svg key={i} className="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
+            </div>
+            <p className="text-gray-500 text-sm">5.0 stars on Google</p>
+          </ScrollRevealCSS>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Review 1 - Shannon */}
+            <ScrollRevealCSS duration={600} delay={0} y={20}>
+              <div className="bg-white p-8 rounded-lg shadow-sm h-full">
+                <div className="flex items-center gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-gray-700 leading-relaxed mb-6">
+                  &ldquo;Party on Delivery is a fantastic treasure!! They truly made our company UT tailgate happen! They delivered all our liquor and kegs and brought tables and chairs for our guests! Communication was easy and they helped me decide on how much alcohol we would need!! I highly recommend Party on Delivery to save you time and stress!! Very reasonably priced too!&rdquo;
+                </p>
+                <div className="border-t pt-4">
+                  <p className="font-medium text-gray-900">Shannon Crim</p>
+                  <p className="text-sm text-gray-500">Company UT Tailgate</p>
+                </div>
+              </div>
+            </ScrollRevealCSS>
+
+            {/* Review 2 - Dane */}
+            <ScrollRevealCSS duration={600} delay={100} y={20}>
+              <div className="bg-white p-8 rounded-lg shadow-sm h-full">
+                <div className="flex items-center gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-gray-700 leading-relaxed mb-6">
+                  &ldquo;I ordered from here for our company party on Lake Travis. They delivered with all the drinks chilled and kept cold in a big cooler. Great communication. Got everything we needed, even some things not on the website. Right on time! Will definitely buy from them again.&rdquo;
+                </p>
+                <div className="border-t pt-4">
+                  <p className="font-medium text-gray-900">Dane Witbeck</p>
+                  <p className="text-sm text-gray-500">Company Party on Lake Travis</p>
+                </div>
+              </div>
+            </ScrollRevealCSS>
+
+            {/* Review 3 - Chandler */}
+            <ScrollRevealCSS duration={600} delay={200} y={20}>
+              <div className="bg-white p-8 rounded-lg shadow-sm h-full">
+                <div className="flex items-center gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-gray-700 leading-relaxed mb-6">
+                  &ldquo;Reliable, fast, and wonderful service was provided for my corporate team building event. Will definitely be using Party on Delivery again!&rdquo;
+                </p>
+                <div className="border-t pt-4">
+                  <p className="font-medium text-gray-900">Chandler Little</p>
+                  <p className="text-sm text-gray-500">Corporate Team Building Event</p>
+                </div>
+              </div>
+            </ScrollRevealCSS>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="py-20">
         <div className="max-w-6xl mx-auto px-8">
           <ScrollRevealCSS duration={600} y={20} className="text-center mb-16">
             <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
@@ -403,41 +484,53 @@ export default function CorporateHolidayPartyPage() {
       </section>
 
       {/* What We Deliver */}
-      <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-8">
+      <section className="relative py-20">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <Image
+            src="/images/hero/espresso-martini-kit.jpg.png"
+            alt="Espresso Martini Cocktail Kit with Deep Eddy Vodka and Caffe Del Fuego"
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-black/70" />
+        </div>
+
+        <div className="relative z-10 max-w-6xl mx-auto px-8">
           <ScrollRevealCSS duration={600} y={20} className="text-center mb-12">
-            <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-serif text-4xl text-white mb-4 tracking-[0.1em]">
               What We Deliver
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-gray-300">
               Everything you need for a perfect holiday party bar
             </p>
           </ScrollRevealCSS>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <ScrollRevealCSS duration={600} delay={0} y={20} className="bg-gray-50 p-8 rounded-lg">
-              <h3 className="font-serif text-2xl text-gray-900 mb-4">Alcohol</h3>
-              <ul className="space-y-3 text-gray-600">
+            <ScrollRevealCSS duration={600} delay={0} y={20} className="bg-white/10 backdrop-blur-sm p-8 rounded-lg border border-white/20">
+              <h3 className="font-serif text-2xl text-white mb-4">Alcohol</h3>
+              <ul className="space-y-3 text-gray-200">
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Beer (domestic, craft, imports)
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Wine (red, white, sparkling)
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Spirits (vodka, whiskey, tequila, rum, gin)
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Cocktail kits (margarita, mule, etc.)
@@ -445,29 +538,29 @@ export default function CorporateHolidayPartyPage() {
               </ul>
             </ScrollRevealCSS>
 
-            <ScrollRevealCSS duration={600} delay={100} y={20} className="bg-gray-50 p-8 rounded-lg">
-              <h3 className="font-serif text-2xl text-gray-900 mb-4">Mixers & More</h3>
-              <ul className="space-y-3 text-gray-600">
+            <ScrollRevealCSS duration={600} delay={100} y={20} className="bg-white/10 backdrop-blur-sm p-8 rounded-lg border border-white/20">
+              <h3 className="font-serif text-2xl text-white mb-4">Mixers & More</h3>
+              <ul className="space-y-3 text-gray-200">
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Sodas & tonic water
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Juices (cranberry, orange, lime)
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Garnishes (limes, lemons, olives)
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Non-alcoholic options
@@ -475,29 +568,29 @@ export default function CorporateHolidayPartyPage() {
               </ul>
             </ScrollRevealCSS>
 
-            <ScrollRevealCSS duration={600} delay={200} y={20} className="bg-gray-50 p-8 rounded-lg">
-              <h3 className="font-serif text-2xl text-gray-900 mb-4">Supplies</h3>
-              <ul className="space-y-3 text-gray-600">
+            <ScrollRevealCSS duration={600} delay={200} y={20} className="bg-white/10 backdrop-blur-sm p-8 rounded-lg border border-white/20">
+              <h3 className="font-serif text-2xl text-white mb-4">Supplies</h3>
+              <ul className="space-y-3 text-gray-200">
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Bagged ice (we calculate for you)
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Plastic cups & glassware
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Napkins & cocktail straws
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Coolers available
