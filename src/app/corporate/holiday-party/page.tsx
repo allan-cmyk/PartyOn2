@@ -169,7 +169,7 @@ export default function CorporateHolidayPartyPage() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
         </svg>
       ),
-      title: 'TABC Licensed & Insured',
+      title: 'TABC Licensed #P-200084398',
       description: 'Fully compliant with Texas regulations. ID-verified delivery every time.',
     },
     {
@@ -239,7 +239,7 @@ export default function CorporateHolidayPartyPage() {
       <header className="absolute top-0 left-0 right-0 z-50 py-4 px-6">
         <Link href="/" className="inline-block">
           <Image
-            src="/images/logo/partyon-logo-transparent.png"
+            src="/images/POD Logo 2025.svg"
             alt="PartyOn Delivery"
             width={180}
             height={60}
@@ -278,7 +278,7 @@ export default function CorporateHolidayPartyPage() {
             CORPORATE HOLIDAY PARTIES
           </p>
           <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-6 tracking-tight sm:tracking-[0.05em] max-w-4xl leading-snug sm:leading-tight">
-            One Stop Shop - Drinks, Ice, Supplies, Delivered.
+            One Stop Shop - Drinks, Ice, Supplies - Delivered and Set Up.
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl max-w-3xl leading-relaxed mb-8 text-gray-200">
             We handle your office holiday party bar so you can focus on celebrating your team. Beer, wine, spirits, mixers, and ice—delivered cold.
@@ -308,7 +308,7 @@ export default function CorporateHolidayPartyPage() {
               <svg className="w-5 h-5 mr-2 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
               </svg>
-              TABC Licensed
+              TABC Licensed #P-200084398
             </div>
             <div className="flex items-center">
               <svg className="w-5 h-5 mr-2 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -320,7 +320,7 @@ export default function CorporateHolidayPartyPage() {
               <svg className="w-5 h-5 mr-2 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
               </svg>
-              Austin Local Since 2020
+              Austin Local Since 2023
             </div>
             <div className="flex items-center">
               <svg className="w-5 h-5 mr-2 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
