@@ -250,11 +250,21 @@ export default function CorporateHolidayPartyPage() {
       </header>
 
       {/* Deadline Banner */}
-      <div className="bg-red-700 text-white py-3 px-4 text-center">
-        <p className="text-sm sm:text-base font-medium">
-          Order by December 20th for guaranteed holiday delivery | Call (737) 371-9700
+      <div className="bg-green-500 py-5 px-4 text-center relative overflow-hidden">
+        {/* Subtle shimmer effect */}
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-[shimmer_3s_infinite]" />
+        <p className="text-xl sm:text-2xl md:text-3xl font-bold text-black tracking-wide relative z-10 flex items-center justify-center gap-3">
+          <span className="inline-block animate-pulse">&#9889;</span>
+          ORDER BY DECEMBER 8TH - FREE ICE & DELIVERY
+          <span className="inline-block animate-pulse">&#9889;</span>
         </p>
       </div>
+      <style jsx>{`
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+      `}</style>
 
       {/* Hero Section */}
       <section className="relative min-h-[500px] sm:h-[70vh] sm:min-h-[600px] flex items-center">
