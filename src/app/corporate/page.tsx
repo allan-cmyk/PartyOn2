@@ -322,19 +322,19 @@ export default function CorporateLandingPage() {
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-2">
             <button
               onClick={handleScheduleCall}
-              className="px-8 py-4 bg-gold-600 text-black hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
+              className="px-8 py-4 bg-gold-600 text-black hover:bg-gold-700 transition-colors tracking-[0.1em] text-base font-bold"
             >
               SCHEDULE A CALL
             </button>
             <button
               onClick={handleScheduleCall}
-              className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.1em] text-sm font-medium"
+              className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.1em] text-base font-bold"
             >
               GET A QUOTE
             </button>
             <Link
               href="/corporate/holiday-party"
-              className="px-8 py-4 bg-green-500 text-black hover:bg-green-600 transition-colors tracking-[0.1em] text-sm font-medium text-center"
+              className="px-8 py-4 bg-green-500 text-black hover:bg-green-600 transition-colors tracking-[0.1em] text-base font-bold text-center"
             >
               HOLIDAY PARTIES
             </Link>
