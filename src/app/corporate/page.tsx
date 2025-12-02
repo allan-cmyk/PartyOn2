@@ -332,6 +332,12 @@ export default function CorporateLandingPage() {
             >
               GET A QUOTE
             </button>
+            <Link
+              href="/corporate/holiday-party"
+              className="px-8 py-4 bg-green-500 text-black hover:bg-green-600 transition-colors tracking-[0.1em] text-sm font-medium text-center"
+            >
+              HOLIDAY PARTIES
+            </Link>
           </div>
         </div>
       </section>
