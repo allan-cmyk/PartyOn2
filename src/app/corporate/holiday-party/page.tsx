@@ -267,7 +267,7 @@ export default function CorporateHolidayPartyPage() {
             CORPORATE HOLIDAY PARTIES
           </p>
           <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-6 tracking-tight sm:tracking-[0.05em] max-w-4xl leading-snug sm:leading-tight">
-            One Call. One Vendor. One Invoice.
+            One Stop Shop - Drinks, Ice, Supplies, Delivered.
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl max-w-3xl leading-relaxed mb-8 text-gray-200">
             We handle your office holiday party bar so you can focus on celebrating your team. Beer, wine, spirits, mixers, and ice—delivered cold.
