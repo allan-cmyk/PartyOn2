@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import CorporateEventCalculatorLanding from '@/components/CorporateEventCalculatorLanding';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
@@ -236,7 +235,19 @@ export default function CorporateHolidayPartyPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation />
+      {/* Simple Logo Header - Landing Page Style */}
+      <header className="absolute top-0 left-0 right-0 z-50 py-4 px-6">
+        <Link href="/" className="inline-block">
+          <Image
+            src="/images/logo/partyon-logo-transparent.png"
+            alt="PartyOn Delivery"
+            width={180}
+            height={60}
+            className="h-12 w-auto"
+            priority
+          />
+        </Link>
+      </header>
 
       {/* Deadline Banner */}
       <div className="bg-red-700 text-white py-3 px-4 text-center">
