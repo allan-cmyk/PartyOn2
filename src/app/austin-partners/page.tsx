@@ -58,15 +58,15 @@ export default function AustinPartnersPage() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 text-white">
           <ScrollRevealCSS duration={800} y={30}>
             <p className="text-gold-400 tracking-[0.2em] uppercase text-sm mb-4">
-              Partner Directory
+              Austin Vendor Directory
             </p>
             <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl mb-6 tracking-[0.1em] max-w-4xl">
-              Our Austin Partners
+              Best Austin Event Vendors
             </h1>
             <p className="text-lg sm:text-xl max-w-2xl leading-relaxed text-gray-200">
-              Discover the best local vendors for your next Austin event. From
-              wedding planners to boat rentals, we&apos;ve partnered with
-              Austin&apos;s top event professionals.
+              Discover Austin&apos;s top-rated event vendors for 2025. From wedding planners
+              and Lake Travis boat rentals to mobile bartenders and caterers—find the
+              best local professionals for your next Austin event.
             </p>
           </ScrollRevealCSS>
         </div>
@@ -91,42 +91,103 @@ export default function AustinPartnersPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-8">
           <ScrollRevealCSS duration={600} y={20}>
             <h2 className="font-serif text-3xl text-gray-900 tracking-[0.1em] mb-6">
-              Your Guide to Austin Events
+              Your Complete Guide to Austin Event Vendors
             </h2>
             <div className="prose prose-lg text-gray-600 max-w-none">
               <p>
-                Austin is known for its vibrant event scene, from lakeside
-                weddings at{' '}
+                Looking for the <strong>best Austin event vendors</strong>? Austin is known for its vibrant
+                event scene, with over 12,000 weddings annually and countless corporate events,
+                bachelorette parties, and celebrations. From stunning{' '}
                 <Link href="/boat-parties" className="text-gold-600 hover:text-gold-700">
-                  Lake Travis
+                  Lake Travis boat rentals
                 </Link>{' '}
-                to unforgettable{' '}
+                and double-decker party boats to unforgettable{' '}
                 <Link href="/bach-parties" className="text-gold-600 hover:text-gold-700">
-                  bachelorette parties
+                  bachelorette party services
                 </Link>{' '}
-                on South Congress. Our partners represent the best of what
-                Austin has to offer for event planning and execution.
+                on South Congress, our curated directory features Austin&apos;s top-rated vendors.
               </p>
               <p>
-                Whether you&apos;re planning a{' '}
+                Our <strong>Austin wedding vendors</strong> include full-service wedding planners,
+                day-of coordinators, and luxury event designers who know the local venue scene inside
+                and out. Need <strong>mobile bartenders in Austin</strong>? Our TABC-certified bartending
+                partners bring professional bar service directly to your event—whether it&apos;s a
+                downtown office party, Hill Country wedding, or lakeside celebration.
+              </p>
+              <p>
+                Planning a{' '}
                 <Link href="/corporate" className="text-gold-600 hover:text-gold-700">
-                  corporate event
+                  corporate event in Austin
                 </Link>
-                , a milestone celebration, or an intimate gathering, these
-                trusted vendors can help bring your vision to life. From
-                professional mobile bartenders and TABC-certified staff to
-                unique venues and reliable transportation, every partner has
-                been vetted for quality and service.
+                ? Our vendor network includes professional caterers specializing in Tex-Mex, BBQ,
+                and farm-to-table cuisine, plus reliable transportation services including party
+                buses and limo rentals. Every partner has been vetted for quality, reliability,
+                and exceptional service.
               </p>
               <p>
                 Combined with Party On Delivery&apos;s{' '}
                 <Link href="/products" className="text-gold-600 hover:text-gold-700">
                   premium alcohol delivery
                 </Link>
-                , you have everything you need to create an unforgettable Austin
-                experience. Let us handle the drinks while our partners take
-                care of the rest.
+                , you have everything you need for the perfect Austin event. We deliver beer, wine,
+                spirits, mixers, and ice directly to your venue—cold and on time. Let us handle the
+                drinks while our trusted partners take care of the rest.
               </p>
+            </div>
+          </ScrollRevealCSS>
+        </div>
+      </section>
+
+      {/* FAQ Section for SEO */}
+      <section className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-8">
+          <ScrollRevealCSS duration={600} y={20}>
+            <h2 className="font-serif text-3xl text-gray-900 tracking-[0.1em] mb-8 text-center">
+              Frequently Asked Questions
+            </h2>
+            <div className="space-y-6">
+              <div className="border-b border-gray-200 pb-6">
+                <h3 className="font-medium text-gray-900 mb-2">
+                  What are the best event vendors in Austin?
+                </h3>
+                <p className="text-gray-600">
+                  Austin&apos;s best event vendors include experienced wedding planners, TABC-certified
+                  mobile bartenders, Lake Travis boat rental companies, professional caterers, and
+                  unique venue spaces. Our directory features vetted partners across all categories
+                  to help you plan the perfect Austin event.
+                </p>
+              </div>
+              <div className="border-b border-gray-200 pb-6">
+                <h3 className="font-medium text-gray-900 mb-2">
+                  How do I find wedding vendors in Austin, TX?
+                </h3>
+                <p className="text-gray-600">
+                  Browse our Austin vendor directory to find top-rated wedding planners, caterers,
+                  bartenders, and venues. Each partner has been selected for their quality of service
+                  and experience with Austin weddings, from downtown celebrations to Hill Country estates.
+                </p>
+              </div>
+              <div className="border-b border-gray-200 pb-6">
+                <h3 className="font-medium text-gray-900 mb-2">
+                  Where can I rent a party boat on Lake Travis?
+                </h3>
+                <p className="text-gray-600">
+                  Our boat rental partners offer a variety of Lake Travis party boats, including
+                  double-decker boats with water slides, luxury yachts, and pontoon boats perfect
+                  for bachelorette parties, birthdays, and corporate outings. Most boats include
+                  captains and can accommodate groups from 8 to 25+ guests.
+                </p>
+              </div>
+              <div className="pb-6">
+                <h3 className="font-medium text-gray-900 mb-2">
+                  Do I need a TABC-certified bartender for my Austin event?
+                </h3>
+                <p className="text-gray-600">
+                  Yes, Texas law requires bartenders serving alcohol at events to be TABC-certified.
+                  Our mobile bartending partners are fully licensed and insured, ensuring your event
+                  is compliant while providing professional cocktail service for your guests.
+                </p>
+              </div>
             </div>
           </ScrollRevealCSS>
         </div>
@@ -159,7 +220,7 @@ export default function AustinPartnersPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
           <ScrollRevealCSS duration={600} y={20}>
             <h2 className="font-serif text-2xl text-gray-900 tracking-[0.1em] mb-8 text-center">
-              Explore Austin Events
+              Browse Austin Event Vendors by Category
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {PARTNER_CATEGORIES.map((category) => (
