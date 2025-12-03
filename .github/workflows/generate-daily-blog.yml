@@ -47,6 +47,7 @@ jobs:
           git add public/images/blog/
           git add scripts/topics.json
           git diff --staged --quiet || git commit -m "🤖 Auto-generate daily blog post [skip ci]"
+          git pull --rebase origin dev
           git push origin dev
 
       - name: Create Pull Request to Main
