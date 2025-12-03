@@ -24,9 +24,11 @@ try {
 // Load environment variables from .env.local
 config({ path: path.join(process.cwd(), '.env.local') });
 
-// Using Anthropic API directly (more reliable than OpenRouter)
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || process.env.GOOGLE_API_KEY || '';
+// Using OpenRouter API (provides access to Claude and other models)
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || '';
+
+// OpenRouter model to use (Claude 3 Haiku is fast and affordable for blog generation)
+const OPENROUTER_MODEL = 'anthropic/claude-3-haiku';
 
 interface Topic {
   id: number;
@@ -99,7 +101,7 @@ function markTopicPublished(topics: TopicsData, topicId: number): void {
 
 // Generate blog content with Claude via Anthropic API
 async function generateBlogContent(topic: Topic): Promise<string> {
-  console.log(`🤖 Generating blog content with Claude via Anthropic API...`);
+  console.log(`🤖 Generating blog content with ${OPENROUTER_MODEL} via OpenRouter...`);
 
   const serviceInfo = getCategoryServiceInfo(topic.category);
 
@@ -283,15 +285,16 @@ IMPORTANT:
 
 Write the blog post now:`;
 
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
-      'x-api-key': ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01',
-      'Content-Type': 'application/json'
+      'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': 'https://partyondelivery.com',
+      'X-Title': 'Party On Delivery Blog Generator'
     },
     body: JSON.stringify({
-      model: 'claude-3-haiku-20240307',
+      model: OPENROUTER_MODEL,
       max_tokens: 4096,
       messages: [
         {
@@ -304,11 +307,11 @@ Write the blog post now:`;
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Anthropic API error: ${response.statusText} - ${errorText}`);
+    throw new Error(`OpenRouter API error: ${response.statusText} - ${errorText}`);
   }
 
   const data = await response.json();
-  return data.content[0].text;
+  return data.choices[0].message.content;
 }
 
 // Generate images for the blog post
