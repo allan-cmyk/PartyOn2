@@ -1,0 +1,70 @@
+{
+  "partners": [
+    {
+      "id": "1",
+      "name": "Sample Event Planner",
+      "slug": "sample-event-planner",
+      "description": "Full-service event planning for weddings, corporate events, and milestone celebrations across Austin.",
+      "website": "https://example.com",
+      "logo": "/images/partners/placeholder.svg",
+      "category": "event-planning",
+      "featured": true,
+      "order": 1
+    },
+    {
+      "id": "2",
+      "name": "Sample Bartending Co",
+      "slug": "sample-bartending-co",
+      "description": "TABC-certified mobile bartenders bringing craft cocktails and professional service to your Austin event.",
+      "website": "https://example.com",
+      "logo": "/images/partners/placeholder.svg",
+      "category": "mobile-bartending",
+      "featured": false,
+      "order": 1
+    },
+    {
+      "id": "3",
+      "name": "Sample Venue",
+      "slug": "sample-venue",
+      "description": "Beautiful Austin Hill Country venue with stunning views, perfect for weddings and private events.",
+      "website": "https://example.com",
+      "logo": "/images/partners/placeholder.svg",
+      "category": "venues",
+      "featured": false,
+      "order": 1
+    },
+    {
+      "id": "4",
+      "name": "Sample Catering",
+      "slug": "sample-catering",
+      "description": "Award-winning Austin caterer specializing in Tex-Mex, BBQ, and farm-to-table cuisine for events of all sizes.",
+      "website": "https://example.com",
+      "logo": "/images/partners/placeholder.svg",
+      "category": "catering",
+      "featured": false,
+      "order": 1
+    },
+    {
+      "id": "5",
+      "name": "Sample Boat Rentals",
+      "slug": "sample-boat-rentals",
+      "description": "Premium Lake Travis boat rentals including party barges, double-decker boats, and yacht charters.",
+      "website": "https://example.com",
+      "logo": "/images/partners/placeholder.svg",
+      "category": "boats",
+      "featured": true,
+      "order": 1
+    },
+    {
+      "id": "6",
+      "name": "Sample Party Bus",
+      "slug": "sample-party-bus",
+      "description": "Luxury party buses and limo service for Austin events, bachelor parties, and group transportation.",
+      "website": "https://example.com",
+      "logo": "/images/partners/placeholder.svg",
+      "category": "transportation",
+      "featured": false,
+      "order": 1
+    }
+  ]
+}

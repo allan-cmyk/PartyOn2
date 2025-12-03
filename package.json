@@ -24,6 +24,9 @@
     "sitemap:check:prod": "tsx scripts/sitemap-health-check.ts --url=https://partyondelivery.com/sitemap.xml",
     "sitemap:check:sample": "tsx scripts/sitemap-health-check.ts --sample=50",
     "sitemap:ping": "curl -s https://www.google.com/ping?sitemap=https://partyondelivery.com/sitemap.xml && curl -s https://www.bing.com/ping?sitemap=https://partyondelivery.com/sitemap.xml",
+    "indexnow:generate-key": "node scripts/generate-indexnow-key.mjs",
+    "indexnow:submit": "node scripts/indexnow-submit.mjs",
+    "indexnow:priority": "node scripts/indexnow-submit.mjs https://partyondelivery.com/ https://partyondelivery.com/products https://partyondelivery.com/about https://partyondelivery.com/services https://partyondelivery.com/weddings https://partyondelivery.com/boat-parties https://partyondelivery.com/bach-parties https://partyondelivery.com/corporate https://partyondelivery.com/blog",
     "extract-bundle": "tsx scripts/cocktail-bundle-image-extractor.ts"
   },
   "dependencies": {
