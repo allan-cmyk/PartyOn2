@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from 'next/font/google';
 import dynamic from 'next/dynamic';
 import "./globals.css";
@@ -31,16 +31,17 @@ const inter = Inter({
   display: 'swap',
 });
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://partyondelivery.com'),
   title: "Party On Delivery | Premium Alcohol Delivery in Austin",
   description: "Austin's premier alcohol delivery for weddings, corporate events, bachelorette parties & special occasions. Beer kegs, wine, spirits & party supplies delivered. Serving Downtown, Lake Travis & all of Austin.",
   keywords: "alcohol delivery austin, wedding bar service, lake travis boat party, austin party delivery, premium spirits delivery",
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-  },
   alternates: {
     canonical: '/',
   },

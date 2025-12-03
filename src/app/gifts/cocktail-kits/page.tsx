@@ -8,6 +8,9 @@ import { shopifyFetch } from '@/lib/shopify/client'
 import { PRODUCTS_GRID_QUERY } from '@/lib/shopify/queries/products'
 import { ShopifyProduct } from '@/lib/shopify/types'
 
+// Force dynamic rendering to ensure environment variables are available
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Christmas Cocktail Kit Gifts | Austin Delivery | Party On Delivery',
   description: 'Perfect Christmas gifts for Austin hosts. Premium cocktail kits make 20-30 drinks. Austin Rita, Skinny Margarita & more. Delivered to their door by December 20.',
