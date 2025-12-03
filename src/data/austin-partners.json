@@ -2,28 +2,50 @@
   "partners": [
     {
       "id": "1",
+      "name": "PourTwentyFour",
+      "slug": "pourtwentyfour",
+      "description": "3-time award-winning upscale bartending and coffee bar service serving quality craft cocktails with the freshest ingredients. TABC-certified, fully insured, and available for destination events.",
+      "website": "https://www.pourtwentyfour.com",
+      "logo": "/images/partners/pourtwentyfour-logo.png",
+      "category": "mobile-bartending",
+      "featured": true,
+      "order": 1
+    },
+    {
+      "id": "2",
+      "name": "Tap Truck Austin",
+      "slug": "tap-truck-austin",
+      "description": "Vintage 1959 Ford F-100 mobile bar nicknamed 'Willie Nelson' with 6 taps serving craft beer, wine, champagne, and pre-made cocktails. Perfect for weddings, corporate events, and festivals.",
+      "website": "https://www.taptruckaustin.com",
+      "logo": "/images/partners/taptruck-austin-logo.png",
+      "category": "mobile-bartending",
+      "featured": true,
+      "order": 2
+    },
+    {
+      "id": "3",
+      "name": "Drink To Remember",
+      "slug": "drink-to-remember",
+      "description": "Top-rated Austin mobile bartending service featured on Yelp's Best Bartending Services list. Professional event bartenders for weddings, corporate events, and private celebrations.",
+      "website": "https://drinktoremember.com",
+      "logo": "/images/partners/placeholder.svg",
+      "category": "mobile-bartending",
+      "featured": false,
+      "order": 3
+    },
+    {
+      "id": "4",
       "name": "Sample Event Planner",
       "slug": "sample-event-planner",
       "description": "Full-service event planning for weddings, corporate events, and milestone celebrations across Austin.",
       "website": "https://example.com",
       "logo": "/images/partners/placeholder.svg",
       "category": "event-planning",
-      "featured": true,
-      "order": 1
-    },
-    {
-      "id": "2",
-      "name": "Sample Bartending Co",
-      "slug": "sample-bartending-co",
-      "description": "TABC-certified mobile bartenders bringing craft cocktails and professional service to your Austin event.",
-      "website": "https://example.com",
-      "logo": "/images/partners/placeholder.svg",
-      "category": "mobile-bartending",
       "featured": false,
       "order": 1
     },
     {
-      "id": "3",
+      "id": "5",
       "name": "Sample Venue",
       "slug": "sample-venue",
       "description": "Beautiful Austin Hill Country venue with stunning views, perfect for weddings and private events.",
@@ -34,7 +56,7 @@
       "order": 1
     },
     {
-      "id": "4",
+      "id": "6",
       "name": "Sample Catering",
       "slug": "sample-catering",
       "description": "Award-winning Austin caterer specializing in Tex-Mex, BBQ, and farm-to-table cuisine for events of all sizes.",
@@ -45,18 +67,18 @@
       "order": 1
     },
     {
-      "id": "5",
+      "id": "7",
       "name": "Sample Boat Rentals",
       "slug": "sample-boat-rentals",
       "description": "Premium Lake Travis boat rentals including party barges, double-decker boats, and yacht charters.",
       "website": "https://example.com",
       "logo": "/images/partners/placeholder.svg",
       "category": "boats",
-      "featured": true,
+      "featured": false,
       "order": 1
     },
     {
-      "id": "6",
+      "id": "8",
       "name": "Sample Party Bus",
       "slug": "sample-party-bus",
       "description": "Luxury party buses and limo service for Austin events, bachelor parties, and group transportation.",
