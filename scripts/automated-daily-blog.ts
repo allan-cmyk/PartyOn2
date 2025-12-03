@@ -209,79 +209,15 @@ REQUIRED SECTIONS:
 4. Practical tips throughout with bullet points
 5. FAQ section with 3-5 questions (use ### Q: format)
 6. Conclusion with clear call-to-action
-7. Schema.org JSON-LD block at the very end (see format below)
-
-SCHEMA.ORG JSON-LD (add this at the END of the blog post):
-\`\`\`json
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Article",
-      "@id": "https://partyondelivery.com/blog/${createSlug(topic.title)}",
-      "headline": "${topic.title}",
-      "description": "[First 160 characters of intro]",
-      "author": {
-        "@type": "Organization",
-        "name": "Party On Delivery",
-        "url": "https://partyondelivery.com"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "Party On Delivery",
-        "url": "https://partyondelivery.com"
-      },
-      "datePublished": "${formatDate(new Date())}",
-      "keywords": "${topic.keywords.join(', ')}"
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "[Question 1 from FAQ section]",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "[Answer 1 from FAQ section]"
-          }
-        }
-      ]
-    },
-    {
-      "@type": "LocalBusiness",
-      "name": "Party On Delivery",
-      "@id": "https://partyondelivery.com",
-      "url": "https://partyondelivery.com",
-      "telephone": "(737) 371-9700",
-      "email": "info@partyondelivery.com",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Austin",
-        "addressRegion": "TX",
-        "addressCountry": "US"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": "30.2672",
-        "longitude": "-97.7431"
-      },
-      "priceRange": "$$",
-      "servesCuisine": "Alcohol Delivery",
-      "areaServed": {
-        "@type": "City",
-        "name": "Austin"
-      }
-    }
-  ]
-}
-\`\`\`
 
 IMPORTANT:
 - Keep tables simple (max 4 columns for mobile readability)
 - Ensure all pricing includes context (per person, per hour, etc.)
 - FAQ answers should be 2-4 sentences, direct and factual
-- Schema JSON-LD must be valid and complete
 - Write in MDX format (HTML tables are allowed in MDX)
+- DO NOT include any JSON-LD or Schema.org blocks - these are handled automatically by the website
+- DO NOT include code blocks at the end of the post
+- End the post with the conclusion paragraph, not with any JSON or code
 
 Write the blog post now:`;
 
@@ -320,16 +256,16 @@ async function generateBlogImages(topic: Topic, slug: string): Promise<string[]>
   if (!generateWithRetry || !saveImageFromBase64) {
     console.log(`🖼️  Using placeholder images (image generation not available in CI)`);
 
-    // Use a default hero image based on category
+    // Use a default hero image based on category (verified existing files)
     const categoryImages: Record<string, string> = {
-      'Corporate Events': '/images/hero/mobile-bartender-outdoor-event.webp',
-      'Weddings': '/images/hero/lake-travis-sunset.webp',
-      'Bachelor Parties': '/images/hero/lake-travis-sunset.webp',
-      'Bachelorette Parties': '/images/hero/lake-travis-sunset.webp',
-      'Boat Parties': '/images/hero/lake-travis-sunset.webp',
+      'Corporate Events': '/images/hero/corporate-hero-conference.webp',
+      'Weddings': '/images/hero/wedding-hero-garden.webp',
+      'Bachelor Parties': '/images/hero/bach-hero-party-bus.webp',
+      'Bachelorette Parties': '/images/hero/bach-hero-rainey.webp',
+      'Boat Parties': '/images/hero/lake-travis-yacht-sunset.webp',
     };
 
-    const defaultImage = categoryImages[topic.category] || '/images/hero/lake-travis-sunset.webp';
+    const defaultImage = categoryImages[topic.category] || '/images/hero/austin-skyline-hero.webp';
     return [defaultImage];
   }
 
