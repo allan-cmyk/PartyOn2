@@ -3,9 +3,23 @@
 import 'dotenv/config';
 import fs from 'fs';
 import path from 'path';
-import { generateWithRetry } from '../image-generator-tool/lib/api';
-import { saveImageFromBase64 } from '../image-generator-tool/lib/image';
 import { config } from 'dotenv';
+
+// Dynamic imports for image generation (may not be available in CI)
+let generateWithRetry: ((prompt: string) => Promise<string | null>) | null = null;
+let saveImageFromBase64: ((data: string, outputPath: string) => Promise<void>) | null = null;
+
+// Try to load image generation tools (only available locally, not in CI)
+try {
+  // These imports will fail in CI where image-generator-tool isn't available
+  const imageApi = require('../image-generator-tool/lib/api');
+  const imageLib = require('../image-generator-tool/lib/image');
+  generateWithRetry = imageApi.generateWithRetry;
+  saveImageFromBase64 = imageLib.saveImageFromBase64;
+  console.log('✅ Image generation tools loaded successfully');
+} catch {
+  console.log('⚠️  Image generation tools not available (CI environment) - using placeholder images');
+}
 
 // Load environment variables from .env.local
 config({ path: path.join(process.cwd(), '.env.local') });
@@ -299,6 +313,23 @@ Write the blog post now:`;
 
 // Generate images for the blog post
 async function generateBlogImages(topic: Topic, slug: string): Promise<string[]> {
+  // If image generation tools aren't available, return placeholder images
+  if (!generateWithRetry || !saveImageFromBase64) {
+    console.log(`🖼️  Using placeholder images (image generation not available in CI)`);
+
+    // Use a default hero image based on category
+    const categoryImages: Record<string, string> = {
+      'Corporate Events': '/images/hero/mobile-bartender-outdoor-event.webp',
+      'Weddings': '/images/hero/lake-travis-sunset.webp',
+      'Bachelor Parties': '/images/hero/lake-travis-sunset.webp',
+      'Bachelorette Parties': '/images/hero/lake-travis-sunset.webp',
+      'Boat Parties': '/images/hero/lake-travis-sunset.webp',
+    };
+
+    const defaultImage = categoryImages[topic.category] || '/images/hero/lake-travis-sunset.webp';
+    return [defaultImage];
+  }
+
   console.log(`🎨 Generating ${CONFIG.imagesPerPost} images...`);
 
   // Create slug-specific directory
