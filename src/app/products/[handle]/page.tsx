@@ -13,6 +13,7 @@ import CoronaExtraKegFAQ from '@/components/products/CoronaExtraKegFAQ';
 import BorrascaBrutCavaFAQ from '@/components/products/BorrascaBrutCavaFAQ';
 import ProductBreadcrumbs from '@/components/products/ProductBreadcrumbs';
 import { formatPrice } from '@/lib/shopify/utils';
+import { getProductRobotsMeta } from '@/lib/noindex-products';
 
 interface Props {
   params: Promise<{ handle: string }>;
@@ -37,9 +38,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle } = await params;
   const product = await getProduct(handle);
 
+  // Get robots meta for noindex products (tobacco, snuff, etc.)
+  // Products are still purchasable but hidden from Google search results
+  const robots = getProductRobotsMeta(handle);
+
   if (!product) {
     return {
       title: 'Product Not Found',
+      robots,
     };
   }
 
@@ -67,6 +73,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: 'Miller Lite Keg Austin | 1/2 Barrel (15.5 gal) | Party On Delivery',
       description: 'Miller Lite keg delivery in Austin. 1/2 barrel serves 165 drinks. Perfect for parties, weddings, tailgates. Same-day Austin delivery available. Order now!',
       keywords: 'miller lite keg, miller lite keg austin, miller lite keg delivery, beer keg austin, half barrel keg, party keg delivery austin, wedding keg austin',
+      robots,
       openGraph: {
         title: 'Miller Lite Keg Austin | 1/2 Barrel Keg Delivery',
         description: 'Miller Lite 1/2 barrel keg delivered throughout Austin. Serves 165 drinks. Perfect for weddings, corporate events, and parties.',
@@ -90,6 +97,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: 'Pinthouse Electric Jellyfish IPA Austin | 16oz 4-Pack | Local Delivery',
       description: 'Buy Pinthouse Electric Jellyfish IPA in Austin. Award-winning local IPA. 16oz 4-pack cans delivered throughout Austin. Support local breweries. Order today!',
       keywords: 'electric jellyfish beer, pinthouse beer, pinthouse electric jellyfish, austin ipa, local austin beer, craft beer austin delivery, pinthouse brewery',
+      robots,
       openGraph: {
         title: 'Pinthouse Electric Jellyfish IPA | Austin Craft Beer Delivery',
         description: 'Award-winning Pinthouse Electric Jellyfish IPA delivered in Austin. Support local Austin breweries with fast delivery.',
@@ -113,6 +121,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: "Fat E's Spicy Mator Mix Austin | Bloody Mary Mix | Fast Delivery",
       description: "Fat E's Spicy Mator Mix delivered in Austin. Premium bloody mary mix with bold, spicy flavor. Perfect for brunch, parties, weddings. Order online!",
       keywords: "fat e bloody mary mix, bloody mary mix austin, spicy bloody mary mix, brunch bloody mary, fat e's mator mix, austin bloody mary delivery",
+      robots,
       openGraph: {
         title: "Fat E's Spicy Mator Mix | Premium Bloody Mary Mix Austin",
         description: "Premium spicy bloody mary mix delivered in Austin. Perfect for brunch parties, weddings, and events.",
@@ -136,6 +145,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: 'Borrasca Brut Cava Austin | Spanish Sparkling Wine | Delivered',
       description: 'Buy Borrasca Brut Cava sparkling wine in Austin. Crisp, dry Spanish cava perfect for celebrations, toasts, weddings. Austin delivery available. Order now!',
       keywords: 'borrasca cava, brut cava austin, spanish sparkling wine, cava delivery austin, sparkling wine austin, champagne alternative, wedding sparkling wine',
+      robots,
       openGraph: {
         title: 'Borrasca Brut Cava | Spanish Sparkling Wine Austin Delivery',
         description: 'Premium Spanish cava delivered in Austin. Crisp, elegant sparkling wine perfect for weddings and celebrations.',
@@ -159,6 +169,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: 'Corona Extra Keg Austin | 1/2 Barrel | Perfect for Parties',
       description: 'Corona Extra keg delivery in Austin. 1/2 barrel serves 165 drinks. Perfect for lake parties, tailgates, weddings. Austin-wide delivery. Order online!',
       keywords: 'corona keg, corona extra keg austin, corona keg delivery, lake travis keg, beach party keg, corona keg lake travis, austin keg delivery',
+      robots,
       openGraph: {
         title: 'Corona Extra Keg Austin | 1/2 Barrel Keg Delivery',
         description: 'Corona Extra keg delivered in Austin. Perfect for Lake Travis parties, tailgates, and summer events. Serves 165 drinks.',
@@ -176,12 +187,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  // Schneeberg-specific optimized metadata
+  // Schneeberg-specific optimized metadata (noindexed - tobacco/snuff product)
   if (isSchneebergProduct) {
     return {
       title: 'Pöschl Schneeberg Snuff Austin | Tobacco-Free | Fast Delivery',
       description: 'Buy Pöschl Schneeberg Weiss tobacco-free herbal snuff in Austin. Refreshing peppermint nasal snuff, no tobacco or nicotine. Same-day delivery available. Order now!',
       keywords: 'schneeberg snuff, schneeberg powder, poschl schneeberg, schneeberg austin, tobacco free snuff, nicotine free snuff, herbal snuff austin, peppermint snuff, bavarian nasal mint powder, schneeberg snuff where to buy, schneeberg weiss',
+      robots, // Will be { index: false, follow: true } for Schneeberg products
       openGraph: {
         title: 'Pöschl Schneeberg Weiss - Tobacco-Free Herbal Snuff | Austin Delivery',
         description: 'Premium tobacco-free, nicotine-free peppermint snuff delivered in Austin. Authentic Pöschl Schneeberg Weiss with same-day delivery.',
@@ -213,6 +225,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${product.title} - ${price} | Party On Delivery Austin`,
     description: truncatedDescription || `Buy ${product.title} for delivery in Austin. Premium alcohol delivery for weddings, parties, and events.`,
     keywords: `${product.title}, austin alcohol delivery, ${product.productType}, party supplies austin`,
+    robots,
     openGraph: {
       title: product.title,
       description: truncatedDescription || `Premium ${product.title} delivered in Austin`,
