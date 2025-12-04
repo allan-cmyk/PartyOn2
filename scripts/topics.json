@@ -205,7 +205,7 @@
         "activities",
         "austin"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 8,
@@ -217,7 +217,7 @@
         "packing list",
         "boat party"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 9,

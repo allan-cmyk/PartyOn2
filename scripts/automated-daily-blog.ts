@@ -3,16 +3,32 @@
 import 'dotenv/config';
 import fs from 'fs';
 import path from 'path';
-import { generateWithRetry } from '../image-generator-tool/lib/api';
-import { saveImageFromBase64 } from '../image-generator-tool/lib/image';
 import { config } from 'dotenv';
+
+// Dynamic imports for image generation (may not be available in CI)
+let generateWithRetry: ((prompt: string) => Promise<string | null>) | null = null;
+let saveImageFromBase64: ((data: string, outputPath: string) => Promise<void>) | null = null;
+
+// Try to load image generation tools (only available locally, not in CI)
+try {
+  // These imports will fail in CI where image-generator-tool isn't available
+  const imageApi = require('../image-generator-tool/lib/api');
+  const imageLib = require('../image-generator-tool/lib/image');
+  generateWithRetry = imageApi.generateWithRetry;
+  saveImageFromBase64 = imageLib.saveImageFromBase64;
+  console.log('✅ Image generation tools loaded successfully');
+} catch {
+  console.log('⚠️  Image generation tools not available (CI environment) - using placeholder images');
+}
 
 // Load environment variables from .env.local
 config({ path: path.join(process.cwd(), '.env.local') });
 
-// Using Anthropic API directly (more reliable than OpenRouter)
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || process.env.GOOGLE_API_KEY || '';
+// Using OpenRouter API (provides access to Claude and other models)
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || '';
+
+// OpenRouter model to use (Claude 3 Haiku is fast and affordable for blog generation)
+const OPENROUTER_MODEL = 'anthropic/claude-3-haiku';
 
 interface Topic {
   id: number;
@@ -34,6 +50,69 @@ const CONFIG = {
   targetWordCount: 1200,
   imagesPerPost: 4,
 };
+
+// Topic Cluster Configuration for automatic internal linking
+interface TopicCluster {
+  pillarSlug: string;
+  pillarTitle: string;
+  category: string;
+  clusterSlugs: string[];
+}
+
+const TOPIC_CLUSTERS: TopicCluster[] = [
+  {
+    pillarSlug: 'ultimate-guide-austin-corporate-events',
+    pillarTitle: 'The Ultimate Guide to Austin Corporate Events',
+    category: 'Corporate Events',
+    clusterSlugs: [],
+  },
+  {
+    pillarSlug: 'ultimate-guide-austin-bachelor-parties',
+    pillarTitle: 'The Ultimate Guide to Austin Bachelor Parties',
+    category: 'Bachelor Parties',
+    clusterSlugs: [],
+  },
+  {
+    pillarSlug: 'ultimate-guide-austin-bachelorette-parties',
+    pillarTitle: 'The Ultimate Guide to Austin Bachelorette Parties',
+    category: 'Bachelorette Parties',
+    clusterSlugs: [],
+  },
+  {
+    pillarSlug: 'ultimate-guide-austin-wedding-bar-service',
+    pillarTitle: 'The Ultimate Guide to Austin Wedding Bar Service',
+    category: 'Weddings',
+    clusterSlugs: [],
+  },
+  {
+    pillarSlug: 'ultimate-guide-lake-travis-boat-parties',
+    pillarTitle: 'The Ultimate Guide to Lake Travis Boat Parties',
+    category: 'Boat Parties',
+    clusterSlugs: [],
+  },
+  {
+    pillarSlug: 'ultimate-guide-ut-tailgating',
+    pillarTitle: 'The Ultimate Guide to UT Football Tailgating',
+    category: 'Tailgating',
+    clusterSlugs: [],
+  },
+];
+
+function findClusterByCategory(category: string): TopicCluster | undefined {
+  return TOPIC_CLUSTERS.find(c => c.category.toLowerCase() === category.toLowerCase());
+}
+
+function generateClusterSection(category: string): string {
+  const cluster = findClusterByCategory(category);
+  if (!cluster) return '';
+
+  return `
+
+---
+
+*This article is part of our comprehensive [${cluster.pillarTitle}](/blog/${cluster.pillarSlug}). Explore the full guide for more tips and resources.*
+`;
+}
 
 // Utility functions
 function createSlug(title: string): string {
@@ -85,7 +164,7 @@ function markTopicPublished(topics: TopicsData, topicId: number): void {
 
 // Generate blog content with Claude via Anthropic API
 async function generateBlogContent(topic: Topic): Promise<string> {
-  console.log(`🤖 Generating blog content with Claude via Anthropic API...`);
+  console.log(`🤖 Generating blog content with ${OPENROUTER_MODEL} via OpenRouter...`);
 
   const serviceInfo = getCategoryServiceInfo(topic.category);
 
@@ -193,91 +272,28 @@ REQUIRED SECTIONS:
 4. Practical tips throughout with bullet points
 5. FAQ section with 3-5 questions (use ### Q: format)
 6. Conclusion with clear call-to-action
-7. Schema.org JSON-LD block at the very end (see format below)
-
-SCHEMA.ORG JSON-LD (add this at the END of the blog post):
-\`\`\`json
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Article",
-      "@id": "https://partyondelivery.com/blog/${createSlug(topic.title)}",
-      "headline": "${topic.title}",
-      "description": "[First 160 characters of intro]",
-      "author": {
-        "@type": "Organization",
-        "name": "Party On Delivery",
-        "url": "https://partyondelivery.com"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "Party On Delivery",
-        "url": "https://partyondelivery.com"
-      },
-      "datePublished": "${formatDate(new Date())}",
-      "keywords": "${topic.keywords.join(', ')}"
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "[Question 1 from FAQ section]",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "[Answer 1 from FAQ section]"
-          }
-        }
-      ]
-    },
-    {
-      "@type": "LocalBusiness",
-      "name": "Party On Delivery",
-      "@id": "https://partyondelivery.com",
-      "url": "https://partyondelivery.com",
-      "telephone": "(737) 371-9700",
-      "email": "info@partyondelivery.com",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Austin",
-        "addressRegion": "TX",
-        "addressCountry": "US"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": "30.2672",
-        "longitude": "-97.7431"
-      },
-      "priceRange": "$$",
-      "servesCuisine": "Alcohol Delivery",
-      "areaServed": {
-        "@type": "City",
-        "name": "Austin"
-      }
-    }
-  ]
-}
-\`\`\`
 
 IMPORTANT:
 - Keep tables simple (max 4 columns for mobile readability)
 - Ensure all pricing includes context (per person, per hour, etc.)
 - FAQ answers should be 2-4 sentences, direct and factual
-- Schema JSON-LD must be valid and complete
 - Write in MDX format (HTML tables are allowed in MDX)
+- DO NOT include any JSON-LD or Schema.org blocks - these are handled automatically by the website
+- DO NOT include code blocks at the end of the post
+- End the post with the conclusion paragraph, not with any JSON or code
 
 Write the blog post now:`;
 
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
-      'x-api-key': ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01',
-      'Content-Type': 'application/json'
+      'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': 'https://partyondelivery.com',
+      'X-Title': 'Party On Delivery Blog Generator'
     },
     body: JSON.stringify({
-      model: 'claude-3-haiku-20240307',
+      model: OPENROUTER_MODEL,
       max_tokens: 4096,
       messages: [
         {
@@ -290,15 +306,32 @@ Write the blog post now:`;
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Anthropic API error: ${response.statusText} - ${errorText}`);
+    throw new Error(`OpenRouter API error: ${response.statusText} - ${errorText}`);
   }
 
   const data = await response.json();
-  return data.content[0].text;
+  return data.choices[0].message.content;
 }
 
 // Generate images for the blog post
 async function generateBlogImages(topic: Topic, slug: string): Promise<string[]> {
+  // If image generation tools aren't available, return placeholder images
+  if (!generateWithRetry || !saveImageFromBase64) {
+    console.log(`🖼️  Using placeholder images (image generation not available in CI)`);
+
+    // Use a default hero image based on category (verified existing files)
+    const categoryImages: Record<string, string> = {
+      'Corporate Events': '/images/hero/corporate-hero-conference.webp',
+      'Weddings': '/images/hero/wedding-hero-garden.webp',
+      'Bachelor Parties': '/images/hero/bach-hero-party-bus.webp',
+      'Bachelorette Parties': '/images/hero/bach-hero-rainey.webp',
+      'Boat Parties': '/images/hero/lake-travis-yacht-sunset.webp',
+    };
+
+    const defaultImage = categoryImages[topic.category] || '/images/hero/austin-skyline-hero.webp';
+    return [defaultImage];
+  }
+
   console.log(`🎨 Generating ${CONFIG.imagesPerPost} images...`);
 
   // Create slug-specific directory
@@ -433,6 +466,9 @@ function createMDXFile(topic: Topic, content: string, imagePaths: string[]): str
 
   const contentWithImages = insertImagesIntoContent(content, imagePaths);
 
+  // Add cluster link section (link back to pillar page)
+  const clusterSection = generateClusterSection(topic.category);
+
   const frontmatter = `---
 title: "${topic.title}"
 date: "${date}"
@@ -445,7 +481,17 @@ author: "${author}"
 
 `;
 
-  return frontmatter + contentWithImages;
+  // Insert cluster section before the schema.org script (if present) or at end
+  let finalContent = contentWithImages;
+  const schemaMatch = finalContent.match(/<script type="application\/ld\+json"/);
+
+  if (schemaMatch && schemaMatch.index) {
+    finalContent = finalContent.slice(0, schemaMatch.index) + clusterSection + '\n' + finalContent.slice(schemaMatch.index);
+  } else {
+    finalContent = finalContent + clusterSection;
+  }
+
+  return frontmatter + finalContent;
 }
 
 // Save MDX file

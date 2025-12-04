@@ -3,9 +3,23 @@
 import 'dotenv/config';
 import fs from 'fs';
 import path from 'path';
-import { generateWithRetry } from '../image-generator-tool/lib/api';
-import { saveImageFromBase64 } from '../image-generator-tool/lib/image';
 import { config } from 'dotenv';
+
+// Dynamic imports for image generation (may not be available in CI)
+let generateWithRetry: ((prompt: string) => Promise<string | null>) | null = null;
+let saveImageFromBase64: ((data: string, outputPath: string) => Promise<void>) | null = null;
+
+// Try to load image generation tools (only available locally, not in CI)
+try {
+  const imageApi = require('../image-generator-tool/lib/api');
+  const imageLib = require('../image-generator-tool/lib/image');
+  generateWithRetry = imageApi.generateWithRetry;
+  saveImageFromBase64 = imageLib.saveImageFromBase64;
+  console.log('✅ Image generation tools loaded successfully');
+} catch {
+  console.log('⚠️  Image generation tools not available - this script requires local image-generator-tool');
+  process.exit(1);
+}
 
 // Load environment variables
 config({ path: path.join(process.cwd(), '.env.local') });
@@ -51,7 +65,7 @@ async function generateBlogImages(slug: string, index: number): Promise<string[]
     try {
       console.log(`   Generating image ${i + 1}/${CONFIG.imagesPerPost}...`);
 
-      const imageData = await generateWithRetry(imagePrompts[i]);
+      const imageData = await generateWithRetry!(imagePrompts[i]);
 
       if (!imageData) {
         throw new Error('No image data received');
@@ -60,7 +74,7 @@ async function generateBlogImages(slug: string, index: number): Promise<string[]
       const filename = `${slug}-${i}.webp`;
       const outputPath = path.join(imageDir, filename);
 
-      await saveImageFromBase64(imageData, outputPath);
+      await saveImageFromBase64!(imageData, outputPath);
 
       const publicPath = `/images/blog/${slug}/${filename}`;
       imagePaths.push(publicPath);

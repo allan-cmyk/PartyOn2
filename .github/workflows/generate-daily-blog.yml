@@ -6,6 +6,10 @@ on:
     - cron: '0 14 * * *'
   workflow_dispatch: # Allows manual triggering from GitHub UI
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   generate-blog:
     runs-on: ubuntu-latest
@@ -16,6 +20,7 @@ jobs:
         with:
           ref: dev
           token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -32,7 +37,6 @@ jobs:
       - name: Generate blog post
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         run: npm run generate-blog
 
       - name: Commit and push changes
@@ -43,6 +47,7 @@ jobs:
           git add public/images/blog/
           git add scripts/topics.json
           git diff --staged --quiet || git commit -m "🤖 Auto-generate daily blog post [skip ci]"
+          git pull --rebase origin dev
           git push origin dev
 
       - name: Create Pull Request to Main
