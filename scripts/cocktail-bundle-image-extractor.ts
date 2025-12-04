@@ -16,7 +16,7 @@ import * as http from 'http';
 
 // Configuration
 const SHOPIFY_STORE_URL = 'https://partyondelivery.com';
-const LOCAL_API_URL = process.env.LOCAL_API_URL || 'http://localhost:3002';
+const LOCAL_API_URL = process.env.LOCAL_API_URL || 'http://localhost:3000';
 const OUTPUT_BASE_DIR = path.join(__dirname, '../public/images/products');
 
 interface ProductImage {
