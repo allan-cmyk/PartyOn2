@@ -845,6 +845,141 @@ Source: ${formData.source}`,
         </div>
       </section>
 
+      {/* Featured Partners */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-8">
+          <ScrollRevealCSS duration={800} delay={0} y={30}>
+            <div className="text-center mb-16">
+              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+                Our Partner Network
+              </h2>
+              <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Austin&apos;s finest mobile bartending services trust Party On Delivery for their alcohol and supply needs
+              </p>
+            </div>
+          </ScrollRevealCSS>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* PourTwentyFour */}
+            <ScrollRevealCSS duration={800} delay={0} y={30}>
+              <a
+                href="https://pourtwentyfour.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-white p-8 shadow-lg hover:shadow-xl transition-shadow group"
+              >
+                <div className="h-24 flex items-center justify-center mb-6">
+                  <Image
+                    src="/images/partners/pourtwentyfour-logo.png"
+                    alt="PourTwentyFour - Upscale Mobile Bartending"
+                    width={200}
+                    height={80}
+                    className="object-contain max-h-20 group-hover:scale-105 transition-transform"
+                  />
+                </div>
+                <h3 className="font-serif text-xl text-gray-900 mb-2 text-center">PourTwentyFour</h3>
+                <p className="text-gray-600 text-center text-sm mb-4">
+                  Upscale mobile bartending service specializing in quality craft cocktails with the freshest ingredients
+                </p>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  <span className="text-xs bg-gold-100 text-gold-700 px-2 py-1">Weddings</span>
+                  <span className="text-xs bg-gold-100 text-gold-700 px-2 py-1">Corporate Events</span>
+                  <span className="text-xs bg-gold-100 text-gold-700 px-2 py-1">Private Parties</span>
+                </div>
+                <div className="mt-4 text-center">
+                  <span className="text-gold-600 text-sm group-hover:text-gold-700 transition-colors">
+                    Visit Website →
+                  </span>
+                </div>
+              </a>
+            </ScrollRevealCSS>
+
+            {/* DTR Bartending */}
+            <ScrollRevealCSS duration={800} delay={100} y={30}>
+              <a
+                href="https://dtrbartending.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-white p-8 shadow-lg hover:shadow-xl transition-shadow group"
+              >
+                <div className="h-24 flex items-center justify-center mb-6">
+                  <Image
+                    src="/images/partners/dtr-bartending-logo.png"
+                    alt="DTR Bartending - Drink to Remember"
+                    width={200}
+                    height={80}
+                    className="object-contain max-h-20 group-hover:scale-105 transition-transform"
+                  />
+                </div>
+                <h3 className="font-serif text-xl text-gray-900 mb-2 text-center">DTR Bartending</h3>
+                <p className="text-gray-600 text-center text-sm mb-4">
+                  Event bartending with five-star service, TABC licensed bartenders, and custom crafted signature cocktails
+                </p>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  <span className="text-xs bg-gold-100 text-gold-700 px-2 py-1">TABC Licensed</span>
+                  <span className="text-xs bg-gold-100 text-gold-700 px-2 py-1">Fully Insured</span>
+                  <span className="text-xs bg-gold-100 text-gold-700 px-2 py-1">Custom Cocktails</span>
+                </div>
+                <div className="mt-4 text-center">
+                  <span className="text-gold-600 text-sm group-hover:text-gold-700 transition-colors">
+                    Visit Website →
+                  </span>
+                </div>
+              </a>
+            </ScrollRevealCSS>
+
+            {/* Tap Truck Austin */}
+            <ScrollRevealCSS duration={800} delay={200} y={30}>
+              <a
+                href="https://taptruckaustin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-white p-8 shadow-lg hover:shadow-xl transition-shadow group"
+              >
+                <div className="h-24 flex items-center justify-center mb-6">
+                  <Image
+                    src="/images/partners/taptruckaustin-logo.png"
+                    alt="Tap Truck Austin - Mobile Bar Service"
+                    width={200}
+                    height={80}
+                    className="object-contain max-h-20 group-hover:scale-105 transition-transform"
+                  />
+                </div>
+                <h3 className="font-serif text-xl text-gray-900 mb-2 text-center">Tap Truck Austin</h3>
+                <p className="text-gray-600 text-center text-sm mb-4">
+                  Full service mobile bar in a vintage 1959 Ford F100 with 6 taps for beer, wine, cocktails, and more
+                </p>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  <span className="text-xs bg-gold-100 text-gold-700 px-2 py-1">Vintage Truck</span>
+                  <span className="text-xs bg-gold-100 text-gold-700 px-2 py-1">6 Taps</span>
+                  <span className="text-xs bg-gold-100 text-gold-700 px-2 py-1">Beer & Wine</span>
+                </div>
+                <div className="mt-4 text-center">
+                  <span className="text-gold-600 text-sm group-hover:text-gold-700 transition-colors">
+                    Visit Website →
+                  </span>
+                </div>
+              </a>
+            </ScrollRevealCSS>
+          </div>
+
+          <ScrollRevealCSS duration={800} delay={300} y={30}>
+            <div className="mt-12 text-center">
+              <p className="text-gray-600 mb-4">
+                Want to join our partner network?
+              </p>
+              <button
+                onClick={scrollToForm}
+                className="bg-gold-600 text-gray-900 px-8 py-3 tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium text-sm"
+              >
+                APPLY TO PARTNER
+              </button>
+            </div>
+          </ScrollRevealCSS>
+        </div>
+      </section>
+
       {/* Partner Form */}
       <section id="partner-form" className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-8">
