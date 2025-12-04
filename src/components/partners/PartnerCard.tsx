@@ -31,32 +31,27 @@ export default function PartnerCard({ partner }: PartnerCardProps) {
             }}
           />
         )}
-        {/* Dark overlay for better logo visibility */}
+        {/* Subtle gradient overlay for logo visibility */}
         {partner.heroImage && (
-          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-black/30" />
         )}
         {/* Logo */}
-        <div className="relative w-full h-full p-4 flex items-center justify-center">
-          <div
-            className={`relative flex items-center justify-center ${
-              partner.heroImage
-                ? 'bg-white rounded-xl p-4 shadow-xl border border-gray-100'
-                : ''
-            }`}
-            style={{ width: '75%', height: '75%' }}
-          >
-            <div className="relative w-full h-full">
-              <Image
-                src={partner.logo}
-                alt={`${partner.name} logo`}
-                fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                className="object-contain"
-                onError={(e) => {
-                  e.currentTarget.src = '/images/partners/placeholder.svg';
-                }}
-              />
-            </div>
+        <div className="relative w-full h-full p-6 flex items-center justify-center">
+          <div className="relative" style={{ width: '70%', height: '70%' }}>
+            <Image
+              src={partner.logo}
+              alt={`${partner.name} logo`}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              className={`object-contain ${
+                partner.heroImage
+                  ? 'drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] brightness-110 contrast-110'
+                  : ''
+              }`}
+              onError={(e) => {
+                e.currentTarget.src = '/images/partners/placeholder.svg';
+              }}
+            />
           </div>
         </div>
         {partner.featured && (
