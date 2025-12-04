@@ -7,6 +7,7 @@
       "description": "3-time award-winning upscale bartending and coffee bar service serving quality craft cocktails with the freshest ingredients. TABC-certified, fully insured, and available for destination events.",
       "website": "https://www.pourtwentyfour.com",
       "logo": "/images/partners/pourtwentyfour-logo.png",
+      "heroImage": "/images/partners/pourtwentyfour-hero.jpg",
       "category": "mobile-bartending",
       "featured": true,
       "order": 1
@@ -17,20 +18,22 @@
       "slug": "tap-truck-austin",
       "description": "Vintage 1959 Ford F-100 mobile bar nicknamed 'Willie Nelson' with 6 taps serving craft beer, wine, champagne, and pre-made cocktails. Perfect for weddings, corporate events, and festivals.",
       "website": "https://www.taptruckaustin.com",
-      "logo": "/images/partners/taptruck-austin-logo.png",
+      "logo": "/images/partners/taptruckaustin-logo.png",
+      "heroImage": "/images/partners/taptruckaustin-hero.jpg",
       "category": "mobile-bartending",
       "featured": true,
       "order": 2
     },
     {
       "id": "3",
-      "name": "Drink To Remember",
-      "slug": "drink-to-remember",
-      "description": "Top-rated Austin mobile bartending service featured on Yelp's Best Bartending Services list. Professional event bartenders for weddings, corporate events, and private celebrations.",
-      "website": "https://drinktoremember.com",
-      "logo": "/images/partners/placeholder.svg",
+      "name": "DTR Bartending",
+      "slug": "dtr-bartending",
+      "description": "Event bartending company serving the greater Austin area with five-star customer service, TABC licensed bartenders, fully licensed and insured operations, and custom crafted signature cocktails.",
+      "website": "https://dtrbartending.com",
+      "logo": "/images/partners/dtr-bartending-logo.png",
+      "heroImage": "/images/partners/dtr-bartending-hero.jpg",
       "category": "mobile-bartending",
-      "featured": false,
+      "featured": true,
       "order": 3
     },
     {

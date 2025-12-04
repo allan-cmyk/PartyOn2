@@ -15,6 +15,7 @@ export interface Partner {
   description: string;
   website: string;
   logo: string;
+  heroImage?: string;
   category: PartnerCategory;
   featured?: boolean;
   order?: number;
