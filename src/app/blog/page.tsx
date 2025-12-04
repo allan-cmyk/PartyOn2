@@ -57,26 +57,6 @@ export default function BlogPage() {
       {/* Search, Filter, and Blog Posts Grid - Client Component */}
       <BlogSearchFilter posts={sortedPosts} />
 
-      {/* Categories Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-8">
-          <h2 className="font-serif text-3xl text-center mb-12 tracking-[0.1em]">
-            EXPLORE BY CATEGORY
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {['Event Planning', 'Cocktail Recipes', 'Local Guides', 'Business Tips'].map((category) => (
-              <Link
-                key={category}
-                href={`/blog/category/${category.toLowerCase().replace(' ', '-')}`}
-                className="bg-white border border-gray-200 px-6 py-4 text-center hover:border-gold-500 hover:bg-gold-50 transition-all"
-              >
-                <span className="text-sm tracking-[0.1em]">{category.toUpperCase()}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Newsletter Section - Client Component */}
       <BlogPageClient />
 
