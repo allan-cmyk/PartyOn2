@@ -16,6 +16,7 @@ export interface Partner {
   website: string;
   logo: string;
   heroImage?: string;
+  invertLogo?: boolean; // Invert dark logos to white for dark backgrounds
   category: PartnerCategory;
   featured?: boolean;
   order?: number;

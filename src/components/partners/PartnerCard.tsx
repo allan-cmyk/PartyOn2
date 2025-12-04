@@ -36,8 +36,8 @@ export default function PartnerCard({ partner }: PartnerCardProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-black/30" />
         )}
         {/* Logo */}
-        <div className="relative w-full h-full p-6 flex items-center justify-center">
-          <div className="relative" style={{ width: '70%', height: '70%' }}>
+        <div className="relative w-full h-full p-4 flex items-center justify-center">
+          <div className="relative" style={{ width: '85%', height: '85%' }}>
             <Image
               src={partner.logo}
               alt={`${partner.name} logo`}
@@ -45,7 +45,11 @@ export default function PartnerCard({ partner }: PartnerCardProps) {
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
               className={`object-contain ${
                 partner.heroImage
-                  ? 'drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] brightness-110 contrast-110'
+                  ? `drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] ${
+                      partner.invertLogo
+                        ? 'brightness-0 invert drop-shadow-[0_2px_8px_rgba(255,255,255,0.5)]'
+                        : 'brightness-110 contrast-110'
+                    }`
                   : ''
               }`}
               onError={(e) => {

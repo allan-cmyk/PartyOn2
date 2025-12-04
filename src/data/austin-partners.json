@@ -44,6 +44,7 @@
       "website": "https://www.thebachplan.com",
       "logo": "/images/partners/thebachplan-logo.png",
       "heroImage": "/images/partners/thebachplan-hero.jpg",
+      "invertLogo": true,
       "category": "event-planning",
       "featured": true,
       "order": 1
