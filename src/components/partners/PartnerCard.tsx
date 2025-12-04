@@ -37,7 +37,14 @@ export default function PartnerCard({ partner }: PartnerCardProps) {
         )}
         {/* Logo */}
         <div className="relative w-full h-full p-4 flex items-center justify-center">
-          <div className={`relative flex items-center justify-center ${partner.heroImage ? 'bg-white/90 rounded-lg p-3 shadow-lg' : ''}`} style={{ width: '85%', height: '85%' }}>
+          <div
+            className={`relative flex items-center justify-center ${
+              partner.heroImage
+                ? 'bg-white rounded-xl p-4 shadow-xl border border-gray-100'
+                : ''
+            }`}
+            style={{ width: '75%', height: '75%' }}
+          >
             <div className="relative w-full h-full">
               <Image
                 src={partner.logo}
