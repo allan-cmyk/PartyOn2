@@ -36,18 +36,20 @@ export default function PartnerCard({ partner }: PartnerCardProps) {
           <div className="absolute inset-0 bg-black/40" />
         )}
         {/* Logo */}
-        <div className="relative w-full h-full p-6 flex items-center justify-center">
-          <div className="relative w-full h-full">
-            <Image
-              src={partner.logo}
-              alt={`${partner.name} logo`}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-              className={`object-contain ${partner.heroImage ? 'drop-shadow-lg brightness-0 invert' : ''}`}
-              onError={(e) => {
-                e.currentTarget.src = '/images/partners/placeholder.svg';
-              }}
-            />
+        <div className="relative w-full h-full p-4 flex items-center justify-center">
+          <div className={`relative flex items-center justify-center ${partner.heroImage ? 'bg-white/90 rounded-lg p-3 shadow-lg' : ''}`} style={{ width: '85%', height: '85%' }}>
+            <div className="relative w-full h-full">
+              <Image
+                src={partner.logo}
+                alt={`${partner.name} logo`}
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                className="object-contain"
+                onError={(e) => {
+                  e.currentTarget.src = '/images/partners/placeholder.svg';
+                }}
+              />
+            </div>
           </div>
         </div>
         {partner.featured && (
