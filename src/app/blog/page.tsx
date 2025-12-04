@@ -1,10 +1,10 @@
 import React from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import OldFashionedNavigation from '@/components/OldFashionedNavigation'
 import migratedPosts from '@/data/blog-posts/posts.json'
 import { getAllMDXPosts, mdxPostToLegacyFormat } from '@/lib/blog-mdx'
 import BlogPageClient from './BlogPageClient'
+import BlogSearchFilter from './BlogSearchFilter'
 
 interface BlogPost {
   slug: string;
@@ -54,61 +54,8 @@ export default function BlogPage() {
         </div>
       </section>
 
-      {/* Newsletter Section - Client Component */}
-      <BlogPageClient />
-
-      {/* Blog Posts Grid */}
-      <section className="py-16 px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-            {sortedPosts.map((post) => {
-              const category = post.tags[0] || 'Article';
-              const imageUrl = post.image?.url || '/images/hero/lake-travis-yacht-sunset.webp';
-
-              return (
-                <article
-                  key={post.slug}
-                  className="bg-white border border-gray-200 hover:border-gold-500 transition-all duration-300 group"
-                >
-                  <Link href={`/blog/${post.slug}`}>
-                    <div className="relative h-64 overflow-hidden">
-                      <Image
-                        src={imageUrl}
-                        alt={post.image?.alt || post.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
-                      <div className="absolute top-4 left-4">
-                        <span className="bg-white px-3 py-1 text-xs tracking-[0.1em] text-gray-700">
-                          {category.toUpperCase()}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="p-6">
-                      <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                        <time>{new Date(post.publishedAt).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}</time>
-                      </div>
-                      <h2 className="font-serif text-2xl text-gray-900 mb-3 group-hover:text-gold-500 transition-colors">
-                        {post.title}
-                      </h2>
-                      <p className="text-gray-600 mb-4 line-clamp-3">
-                        {post.excerpt}
-                      </p>
-                      <span className="inline-block mt-2 px-4 py-2 border border-gold-500 text-gold-600 group-hover:bg-gold-600 group-hover:text-gray-900 font-medium text-sm tracking-[0.1em] transition-all">
-                        READ MORE →
-                      </span>
-                    </div>
-                  </Link>
-                </article>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      {/* Search, Filter, and Blog Posts Grid - Client Component */}
+      <BlogSearchFilter posts={sortedPosts} />
 
       {/* Categories Section */}
       <section className="py-16 bg-gray-50">
@@ -129,6 +76,9 @@ export default function BlogPage() {
           </div>
         </div>
       </section>
+
+      {/* Newsletter Section - Client Component */}
+      <BlogPageClient />
 
       {/* Footer CTA */}
       <section className="py-16 bg-gray-900 text-white text-center">
