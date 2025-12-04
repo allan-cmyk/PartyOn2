@@ -867,17 +867,27 @@ Source: ${formData.source}`,
                 href="https://pourtwentyfour.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block bg-white p-8 shadow-lg hover:shadow-xl transition-shadow group"
+                className="block bg-white shadow-lg hover:shadow-xl transition-shadow group overflow-hidden"
               >
-                <div className="h-24 flex items-center justify-center mb-6">
+                <div className="relative h-32 bg-gray-100 flex items-center justify-center">
                   <Image
-                    src="/images/partners/pourtwentyfour-logo.png"
-                    alt="PourTwentyFour - Upscale Mobile Bartending"
-                    width={200}
-                    height={80}
-                    className="object-contain max-h-20 group-hover:scale-105 transition-transform"
+                    src="/images/partners/pourtwentyfour-hero.jpg"
+                    alt=""
+                    fill
+                    className="object-cover"
                   />
+                  <div className="absolute inset-0 bg-black/40" />
+                  <div className="relative bg-white/90 rounded-lg p-3 shadow-lg">
+                    <Image
+                      src="/images/partners/pourtwentyfour-logo.png"
+                      alt="PourTwentyFour - Upscale Mobile Bartending"
+                      width={160}
+                      height={60}
+                      className="object-contain max-h-14 group-hover:scale-105 transition-transform"
+                    />
+                  </div>
                 </div>
+                <div className="p-6">
                 <h3 className="font-serif text-xl text-gray-900 mb-2 text-center">PourTwentyFour</h3>
                 <p className="text-gray-600 text-center text-sm mb-4">
                   Upscale mobile bartending service specializing in quality craft cocktails with the freshest ingredients
@@ -892,6 +902,7 @@ Source: ${formData.source}`,
                     Visit Website →
                   </span>
                 </div>
+                </div>
               </a>
             </ScrollRevealCSS>
 
@@ -901,17 +912,27 @@ Source: ${formData.source}`,
                 href="https://dtrbartending.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block bg-white p-8 shadow-lg hover:shadow-xl transition-shadow group"
+                className="block bg-white shadow-lg hover:shadow-xl transition-shadow group overflow-hidden"
               >
-                <div className="h-24 flex items-center justify-center mb-6">
+                <div className="relative h-32 bg-gray-100 flex items-center justify-center">
                   <Image
-                    src="/images/partners/dtr-bartending-logo.png"
-                    alt="DTR Bartending - Drink to Remember"
-                    width={200}
-                    height={80}
-                    className="object-contain max-h-20 group-hover:scale-105 transition-transform"
+                    src="/images/partners/dtr-bartending-hero.jpg"
+                    alt=""
+                    fill
+                    className="object-cover"
                   />
+                  <div className="absolute inset-0 bg-black/40" />
+                  <div className="relative bg-white/90 rounded-lg p-3 shadow-lg">
+                    <Image
+                      src="/images/partners/dtr-bartending-logo.png"
+                      alt="DTR Bartending - Drink to Remember"
+                      width={160}
+                      height={60}
+                      className="object-contain max-h-14 group-hover:scale-105 transition-transform"
+                    />
+                  </div>
                 </div>
+                <div className="p-6">
                 <h3 className="font-serif text-xl text-gray-900 mb-2 text-center">DTR Bartending</h3>
                 <p className="text-gray-600 text-center text-sm mb-4">
                   Event bartending with five-star service, TABC licensed bartenders, and custom crafted signature cocktails
@@ -926,6 +947,7 @@ Source: ${formData.source}`,
                     Visit Website →
                   </span>
                 </div>
+                </div>
               </a>
             </ScrollRevealCSS>
 
@@ -935,17 +957,27 @@ Source: ${formData.source}`,
                 href="https://taptruckaustin.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block bg-white p-8 shadow-lg hover:shadow-xl transition-shadow group"
+                className="block bg-white shadow-lg hover:shadow-xl transition-shadow group overflow-hidden"
               >
-                <div className="h-24 flex items-center justify-center mb-6">
+                <div className="relative h-32 bg-gray-100 flex items-center justify-center">
                   <Image
-                    src="/images/partners/taptruckaustin-logo.png"
-                    alt="Tap Truck Austin - Mobile Bar Service"
-                    width={200}
-                    height={80}
-                    className="object-contain max-h-20 group-hover:scale-105 transition-transform"
+                    src="/images/partners/taptruckaustin-hero.jpg"
+                    alt=""
+                    fill
+                    className="object-cover"
                   />
+                  <div className="absolute inset-0 bg-black/40" />
+                  <div className="relative bg-white/90 rounded-lg p-3 shadow-lg">
+                    <Image
+                      src="/images/partners/taptruckaustin-logo.png"
+                      alt="Tap Truck Austin - Mobile Bar Service"
+                      width={160}
+                      height={60}
+                      className="object-contain max-h-14 group-hover:scale-105 transition-transform"
+                    />
+                  </div>
                 </div>
+                <div className="p-6">
                 <h3 className="font-serif text-xl text-gray-900 mb-2 text-center">Tap Truck Austin</h3>
                 <p className="text-gray-600 text-center text-sm mb-4">
                   Full service mobile bar in a vintage 1959 Ford F100 with 6 taps for beer, wine, cocktails, and more
@@ -959,6 +991,7 @@ Source: ${formData.source}`,
                   <span className="text-gold-600 text-sm group-hover:text-gold-700 transition-colors">
                     Visit Website →
                   </span>
+                </div>
                 </div>
               </a>
             </ScrollRevealCSS>
