@@ -5,12 +5,12 @@
  * Uses Firecrawl to scrape the partner's website for logo, hero image, and description.
  *
  * Usage:
- *   npx tsx scripts/add-partner.ts "Partner Name" "https://partner-website.com" "category"
+ *   npm run add-partner "Partner Name" "https://partner-website.com" "category"
  *
  * Categories: event-planning, mobile-bartending, venues, catering, boats, transportation
  *
  * Example:
- *   npx tsx scripts/add-partner.ts "Awesome Bartending" "https://awesomebartending.com" "mobile-bartending"
+ *   npm run add-partner "Awesome Bartending" "https://awesomebartending.com" "mobile-bartending"
  *
  * What this script does:
  * 1. Scrapes the partner website using Firecrawl API
@@ -21,7 +21,7 @@
  * 6. Adds the partner to austin-partners.json
  *
  * Requirements:
- * - FIRECRAWL_API_KEY environment variable must be set
+ * - FIRECRAWL_API_KEY in .env.local (loaded automatically)
  * - Node.js with tsx installed
  */
 
@@ -29,6 +29,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as https from 'https';
 import * as http from 'http';
+import { config } from 'dotenv';
+
+// Load environment variables from .env.local
+config({ path: path.join(__dirname, '../.env.local') });
 
 const FIRECRAWL_API_KEY = process.env.FIRECRAWL_API_KEY;
 const PARTNERS_JSON_PATH = path.join(__dirname, '../src/data/austin-partners.json');
