@@ -51,6 +51,69 @@ const CONFIG = {
   imagesPerPost: 4,
 };
 
+// Topic Cluster Configuration for automatic internal linking
+interface TopicCluster {
+  pillarSlug: string;
+  pillarTitle: string;
+  category: string;
+  clusterSlugs: string[];
+}
+
+const TOPIC_CLUSTERS: TopicCluster[] = [
+  {
+    pillarSlug: 'ultimate-guide-austin-corporate-events',
+    pillarTitle: 'The Ultimate Guide to Austin Corporate Events',
+    category: 'Corporate Events',
+    clusterSlugs: [],
+  },
+  {
+    pillarSlug: 'ultimate-guide-austin-bachelor-parties',
+    pillarTitle: 'The Ultimate Guide to Austin Bachelor Parties',
+    category: 'Bachelor Parties',
+    clusterSlugs: [],
+  },
+  {
+    pillarSlug: 'ultimate-guide-austin-bachelorette-parties',
+    pillarTitle: 'The Ultimate Guide to Austin Bachelorette Parties',
+    category: 'Bachelorette Parties',
+    clusterSlugs: [],
+  },
+  {
+    pillarSlug: 'ultimate-guide-austin-wedding-bar-service',
+    pillarTitle: 'The Ultimate Guide to Austin Wedding Bar Service',
+    category: 'Weddings',
+    clusterSlugs: [],
+  },
+  {
+    pillarSlug: 'ultimate-guide-lake-travis-boat-parties',
+    pillarTitle: 'The Ultimate Guide to Lake Travis Boat Parties',
+    category: 'Boat Parties',
+    clusterSlugs: [],
+  },
+  {
+    pillarSlug: 'ultimate-guide-ut-tailgating',
+    pillarTitle: 'The Ultimate Guide to UT Football Tailgating',
+    category: 'Tailgating',
+    clusterSlugs: [],
+  },
+];
+
+function findClusterByCategory(category: string): TopicCluster | undefined {
+  return TOPIC_CLUSTERS.find(c => c.category.toLowerCase() === category.toLowerCase());
+}
+
+function generateClusterSection(category: string): string {
+  const cluster = findClusterByCategory(category);
+  if (!cluster) return '';
+
+  return `
+
+---
+
+*This article is part of our comprehensive [${cluster.pillarTitle}](/blog/${cluster.pillarSlug}). Explore the full guide for more tips and resources.*
+`;
+}
+
 // Utility functions
 function createSlug(title: string): string {
   return title
@@ -403,6 +466,9 @@ function createMDXFile(topic: Topic, content: string, imagePaths: string[]): str
 
   const contentWithImages = insertImagesIntoContent(content, imagePaths);
 
+  // Add cluster link section (link back to pillar page)
+  const clusterSection = generateClusterSection(topic.category);
+
   const frontmatter = `---
 title: "${topic.title}"
 date: "${date}"
@@ -415,7 +481,17 @@ author: "${author}"
 
 `;
 
-  return frontmatter + contentWithImages;
+  // Insert cluster section before the schema.org script (if present) or at end
+  let finalContent = contentWithImages;
+  const schemaMatch = finalContent.match(/<script type="application\/ld\+json"/);
+
+  if (schemaMatch && schemaMatch.index) {
+    finalContent = finalContent.slice(0, schemaMatch.index) + clusterSection + '\n' + finalContent.slice(schemaMatch.index);
+  } else {
+    finalContent = finalContent + clusterSection;
+  }
+
+  return frontmatter + finalContent;
 }
 
 // Save MDX file
