@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import type { Partner } from '@/lib/partners/types';
 import { getCategoryName } from '@/lib/partners/types';
@@ -9,6 +10,8 @@ interface PartnerCardProps {
 }
 
 export default function PartnerCard({ partner }: PartnerCardProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
     <article
       className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-gold-300"
@@ -46,10 +49,38 @@ export default function PartnerCard({ partner }: PartnerCardProps) {
           {partner.name}
         </h3>
 
-        {/* Description */}
-        <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">
-          {partner.description}
-        </p>
+        {/* Expandable Description */}
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="text-left w-full mb-4 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 rounded"
+          aria-expanded={isExpanded}
+        >
+          <p
+            className={`text-gray-600 text-sm leading-relaxed transition-all duration-300 ${
+              isExpanded ? '' : 'line-clamp-3'
+            }`}
+          >
+            {partner.description}
+          </p>
+          <span className="inline-flex items-center text-gold-600 text-xs mt-2 hover:text-gold-700 transition-colors">
+            {isExpanded ? 'Show less' : 'Read more'}
+            <svg
+              className={`w-3 h-3 ml-1 transition-transform duration-300 ${
+                isExpanded ? 'rotate-180' : ''
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </span>
+        </button>
 
         {/* Website Link */}
         <a
