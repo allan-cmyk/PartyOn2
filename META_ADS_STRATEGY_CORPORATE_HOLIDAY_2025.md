@@ -1,7 +1,7 @@
-# Meta Ads Strategy: Corporate Holiday Party Events 2024
+# Meta Ads Strategy: Corporate Holiday Party Events 2025
 ## Party On Delivery - Austin, TX
 
-**Campaign Duration:** 3 weeks (December 2-20, 2024)
+**Campaign Duration:** 3 weeks (December 2-20, 2025)
 **Total Budget:** $400/month (~$13/day)
 **Primary Goal:** Generate leads (form submissions) from corporate event planners
 **Target Audience:** Office managers, HR professionals, executive assistants, event coordinators
@@ -68,7 +68,7 @@ Week 3 (Dec 16-20): 50% Cold, 50% Retargeting (urgency converts warm leads)
 
 ### Campaign Settings
 
-**Campaign Name:** Corporate Holiday Events 2024
+**Campaign Name:** Corporate Holiday Events 2025
 **Objective:** Leads (optimized for form submissions)
 **Buying Type:** Auction
 **Budget:** $13/day campaign budget (Advantage Campaign Budget)
@@ -462,7 +462,7 @@ https://partyondelivery.com/corporate
 
 **With UTM Parameters:**
 ```
-https://partyondelivery.com/corporate?utm_source=meta&utm_medium=paid-social&utm_campaign=corporate-holiday-2024&utm_content=[ad-variant]
+https://partyondelivery.com/corporate?utm_source=meta&utm_medium=paid-social&utm_campaign=corporate-holiday-2025&utm_content=[ad-variant]
 ```
 
 **Ad Variant Names:**
@@ -492,7 +492,7 @@ https://partyondelivery.com/corporate?utm_source=meta&utm_medium=paid-social&utm
 
 ## Week-by-Week Timeline
 
-### Week 1: Launch & Test (December 2-8)
+### Week 1: Launch & Test (December 2-8, 2025)
 
 **Monday, Dec 2:**
 - [ ] Launch Ad Set 1: Cold Audience ($8/day)
@@ -517,7 +517,7 @@ https://partyondelivery.com/corporate?utm_source=meta&utm_medium=paid-social&utm
 
 ---
 
-### Week 2: Optimize (December 9-15)
+### Week 2: Optimize (December 9-15, 2025)
 
 **Daily Tasks:**
 - [ ] Review metrics each morning
@@ -545,7 +545,7 @@ https://partyondelivery.com/corporate?utm_source=meta&utm_medium=paid-social&utm
 
 ---
 
-### Week 3: Final Push (December 16-20)
+### Week 3: Final Push (December 16-20, 2025)
 
 **Monday, Dec 16:**
 - [ ] Launch urgency-focused ads ("Only 5 days left!")
@@ -616,7 +616,7 @@ https://partyondelivery.com/corporate?utm_source=meta&utm_medium=paid-social&utm
 
 ## Meta Ads Setup Checklist
 
-### Pre-Launch (Complete Before Dec 2)
+### Pre-Launch (Complete Before Dec 2, 2025)
 
 **Meta Business Setup:**
 - [ ] Meta Business Manager account active
@@ -663,7 +663,7 @@ https://partyondelivery.com/corporate?utm_source=meta&utm_medium=paid-social&utm
 4. Pixel: Select your pixel
 5. Conversion event: Lead
 6. Budget: $8/day (if not using Advantage Budget)
-7. Schedule: Dec 2 - Dec 20, 2024
+7. Schedule: Dec 2 - Dec 20, 2025
 8. Audience:
    - Location: Austin, TX + 25 miles
    - Age: 28-55
@@ -694,7 +694,7 @@ https://partyondelivery.com/corporate?utm_source=meta&utm_medium=paid-social&utm
 6. Headline: "Stop Sending Employees to the Liquor Store"
 7. Description: "Corporate holiday party bar service in Austin"
 8. Call-to-action: "Get Quote"
-9. Website URL: `https://partyondelivery.com/corporate?utm_source=meta&utm_medium=paid-social&utm_campaign=corporate-holiday-2024&utm_content=pain-point-employee`
+9. Website URL: `https://partyondelivery.com/corporate?utm_source=meta&utm_medium=paid-social&utm_campaign=corporate-holiday-2025&utm_content=pain-point-employee`
 10. Duplicate ad 4-5 times with different images/copy
 
 **Step 5: Review & Publish**
@@ -908,10 +908,10 @@ Best,
 
 ### Use This Data For
 
-- Q1 2025 corporate events push
+- Q1 2026 corporate events push
 - Cinco de Mayo corporate campaign
 - Summer team offsite campaign
-- Holiday 2025 planning (start earlier!)
+- Holiday 2026 planning (start earlier!)
 
 ---
 
@@ -986,6 +986,6 @@ Best,
 
 ---
 
-_Last updated: December 2, 2024_
-_Campaign duration: December 2-20, 2024_
+_Last updated: December 4, 2025_
+_Campaign duration: December 2-20, 2025_
 _Total investment: $400 over 3 weeks_
