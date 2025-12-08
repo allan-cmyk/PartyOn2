@@ -12,6 +12,38 @@ import { trackMetaEvent } from '@/components/MetaPixel';
 
 export default function HolidayRunnerUpPage() {
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [isExpired, setIsExpired] = useState(false);
+
+  // Countdown timer - ends at midnight on December 14, 2025 (Central Time)
+  useEffect(() => {
+    const endDate = new Date('2025-12-15T06:00:00Z'); // Midnight CT = 6am UTC
+
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const difference = endDate.getTime() - now.getTime();
+
+      if (difference <= 0) {
+        setIsExpired(true);
+        return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+      }
+
+      return {
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((difference / 1000 / 60) % 60),
+        seconds: Math.floor((difference / 1000) % 60),
+      };
+    };
+
+    setTimeLeft(calculateTimeLeft());
+
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   // Auto-verify age for this landing page and track page view
   useEffect(() => {
@@ -49,6 +81,16 @@ export default function HolidayRunnerUpPage() {
     {
       icon: (
         <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        </svg>
+      ),
+      title: 'Free Ice (Up to 80 lbs)',
+      description:
+        'No more last-minute ice runs. We include up to 80 lbs of ice with your order—enough to keep all your drinks cold throughout the party.',
+    },
+    {
+      icon: (
+        <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
         </svg>
       ),
@@ -72,7 +114,7 @@ export default function HolidayRunnerUpPage() {
     {
       step: '3',
       title: 'We Deliver Your Party',
-      description: 'Your drinks + free mini Espresso Martini bottle + holiday gift package arrive cold and on time.',
+      description: 'Your drinks + free mini Espresso Martini bottle + holiday gift package + up to 80 lbs of ice all arrive cold and on time.',
     },
   ];
 
@@ -125,14 +167,45 @@ export default function HolidayRunnerUpPage() {
         </Link>
       </header>
 
-      {/* Urgency Banner */}
-      <div className="bg-green-500 py-5 px-4 text-center relative overflow-hidden">
+      {/* Urgency Banner with Countdown */}
+      <div className="bg-green-500 py-4 px-4 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-[shimmer_3s_infinite]" />
-        <p className="text-lg sm:text-xl md:text-2xl font-bold text-black tracking-wide relative z-10 flex items-center justify-center gap-2 flex-wrap">
-          <span className="inline-block animate-pulse">&#9889;</span>
-          EXCLUSIVE RUNNER-UP OFFER – FREE DELIVERY ON $250+
-          <span className="inline-block animate-pulse">&#9889;</span>
-        </p>
+        <div className="relative z-10">
+          <p className="text-lg sm:text-xl md:text-2xl font-bold text-black tracking-wide flex items-center justify-center gap-2 flex-wrap">
+            <span className="inline-block animate-pulse">&#9889;</span>
+            EXCLUSIVE RUNNER-UP OFFER – FREE DELIVERY + FREE ICE
+            <span className="inline-block animate-pulse">&#9889;</span>
+          </p>
+          {!isExpired && (
+            <div className="mt-2 flex items-center justify-center gap-1 sm:gap-2 text-black font-mono">
+              <span className="text-sm sm:text-base font-semibold">OFFER ENDS IN:</span>
+              <div className="flex gap-1 sm:gap-2">
+                <div className="bg-black text-green-400 px-2 py-1 rounded text-sm sm:text-lg font-bold min-w-[40px] sm:min-w-[50px]">
+                  {String(timeLeft.days).padStart(2, '0')}
+                  <span className="text-[10px] sm:text-xs block font-normal">DAYS</span>
+                </div>
+                <span className="text-xl font-bold">:</span>
+                <div className="bg-black text-green-400 px-2 py-1 rounded text-sm sm:text-lg font-bold min-w-[40px] sm:min-w-[50px]">
+                  {String(timeLeft.hours).padStart(2, '0')}
+                  <span className="text-[10px] sm:text-xs block font-normal">HRS</span>
+                </div>
+                <span className="text-xl font-bold">:</span>
+                <div className="bg-black text-green-400 px-2 py-1 rounded text-sm sm:text-lg font-bold min-w-[40px] sm:min-w-[50px]">
+                  {String(timeLeft.minutes).padStart(2, '0')}
+                  <span className="text-[10px] sm:text-xs block font-normal">MIN</span>
+                </div>
+                <span className="text-xl font-bold">:</span>
+                <div className="bg-black text-green-400 px-2 py-1 rounded text-sm sm:text-lg font-bold min-w-[40px] sm:min-w-[50px]">
+                  {String(timeLeft.seconds).padStart(2, '0')}
+                  <span className="text-[10px] sm:text-xs block font-normal">SEC</span>
+                </div>
+              </div>
+            </div>
+          )}
+          {isExpired && (
+            <p className="mt-2 text-sm font-semibold text-black">This offer has expired. Contact us for current promotions!</p>
+          )}
+        </div>
       </div>
       <style jsx>{`
         @keyframes shimmer {
@@ -173,7 +246,7 @@ export default function HolidayRunnerUpPage() {
           </h1>
           <p className="text-lg sm:text-xl text-gray-200 max-w-2xl mb-8 leading-relaxed">
             As a runner-up in our Holiday Cocktail Kit Giveaway, you get a free mini Espresso Martini bottle, a bonus
-            holiday gift package, and FREE delivery on your holiday party order ($250+).
+            holiday gift package, FREE ice (up to 80 lbs), and FREE delivery on your holiday party order ($250+).
           </p>
 
           {/* Value Bullets */}
@@ -206,7 +279,7 @@ export default function HolidayRunnerUpPage() {
                   clipRule="evenodd"
                 />
               </svg>
-              <span>Free delivery on your holiday party order ($250+ in Austin area)</span>
+              <span>Free ice (up to 80 lbs) – no more last-minute ice runs!</span>
             </li>
             <li className="flex items-center gap-3">
               <svg className="w-6 h-6 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -216,7 +289,7 @@ export default function HolidayRunnerUpPage() {
                   clipRule="evenodd"
                 />
               </svg>
-              <span>Done-for-you drink planning for your holiday party</span>
+              <span>Free delivery on your holiday party order ($250+ in Austin area)</span>
             </li>
           </ul>
 
@@ -252,13 +325,13 @@ export default function HolidayRunnerUpPage() {
             <div className="w-16 h-px bg-gold-600 mx-auto" />
           </ScrollRevealCSS>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {whatsIncluded.map((item, index) => (
               <ScrollRevealCSS key={item.title} duration={600} delay={index * 100} y={20}>
-                <div className="bg-white p-8 rounded-lg shadow-sm text-center h-full">
-                  <div className="mb-6">{item.icon}</div>
-                  <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.05em]">{item.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{item.description}</p>
+                <div className="bg-white p-6 rounded-lg shadow-sm text-center h-full">
+                  <div className="mb-4">{item.icon}</div>
+                  <h3 className="font-serif text-lg text-gray-900 mb-3 tracking-[0.05em]">{item.title}</h3>
+                  <p className="text-gray-600 leading-relaxed text-sm">{item.description}</p>
                 </div>
               </ScrollRevealCSS>
             ))}
@@ -466,7 +539,7 @@ export default function HolidayRunnerUpPage() {
             </h2>
             <p className="text-lg text-gray-300 mb-10 max-w-2xl mx-auto">
               Shop our selection, use code <span className="text-gold-400 font-bold">RUNNERUP</span> at checkout, and
-              enjoy free delivery + your exclusive gifts. We handle the drinks so you can focus on celebrating.
+              enjoy free delivery + free ice (up to 80 lbs) + your exclusive gifts. We handle the drinks so you can focus on celebrating.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
