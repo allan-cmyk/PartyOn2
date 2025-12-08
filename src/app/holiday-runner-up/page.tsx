@@ -168,42 +168,42 @@ export default function HolidayRunnerUpPage() {
       </header>
 
       {/* Urgency Banner with Countdown */}
-      <div className="bg-green-500 py-4 px-4 text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-[shimmer_3s_infinite]" />
+      <div className="bg-gray-100 py-5 px-4 text-center relative overflow-hidden border-b border-gray-200">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold-400/20 to-transparent -translate-x-full animate-[shimmer_3s_infinite]" />
         <div className="relative z-10">
-          <p className="text-lg sm:text-xl md:text-2xl font-bold text-black tracking-wide flex items-center justify-center gap-2 flex-wrap">
-            <span className="inline-block animate-pulse">&#9889;</span>
+          <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 tracking-wide flex items-center justify-center gap-2 flex-wrap">
+            <span className="inline-block animate-pulse text-gold-600">&#9889;</span>
             EXCLUSIVE RUNNER-UP OFFER – FREE DELIVERY + FREE ICE
-            <span className="inline-block animate-pulse">&#9889;</span>
+            <span className="inline-block animate-pulse text-gold-600">&#9889;</span>
           </p>
           {!isExpired && (
-            <div className="mt-2 flex items-center justify-center gap-1 sm:gap-2 text-black font-mono">
-              <span className="text-sm sm:text-base font-semibold">OFFER ENDS IN:</span>
+            <div className="mt-3 flex items-center justify-center gap-2 sm:gap-3 text-gray-900 font-mono">
+              <span className="text-base sm:text-lg font-semibold">OFFER ENDS IN:</span>
               <div className="flex gap-1 sm:gap-2">
-                <div className="bg-black text-green-400 px-2 py-1 rounded text-sm sm:text-lg font-bold min-w-[40px] sm:min-w-[50px]">
+                <div className="bg-black text-yellow-400 px-2 py-1 rounded text-base sm:text-xl font-bold min-w-[45px] sm:min-w-[55px]">
                   {String(timeLeft.days).padStart(2, '0')}
-                  <span className="text-[10px] sm:text-xs block font-normal">DAYS</span>
+                  <span className="text-[10px] sm:text-xs block font-normal text-yellow-300">DAYS</span>
                 </div>
-                <span className="text-xl font-bold">:</span>
-                <div className="bg-black text-green-400 px-2 py-1 rounded text-sm sm:text-lg font-bold min-w-[40px] sm:min-w-[50px]">
+                <span className="text-2xl font-bold text-gray-900">:</span>
+                <div className="bg-black text-yellow-400 px-2 py-1 rounded text-base sm:text-xl font-bold min-w-[45px] sm:min-w-[55px]">
                   {String(timeLeft.hours).padStart(2, '0')}
-                  <span className="text-[10px] sm:text-xs block font-normal">HRS</span>
+                  <span className="text-[10px] sm:text-xs block font-normal text-yellow-300">HRS</span>
                 </div>
-                <span className="text-xl font-bold">:</span>
-                <div className="bg-black text-green-400 px-2 py-1 rounded text-sm sm:text-lg font-bold min-w-[40px] sm:min-w-[50px]">
+                <span className="text-2xl font-bold text-gray-900">:</span>
+                <div className="bg-black text-yellow-400 px-2 py-1 rounded text-base sm:text-xl font-bold min-w-[45px] sm:min-w-[55px]">
                   {String(timeLeft.minutes).padStart(2, '0')}
-                  <span className="text-[10px] sm:text-xs block font-normal">MIN</span>
+                  <span className="text-[10px] sm:text-xs block font-normal text-yellow-300">MIN</span>
                 </div>
-                <span className="text-xl font-bold">:</span>
-                <div className="bg-black text-green-400 px-2 py-1 rounded text-sm sm:text-lg font-bold min-w-[40px] sm:min-w-[50px]">
+                <span className="text-2xl font-bold text-gray-900">:</span>
+                <div className="bg-black text-yellow-400 px-2 py-1 rounded text-base sm:text-xl font-bold min-w-[45px] sm:min-w-[55px]">
                   {String(timeLeft.seconds).padStart(2, '0')}
-                  <span className="text-[10px] sm:text-xs block font-normal">SEC</span>
+                  <span className="text-[10px] sm:text-xs block font-normal text-yellow-300">SEC</span>
                 </div>
               </div>
             </div>
           )}
           {isExpired && (
-            <p className="mt-2 text-sm font-semibold text-black">This offer has expired. Contact us for current promotions!</p>
+            <p className="mt-3 text-base font-semibold text-gray-700">This offer has expired. Contact us for current promotions!</p>
           )}
         </div>
       </div>
