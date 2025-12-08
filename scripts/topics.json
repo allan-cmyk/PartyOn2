@@ -254,7 +254,7 @@
         "cost splitting",
         "austin"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 12,
@@ -267,7 +267,7 @@
         "austin",
         "matching"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 13,
@@ -279,7 +279,7 @@
         "austin",
         "restaurants"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 14,
