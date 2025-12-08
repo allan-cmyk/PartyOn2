@@ -72,6 +72,22 @@ export default function AustinPartnersPage() {
         </div>
       </section>
 
+      {/* Become a Partner CTA Banner */}
+      <div className="bg-gray-900 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-white text-center sm:text-left">
+            <span className="text-gold-400 font-medium">Are you an event vendor?</span>
+            {' '}Join our partner network and grow your business.
+          </p>
+          <Link
+            href="/austin-partners"
+            className="inline-block px-6 py-2 bg-gold-600 text-black hover:bg-gold-500 transition-colors tracking-[0.1em] text-sm font-medium rounded-sm whitespace-nowrap"
+          >
+            BECOME A PARTNER
+          </Link>
+        </div>
+      </div>
+
       {/* Category Filter */}
       <CategoryFilter
         activeCategory={activeCategory}

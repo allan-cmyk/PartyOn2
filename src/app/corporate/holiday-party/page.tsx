@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import CorporateEventCalculatorLanding from '@/components/CorporateEventCalculatorLanding';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
+import { trackMetaEvent } from '@/components/MetaPixel';
 
 export default function CorporateHolidayPartyPage() {
   const [formData, setFormData] = useState({
@@ -102,6 +103,14 @@ export default function CorporateHolidayPartyPage() {
       if (!response.ok) {
         throw new Error(`Failed to submit form: ${response.status} ${response.statusText}`);
       }
+
+      // Fire Meta Pixel Lead event on successful submission
+      trackMetaEvent('Lead', {
+        content_name: 'Corporate Holiday Party Inquiry',
+        content_category: 'Corporate Events',
+        value: 800, // Estimated average order value
+        currency: 'USD',
+      });
 
       setSubmitMessage('Thank you! Your inquiry has been submitted. We\'ll contact you within 24 hours to finalize your holiday party details.');
 
