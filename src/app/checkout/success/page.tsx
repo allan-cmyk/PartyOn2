@@ -1,26 +1,40 @@
 'use client';
 
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState, Suspense, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
 import { useCustomerContext } from '@/contexts/CustomerContext';
+import { trackMetaEvent } from '@/components/MetaPixel';
 
 function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
   const { isAuthenticated, refreshCustomer } = useCustomerContext();
   const [orderNumber, setOrderNumber] = useState<string | null>(null);
+  const purchaseEventFired = useRef(false);
 
   useEffect(() => {
     // Extract order info from URL params if available
     const order = searchParams.get('order');
     const orderName = searchParams.get('order_name');
-    
+    const orderTotal = searchParams.get('total');
+
     if (orderName) {
       setOrderNumber(orderName);
     } else if (order) {
       setOrderNumber(order);
+    }
+
+    // Fire Meta Pixel Purchase event (only once)
+    if (!purchaseEventFired.current) {
+      purchaseEventFired.current = true;
+      trackMetaEvent('Purchase', {
+        content_type: 'product',
+        value: orderTotal ? parseFloat(orderTotal) : 0,
+        currency: 'USD',
+        content_name: orderName || order || 'Order',
+      });
     }
 
     // Refresh customer data to get latest orders

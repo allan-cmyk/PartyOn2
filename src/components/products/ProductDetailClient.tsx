@@ -7,6 +7,7 @@ import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import { useCartContext } from '@/contexts/CartContext';
 import { formatPrice, getFirstAvailableVariant } from '@/lib/shopify/utils';
 import { ShopifyProduct } from '@/lib/shopify/types';
+import { trackMetaEvent } from '@/components/MetaPixel';
 
 interface Props {
   product: ShopifyProduct;
@@ -19,12 +20,22 @@ export default function ProductDetailClient({ product }: Props) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [addedToCart, setAddedToCart] = useState(false);
 
-  // Set default variant on mount
+  // Set default variant on mount and fire ViewContent event
   useEffect(() => {
     const defaultVariant = getFirstAvailableVariant(product);
     if (defaultVariant) {
       setSelectedVariantId(defaultVariant.id);
     }
+
+    // Fire Meta Pixel ViewContent event
+    trackMetaEvent('ViewContent', {
+      content_name: product.title,
+      content_category: product.productType || 'Beverage',
+      content_ids: product.id,
+      content_type: 'product',
+      value: parseFloat(product.priceRange.minVariantPrice.amount),
+      currency: product.priceRange.minVariantPrice.currencyCode,
+    });
   }, [product]);
 
   const handleAddToCart = async () => {

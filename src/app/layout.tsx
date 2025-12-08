@@ -8,6 +8,7 @@ import { CustomerProvider } from "@/contexts/CustomerContext";
 import ClientLayoutWrapper from "@/components/ClientLayoutWrapper";
 import { structuredData } from "./structured-data";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import MetaPixel from "@/components/MetaPixel";
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
@@ -105,6 +106,7 @@ export default function RootLayout({
         />
 
         <GoogleAnalytics />
+        <MetaPixel />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

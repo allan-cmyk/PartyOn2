@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import { useCart } from '@/lib/shopify/hooks/useCart';
 import { ShopifyCart } from '@/lib/shopify/types';
+import { trackMetaEvent } from '@/components/MetaPixel';
 
 interface CartContextType extends ReturnType<typeof useCart> {
   isCartOpen: boolean;
@@ -45,17 +46,28 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setIsCartOpen(prev => !prev);
   };
 
-  // Override addToCart to check age verification
+  // Override addToCart to check age verification and fire Meta Pixel event
   const addToCart = async (variantId: string, quantity: number = 1): Promise<ShopifyCart> => {
     console.log('CartContext addToCart called with:', { variantId, quantity, variantIdType: typeof variantId });
-    
+
     if (!checkAgeVerification()) {
       localStorage.removeItem('age_verified');
       localStorage.removeItem('ageVerified');
       window.location.reload();
       throw new Error('Age verification required');
     }
-    return cartHook.addToCart(variantId, quantity);
+
+    const result = await cartHook.addToCart(variantId, quantity);
+
+    // Fire Meta Pixel AddToCart event
+    trackMetaEvent('AddToCart', {
+      content_type: 'product',
+      content_ids: variantId,
+      num_items: quantity,
+      currency: 'USD',
+    });
+
+    return result;
   };
 
   const value: CartContextType = {
