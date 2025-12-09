@@ -6,6 +6,7 @@ import Link from 'next/link';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import Footer from '@/components/Footer';
 import { trackMetaEvent } from '@/components/MetaPixel';
+import HolidayProductsCarousel from '@/components/holiday/HolidayProductsCarousel';
 
 // TODO: Confirm Shopify discount code "RUNNERUP" is configured for free delivery on $250+
 // TODO: Update offer expiration date if needed
@@ -345,11 +346,23 @@ export default function HolidayRunnerUpPage() {
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="py-20">
-        <div className="max-w-6xl mx-auto px-8">
+      {/* How It Works Section - with background image */}
+      <section className="py-20 relative">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <Image
+            src="/images/holiday/cranberry-cocktails.jpg"
+            alt="Holiday cocktails"
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-black/75" />
+        </div>
+
+        <div className="max-w-6xl mx-auto px-8 relative z-10">
           <ScrollRevealCSS duration={600} y={20} className="text-center mb-16">
-            <h2 className="font-serif text-3xl sm:text-4xl text-gray-900 mb-4 tracking-[0.1em]">How It Works</h2>
+            <h2 className="font-serif text-3xl sm:text-4xl text-white mb-4 tracking-[0.1em]">How It Works</h2>
             <div className="w-16 h-px bg-gold-600 mx-auto" />
           </ScrollRevealCSS>
 
@@ -360,8 +373,8 @@ export default function HolidayRunnerUpPage() {
                   <div className="w-16 h-16 bg-gold-600 rounded-full flex items-center justify-center mx-auto mb-6">
                     <span className="font-serif text-2xl text-gray-900 font-bold">{item.step}</span>
                   </div>
-                  <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.05em]">{item.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{item.description}</p>
+                  <h3 className="font-serif text-xl text-white mb-4 tracking-[0.05em]">{item.title}</h3>
+                  <p className="text-gray-300 leading-relaxed">{item.description}</p>
                 </div>
               </ScrollRevealCSS>
             ))}
@@ -369,7 +382,7 @@ export default function HolidayRunnerUpPage() {
 
           {/* Trust Badges */}
           <ScrollRevealCSS duration={600} delay={300} y={20}>
-            <div className="flex flex-wrap justify-center gap-8 mt-16 text-gray-500 text-sm">
+            <div className="flex flex-wrap justify-center gap-8 mt-16 text-gray-300 text-sm">
               <div className="flex items-center gap-2">
                 <svg className="w-5 h-5 text-gold-600" fill="currentColor" viewBox="0 0 20 20">
                   <path
@@ -401,8 +414,11 @@ export default function HolidayRunnerUpPage() {
         </div>
       </section>
 
+      {/* Holiday Products Carousel */}
+      <HolidayProductsCarousel />
+
       {/* Testimonials Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-8">
           <ScrollRevealCSS duration={600} y={20} className="text-center mb-16">
             <h2 className="font-serif text-3xl sm:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
