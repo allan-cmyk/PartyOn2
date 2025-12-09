@@ -38,6 +38,7 @@ export default function HolidayProductsCarousel(): React.ReactElement {
       try {
         // Build query string for Shopify - OR together multiple handle searches
         const handleQuery = HOLIDAY_PRODUCT_HANDLES.map(h => `handle:${h}`).join(' OR ');
+        console.log('Holiday carousel: Fetching products with query:', handleQuery);
 
         const response = await shopifyFetch<ProductsResponse>({
           query: PRODUCTS_BY_HANDLES_QUERY,
@@ -47,10 +48,13 @@ export default function HolidayProductsCarousel(): React.ReactElement {
           },
         });
 
+        console.log('Holiday carousel: Response received, edges count:', response?.products?.edges?.length || 0);
+
         if (response?.products?.edges) {
           // Sort products to match our desired order
           const productMap = new Map<string, ShopifyProduct>();
           response.products.edges.forEach(({ node }) => {
+            console.log('Holiday carousel: Found product:', node.handle, node.title);
             productMap.set(node.handle, node);
           });
 
@@ -59,6 +63,7 @@ export default function HolidayProductsCarousel(): React.ReactElement {
             .map(handle => productMap.get(handle))
             .filter((p): p is ShopifyProduct => p !== undefined);
 
+          console.log('Holiday carousel: Ordered products count:', orderedProducts.length);
           setProducts(orderedProducts);
         }
       } catch (err) {
@@ -113,7 +118,13 @@ export default function HolidayProductsCarousel(): React.ReactElement {
     );
   }
 
-  if (error || products.length === 0) {
+  if (error) {
+    console.error('Holiday carousel error:', error);
+    return <></>;
+  }
+
+  if (products.length === 0) {
+    console.log('Holiday carousel: No products found');
     return <></>;
   }
 
