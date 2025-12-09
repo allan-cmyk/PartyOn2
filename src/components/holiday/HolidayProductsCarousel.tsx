@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { shopifyFetch, PRODUCTS_BY_HANDLES_QUERY } from '@/lib/shopify';
+import { shopifyFetch, PRODUCT_BY_HANDLE_QUERY } from '@/lib/shopify';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
@@ -17,14 +17,8 @@ const HOLIDAY_PRODUCT_HANDLES = [
   'the-hill-country-old-fashioned',
 ];
 
-interface ProductNode {
-  node: ShopifyProduct;
-}
-
-interface ProductsResponse {
-  products: {
-    edges: ProductNode[];
-  };
+interface ProductByHandleResponse {
+  productByHandle: ShopifyProduct | null;
 }
 
 export default function HolidayProductsCarousel(): React.ReactElement {
@@ -36,36 +30,28 @@ export default function HolidayProductsCarousel(): React.ReactElement {
   useEffect(() => {
     async function fetchHolidayProducts(): Promise<void> {
       try {
-        // Build query string for Shopify - OR together multiple handle searches
-        const handleQuery = HOLIDAY_PRODUCT_HANDLES.map(h => `handle:${h}`).join(' OR ');
-        console.log('Holiday carousel: Fetching products with query:', handleQuery);
+        console.log('Holiday carousel: Fetching products individually by handle');
 
-        const response = await shopifyFetch<ProductsResponse>({
-          query: PRODUCTS_BY_HANDLES_QUERY,
-          variables: {
-            query: handleQuery,
-            first: 20,
-          },
+        // Fetch each product individually using productByHandle query
+        const productPromises = HOLIDAY_PRODUCT_HANDLES.map(async (handle) => {
+          try {
+            const response = await shopifyFetch<ProductByHandleResponse>({
+              query: PRODUCT_BY_HANDLE_QUERY,
+              variables: { handle },
+            });
+            console.log('Holiday carousel: Fetched', handle, response?.productByHandle?.title || 'NOT FOUND');
+            return response?.productByHandle;
+          } catch (err) {
+            console.error(`Failed to fetch product ${handle}:`, err);
+            return null;
+          }
         });
 
-        console.log('Holiday carousel: Response received, edges count:', response?.products?.edges?.length || 0);
+        const fetchedProducts = await Promise.all(productPromises);
+        const validProducts = fetchedProducts.filter((p): p is ShopifyProduct => p !== null);
 
-        if (response?.products?.edges) {
-          // Sort products to match our desired order
-          const productMap = new Map<string, ShopifyProduct>();
-          response.products.edges.forEach(({ node }) => {
-            console.log('Holiday carousel: Found product:', node.handle, node.title);
-            productMap.set(node.handle, node);
-          });
-
-          // Return in our preferred order
-          const orderedProducts = HOLIDAY_PRODUCT_HANDLES
-            .map(handle => productMap.get(handle))
-            .filter((p): p is ShopifyProduct => p !== undefined);
-
-          console.log('Holiday carousel: Ordered products count:', orderedProducts.length);
-          setProducts(orderedProducts);
-        }
+        console.log('Holiday carousel: Total products found:', validProducts.length);
+        setProducts(validProducts);
       } catch (err) {
         console.error('Error fetching holiday products:', err);
         setError('Unable to load holiday products');
