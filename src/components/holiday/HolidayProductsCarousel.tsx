@@ -9,14 +9,12 @@ import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 // Holiday product handles - these should match exact Shopify handles
 const HOLIDAY_PRODUCT_HANDLES = [
-  'apple-cider-aperol-spritz',
-  'austin-whiskey-gift-basket',
-  'austin-beers-big-gift-basket',
-  'apple-cider-mule-cocktail-kit',
-  'peppermint-martini-cocktail-kit',
-  'espresso-martini-cocktail-kit',
+  'peppermint-martini',
+  'apple-cider-aperol-cider-bundle',
+  'pumpkin-spice-old-fashioned-1',
   'cranberry-ginger-fizz-mocktail-kit',
-  'pumpkin-pie-martini-kit',
+  'hugo-spritz-cocktail-kit',
+  'the-hill-country-old-fashioned',
 ];
 
 interface ProductNode {
