@@ -48,10 +48,8 @@ function ProductsContent() {
   const [selectedProduct, setSelectedProduct] = useState<ShopifyProduct | null>(null);
   const [showProductModal, setShowProductModal] = useState(false);
 
-  // Sticky collections state for mobile
-  const [isCollectionsSticky, setIsCollectionsSticky] = useState(false);
+  // Sticky collections disabled - was causing scroll conflicts on mobile
   const collectionsRef = useRef<HTMLElement>(null);
-  const collectionsInitialTopRef = useRef<number>(0);
 
   // Check age verification on mount
   useEffect(() => {
@@ -84,33 +82,8 @@ function ProductsContent() {
     setShowProductModal(true);
   };
 
-  // Store initial position of collections section
-  useEffect(() => {
-    if (!isMobile || !collectionsRef.current) return;
-
-    // Store the initial top position (only once on mount)
-    const rect = collectionsRef.current.getBoundingClientRect();
-    collectionsInitialTopRef.current = rect.top + window.scrollY;
-  }, [isMobile]);
-
-  // Sticky collections detection for mobile
-  useEffect(() => {
-    if (!isMobile || collectionsInitialTopRef.current === 0) return;
-
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-
-      // Use the stored initial position, not the current position
-      // This prevents the bouncing issue
-      setIsCollectionsSticky(scrollY > collectionsInitialTopRef.current);
-    };
-
-    // Set initial state
-    handleScroll();
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isMobile]);
+  // NOTE: Sticky collections feature disabled - was causing scroll conflicts on mobile
+  // The collections ref is kept for potential future use
 
   // Infinite scroll implementation
   useEffect(() => {
@@ -294,39 +267,28 @@ function ProductsContent() {
       {!searchQuery && (
         <section
           ref={collectionsRef}
-          className={`bg-gray-50 border-b border-gray-200 transition-all duration-300 ${
-            isMobile && isCollectionsSticky
-              ? 'sticky top-0 z-40 py-3 shadow-md'
-              : 'py-6'
-          }`}
+          className="bg-gray-50 border-b border-gray-200 py-6"
         >
           <div className={`${isMobile ? 'px-4' : 'max-w-7xl mx-auto px-8'}`}>
-            {/* Header - hide when sticky on mobile */}
-            {!(isMobile && isCollectionsSticky) && (
-              <div className="flex items-center justify-between mb-4">
-                <h3 className={`font-serif ${isMobile ? 'text-lg' : 'text-xl'} text-gray-900 tracking-[0.1em]`}>
-                  FEATURED COLLECTIONS
-                </h3>
-                {collectionFilter && (
-                  <button
-                    onClick={() => {
-                      setCollectionFilter(null);
-                      setFilter('all');
-                    }}
-                    className="text-sm text-gold-600 hover:text-gold-700 tracking-[0.1em]"
-                  >
-                    CLEAR COLLECTION
-                  </button>
-                )}
-              </div>
-            )}
+            <div className="flex items-center justify-between mb-4">
+              <h3 className={`font-serif ${isMobile ? 'text-lg' : 'text-xl'} text-gray-900 tracking-[0.1em]`}>
+                FEATURED COLLECTIONS
+              </h3>
+              {collectionFilter && (
+                <button
+                  onClick={() => {
+                    setCollectionFilter(null);
+                    setFilter('all');
+                  }}
+                  className="text-sm text-gold-600 hover:text-gold-700 tracking-[0.1em]"
+                >
+                  CLEAR COLLECTION
+                </button>
+              )}
+            </div>
 
-            {/* Collections Grid/Horizontal Scroll */}
-            <div className={
-              isMobile && isCollectionsSticky
-                ? 'flex overflow-x-auto gap-2 pb-2 -mx-4 px-4 scrollbar-hide snap-x snap-mandatory'
-                : `grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-7 gap-2'}`
-            }>
+            {/* Collections Grid */}
+            <div className={`grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-7 gap-2'}`}>
               {SHOPIFY_COLLECTIONS.map((collection) => {
                 const isActive = collectionFilter === collection.handle;
                 return (
@@ -344,11 +306,10 @@ function ProductsContent() {
                     className={`
                       px-4 py-3 text-center border transition-all rounded-lg relative
                       ${isActive
-                        ? `${collection.colors.bgActive} ${collection.colors.textActive} ${collection.colors.borderActive} shadow-lg ${isMobile && isCollectionsSticky ? '' : 'scale-105'}`
+                        ? `${collection.colors.bgActive} ${collection.colors.textActive} ${collection.colors.borderActive} shadow-lg scale-105`
                         : `${collection.colors.bg} ${collection.colors.text} ${collection.colors.border} hover:scale-102`
                       }
                       ${isMobile ? 'text-xs' : 'text-sm'}
-                      ${isMobile && isCollectionsSticky ? 'flex-shrink-0 snap-start whitespace-nowrap' : ''}
                       tracking-[0.1em] font-medium
                     `}
                     disabled={loading && collectionFilter !== collection.handle}
