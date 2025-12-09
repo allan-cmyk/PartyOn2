@@ -71,10 +71,9 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
                 alt={product.title}
                 fill
                 className="object-cover"
-                loading="lazy"
+                loading={index < 4 ? "eager" : "lazy"}
                 quality={50}
                 sizes="(max-width: 768px) 50vw, 25vw"
-                priority={index < 2}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
