@@ -362,6 +362,48 @@ export const SEARCH_PRODUCTS_QUERY = gql`
   }
 `;
 
+// Fetch multiple products by handles - uses Shopify query filter
+export const PRODUCTS_BY_HANDLES_QUERY = gql`
+  query getProductsByHandles($query: String!, $first: Int = 20) {
+    products(first: $first, query: $query) {
+      edges {
+        node {
+          id
+          handle
+          title
+          productType
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+          images(first: 1) {
+            edges {
+              node {
+                url
+                altText
+              }
+            }
+          }
+          variants(first: 1) {
+            edges {
+              node {
+                id
+                availableForSale
+                price {
+                  amount
+                  currencyCode
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 // Storefront Search Query - Uses Shopify's predictiveSearch for real-time search
 export const STOREFRONT_SEARCH_QUERY = gql`
   query storefrontSearch($query: String!, $limit: Int = 10) {
