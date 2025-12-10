@@ -141,6 +141,14 @@ PartyOn Delivery is a premium alcohol delivery service in Austin, Texas, offerin
 6. **Loading Skeletons** - Improved perceived performance
 7. **Mobile Optimizations** - Lazy loading, priority hints, reduced animations
 
+### ✅ Completed (Latest Session - Meta Pixel Integration)
+1. **Meta Pixel Component** - Facebook/Instagram tracking with env variable support (`src/components/MetaPixel.tsx`)
+2. **PageView Tracking** - Automatic on all page loads
+3. **AddToCart Events** - Fires when items added to cart (`CartContext.tsx`)
+4. **ViewContent Events** - Fires on product detail page views (`ProductDetailClient.tsx`)
+5. **Purchase Events** - Fires on checkout success with order value (`checkout/success/page.tsx`)
+6. **Environment Config** - `NEXT_PUBLIC_META_PIXEL_ID` with fallback to default
+
 ### 📋 Todo
 1. Production testing with real group orders
 2. Split payment options for group orders (researching feasibility)
