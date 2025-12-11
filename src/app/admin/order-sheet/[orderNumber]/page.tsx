@@ -147,11 +147,6 @@ export default function OrderSheetPage() {
           .no-print {
             display: none !important;
           }
-          .order-sheet-container {
-            max-height: 9.5in;
-            overflow: hidden;
-            page-break-inside: avoid;
-          }
         }
         @page {
           size: letter;
@@ -171,7 +166,7 @@ export default function OrderSheetPage() {
 
       {/* Order Sheet */}
       <div
-        className="order-sheet-container max-w-[8.5in] mx-auto bg-white p-3 font-sans text-sm"
+        className="max-w-[8.5in] mx-auto bg-white p-3 font-sans text-sm"
         style={{ fontFamily: 'Arial, sans-serif' }}
       >
         {/* Order Number Banner */}
