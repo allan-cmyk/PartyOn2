@@ -292,7 +292,7 @@
         "relaxation",
         "austin"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 15,
@@ -304,7 +304,7 @@
         "photo spots",
         "austin"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 16,
@@ -316,7 +316,7 @@
         "music",
         "austin"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 17,

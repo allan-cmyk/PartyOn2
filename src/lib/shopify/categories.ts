@@ -118,6 +118,19 @@ export const SHOPIFY_COLLECTIONS = [
     }
   },
   {
+    handle: 'cocktail-kits',
+    label: 'Cocktail Kits',
+    category: 'cocktails',
+    colors: {
+      bg: 'bg-rose-50 hover:bg-rose-100',
+      bgActive: 'bg-rose-600',
+      text: 'text-rose-700',
+      textActive: 'text-white',
+      border: 'border-rose-400 hover:border-rose-500',
+      borderActive: 'border-rose-600'
+    }
+  },
+  {
     handle: 'bachelor-favorites',
     label: 'Bachelor Favorites',
     category: 'partySupplies',
