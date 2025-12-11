@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getOrderByNumber, parseDeliveryInfo, formatPackageSize, getOrderSheetColor, OrderSheetColor } from '@/lib/shopify/admin/orders';
+import { getOrderByNumber, parseDeliveryInfo, formatPackageSize, getOrderSheetColor } from '@/lib/shopify/admin/orders';
 
 export async function GET(
   request: NextRequest,

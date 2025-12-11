@@ -322,15 +322,8 @@ function isBeforeNoon(timeStr: string | null): boolean {
 
   const normalized = timeStr.toLowerCase().trim();
 
-  // Check for PM indicator
+  // Any PM time is NOT before noon (12pm onwards)
   if (normalized.includes('pm')) {
-    // Extract hour
-    const hourMatch = normalized.match(/(\d{1,2}):/);
-    if (hourMatch) {
-      const hour = parseInt(hourMatch[1], 10);
-      // 12pm is noon, so 12pm is NOT before noon
-      return false;
-    }
     return false;
   }
 
