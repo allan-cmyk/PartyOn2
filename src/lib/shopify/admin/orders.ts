@@ -222,11 +222,42 @@ export function parseDeliveryInfo(
       if (dateMatch) {
         deliveryDate = dateMatch[1];
       } else {
-        // Try standalone date pattern
+        // Try standalone numeric date pattern
         const standaloneDateMatch = note.match(/\b(\d{1,2}\/\d{1,2}\/\d{2,4})\b/);
         if (standaloneDateMatch) {
           deliveryDate = standaloneDateMatch[1];
         }
+      }
+    }
+
+    // Pattern 3: Text month format like "Dec 13", "December 13", "Dec 13th", etc.
+    if (!deliveryDate) {
+      const monthNames: Record<string, string> = {
+        'jan': '1', 'january': '1',
+        'feb': '2', 'february': '2',
+        'mar': '3', 'march': '3',
+        'apr': '4', 'april': '4',
+        'may': '5',
+        'jun': '6', 'june': '6',
+        'jul': '7', 'july': '7',
+        'aug': '8', 'august': '8',
+        'sep': '9', 'sept': '9', 'september': '9',
+        'oct': '10', 'october': '10',
+        'nov': '11', 'november': '11',
+        'dec': '12', 'december': '12',
+      };
+      // Match patterns like "Dec 13", "December 13th", "dec. 13"
+      const textDateMatch = note.match(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)[.\s]*(\d{1,2})(?:st|nd|rd|th)?\b/i);
+      if (textDateMatch) {
+        const monthKey = textDateMatch[1].toLowerCase();
+        const month = monthNames[monthKey];
+        const day = textDateMatch[2];
+        // Assume current year or next year based on whether the date has passed
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const testDate = new Date(currentYear, parseInt(month) - 1, parseInt(day));
+        const year = testDate < now ? currentYear + 1 : currentYear;
+        deliveryDate = `${month}/${day}/${year.toString().slice(-2)}`;
       }
     }
 
