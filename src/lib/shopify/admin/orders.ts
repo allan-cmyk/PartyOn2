@@ -156,11 +156,12 @@ export async function getOrderByNumber(orderNumber: number): Promise<OrderData |
 }
 
 /**
- * Parse delivery date and time from custom attributes or address fields
+ * Parse delivery date and time from custom attributes, address fields, or notes
  */
 export function parseDeliveryInfo(
   customAttributes: OrderCustomAttribute[],
-  shippingAddress?: OrderAddress | null
+  shippingAddress?: OrderAddress | null,
+  note?: string | null
 ): {
   deliveryDate: string | null;
   deliveryTime: string | null;
@@ -202,6 +203,53 @@ export function parseDeliveryInfo(
     if (dateTimeMatch) {
       if (!deliveryDate) deliveryDate = dateTimeMatch[1];
       if (!deliveryTime) deliveryTime = dateTimeMatch[2];
+    }
+  }
+
+  // Check note field for date/time patterns
+  if (note && (!deliveryDate || !deliveryTime)) {
+    // Pattern 1: "MM/DD/YY - H:MMam/pm" or "MM/DD/YYYY - H:MMam/pm"
+    const dateTimeMatch = note.match(/(\d{1,2}\/\d{1,2}\/\d{2,4})\s*[-–@]\s*(\d{1,2}:\d{2}\s*(?:am|pm)?)/i);
+    if (dateTimeMatch) {
+      if (!deliveryDate) deliveryDate = dateTimeMatch[1];
+      if (!deliveryTime) deliveryTime = dateTimeMatch[2];
+    }
+
+    // Pattern 2: Separate date and time on different lines or with labels
+    if (!deliveryDate) {
+      // Look for date patterns: MM/DD/YY, MM/DD/YYYY, MM-DD-YY, etc.
+      const dateMatch = note.match(/(?:date|deliver(?:y|ed)?|drop.?off)[:\s]*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i);
+      if (dateMatch) {
+        deliveryDate = dateMatch[1];
+      } else {
+        // Try standalone date pattern
+        const standaloneDateMatch = note.match(/\b(\d{1,2}\/\d{1,2}\/\d{2,4})\b/);
+        if (standaloneDateMatch) {
+          deliveryDate = standaloneDateMatch[1];
+        }
+      }
+    }
+
+    if (!deliveryTime) {
+      // Look for time patterns: H:MMam/pm, HH:MM am/pm
+      const timeMatch = note.match(/(?:time|at|@)[:\s]*(\d{1,2}:\d{2}\s*(?:am|pm)?)/i);
+      if (timeMatch) {
+        deliveryTime = timeMatch[1];
+      } else {
+        // Try standalone time pattern
+        const standaloneTimeMatch = note.match(/\b(\d{1,2}:\d{2}\s*(?:am|pm))\b/i);
+        if (standaloneTimeMatch) {
+          deliveryTime = standaloneTimeMatch[1];
+        }
+      }
+    }
+
+    // Check note for boat keywords
+    const noteLower = note.toLowerCase();
+    if (noteLower.includes('boat') || noteLower.includes('marina') ||
+        noteLower.includes('slip') || noteLower.includes('dock') ||
+        noteLower.includes('lake travis')) {
+      deliveryType = 'boat';
     }
   }
 

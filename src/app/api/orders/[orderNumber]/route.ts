@@ -25,8 +25,8 @@ export async function GET(
       );
     }
 
-    // Parse delivery info from custom attributes and shipping address
-    const deliveryInfo = parseDeliveryInfo(order.customAttributes, order.shippingAddress);
+    // Parse delivery info from custom attributes, shipping address, and notes
+    const deliveryInfo = parseDeliveryInfo(order.customAttributes, order.shippingAddress, order.note);
 
     // Extract numeric order number from name (e.g., "#3903" -> 3903)
     const orderNumMatch = order.name.match(/\d+/);
