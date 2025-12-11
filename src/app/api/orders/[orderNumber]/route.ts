@@ -78,19 +78,30 @@ export async function GET(
             })()
           : null,
       },
-      lineItems: order.lineItems.map((item) => {
-        // Extract product name (before the bullet) and package size (after the bullet)
-        const bulletIndex = item.title.indexOf('•');
-        const productName = bulletIndex > -1 ? item.title.substring(0, bulletIndex).trim() : item.title;
+      lineItems: order.lineItems
+        .filter((item) => {
+          // Exclude tips and other non-product items
+          const titleLower = item.title.toLowerCase();
+          return !titleLower.includes('tip') && !titleLower.includes('gratuity');
+        })
+        .map((item) => {
+          // Extract product name (before the bullet) and package size (after the bullet)
+          const bulletIndex = item.title.indexOf('•');
+          const productName = bulletIndex > -1 ? item.title.substring(0, bulletIndex).trim() : item.title;
 
-        return {
-          name: productName,
-          packageSize: formatPackageSize(item.variantTitle, item.sku, item.title),
-          quantity: item.quantity,
-          sku: item.sku,
-        };
-      }),
-      itemCount: order.lineItems.reduce((sum, item) => sum + item.quantity, 0),
+          return {
+            name: productName,
+            packageSize: formatPackageSize(item.variantTitle, item.sku, item.title),
+            quantity: item.quantity,
+            sku: item.sku,
+          };
+        }),
+      itemCount: order.lineItems
+        .filter((item) => {
+          const titleLower = item.title.toLowerCase();
+          return !titleLower.includes('tip') && !titleLower.includes('gratuity');
+        })
+        .reduce((sum, item) => sum + item.quantity, 0),
       totalPrice: order.totalPriceSet.shopMoney.amount,
       currency: order.totalPriceSet.shopMoney.currencyCode,
       note: order.note,
