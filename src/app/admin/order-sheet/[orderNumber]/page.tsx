@@ -174,20 +174,25 @@ export default function OrderSheetPage() {
         className="order-sheet-container max-w-[8.5in] mx-auto bg-white p-3 font-sans text-sm"
         style={{ fontFamily: 'Arial, sans-serif' }}
       >
+        {/* Order Number Banner */}
+        <div className="border-2 border-black text-center font-bold text-2xl py-2 mb-0" style={{ backgroundColor: order.sheetColor.bgHex }}>
+          Order {order.orderNumber}
+        </div>
+
         {/* Header Row */}
-        <table className="w-full border-collapse border-2 border-black mb-0">
+        <table className="w-full border-collapse border-2 border-black border-t-0 mb-0">
           <tbody>
             <tr>
-              <td className="border-2 border-black font-bold px-2 py-1 w-16" style={{ backgroundColor: order.sheetColor.bgHex }}>
+              <td className="border-2 border-black border-t-0 font-bold px-2 py-1 w-16" style={{ backgroundColor: order.sheetColor.bgHex }}>
                 Name:
               </td>
-              <td className="border-2 border-black px-2 py-1 font-bold text-lg">
+              <td className="border-2 border-black border-t-0 px-2 py-1 font-bold text-lg">
                 {order.customer.name}
               </td>
-              <td className="border-2 border-black font-bold px-2 py-1 w-20" style={{ backgroundColor: order.sheetColor.bgHex }}>
+              <td className="border-2 border-black border-t-0 font-bold px-2 py-1 w-20" style={{ backgroundColor: order.sheetColor.bgHex }}>
                 Phone #:
               </td>
-              <td className="border-2 border-black px-2 py-1 font-bold">
+              <td className="border-2 border-black border-t-0 px-2 py-1 font-bold">
                 {order.customer.phone}
               </td>
             </tr>
