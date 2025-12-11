@@ -147,10 +147,15 @@ export default function OrderSheetPage() {
           .no-print {
             display: none !important;
           }
+          .order-sheet-container {
+            max-height: 9.5in;
+            overflow: hidden;
+            page-break-inside: avoid;
+          }
         }
         @page {
           size: letter;
-          margin: 0.5in;
+          margin: 0.25in;
         }
       `}</style>
 
@@ -166,7 +171,7 @@ export default function OrderSheetPage() {
 
       {/* Order Sheet */}
       <div
-        className="max-w-[8.5in] mx-auto bg-white p-4 font-sans text-sm"
+        className="order-sheet-container max-w-[8.5in] mx-auto bg-white p-3 font-sans text-sm"
         style={{ fontFamily: 'Arial, sans-serif' }}
       >
         {/* Header Row */}
@@ -268,8 +273,8 @@ export default function OrderSheetPage() {
                 </td>
               </tr>
             ))}
-            {/* Add empty rows if fewer than 10 items */}
-            {Array.from({ length: Math.max(0, 10 - order.lineItems.length) }).map(
+            {/* Add empty rows only if fewer than 8 items, max 3 empty rows */}
+            {Array.from({ length: Math.min(3, Math.max(0, 8 - order.lineItems.length)) }).map(
               (_, index) => (
                 <tr key={`empty-${index}`}>
                   <td className="border border-black px-2 py-1">&nbsp;</td>
@@ -298,15 +303,15 @@ export default function OrderSheetPage() {
         </table>
 
         {/* Missing Items & Notes */}
-        <div className="border-l-2 border-r-2 border-black text-center font-bold py-2" style={{ backgroundColor: order.sheetColor.bgHex }}>
+        <div className="border-l-2 border-r-2 border-black text-center font-bold py-1 text-sm" style={{ backgroundColor: order.sheetColor.bgHex }}>
           Missing Items & Notes
         </div>
-        <div className="border-2 border-black min-h-[80px] p-2">
-          {order.note && <p className="text-sm">{order.note}</p>}
+        <div className="border-2 border-black min-h-[50px] p-2">
+          {order.note && <p className="text-xs">{order.note}</p>}
         </div>
 
         {/* Timestamp */}
-        <div className="mt-4 font-bold text-lg">
+        <div className="mt-2 font-bold text-base">
           {formatTimestamp(order.delivery.date, order.delivery.time)}
         </div>
       </div>

@@ -267,10 +267,16 @@ export function parseDeliveryInfo(
       if (timeMatch) {
         deliveryTime = timeMatch[1];
       } else {
-        // Try standalone time pattern
+        // Try standalone time pattern with colon (e.g., "5:30pm")
         const standaloneTimeMatch = note.match(/\b(\d{1,2}:\d{2}\s*(?:am|pm))\b/i);
         if (standaloneTimeMatch) {
           deliveryTime = standaloneTimeMatch[1];
+        } else {
+          // Try time without colon (e.g., "11am", "2pm", "11 am")
+          const simpleTimeMatch = note.match(/\b(\d{1,2})\s*(am|pm)\b/i);
+          if (simpleTimeMatch) {
+            deliveryTime = `${simpleTimeMatch[1]}:00${simpleTimeMatch[2].toLowerCase()}`;
+          }
         }
       }
     }
