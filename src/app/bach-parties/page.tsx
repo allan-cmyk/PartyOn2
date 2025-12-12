@@ -8,9 +8,15 @@ import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import HeroOverlay from '@/components/HeroOverlay';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import BachPartiesSchemas from '@/components/seo/BachPartiesSchemas';
+import { trackPageView, ANALYTICS_EVENTS } from '@/lib/analytics/track';
 
 export default function BachPartiesPage() {
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+
+  // Track page view on mount
+  useEffect(() => {
+    trackPageView(ANALYTICS_EVENTS.VIEW_BACH_PARTIES, '/bach-parties', 'Bach Party Delivery Service');
+  }, []);
 
   const heroImages = [
     { src: '/images/services/bach-parties/bachelor-party-epic.webp', alt: 'Epic bachelor party celebration' },

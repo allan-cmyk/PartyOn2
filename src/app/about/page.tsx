@@ -1,12 +1,17 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
+import { trackPageView, ANALYTICS_EVENTS } from '@/lib/analytics/track';
 
 export default function AboutPage() {
+  // Track page view on mount
+  useEffect(() => {
+    trackPageView(ANALYTICS_EVENTS.VIEW_ABOUT, '/about', 'About PartyOn Delivery');
+  }, []);
   const values = [
     {
       title: "Excellence",

@@ -7,6 +7,7 @@ import { useGroupOrder, useJoinGroupOrder } from '@/lib/group-orders/hooks'
 import { useGroupOrderContext } from '@/contexts/GroupOrderContext'
 import { useCartContext } from '@/contexts/CartContext'
 import AgeVerificationModal from '@/components/AgeVerificationModal'
+import { trackEvent, ANALYTICS_EVENTS } from '@/lib/analytics/track'
 
 export default function GroupOrderLandingPage() {
   const params = useParams()
@@ -43,10 +44,16 @@ export default function GroupOrderLandingPage() {
         customerId: localStorage.getItem('customerId') || undefined,
         guestName: 'Guest User', // In production, collect this info
       })
-      
+
+      // Track join group order event
+      trackEvent(ANALYTICS_EVENTS.JOIN_GROUP_ORDER, {
+        group_order_id: groupOrder.id,
+        share_code: shareCode
+      })
+
       // Set the group order code in context
       setGroupOrderCode(shareCode)
-      
+
       // Redirect to products page
       router.push('/products')
     } catch (err) {

@@ -1,13 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import LuxuryCard from '@/components/LuxuryCard';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
+import { trackPageView, trackFormSubmit, ANALYTICS_EVENTS } from '@/lib/analytics/track';
 
 export default function ContactPage() {
+  // Track page view on mount
+  useEffect(() => {
+    trackPageView(ANALYTICS_EVENTS.VIEW_CONTACT, '/contact', 'Contact Us');
+  }, []);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -44,6 +49,9 @@ export default function ContactPage() {
       const data = await response.json();
 
       if (data.success) {
+        // Track form submission
+        trackFormSubmit('contact_form', '/contact');
+
         setSubmitMessage(data.message);
         // Reset form
         setFormData({

@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState } from 'react';
 import { useCart } from '@/lib/shopify/hooks/useCart';
 import { ShopifyCart } from '@/lib/shopify/types';
 import { trackMetaEvent } from '@/components/MetaPixel';
+import { trackCartAction, trackEvent, ANALYTICS_EVENTS } from '@/lib/analytics/track';
 
 interface CartContextType extends ReturnType<typeof useCart> {
   isCartOpen: boolean;
@@ -33,6 +34,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     setIsCartOpen(true);
+
+    // Track cart open event with cart info
+    if (cartHook.cart) {
+      trackEvent(ANALYTICS_EVENTS.OPEN_CART, {
+        cart_total: parseFloat(cartHook.cart.cost?.totalAmount?.amount || '0'),
+        item_count: cartHook.cart.totalQuantity || 0
+      });
+    }
   };
 
   const closeCart = () => setIsCartOpen(false);
@@ -46,7 +55,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setIsCartOpen(prev => !prev);
   };
 
-  // Override addToCart to check age verification and fire Meta Pixel event
+  // Override addToCart to check age verification and fire tracking events
   const addToCart = async (variantId: string, quantity: number = 1): Promise<ShopifyCart> => {
     console.log('CartContext addToCart called with:', { variantId, quantity, variantIdType: typeof variantId });
 
@@ -59,6 +68,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     const result = await cartHook.addToCart(variantId, quantity);
 
+    // Find the added item to get product details for tracking
+    const addedLine = result.lines?.edges?.find(
+      edge => edge.node.merchandise.id === variantId
+    )?.node;
+
+    // Fire Vercel Analytics AddToCart event
+    trackCartAction(
+      'add',
+      variantId,
+      addedLine?.merchandise?.product?.title || 'Unknown Product',
+      parseFloat(addedLine?.merchandise?.price?.amount || '0'),
+      quantity
+    );
+
     // Fire Meta Pixel AddToCart event
     trackMetaEvent('AddToCart', {
       content_type: 'product',
@@ -70,9 +93,53 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     return result;
   };
 
+  // Override removeFromCart to fire tracking events
+  const removeFromCart = async (lineId: string): Promise<void> => {
+    // Get item details before removing for tracking
+    const removedLine = cartHook.cart?.lines?.edges?.find(
+      edge => edge.node.id === lineId
+    )?.node;
+
+    await cartHook.removeFromCart(lineId);
+
+    // Fire Vercel Analytics RemoveFromCart event
+    if (removedLine) {
+      trackCartAction(
+        'remove',
+        removedLine.merchandise.id,
+        removedLine.merchandise.product?.title || 'Unknown Product',
+        parseFloat(removedLine.merchandise.price?.amount || '0'),
+        removedLine.quantity
+      );
+    }
+  };
+
+  // Override updateCartItem to fire tracking events
+  const updateCartItem = async (lineId: string, quantity: number): Promise<void> => {
+    // Get item details for tracking
+    const updatedLine = cartHook.cart?.lines?.edges?.find(
+      edge => edge.node.id === lineId
+    )?.node;
+
+    await cartHook.updateCartItem(lineId, quantity);
+
+    // Fire Vercel Analytics UpdateCartQuantity event
+    if (updatedLine) {
+      trackCartAction(
+        'update',
+        updatedLine.merchandise.id,
+        updatedLine.merchandise.product?.title || 'Unknown Product',
+        parseFloat(updatedLine.merchandise.price?.amount || '0'),
+        quantity
+      );
+    }
+  };
+
   const value: CartContextType = {
     ...cartHook,
     addToCart,
+    removeFromCart,
+    updateCartItem,
     isCartOpen,
     openCart,
     closeCart,

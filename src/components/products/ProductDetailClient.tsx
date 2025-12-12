@@ -8,6 +8,7 @@ import { useCartContext } from '@/contexts/CartContext';
 import { formatPrice, getFirstAvailableVariant } from '@/lib/shopify/utils';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import { trackMetaEvent } from '@/components/MetaPixel';
+import { trackProductView } from '@/lib/analytics/track';
 
 interface Props {
   product: ShopifyProduct;
@@ -20,12 +21,20 @@ export default function ProductDetailClient({ product }: Props) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [addedToCart, setAddedToCart] = useState(false);
 
-  // Set default variant on mount and fire ViewContent event
+  // Set default variant on mount and fire view events
   useEffect(() => {
     const defaultVariant = getFirstAvailableVariant(product);
     if (defaultVariant) {
       setSelectedVariantId(defaultVariant.id);
     }
+
+    // Fire Vercel Analytics product view event
+    trackProductView(
+      product.id,
+      product.title,
+      parseFloat(product.priceRange.minVariantPrice.amount),
+      product.productType || 'Beverage'
+    );
 
     // Fire Meta Pixel ViewContent event
     trackMetaEvent('ViewContent', {
