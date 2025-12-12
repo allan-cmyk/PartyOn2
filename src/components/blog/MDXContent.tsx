@@ -81,6 +81,33 @@ const components = {
   pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
     <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto mb-6" {...props} />
   ),
+
+  // Table styling - preserve className from MDX for comparison-table styling
+  table: ({ className, ...props }: React.TableHTMLAttributes<HTMLTableElement>) => (
+    <table className={className || 'min-w-full border-collapse border border-gray-300'} {...props} />
+  ),
+  thead: (props: React.HTMLAttributes<HTMLTableSectionElement>) => (
+    <thead {...props} />
+  ),
+  tbody: (props: React.HTMLAttributes<HTMLTableSectionElement>) => (
+    <tbody {...props} />
+  ),
+  tr: (props: React.HTMLAttributes<HTMLTableRowElement>) => (
+    <tr {...props} />
+  ),
+  th: ({ className, ...props }: React.ThHTMLAttributes<HTMLTableCellElement>) => (
+    <th className={className} {...props} />
+  ),
+  td: ({ className, ...props }: React.TdHTMLAttributes<HTMLTableCellElement>) => (
+    <td className={className} {...props} />
+  ),
+  caption: (props: React.HTMLAttributes<HTMLTableCaptionElement>) => (
+    <caption {...props} />
+  ),
+  // Pass through div elements to preserve Schema.org itemScope/itemType attributes
+  div: (props: React.HTMLAttributes<HTMLDivElement>) => (
+    <div {...props} />
+  ),
 }
 
 export default function MDXContent({ source }: MDXContentProps) {
