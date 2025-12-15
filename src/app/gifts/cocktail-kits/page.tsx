@@ -41,10 +41,11 @@ export default async function CocktailKitsGiftPage() {
 
   const allProducts = response.products.edges.map((edge: { node: ShopifyProduct }) => edge.node)
 
-  // Filter for cocktail kits
+  // Filter for cocktail kits and bundles
   const cocktailKits = allProducts.filter((product: ShopifyProduct) =>
     product.productType?.toLowerCase().includes('cocktail') ||
     product.title.toLowerCase().includes('kit') ||
+    product.title.toLowerCase().includes('bundle') ||
     product.tags?.some(tag => tag.toLowerCase().includes('cocktail'))
   )
 
