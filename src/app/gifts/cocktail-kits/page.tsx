@@ -121,21 +121,19 @@ export default async function CocktailKitsGiftPage() {
 
             {/* Right Column - Hero Image */}
             <div className="relative">
-              {featuredKits[0] && (
-                <div className="relative aspect-square rounded-lg overflow-hidden shadow-2xl">
-                  <Image
-                    src={featuredKits[0].images.edges[0]?.node.url || '/images/products/classic-austin-margarita-kit.webp'}
-                    alt={featuredKits[0].title}
-                    fill
-                    className="object-cover"
-                    priority
-                  />
-                  {/* Badge */}
-                  <div className="absolute top-4 right-4 bg-gold-500 text-white px-4 py-2 text-sm font-bold tracking-wider shadow-lg">
-                    BESTSELLER
-                  </div>
+              <div className="relative aspect-square rounded-lg overflow-hidden shadow-2xl">
+                <Image
+                  src={espressoMartiniKit?.images.edges[0]?.node.url || 'https://cdn.shopify.com/s/files/1/0538/1767/1858/files/Gemini_Generated_Image_tk6mbhtk6mbhtk6m.png?v=1764702134'}
+                  alt={espressoMartiniKit?.title || 'Espresso Martini Cocktail Kit'}
+                  fill
+                  className="object-cover"
+                  priority
+                />
+                {/* Badge */}
+                <div className="absolute top-4 right-4 bg-gold-500 text-white px-4 py-2 text-sm font-bold tracking-wider shadow-lg">
+                  PERFECT GIFT
                 </div>
-              )}
+              </div>
 
               {/* Trust Badges */}
               <div className="mt-6 grid grid-cols-3 gap-4 text-center">
