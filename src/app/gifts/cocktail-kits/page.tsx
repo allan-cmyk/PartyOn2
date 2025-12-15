@@ -92,7 +92,7 @@ export default async function CocktailKitsGiftPage() {
                 Perfect Christmas Cocktail Kits for Austin Hosts
               </h1>
               <p className="text-xl sm:text-2xl text-neutral-700 mb-6 tracking-wide">
-                Give the Gift of 24 Premium Margaritas
+                Austin&apos;s Best Gift - Premium Cocktails Made with Local Spirits
               </p>
               <p className="text-lg text-neutral-600 mb-8 leading-relaxed">
                 Skip the crowded liquor store. Send a complete party in a box—everything they need to make authentic Austin-style cocktails. Delivered to their door with gift card and bottle bag included.
