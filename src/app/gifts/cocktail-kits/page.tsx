@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import ChristmasDeadlineBanner from '@/components/ChristmasDeadlineBanner'
-import ProductCard from '@/components/shopify/ProductCard'
+import FeaturedKitCard from '@/components/gifts/FeaturedKitCard'
 import LuxuryCard from '@/components/LuxuryCard'
 import { shopifyFetch } from '@/lib/shopify/client'
 import { PRODUCTS_GRID_QUERY } from '@/lib/shopify/queries/products'
@@ -22,6 +22,16 @@ export const metadata: Metadata = {
   },
 }
 
+// Featured kit descriptions for the landing page
+const featuredKitDescriptions: Record<string, string> = {
+  'austin rita': 'Our bestselling margarita kit! Makes 24 authentic Austin-style margaritas with premium tequila, fresh lime, and all the fixings. Perfect for parties or a great night in.',
+  'espresso martini': 'A modern classic, Texas style! Made with local vodka, rich coffee liqueur, and smooth Mexican vanilla espresso. Makes 16 elegant cocktails.',
+  'hill country old': 'Light, fun, and featuring a great local cider. This refreshing Old Fashioned variation is the ultimate aperitivo for any occasion.',
+  'old-fashioned': 'The timeless cocktail done right. Premium bourbon, aromatic bitters, and a touch of sweetness. A sophisticated gift for whiskey lovers.',
+  'apple cider aperol': 'The perfect fall cocktail! Crisp apple cider meets Italian Aperol for a refreshing, bittersweet spritz. Seasonal and sophisticated.',
+  'aperol spritz': 'The iconic Italian aperitivo! Bright, bubbly, and perfectly balanced. A crowd-pleasing classic that never goes out of style.',
+}
+
 export default async function CocktailKitsGiftPage() {
   // Fetch cocktail kit products from Shopify
   const response = await shopifyFetch<{ products: { edges: Array<{ node: ShopifyProduct }> } }>({
@@ -38,15 +48,34 @@ export default async function CocktailKitsGiftPage() {
     product.tags?.some(tag => tag.toLowerCase().includes('cocktail'))
   )
 
-  // Find Austin Rita as hero product
-  const austinRitaKit = cocktailKits.find((p: ShopifyProduct) =>
-    p.title.toLowerCase().includes('austin rita')
-  )
+  // Find specific featured kits by name patterns
+  const findKit = (pattern: string) =>
+    cocktailKits.find((p: ShopifyProduct) =>
+      p.title.toLowerCase().includes(pattern.toLowerCase())
+    )
 
-  // Other kits (excluding Austin Rita)
-  const otherKits = cocktailKits.filter((p: ShopifyProduct) =>
-    p.id !== austinRitaKit?.id
-  ).slice(0, 5)
+  // Get 4 specific featured kits
+  const austinRitaKit = findKit('austin rita party pitcher')
+  const espressoMartiniKit = findKit('espresso martini cocktail kit')
+  const oldFashionedKit = findKit('hill country old-fashioned') || findKit('hill country old')
+  const aperolSpritzKit = findKit('apple cider aperol spritz')
+
+  // Build array of 4 featured kits
+  const featuredKits = [
+    austinRitaKit,
+    espressoMartiniKit,
+    oldFashionedKit,
+    aperolSpritzKit
+  ].filter(Boolean) as ShopifyProduct[]
+
+  // Get description for a kit
+  const getKitDescription = (product: ShopifyProduct): string => {
+    const titleLower = product.title.toLowerCase()
+    for (const [key, desc] of Object.entries(featuredKitDescriptions)) {
+      if (titleLower.includes(key)) return desc
+    }
+    return product.description?.slice(0, 200) || 'Premium cocktail kit with everything you need.'
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -91,11 +120,11 @@ export default async function CocktailKitsGiftPage() {
 
             {/* Right Column - Hero Image */}
             <div className="relative">
-              {austinRitaKit && (
+              {featuredKits[0] && (
                 <div className="relative aspect-square rounded-lg overflow-hidden shadow-2xl">
                   <Image
-                    src={austinRitaKit.images.edges[0]?.node.url || '/images/products/classic-austin-margarita-kit.webp'}
-                    alt={austinRitaKit.title}
+                    src={featuredKits[0].images.edges[0]?.node.url || '/images/products/classic-austin-margarita-kit.webp'}
+                    alt={featuredKits[0].title}
                     fill
                     className="object-cover"
                     priority
@@ -127,58 +156,39 @@ export default async function CocktailKitsGiftPage() {
         </div>
       </section>
 
-      {/* Featured Product: Austin Rita Kit */}
-      {austinRitaKit && (
-        <section id="featured-products" className="py-16 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="font-serif text-3xl sm:text-4xl text-neutral-900 mb-4 tracking-wide">
-                Featured Gift: Austin Rita Party Pitcher Kit
-              </h2>
-              <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
-                Our bestselling margarita kit—perfect for hosts, party lovers, and anyone who appreciates a great cocktail.
-              </p>
-            </div>
+      {/* Featured Cocktail Kits - Split Layout */}
+      <section id="featured-products" className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="font-serif text-3xl sm:text-4xl text-neutral-900 mb-4 tracking-wide">
+              Top Gift Kits in Austin
+            </h2>
+            <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
+              Curated cocktail kits featuring local ingredients and classic recipes. Each makes 16-30 drinks!
+            </p>
+          </div>
 
-            <div className="max-w-5xl mx-auto">
-              <ProductCard
-                product={austinRitaKit}
+          <div className="space-y-20 lg:space-y-28">
+            {featuredKits.map((kit, index) => (
+              <FeaturedKitCard
+                key={kit.id}
+                product={kit}
+                imagePosition={index % 2 === 0 ? 'left' : 'right'}
+                description={getKitDescription(kit)}
               />
-            </div>
+            ))}
           </div>
-        </section>
-      )}
 
-      {/* More Cocktail Kits */}
-      {otherKits.length > 0 && (
-        <section className="py-16 bg-neutral-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="font-serif text-3xl sm:text-4xl text-neutral-900 mb-4 tracking-wide">
-                More Cocktail Kit Gifts
-              </h2>
-              <p className="text-lg text-neutral-600">
-                Explore our full selection of premium cocktail kits
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {otherKits.map((product: ShopifyProduct) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-
-            <div className="text-center mt-12">
-              <Link
-                href="/products"
-                className="inline-block border-2 border-gold-500 text-gold-600 hover:bg-gold-50 px-8 py-4 text-lg font-medium tracking-widest transition-colors duration-200"
-              >
-                VIEW ALL PRODUCTS
-              </Link>
-            </div>
+          <div className="text-center mt-16">
+            <Link
+              href="/products?filter=cocktail"
+              className="inline-block border-2 border-gold-500 text-gold-600 hover:bg-gold-50 px-8 py-4 text-lg font-medium tracking-widest transition-colors duration-200"
+            >
+              VIEW ALL COCKTAIL KITS
+            </Link>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* Why Gift Cocktail Kits */}
       <section className="py-16 bg-white">
