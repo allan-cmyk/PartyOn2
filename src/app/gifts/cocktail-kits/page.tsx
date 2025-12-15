@@ -33,21 +33,16 @@ const featuredKitDescriptions: Record<string, string> = {
 }
 
 export default async function CocktailKitsGiftPage() {
-  // Fetch cocktail kit products from Shopify
+  // Fetch cocktail kit products from Shopify using productType filter
   const response = await shopifyFetch<{ products: { edges: Array<{ node: ShopifyProduct }> } }>({
     query: PRODUCTS_GRID_QUERY,
-    variables: { first: 50 }
+    variables: {
+      first: 50,
+      query: 'product_type:"Cocktail Kits"'
+    }
   })
 
-  const allProducts = response.products.edges.map((edge: { node: ShopifyProduct }) => edge.node)
-
-  // Filter for cocktail kits and bundles
-  const cocktailKits = allProducts.filter((product: ShopifyProduct) =>
-    product.productType?.toLowerCase().includes('cocktail') ||
-    product.title.toLowerCase().includes('kit') ||
-    product.title.toLowerCase().includes('bundle') ||
-    product.tags?.some(tag => tag.toLowerCase().includes('cocktail'))
-  )
+  const cocktailKits = response.products.edges.map((edge: { node: ShopifyProduct }) => edge.node)
 
   // Find specific featured kits by name patterns
   const findKit = (pattern: string) =>
