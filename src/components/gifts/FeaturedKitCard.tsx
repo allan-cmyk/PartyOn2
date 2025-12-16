@@ -8,16 +8,60 @@ import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseA
 import { useCartContext } from '@/contexts/CartContext';
 import AgeVerificationModal from '../AgeVerificationModal';
 
+// What's included for each kit type
+const kitIngredients: Record<string, string[]> = {
+  'austin rita': [
+    'Dulce Vida Blanco Tequila',
+    'Stirrings Triple Sec',
+    'Fresh Lime Juice',
+    'Topo Chico Sparkling Water',
+    'Sprite',
+  ],
+  'espresso martini': [
+    'Tito\'s Handmade Vodka',
+    'Kahlúa Coffee Liqueur',
+    'Mexican Vanilla Espresso',
+    'Simple Syrup',
+  ],
+  'hill country old': [
+    'Austin Eastciders Cider',
+    'Bourbon Whiskey',
+    'Aromatic Bitters',
+    'Orange Peel',
+  ],
+  'old-fashioned': [
+    'Premium Bourbon',
+    'Angostura Bitters',
+    'Orange Bitters',
+    'Demerara Sugar',
+    'Orange Peel',
+  ],
+  'apple cider aperol': [
+    'Aperol',
+    'Prosecco',
+    'Austin Eastciders Apple Cider',
+    'Fresh Orange Slices',
+  ],
+  'aperol spritz': [
+    'Aperol',
+    'Prosecco',
+    'Sparkling Water',
+    'Fresh Orange Slices',
+  ],
+};
+
 interface FeaturedKitCardProps {
   product: ShopifyProduct;
   imagePosition?: 'left' | 'right';
   description?: string;
+  showIngredients?: boolean;
 }
 
 export default function FeaturedKitCard({
   product,
   imagePosition = 'left',
-  description
+  description,
+  showIngredients = true
 }: FeaturedKitCardProps) {
   const { addToCart, loading: cartLoading } = useCartContext();
   const [isAdding, setIsAdding] = useState(false);
@@ -25,6 +69,18 @@ export default function FeaturedKitCard({
   const imageUrl = getProductImageUrl(product);
   const variant = getFirstAvailableVariant(product);
   const price = product.priceRange.minVariantPrice;
+  const compareAtPrice = variant?.compareAtPrice;
+
+  // Get ingredients for this kit
+  const getIngredients = (): string[] => {
+    const titleLower = product.title.toLowerCase();
+    for (const [key, ingredients] of Object.entries(kitIngredients)) {
+      if (titleLower.includes(key)) return ingredients;
+    }
+    return [];
+  };
+
+  const ingredients = getIngredients();
 
   const handleAddToCart = async () => {
     if (!variant?.id || !variant.availableForSale) return;
@@ -105,8 +161,40 @@ export default function FeaturedKitCard({
           {description || defaultDescription}
         </p>
 
-        <div className="text-3xl font-light text-neutral-900 tracking-wide">
-          {formatPrice(price.amount, price.currencyCode)}
+        {/* What's Included */}
+        {showIngredients && ingredients.length > 0 && (
+          <div className="bg-neutral-50 p-4 rounded-lg">
+            <h4 className="text-sm font-semibold text-neutral-900 tracking-wide mb-3 uppercase">
+              What&apos;s Included
+            </h4>
+            <ul className="space-y-2">
+              {ingredients.map((ingredient, index) => (
+                <li key={index} className="flex items-center gap-2 text-neutral-600">
+                  <svg className="w-4 h-4 text-gold-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span>{ingredient}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Price with strikethrough */}
+        <div className="flex items-baseline gap-3">
+          {compareAtPrice && parseFloat(compareAtPrice.amount) > parseFloat(price.amount) && (
+            <span className="text-xl text-neutral-400 line-through">
+              {formatPrice(compareAtPrice.amount, compareAtPrice.currencyCode)}
+            </span>
+          )}
+          <span className="text-3xl font-light text-neutral-900 tracking-wide">
+            {formatPrice(price.amount, price.currencyCode)}
+          </span>
+          {compareAtPrice && parseFloat(compareAtPrice.amount) > parseFloat(price.amount) && (
+            <span className="text-sm font-medium text-green-600 bg-green-50 px-2 py-1 rounded">
+              SAVE {formatPrice((parseFloat(compareAtPrice.amount) - parseFloat(price.amount)).toString(), price.currencyCode)}
+            </span>
+          )}
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4">

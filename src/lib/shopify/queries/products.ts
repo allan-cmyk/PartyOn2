@@ -43,6 +43,10 @@ export const PRODUCTS_GRID_QUERY = gql`
                   amount
                   currencyCode
                 }
+                compareAtPrice {
+                  amount
+                  currencyCode
+                }
               }
             }
           }
