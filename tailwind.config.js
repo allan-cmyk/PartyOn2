@@ -195,7 +195,10 @@ module.exports = {
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
         serif: ['var(--font-cormorant-garamond)', 'Georgia', 'serif'],
-        display: ['var(--font-playfair)', 'Georgia', 'serif'],
+        display: ['var(--font-playfair-display)', 'Georgia', 'serif'],
+        abril: ['var(--font-abril-fatface)', 'Georgia', 'serif'],
+        caveat: ['var(--font-caveat)', 'cursive'],
+        playfair: ['var(--font-playfair-display)', 'Georgia', 'serif'],
       },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-in-out',

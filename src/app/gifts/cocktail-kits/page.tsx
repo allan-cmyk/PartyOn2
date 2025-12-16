@@ -67,8 +67,11 @@ export default async function CocktailKitsGiftPage() {
   // Get IDs of featured kits to exclude from secondary grid
   const featuredKitIds = new Set(featuredKits.map(kit => kit.id))
 
-  // Get other cocktail kits not in featured list
-  const otherKits = cocktailKits.filter((kit: ShopifyProduct) => !featuredKitIds.has(kit.id))
+  // Get other cocktail kits not in featured list (exclude limes and other non-kit items)
+  const otherKits = cocktailKits.filter((kit: ShopifyProduct) =>
+    !featuredKitIds.has(kit.id) &&
+    !kit.title.toLowerCase().includes('lime')
+  )
 
   // Get description for a kit
   const getKitDescription = (product: ShopifyProduct): string => {
@@ -94,14 +97,14 @@ export default async function CocktailKitsGiftPage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Column - Text */}
             <div className="text-center lg:text-left">
-              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-neutral-900 mb-6 tracking-wide">
-                Austin&apos;s #1 Last-Minute Gift for Cocktail Lovers
+              <h1 className="font-abril text-4xl sm:text-5xl lg:text-6xl text-neutral-900 mb-6">
+                Still Need a Gift? We&apos;ve Got You.
               </h1>
               <p className="text-xl sm:text-2xl text-neutral-700 mb-6 tracking-wide">
-                Premium local spirits and ingredients delivered in time for Christmas!
+                Premium local spirits and ingredients delivered in time for Christmas
               </p>
               <p className="text-lg text-neutral-600 mb-8 leading-relaxed">
-                Send what they really want, a complete party in a box! Includes everything needed to make bar-quality cocktails, delivered with a gift card and bottle bag included.
+                Send what they really want, a complete party in a box. Includes everything needed to make bar-quality cocktails, delivered with a gift card and bottle bag included.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
