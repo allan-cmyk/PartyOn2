@@ -51,6 +51,43 @@ export default function HomePage() {
       {/* Hero Section - Client Component */}
       <HeroSection />
 
+      {/* Christmas Cocktail Kits Banner */}
+      <section className="py-12 bg-gradient-to-r from-red-900 via-red-800 to-red-900 relative overflow-hidden">
+        {/* Subtle sparkle effect */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-4 left-1/4 w-2 h-2 bg-white rounded-full animate-pulse" />
+          <div className="absolute top-8 right-1/3 w-1.5 h-1.5 bg-white rounded-full animate-pulse delay-300" />
+          <div className="absolute bottom-6 left-1/2 w-2 h-2 bg-white rounded-full animate-pulse delay-500" />
+          <div className="absolute top-1/2 right-1/4 w-1 h-1 bg-white rounded-full animate-pulse delay-700" />
+        </div>
+        <div className="max-w-6xl mx-auto px-8 relative">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+            <div className="text-center lg:text-left">
+              <div className="inline-block bg-gold-500 text-gray-900 px-4 py-1 text-xs font-bold tracking-widest mb-4 rounded">
+                HOLIDAY GIFT IDEA
+              </div>
+              <h2 className="font-serif text-3xl md:text-4xl text-white mb-3 tracking-wide">
+                Cocktail Kits Make the Perfect Gift
+              </h2>
+              <p className="text-red-100 text-lg max-w-xl">
+                Send a complete party in a box! Premium spirits, mixers &amp; garnishes delivered with a gift card included.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link href="/gifts/cocktail-kits">
+                <button className="px-8 py-4 bg-gold-500 text-gray-900 hover:bg-gold-400 transition-colors tracking-[0.15em] text-sm font-medium whitespace-nowrap">
+                  SHOP GIFT KITS
+                </button>
+              </Link>
+              <div className="text-center sm:text-left">
+                <p className="text-white font-medium">Order by Dec 20</p>
+                <p className="text-red-200 text-sm">for Christmas delivery</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Choose Your Path Fork */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-8">
@@ -117,43 +154,6 @@ export default function HomePage() {
             <p className="text-gray-600 text-sm tracking-[0.05em]">
               Austin locals serving Downtown to Lake Travis since 2023
             </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Christmas Cocktail Kits Banner */}
-      <section className="py-12 bg-gradient-to-r from-red-900 via-red-800 to-red-900 relative overflow-hidden">
-        {/* Subtle sparkle effect */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-4 left-1/4 w-2 h-2 bg-white rounded-full animate-pulse" />
-          <div className="absolute top-8 right-1/3 w-1.5 h-1.5 bg-white rounded-full animate-pulse delay-300" />
-          <div className="absolute bottom-6 left-1/2 w-2 h-2 bg-white rounded-full animate-pulse delay-500" />
-          <div className="absolute top-1/2 right-1/4 w-1 h-1 bg-white rounded-full animate-pulse delay-700" />
-        </div>
-        <div className="max-w-6xl mx-auto px-8 relative">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-            <div className="text-center lg:text-left">
-              <div className="inline-block bg-gold-500 text-gray-900 px-4 py-1 text-xs font-bold tracking-widest mb-4 rounded">
-                HOLIDAY GIFT IDEA
-              </div>
-              <h2 className="font-serif text-3xl md:text-4xl text-white mb-3 tracking-wide">
-                Cocktail Kits Make the Perfect Gift
-              </h2>
-              <p className="text-red-100 text-lg max-w-xl">
-                Send a complete party in a box! Premium spirits, mixers &amp; garnishes delivered with a gift card included.
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/gifts/cocktail-kits">
-                <button className="px-8 py-4 bg-gold-500 text-gray-900 hover:bg-gold-400 transition-colors tracking-[0.15em] text-sm font-medium whitespace-nowrap">
-                  SHOP GIFT KITS
-                </button>
-              </Link>
-              <div className="text-center sm:text-left">
-                <p className="text-white font-medium">Order by Dec 20</p>
-                <p className="text-red-200 text-sm">for Christmas delivery</p>
-              </div>
-            </div>
           </div>
         </div>
       </section>
