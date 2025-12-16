@@ -80,7 +80,7 @@ export default function HomePage() {
                 </button>
               </Link>
               <div className="text-center sm:text-left">
-                <p className="text-white font-medium">Order by Dec 20</p>
+                <p className="text-white font-medium">Order by Dec 22</p>
                 <p className="text-red-200 text-sm">for Christmas delivery</p>
               </div>
             </div>
@@ -683,7 +683,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <img
-                src="/images/POD Logo 2025.svg"
+                src="/images/pod-logo-2025.svg"
                 alt="Party On Delivery"
                 className="h-16 w-auto mb-4"
                 width="64"
