@@ -9,6 +9,7 @@ export const PRODUCTS_GRID_QUERY = gql`
           id
           handle
           title
+          description
           productType
           tags
           vendor

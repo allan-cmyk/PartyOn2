@@ -22,15 +22,6 @@ export const metadata: Metadata = {
   },
 }
 
-// Featured kit descriptions for the landing page
-const featuredKitDescriptions: Record<string, string> = {
-  'austin rita': 'Our bestselling margarita kit! Makes 24 authentic Austin-style margaritas with premium tequila, fresh lime, and all the fixings. Perfect for parties or a great night in.',
-  'espresso martini': 'A modern classic, Texas style! Made with local vodka, rich coffee liqueur, and smooth Mexican vanilla espresso. Makes 16 elegant cocktails.',
-  'hill country old': 'Light, fun, and featuring a great local cider. This refreshing Old Fashioned variation is the ultimate aperitivo for any occasion.',
-  'old-fashioned': 'The timeless cocktail done right. Premium bourbon, aromatic bitters, and a touch of sweetness. A sophisticated gift for whiskey lovers.',
-  'apple cider aperol': 'The perfect fall cocktail! Crisp apple cider meets Italian Aperol for a refreshing, bittersweet spritz. Seasonal and sophisticated.',
-  'aperol spritz': 'The iconic Italian aperitivo! Bright, bubbly, and perfectly balanced. A crowd-pleasing classic that never goes out of style.',
-}
 
 export default async function CocktailKitsGiftPage() {
   // Fetch cocktail kit products from Shopify using productType filter
@@ -73,13 +64,9 @@ export default async function CocktailKitsGiftPage() {
     !kit.title.toLowerCase().includes('lime')
   )
 
-  // Get description for a kit
+  // Get description for a kit - use Shopify product description
   const getKitDescription = (product: ShopifyProduct): string => {
-    const titleLower = product.title.toLowerCase()
-    for (const [key, desc] of Object.entries(featuredKitDescriptions)) {
-      if (titleLower.includes(key)) return desc
-    }
-    return product.description?.slice(0, 200) || 'Premium cocktail kit with everything you need.'
+    return product.description || 'Premium cocktail kit with everything you need.'
   }
 
   return (
@@ -110,13 +97,13 @@ export default async function CocktailKitsGiftPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <a
                   href="#featured-products"
-                  className="inline-block bg-gold-500 hover:bg-gold-600 text-white px-8 py-4 text-lg font-medium tracking-widest transition-colors duration-200"
+                  className="inline-block bg-gold-500 hover:bg-gold-600 text-neutral-900 px-8 py-4 text-lg font-medium tracking-widest transition-colors duration-200"
                 >
                   SHOP GIFT KITS
                 </a>
                 <a
                   href="#how-it-works"
-                  className="inline-block border-2 border-gold-500 text-gold-600 hover:bg-gold-50 px-8 py-4 text-lg font-medium tracking-widest transition-colors duration-200"
+                  className="inline-block border-2 border-gray-900 text-gray-900 hover:bg-gray-100 px-8 py-4 text-lg font-medium tracking-widest transition-colors duration-200"
                 >
                   HOW IT WORKS
                 </a>
@@ -134,7 +121,7 @@ export default async function CocktailKitsGiftPage() {
                   priority
                 />
                 {/* Badge */}
-                <div className="absolute top-4 right-4 bg-gold-500 text-white px-4 py-2 text-sm font-bold tracking-wider shadow-lg">
+                <div className="absolute top-4 right-4 bg-gold-500 text-neutral-900 px-4 py-2 text-sm font-bold tracking-wider shadow-lg">
                   PERFECT GIFT
                 </div>
               </div>
@@ -142,15 +129,15 @@ export default async function CocktailKitsGiftPage() {
               {/* Trust Badges */}
               <div className="mt-6 grid grid-cols-3 gap-4 text-center">
                 <div>
-                  <div className="text-2xl font-bold text-gold-500">24</div>
+                  <div className="text-2xl font-bold text-neutral-900">24</div>
                   <div className="text-sm text-neutral-600">Drinks</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-gold-500">$89.99</div>
+                  <div className="text-2xl font-bold text-neutral-900">$89.99</div>
                   <div className="text-sm text-neutral-600">Complete Kit</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-gold-500">72hrs</div>
+                  <div className="text-2xl font-bold text-neutral-900">72hrs</div>
                   <div className="text-sm text-neutral-600">Delivery</div>
                 </div>
               </div>
@@ -163,7 +150,7 @@ export default async function CocktailKitsGiftPage() {
       <section id="featured-products" className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="font-serif text-3xl sm:text-4xl text-neutral-900 mb-4 tracking-wide">
+            <h2 className="font-abril text-3xl sm:text-4xl text-neutral-900 mb-4">
               Top Gift Kits in Austin
             </h2>
             <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
@@ -185,7 +172,7 @@ export default async function CocktailKitsGiftPage() {
           {/* Secondary Grid - More Kits */}
           {otherKits.length > 0 && (
             <div className="mt-20">
-              <h3 className="font-serif text-2xl sm:text-3xl text-neutral-900 mb-8 text-center tracking-wide">
+              <h3 className="font-abril text-2xl sm:text-3xl text-neutral-900 mb-8 text-center">
                 More Cocktail Kits
               </h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -219,7 +206,7 @@ export default async function CocktailKitsGiftPage() {
                         )}
                       </div>
                       <div className="p-4">
-                        <h4 className="font-serif text-lg text-neutral-900 mb-2 group-hover:text-gold-600 transition-colors">
+                        <h4 className="font-playfair text-lg text-neutral-900 mb-2 group-hover:text-gold-600 transition-colors font-semibold">
                           {kit.title}
                         </h4>
                         <div className="flex items-baseline gap-2">
@@ -243,7 +230,7 @@ export default async function CocktailKitsGiftPage() {
           <div className="text-center mt-16">
             <Link
               href="/products?filter=cocktail"
-              className="inline-block border-2 border-gold-500 text-gold-600 hover:bg-gold-50 px-8 py-4 text-lg font-medium tracking-widest transition-colors duration-200"
+              className="inline-block border-2 border-gray-900 text-gray-900 hover:bg-gray-100 px-8 py-4 text-lg font-medium tracking-widest transition-colors duration-200"
             >
               VIEW ALL COCKTAIL KITS
             </Link>
@@ -255,7 +242,7 @@ export default async function CocktailKitsGiftPage() {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl sm:text-4xl text-neutral-900 mb-4 tracking-wide">
+            <h2 className="font-abril text-3xl sm:text-4xl text-neutral-900 mb-4">
               Why Gift a Cocktail Kit?
             </h2>
             <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
@@ -271,7 +258,7 @@ export default async function CocktailKitsGiftPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-xl text-neutral-900 mb-2 tracking-wide">
+                <h3 className="font-playfair text-xl text-neutral-900 mb-2 font-semibold">
                   Everything in One Box
                 </h3>
                 <p className="text-neutral-600">
@@ -287,7 +274,7 @@ export default async function CocktailKitsGiftPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-xl text-neutral-900 mb-2 tracking-wide">
+                <h3 className="font-playfair text-xl text-neutral-900 mb-2 font-semibold">
                   Makes 20-30 Drinks
                 </h3>
                 <p className="text-neutral-600">
@@ -304,7 +291,7 @@ export default async function CocktailKitsGiftPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-xl text-neutral-900 mb-2 tracking-wide">
+                <h3 className="font-playfair text-xl text-neutral-900 mb-2 font-semibold">
                   Austin Local Ingredients
                 </h3>
                 <p className="text-neutral-600">
@@ -320,7 +307,7 @@ export default async function CocktailKitsGiftPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-xl text-neutral-900 mb-2 tracking-wide">
+                <h3 className="font-playfair text-xl text-neutral-900 mb-2 font-semibold">
                   Gift-Ready Delivery
                 </h3>
                 <p className="text-neutral-600">
@@ -336,7 +323,7 @@ export default async function CocktailKitsGiftPage() {
       <section id="how-it-works" className="py-16 bg-gradient-to-br from-neutral-50 to-neutral-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl sm:text-4xl text-neutral-900 mb-4 tracking-wide">
+            <h2 className="font-abril text-3xl sm:text-4xl text-neutral-900 mb-4">
               How Cocktail Kit Gifting Works
             </h2>
             <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
@@ -347,7 +334,7 @@ export default async function CocktailKitsGiftPage() {
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {/* Step 1 */}
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gold-500 text-white text-2xl font-bold mb-4">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gold-500 text-neutral-900 text-2xl font-bold mb-4">
                 1
               </div>
               <h3 className="text-xl font-semibold text-neutral-900 mb-3 tracking-wide">
@@ -360,7 +347,7 @@ export default async function CocktailKitsGiftPage() {
 
             {/* Step 2 */}
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gold-500 text-white text-2xl font-bold mb-4">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gold-500 text-neutral-900 text-2xl font-bold mb-4">
                 2
               </div>
               <h3 className="text-xl font-semibold text-neutral-900 mb-3 tracking-wide">
@@ -373,7 +360,7 @@ export default async function CocktailKitsGiftPage() {
 
             {/* Step 3 */}
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gold-500 text-white text-2xl font-bold mb-4">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gold-500 text-neutral-900 text-2xl font-bold mb-4">
                 3
               </div>
               <h3 className="text-xl font-semibold text-neutral-900 mb-3 tracking-wide">
@@ -418,7 +405,7 @@ export default async function CocktailKitsGiftPage() {
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl sm:text-4xl text-neutral-900 mb-4 tracking-wide">
+            <h2 className="font-abril text-3xl sm:text-4xl text-neutral-900 mb-4">
               What Our Customers Say
             </h2>
             <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
@@ -503,7 +490,7 @@ export default async function CocktailKitsGiftPage() {
       <section className="py-16 bg-gradient-to-br from-neutral-50 to-neutral-100">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl sm:text-4xl text-neutral-900 mb-4 tracking-wide">
+            <h2 className="font-abril text-3xl sm:text-4xl text-neutral-900 mb-4">
               Frequently Asked Questions
             </h2>
           </div>
@@ -573,20 +560,20 @@ export default async function CocktailKitsGiftPage() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-16 bg-gradient-to-r from-gold-500 to-gold-600 text-white">
+      <section className="py-16 bg-gradient-to-r from-gold-500 to-gold-600">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-serif text-3xl sm:text-4xl mb-4 tracking-wide">
+          <h2 className="font-abril text-3xl sm:text-4xl text-neutral-900 mb-4">
             Give the Perfect Christmas Gift
           </h2>
-          <p className="text-xl mb-2 text-white/90">
+          <p className="text-xl mb-2 text-neutral-800">
             Order by December 20 for Guaranteed Delivery
           </p>
-          <p className="text-lg mb-8 text-white/80">
+          <p className="text-lg mb-8 text-neutral-700">
             Free Delivery on Orders $100+
           </p>
           <a
             href="#featured-products"
-            className="inline-block bg-white text-gold-600 hover:bg-neutral-100 px-8 py-4 text-lg font-medium tracking-widest transition-colors duration-200"
+            className="inline-block bg-neutral-900 text-white hover:bg-neutral-800 px-8 py-4 text-lg font-medium tracking-widest transition-colors duration-200"
           >
             SHOP ALL COCKTAIL KITS
           </a>

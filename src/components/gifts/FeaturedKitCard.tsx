@@ -152,7 +152,7 @@ export default function FeaturedKitCard({
       {/* Product Details */}
       <div className="md:[direction:ltr] space-y-6">
         <Link href={`/products/${productHandle}`}>
-          <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-neutral-900 tracking-wide hover:text-gold-600 transition-colors">
+          <h3 className="font-abril text-2xl sm:text-3xl lg:text-4xl text-neutral-900 hover:text-gold-600 transition-colors">
             {product.title}
           </h3>
         </Link>
@@ -201,9 +201,9 @@ export default function FeaturedKitCard({
           <button
             onClick={handleAddToCart}
             disabled={!variant?.availableForSale || isAdding || cartLoading}
-            className={`px-8 py-4 text-sm tracking-[0.15em] font-medium transition-colors duration-300 ${
+            className={`px-10 py-5 text-lg tracking-[0.1em] font-bold transition-colors duration-300 ${
               variant?.availableForSale && !isAdding && !cartLoading
-                ? 'bg-gold-500 text-white hover:bg-gold-600'
+                ? 'bg-gold-500 text-neutral-900 hover:bg-gold-600'
                 : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
             }`}
           >
@@ -216,7 +216,7 @@ export default function FeaturedKitCard({
 
           <Link
             href={`/products/${productHandle}`}
-            className="px-8 py-4 border-2 border-gold-500 text-gold-600 hover:bg-gold-50 text-sm tracking-[0.15em] font-medium transition-colors duration-300 text-center"
+            className="px-10 py-5 border-2 border-gray-900 text-gray-900 hover:bg-gray-100 text-lg tracking-[0.1em] font-bold transition-colors duration-300 text-center"
           >
             VIEW DETAILS
           </Link>
