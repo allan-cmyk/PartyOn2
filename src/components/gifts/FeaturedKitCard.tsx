@@ -13,21 +13,20 @@ const kitIngredients: Record<string, string[]> = {
   'austin rita': [
     'Dulce Vida Blanco Tequila',
     'Stirrings Triple Sec',
-    'Fresh Lime Juice',
+    'Organic Lime Juice',
     'Topo Chico Sparkling Water',
     'Sprite',
   ],
   'espresso martini': [
-    'Tito\'s Handmade Vodka',
-    'Kahlúa Coffee Liqueur',
-    'Mexican Vanilla Espresso',
+    'Deep Eddy Vodka',
+    'Cafe del Fuego Coffee Liqueur',
+    'Hybrid Double Espresso',
     'Simple Syrup',
   ],
   'hill country old': [
-    'Austin Eastciders Cider',
-    'Bourbon Whiskey',
-    'Aromatic Bitters',
-    'Orange Peel',
+    'Still Austin Straight Bourbon Whiskey',
+    'Lybra and Co Old Fashioned Cocktail Syrup',
+    'Japanese Jigger',
   ],
   'old-fashioned': [
     'Premium Bourbon',
@@ -38,9 +37,10 @@ const kitIngredients: Record<string, string[]> = {
   ],
   'apple cider aperol': [
     'Aperol',
-    'Prosecco',
-    'Austin Eastciders Apple Cider',
-    'Fresh Orange Slices',
+    'Austin Eastciders Original Dry Cider',
+    'Topo Chico',
+    'Cinnamon Sugar',
+    'Cinnamon Sticks',
   ],
   'aperol spritz': [
     'Aperol',
