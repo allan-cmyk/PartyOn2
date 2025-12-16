@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Inter } from 'next/font/google';
+import { Cormorant_Garamond, Inter, Abril_Fatface, Caveat, Playfair_Display } from 'next/font/google';
 import dynamic from 'next/dynamic';
 import "./globals.css";
 import AgeVerification from "@/components/AgeVerification";
@@ -25,10 +25,31 @@ const cormorantGaramond = Cormorant_Garamond({
   display: 'swap',
 });
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600'],
   variable: '--font-inter',
+  display: 'swap',
+});
+
+const abrilFatface = Abril_Fatface({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-abril-fatface',
+  display: 'swap',
+});
+
+const caveat = Caveat({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-caveat',
+  display: 'swap',
+});
+
+const playfairDisplay = Playfair_Display({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800', '900'],
+  variable: '--font-playfair-display',
   display: 'swap',
 });
 
@@ -112,7 +133,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
       </head>
-      <body className={`${inter.variable} ${cormorantGaramond.variable} antialiased bg-white text-navy-900`}>
+      <body className={`${inter.variable} ${cormorantGaramond.variable} ${abrilFatface.variable} ${caveat.variable} ${playfairDisplay.variable} antialiased bg-white text-navy-900`}>
         <CustomerProvider>
           <CartProvider>
             <GroupOrderProvider>

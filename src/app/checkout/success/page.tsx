@@ -7,6 +7,7 @@ import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
 import { useCustomerContext } from '@/contexts/CustomerContext';
 import { trackMetaEvent } from '@/components/MetaPixel';
+import { trackPurchase } from '@/lib/analytics/track';
 
 function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
@@ -26,9 +27,17 @@ function CheckoutSuccessContent() {
       setOrderNumber(order);
     }
 
-    // Fire Meta Pixel Purchase event (only once)
+    // Fire purchase tracking events (only once)
     if (!purchaseEventFired.current) {
       purchaseEventFired.current = true;
+
+      // Fire Vercel Analytics purchase event
+      trackPurchase(
+        orderName || order || 'Unknown',
+        orderTotal ? parseFloat(orderTotal) : 0
+      );
+
+      // Fire Meta Pixel Purchase event
       trackMetaEvent('Purchase', {
         content_type: 'product',
         value: orderTotal ? parseFloat(orderTotal) : 0,

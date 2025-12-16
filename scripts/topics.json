@@ -328,7 +328,7 @@
         "large groups",
         "austin"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 18,
@@ -340,7 +340,7 @@
         "diy",
         "austin"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 19,
@@ -353,7 +353,7 @@
         "austin",
         "custom"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 20,
@@ -365,7 +365,7 @@
         "lake travis",
         "austin"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 31,
@@ -377,7 +377,7 @@
         "austin",
         "timeline"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 32,

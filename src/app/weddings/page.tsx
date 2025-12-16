@@ -9,6 +9,7 @@ import LuxuryCard from '@/components/LuxuryCard';
 import WeddingDrinkCalculator from '@/components/WeddingDrinkCalculator';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import WeddingsSchemas from '@/components/seo/WeddingsSchemas';
+import { trackPageView, ANALYTICS_EVENTS } from '@/lib/analytics/track';
 
 // Testimonial Carousel Component
 function TestimonialCarousel() {
@@ -163,6 +164,11 @@ function TestimonialCarousel() {
 export default function WeddingsPage() {
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [showStickyBar, setShowStickyBar] = useState(false);
+
+  // Track page view on mount
+  useEffect(() => {
+    trackPageView(ANALYTICS_EVENTS.VIEW_WEDDINGS, '/weddings', 'Wedding Bar Service');
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {

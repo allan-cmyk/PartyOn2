@@ -118,58 +118,80 @@ function parseBundleComponents(description: string, title: string): BundleCompon
  * Extract search keywords and metadata from a product name
  */
 function extractSearchKeywords(productName: string): { keywords: string; size?: string; isSingle: boolean } {
-  // Remove bullets and extra punctuation, but preserve quantity info
+  // Check if it's a single item (mentions "1" or specific single indicators)
+  const isSingle = /\(1\)|\bsingle\b|• 1\b/i.test(productName);
+
+  // Clean up the product name - remove bullets, stars, and split on them
   let cleaned = productName
-    .replace(/[•⭐]/g, '')
+    .split(/[•⭐]/)[0]  // Take only the part before the bullet/star (the product name)
+    .replace(/\s*\(\d+\)\s*/g, '') // Remove quantity markers like (1)
     .trim();
 
-  // Check if it's a single item (mentions "1" or specific single indicators)
-  const isSingle = /\(1\)|\bsingle\b|• 1\b/i.test(cleaned);
-
-  // Remove quantity markers after checking
-  cleaned = cleaned.replace(/\s*\(\d+\)\s*/g, '').trim();
-
-  // Extract size information
-  const sizeMatch = cleaned.match(/(\d+(?:\.\d+)?)\s*(ml|oz|l|gallon|liter)/i);
+  // Extract size information from the ORIGINAL string (before we cleaned it)
+  const sizeMatch = productName.match(/(\d+(?:\.\d+)?)\s*(ml|oz|l|gallon|liter)/i);
   const size = sizeMatch ? sizeMatch[0].toLowerCase() : undefined;
 
-  // Remove common container words
+  // Remove common container words and size info from cleaned string
   cleaned = cleaned
+    .replace(/\d+(?:\.\d+)?\s*(ml|oz|l|gallon|liter)/gi, '')
     .replace(/\s+bottle\s*/gi, ' ')
+    .replace(/\s+bottles\s*/gi, ' ')
     .replace(/\s+can\s*/gi, ' ')
+    .replace(/\s+cans\s*/gi, ' ')
+    .replace(/\s+pack\s*/gi, ' ')
+    .replace(/\s+\.\s*/g, ' ')  // Remove stray periods
+    .replace(/\s+/g, ' ')  // Normalize whitespace
     .trim();
 
   // Extract the main product keywords
   let keywords = '';
+  const lowerCleaned = cleaned.toLowerCase();
 
-  if (cleaned.toLowerCase().includes('lime juice')) {
+  if (lowerCleaned.includes('lime juice')) {
     keywords = 'lime juice';
-  } else if (cleaned.toLowerCase().includes('triple sec')) {
+  } else if (lowerCleaned.includes('triple sec')) {
     keywords = 'triple sec';
-  } else if (cleaned.toLowerCase().includes('tequila')) {
+  } else if (lowerCleaned.includes('simple syrup')) {
+    keywords = 'simple syrup';
+  } else if (lowerCleaned.includes('bitters')) {
+    // Preserve bitters type
+    if (lowerCleaned.includes('combo') || lowerCleaned.includes('aromatic')) {
+      keywords = 'hella bitters combo';
+    } else if (lowerCleaned.includes('orange')) {
+      keywords = 'hella bitters orange';
+    } else {
+      keywords = 'bitters';
+    }
+  } else if (lowerCleaned.includes('jigger')) {
+    keywords = 'jigger';
+  } else if (lowerCleaned.includes('mixing glass') || lowerCleaned.includes('strainer') || lowerCleaned.includes('stirring spoon')) {
+    keywords = 'bar set';
+  } else if (lowerCleaned.includes('whiskey glass') || lowerCleaned.includes('rocks glass')) {
+    keywords = 'whiskey glass';
+  } else if (lowerCleaned.includes('tequila')) {
     // Preserve tequila variety (blanco, reposado, etc.)
-    if (cleaned.toLowerCase().includes('blanco')) {
+    if (lowerCleaned.includes('blanco')) {
       keywords = 'blanco tequila';
-    } else if (cleaned.toLowerCase().includes('reposado')) {
+    } else if (lowerCleaned.includes('reposado')) {
       keywords = 'reposado tequila';
     } else {
       keywords = 'tequila';
     }
-  } else if (cleaned.toLowerCase().includes('sparkling water') || cleaned.toLowerCase().includes('seltzer')) {
-    keywords = 'topo chico'; // Prefer Topo Chico brand for sparkling water
-  } else if (cleaned.toLowerCase().includes('sprite')) {
+  } else if (lowerCleaned.includes('sparkling water') || lowerCleaned.includes('seltzer')) {
+    keywords = 'topo chico';
+  } else if (lowerCleaned.includes('sprite')) {
     keywords = 'sprite';
-  } else if (cleaned.toLowerCase().includes('lemonade')) {
+  } else if (lowerCleaned.includes('lemonade')) {
     keywords = 'lemonade';
-  } else if (cleaned.toLowerCase().includes('unsweet') && cleaned.toLowerCase().includes('tea')) {
+  } else if (lowerCleaned.includes('unsweet') && lowerCleaned.includes('tea')) {
     keywords = 'texas unsweet tea';
-  } else if (cleaned.toLowerCase().includes('iced tea') || cleaned.toLowerCase().includes('ice tea')) {
+  } else if (lowerCleaned.includes('iced tea') || lowerCleaned.includes('ice tea')) {
     keywords = 'iced tea';
-  } else if (cleaned.toLowerCase().includes('dispenser') || cleaned.toLowerCase().includes('pitcher')) {
+  } else if (lowerCleaned.includes('dispenser') || lowerCleaned.includes('pitcher')) {
     keywords = 'drink dispenser';
   } else {
     // Default: use cleaned name
-    keywords = cleaned.replace(/\d+(?:\.\d+)?\s*(ml|oz|l|gallon|liter)/gi, '').trim();
+    keywords = cleaned;
   }
 
   return { keywords, size, isSingle };
@@ -255,12 +277,12 @@ async function searchProduct(searchTerm: string): Promise<ShopifyProduct | null>
   try {
     // Extract keywords and metadata for better searching
     const searchInfo = extractSearchKeywords(searchTerm);
-    // Include size in search query for better results
-    const searchQuery = searchInfo.size ? `${searchInfo.keywords} ${searchInfo.size}` : searchInfo.keywords;
+    // Don't include size in search query - it breaks Shopify search. Use size only for scoring.
+    const searchQuery = searchInfo.keywords;
     const encodedTerm = encodeURIComponent(searchQuery);
     const url = `${LOCAL_API_URL}/api/products?search=${encodedTerm}&first=10`;
 
-    console.log(`   → Searching API: ${searchQuery}${searchInfo.isSingle ? ' (single item)' : ''}`);
+    console.log(`   → Searching API: ${searchQuery}${searchInfo.size ? ` (prefer ${searchInfo.size})` : ''}${searchInfo.isSingle ? ' (single item)' : ''}`);
     const response = await fetch(url);
 
     if (!response.ok) {

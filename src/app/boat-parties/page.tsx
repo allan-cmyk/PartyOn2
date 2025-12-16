@@ -8,10 +8,16 @@ import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import LuxuryCard from '@/components/LuxuryCard';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import BoatPartiesSchemas from '@/components/seo/BoatPartiesSchemas';
+import { trackPageView, ANALYTICS_EVENTS } from '@/lib/analytics/track';
 
 export default function BoatPartiesPage() {
   const [currentHeroImage, setCurrentHeroImage] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
+
+  // Track page view on mount
+  useEffect(() => {
+    trackPageView(ANALYTICS_EVENTS.VIEW_BOAT_PARTIES, '/boat-parties', 'Boat Party Delivery Service');
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {

@@ -7,6 +7,7 @@ import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import CorporateEventCalculatorLanding from '@/components/CorporateEventCalculatorLanding';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import { trackMetaEvent } from '@/components/MetaPixel';
+import { trackPageView, ANALYTICS_EVENTS } from '@/lib/analytics/track';
 
 export default function CorporateLandingPage() {
   const [formData, setFormData] = useState({
@@ -28,6 +29,9 @@ export default function CorporateLandingPage() {
   // Auto-verify age for B2B corporate page and capture UTM parameters
   useEffect(() => {
     localStorage.setItem('age_verified', 'true');
+
+    // Track page view
+    trackPageView(ANALYTICS_EVENTS.VIEW_CORPORATE, '/corporate', 'Corporate Events');
 
     // Capture UTM parameters
     const urlParams = new URLSearchParams(window.location.search);

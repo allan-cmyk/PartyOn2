@@ -10,6 +10,7 @@ import SimpleDeliveryScheduler from '@/components/SimpleDeliveryScheduler';
 import AIConcierge from '@/components/AIConcierge';
 import { copyToClipboard, type SharedCartVariant } from '@/lib/cart/shareCart';
 import { parseAddress, formatPhone } from '@/lib/utils/addressParser';
+import { trackBeginCheckout, trackEvent, ANALYTICS_EVENTS } from '@/lib/analytics/track';
 // Group order imports temporarily disabled
 // import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
 // import CreateGroupOrderModal from '@/components/group-orders/CreateGroupOrderModal';
@@ -39,6 +40,13 @@ export default function Cart() {
   const hasItems = (cart?.totalQuantity || 0) > 0;
 
   const handleProceedToCheckout = () => {
+    // Track begin checkout event
+    if (cart && hasItems) {
+      trackBeginCheckout(
+        parseFloat(subtotal?.amount || '0'),
+        cart.totalQuantity || 0
+      );
+    }
     // Show delivery scheduler to collect delivery information first
     setShowDeliveryScheduler(true);
   };
@@ -47,6 +55,13 @@ export default function Cart() {
     try {
       // Set redirecting state to show loading
       setIsRedirecting(true);
+
+      // Track delivery details set event
+      trackEvent(ANALYTICS_EVENTS.SET_DELIVERY_DETAILS, {
+        delivery_date: date.toISOString().split('T')[0],
+        delivery_time: time,
+        zip_code: zipCode
+      });
 
       // Format date for better display in Shopify
       const formattedDate = new Intl.DateTimeFormat('en-US', {

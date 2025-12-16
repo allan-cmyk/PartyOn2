@@ -10,6 +10,7 @@ import { formatPrice } from '@/lib/shopify/utils';
 import SimpleDeliveryScheduler from '@/components/SimpleDeliveryScheduler';
 import { parseAddress, formatPhone } from '@/lib/utils/addressParser';
 import { copyToClipboard, type SharedCartVariant } from '@/lib/cart/shareCart';
+import { trackBeginCheckout, trackEvent, ANALYTICS_EVENTS } from '@/lib/analytics/track';
 
 export default function MobileCart() {
   const { cart, isCartOpen, closeCart, loading, updateCartAttributes, clearCart } = useCartContext();
@@ -45,12 +46,26 @@ export default function MobileCart() {
   };
 
   const handleProceedToCheckout = () => {
+    // Track begin checkout event
+    if (cart && hasItems) {
+      trackBeginCheckout(
+        parseFloat(subtotal?.amount || '0'),
+        cart.totalQuantity || 0
+      );
+    }
     setShowDeliveryScheduler(true);
   };
 
   const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, address: string, zipCode: string, phone: string) => {
     try {
       setIsRedirecting(true);
+
+      // Track delivery details set event
+      trackEvent(ANALYTICS_EVENTS.SET_DELIVERY_DETAILS, {
+        delivery_date: date.toISOString().split('T')[0],
+        delivery_time: time,
+        zip_code: zipCode
+      });
 
       // Format date for Shopify
       const formattedDate = date.toLocaleDateString('en-US', {

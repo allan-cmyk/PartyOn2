@@ -19,7 +19,9 @@ export default function ChristmasDeadlineBanner({
   if (!isVisible) return null
 
   return (
-    <div className="bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 text-white sticky top-0 z-50 shadow-lg">
+    <div className="relative bg-gradient-to-r from-green-700 via-green-600 to-green-700 text-white sticky top-0 z-50 shadow-lg overflow-hidden">
+      {/* Shimmer effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-3 flex items-center justify-between gap-4">
           {/* Icon */}

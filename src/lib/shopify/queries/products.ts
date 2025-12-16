@@ -9,6 +9,7 @@ export const PRODUCTS_GRID_QUERY = gql`
           id
           handle
           title
+          description
           productType
           tags
           vendor
@@ -40,6 +41,10 @@ export const PRODUCTS_GRID_QUERY = gql`
                 id
                 availableForSale
                 price {
+                  amount
+                  currencyCode
+                }
+                compareAtPrice {
                   amount
                   currencyCode
                 }

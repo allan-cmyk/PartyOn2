@@ -1,12 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
+import { trackPageView, ANALYTICS_EVENTS } from '@/lib/analytics/track';
 
 export default function DeliveryAreasPage() {
+  // Track page view on mount
+  useEffect(() => {
+    trackPageView(ANALYTICS_EVENTS.VIEW_DELIVERY_AREAS, '/delivery-areas', 'Delivery Areas');
+  }, []);
   const [activeArea, setActiveArea] = useState('downtown');
 
   const areas = {

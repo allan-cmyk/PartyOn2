@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
@@ -11,8 +11,13 @@ import PartnerGrid from '@/components/partners/PartnerGrid';
 import partnersData from '@/data/austin-partners.json';
 import type { Partner, PartnerCategory } from '@/lib/partners/types';
 import { PARTNER_CATEGORIES } from '@/lib/partners/types';
+import { trackPageView, ANALYTICS_EVENTS } from '@/lib/analytics/track';
 
 export default function AustinPartnersPage() {
+  // Track page view on mount
+  useEffect(() => {
+    trackPageView(ANALYTICS_EVENTS.VIEW_PARTNERS, '/partners', 'Austin Event Partners');
+  }, []);
   const [activeCategory, setActiveCategory] = useState<PartnerCategory | 'all'>('all');
   const partners = partnersData.partners as Partner[];
 

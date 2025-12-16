@@ -7,6 +7,7 @@ import { useGroupOrderContext } from '@/contexts/GroupOrderContext'
 import { useCartContext } from '@/contexts/CartContext'
 // import { formatPrice } from '@/lib/shopify/utils' // Not used currently
 import ShareGroupOrder from '@/components/group-orders/ShareGroupOrder'
+import { trackEvent, ANALYTICS_EVENTS } from '@/lib/analytics/track'
 
 export default function GroupOrderDashboard() {
   const router = useRouter()
@@ -59,7 +60,14 @@ export default function GroupOrderDashboard() {
       if (!response.ok) {
         throw new Error(data.error || 'Failed to lock order')
       }
-      
+
+      // Track lock group order event
+      trackEvent(ANALYTICS_EVENTS.LOCK_GROUP_ORDER, {
+        group_order_id: currentGroupOrder.id,
+        participant_count: currentGroupOrder.participants.length,
+        total_amount: currentGroupOrder.totalAmount || 0
+      })
+
       // Redirect to checkout
       router.push(data.checkoutUrl)
     } catch (error) {
