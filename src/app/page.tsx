@@ -61,8 +61,21 @@ export default function HomePage() {
           <div className="absolute top-1/2 right-1/4 w-1 h-1 bg-white rounded-full animate-pulse delay-700" />
         </div>
         <div className="max-w-6xl mx-auto px-8 relative">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-            <div className="text-center lg:text-left">
+          <div className="grid lg:grid-cols-12 gap-8 items-center">
+            {/* Cocktail Kit Image */}
+            <div className="hidden lg:block lg:col-span-3">
+              <div className="relative w-48 h-48 mx-auto rounded-lg overflow-hidden shadow-2xl transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+                <Image
+                  src="https://cdn.shopify.com/s/files/1/0538/1767/1858/files/Gemini_Generated_Image_tk6mbhtk6mbhtk6m.png?v=1734370134"
+                  alt="Espresso Martini Cocktail Kit"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </div>
+
+            {/* Text Content */}
+            <div className="lg:col-span-5 text-center lg:text-left">
               <div className="inline-block bg-gold-500 text-gray-900 px-4 py-1 text-xs font-bold tracking-widest mb-4 rounded">
                 HOLIDAY GIFT IDEA
               </div>
@@ -73,13 +86,15 @@ export default function HomePage() {
                 Send a complete party in a box! Premium spirits, mixers &amp; garnishes delivered with a gift card included.
               </p>
             </div>
-            <div className="flex flex-col sm:flex-row gap-4">
+
+            {/* CTA */}
+            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col xl:flex-row items-center justify-center gap-4">
               <Link href="/gifts/cocktail-kits">
                 <button className="px-8 py-4 bg-gold-500 text-gray-900 hover:bg-gold-400 transition-colors tracking-[0.15em] text-sm font-medium whitespace-nowrap">
                   SHOP GIFT KITS
                 </button>
               </Link>
-              <div className="text-center sm:text-left">
+              <div className="text-center sm:text-left lg:text-center xl:text-left">
                 <p className="text-white font-medium">Order by Dec 22</p>
                 <p className="text-red-200 text-sm">for Christmas delivery</p>
               </div>
