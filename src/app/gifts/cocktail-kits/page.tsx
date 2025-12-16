@@ -13,12 +13,12 @@ export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Christmas Cocktail Kit Gifts | Austin Delivery | Party On Delivery',
-  description: 'Perfect Christmas gifts for Austin hosts. Premium cocktail kits make 20-30 drinks. Austin Rita, Skinny Margarita & more. Delivered to their door by December 20.',
+  description: 'Perfect Christmas gifts for Austin hosts. Premium cocktail kits make 20-30 drinks. Austin Rita, Skinny Margarita & more. Delivered to their door by December 22.',
   keywords: 'cocktail kit gifts Austin, Christmas alcohol gifts, margarita kit delivery, Austin party gifts, holiday host gifts',
   openGraph: {
     title: 'Perfect Christmas Cocktail Kits for Austin Hosts',
     description: 'Give the gift of 24 premium margaritas. Everything in one box, delivered to their door.',
-    images: ['/images/products/classic-austin-margarita-kit.webp'],
+    images: ['/images/products/branded-delivery-bag.webp'],
   },
 }
 
@@ -85,7 +85,7 @@ export default async function CocktailKitsGiftPage() {
     <div className="min-h-screen bg-white">
       {/* Christmas Deadline Banner */}
       <ChristmasDeadlineBanner
-        deadline="December 20"
+        deadline="December 22"
         minOrderAmount={100}
         dismissible={true}
       />
@@ -516,7 +516,7 @@ export default async function CocktailKitsGiftPage() {
                 </svg>
               </summary>
               <p className="mt-4 text-neutral-600 leading-relaxed">
-                Order by <strong>December 20</strong> to guarantee delivery before Christmas. We schedule deliveries with 72-hour advance notice to ensure availability and quality service.
+                Order by <strong>December 22</strong> to guarantee delivery before Christmas. We schedule deliveries with 72-hour advance notice to ensure availability and quality service.
               </p>
             </details>
 
@@ -578,7 +578,7 @@ export default async function CocktailKitsGiftPage() {
             Give the Perfect Christmas Gift
           </h2>
           <p className="text-xl mb-2 text-neutral-800">
-            Order by December 20 for Guaranteed Delivery
+            Order by December 22 for Guaranteed Delivery
           </p>
           <p className="text-lg mb-8 text-neutral-700">
             Free Delivery on Orders $100+

@@ -222,7 +222,7 @@ export default function CorporateHolidayPartyPage() {
   const faqs = [
     {
       question: 'What\'s the last day to order for holiday party delivery?',
-      answer: 'We require 72 hours advance notice for all orders. For guaranteed holiday delivery, we recommend ordering by December 20th. December dates book up fast, so submit your inquiry early to lock in your preferred delivery window.',
+      answer: 'We require 72 hours advance notice for all orders. For guaranteed holiday delivery, we recommend ordering by December 22nd. December dates book up fast, so submit your inquiry early to lock in your preferred delivery window.',
     },
     {
       question: 'How much does it cost for a corporate holiday party?',
@@ -252,7 +252,7 @@ export default function CorporateHolidayPartyPage() {
       <header className="absolute top-0 left-0 right-0 z-50 py-4 px-6">
         <Link href="/" className="inline-block">
           <Image
-            src="/images/POD Logo 2025.svg"
+            src="/images/pod-logo-2025.svg"
             alt="PartyOn Delivery"
             width={180}
             height={60}
@@ -949,7 +949,7 @@ export default function CorporateHolidayPartyPage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <img
-                src="/images/POD Logo 2025.svg"
+                src="/images/pod-logo-2025.svg"
                 alt="Party On Delivery"
                 className="h-16 w-auto mb-4"
               />

@@ -10,7 +10,7 @@ interface ChristmasDeadlineBannerProps {
 }
 
 export default function ChristmasDeadlineBanner({
-  deadline = 'December 20',
+  deadline = 'December 22',
   minOrderAmount = 100,
   dismissible = true
 }: ChristmasDeadlineBannerProps) {

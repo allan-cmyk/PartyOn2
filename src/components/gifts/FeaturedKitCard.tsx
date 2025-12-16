@@ -19,13 +19,13 @@ const kitIngredients: Record<string, string[]> = {
   ],
   'espresso martini': [
     'Deep Eddy Vodka',
-    'Cafe del Fuego Coffee Liqueur',
-    'Hybrid Double Espresso',
+    'Caffe Del Fuego Coffee Liqueur',
+    'High Brew Double Espresso',
     'Simple Syrup',
   ],
   'hill country old': [
     'Still Austin Straight Bourbon Whiskey',
-    'Lybra and Co Old Fashioned Cocktail Syrup',
+    'Liber and Co. Old-Fashioned Cocktail Syrup',
     'Japanese Jigger',
   ],
   'old-fashioned': [
