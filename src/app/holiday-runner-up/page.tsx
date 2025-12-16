@@ -158,7 +158,7 @@ export default function HolidayRunnerUpPage() {
       <header className="absolute top-0 left-0 right-0 z-50 py-4 px-6">
         <Link href="/" className="inline-block">
           <Image
-            src="/images/POD Logo 2025.svg"
+            src="/images/pod-logo-2025.svg"
             alt="PartyOn Delivery"
             width={180}
             height={60}

@@ -74,7 +74,7 @@ export const metadata: Metadata = {
     siteName: "Party On Delivery",
     images: [
       {
-        url: "/images/hero/lake-travis-sunset.webp",
+        url: "/images/hero/lake-travis-yacht-sunset.webp",
         width: 1200,
         height: 630,
         alt: "Party On Delivery - Austin Premium Alcohol Delivery",
@@ -87,7 +87,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Party On Delivery | Premium Alcohol Delivery in Austin",
     description: "Austin's premier alcohol delivery for weddings, corporate events, bachelorette parties & special occasions. Beer kegs, wine, spirits & party supplies delivered. Serving Downtown, Lake Travis & all of Austin.",
-    images: ["/images/hero/lake-travis-sunset.webp"],
+    images: ["/images/hero/lake-travis-yacht-sunset.webp"],
   },
   robots: {
     index: true,

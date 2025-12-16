@@ -91,7 +91,7 @@ export default async function LocationDeliveryPage({ params }: { params: Promise
       {/* Hero Section */}
       <section className="relative h-[50vh] mt-24 flex items-center justify-center overflow-hidden">
         <Image
-          src="/images/hero/luxury-bar-setup.webp"
+          src="/images/services/corporate/penthouse-suite-setup.webp"
           alt={`${locationData.name} Alcohol Delivery`}
           fill
           className="object-cover"

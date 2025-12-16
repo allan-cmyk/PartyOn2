@@ -11,7 +11,8 @@ export default function robots(): MetadataRoute.Robots {
           '/account/',
           '/checkout/',
           '/group/dashboard',
-          '/cart/shared/'
+          '/cart/shared/',
+          '/test-videos'
         ]
       },
       {
@@ -22,7 +23,8 @@ export default function robots(): MetadataRoute.Robots {
           '/account/',
           '/checkout/',
           '/group/dashboard',
-          '/cart/shared/'
+          '/cart/shared/',
+          '/test-videos'
         ]
       },
       {
@@ -33,7 +35,8 @@ export default function robots(): MetadataRoute.Robots {
           '/account/',
           '/checkout/',
           '/group/dashboard',
-          '/cart/shared/'
+          '/cart/shared/',
+          '/test-videos'
         ]
       }
     ],

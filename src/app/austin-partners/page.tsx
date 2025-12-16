@@ -116,7 +116,7 @@ export default function PartnersPage() {
       title: "Mobile Bartenders",
       description: "Help your clients and make additional revenue on every party",
       available: true,
-      image: '/images/hero/bartender-service.webp'
+      image: '/images/hero/mobile-bartender-outdoor-event.webp'
     },
     {
       href: '#',
@@ -142,7 +142,7 @@ export default function PartnersPage() {
       description: "Premium spirits and curated packages delivered to your Austin rental properties",
       available: false,
       comingSoon: true,
-      image: '/images/hero/luxury-home-interior.webp'
+      image: '/images/backgrounds/chic-austin-airbnb.webp'
     },
     {
       href: '#',
@@ -155,7 +155,7 @@ export default function PartnersPage() {
       description: "Offer residents exclusive access to curated spirits and concierge delivery",
       available: false,
       comingSoon: true,
-      image: '/images/textures/marble-surface.webp'
+      image: '/images/backgrounds/rooftop-terrace-elegant-1.webp'
     },
     {
       href: '#',

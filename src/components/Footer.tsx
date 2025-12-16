@@ -40,7 +40,7 @@ export default function Footer() {
           <div className="lg:col-span-1 space-y-6">
             <Link href="/" className="inline-block group">
               <img
-                src="/images/POD Logo 2025.svg"
+                src="/images/pod-logo-2025.svg"
                 alt="Party On Delivery"
                 className="h-16 w-auto"
                 width="64"

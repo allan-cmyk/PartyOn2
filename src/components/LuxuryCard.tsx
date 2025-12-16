@@ -21,7 +21,7 @@ const backgroundImages = [
   '/images/textures/vintage-leather-luxury.webp',
   '/images/textures/premium-wood-grain.webp',
   '/images/textures/silk-fabric-gold.webp',
-  '/images/textures/crystal-prism-light.webp',
+  '/images/gallery/sunset-champagne-pontoon.webp',
   '/images/textures/brushed-metal-gold.webp',
 ];
 

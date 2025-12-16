@@ -65,7 +65,7 @@ export default function AustinAlcoholDeliveryPage() {
         <section className="relative min-h-[70vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-gray-900/70 to-gray-900/50 z-10" />
           <Image
-            src="/images/hero/lake-travis-sunset.webp"
+            src="/images/hero/lake-travis-yacht-sunset.webp"
             alt="Austin Alcohol Delivery Service"
             fill
             className="object-cover"

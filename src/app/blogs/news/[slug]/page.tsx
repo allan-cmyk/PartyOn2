@@ -114,7 +114,7 @@ export default async function BlogPostPage({ params }: Props) {
               name: 'Party On Delivery',
               logo: {
                 '@type': 'ImageObject',
-                url: '/images/logo.png',
+                url: '/images/pod-logo-2025.svg',
               },
             },
             mainEntityOfPage: {
