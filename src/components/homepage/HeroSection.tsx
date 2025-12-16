@@ -73,30 +73,30 @@ export default function HeroSection() {
 
       {/* Hero content with CSS animation */}
       <div
-        className={`relative text-center text-white z-10 max-w-4xl mx-auto px-8 transition-all duration-1000 ${
+        className={`relative text-center text-white z-10 max-w-4xl mx-auto px-6 sm:px-8 pt-16 sm:pt-0 transition-all duration-1000 ${
           isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}
       >
-        <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
+        <h1 className="font-serif font-light text-3xl sm:text-5xl md:text-7xl mb-4 sm:mb-6 tracking-[0.1em] sm:tracking-[0.15em]">
           <span className="block text-white">Drinks, Ice, Bar Setups</span>
           <span className="block text-gold-400">Delivered on Time</span>
         </h1>
-        <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
-        <p className="text-lg md:text-xl font-light tracking-[0.1em] mb-8 text-gray-200">
+        <div className="w-16 sm:w-24 h-px bg-gold-400 mx-auto mb-4 sm:mb-6" />
+        <p className="text-base sm:text-lg md:text-xl font-light tracking-[0.05em] sm:tracking-[0.1em] mb-4 sm:mb-8 text-gray-200 max-w-lg mx-auto">
           From house parties to Lake Travis weddings—everything arrives cold with ice, cups, and mixers handled.
         </p>
-        <div className="text-sm text-gray-300 mb-8 tracking-[0.05em]">
+        <div className="text-xs sm:text-sm text-gray-300 mb-4 sm:mb-8 tracking-[0.05em]">
           Licensed • Insured • TABC-certified • 5.0★ on Google
         </div>
         {/* Primary CTAs */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
           <Link href="/products">
-            <button className="px-10 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-all duration-300 tracking-[0.15em] text-sm">
+            <button className="px-8 sm:px-10 py-3 sm:py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-all duration-300 tracking-[0.15em] text-sm">
               ORDER NOW
             </button>
           </Link>
           <Link href="/order">
-            <button className="px-10 py-4 border-2 border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
+            <button className="px-8 sm:px-10 py-3 sm:py-4 border-2 border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
               PLAN MY EVENT
             </button>
           </Link>
