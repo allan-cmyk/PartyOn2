@@ -64,9 +64,21 @@ export default async function CocktailKitsGiftPage() {
     !kit.title.toLowerCase().includes('lime')
   )
 
-  // Get description for a kit - use Shopify product description
-  const getKitDescription = (product: ShopifyProduct): string => {
-    return product.description || 'Premium cocktail kit with everything you need.'
+  // Short, punchy subheadlines for each kit
+  const kitSubheadlines: Record<string, string> = {
+    'austin rita': 'Perfect for a day on the water.',
+    'espresso martini': 'The after-dinner crowd-pleaser.',
+    'hill country old': 'A refreshing Texas twist on a classic.',
+    'apple cider aperol': 'The perfect fall cocktail.',
+  }
+
+  // Get short subheadline for a kit
+  const getKitSubheadline = (product: ShopifyProduct): string => {
+    const titleLower = product.title.toLowerCase()
+    for (const [key, subheadline] of Object.entries(kitSubheadlines)) {
+      if (titleLower.includes(key)) return subheadline
+    }
+    return 'Premium cocktail kit with everything you need.'
   }
 
   return (
@@ -164,7 +176,7 @@ export default async function CocktailKitsGiftPage() {
                 key={kit.id}
                 product={kit}
                 imagePosition={index % 2 === 0 ? 'left' : 'right'}
-                description={getKitDescription(kit)}
+                description={getKitSubheadline(kit)}
               />
             ))}
           </div>
