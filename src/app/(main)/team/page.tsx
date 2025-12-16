@@ -8,21 +8,21 @@ const teamMembers = [
     name: "Jake Martinez",
     role: "Founder & CEO",
     bio: "Austin native with 15 years in hospitality. Started Party On after seeing too many celebrations ruined by unreliable service.",
-    image: "/images/team/jake.webp",
+    image: "/images/authors/brian-hill.png",
     funFact: "Can name every bar on 6th Street"
   },
   {
     name: "Sarah Chen",
     role: "Chief Operations Officer",
     bio: "Former Amazon logistics manager who brings world-class delivery expertise to Austin's party scene.",
-    image: "/images/team/sarah.webp",
+    image: "/images/authors/allan-henslee.png",
     funFact: "Holds the Lake Travis wakeboarding record"
   },
   {
     name: "Marcus Thompson",
     role: "Head of Bartending Services",
     bio: "20+ years crafting cocktails at Austin's finest establishments. TABC certified instructor.",
-    image: "/images/team/marcus.webp",
+    image: "/images/about/professional-bartender-team.webp",
     funFact: "Invented the 'Austin Sunrise' cocktail"
   },
   {
@@ -36,14 +36,14 @@ const teamMembers = [
     name: "Emma Rodriguez",
     role: "Wedding Services Director",
     bio: "Planned over 500 Hill Country weddings. Knows every venue from Dripping Springs to Fredericksburg.",
-    image: "/images/team/emma.webp",
+    image: "/images/about/founders-austin-team.jpg",
     funFact: "Got married at all her top 3 venues"
   },
   {
     name: "Tyler Brooks",
     role: "Lake Travis Operations Manager",
     bio: "Boat captain turned logistics expert. Ensures every lake party gets premium service, even in rough waters.",
-    image: "/images/team/tyler.webp",
+    image: "/images/about/premium-warehouse-facility.webp",
     funFact: "Can navigate Lake Travis blindfolded"
   }
 ]

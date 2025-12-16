@@ -30,28 +30,28 @@ export default function WeddingProductsPage() {
           id: 'wedding-champagne-1',
           title: 'Moët & Chandon Impérial',
           price: '$65',
-          image: '/images/products/champagne-moet.webp',
+          image: '/images/gallery/sunset-champagne-pontoon.webp',
           description: 'Classic champagne for toasts'
         },
         {
           id: 'wedding-champagne-2',
           title: 'Veuve Clicquot Yellow Label',
           price: '$75',
-          image: '/images/products/champagne-veuve.webp',
+          image: '/images/gallery/sunset-champagne-pontoon.webp',
           description: 'Premium champagne selection'
         },
         {
           id: 'wedding-wine-1',
           title: 'Caymus Cabernet Sauvignon',
           price: '$95',
-          image: '/images/products/wine-red-premium.webp',
+          image: '/images/products/wine-collection-cellar.webp',
           description: 'Napa Valley excellence'
         },
         {
           id: 'wedding-wine-2',
           title: 'Cakebread Chardonnay',
           price: '$55',
-          image: '/images/products/wine-white-premium.webp',
+          image: '/images/products/wine-collection-cellar.webp',
           description: 'Elegant white wine'
         }
       ]
@@ -64,28 +64,28 @@ export default function WeddingProductsPage() {
           id: 'wedding-spirit-1',
           title: 'Grey Goose Vodka',
           price: '$45',
-          image: '/images/products/vodka-premium.webp',
+          image: '/images/products/premium-spirits-wall.webp',
           description: 'French premium vodka'
         },
         {
           id: 'wedding-spirit-2',
           title: 'Hendrick\'s Gin',
           price: '$42',
-          image: '/images/products/gin-premium.webp',
+          image: '/images/products/premium-spirits-boutique.webp',
           description: 'Distinctive Scottish gin'
         },
         {
           id: 'wedding-spirit-3',
           title: 'Patrón Silver Tequila',
           price: '$55',
-          image: '/images/products/tequila-patron.webp',
+          image: '/images/products/tequila-blanco.png',
           description: 'Ultra-premium tequila'
         },
         {
           id: 'wedding-spirit-4',
           title: 'Macallan 12 Year',
           price: '$85',
-          image: '/images/products/whiskey-macallan.webp',
+          image: '/images/products/premium-spirits-wall.webp',
           description: 'Single malt Scotch'
         }
       ]
@@ -98,28 +98,28 @@ export default function WeddingProductsPage() {
           id: 'wedding-package-1',
           title: 'Classic Bar Package (50 guests)',
           price: '$1,299',
-          image: '/images/products/bar-package-classic.webp',
+          image: '/images/services/weddings/outdoor-bar-setup.webp',
           description: 'Beer, wine, and standard spirits'
         },
         {
           id: 'wedding-package-2',
           title: 'Premium Bar Package (50 guests)',
           price: '$1,899',
-          image: '/images/products/bar-package-premium.webp',
+          image: '/images/services/weddings/premium-spirits-display.webp',
           description: 'Top-shelf spirits and wines'
         },
         {
           id: 'wedding-package-3',
           title: 'Champagne Toast (100 guests)',
           price: '$650',
-          image: '/images/products/champagne-toast.webp',
+          image: '/images/gallery/sunset-champagne-pontoon.webp',
           description: 'Moët for ceremonial toasts'
         },
         {
           id: 'wedding-package-4',
           title: 'Wine Service (100 guests)',
           price: '$850',
-          image: '/images/products/wine-service.webp',
+          image: '/images/products/wine-collection-cellar.webp',
           description: 'Red and white selection'
         }
       ]

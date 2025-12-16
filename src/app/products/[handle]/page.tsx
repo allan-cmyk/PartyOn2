@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     product.priceRange.minVariantPrice.currencyCode
   );
 
-  const image = product.images.edges[0]?.node.url || '/images/logo.png';
+  const image = product.images.edges[0]?.node.url || '/images/pod-logo-2025.svg';
 
   // Strip HTML from description for meta tag
   const plainDescription = product.description?.replace(/<[^>]*>/g, '') || '';
@@ -398,7 +398,7 @@ export default async function ProductDetailPage({ params }: Props) {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <img
-                src="/images/POD Logo 2025.svg"
+                src="/images/pod-logo-2025.svg"
                 alt="Party On Delivery"
                 className="h-16 w-auto mb-4"
               />

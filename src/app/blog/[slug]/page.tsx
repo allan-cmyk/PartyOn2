@@ -59,7 +59,7 @@ const _legacyBlogPosts = [
     date: '2024-03-15',
     readTime: '8 min read',
     author: 'Sarah Mitchell',
-    authorImage: '/images/team/sarah.jpg',
+    authorImage: '/images/authors/allan-henslee.png',
     content: `
       <p class="lead">The pontoon was sinking. Not dramatically – this wasn't Titanic – but definitely listing to starboard where all twelve bachelorettes had congregated for a group selfie. As I watched our carefully arranged champagne pyramid slide toward disaster, I had two thoughts: we needed more ballast, and this was exactly why boat parties are the best worst idea ever.</p>
 
@@ -169,7 +169,7 @@ const _legacyBlogPosts = [
     date: '2024-03-10',
     readTime: '5 min read',
     author: 'Marcus Chen',
-    authorImage: '/images/team/marcus.jpg',
+    authorImage: '/images/authors/brian-hill.png',
     content: `
       <p class="lead">The thermometer at Star Hill Ranch read 104°F when Sarah Martinez started crying. It was 4:47 PM on a picture-perfect Saturday in July – if you ignored the fact that her carefully planned outdoor wedding cocktail hour was melting faster than the ice sculptures.</p>
 
@@ -296,7 +296,7 @@ const _legacyBlogPosts = [
     date: '2024-03-05',
     readTime: '10 min read',
     author: 'Jake Thompson',
-    authorImage: '/images/team/jake.jpg',
+    authorImage: '/images/authors/brian-hill.png',
     content: `
       <p class="lead">"No strippers, no Vegas, and for the love of God, no matching t-shirts." Those were the groom's only rules when his brother called me at 11 PM on a Tuesday, desperate to plan a bachelor party that didn't suck.</p>
 
@@ -425,7 +425,7 @@ const _legacyBlogPosts = [
     date: '2024-02-28',
     readTime: '6 min read',
     author: 'Amanda Rodriguez',
-    authorImage: '/images/team/amanda.jpg',
+    authorImage: '/images/authors/allan-henslee.png',
     content: `
       <p class="lead">The managing partner was three bourbons deep, explaining cryptocurrency to our bartender, when the CEO of their biggest client walked in. What happened next taught me everything about why corporate bar service is 90% psychology and 10% pouring.</p>
 
@@ -544,7 +544,7 @@ const _legacyBlogPosts = [
     date: '2024-03-20',
     readTime: '7 min read',
     author: 'Carlos Mendoza',
-    authorImage: '/images/team/carlos.jpg',
+    authorImage: '/images/authors/brian-hill.png',
     content: `
       <p class="lead">The father of the bride was turning purple. Not metaphorically – actually purple. It was 8:47 PM at Laguna Gloria, the museum's sculpture garden was lit like a Tuscan dream, 200 guests were watching, and our lead bartender had just informed me that the signature cocktail ingredient had been left in a cooler. In Buda. Forty-five minutes away.</p>
 
@@ -648,7 +648,7 @@ const _legacyBlogPosts = [
     date: '2024-03-18',
     readTime: '9 min read',
     author: 'Jessica Chen',
-    authorImage: '/images/team/jessica.jpg',
+    authorImage: '/images/authors/allan-henslee.png',
     content: `
       <p class="lead">The bartender at Clive Bar paused mid-pour, looked at the bachelor party ordering Vegas Bombs, and said something that perfectly captured Austin's cocktail evolution: "Y'all sure you don't want to try our fermented tepache with mezcal instead?"</p>
 
@@ -766,7 +766,7 @@ const _legacyBlogPosts = [
     date: '2024-03-12',
     readTime: '8 min read',
     author: 'Captain Jake Sullivan',
-    authorImage: '/images/team/jake.jpg',
+    authorImage: '/images/authors/brian-hill.png',
     content: `
       <p class="lead">Devil's Cove is dead to me. There, I said it. After fifteen years running boats on Lake Travis, watching that once-pristine party spot turn into a floating frat house complete with DJ battles and beer can graveyards, I'm ready to spill some secrets. But first, you've got to promise not to trash these places. Deal?</p>
 
@@ -880,7 +880,7 @@ const _legacyBlogPosts = [
     date: '2024-03-08',
     readTime: '6 min read',
     author: 'Rachel Martinez',
-    authorImage: '/images/team/rachel.jpg',
+    authorImage: '/images/authors/brian-hill.png',
     content: `
       <p class="lead">Your maid of honor hasn't slept in three days. Not because of her speech (she nailed that weeks ago), but because she's lying awake calculating drink math. How many bottles for 12 girls over a weekend? What if Sarah's still doing sober January in March? What if the bride's future sister-in-law only drinks rosé but everywhere is sold out of Whispering Angel?</p>
 

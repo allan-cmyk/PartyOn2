@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/images/boat-parties/lake-travis-yacht.webp',
+        url: '/images/services/boat-parties/luxury-yacht-deck.webp',
         width: 1200,
         height: 630,
         alt: 'Lake Travis Boat Party - Party On Delivery',

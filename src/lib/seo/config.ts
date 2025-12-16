@@ -109,7 +109,7 @@ export const seoConfig = {
     name: 'Party On Delivery',
     legalName: 'Party On Delivery LLC',
     url: 'https://partyondelivery.com',
-    logo: 'https://partyondelivery.com/images/POD Logo 2025.svg',
+    logo: 'https://partyondelivery.com/images/pod-logo-2025.svg',
     contactPoint: {
       telephone: '+1-737-371-9700',
       contactType: 'customer service',

@@ -12,13 +12,13 @@ export const metadata: Metadata = {
     description: 'Rent white folding chairs with same-day delivery in Austin. Professional setup available.',
     url: 'https://partyondelivery.com/rentals/chair-rentals-austin',
     type: 'website',
-    images: ['/images/hero/lake-travis-sunset.webp'],
+    images: ['/images/hero/lake-travis-yacht-sunset.webp'],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Chair Rentals Austin | Same-Day Delivery',
     description: 'White folding chairs delivered throughout Austin for weddings and events.',
-    images: ['/images/hero/lake-travis-sunset.webp'],
+    images: ['/images/hero/lake-travis-yacht-sunset.webp'],
   },
   alternates: {
     canonical: '/rentals/chair-rentals-austin',

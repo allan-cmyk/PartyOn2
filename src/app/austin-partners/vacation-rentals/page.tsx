@@ -24,7 +24,7 @@ export default function VacationRentalsPartnerPage() {
     {
       title: 'Welcome Packages',
       description: 'Curated selections to greet your guests',
-      image: '/images/products/welcome-package.webp',
+      image: '/images/products/branded-delivery-bag.webp',
       link: '/products?collection=welcome-packages',
       products: [
         { id: '1', title: 'Texas Welcome Box', price: '$149', description: 'Local spirits & mixers' },
@@ -35,7 +35,7 @@ export default function VacationRentalsPartnerPage() {
     {
       title: 'Party Essentials',
       description: 'Everything for entertaining',
-      image: '/images/products/party-essentials.webp',
+      image: '/images/products/delivery-bag-contents.webp',
       link: '/products?collection=party-supplies',
       products: [
         { id: '4', title: 'Cocktail Party Kit', price: '$199', description: 'Serves 10-15 guests' },
@@ -57,7 +57,7 @@ export default function VacationRentalsPartnerPage() {
     {
       title: 'Mixers & Extras',
       description: 'Bar accessories and non-alcoholic options',
-      image: '/images/products/mixers-garnishes.webp',
+      image: '/images/products/delivery-bag-contents.webp',
       link: '/products?filter=mixers-na',
       products: [
         { id: '10', title: 'Mixer Bundle', price: '$49', description: 'Juices, sodas, tonic' },
@@ -112,7 +112,7 @@ export default function VacationRentalsPartnerPage() {
       {/* Hero Section */}
       <section className="relative h-[50vh] flex items-center justify-center overflow-hidden">
         <Image
-          src="/images/hero/luxury-home-interior.webp"
+          src="/images/backgrounds/chic-austin-airbnb.webp"
           alt="Luxury Vacation Rental"
           fill
           className="object-cover"

@@ -9,7 +9,7 @@ export default function LakeTravisPage() {
         title="Lake Travis Delivery"
         subtitle="Boat Parties Done Right"
         description="Premium spirits delivered to your boat or lakeside venue"
-        backgroundImage="/images/hero/lake-travis-party.webp"
+        backgroundImage="/images/hero/lake-travis-yacht-sunset.webp"
         height="medium"
       />
 

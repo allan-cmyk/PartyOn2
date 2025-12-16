@@ -9,7 +9,7 @@ export const structuredData = {
       url: 'https://partyondelivery.com',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://partyondelivery.com/images/POD Logo 2025.svg',
+        url: 'https://partyondelivery.com/images/pod-logo-2025.svg',
         width: 600,
         height: 60,
       },
@@ -104,7 +104,7 @@ export const structuredData = {
         'https://www.instagram.com/partyondelivery/',
         'https://www.facebook.com/partyondelivery',
       ],
-      image: 'https://partyondelivery.com/images/POD Logo 2025.svg',
+      image: 'https://partyondelivery.com/images/pod-logo-2025.svg',
       aggregateRating: {
         '@type': 'AggregateRating',
         ratingValue: '5.0',

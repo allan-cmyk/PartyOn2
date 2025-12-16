@@ -21,7 +21,7 @@ export function getFirstAvailableVariant(product: ShopifyProduct): ShopifyProduc
 // Get product image URL (optimized for display)
 export function getProductImageUrl(product: ShopifyProduct, index: number = 0, isMobile: boolean = false): string {
   const image = product.images.edges[index]?.node;
-  if (!image?.url) return '/images/placeholder-product.png';
+  if (!image?.url) return '/images/products/branded-delivery-bag.webp';
 
   // Use optimized image transformation for Shopify CDN images
   return getProductCardImage(image.url, isMobile);
@@ -30,7 +30,7 @@ export function getProductImageUrl(product: ShopifyProduct, index: number = 0, i
 // Get raw product image URL (without transformations)
 export function getRawProductImageUrl(product: ShopifyProduct, index: number = 0): string {
   const image = product.images.edges[index]?.node;
-  return image?.url || '/images/placeholder-product.png';
+  return image?.url || '/images/products/branded-delivery-bag.webp';
 }
 
 // Extract metafield value (simplified for single metafield)

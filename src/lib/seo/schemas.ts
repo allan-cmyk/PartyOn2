@@ -66,7 +66,7 @@ export function generateArticleSchema({
       name: 'Party On Delivery',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://partyondelivery.com/images/POD Logo 2025.svg',
+        url: 'https://partyondelivery.com/images/pod-logo-2025.svg',
       },
     },
     url: url,
@@ -294,7 +294,7 @@ export function generateServiceSchema(serviceType?: 'wedding' | 'party' | 'corpo
       url: 'https://partyondelivery.com',
       telephone: '(737) 371-9700',
       priceRange: '$$',
-      image: 'https://partyondelivery.com/images/POD Logo 2025.svg',
+      image: 'https://partyondelivery.com/images/pod-logo-2025.svg',
       address: {
         '@type': 'PostalAddress',
         addressLocality: 'Austin',

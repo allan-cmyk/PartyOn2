@@ -22,7 +22,7 @@ export default function PropertyManagementPartnerPage() {
     {
       title: 'Resident Welcome Packages',
       description: 'Premium spirits for new move-ins',
-      image: '/images/products/welcome-package.webp',
+      image: '/images/products/branded-delivery-bag.webp',
       products: [
         { id: '1', title: 'Luxury Welcome Box', price: '$199', description: 'Wine, champagne & treats' },
         { id: '2', title: 'Texas Spirit Selection', price: '$149', description: 'Local favorites' },
@@ -32,7 +32,7 @@ export default function PropertyManagementPartnerPage() {
     {
       title: 'Resident Events',
       description: 'Elevate your community gatherings',
-      image: '/images/products/party-essentials.webp',
+      image: '/images/products/delivery-bag-contents.webp',
       products: [
         { id: '4', title: 'Pool Party Package', price: '$599', description: 'For 50 residents' },
         { id: '5', title: 'Wine Tasting Event', price: '$799', description: '12 wines, 30 guests' },
@@ -42,7 +42,7 @@ export default function PropertyManagementPartnerPage() {
     {
       title: 'Concierge Service',
       description: 'On-demand delivery for residents',
-      image: '/images/products/concierge-service.webp',
+      image: '/images/products/premium-spirits-lifestyle.webp',
       products: [
         { id: '7', title: 'Express Delivery', price: 'Varies', description: '3-hour service' },
         { id: '8', title: 'Scheduled Delivery', price: 'Varies', description: '72-hour advance' },
@@ -96,7 +96,7 @@ export default function PropertyManagementPartnerPage() {
       {/* Hero Section */}
       <section className="relative h-[50vh] flex items-center justify-center overflow-hidden">
         <Image
-          src="/images/hero/luxury-apartment-building.webp"
+          src="/images/backgrounds/rooftop-terrace-elegant-2.webp"
           alt="Luxury Property Management"
           fill
           className="object-cover"

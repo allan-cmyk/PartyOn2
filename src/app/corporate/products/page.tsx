@@ -30,28 +30,28 @@ export default function CorporateProductsPage() {
           id: 'corp-whiskey-1',
           title: 'Executive Whiskey Collection',
           price: '$450',
-          image: '/images/products/whiskey-executive.webp',
+          image: '/images/products/premium-spirits-wall.webp',
           description: 'Macallan, Glenfiddich, Balvenie'
         },
         {
           id: 'corp-cognac-1',
           title: 'Hennessy Paradis',
           price: '$650',
-          image: '/images/products/cognac-hennessy.webp',
+          image: '/images/products/premium-spirits-boutique.webp',
           description: 'Ultra-premium cognac'
         },
         {
           id: 'corp-wine-1',
           title: 'Opus One Cabernet',
           price: '$380',
-          image: '/images/products/wine-opus-one.webp',
+          image: '/images/products/wine-collection-cellar.webp',
           description: 'Napa Valley icon'
         },
         {
           id: 'corp-champagne-1',
           title: 'Krug Grande Cuvée',
           price: '$220',
-          image: '/images/products/champagne-krug.webp',
+          image: '/images/gallery/sunset-champagne-pontoon.webp',
           description: 'Prestige champagne'
         }
       ]
@@ -64,28 +64,28 @@ export default function CorporateProductsPage() {
           id: 'corp-beer-1',
           title: 'Local Craft Beer Selection',
           price: '$180',
-          image: '/images/products/beer-local-craft.webp',
+          image: '/images/products/delivery-bag-contents.webp',
           description: '48 Austin craft beers'
         },
         {
           id: 'corp-cocktail-1',
           title: 'Cocktail Hour Kit',
           price: '$299',
-          image: '/images/products/cocktail-kit.webp',
+          image: '/images/products/branded-delivery-bag.webp',
           description: 'Complete bar setup for 25'
         },
         {
           id: 'corp-wine-2',
           title: 'Wine & Cheese Pairing',
           price: '$425',
-          image: '/images/products/wine-cheese.webp',
+          image: '/images/products/wine-collection-cellar.webp',
           description: '8 wines with pairing notes'
         },
         {
           id: 'corp-na-1',
           title: 'Non-Alcoholic Premium',
           price: '$125',
-          image: '/images/products/non-alcoholic.webp',
+          image: '/images/products/delivery-bag-contents.webp',
           description: 'Mocktails and sodas'
         }
       ]
@@ -98,28 +98,28 @@ export default function CorporateProductsPage() {
           id: 'corp-package-1',
           title: 'Board Meeting Package',
           price: '$899',
-          image: '/images/products/package-board.webp',
+          image: '/images/services/corporate/penthouse-suite-setup.webp',
           description: 'Premium spirits for 12 executives'
         },
         {
           id: 'corp-package-2',
           title: 'Holiday Party (50 employees)',
           price: '$2,499',
-          image: '/images/products/package-holiday.webp',
+          image: '/images/hero/corporate-hero-gala.webp',
           description: 'Full bar service'
         },
         {
           id: 'corp-package-3',
           title: 'Client Entertainment Suite',
           price: '$1,299',
-          image: '/images/products/package-client.webp',
+          image: '/images/hero/corporate-hero-conference.webp',
           description: 'Luxury spirits and wine'
         },
         {
           id: 'corp-package-4',
           title: 'Product Launch Event',
           price: '$3,499',
-          image: '/images/products/package-launch.webp',
+          image: '/images/hero/corporate-hero-tech.webp',
           description: 'Champagne and cocktails for 100'
         }
       ]
@@ -133,7 +133,7 @@ export default function CorporateProductsPage() {
       {/* Hero Section */}
       <section className="relative h-[40vh] flex items-center justify-center overflow-hidden">
         <Image
-          src="/images/services/corporate/executive-bar.webp"
+          src="/images/services/corporate/penthouse-suite-setup.webp"
           alt="Corporate Bar Setup"
           fill
           className="object-cover"

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/images/bach-parties/bachelorette-celebration.webp',
+        url: '/images/services/bach-parties/bachelorette-champagne-tower.webp',
         width: 1200,
         height: 630,
         alt: 'Bachelorette Party Delivery Austin - Party On Delivery',
