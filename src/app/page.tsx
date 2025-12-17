@@ -52,51 +52,41 @@ export default function HomePage() {
       <HeroSection />
 
       {/* Christmas Cocktail Kits Banner */}
-      <section className="py-12 bg-gradient-to-r from-red-900 via-red-800 to-red-900 relative overflow-hidden">
-        {/* Subtle sparkle effect */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-4 left-1/4 w-2 h-2 bg-white rounded-full animate-pulse" />
-          <div className="absolute top-8 right-1/3 w-1.5 h-1.5 bg-white rounded-full animate-pulse delay-300" />
-          <div className="absolute bottom-6 left-1/2 w-2 h-2 bg-white rounded-full animate-pulse delay-500" />
-          <div className="absolute top-1/2 right-1/4 w-1 h-1 bg-white rounded-full animate-pulse delay-700" />
+      <section className="relative py-16 sm:py-20 overflow-hidden border-y-4 border-red-700">
+        {/* Full background image */}
+        <div className="absolute inset-0">
+          <Image
+            src="https://cdn.shopify.com/s/files/1/0538/1767/1858/files/Gemini_Generated_Image_tk6mbhtk6mbhtk6m.png?v=1734370134"
+            alt="Espresso Martini Cocktail Kit"
+            fill
+            className="object-cover"
+          />
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-black/60" />
         </div>
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 relative">
-          <div className="flex flex-col lg:grid lg:grid-cols-12 gap-6 lg:gap-8 items-center">
-            {/* Cocktail Kit Image - visible on all screens */}
-            <div className="lg:col-span-3 order-first lg:order-none">
-              <div className="relative w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 mx-auto rounded-lg overflow-hidden shadow-2xl transform -rotate-3 hover:rotate-0 transition-transform duration-300">
-                <Image
-                  src="https://cdn.shopify.com/s/files/1/0538/1767/1858/files/Gemini_Generated_Image_tk6mbhtk6mbhtk6m.png?v=1734370134"
-                  alt="Espresso Martini Cocktail Kit"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </div>
 
-            {/* Text Content */}
-            <div className="lg:col-span-5 text-center lg:text-left">
-              <div className="inline-block bg-gold-500 text-gray-900 px-3 sm:px-4 py-1 text-xs font-bold tracking-widest mb-3 sm:mb-4 rounded">
-                HOLIDAY GIFT IDEA
-              </div>
-              <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-white mb-2 sm:mb-3 tracking-wide">
-                Cocktail Kits Make the Perfect Gift
-              </h2>
-              <p className="text-red-100 text-base sm:text-lg max-w-xl mx-auto lg:mx-0">
-                Send a complete party in a box! Premium spirits, mixers &amp; garnishes delivered with a gift card included.
-              </p>
+        <div className="max-w-4xl mx-auto px-6 sm:px-8 relative z-10">
+          <div className="text-center">
+            <div className="inline-block bg-gold-500 text-gray-900 px-4 py-1.5 text-xs font-bold tracking-widest mb-4 rounded">
+              HOLIDAY GIFT IDEA
             </div>
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-white mb-4 tracking-wide">
+              Cocktail Kits Make the Perfect Gift
+            </h2>
+            <p className="text-white/90 text-lg sm:text-xl max-w-2xl mx-auto mb-8">
+              Send a complete party in a box! Premium spirits, mixers &amp; garnishes delivered with a gift card included.
+            </p>
 
             {/* CTA */}
-            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col xl:flex-row items-center justify-center gap-3 sm:gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/gifts/cocktail-kits">
-                <button className="px-6 sm:px-8 py-3 sm:py-4 bg-gold-500 text-gray-900 hover:bg-gold-400 transition-colors tracking-[0.15em] text-sm font-medium whitespace-nowrap">
+                <button className="px-8 py-4 bg-gold-500 text-gray-900 hover:bg-gold-400 transition-colors tracking-[0.15em] text-sm font-bold whitespace-nowrap">
                   SHOP GIFT KITS
                 </button>
               </Link>
-              <div className="text-center sm:text-left lg:text-center xl:text-left">
-                <p className="text-white font-medium">Order by Dec 22</p>
-                <p className="text-red-200 text-sm">for Christmas delivery</p>
+              <div className="text-center sm:text-left">
+                <p className="text-white font-semibold text-lg">Order by Dec 22</p>
+                <p className="text-white/70 text-sm">for Christmas delivery</p>
               </div>
             </div>
           </div>
