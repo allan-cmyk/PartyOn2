@@ -52,7 +52,7 @@ export default function HomePage() {
       <HeroSection />
 
       {/* Christmas Cocktail Kits Banner */}
-      <section className="relative py-16 sm:py-20 overflow-hidden border-y-4 border-red-700">
+      <section className="relative py-16 sm:py-20 overflow-hidden border-y-[12px] border-red-700">
         {/* Full background image */}
         <div className="absolute inset-0">
           <Image
