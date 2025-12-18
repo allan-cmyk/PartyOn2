@@ -116,16 +116,6 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
 
-        {/* Preload critical fonts - only essential weight for mobile */}
-        <link
-          rel="preload"
-          href="/_next/static/media/cormorant-garamond-latin-300-normal.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-          media="(max-width: 768px)"
-        />
-
         <GoogleAnalytics />
         <MetaPixel />
         <script
