@@ -89,7 +89,7 @@ function calculateChampagneQuantity(guestCount: number): number {
  * Main calculation function - generates full package breakdown
  */
 export function calculateWeddingPackage(input: WeddingOrderInput): CalculatedPackage {
-  const { guestCount, eventHours, tier, selectedSpirits } = input;
+  const { guestCount, eventHours, tier, selectedSpirits, includeChampagneToast } = input;
 
   const tierConfig = getTierConfig(tier);
   const hasSpirits = tierConfig.spirits.level !== null;
@@ -163,8 +163,8 @@ export function calculateWeddingPackage(input: WeddingOrderInput): CalculatedPac
     });
   }
 
-  // ---- CHAMPAGNE TOAST ----
-  if (tierConfig.includesChampagne) {
+  // ---- CHAMPAGNE TOAST (optional add-on) ----
+  if (includeChampagneToast) {
     const champagneQty = calculateChampagneQuantity(guestCount);
     const champagneSubtotal = champagneQty * CHAMPAGNE_PRODUCT.estimatedPrice;
 

@@ -27,6 +27,7 @@ export default function WeddingOrderCalculator(): ReactElement {
   const [eventHours, setEventHours] = useState(5);
   const [tier, setTier] = useState<WeddingTier>('standard-bar');
   const [selectedSpirits, setSelectedSpirits] = useState<SpiritType[]>(DEFAULT_SPIRITS);
+  const [includeChampagneToast, setIncludeChampagneToast] = useState(true);
 
   // UI state
   const [isAddingToCart, setIsAddingToCart] = useState(false);
@@ -39,8 +40,9 @@ export default function WeddingOrderCalculator(): ReactElement {
       eventHours,
       tier,
       selectedSpirits,
+      includeChampagneToast,
     }),
-    [guestCount, eventHours, tier, selectedSpirits]
+    [guestCount, eventHours, tier, selectedSpirits, includeChampagneToast]
   );
 
   // Calculate package
@@ -105,63 +107,67 @@ export default function WeddingOrderCalculator(): ReactElement {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-        {/* Left Column: Inputs */}
-        <div className="space-y-8">
-          {/* Guest Count */}
-          <div className="space-y-4">
-            <label className="block text-sm font-medium text-gray-700 tracking-[0.1em] uppercase">
-              Number of Guests
-            </label>
-            <div className="space-y-2">
-              <input
-                type="range"
-                min={10}
-                max={500}
-                step={10}
-                value={guestCount}
-                onChange={(e) => setGuestCount(Number(e.target.value))}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gold-600"
-              />
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500">10</span>
-                <div className="text-center">
-                  <span className="text-3xl font-serif text-gray-900">{guestCount}</span>
-                  <span className="text-sm text-gray-500 ml-2">guests</span>
+      {/* Main Grid: 2/3 inputs + 1/3 breakdown on desktop */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+        {/* Left Column: Inputs (takes 2 columns on desktop) */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* Guest Count & Hours Row */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {/* Guest Count */}
+            <div className="space-y-4">
+              <label className="block text-sm font-medium text-gray-700 tracking-[0.1em] uppercase">
+                Number of Guests
+              </label>
+              <div className="space-y-2">
+                <input
+                  type="range"
+                  min={10}
+                  max={500}
+                  step={10}
+                  value={guestCount}
+                  onChange={(e) => setGuestCount(Number(e.target.value))}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gold-600"
+                />
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-500">10</span>
+                  <div className="text-center">
+                    <span className="text-3xl font-serif text-gray-900">{guestCount}</span>
+                    <span className="text-sm text-gray-500 ml-2">guests</span>
+                  </div>
+                  <span className="text-sm text-gray-500">500</span>
                 </div>
-                <span className="text-sm text-gray-500">500</span>
               </div>
             </div>
-          </div>
 
-          {/* Event Hours */}
-          <div className="space-y-4">
-            <label className="block text-sm font-medium text-gray-700 tracking-[0.1em] uppercase">
-              Event Duration
-            </label>
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => setEventHours((h) => Math.max(1, h - 1))}
-                className="w-12 h-12 rounded-full border-2 border-gray-200 flex items-center justify-center hover:border-gray-300 transition-colors"
-                aria-label="Decrease hours"
-              >
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                </svg>
-              </button>
-              <div className="flex-1 text-center">
-                <span className="text-3xl font-serif text-gray-900">{eventHours}</span>
-                <span className="text-sm text-gray-500 ml-2">hours</span>
+            {/* Event Hours */}
+            <div className="space-y-4">
+              <label className="block text-sm font-medium text-gray-700 tracking-[0.1em] uppercase">
+                Event Duration
+              </label>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setEventHours((h) => Math.max(1, h - 1))}
+                  className="w-12 h-12 rounded-full border-2 border-gray-200 flex items-center justify-center hover:border-gray-300 transition-colors"
+                  aria-label="Decrease hours"
+                >
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                  </svg>
+                </button>
+                <div className="flex-1 text-center">
+                  <span className="text-3xl font-serif text-gray-900">{eventHours}</span>
+                  <span className="text-sm text-gray-500 ml-2">hours</span>
+                </div>
+                <button
+                  onClick={() => setEventHours((h) => Math.min(12, h + 1))}
+                  className="w-12 h-12 rounded-full border-2 border-gray-200 flex items-center justify-center hover:border-gray-300 transition-colors"
+                  aria-label="Increase hours"
+                >
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                </button>
               </div>
-              <button
-                onClick={() => setEventHours((h) => Math.min(12, h + 1))}
-                className="w-12 h-12 rounded-full border-2 border-gray-200 flex items-center justify-center hover:border-gray-300 transition-colors"
-                aria-label="Increase hours"
-              >
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-              </button>
             </div>
           </div>
 
@@ -178,10 +184,33 @@ export default function WeddingOrderCalculator(): ReactElement {
             onSpiritsChange={setSelectedSpirits}
             tier={tier}
           />
+
+          {/* Champagne Toast Option */}
+          <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
+            <label className="flex items-start gap-4 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={includeChampagneToast}
+                onChange={(e) => setIncludeChampagneToast(e.target.checked)}
+                className="mt-1 w-5 h-5 rounded border-gray-300 text-gold-600 focus:ring-gold-500"
+              />
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z" />
+                  </svg>
+                  <span className="font-medium text-gray-900">Include Champagne Toast</span>
+                </div>
+                <p className="text-sm text-gray-600 mt-1">
+                  Add La Marca Prosecco for a celebratory toast (1 glass per guest)
+                </p>
+              </div>
+            </label>
+          </div>
         </div>
 
-        {/* Right Column: Results */}
-        <div className="lg:sticky lg:top-8 lg:self-start">
+        {/* Right Column: Results (takes 1 column on desktop) */}
+        <div className="lg:col-span-1 lg:sticky lg:top-8 lg:self-start">
           <PackageBreakdown
             calculation={calculation}
             isLoading={isAddingToCart || cartLoading}

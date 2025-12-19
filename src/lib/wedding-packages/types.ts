@@ -66,6 +66,7 @@ export interface WeddingOrderInput {
   eventHours: number;
   tier: WeddingTier;
   selectedSpirits: SpiritType[]; // Which 3 (or 5) spirits selected
+  includeChampagneToast: boolean; // Optional champagne toast add-on
 }
 
 /** A calculated item in the package */
