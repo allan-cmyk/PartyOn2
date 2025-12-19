@@ -11,129 +11,101 @@ interface TierSelectorProps {
 }
 
 /**
- * Tier selection cards for the 5 wedding package options
- * Shows tier name, price per person, and estimated total
+ * Tier selection tabs for the 5 wedding package options
+ * Simple tabs with names, detailed info shown below when selected
  */
 export default function TierSelector({
   selectedTier,
   onTierChange,
   guestCount,
 }: TierSelectorProps): ReactElement {
+  const selectedConfig = getTierConfig(selectedTier);
+  const estimatedTotal = getEstimatedTotal(guestCount, selectedTier);
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <label className="block text-sm font-medium text-gray-700 tracking-[0.1em] uppercase">
         Select Your Package
       </label>
 
-      {/* Mobile: Horizontal scroll */}
-      <div className="flex gap-3 overflow-x-auto pb-4 -mx-4 px-4 md:hidden snap-x snap-mandatory">
+      {/* Tier Tabs - Simple name buttons */}
+      <div className="flex flex-wrap gap-2">
         {TIER_ORDER.map((tierId) => {
           const tier = getTierConfig(tierId);
           const isSelected = selectedTier === tierId;
-          const estimatedTotal = getEstimatedTotal(guestCount, tierId);
 
           return (
             <button
               key={tierId}
               onClick={() => onTierChange(tierId)}
               className={`
-                flex-shrink-0 w-[160px] p-4 rounded-lg border-2 text-left
-                transition-all duration-200 snap-center
+                px-4 py-3 rounded-lg border-2 text-sm font-medium
+                transition-all duration-200
                 ${isSelected
-                  ? 'border-gold-600 bg-gold-50 shadow-md'
-                  : 'border-gray-200 bg-white hover:border-gray-300'
+                  ? 'border-gold-600 bg-gold-600 text-white shadow-md'
+                  : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
                 }
               `}
             >
-              <div className="text-xs text-gray-500 tracking-[0.05em] uppercase mb-1">
-                ${tier.pricePerPerson}/person
-              </div>
-              <div className={`font-serif text-base mb-2 ${isSelected ? 'text-gold-700' : 'text-gray-900'}`}>
-                {tier.name.replace('The ', '')}
-              </div>
-              <div className="text-sm text-gray-600">
-                ~${estimatedTotal.toLocaleString()}
-              </div>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Desktop: Grid */}
-      <div className="hidden md:grid md:grid-cols-5 gap-4">
-        {TIER_ORDER.map((tierId) => {
-          const tier = getTierConfig(tierId);
-          const isSelected = selectedTier === tierId;
-          const estimatedTotal = getEstimatedTotal(guestCount, tierId);
-
-          return (
-            <button
-              key={tierId}
-              onClick={() => onTierChange(tierId)}
-              className={`
-                p-5 rounded-lg border-2 text-left transition-all duration-200
-                ${isSelected
-                  ? 'border-gold-600 bg-gold-50 shadow-lg transform scale-[1.02]'
-                  : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-md'
-                }
-              `}
-            >
-              {/* Price Badge */}
-              <div className={`
-                inline-block px-2 py-1 rounded text-xs font-medium tracking-[0.05em] mb-3
-                ${isSelected ? 'bg-gold-600 text-white' : 'bg-gray-100 text-gray-600'}
-              `}>
-                ${tier.pricePerPerson}/person
-              </div>
-
-              {/* Tier Name */}
-              <h3 className={`font-serif text-lg mb-2 ${isSelected ? 'text-gold-700' : 'text-gray-900'}`}>
-                {tier.name.replace('The ', '')}
-              </h3>
-
-              {/* Description */}
-              <p className="text-xs text-gray-500 mb-3 line-clamp-2">
-                {tier.description}
-              </p>
-
-              {/* Estimated Total */}
-              <div className={`
-                text-lg font-medium
-                ${isSelected ? 'text-gold-700' : 'text-gray-700'}
-              `}>
-                ~${estimatedTotal.toLocaleString()}
-              </div>
-              <div className="text-xs text-gray-400">estimated total</div>
+              {tier.name}
             </button>
           );
         })}
       </div>
 
       {/* Selected Tier Details */}
-      <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-        <h4 className="font-serif text-lg text-gray-900 mb-3">
-          {getTierConfig(selectedTier).name} Includes:
-        </h4>
-        <ul className="space-y-2">
-          {getTierConfig(selectedTier).features.map((feature, index) => (
-            <li key={index} className="flex items-start gap-2 text-sm text-gray-600">
-              <svg
-                className="w-5 h-5 text-gold-600 flex-shrink-0 mt-0.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-              {feature}
-            </li>
-          ))}
-        </ul>
+      <div className="p-6 bg-gray-50 rounded-lg border border-gray-200">
+        {/* Header with name and pricing */}
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+          <div>
+            <h3 className="font-serif text-2xl text-gray-900 mb-2">
+              {selectedConfig.name}
+            </h3>
+            <p className="text-gray-600">
+              {selectedConfig.description}
+            </p>
+          </div>
+
+          {/* Pricing Summary */}
+          <div className="sm:text-right flex-shrink-0">
+            <div className="inline-block px-3 py-1 bg-gold-100 text-gold-800 rounded-full text-sm font-medium mb-2">
+              ${selectedConfig.pricePerPerson}/person avg.
+            </div>
+            <div className="text-2xl font-serif text-gray-900">
+              ~${estimatedTotal.toLocaleString()}
+            </div>
+            <div className="text-sm text-gray-500">
+              estimated for {guestCount} guests
+            </div>
+          </div>
+        </div>
+
+        {/* What's Included */}
+        <div>
+          <h4 className="text-sm font-medium text-gray-700 tracking-[0.1em] uppercase mb-3">
+            What&apos;s Included
+          </h4>
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {selectedConfig.features.map((feature, index) => (
+              <li key={index} className="flex items-start gap-2 text-sm text-gray-600">
+                <svg
+                  className="w-5 h-5 text-gold-600 flex-shrink-0 mt-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                {feature}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
