@@ -51,48 +51,6 @@ export default function HomePage() {
       {/* Hero Section - Client Component */}
       <HeroSection />
 
-      {/* Christmas Cocktail Kits Banner */}
-      <section className="relative py-16 sm:py-20 overflow-hidden border-y-[12px] border-red-700">
-        {/* Full background image */}
-        <div className="absolute inset-0">
-          <Image
-            src="https://cdn.shopify.com/s/files/1/0538/1767/1858/files/Gemini_Generated_Image_tk6mbhtk6mbhtk6m.png?v=1734370134"
-            alt="Espresso Martini Cocktail Kit"
-            fill
-            className="object-cover"
-          />
-          {/* Dark overlay for text readability */}
-          <div className="absolute inset-0 bg-black/60" />
-        </div>
-
-        <div className="max-w-4xl mx-auto px-6 sm:px-8 relative z-10">
-          <div className="text-center">
-            <div className="inline-block bg-gold-500 text-gray-900 px-4 py-1.5 text-xs font-bold tracking-widest mb-4 rounded">
-              HOLIDAY GIFT IDEA
-            </div>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-white mb-4 tracking-wide">
-              Cocktail Kits Make the Perfect Gift
-            </h2>
-            <p className="text-white/90 text-lg sm:text-xl max-w-2xl mx-auto mb-8">
-              Send a complete party in a box! Premium spirits, mixers &amp; garnishes delivered with a gift card included.
-            </p>
-
-            {/* CTA */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/gifts/cocktail-kits">
-                <button className="px-8 py-4 bg-gold-500 text-gray-900 hover:bg-gold-400 transition-colors tracking-[0.15em] text-sm font-bold whitespace-nowrap">
-                  SHOP GIFT KITS
-                </button>
-              </Link>
-              <div className="text-center sm:text-left">
-                <p className="text-white font-semibold text-lg">Order by Dec 22</p>
-                <p className="text-white/70 text-sm">for Christmas delivery</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Choose Your Path Fork */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-8">
