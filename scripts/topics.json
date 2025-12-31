@@ -389,7 +389,7 @@
         "austin",
         "wedding venues"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 33,
@@ -401,7 +401,7 @@
         "austin",
         "organization"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 34,
@@ -414,7 +414,7 @@
         "austin",
         "texas"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 35,
@@ -426,7 +426,7 @@
         "austin",
         "wedding planning"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 36,
@@ -438,7 +438,7 @@
         "austin",
         "intimate"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 37,
@@ -450,7 +450,7 @@
         "modern",
         "texas style"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 38,
@@ -462,7 +462,7 @@
         "austin",
         "scenic"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 39,
@@ -473,7 +473,7 @@
         "austin restaurants",
         "wedding planning"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 40,
@@ -484,7 +484,7 @@
         "wedding packages",
         "austin venues"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 41,
@@ -496,7 +496,7 @@
         "checklist",
         "party planning"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 42,
@@ -508,7 +508,7 @@
         "lake travis",
         "large groups"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 43,
@@ -520,7 +520,7 @@
         "music",
         "lake travis"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 44,
@@ -533,7 +533,7 @@
         "byob",
         "lake travis"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 45,
@@ -545,7 +545,7 @@
         "lake travis",
         "safety tips"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 46,
@@ -557,7 +557,7 @@
         "boat party",
         "celebration"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 47,

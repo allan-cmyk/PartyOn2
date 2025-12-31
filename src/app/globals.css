@@ -5,6 +5,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Explicit font-family overrides to ensure fonts load correctly */
+@layer utilities {
+  .font-serif {
+    font-family: var(--font-cormorant-garamond), 'Cormorant Garamond', Georgia, serif !important;
+  }
+
+  .font-sans {
+    font-family: var(--font-inter), 'Inter', system-ui, sans-serif !important;
+  }
+}
+
 @layer base {
   :root {
     --background: #ffffff;
@@ -318,7 +329,7 @@
     font-size: 1.5rem;
     margin-top: 0;
     margin-bottom: 0.5rem;
-    font-family: var(--font-serif);
+    font-family: var(--font-cormorant-garamond), 'Cormorant Garamond', Georgia, serif;
     letter-spacing: 0.05em;
   }
 
