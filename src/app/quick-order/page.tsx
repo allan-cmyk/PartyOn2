@@ -53,19 +53,27 @@ export default function QuickOrderPage(): ReactElement {
 
   // Hide nav on scroll down, show on scroll up (only when collections are sticky)
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const scrollingDown = currentScrollY > lastScrollY.current;
-      const scrollDelta = Math.abs(currentScrollY - lastScrollY.current);
+    let ticking = false;
 
-      // Only react to significant scroll (> 10px) to avoid jitter
-      if (scrollDelta > 10) {
-        if (scrollingDown && isCollectionsSticky) {
-          setHideNav(true);
-        } else if (!scrollingDown) {
-          setHideNav(false);
-        }
-        lastScrollY.current = currentScrollY;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          const scrollDelta = currentScrollY - lastScrollY.current;
+
+          // Hide nav: scroll down > 30px while collections sticky
+          // Show nav: any scroll up > 5px
+          if (scrollDelta > 30 && isCollectionsSticky) {
+            setHideNav(true);
+            lastScrollY.current = currentScrollY;
+          } else if (scrollDelta < -5) {
+            setHideNav(false);
+            lastScrollY.current = currentScrollY;
+          }
+
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
