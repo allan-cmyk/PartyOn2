@@ -28,6 +28,10 @@ export default function QuickOrderPage(): ReactElement {
   const collectionsRef = useRef<HTMLElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
+  // Nav hide/show on scroll direction
+  const [hideNav, setHideNav] = useState(false);
+  const lastScrollY = useRef(0);
+
   // Intersection Observer for sticky detection - more robust than scroll events
   useEffect(() => {
     if (!sentinelRef.current) return;
@@ -47,6 +51,28 @@ export default function QuickOrderPage(): ReactElement {
     return () => observer.disconnect();
   }, []);
 
+  // Hide nav on scroll down, show on scroll up (only when collections are sticky)
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const scrollingDown = currentScrollY > lastScrollY.current;
+      const scrollDelta = Math.abs(currentScrollY - lastScrollY.current);
+
+      // Only react to significant scroll (> 10px) to avoid jitter
+      if (scrollDelta > 10) {
+        if (scrollingDown && isCollectionsSticky) {
+          setHideNav(true);
+        } else if (!scrollingDown) {
+          setHideNav(false);
+        }
+        lastScrollY.current = currentScrollY;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isCollectionsSticky]);
+
   const handleCollectionChange = (handle: string) => {
     if (activeCollection === handle) {
       // Don't toggle off - always keep a collection selected
@@ -61,7 +87,7 @@ export default function QuickOrderPage(): ReactElement {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation forceScrolled={true} />
+      <OldFashionedNavigation forceScrolled={true} hidden={hideNav} />
 
       {/* Hero Section */}
       <section className="relative h-[35vh] md:h-[40vh] mt-24 flex items-center justify-center overflow-hidden">
@@ -95,7 +121,7 @@ export default function QuickOrderPage(): ReactElement {
         ref={collectionsRef}
         className={`bg-gray-50 border-b border-gray-200 transition-all duration-300 ${
           isCollectionsSticky
-            ? 'sticky top-24 md:top-24 z-40 py-3 shadow-md'
+            ? `sticky z-40 py-3 shadow-md ${hideNav ? 'top-0' : 'top-24'}`
             : 'py-6'
         }`}
       >

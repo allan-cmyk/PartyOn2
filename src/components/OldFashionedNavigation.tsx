@@ -33,9 +33,11 @@ function NavLink({ href, children, isScrolled, onClick }: NavLinkProps) {
 
 interface OldFashionedNavigationProps {
   forceScrolled?: boolean;
+  /** Hide navigation (slides up out of view) */
+  hidden?: boolean;
 }
 
-export default function OldFashionedNavigation({ forceScrolled = false }: OldFashionedNavigationProps) {
+export default function OldFashionedNavigation({ forceScrolled = false, hidden = false }: OldFashionedNavigationProps) {
   const [isScrolled, setIsScrolled] = useState(forceScrolled);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
@@ -94,9 +96,9 @@ export default function OldFashionedNavigation({ forceScrolled = false }: OldFas
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent'
-      }`}>
+      } ${hidden ? '-translate-y-full' : 'translate-y-0'}`}>
         <div className="max-w-7xl mx-auto px-8 md:px-16 lg:px-20">
           <div className="flex items-center justify-between h-24">
             {/* Logo */}
