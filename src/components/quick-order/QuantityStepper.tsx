@@ -17,7 +17,7 @@ interface QuantityStepperProps {
   /** Whether controls are disabled */
   disabled?: boolean;
   /** Size variant */
-  size?: 'sm' | 'md';
+  size?: 'xs' | 'sm' | 'md';
 }
 
 /**
@@ -39,8 +39,12 @@ export default function QuantityStepper({
   disabled = false,
   size = 'md',
 }: QuantityStepperProps): ReactElement {
-  const buttonSize = size === 'sm' ? 'w-7 h-7' : 'w-9 h-9';
-  const fontSize = size === 'sm' ? 'text-sm' : 'text-base';
+  const sizeClasses = {
+    xs: { button: 'w-6 h-6', font: 'text-xs', minWidth: 'min-w-[20px]', icon: 'w-3 h-3' },
+    sm: { button: 'w-7 h-7', font: 'text-sm', minWidth: 'min-w-[28px]', icon: 'w-4 h-4' },
+    md: { button: 'w-9 h-9', font: 'text-base', minWidth: 'min-w-[28px]', icon: 'w-4 h-4' },
+  };
+  const { button: buttonSize, font: fontSize, minWidth, icon: iconSize } = sizeClasses[size];
 
   return (
     <div className="flex items-center gap-1 bg-white rounded-full border border-gray-200 shadow-sm">
@@ -55,7 +59,7 @@ export default function QuantityStepper({
         aria-label="Decrease quantity"
       >
         <svg
-          className="w-4 h-4"
+          className={iconSize}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -70,7 +74,7 @@ export default function QuantityStepper({
       </button>
 
       <span
-        className={`${fontSize} font-semibold text-gray-900 min-w-[28px] text-center`}
+        className={`${fontSize} font-semibold text-gray-900 ${minWidth} text-center`}
       >
         {quantity}
       </span>
@@ -86,7 +90,7 @@ export default function QuantityStepper({
         aria-label="Increase quantity"
       >
         <svg
-          className="w-4 h-4"
+          className={iconSize}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

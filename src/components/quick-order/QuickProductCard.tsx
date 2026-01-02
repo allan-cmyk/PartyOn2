@@ -122,7 +122,7 @@ export default function QuickProductCard({
           src={imageUrl}
           alt={product.title}
           fill
-          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+          sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 16vw"
           className="object-cover"
           loading="lazy"
         />
@@ -137,14 +137,14 @@ export default function QuickProductCard({
       </div>
 
       {/* Product Info */}
-      <div className="p-3 space-y-1 text-center">
-        <h3 className="font-medium text-sm text-gray-900 line-clamp-2 leading-tight">
+      <div className="p-2 space-y-0.5 text-center">
+        <h3 className="font-medium text-xs sm:text-sm text-gray-900 line-clamp-2 leading-tight">
           {product.title}
         </h3>
         {packSize && (
-          <p className="text-xs text-gray-500">{packSize}</p>
+          <p className="text-[10px] sm:text-xs text-gray-500">{packSize}</p>
         )}
-        <p className="font-bold text-base text-green-700">
+        <p className="font-bold text-sm sm:text-base text-green-700">
           {formatPrice(price.amount, price.currencyCode)}
         </p>
 
@@ -153,13 +153,13 @@ export default function QuickProductCard({
           <button
             onClick={handleAdd}
             disabled={isAdding}
-            className="mx-auto mt-2 w-10 h-10 rounded-full bg-green-600 hover:bg-green-700 text-white flex items-center justify-center shadow-md transition-all disabled:opacity-50"
+            className="mx-auto mt-1.5 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-green-600 hover:bg-green-700 text-white flex items-center justify-center shadow-md transition-all disabled:opacity-50"
             aria-label={`Add ${product.title} to cart`}
           >
             {isAdding ? (
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
             )}
@@ -167,18 +167,18 @@ export default function QuickProductCard({
         )}
 
         {isAvailable && displayQty > 0 && (
-          <div className="flex justify-center mt-2">
+          <div className="flex justify-center mt-1.5">
             <QuantityStepper
               quantity={displayQty}
               onIncrement={handleIncrement}
               onDecrement={handleDecrement}
-              size="sm"
+              size="xs"
             />
           </div>
         )}
 
         {!isAvailable && (
-          <p className="text-xs text-gray-400 mt-2">Unavailable</p>
+          <p className="text-[10px] sm:text-xs text-gray-400 mt-1.5">Unavailable</p>
         )}
       </div>
     </div>
