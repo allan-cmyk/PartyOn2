@@ -140,7 +140,7 @@ export default function QuickOrderSearch({
 
       {/* Dropdown Results */}
       {isOpen && searchTerm.length >= 2 && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-80 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-[60] max-h-80 overflow-y-auto">
           {loading ? (
             <div className="p-4 text-center">
               <div className="inline-block animate-spin rounded-full h-5 w-5 border-2 border-green-500 border-t-transparent" />

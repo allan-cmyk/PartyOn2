@@ -242,21 +242,22 @@ export default function QuickOrderPage(): ReactElement {
 
       {/* Search Overlay */}
       {showSearchOverlay && (
-        <div className="fixed inset-0 z-50 bg-black/50" onClick={() => setShowSearchOverlay(false)}>
+        <div
+          className="fixed inset-0 z-50 bg-black/50 px-4 pt-4"
+          onClick={() => setShowSearchOverlay(false)}
+        >
           <div
-            className="bg-white w-full max-w-2xl mx-auto mt-4 rounded-xl shadow-2xl overflow-hidden"
+            className="bg-white w-full max-w-2xl mx-auto rounded-xl shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-4 border-b border-gray-200 flex items-center gap-3">
-              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <div className="flex-1">
+            {/* Search header with close button */}
+            <div className="p-4 flex items-start gap-3">
+              <div className="flex-1 relative">
                 <QuickOrderSearch autoFocus onResultClick={() => setShowSearchOverlay(false)} />
               </div>
               <button
                 onClick={() => setShowSearchOverlay(false)}
-                className="p-2 text-gray-400 hover:text-gray-600"
+                className="flex-shrink-0 p-2 text-gray-400 hover:text-gray-600 -mt-1"
                 aria-label="Close search"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
