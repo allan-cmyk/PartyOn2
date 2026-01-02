@@ -32,6 +32,9 @@ export default function QuickOrderPage(): ReactElement {
   const [hideNav, setHideNav] = useState(false);
   const lastScrollY = useRef(0);
 
+  // Search overlay state
+  const [showSearchOverlay, setShowSearchOverlay] = useState(false);
+
   // Intersection Observer for sticky detection - more robust than scroll events
   useEffect(() => {
     if (!sentinelRef.current) return;
@@ -155,33 +158,55 @@ export default function QuickOrderPage(): ReactElement {
           <div
             className={
               isCollectionsSticky
-                ? 'flex overflow-x-auto gap-2 pb-2 -mx-4 px-4 scrollbar-hide snap-x snap-mandatory'
+                ? 'flex items-center gap-2'
                 : `grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-7 gap-2'}`
             }
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
-            {SHOPIFY_COLLECTIONS.map((collection) => {
-              const isActive = activeCollection === collection.handle;
-              return (
-                <button
-                  key={collection.handle}
-                  onClick={() => handleCollectionChange(collection.handle)}
-                  className={`
-                    px-4 py-3 text-center border transition-all rounded-lg relative
-                    ${isActive
-                      ? `${collection.colors.bgActive} ${collection.colors.textActive} ${collection.colors.borderActive} shadow-lg ${isCollectionsSticky ? '' : 'scale-105'}`
-                      : `${collection.colors.bg} ${collection.colors.text} ${collection.colors.border} hover:scale-102`
-                    }
-                    ${isMobile ? 'text-xs' : 'text-sm'}
-                    ${isCollectionsSticky ? 'flex-shrink-0 snap-start whitespace-nowrap' : ''}
-                    tracking-[0.1em] font-medium
-                  `}
-                  disabled={loading && activeCollection !== collection.handle}
-                >
-                  {collection.label.toUpperCase()}
-                </button>
-              );
-            })}
+            {/* Search button - only show when sticky */}
+            {isCollectionsSticky && (
+              <button
+                onClick={() => setShowSearchOverlay(true)}
+                className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
+                aria-label="Search products"
+              >
+                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+            )}
+
+            {/* Categories */}
+            <div
+              className={
+                isCollectionsSticky
+                  ? 'flex overflow-x-auto gap-2 pb-2 -mr-4 pr-4 scrollbar-hide snap-x snap-mandatory flex-1'
+                  : 'contents'
+              }
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {SHOPIFY_COLLECTIONS.map((collection) => {
+                const isActive = activeCollection === collection.handle;
+                return (
+                  <button
+                    key={collection.handle}
+                    onClick={() => handleCollectionChange(collection.handle)}
+                    className={`
+                      px-4 py-3 text-center border transition-all rounded-lg relative
+                      ${isActive
+                        ? `${collection.colors.bgActive} ${collection.colors.textActive} ${collection.colors.borderActive} shadow-lg ${isCollectionsSticky ? '' : 'scale-105'}`
+                        : `${collection.colors.bg} ${collection.colors.text} ${collection.colors.border} hover:scale-102`
+                      }
+                      ${isMobile ? 'text-xs' : 'text-sm'}
+                      ${isCollectionsSticky ? 'flex-shrink-0 snap-start whitespace-nowrap' : ''}
+                      tracking-[0.1em] font-medium
+                    `}
+                    disabled={loading && activeCollection !== collection.handle}
+                  >
+                    {collection.label.toUpperCase()}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
@@ -214,6 +239,34 @@ export default function QuickOrderPage(): ReactElement {
 
       {/* Cart Summary Bar - Fixed Bottom */}
       <CartSummaryBar />
+
+      {/* Search Overlay */}
+      {showSearchOverlay && (
+        <div className="fixed inset-0 z-50 bg-black/50" onClick={() => setShowSearchOverlay(false)}>
+          <div
+            className="bg-white w-full max-w-2xl mx-auto mt-4 rounded-xl shadow-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-4 border-b border-gray-200 flex items-center gap-3">
+              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <div className="flex-1">
+                <QuickOrderSearch autoFocus onResultClick={() => setShowSearchOverlay(false)} />
+              </div>
+              <button
+                onClick={() => setShowSearchOverlay(false)}
+                className="p-2 text-gray-400 hover:text-gray-600"
+                aria-label="Close search"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

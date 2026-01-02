@@ -10,11 +10,21 @@ import { ShopifyProduct } from '@/lib/shopify/types';
 import { formatPrice, getProductImageUrl, getFirstAvailableVariant } from '@/lib/shopify/utils';
 import { useCartContext } from '@/contexts/CartContext';
 
+interface QuickOrderSearchProps {
+  /** Auto-focus the input on mount */
+  autoFocus?: boolean;
+  /** Callback when a result is clicked (for closing overlay) */
+  onResultClick?: () => void;
+}
+
 /**
  * Search bar with dropdown results and quick-add functionality
  * Designed for mobile-first quick ordering experience
  */
-export default function QuickOrderSearch(): ReactElement {
+export default function QuickOrderSearch({
+  autoFocus = false,
+  onResultClick,
+}: QuickOrderSearchProps): ReactElement {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState<ShopifyProduct[]>([]);
@@ -71,6 +81,8 @@ export default function QuickOrderSearch(): ReactElement {
     setAddingId(product.id);
     try {
       await addToCart(variant.id, 1);
+      // Call callback after successful add (e.g., to close overlay)
+      onResultClick?.();
     } catch (error) {
       console.error('Add to cart error:', error);
     } finally {
@@ -111,6 +123,7 @@ export default function QuickOrderSearch(): ReactElement {
           }}
           onFocus={() => setIsOpen(true)}
           placeholder="Search products..."
+          autoFocus={autoFocus}
           className="w-full pl-10 pr-10 py-2.5 bg-gray-100 border-0 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-green-500 focus:outline-none transition-all"
         />
         {searchTerm && (
