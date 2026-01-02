@@ -1,38 +1,10 @@
 /**
- * @fileoverview SWR hook for fetching products by category for Quick Order page
+ * @fileoverview SWR hook for fetching products by collection for Quick Order page
  * @module hooks/useQuickOrderProducts
  */
 
 import useSWR from 'swr';
 import type { ShopifyProduct } from '@/lib/shopify/types';
-
-/**
- * Category to Shopify collection handle mapping
- */
-const CATEGORY_MAP: Record<string, string> = {
-  all: 'favorites-home-page',
-  beer: 'tailgate-beer',
-  seltzers: 'seltzer-collection',
-  'cocktail-kits': 'cocktail-kits',
-  liquor: 'spirits',
-  mixers: 'mixers-non-alcoholic',
-  wine: 'champagne',
-  supplies: 'party-supplies',
-};
-
-/**
- * Category definitions for the UI
- */
-export const QUICK_ORDER_CATEGORIES = [
-  { id: 'all', label: 'All' },
-  { id: 'beer', label: 'Beer' },
-  { id: 'seltzers', label: 'Seltzers' },
-  { id: 'cocktail-kits', label: 'Cocktail Kits' },
-  { id: 'liquor', label: 'Liquor' },
-  { id: 'mixers', label: 'Mixers/NA' },
-  { id: 'wine', label: 'Wine' },
-  { id: 'supplies', label: 'Supplies' },
-];
 
 interface ProductsResponse {
   products: {
@@ -51,23 +23,21 @@ const fetcher = async (url: string): Promise<ProductsResponse> => {
 };
 
 /**
- * Hook for fetching products by category with SWR caching
+ * Hook for fetching products by collection handle with SWR caching
  *
- * @param category - Category ID from QUICK_ORDER_CATEGORIES
+ * @param collectionHandle - Shopify collection handle (e.g., 'favorites-home-page', 'cocktail-kits')
  * @returns Products array with loading and error states
  *
  * @example
  * ```tsx
- * const { products, loading, error } = useQuickOrderProducts('beer');
+ * const { products, loading, error } = useQuickOrderProducts('cocktail-kits');
  * ```
  */
-export function useQuickOrderProducts(category: string): {
+export function useQuickOrderProducts(collectionHandle: string): {
   products: ShopifyProduct[];
   loading: boolean;
   error: Error | undefined;
 } {
-  const collectionHandle = CATEGORY_MAP[category] ?? CATEGORY_MAP.all;
-
   const { data, error, isLoading } = useSWR<ProductsResponse>(
     `/api/products?collection=${collectionHandle}&first=100`,
     fetcher,
