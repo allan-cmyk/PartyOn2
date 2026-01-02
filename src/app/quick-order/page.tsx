@@ -26,30 +26,26 @@ export default function QuickOrderPage(): ReactElement {
   // Sticky collections state
   const [isCollectionsSticky, setIsCollectionsSticky] = useState(false);
   const collectionsRef = useRef<HTMLElement>(null);
-  const collectionsInitialTopRef = useRef<number>(0);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
-  // Store initial position of collections section
+  // Intersection Observer for sticky detection - more robust than scroll events
   useEffect(() => {
-    if (!collectionsRef.current) return;
-    const rect = collectionsRef.current.getBoundingClientRect();
-    collectionsInitialTopRef.current = rect.top + window.scrollY;
+    if (!sentinelRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // When sentinel exits viewport (scrolled past), make collections sticky
+        setIsCollectionsSticky(!entry.isIntersecting);
+      },
+      {
+        rootMargin: '-96px 0px 0px 0px', // Account for nav height (h-24 = 96px)
+        threshold: 0,
+      }
+    );
+
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
   }, []);
-
-  // Sticky collections detection
-  useEffect(() => {
-    if (collectionsInitialTopRef.current === 0) return;
-
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      // Account for nav height (96px on desktop, smaller on mobile)
-      const navHeight = isMobile ? 64 : 96;
-      setIsCollectionsSticky(scrollY > collectionsInitialTopRef.current - navHeight);
-    };
-
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isMobile]);
 
   const handleCollectionChange = (handle: string) => {
     if (activeCollection === handle) {
@@ -90,6 +86,9 @@ export default function QuickOrderPage(): ReactElement {
           </p>
         </div>
       </section>
+
+      {/* Sentinel for sticky detection - IntersectionObserver watches this */}
+      <div ref={sentinelRef} className="h-0" aria-hidden="true" />
 
       {/* Featured Collections - Sticky */}
       <section
