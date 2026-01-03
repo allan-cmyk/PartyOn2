@@ -54,7 +54,7 @@ export default function QuantityStepper({
           e.stopPropagation();
           onDecrement();
         }}
-        disabled={disabled || quantity <= 1}
+        disabled={disabled}
         className={`${buttonSize} flex items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors`}
         aria-label="Decrease quantity"
       >
