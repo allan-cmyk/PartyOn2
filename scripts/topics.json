@@ -605,7 +605,7 @@
         "lake travis",
         "booking"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 51,
