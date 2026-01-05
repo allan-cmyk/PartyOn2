@@ -56,7 +56,7 @@ export default function HowItWorks(): ReactElement {
               <div className="w-16 h-16 mx-auto mb-4 bg-white rounded-full border-2 border-gold-400 flex items-center justify-center text-gold-600">
                 {step.icon}
               </div>
-              <div className="text-gold-500 font-serif text-sm tracking-[0.2em] mb-2">
+              <div className="text-green-600 font-serif text-sm tracking-[0.2em] mb-2">
                 STEP {step.number}
               </div>
               <h3 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.05em]">
