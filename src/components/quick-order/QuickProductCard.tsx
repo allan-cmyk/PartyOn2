@@ -138,13 +138,13 @@ export default function QuickProductCard({
 
       {/* Product Info */}
       <div className="p-2 space-y-0.5 text-center">
-        <h3 className="font-medium text-xs sm:text-sm text-gray-900 line-clamp-2 leading-tight">
+        <h3 className="font-medium text-sm sm:text-base text-gray-900 line-clamp-2 leading-tight">
           {product.title}
         </h3>
         {packSize && (
-          <p className="text-[10px] sm:text-xs text-gray-500">{packSize}</p>
+          <p className="text-xs sm:text-sm text-gray-500">{packSize}</p>
         )}
-        <p className="font-bold text-sm sm:text-base text-green-700">
+        <p className="font-bold text-base sm:text-lg text-green-700">
           {formatPrice(price.amount, price.currencyCode)}
         </p>
 
@@ -178,7 +178,7 @@ export default function QuickProductCard({
         )}
 
         {!isAvailable && (
-          <p className="text-[10px] sm:text-xs text-gray-400 mt-1.5">Unavailable</p>
+          <p className="text-xs sm:text-sm text-gray-400 mt-1.5">Unavailable</p>
         )}
       </div>
     </div>
