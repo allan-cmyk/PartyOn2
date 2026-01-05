@@ -13,7 +13,6 @@ import { useQuickOrderProducts } from '@/hooks/useQuickOrderProducts';
 import QuickOrderGrid from '@/components/quick-order/QuickOrderGrid';
 import CartSummaryBar from '@/components/quick-order/CartSummaryBar';
 import QuickOrderSearch from '@/components/quick-order/QuickOrderSearch';
-import HowItWorks from '@/components/quick-order/HowItWorks';
 import QuickOrderFAQs from '@/components/quick-order/QuickOrderFAQs';
 import DeliveryAreasPreview from '@/components/quick-order/DeliveryAreasPreview';
 import { SHOPIFY_COLLECTIONS } from '@/lib/shopify/categories';
@@ -242,7 +241,6 @@ export default function QuickOrderPage(): ReactElement {
       </main>
 
       {/* SEO Sections */}
-      <HowItWorks />
       <DeliveryAreasPreview />
       <QuickOrderFAQs />
 
