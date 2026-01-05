@@ -8,10 +8,13 @@
 import { useState, useEffect, useRef, type ReactElement } from 'react';
 import Image from 'next/image';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Footer from '@/components/Footer';
 import { useQuickOrderProducts } from '@/hooks/useQuickOrderProducts';
 import QuickOrderGrid from '@/components/quick-order/QuickOrderGrid';
 import CartSummaryBar from '@/components/quick-order/CartSummaryBar';
 import QuickOrderSearch from '@/components/quick-order/QuickOrderSearch';
+import QuickOrderFAQs from '@/components/quick-order/QuickOrderFAQs';
+import DeliveryAreasPreview from '@/components/quick-order/DeliveryAreasPreview';
 import { SHOPIFY_COLLECTIONS } from '@/lib/shopify/categories';
 import { useIsMobile } from '@/hooks/useIsMobile';
 
@@ -219,7 +222,7 @@ export default function QuickOrderPage(): ReactElement {
       </div>
 
       {/* Product Grid */}
-      <main className="px-4 py-6 pb-24">
+      <main className="px-4 py-6">
         <div className="max-w-7xl mx-auto">
           {error ? (
             <div className="text-center py-12">
@@ -236,6 +239,15 @@ export default function QuickOrderPage(): ReactElement {
           )}
         </div>
       </main>
+
+      {/* SEO Sections */}
+      <DeliveryAreasPreview />
+      <QuickOrderFAQs />
+
+      {/* Footer */}
+      <div className="pb-20">
+        <Footer />
+      </div>
 
       {/* Cart Summary Bar - Fixed Bottom */}
       <CartSummaryBar />
