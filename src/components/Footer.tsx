@@ -9,6 +9,7 @@ export default function Footer() {
       { label: 'Wedding Bar Service', href: '/weddings' },
       { label: 'Boat Party Packages', href: '/boat-parties' },
       { label: 'Bachelor/ette Parties', href: '/bach-parties' },
+      { label: 'Keg Delivery', href: '/kegs' },
     ],
     company: [
       { label: 'About Us', href: '/about' },

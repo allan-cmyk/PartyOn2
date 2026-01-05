@@ -7,12 +7,12 @@ import type { Metadata } from 'next';
 import type { ReactElement, ReactNode } from 'react';
 
 export const metadata: Metadata = {
-  title: 'Order | Party On Delivery - Austin Alcohol Delivery',
+  title: 'Order | Party On Delivery - Your Bar, Delivered',
   description:
-    'Fast and easy alcohol delivery ordering in Austin. One-tap add to cart, instant checkout. Beer, wine, spirits, and cocktail kits delivered to your door.',
+    'Your bar, delivered. Tap, add, party on. Fast alcohol delivery in Austin with one-tap ordering. Beer, wine, spirits, and cocktail kits delivered to your door.',
   openGraph: {
-    title: 'Order | Party On Delivery',
-    description: 'Fast alcohol delivery ordering in Austin. One-tap add to cart.',
+    title: 'Your Bar, Delivered | Party On Delivery',
+    description: 'Tap. Add. Party On. Fast alcohol delivery in Austin.',
     type: 'website',
   },
 };

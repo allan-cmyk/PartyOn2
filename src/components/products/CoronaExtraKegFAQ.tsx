@@ -28,7 +28,7 @@ export default function CoronaExtraKegFAQ() {
     },
     {
       question: "What areas of Austin do you deliver Corona kegs to?",
-      answer: "We deliver Corona Extra kegs throughout Austin including Downtown, South Austin, East Austin, West Austin, North Austin, and especially Lake Travis areas. We also deliver to Round Rock, Cedar Park, Pflugerville, Lakeway, and Bee Cave. Popular delivery locations include lake houses, boat docks, outdoor venues, and backyard parties."
+      answer: "We deliver Corona Extra kegs throughout Austin including Downtown, South Austin, East Austin, Lake Travis, Westlake, The Domain, Bee Cave, Lakeway, Mueller, and Spicewood. Popular delivery locations include lake houses, boat docks, outdoor venues, and backyard parties. Please note: We do not currently deliver to Round Rock, Cedar Park, or Dripping Springs."
     },
     {
       question: "Do you rent taps and ice tubs for Corona kegs?",

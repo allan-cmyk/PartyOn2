@@ -116,13 +116,11 @@ export default function QuickOrderPage(): ReactElement {
 
         <div className="relative text-center text-white z-10 max-w-4xl mx-auto px-6">
           <h1 className="font-serif font-light text-4xl md:text-6xl mb-4 tracking-[0.15em]">
-            Premium Spirits & Party Essentials
+            Your Bar, Delivered
           </h1>
           <div className="w-20 h-px bg-gold-400 mx-auto mb-4" />
           <p className="text-base md:text-lg font-light tracking-[0.1em] text-gray-200">
-            For whatever you&apos;re planning
-            <br />
-            Find something everyone will enjoy
+            Tap. Add. Party On.
           </p>
         </div>
       </section>
