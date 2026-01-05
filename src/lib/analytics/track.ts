@@ -10,6 +10,7 @@ export const ANALYTICS_EVENTS = {
   VIEW_BOAT_PARTIES: 'view_boat_parties',
   VIEW_BACH_PARTIES: 'view_bach_parties',
   VIEW_CORPORATE: 'view_corporate',
+  VIEW_KEGS: 'view_kegs',
   VIEW_CORPORATE_HOLIDAY: 'view_corporate_holiday',
   VIEW_ABOUT: 'view_about',
   VIEW_CONTACT: 'view_contact',

@@ -12,7 +12,7 @@ export default function MillerLiteKegFAQ() {
   const faqs = [
     {
       question: "How quickly can I get a Miller Lite keg delivered in Austin?",
-      answer: "We offer same-day delivery of Miller Lite kegs throughout Austin based on availability. For guaranteed delivery at a specific time (such as for weddings or events), we recommend scheduling your order in advance. We deliver to Downtown Austin, South Austin, Lake Travis, Round Rock, Cedar Park, and all surrounding areas."
+      answer: "We require 72-hour advance notice for keg deliveries to ensure proper chilling and coordination. We deliver to Downtown Austin, South Austin, East Austin, Lake Travis, Westlake, The Domain, Bee Cave, Lakeway, Mueller, and Spicewood. Note: We do not currently deliver to Round Rock, Cedar Park, or Dripping Springs."
     },
     {
       question: "How many people does a 1/2 barrel Miller Lite keg serve?",
@@ -28,7 +28,7 @@ export default function MillerLiteKegFAQ() {
     },
     {
       question: "What areas of Austin do you deliver Miller Lite kegs to?",
-      answer: "We deliver Miller Lite kegs throughout the greater Austin area including Downtown, South Austin, East Austin, West Austin, North Austin, Lake Travis, Round Rock, Cedar Park, and Pflugerville. We also deliver to event venues, wedding locations, hotels, and outdoor spaces (where alcohol is permitted)."
+      answer: "We deliver Miller Lite kegs throughout Austin including Downtown, South Austin, East Austin, Lake Travis, Westlake, The Domain, Bee Cave, Lakeway, Mueller, and Spicewood. We also deliver to event venues, wedding locations, hotels, and outdoor spaces (where alcohol is permitted). Please note: We do not currently deliver to Round Rock, Cedar Park, or Dripping Springs."
     },
     {
       question: "How long does a keg stay fresh after tapping?",

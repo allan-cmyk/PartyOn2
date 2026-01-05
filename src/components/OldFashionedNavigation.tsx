@@ -86,6 +86,7 @@ export default function OldFashionedNavigation({ forceScrolled = false, hidden =
     { href: '/boat-parties', label: 'BOAT PARTIES' },
     { href: '/bach-parties', label: 'CELEBRATIONS' },
     { href: '/corporate', label: 'CORPORATE' },
+    { href: '/kegs', label: 'KEGS' },
   ];
 
   const rentals = [

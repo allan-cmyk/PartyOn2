@@ -105,7 +105,7 @@ export function generateFAQSchema(faqs: Array<{ question: string; answer: string
   };
 }
 
-export function generateEventSchema(eventType: 'wedding' | 'party' | 'corporate' | 'boat') {
+export function generateEventSchema(eventType: 'wedding' | 'party' | 'corporate' | 'boat' | 'keg') {
   // Generate future date range for ongoing service availability
   // Start from today, end 1 year from today (valid future date range)
   const today = new Date();
@@ -183,6 +183,22 @@ export function generateEventSchema(eventType: 'wedding' | 'party' | 'corporate'
           addressCountry: 'US'
         }
       }
+    },
+    keg: {
+      name: 'Beer Keg Delivery Service - Austin, TX',
+      description: 'Cold keg delivery for parties, weddings, tailgates, and events in Austin. Miller Lite, Corona, craft beer kegs with tap rentals, tubs, and equipment.',
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      eventStatus: 'https://schema.org/EventScheduled',
+      location: {
+        '@type': 'Place',
+        name: 'Austin Metropolitan Area',
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: 'Austin',
+          addressRegion: 'TX',
+          addressCountry: 'US'
+        }
+      }
     }
   };
 
@@ -190,7 +206,8 @@ export function generateEventSchema(eventType: 'wedding' | 'party' | 'corporate'
     wedding: 'https://partyondelivery.com/weddings',
     party: 'https://partyondelivery.com/bach-parties',
     boat: 'https://partyondelivery.com/boat-parties',
-    corporate: 'https://partyondelivery.com/corporate-events'
+    corporate: 'https://partyondelivery.com/corporate-events',
+    keg: 'https://partyondelivery.com/kegs'
   };
 
   return {
