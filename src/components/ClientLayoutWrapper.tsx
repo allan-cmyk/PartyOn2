@@ -8,7 +8,7 @@ import MobileCart from '@/components/mobile/MobileCart';
 import MobileNavigation from '@/components/mobile/MobileNavigation';
 
 // Pages where MobileNavigation should be hidden (they have their own nav)
-const HIDE_MOBILE_NAV_PATHS = ['/quick-order'];
+const HIDE_MOBILE_NAV_PATHS = ['/order'];
 
 export default function ClientLayoutWrapper({ children }: { children: React.ReactNode }) {
   const [isMobile, setIsMobile] = useState<boolean | null>(null);

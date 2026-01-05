@@ -331,9 +331,9 @@ export default function Cart() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
                     <p className="text-gray-500 mb-6 text-center">Your cart is empty</p>
-                    <Link href="/products" onClick={closeCart}>
+                    <Link href="/order" onClick={closeCart}>
                       <button className="px-6 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm">
-                        SHOP PRODUCTS
+                        START ORDERING
                       </button>
                     </Link>
                   </div>
@@ -481,7 +481,7 @@ export default function Cart() {
                   </button>
 
                   {/* Continue Shopping */}
-                  <Link href="/products" onClick={closeCart}>
+                  <Link href="/order" onClick={closeCart}>
                     <button className="w-full py-3 border border-gray-300 text-gray-700 hover:border-gold-600 transition-colors tracking-[0.1em] text-sm">
                       CONTINUE SHOPPING
                     </button>

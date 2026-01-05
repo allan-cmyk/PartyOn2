@@ -298,9 +298,9 @@ export default function MobileCart() {
                       />
                     </svg>
                     <p className="text-gray-500 mb-6 text-center">Your cart is empty</p>
-                    <Link href="/products" onClick={closeCart}>
+                    <Link href="/order" onClick={closeCart}>
                       <button className="px-6 py-3 bg-gold-600 text-gray-900 rounded-lg tracking-[0.1em] text-sm">
-                        SHOP PRODUCTS
+                        START ORDERING
                       </button>
                     </Link>
                   </div>

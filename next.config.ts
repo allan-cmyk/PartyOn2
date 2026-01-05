@@ -94,6 +94,18 @@ const nextConfig: NextConfig = {
   // 301 Redirects for SEO (from SEMrush audit - January 2025)
   async redirects() {
     return [
+      // Main ordering page redirects
+      {
+        source: '/products',
+        destination: '/order',
+        permanent: true,
+      },
+      {
+        source: '/quick-order',
+        destination: '/order',
+        permanent: true,
+      },
+
       // ALL blog URL truncation redirects REMOVED - they were blocking real blog posts
       // The :suffix* pattern matches ZERO or more chars, so it was catching exact URLs
 

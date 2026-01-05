@@ -80,9 +80,9 @@ export default function HomePage() {
                     <span className="text-gray-700">Everything arrives cold with coordinated handoff</span>
                   </li>
                 </ul>
-                <Link href="/products">
+                <Link href="/order">
                   <button className="w-full px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
-                    SHOP BEST SELLERS
+                    START ORDERING
                   </button>
                 </Link>
               </div>
@@ -563,7 +563,7 @@ export default function HomePage() {
                 Comprehensive Beverage Selection
               </h3>
               <p className="text-gray-700 leading-relaxed mb-6">
-                Our <Link href="/products" className="text-gold-600 hover:text-gold-700 underline">curated catalog</Link> features everything from local Austin craft breweries to premium imported spirits. We stock an extensive selection of beer (domestic, craft, and imported), wine (red, white, rosé, and sparkling), and spirits (vodka, whiskey, tequila, rum, gin, and more). Looking for something special? We can source unique selections from Central Texas distributors to match your event&apos;s exact vision.
+                Our <Link href="/order" className="text-gold-600 hover:text-gold-700 underline">curated catalog</Link> features everything from local Austin craft breweries to premium imported spirits. We stock an extensive selection of beer (domestic, craft, and imported), wine (red, white, rosé, and sparkling), and spirits (vodka, whiskey, tequila, rum, gin, and more). Looking for something special? We can source unique selections from Central Texas distributors to match your event&apos;s exact vision.
               </p>
 
               <h3 className="font-serif text-2xl text-gray-900 mt-8 mb-4 tracking-[0.08em]">
@@ -624,12 +624,12 @@ export default function HomePage() {
                 2-minute order • Fast availability check • (737) 371-9700
               </p>
               <div className="flex flex-col md:flex-row gap-6 justify-center">
-                <Link href="/products">
+                <Link href="/order">
                   <button className="px-10 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
                     ORDER NOW
                   </button>
                 </Link>
-                <Link href="/order">
+                <Link href="/plan-event">
                   <button className="px-10 py-4 border-2 border-gold-600 text-white hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
                     PLAN MY EVENT
                   </button>
