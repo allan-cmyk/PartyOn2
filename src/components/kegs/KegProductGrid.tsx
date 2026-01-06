@@ -25,9 +25,10 @@ const ALL_KEGS: Keg[] = [
   { name: 'Miller Lite', size: '1/4 barrel', price: '$109.99', inStock: true, handle: 'miller-lite-keg-1-4-barrel-5-5-gal', category: 'domestics', sizeType: 'slim' },
   { name: 'Michelob Ultra', size: '1/2 barrel', price: '$189.00', inStock: true, handle: 'michelob-ultra-1-2-barrel', category: 'domestics', sizeType: 'half' },
   { name: 'Lone Star', size: '1/2 barrel', price: '$163.99', inStock: true, handle: 'lone-star-keg-1-2-barrel', category: 'domestics', sizeType: 'half' },
-  { name: 'Bud Light', size: '1/2 barrel', price: '$179.99', inStock: false, category: 'domestics', sizeType: 'half' },
+  { name: 'Bud Light', size: '1/2 barrel', price: '$172.99', inStock: true, handle: 'bud-light-1-2-barrell', category: 'domestics', sizeType: 'half' },
+  { name: 'Bud Light', size: '1/4 barrel', price: '$89.99', inStock: true, handle: 'bud-light-1-4-slim-barrell', category: 'domestics', sizeType: 'slim' },
   { name: 'Coors Light', size: '1/2 barrel', inStock: false, category: 'domestics', sizeType: 'half' },
-  { name: 'Budweiser', size: '1/2 barrel', price: '$179.99', inStock: false, category: 'domestics', sizeType: 'half' },
+  { name: 'Budweiser', size: '1/2 barrel', price: '$172.99', inStock: true, handle: 'budweiser-1-2-barrell', category: 'domestics', sizeType: 'half' },
 
   // Imports
   { name: 'Corona Extra', size: '1/2 barrel', price: '$189.99', inStock: true, handle: 'corona-extra-1-2-barrel', category: 'imports', sizeType: 'half' },
