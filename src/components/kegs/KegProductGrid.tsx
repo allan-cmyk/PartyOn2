@@ -25,9 +25,9 @@ const ALL_KEGS: Keg[] = [
   { name: 'Miller Lite', size: '1/4 barrel', price: '$109.99', inStock: true, handle: 'miller-lite-keg-1-4-barrel-5-5-gal', category: 'domestics', sizeType: 'slim' },
   { name: 'Michelob Ultra', size: '1/2 barrel', price: '$189.00', inStock: true, handle: 'michelob-ultra-1-2-barrel', category: 'domestics', sizeType: 'half' },
   { name: 'Lone Star', size: '1/2 barrel', price: '$163.99', inStock: true, handle: 'lone-star-keg-1-2-barrel', category: 'domestics', sizeType: 'half' },
-  { name: 'Bud Light', size: '1/2 barrel', inStock: false, category: 'domestics', sizeType: 'half' },
+  { name: 'Bud Light', size: '1/2 barrel', price: '$179.99', inStock: false, category: 'domestics', sizeType: 'half' },
   { name: 'Coors Light', size: '1/2 barrel', inStock: false, category: 'domestics', sizeType: 'half' },
-  { name: 'Budweiser', size: '1/2 barrel', inStock: false, category: 'domestics', sizeType: 'half' },
+  { name: 'Budweiser', size: '1/2 barrel', price: '$179.99', inStock: false, category: 'domestics', sizeType: 'half' },
 
   // Imports
   { name: 'Corona Extra', size: '1/2 barrel', price: '$189.99', inStock: true, handle: 'corona-extra-1-2-barrel', category: 'imports', sizeType: 'half' },
@@ -35,8 +35,6 @@ const ALL_KEGS: Keg[] = [
   { name: 'Dos Equis', size: '1/2 barrel', price: '$214.99', inStock: true, handle: 'miller-lite-keg-1-2-barrel-11-gal-copy', category: 'imports', sizeType: 'half' },
   { name: 'Dos Equis', size: '1/6 barrel', price: '$89.99', inStock: true, handle: 'dos-equis-lager-1-6', category: 'imports', sizeType: 'slim' },
   { name: 'Dos Equis Slim', size: '20L', price: '$84.99', inStock: true, handle: 'dos-equis-keg-slim-keg-20l', category: 'imports', sizeType: 'slim' },
-  { name: 'Heineken', size: '1/2 barrel', inStock: false, category: 'imports', sizeType: 'half' },
-  { name: 'Stella Artois', size: '1/2 barrel', inStock: false, category: 'imports', sizeType: 'half' },
 
   // Craft
   { name: 'Austin BeerWorks Pearl Snap', size: '1/6 barrel', price: '$94.99', inStock: true, handle: 'austin-beer-works-pearl-snaps-1-6', category: 'craft', sizeType: 'slim' },
