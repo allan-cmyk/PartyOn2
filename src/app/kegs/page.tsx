@@ -13,6 +13,7 @@ import EquipmentRentals from '@/components/kegs/EquipmentRentals';
 import KegCalculator from '@/components/kegs/KegCalculator';
 import KegServiceAreas from '@/components/kegs/KegServiceAreas';
 import { trackPageView, ANALYTICS_EVENTS } from '@/lib/analytics/track';
+import { useCartContext } from '@/contexts/CartContext';
 
 /**
  * Keg Delivery Landing Page
@@ -20,6 +21,9 @@ import { trackPageView, ANALYTICS_EVENTS } from '@/lib/analytics/track';
  */
 export default function KegsPage() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const { cart, setIsCartOpen } = useCartContext();
+
+  const itemCount = cart?.lines?.edges?.reduce((total, edge) => total + edge.node.quantity, 0) || 0;
 
   useEffect(() => {
     trackPageView(ANALYTICS_EVENTS.VIEW_KEGS, '/kegs', 'Keg Delivery Austin TX');
@@ -86,8 +90,11 @@ export default function KegsPage() {
         </div>
       </section>
 
-      {/* Product Grid - Moved to top */}
+      {/* Product Grid - includes "Need Multiple Kegs" CTA */}
       <KegProductGrid />
+
+      {/* Equipment Rentals - right after kegs */}
+      <EquipmentRentals />
 
       {/* How It Works */}
       <section className="py-24">
@@ -147,9 +154,6 @@ export default function KegsPage() {
 
       {/* Keg Size Education */}
       <KegSizeEducation />
-
-      {/* Equipment Rentals */}
-      <EquipmentRentals />
 
       {/* Keg Calculator */}
       <KegCalculator />
@@ -396,18 +400,15 @@ export default function KegsPage() {
             transition={{ duration: 0.3, ease: 'easeOut' }}
             className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-50 md:hidden"
           >
-            <div className="flex gap-3">
-              <Link href="/contact" className="flex-1">
-                <button className="w-full py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors text-sm tracking-[0.1em]">
-                  GET A QUOTE
-                </button>
-              </Link>
-              <a href="tel:7373719700" className="flex-1">
-                <button className="w-full py-3 border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all text-sm tracking-[0.1em]">
-                  CALL
-                </button>
-              </a>
-            </div>
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="w-full py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors text-sm tracking-[0.1em] flex items-center justify-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              VIEW CART {itemCount > 0 && `(${itemCount})`}
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
