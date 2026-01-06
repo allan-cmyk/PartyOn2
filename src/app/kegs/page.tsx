@@ -21,7 +21,7 @@ import { useCartContext } from '@/contexts/CartContext';
  */
 export default function KegsPage() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const { cart, setIsCartOpen } = useCartContext();
+  const { cart, openCart } = useCartContext();
 
   const itemCount = cart?.lines?.edges?.reduce((total, edge) => total + edge.node.quantity, 0) || 0;
 
@@ -401,7 +401,7 @@ export default function KegsPage() {
             className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-50 md:hidden"
           >
             <button
-              onClick={() => setIsCartOpen(true)}
+              onClick={() => openCart()}
               className="w-full py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors text-sm tracking-[0.1em] flex items-center justify-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
