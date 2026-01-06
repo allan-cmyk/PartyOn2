@@ -106,8 +106,8 @@ export default function QuickOrderPage(): ReactElement {
       {/* Hero Section */}
       <section className="relative h-[35vh] md:h-[40vh] mt-24 flex items-center justify-center overflow-hidden">
         <Image
-          src="/images/products/premium-spirits-wall.webp"
-          alt="Premium Spirits Collection"
+          src="/images/order/order-hero.png"
+          alt="Premium Bar Setup at Austin Pool Party"
           fill
           className="object-cover"
           priority
