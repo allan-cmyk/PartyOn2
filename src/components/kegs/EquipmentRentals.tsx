@@ -13,15 +13,11 @@ import AgeVerificationModal from '@/components/AgeVerificationModal';
  * Fetches actual products from Shopify and displays with Add to Cart
  */
 
-// Product handles to fetch
+// Product handles to fetch - only keg equipment that exists in Shopify
 const EQUIPMENT_HANDLES = [
   'ultimate-keg-party-package',
   'keg-tub-rental',
   'keg-tap-rental',
-  'bag-of-ice-7-lbs',
-  '240-16-oz-solo-cups',
-  '10-ping-pong-balls',
-  'folding-table-rental-6ft',
 ];
 
 const FEATURED_HANDLE = 'ultimate-keg-party-package';
@@ -263,8 +259,8 @@ export default function EquipmentRentals() {
           {/* Loading skeleton */}
           <div className="animate-pulse">
             <div className="bg-gray-200 h-48 rounded-lg mb-8" />
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
-              {[...Array(6)].map((_, i) => (
+            <div className="grid grid-cols-2 gap-4 md:gap-6 max-w-md mx-auto">
+              {[...Array(2)].map((_, i) => (
                 <div key={i} className="bg-gray-200 h-64 rounded-lg" />
               ))}
             </div>
@@ -294,8 +290,8 @@ export default function EquipmentRentals() {
           </ScrollRevealCSS>
         )}
 
-        {/* Regular Items Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+        {/* Regular Items Grid - Keg Tub and Tap Rentals */}
+        <div className="grid grid-cols-2 gap-4 md:gap-6 max-w-md mx-auto">
           {regularProducts.map((product, index) => (
             <ScrollRevealCSS
               key={product.id}
