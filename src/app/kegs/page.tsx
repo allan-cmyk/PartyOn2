@@ -49,7 +49,7 @@ export default function KegsPage() {
       <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src="/images/kegs/keg-party-hero.webp"
+            src="/images/kegs/keg-party-hero.png"
             alt="Backyard pool party with keg in Austin"
             fill
             sizes="100vw"
