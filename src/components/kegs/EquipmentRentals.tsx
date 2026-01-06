@@ -28,11 +28,10 @@ const FEATURED_HANDLE = 'ultimate-keg-party-package';
 
 interface EquipmentCardProps {
   product: ShopifyProduct;
-  index: number;
   featured?: boolean;
 }
 
-function EquipmentCard({ product, index, featured = false }: EquipmentCardProps) {
+function EquipmentCard({ product, featured = false }: EquipmentCardProps) {
   const { addToCart, loading: cartLoading } = useCartContext();
   const [isAdding, setIsAdding] = useState(false);
   const [showAgeVerification, setShowAgeVerification] = useState(false);
@@ -291,7 +290,7 @@ export default function EquipmentRentals() {
         {/* Featured Package */}
         {featuredProduct && (
           <ScrollRevealCSS duration={800} y={20} className="mb-8">
-            <EquipmentCard product={featuredProduct} index={0} featured />
+            <EquipmentCard product={featuredProduct} featured />
           </ScrollRevealCSS>
         )}
 
@@ -304,7 +303,7 @@ export default function EquipmentRentals() {
               y={20}
               delay={index * 50}
             >
-              <EquipmentCard product={product} index={index} />
+              <EquipmentCard product={product} />
             </ScrollRevealCSS>
           ))}
         </div>
