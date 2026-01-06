@@ -49,8 +49,8 @@ export default function KegsPage() {
       <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src="/images/services/corporate/corporate-event.webp"
-            alt="Cold keg delivery in Austin"
+            src="/images/kegs/keg-party-hero.webp"
+            alt="Backyard pool party with keg in Austin"
             fill
             sizes="100vw"
             className="object-cover"
@@ -85,6 +85,9 @@ export default function KegsPage() {
           </p>
         </div>
       </section>
+
+      {/* Product Grid - Moved to top */}
+      <KegProductGrid />
 
       {/* How It Works */}
       <section className="py-24">
@@ -141,9 +144,6 @@ export default function KegsPage() {
 
       {/* Keg Size Education */}
       <KegSizeEducation />
-
-      {/* Product Grid */}
-      <KegProductGrid />
 
       {/* Equipment Rentals */}
       <EquipmentRentals />
