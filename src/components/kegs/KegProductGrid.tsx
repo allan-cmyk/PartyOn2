@@ -3,6 +3,11 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
+import ProductModal from '@/components/ProductModal';
+import AgeVerificationModal from '@/components/AgeVerificationModal';
+import { ShopifyProduct } from '@/lib/shopify/types';
+import { useCartContext } from '@/contexts/CartContext';
+import { canPurchaseAlcohol } from '@/lib/shopify/utils';
 
 /**
  * Keg product grid with category tabs
@@ -59,6 +64,15 @@ const CATEGORIES = [
 
 export default function KegProductGrid() {
   const [activeCategory, setActiveCategory] = useState('all');
+  const [selectedProduct, setSelectedProduct] = useState<ShopifyProduct | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loadingHandle, setLoadingHandle] = useState<string | null>(null);
+  const [showAgeVerification, setShowAgeVerification] = useState(false);
+  const [pendingCartAdd, setPendingCartAdd] = useState<string | null>(null);
+  const [addingToCart, setAddingToCart] = useState<string | null>(null);
+  const [productCache, setProductCache] = useState<Record<string, ShopifyProduct>>({});
+
+  const { addToCart, loading: cartLoading } = useCartContext();
 
   const filteredKegs = activeCategory === 'all'
     ? ALL_KEGS
@@ -66,135 +80,256 @@ export default function KegProductGrid() {
       ? ALL_KEGS.filter(keg => keg.sizeType === activeCategory)
       : ALL_KEGS.filter(keg => keg.category === activeCategory);
 
+  // Fetch product by handle
+  const fetchProduct = async (handle: string): Promise<ShopifyProduct | null> => {
+    // Check cache first
+    if (productCache[handle]) {
+      return productCache[handle];
+    }
+
+    try {
+      const response = await fetch(`/api/products/${handle}`);
+      if (!response.ok) return null;
+      const product = await response.json();
+
+      // Cache the product
+      setProductCache(prev => ({ ...prev, [handle]: product }));
+      return product;
+    } catch (error) {
+      console.error('Error fetching product:', error);
+      return null;
+    }
+  };
+
+  // Handle title click - open modal with product details
+  const handleTitleClick = async (keg: Keg) => {
+    if (!keg.handle) return;
+
+    setLoadingHandle(keg.handle);
+    const product = await fetchProduct(keg.handle);
+    setLoadingHandle(null);
+
+    if (product) {
+      setSelectedProduct(product);
+      setIsModalOpen(true);
+    }
+  };
+
+  // Handle add to cart
+  const handleAddToCart = async (keg: Keg) => {
+    if (!keg.handle) return;
+
+    // Check age verification
+    if (!canPurchaseAlcohol()) {
+      setPendingCartAdd(keg.handle);
+      setShowAgeVerification(true);
+      return;
+    }
+
+    await addProductToCart(keg.handle);
+  };
+
+  // Actually add to cart
+  const addProductToCart = async (handle: string) => {
+    setAddingToCart(handle);
+
+    try {
+      const product = await fetchProduct(handle);
+      if (!product) {
+        console.error('Product not found');
+        return;
+      }
+
+      const variant = product.variants?.edges?.[0]?.node;
+      if (!variant?.id || !variant.availableForSale) {
+        console.error('No available variant');
+        return;
+      }
+
+      await addToCart(variant.id, 1);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    } finally {
+      setAddingToCart(null);
+    }
+  };
+
+  // Handle age verification success
+  const handleAgeVerified = async () => {
+    setShowAgeVerification(false);
+    localStorage.setItem('age_verified', 'true');
+
+    if (pendingCartAdd) {
+      await addProductToCart(pendingCartAdd);
+      setPendingCartAdd(null);
+    }
+  };
+
   return (
-    <section className="py-12 md:py-24 bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 md:px-8">
-        <ScrollRevealCSS duration={800} y={20} className="text-center mb-8 md:mb-12">
-          <h2 className="font-serif font-light text-3xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
-            Available Kegs
-          </h2>
-          <div className="w-16 h-px bg-gold-600 mx-auto mb-4 md:mb-6" />
-          <p className="text-gray-600 text-sm md:text-lg max-w-2xl mx-auto">
-            In-stock kegs available for delivery. Can&apos;t find your brand?
-            Request a quote and we&apos;ll source it for you.
-          </p>
-        </ScrollRevealCSS>
+    <>
+      <section className="py-12 md:py-24 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 md:px-8">
+          <ScrollRevealCSS duration={800} y={20} className="text-center mb-8 md:mb-12">
+            <h2 className="font-serif font-light text-3xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+              Available Kegs
+            </h2>
+            <div className="w-16 h-px bg-gold-600 mx-auto mb-4 md:mb-6" />
+            <p className="text-gray-600 text-sm md:text-lg max-w-2xl mx-auto">
+              In-stock kegs available for delivery. Can&apos;t find your brand?
+              Request a quote and we&apos;ll source it for you.
+            </p>
+          </ScrollRevealCSS>
 
-        {/* Category Tabs */}
-        <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-8 md:mb-12">
-          {CATEGORIES.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setActiveCategory(category.id)}
-              className={`px-3 md:px-6 py-2 md:py-3 tracking-[0.05em] md:tracking-[0.1em] text-xs md:text-sm transition-all duration-300 rounded ${
-                activeCategory === category.id
-                  ? 'bg-gold-600 text-gray-900'
-                  : 'border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900'
-              }`}
-            >
-              {category.name.toUpperCase()}
-            </button>
-          ))}
-        </div>
+          {/* Category Tabs */}
+          <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-8 md:mb-12">
+            {CATEGORIES.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => setActiveCategory(category.id)}
+                className={`px-3 md:px-6 py-2 md:py-3 tracking-[0.05em] md:tracking-[0.1em] text-xs md:text-sm transition-all duration-300 rounded ${
+                  activeCategory === category.id
+                    ? 'bg-gold-600 text-gray-900'
+                    : 'border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900'
+                }`}
+              >
+                {category.name.toUpperCase()}
+              </button>
+            ))}
+          </div>
 
-        {/* Keg Grid */}
-        <div
-          key={activeCategory}
-          className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6"
-          style={{
-            animation: 'result-fade-in 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards',
-          }}
-        >
-          {filteredKegs.map((keg, index) => (
-            <div
-              key={`${keg.name}-${keg.size}`}
-              className="bg-white rounded-lg p-3 md:p-6 shadow-lg border border-gray-200 hover:border-gold-300 transition-all duration-300"
-              style={{
-                animation: `result-fade-in 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards`,
-                animationDelay: `${index * 30}ms`,
-                opacity: 0,
-              }}
-            >
-              <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-2">
-                <div className="mb-1 md:mb-0">
-                  <h3 className="font-serif text-sm md:text-xl text-gray-900 tracking-[0.05em] leading-tight">
-                    {keg.name}
-                  </h3>
-                  <p className="text-gray-500 text-xs md:text-sm">{keg.size}</p>
-                </div>
-                {keg.inStock ? (
-                  <span className="bg-green-100 text-green-800 text-[10px] md:text-xs px-2 md:px-3 py-0.5 md:py-1 rounded-full font-medium w-fit">
-                    In Stock
-                  </span>
-                ) : (
-                  <span className="bg-gray-100 text-gray-600 text-[10px] md:text-xs px-2 md:px-3 py-0.5 md:py-1 rounded-full font-medium w-fit">
-                    Request Quote
-                  </span>
-                )}
-              </div>
-
-              {/* Price */}
-              {keg.price && (
-                <p className="text-lg md:text-2xl font-medium text-gold-600 mb-2 md:mb-4">
-                  {keg.price}
-                </p>
-              )}
-              {!keg.price && (
-                <p className="text-sm md:text-lg text-gray-400 mb-2 md:mb-4 italic">
-                  Price on request
-                </p>
-              )}
-
-              {keg.inStock && keg.handle ? (
-                <Link
-                  href={`/products/${keg.handle}`}
-                  className="block w-full py-1.5 md:py-2 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.05em] md:tracking-[0.1em] text-xs md:text-sm font-medium text-center rounded"
-                >
-                  VIEW & ORDER
-                </Link>
-              ) : (
-                <Link
-                  href="/contact"
-                  className="block w-full py-1.5 md:py-2 border border-gold-600 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.05em] md:tracking-[0.1em] text-xs md:text-sm font-medium text-center rounded"
-                >
-                  REQUEST QUOTE
-                </Link>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* Bulk Order CTA */}
-        <ScrollRevealCSS duration={800} y={20} delay={300} className="mt-12">
+          {/* Keg Grid */}
           <div
-            className="relative rounded-lg p-8 text-center overflow-hidden"
+            key={activeCategory}
+            className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6"
             style={{
-              backgroundImage: 'url(/images/kegs/multiple-kegs-bg.png)',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
+              animation: 'result-fade-in 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards',
             }}
           >
-            {/* Dark overlay for text readability */}
-            <div className="absolute inset-0 bg-gray-900/70" />
-
-            <div className="relative z-10">
-              <h3 className="font-serif text-2xl text-white mb-4 tracking-[0.1em]">
-                Need Multiple Kegs or a Special Brand?
-              </h3>
-              <p className="text-gray-200 mb-6 max-w-xl mx-auto">
-                Planning a large event? We can source almost any beer and offer
-                volume discounts for orders of 3+ kegs.
-              </p>
-              <a
-                href="tel:7373719700"
-                className="inline-block px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium rounded"
+            {filteredKegs.map((keg, index) => (
+              <div
+                key={`${keg.name}-${keg.size}`}
+                className="bg-white rounded-lg p-4 md:p-6 shadow-lg border border-gray-200 hover:border-gold-300 transition-all duration-300 text-center"
+                style={{
+                  animation: `result-fade-in 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards`,
+                  animationDelay: `${index * 30}ms`,
+                  opacity: 0,
+                }}
               >
-                CALL (737) 371-9700
-              </a>
-            </div>
+                {/* In Stock Badge */}
+                <div className="mb-3">
+                  {keg.inStock ? (
+                    <span className="bg-green-100 text-green-800 text-xs md:text-sm px-3 py-1 rounded-full font-medium">
+                      In Stock
+                    </span>
+                  ) : (
+                    <span className="bg-gray-100 text-gray-600 text-xs md:text-sm px-3 py-1 rounded-full font-medium">
+                      Request Quote
+                    </span>
+                  )}
+                </div>
+
+                {/* Title - Clickable */}
+                <button
+                  onClick={() => handleTitleClick(keg)}
+                  disabled={!keg.handle || loadingHandle === keg.handle}
+                  className="w-full mb-1 hover:text-gold-600 transition-colors disabled:cursor-default"
+                >
+                  <h3 className="font-serif text-lg md:text-2xl text-gray-900 tracking-[0.05em] leading-tight">
+                    {loadingHandle === keg.handle ? 'Loading...' : keg.name}
+                  </h3>
+                </button>
+
+                {/* Size */}
+                <p className="text-gray-500 text-sm md:text-base mb-3">{keg.size}</p>
+
+                {/* Price */}
+                {keg.price ? (
+                  <p className="text-2xl md:text-3xl font-medium text-gold-600 mb-4">
+                    {keg.price}
+                  </p>
+                ) : (
+                  <p className="text-base md:text-lg text-gray-400 mb-4 italic">
+                    Price on request
+                  </p>
+                )}
+
+                {/* Action Button */}
+                {keg.inStock && keg.handle ? (
+                  <button
+                    onClick={() => handleAddToCart(keg)}
+                    disabled={addingToCart === keg.handle || cartLoading}
+                    className={`w-full py-2 md:py-3 transition-colors tracking-[0.05em] md:tracking-[0.1em] text-xs md:text-sm font-medium rounded ${
+                      addingToCart === keg.handle || cartLoading
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-gold-600 text-gray-900 hover:bg-gold-700'
+                    }`}
+                  >
+                    {addingToCart === keg.handle ? 'ADDING...' : 'ADD TO CART'}
+                  </button>
+                ) : (
+                  <Link
+                    href="/contact"
+                    className="block w-full py-2 md:py-3 border border-gold-600 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.05em] md:tracking-[0.1em] text-xs md:text-sm font-medium text-center rounded"
+                  >
+                    REQUEST QUOTE
+                  </Link>
+                )}
+              </div>
+            ))}
           </div>
-        </ScrollRevealCSS>
-      </div>
-    </section>
+
+          {/* Bulk Order CTA */}
+          <ScrollRevealCSS duration={800} y={20} delay={300} className="mt-12">
+            <div
+              className="relative rounded-lg p-8 text-center overflow-hidden"
+              style={{
+                backgroundImage: 'url(/images/kegs/multiple-kegs-bg.png)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            >
+              {/* Dark overlay for text readability */}
+              <div className="absolute inset-0 bg-gray-900/70" />
+
+              <div className="relative z-10">
+                <h3 className="font-serif text-2xl text-white mb-4 tracking-[0.1em]">
+                  Need Multiple Kegs or a Special Brand?
+                </h3>
+                <p className="text-gray-200 mb-6 max-w-xl mx-auto">
+                  Planning a large event? We can source almost any beer and offer
+                  volume discounts for orders of 3+ kegs.
+                </p>
+                <a
+                  href="tel:7373719700"
+                  className="inline-block px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium rounded"
+                >
+                  CALL (737) 371-9700
+                </a>
+              </div>
+            </div>
+          </ScrollRevealCSS>
+        </div>
+      </section>
+
+      {/* Product Modal */}
+      <ProductModal
+        product={selectedProduct}
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedProduct(null);
+        }}
+      />
+
+      {/* Age Verification Modal */}
+      <AgeVerificationModal
+        isOpen={showAgeVerification}
+        onClose={() => {
+          setShowAgeVerification(false);
+          setPendingCartAdd(null);
+        }}
+        onVerify={handleAgeVerified}
+      />
+    </>
   );
 }
