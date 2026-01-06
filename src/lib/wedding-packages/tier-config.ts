@@ -438,18 +438,59 @@ export const SPIRIT_PRODUCTS: Record<SpiritLevel, Record<SpiritType, WeddingProd
 };
 
 // ============================================================================
-// CHAMPAGNE FOR TOAST
+// CHAMPAGNE FOR TOAST (varies by tier)
 // ============================================================================
 
-export const CHAMPAGNE_PRODUCT: WeddingProduct = {
-  name: 'La Marca Prosecco',
-  handle: 'la-marca-prosecco-extra-dry-750ml-bottle',
-  category: 'champagne',
-  subcategory: 'sparkling',
-  servingsPerUnit: 5,
-  unitLabel: '750ml',
-  estimatedPrice: 17.99,
+/** Champagne tiers: budget, standard, deluxe */
+export type ChampagneLevel = 'budget' | 'standard' | 'premium';
+
+export const CHAMPAGNE_PRODUCTS: Record<ChampagneLevel, WeddingProduct> = {
+  budget: {
+    name: 'Wycliff Brut Champagne',
+    handle: 'wycliff-brut-california-champagne-750ml-bottle',
+    category: 'champagne',
+    subcategory: 'sparkling',
+    servingsPerUnit: 5,
+    unitLabel: '750ml',
+    estimatedPrice: 8.99,
+  },
+  standard: {
+    name: 'La Marca Prosecco',
+    handle: 'la-marca-prosecco-extra-dry-750ml-bottle',
+    category: 'champagne',
+    subcategory: 'sparkling',
+    servingsPerUnit: 5,
+    unitLabel: '750ml',
+    estimatedPrice: 17.99,
+  },
+  premium: {
+    name: 'Moët & Chandon Imperial Brut',
+    handle: 'moet-chandon-imperial-brut-champagne-750ml-bottle',
+    category: 'champagne',
+    subcategory: 'sparkling',
+    servingsPerUnit: 5,
+    unitLabel: '750ml',
+    estimatedPrice: 54.99,
+  },
 };
+
+/** Map tiers to their champagne level */
+const TIER_CHAMPAGNE_MAP: Record<WeddingTier, ChampagneLevel> = {
+  'beer-wine-special': 'budget',
+  'affordable-full-bar': 'budget',
+  'standard-bar': 'standard',
+  'texas-bar': 'standard',
+  'deluxe-bar': 'premium',
+};
+
+/** Get the appropriate champagne for a tier */
+export function getChampagneForTier(tier: WeddingTier): WeddingProduct {
+  const level = TIER_CHAMPAGNE_MAP[tier] ?? 'standard';
+  return CHAMPAGNE_PRODUCTS[level] ?? CHAMPAGNE_PRODUCTS.standard;
+}
+
+/** @deprecated Use getChampagneForTier instead */
+export const CHAMPAGNE_PRODUCT: WeddingProduct = CHAMPAGNE_PRODUCTS.standard;
 
 // ============================================================================
 // HELPER FUNCTIONS

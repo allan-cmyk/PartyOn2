@@ -5,7 +5,7 @@ import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 /**
  * Service areas component for keg delivery
- * Shows where we deliver and don't deliver
+ * Shows delivery zones and Lake Travis dock delivery option
  */
 
 const SERVED_AREAS = [
@@ -19,12 +19,6 @@ const SERVED_AREAS = [
   'Lakeway',
   'Mueller',
   'Spicewood',
-];
-
-const NOT_SERVED_AREAS = [
-  'Round Rock',
-  'Cedar Park',
-  'Dripping Springs',
 ];
 
 export default function KegServiceAreas() {
@@ -44,7 +38,7 @@ export default function KegServiceAreas() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {/* Served Areas */}
           <ScrollRevealCSS duration={800} y={20} delay={100}>
-            <div className="bg-white rounded-lg p-6 shadow-lg border border-green-200">
+            <div className="bg-white rounded-lg p-6 shadow-lg border border-green-200 h-full">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
                   <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,59 +62,34 @@ export default function KegServiceAreas() {
             </div>
           </ScrollRevealCSS>
 
-          {/* Not Served Areas */}
+          {/* Lake Travis Dock Delivery */}
           <ScrollRevealCSS duration={800} y={20} delay={200}>
-            <div className="bg-white rounded-lg p-6 shadow-lg border border-gray-200">
+            <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg p-6 shadow-lg border border-blue-200 h-full flex flex-col">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                  <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                  <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </div>
                 <h3 className="font-serif text-xl text-gray-900 tracking-[0.05em]">
-                  Outside Delivery Zone
+                  Lake Travis Dock Delivery
                 </h3>
               </div>
-              <div className="space-y-2 mb-4">
-                {NOT_SERVED_AREAS.map((area) => (
-                  <div key={area} className="flex items-center gap-2 py-1">
-                    <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                    <span className="text-gray-500 text-sm">{area}</span>
-                  </div>
-                ))}
-              </div>
-              <p className="text-gray-500 text-xs">
-                Live in one of these areas?{' '}
-                <Link href="/contact" className="text-gold-600 hover:text-gold-700 underline">
-                  Contact us
-                </Link>{' '}
-                for potential special arrangements.
+              <p className="text-gray-600 text-sm mb-4 flex-grow">
+                Planning a boat party? We deliver kegs directly to Lake Travis
+                marinas including Lakeway Marina, Point Venture, Volente Beach,
+                and Hudson Bend.
               </p>
+              <Link
+                href="/boat-parties"
+                className="inline-block text-gold-600 hover:text-gold-700 font-medium tracking-[0.1em] text-sm"
+              >
+                LEARN ABOUT BOAT PARTY DELIVERY →
+              </Link>
             </div>
           </ScrollRevealCSS>
         </div>
-
-        {/* Lake Travis Callout */}
-        <ScrollRevealCSS duration={800} y={20} delay={300} className="mt-12">
-          <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg p-8 text-center border border-blue-200 max-w-2xl mx-auto">
-            <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
-              Lake Travis Dock Delivery
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Planning a boat party? We deliver kegs directly to Lake Travis
-              marinas including Lakeway Marina, Point Venture, Volente Beach,
-              and Hudson Bend.
-            </p>
-            <Link
-              href="/boat-parties"
-              className="inline-block text-gold-600 hover:text-gold-700 font-medium tracking-[0.1em] text-sm"
-            >
-              LEARN ABOUT BOAT PARTY DELIVERY →
-            </Link>
-          </div>
-        </ScrollRevealCSS>
       </div>
     </section>
   );

@@ -16,16 +16,25 @@ export default function WeddingOrderPage(): ReactElement {
       <OldFashionedNavigation />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-12 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-4xl mx-auto px-6 text-center">
+      <section className="pt-32 pb-20 min-h-[500px] relative overflow-hidden">
+        {/* Background Image */}
+        <img
+          src="/images/wedding-services/order-hero.png"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover object-[center_70%]"
+        />
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-black/50" />
+
+        <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
           <ScrollRevealCSS>
-            <p className="text-gold-600 tracking-[0.2em] text-sm uppercase mb-4">
+            <p className="text-gold-400 tracking-[0.2em] text-sm uppercase mb-4">
               Wedding Bar Packages
             </p>
           </ScrollRevealCSS>
 
           <ScrollRevealCSS delay={100}>
-            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-gray-900 mb-6 tracking-[0.1em]">
+            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white mb-6 tracking-[0.1em]">
               BUILD YOUR PERFECT
               <br />
               WEDDING BAR
@@ -33,11 +42,11 @@ export default function WeddingOrderPage(): ReactElement {
           </ScrollRevealCSS>
 
           <ScrollRevealCSS delay={200}>
-            <div className="w-24 h-px bg-gold-500 mx-auto mb-6" />
+            <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
           </ScrollRevealCSS>
 
           <ScrollRevealCSS delay={300}>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-200 max-w-2xl mx-auto">
               Use our calculator to build a customized bar package for your wedding.
               Choose from 5 tiers, select your spirits, and get exactly what you need
               delivered to your Austin venue.

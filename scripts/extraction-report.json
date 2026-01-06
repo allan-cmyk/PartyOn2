@@ -1,0 +1,178 @@
+{
+  "timestamp": "2025-12-17T19:35:11.230Z",
+  "duration": "1m 14s",
+  "totalKits": 21,
+  "successful": 21,
+  "failed": 0,
+  "totalImagesDownloaded": 84,
+  "results": [
+    {
+      "title": "Spicy Rita Cocktail Kit",
+      "handle": "spicy-rita-shaken-cocktail-kit",
+      "success": true,
+      "componentsFound": 5,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\Spicy Rita Cocktail Kit",
+      "imagesDownloaded": 5
+    },
+    {
+      "title": "Espresso Martini Cocktail Kit",
+      "handle": "espresso-martini",
+      "success": true,
+      "componentsFound": 7,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\Espresso Martini Cocktail Kit",
+      "imagesDownloaded": 5
+    },
+    {
+      "title": "Hugo Spritz Cocktail Kit",
+      "handle": "hugo-spritz-cocktail-kit",
+      "success": true,
+      "componentsFound": 5,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\Hugo Spritz Cocktail Kit",
+      "imagesDownloaded": 4
+    },
+    {
+      "title": "Still Austin Old-Fashioned Gift Basket",
+      "handle": "still-austin-old-fashioned-gift-basket",
+      "success": true,
+      "componentsFound": 7,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\Still Austin Old-Fashioned Gift Basket",
+      "imagesDownloaded": 5
+    },
+    {
+      "title": "Verde Punch Cocktail Kit",
+      "handle": "drunk-eagle-cocktail-kit",
+      "success": true,
+      "componentsFound": 5,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\Verde Punch Cocktail Kit",
+      "imagesDownloaded": 5
+    },
+    {
+      "title": "Hair of the Dog Gift Basket - Mimosas",
+      "handle": "hair-of-the-dog-gift-basket-mimosas",
+      "success": true,
+      "componentsFound": 8,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\Hair of the Dog Gift Basket - Mimosas",
+      "imagesDownloaded": 2
+    },
+    {
+      "title": "California Sober/Gardening Gift Basket",
+      "handle": "california-sober-gardening-gift-basket",
+      "success": true,
+      "componentsFound": 10,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\California SoberGardening Gift Basket",
+      "imagesDownloaded": 4
+    },
+    {
+      "title": "Pink 75 Cocktail Kit",
+      "handle": "pink-75-cocktail-kit",
+      "success": true,
+      "componentsFound": 10,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\Pink 75 Cocktail Kit",
+      "imagesDownloaded": 5
+    },
+    {
+      "title": "Aperol Spritz Party Pitcher Kit (16 Drinks)",
+      "handle": "aperol-spritz-party-pitcher-kit-16-drinks",
+      "success": true,
+      "componentsFound": 3,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\Aperol Spritz Party Pitcher Kit (16 Drinks)",
+      "imagesDownloaded": 3
+    },
+    {
+      "title": "Arnold Palmer Non-Alcoholic (Party Pitcher Kit - 1 gallon)",
+      "handle": "arnold-palmer-non-alcoholic-gallon-dispenser-kit-25-drinks-per-dispenser",
+      "success": true,
+      "componentsFound": 2,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\Arnold Palmer Non-Alcoholic (Party Pitcher Kit - 1 gallon)",
+      "imagesDownloaded": 2
+    },
+    {
+      "title": "Cosmo Punch Party Pitcher Kit (30 drinks)",
+      "handle": "cosmo-punch-gallon-dispenser-kit-22-drinks-per-dispenser",
+      "success": true,
+      "componentsFound": 5,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\Cosmo Punch Party Pitcher Kit (30 drinks)",
+      "imagesDownloaded": 5
+    },
+    {
+      "title": "Rum Punch Gallon Dispenser Kit (20 drinks)",
+      "handle": "rum-punch-gallon-dispenser-kit-25-drinks-per-dispenser",
+      "success": true,
+      "componentsFound": 5,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\Rum Punch Gallon Dispenser Kit (20 drinks)",
+      "imagesDownloaded": 5
+    },
+    {
+      "title": "Perfect Paloma Party Pitcher Kit",
+      "handle": "simple-paloma-cocktail-kit",
+      "success": true,
+      "componentsFound": 3,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\Perfect Paloma Party Pitcher Kit",
+      "imagesDownloaded": 3
+    },
+    {
+      "title": "Austin Rita Party Pitcher Kit (24 drinks)",
+      "handle": "classic-margarita-pitcher-kit-20-drinks-per-pitcher",
+      "success": true,
+      "componentsFound": 5,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\Austin Rita Party Pitcher Kit (24 drinks)",
+      "imagesDownloaded": 5
+    },
+    {
+      "title": "Skinny Margarita Pitcher Kit (20 drinks per pitcher)",
+      "handle": "lake-day-ritas-batched-gallon",
+      "success": true,
+      "componentsFound": 3,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\Skinny Margarita Pitcher Kit (20 drinks per pitcher)",
+      "imagesDownloaded": 3
+    },
+    {
+      "title": "Floradora Party Pitcher Kit (16 drinks)",
+      "handle": "floradora-party-pitcher-kit",
+      "success": true,
+      "componentsFound": 5,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\Floradora Party Pitcher Kit (16 drinks)",
+      "imagesDownloaded": 4
+    },
+    {
+      "title": "Tequila Sunrise Party Pitcher Kit (16 drinks)",
+      "handle": "burnt-orange-tequila-sunrise-party-pitcher-kit",
+      "success": true,
+      "componentsFound": 4,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\Tequila Sunrise Party Pitcher Kit (16 drinks)",
+      "imagesDownloaded": 4
+    },
+    {
+      "title": "Cantarito Non-Alcoholic Party Pitcher Kit (1 gallon)",
+      "handle": "cantarito-non-alcoholic-gallon-dispenser-kit-22-drinks-per-dispenser",
+      "success": true,
+      "componentsFound": 4,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\Cantarito Non-Alcoholic Party Pitcher Kit (1 gallon)",
+      "imagesDownloaded": 4
+    },
+    {
+      "title": "Tito's Lemonade Party Pitcher Kit (16 drinks)",
+      "handle": "titos-lemonade-gallon-dispenser-kit-22-drinks-per-dispenser",
+      "success": true,
+      "componentsFound": 2,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\Tito's Lemonade Party Pitcher Kit (16 drinks)",
+      "imagesDownloaded": 2
+    },
+    {
+      "title": "Blue Margarita Party Pitcher Kit (24 drinks)",
+      "handle": "blue-margarita-party-pitcher-kit",
+      "success": true,
+      "componentsFound": 5,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\Blue Margarita Party Pitcher Kit (24 drinks)",
+      "imagesDownloaded": 5
+    },
+    {
+      "title": "Strawberry Margarita Pitcher Kit",
+      "handle": "strawberry-margarita-pitcher-kit",
+      "success": true,
+      "componentsFound": 4,
+      "folderPath": "C:\\Party On Delivery\\WEBSITE FILES\\PartyOn2\\public\\images\\products\\Strawberry Margarita Pitcher Kit",
+      "imagesDownloaded": 4
+    }
+  ]
+}

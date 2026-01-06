@@ -9,6 +9,7 @@ import {
   tierRequiresSpiritPicker,
   DEFAULT_SPIRITS,
   resolveCartItems,
+  getChampagneForTier,
 } from '@/lib/wedding-packages';
 import TierSelector from './TierSelector';
 import SpiritPicker from './SpiritPicker';
@@ -202,7 +203,7 @@ export default function WeddingOrderCalculator(): ReactElement {
                   <span className="font-medium text-gray-900">Include Champagne Toast</span>
                 </div>
                 <p className="text-sm text-gray-600 mt-1">
-                  Add La Marca Prosecco for a celebratory toast (1 glass per guest)
+                  Add {getChampagneForTier(tier).name} for a celebratory toast (1 glass per guest)
                 </p>
               </div>
             </label>

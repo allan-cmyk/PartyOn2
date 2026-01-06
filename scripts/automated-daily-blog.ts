@@ -79,8 +79,8 @@ const TOPIC_CLUSTERS: TopicCluster[] = [
     clusterSlugs: [],
   },
   {
-    pillarSlug: 'ultimate-guide-austin-wedding-bar-service',
-    pillarTitle: 'The Ultimate Guide to Austin Wedding Bar Service',
+    pillarSlug: 'ultimate-guide-austin-weddings',
+    pillarTitle: 'Ultimate Guide to Planning Your Austin Wedding',
     category: 'Weddings',
     clusterSlugs: [],
   },
@@ -91,9 +91,33 @@ const TOPIC_CLUSTERS: TopicCluster[] = [
     clusterSlugs: [],
   },
   {
-    pillarSlug: 'ultimate-guide-ut-tailgating',
-    pillarTitle: 'The Ultimate Guide to UT Football Tailgating',
+    pillarSlug: 'ultimate-guide-ut-tailgating-austin',
+    pillarTitle: 'The Ultimate Guide to UT Football Tailgating in Austin',
     category: 'Tailgating',
+    clusterSlugs: [],
+  },
+  {
+    pillarSlug: 'ultimate-guide-austin-birthday-parties',
+    pillarTitle: 'The Ultimate Guide to Austin Birthday Parties',
+    category: 'Birthday Parties',
+    clusterSlugs: [],
+  },
+  {
+    pillarSlug: 'ultimate-guide-austin-engagement-parties',
+    pillarTitle: 'The Ultimate Guide to Austin Engagement Parties',
+    category: 'Engagement Parties',
+    clusterSlugs: [],
+  },
+  {
+    pillarSlug: 'ultimate-guide-austin-gender-reveals',
+    pillarTitle: 'The Ultimate Guide to Austin Gender Reveals',
+    category: 'Gender Reveals',
+    clusterSlugs: [],
+  },
+  {
+    pillarSlug: 'ultimate-guide-austin-quinceaneras',
+    pillarTitle: 'The Ultimate Guide to Austin Quinceañeras',
+    category: 'Quinceañeras',
     clusterSlugs: [],
   },
 ];
@@ -236,12 +260,13 @@ TABLE TRIGGERS (automatically create HTML tables for):
 HTML TABLE FORMAT (COPY THIS EXACT STRUCTURE - SCHEMA.ORG REQUIRED):
 <div itemScope itemType="https://schema.org/Table">
   <table className="comparison-table">
-    <caption>Descriptive Table Caption</caption>
+    <caption>Descriptive Table Caption (Required - Becomes Table Header)</caption>
     <thead>
       <tr>
         <th scope="col">Column 1</th>
         <th scope="col">Column 2</th>
         <th scope="col">Column 3</th>
+        <th scope="col">Column 4</th>
       </tr>
     </thead>
     <tbody>
@@ -249,21 +274,28 @@ HTML TABLE FORMAT (COPY THIS EXACT STRUCTURE - SCHEMA.ORG REQUIRED):
         <td><strong itemProp="name">Item Name</strong></td>
         <td><span itemProp="price">$XX-XX</span></td>
         <td>Additional details</td>
+        <td>Best For description</td>
       </tr>
       <tr itemScope itemType="https://schema.org/Offer">
         <td><strong itemProp="name">Second Item</strong></td>
         <td><span itemProp="price">$YY-YY</span></td>
         <td>More details</td>
+        <td>Another use case</td>
       </tr>
     </tbody>
   </table>
 </div>
 
-CRITICAL: Do NOT create tables without Schema.org attributes. Every table MUST have:
-- Wrapper div with: itemScope itemType="https://schema.org/Table"
-- Each row with: itemScope itemType="https://schema.org/Offer"
-- Item names with: itemProp="name"
-- Prices with: itemProp="price"
+CRITICAL TABLE REQUIREMENTS:
+1. ALWAYS use the exact wrapper: <div itemScope itemType="https://schema.org/Table">
+2. ALWAYS include <caption> - it displays as an elegant gold-accented header
+3. ALWAYS use <th scope="col"> for header cells (accessibility + SEO)
+4. Each data row MUST have: itemScope itemType="https://schema.org/Offer"
+5. Item names MUST use: <strong itemProp="name">Name</strong>
+6. Prices MUST use: <span itemProp="price">$XX</span> (displays in gold accent)
+7. Maximum 4 columns for mobile readability
+8. Include context with prices (per person, per hour, minimum spend, etc.)
+9. Add "Best For" or similar column to help readers choose options
 
 REQUIRED SECTIONS:
 1. Engaging introduction with a hook
@@ -326,6 +358,11 @@ async function generateBlogImages(topic: Topic, slug: string): Promise<string[]>
       'Bachelor Parties': '/images/hero/bach-hero-party-bus.webp',
       'Bachelorette Parties': '/images/hero/bach-hero-rainey.webp',
       'Boat Parties': '/images/hero/lake-travis-yacht-sunset.webp',
+      'Birthday Parties': '/images/hero/austin-skyline-hero.webp',
+      'Engagement Parties': '/images/hero/wedding-hero-garden.webp',
+      'Gender Reveals': '/images/hero/austin-skyline-hero.webp',
+      'Quinceañeras': '/images/hero/austin-skyline-hero.webp',
+      'Tailgating': '/images/hero/austin-skyline-hero.webp',
     };
 
     const defaultImage = categoryImages[topic.category] || '/images/hero/austin-skyline-hero.webp';
@@ -442,6 +479,26 @@ function getCategoryServiceInfo(category: string): { url: string; description: s
     'Boat Parties': {
       url: 'https://partyondelivery.com/boat-parties',
       description: 'boat party alcohol delivery, cooler packages, and premium beverage service for Lake Travis and Lake Austin boat parties'
+    },
+    'Birthday Parties': {
+      url: 'https://partyondelivery.com/',
+      description: 'birthday party alcohol delivery, celebration packages, and premium beverage service for Austin birthday celebrations'
+    },
+    'Engagement Parties': {
+      url: 'https://partyondelivery.com/weddings',
+      description: 'engagement party bar service, celebration packages, and premium beverage delivery for Austin engagement celebrations'
+    },
+    'Gender Reveals': {
+      url: 'https://partyondelivery.com/',
+      description: 'gender reveal party packages, themed drinks, and premium beverage delivery for Austin gender reveal celebrations'
+    },
+    'Quinceañeras': {
+      url: 'https://partyondelivery.com/',
+      description: 'quinceañera beverage service, celebration packages, and premium delivery for Austin quinceañera celebrations'
+    },
+    'Tailgating': {
+      url: 'https://partyondelivery.com/',
+      description: 'tailgate party packages, cooler delivery, and premium beverage service for UT football tailgates in Austin'
     }
   };
 
@@ -469,6 +526,10 @@ function createMDXFile(topic: Topic, content: string, imagePaths: string[]): str
   // Add cluster link section (link back to pillar page)
   const clusterSection = generateClusterSection(topic.category);
 
+  // Find the pillar slug for this category
+  const cluster = findClusterByCategory(topic.category);
+  const pillarSlugLine = cluster ? `pillarSlug: "${cluster.pillarSlug}"\n` : '';
+
   const frontmatter = `---
 title: "${topic.title}"
 date: "${date}"
@@ -477,7 +538,7 @@ excerpt: "${content.substring(0, 160).replace(/"/g, '\\"')}..."
 image: "${imagePaths[0] || '/images/hero/lake-travis-sunset.webp'}"
 keywords: ${JSON.stringify(topic.keywords)}
 author: "${author}"
----
+${pillarSlugLine}---
 
 `;
 

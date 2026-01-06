@@ -17,7 +17,11 @@
       "Bash(curl:*)",
       "WebFetch(domain:party-on2-p3sd0vlxr-infinite-burn-rate.vercel.app)",
       "Bash(git pull:*)",
-      "WebFetch(domain:docs.recomsale.com)"
+      "WebFetch(domain:docs.recomsale.com)",
+      "Bash(findstr:*)",
+      "Bash(git cherry-pick:*)",
+      "Bash(git fetch:*)",
+      "Bash(ping:*)"
     ],
     "deny": [],
     "ask": []

@@ -13,13 +13,15 @@ export {
   WINE_PRODUCTS,
   BEER_PRODUCTS,
   SPIRIT_PRODUCTS,
-  CHAMPAGNE_PRODUCT,
+  CHAMPAGNE_PRODUCTS,
+  CHAMPAGNE_PRODUCT, // @deprecated - use getChampagneForTier
   ALL_SPIRIT_TYPES,
   DEFAULT_SPIRITS,
   getTierConfig,
   getWinesForTier,
   getBeersForTier,
   getSpiritsForTier,
+  getChampagneForTier,
 } from './tier-config';
 
 // Calculations

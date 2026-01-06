@@ -1,7 +1,7 @@
 {
-  "timestamp": "2025-12-12T14:53:00.844Z",
-  "totalLinks": 822,
-  "uniqueUrls": 372,
+  "timestamp": "2025-12-12T20:12:11.954Z",
+  "totalLinks": 894,
+  "uniqueUrls": 417,
   "results": {
     "ok": [
       {
@@ -268,6 +268,11 @@
             "line": 24
           },
           {
+            "file": "unique-airbnbs-for-large-bachelorette-groups-in-austin.mdx",
+            "text": "The Oasis",
+            "line": 64
+          },
+          {
             "file": "what-to-pack-for-a-bachelor-weekend-on-lake-travis.mdx",
             "text": "The Oasis on Lake Travis",
             "line": 94
@@ -305,6 +310,11 @@
             "file": "how-to-split-costs-fairly-for-a-bachelorette-weekend-in-austin.mdx",
             "text": "Milk + Honey Spa",
             "line": 74
+          },
+          {
+            "file": "ultimate-guide-austin-bachelorette-parties.mdx",
+            "text": "Milk + Honey Spa",
+            "line": 97
           }
         ]
       },
@@ -471,10 +481,56 @@
         ]
       },
       {
+        "url": "https://driskillhotel.com/weddings/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "all-inclusive-austin-wedding-venues.mdx",
+            "text": "The Driskill Hotel",
+            "line": 126
+          },
+          {
+            "file": "all-inclusive-austin-wedding-venues.mdx",
+            "text": "The Driskill Hotel",
+            "line": 190
+          }
+        ]
+      },
+      {
+        "url": "https://www.marriott.com/en-us/hotels/ausmd-austin-marriott-downtown/events/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "all-inclusive-austin-wedding-venues.mdx",
+            "text": "Austin Marriott Downtown",
+            "line": 127
+          }
+        ]
+      },
+      {
+        "url": "https://www.marriott.com/en-us/hotels/ausjw-jw-marriott-austin/events/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "all-inclusive-austin-wedding-venues.mdx",
+            "text": "JW Marriott Austin",
+            "line": 128
+          }
+        ]
+      },
+      {
         "url": "https://brazos-hall.com/",
         "status": "ok",
         "statusCode": 200,
         "occurrences": [
+          {
+            "file": "all-inclusive-austin-wedding-venues.mdx",
+            "text": "Brazos Hall",
+            "line": 129
+          },
           {
             "file": "austin-bachelor-party-do-s-and-don-ts-for-first-time-planners.mdx",
             "text": "Brazos Hall",
@@ -539,6 +595,11 @@
             "file": "best-restaurants-for-birthday-dinners-in-austin.mdx",
             "text": "Brazos Hall",
             "line": 87
+          },
+          {
+            "file": "best-small-wedding-venues-austin.mdx",
+            "text": "Brazos Hall",
+            "line": 90
           },
           {
             "file": "best-venues-for-quincea-eras-near-downtown-austin.mdx",
@@ -748,6 +809,127 @@
         ]
       },
       {
+        "url": "https://www.duchmanwinery.com/Events/Weddings",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "all-inclusive-austin-wedding-venues.mdx",
+            "text": "Duchman Family Winery",
+            "line": 135
+          }
+        ]
+      },
+      {
+        "url": "https://flatcreekestate.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "all-inclusive-austin-wedding-venues.mdx",
+            "text": "Flat Creek Estate",
+            "line": 136
+          },
+          {
+            "file": "wedding-photography-austin-lakes-hills.mdx",
+            "text": "Flat Creek Estate",
+            "line": 81
+          }
+        ]
+      },
+      {
+        "url": "https://www.driftwoodwine.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "all-inclusive-austin-wedding-venues.mdx",
+            "text": "Driftwood Estate Winery",
+            "line": 137
+          }
+        ]
+      },
+      {
+        "url": "https://themamaison.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "all-inclusive-austin-wedding-venues.mdx",
+            "text": "Ma Maison",
+            "line": 181
+          }
+        ]
+      },
+      {
+        "url": "https://pecanspringsranch.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "all-inclusive-austin-wedding-venues.mdx",
+            "text": "Pecan Springs Ranch",
+            "line": 182
+          },
+          {
+            "file": "best-small-wedding-venues-austin.mdx",
+            "text": "Pecan Springs Ranch",
+            "line": 145
+          },
+          {
+            "file": "top-10-gender-reveal-themes-for-austin-families.mdx",
+            "text": "Pecan Springs Ranch",
+            "line": 27
+          }
+        ]
+      },
+      {
+        "url": "https://www.thecreekhaus.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "all-inclusive-austin-wedding-venues.mdx",
+            "text": "Creek Haus",
+            "line": 183
+          },
+          {
+            "file": "best-small-wedding-venues-austin.mdx",
+            "text": "The Creek Haus",
+            "line": 142
+          }
+        ]
+      },
+      {
+        "url": "https://www.camplucy.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "all-inclusive-austin-wedding-venues.mdx",
+            "text": "Camp Lucy",
+            "line": 189
+          },
+          {
+            "file": "best-small-wedding-venues-austin.mdx",
+            "text": "Camp Lucy",
+            "line": 144
+          }
+        ]
+      },
+      {
+        "url": "https://www.fourseasons.com/austin/weddings/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "all-inclusive-austin-wedding-venues.mdx",
+            "text": "Four Seasons Austin",
+            "line": 191
+          }
+        ]
+      },
+      {
         "url": "https://franklinbbq.com/",
         "status": "ok",
         "statusCode": 200,
@@ -848,6 +1030,11 @@
             "line": 70
           },
           {
+            "file": "rehearsal-dinner-austin-restaurants.mdx",
+            "text": "Franklin Barbecue",
+            "line": 140
+          },
+          {
             "file": "rustic-bbq-engagement-party-d-cor-ideas.mdx",
             "text": "Franklin Barbecue",
             "line": 27
@@ -856,6 +1043,120 @@
             "file": "top-corporate-catering-options-for-austin-business-events.mdx",
             "text": "Franklin Barbecue",
             "line": 65
+          }
+        ]
+      },
+      {
+        "url": "https://www.craftmeatsaustin.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "austin-florists-caterers-texas-weddings.mdx",
+            "text": "Micklethwait Craft Meats",
+            "line": 164
+          }
+        ]
+      },
+      {
+        "url": "https://stilesswitchbbq.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "austin-florists-caterers-texas-weddings.mdx",
+            "text": "Stiles Switch BBQ",
+            "line": 165
+          }
+        ]
+      },
+      {
+        "url": "https://terryblacksbbq.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "austin-florists-caterers-texas-weddings.mdx",
+            "text": "Terry Black's Barbecue",
+            "line": 166
+          },
+          {
+            "file": "rehearsal-dinner-austin-restaurants.mdx",
+            "text": "Terry Black's Barbecue",
+            "line": 141
+          }
+        ]
+      },
+      {
+        "url": "https://labarbecue.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "austin-florists-caterers-texas-weddings.mdx",
+            "text": "la Barbecue",
+            "line": 167
+          },
+          {
+            "file": "rustic-bbq-engagement-party-d-cor-ideas.mdx",
+            "text": "la Barbecue",
+            "line": 44
+          }
+        ]
+      },
+      {
+        "url": "https://www.fresaschicken.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "austin-florists-caterers-texas-weddings.mdx",
+            "text": "Fresa's Chicken",
+            "line": 173
+          }
+        ]
+      },
+      {
+        "url": "https://www.suerteatx.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "austin-florists-caterers-texas-weddings.mdx",
+            "text": "Suerte",
+            "line": 174
+          },
+          {
+            "file": "best-restaurants-for-birthday-dinners-in-austin.mdx",
+            "text": "Suerte",
+            "line": 33
+          },
+          {
+            "file": "best-restaurants-for-birthday-dinners-in-austin.mdx",
+            "text": "Suerte",
+            "line": 37
+          },
+          {
+            "file": "best-restaurants-for-birthday-dinners-in-austin.mdx",
+            "text": "Suerte",
+            "line": 71
+          },
+          {
+            "file": "best-restaurants-for-birthday-dinners-in-austin.mdx",
+            "text": "Suerte",
+            "line": 79
+          }
+        ]
+      },
+      {
+        "url": "https://www.atxcocina.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "austin-florists-caterers-texas-weddings.mdx",
+            "text": "ATX Cocina",
+            "line": 175
           }
         ]
       },
@@ -1232,33 +1533,178 @@
             "file": "best-outdoor-venues-for-gender-reveals-in-austin.mdx",
             "text": "Laguna Gloria",
             "line": 31
+          },
+          {
+            "file": "wedding-photography-austin-lakes-hills.mdx",
+            "text": "Laguna Gloria",
+            "line": 68
           }
         ]
       },
       {
-        "url": "https://www.suerteatx.com/",
+        "url": "https://jeffreysofaustin.com/",
         "status": "ok",
         "statusCode": 200,
         "occurrences": [
           {
-            "file": "best-restaurants-for-birthday-dinners-in-austin.mdx",
-            "text": "Suerte",
-            "line": 33
+            "file": "best-small-wedding-venues-austin.mdx",
+            "text": "Jeffrey's",
+            "line": 76
+          }
+        ]
+      },
+      {
+        "url": "https://uchi.uchirestaurants.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "best-small-wedding-venues-austin.mdx",
+            "text": "Uchi",
+            "line": 77
+          }
+        ]
+      },
+      {
+        "url": "https://launderetteaustin.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "best-small-wedding-venues-austin.mdx",
+            "text": "Launderette",
+            "line": 78
           },
           {
-            "file": "best-restaurants-for-birthday-dinners-in-austin.mdx",
-            "text": "Suerte",
-            "line": 37
-          },
+            "file": "rehearsal-dinner-austin-restaurants.mdx",
+            "text": "Launderette",
+            "line": 132
+          }
+        ]
+      },
+      {
+        "url": "https://www.barleyswine.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
           {
-            "file": "best-restaurants-for-birthday-dinners-in-austin.mdx",
-            "text": "Suerte",
-            "line": 71
-          },
-          {
-            "file": "best-restaurants-for-birthday-dinners-in-austin.mdx",
-            "text": "Suerte",
+            "file": "best-small-wedding-venues-austin.mdx",
+            "text": "Barley Swine",
             "line": 79
+          },
+          {
+            "file": "rehearsal-dinner-austin-restaurants.mdx",
+            "text": "Barley Swine",
+            "line": 131
+          }
+        ]
+      },
+      {
+        "url": "https://www.oddduckaustin.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "best-small-wedding-venues-austin.mdx",
+            "text": "Odd Duck",
+            "line": 80
+          },
+          {
+            "file": "rehearsal-dinner-austin-restaurants.mdx",
+            "text": "Odd Duck",
+            "line": 130
+          }
+        ]
+      },
+      {
+        "url": "https://www.bunkhousehotels.com/hotel-saint-cecilia",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "best-small-wedding-venues-austin.mdx",
+            "text": "Hotel Saint Cecilia",
+            "line": 86
+          }
+        ]
+      },
+      {
+        "url": "https://driskillhotel.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "best-small-wedding-venues-austin.mdx",
+            "text": "The Driskill Hotel",
+            "line": 87
+          },
+          {
+            "file": "corporate-events-austin-guide.mdx",
+            "text": "The Driskill Hotel",
+            "line": 101
+          },
+          {
+            "file": "wedding-photography-austin-lakes-hills.mdx",
+            "text": "The Driskill Hotel",
+            "line": 144
+          }
+        ]
+      },
+      {
+        "url": "https://www.umlaufsculpture.org/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "best-small-wedding-venues-austin.mdx",
+            "text": "UMLAUF Sculpture Garden",
+            "line": 88
+          }
+        ]
+      },
+      {
+        "url": "https://thecontemporaryaustin.org/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "best-small-wedding-venues-austin.mdx",
+            "text": "Contemporary Austin",
+            "line": 89
+          },
+          {
+            "file": "top-10-gender-reveal-themes-for-austin-families.mdx",
+            "text": "Contemporary",
+            "line": 60
+          }
+        ]
+      },
+      {
+        "url": "https://www.memorylanewedding.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "best-small-wedding-venues-austin.mdx",
+            "text": "Memory Lane",
+            "line": 143
+          }
+        ]
+      },
+      {
+        "url": "https://www.lakewayresortandspa.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "best-small-wedding-venues-austin.mdx",
+            "text": "Lakeway Resort and Spa",
+            "line": 154
+          },
+          {
+            "file": "ultimate-guide-austin-bachelorette-parties.mdx",
+            "text": "Lakeway Resort",
+            "line": 101
           }
         ]
       },
@@ -1373,6 +1819,11 @@
             "file": "corporate-client-appreciation-event-ideas-in-austin.mdx",
             "text": "Emmer & Rye",
             "line": 73
+          },
+          {
+            "file": "rehearsal-dinner-austin-restaurants.mdx",
+            "text": "Emmer & Rye",
+            "line": 133
           }
         ]
       },
@@ -1566,18 +2017,6 @@
         ]
       },
       {
-        "url": "https://driskillhotel.com/",
-        "status": "ok",
-        "statusCode": 200,
-        "occurrences": [
-          {
-            "file": "corporate-events-austin-guide.mdx",
-            "text": "The Driskill Hotel",
-            "line": 101
-          }
-        ]
-      },
-      {
         "url": "https://www.camplucy.com",
         "status": "ok",
         "statusCode": 200,
@@ -1703,6 +2142,18 @@
         ]
       },
       {
+        "url": "https://www.amazon.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "creative-gender-reveal-photo-shoot-ideas.mdx",
+            "text": "Amazon",
+            "line": 56
+          }
+        ]
+      },
+      {
         "url": "https://backdropsbeautiful.com/",
         "status": "ok",
         "statusCode": 200,
@@ -1755,6 +2206,18 @@
             "file": "the-ultimate-guide-to-austin-s-instagram-worthy-photo-ops.mdx",
             "text": "Texas State Capitol",
             "line": 33
+          }
+        ]
+      },
+      {
+        "url": "https://en.wikipedia.org/wiki/Pfluger_Pedestrian_Bridge",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "engagement-photo-locations-in-austin-s-hill-country.mdx",
+            "text": "Pfluger Pedestrian Bridge",
+            "line": 57
           }
         ]
       },
@@ -1969,18 +2432,6 @@
         ]
       },
       {
-        "url": "https://www.stevierayvaughan.com/",
-        "status": "ok",
-        "statusCode": 200,
-        "occurrences": [
-          {
-            "file": "how-to-build-a-group-playlist-for-your-austin-bach-trip.mdx",
-            "text": "Stevie Ray Vaughan",
-            "line": 85
-          }
-        ]
-      },
-      {
         "url": "https://www.garyclarkjr.com/",
         "status": "ok",
         "statusCode": 200,
@@ -2135,6 +2586,18 @@
         ]
       },
       {
+        "url": "https://texaslonghorns.com/facilities/dkr-texas-memorial-stadium/1",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "how-to-decorate-your-tailgate-like-a-pro.mdx",
+            "text": "UT home game at DKR-Texas Memorial Stadium",
+            "line": 16
+          }
+        ]
+      },
+      {
         "url": "https://lonestarbeer.com/",
         "status": "ok",
         "statusCode": 200,
@@ -2223,6 +2686,23 @@
             "file": "how-to-host-a-professional-happy-hour-for-your-austin-team.mdx",
             "text": "Paperless Post",
             "line": 90
+          }
+        ]
+      },
+      {
+        "url": "https://parking.utexas.edu/parking/events/football2025",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "how-to-legally-tailgate-near-dkr-texas-memorial-stadium.mdx",
+            "text": "San Jacinto Tailgating Zone",
+            "line": 27
+          },
+          {
+            "file": "how-to-legally-tailgate-near-dkr-texas-memorial-stadium.mdx",
+            "text": "Manor Lot",
+            "line": 27
           }
         ]
       },
@@ -2325,6 +2805,11 @@
             "file": "pink-and-blue-snack-and-drink-ideas-for-your-reveal-party.mdx",
             "text": "Moonshine Patio Bar & Grill",
             "line": 70
+          },
+          {
+            "file": "rehearsal-dinner-austin-restaurants.mdx",
+            "text": "Moonshine Patio Bar & Grill",
+            "line": 142
           },
           {
             "file": "top-brunch-spots-for-an-austin-bachelorette-crew.mdx",
@@ -2664,6 +3149,30 @@
         ]
       },
       {
+        "url": "https://www.saltlickbbq.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "rehearsal-dinner-austin-restaurants.mdx",
+            "text": "Salt Lick BBQ",
+            "line": 139
+          }
+        ]
+      },
+      {
+        "url": "https://www.mattselrancho.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "rehearsal-dinner-austin-restaurants.mdx",
+            "text": "Matt's El Rancho",
+            "line": 143
+          }
+        ]
+      },
+      {
         "url": "https://www.airbnb.com/s/Austin--TX/homes?tab_id=home_tab&refinement_paths%5B%5D=%2Fhomes&query=Austin%2C%20TX&place_id=ChIJZbEqopO1RIYRj4eDWkgTAbc&date_picker_type=calendar&checkin=2023-05-15&checkout=2023-05-16&adults=2&source=structured_search_input_header&search_type=search_query",
         "status": "ok",
         "statusCode": 200,
@@ -2672,18 +3181,6 @@
             "file": "rustic-bbq-engagement-party-d-cor-ideas.mdx",
             "text": "Airbnb",
             "line": 29
-          }
-        ]
-      },
-      {
-        "url": "https://labarbecue.com/",
-        "status": "ok",
-        "statusCode": 200,
-        "occurrences": [
-          {
-            "file": "rustic-bbq-engagement-party-d-cor-ideas.mdx",
-            "text": "la Barbecue",
-            "line": 44
           }
         ]
       },
@@ -2772,18 +3269,6 @@
         ]
       },
       {
-        "url": "https://pecanspringsranch.com/",
-        "status": "ok",
-        "statusCode": 200,
-        "occurrences": [
-          {
-            "file": "top-10-gender-reveal-themes-for-austin-families.mdx",
-            "text": "Pecan Springs Ranch",
-            "line": 27
-          }
-        ]
-      },
-      {
         "url": "https://www.duchmanwinery.com/",
         "status": "ok",
         "statusCode": 200,
@@ -2792,18 +3277,11 @@
             "file": "top-10-gender-reveal-themes-for-austin-families.mdx",
             "text": "Duchman Family Winery",
             "line": 33
-          }
-        ]
-      },
-      {
-        "url": "https://thecontemporaryaustin.org/",
-        "status": "ok",
-        "statusCode": 200,
-        "occurrences": [
+          },
           {
-            "file": "top-10-gender-reveal-themes-for-austin-families.mdx",
-            "text": "Contemporary",
-            "line": 60
+            "file": "wedding-photography-austin-lakes-hills.mdx",
+            "text": "Duchman Family Winery",
+            "line": 79
           }
         ]
       },
@@ -2856,6 +3334,174 @@
         ]
       },
       {
+        "url": "https://summitaustin.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "ultimate-guide-austin-bachelor-parties.mdx",
+            "text": "Summit Rooftop",
+            "line": 115
+          }
+        ]
+      },
+      {
+        "url": "https://www.vulcanatx.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "ultimate-guide-austin-bachelor-parties.mdx",
+            "text": "Vulcan Gas Company",
+            "line": 115
+          }
+        ]
+      },
+      {
+        "url": "https://www.marriott.com/en-us/hotels/auswh-w-austin/overview/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "ultimate-guide-austin-bachelor-parties.mdx",
+            "text": "The W Austin's Living Room",
+            "line": 115
+          }
+        ]
+      },
+      {
+        "url": "https://www.jacobysaustin.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "ultimate-guide-austin-bachelorette-parties.mdx",
+            "text": "Jacoby's Restaurant & Mercantile",
+            "line": 90
+          }
+        ]
+      },
+      {
+        "url": "https://junesallday.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "ultimate-guide-austin-bachelorette-parties.mdx",
+            "text": "June's All Day",
+            "line": 91
+          }
+        ]
+      },
+      {
+        "url": "https://www.loroeats.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "ultimate-guide-austin-bachelorette-parties.mdx",
+            "text": "Loro",
+            "line": 92
+          }
+        ]
+      },
+      {
+        "url": "https://cafenoseaustin.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "ultimate-guide-austin-bachelorette-parties.mdx",
+            "text": "Café No Sé",
+            "line": 93
+          }
+        ]
+      },
+      {
+        "url": "https://www.vivadayspa.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "ultimate-guide-austin-bachelorette-parties.mdx",
+            "text": "Viva Day Spa",
+            "line": 97
+          }
+        ]
+      },
+      {
+        "url": "https://www.volentebeach.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "ultimate-guide-austin-bachelorette-parties.mdx",
+            "text": "Volente Beach",
+            "line": 101
+          }
+        ]
+      },
+      {
+        "url": "https://www.airbnb.com/rooms/54171699",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "unique-airbnbs-for-large-bachelorette-groups-in-austin.mdx",
+            "text": "The Soco Loft",
+            "line": 28
+          }
+        ]
+      },
+      {
+        "url": "https://www.airbnb.com/rooms/24753501",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "unique-airbnbs-for-large-bachelorette-groups-in-austin.mdx",
+            "text": "luxurious 6-bedroom, 6.5-bathroom manor",
+            "line": 36
+          }
+        ]
+      },
+      {
+        "url": "https://www.airbnb.com/rooms/48836186",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "unique-airbnbs-for-large-bachelorette-groups-in-austin.mdx",
+            "text": "charming bungalow",
+            "line": 44
+          }
+        ]
+      },
+      {
+        "url": "https://www.airbnb.com/rooms/35013945",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "unique-airbnbs-for-large-bachelorette-groups-in-austin.mdx",
+            "text": "3-bedroom, 3-bathroom Hill Country Airbnb",
+            "line": 52
+          }
+        ]
+      },
+      {
+        "url": "https://www.airbnb.com/rooms/21181174",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "unique-airbnbs-for-large-bachelorette-groups-in-austin.mdx",
+            "text": "stunning 5-bedroom, 5.5-bathroom Lake Travis home",
+            "line": 60
+          }
+        ]
+      },
+      {
         "url": "https://austinspark.com/",
         "status": "ok",
         "statusCode": 200,
@@ -2864,6 +3510,42 @@
             "file": "unique-bachelor-party-ideas-beyond-the-bar-scene.mdx",
             "text": "Austin's Park n' Pizza",
             "line": 74
+          }
+        ]
+      },
+      {
+        "url": "https://fcv.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "wedding-photography-austin-lakes-hills.mdx",
+            "text": "Fall Creek Vineyards",
+            "line": 80
+          }
+        ]
+      },
+      {
+        "url": "https://williamchriswines.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "wedding-photography-austin-lakes-hills.mdx",
+            "text": "William Chris Vineyards",
+            "line": 82
+          }
+        ]
+      },
+      {
+        "url": "https://www.hotelvanzandt.com/",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "wedding-photography-austin-lakes-hills.mdx",
+            "text": "Hotel Van Zandt",
+            "line": 145
           }
         ]
       },
@@ -2912,6 +3594,42 @@
             "file": "what-to-pack-for-a-perfect-austin-tailgate-setup.mdx",
             "text": "DJ",
             "line": 77
+          }
+        ]
+      },
+      {
+        "url": "https://en.wikipedia.org/wiki/Littlefield_Fountain",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "where-to-tailgate-for-ut-football-games-in-austin.mdx",
+            "text": "Littlefield Fountain",
+            "line": 25
+          }
+        ]
+      },
+      {
+        "url": "https://www.google.com/maps/place/San+Jacinto+Blvd,+Austin,+TX/@30.2849,-97.7336,17z",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "where-to-tailgate-for-ut-football-games-in-austin.mdx",
+            "text": "San Jacinto Boulevard",
+            "line": 26
+          }
+        ]
+      },
+      {
+        "url": "https://www.google.com/maps/place/208+Nueces+St,+Austin,+TX+78701",
+        "status": "ok",
+        "statusCode": 200,
+        "occurrences": [
+          {
+            "file": "where-to-tailgate-for-ut-football-games-in-austin.mdx",
+            "text": "208 Nueces St, Austin, TX 78701",
+            "line": 34
           }
         ]
       },
@@ -3752,6 +4470,24 @@
             "file": "best-restaurants-for-birthday-dinners-in-austin.mdx",
             "text": "Lonesome Dove",
             "line": 79
+          }
+        ]
+      },
+      {
+        "url": "https://www.mercuryhall.com/",
+        "status": "redirect",
+        "statusCode": 301,
+        "redirectUrl": "https://sharonshinn.net/contact",
+        "occurrences": [
+          {
+            "file": "best-small-wedding-venues-austin.mdx",
+            "text": "Mercury Hall",
+            "line": 146
+          },
+          {
+            "file": "professional-bar-service-and-responsible-drinking-for-events.mdx",
+            "text": "Mercury Hall",
+            "line": 20
           }
         ]
       },
@@ -4639,19 +5375,6 @@
         ]
       },
       {
-        "url": "https://www.mercuryhall.com/",
-        "status": "redirect",
-        "statusCode": 301,
-        "redirectUrl": "https://sharonshinn.net/contact",
-        "occurrences": [
-          {
-            "file": "professional-bar-service-and-responsible-drinking-for-events.mdx",
-            "text": "Mercury Hall",
-            "line": 20
-          }
-        ]
-      },
-      {
         "url": "https://thesunsetroomaustin.com/",
         "status": "redirect",
         "statusCode": 301,
@@ -4917,6 +5640,19 @@
         ]
       },
       {
+        "url": "https://parks.traviscountytx.gov/parks/hippie-hollow-park",
+        "status": "redirect",
+        "statusCode": 302,
+        "redirectUrl": "/404?r=/parks/hippie-hollow-park",
+        "occurrences": [
+          {
+            "file": "unique-airbnbs-for-large-bachelorette-groups-in-austin.mdx",
+            "text": "Hippie Hollow Park",
+            "line": 64
+          }
+        ]
+      },
+      {
         "url": "https://www.ziplaketravis.com/",
         "status": "redirect",
         "statusCode": 301,
@@ -5073,30 +5809,6 @@
         ]
       },
       {
-        "url": "https://www.amazon.com/",
-        "status": "broken",
-        "statusCode": 405,
-        "occurrences": [
-          {
-            "file": "creative-gender-reveal-photo-shoot-ideas.mdx",
-            "text": "Amazon",
-            "line": 56
-          }
-        ]
-      },
-      {
-        "url": "https://www.austintexas.gov/department/pfluger-pedestrian-bridge",
-        "status": "broken",
-        "statusCode": 404,
-        "occurrences": [
-          {
-            "file": "engagement-photo-locations-in-austin-s-hill-country.mdx",
-            "text": "Pfluger Pedestrian Bridge",
-            "line": 57
-          }
-        ]
-      },
-      {
         "url": "https://www.fairmont.com/contentassets/8c4d4cf79d3844dfbb0f6089a7c29d63/bar-1.jpg",
         "status": "broken",
         "statusCode": 404,
@@ -5162,18 +5874,6 @@
         ]
       },
       {
-        "url": "https://www.utexas.edu/campus-life/dkr-texas-memorial-stadium",
-        "status": "broken",
-        "statusCode": 404,
-        "occurrences": [
-          {
-            "file": "how-to-decorate-your-tailgate-like-a-pro.mdx",
-            "text": "UT home game at DKR-Texas Memorial Stadium",
-            "line": 16
-          }
-        ]
-      },
-      {
         "url": "https://tpwd.texas.gov/state-parks/barton-creek-greenbelt/texas-longhorn-herd",
         "status": "broken",
         "statusCode": 404,
@@ -5234,26 +5934,9 @@
         ]
       },
       {
-        "url": "https://parking.utexas.edu/football-tailgating",
-        "status": "broken",
-        "statusCode": 404,
-        "occurrences": [
-          {
-            "file": "how-to-legally-tailgate-near-dkr-texas-memorial-stadium.mdx",
-            "text": "San Jacinto Tailgating Zone",
-            "line": 27
-          },
-          {
-            "file": "how-to-legally-tailgate-near-dkr-texas-memorial-stadium.mdx",
-            "text": "Manor Lot",
-            "line": 27
-          }
-        ]
-      },
-      {
         "url": "https://www.yelp.com/biz/ama-la-vida-photography-austin",
         "status": "broken",
-        "statusCode": 403,
+        "statusCode": 404,
         "occurrences": [
           {
             "file": "how-to-plan-a-cake-cutting-gender-reveal.mdx",
@@ -5283,42 +5966,6 @@
             "file": "what-to-pack-for-a-perfect-austin-tailgate-setup.mdx",
             "text": "Academy Sports + Outdoors",
             "line": 43
-          }
-        ]
-      },
-      {
-        "url": "https://www.utexas.edu/about/campus-architecture/littlefield-fountain",
-        "status": "broken",
-        "statusCode": 404,
-        "occurrences": [
-          {
-            "file": "where-to-tailgate-for-ut-football-games-in-austin.mdx",
-            "text": "Littlefield Fountain",
-            "line": 25
-          }
-        ]
-      },
-      {
-        "url": "https://goo.gl/maps/7bXrX1dHoG9tDzn56",
-        "status": "broken",
-        "statusCode": 404,
-        "occurrences": [
-          {
-            "file": "where-to-tailgate-for-ut-football-games-in-austin.mdx",
-            "text": "San Jacinto Boulevard",
-            "line": 26
-          }
-        ]
-      },
-      {
-        "url": "https://goo.gl/maps/mfzDTLNwBuBcxSkQ9",
-        "status": "broken",
-        "statusCode": 404,
-        "occurrences": [
-          {
-            "file": "where-to-tailgate-for-ut-football-games-in-austin.mdx",
-            "text": "208 Nueces St, Austin, TX 78701",
-            "line": 34
           }
         ]
       }
@@ -5361,6 +6008,18 @@
         ]
       },
       {
+        "url": "https://www.stevierayvaughan.com/",
+        "status": "timeout",
+        "error": "Request timed out",
+        "occurrences": [
+          {
+            "file": "how-to-build-a-group-playlist-for-your-austin-bach-trip.mdx",
+            "text": "Stevie Ray Vaughan",
+            "line": 85
+          }
+        ]
+      },
+      {
         "url": "https://www.marqueeaustin.com/",
         "status": "timeout",
         "error": "Request timed out",
@@ -5398,6 +6057,18 @@
             "file": "how-to-decorate-your-tailgate-like-a-pro.mdx",
             "text": "Bluetooth speaker",
             "line": 93
+          }
+        ]
+      },
+      {
+        "url": "https://lilydecker.com/",
+        "status": "timeout",
+        "error": "Request timed out",
+        "occurrences": [
+          {
+            "file": "how-to-hire-austin-photographers-for-quincea-eras.mdx",
+            "text": "Lily Decker Photography",
+            "line": 56
           }
         ]
       },
@@ -5817,18 +6488,6 @@
         ]
       },
       {
-        "url": "https://lilydecker.com/",
-        "status": "error",
-        "error": "fetch failed",
-        "occurrences": [
-          {
-            "file": "how-to-hire-austin-photographers-for-quincea-eras.mdx",
-            "text": "Lily Decker Photography",
-            "line": 56
-          }
-        ]
-      },
-      {
         "url": "https://www.tcofaustin.com/",
         "status": "error",
         "error": "fetch failed",
@@ -6038,6 +6697,18 @@
         ]
       },
       {
+        "url": "https://www.longhorn-charter.com/",
+        "status": "error",
+        "error": "fetch failed",
+        "occurrences": [
+          {
+            "file": "unique-airbnbs-for-large-bachelorette-groups-in-austin.mdx",
+            "text": "Longhorn Charter Bus",
+            "line": 73
+          }
+        ]
+      },
+      {
         "url": "https://texaswinetrail.com/",
         "status": "error",
         "error": "fetch failed",
@@ -6172,10 +6843,10 @@
     ]
   },
   "summary": {
-    "ok": 157,
-    "redirect": 119,
-    "broken": 27,
-    "timeout": 8,
+    "ok": 206,
+    "redirect": 120,
+    "broken": 20,
+    "timeout": 10,
     "error": 61
   }
 }

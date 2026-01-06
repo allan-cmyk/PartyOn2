@@ -1,0 +1,18 @@
+{
+  "totalImagesChecked": 94,
+  "brokenImages": [
+    {
+      "imagePath": "/images/products/welcome-package.webp",
+      "sourceFile": "src\\app\\austin-partners\\vacation-rentals\\page.tsx",
+      "lineNumber": 27,
+      "context": "image: '/images/products/welcome-package.webp',"
+    },
+    {
+      "imagePath": "/images/hero/lake-travis-sunset.webp",
+      "sourceFile": "src\\app\\rentals\\chair-rentals-austin\\page.tsx",
+      "lineNumber": 15,
+      "context": "images: ['/images/hero/lake-travis-sunset.webp'],"
+    }
+  ],
+  "validImages": 92
+}

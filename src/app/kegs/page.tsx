@@ -46,20 +46,20 @@ export default function KegsPage() {
       <OldFashionedNavigation />
 
       {/* Hero Section */}
-      <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[100vh] md:h-[80vh] flex items-end md:items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <Image
             src="/images/kegs/keg-party-hero.png"
             alt="Backyard pool party with keg in Austin"
             fill
             sizes="100vw"
-            className="object-cover"
+            className="object-cover object-center"
             priority
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-900/40 via-transparent to-gray-900/80" />
 
-        <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8">
+        <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8 pb-12 md:pb-0">
           <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
             Cold Beer Kegs
             <span className="block text-gold-400 mt-2">DELIVERED TO YOUR DOOR</span>
@@ -110,6 +110,9 @@ export default function KegsPage() {
               <p className="text-gray-600 text-sm leading-relaxed">
                 Select from our in-stock kegs or request any brand.
                 Miller Lite, Corona, craft beers—we source it all.
+              </p>
+              <p className="text-gray-500 text-sm mt-2 italic">
+                If you need something specific, just call and ask.
               </p>
             </ScrollRevealCSS>
 

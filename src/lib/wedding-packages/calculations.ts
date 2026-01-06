@@ -17,7 +17,7 @@ import {
   getWinesForTier,
   getBeersForTier,
   getSpiritsForTier,
-  CHAMPAGNE_PRODUCT,
+  getChampagneForTier,
 } from './tier-config';
 
 // ============================================================================
@@ -80,9 +80,9 @@ function calculateProductQuantity(
  * Calculate champagne bottles needed for toast
  * One toast per person = 1 serving per person
  */
-function calculateChampagneQuantity(guestCount: number): number {
+function calculateChampagneQuantity(guestCount: number, champagne: WeddingProduct): number {
   // 5 servings per bottle, round up
-  return Math.ceil(guestCount / CHAMPAGNE_PRODUCT.servingsPerUnit);
+  return Math.ceil(guestCount / champagne.servingsPerUnit);
 }
 
 /**
@@ -163,15 +163,16 @@ export function calculateWeddingPackage(input: WeddingOrderInput): CalculatedPac
     });
   }
 
-  // ---- CHAMPAGNE TOAST (optional add-on) ----
+  // ---- CHAMPAGNE TOAST (optional add-on, varies by tier) ----
   if (includeChampagneToast) {
-    const champagneQty = calculateChampagneQuantity(guestCount);
-    const champagneSubtotal = champagneQty * CHAMPAGNE_PRODUCT.estimatedPrice;
+    const champagne = getChampagneForTier(tier);
+    const champagneQty = calculateChampagneQuantity(guestCount, champagne);
+    const champagneSubtotal = champagneQty * champagne.estimatedPrice;
 
     items.push({
-      product: CHAMPAGNE_PRODUCT,
+      product: champagne,
       quantity: champagneQty,
-      unitPrice: CHAMPAGNE_PRODUCT.estimatedPrice,
+      unitPrice: champagne.estimatedPrice,
       subtotal: champagneSubtotal,
       available: true,
     });
