@@ -1,131 +1,326 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
+import { ShopifyProduct } from '@/lib/shopify/types';
+import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseAlcohol } from '@/lib/shopify/utils';
+import { useCartContext } from '@/contexts/CartContext';
+import AgeVerificationModal from '@/components/AgeVerificationModal';
 
 /**
- * Equipment rentals section for keg accessories
- * Taps, tubs, CO2 systems, and jockey boxes
+ * Equipment rentals and party supplies section for keg page
+ * Fetches actual products from Shopify and displays with Add to Cart
  */
 
-interface Equipment {
-  name: string;
-  description: string;
-  price: string;
-  icon: 'tap' | 'tub' | 'co2' | 'jockey';
-}
-
-const EQUIPMENT: Equipment[] = [
-  {
-    name: 'Standard Party Tap',
-    description: 'Manual pump tap for single-day events. Easy to use, no electricity needed.',
-    price: '$15/day',
-    icon: 'tap',
-  },
-  {
-    name: 'Ice Tub',
-    description: 'Large insulated tub that fits a 1/2 barrel keg. Keeps beer cold all day.',
-    price: '$25/day',
-    icon: 'tub',
-  },
-  {
-    name: 'CO2 Dispensing System',
-    description: 'Professional draft system. Keeps keg fresh for weeks. Includes tank & regulator.',
-    price: '$50/day',
-    icon: 'co2',
-  },
-  {
-    name: 'Jockey Box',
-    description: 'Portable refrigerated tap system. Perfect for outdoor events without power.',
-    price: '$75/day',
-    icon: 'jockey',
-  },
+// Product handles to fetch
+const EQUIPMENT_HANDLES = [
+  'ultimate-keg-party-package',
+  'keg-tub-rental',
+  'keg-tap-rental',
+  'bag-of-ice-7-lbs',
+  '240-16-oz-solo-cups',
+  '10-ping-pong-balls',
+  'folding-table-rental-6ft',
 ];
 
-function EquipmentIcon({ type }: { type: Equipment['icon'] }) {
-  const iconClass = 'w-8 h-8 text-gold-600';
+const FEATURED_HANDLE = 'ultimate-keg-party-package';
 
-  switch (type) {
-    case 'tap':
-      return (
-        <svg className={iconClass} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-        </svg>
-      );
-    case 'tub':
-      return (
-        <svg className={iconClass} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-        </svg>
-      );
-    case 'co2':
-      return (
-        <svg className={iconClass} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
-        </svg>
-      );
-    case 'jockey':
-      return (
-        <svg className={iconClass} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-        </svg>
-      );
+interface EquipmentCardProps {
+  product: ShopifyProduct;
+  index: number;
+  featured?: boolean;
+}
+
+function EquipmentCard({ product, index, featured = false }: EquipmentCardProps) {
+  const { addToCart, loading: cartLoading } = useCartContext();
+  const [isAdding, setIsAdding] = useState(false);
+  const [showAgeVerification, setShowAgeVerification] = useState(false);
+
+  const imageUrl = getProductImageUrl(product);
+  const variant = getFirstAvailableVariant(product);
+  const price = product.priceRange.minVariantPrice;
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!variant?.id || !variant.availableForSale) return;
+
+    if (!canPurchaseAlcohol()) {
+      setShowAgeVerification(true);
+      return;
+    }
+
+    setIsAdding(true);
+    try {
+      await addToCart(variant.id, 1);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+  const handleAgeVerified = async () => {
+    setShowAgeVerification(false);
+    localStorage.setItem('age_verified', 'true');
+
+    if (variant?.id && variant.availableForSale) {
+      setIsAdding(true);
+      try {
+        await addToCart(variant.id, 1);
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+      } finally {
+        setIsAdding(false);
+      }
+    }
+  };
+
+  if (featured) {
+    return (
+      <>
+        <div className="bg-gradient-to-r from-gold-50 to-amber-50 rounded-lg border-2 border-gold-300 hover:border-gold-400 transition-all duration-300 overflow-hidden">
+          <div className="flex flex-col md:flex-row">
+            {/* Image */}
+            <Link href={`/products/${product.handle}`} className="md:w-1/3 aspect-video md:aspect-auto">
+              <div className="relative h-full min-h-[200px] bg-white">
+                {imageUrl ? (
+                  <img
+                    src={imageUrl}
+                    alt={product.title}
+                    className="w-full h-full object-contain p-4"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                    <svg className="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                  </div>
+                )}
+              </div>
+            </Link>
+
+            {/* Content */}
+            <div className="flex-1 p-6 md:p-8 flex flex-col justify-center">
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="font-serif text-xl md:text-2xl text-gray-900 tracking-[0.05em]">
+                  {product.title}
+                </h3>
+                <span className="bg-gold-600 text-gray-900 text-xs px-2 py-0.5 rounded font-medium">
+                  BEST VALUE
+                </span>
+              </div>
+              <p className="text-gray-600 text-sm md:text-base mb-4 line-clamp-2">
+                {product.description || 'Everything you need for your keg party!'}
+              </p>
+
+              <div className="flex items-center gap-4 flex-wrap">
+                <p className="text-3xl md:text-4xl font-medium text-gold-600">
+                  {formatPrice(price.amount, price.currencyCode)}
+                </p>
+
+                <button
+                  onClick={handleAddToCart}
+                  disabled={!variant?.availableForSale || isAdding || cartLoading}
+                  className={`px-6 py-2 text-sm font-medium tracking-[0.1em] transition-colors ${
+                    variant?.availableForSale && !isAdding && !cartLoading
+                      ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
+                >
+                  {isAdding || cartLoading ? 'ADDING...' : variant?.availableForSale ? 'ADD TO CART' : 'SOLD OUT'}
+                </button>
+
+                <Link
+                  href={`/products/${product.handle}`}
+                  className="text-gold-700 text-sm font-medium tracking-[0.1em] hover:text-gold-800"
+                >
+                  VIEW DETAILS →
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <AgeVerificationModal
+          isOpen={showAgeVerification}
+          onClose={() => setShowAgeVerification(false)}
+          onVerify={handleAgeVerified}
+        />
+      </>
+    );
   }
+
+  // Regular card
+  return (
+    <>
+      <div className="bg-white rounded-lg shadow-lg border border-gray-200 hover:border-gold-300 transition-all duration-300 h-full flex flex-col overflow-hidden group">
+        {/* Image */}
+        <Link href={`/products/${product.handle}`} className="block">
+          <div className="relative aspect-square bg-gray-50 overflow-hidden">
+            {imageUrl ? (
+              <img
+                src={imageUrl}
+                alt={product.title}
+                className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
+                loading="lazy"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <svg className="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+              </div>
+            )}
+
+            {/* Out of Stock Overlay */}
+            {!variant?.availableForSale && (
+              <div className="absolute inset-0 bg-gray-900/60 flex items-center justify-center">
+                <span className="text-white font-light tracking-[0.1em] text-xs">SOLD OUT</span>
+              </div>
+            )}
+          </div>
+        </Link>
+
+        {/* Content */}
+        <div className="p-3 md:p-4 flex-1 flex flex-col">
+          <Link href={`/products/${product.handle}`}>
+            <h3 className="font-serif text-xs md:text-sm text-gray-900 mb-1 tracking-[0.02em] text-center leading-tight hover:text-gold-600 transition-colors line-clamp-2">
+              {product.title}
+            </h3>
+          </Link>
+
+          <p className="text-lg md:text-xl font-medium text-gold-600 text-center mb-3">
+            {formatPrice(price.amount, price.currencyCode)}
+          </p>
+
+          {/* Add to Cart Button */}
+          <button
+            onClick={handleAddToCart}
+            disabled={!variant?.availableForSale || isAdding || cartLoading}
+            className={`mt-auto w-full py-2 text-xs font-medium tracking-wider transition-colors ${
+              variant?.availableForSale && !isAdding && !cartLoading
+                ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
+                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+            }`}
+          >
+            {isAdding || cartLoading ? 'ADDING...' : variant?.availableForSale ? 'ADD TO CART' : 'SOLD OUT'}
+          </button>
+        </div>
+      </div>
+
+      <AgeVerificationModal
+        isOpen={showAgeVerification}
+        onClose={() => setShowAgeVerification(false)}
+        onVerify={handleAgeVerified}
+      />
+    </>
+  );
 }
 
 export default function EquipmentRentals() {
+  const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        // Fetch products by handles
+        const responses = await Promise.all(
+          EQUIPMENT_HANDLES.map(handle =>
+            fetch(`/api/products/${handle}`).then(r => r.ok ? r.json() : null)
+          )
+        );
+
+        const validProducts = responses.filter(Boolean) as ShopifyProduct[];
+        setProducts(validProducts);
+      } catch (error) {
+        console.error('Error fetching equipment products:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProducts();
+  }, []);
+
+  const featuredProduct = products.find(p => p.handle === FEATURED_HANDLE);
+  const regularProducts = products.filter(p => p.handle !== FEATURED_HANDLE);
+
+  if (loading) {
+    return (
+      <section className="py-12 md:py-24 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 md:px-8">
+          <div className="text-center mb-10 md:mb-16">
+            <h2 className="font-serif font-light text-3xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+              Party Supplies & Rentals
+            </h2>
+            <div className="w-16 h-px bg-gold-600 mx-auto mb-4 md:mb-6" />
+          </div>
+
+          {/* Loading skeleton */}
+          <div className="animate-pulse">
+            <div className="bg-gray-200 h-48 rounded-lg mb-8" />
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="bg-gray-200 h-64 rounded-lg" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section className="py-24 bg-gray-50">
-      <div className="max-w-6xl mx-auto px-8">
-        <ScrollRevealCSS duration={800} y={20} className="text-center mb-16">
-          <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
-            Equipment Rentals
+    <section className="py-12 md:py-24 bg-gray-50">
+      <div className="max-w-6xl mx-auto px-4 md:px-8">
+        <ScrollRevealCSS duration={800} y={20} className="text-center mb-10 md:mb-16">
+          <h2 className="font-serif font-light text-3xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+            Party Supplies & Rentals
           </h2>
-          <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Everything you need to tap and serve your keg. Rent separately or
-            bundle with your keg order.
+          <div className="w-16 h-px bg-gold-600 mx-auto mb-4 md:mb-6" />
+          <p className="text-gray-600 text-sm md:text-lg max-w-2xl mx-auto">
+            Everything you need to tap and serve your keg.
           </p>
         </ScrollRevealCSS>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {EQUIPMENT.map((item, index) => (
+        {/* Featured Package */}
+        {featuredProduct && (
+          <ScrollRevealCSS duration={800} y={20} className="mb-8">
+            <EquipmentCard product={featuredProduct} index={0} featured />
+          </ScrollRevealCSS>
+        )}
+
+        {/* Regular Items Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+          {regularProducts.map((product, index) => (
             <ScrollRevealCSS
-              key={item.name}
+              key={product.id}
               duration={800}
               y={20}
-              delay={index * 100}
+              delay={index * 50}
             >
-              <div className="bg-white rounded-lg p-6 shadow-lg border border-gray-200 hover:border-gold-300 transition-all duration-300 h-full flex flex-col">
-                <div className="w-14 h-14 bg-gold-50 rounded-full flex items-center justify-center mb-4">
-                  <EquipmentIcon type={item.icon} />
-                </div>
-                <h3 className="font-serif text-lg text-gray-900 mb-2 tracking-[0.05em]">
-                  {item.name}
-                </h3>
-                <p className="text-gray-600 text-sm mb-4 flex-grow">
-                  {item.description}
-                </p>
-                <p className="text-2xl font-medium text-gold-600">
-                  {item.price}
-                </p>
-              </div>
+              <EquipmentCard product={product} index={index} />
             </ScrollRevealCSS>
           ))}
         </div>
 
         {/* Deposit Notice */}
-        <ScrollRevealCSS duration={800} y={20} delay={500} className="mt-12">
-          <div className="bg-white rounded-lg p-6 border border-gray-200 text-center max-w-2xl mx-auto">
-            <div className="flex items-center justify-center gap-2 mb-3">
+        <ScrollRevealCSS duration={800} y={20} delay={400} className="mt-8 md:mt-12">
+          <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200 text-center max-w-2xl mx-auto">
+            <div className="flex items-center justify-center gap-2 mb-2">
               <svg className="w-5 h-5 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span className="font-medium text-gray-900">About Deposits</span>
+              <span className="font-medium text-gray-900 text-sm md:text-base">About Deposits</span>
             </div>
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-600 text-xs md:text-sm">
               <strong>$50 keg deposit</strong> refunded when empty keg is
-              returned within 7 days. Equipment deposits vary.{' '}
+              returned within 7 days.{' '}
               <Link href="/contact" className="text-gold-600 hover:text-gold-700 underline">
                 Contact us
               </Link>{' '}

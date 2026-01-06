@@ -1,28 +1,26 @@
-import { Metadata } from 'next'
+/**
+ * @fileoverview Layout for Order page with SEO metadata
+ * @module app/order/layout
+ */
+
+import type { Metadata } from 'next';
+import type { ReactElement, ReactNode } from 'react';
 
 export const metadata: Metadata = {
-  title: 'Order Alcohol Delivery | Party On Delivery Austin',
-  description: 'Order premium alcohol delivery for your Austin event. 72-hour advance booking, cold delivery, and full-service options for weddings, parties, and celebrations.',
-  keywords: 'order alcohol delivery austin, book party delivery, austin event alcohol, schedule alcohol delivery',
-  alternates: {
-    canonical: '/order',
-  },
+  title: 'Order | Party On Delivery - Your Bar, Delivered',
+  description:
+    'Your bar, delivered. Tap, add, party on. Fast alcohol delivery in Austin with one-tap ordering. Beer, wine, spirits, and cocktail kits delivered to your door.',
   openGraph: {
-    title: 'Order Alcohol Delivery - Party On Delivery Austin',
-    description: 'Order premium alcohol delivery for your Austin event. 72-hour advance booking available.',
-    url: 'https://partyondelivery.com/order',
+    title: 'Your Bar, Delivered | Party On Delivery',
+    description: 'Tap. Add. Party On. Fast alcohol delivery in Austin.',
     type: 'website',
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
-}
+};
 
 export default function OrderLayout({
   children,
 }: {
-  children: React.ReactNode
-}) {
-  return <>{children}</>
+  children: ReactNode;
+}): ReactElement {
+  return <>{children}</>;
 }

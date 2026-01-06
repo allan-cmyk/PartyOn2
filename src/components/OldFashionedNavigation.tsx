@@ -114,7 +114,7 @@ export default function OldFashionedNavigation({ forceScrolled = false, hidden =
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-12">
 
-              <NavLink href="/products" isScrolled={isScrolled}>PRODUCTS</NavLink>
+              <NavLink href="/order" isScrolled={isScrolled}>ORDER</NavLink>
 
               {/* Services Dropdown - CSS animations instead of Framer Motion */}
               <div className="relative group">
@@ -300,11 +300,11 @@ export default function OldFashionedNavigation({ forceScrolled = false, hidden =
             </div>
 
             <Link
-              href="/products"
+              href="/order"
               className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
-              PRODUCTS
+              ORDER
             </Link>
 
             {/* Services Section */}

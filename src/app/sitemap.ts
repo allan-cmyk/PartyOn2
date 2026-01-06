@@ -126,7 +126,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/about',
     '/contact',
     '/order',
-    '/products',
+    '/plan-event',
     '/blog',
     '/blogs/news',
     '/weddings',
@@ -143,7 +143,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
-    priority: route === '' ? 1 : route === '/products' ? 0.9 : 0.8
+    priority: route === '' ? 1 : route === '/order' ? 0.9 : 0.8
   }))
 
   // Product pages (dynamic)

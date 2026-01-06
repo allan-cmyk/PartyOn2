@@ -61,8 +61,8 @@ export default function MobileNavigation() {
       )
     },
     {
-      href: '/products',
-      label: 'Shop',
+      href: '/order',
+      label: 'Order',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" 

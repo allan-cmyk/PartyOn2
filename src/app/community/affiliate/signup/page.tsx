@@ -15,28 +15,28 @@ export default function AffiliateSignupPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Page Header */}
-      <div className="bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 text-white py-16">
+      <div className="bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="font-serif text-4xl sm:text-5xl font-bold text-center tracking-wide mb-4">
+          <h1 className="font-serif text-4xl sm:text-5xl font-bold text-center tracking-wide mb-4 text-gray-900">
             Join Our Affiliate Program
           </h1>
-          <p className="text-center text-lg sm:text-xl max-w-2xl mx-auto mb-8">
+          <p className="text-center text-lg sm:text-xl max-w-2xl mx-auto mb-8 text-gray-800">
             Earn commissions by promoting Austin&apos;s premier alcohol delivery service
           </p>
 
           {/* Benefits Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mt-8">
             <div className="text-center">
-              <div className="text-3xl font-bold mb-2">Up to 10%</div>
-              <div className="text-sm opacity-90">Commission Rate</div>
+              <div className="text-3xl font-bold mb-2 text-gray-900">5%</div>
+              <div className="text-sm text-gray-800">Commission on Every Order</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold mb-2">30 Days</div>
-              <div className="text-sm opacity-90">Cookie Duration</div>
+              <div className="text-3xl font-bold mb-2 text-gray-900">On-Time</div>
+              <div className="text-sm text-gray-800">Cold Drinks & Ice Delivered</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold mb-2">Real-Time</div>
-              <div className="text-sm opacity-90">Tracking Dashboard</div>
+              <div className="text-3xl font-bold mb-2 text-gray-900">Zero</div>
+              <div className="text-sm text-gray-800">Store Runs or Hauling</div>
             </div>
           </div>
         </div>
