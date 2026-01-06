@@ -27,7 +27,7 @@ const ALL_KEGS: Keg[] = [
   { name: 'Lone Star', size: '1/2 barrel', price: '$163.99', inStock: true, handle: 'lone-star-keg-1-2-barrel', category: 'domestics', sizeType: 'half' },
   { name: 'Bud Light', size: '1/2 barrel', price: '$172.99', inStock: true, handle: 'bud-light-1-2-barrell', category: 'domestics', sizeType: 'half' },
   { name: 'Bud Light', size: '1/4 barrel', price: '$89.99', inStock: true, handle: 'bud-light-1-4-slim-barrell', category: 'domestics', sizeType: 'slim' },
-  { name: 'Coors Light', size: '1/2 barrel', inStock: false, category: 'domestics', sizeType: 'half' },
+  { name: 'Coors Light', size: '1/2 barrel', price: '$174.99', inStock: true, handle: '1-4-barrel-1-2-keg-of-coors-light', category: 'domestics', sizeType: 'half' },
   { name: 'Budweiser', size: '1/2 barrel', price: '$172.99', inStock: true, handle: 'budweiser-1-2-barrell', category: 'domestics', sizeType: 'half' },
 
   // Imports
@@ -45,8 +45,7 @@ const ALL_KEGS: Keg[] = [
   { name: 'Blue Moon Belgian White', size: '1/6 barrel', price: '$89.99', inStock: true, handle: 'blue-moon-belgian-white-1-6-barrel', category: 'craft', sizeType: 'slim' },
   { name: 'Yuengling', size: '1/4 barrel', price: '$114.99', inStock: true, handle: 'yuengling-slim-1-4-barrel', category: 'craft', sizeType: 'slim' },
   { name: 'Franziskaner Hefeweizen', size: '13.2 gal', price: '$199.00', inStock: true, handle: 'franziskaner-hefeweizen-13-2g-keg', category: 'craft', sizeType: 'slim' },
-  { name: 'Live Oak Hefeweizen', size: '1/6 barrel', inStock: false, category: 'craft', sizeType: 'slim' },
-  { name: 'Pinthouse Electric Jellyfish', size: '1/6 barrel', inStock: false, category: 'craft', sizeType: 'slim' },
+  { name: 'Electric Jellyfish Hazy IPA', size: '1/6 barrel', price: '$159.99', inStock: true, handle: 'electric-jellyfish-hazy-ipa-1-6-barrel', category: 'craft', sizeType: 'slim' },
 ];
 
 const CATEGORIES = [
