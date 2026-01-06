@@ -167,20 +167,32 @@ export default function KegProductGrid() {
 
         {/* Bulk Order CTA */}
         <ScrollRevealCSS duration={800} y={20} delay={300} className="mt-12">
-          <div className="bg-white rounded-lg p-8 text-center border border-gray-200">
-            <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
-              Need Multiple Kegs or a Special Brand?
-            </h3>
-            <p className="text-gray-600 mb-6 max-w-xl mx-auto">
-              Planning a large event? We can source almost any beer and offer
-              volume discounts for orders of 3+ kegs.
-            </p>
-            <a
-              href="tel:7373719700"
-              className="inline-block px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium rounded"
-            >
-              CALL (737) 371-9700
-            </a>
+          <div
+            className="relative rounded-lg p-8 text-center overflow-hidden"
+            style={{
+              backgroundImage: 'url(/images/kegs/multiple-kegs-bg.png)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          >
+            {/* Dark overlay for text readability */}
+            <div className="absolute inset-0 bg-gray-900/70" />
+
+            <div className="relative z-10">
+              <h3 className="font-serif text-2xl text-white mb-4 tracking-[0.1em]">
+                Need Multiple Kegs or a Special Brand?
+              </h3>
+              <p className="text-gray-200 mb-6 max-w-xl mx-auto">
+                Planning a large event? We can source almost any beer and offer
+                volume discounts for orders of 3+ kegs.
+              </p>
+              <a
+                href="tel:7373719700"
+                className="inline-block px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium rounded"
+              >
+                CALL (737) 371-9700
+              </a>
+            </div>
           </div>
         </ScrollRevealCSS>
       </div>
