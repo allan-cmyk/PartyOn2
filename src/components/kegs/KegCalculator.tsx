@@ -27,13 +27,13 @@ export default function KegCalculator() {
   const totalDrinks = Math.ceil(drinksFirstHour + drinksRemainingHours);
   const kegsNeeded = Math.ceil(totalDrinks / 165);
 
-  // Determine recommendation
+  // Determine recommendation based on total drinks
   const getRecommendation = () => {
-    if (kegsNeeded <= 0.5) {
+    if (totalDrinks < 55) {
       return { size: '1/6 Barrel', servings: 55, note: 'A sixtel should be plenty!' };
-    } else if (kegsNeeded <= 0.75) {
+    } else if (totalDrinks < 80) {
       return { size: '1/4 Barrel', servings: 82, note: 'A pony keg is perfect for your group.' };
-    } else if (kegsNeeded <= 1.25) {
+    } else if (totalDrinks <= 165) {
       return { size: '1/2 Barrel', servings: 165, note: 'One full keg will do the trick!' };
     } else {
       return {

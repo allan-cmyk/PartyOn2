@@ -60,12 +60,12 @@ export default function KegSizeEducation() {
         <div className="md:hidden">
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
             <table className="w-full">
-              <thead className="bg-gray-900 text-white">
+              <thead className="bg-gray-900">
                 <tr>
-                  <th className="py-3 px-3 text-left text-sm font-semibold">Size</th>
-                  <th className="py-3 px-2 text-center text-sm font-semibold">Gallons</th>
-                  <th className="py-3 px-2 text-center text-sm font-semibold">Beers</th>
-                  <th className="py-3 px-3 text-right text-sm font-semibold">Best For</th>
+                  <th className="py-3 px-3 text-left text-sm font-semibold text-gold-400">Size</th>
+                  <th className="py-3 px-2 text-center text-sm font-semibold text-gold-400">Gallons</th>
+                  <th className="py-3 px-2 text-center text-sm font-semibold text-gold-400">Beers</th>
+                  <th className="py-3 px-3 text-right text-sm font-semibold text-gold-400">Best For</th>
                 </tr>
               </thead>
               <tbody>
@@ -92,7 +92,7 @@ export default function KegSizeEducation() {
                       <div className="text-lg font-bold text-gray-900">~{keg.servings}</div>
                     </td>
                     <td className="py-4 px-3 text-right">
-                      <div className="text-sm font-bold text-gold-600">{keg.guestRange}</div>
+                      <div className="text-sm font-bold text-gray-900">{keg.guestRange}</div>
                     </td>
                   </tr>
                 ))}
