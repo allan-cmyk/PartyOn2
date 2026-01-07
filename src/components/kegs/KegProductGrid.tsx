@@ -197,68 +197,103 @@ export default function KegProductGrid() {
             ))}
           </div>
 
-          {/* Keg Grid */}
-          <div
-            key={activeCategory}
-            className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6"
-            style={{
-              animation: 'result-fade-in 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards',
-            }}
-          >
-            {filteredKegs.map((keg, index) => (
+          {/* Keg Table - Desktop */}
+          <div className="hidden md:block bg-white rounded-lg shadow-lg overflow-hidden">
+            <table className="w-full">
+              <thead className="bg-gray-900 text-white">
+                <tr>
+                  <th className="text-left py-4 px-6 text-lg font-medium tracking-wide">Beer</th>
+                  <th className="text-left py-4 px-6 text-lg font-medium tracking-wide">Size</th>
+                  <th className="text-right py-4 px-6 text-lg font-medium tracking-wide">Price</th>
+                  <th className="text-center py-4 px-6 text-lg font-medium tracking-wide">Order</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredKegs.map((keg, index) => (
+                  <tr
+                    key={`${keg.name}-${keg.size}`}
+                    className={`border-b border-gray-100 hover:bg-gray-50 transition-colors ${
+                      index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'
+                    }`}
+                  >
+                    <td className="py-5 px-6">
+                      <button
+                        onClick={() => handleTitleClick(keg)}
+                        disabled={!keg.handle || loadingHandle === keg.handle}
+                        className="text-left hover:underline disabled:cursor-default"
+                      >
+                        <span className="text-xl font-semibold text-gray-900">
+                          {loadingHandle === keg.handle ? 'Loading...' : keg.name}
+                        </span>
+                      </button>
+                    </td>
+                    <td className="py-5 px-6">
+                      <span className="text-lg text-gray-600">{keg.size}</span>
+                    </td>
+                    <td className="py-5 px-6 text-right">
+                      <span className="text-2xl font-bold text-gray-900">
+                        {keg.price || 'Quote'}
+                      </span>
+                    </td>
+                    <td className="py-5 px-6 text-center">
+                      {keg.inStock && keg.handle ? (
+                        <button
+                          onClick={() => handleAddToCart(keg)}
+                          disabled={addingToCart === keg.handle || cartLoading}
+                          className={`px-6 py-3 text-base font-medium rounded transition-colors ${
+                            addingToCart === keg.handle || cartLoading
+                              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                              : 'bg-gold-600 text-gray-900 hover:bg-gold-700'
+                          }`}
+                        >
+                          {addingToCart === keg.handle ? 'ADDING...' : 'ADD TO CART'}
+                        </button>
+                      ) : (
+                        <Link
+                          href="/contact"
+                          className="inline-block px-6 py-3 border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-colors text-base font-medium rounded"
+                        >
+                          REQUEST
+                        </Link>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Keg List - Mobile */}
+          <div className="md:hidden space-y-3">
+            {filteredKegs.map((keg) => (
               <div
-                key={`${keg.name}-${keg.size}`}
-                className="bg-white rounded-lg p-4 md:p-6 shadow-lg border border-gray-200 hover:border-gold-300 transition-all duration-300 text-center"
-                style={{
-                  animation: `result-fade-in 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards`,
-                  animationDelay: `${index * 30}ms`,
-                  opacity: 0,
-                }}
+                key={`mobile-${keg.name}-${keg.size}`}
+                className="bg-white rounded-lg shadow p-4 border border-gray-200"
               >
-                {/* In Stock Badge */}
-                <div className="mb-3">
-                  {keg.inStock ? (
-                    <span className="bg-green-100 text-green-800 text-xs md:text-sm px-3 py-1 rounded-full font-medium">
-                      In Stock
-                    </span>
-                  ) : (
-                    <span className="bg-gray-100 text-gray-600 text-xs md:text-sm px-3 py-1 rounded-full font-medium">
-                      Request Quote
-                    </span>
-                  )}
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex-1">
+                    <button
+                      onClick={() => handleTitleClick(keg)}
+                      disabled={!keg.handle || loadingHandle === keg.handle}
+                      className="text-left hover:underline disabled:cursor-default"
+                    >
+                      <h3 className="text-xl font-semibold text-gray-900">
+                        {loadingHandle === keg.handle ? 'Loading...' : keg.name}
+                      </h3>
+                    </button>
+                    <p className="text-base text-gray-500 mt-1">{keg.size}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-gray-900">
+                      {keg.price || 'Quote'}
+                    </p>
+                  </div>
                 </div>
-
-                {/* Title - Clickable */}
-                <button
-                  onClick={() => handleTitleClick(keg)}
-                  disabled={!keg.handle || loadingHandle === keg.handle}
-                  className="w-full mb-1 hover:text-gold-600 transition-colors disabled:cursor-default"
-                >
-                  <h3 className="font-serif text-lg md:text-2xl text-gray-900 tracking-[0.05em] leading-tight">
-                    {loadingHandle === keg.handle ? 'Loading...' : keg.name}
-                  </h3>
-                </button>
-
-                {/* Size */}
-                <p className="text-gray-500 text-sm md:text-base mb-3">{keg.size}</p>
-
-                {/* Price */}
-                {keg.price ? (
-                  <p className="text-2xl md:text-3xl font-medium text-gold-600 mb-4">
-                    {keg.price}
-                  </p>
-                ) : (
-                  <p className="text-base md:text-lg text-gray-400 mb-4 italic">
-                    Price on request
-                  </p>
-                )}
-
-                {/* Action Button */}
                 {keg.inStock && keg.handle ? (
                   <button
                     onClick={() => handleAddToCart(keg)}
                     disabled={addingToCart === keg.handle || cartLoading}
-                    className={`w-full py-2 md:py-3 transition-colors tracking-[0.05em] md:tracking-[0.1em] text-xs md:text-sm font-medium rounded ${
+                    className={`w-full py-3 text-base font-medium rounded transition-colors ${
                       addingToCart === keg.handle || cartLoading
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         : 'bg-gold-600 text-gray-900 hover:bg-gold-700'
@@ -269,7 +304,7 @@ export default function KegProductGrid() {
                 ) : (
                   <Link
                     href="/contact"
-                    className="block w-full py-2 md:py-3 border border-gold-600 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.05em] md:tracking-[0.1em] text-xs md:text-sm font-medium text-center rounded"
+                    className="block w-full py-3 border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-colors text-base font-medium text-center rounded"
                   >
                     REQUEST QUOTE
                   </Link>
