@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 /**
  * Verify admin authentication via session header
  */
-function verifyAuth(_request: NextRequest): boolean {
+function verifyAuth(): boolean {
   // For API routes, we rely on the frontend having verified the session
   // The admin layout already handles authentication
   return true;
@@ -23,7 +23,7 @@ function verifyAuth(_request: NextRequest): boolean {
  * Fetches dashboard data for the specified period
  */
 export async function GET(request: NextRequest) {
-  if (!verifyAuth(request)) {
+  if (!verifyAuth()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
