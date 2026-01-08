@@ -104,7 +104,7 @@ export default function QuickOrderPage(): ReactElement {
       <OldFashionedNavigation forceScrolled={true} hidden={hideNav} />
 
       {/* Hero Section */}
-      <section className="relative h-[35vh] md:h-[40vh] mt-24 flex items-center justify-center overflow-hidden">
+      <section className="relative h-[35vh] md:h-[40vh] mt-24 pb-20 flex items-center justify-center overflow-hidden">
         <Image
           src="/images/order/order-hero.png"
           alt="Premium Bar Setup at Austin Pool Party"
