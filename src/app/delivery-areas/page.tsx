@@ -88,7 +88,7 @@ export default function DeliveryAreasPage() {
       <OldFashionedNavigation />
       
       {/* Hero Section */}
-      <section className="relative h-[50vh] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[50vh] mt-24 flex items-center justify-center overflow-hidden">
         <Image
           src="/images/hero/austin-skyline-golden-hour.webp"
           alt="Austin Aerial View"

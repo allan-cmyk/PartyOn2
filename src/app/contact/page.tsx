@@ -79,7 +79,7 @@ export default function ContactPage() {
       <OldFashionedNavigation />
       
       {/* Hero Section */}
-      <section className="relative h-[50vh] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[50vh] mt-24 flex items-center justify-center overflow-hidden">
         <Image
           src="/images/hero/contact-hero-austin.webp"
           alt="Austin Downtown"

@@ -114,7 +114,7 @@ export default function BoatPartiesPage() {
       <OldFashionedNavigation />
       
       {/* Hero Section with Image Slider */}
-      <section className="relative h-[90vh] flex items-center justify-center overflow-hidden pt-[400px] pb-[300px] md:pt-40 md:pb-16">
+      <section className="relative h-[90vh] pt-32 md:pt-24 flex items-center justify-center overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentHeroImage}

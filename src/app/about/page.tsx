@@ -44,7 +44,7 @@ export default function AboutPage() {
       <OldFashionedNavigation />
       
       {/* Hero Section */}
-      <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[60vh] mt-24 flex items-center justify-center overflow-hidden">
         <Image
           src="/images/hero/austin-skyline-golden-hour.webp"
           alt="Austin Skyline"

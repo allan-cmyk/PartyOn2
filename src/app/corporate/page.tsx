@@ -305,7 +305,7 @@ export default function CorporateLandingPage() {
       <OldFashionedNavigation />
 
       {/* Hero Section */}
-      <section className="relative min-h-[500px] sm:h-[70vh] sm:min-h-[600px] flex items-center">
+      <section className="relative min-h-[500px] sm:h-[70vh] sm:min-h-[600px] mt-24 flex items-center">
         <div className="absolute inset-0">
           <Image
             src="/images/hero/corporate-hero-conference.webp"
