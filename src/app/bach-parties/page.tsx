@@ -87,7 +87,7 @@ export default function BachPartiesPage() {
       <OldFashionedNavigation />
       
       {/* Hero Section */}
-      <section className="relative h-[100vh] pt-32 md:pt-24 flex items-center justify-center overflow-hidden">
+      <section className="relative h-[100vh] pt-32 pb-32 md:pt-24 md:pb-24 flex items-center justify-center overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentHeroIndex}
