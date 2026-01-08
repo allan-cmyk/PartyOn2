@@ -73,7 +73,7 @@ export default function HeroSection() {
 
       {/* Hero content with CSS animation */}
       <div
-        className={`relative text-center text-white z-10 max-w-4xl mx-auto px-6 sm:px-8 pt-24 sm:pt-28 md:pt-32 transition-all duration-1000 ${
+        className={`relative text-center text-white z-10 max-w-4xl mx-auto px-6 sm:px-8 pt-24 pb-32 sm:pt-28 sm:pb-36 md:pt-32 md:pb-40 transition-all duration-1000 ${
           isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}
       >
