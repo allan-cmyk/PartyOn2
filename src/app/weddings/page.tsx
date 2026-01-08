@@ -243,7 +243,7 @@ export default function WeddingsPage() {
       <OldFashionedNavigation />
       
       {/* Hero Section */}
-      <section className="relative h-[100vh] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[100vh] pt-24 flex items-center justify-center overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentHeroIndex}
@@ -268,7 +268,7 @@ export default function WeddingsPage() {
         </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 via-gray-900/30 to-gray-900/50" />
 
-        <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8 pt-24">
+        <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8">
           <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em] leading-tight md:leading-tight">
             <span className="block text-white mb-2">Your Austin Wedding,</span>
             <span className="block text-gold-400">PERFECTLY SERVED</span>
