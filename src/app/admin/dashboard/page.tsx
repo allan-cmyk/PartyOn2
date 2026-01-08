@@ -5,6 +5,8 @@ import MetricCard from './components/MetricCard';
 import SalesChart from './components/SalesChart';
 import TopProductsTable from './components/TopProductsTable';
 import IntegrationStatus from './components/IntegrationStatus';
+import TrafficOverview from './components/TrafficOverview';
+import SEOMetrics from './components/SEOMetrics';
 import { DashboardData, AnalyticsConfig } from '@/lib/analytics/types';
 
 type Period = '7d' | '30d' | '90d';
@@ -156,20 +158,54 @@ export default function DashboardPage(): ReactElement {
           </div>
         </div>
 
-        {/* SEO & Traffic Section (Placeholder for when Google APIs are configured) */}
+        {/* Traffic & SEO Section (when Google APIs are configured) */}
+        {config && (config.ga4Configured || config.searchConsoleConfigured) && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {config.ga4Configured && (
+              <TrafficOverview
+                metrics={data?.traffic || null}
+                sources={data?.trafficSources || []}
+                loading={loading}
+              />
+            )}
+            {config.searchConsoleConfigured && (
+              <SEOMetrics
+                metrics={data?.seo || null}
+                keywords={data?.topKeywords || []}
+                loading={loading}
+              />
+            )}
+          </div>
+        )}
+
+        {/* Setup Instructions (when Google APIs are NOT configured) */}
         {config && (!config.ga4Configured || !config.searchConsoleConfigured) && (
           <div id="setup-instructions" className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Unlock SEO & Traffic Insights
+              {config.ga4Configured || config.searchConsoleConfigured
+                ? 'Complete Your Setup'
+                : 'Unlock SEO & Traffic Insights'}
             </h3>
             <p className="text-gray-600 mb-4">
-              Connect Google Analytics and Search Console to see:
+              {!config.ga4Configured && !config.searchConsoleConfigured
+                ? 'Connect Google Analytics and Search Console to see:'
+                : !config.ga4Configured
+                ? 'Connect Google Analytics to see:'
+                : 'Connect Search Console to see:'}
             </p>
             <ul className="list-disc list-inside text-gray-600 mb-6 space-y-1">
-              <li>Real-time traffic data and user behavior</li>
-              <li>Organic search rankings and keyword performance</li>
-              <li>Click-through rates and impression data</li>
-              <li>Top landing pages and traffic sources</li>
+              {!config.ga4Configured && (
+                <>
+                  <li>Real-time traffic data and user behavior</li>
+                  <li>Top landing pages and traffic sources</li>
+                </>
+              )}
+              {!config.searchConsoleConfigured && (
+                <>
+                  <li>Organic search rankings and keyword performance</li>
+                  <li>Click-through rates and impression data</li>
+                </>
+              )}
             </ul>
 
             <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
