@@ -1,31 +1,53 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+export type AdminRole = 'admin' | 'employee';
+
+interface AuthResult {
+  success: boolean;
+  role?: AdminRole;
+  error?: string;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { password } = await request.json();
 
     const adminPassword = process.env.ADMIN_PASSWORD;
+    const employeePassword = process.env.EMPLOYEE_PASSWORD;
 
-    if (!adminPassword) {
-      console.error('ADMIN_PASSWORD not configured in environment');
+    // Check admin password first
+    if (adminPassword && password === adminPassword) {
+      return NextResponse.json({
+        success: true,
+        role: 'admin' as AdminRole
+      } as AuthResult);
+    }
+
+    // Check employee password
+    if (employeePassword && password === employeePassword) {
+      return NextResponse.json({
+        success: true,
+        role: 'employee' as AdminRole
+      } as AuthResult);
+    }
+
+    // No valid password configured
+    if (!adminPassword && !employeePassword) {
+      console.error('No admin passwords configured in environment');
       return NextResponse.json(
-        { success: false, error: 'Admin access not configured' },
+        { success: false, error: 'Admin access not configured' } as AuthResult,
         { status: 500 }
       );
     }
 
-    if (password === adminPassword) {
-      return NextResponse.json({ success: true });
-    }
-
     return NextResponse.json(
-      { success: false, error: 'Invalid password' },
+      { success: false, error: 'Invalid password' } as AuthResult,
       { status: 401 }
     );
   } catch (error) {
     console.error('Admin verify error:', error);
     return NextResponse.json(
-      { success: false, error: 'Verification failed' },
+      { success: false, error: 'Verification failed' } as AuthResult,
       { status: 500 }
     );
   }

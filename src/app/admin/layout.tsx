@@ -1,6 +1,10 @@
 'use client';
 
 import { useState, useEffect, ReactElement } from 'react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+
+export type AdminRole = 'admin' | 'employee';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -8,15 +12,35 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children }: AdminLayoutProps): ReactElement {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [role, setRole] = useState<AdminRole | null>(null);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     // Check if already authenticated in this session
     const authenticated = sessionStorage.getItem('admin_authenticated');
-    setIsAuthenticated(authenticated === 'true');
+    const storedRole = sessionStorage.getItem('admin_role') as AdminRole | null;
+
+    if (authenticated === 'true' && storedRole) {
+      setIsAuthenticated(true);
+      setRole(storedRole);
+    } else {
+      setIsAuthenticated(false);
+    }
   }, []);
+
+  // Redirect employees away from admin-only pages
+  useEffect(() => {
+    if (isAuthenticated && role === 'employee') {
+      const adminOnlyPaths = ['/admin/dashboard'];
+      if (adminOnlyPaths.some(path => pathname.startsWith(path))) {
+        router.push('/admin/orders');
+      }
+    }
+  }, [isAuthenticated, role, pathname, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,9 +56,18 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
 
       const data = await response.json();
 
-      if (data.success) {
+      if (data.success && data.role) {
         sessionStorage.setItem('admin_authenticated', 'true');
+        sessionStorage.setItem('admin_role', data.role);
         setIsAuthenticated(true);
+        setRole(data.role);
+
+        // Redirect based on role
+        if (data.role === 'employee') {
+          router.push('/admin/orders');
+        } else if (pathname === '/admin') {
+          router.push('/admin/dashboard');
+        }
       } else {
         setError(data.error || 'Invalid password');
         setPassword('');
@@ -44,6 +77,14 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('admin_authenticated');
+    sessionStorage.removeItem('admin_role');
+    setIsAuthenticated(false);
+    setRole(null);
+    setPassword('');
   };
 
   // Still checking auth status
@@ -60,9 +101,12 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-          <h1 className="text-2xl font-bold text-center mb-6 text-gray-800">
-            Admin Access
-          </h1>
+          <div className="text-center mb-6">
+            <h1 className="text-2xl font-bold text-gray-800">
+              Party On Delivery
+            </h1>
+            <p className="text-gray-500 text-sm mt-1">Staff Portal</p>
+          </div>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label
@@ -76,8 +120,8 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter admin password"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                placeholder="Enter your password"
                 required
                 autoFocus
               />
@@ -90,7 +134,7 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-2 px-4 bg-gray-900 text-white font-medium rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Verifying...' : 'Login'}
             </button>
@@ -100,6 +144,60 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
     );
   }
 
-  // Authenticated - render children
-  return <>{children}</>;
+  // Navigation items based on role
+  const navItems = [
+    { href: '/admin/orders', label: 'Orders', roles: ['admin', 'employee'] },
+    { href: '/admin/dashboard', label: 'Analytics', roles: ['admin'] },
+  ];
+
+  const visibleNavItems = navItems.filter(item =>
+    role && item.roles.includes(role)
+  );
+
+  // Authenticated - render with navigation
+  return (
+    <div className="min-h-screen bg-gray-100">
+      {/* Top Navigation */}
+      <nav className="bg-gray-900 text-white shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-14">
+            <div className="flex items-center gap-8">
+              <span className="font-semibold text-gold-400">
+                Party On Staff
+              </span>
+              <div className="flex gap-1">
+                {visibleNavItems.map(item => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                      pathname.startsWith(item.href)
+                        ? 'bg-gray-800 text-white'
+                        : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <span className="text-xs text-gray-400 uppercase tracking-wider">
+                {role === 'admin' ? 'Admin' : 'Employee'}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="text-sm text-gray-400 hover:text-white transition-colors"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Main Content */}
+      {children}
+    </div>
+  );
 }

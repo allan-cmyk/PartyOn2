@@ -52,19 +52,14 @@ export default function DashboardPage(): ReactElement {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Header */}
+    <div className="bg-gray-100 min-h-[calc(100vh-56px)]">
+      {/* Page Header */}
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                Analytics Dashboard
-              </h1>
-              <p className="text-sm text-gray-500 mt-1">
-                Party On Delivery — Performance Overview
-              </p>
-            </div>
+            <h1 className="text-xl font-semibold text-gray-900">
+              Sales Analytics
+            </h1>
             <div className="flex items-center gap-2">
               {(['7d', '30d', '90d'] as Period[]).map((p) => (
                 <button
@@ -85,7 +80,7 @@ export default function DashboardPage(): ReactElement {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Integration Status */}
         {config && <IntegrationStatus config={config} />}
 
