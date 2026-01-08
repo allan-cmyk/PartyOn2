@@ -114,3 +114,46 @@ enum OrderSource {
   GROUP
   PARTNER
 }
+
+// Daily Analytics Snapshots - historical tracking
+model AnalyticsSnapshot {
+  id                  String   @id @default(uuid())
+  date                DateTime @unique @db.Date
+
+  // Traffic metrics (from GA4 when configured)
+  sessions            Int      @default(0)
+  users               Int      @default(0)
+  pageviews           Int      @default(0)
+  bounceRate          Decimal? @map("bounce_rate")
+  avgSessionDuration  Decimal? @map("avg_session_duration")
+
+  // Traffic sources
+  organicSessions     Int      @default(0) @map("organic_sessions")
+  directSessions      Int      @default(0) @map("direct_sessions")
+  referralSessions    Int      @default(0) @map("referral_sessions")
+  socialSessions      Int      @default(0) @map("social_sessions")
+  paidSessions        Int      @default(0) @map("paid_sessions")
+
+  // Sales metrics (from Shopify)
+  orders              Int      @default(0)
+  revenue             Decimal  @default(0)
+  averageOrderValue   Decimal  @default(0) @map("average_order_value")
+
+  // SEO metrics (from Search Console when configured)
+  impressions         Int      @default(0)
+  clicks              Int      @default(0)
+  ctr                 Decimal? @default(0)
+  avgPosition         Decimal? @map("avg_position")
+
+  // Top data (JSON for flexibility)
+  topPages            Json?    @map("top_pages")
+  topProducts         Json?    @map("top_products")
+  topKeywords         Json?    @map("top_keywords")
+  topReferrers        Json?    @map("top_referrers")
+
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  @@index([date])
+  @@map("analytics_snapshots")
+}
