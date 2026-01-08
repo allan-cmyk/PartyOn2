@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 /**
  * Verify admin authentication via session header
  */
-function verifyAuth(request: NextRequest): boolean {
+function verifyAuth(_request: NextRequest): boolean {
   // For API routes, we rely on the frontend having verified the session
   // The admin layout already handles authentication
   return true;

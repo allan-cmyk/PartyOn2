@@ -50,7 +50,7 @@ export default function KegsPage() {
       <OldFashionedNavigation />
 
       {/* Hero Section */}
-      <section className="relative min-h-[100vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[100vh] pt-32 md:pt-24 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <Image
             src="/images/kegs/keg-party-hero.png"
