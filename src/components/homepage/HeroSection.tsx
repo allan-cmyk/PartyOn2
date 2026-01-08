@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { trackCTAClick } from '@/lib/analytics/ga4-events';
 
 export default function HeroSection() {
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
@@ -90,12 +91,18 @@ export default function HeroSection() {
         </div>
         {/* Primary CTAs */}
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-          <Link href="/products">
+          <Link
+            href="/products"
+            onClick={() => trackCTAClick('ORDER NOW', '/products', 'hero')}
+          >
             <button className="px-8 sm:px-10 py-3 sm:py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-all duration-300 tracking-[0.15em] text-sm">
               ORDER NOW
             </button>
           </Link>
-          <Link href="/order">
+          <Link
+            href="/order"
+            onClick={() => trackCTAClick('PLAN MY EVENT', '/order', 'hero')}
+          >
             <button className="px-8 sm:px-10 py-3 sm:py-4 border-2 border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
               PLAN MY EVENT
             </button>

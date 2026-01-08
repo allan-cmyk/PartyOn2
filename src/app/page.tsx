@@ -5,6 +5,8 @@ import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import HeroSection from '@/components/homepage/HeroSection';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import { generateFAQSchema } from '@/lib/seo/schemas';
+import TrackedLink from '@/components/analytics/TrackedLink';
+import HomepageTracking from '@/components/analytics/HomepageTracking';
 
 export default function HomePage() {
   // Homepage FAQ data for schema markup
@@ -39,6 +41,9 @@ export default function HomePage() {
 
   return (
     <div className="bg-white">
+      {/* GA4 Scroll Tracking */}
+      <HomepageTracking />
+
       {/* FAQ Schema for Homepage */}
       <Script
         id="homepage-faq-schema"
@@ -80,11 +85,11 @@ export default function HomePage() {
                     <span className="text-gray-700">Everything arrives cold with coordinated handoff</span>
                   </li>
                 </ul>
-                <Link href="/order">
+                <TrackedLink href="/order" section="choose_path" buttonText="START ORDERING">
                   <button className="w-full px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
                     START ORDERING
                   </button>
-                </Link>
+                </TrackedLink>
               </div>
             </ScrollRevealCSS>
 
@@ -104,11 +109,11 @@ export default function HomePage() {
                     <span className="text-gray-700">Optional TABC-certified bartender staffing via vetted partners</span>
                   </li>
                 </ul>
-                <Link href="/contact">
+                <TrackedLink href="/contact" section="choose_path" buttonText="GET HELP">
                   <button className="w-full px-8 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
                     GET HELP
                   </button>
-                </Link>
+                </TrackedLink>
               </div>
             </ScrollRevealCSS>
           </div>
@@ -242,16 +247,16 @@ export default function HomePage() {
                 Make your special day stress-free with coordinated bar service and setup.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
-                <Link href="/weddings">
+                <TrackedLink href="/weddings" section="services" buttonText="EXPLORE PACKAGES">
                   <button className="px-6 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm">
                     EXPLORE PACKAGES
                   </button>
-                </Link>
-                <Link href="/order">
+                </TrackedLink>
+                <TrackedLink href="/order" section="services" buttonText="PLAN MY WEDDING">
                   <button className="px-6 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.1em] text-sm">
                     PLAN MY WEDDING
                   </button>
-                </Link>
+                </TrackedLink>
               </div>
             </div>
             </div>
@@ -268,16 +273,16 @@ export default function HomePage() {
                 Lake Travis essentials delivered dockside—drinks, ice, and coolers ready to go.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
-                <Link href="/boat-parties">
+                <TrackedLink href="/boat-parties" section="services" buttonText="ORDER LAKE DAY ESSENTIALS">
                   <button className="px-6 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm">
                     ORDER LAKE DAY ESSENTIALS
                   </button>
-                </Link>
-                <Link href="/order">
+                </TrackedLink>
+                <TrackedLink href="/order" section="services" buttonText="PLAN A YACHT BAR">
                   <button className="px-6 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.1em] text-sm">
                     PLAN A YACHT BAR
                   </button>
-                </Link>
+                </TrackedLink>
               </div>
             </div>
             <div className="relative h-96 overflow-hidden order-1 lg:order-2">
@@ -318,16 +323,16 @@ export default function HomePage() {
                 Professional office bars and team events with invoice billing available.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
-                <Link href="/corporate">
+                <TrackedLink href="/corporate" section="services" buttonText="ORDER OFFICE BAR">
                   <button className="px-6 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm">
                     ORDER OFFICE BAR
                   </button>
-                </Link>
-                <Link href="/order">
+                </TrackedLink>
+                <TrackedLink href="/order" section="services" buttonText="BOOK A CORPORATE CONSULT">
                   <button className="px-6 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.1em] text-sm">
                     BOOK A CORPORATE CONSULT
                   </button>
-                </Link>
+                </TrackedLink>
               </div>
             </div>
             </div>
@@ -624,16 +629,16 @@ export default function HomePage() {
                 2-minute order • Fast availability check • (737) 371-9700
               </p>
               <div className="flex flex-col md:flex-row gap-6 justify-center">
-                <Link href="/order">
+                <TrackedLink href="/order" section="footer_cta" buttonText="ORDER NOW">
                   <button className="px-10 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
                     ORDER NOW
                   </button>
-                </Link>
-                <Link href="/plan-event">
+                </TrackedLink>
+                <TrackedLink href="/plan-event" section="footer_cta" buttonText="PLAN MY EVENT">
                   <button className="px-10 py-4 border-2 border-gold-600 text-white hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
                     PLAN MY EVENT
                   </button>
-                </Link>
+                </TrackedLink>
               </div>
             </div>
           </ScrollRevealCSS>
