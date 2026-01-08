@@ -1,32 +1,22 @@
 /**
  * Admin Analytics API
- * Fetches analytics data from Shopify (and GA4/Search Console when configured)
+ * Fetches analytics data from Shopify, GA4, and Search Console
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getSalesMetrics, getDailySales, getTopProducts } from '@/lib/analytics/shopify';
+import { getTrafficMetrics, getTrafficSources, getTopPages } from '@/lib/analytics/google-analytics';
+import { getSEOMetrics, getTopKeywords } from '@/lib/analytics/search-console';
+import { isGoogleConfigured } from '@/lib/analytics/google-auth';
 import { DashboardData, AnalyticsConfig } from '@/lib/analytics/types';
 
 export const dynamic = 'force-dynamic';
-
-/**
- * Verify admin authentication via session header
- */
-function verifyAuth(): boolean {
-  // For API routes, we rely on the frontend having verified the session
-  // The admin layout already handles authentication
-  return true;
-}
 
 /**
  * GET /api/admin/analytics
  * Fetches dashboard data for the specified period
  */
 export async function GET(request: NextRequest) {
-  if (!verifyAuth()) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
   const searchParams = request.nextUrl.searchParams;
   const period = searchParams.get('period') || '30d';
 
@@ -70,40 +60,80 @@ export async function GET(request: NextRequest) {
 
   startDate.setHours(0, 0, 0, 0);
 
+  // Check what integrations are configured
+  const googleConfig = isGoogleConfigured();
+  const config: AnalyticsConfig = {
+    shopifyConfigured: !!process.env.SHOPIFY_ADMIN_API_TOKEN,
+    ga4Configured: googleConfig.ga4,
+    searchConsoleConfigured: googleConfig.searchConsole,
+  };
+
   try {
-    // Fetch Shopify data in parallel
-    const [salesMetrics, dailySales, topProducts] = await Promise.all([
-      getSalesMetrics(startDate, endDate, compareStartDate, compareEndDate),
-      getDailySales(startDate, endDate),
-      getTopProducts(startDate, endDate, 10),
-    ]);
-
-    // Check what integrations are configured
-    const config: AnalyticsConfig = {
-      shopifyConfigured: !!process.env.SHOPIFY_ADMIN_API_TOKEN,
-      ga4Configured: !!process.env.GOOGLE_GA4_PROPERTY_ID,
-      searchConsoleConfigured: !!process.env.GOOGLE_SEARCH_CONSOLE_SITE,
-    };
-
+    // Start with empty dashboard data
     const dashboardData: DashboardData = {
-      sales: salesMetrics,
-      dailySales,
-      topProducts,
+      sales: {
+        totalRevenue: 0,
+        totalOrders: 0,
+        averageOrderValue: 0,
+        revenueChange: 0,
+        ordersChange: 0,
+      },
+      dailySales: [],
+      topProducts: [],
       lastUpdated: new Date().toISOString(),
     };
 
-    // TODO: Add GA4 traffic data when configured
-    // if (config.ga4Configured) {
-    //   dashboardData.traffic = await getTrafficMetrics(startDate, endDate);
-    //   dashboardData.trafficSources = await getTrafficSources(startDate, endDate);
-    //   dashboardData.topPages = await getTopPages(startDate, endDate);
-    // }
+    // Fetch all data in parallel
+    const promises: Promise<void>[] = [];
 
-    // TODO: Add Search Console SEO data when configured
-    // if (config.searchConsoleConfigured) {
-    //   dashboardData.seo = await getSEOMetrics(startDate, endDate);
-    //   dashboardData.topKeywords = await getTopKeywords(startDate, endDate);
-    // }
+    // Shopify data
+    if (config.shopifyConfigured) {
+      promises.push(
+        (async () => {
+          const [salesMetrics, dailySales, topProducts] = await Promise.all([
+            getSalesMetrics(startDate, endDate, compareStartDate, compareEndDate),
+            getDailySales(startDate, endDate),
+            getTopProducts(startDate, endDate, 10),
+          ]);
+          dashboardData.sales = salesMetrics;
+          dashboardData.dailySales = dailySales;
+          dashboardData.topProducts = topProducts;
+        })()
+      );
+    }
+
+    // GA4 data
+    if (config.ga4Configured) {
+      promises.push(
+        (async () => {
+          const [trafficMetrics, trafficSources, topPages] = await Promise.all([
+            getTrafficMetrics(startDate, endDate, compareStartDate, compareEndDate),
+            getTrafficSources(startDate, endDate),
+            getTopPages(startDate, endDate, 10),
+          ]);
+          if (trafficMetrics) dashboardData.traffic = trafficMetrics;
+          if (trafficSources.length > 0) dashboardData.trafficSources = trafficSources;
+          if (topPages.length > 0) dashboardData.topPages = topPages;
+        })()
+      );
+    }
+
+    // Search Console data
+    if (config.searchConsoleConfigured) {
+      promises.push(
+        (async () => {
+          const [seoMetrics, topKeywords] = await Promise.all([
+            getSEOMetrics(startDate, endDate, compareStartDate, compareEndDate),
+            getTopKeywords(startDate, endDate, 20),
+          ]);
+          if (seoMetrics) dashboardData.seo = seoMetrics;
+          if (topKeywords.length > 0) dashboardData.topKeywords = topKeywords;
+        })()
+      );
+    }
+
+    // Wait for all data to be fetched
+    await Promise.all(promises);
 
     return NextResponse.json({
       success: true,
