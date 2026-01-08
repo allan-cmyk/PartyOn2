@@ -66,7 +66,7 @@ export default function RentalsHubPage() {
 
       <main className="bg-white">
         {/* Hero Section */}
-        <section className="relative mt-24 bg-gradient-to-br from-gray-900 to-gray-800 text-white py-24">
+        <section className="relative pt-32 md:pt-24 bg-gradient-to-br from-gray-900 to-gray-800 text-white pb-24">
           <div className="max-w-6xl mx-auto px-8">
             <nav className="mb-8" aria-label="Breadcrumb">
               <ol className="flex items-center space-x-2 text-sm text-gray-300">

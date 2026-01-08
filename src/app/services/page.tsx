@@ -85,7 +85,7 @@ export default function ServicesPage() {
       <OldFashionedNavigation />
       
       {/* Hero Section */}
-      <section className="relative min-h-[40vh] mt-24 bg-gradient-to-br from-slate-900 to-slate-700 flex items-center justify-center">
+      <section className="relative min-h-[40vh] pt-32 md:pt-24 bg-gradient-to-br from-slate-900 to-slate-700 flex items-center justify-center">
         <div className="text-center text-white">
           <h1 className="font-serif text-5xl md:text-7xl tracking-[0.15em] mb-4">SERVICES</h1>
           <p className="text-xl tracking-[0.1em] text-gold-400">Premium Alcohol Delivery & Event Solutions</p>
