@@ -291,7 +291,7 @@ export default function PartnersPage() {
       <OldFashionedNavigation />
 
       {/* Hero Section */}
-      <section className="relative h-[60vh] mt-24 flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[60vh] pt-32 md:pt-24 flex items-center justify-center overflow-hidden">
         <Image
           src="/images/gallery/headquarters-entrance.webp"
           alt="Partner with PartyOn"
