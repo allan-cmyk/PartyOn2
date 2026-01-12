@@ -75,3 +75,126 @@ export function getCategoryById(id: PartnerCategory): CategoryInfo | undefined {
 export function getCategoryName(id: PartnerCategory): string {
   return getCategoryById(id)?.name || id;
 }
+
+// ============================================
+// Partner Landing Page Types
+// For reusable partner landing pages like Premier Party Cruises
+// ============================================
+
+/**
+ * Link object for FAQs and other content
+ */
+export interface PartnerLink {
+  text: string;
+  url: string;
+  external?: boolean;
+}
+
+/**
+ * FAQ item for partner landing pages
+ */
+export interface PartnerFAQ {
+  question: string;
+  answer: string;
+  link?: PartnerLink;
+}
+
+/**
+ * Order type option (e.g., Boat Order, Airbnb Order)
+ */
+export interface OrderType {
+  id: string;
+  label: string;
+  description: string;
+  icon?: string;
+}
+
+/**
+ * Hero bullet point with optional icon
+ */
+export interface BulletPoint {
+  text: string;
+  icon?: 'delivery' | 'group' | 'perks' | 'check';
+}
+
+/**
+ * Partner landing page data structure
+ * Used for dedicated partner pages with ordering functionality
+ */
+export interface PartnerLandingPage {
+  /** URL slug (e.g., 'premier-party-cruises') */
+  slug: string;
+  /** Display name */
+  name: string;
+  /** Short tagline for hero section */
+  tagline: string;
+  /** Longer description for SEO/meta */
+  description: string;
+  /** YouTube video URL for hero background */
+  heroVideoUrl?: string;
+  /** YouTube video ID extracted from URL */
+  heroVideoId?: string;
+  /** Fallback hero image if video unavailable */
+  heroImageUrl?: string;
+  /** Hero bullet points */
+  bulletPoints: BulletPoint[];
+  /** Price indicator ($, $$, or $$$) */
+  priceIndicator: '$' | '$$' | '$$$';
+  /** Partner's external website */
+  websiteUrl: string;
+  /** Available order types */
+  orderTypes: OrderType[];
+  /** FAQ items */
+  faqs: PartnerFAQ[];
+  /** Partner logo URL (optional) */
+  logoUrl?: string;
+  /** Contact email (optional) */
+  contactEmail?: string;
+  /** Service area description */
+  serviceArea?: string;
+  /** Whether partner page is active */
+  isActive: boolean;
+}
+
+/**
+ * Form data for creating a new group order
+ */
+export interface CreateOrderFormData {
+  orderName: string;
+  hostEmail: string;
+  orderType: string;
+  partnerId: string;
+}
+
+/**
+ * Drink calculator input
+ */
+export interface DrinkCalculatorInput {
+  guestCount: number;
+  eventDuration: number; // hours
+  beerDrinkers: number; // percentage 0-100
+  wineDrinkers: number; // percentage 0-100
+  cocktailDrinkers: number; // percentage 0-100
+}
+
+/**
+ * Drink calculator output
+ */
+export interface DrinkCalculatorResult {
+  beer: {
+    cans: number;
+    cases: number;
+  };
+  wine: {
+    bottles: number;
+  };
+  liquor: {
+    bottles: number;
+  };
+  mixers: {
+    bottles: number;
+  };
+  ice: {
+    bags: number;
+  };
+}
