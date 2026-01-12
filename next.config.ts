@@ -76,6 +76,16 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'lirp.cdn-website.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.cdn-website.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: '**.com',
         pathname: '/**',
       },
