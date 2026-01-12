@@ -168,7 +168,7 @@ export const db = {
         .order('created_at', { ascending: false })
 
       if (error) return []
-      
+
       return data.map(order => ({
         id: order.id,
         name: order.name,
@@ -187,5 +187,95 @@ export const db = {
     } else {
       return groupOrderStore.getOrdersByHostId(hostCustomerId)
     }
-  }
+  },
+
+  /**
+   * Update participant cart totals
+   */
+  async updateParticipantCart(
+    shareCode: string,
+    cartId: string,
+    cartTotal: number,
+    itemCount: number
+  ) {
+    if (isSupabaseConfigured && supabase) {
+      // First get the order to find the participant
+      const order = await this.getOrderByCode(shareCode)
+      if (!order) return null
+
+      const participant = order.participants.find(p => p.cartId === cartId)
+      if (!participant) return null
+
+      const { data, error } = await supabase
+        .from('group_participants')
+        .update({
+          cart_total: cartTotal,
+          item_count: itemCount,
+        })
+        .eq('id', participant.id)
+        .select()
+        .single()
+
+      if (error) throw error
+      return data
+    } else {
+      return groupOrderStore.updateParticipantCart(shareCode, cartId, cartTotal, itemCount)
+    }
+  },
+
+  /**
+   * Update order status (e.g., lock for checkout)
+   */
+  async updateOrderStatus(shareCode: string, status: 'active' | 'locked' | 'completed' | 'cancelled') {
+    if (isSupabaseConfigured && supabase) {
+      const { data, error } = await supabase
+        .from('group_orders')
+        .update({
+          status,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('share_code', shareCode)
+        .select()
+        .single()
+
+      if (error) throw error
+
+      return {
+        id: data.id,
+        name: data.name,
+        hostCustomerId: data.host_customer_id,
+        hostName: data.host_name,
+        shareCode: data.share_code,
+        status: data.status,
+        deliveryDate: data.delivery_date,
+        deliveryTime: data.delivery_time,
+        deliveryAddress: data.delivery_address,
+        minimumOrderAmount: data.minimum_order_amount,
+        expiresAt: data.expires_at,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
+      }
+    } else {
+      return groupOrderStore.updateOrder(shareCode, { status })
+    }
+  },
+
+  /**
+   * Remove participant from order (soft delete)
+   */
+  async removeParticipant(shareCode: string, participantId: string) {
+    if (isSupabaseConfigured && supabase) {
+      const { data, error } = await supabase
+        .from('group_participants')
+        .update({ status: 'removed' })
+        .eq('id', participantId)
+        .select()
+        .single()
+
+      if (error) throw error
+      return data
+    } else {
+      return groupOrderStore.removeParticipant(shareCode, participantId)
+    }
+  },
 }

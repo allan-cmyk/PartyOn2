@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { groupOrderStore } from '@/lib/group-orders/store'
+import { db } from '@/lib/group-orders/database'
 
 export async function POST(
   request: NextRequest,
@@ -16,7 +16,7 @@ export async function POST(
       )
     }
 
-    const groupOrder = groupOrderStore.getOrderByCode(code)
+    const groupOrder = await db.getOrderByCode(code)
     if (!groupOrder) {
       return NextResponse.json(
         { error: 'Group order not found' },
@@ -40,27 +40,24 @@ export async function POST(
       )
     }
 
-    // TESTING MODE: Skip minimum order check
-    // Calculate total amount for validation (currently disabled)
-    /* const totalAmount = groupOrder.participants
+    // Validate minimum order amount ($150)
+    const totalAmount = groupOrder.participants
       .filter(p => p.status === 'active')
       .reduce((sum, p) => sum + (p.cartTotal || 0), 0)
-    
+
     if (totalAmount < groupOrder.minimumOrderAmount) {
       return NextResponse.json(
-        { 
+        {
           error: 'Minimum order amount not met',
           required: groupOrder.minimumOrderAmount,
           current: totalAmount
         },
         { status: 400 }
       )
-    } */
+    }
 
     // Lock the order
-    const lockedOrder = groupOrderStore.updateOrder(code, {
-      status: 'locked' as const
-    })
+    const lockedOrder = await db.updateOrderStatus(code, 'locked')
 
     if (!lockedOrder) {
       return NextResponse.json(

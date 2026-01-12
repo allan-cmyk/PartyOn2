@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       deliveryDate: body.deliveryDate,
       deliveryTime: body.deliveryTime,
       deliveryAddress: body.deliveryAddress,
-      minimumOrderAmount: 0, // TESTING MODE: No minimum
+      minimumOrderAmount: 150, // $150 minimum order amount
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),

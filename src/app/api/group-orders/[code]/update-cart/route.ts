@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { groupOrderStore } from '@/lib/group-orders/store'
+import { db } from '@/lib/group-orders/database'
 
 export async function POST(
   request: NextRequest,
@@ -16,7 +16,8 @@ export async function POST(
       )
     }
 
-    const groupOrder = groupOrderStore.getOrderByCode(code)
+    // Verify the group order exists
+    const groupOrder = await db.getOrderByCode(code)
     if (!groupOrder) {
       return NextResponse.json(
         { error: 'Group order not found' },
@@ -24,8 +25,9 @@ export async function POST(
       )
     }
 
-    const updatedParticipant = groupOrderStore.updateParticipantCart(
-      groupOrder.id,
+    // Update the participant's cart totals
+    const updatedParticipant = await db.updateParticipantCart(
+      code,
       cartId,
       cartTotal,
       itemCount

@@ -57,59 +57,77 @@ export function useJoinGroupOrder() {
   return { joinGroupOrder }
 }
 
-export function useGroupOrderActions(groupOrderId: string | null) {
-  const lockOrder = useCallback(async () => {
-    if (!groupOrderId) return
-    
+/**
+ * Hook for host actions on a group order
+ * @param shareCode - The share code of the group order
+ */
+export function useGroupOrderActions(shareCode: string | null) {
+  const lockOrder = useCallback(async (hostCustomerId: string) => {
+    if (!shareCode) throw new Error('No share code provided')
+
     try {
-      const result = await GroupOrderAPI.lock(groupOrderId)
+      const result = await GroupOrderAPI.lock(shareCode, hostCustomerId)
       return result
     } catch (error) {
       console.error('Failed to lock group order:', error)
       throw error
     }
-  }, [groupOrderId])
+  }, [shareCode])
 
-  const createCheckout = useCallback(async () => {
-    if (!groupOrderId) return
-    
+  const createCheckout = useCallback(async (
+    hostCustomerId: string,
+    hostEmail: string,
+    hostPhone?: string
+  ) => {
+    if (!shareCode) throw new Error('No share code provided')
+
     try {
-      const result = await GroupOrderAPI.createCheckout(groupOrderId)
+      const result = await GroupOrderAPI.createCheckout(
+        shareCode,
+        hostCustomerId,
+        hostEmail,
+        hostPhone
+      )
       return result
     } catch (error) {
       console.error('Failed to create checkout:', error)
       throw error
     }
-  }, [groupOrderId])
+  }, [shareCode])
 
-  const removeParticipant = useCallback(async (participantId: string) => {
-    if (!groupOrderId) return
-    
+  const removeParticipant = useCallback(async (
+    participantId: string,
+    hostCustomerId: string
+  ) => {
+    if (!shareCode) throw new Error('No share code provided')
+
     try {
-      await GroupOrderAPI.removeParticipant(groupOrderId, participantId)
+      await GroupOrderAPI.removeParticipant(shareCode, participantId, hostCustomerId)
     } catch (error) {
       console.error('Failed to remove participant:', error)
       throw error
     }
-  }, [groupOrderId])
+  }, [shareCode])
+
+  const updateCart = useCallback(async (
+    cartId: string,
+    cartTotal: number,
+    itemCount: number
+  ) => {
+    if (!shareCode) return
+
+    try {
+      await GroupOrderAPI.updateCart(shareCode, cartId, cartTotal, itemCount)
+    } catch (error) {
+      console.error('Failed to update cart:', error)
+      // Don't throw - cart sync failures shouldn't break the UI
+    }
+  }, [shareCode])
 
   return {
     lockOrder,
     createCheckout,
     removeParticipant,
-  }
-}
-
-export function useHostGroupOrders(customerId: string | null) {
-  const { data, error, mutate } = useSWR(
-    customerId ? `/api/group-orders/host/${customerId}` : null,
-    () => customerId ? GroupOrderAPI.getHostOrders(customerId) : null
-  )
-
-  return {
-    orders: data || [],
-    isLoading: !error && !data && customerId !== null,
-    error,
-    refresh: mutate,
+    updateCart,
   }
 }
