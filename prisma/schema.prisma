@@ -157,3 +157,55 @@ model AnalyticsSnapshot {
   @@index([date])
   @@map("analytics_snapshots")
 }
+
+// A/B Testing Experiments
+model Experiment {
+  id             String           @id @default(cuid())
+  name           String
+  description    String?
+  page           String           // e.g., "/", "/weddings", "/order"
+  elementId      String           @map("element_id") // e.g., "hero", "cta-primary"
+  status         ExperimentStatus @default(DRAFT)
+  startDate      DateTime?        @map("start_date")
+  endDate        DateTime?        @map("end_date")
+  goalMetric     String           @map("goal_metric") // "cta_click", "scroll_depth", "conversion"
+  goalValue      String?          @map("goal_value") // specific value to track
+  winningVariant String?          @map("winning_variant")
+  confidence     Float?
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+
+  variants       Variant[]
+
+  @@index([page])
+  @@index([status])
+  @@map("experiments")
+}
+
+// A/B Test Variants
+model Variant {
+  id           String     @id @default(cuid())
+  experimentId String     @map("experiment_id")
+  name         String     // "Control", "Variant A", "Variant B"
+  description  String?
+  isControl    Boolean    @default(false) @map("is_control")
+  weight       Int        @default(50) // traffic percentage
+  impressions  Int        @default(0)
+  clicks       Int        @default(0)
+  conversions  Int        @default(0)
+  revenue      Float      @default(0)
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  experiment   Experiment @relation(fields: [experimentId], references: [id], onDelete: Cascade)
+
+  @@index([experimentId])
+  @@map("variants")
+}
+
+enum ExperimentStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  COMPLETED
+}

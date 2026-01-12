@@ -199,6 +199,57 @@ OPENROUTER_API_KEY=[configured]
 4. **Icons**: Only SVG icons, no emojis
 5. **Tone**: Professional, luxury, distinguished
 
+## 🚨 Landing Page Layout Standards (CRITICAL)
+
+The navigation is **fixed position with `h-24`** (96px / 6rem). ALL landing pages MUST account for this.
+
+### Hero Section Patterns
+
+**Pattern A: Full-Bleed Hero (image edge-to-edge)**
+Use when hero image should extend to edges of viewport:
+```tsx
+<section className="relative h-[50vh] md:h-[60vh] mt-24 flex items-center justify-center overflow-hidden">
+  <Image src="..." fill className="object-cover" />
+  {/* Content */}
+</section>
+```
+- `mt-24` pushes hero below fixed nav (REQUIRED)
+- Use `h-[Xvh]` for responsive height
+- Can use `md:h-[Yvh]` for different desktop height
+
+**Pattern B: Content Page (no full-bleed hero)**
+Use for text-heavy pages without edge-to-edge images:
+```tsx
+<section className="pt-32 pb-16 px-8 bg-gray-50">
+  {/* Content starts with breathing room below nav */}
+</section>
+```
+- `pt-32` = 128px (96px nav + 32px breathing room)
+
+### Common Mistakes to AVOID
+
+| Wrong | Correct | Why |
+|-------|---------|-----|
+| `h-[100vh] pt-[200px]` | `h-[60vh] mt-24` | Don't hack with huge padding |
+| No margin/padding | `mt-24` or `pt-32` | Content hidden behind nav |
+| `pt-24` only | `pt-32` or `mt-24` | `pt-24` = exactly nav height (no room) |
+| Different mobile/desktop hacks | Consistent pattern | Hard to maintain |
+
+### Quick Reference
+
+| Page Type | Hero Class | Example Pages |
+|-----------|------------|---------------|
+| Full-bleed image hero | `mt-24 h-[50vh] md:h-[60vh]` | /order, /products, /delivery/* |
+| Shorter image hero | `mt-24 h-[35vh] md:h-[40vh]` | /order (current) |
+| Content/form page | `pt-32` | /terms, /privacy, /blog, /faqs |
+| Full-height hero | `mt-24 h-[calc(100vh-96px)]` | Special cases only |
+
+### Audit Checklist for New Landing Pages
+- [ ] Does hero section have `mt-24` (full-bleed) or `pt-32` (content)?
+- [ ] Test on mobile: is content visible below nav?
+- [ ] Test on desktop: proper spacing below nav?
+- [ ] No hacky mobile-specific padding overrides?
+
 ## Shopify Integration Architecture
 ```
 /lib/shopify/

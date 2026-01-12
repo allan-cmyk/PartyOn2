@@ -10,7 +10,7 @@ export default function AdminOrdersPage(): ReactElement {
   const [orders, setOrders] = useState<OrderForDisplay[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
+  const [filterStatus, setFilterStatus] = useState<FilterStatus>('unfulfilled');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<OrderForDisplay | null>(null);
 
@@ -39,28 +39,43 @@ export default function AdminOrdersPage(): ReactElement {
   };
 
   // Filter orders
-  const filteredOrders = orders.filter((order) => {
-    // Status filter
-    if (filterStatus === 'unfulfilled' && order.fulfillmentStatus !== 'unfulfilled') {
-      return false;
-    }
-    if (filterStatus === 'fulfilled' && order.fulfillmentStatus === 'unfulfilled') {
-      return false;
-    }
+  const filteredOrders = orders
+    .filter((order) => {
+      // Status filter
+      if (filterStatus === 'unfulfilled' && order.fulfillmentStatus !== 'unfulfilled') {
+        return false;
+      }
+      if (filterStatus === 'fulfilled' && order.fulfillmentStatus === 'unfulfilled') {
+        return false;
+      }
 
-    // Search filter
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      return (
-        order.orderNumber.toLowerCase().includes(query) ||
-        order.customerName.toLowerCase().includes(query) ||
-        order.customerPhone.includes(query) ||
-        order.deliveryAddress.toLowerCase().includes(query)
-      );
-    }
+      // Search filter
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        return (
+          order.orderNumber.toLowerCase().includes(query) ||
+          order.customerName.toLowerCase().includes(query) ||
+          order.customerPhone.includes(query) ||
+          order.deliveryAddress.toLowerCase().includes(query)
+        );
+      }
 
-    return true;
-  });
+      return true;
+    })
+    // Sort by delivery date (closest first)
+    .sort((a, b) => {
+      if (!a.deliveryDate && !b.deliveryDate) return 0;
+      if (!a.deliveryDate) return 1; // No date goes to bottom
+      if (!b.deliveryDate) return -1;
+      return new Date(a.deliveryDate).getTime() - new Date(b.deliveryDate).getTime();
+    });
+
+  // Helper to get first line of address
+  const getAddressFirstLine = (address: string): string => {
+    if (!address) return '';
+    const firstLine = address.split(',')[0] || address.split('\n')[0];
+    return firstLine.trim();
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -219,23 +234,28 @@ export default function AdminOrdersPage(): ReactElement {
                       )
                     }
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <span className="font-semibold text-gray-900">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span className="font-semibold text-gray-900 whitespace-nowrap">
                           {order.orderNumber}
                         </span>
                         {getStatusBadge(order.fulfillmentStatus)}
-                        <span className="text-gray-500 text-sm">
+                        <span className="text-gray-600 text-sm whitespace-nowrap">
                           {order.customerName}
                         </span>
+                        {order.deliveryAddress && (
+                          <span className="text-gray-400 text-sm truncate hidden sm:inline">
+                            • {getAddressFirstLine(order.deliveryAddress)}
+                          </span>
+                        )}
                       </div>
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-4 flex-shrink-0">
                         {order.deliveryDate && (
-                          <span className="text-sm text-gray-600">
+                          <span className="text-sm font-medium text-amber-700 bg-amber-50 px-2 py-1 rounded whitespace-nowrap">
                             📅 {order.deliveryDate} {order.deliveryTime}
                           </span>
                         )}
-                        <span className="font-medium text-gray-900">
+                        <span className="font-medium text-gray-900 whitespace-nowrap">
                           ${order.total.toFixed(2)}
                         </span>
                         <svg
