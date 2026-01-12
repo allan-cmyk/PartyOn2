@@ -726,7 +726,7 @@
         "sustainability",
         "cleanup"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 61,
@@ -833,7 +833,7 @@
         "austin",
         "bakeries"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 70,
@@ -846,7 +846,7 @@
         "affordable",
         "suppliers"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 71,
@@ -951,7 +951,7 @@
         "texas",
         "budget friendly"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 80,

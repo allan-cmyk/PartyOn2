@@ -7,7 +7,11 @@ import TopProductsTable from './components/TopProductsTable';
 import IntegrationStatus from './components/IntegrationStatus';
 import TrafficOverview from './components/TrafficOverview';
 import SEOMetrics from './components/SEOMetrics';
-import { DashboardData, AnalyticsConfig } from '@/lib/analytics/types';
+import ActiveTestsSummary from './components/ActiveTestsSummary';
+import CustomerBehaviorPanel from './components/CustomerBehaviorPanel';
+import ABTestResultsPanel from './components/ABTestResultsPanel';
+import RecommendationsPanel from './components/RecommendationsPanel';
+import { ExtendedDashboardData, AnalyticsConfig } from '@/lib/analytics/types';
 
 type Period = '7d' | '30d' | '90d';
 
@@ -19,7 +23,7 @@ export default function DashboardPage(): ReactElement {
   const [period, setPeriod] = useState<Period>('30d');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<DashboardData | null>(null);
+  const [data, setData] = useState<ExtendedDashboardData | null>(null);
   const [config, setConfig] = useState<AnalyticsConfig | null>(null);
 
   useEffect(() => {
@@ -85,6 +89,16 @@ export default function DashboardPage(): ReactElement {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Integration Status */}
         {config && <IntegrationStatus config={config} />}
+
+        {/* Active A/B Tests Summary - Quick Glance View */}
+        {data?.experimentsByPage && (
+          <div className="mb-6">
+            <ActiveTestsSummary
+              experimentsByPage={data.experimentsByPage}
+              loading={loading}
+            />
+          </div>
+        )}
 
         {/* Error State */}
         {error && (
@@ -175,6 +189,28 @@ export default function DashboardPage(): ReactElement {
                 loading={loading}
               />
             )}
+          </div>
+        )}
+
+        {/* Customer Behavior & A/B Testing Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <CustomerBehaviorPanel
+            metrics={data?.behavior || null}
+            loading={loading}
+          />
+          <ABTestResultsPanel
+            results={data?.experiments || null}
+            loading={loading}
+          />
+        </div>
+
+        {/* AI Recommendations Section */}
+        {data?.recommendations && data.recommendations.length > 0 && (
+          <div className="mb-8">
+            <RecommendationsPanel
+              recommendations={data.recommendations}
+              loading={loading}
+            />
           </div>
         )}
 

@@ -35,7 +35,7 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
   // Redirect employees away from admin-only pages
   useEffect(() => {
     if (isAuthenticated && role === 'employee') {
-      const adminOnlyPaths = ['/admin/dashboard'];
+      const adminOnlyPaths = ['/admin/dashboard', '/admin/experiments'];
       if (adminOnlyPaths.some(path => pathname.startsWith(path))) {
         router.push('/admin/orders');
       }
@@ -148,6 +148,7 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
   const navItems = [
     { href: '/admin/orders', label: 'Orders', roles: ['admin', 'employee'] },
     { href: '/admin/dashboard', label: 'Analytics', roles: ['admin'] },
+    { href: '/admin/experiments', label: 'Experiments', roles: ['admin'] },
   ];
 
   const visibleNavItems = navItems.filter(item =>

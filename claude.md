@@ -9,6 +9,7 @@
 3. `global-rules/archon/CLAUDE.md` - **ARCHON-FIRST task management rule** (check Archon before TodoWrite)
 4. `global-rules/nextjs/rasmus--nextjs-rules.md` - Next.js 15 patterns and requirements
 5. `global-rules/react/rasmus--react-rules.md` - React 19 component standards and documentation
+6. `global-rules/partyondelivery/layout-standards.md` - **HERO SECTION RULES** (CRITICAL - prevents recurring layout bugs)
 
 **DO NOT proceed with any coding tasks until these files are read and understood.**
 
@@ -19,6 +20,8 @@
 - 80% minimum test coverage - NO EXCEPTIONS
 - Complete JSDoc documentation for ALL exports
 - Archon-first for task management (TodoWrite is secondary only)
+- **HERO SECTIONS**: Use `mt-24 h-[Xvh]` pattern - NEVER `h-[100vh] pt-32` (see layout-standards.md)
+- **COLOR CONTRAST**: White/gold backgrounds = black text. Dark backgrounds = white/gold text. NEVER gold text on white.
 
 ---
 
@@ -198,6 +201,226 @@ OPENROUTER_API_KEY=[configured]
 3. **Spacing**: Wide letter-spacing (tracking-[0.1em] to tracking-[0.15em])
 4. **Icons**: Only SVG icons, no emojis
 5. **Tone**: Professional, luxury, distinguished
+
+---
+
+## 🎨 COLOR CONTRAST RULES (MANDATORY)
+
+**Poor color contrast causes readability issues. Follow these rules strictly.**
+
+### The Rule
+
+| Background Color | Allowed Text Colors | Forbidden Text Colors |
+|------------------|--------------------|-----------------------|
+| **White** (`bg-white`, `bg-gray-50`) | Black, dark gray (`text-gray-900`, `text-gray-700`) | ❌ Yellow, gold, white |
+| **Yellow/Gold** (`bg-gold-*`, `bg-yellow-*`) | Black, dark gray (`text-gray-900`) | ❌ White, light colors |
+| **Black/Dark** (`bg-gray-900`, `bg-black`) | White, yellow/gold (`text-white`, `text-gold-400`) | ❌ Black, dark gray |
+
+### ✅ CORRECT Examples
+```tsx
+{/* Dark background = light text */}
+<div className="bg-gray-900 text-white">Dark bg, white text</div>
+<div className="bg-gray-900 text-gold-400">Dark bg, gold text</div>
+
+{/* Light background = dark text */}
+<div className="bg-white text-gray-900">White bg, black text</div>
+<div className="bg-gray-50 text-gray-700">Light bg, dark gray text</div>
+
+{/* Gold background = dark text */}
+<button className="bg-gold-600 text-gray-900">Gold button, black text</button>
+```
+
+### ❌ FORBIDDEN Examples
+```tsx
+{/* NEVER: Yellow/gold text on white/light backgrounds */}
+<div className="bg-white text-gold-400">UNREADABLE</div>
+<div className="bg-gray-50 text-yellow-500">UNREADABLE</div>
+
+{/* NEVER: White text on yellow/gold backgrounds */}
+<button className="bg-gold-600 text-white">UNREADABLE</button>
+<div className="bg-yellow-400 text-white">UNREADABLE</div>
+
+{/* NEVER: Light text on light backgrounds */}
+<div className="bg-white text-gray-200">UNREADABLE</div>
+```
+
+### Quick Reference
+- **Hero overlays** (dark gradient): Use `text-white` or `text-gold-400`
+- **Gold/yellow buttons**: Always use `text-gray-900` (black text)
+- **White sections**: Use `text-gray-900`, `text-gray-700`, or `text-gray-600`
+- **Gold accent text**: ONLY on dark backgrounds (`bg-gray-900`, dark overlays)
+
+---
+
+## 🚨🚨🚨 HERO SECTION STANDARDS - READ THIS FIRST 🚨🚨🚨
+
+**This section is CRITICAL. Hero section bugs are the #1 recurring issue in this codebase.**
+
+### The Navigation Specification
+
+```
+Navigation: fixed position, z-50, height = h-24 (96px / 6rem)
+- At top of page: py-6 (taller, transparent)
+- When scrolled: py-4 (shorter, white background)
+```
+
+**ALL hero sections MUST account for the 96px fixed navigation.**
+
+---
+
+### THE GOLDEN RULE
+
+**For full-bleed hero images: Use `mt-24` (margin-top) to push the section below the nav.**
+
+**NEVER combine `h-[100vh]` or `h-screen` with `pt-32` or other top padding. This is the root cause of most hero bugs.**
+
+---
+
+### ✅ CORRECT PATTERNS (Copy-Paste These)
+
+#### Pattern A: Standard Full-Bleed Hero (RECOMMENDED)
+```tsx
+{/* Use for: About, Contact, Weddings, Boat Parties, Bach Parties, etc. */}
+<section className="relative h-[50vh] md:h-[60vh] mt-24 flex items-center justify-center overflow-hidden">
+  <Image src="..." alt="..." fill className="object-cover" priority />
+  <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 via-gray-900/30 to-gray-900/50" />
+  <div className="relative text-center text-white z-10 max-w-4xl mx-auto px-8">
+    {/* Hero content */}
+  </div>
+</section>
+```
+**Key points:**
+- `mt-24` = 96px margin pushes entire section below nav
+- `h-[50vh] md:h-[60vh]` = viewport-relative height (NOT 100vh)
+- NO padding-top on the section itself
+- Content is centered with flexbox
+
+#### Pattern B: Tall Full-Bleed Hero (for dramatic effect)
+```tsx
+{/* Use for: Homepage, special landing pages that need more impact */}
+<section className="relative h-[70vh] md:h-[80vh] mt-24 flex items-center justify-center overflow-hidden">
+  <Image src="..." alt="..." fill className="object-cover" priority />
+  {/* ... same structure as Pattern A */}
+</section>
+```
+**Note:** Even for tall heroes, use `mt-24` and vh units - NOT `h-screen` or `h-[100vh]`
+
+#### Pattern C: True Full-Screen Hero (edge case only)
+```tsx
+{/* ONLY use when hero MUST fill entire viewport minus nav */}
+<section className="relative h-[calc(100vh-96px)] mt-24 flex items-center justify-center overflow-hidden">
+  {/* ... */}
+</section>
+```
+**Use sparingly** - this is harder to maintain across devices.
+
+#### Pattern D: Content Page (no full-bleed image)
+```tsx
+{/* Use for: Terms, Privacy, FAQs, Blog posts, forms without hero images */}
+<section className="pt-32 pb-16 px-8 bg-gray-50">
+  {/* pt-32 = 128px = 96px nav + 32px breathing room */}
+  <div className="max-w-4xl mx-auto">
+    {/* Content */}
+  </div>
+</section>
+```
+
+---
+
+### ❌ FORBIDDEN PATTERNS (Never Use These)
+
+#### FORBIDDEN #1: Height + Padding Double-Spacing
+```tsx
+{/* ❌ WRONG - This is the most common bug! */}
+<section className="relative h-[100vh] pt-32 pb-32 md:pt-24 md:pb-24 flex items-center justify-center">
+```
+**Why it's wrong:** `h-[100vh]` takes full viewport, then `pt-32` adds 128px padding INSIDE that space, pushing content down and creating overflow/cutoff issues.
+
+#### FORBIDDEN #2: Using h-screen Without Adjustment
+```tsx
+{/* ❌ WRONG - h-screen ignores the fixed nav */}
+<section className="relative h-screen flex items-center justify-center">
+```
+**Why it's wrong:** `h-screen` = 100vh, which goes behind the fixed nav. Content at the top will be hidden.
+
+#### FORBIDDEN #3: Mobile-Specific Margin Hacks
+```tsx
+{/* ❌ WRONG - Adding hacky margins to fix underlying spacing issues */}
+<div className="mt-[120px] mb-[80px] md:mt-0 md:mb-0">
+```
+**Why it's wrong:** This indicates the parent section's spacing is broken. Fix the section, not the content.
+
+#### FORBIDDEN #4: Inconsistent Mobile/Desktop Padding
+```tsx
+{/* ❌ WRONG - Different padding strategies per breakpoint */}
+<section className="pt-32 pb-32 md:pt-24 md:pb-24">
+```
+**Why it's wrong:** Creates unpredictable behavior. Use consistent `mt-24` for all breakpoints.
+
+#### FORBIDDEN #5: Using pt-24 Alone
+```tsx
+{/* ❌ WRONG - pt-24 = exactly nav height, no breathing room */}
+<section className="pt-24">
+```
+**Why it's wrong:** Content starts immediately at nav edge with no visual separation.
+
+---
+
+### Page-Specific Implementations (REFERENCE)
+
+| Page | Correct Implementation | Notes |
+|------|----------------------|-------|
+| **Homepage** | `h-[70vh] md:h-[80vh] mt-24` | Tall hero for impact |
+| **About** | `h-[50vh] md:h-[60vh] mt-24` | Standard full-bleed |
+| **Contact** | `h-[50vh] mt-24` | Standard full-bleed |
+| **Weddings** | `h-[60vh] md:h-[70vh] mt-24` | Tall for dramatic photos |
+| **Boat Parties** | `h-[60vh] md:h-[70vh] mt-24` | Tall for dramatic photos |
+| **Bach Parties** | `h-[60vh] md:h-[70vh] mt-24` | Tall for dramatic photos |
+| **Order** | `h-[35vh] md:h-[40vh] mt-24` | Shorter, form follows |
+| **Products** | `h-[40vh] md:h-[50vh] mt-24` | Moderate height |
+| **Terms/Privacy** | `pt-32` (no hero image) | Content page pattern |
+| **Blog Posts** | `pt-32` (no hero image) | Content page pattern |
+
+---
+
+### Hero Section Audit Checklist
+
+**Before submitting ANY page with a hero section, verify:**
+
+- [ ] **Section uses `mt-24`** for full-bleed heroes (NOT pt-24, NOT pt-32)
+- [ ] **Height uses vh units** like `h-[50vh]` (NOT h-screen, NOT h-[100vh])
+- [ ] **NO padding-top on the section** when using mt-24 + vh height
+- [ ] **Content uses flexbox centering** (`flex items-center justify-center`)
+- [ ] **Test mobile**: Hero visible below nav, content not cut off
+- [ ] **Test desktop**: Proper spacing, no awkward gaps
+- [ ] **No mobile-specific margin hacks** inside hero content
+- [ ] **Consistent breakpoint behavior** (same spacing logic mobile/desktop)
+
+---
+
+### When Modifying Existing Hero Sections
+
+**STOP and check before editing ANY hero section:**
+
+1. Read this documentation first
+2. Identify which pattern the page should use
+3. If current implementation uses forbidden patterns, FIX IT using correct patterns
+4. Never add padding/margin hacks to "fix" layout issues
+5. Test on both mobile and desktop before considering it complete
+
+---
+
+### Quick Troubleshooting
+
+| Symptom | Likely Cause | Fix |
+|---------|--------------|-----|
+| Hero hidden behind nav | Missing `mt-24` | Add `mt-24` to section |
+| Content cut off at bottom | Using `h-[100vh]` + padding | Use `h-[60vh] mt-24` instead |
+| Awkward gap above hero | Using `pt-32` on full-bleed | Change to `mt-24` |
+| Mobile looks different than desktop | Inconsistent padding per breakpoint | Use same `mt-24` for all |
+| Hero too short/tall | Wrong vh value | Adjust to `h-[50vh]` or `h-[60vh]` |
+
+---
 
 ## Shopify Integration Architecture
 ```
