@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { BYOBVenue } from '@/lib/byob-venues/types';
@@ -39,6 +40,7 @@ const settingLabels: Record<string, string> = {
 };
 
 export default function VenueCard({ venue }: VenueCardProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const isPartner = venue.partnerStatus !== 'none';
   const isPremier = venue.partnerStatus === 'premier';
 
@@ -167,9 +169,19 @@ export default function VenueCard({ venue }: VenueCardProps) {
         </div>
 
         {/* Description (or BYOB Policy as fallback) */}
-        <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 mb-4">
-          {displayText}
-        </p>
+        <div className="mb-4">
+          <p className={`text-sm text-gray-600 leading-relaxed ${!isExpanded ? 'line-clamp-3' : ''}`}>
+            {displayText}
+          </p>
+          {displayText && displayText.length > 150 && (
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-sm text-gold-600 hover:text-gold-700 mt-1 font-medium"
+            >
+              {isExpanded ? 'Show Less' : 'Read More'}
+            </button>
+          )}
+        </div>
 
         {/* Action Button - Only for partners */}
         {isPartner && venue.partnerSlug && (
