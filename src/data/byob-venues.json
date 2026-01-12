@@ -957,21 +957,6 @@
       "area": "north"
     },
     {
-      "id": 61,
-      "name": "Painting With a Twist - South",
-      "slug": "painting-with-a-twist-south",
-      "category": "entertainment",
-      "subcategory": "Art studio",
-      "byobPolicy": "BYOB; private paint parties welcome beverages.",
-      "description": "Painting With a Twist South Austin is a BYOB paint-and-sip studio at 6705 W Highway 290 in Oak Hill Centre. Bring your favorite wine and snacks while creating your own artwork with step-by-step guidance. Great for private parties, bachelorettes, and corporate events.",
-      "website": "https://www.paintingwithatwist.com/studio/south-austin/",
-      "partnerStatus": "none",
-      "eventTypes": ["social", "party"],
-      "setting": "indoor",
-      "priceRange": 1,
-      "area": "south"
-    },
-    {
       "id": 62,
       "name": "CRAFT Austin",
       "slug": "craft-austin",
