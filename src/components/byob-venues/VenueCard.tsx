@@ -55,14 +55,35 @@ export default function VenueCard({ venue }: VenueCardProps) {
 
   const venueImage = venue.image || placeholderImages[venue.category] || '/images/venues/default-venue.webp';
 
+  // Use description if available, otherwise fall back to byobPolicy
+  const displayText = venue.description || venue.byobPolicy;
+
+  // Image wrapper - clickable link to website if available
+  const ImageWrapper = ({ children }: { children: React.ReactNode }) => {
+    if (venue.website) {
+      return (
+        <a
+          href={venue.website}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block relative h-48 bg-gray-100 overflow-hidden cursor-pointer"
+          aria-label={`Visit ${venue.name} website`}
+        >
+          {children}
+        </a>
+      );
+    }
+    return <div className="relative h-48 bg-gray-100 overflow-hidden">{children}</div>;
+  };
+
   return (
     <article
       className={`group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden ${
         isPartner ? 'border-2 border-gold-400 ring-1 ring-gold-200' : 'border border-gray-100 hover:border-gold-300'
       }`}
     >
-      {/* Image Container */}
-      <div className="relative h-48 bg-gray-100 overflow-hidden">
+      {/* Image Container - Clickable link to venue website */}
+      <ImageWrapper>
         <Image
           src={venueImage}
           alt={`${venue.name} - ${venue.subcategory} in ${getAreaName(venue.area)}`}
@@ -101,7 +122,19 @@ export default function VenueCard({ venue }: VenueCardProps) {
 
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-      </div>
+
+        {/* External link indicator for non-partners with website */}
+        {venue.website && !isPartner && (
+          <div className="absolute bottom-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+            <span className="inline-flex items-center gap-1 px-2 py-1 bg-white/90 text-gray-700 text-xs font-medium rounded shadow">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+              Visit Site
+            </span>
+          </div>
+        )}
+      </ImageWrapper>
 
       {/* Content */}
       <div className="p-5">
@@ -133,40 +166,20 @@ export default function VenueCard({ venue }: VenueCardProps) {
           </div>
         </div>
 
-        {/* BYOB Policy */}
-        <p className="text-sm text-gray-600 leading-relaxed line-clamp-2 mb-4">
-          {venue.byobPolicy}
+        {/* Description (or BYOB Policy as fallback) */}
+        <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 mb-4">
+          {displayText}
         </p>
 
-        {/* Action Buttons */}
-        <div className="flex items-center gap-3">
-          {venue.website && (
-            <a
-              href={venue.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 text-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded transition-colors"
-            >
-              Visit Website
-            </a>
-          )}
-
-          {isPartner && venue.partnerSlug ? (
-            <Link
-              href={`/venues/${venue.partnerSlug}`}
-              className="flex-1 text-center px-4 py-2 text-sm font-medium text-gray-900 bg-gold-400 hover:bg-gold-500 rounded transition-colors"
-            >
-              Order Alcohol
-            </Link>
-          ) : (
-            <Link
-              href="/products"
-              className="flex-1 text-center px-4 py-2 text-sm font-medium text-gold-700 border border-gold-300 hover:bg-gold-50 rounded transition-colors"
-            >
-              Browse Drinks
-            </Link>
-          )}
-        </div>
+        {/* Action Button - Only for partners */}
+        {isPartner && venue.partnerSlug && (
+          <Link
+            href={`/venues/${venue.partnerSlug}`}
+            className="block w-full text-center px-4 py-2.5 text-sm font-medium text-gray-900 bg-gold-400 hover:bg-gold-500 rounded transition-colors"
+          >
+            Order Alcohol
+          </Link>
+        )}
       </div>
     </article>
   );

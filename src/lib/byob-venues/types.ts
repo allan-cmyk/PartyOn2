@@ -52,6 +52,7 @@ export interface BYOBVenue {
   category: VenueCategory;
   subcategory: string;
   byobPolicy: string;
+  description?: string;
   partnerStatus: PartnerTier;
   partnerSlug?: string;
   website?: string;
