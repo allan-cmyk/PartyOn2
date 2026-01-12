@@ -66,6 +66,16 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 's3-media0.fl.yelpcdn.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.yelpcdn.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: '**.com',
         pathname: '/**',
       },
