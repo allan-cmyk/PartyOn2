@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { BYOBVenue } from '@/lib/byob-venues/types';
-import { getCategoryName, getPriceLabel, getAreaName } from '@/lib/byob-venues/types';
+import { getPriceLabel, getAreaName } from '@/lib/byob-venues/types';
 
 interface VenueCardProps {
   venue: BYOBVenue;
@@ -41,7 +41,6 @@ const settingLabels: Record<string, string> = {
 export default function VenueCard({ venue }: VenueCardProps) {
   const isPartner = venue.partnerStatus !== 'none';
   const isPremier = venue.partnerStatus === 'premier';
-  const isFeatured = venue.partnerStatus === 'featured';
 
   // Default placeholder image based on category
   const placeholderImages: Record<string, string> = {

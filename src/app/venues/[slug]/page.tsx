@@ -9,7 +9,7 @@ import Footer from '@/components/Footer';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import venuesData from '@/data/byob-venues.json';
 import type { BYOBVenue } from '@/lib/byob-venues/types';
-import { getCategoryName, getAreaName, getPriceLabel } from '@/lib/byob-venues/types';
+import { getAreaName, getPriceLabel } from '@/lib/byob-venues/types';
 
 export default function VenueLandingPage() {
   const params = useParams();
