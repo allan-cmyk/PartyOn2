@@ -210,6 +210,7 @@ module.exports = {
         'wiggle': 'wiggle 0.5s ease-in-out',
         'pulse-slow': 'pulse 3s ease-in-out infinite',
         'party': 'party 1s ease-in-out',
+        'scroll-left': 'scrollLeft 40s linear infinite',
       },
       keyframes: {
         fadeIn: {
@@ -243,6 +244,10 @@ module.exports = {
           '50%': { transform: 'scale(1) rotate(-5deg)' },
           '75%': { transform: 'scale(1.1) rotate(5deg)' },
           '100%': { transform: 'scale(1) rotate(0deg)' },
+        },
+        scrollLeft: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
         },
       },
       backgroundImage: {

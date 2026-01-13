@@ -8,6 +8,7 @@ import Footer from '@/components/Footer';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import VenueFilters from '@/components/byob-venues/VenueFilters';
 import VenueGrid from '@/components/byob-venues/VenueGrid';
+import HeroImageCarousel from '@/components/byob-venues/HeroImageCarousel';
 import venuesData from '@/data/byob-venues.json';
 import type { BYOBVenue, VenueCategory, EventType } from '@/lib/byob-venues/types';
 
@@ -95,19 +96,10 @@ export default function AustinBYOBVenuesPage() {
     <div className="bg-white min-h-screen">
       <OldFashionedNavigation hidden={hideHeaderOnMobile} />
 
-      {/* Hero Section */}
+      {/* Hero Section with Auto-Scrolling Image Carousel */}
       <section className="relative h-[50vh] min-h-[400px] mt-24 flex items-center">
-        <div className="absolute inset-0">
-          <Image
-            src="/images/hero/austin-wedding-venue-outdoor.webp"
-            alt="Austin BYOB wedding venue with elegant outdoor setup"
-            fill
-            sizes="100vw"
-            className="object-cover"
-            priority
-          />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30" />
+        {/* Auto-scrolling venue image carousel */}
+        <HeroImageCarousel />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 text-white">
           <ScrollRevealCSS duration={800} y={30}>
