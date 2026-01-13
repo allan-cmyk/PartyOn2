@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { BYOBVenue } from '@/lib/byob-venues/types';
 import { getPriceLabel, getAreaName } from '@/lib/byob-venues/types';
+import VenueDetailModal from './VenueDetailModal';
 
 interface VenueCardProps {
   venue: BYOBVenue;
@@ -41,6 +42,7 @@ const settingLabels: Record<string, string> = {
 
 export default function VenueCard({ venue }: VenueCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const isPartner = venue.partnerStatus !== 'none';
   const isPremier = venue.partnerStatus === 'premier';
 
@@ -176,6 +178,14 @@ export default function VenueCard({ venue }: VenueCardProps) {
           <span className="text-gold-600">{getPriceLabel(venue.priceRange)}</span>
         </div>
 
+        {/* Mobile-only: Read Description button */}
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="sm:hidden w-full mb-2 px-2 py-1.5 text-[10px] font-medium text-gold-700 bg-gold-50 hover:bg-gold-100 rounded transition-colors"
+        >
+          Read Description
+        </button>
+
         {/* Description (or BYOB Policy as fallback) - Hidden on mobile */}
         <div className="hidden sm:block mb-4">
           <p className={`text-sm text-gray-600 leading-relaxed ${!isExpanded ? 'line-clamp-3' : ''}`}>
@@ -201,6 +211,13 @@ export default function VenueCard({ venue }: VenueCardProps) {
           </Link>
         )}
       </div>
+
+      {/* Venue Detail Modal (Mobile) */}
+      <VenueDetailModal
+        venue={venue}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </article>
   );
 }

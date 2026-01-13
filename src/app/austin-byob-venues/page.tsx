@@ -8,7 +8,7 @@ import Footer from '@/components/Footer';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import VenueFilters from '@/components/byob-venues/VenueFilters';
 import VenueGrid from '@/components/byob-venues/VenueGrid';
-import HeroImageCarousel from '@/components/byob-venues/HeroImageCarousel';
+import HeroMosaicGrid from '@/components/byob-venues/HeroMosaicGrid';
 import venuesData from '@/data/byob-venues.json';
 import type { BYOBVenue, VenueCategory, EventType } from '@/lib/byob-venues/types';
 
@@ -96,10 +96,10 @@ export default function AustinBYOBVenuesPage() {
     <div className="bg-white min-h-screen">
       <OldFashionedNavigation hidden={hideHeaderOnMobile} />
 
-      {/* Hero Section with Auto-Scrolling Image Carousel */}
+      {/* Hero Section with Dynamic Mosaic Grid */}
       <section className="relative h-[50vh] min-h-[400px] mt-24 flex items-center">
-        {/* Auto-scrolling venue image carousel */}
-        <HeroImageCarousel />
+        {/* Mosaic grid with staggered image transitions */}
+        <HeroMosaicGrid />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 text-white">
           <ScrollRevealCSS duration={800} y={30}>
