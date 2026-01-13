@@ -11,19 +11,25 @@ import { trackEvent, ANALYTICS_EVENTS } from '@/lib/analytics/track'
 
 export default function GroupOrderDashboard() {
   const router = useRouter()
-  const { currentGroupOrder, isHost, isInGroupOrder, refreshGroupOrder } = useGroupOrderContext()
+  const { currentGroupOrder, isHost, isInGroupOrder, refreshGroupOrder, groupOrderCode } = useGroupOrderContext()
   const { cart } = useCartContext()
   const [showShareModal, setShowShareModal] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
 
   // Redirect if not in a group order or not the host
+  // But don't redirect while still loading (code set but order not loaded yet)
   useEffect(() => {
+    // Still loading - code is set but order hasn't loaded yet
+    if (groupOrderCode && !currentGroupOrder) {
+      return
+    }
+
     if (!isInGroupOrder) {
       router.push('/products')
     } else if (!isHost) {
       router.push('/products')
     }
-  }, [isInGroupOrder, isHost, router])
+  }, [isInGroupOrder, isHost, router, groupOrderCode, currentGroupOrder])
 
   // Refresh group order data periodically
   useEffect(() => {
