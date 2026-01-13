@@ -13,6 +13,8 @@ interface VenueFiltersProps {
   onSearchChange: (query: string) => void;
   onPartnersOnlyChange: (show: boolean) => void;
   venueCounts: Record<VenueCategory | 'all', number>;
+  /** Hide filters on mobile (slides up out of view) */
+  hiddenOnMobile?: boolean;
 }
 
 export default function VenueFilters({
@@ -25,9 +27,12 @@ export default function VenueFilters({
   onSearchChange,
   onPartnersOnlyChange,
   venueCounts,
+  hiddenOnMobile = false,
 }: VenueFiltersProps) {
   return (
-    <div className="bg-white border-b border-gray-200 sticky top-24 z-40">
+    <div className={`bg-white border-b border-gray-200 sticky top-24 z-40 transition-transform duration-300 ${
+      hiddenOnMobile ? 'md:translate-y-0 -translate-y-full' : 'translate-y-0'
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4">
         {/* Search and Partner Toggle Row */}
         <div className="flex flex-col sm:flex-row gap-4 mb-4">

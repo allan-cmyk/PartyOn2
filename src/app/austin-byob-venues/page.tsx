@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
@@ -16,6 +16,46 @@ export default function AustinBYOBVenuesPage() {
   const [activeEventType, setActiveEventType] = useState<EventType | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [showPartnersOnly, setShowPartnersOnly] = useState(false);
+
+  // Mobile scroll-to-hide state
+  const [hideHeaderOnMobile, setHideHeaderOnMobile] = useState(false);
+  const venueGridRef = useRef<HTMLDivElement>(null);
+  const lastScrollY = useRef(0);
+
+  // Detect scroll direction and position to hide/show header on mobile
+  useEffect(() => {
+    const handleScroll = () => {
+      // Only apply on mobile (< 768px)
+      if (window.innerWidth >= 768) {
+        setHideHeaderOnMobile(false);
+        return;
+      }
+
+      const currentScrollY = window.scrollY;
+      const venueGridTop = venueGridRef.current?.getBoundingClientRect().top ?? 0;
+      const viewportHeight = window.innerHeight;
+
+      // Hide header when scrolling down AND venue grid is near/past the top of viewport
+      // Show header when scrolling up OR at the very top of the page
+      if (currentScrollY < 100) {
+        // Near top of page - always show header
+        setHideHeaderOnMobile(false);
+      } else if (venueGridTop < viewportHeight * 0.5) {
+        // Venue grid is in view - hide header when scrolling down
+        if (currentScrollY > lastScrollY.current) {
+          setHideHeaderOnMobile(true);
+        } else if (currentScrollY < lastScrollY.current - 50) {
+          // Scrolling up significantly - show header
+          setHideHeaderOnMobile(false);
+        }
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const venues = venuesData.venues as BYOBVenue[];
 
@@ -53,7 +93,7 @@ export default function AustinBYOBVenuesPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation />
+      <OldFashionedNavigation hidden={hideHeaderOnMobile} />
 
       {/* Hero Section */}
       <section className="relative h-[50vh] min-h-[400px] mt-24 flex items-center">
@@ -199,10 +239,11 @@ export default function AustinBYOBVenuesPage() {
         onSearchChange={setSearchQuery}
         onPartnersOnlyChange={setShowPartnersOnly}
         venueCounts={venueCounts}
+        hiddenOnMobile={hideHeaderOnMobile}
       />
 
       {/* Venue Grid */}
-      <section className="py-12 px-4 sm:px-8">
+      <section ref={venueGridRef} className="py-12 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto">
           <VenueGrid
             venues={venues}
