@@ -59,8 +59,11 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Error creating group order:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    const errorStack = error instanceof Error ? error.stack : undefined
+    console.error('Error details:', { message: errorMessage, stack: errorStack })
     return NextResponse.json(
-      { error: 'Failed to create group order' },
+      { error: 'Failed to create group order', details: errorMessage },
       { status: 500 }
     )
   }
