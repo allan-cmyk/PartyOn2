@@ -249,6 +249,7 @@
       "byobPolicy": "City venue; BYOB only with permit; no alcohol sales.",
       "description": "The historic Zilker Park Clubhouse is a charming stone building nestled in Austin's beloved Zilker Park. This city-owned facility offers indoor and outdoor spaces perfect for casual social gatherings, birthday parties, and community events with BYOB options.",
       "website": "https://www.austintexas.gov/department/zilker-park",
+      "image": "https://www.austintexas.gov/sites/default/files/files/Parks/Special_Events/reservablefacilities/images/6145f38dae88bf8e71aa9ceaac5e5bd3c735c51adeb2802985353eb8071a7716.jpg",
       "partnerStatus": "none",
       "eventTypes": ["social", "party"],
       "setting": "both",
@@ -496,21 +497,6 @@
       "area": "north"
     },
     {
-      "id": 32,
-      "name": "Gather on Monroe",
-      "slug": "gather-on-monroe",
-      "category": "modern-industrial",
-      "subcategory": "Urban venue",
-      "byobPolicy": "BYO-friendly; own alcohol or choose bar packages.",
-      "description": "Gather on Monroe is a unique South Austin venue offering a natural urban feel with large oak trees shading outdoor ceremony and dinner spaces. The indoor area features modern furnishings perfect for weddings, corporate events, and social gatherings with BYOB options.",
-      "website": "https://www.gatheronmonroe.com/",
-      "partnerStatus": "none",
-      "eventTypes": ["corporate", "social"],
-      "setting": "indoor",
-      "priceRange": 2,
-      "area": "south"
-    },
-    {
       "id": 33,
       "name": "Peached Social House",
       "slug": "peached-social-house",
@@ -607,21 +593,6 @@
       "area": "east"
     },
     {
-      "id": 39,
-      "name": "Trinity Hall",
-      "slug": "trinity-hall",
-      "category": "modern-industrial",
-      "subcategory": "Downtown venue",
-      "byobPolicy": "All catering/bar brought in; BYOB permitted.",
-      "description": "Trinity Hall is a modern, industrial multi-level venue in downtown Austin featuring whitewashed brick walls and brass light fixtures. This customizable space on East 5th Street can accommodate up to 600 guests for weddings, corporate events, and private celebrations with BYOB permitted.",
-      "website": "http://trinityhall.com/",
-      "partnerStatus": "none",
-      "eventTypes": ["corporate", "social"],
-      "setting": "indoor",
-      "priceRange": 2,
-      "area": "downtown"
-    },
-    {
       "id": 40,
       "name": "800 Congress",
       "slug": "800-congress",
@@ -710,26 +681,12 @@
       "byobPolicy": "BYOB with permit; renters supply all beverages.",
       "description": "Fiesta Gardens at 2101 Jesse E. Segovia Street is a popular waterfront venue on Lady Bird Lake. Features outdoor pavilions, an open-air amphitheater, and picnic areas. Perfect for festivals, concerts, cultural celebrations, and private events with permit-based BYOB.",
       "website": "https://www.austintexas.gov/department/fiesta-gardens",
+      "image": "https://www.austintexas.gov/sites/default/files/images/Parks/Parkland_Development/Fiesta%20Gardens%20-%20Dining%20Hall.jpg",
       "partnerStatus": "none",
       "eventTypes": ["social", "party"],
       "setting": "outdoor",
       "priceRange": 1,
       "area": "east"
-    },
-    {
-      "id": 46,
-      "name": "Zilker Park Pavilions",
-      "slug": "zilker-park-pavilions",
-      "category": "public-community",
-      "subcategory": "City park sites",
-      "byobPolicy": "Permitted alcohol is BYOB only; no sales on-site.",
-      "description": "Zilker Park pavilions offer beautiful outdoor rental spaces in Austin's beloved metropolitan park. With views of downtown and Barton Springs, these city-owned facilities are perfect for social gatherings, birthday parties, and casual events. Alcohol is BYOB only with proper permits.",
-      "website": "https://www.austintexas.gov/department/zilker-park",
-      "partnerStatus": "none",
-      "eventTypes": ["social", "party"],
-      "setting": "outdoor",
-      "priceRange": 1,
-      "area": "zilker"
     },
     {
       "id": 47,
@@ -1005,21 +962,6 @@
       "area": "south"
     },
     {
-      "id": 65,
-      "name": "Art by the Glass Studio",
-      "slug": "art-by-the-glass-studio",
-      "category": "entertainment",
-      "subcategory": "Art studio",
-      "byobPolicy": "BYOB painting parties; bring your own beverages.",
-      "description": "Art by the Glass Studio hosts BYOB paint parties at partner venues across Austin including The Dig Pub and Spirit of Texas Distillery. Bring wine to share while art instructors guide you step-by-step to create your own masterpiece at public or private events.",
-      "website": "https://www.artbytheglassstudio.com/",
-      "partnerStatus": "none",
-      "eventTypes": ["social", "party"],
-      "setting": "indoor",
-      "priceRange": 1,
-      "area": "central"
-    },
-    {
       "id": 66,
       "name": "Kindred Oaks",
       "slug": "kindred-oaks",
@@ -1050,21 +992,6 @@
       "setting": "both",
       "priceRange": 2,
       "area": "kyle"
-    },
-    {
-      "id": 68,
-      "name": "Kali-Kate",
-      "slug": "kali-kate",
-      "category": "hill-country",
-      "subcategory": "Ranch pavilion",
-      "byobPolicy": "BYOB weddings; client supplies alcohol.",
-      "description": "Kali-Kate Event Pavilion in Buda features a stunning 3,400 sq ft Grand Pavilion with vaulted ceilings and elaborate chandeliers. This rustic elegant venue offers inspired memories with beautiful Hill Country settings perfect for weddings and events with BYOB options.",
-      "website": "http://www.kali-kate.com/",
-      "partnerStatus": "none",
-      "eventTypes": ["wedding"],
-      "setting": "both",
-      "priceRange": 3,
-      "area": "buda"
     },
     {
       "id": 69,
@@ -1145,6 +1072,22 @@
       "setting": "both",
       "priceRange": 3,
       "area": "buda"
+    },
+    {
+      "id": 74,
+      "name": "Vuka Bouldin Creek",
+      "slug": "vuka-bouldin-creek",
+      "category": "modern-industrial",
+      "subcategory": "Event space",
+      "byobPolicy": "Confirmed BYOB allowed (outside alcohol).",
+      "description": "Vuka Bouldin Creek is a versatile wedding and event space in South Austin featuring elegant indoor spaces with natural light and modern design. Part of the Vuka family of venues, this location specializes in weddings with dedicated event coordination, flexible layouts, and BYOB-friendly policies.",
+      "website": "https://vuka.co/event-space/weddings/",
+      "image": "https://vuka.co/wp-content/uploads/2024/04/Alba-Wedding-516-scaled.jpg",
+      "partnerStatus": "none",
+      "eventTypes": ["wedding", "corporate", "social"],
+      "setting": "indoor",
+      "priceRange": 2,
+      "area": "south"
     }
   ]
 }
