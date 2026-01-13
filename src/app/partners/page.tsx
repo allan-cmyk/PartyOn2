@@ -131,7 +131,11 @@ export default function AustinPartnersPage() {
               <p>
                 Our <strong>Austin wedding vendors</strong> include full-service wedding planners,
                 day-of coordinators, and luxury event designers who know the local venue scene inside
-                and out. Need <strong>mobile bartenders in Austin</strong>? Our TABC-certified bartending
+                and out. Looking for the perfect space? Browse our{' '}
+                <Link href="/austin-byob-venues" className="text-gold-600 hover:text-gold-700">
+                  complete list of 75+ Austin BYOB venues
+                </Link>
+                . Need <strong>mobile bartenders in Austin</strong>? Our TABC-certified bartending
                 partners bring professional bar service directly to your event—whether it&apos;s a
                 downtown office party, Hill Country wedding, or lakeside celebration.
               </p>
@@ -174,8 +178,12 @@ export default function AustinPartnersPage() {
                 <p className="text-gray-600">
                   Austin&apos;s best event vendors include experienced wedding planners, TABC-certified
                   mobile bartenders, Lake Travis boat rental companies, professional caterers, and
-                  unique venue spaces. Our directory features vetted partners across all categories
-                  to help you plan the perfect Austin event.
+                  unique venue spaces. Browse our{' '}
+                  <Link href="/austin-byob-venues" className="text-gold-600 hover:text-gold-700">
+                    complete BYOB venue directory
+                  </Link>{' '}
+                  for 75+ venues that allow outside alcohol. Our directory features vetted partners
+                  across all categories to help you plan the perfect Austin event.
                 </p>
               </div>
               <div className="border-b border-gray-200 pb-6">
@@ -184,7 +192,11 @@ export default function AustinPartnersPage() {
                 </h3>
                 <p className="text-gray-600">
                   Browse our Austin vendor directory to find top-rated wedding planners, caterers,
-                  bartenders, and venues. Each partner has been selected for their quality of service
+                  bartenders, and venues. For venue options, check out our{' '}
+                  <Link href="/austin-byob-venues" className="text-gold-600 hover:text-gold-700">
+                    full list of 75+ BYOB venues in Austin
+                  </Link>
+                  . Each partner has been selected for their quality of service
                   and experience with Austin weddings, from downtown celebrations to Hill Country estates.
                 </p>
               </div>
