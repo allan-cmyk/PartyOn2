@@ -94,7 +94,7 @@ export default function AustinBYOBVenuesPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation hidden={hideHeaderOnMobile} />
+      <OldFashionedNavigation />
 
       {/* Hero Section with Dynamic Mosaic Grid */}
       <section className="relative h-[50vh] min-h-[400px] mt-24 flex items-center">
@@ -188,16 +188,42 @@ export default function AustinBYOBVenuesPage() {
                       </div>
                     )}
 
-                    {/* Image */}
-                    <div className="relative h-48 bg-gray-200">
-                      <Image
-                        src={venue.image || '/images/venues/default-venue.webp'}
-                        alt={venue.name}
-                        fill
-                        className="object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                    </div>
+                    {/* Image - Clickable to venue website */}
+                    {venue.website ? (
+                      <a
+                        href={venue.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block relative h-48 bg-gray-200 group/image cursor-pointer"
+                      >
+                        <Image
+                          src={venue.image || '/images/venues/default-venue.webp'}
+                          alt={venue.name}
+                          fill
+                          className="object-cover group-hover/image:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent group-hover/image:from-black/60" />
+                        {/* Hover overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/image:opacity-100 transition-opacity">
+                          <span className="bg-white/90 text-gray-900 px-3 py-1.5 rounded text-sm font-medium flex items-center gap-1.5">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                            Visit Website
+                          </span>
+                        </div>
+                      </a>
+                    ) : (
+                      <div className="relative h-48 bg-gray-200">
+                        <Image
+                          src={venue.image || '/images/venues/default-venue.webp'}
+                          alt={venue.name}
+                          fill
+                          className="object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                      </div>
+                    )}
 
                     {/* Content */}
                     <div className="p-5">

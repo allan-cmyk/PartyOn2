@@ -714,7 +714,7 @@
       "byobPolicy": "BYOB; guests bring beer/wine/soju to private rooms.",
       "description": "Austin Karaoke offers private karaoke rooms for groups of all sizes in North Austin. With state-of-the-art sound systems, thousands of songs in multiple languages, and BYOB alcohol policy, it's perfect for birthday parties, bachelor/bachelorette celebrations, and corporate team events.",
       "website": "https://austinkaraoke.net/",
-      "image": "https://austinkaraoke.net/wp-content/uploads/2023/06/Hallway-scaled.jpg",
+      "image": "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?fm=jpg&q=80&w=1200",
       "partnerStatus": "none",
       "eventTypes": ["party", "social"],
       "setting": "indoor",
@@ -1089,6 +1089,23 @@
       "setting": "indoor",
       "priceRange": 2,
       "area": "south"
+    },
+    {
+      "id": 75,
+      "name": "Rich's Art Gallery",
+      "slug": "richs-art-gallery",
+      "category": "historic-cultural",
+      "subcategory": "Art gallery",
+      "byobPolicy": "BYOB permitted for private events; TABC-certified bartenders required.",
+      "description": "Rich's Art Gallery is a premier downtown Austin venue offering an intimate and sophisticated setting for private events, corporate gatherings, and celebrations. Located in the heart of downtown, the gallery features rotating art exhibitions providing a unique backdrop for your event. The versatile space accommodates 50-150 guests with elegant lighting and modern amenities. BYOB-friendly with free alcohol delivery from Party On Delivery.",
+      "website": "https://richsaustin.com/",
+      "image": "https://images.unsplash.com/photo-1577720643272-265f09367456?fm=jpg&q=80&w=1200",
+      "partnerStatus": "premier",
+      "partnerSlug": "richs-art-gallery",
+      "eventTypes": ["corporate", "social", "party"],
+      "setting": "indoor",
+      "priceRange": 2,
+      "area": "downtown"
     }
   ]
 }
