@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import PartnerCard from './PartnerCard';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import type { Partner, PartnerCategory } from '@/lib/partners/types';
@@ -26,9 +27,22 @@ export default function PartnerGrid({ partners, activeCategory }: PartnerGridPro
             <section key={category.id} id={category.id} className="scroll-mt-32">
               <ScrollRevealCSS duration={600} y={20}>
                 <div className="mb-8">
-                  <h2 className="font-serif text-3xl text-gray-900 tracking-[0.1em] mb-2">
-                    {category.name}
-                  </h2>
+                  <div className="flex flex-wrap items-center gap-4 mb-2">
+                    <h2 className="font-serif text-3xl text-gray-900 tracking-[0.1em]">
+                      {category.name}
+                    </h2>
+                    {category.id === 'venues' && (
+                      <Link
+                        href="/austin-byob-venues"
+                        className="inline-flex items-center gap-1.5 text-sm text-gold-600 hover:text-gold-700 font-medium transition-colors"
+                      >
+                        Click here for full BYOB Venue List
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </Link>
+                    )}
+                  </div>
                   <div className="w-16 h-0.5 bg-gold-600 mb-3" />
                   <p className="text-gray-600">{category.description}</p>
                 </div>
@@ -63,9 +77,22 @@ export default function PartnerGrid({ partners, activeCategory }: PartnerGridPro
     <section>
       <ScrollRevealCSS duration={600} y={20}>
         <div className="mb-8">
-          <h2 className="font-serif text-3xl text-gray-900 tracking-[0.1em] mb-2">
-            {categoryInfo?.name || activeCategory}
-          </h2>
+          <div className="flex flex-wrap items-center gap-4 mb-2">
+            <h2 className="font-serif text-3xl text-gray-900 tracking-[0.1em]">
+              {categoryInfo?.name || activeCategory}
+            </h2>
+            {activeCategory === 'venues' && (
+              <Link
+                href="/austin-byob-venues"
+                className="inline-flex items-center gap-1.5 text-sm text-gold-600 hover:text-gold-700 font-medium transition-colors"
+              >
+                Click here for full BYOB Venue List
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            )}
+          </div>
           <div className="w-16 h-0.5 bg-gold-600 mb-3" />
           <p className="text-gray-600">
             {categoryInfo?.description || ''}
