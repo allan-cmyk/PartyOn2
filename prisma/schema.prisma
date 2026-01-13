@@ -47,6 +47,7 @@ model GroupOrder {
   updatedAt           DateTime            @updatedAt @map("updated_at")
   
   participants        GroupParticipant[]
+  items               GroupOrderItem[]
   orderAnalytics      OrderAnalytics[]
 
   @@index([shareCode])
@@ -56,24 +57,48 @@ model GroupOrder {
 
 // Participants in group orders
 model GroupParticipant {
-  id            String            @id @default(uuid())
-  groupOrderId  String            @map("group_order_id")
-  customerId    String?           @map("customer_id")
-  guestName     String?           @map("guest_name")
-  guestEmail    String?           @map("guest_email")
-  cartId        String            @map("cart_id")
-  ageVerified   Boolean           @default(false) @map("age_verified")
-  status        ParticipantStatus @default(ACTIVE)
-  cartTotal     Decimal           @default(0) @map("cart_total")
-  itemCount     Int               @default(0) @map("item_count")
-  joinedAt      DateTime          @default(now()) @map("joined_at")
-  
-  groupOrder    GroupOrder        @relation(fields: [groupOrderId], references: [id], onDelete: Cascade)
+  id               String            @id @default(uuid())
+  groupOrderId     String            @map("group_order_id")
+  customerId       String?           @map("customer_id")
+  guestName        String?           @map("guest_name")
+  guestEmail       String?           @map("guest_email")
+  cartId           String            @map("cart_id")
+  ageVerified      Boolean           @default(false) @map("age_verified")
+  status           ParticipantStatus @default(ACTIVE)
+  cartTotal        Decimal           @default(0) @map("cart_total")
+  itemCount        Int               @default(0) @map("item_count")
+  joinedAt         DateTime          @default(now()) @map("joined_at")
+  // Checkout tracking fields (new)
+  checkedOutAt     DateTime?         @map("checked_out_at")
+  shopifyOrderId   String?           @map("shopify_order_id")
+  shopifyOrderName String?           @map("shopify_order_name")
+
+  groupOrder       GroupOrder        @relation(fields: [groupOrderId], references: [id], onDelete: Cascade)
 
   @@unique([groupOrderId, cartId])
   @@index([groupOrderId])
   @@index([cartId])
+  @@index([status])
   @@map("group_participants")
+}
+
+// Items purchased in group orders (for visibility to all participants)
+model GroupOrderItem {
+  id              String     @id @default(uuid())
+  groupOrderId    String     @map("group_order_id")
+  participantId   String     @map("participant_id")
+  shopifyLineId   String     @map("shopify_line_id")
+  title           String
+  variantTitle    String?    @map("variant_title")
+  quantity        Int
+  price           Decimal
+  imageUrl        String?    @map("image_url")
+  createdAt       DateTime   @default(now()) @map("created_at")
+
+  groupOrder      GroupOrder @relation(fields: [groupOrderId], references: [id], onDelete: Cascade)
+
+  @@index([groupOrderId])
+  @@map("group_order_items")
 }
 
 // Order Analytics - supplementary data for Shopify orders
@@ -99,7 +124,8 @@ model OrderAnalytics {
 // Enums
 enum GroupOrderStatus {
   ACTIVE
-  LOCKED
+  LOCKED      // Legacy - kept for backwards compatibility
+  CLOSED      // New - prevents new joins but doesn't trigger checkout
   COMPLETED
   CANCELLED
 }
@@ -107,6 +133,7 @@ enum GroupOrderStatus {
 enum ParticipantStatus {
   ACTIVE
   REMOVED
+  CHECKED_OUT // New - participant has completed their individual checkout
 }
 
 enum OrderSource {

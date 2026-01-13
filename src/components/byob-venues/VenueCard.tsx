@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { BYOBVenue } from '@/lib/byob-venues/types';
 import { getPriceLabel, getAreaName } from '@/lib/byob-venues/types';
+import VenueDetailModal from './VenueDetailModal';
 
 interface VenueCardProps {
   venue: BYOBVenue;
@@ -41,6 +42,7 @@ const settingLabels: Record<string, string> = {
 
 export default function VenueCard({ venue }: VenueCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const isPartner = venue.partnerStatus !== 'none';
   const isPremier = venue.partnerStatus === 'premier';
 
@@ -68,14 +70,14 @@ export default function VenueCard({ venue }: VenueCardProps) {
           href={venue.website}
           target="_blank"
           rel="noopener noreferrer"
-          className="block relative h-48 bg-gray-100 overflow-hidden cursor-pointer"
+          className="block relative h-32 sm:h-48 bg-gray-100 overflow-hidden cursor-pointer"
           aria-label={`Visit ${venue.name} website`}
         >
           {children}
         </a>
       );
     }
-    return <div className="relative h-48 bg-gray-100 overflow-hidden">{children}</div>;
+    return <div className="relative h-32 sm:h-48 bg-gray-100 overflow-hidden">{children}</div>;
   };
 
   return (
@@ -99,24 +101,25 @@ export default function VenueCard({ venue }: VenueCardProps) {
 
         {/* Partner Badge */}
         {isPartner && (
-          <div className="absolute top-3 left-3 z-10">
-            <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold tracking-wide rounded-full shadow-lg ${
+          <div className="absolute top-2 sm:top-3 left-2 sm:left-3 z-10">
+            <span className={`inline-flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-3 py-1 sm:py-1.5 text-[9px] sm:text-xs font-semibold tracking-wide rounded-full shadow-lg ${
               isPremier
                 ? 'bg-gold-500 text-gray-900'
                 : 'bg-gold-400 text-gray-900'
             }`}>
-              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
-              FREE DELIVERY
+              <span className="hidden sm:inline">FREE DELIVERY</span>
+              <span className="sm:hidden">FREE</span>
             </span>
           </div>
         )}
 
         {/* Premier Badge */}
         {isPremier && (
-          <div className="absolute top-3 right-3 z-10">
-            <span className="inline-block px-2 py-1 bg-gray-900 text-gold-400 text-[10px] font-bold tracking-wider rounded">
+          <div className="absolute top-2 sm:top-3 right-2 sm:right-3 z-10">
+            <span className="inline-block px-1.5 sm:px-2 py-0.5 sm:py-1 bg-gray-900 text-gold-400 text-[8px] sm:text-[10px] font-bold tracking-wider rounded">
               PREMIER
             </span>
           </div>
@@ -139,24 +142,24 @@ export default function VenueCard({ venue }: VenueCardProps) {
       </ImageWrapper>
 
       {/* Content */}
-      <div className="p-5">
+      <div className="p-3 sm:p-5">
         {/* Category & Location */}
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-xs text-gold-700 bg-gold-50 px-2 py-0.5 rounded-full tracking-wide">
+        <div className="flex flex-wrap items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
+          <span className="text-[10px] sm:text-xs text-gold-700 bg-gold-50 px-1.5 sm:px-2 py-0.5 rounded-full tracking-wide truncate max-w-[80%]">
             {venue.subcategory}
           </span>
-          <span className="text-xs text-gray-500">
+          <span className="text-[10px] sm:text-xs text-gray-500 hidden sm:inline">
             {getAreaName(venue.area)}
           </span>
         </div>
 
         {/* Venue Name */}
-        <h3 className="font-serif text-xl text-gray-900 mb-2 tracking-wide group-hover:text-gold-700 transition-colors line-clamp-1">
+        <h3 className="font-serif text-sm sm:text-xl text-gray-900 mb-1 sm:mb-2 tracking-wide group-hover:text-gold-700 transition-colors line-clamp-2 sm:line-clamp-1">
           {venue.name}
         </h3>
 
-        {/* Quick Stats */}
-        <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
+        {/* Quick Stats - Hidden on mobile for space */}
+        <div className="hidden sm:flex items-center gap-4 text-sm text-gray-600 mb-3">
           <div className="flex items-center gap-1" title={settingLabels[venue.setting]}>
             <SettingIcon setting={venue.setting} />
             <span>{settingLabels[venue.setting]}</span>
@@ -168,8 +171,23 @@ export default function VenueCard({ venue }: VenueCardProps) {
           </div>
         </div>
 
-        {/* Description (or BYOB Policy as fallback) */}
-        <div className="mb-4">
+        {/* Mobile-only: Compact stats row */}
+        <div className="flex sm:hidden items-center gap-2 text-[10px] text-gray-500 mb-2">
+          <span>{settingLabels[venue.setting]}</span>
+          <span>•</span>
+          <span className="text-gold-600">{getPriceLabel(venue.priceRange)}</span>
+        </div>
+
+        {/* Mobile-only: Read Description button */}
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="sm:hidden w-full mb-2 px-2 py-1.5 text-[10px] font-medium text-gold-700 bg-gold-50 hover:bg-gold-100 rounded transition-colors"
+        >
+          Read Description
+        </button>
+
+        {/* Description (or BYOB Policy as fallback) - Hidden on mobile */}
+        <div className="hidden sm:block mb-4">
           <p className={`text-sm text-gray-600 leading-relaxed ${!isExpanded ? 'line-clamp-3' : ''}`}>
             {displayText}
           </p>
@@ -187,12 +205,19 @@ export default function VenueCard({ venue }: VenueCardProps) {
         {isPartner && venue.partnerSlug && (
           <Link
             href={`/venues/${venue.partnerSlug}`}
-            className="block w-full text-center px-4 py-2.5 text-sm font-medium text-gray-900 bg-gold-400 hover:bg-gold-500 rounded transition-colors"
+            className="block w-full text-center px-2 sm:px-4 py-1.5 sm:py-2.5 text-xs sm:text-sm font-medium text-gray-900 bg-gold-400 hover:bg-gold-500 rounded transition-colors"
           >
             Order Alcohol
           </Link>
         )}
       </div>
+
+      {/* Venue Detail Modal (Mobile) */}
+      <VenueDetailModal
+        venue={venue}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </article>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
@@ -8,6 +8,7 @@ import Footer from '@/components/Footer';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import VenueFilters from '@/components/byob-venues/VenueFilters';
 import VenueGrid from '@/components/byob-venues/VenueGrid';
+import HeroMosaicGrid from '@/components/byob-venues/HeroMosaicGrid';
 import venuesData from '@/data/byob-venues.json';
 import type { BYOBVenue, VenueCategory, EventType } from '@/lib/byob-venues/types';
 
@@ -16,6 +17,46 @@ export default function AustinBYOBVenuesPage() {
   const [activeEventType, setActiveEventType] = useState<EventType | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [showPartnersOnly, setShowPartnersOnly] = useState(false);
+
+  // Mobile scroll-to-hide state
+  const [hideHeaderOnMobile, setHideHeaderOnMobile] = useState(false);
+  const venueGridRef = useRef<HTMLDivElement>(null);
+  const lastScrollY = useRef(0);
+
+  // Detect scroll direction and position to hide/show header on mobile
+  useEffect(() => {
+    const handleScroll = () => {
+      // Only apply on mobile (< 768px)
+      if (window.innerWidth >= 768) {
+        setHideHeaderOnMobile(false);
+        return;
+      }
+
+      const currentScrollY = window.scrollY;
+      const venueGridTop = venueGridRef.current?.getBoundingClientRect().top ?? 0;
+      const viewportHeight = window.innerHeight;
+
+      // Hide header when scrolling down AND venue grid is near/past the top of viewport
+      // Show header when scrolling up OR at the very top of the page
+      if (currentScrollY < 100) {
+        // Near top of page - always show header
+        setHideHeaderOnMobile(false);
+      } else if (venueGridTop < viewportHeight * 0.5) {
+        // Venue grid is in view - hide header when scrolling down
+        if (currentScrollY > lastScrollY.current) {
+          setHideHeaderOnMobile(true);
+        } else if (currentScrollY < lastScrollY.current - 50) {
+          // Scrolling up significantly - show header
+          setHideHeaderOnMobile(false);
+        }
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const venues = venuesData.venues as BYOBVenue[];
 
@@ -55,19 +96,10 @@ export default function AustinBYOBVenuesPage() {
     <div className="bg-white min-h-screen">
       <OldFashionedNavigation />
 
-      {/* Hero Section */}
+      {/* Hero Section with Dynamic Mosaic Grid */}
       <section className="relative h-[50vh] min-h-[400px] mt-24 flex items-center">
-        <div className="absolute inset-0">
-          <Image
-            src="/images/hero/austin-wedding-venue-outdoor.webp"
-            alt="Austin BYOB wedding venue with elegant outdoor setup"
-            fill
-            sizes="100vw"
-            className="object-cover"
-            priority
-          />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30" />
+        {/* Mosaic grid with staggered image transitions */}
+        <HeroMosaicGrid />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 text-white">
           <ScrollRevealCSS duration={800} y={30}>
@@ -156,16 +188,42 @@ export default function AustinBYOBVenuesPage() {
                       </div>
                     )}
 
-                    {/* Image */}
-                    <div className="relative h-48 bg-gray-200">
-                      <Image
-                        src={venue.image || '/images/venues/default-venue.webp'}
-                        alt={venue.name}
-                        fill
-                        className="object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                    </div>
+                    {/* Image - Clickable to venue website */}
+                    {venue.website ? (
+                      <a
+                        href={venue.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block relative h-48 bg-gray-200 group/image cursor-pointer"
+                      >
+                        <Image
+                          src={venue.image || '/images/venues/default-venue.webp'}
+                          alt={venue.name}
+                          fill
+                          className="object-cover group-hover/image:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent group-hover/image:from-black/60" />
+                        {/* Hover overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/image:opacity-100 transition-opacity">
+                          <span className="bg-white/90 text-gray-900 px-3 py-1.5 rounded text-sm font-medium flex items-center gap-1.5">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                            Visit Website
+                          </span>
+                        </div>
+                      </a>
+                    ) : (
+                      <div className="relative h-48 bg-gray-200">
+                        <Image
+                          src={venue.image || '/images/venues/default-venue.webp'}
+                          alt={venue.name}
+                          fill
+                          className="object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                      </div>
+                    )}
 
                     {/* Content */}
                     <div className="p-5">
@@ -199,10 +257,11 @@ export default function AustinBYOBVenuesPage() {
         onSearchChange={setSearchQuery}
         onPartnersOnlyChange={setShowPartnersOnly}
         venueCounts={venueCounts}
+        hiddenOnMobile={hideHeaderOnMobile}
       />
 
       {/* Venue Grid */}
-      <section className="py-12 px-4 sm:px-8">
+      <section ref={venueGridRef} className="py-12 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto">
           <VenueGrid
             venues={venues}

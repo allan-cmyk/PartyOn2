@@ -11,30 +11,16 @@ import AIConcierge from '@/components/AIConcierge';
 import { copyToClipboard, type SharedCartVariant } from '@/lib/cart/shareCart';
 import { parseAddress, formatPhone } from '@/lib/utils/addressParser';
 import { trackBeginCheckout, trackEvent, ANALYTICS_EVENTS } from '@/lib/analytics/track';
-// Group order imports temporarily disabled
-// import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
-// import CreateGroupOrderModal from '@/components/group-orders/CreateGroupOrderModal';
-// import ShareGroupOrder from '@/components/group-orders/ShareGroupOrder';
-// Discount imports temporarily disabled - handled at Shopify checkout
-// import { shopifyFetch } from '@/lib/shopify/client';
-// import { CART_DISCOUNT_CODES_UPDATE_MUTATION } from '@/lib/shopify/mutations/discount';
+// Group order imports
+import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
 
 export default function Cart() {
   const { cart, isCartOpen, closeCart, loading, updateCartAttributes, clearCart } = useCartContext();
-  // Group order features temporarily disabled
-  // const { currentGroupOrder, isInGroupOrder, isHost } = useGroupOrderContext();
+  const { currentGroupOrder, isInGroupOrder, isHost } = useGroupOrderContext();
   const [showDeliveryScheduler, setShowDeliveryScheduler] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
   const [shareSuccess, setShareSuccess] = useState(false);
-  // Group order states temporarily disabled
-  // const [showCreateGroupOrder, setShowCreateGroupOrder] = useState(false);
-  // const [showShareModal, setShowShareModal] = useState(false);
-  // const [newGroupOrderCode, setNewGroupOrderCode] = useState('');
-  // Discount states temporarily disabled - handled at Shopify checkout
-  // const [discountCode, setDiscountCode] = useState('');
-  // const [isApplyingDiscount, setIsApplyingDiscount] = useState(false);
-  // const [discountError, setDiscountError] = useState('');
 
   const subtotal = cart?.cost?.subtotalAmount || null;
   const hasItems = (cart?.totalQuantity || 0) > 0;
@@ -47,8 +33,79 @@ export default function Cart() {
         cart.totalQuantity || 0
       );
     }
-    // Show delivery scheduler to collect delivery information first
-    setShowDeliveryScheduler(true);
+
+    // If in a group order, use group delivery info directly (skip scheduler)
+    if (isInGroupOrder && currentGroupOrder) {
+      handleGroupOrderCheckout();
+    } else {
+      // Show delivery scheduler to collect delivery information first
+      setShowDeliveryScheduler(true);
+    }
+  };
+
+  /**
+   * Handle checkout for group order participants
+   * Uses the group order's delivery details and skips the scheduler
+   */
+  const handleGroupOrderCheckout = async () => {
+    if (!currentGroupOrder || !cart?.checkoutUrl) return;
+
+    setIsRedirecting(true);
+
+    try {
+      const { deliveryAddress, deliveryDate, deliveryTime, shareCode, name } = currentGroupOrder;
+
+      // Format delivery date
+      const formattedDate = new Intl.DateTimeFormat('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      }).format(new Date(deliveryDate));
+
+      // Build checkout URL with pre-filled group delivery address
+      const url = new URL(cart.checkoutUrl);
+
+      // Add shipping address parameters
+      url.searchParams.append('checkout[shipping_address][address1]', deliveryAddress.address1);
+      if (deliveryAddress.address2) {
+        url.searchParams.append('checkout[shipping_address][address2]', deliveryAddress.address2);
+      }
+      url.searchParams.append('checkout[shipping_address][city]', deliveryAddress.city);
+      url.searchParams.append('checkout[shipping_address][province]', deliveryAddress.province);
+      url.searchParams.append('checkout[shipping_address][country]', deliveryAddress.country);
+      url.searchParams.append('checkout[shipping_address][zip]', deliveryAddress.zip);
+
+      // Track event
+      trackEvent(ANALYTICS_EVENTS.SET_DELIVERY_DETAILS, {
+        delivery_date: deliveryDate,
+        delivery_time: deliveryTime,
+        zip_code: deliveryAddress.zip,
+        group_order: true,
+        share_code: shareCode
+      });
+
+      console.log('Group order checkout:', {
+        shareCode,
+        groupName: name,
+        deliveryDate: formattedDate,
+        deliveryTime,
+        address: deliveryAddress
+      });
+
+      const checkoutUrl = url.toString();
+      console.log('Final group checkout URL:', checkoutUrl);
+
+      // Redirect to checkout
+      const delay = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ? 500 : 200;
+      await new Promise(resolve => setTimeout(resolve, delay));
+
+      window.location.href = checkoutUrl;
+    } catch (error) {
+      console.error('Error during group checkout:', error);
+      setIsRedirecting(false);
+      alert('Unable to proceed to checkout. Please try again.');
+    }
   };
 
   const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, address: string, zipCode: string, phone: string) => {
@@ -349,36 +406,48 @@ export default function Cart() {
               {/* Footer */}
               {hasItems && (
                 <div className="border-t border-gray-200 p-6 space-y-4">
-                  {/* Group Order Info - Hidden until Stripe setup */}
-                  {/* {isInGroupOrder && currentGroupOrder && (
-                    <div className="bg-gray-50 p-4 rounded">
+                  {/* Group Order Info */}
+                  {isInGroupOrder && currentGroupOrder && (
+                    <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm tracking-[0.1em] text-gray-600">GROUP ORDER</span>
-                        <span className="text-sm font-cormorant text-gold-500">{currentGroupOrder.shareCode}</span>
+                        <div className="flex items-center gap-2">
+                          <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          <span className="text-sm font-medium text-green-800">Group Order</span>
+                        </div>
+                        <span className="inline-flex items-center gap-1 text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          FREE DELIVERY
+                        </span>
                       </div>
-                      <p className="text-sm font-cormorant">{currentGroupOrder.name}</p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        Delivery: {new Date(currentGroupOrder.deliveryDate).toLocaleDateString()} at {currentGroupOrder.deliveryTime}
+                      <p className="text-sm text-green-800 font-medium">{currentGroupOrder.name}</p>
+                      <p className="text-xs text-green-700 mt-1">
+                        Delivery: {new Date(currentGroupOrder.deliveryDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} at {currentGroupOrder.deliveryTime}
                       </p>
                       {isHost && (
                         <Link href="/group/dashboard" onClick={closeCart}>
-                          <button className="mt-2 text-xs text-gold-600 hover:text-gold-700 underline">
-                            View Dashboard →
+                          <button className="mt-2 text-xs text-green-700 hover:text-green-800 underline">
+                            View Dashboard
                           </button>
                         </Link>
                       )}
                     </div>
-                  )} */}
+                  )}
 
-                  {/* Discount Code Notice */}
-                  <div className="bg-gray-50 px-4 py-3 rounded">
-                    <p className="text-sm text-gray-600 text-center">
-                      <svg className="inline-block w-4 h-4 mr-1.5 align-text-bottom" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                      </svg>
-                      Discount codes can be applied at Shopify checkout
-                    </p>
-                  </div>
+                  {/* Discount Code Notice - only show if not in group order */}
+                  {!isInGroupOrder && (
+                    <div className="bg-gray-50 px-4 py-3 rounded">
+                      <p className="text-sm text-gray-600 text-center">
+                        <svg className="inline-block w-4 h-4 mr-1.5 align-text-bottom" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                        </svg>
+                        Discount codes can be applied at Shopify checkout
+                      </p>
+                    </div>
+                  )}
 
                   {/* Subtotal */}
                   <div className="flex justify-between text-sm">
@@ -411,7 +480,11 @@ export default function Cart() {
                   {/* Shipping */}
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Delivery</span>
-                    <span className="text-gray-500 text-xs">Calculated at checkout</span>
+                    {isInGroupOrder ? (
+                      <span className="text-green-600 font-medium">FREE</span>
+                    ) : (
+                      <span className="text-gray-500 text-xs">Calculated at checkout</span>
+                    )}
                   </div>
 
                   {/* Total - Show subtotal since delivery is calculated at checkout */}

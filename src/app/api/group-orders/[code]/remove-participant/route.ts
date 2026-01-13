@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { groupOrderStore } from '@/lib/group-orders/store'
+import { db } from '@/lib/group-orders/database'
 
 export async function POST(
   request: NextRequest,
@@ -16,7 +16,7 @@ export async function POST(
       )
     }
 
-    const groupOrder = groupOrderStore.getOrderByCode(code)
+    const groupOrder = await db.getOrderByCode(code)
     if (!groupOrder) {
       return NextResponse.json(
         { error: 'Group order not found' },
@@ -32,8 +32,8 @@ export async function POST(
       )
     }
 
-    const removed = groupOrderStore.removeParticipant(groupOrder.id, participantId)
-    
+    const removed = await db.removeParticipant(code, participantId)
+
     if (!removed) {
       return NextResponse.json(
         { error: 'Participant not found' },
