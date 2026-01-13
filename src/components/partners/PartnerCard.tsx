@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import type { Partner } from '@/lib/partners/types';
 import { getCategoryName } from '@/lib/partners/types';
 
@@ -12,58 +13,71 @@ interface PartnerCardProps {
 export default function PartnerCard({ partner }: PartnerCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  // Image container content (reused for both linked and non-linked versions)
+  const ImageContent = (
+    <>
+      {/* Hero Image Background */}
+      {partner.heroImage && (
+        <Image
+          src={partner.heroImage}
+          alt=""
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          className="object-cover"
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+          }}
+        />
+      )}
+      {/* Subtle gradient overlay for logo visibility */}
+      {partner.heroImage && (
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-black/30" />
+      )}
+      {/* Logo */}
+      <div className="relative w-full h-full p-4 flex items-center justify-center">
+        <div className="relative" style={{ width: '85%', height: '85%' }}>
+          <Image
+            src={partner.logo}
+            alt={`${partner.name} logo`}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className={`object-contain ${
+              partner.heroImage
+                ? `drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] ${
+                    partner.invertLogo
+                      ? 'brightness-0 invert drop-shadow-[0_2px_8px_rgba(255,255,255,0.5)]'
+                      : 'brightness-110 contrast-110'
+                  }`
+                : ''
+            }`}
+            onError={(e) => {
+              e.currentTarget.src = '/images/partners/placeholder.svg';
+            }}
+          />
+        </div>
+      </div>
+      {partner.featured && (
+        <span className="absolute top-3 right-3 bg-gold-600 text-white text-xs px-2 py-1 rounded-full font-medium tracking-wide z-10">
+          Featured
+        </span>
+      )}
+    </>
+  );
+
   return (
     <article
       className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-gold-300"
     >
-      {/* Logo Container with Hero Background */}
-      <div className="relative h-40 bg-gray-50 flex items-center justify-center overflow-hidden">
-        {/* Hero Image Background */}
-        {partner.heroImage && (
-          <Image
-            src={partner.heroImage}
-            alt=""
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            className="object-cover"
-            onError={(e) => {
-              e.currentTarget.style.display = 'none';
-            }}
-          />
-        )}
-        {/* Subtle gradient overlay for logo visibility */}
-        {partner.heroImage && (
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-black/30" />
-        )}
-        {/* Logo */}
-        <div className="relative w-full h-full p-4 flex items-center justify-center">
-          <div className="relative" style={{ width: '85%', height: '85%' }}>
-            <Image
-              src={partner.logo}
-              alt={`${partner.name} logo`}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-              className={`object-contain ${
-                partner.heroImage
-                  ? `drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] ${
-                      partner.invertLogo
-                        ? 'brightness-0 invert drop-shadow-[0_2px_8px_rgba(255,255,255,0.5)]'
-                        : 'brightness-110 contrast-110'
-                    }`
-                  : ''
-              }`}
-              onError={(e) => {
-                e.currentTarget.src = '/images/partners/placeholder.svg';
-              }}
-            />
-          </div>
+      {/* Logo Container with Hero Background - Clickable if partnerPage exists */}
+      {partner.partnerPage ? (
+        <Link href={partner.partnerPage} className="relative h-40 bg-gray-50 flex items-center justify-center overflow-hidden block cursor-pointer">
+          {ImageContent}
+        </Link>
+      ) : (
+        <div className="relative h-40 bg-gray-50 flex items-center justify-center overflow-hidden">
+          {ImageContent}
         </div>
-        {partner.featured && (
-          <span className="absolute top-3 right-3 bg-gold-600 text-white text-xs px-2 py-1 rounded-full font-medium tracking-wide z-10">
-            Featured
-          </span>
-        )}
-      </div>
+      )}
 
       {/* Content */}
       <div className="p-6">

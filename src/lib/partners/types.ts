@@ -20,6 +20,7 @@ export interface Partner {
   category: PartnerCategory;
   featured?: boolean;
   order?: number;
+  partnerPage?: string; // Internal partner page URL (e.g., '/partners/premier-party-cruises')
 }
 
 export interface CategoryInfo {
