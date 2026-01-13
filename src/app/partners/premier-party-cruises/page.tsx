@@ -6,7 +6,6 @@ import { premierPartyCruises } from '@/lib/partners/landing-pages';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
 import PartnerHero from '@/components/partners/PartnerHero';
-import OrderTypeSelector from '@/components/partners/OrderTypeSelector';
 import PartnerFAQ from '@/components/partners/PartnerFAQ';
 import DrinkCalculator from '@/components/partners/DrinkCalculator';
 
@@ -79,12 +78,12 @@ export default function PremierPartyCruisesPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
                 </a>
-                <button
-                  onClick={() => document.getElementById('start-order')?.scrollIntoView({ behavior: 'smooth' })}
+                <Link
+                  href="/group/create"
                   className="inline-flex items-center gap-2 px-6 py-3 bg-gold-500 text-gray-900 hover:bg-gold-600 rounded-lg transition-colors font-medium"
                 >
                   Order Drinks Now
-                </button>
+                </Link>
               </div>
             </div>
             {/* Image */}
@@ -111,11 +110,34 @@ export default function PremierPartyCruisesPage() {
         </div>
       </section>
 
-      {/* 4. Order Type Selection Section */}
-      <OrderTypeSelector
-        orderTypes={premierPartyCruises.orderTypes}
-        partnerId={premierPartyCruises.slug}
-      />
+      {/* 4. Start Your Order Section */}
+      <section id="start-order" className="py-16 px-6 bg-gray-50">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-wide">
+            Start Your Group Order
+          </h2>
+          <p className="text-gray-600 max-w-2xl mx-auto mb-8">
+            Create a group order, share the link with your boat party crew, and everyone gets FREE DELIVERY to the marina.
+          </p>
+          <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-sm max-w-md mx-auto">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="font-semibold text-green-700">FREE DELIVERY to Premier Party Cruises</span>
+            </div>
+            <p className="text-gray-600 text-sm mb-6">
+              We deliver directly to Anderson Mill Marina. Your drinks will be cold and ready when you arrive!
+            </p>
+            <Link
+              href="/group/create"
+              className="block w-full py-4 bg-gold-500 hover:bg-gold-600 text-gray-900 font-semibold rounded-lg transition-colors text-lg"
+            >
+              Create Group Order
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* 5. What's Included Section */}
       <section className="py-16 px-6 bg-white">
@@ -325,12 +347,12 @@ export default function PremierPartyCruisesPage() {
             and get free delivery to the Premier Party Cruises marina.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={() => document.getElementById('start-order')?.scrollIntoView({ behavior: 'smooth' })}
+            <Link
+              href="/group/create"
               className="px-8 py-4 bg-gray-900 text-white hover:bg-gray-800 rounded-lg transition-colors font-semibold text-lg"
             >
               Start Your Order
-            </button>
+            </Link>
             <Link
               href="/products"
               className="px-8 py-4 bg-white text-gray-900 hover:bg-gray-100 rounded-lg transition-colors font-semibold text-lg"

@@ -5,6 +5,18 @@ import { useRouter } from 'next/navigation'
 import { useGroupOrderContext } from '@/contexts/GroupOrderContext'
 import { GroupOrderAPI } from '@/lib/group-orders/api'
 
+// Partner addresses for quick selection
+const PARTNER_ADDRESSES = [
+  {
+    label: 'Premier Party Cruises [Anderson Mill Marina]',
+    address1: '13993 FM 2769',
+    address2: '',
+    city: 'Leander',
+    province: 'TX',
+    zip: '78641',
+  },
+]
+
 export default function CreateGroupOrderPage() {
   const router = useRouter()
   const { setGroupOrderCode } = useGroupOrderContext()
@@ -14,7 +26,7 @@ export default function CreateGroupOrderPage() {
   const [formData, setFormData] = useState({
     name: '',
     deliveryDate: '',
-    deliveryTime: '12:00 PM - 2:00 PM',
+    deliveryTime: '12:00 PM - 1:00 PM',
     address1: '',
     address2: '',
     city: 'Austin',
@@ -34,6 +46,12 @@ export default function CreateGroupOrderPage() {
     return customerId
   }
 
+  // Check if a date is Sunday
+  const isSunday = (dateString: string) => {
+    const date = new Date(dateString + 'T12:00:00')
+    return date.getDay() === 0
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
@@ -49,6 +67,11 @@ export default function CreateGroupOrderPage() {
       const selectedDate = new Date(formData.deliveryDate)
       if (selectedDate < minDate) {
         throw new Error('Delivery date must be at least 72 hours from now')
+      }
+
+      // No Sunday deliveries
+      if (isSunday(formData.deliveryDate)) {
+        throw new Error('Sorry, we do not deliver on Sundays. Please select another day.')
       }
 
       const result = await GroupOrderAPI.create({
@@ -83,20 +106,45 @@ export default function CreateGroupOrderPage() {
     }
   }
 
-  // Calculate minimum date (72 hours from now)
+  // Calculate minimum date (72 hours from now), skip Sundays
   const getMinDate = () => {
     const date = new Date()
     date.setHours(date.getHours() + 72)
+    // If minimum date lands on Sunday, push to Monday
+    if (date.getDay() === 0) {
+      date.setDate(date.getDate() + 1)
+    }
     return date.toISOString().split('T')[0]
   }
 
+  // 1-hour time slots
   const timeSlots = [
-    '10:00 AM - 12:00 PM',
-    '12:00 PM - 2:00 PM',
-    '2:00 PM - 4:00 PM',
-    '4:00 PM - 6:00 PM',
-    '6:00 PM - 8:00 PM',
+    '9:00 AM - 10:00 AM',
+    '10:00 AM - 11:00 AM',
+    '11:00 AM - 12:00 PM',
+    '12:00 PM - 1:00 PM',
+    '1:00 PM - 2:00 PM',
+    '2:00 PM - 3:00 PM',
+    '3:00 PM - 4:00 PM',
+    '4:00 PM - 5:00 PM',
+    '5:00 PM - 6:00 PM',
+    '6:00 PM - 7:00 PM',
+    '7:00 PM - 8:00 PM',
   ]
+
+  // Handle partner address selection
+  const handlePartnerAddressSelect = (index: number) => {
+    if (index === -1) return // "Select..." option
+    const addr = PARTNER_ADDRESSES[index]
+    setFormData({
+      ...formData,
+      address1: addr.address1,
+      address2: addr.address2,
+      city: addr.city,
+      province: addr.province,
+      zip: addr.zip,
+    })
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 pt-32 pb-16">
@@ -107,7 +155,7 @@ export default function CreateGroupOrderPage() {
               Create Group Order
             </h1>
             <p className="text-gray-600 text-center mb-8">
-              Start a group order and invite friends to add their items. You&apos;ll pay for everyone at checkout.
+              Start a group order and invite friends to add their items. Everyone checks out individually and gets FREE DELIVERY!
             </p>
 
             {error && (
@@ -127,9 +175,12 @@ export default function CreateGroupOrderPage() {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g., Sarah's Birthday Party"
+                  placeholder="e.g., BACH-SARAH-2026"
                   className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-gold-500 focus:border-transparent"
                 />
+                <p className="mt-1 text-sm text-gray-500">
+                  (This will be the name you share with your group - make it good!)
+                </p>
               </div>
 
               {/* Your Name */}
@@ -150,14 +201,22 @@ export default function CreateGroupOrderPage() {
               {/* Delivery Date */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Delivery Date * <span className="text-gray-500 font-normal">(72+ hours advance)</span>
+                  Delivery Date * <span className="text-gray-500 font-normal">(72+ hours advance, no Sundays)</span>
                 </label>
                 <input
                   type="date"
                   required
                   min={getMinDate()}
                   value={formData.deliveryDate}
-                  onChange={(e) => setFormData({ ...formData, deliveryDate: e.target.value })}
+                  onChange={(e) => {
+                    const val = e.target.value
+                    if (isSunday(val)) {
+                      setError('Sorry, we do not deliver on Sundays. Please select another day.')
+                    } else {
+                      setError(null)
+                    }
+                    setFormData({ ...formData, deliveryDate: val })
+                  }}
                   className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-gold-500 focus:border-transparent"
                 />
               </div>
@@ -184,6 +243,33 @@ export default function CreateGroupOrderPage() {
                 <label className="block text-sm font-medium text-gray-700">
                   Delivery Address *
                 </label>
+
+                {/* Partner Addresses Dropdown */}
+                <div>
+                  <label className="block text-xs font-medium text-gold-700 mb-1 tracking-wide">
+                    PARTNER ADDRESSES
+                  </label>
+                  <select
+                    onChange={(e) => handlePartnerAddressSelect(parseInt(e.target.value))}
+                    className="w-full px-4 py-3 border border-gold-300 rounded bg-gold-50 focus:ring-2 focus:ring-gold-500 focus:border-transparent text-gray-700"
+                    defaultValue="-1"
+                  >
+                    <option value="-1">Select a partner location...</option>
+                    {PARTNER_ADDRESSES.map((addr, i) => (
+                      <option key={i} value={i}>{addr.label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-200"></div>
+                  </div>
+                  <div className="relative flex justify-center text-xs">
+                    <span className="px-2 bg-white text-gray-500">or enter address manually</span>
+                  </div>
+                </div>
+
                 <input
                   type="text"
                   required
@@ -227,11 +313,17 @@ export default function CreateGroupOrderPage() {
                 </div>
               </div>
 
-              {/* Minimum Order Notice */}
-              <div className="bg-amber-50 border border-amber-200 rounded p-4">
-                <p className="text-sm text-amber-800">
-                  <strong>Note:</strong> Group orders require a minimum of $150 total before checkout.
-                  All participants can add items, but only you (the host) will pay at checkout.
+              {/* FREE DELIVERY Notice */}
+              <div className="bg-green-50 border border-green-200 rounded p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="font-medium text-green-800">FREE DELIVERY for all participants!</span>
+                </div>
+                <p className="text-sm text-green-700">
+                  Share the link with your group. Everyone shops and checks out individually - no minimums, no waiting.
+                  All orders deliver together at your scheduled time.
                 </p>
               </div>
 
