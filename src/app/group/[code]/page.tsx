@@ -7,42 +7,51 @@ import { useGroupOrder, useJoinGroupOrder } from '@/lib/group-orders/hooks'
 import { useGroupOrderContext } from '@/contexts/GroupOrderContext'
 import { useCartContext } from '@/contexts/CartContext'
 import AgeVerificationModal from '@/components/AgeVerificationModal'
+import GroupOrderItems from '@/components/group-orders/GroupOrderItems'
 import { trackEvent, ANALYTICS_EVENTS } from '@/lib/analytics/track'
 
 export default function GroupOrderLandingPage() {
   const params = useParams()
   const router = useRouter()
   const shareCode = params.code as string
-  
+
   const { groupOrder, isLoading, error } = useGroupOrder(shareCode)
   const { setGroupOrderCode } = useGroupOrderContext()
   const { joinGroupOrder } = useJoinGroupOrder()
   const { cart } = useCartContext()
-  
+
   const [showAgeVerification, setShowAgeVerification] = useState(false)
   const [isJoining, setIsJoining] = useState(false)
   const [joinError, setJoinError] = useState<string | null>(null)
+  const [guestName, setGuestName] = useState('')
+  const [guestEmail, setGuestEmail] = useState('')
 
   // Check if already in this group order
   const isAlreadyJoined = groupOrder?.participants.some(
     p => p.cartId === cart?.id
   )
 
-  const handleJoinOrder = () => {
+  const handleJoinOrder = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!guestName.trim() || !guestEmail.trim()) {
+      setJoinError('Please enter your name and email')
+      return
+    }
     setShowAgeVerification(true)
   }
 
   const handleAgeVerified = async () => {
     if (!groupOrder || !cart) return
-    
+
     setIsJoining(true)
     setJoinError(null)
-    
+
     try {
       await joinGroupOrder(groupOrder.id, {
         cartId: cart.id,
         customerId: localStorage.getItem('customerId') || undefined,
-        guestName: 'Guest User', // In production, collect this info
+        guestName: guestName.trim(),
+        guestEmail: guestEmail.trim().toLowerCase(),
       })
 
       // Track join group order event
@@ -54,7 +63,7 @@ export default function GroupOrderLandingPage() {
       // Set the group order code in context
       setGroupOrderCode(shareCode)
 
-      // Redirect to products page
+      // Redirect to products page to start shopping
       router.push('/products')
     } catch (err) {
       setJoinError('Failed to join group order. Please try again.')
@@ -92,141 +101,168 @@ export default function GroupOrderLandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8 fade-in-up">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gold-500 bg-opacity-10 rounded-full mb-4">
-              <svg className="w-10 h-10 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-            </div>
-            <h1 className="text-3xl font-cormorant tracking-[0.1em] mb-2">
-              {groupOrder.name}
-            </h1>
-            <p className="text-gray-600">Hosted by {groupOrder.hostName}</p>
-          </div>
-
-          {/* Order Details */}
-          <div className="bg-gray-50 rounded p-6 mb-6">
-            <h2 className="text-sm tracking-[0.1em] text-gray-600 mb-4">DELIVERY DETAILS</h2>
-            <div className="space-y-3">
-              <div className="flex items-start">
-                <svg className="w-5 h-5 text-gold-500 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <div>
-                  <p className="font-medium">
-                    {new Date(groupOrder.deliveryDate).toLocaleDateString('en-US', {
-                      weekday: 'long',
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
-                  </p>
-                  <p className="text-gray-600">{groupOrder.deliveryTime}</p>
-                </div>
+    <div className="min-h-screen bg-gray-50 pt-32 pb-16">
+      <div className="container mx-auto px-4">
+        <div className="max-w-3xl mx-auto">
+          {/* Header Card */}
+          <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <h1 className="text-2xl md:text-3xl font-cormorant text-gray-900 mb-1">
+                  {groupOrder.name}
+                </h1>
+                <p className="text-gray-600">Hosted by {groupOrder.hostName}</p>
               </div>
-              <div className="flex items-start">
-                <svg className="w-5 h-5 text-gold-500 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              {/* FREE DELIVERY Badge */}
+              <div className="flex items-center gap-2 bg-green-50 text-green-700 px-3 py-1.5 rounded-full border border-green-200">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <div>
-                  <p className="font-medium">{groupOrder.deliveryAddress.address1}</p>
-                  {groupOrder.deliveryAddress.address2 && (
-                    <p className="text-gray-600">{groupOrder.deliveryAddress.address2}</p>
-                  )}
-                  <p className="text-gray-600">
-                    {groupOrder.deliveryAddress.city}, {groupOrder.deliveryAddress.province} {groupOrder.deliveryAddress.zip}
-                  </p>
-                </div>
+                <span className="text-sm font-medium">FREE DELIVERY</span>
+              </div>
+            </div>
+
+            {/* Delivery Details */}
+            <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+              <div className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span>
+                  {new Date(groupOrder.deliveryDate).toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    month: 'short',
+                    day: 'numeric'
+                  })}
+                  {' '}{groupOrder.deliveryTime}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                </svg>
+                <span>{groupOrder.deliveryAddress.address1}, {groupOrder.deliveryAddress.city}</span>
               </div>
             </div>
           </div>
 
-          {/* Participants */}
-          <div className="mb-6">
-            <h2 className="text-sm tracking-[0.1em] text-gray-600 mb-4">
-              PARTICIPANTS ({groupOrder.participants.length})
-            </h2>
-            <div className="space-y-2">
-              {groupOrder.participants.map((participant, index) => (
-                <div key={participant.id} className="flex items-center justify-between py-2 border-b border-gray-100">
-                  <span className="text-sm">
-                    {participant.guestName || `Participant ${index + 1}`}
-                  </span>
-                  <span className="text-sm text-gray-500">
-                    {participant.itemCount} items
-                  </span>
+          {/* Join Form or Shopping Section */}
+          {groupOrder.status === 'active' && !isAlreadyJoined && (
+            <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+              <h2 className="text-lg font-cormorant text-gray-900 mb-4">Join This Group Order</h2>
+              <form onSubmit={handleJoinOrder} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+                    <input
+                      type="text"
+                      required
+                      value={guestName}
+                      onChange={(e) => setGuestName(e.target.value)}
+                      placeholder="Enter your name"
+                      className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Your Email</label>
+                    <input
+                      type="email"
+                      required
+                      value={guestEmail}
+                      onChange={(e) => setGuestEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                    />
+                  </div>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Progress */}
-          <div className="mb-8">
-            <div className="flex justify-between text-sm mb-2">
-              <span className="text-gray-600">Order Total</span>
-              <span className="font-medium">${groupOrder.totalAmount.toFixed(2)}</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
-                className="bg-gold-500 h-2 rounded-full transition-all duration-500"
-                style={{ width: `${Math.min((groupOrder.totalAmount / groupOrder.minimumOrderAmount) * 100, 100)}%` }}
-              />
-            </div>
-            <p className="text-xs text-gray-500 mt-1">
-              ${groupOrder.minimumOrderAmount} minimum order
-            </p>
-          </div>
-
-          {/* Action Buttons */}
-          {groupOrder.status === 'active' && (
-            <div className="space-y-3">
-              {isAlreadyJoined ? (
-                <>
-                  <Link href="/products">
-                    <button className="w-full bg-gray-900 text-white py-4 tracking-[0.15em] hover:bg-gold transition-colors">
-                      CONTINUE SHOPPING
-                    </button>
-                  </Link>
-                  <p className="text-center text-sm text-gray-600">
-                    You&apos;ve already joined this group order
-                  </p>
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={handleJoinOrder}
-                    disabled={isJoining}
-                    className="w-full bg-gold-500 text-gray-900 py-4 tracking-[0.15em] hover:bg-gold-600 transition-colors disabled:opacity-50"
-                  >
-                    {isJoining ? 'JOINING...' : 'JOIN THIS ORDER'}
-                  </button>
-                  {joinError && (
-                    <p className="text-center text-sm text-red-600">{joinError}</p>
-                  )}
-                </>
-              )}
-            </div>
-          )}
-
-          {groupOrder.status === 'locked' && (
-            <div className="text-center">
-              <p className="text-gray-600 mb-4">This order has been locked by the host and is no longer accepting new participants.</p>
-              <Link href="/products">
-                <button className="bg-gray-900 text-white px-6 py-3 tracking-[0.1em] hover:bg-gold transition-colors">
-                  START NEW ORDER
+                {joinError && (
+                  <p className="text-sm text-red-600">{joinError}</p>
+                )}
+                <button
+                  type="submit"
+                  disabled={isJoining}
+                  className="w-full bg-gold-600 text-gray-900 py-3 font-medium tracking-[0.1em] hover:bg-gold-700 transition-colors disabled:opacity-50"
+                >
+                  {isJoining ? 'JOINING...' : 'JOIN & START SHOPPING'}
                 </button>
-              </Link>
+                <p className="text-xs text-gray-500 text-center">
+                  You&apos;ll need to verify you&apos;re 21+ to continue
+                </p>
+              </form>
             </div>
           )}
+
+          {/* Already Joined - Continue Shopping */}
+          {groupOrder.status === 'active' && isAlreadyJoined && (
+            <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-900 font-medium">You&apos;re part of this group order!</p>
+                  <p className="text-sm text-gray-600">Add items to your cart and checkout when ready.</p>
+                </div>
+                <Link href="/products">
+                  <button className="bg-gold-600 text-gray-900 px-6 py-3 font-medium tracking-[0.1em] hover:bg-gold-700 transition-colors">
+                    SHOP NOW
+                  </button>
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {/* Closed/Locked Status */}
+          {(groupOrder.status === 'closed' || groupOrder.status === 'locked') && !isAlreadyJoined && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 mb-6">
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-amber-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <div>
+                  <p className="text-amber-800 font-medium">This group is closed to new participants</p>
+                  <p className="text-sm text-amber-700 mt-1">Contact the host if you need to join.</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* What's Been Ordered */}
+          <GroupOrderItems shareCode={shareCode} className="mb-6" />
+
+          {/* Participants List */}
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <h3 className="text-lg font-cormorant text-gray-900 mb-4">
+              Participants ({groupOrder.participants.length})
+            </h3>
+            {groupOrder.participants.length === 0 ? (
+              <p className="text-gray-500 text-sm">No one has joined yet. Be the first!</p>
+            ) : (
+              <div className="space-y-2">
+                {groupOrder.participants.map((participant, index) => (
+                  <div key={participant.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                    <span className="text-sm text-gray-900">
+                      {participant.guestName || `Participant ${index + 1}`}
+                    </span>
+                    <div className="flex items-center gap-3">
+                      {participant.status === 'checked_out' ? (
+                        <span className="inline-flex items-center gap-1 text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Checked out
+                        </span>
+                      ) : (
+                        <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">
+                          Shopping
+                        </span>
+                      )}
+                      <span className="text-sm text-gray-500">
+                        {participant.itemCount || 0} items
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

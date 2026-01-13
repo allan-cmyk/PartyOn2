@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { 
-  verifyWebhookSignature, 
-  getWebhookHeaders, 
-  validateWebhookDomain 
+import {
+  verifyWebhookSignature,
+  getWebhookHeaders,
+  validateWebhookDomain
 } from '@/lib/shopify/webhook-verification';
+import { db } from '@/lib/group-orders/database';
 
 // Shopify webhook topics we handle
 const WEBHOOK_TOPICS = {
@@ -104,24 +105,104 @@ export async function POST(request: NextRequest) {
 }
 
 // Handler functions for each webhook type
-async function handleOrderCreated(order: Record<string, unknown>) {
+async function handleOrderCreated(order: ShopifyOrder) {
   console.log('New order created:', order.name);
-  
+
   // Extract delivery information from order attributes
-  const noteAttributes = order.note_attributes as Array<{ name: string; value: string }> | undefined;
-  const deliveryDate = noteAttributes?.find((attr) => attr.name === 'delivery_date')?.value;
-  const deliveryTime = noteAttributes?.find((attr) => attr.name === 'delivery_time')?.value;
-  const deliveryInstructions = noteAttributes?.find((attr) => attr.name === 'delivery_instructions')?.value;
-  
-  // TODO: Send order confirmation email
-  // TODO: Create internal delivery task
-  // TODO: Update inventory if needed
-  
+  const noteAttributes = order.note_attributes || [];
+  const deliveryDate = noteAttributes.find((attr) => attr.name === 'delivery_date')?.value;
+  const deliveryTime = noteAttributes.find((attr) => attr.name === 'delivery_time')?.value;
+  const deliveryInstructions = noteAttributes.find((attr) => attr.name === 'delivery_instructions')?.value;
+
+  // Check if this is a group order
+  const isGroupOrder = noteAttributes.find((attr) => attr.name === 'group_order')?.value === 'true';
+  const shareCode = noteAttributes.find((attr) => attr.name === 'share_code')?.value;
+
+  if (isGroupOrder && shareCode) {
+    await handleGroupOrderCheckout(order, shareCode);
+  }
+
   console.log('Order delivery details:', {
     date: deliveryDate,
     time: deliveryTime,
-    instructions: deliveryInstructions
+    instructions: deliveryInstructions,
+    isGroupOrder,
+    shareCode
   });
+}
+
+/**
+ * Handle a group order participant's checkout completion
+ * Updates participant status and stores line items for visibility
+ */
+async function handleGroupOrderCheckout(order: ShopifyOrder, shareCode: string) {
+  try {
+    console.log(`Processing group order checkout for share code: ${shareCode}`);
+
+    // Find the participant by their cart ID (stored in cart attributes)
+    // The cart_id is not directly available in Shopify order, so we find by email
+    const email = order.email || order.customer?.email;
+    if (!email) {
+      console.warn('No email found for group order checkout');
+      return;
+    }
+
+    const participant = await db.findParticipantByEmail(shareCode, email);
+    if (!participant) {
+      console.warn(`No participant found with email ${email} for group ${shareCode}`);
+      return;
+    }
+
+    // Update participant checkout status
+    await db.updateParticipantCheckoutStatus(shareCode, participant.cartId, {
+      shopifyOrderId: String(order.id),
+      shopifyOrderName: order.name || `#${order.order_number}`,
+    });
+
+    // Store line items for group visibility
+    const lineItems = order.line_items?.map(item => ({
+      shopifyLineId: String(item.id),
+      title: item.title,
+      variantTitle: item.variant_title || undefined,
+      quantity: item.quantity,
+      price: parseFloat(item.price),
+      imageUrl: item.image?.src || undefined,
+    })) || [];
+
+    if (lineItems.length > 0) {
+      await db.addOrderItems(shareCode, participant.id, lineItems);
+    }
+
+    console.log(`Group order checkout processed: ${participant.guestName || email} checked out ${lineItems.length} items`);
+
+  } catch (error) {
+    console.error('Error processing group order checkout:', error);
+  }
+}
+
+// Shopify Order type for webhook
+interface ShopifyOrder {
+  id: number
+  name: string
+  order_number: number
+  email?: string
+  customer?: {
+    id: number
+    email: string
+    first_name: string
+    last_name: string
+  }
+  note_attributes?: Array<{ name: string; value: string }>
+  line_items?: Array<{
+    id: number
+    title: string
+    variant_title?: string
+    quantity: number
+    price: string
+    image?: {
+      src: string
+    }
+  }>
 }
 
 async function handleOrderUpdated(order: Record<string, unknown>) {
