@@ -3,7 +3,7 @@
  * Sent when delivery status changes
  */
 
-import { formatCurrency, formatDate, formatTime } from '../resend-client';
+import { formatCurrency } from '../resend-client';
 
 interface DeliveryAddress {
   address1: string;

@@ -4,7 +4,7 @@
  */
 
 import { PrismaClient, ProductStatus, Prisma } from '@prisma/client';
-import { adminGraphQL, paginatedAdminQuery } from './admin-client';
+import { paginatedAdminQuery } from './admin-client';
 
 const PRODUCTS_QUERY = `
   query getProducts($first: Int!, $after: String) {

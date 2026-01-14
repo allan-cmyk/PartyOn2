@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 interface InventorySummary {
   totalItems: number;
@@ -119,9 +120,9 @@ export default function InventoryReportPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-black">Inventory Report</h1>
-          <a href="/admin/reports" className="text-blue-600 hover:text-blue-800 text-sm">
+          <Link href="/admin/reports" className="text-blue-600 hover:text-blue-800 text-sm">
             &larr; Back to Reports Dashboard
-          </a>
+          </Link>
         </div>
         <div className="flex gap-2">
           {(['7d', '30d', '90d'] as DateRange[]).map((r) => (
@@ -239,7 +240,7 @@ export default function InventoryReportPage() {
                 </tr>
               </thead>
               <tbody>
-                {data.inventoryByCategory.map((cat, index) => (
+                {data.inventoryByCategory.map((cat) => (
                   <tr key={cat.category} className="border-b border-gray-100 hover:bg-gray-50">
                     <td className="py-3 px-4 font-medium text-black">{cat.category}</td>
                     <td className="py-3 px-4 text-right text-gray-600">{cat.items}</td>

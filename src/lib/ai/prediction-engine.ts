@@ -3,7 +3,7 @@
  * Predicts stockouts, recommends reorder timing and quantities
  */
 
-import { getAnthropicClient, AI_MODELS, extractJSON, formatDateForAI, daysBetween, type AIResponse } from './inventory-client';
+import { getAnthropicClient, AI_MODELS, extractJSON, formatDateForAI, type AIResponse } from './inventory-client';
 
 /**
  * Sales history data point

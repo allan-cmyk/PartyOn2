@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 interface SalesSummary {
   revenue: number;
@@ -142,24 +143,24 @@ export default function ReportsPage() {
 
       {/* Quick Links */}
       <div className="flex gap-4 mb-6">
-        <a
+        <Link
           href="/admin/reports/sales"
           className="text-blue-600 hover:text-blue-800 font-medium"
         >
           Sales Report &rarr;
-        </a>
-        <a
+        </Link>
+        <Link
           href="/admin/reports/customers"
           className="text-blue-600 hover:text-blue-800 font-medium"
         >
           Customer Report &rarr;
-        </a>
-        <a
+        </Link>
+        <Link
           href="/admin/reports/inventory"
           className="text-blue-600 hover:text-blue-800 font-medium"
         >
           Inventory Report &rarr;
-        </a>
+        </Link>
       </div>
 
       {/* Summary Cards */}

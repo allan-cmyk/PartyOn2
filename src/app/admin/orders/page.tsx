@@ -204,11 +204,11 @@ export default function OrdersPage() {
             <p className="text-2xl font-bold text-black">{formatCurrency(data.summary.totalRevenue)}</p>
           </div>
           <div className="bg-purple-100 border-2 border-purple-300 rounded-lg p-4">
-            <h3 className="text-xs font-medium text-gray-600 mb-1">Today's Orders</h3>
+            <h3 className="text-xs font-medium text-gray-600 mb-1">Today&apos;s Orders</h3>
             <p className="text-2xl font-bold text-black">{data.summary.todayOrders}</p>
           </div>
           <div className="bg-yellow-100 border-2 border-yellow-300 rounded-lg p-4">
-            <h3 className="text-xs font-medium text-gray-600 mb-1">Today's Revenue</h3>
+            <h3 className="text-xs font-medium text-gray-600 mb-1">Today&apos;s Revenue</h3>
             <p className="text-2xl font-bold text-black">{formatCurrency(data.summary.todayRevenue)}</p>
           </div>
           <div className="bg-orange-100 border-2 border-orange-300 rounded-lg p-4">

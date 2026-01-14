@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 interface TopCustomer {
   id: string;
@@ -109,9 +110,9 @@ export default function CustomerReportPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-black">Customer Report</h1>
-          <a href="/admin/reports" className="text-blue-600 hover:text-blue-800 text-sm">
+          <Link href="/admin/reports" className="text-blue-600 hover:text-blue-800 text-sm">
             &larr; Back to Reports Dashboard
-          </a>
+          </Link>
         </div>
         <div className="flex gap-2">
           {(['30d', '90d', '365d'] as DateRange[]).map((r) => (

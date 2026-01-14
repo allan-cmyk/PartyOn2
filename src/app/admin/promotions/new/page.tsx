@@ -96,7 +96,7 @@ export default function NewDiscountPage() {
       }
 
       router.push('/admin/promotions');
-    } catch (err) {
+    } catch {
       setError('Failed to create discount. Please try again.');
     } finally {
       setLoading(false);
