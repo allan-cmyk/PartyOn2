@@ -68,22 +68,7 @@ export const db = {
         participants: {
           where: { status: { not: 'REMOVED' } },
           orderBy: { joinedAt: 'asc' },
-          select: {
-            id: true,
-            groupOrderId: true,
-            customerId: true,
-            guestName: true,
-            guestEmail: true,
-            cartId: true,
-            ageVerified: true,
-            status: true,
-            cartTotal: true,
-            itemCount: true,
-            joinedAt: true,
-            checkedOutAt: true,
-            shopifyOrderId: true,
-            shopifyOrderName: true,
-          },
+          // No explicit select - let Prisma use default selection based on schema
         },
         items: true,
       },
@@ -392,28 +377,29 @@ export const db = {
 
 /**
  * Map Prisma GroupOrder to our domain type
+ * Uses flexible typing to handle schema mismatches
  */
-function mapGroupOrderFromPrisma(order: Prisma.GroupOrderGetPayload<{
-  include: { participants: true; items?: true }
-}>): GroupOrderWithParticipants {
+function mapGroupOrderFromPrisma(order: Record<string, unknown> & {
+  participants?: Record<string, unknown>[]
+}): GroupOrderWithParticipants {
   const participants = order.participants?.map(mapParticipantFromPrisma) || []
   const totalAmount = participants.reduce((sum, p) => sum + (p.cartTotal || 0), 0)
   const totalItems = participants.reduce((sum, p) => sum + (p.itemCount || 0), 0)
 
   return {
-    id: order.id,
-    name: order.name,
-    hostCustomerId: order.hostCustomerId,
-    hostName: order.hostName || undefined,
-    shareCode: order.shareCode,
-    status: order.status.toLowerCase() as 'active' | 'locked' | 'closed' | 'completed' | 'cancelled',
-    deliveryDate: order.deliveryDate.toISOString(),
-    deliveryTime: order.deliveryTime,
+    id: order.id as string,
+    name: order.name as string,
+    hostCustomerId: order.hostCustomerId as string,
+    hostName: (order.hostName as string) || undefined,
+    shareCode: order.shareCode as string,
+    status: ((order.status as string) || 'active').toLowerCase() as 'active' | 'locked' | 'closed' | 'completed' | 'cancelled',
+    deliveryDate: (order.deliveryDate as Date).toISOString(),
+    deliveryTime: order.deliveryTime as string,
     deliveryAddress: order.deliveryAddress as GroupOrder['deliveryAddress'],
-    minimumOrderAmount: Number(order.minimumOrderAmount),
-    expiresAt: order.expiresAt.toISOString(),
-    createdAt: order.createdAt.toISOString(),
-    updatedAt: order.updatedAt.toISOString(),
+    minimumOrderAmount: Number(order.minimumOrderAmount || 0),
+    expiresAt: (order.expiresAt as Date).toISOString(),
+    createdAt: (order.createdAt as Date).toISOString(),
+    updatedAt: (order.updatedAt as Date).toISOString(),
     participants,
     totalAmount,
     totalItems,
@@ -422,22 +408,23 @@ function mapGroupOrderFromPrisma(order: Prisma.GroupOrderGetPayload<{
 
 /**
  * Map Prisma GroupParticipant to our domain type
+ * Uses 'any' type to handle cases where DB schema might be out of sync
  */
-function mapParticipantFromPrisma(participant: Prisma.GroupParticipantGetPayload<object>): GroupParticipant {
+function mapParticipantFromPrisma(participant: Record<string, unknown>): GroupParticipant {
   return {
-    id: participant.id,
-    groupOrderId: participant.groupOrderId,
-    customerId: participant.customerId || undefined,
-    guestName: participant.guestName || undefined,
-    guestEmail: participant.guestEmail || undefined,
-    cartId: participant.cartId,
-    ageVerified: participant.ageVerified,
-    status: participant.status.toLowerCase() as 'active' | 'removed' | 'checked_out',
-    cartTotal: Number(participant.cartTotal),
-    itemCount: participant.itemCount,
-    joinedAt: participant.joinedAt.toISOString(),
-    checkedOutAt: participant.checkedOutAt?.toISOString(),
-    shopifyOrderId: participant.shopifyOrderId || undefined,
-    shopifyOrderName: participant.shopifyOrderName || undefined,
+    id: participant.id as string,
+    groupOrderId: participant.groupOrderId as string,
+    customerId: (participant.customerId as string) || undefined,
+    guestName: (participant.guestName as string) || undefined,
+    guestEmail: (participant.guestEmail as string) || undefined,
+    cartId: participant.cartId as string,
+    ageVerified: participant.ageVerified as boolean,
+    status: ((participant.status as string) || 'active').toLowerCase() as 'active' | 'removed' | 'checked_out',
+    cartTotal: Number(participant.cartTotal || 0),
+    itemCount: (participant.itemCount as number) || 0,
+    joinedAt: participant.joinedAt ? (participant.joinedAt as Date).toISOString() : new Date().toISOString(),
+    checkedOutAt: participant.checkedOutAt ? (participant.checkedOutAt as Date).toISOString() : undefined,
+    shopifyOrderId: (participant.shopifyOrderId as string) || undefined,
+    shopifyOrderName: (participant.shopifyOrderName as string) || undefined,
   }
 }
