@@ -2,6 +2,9 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import OldFashionedNavigation from '@/components/OldFashionedNavigation'
+import Footer from '@/components/Footer'
 import { useGroupOrderContext } from '@/contexts/GroupOrderContext'
 import { GroupOrderAPI } from '@/lib/group-orders/api'
 
@@ -100,7 +103,18 @@ export default function CreateGroupOrderPage() {
         }, 100)
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create group order')
+      // Extract detailed error message
+      let errorMessage = 'Failed to create group order'
+      if (err instanceof Error) {
+        errorMessage = err.message
+        // Check for common issues
+        if (err.message.includes('fetch') || err.message.includes('network')) {
+          errorMessage = 'Network error. Please check your internet connection and try again.'
+        } else if (err.message.includes('500') || err.message.includes('server')) {
+          errorMessage = 'Server error. Our team has been notified. Please try again in a few minutes.'
+        }
+      }
+      setError(errorMessage)
     } finally {
       setIsLoading(false)
     }
@@ -147,22 +161,48 @@ export default function CreateGroupOrderPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-32 pb-16">
-      <div className="container mx-auto px-4">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-lg shadow-sm p-8">
-            <h1 className="text-3xl font-cormorant text-gray-900 mb-2 text-center">
-              Create Group Order
-            </h1>
-            <p className="text-gray-600 text-center mb-8">
-              Start a group order and invite friends to add their items. Everyone checks out individually and gets FREE DELIVERY!
-            </p>
+    <div className="min-h-screen bg-gray-50">
+      <OldFashionedNavigation />
 
-            {error && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded">
-                {error}
-              </div>
-            )}
+      <div className="pt-32 pb-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-2xl mx-auto">
+            {/* Back link */}
+            <Link
+              href="/products"
+              className="inline-flex items-center text-gray-600 hover:text-gold-600 mb-6 transition-colors"
+            >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Products
+            </Link>
+
+            <div className="bg-white rounded-lg shadow-sm p-8">
+              <h1 className="text-3xl font-cormorant text-gray-900 mb-2 text-center">
+                Create Group Order
+              </h1>
+              <p className="text-gray-600 text-center mb-8">
+                Start a group order and invite friends to add their items. Everyone checks out individually and gets FREE DELIVERY!
+              </p>
+
+              {error && (
+                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded">
+                  <div className="flex items-start gap-3">
+                    <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p className="font-medium text-red-800">Unable to create group order</p>
+                      <p className="text-red-700 text-sm mt-1">{error}</p>
+                      <p className="text-red-600 text-xs mt-2">
+                        Please check your information and try again. If the problem persists,
+                        <Link href="/contact" className="underline ml-1">contact us</Link>.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Event Name */}
@@ -340,9 +380,12 @@ export default function CreateGroupOrderPage() {
                 {isLoading ? 'CREATING...' : 'CREATE GROUP ORDER'}
               </button>
             </form>
+            </div>
           </div>
         </div>
       </div>
+
+      <Footer />
     </div>
   )
 }
