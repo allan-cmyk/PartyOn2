@@ -4,7 +4,7 @@
  */
 
 // Client
-export { stripe, STRIPE_PUBLISHABLE_KEY, STRIPE_WEBHOOK_SECRET } from './client';
+export { stripe, getStripe, STRIPE_PUBLISHABLE_KEY, STRIPE_WEBHOOK_SECRET } from './client';
 
 // Checkout
 export {
