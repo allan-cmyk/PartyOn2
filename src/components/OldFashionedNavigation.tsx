@@ -35,9 +35,18 @@ interface OldFashionedNavigationProps {
   forceScrolled?: boolean;
   /** Hide navigation (slides up out of view) */
   hidden?: boolean;
+  /** Hide logo on mobile (only show hamburger menu) */
+  hideMobileLogo?: boolean;
+  /** Force hamburger icon to be white (for dark hero backgrounds) */
+  forceWhiteHamburger?: boolean;
 }
 
-export default function OldFashionedNavigation({ forceScrolled = false, hidden = false }: OldFashionedNavigationProps) {
+export default function OldFashionedNavigation({
+  forceScrolled = false,
+  hidden = false,
+  hideMobileLogo = false,
+  forceWhiteHamburger = false,
+}: OldFashionedNavigationProps) {
   const [isScrolled, setIsScrolled] = useState(forceScrolled);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
@@ -102,10 +111,10 @@ export default function OldFashionedNavigation({ forceScrolled = false, hidden =
       } ${hidden ? '-translate-y-full' : 'translate-y-0'}`}>
         <div className="max-w-7xl mx-auto px-8 md:px-16 lg:px-20">
           <div className="flex items-center justify-between h-24">
-            {/* Logo */}
-            <Link href="/" className="flex items-center -ml-4">
-              <img 
-                src="/images/pod-logo-2025.svg" 
+            {/* Logo - hidden on mobile when hideMobileLogo is true */}
+            <Link href="/" className={`flex items-center -ml-4 ${hideMobileLogo ? 'hidden md:flex' : ''}`}>
+              <img
+                src="/images/pod-logo-2025.svg"
                 alt="Party On Delivery"
                 className="h-20 w-auto"
               />
@@ -256,11 +265,17 @@ export default function OldFashionedNavigation({ forceScrolled = false, hidden =
             </div>
 
             {/* Mobile Menu Button */}
-            <button 
+            <button
               className="md:hidden"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              <div className={`space-y-1.5 ${isScrolled ? 'text-gray-900' : 'text-white'}`}>
+              <div className={`space-y-1.5 ${
+                forceWhiteHamburger
+                  ? 'text-white'
+                  : isScrolled
+                    ? 'text-gray-900'
+                    : 'text-white'
+              }`}>
                 <span className="block w-6 h-0.5 bg-current"></span>
                 <span className="block w-6 h-0.5 bg-current"></span>
                 <span className="block w-6 h-0.5 bg-current"></span>

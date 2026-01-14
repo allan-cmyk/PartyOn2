@@ -198,38 +198,62 @@ export default function WeddingsPage() {
   }, [heroImages.length]);
   const packages = [
     {
-      name: "Beer and Wine Special",
-      price: "From $800 (for 100 people)",
-      description: "Perfect for laid back occasions",
+      name: "Beer & Wine Special",
+      price: "$13/person (~$1,300 for 100)",
+      description: "Perfect for casual receptions and laid-back celebrations",
       features: [
-        "Will work with any budget",
-        "Choose any drinks from our selection",
-        "Also perfect for other wedding events (i.e. welcome party, day-after brunch)",
-        "Add cooler rentals, cups, ice, and custom koozies!"
+        "Curated selection of craft beers and wines",
+        "Delivery to your venue, cold if needed",
+        "Perfect for welcome parties & day-after brunch",
+        "Add coolers, cups, ice, and custom koozies"
       ],
       featured: false
     },
     {
-      name: "Classic Reception",
-      price: "From $1,100 (for 100 people)",
+      name: "Affordable Full Bar",
+      price: "$16/person (~$1,600 for 100)",
+      description: "Full bar service at a budget-friendly price",
+      features: [
+        "Beer, wine, and well spirits included",
+        "Classic cocktail capabilities",
+        "Mixers, garnishes, and ice included",
+        "Delivery and basic bar setup"
+      ],
+      featured: false
+    },
+    {
+      name: "Standard Bar",
+      price: "$20/person (~$2,000 for 100)",
       description: "Our most popular package for traditional celebrations",
       features: [
-        "Choose anything from the full premium bar selection",
-        "Signature cocktail menu",
-        "Delivery, bar setup, and rental returns included",
-        "Add barware rental and bartending service if needed"
+        "Premium beer, wine, and call spirits",
+        "Signature cocktail menu options",
+        "Full bar setup with glassware",
+        "Delivery, setup, and rental returns included"
       ],
       featured: true
     },
     {
-      name: "The All Out",
-      price: "From $2,000 (for 100 people)",
-      description: "Luxurious service for unforgettable celebrations",
+      name: "Texas Bar",
+      price: "$23/person (~$2,300 for 100)",
+      description: "Elevated experience with Texas craft selections",
       features: [
-        "Choose any alcohol available in Central TX (we honor all reasonable requests)",
-        "Top-shelf spirits and bar service",
+        "Local craft beers and Texas wines",
+        "Premium spirits and Texas whiskeys",
+        "Custom signature cocktails",
+        "Full service with professional setup"
+      ],
+      featured: false
+    },
+    {
+      name: "Deluxe Bar",
+      price: "$26/person (~$2,600 for 100)",
+      description: "Luxury service for unforgettable celebrations",
+      features: [
+        "Top-shelf spirits and champagne",
+        "Any alcohol available in Central TX",
         "Custom bespoke cocktails",
-        "Delivery, setup, breakdown, glassware and additional bars available"
+        "Full setup, breakdown, and premium glassware"
       ],
       featured: false
     }
@@ -243,7 +267,7 @@ export default function WeddingsPage() {
       <OldFashionedNavigation />
       
       {/* Hero Section */}
-      <section className="relative h-[100vh] pt-32 pb-32 md:pt-24 md:pb-24 flex items-center justify-center overflow-hidden">
+      <section className="relative h-[60vh] md:h-[70vh] mt-24 flex items-center justify-center overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentHeroIndex}
@@ -484,7 +508,7 @@ export default function WeddingsPage() {
             </p>
           </ScrollRevealCSS>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
             {packages.map((pkg, index) => (
               <LuxuryCard
                 key={pkg.name}

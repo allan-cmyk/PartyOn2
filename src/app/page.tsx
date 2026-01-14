@@ -328,7 +328,7 @@ export default function HomePage() {
                     ORDER OFFICE BAR
                   </button>
                 </TrackedLink>
-                <TrackedLink href="/order" section="services" buttonText="BOOK A CORPORATE CONSULT">
+                <TrackedLink href="/contact" section="services" buttonText="BOOK A CORPORATE CONSULT">
                   <button className="px-6 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.1em] text-sm">
                     BOOK A CORPORATE CONSULT
                   </button>

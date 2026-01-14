@@ -101,7 +101,12 @@ export default function QuickOrderPage(): ReactElement {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation forceScrolled={true} hidden={hideNav} />
+      <OldFashionedNavigation
+        forceScrolled={!isMobile}
+        hidden={hideNav}
+        hideMobileLogo
+        forceWhiteHamburger
+      />
 
       {/* Hero Section */}
       <section className="relative h-[35vh] md:h-[40vh] mt-24 pb-20 flex items-center justify-center overflow-hidden">

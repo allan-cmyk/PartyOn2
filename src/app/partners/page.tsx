@@ -44,10 +44,10 @@ export default function AustinPartnersPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation />
+      <OldFashionedNavigation hideMobileLogo />
 
       {/* Hero Section */}
-      <section className="relative h-[50vh] min-h-[400px] flex items-center">
+      <section className="relative h-[50vh] min-h-[400px] mt-24 flex items-center">
         <div className="absolute inset-0">
           <Image
             src="/images/hero/austin-skyline-golden-hour.webp"

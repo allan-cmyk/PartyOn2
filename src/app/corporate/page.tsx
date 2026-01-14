@@ -332,7 +332,7 @@ export default function CorporateLandingPage() {
           <p className="text-lg sm:text-xl md:text-2xl max-w-3xl leading-relaxed mb-8">
             From 20 to 500+ guests—beer, wine, spirits, mixers, and ice delivered cold and on time. Simple planning, zero stress.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-2">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-2 flex-wrap">
             <button
               onClick={handleScheduleCall}
               className="px-8 py-4 bg-gold-600 text-black hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
@@ -345,6 +345,11 @@ export default function CorporateLandingPage() {
             >
               GET A QUOTE
             </button>
+            <Link href="/plan-event">
+              <button className="px-8 py-4 border-2 border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-gray-900 transition-all duration-300 tracking-[0.1em] text-sm font-medium">
+                GET A QUICK ESTIMATE
+              </button>
+            </Link>
           </div>
         </div>
       </section>

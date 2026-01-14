@@ -1,396 +1,438 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import AIConcierge from '@/components/AIConcierge';
-import LuxuryCard from '@/components/LuxuryCard';
+import Footer from '@/components/Footer';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
+import WeddingDrinkCalculator from '@/components/WeddingDrinkCalculator';
+import { trackPageView, ANALYTICS_EVENTS } from '@/lib/analytics/track';
 
 interface EventOption {
   id: string;
   title: string;
   description: string;
   image: string;
-  guestRange: string;
-  priceRange: string;
   link: string;
-  features: string[];
 }
 
-export default function OrderPage() {
-  const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
+export default function PlanEventPage() {
   const [isConciergeOpen, setIsConciergeOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    eventType: '',
+    eventDate: '',
+    guestCount: '',
+    venue: '',
+    message: ''
+  });
+  const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+
+  useEffect(() => {
+    trackPageView(ANALYTICS_EVENTS.VIEW_PLAN_EVENT, '/plan-event', 'Plan Your Event');
+  }, []);
 
   const eventOptions: EventOption[] = [
     {
       id: 'wedding',
       title: 'Weddings',
-      description: 'Elegant bar service for your perfect day',
+      description: 'Curated bar packages for your perfect day',
       image: '/images/services/weddings/signature-cocktails-rings.webp',
-      guestRange: '50-300+',
-      priceRange: '$1,500-$5,000+',
-      link: '/weddings',
-      features: [
-        'Professional bartenders',
-        'Custom cocktail menus',
-        'Premium glassware',
-        'Full setup & cleanup'
-      ]
+      link: '/weddings'
     },
     {
       id: 'boat',
       title: 'Boat Parties',
-      description: 'Lake Travis luxury delivered to your vessel',
+      description: 'Lake Travis delivery to your vessel',
       image: '/images/services/boat-parties/luxury-yacht-deck.webp',
-      guestRange: '10-50',
-      priceRange: '$400-$2,000',
-      link: '/boat-parties',
-      features: [
-        'Dock & water delivery',
-        'Marine-safe packaging',
-        'Coolers & ice included',
-        'Sunset coordination'
-      ]
+      link: '/boat-parties'
     },
     {
       id: 'bach',
       title: 'Celebrations',
-      description: 'Bachelor/ette parties & special occasions',
+      description: 'Bachelor/ette & special occasions',
       image: '/images/services/bach-parties/bachelor-party-epic.webp',
-      guestRange: '15-50',
-      priceRange: '$500-$3,000',
-      link: '/bach-parties',
-      features: [
-        'Multi-venue delivery',
-        'Party concierge',
-        'Custom themes',
-        'VIP treatment'
-      ]
+      link: '/bach-parties'
     },
     {
       id: 'corporate',
-      title: 'Corporate Events',
-      description: 'Professional service for business occasions',
+      title: 'Corporate',
+      description: 'Professional service for business events',
       image: '/images/services/corporate/penthouse-suite-setup.webp',
-      guestRange: '25-500+',
-      priceRange: '$1,000-$10,000+',
-      link: '/corporate',
-      features: [
-        'Executive presentations',
-        'Brand customization',
-        'Professional staff',
-        'Liability coverage'
-      ]
-    },
-    {
-      id: 'custom',
-      title: 'Custom Orders',
-      description: 'Build your own selection from our catalog',
-      image: '/images/products/premium-spirits-wall.webp',
-      guestRange: 'Any size',
-      priceRange: 'No minimum', // '$100 minimum' - TESTING MODE
-      link: '/products',
-      features: [
-        'Choose individual items',
-        'Mix & match products',
-        'Flexible quantities',
-        'Same-day available'
-      ]
+      link: '/corporate'
     }
   ];
 
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormStatus('submitting');
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          source: 'plan-event-page',
+          subject: `Event Planning Request: ${formData.eventType}`
+        })
+      });
+
+      if (response.ok) {
+        setFormStatus('success');
+        setFormData({
+          name: '', email: '', phone: '', eventType: '',
+          eventDate: '', guestCount: '', venue: '', message: ''
+        });
+      } else {
+        setFormStatus('error');
+      }
+    } catch {
+      setFormStatus('error');
+    }
+  };
+
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation forceScrolled={true} />
-      
+      <OldFashionedNavigation />
+
       {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-4xl mx-auto px-8 text-center">
-          <div className="hero-fade-in">
-            <h1 className="font-serif text-5xl md:text-6xl text-gray-900 mb-6 tracking-[0.15em]">
-              ORDER NOW
-            </h1>
-            <div className="w-24 h-px bg-gold-500 mx-auto mb-8" />
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-12">
-              Start shopping our premium selection or let our AI concierge help you create the perfect order
-            </p>
+      <section className="relative h-[50vh] md:h-[60vh] mt-24 flex items-center justify-center overflow-hidden">
+        <Image
+          src="/images/hero/austin-skyline-hero.webp"
+          alt="Austin skyline at sunset"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
 
-            {/* Primary CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <Link href="/products">
-                <button className="px-12 py-4 bg-gray-900 text-white hover:bg-gold-500 transition-all duration-300 tracking-[0.15em] text-lg w-full sm:w-auto">
-                  BROWSE PRODUCTS
-                </button>
-              </Link>
-              <button
-                onClick={() => setIsConciergeOpen(true)}
-                className="px-12 py-4 border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-all duration-300 tracking-[0.15em] text-lg w-full sm:w-auto"
-              >
-                AI CONCIERGE
-              </button>
-            </div>
-
-            <p className="text-sm text-gray-500">
-              {/* TESTING MODE: No restrictions */}
-              Order anytime • No minimum
-            </p>
-          </div>
+        <div className="relative text-center text-white z-10 max-w-4xl mx-auto px-6">
+          <h1 className="font-serif font-light text-4xl sm:text-5xl md:text-7xl mb-6 tracking-[0.15em]">
+            <span className="block text-white mb-2">Let Us Help</span>
+            <span className="block text-gold-400">PLAN YOUR EVENT</span>
+          </h1>
+          <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
+          <p className="text-lg md:text-xl font-light tracking-[0.1em] text-gray-200 max-w-2xl mx-auto">
+            Calculate what you need, chat with our AI concierge, or talk directly with our team
+          </p>
         </div>
       </section>
 
-      {/* Quick Options Section */}
-      <section className="py-12 bg-white">
-        <div className="max-w-6xl mx-auto px-8">
-          <div className="hero-fade-in text-center mb-10" style={{ animationDelay: '300ms' }}>
-            <h2 className="font-serif text-3xl text-gray-900 mb-4 tracking-[0.1em]">
-              CHOOSE YOUR PATH
-            </h2>
-            <div className="w-16 h-px bg-gold-500 mx-auto" />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Quick Order Option */}
-            <div className="hero-fade-in" style={{ animationDelay: '400ms' }}>
-              <LuxuryCard backgroundImage="/images/order/quick-order.webp">
-                <div className="p-6 text-center">
-                  <svg className="w-12 h-12 text-gold-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v6m0 0v2m0-2h2m-2 0h-2" />
-                  </svg>
-                  <h3 className="font-medium text-lg mb-2 tracking-[0.1em]">QUICK ORDER</h3>
-                  <p className="text-gray-600 text-sm mb-4">Know what you want? Jump straight to shopping</p>
-                  <Link href="/products">
-                    <button className="px-6 py-2 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 font-semibold text-sm tracking-[0.1em] transition-all">
-                      SHOP NOW →
-                    </button>
-                  </Link>
-                </div>
-              </LuxuryCard>
-            </div>
-
-            {/* AI Concierge Option */}
-            <div className="hero-fade-in" style={{ animationDelay: '500ms' }}>
-              <LuxuryCard backgroundImage="/images/order/ai-concierge.webp">
-                <div className="p-6 text-center">
-                  <svg className="w-12 h-12 text-gold-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                  </svg>
-                  <h3 className="font-medium text-lg mb-2 tracking-[0.1em]">AI CONCIERGE</h3>
-                  <p className="text-gray-600 text-sm mb-4">Get personalized recommendations for your event</p>
-                  <button
-                    onClick={() => setIsConciergeOpen(true)}
-                    className="px-6 py-2 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 font-semibold text-sm tracking-[0.1em] transition-all"
-                  >
-                    START CHAT →
-                  </button>
-                </div>
-              </LuxuryCard>
-            </div>
-
-            {/* Browse Packages Option */}
-            <div className="hero-fade-in" style={{ animationDelay: '600ms' }}>
-              <LuxuryCard backgroundImage="/images/order/event-packages.webp">
-                <div className="p-6 text-center">
-                  <svg className="w-12 h-12 text-gold-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-                  </svg>
-                  <h3 className="font-medium text-lg mb-2 tracking-[0.1em]">EVENT PACKAGES</h3>
-                  <p className="text-gray-600 text-sm mb-4">Explore curated packages for every occasion</p>
-                  <a href="#packages" className="inline-block px-6 py-2 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 font-semibold text-sm tracking-[0.1em] transition-all">
-                    VIEW PACKAGES →
-                  </a>
-                </div>
-              </LuxuryCard>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Event Selection Grid */}
-      <section id="packages" className="py-16 px-8 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <ScrollRevealCSS delay={0} duration={600} className="text-center mb-12">
-            <h2 className="font-serif text-3xl text-gray-900 mb-4 tracking-[0.1em]">
-              EVENT PACKAGES
-            </h2>
-            <div className="w-16 h-px bg-gold-500 mx-auto mb-6" />
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Choose from our curated packages designed for specific events, or build your own custom order
-            </p>
-          </ScrollRevealCSS>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {eventOptions.map((event, index) => (
-              <div
-                key={event.id}
-                className={`hero-fade-in bg-white border ${
-                  selectedEvent === event.id ? 'border-gold-600' : 'border-gray-200'
-                } hover:border-gold-600 transition-all duration-300 cursor-pointer`}
-                style={{ animationDelay: `${index * 100}ms` }}
-                onClick={() => setSelectedEvent(event.id)}
-              >
-                {/* Image */}
-                <div className="relative h-64 overflow-hidden">
-                  <Image
-                    src={event.image}
-                    alt={event.title}
-                    fill
-                    className="object-cover hover:scale-105 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                  <h3 className="absolute bottom-4 left-6 font-serif text-2xl text-white tracking-[0.1em]">
-                    {event.title}
-                  </h3>
-                </div>
-
-                {/* Content */}
-                <div className="p-6">
-                  <p className="text-gray-600 mb-4">{event.description}</p>
-                  
-                  {/* Details */}
-                  <div className="space-y-3 mb-6">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500 tracking-[0.1em]">GUESTS</span>
-                      <span className="text-gray-900">{event.guestRange}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500 tracking-[0.1em]">BUDGET</span>
-                      <span className="text-gray-900">{event.priceRange}</span>
-                    </div>
-                  </div>
-
-                  {/* Features */}
-                  <div className="space-y-2 mb-6">
-                    {event.features.map((feature, i) => (
-                      <div key={i} className="flex items-start text-sm">
-                        <svg className="w-4 h-4 text-gold-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span className="text-gray-600">{feature}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* CTA */}
-                  <Link href={event.link}>
-                    <button className="w-full py-3 bg-gold-500 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.15em] text-sm">
-                      EXPLORE {event.title.toUpperCase()}
-                    </button>
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-
-        </div>
-      </section>
-
-      {/* Quick Info Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-5xl mx-auto px-8">
-          <ScrollRevealCSS delay={0} duration={600} className="text-center mb-12">
-            <h2 className="font-serif text-3xl text-gray-900 mb-4 tracking-[0.1em]">
-              How It Works
+      {/* Three Paths Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-6">
+          <ScrollRevealCSS duration={600} y={20} className="text-center mb-12">
+            <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+              Choose Your Path
             </h2>
             <div className="w-16 h-px bg-gold-600 mx-auto" />
           </ScrollRevealCSS>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {[
-              {
-                step: '1',
-                title: 'Choose Your Event',
-                description: 'Select from our curated packages or build custom'
-              },
-              {
-                step: '2',
-                title: 'Select Products',
-                description: 'Browse premium spirits, wines, and beers'
-              },
-              {
-                step: '3',
-                title: 'Schedule Delivery',
-                description: 'Pick your date and delivery location'
-              },
-              {
-                step: '4',
-                title: 'Enjoy Service',
-                description: 'Professional delivery and optional bartending'
-              }
-            ].map((item, index) => (
-              <ScrollRevealCSS
-                key={item.step}
-                delay={index * 100}
-                duration={600}
-                className="text-center"
-              >
-                <div className="w-12 h-12 bg-gold-500 text-gray-900 rounded-full flex items-center justify-center mx-auto mb-4 font-serif text-lg">
-                  {item.step}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Calculator Path */}
+            <ScrollRevealCSS duration={600} y={20} delay={100}>
+              <a href="#calculator" className="block bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center">
+                <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
                 </div>
-                <h3 className="font-medium text-gray-900 mb-2 tracking-[0.1em]">
-                  {item.title}
+                <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                  Quick Estimate
                 </h3>
-                <p className="text-sm text-gray-600">
-                  {item.description}
+                <p className="text-gray-600 text-sm mb-4">
+                  Use our calculator to estimate how much alcohol you need for your event
                 </p>
-              </ScrollRevealCSS>
-            ))}
+                <span className="text-gold-600 text-sm tracking-[0.1em] font-medium">
+                  USE CALCULATOR
+                </span>
+              </a>
+            </ScrollRevealCSS>
+
+            {/* AI Concierge Path */}
+            <ScrollRevealCSS duration={600} y={20} delay={200}>
+              <button
+                onClick={() => setIsConciergeOpen(true)}
+                className="w-full bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center border-2 border-gold-200"
+              >
+                <div className="w-16 h-16 bg-gold-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                  </svg>
+                </div>
+                <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                  AI Concierge
+                </h3>
+                <p className="text-gray-600 text-sm mb-4">
+                  Chat with our AI to get personalized recommendations for your event
+                </p>
+                <span className="text-gold-600 text-sm tracking-[0.1em] font-medium">
+                  START CHAT
+                </span>
+              </button>
+            </ScrollRevealCSS>
+
+            {/* Human Contact Path */}
+            <ScrollRevealCSS duration={600} y={20} delay={300}>
+              <a href="#contact-form" className="block bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center">
+                <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                </div>
+                <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                  Talk to Us
+                </h3>
+                <p className="text-gray-600 text-sm mb-4">
+                  Fill out a quick form and our team will reach out within 24 hours
+                </p>
+                <span className="text-gold-600 text-sm tracking-[0.1em] font-medium">
+                  CONTACT FORM
+                </span>
+              </a>
+            </ScrollRevealCSS>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-white py-16 border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-8 md:px-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <img 
-                src="/images/pod-logo-2025.svg" 
-                alt="Party On Delivery"
-                className="h-16 w-auto mb-4"
-              />
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Austin&apos;s premier alcohol delivery and event service since 2020.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SERVICES</h4>
-              <ul className="space-y-2">
-                <li><Link href="/weddings" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Weddings</Link></li>
-                <li><Link href="/boat-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Boat Parties</Link></li>
-                <li><Link href="/bach-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Celebrations</Link></li>
-                <li><Link href="/corporate" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Corporate</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SHOP</h4>
-              <ul className="space-y-2">
-                <li><Link href="/products" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">All Products</Link></li>
-                <li><Link href="/collections" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Collections</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">CONTACT</h4>
-              <ul className="space-y-2 text-gray-600 text-sm">
-                <li>Phone: (737) 371-9700</li>
-                <li>Email: info@partyondelivery.com</li>
-                <li>Hours: 10AM - 9PM (except Sundays)</li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-500 text-sm">© 2024 PartyOn Delivery. All rights reserved.</p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="/terms" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Terms</Link>
-              <Link href="/privacy" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Privacy</Link>
+      {/* Drink Calculator Section */}
+      <section id="calculator" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <ScrollRevealCSS duration={600} y={20}>
+            <WeddingDrinkCalculator />
+          </ScrollRevealCSS>
+
+          <div className="text-center mt-12">
+            <p className="text-gray-600 mb-6">
+              Ready to order? Start shopping or let us build a custom quote for you.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/products">
+                <button className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                  START SHOPPING
+                </button>
+              </Link>
+              <button
+                onClick={() => setIsConciergeOpen(true)}
+                className="px-8 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.15em] text-sm font-medium"
+              >
+                GET AI RECOMMENDATIONS
+              </button>
             </div>
           </div>
         </div>
-      </footer>
-      
-      {/* AI Concierge */}
-      <AIConcierge 
-        mode="event-planning" 
+      </section>
+
+      {/* Contact Form Section */}
+      <section id="contact-form" className="py-20 bg-gray-50">
+        <div className="max-w-3xl mx-auto px-6">
+          <ScrollRevealCSS duration={600} y={20} className="text-center mb-12">
+            <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+              Talk to Our Team
+            </h2>
+            <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+            <p className="text-gray-600">
+              Fill out the form below and we&apos;ll get back to you within 24 hours with a custom quote.
+            </p>
+          </ScrollRevealCSS>
+
+          <ScrollRevealCSS duration={600} y={20} delay={100}>
+            <form onSubmit={handleFormSubmit} className="bg-white p-8 rounded-lg shadow-lg space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2 tracking-[0.05em]">Name *</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleFormChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-600 focus:border-transparent"
+                    placeholder="Your name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2 tracking-[0.05em]">Email *</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleFormChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-600 focus:border-transparent"
+                    placeholder="your@email.com"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2 tracking-[0.05em]">Phone</label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleFormChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-600 focus:border-transparent"
+                    placeholder="(512) 555-0123"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2 tracking-[0.05em]">Event Type *</label>
+                  <select
+                    name="eventType"
+                    value={formData.eventType}
+                    onChange={handleFormChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-600 focus:border-transparent"
+                  >
+                    <option value="">Select event type</option>
+                    <option value="Wedding">Wedding</option>
+                    <option value="Corporate Event">Corporate Event</option>
+                    <option value="Boat Party">Boat Party</option>
+                    <option value="Bachelor/Bachelorette">Bachelor/Bachelorette</option>
+                    <option value="Birthday Party">Birthday Party</option>
+                    <option value="House Party">House Party</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2 tracking-[0.05em]">Event Date</label>
+                  <input
+                    type="date"
+                    name="eventDate"
+                    value={formData.eventDate}
+                    onChange={handleFormChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-600 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2 tracking-[0.05em]">Guest Count</label>
+                  <input
+                    type="number"
+                    name="guestCount"
+                    value={formData.guestCount}
+                    onChange={handleFormChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-600 focus:border-transparent"
+                    placeholder="100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2 tracking-[0.05em]">Venue/Location</label>
+                  <input
+                    type="text"
+                    name="venue"
+                    value={formData.venue}
+                    onChange={handleFormChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-600 focus:border-transparent"
+                    placeholder="Venue name or address"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2 tracking-[0.05em]">Additional Details</label>
+                <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleFormChange}
+                  rows={4}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-600 focus:border-transparent"
+                  placeholder="Tell us about your event - any special requests, drink preferences, or questions?"
+                />
+              </div>
+
+              <div className="text-center">
+                <button
+                  type="submit"
+                  disabled={formStatus === 'submitting'}
+                  className="px-12 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium disabled:opacity-50"
+                >
+                  {formStatus === 'submitting' ? 'SENDING...' : 'SUBMIT REQUEST'}
+                </button>
+              </div>
+
+              {formStatus === 'success' && (
+                <div className="text-center p-4 bg-green-50 text-green-700 rounded-md">
+                  Thank you! We&apos;ll be in touch within 24 hours.
+                </div>
+              )}
+              {formStatus === 'error' && (
+                <div className="text-center p-4 bg-red-50 text-red-700 rounded-md">
+                  Something went wrong. Please try again or call us at (737) 371-9700.
+                </div>
+              )}
+            </form>
+          </ScrollRevealCSS>
+        </div>
+      </section>
+
+      {/* Event Types Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <ScrollRevealCSS duration={600} y={20} className="text-center mb-12">
+            <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+              Explore Event Types
+            </h2>
+            <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Browse our specialized services for different event types
+            </p>
+          </ScrollRevealCSS>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {eventOptions.map((event, index) => (
+              <ScrollRevealCSS key={event.id} duration={600} y={20} delay={index * 100}>
+                <Link href={event.link} className="block group">
+                  <div className="relative h-64 overflow-hidden rounded-lg">
+                    <Image
+                      src={event.image}
+                      alt={event.title}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/70 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                      <h3 className="font-serif text-xl mb-1 tracking-[0.1em]">
+                        {event.title}
+                      </h3>
+                      <p className="text-sm text-gray-300">
+                        {event.description}
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              </ScrollRevealCSS>
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <Link href="/products">
+              <button className="px-8 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.15em] text-sm font-medium">
+                OR BROWSE ALL PRODUCTS
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+
+      {/* AI Concierge Modal */}
+      <AIConcierge
+        mode="event-planning"
         isOpen={isConciergeOpen}
         onClose={() => setIsConciergeOpen(false)}
       />

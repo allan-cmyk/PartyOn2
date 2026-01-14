@@ -89,22 +89,30 @@ export default function HeroSection() {
         <div className="text-xs sm:text-sm text-gray-300 mb-4 sm:mb-8 tracking-[0.05em]">
           Licensed • Insured • TABC-certified • 5.0★ on Google
         </div>
-        {/* Primary CTAs */}
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+        {/* Primary CTAs - 3 buttons */}
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center flex-wrap">
           <Link
             href="/products"
-            onClick={() => trackCTAClick('ORDER NOW', '/products', 'hero')}
+            onClick={() => trackCTAClick('START AN ORDER', '/products', 'hero')}
           >
             <button className="px-8 sm:px-10 py-3 sm:py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-all duration-300 tracking-[0.15em] text-sm">
-              ORDER NOW
+              START AN ORDER
             </button>
           </Link>
           <Link
-            href="/order"
-            onClick={() => trackCTAClick('PLAN MY EVENT', '/order', 'hero')}
+            href="/group/join"
+            onClick={() => trackCTAClick('JOIN AN ORDER', '/group/join', 'hero')}
           >
             <button className="px-8 sm:px-10 py-3 sm:py-4 border-2 border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
-              PLAN MY EVENT
+              JOIN AN ORDER
+            </button>
+          </Link>
+          <Link
+            href="/plan-event"
+            onClick={() => trackCTAClick('HELP ME PLAN MY EVENT', '/plan-event', 'hero')}
+          >
+            <button className="px-8 sm:px-10 py-3 sm:py-4 border-2 border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
+              HELP ME PLAN MY EVENT
             </button>
           </Link>
         </div>
