@@ -1,46 +1,20 @@
 /**
  * Product Search API
- *
- * GET /api/v1/products/search?q=query - Search products by text
+ * Note: Local Product model not implemented - products managed via Shopify
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { searchProducts } from '@/lib/inventory/services/product-service';
 
-/**
- * GET /api/v1/products/search
- * Search products by title, description, tags, or SKU
- */
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  try {
-    const query = request.nextUrl.searchParams.get('q');
-    const limit = parseInt(request.nextUrl.searchParams.get('limit') || '10', 10);
+  const query = request.nextUrl.searchParams.get('q');
 
-    if (!query || query.trim().length < 2) {
-      return NextResponse.json(
-        { success: false, error: 'Search query must be at least 2 characters' },
-        { status: 400 }
-      );
-    }
-
-    const products = await searchProducts(query.trim(), Math.min(limit, 50));
-
-    return NextResponse.json({
-      success: true,
-      data: products,
-      meta: {
-        query,
-        count: products.length,
-      },
-    });
-  } catch (error) {
-    console.error('[Products Search API] error:', error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: error instanceof Error ? error.message : 'Search failed',
-      },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json({
+    success: false,
+    error: 'Product search managed via Shopify Storefront API - local Product model not implemented',
+    data: [],
+    meta: {
+      query: query || '',
+      count: 0,
+    },
+  }, { status: 501 });
 }

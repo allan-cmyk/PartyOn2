@@ -107,7 +107,6 @@ export async function createParticipantCheckoutSession(
     deliveryContribution,
     total,
     customerEmail,
-    customerName: _customerName,
     successUrl,
     cancelUrl,
     expiresAt,
@@ -380,25 +379,19 @@ export async function handleGroupPaymentExpired(
 
 /**
  * Update group order total paid/expected amounts
+ * Note: totalPaid/totalExpected not stored on GroupOrder model
+ * These values are calculated on-the-fly from payments
  */
 async function updateGroupOrderTotals(groupOrderId: string): Promise<void> {
-  const payments = await prisma.groupOrderPayment.findMany({
-    where: { groupOrderId },
-  });
-
-  const totalPaid = payments
-    .filter((p) => p.status === 'PAID')
-    .reduce((sum, p) => sum + Number(p.total), 0);
-
-  const totalExpected = payments.reduce((sum, p) => sum + Number(p.total), 0);
-
-  await prisma.groupOrder.update({
+  // Just verify the group order exists - totals are computed from payments
+  const groupOrder = await prisma.groupOrder.findUnique({
     where: { id: groupOrderId },
-    data: {
-      totalPaid,
-      totalExpected,
-    },
   });
+
+  if (!groupOrder) {
+    console.warn(`[Group Payments] Group order ${groupOrderId} not found for totals update`);
+  }
+  // Totals are calculated from payments on-the-fly, not stored
 }
 
 /**
@@ -462,7 +455,7 @@ export async function refundParticipantPayment(
   participantId: string,
   reason?: string
 ): Promise<Stripe.Refund | null> {
-  const payment = await prisma.groupOrderPayment.findUnique({
+  const payment = await prisma.groupOrderPayment.findFirst({
     where: { participantId },
   });
 
@@ -489,13 +482,11 @@ export async function refundParticipantPayment(
     },
   });
 
-  // Update payment record
+  // Update payment record status
   await prisma.groupOrderPayment.update({
     where: { id: payment.id },
     data: {
       status: 'REFUNDED',
-      refundedAmount: payment.total,
-      refundedAt: new Date(),
     },
   });
 
@@ -538,8 +529,6 @@ export async function cancelAllGroupPayments(
         where: { id: payment.id },
         data: {
           status: 'REFUNDED',
-          refundedAmount: payment.total,
-          refundedAt: new Date(),
         },
       });
     } else if (payment.status === 'PENDING' || payment.status === 'PROCESSING') {
@@ -555,7 +544,7 @@ export async function cancelAllGroupPayments(
       await prisma.groupOrderPayment.update({
         where: { id: payment.id },
         data: {
-          status: 'CANCELLED',
+          status: 'EXPIRED',  // Use EXPIRED since CANCELLED is not a valid PaymentStatus
         },
       });
       cancelled++;
@@ -567,7 +556,6 @@ export async function cancelAllGroupPayments(
     where: { id: groupOrderId },
     data: {
       status: 'CANCELLED',
-      totalPaid: 0,
     },
   });
 
@@ -607,7 +595,7 @@ export async function processHostDecision(
           }
           await prisma.groupOrderPayment.update({
             where: { id: payment.id },
-            data: { status: 'CANCELLED' },
+            data: { status: 'EXPIRED' },  // Use EXPIRED since CANCELLED is not a valid PaymentStatus
           });
         }
       }

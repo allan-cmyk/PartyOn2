@@ -55,7 +55,7 @@ export async function POST(
       include: {
         participants: {
           include: {
-            payment: true,
+            payments: true,
           },
         },
       },
@@ -86,7 +86,7 @@ export async function POST(
     }
 
     // Check if participant has already paid
-    if (participant.payment?.status === 'PAID') {
+    if (participant.payments?.some(p => p.status === 'PAID')) {
       return NextResponse.json(
         { success: false, error: 'Participant has already paid' },
         { status: 400 }

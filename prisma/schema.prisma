@@ -33,23 +33,28 @@ model PartnerInquiry {
 
 // Group Orders - for group ordering feature
 model GroupOrder {
-  id                  String              @id @default(uuid())
-  name                String
-  hostCustomerId      String              @map("host_customer_id")
-  hostName            String?             @map("host_name")
-  shareCode           String              @unique @map("share_code")
-  status              GroupOrderStatus    @default(ACTIVE)
-  deliveryDate        DateTime            @map("delivery_date")
-  deliveryTime        String              @map("delivery_time")
-  deliveryAddress     Json                @map("delivery_address")
-  minimumOrderAmount  Decimal             @default(100.00) @map("minimum_order_amount")
-  expiresAt           DateTime            @map("expires_at")
-  createdAt           DateTime            @default(now()) @map("created_at")
-  updatedAt           DateTime            @updatedAt @map("updated_at")
-  
-  participants        GroupParticipant[]
-  items               GroupOrderItem[]
-  orderAnalytics      OrderAnalytics[]
+  id                    String              @id @default(uuid())
+  name                  String
+  hostCustomerId        String              @map("host_customer_id")
+  hostName              String?             @map("host_name")
+  shareCode             String              @unique @map("share_code")
+  status                GroupOrderStatus    @default(ACTIVE)
+  deliveryDate          DateTime            @map("delivery_date")
+  deliveryTime          String              @map("delivery_time")
+  deliveryAddress       Json                @map("delivery_address")
+  minimumOrderAmount    Decimal             @default(100.00) @map("minimum_order_amount")
+  multiPaymentEnabled   Boolean             @default(false) @map("multi_payment_enabled")
+  paymentDeadline       DateTime?           @map("payment_deadline")
+  hostDecision          HostDecision?       @map("host_decision")
+  hostDecisionAt        DateTime?           @map("host_decision_at")
+  expiresAt             DateTime            @map("expires_at")
+  createdAt             DateTime            @default(now()) @map("created_at")
+  updatedAt             DateTime            @updatedAt @map("updated_at")
+
+  participants          GroupParticipant[]
+  items                 GroupOrderItem[]
+  orderAnalytics        OrderAnalytics[]
+  payments              GroupOrderPayment[]
 
   @@index([shareCode])
   @@index([hostCustomerId])
@@ -58,23 +63,24 @@ model GroupOrder {
 
 // Participants in group orders
 model GroupParticipant {
-  id               String            @id @default(uuid())
-  groupOrderId     String            @map("group_order_id")
-  customerId       String?           @map("customer_id")
-  guestName        String?           @map("guest_name")
-  guestEmail       String?           @map("guest_email")
-  cartId           String            @map("cart_id")
-  ageVerified      Boolean           @default(false) @map("age_verified")
-  status           ParticipantStatus @default(ACTIVE)
-  cartTotal        Decimal           @default(0) @map("cart_total")
-  itemCount        Int               @default(0) @map("item_count")
-  joinedAt         DateTime          @default(now()) @map("joined_at")
+  id               String              @id @default(uuid())
+  groupOrderId     String              @map("group_order_id")
+  customerId       String?             @map("customer_id")
+  guestName        String?             @map("guest_name")
+  guestEmail       String?             @map("guest_email")
+  cartId           String              @map("cart_id")
+  ageVerified      Boolean             @default(false) @map("age_verified")
+  status           ParticipantStatus   @default(ACTIVE)
+  cartTotal        Decimal             @default(0) @map("cart_total")
+  itemCount        Int                 @default(0) @map("item_count")
+  joinedAt         DateTime            @default(now()) @map("joined_at")
   // Checkout tracking fields (new)
-  checkedOutAt     DateTime?         @map("checked_out_at")
-  shopifyOrderId   String?           @map("shopify_order_id")
-  shopifyOrderName String?           @map("shopify_order_name")
+  checkedOutAt     DateTime?           @map("checked_out_at")
+  shopifyOrderId   String?             @map("shopify_order_id")
+  shopifyOrderName String?             @map("shopify_order_name")
 
-  groupOrder       GroupOrder        @relation(fields: [groupOrderId], references: [id], onDelete: Cascade)
+  groupOrder       GroupOrder          @relation(fields: [groupOrderId], references: [id], onDelete: Cascade)
+  payments         GroupOrderPayment[]
 
   @@unique([groupOrderId, cartId])
   @@index([groupOrderId])
@@ -100,6 +106,32 @@ model GroupOrderItem {
 
   @@index([groupOrderId])
   @@map("group_order_items")
+}
+
+// Payment tracking for multi-payment group orders
+model GroupOrderPayment {
+  id                       String           @id @default(uuid())
+  groupOrderId             String           @map("group_order_id")
+  participantId            String           @map("participant_id")
+  stripeCheckoutSessionId  String?          @unique @map("stripe_checkout_session_id")
+  stripePaymentIntentId    String?          @unique @map("stripe_payment_intent_id")
+  subtotal                 Decimal          @default(0)
+  taxAmount                Decimal          @default(0) @map("tax_amount")
+  deliveryContribution     Decimal          @default(0) @map("delivery_contribution")
+  total                    Decimal          @default(0) // Total amount (subtotal + tax + delivery)
+  status                   PaymentStatus    @default(PENDING)
+  paidAt                   DateTime?        @map("paid_at")
+  expiresAt                DateTime?        @map("expires_at")
+  createdAt                DateTime         @default(now()) @map("created_at")
+  updatedAt                DateTime         @updatedAt @map("updated_at")
+
+  groupOrder               GroupOrder       @relation(fields: [groupOrderId], references: [id], onDelete: Cascade)
+  participant              GroupParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@index([groupOrderId])
+  @@index([participantId])
+  @@index([status])
+  @@map("group_order_payments")
 }
 
 // Order Analytics - supplementary data for Shopify orders
@@ -141,6 +173,21 @@ enum OrderSource {
   DIRECT
   GROUP
   PARTNER
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  PAID
+  FAILED
+  EXPIRED
+  REFUNDED
+}
+
+enum HostDecision {
+  PROCEED_PARTIAL
+  CANCEL_REFUND_ALL
+  EXTEND_DEADLINE
 }
 
 // Daily Analytics Snapshots - historical tracking

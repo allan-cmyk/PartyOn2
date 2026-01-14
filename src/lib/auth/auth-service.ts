@@ -1,22 +1,9 @@
 /**
  * Authentication Service
- * Handles user registration, login, and password management
+ * Note: Local Customer model not implemented - auth managed via Shopify Customer Accounts API
  */
 
-import bcrypt from 'bcryptjs';
-import crypto from 'crypto';
-import { prisma } from '@/lib/database/client';
-
-/**
- * Password hashing configuration
- */
-const SALT_ROUNDS = 12;
-
-/**
- * Token expiry times
- */
-const PASSWORD_RESET_EXPIRY_HOURS = 24;
-const EMAIL_VERIFICATION_EXPIRY_HOURS = 48;
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 /**
  * Customer with sensitive fields excluded
@@ -55,377 +42,130 @@ export interface LoginResult {
   requiresVerification?: boolean;
 }
 
+const NOT_IMPLEMENTED_ERROR = 'Authentication managed via Shopify Customer Accounts API - local auth not implemented';
+
 /**
- * Hash a password
+ * Hash a password (stub)
  */
-export async function hashPassword(password: string): Promise<string> {
-  return bcrypt.hash(password, SALT_ROUNDS);
+export async function hashPassword(_password: string): Promise<string> {
+  throw new Error(NOT_IMPLEMENTED_ERROR);
 }
 
 /**
- * Verify a password against a hash
+ * Verify a password against a hash (stub)
  */
-export async function verifyPassword(password: string, hash: string): Promise<boolean> {
-  return bcrypt.compare(password, hash);
+export async function verifyPassword(_password: string, _hash: string): Promise<boolean> {
+  throw new Error(NOT_IMPLEMENTED_ERROR);
 }
 
 /**
- * Generate a secure random token
+ * Generate a secure random token (stub)
  */
-export function generateToken(length: number = 32): string {
-  return crypto.randomBytes(length).toString('hex');
+export function generateToken(_length: number = 32): string {
+  throw new Error(NOT_IMPLEMENTED_ERROR);
 }
 
 /**
- * Convert customer to safe version (exclude sensitive data)
+ * Register a new customer (stub)
  */
-function toSafeCustomer(customer: {
-  id: string;
-  email: string;
-  firstName: string | null;
-  lastName: string | null;
-  phone: string | null;
-  emailVerified: boolean;
-  ageVerified: boolean;
-  acceptsMarketing: boolean;
-  createdAt: Date;
-}): SafeCustomer {
-  return {
-    id: customer.id,
-    email: customer.email,
-    firstName: customer.firstName,
-    lastName: customer.lastName,
-    phone: customer.phone,
-    emailVerified: customer.emailVerified,
-    ageVerified: customer.ageVerified,
-    acceptsMarketing: customer.acceptsMarketing,
-    createdAt: customer.createdAt,
-  };
-}
-
-/**
- * Register a new customer
- */
-export async function registerCustomer(input: RegisterInput): Promise<{
+export async function registerCustomer(_input: RegisterInput): Promise<{
   success: boolean;
   customer?: SafeCustomer;
   verificationToken?: string;
   error?: string;
 }> {
-  const { email, password, firstName, lastName, phone, acceptsMarketing } = input;
-
-  // Check if email already exists
-  const existing = await prisma.customer.findUnique({
-    where: { email: email.toLowerCase() },
-  });
-
-  if (existing) {
-    return { success: false, error: 'Email already registered' };
-  }
-
-  // Validate password strength
-  if (password.length < 8) {
-    return { success: false, error: 'Password must be at least 8 characters' };
-  }
-
-  // Hash password
-  const passwordHash = await hashPassword(password);
-
-  // Generate email verification token
-  const verificationToken = generateToken();
-
-  // Create customer
-  const customer = await prisma.customer.create({
-    data: {
-      email: email.toLowerCase(),
-      passwordHash,
-      firstName: firstName || null,
-      lastName: lastName || null,
-      phone: phone || null,
-      acceptsMarketing: acceptsMarketing ?? false,
-      emailVerified: false,
-      resetToken: verificationToken, // Reuse resetToken for email verification
-      resetTokenExpiry: new Date(Date.now() + EMAIL_VERIFICATION_EXPIRY_HOURS * 60 * 60 * 1000),
-    },
-  });
-
-  return {
-    success: true,
-    customer: toSafeCustomer(customer),
-    verificationToken,
-  };
+  return { success: false, error: NOT_IMPLEMENTED_ERROR };
 }
 
 /**
- * Login a customer
+ * Login a customer (stub)
  */
 export async function loginCustomer(
-  email: string,
-  password: string
+  _email: string,
+  _password: string
 ): Promise<LoginResult> {
-  // Find customer by email
-  const customer = await prisma.customer.findUnique({
-    where: { email: email.toLowerCase() },
-  });
-
-  if (!customer) {
-    return { success: false, error: 'Invalid email or password' };
-  }
-
-  // Check if account is active
-  if (!customer.isActive) {
-    return { success: false, error: 'Account is disabled' };
-  }
-
-  // Check if password exists (might be Shopify-only account)
-  if (!customer.passwordHash) {
-    return { success: false, error: 'Please set a password using the reset password feature' };
-  }
-
-  // Verify password
-  const isValid = await verifyPassword(password, customer.passwordHash);
-  if (!isValid) {
-    return { success: false, error: 'Invalid email or password' };
-  }
-
-  // Update last login
-  await prisma.customer.update({
-    where: { id: customer.id },
-    data: { lastLoginAt: new Date() },
-  });
-
-  // Check if email is verified (optional - can be enforced or just warn)
-  if (!customer.emailVerified) {
-    return {
-      success: true,
-      customer: toSafeCustomer(customer),
-      requiresVerification: true,
-    };
-  }
-
-  return {
-    success: true,
-    customer: toSafeCustomer(customer),
-  };
+  return { success: false, error: NOT_IMPLEMENTED_ERROR };
 }
 
 /**
- * Verify email with token
+ * Verify email with token (stub)
  */
-export async function verifyEmail(token: string): Promise<{
+export async function verifyEmail(_token: string): Promise<{
   success: boolean;
   error?: string;
 }> {
-  // Find customer with this token
-  const customer = await prisma.customer.findFirst({
-    where: {
-      resetToken: token,
-      resetTokenExpiry: { gt: new Date() },
-      emailVerified: false,
-    },
-  });
-
-  if (!customer) {
-    return { success: false, error: 'Invalid or expired verification token' };
-  }
-
-  // Mark email as verified
-  await prisma.customer.update({
-    where: { id: customer.id },
-    data: {
-      emailVerified: true,
-      emailVerifiedAt: new Date(),
-      resetToken: null,
-      resetTokenExpiry: null,
-    },
-  });
-
-  return { success: true };
+  return { success: false, error: NOT_IMPLEMENTED_ERROR };
 }
 
 /**
- * Request password reset
+ * Request password reset (stub)
  */
-export async function requestPasswordReset(email: string): Promise<{
+export async function requestPasswordReset(_email: string): Promise<{
   success: boolean;
   resetToken?: string;
   error?: string;
 }> {
-  // Find customer by email
-  const customer = await prisma.customer.findUnique({
-    where: { email: email.toLowerCase() },
-  });
-
-  // Don't reveal if email exists
-  if (!customer) {
-    // Return success anyway to prevent email enumeration
-    return { success: true };
-  }
-
-  // Generate reset token
-  const resetToken = generateToken();
-
-  // Save token with expiry
-  await prisma.customer.update({
-    where: { id: customer.id },
-    data: {
-      resetToken,
-      resetTokenExpiry: new Date(Date.now() + PASSWORD_RESET_EXPIRY_HOURS * 60 * 60 * 1000),
-    },
-  });
-
-  return { success: true, resetToken };
+  return { success: false, error: NOT_IMPLEMENTED_ERROR };
 }
 
 /**
- * Reset password with token
+ * Reset password with token (stub)
  */
 export async function resetPassword(
-  token: string,
-  newPassword: string
+  _token: string,
+  _newPassword: string
 ): Promise<{
   success: boolean;
   error?: string;
 }> {
-  // Find customer with valid token
-  const customer = await prisma.customer.findFirst({
-    where: {
-      resetToken: token,
-      resetTokenExpiry: { gt: new Date() },
-    },
-  });
-
-  if (!customer) {
-    return { success: false, error: 'Invalid or expired reset token' };
-  }
-
-  // Validate password strength
-  if (newPassword.length < 8) {
-    return { success: false, error: 'Password must be at least 8 characters' };
-  }
-
-  // Hash new password
-  const passwordHash = await hashPassword(newPassword);
-
-  // Update password and clear token
-  await prisma.customer.update({
-    where: { id: customer.id },
-    data: {
-      passwordHash,
-      resetToken: null,
-      resetTokenExpiry: null,
-    },
-  });
-
-  return { success: true };
+  return { success: false, error: NOT_IMPLEMENTED_ERROR };
 }
 
 /**
- * Change password (for logged-in users)
+ * Change password (for logged-in users) (stub)
  */
 export async function changePassword(
-  customerId: string,
-  currentPassword: string,
-  newPassword: string
+  _customerId: string,
+  _currentPassword: string,
+  _newPassword: string
 ): Promise<{
   success: boolean;
   error?: string;
 }> {
-  // Find customer
-  const customer = await prisma.customer.findUnique({
-    where: { id: customerId },
-  });
-
-  if (!customer || !customer.passwordHash) {
-    return { success: false, error: 'Customer not found' };
-  }
-
-  // Verify current password
-  const isValid = await verifyPassword(currentPassword, customer.passwordHash);
-  if (!isValid) {
-    return { success: false, error: 'Current password is incorrect' };
-  }
-
-  // Validate new password
-  if (newPassword.length < 8) {
-    return { success: false, error: 'Password must be at least 8 characters' };
-  }
-
-  // Hash and save new password
-  const passwordHash = await hashPassword(newPassword);
-  await prisma.customer.update({
-    where: { id: customerId },
-    data: { passwordHash },
-  });
-
-  return { success: true };
+  return { success: false, error: NOT_IMPLEMENTED_ERROR };
 }
 
 /**
- * Get customer by ID
+ * Get customer by ID (stub)
  */
-export async function getCustomerById(customerId: string): Promise<SafeCustomer | null> {
-  const customer = await prisma.customer.findUnique({
-    where: { id: customerId },
-  });
-
-  return customer ? toSafeCustomer(customer) : null;
+export async function getCustomerById(_customerId: string): Promise<SafeCustomer | null> {
+  return null;
 }
 
 /**
- * Update customer profile
+ * Update customer profile (stub)
  */
 export async function updateCustomerProfile(
-  customerId: string,
-  data: {
+  _customerId: string,
+  _data: {
     firstName?: string;
     lastName?: string;
     phone?: string;
     acceptsMarketing?: boolean;
   }
 ): Promise<SafeCustomer | null> {
-  const customer = await prisma.customer.update({
-    where: { id: customerId },
-    data: {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      phone: data.phone,
-      acceptsMarketing: data.acceptsMarketing,
-    },
-  });
-
-  return toSafeCustomer(customer);
+  return null;
 }
 
 /**
- * Verify customer age
+ * Verify customer age (stub)
  */
 export async function verifyAge(
-  customerId: string,
-  dateOfBirth: Date
+  _customerId: string,
+  _dateOfBirth: Date
 ): Promise<{
   success: boolean;
   error?: string;
 }> {
-  // Calculate age
-  const today = new Date();
-  const age = today.getFullYear() - dateOfBirth.getFullYear();
-  const monthDiff = today.getMonth() - dateOfBirth.getMonth();
-  const isUnder21 = age < 21 || (age === 21 && monthDiff < 0);
-
-  if (isUnder21) {
-    return { success: false, error: 'Must be 21 or older to purchase alcohol' };
-  }
-
-  // Update customer
-  await prisma.customer.update({
-    where: { id: customerId },
-    data: {
-      ageVerified: true,
-      ageVerifiedAt: new Date(),
-      dateOfBirth,
-    },
-  });
-
-  return { success: true };
+  return { success: false, error: NOT_IMPLEMENTED_ERROR };
 }

@@ -1,10 +1,10 @@
 /**
  * Product Service
- * Business logic for product management
+ * Note: Product models not in Prisma schema - products managed via Shopify
  */
 
-import { prisma } from '@/lib/database/client';
-import { Prisma, ProductStatus } from '@prisma/client';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import type {
   ProductCreateInput,
   ProductUpdateInput,
@@ -13,259 +13,79 @@ import type {
   PaginationParams,
 } from '../types';
 
-const DEFAULT_PAGE_SIZE = 20;
-const MAX_PAGE_SIZE = 100;
+const NOT_IMPLEMENTED = 'Products managed via Shopify Storefront API - local product service not implemented';
 
 /**
- * Get paginated list of products with filters
+ * Get paginated list of products with filters (stub)
  */
 export async function getProducts(
-  filters: ProductFilters = {},
-  pagination: PaginationParams = {}
+  _filters: ProductFilters = {},
+  _pagination: PaginationParams = {}
 ): Promise<{ products: ProductWithRelations[]; total: number }> {
-  const {
-    page = 1,
-    pageSize = DEFAULT_PAGE_SIZE,
-    sortBy = 'createdAt',
-    sortOrder = 'desc',
-  } = pagination;
-
-  const take = Math.min(pageSize, MAX_PAGE_SIZE);
-  const skip = (page - 1) * take;
-
-  // Build where clause
-  const where: Prisma.ProductWhereInput = {};
-
-  if (filters.status) {
-    where.status = filters.status as ProductStatus;
-  }
-
-  if (filters.productType) {
-    where.productType = filters.productType;
-  }
-
-  if (filters.vendor) {
-    where.vendor = filters.vendor;
-  }
-
-  if (filters.search) {
-    where.OR = [
-      { title: { contains: filters.search, mode: 'insensitive' } },
-      { description: { contains: filters.search, mode: 'insensitive' } },
-      { handle: { contains: filters.search, mode: 'insensitive' } },
-      { tags: { has: filters.search } },
-    ];
-  }
-
-  if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
-    where.basePrice = {};
-    if (filters.minPrice !== undefined) {
-      where.basePrice.gte = new Prisma.Decimal(filters.minPrice);
-    }
-    if (filters.maxPrice !== undefined) {
-      where.basePrice.lte = new Prisma.Decimal(filters.maxPrice);
-    }
-  }
-
-  if (filters.categoryId) {
-    where.categories = {
-      some: { categoryId: filters.categoryId },
-    };
-  }
-
-  if (filters.inStock !== undefined) {
-    where.variants = {
-      some: {
-        inventoryQuantity: filters.inStock ? { gt: 0 } : { lte: 0 },
-      },
-    };
-  }
-
-  // Build orderBy
-  const orderBy: Prisma.ProductOrderByWithRelationInput = {
-    [sortBy]: sortOrder,
-  };
-
-  const [products, total] = await Promise.all([
-    prisma.product.findMany({
-      where,
-      include: {
-        variants: true,
-        images: { orderBy: { position: 'asc' } },
-        categories: { include: { category: true } },
-      },
-      orderBy,
-      skip,
-      take,
-    }),
-    prisma.product.count({ where }),
-  ]);
-
-  return { products, total };
+  return { products: [], total: 0 };
 }
 
 /**
- * Get single product by ID or handle
+ * Get single product by ID or handle (stub)
  */
 export async function getProduct(
-  idOrHandle: string
+  _idOrHandle: string
 ): Promise<ProductWithRelations | null> {
-  return prisma.product.findFirst({
-    where: {
-      OR: [{ id: idOrHandle }, { handle: idOrHandle }],
-    },
-    include: {
-      variants: true,
-      images: { orderBy: { position: 'asc' } },
-      categories: { include: { category: true } },
-    },
-  });
+  return null;
 }
 
 /**
- * Create a new product
+ * Create a new product (stub)
  */
 export async function createProduct(
-  input: ProductCreateInput
+  _input: ProductCreateInput
 ): Promise<ProductWithRelations> {
-  const product = await prisma.product.create({
-    data: {
-      handle: input.handle,
-      title: input.title,
-      description: input.description,
-      descriptionHtml: input.descriptionHtml,
-      vendor: input.vendor,
-      productType: input.productType,
-      tags: input.tags || [],
-      basePrice: new Prisma.Decimal(input.basePrice),
-      compareAtPrice: input.compareAtPrice
-        ? new Prisma.Decimal(input.compareAtPrice)
-        : null,
-      status: (input.status as ProductStatus) || 'DRAFT',
-      metaTitle: input.metaTitle,
-      metaDescription: input.metaDescription,
-      abv: input.abv ? new Prisma.Decimal(input.abv) : null,
-    },
-    include: {
-      variants: true,
-      images: true,
-      categories: { include: { category: true } },
-    },
-  });
-
-  return product;
+  throw new Error(NOT_IMPLEMENTED);
 }
 
 /**
- * Update an existing product
+ * Update an existing product (stub)
  */
 export async function updateProduct(
-  input: ProductUpdateInput
+  _input: ProductUpdateInput
 ): Promise<ProductWithRelations> {
-  const { id, ...data } = input;
-
-  const updateData: Prisma.ProductUpdateInput = {};
-
-  if (data.handle !== undefined) updateData.handle = data.handle;
-  if (data.title !== undefined) updateData.title = data.title;
-  if (data.description !== undefined) updateData.description = data.description;
-  if (data.descriptionHtml !== undefined) updateData.descriptionHtml = data.descriptionHtml;
-  if (data.vendor !== undefined) updateData.vendor = data.vendor;
-  if (data.productType !== undefined) updateData.productType = data.productType;
-  if (data.tags !== undefined) updateData.tags = data.tags;
-  if (data.basePrice !== undefined) updateData.basePrice = new Prisma.Decimal(data.basePrice);
-  if (data.compareAtPrice !== undefined) {
-    updateData.compareAtPrice = data.compareAtPrice
-      ? new Prisma.Decimal(data.compareAtPrice)
-      : null;
-  }
-  if (data.status !== undefined) updateData.status = data.status as ProductStatus;
-  if (data.metaTitle !== undefined) updateData.metaTitle = data.metaTitle;
-  if (data.metaDescription !== undefined) updateData.metaDescription = data.metaDescription;
-  if (data.abv !== undefined) {
-    updateData.abv = data.abv ? new Prisma.Decimal(data.abv) : null;
-  }
-
-  return prisma.product.update({
-    where: { id },
-    data: updateData,
-    include: {
-      variants: true,
-      images: { orderBy: { position: 'asc' } },
-      categories: { include: { category: true } },
-    },
-  });
+  throw new Error(NOT_IMPLEMENTED);
 }
 
 /**
- * Delete a product (soft delete by archiving)
+ * Delete a product (stub)
  */
-export async function deleteProduct(id: string): Promise<void> {
-  await prisma.product.update({
-    where: { id },
-    data: { status: 'ARCHIVED' },
-  });
+export async function deleteProduct(_id: string): Promise<void> {
+  throw new Error(NOT_IMPLEMENTED);
 }
 
 /**
- * Hard delete a product (permanent)
+ * Hard delete a product (stub)
  */
-export async function hardDeleteProduct(id: string): Promise<void> {
-  await prisma.product.delete({ where: { id } });
+export async function hardDeleteProduct(_id: string): Promise<void> {
+  throw new Error(NOT_IMPLEMENTED);
 }
 
 /**
- * Get unique product types for filtering
+ * Get unique product types for filtering (stub)
  */
 export async function getProductTypes(): Promise<string[]> {
-  const result = await prisma.product.findMany({
-    select: { productType: true },
-    distinct: ['productType'],
-    where: { productType: { not: null } },
-  });
-
-  return result
-    .map(r => r.productType)
-    .filter((t): t is string => t !== null);
+  return [];
 }
 
 /**
- * Get unique vendors for filtering
+ * Get unique vendors for filtering (stub)
  */
 export async function getVendors(): Promise<string[]> {
-  const result = await prisma.product.findMany({
-    select: { vendor: true },
-    distinct: ['vendor'],
-    where: { vendor: { not: null } },
-  });
-
-  return result
-    .map(r => r.vendor)
-    .filter((v): v is string => v !== null);
+  return [];
 }
 
 /**
- * Search products by text
+ * Search products by text (stub)
  */
 export async function searchProducts(
-  query: string,
-  limit = 10
+  _query: string,
+  _limit = 10
 ): Promise<ProductWithRelations[]> {
-  return prisma.product.findMany({
-    where: {
-      status: 'ACTIVE',
-      OR: [
-        { title: { contains: query, mode: 'insensitive' } },
-        { description: { contains: query, mode: 'insensitive' } },
-        { tags: { has: query } },
-        { variants: { some: { sku: { contains: query, mode: 'insensitive' } } } },
-      ],
-    },
-    include: {
-      variants: true,
-      images: { orderBy: { position: 'asc' }, take: 1 },
-      categories: { include: { category: true } },
-    },
-    take: limit,
-  });
+  return [];
 }

@@ -1,152 +1,99 @@
 /**
  * Product Variant Service
- * Business logic for variant management
+ * Note: ProductVariant model not in Prisma schema - variants managed via Shopify
  */
 
-import { prisma } from '@/lib/database/client';
-import { Prisma, ProductVariant } from '@prisma/client';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import type { VariantCreateInput, VariantUpdateInput } from '../types';
 
+const NOT_IMPLEMENTED = 'Product variants managed via Shopify - local variant service not implemented';
+
+// Local type for ProductVariant since Prisma model doesn't exist
+export interface ProductVariant {
+  id: string;
+  productId: string;
+  sku: string | null;
+  title: string;
+  price: number;
+  compareAtPrice: number | null;
+  option1Name: string | null;
+  option1Value: string | null;
+  option2Name: string | null;
+  option2Value: string | null;
+  option3Name: string | null;
+  option3Value: string | null;
+  inventoryQuantity: number;
+  trackInventory: boolean;
+  allowBackorder: boolean;
+  weight: number | null;
+  weightUnit: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 /**
- * Get all variants for a product
+ * Get all variants for a product (stub)
  */
 export async function getVariantsByProduct(
-  productId: string
+  _productId: string
 ): Promise<ProductVariant[]> {
-  return prisma.productVariant.findMany({
-    where: { productId },
-    orderBy: { createdAt: 'asc' },
-  });
+  return [];
 }
 
 /**
- * Get single variant by ID
+ * Get single variant by ID (stub)
  */
-export async function getVariant(id: string): Promise<ProductVariant | null> {
-  return prisma.productVariant.findUnique({ where: { id } });
+export async function getVariant(_id: string): Promise<ProductVariant | null> {
+  return null;
 }
 
 /**
- * Get variant by SKU
+ * Get variant by SKU (stub)
  */
-export async function getVariantBySku(sku: string): Promise<ProductVariant | null> {
-  return prisma.productVariant.findUnique({ where: { sku } });
+export async function getVariantBySku(_sku: string): Promise<ProductVariant | null> {
+  return null;
 }
 
 /**
- * Create a new variant
+ * Create a new variant (stub)
  */
 export async function createVariant(
-  input: VariantCreateInput
+  _input: VariantCreateInput
 ): Promise<ProductVariant> {
-  return prisma.productVariant.create({
-    data: {
-      productId: input.productId,
-      sku: input.sku,
-      title: input.title || 'Default',
-      price: new Prisma.Decimal(input.price),
-      compareAtPrice: input.compareAtPrice
-        ? new Prisma.Decimal(input.compareAtPrice)
-        : null,
-      option1Name: input.option1Name,
-      option1Value: input.option1Value,
-      option2Name: input.option2Name,
-      option2Value: input.option2Value,
-      option3Name: input.option3Name,
-      option3Value: input.option3Value,
-      inventoryQuantity: input.inventoryQuantity ?? 0,
-      trackInventory: input.trackInventory ?? true,
-      allowBackorder: input.allowBackorder ?? false,
-      weight: input.weight,
-      weightUnit: input.weightUnit || 'g',
-    },
-  });
+  throw new Error(NOT_IMPLEMENTED);
 }
 
 /**
- * Update a variant
+ * Update a variant (stub)
  */
 export async function updateVariant(
-  input: VariantUpdateInput
+  _input: VariantUpdateInput
 ): Promise<ProductVariant> {
-  const { id, ...data } = input;
-
-  const updateData: Prisma.ProductVariantUpdateInput = {};
-
-  if (data.sku !== undefined) updateData.sku = data.sku;
-  if (data.title !== undefined) updateData.title = data.title;
-  if (data.price !== undefined) updateData.price = new Prisma.Decimal(data.price);
-  if (data.compareAtPrice !== undefined) {
-    updateData.compareAtPrice = data.compareAtPrice
-      ? new Prisma.Decimal(data.compareAtPrice)
-      : null;
-  }
-  if (data.option1Name !== undefined) updateData.option1Name = data.option1Name;
-  if (data.option1Value !== undefined) updateData.option1Value = data.option1Value;
-  if (data.option2Name !== undefined) updateData.option2Name = data.option2Name;
-  if (data.option2Value !== undefined) updateData.option2Value = data.option2Value;
-  if (data.option3Name !== undefined) updateData.option3Name = data.option3Name;
-  if (data.option3Value !== undefined) updateData.option3Value = data.option3Value;
-  if (data.inventoryQuantity !== undefined) {
-    updateData.inventoryQuantity = data.inventoryQuantity;
-  }
-  if (data.trackInventory !== undefined) updateData.trackInventory = data.trackInventory;
-  if (data.allowBackorder !== undefined) updateData.allowBackorder = data.allowBackorder;
-  if (data.weight !== undefined) updateData.weight = data.weight;
-  if (data.weightUnit !== undefined) updateData.weightUnit = data.weightUnit;
-
-  return prisma.productVariant.update({
-    where: { id },
-    data: updateData,
-  });
+  throw new Error(NOT_IMPLEMENTED);
 }
 
 /**
- * Delete a variant
+ * Delete a variant (stub)
  */
-export async function deleteVariant(id: string): Promise<void> {
-  await prisma.productVariant.delete({ where: { id } });
+export async function deleteVariant(_id: string): Promise<void> {
+  throw new Error(NOT_IMPLEMENTED);
 }
 
 /**
- * Bulk update variant prices
+ * Bulk update variant prices (stub)
  */
 export async function bulkUpdatePrices(
-  updates: Array<{ id: string; price: number; compareAtPrice?: number | null }>
+  _updates: Array<{ id: string; price: number; compareAtPrice?: number | null }>
 ): Promise<number> {
-  let updated = 0;
-
-  for (const update of updates) {
-    await prisma.productVariant.update({
-      where: { id: update.id },
-      data: {
-        price: new Prisma.Decimal(update.price),
-        compareAtPrice: update.compareAtPrice
-          ? new Prisma.Decimal(update.compareAtPrice)
-          : null,
-      },
-    });
-    updated++;
-  }
-
-  return updated;
+  throw new Error(NOT_IMPLEMENTED);
 }
 
 /**
- * Get variants with low inventory
+ * Get variants with low inventory (stub)
  */
 export async function getLowInventoryVariants(
-  threshold = 10
+  _threshold = 10
 ): Promise<Array<ProductVariant & { product: { title: string } }>> {
-  return prisma.productVariant.findMany({
-    where: {
-      trackInventory: true,
-      inventoryQuantity: { lte: threshold },
-      product: { status: 'ACTIVE' },
-    },
-    include: {
-      product: { select: { title: true } },
-    },
-    orderBy: { inventoryQuantity: 'asc' },
-  });
+  return [];
 }

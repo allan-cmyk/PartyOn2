@@ -1,22 +1,9 @@
 /**
  * Shopify Sync Service
- *
- * One-way sync from Shopify to local database for parallel operation.
- * This allows the custom inventory management system to run alongside Shopify
- * during the migration period.
- *
- * Usage:
- * ```typescript
- * import { runFullSync, syncProducts, syncCustomers } from '@/lib/shopify/sync';
- *
- * // Full sync (products + customers)
- * const result = await runFullSync(prisma);
- *
- * // Individual syncs
- * const productResult = await syncProducts(prisma);
- * const customerResult = await syncCustomers(prisma);
- * ```
+ * Note: Sync models not in Prisma schema - data managed directly via Shopify APIs
  */
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { PrismaClient } from '@prisma/client';
 import { syncAllProducts, SyncResult } from './product-sync';
@@ -37,33 +24,17 @@ export interface FullSyncResult {
 }
 
 /**
- * Run full sync of all Shopify data
+ * Run full sync of all Shopify data (stub)
  */
 export async function runFullSync(prisma: PrismaClient): Promise<FullSyncResult> {
   const startTime = Date.now();
 
-  console.log('[Shopify Sync] Starting full sync...');
+  console.log('[Shopify Sync] Sync disabled - data managed directly via Shopify APIs');
 
-  // Sync products first
-  console.log('[Shopify Sync] Syncing products...');
   const productResult = await syncAllProducts(prisma);
-  console.log(`[Shopify Sync] Products: ${productResult.created} created, ${productResult.updated} updated`);
-
-  // Then sync customers
-  console.log('[Shopify Sync] Syncing customers...');
   const customerResult = await syncAllCustomers(prisma);
-  console.log(`[Shopify Sync] Customers: ${customerResult.created} created, ${customerResult.updated} updated, ${customerResult.skipped} skipped`);
 
   const duration = Date.now() - startTime;
-  console.log(`[Shopify Sync] Full sync completed in ${duration}ms`);
-
-  // Log errors if any
-  if (productResult.errors.length > 0) {
-    console.error('[Shopify Sync] Product sync errors:', productResult.errors);
-  }
-  if (customerResult.errors.length > 0) {
-    console.error('[Shopify Sync] Customer sync errors:', customerResult.errors);
-  }
 
   return {
     products: productResult,
@@ -74,25 +45,15 @@ export async function runFullSync(prisma: PrismaClient): Promise<FullSyncResult>
 }
 
 /**
- * Create a sync log entry in the database
+ * Create a sync log entry in the database (stub - no-op)
  */
 export async function logSyncResult(
-  prisma: PrismaClient,
-  entityType: 'product' | 'customer',
-  entityId: string,
-  shopifyId: string,
-  status: 'COMPLETED' | 'FAILED',
-  errorMessage?: string
+  _prisma: PrismaClient,
+  _entityType: 'product' | 'customer',
+  _entityId: string,
+  _shopifyId: string,
+  _status: 'COMPLETED' | 'FAILED',
+  _errorMessage?: string
 ): Promise<void> {
-  await prisma.shopifySync.create({
-    data: {
-      entityType,
-      entityId,
-      shopifyId,
-      direction: 'SHOPIFY_TO_LOCAL',
-      status,
-      errorMessage,
-      syncedAt: status === 'COMPLETED' ? new Date() : undefined,
-    },
-  });
+  // No-op - sync logging not implemented
 }

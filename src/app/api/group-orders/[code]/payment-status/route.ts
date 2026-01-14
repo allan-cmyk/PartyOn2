@@ -33,8 +33,6 @@ export async function GET(
         paymentDeadline: true,
         hostDecision: true,
         hostDecisionAt: true,
-        totalPaid: true,
-        totalExpected: true,
         deliveryDate: true,
         deliveryTime: true,
       },

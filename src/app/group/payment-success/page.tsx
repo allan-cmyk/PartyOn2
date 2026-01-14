@@ -1,8 +1,9 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
+import React from 'react'
 
 interface PaymentDetails {
   groupOrderName: string
@@ -18,7 +19,7 @@ interface PaymentDetails {
   }
 }
 
-export default function GroupPaymentSuccessPage(): React.ReactElement {
+function PaymentSuccessContent(): React.ReactElement {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get('session_id')
   const groupCode = searchParams.get('group')
@@ -222,5 +223,24 @@ export default function GroupPaymentSuccessPage(): React.ReactElement {
         }
       `}</style>
     </div>
+  )
+}
+
+function LoadingFallback(): React.ReactElement {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-500 mx-auto mb-4"></div>
+        <p className="text-gray-600 tracking-[0.1em]">Loading...</p>
+      </div>
+    </div>
+  )
+}
+
+export default function GroupPaymentSuccessPage(): React.ReactElement {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <PaymentSuccessContent />
+    </Suspense>
   )
 }

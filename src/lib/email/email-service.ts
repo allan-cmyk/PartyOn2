@@ -3,7 +3,6 @@
  * Centralized service for sending all transactional emails
  */
 
-import { EmailType } from '@prisma/client';
 import { sendEmail } from './resend-client';
 import {
   generateOrderConfirmationEmail,
@@ -32,7 +31,7 @@ export async function sendOrderConfirmationEmail(
     subject: `Order Confirmed - #${data.orderNumber}`,
     html,
     text,
-    type: EmailType.ORDER_CONFIRMATION,
+    type: 'ORDER_CONFIRMATION',
     metadata: {
       orderNumber: data.orderNumber,
       customerName: data.customerName,
@@ -55,7 +54,7 @@ export async function sendDeliveryEnRouteEmail(
     subject: `Your Order #${data.orderNumber} is On Its Way!`,
     html,
     text,
-    type: EmailType.DELIVERY_EN_ROUTE,
+    type: 'DELIVERY_EN_ROUTE',
     metadata: {
       orderNumber: data.orderNumber,
       driverName: data.driverName,
@@ -78,7 +77,7 @@ export async function sendDeliveryCompletedEmail(
     subject: `Delivery Complete - Order #${data.orderNumber}`,
     html,
     text,
-    type: EmailType.DELIVERY_COMPLETED,
+    type: 'DELIVERY_COMPLETED',
     metadata: {
       orderNumber: data.orderNumber,
     },
@@ -208,7 +207,7 @@ Premium Alcohol Delivery
     subject: 'Payment Issue - PartyOn Delivery',
     html,
     text,
-    type: EmailType.PAYMENT_FAILED,
+    type: 'PAYMENT_FAILED',
     metadata: {
       customerName,
       errorMessage,
@@ -330,7 +329,7 @@ Premium Alcohol Delivery
     subject: `Refund Processed - Order #${orderNumber}`,
     html,
     text,
-    type: EmailType.REFUND_PROCESSED,
+    type: 'REFUND_PROCESSED',
     orderId: undefined, // Could be passed if available
     metadata: {
       orderNumber,
