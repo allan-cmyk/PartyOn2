@@ -107,7 +107,7 @@ export async function createParticipantCheckoutSession(
     deliveryContribution,
     total,
     customerEmail,
-    customerName,
+    customerName: _customerName,
     successUrl,
     cancelUrl,
     expiresAt,

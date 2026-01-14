@@ -1,6 +1,6 @@
 'use client'
 
-import { useParams, useRouter, useSearchParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useGroupOrder } from '@/lib/group-orders/hooks'
@@ -25,7 +25,6 @@ interface CartItem {
 
 export default function ParticipantPaymentPage(): React.ReactElement {
   const params = useParams()
-  const router = useRouter()
   const searchParams = useSearchParams()
   const shareCode = params.code as string
 
