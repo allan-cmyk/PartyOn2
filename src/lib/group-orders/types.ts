@@ -1,3 +1,25 @@
+export type PaymentStatus = 'PENDING' | 'PROCESSING' | 'PAID' | 'FAILED' | 'REFUNDED' | 'PARTIALLY_REFUNDED' | 'EXPIRED' | 'CANCELLED'
+export type HostDecision = 'PROCEED_PARTIAL' | 'CANCEL_REFUND_ALL' | 'EXTEND_DEADLINE'
+
+export interface GroupOrderPayment {
+  id: string
+  groupOrderId: string
+  participantId: string
+  stripeCheckoutSessionId?: string
+  stripePaymentIntentId?: string
+  subtotal: number
+  taxAmount: number
+  deliveryContribution: number
+  total: number
+  status: PaymentStatus
+  paidAt?: string | null
+  expiresAt?: string | null
+  refundedAmount: number
+  refundedAt?: string | null
+  createdAt: string
+  updatedAt: string
+}
+
 export interface GroupOrder {
   id: string
   name: string
@@ -19,6 +41,13 @@ export interface GroupOrder {
   expiresAt: string
   createdAt: string
   updatedAt: string
+  // Multi-payment fields
+  paymentDeadline?: string | null
+  multiPaymentEnabled?: boolean
+  hostDecision?: HostDecision | null
+  hostDecisionAt?: string | null
+  totalPaid?: number
+  totalPending?: number
 }
 
 export interface GroupParticipant {
@@ -33,6 +62,9 @@ export interface GroupParticipant {
   joinedAt: string
   cartTotal?: number
   itemCount?: number
+  // Payment tracking
+  payment?: GroupOrderPayment | null
+  paymentStatus?: PaymentStatus
 }
 
 export interface GroupOrderWithParticipants extends GroupOrder {

@@ -143,10 +143,25 @@ model GroupOrder {
   deliveryAddress    Json             @map("delivery_address")
   minimumOrderAmount Decimal          @default(100.00) @map("minimum_order_amount")
   expiresAt          DateTime         @map("expires_at")
+
+  // Payment deadline for multi-payment system
+  multiPaymentEnabled   Boolean       @default(false) @map("multi_payment_enabled")
+  paymentDeadline       DateTime?     @map("payment_deadline")
+  paymentReminderSentAt DateTime?     @map("payment_reminder_sent_at")
+
+  // Host decision for partial payments
+  hostDecision          HostDecision? @map("host_decision")
+  hostDecisionAt        DateTime?     @map("host_decision_at")
+
+  // Aggregated payment tracking
+  totalPaid             Decimal       @default(0) @map("total_paid") @db.Decimal(10, 2)
+  totalExpected         Decimal       @default(0) @map("total_expected") @db.Decimal(10, 2)
+
   createdAt          DateTime         @default(now()) @map("created_at")
   updatedAt          DateTime         @updatedAt @map("updated_at")
 
   participants   GroupParticipant[]
+  payments       GroupOrderPayment[]
   orderAnalytics OrderAnalytics[]
 
   // New relations for inventory management system
@@ -180,11 +195,65 @@ model GroupParticipant {
 
   groupOrder GroupOrder @relation(fields: [groupOrderId], references: [id], onDelete: Cascade)
   customer   Customer?  @relation("CustomerParticipations", fields: [customerId], references: [id], onDelete: SetNull)
+  payment    GroupOrderPayment?
 
   @@unique([groupOrderId, cartId])
   @@index([groupOrderId])
   @@index([cartId])
   @@map("group_participants")
+}
+
+// Payment tracking for multi-payment group orders
+model GroupOrderPayment {
+  id                      String        @id @default(uuid())
+  groupOrderId            String        @map("group_order_id")
+  participantId           String        @unique @map("participant_id")
+
+  // Stripe payment tracking
+  stripeCheckoutSessionId String?       @unique @map("stripe_checkout_session_id")
+  stripePaymentIntentId   String?       @unique @map("stripe_payment_intent_id")
+
+  // Amount breakdown
+  subtotal                Decimal       @db.Decimal(10, 2)
+  taxAmount               Decimal       @default(0) @map("tax_amount") @db.Decimal(10, 2)
+  deliveryContribution    Decimal       @default(0) @map("delivery_contribution") @db.Decimal(10, 2)
+  total                   Decimal       @db.Decimal(10, 2)
+
+  // Payment status
+  status                  PaymentStatus @default(PENDING)
+  paidAt                  DateTime?     @map("paid_at")
+  expiresAt               DateTime?     @map("expires_at")
+
+  // Refund tracking
+  refundedAmount          Decimal       @default(0) @map("refunded_amount") @db.Decimal(10, 2)
+  refundedAt              DateTime?     @map("refunded_at")
+
+  createdAt               DateTime      @default(now()) @map("created_at")
+  updatedAt               DateTime      @updatedAt @map("updated_at")
+
+  groupOrder  GroupOrder       @relation(fields: [groupOrderId], references: [id], onDelete: Cascade)
+  participant GroupParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@index([groupOrderId])
+  @@index([status])
+  @@map("group_order_payments")
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  PAID
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+  EXPIRED
+  CANCELLED
+}
+
+enum HostDecision {
+  PROCEED_PARTIAL      // Ship for those who paid
+  CANCEL_REFUND_ALL    // Cancel entire order, refund everyone
+  EXTEND_DEADLINE      // Give more time for remaining payments
 }
 
 // Order Analytics - supplementary data for Shopify orders

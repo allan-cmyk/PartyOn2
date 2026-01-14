@@ -14,6 +14,11 @@ import {
   sendPaymentFailedEmail,
   sendRefundProcessedEmail,
 } from '@/lib/email';
+import {
+  handleGroupPaymentCompleted,
+  handleGroupPaymentFailed,
+  handleGroupPaymentExpired,
+} from './group-payments';
 
 /**
  * Verify webhook signature and construct event
@@ -43,6 +48,13 @@ async function handleCheckoutSessionCompleted(
   session: Stripe.Checkout.Session
 ): Promise<void> {
   console.log('[Stripe Webhook] Processing checkout.session.completed:', session.id);
+
+  // Check if this is a group order payment
+  if (session.metadata?.isGroupOrder === 'true') {
+    console.log('[Stripe Webhook] Processing group order payment:', session.id);
+    await handleGroupPaymentCompleted(session);
+    return;
+  }
 
   // Check if order already exists (idempotency)
   const existingOrder = await getOrderByCheckoutSession(session.id);
@@ -150,6 +162,13 @@ async function handleCheckoutSessionExpired(
   session: Stripe.Checkout.Session
 ): Promise<void> {
   console.log('[Stripe Webhook] Processing checkout.session.expired:', session.id);
+
+  // Check if this is a group order payment
+  if (session.metadata?.isGroupOrder === 'true') {
+    console.log('[Stripe Webhook] Processing expired group order payment:', session.id);
+    await handleGroupPaymentExpired(session);
+    return;
+  }
 
   const cartId = session.metadata?.cartId;
   if (!cartId) return;
@@ -293,6 +312,10 @@ export async function processWebhookEvent(event: Stripe.Event): Promise<void> {
       await handleCheckoutSessionExpired(event.data.object as Stripe.Checkout.Session);
       break;
 
+    case 'checkout.session.async_payment_failed':
+      await handleCheckoutSessionAsyncPaymentFailed(event.data.object as Stripe.Checkout.Session);
+      break;
+
     case 'payment_intent.succeeded':
       await handlePaymentIntentSucceeded(event.data.object as Stripe.PaymentIntent);
       break;
@@ -311,11 +334,41 @@ export async function processWebhookEvent(event: Stripe.Event): Promise<void> {
 }
 
 /**
+ * Handle async payment failure for checkout session
+ */
+async function handleCheckoutSessionAsyncPaymentFailed(
+  session: Stripe.Checkout.Session
+): Promise<void> {
+  console.log('[Stripe Webhook] Processing checkout.session.async_payment_failed:', session.id);
+
+  // Check if this is a group order payment
+  if (session.metadata?.isGroupOrder === 'true') {
+    console.log('[Stripe Webhook] Processing failed group order payment:', session.id);
+    await handleGroupPaymentFailed(session);
+    return;
+  }
+
+  // For regular orders, mark cart as abandoned
+  const cartId = session.metadata?.cartId;
+  if (cartId) {
+    try {
+      await prisma.cart.update({
+        where: { id: cartId },
+        data: { status: 'ABANDONED' },
+      });
+    } catch (error) {
+      console.error('[Stripe Webhook] Failed to update cart:', error);
+    }
+  }
+}
+
+/**
  * List of webhook events to subscribe to
  */
 export const WEBHOOK_EVENTS: Stripe.WebhookEndpointCreateParams.EnabledEvent[] = [
   'checkout.session.completed',
   'checkout.session.expired',
+  'checkout.session.async_payment_failed',
   'payment_intent.succeeded',
   'payment_intent.payment_failed',
   'charge.refunded',
