@@ -1,0 +1,20 @@
+/**
+ * Email Module
+ * Centralized email functionality for PartyOn Delivery
+ */
+
+// Client and utilities
+export { sendEmail, resend, formatCurrency, formatDate, formatTime } from './resend-client';
+
+// Email service functions
+export {
+  sendOrderConfirmationEmail,
+  sendDeliveryEnRouteEmail,
+  sendDeliveryCompletedEmail,
+  sendPaymentFailedEmail,
+  sendRefundProcessedEmail,
+} from './email-service';
+
+// Template types
+export type { OrderConfirmationData } from './templates/order-confirmation';
+export type { DeliveryUpdateData } from './templates/delivery-update';
