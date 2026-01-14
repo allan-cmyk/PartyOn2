@@ -22,6 +22,10 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
   const [isAdding, setIsAdding] = useState(false);
   const [showAgeVerification, setShowAgeVerification] = useState(false);
 
+  // Touch swipe state
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
   // Lock body scroll when modal is open
   useBodyScrollLock(isOpen);
 
@@ -39,12 +43,48 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
         setSelectedImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
       } else if (e.key === 'ArrowRight') {
         setSelectedImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+      } else if (e.key === 'Escape') {
+        onClose();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, images.length]);
+  }, [isOpen, images.length, onClose]);
+
+  // Touch swipe handlers for image carousel
+  const minSwipeDistance = 50;
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe && images.length > 1) {
+      // Swipe left = next image
+      setSelectedImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+    } else if (isRightSwipe && images.length > 1) {
+      // Swipe right = previous image
+      setSelectedImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+    }
+  };
+
+  // Reset state when product changes
+  React.useEffect(() => {
+    setSelectedImageIndex(0);
+    setQuantity(1);
+  }, [product?.id]);
 
   if (!product) return null;
 
@@ -134,7 +174,12 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
               {/* Image Section */}
               <div className="w-full md:w-1/2 lg:w-3/5 bg-gray-50 p-8 flex flex-col overflow-hidden">
                 {/* Main Image with Carousel Controls */}
-                <div className="flex-1 flex items-center justify-center mb-4 overflow-hidden relative">
+                <div
+                  className="flex-1 flex items-center justify-center mb-4 overflow-hidden relative touch-pan-y"
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                >
                   {mainImage.url ? (
                     <>
                       <motion.img

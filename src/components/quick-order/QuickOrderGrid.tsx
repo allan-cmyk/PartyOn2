@@ -5,9 +5,10 @@
 
 'use client';
 
-import type { ReactElement } from 'react';
+import { useState, type ReactElement } from 'react';
 import type { ShopifyProduct } from '@/lib/shopify/types';
 import QuickProductCard from './QuickProductCard';
+import ProductModal from '../ProductModal';
 
 interface QuickOrderGridProps {
   /** Products to display */
@@ -44,6 +45,20 @@ export default function QuickOrderGrid({
   products,
   loading = false,
 }: QuickOrderGridProps): ReactElement {
+  const [selectedProduct, setSelectedProduct] = useState<ShopifyProduct | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleProductClick = (product: ShopifyProduct) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    // Delay clearing product to allow exit animation
+    setTimeout(() => setSelectedProduct(null), 200);
+  };
+
   // Show skeleton while loading
   if (loading) {
     return (
@@ -65,10 +80,23 @@ export default function QuickOrderGrid({
   }
 
   return (
-    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
-      {products.map((product) => (
-        <QuickProductCard key={product.id} product={product} />
-      ))}
-    </div>
+    <>
+      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
+        {products.map((product) => (
+          <QuickProductCard
+            key={product.id}
+            product={product}
+            onImageClick={handleProductClick}
+          />
+        ))}
+      </div>
+
+      {/* Product Detail Modal */}
+      <ProductModal
+        product={selectedProduct}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
+    </>
   );
 }

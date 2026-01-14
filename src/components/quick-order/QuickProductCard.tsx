@@ -14,6 +14,8 @@ import QuantityStepper from './QuantityStepper';
 
 interface QuickProductCardProps {
   product: ShopifyProduct;
+  /** Callback when product image is clicked to open detail modal */
+  onImageClick?: (product: ShopifyProduct) => void;
 }
 
 /**
@@ -36,6 +38,7 @@ function getPackSize(product: ShopifyProduct): string {
  */
 export default function QuickProductCard({
   product,
+  onImageClick,
 }: QuickProductCardProps): ReactElement {
   const { cart, addToCart, updateCartItem, removeFromCart } = useCartContext();
   const [isAdding, setIsAdding] = useState(false);
@@ -116,16 +119,28 @@ export default function QuickProductCard({
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
-      {/* Image */}
-      <div className="relative aspect-square bg-gray-100">
+      {/* Image - Clickable to open modal */}
+      <button
+        type="button"
+        onClick={() => onImageClick?.(product)}
+        className="relative aspect-square bg-gray-100 w-full cursor-pointer group"
+        aria-label={`View details for ${product.title}`}
+      >
         <Image
           src={imageUrl}
           alt={product.title}
           fill
           sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 16vw"
-          className="object-cover"
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
           loading="lazy"
         />
+
+        {/* Hover overlay with "View" indicator */}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+          <span className="opacity-0 group-hover:opacity-100 transition-opacity text-white text-xs font-medium bg-black/60 px-2 py-1 rounded">
+            TAP TO VIEW
+          </span>
+        </div>
 
         {/* Out of Stock Overlay */}
         {!isAvailable && (
@@ -133,8 +148,7 @@ export default function QuickProductCard({
             <span className="text-white font-medium text-sm">Out of Stock</span>
           </div>
         )}
-
-      </div>
+      </button>
 
       {/* Product Info */}
       <div className="p-2 space-y-0.5 text-center">
