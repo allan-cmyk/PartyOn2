@@ -22,6 +22,15 @@
 
 ---
 
+## Claude for Chrome
+
+- Use `read_page` to get element refs from the accessibility tree
+- Use `find` to locate elements by description
+- Click/interact using `ref`, not coordinates
+- NEVER take screenshots unless explicitly requested by the user
+
+---
+
 ## Project Overview
 PartyOn Delivery is a premium alcohol delivery service in Austin, Texas, offering scheduled deliveries for events, parties, and special occasions. The platform features an elegant, luxury design aesthetic and is fully integrated with Shopify for e-commerce operations.
 
