@@ -4,7 +4,7 @@
  */
 
 import { prisma } from '@/lib/database/client';
-import { Prisma, CartStatus, Cart, CartItem } from '@prisma/client';
+import { Prisma, Cart, CartItem } from '@prisma/client';
 
 // ==========================================
 // Types
@@ -46,7 +46,6 @@ export interface DeliveryInfo {
 
 // Tax rate for Austin, TX
 const TAX_RATE = 0.0825;
-const DEFAULT_DELIVERY_FEE = 25;
 
 // ==========================================
 // Cart Operations
@@ -308,7 +307,7 @@ export async function mergeGuestCart(
   }
 
   // Get or create customer cart
-  let customerCart = await prisma.cart.findFirst({
+  const customerCart = await prisma.cart.findFirst({
     where: { customerId, status: 'ACTIVE' },
   });
 

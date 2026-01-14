@@ -68,7 +68,7 @@ export default function EditDiscountPage({ params }: PageProps) {
       }
 
       setDiscount(result.data);
-    } catch (err) {
+    } catch {
       setError('Failed to load discount');
     } finally {
       setLoading(false);
@@ -132,7 +132,7 @@ export default function EditDiscountPage({ params }: PageProps) {
       }
 
       router.push('/admin/promotions');
-    } catch (err) {
+    } catch {
       setError('Failed to update discount. Please try again.');
     } finally {
       setSaving(false);
@@ -155,7 +155,7 @@ export default function EditDiscountPage({ params }: PageProps) {
       }
 
       router.push('/admin/promotions');
-    } catch (err) {
+    } catch {
       setError('Failed to delete discount');
     }
   };

@@ -93,14 +93,6 @@ export default function PromotionsPage() {
     }).format(amount);
   };
 
-  const formatDate = (dateStr: string): string => {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
-
   const getDiscountTypeLabel = (type: string): string => {
     const labels: Record<string, string> = {
       PERCENTAGE: 'Percentage',
@@ -145,9 +137,9 @@ export default function PromotionsPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-black">Promotions</h1>
-          <a href="/admin/reports" className="text-blue-600 hover:text-blue-800 text-sm">
+          <Link href="/admin/reports" className="text-blue-600 hover:text-blue-800 text-sm">
             &larr; Back to Reports Dashboard
-          </a>
+          </Link>
         </div>
         <Link
           href="/admin/promotions/new"

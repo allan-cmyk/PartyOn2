@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 interface SyncHistory {
   id: string;
@@ -215,12 +216,12 @@ export default function SyncPage() {
           Feature flags control which system handles each feature. Enable flags gradually to migrate
           traffic from Shopify to the custom system.
         </p>
-        <a
+        <Link
           href="/admin/features"
           className="text-blue-600 hover:text-blue-800 text-sm font-medium"
         >
           Manage Feature Flags &rarr;
-        </a>
+        </Link>
       </div>
     </div>
   );

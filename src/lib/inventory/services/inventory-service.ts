@@ -4,7 +4,7 @@
  */
 
 import { prisma } from '@/lib/database/client';
-import { Prisma, InventoryMovementType, AlertStatus } from '@prisma/client';
+import { Prisma, InventoryMovementType } from '@prisma/client';
 import type {
   InventoryAdjustment,
   InventoryTransfer,

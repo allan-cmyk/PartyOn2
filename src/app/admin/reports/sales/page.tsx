@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 interface ChartDataPoint {
   date: string;
@@ -112,9 +113,9 @@ export default function SalesReportPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-black">Sales Report</h1>
-          <a href="/admin/reports" className="text-blue-600 hover:text-blue-800 text-sm">
+          <Link href="/admin/reports" className="text-blue-600 hover:text-blue-800 text-sm">
             &larr; Back to Reports Dashboard
-          </a>
+          </Link>
         </div>
         <div className="flex gap-4">
           <div className="flex gap-2">

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 interface FeatureFlag {
   key: string;
@@ -267,9 +268,9 @@ export default function FeaturesPage() {
           <li><strong>7.</strong> Once stable, enable use_custom_auth and use_custom_customers</li>
           <li><strong>8.</strong> Finally, enable use_custom_orders to complete migration</li>
         </ol>
-        <a href="/admin/sync" className="text-blue-600 hover:text-blue-800 text-sm mt-4 block font-medium">
+        <Link href="/admin/sync" className="text-blue-600 hover:text-blue-800 text-sm mt-4 block font-medium">
           Go to Sync Page &rarr;
-        </a>
+        </Link>
       </div>
     </div>
   );

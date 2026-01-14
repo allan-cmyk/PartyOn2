@@ -4,7 +4,7 @@
  */
 
 import { prisma } from '@/lib/database/client';
-import { Discount, AutomaticDiscount, DiscountType, AutoDiscountTrigger } from '@prisma/client';
+import { Discount, AutomaticDiscount, DiscountType } from '@prisma/client';
 
 interface CartItem {
   productId: string;
