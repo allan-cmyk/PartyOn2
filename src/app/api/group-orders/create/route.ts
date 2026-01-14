@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
 
     // Generate unique share code
     let shareCode = generateShareCode()
-    while (await db.getOrderByCode(shareCode)) {
+    while (await db.shareCodeExists(shareCode)) {
       shareCode = generateShareCode()
     }
 
@@ -62,8 +62,17 @@ export async function POST(request: NextRequest) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     const errorStack = error instanceof Error ? error.stack : undefined
     console.error('Error details:', { message: errorMessage, stack: errorStack })
+
+    // Check for specific Prisma errors
+    let userMessage = 'Failed to create group order'
+    if (errorMessage.includes('does not exist')) {
+      userMessage = 'Database schema issue - please contact support'
+    } else if (errorMessage.includes('unique constraint')) {
+      userMessage = 'Please try again with a different event name'
+    }
+
     return NextResponse.json(
-      { error: 'Failed to create group order', details: errorMessage },
+      { error: userMessage, details: errorMessage, stack: errorStack },
       { status: 500 }
     )
   }

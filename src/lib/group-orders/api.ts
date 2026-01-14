@@ -20,7 +20,10 @@ export class GroupOrderAPI {
     })
 
     if (!response.ok) {
-      throw new Error('Failed to create group order')
+      const errorData = await response.json().catch(() => ({}))
+      const errorMessage = errorData.error || errorData.details || 'Failed to create group order'
+      console.error('Create group order error:', errorData)
+      throw new Error(errorMessage)
     }
 
     return response.json()

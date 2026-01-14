@@ -7,6 +7,17 @@ import { Prisma } from '@prisma/client'
  */
 export const db = {
   /**
+   * Check if a share code exists (simple check without participants)
+   */
+  async shareCodeExists(shareCode: string): Promise<boolean> {
+    const order = await prisma.groupOrder.findUnique({
+      where: { shareCode },
+      select: { id: true },
+    })
+    return order !== null
+  },
+
+  /**
    * Create a new group order
    */
   async createOrder(order: Omit<GroupOrder, 'createdAt' | 'updatedAt'> & { participants?: GroupParticipant[] }): Promise<GroupOrderWithParticipants> {
@@ -24,13 +35,27 @@ export const db = {
         minimumOrderAmount: order.minimumOrderAmount || 0,
         expiresAt: new Date(order.expiresAt),
       },
-      include: {
-        participants: true,
-        items: true,
-      },
     })
 
-    return mapGroupOrderFromPrisma(created)
+    // Return the created order with empty participants (new orders have none)
+    return {
+      id: created.id,
+      name: created.name,
+      hostCustomerId: created.hostCustomerId,
+      hostName: created.hostName || undefined,
+      shareCode: created.shareCode,
+      status: created.status.toLowerCase() as 'active' | 'locked' | 'closed' | 'completed' | 'cancelled',
+      deliveryDate: created.deliveryDate.toISOString(),
+      deliveryTime: created.deliveryTime,
+      deliveryAddress: created.deliveryAddress as GroupOrder['deliveryAddress'],
+      minimumOrderAmount: Number(created.minimumOrderAmount),
+      expiresAt: created.expiresAt.toISOString(),
+      createdAt: created.createdAt.toISOString(),
+      updatedAt: created.updatedAt.toISOString(),
+      participants: [],
+      totalAmount: 0,
+      totalItems: 0,
+    }
   },
 
   /**
@@ -43,6 +68,22 @@ export const db = {
         participants: {
           where: { status: { not: 'REMOVED' } },
           orderBy: { joinedAt: 'asc' },
+          select: {
+            id: true,
+            groupOrderId: true,
+            customerId: true,
+            guestName: true,
+            guestEmail: true,
+            cartId: true,
+            ageVerified: true,
+            status: true,
+            cartTotal: true,
+            itemCount: true,
+            joinedAt: true,
+            checkedOutAt: true,
+            shopifyOrderId: true,
+            shopifyOrderName: true,
+          },
         },
         items: true,
       },
