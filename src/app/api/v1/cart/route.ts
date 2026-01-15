@@ -14,6 +14,7 @@ import {
   updateCartItem,
   removeFromCart,
   clearCart,
+  setDeliveryInfo,
   validateCartMinimum,
   cartToCheckoutData,
 } from '@/lib/inventory/services/cart-service';
@@ -173,6 +174,26 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
       case 'clear': {
         cart = await clearCart(cart.id);
+        break;
+      }
+
+      case 'delivery': {
+        const { date, time, address, phone, instructions } = body;
+
+        if (!date || !time || !address || !phone) {
+          return NextResponse.json(
+            { success: false, error: 'Missing required fields: date, time, address, phone' },
+            { status: 400 }
+          );
+        }
+
+        cart = await setDeliveryInfo(cart.id, {
+          date: new Date(date),
+          time,
+          address,
+          phone,
+          instructions,
+        });
         break;
       }
 

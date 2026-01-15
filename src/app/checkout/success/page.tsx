@@ -20,15 +20,46 @@ function CheckoutSuccessContent() {
     const order = searchParams.get('order');
     const orderName = searchParams.get('order_name');
     const orderTotal = searchParams.get('total');
+    const sessionId = searchParams.get('session_id');
+
+    // If we have a Stripe session_id, fetch session details
+    async function fetchStripeSession() {
+      if (sessionId && !orderNumber) {
+        try {
+          const response = await fetch(`/api/v1/checkout?session_id=${sessionId}`);
+          const data = await response.json();
+          if (data.success) {
+            // Fire tracking events with Stripe session data
+            if (!purchaseEventFired.current) {
+              purchaseEventFired.current = true;
+              const amount = data.data.amountTotal ? data.data.amountTotal / 100 : 0;
+              trackPurchase(sessionId, amount);
+              trackMetaEvent('Purchase', {
+                content_type: 'product',
+                value: amount,
+                currency: data.data.currency?.toUpperCase() || 'USD',
+                content_name: 'Stripe Order',
+              });
+            }
+          }
+        } catch (error) {
+          console.error('Failed to fetch session:', error);
+        }
+      }
+    }
 
     if (orderName) {
       setOrderNumber(orderName);
     } else if (order) {
       setOrderNumber(order);
+    } else if (sessionId) {
+      // For Stripe checkout, show session ID as reference
+      setOrderNumber(`Session: ${sessionId.substring(0, 8)}...`);
+      fetchStripeSession();
     }
 
-    // Fire purchase tracking events (only once)
-    if (!purchaseEventFired.current) {
+    // Fire purchase tracking events (only once) for non-Stripe checkouts
+    if (!purchaseEventFired.current && !sessionId) {
       purchaseEventFired.current = true;
 
       // Fire Vercel Analytics purchase event
@@ -54,8 +85,9 @@ function CheckoutSuccessContent() {
     // Clear cart from localStorage
     if (typeof window !== 'undefined') {
       localStorage.removeItem('shopify_cart_id');
+      localStorage.removeItem('cart_id');
     }
-  }, [searchParams, isAuthenticated, refreshCustomer]);
+  }, [searchParams, isAuthenticated, refreshCustomer, orderNumber]);
 
   return (
     <>

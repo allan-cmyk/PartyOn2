@@ -5,15 +5,13 @@ import Link from 'next/link';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
 import DeliveryScheduler from '@/components/DeliveryScheduler';
-import { useCart } from '@/lib/shopify/hooks/useCart';
+import { useCartContext } from '@/contexts/CartContext';
 import { useCustomerContext } from '@/contexts/CustomerContext';
 import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
 import CustomerAuth from '@/components/CustomerAuth';
-import { shopifyFetch } from '@/lib/shopify/client';
-import { CART_DISCOUNT_CODES_UPDATE_MUTATION } from '@/lib/shopify/mutations/discount';
 
 export default function CheckoutPage() {
-  const { cart, loading: cartLoading } = useCart();
+  const { cart, loading: cartLoading, isCustomCart } = useCartContext();
   const { customer, isAuthenticated } = useCustomerContext();
   const { isInGroupOrder, currentGroupOrder, isHost } = useGroupOrderContext();
   
@@ -44,6 +42,8 @@ export default function CheckoutPage() {
   const [discountCode, setDiscountCode] = useState('');
   const [isApplyingDiscount, setIsApplyingDiscount] = useState(false);
   const [discountFeedback, setDiscountFeedback] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
+  const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   // Initialize form with customer data
   useEffect(() => {
@@ -81,41 +81,52 @@ export default function CheckoutPage() {
 
   const handleApplyDiscount = async () => {
     if (!cart || !discountCode.trim()) return;
-    
+
     setIsApplyingDiscount(true);
     setDiscountFeedback({ type: null, message: '' });
-    
+
     try {
-      const response = await shopifyFetch({
-        query: CART_DISCOUNT_CODES_UPDATE_MUTATION,
-        variables: {
-          cartId: cart.id,
-          discountCodes: [...(cart.discountCodes?.map(d => d.code) || []), discountCode.trim().toUpperCase()]
-        }
-      }) as {
-        cartDiscountCodesUpdate?: {
-          userErrors?: Array<{ field?: string; message?: string }>;
-          cart?: unknown;
-        };
-      };
-      
-      if (response?.cartDiscountCodesUpdate?.userErrors?.length && response.cartDiscountCodesUpdate.userErrors.length > 0) {
-        setDiscountFeedback({ 
-          type: 'error', 
-          message: 'Invalid or expired discount code' 
+      if (isCustomCart) {
+        // Custom cart discount - not yet implemented
+        setDiscountFeedback({
+          type: 'error',
+          message: 'Discount codes are not available at this time'
         });
       } else {
-        setDiscountFeedback({ 
-          type: 'success', 
-          message: `Discount code "${discountCode.toUpperCase()}" applied successfully!` 
-        });
-        setDiscountCode('');
-        // Cart will auto-refresh via context
+        // Shopify discount - dynamic import to avoid build errors when not using Shopify
+        const { shopifyFetch } = await import('@/lib/shopify/client');
+        const { CART_DISCOUNT_CODES_UPDATE_MUTATION } = await import('@/lib/shopify/mutations/discount');
+
+        const response = await shopifyFetch({
+          query: CART_DISCOUNT_CODES_UPDATE_MUTATION,
+          variables: {
+            cartId: cart.id,
+            discountCodes: [...(cart.discountCodes?.map(d => d.code) || []), discountCode.trim().toUpperCase()]
+          }
+        }) as {
+          cartDiscountCodesUpdate?: {
+            userErrors?: Array<{ field?: string; message?: string }>;
+            cart?: unknown;
+          };
+        };
+
+        if (response?.cartDiscountCodesUpdate?.userErrors?.length && response.cartDiscountCodesUpdate.userErrors.length > 0) {
+          setDiscountFeedback({
+            type: 'error',
+            message: 'Invalid or expired discount code'
+          });
+        } else {
+          setDiscountFeedback({
+            type: 'success',
+            message: `Discount code "${discountCode.toUpperCase()}" applied successfully!`
+          });
+          setDiscountCode('');
+        }
       }
     } catch {
-      setDiscountFeedback({ 
-        type: 'error', 
-        message: 'Failed to apply discount code. Please try again.' 
+      setDiscountFeedback({
+        type: 'error',
+        message: 'Failed to apply discount code. Please try again.'
       });
     } finally {
       setIsApplyingDiscount(false);
@@ -124,10 +135,19 @@ export default function CheckoutPage() {
 
   const handleRemoveDiscount = async (code: string) => {
     if (!cart) return;
-    
-    const currentCodes = cart.discountCodes?.filter(d => d.code !== code).map(d => d.code) || [];
-    
+
     try {
+      if (isCustomCart) {
+        // Custom cart - not yet implemented
+        return;
+      }
+
+      // Shopify discount - dynamic import
+      const { shopifyFetch } = await import('@/lib/shopify/client');
+      const { CART_DISCOUNT_CODES_UPDATE_MUTATION } = await import('@/lib/shopify/mutations/discount');
+
+      const currentCodes = cart.discountCodes?.filter(d => d.code !== code).map(d => d.code) || [];
+
       await shopifyFetch({
         query: CART_DISCOUNT_CODES_UPDATE_MUTATION,
         variables: {
@@ -135,23 +155,22 @@ export default function CheckoutPage() {
           discountCodes: currentCodes
         }
       });
-      
-      setDiscountFeedback({ 
-        type: 'success', 
-        message: `Discount code "${code}" removed` 
+
+      setDiscountFeedback({
+        type: 'success',
+        message: `Discount code "${code}" removed`
       });
-      // Cart will auto-refresh via context
     } catch {
-      setDiscountFeedback({ 
-        type: 'error', 
-        message: 'Failed to remove discount code' 
+      setDiscountFeedback({
+        type: 'error',
+        message: 'Failed to remove discount code'
       });
     }
   };
 
   const handleProceedToPayment = async () => {
     // Validate form
-    if (!billingAddress.firstName || !billingAddress.lastName || !billingAddress.email || 
+    if (!billingAddress.firstName || !billingAddress.lastName || !billingAddress.email ||
         !billingAddress.phone || !billingAddress.address1 || !billingAddress.zip) {
       alert('Please fill in all required fields');
       return;
@@ -167,25 +186,82 @@ export default function CheckoutPage() {
       return;
     }
 
-    // TESTING MODE: Store order info and redirect to custom payment page
-    const orderInfo = {
-      customer: {
-        ...billingAddress,
-        phone: deliveryDetails.phone || billingAddress.phone // Use delivery phone if provided
-      },
-      delivery: {
-        ...deliveryDetails,
-        address: `${billingAddress.address1}${billingAddress.address2 ? ` ${billingAddress.address2}` : ''}, ${billingAddress.city}, ${billingAddress.state} ${billingAddress.zip}`
-      },
-      groupOrder: isGroupCheckout ? currentGroupOrder : null,
-      cartId: cart?.id
-    };
-    
-    // Store in localStorage for payment page
-    localStorage.setItem('checkoutInfo', JSON.stringify(orderInfo));
-    
-    // Redirect to custom payment page instead of Shopify
-    window.location.href = '/payment';
+    setIsProcessingCheckout(true);
+    setCheckoutError(null);
+
+    try {
+      // For custom cart, use Stripe checkout
+      if (isCustomCart) {
+        // Save delivery info to cart
+        const deliveryResponse = await fetch('/api/v1/cart', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            operation: 'delivery',
+            date: deliveryDetails.date?.toISOString(),
+            time: deliveryDetails.time,
+            address: {
+              address1: billingAddress.address1,
+              address2: billingAddress.address2 || '',
+              city: billingAddress.city,
+              province: billingAddress.state,
+              zip: billingAddress.zip,
+              country: billingAddress.country,
+            },
+            phone: deliveryDetails.phone || billingAddress.phone,
+            instructions: deliveryDetails.instructions,
+          }),
+        });
+
+        if (!deliveryResponse.ok) {
+          const data = await deliveryResponse.json();
+          throw new Error(data.error || 'Failed to save delivery info');
+        }
+
+        // Create Stripe checkout session
+        const checkoutResponse = await fetch('/api/v1/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customerEmail: billingAddress.email,
+          }),
+        });
+
+        const checkoutData = await checkoutResponse.json();
+
+        if (!checkoutData.success) {
+          throw new Error(checkoutData.error || 'Failed to create checkout session');
+        }
+
+        // Redirect to Stripe checkout
+        if (checkoutData.data.checkoutUrl) {
+          window.location.href = checkoutData.data.checkoutUrl;
+        } else {
+          throw new Error('No checkout URL received');
+        }
+      } else {
+        // Legacy: Store order info and redirect to custom payment page
+        const orderInfo = {
+          customer: {
+            ...billingAddress,
+            phone: deliveryDetails.phone || billingAddress.phone
+          },
+          delivery: {
+            ...deliveryDetails,
+            address: `${billingAddress.address1}${billingAddress.address2 ? ` ${billingAddress.address2}` : ''}, ${billingAddress.city}, ${billingAddress.state} ${billingAddress.zip}`
+          },
+          groupOrder: isGroupCheckout ? currentGroupOrder : null,
+          cartId: cart?.id
+        };
+
+        localStorage.setItem('checkoutInfo', JSON.stringify(orderInfo));
+        window.location.href = '/payment';
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      setCheckoutError(error instanceof Error ? error.message : 'Checkout failed. Please try again.');
+      setIsProcessingCheckout(false);
+    }
   };
 
   if (cartLoading) {
@@ -560,23 +636,40 @@ export default function CheckoutPage() {
                   </span>
                 </label>
 
+                {/* Checkout Error */}
+                {checkoutError && (
+                  <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm">
+                    {checkoutError}
+                  </div>
+                )}
+
                 {/* Checkout Button */}
                 <button
                   onClick={handleProceedToPayment}
-                  disabled={!acceptTerms || !deliveryDetails}
+                  disabled={!acceptTerms || !deliveryDetails || isProcessingCheckout}
                   className={`w-full mt-6 py-4 font-medium tracking-[0.15em] transition-colors ${
-                    acceptTerms && deliveryDetails
+                    acceptTerms && deliveryDetails && !isProcessingCheckout
                       ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
                 >
-                  PROCEED TO PAYMENT
+                  {isProcessingCheckout ? (
+                    <span className="flex items-center justify-center">
+                      <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      PROCESSING...
+                    </span>
+                  ) : (
+                    'PROCEED TO PAYMENT'
+                  )}
                 </button>
 
                 {/* Security Badge */}
                 <div className="mt-4 text-center">
                   <p className="text-xs text-gray-500">
-                    🔒 Secure checkout powered by Shopify
+                    Secure checkout powered by {isCustomCart ? 'Stripe' : 'Shopify'}
                   </p>
                 </div>
               </div>
