@@ -77,22 +77,39 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
 /**
  * GET handler for checking sync status
- * Note: Product/Customer sync models not yet implemented - returns basic status
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
   if (!isAuthorized(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // Note: Product/Customer sync is handled via Shopify API directly
-  // Local database sync models (product, customer, shopifySync) not implemented
-  return NextResponse.json({
-    status: 'ready',
-    message: 'Sync via Shopify API - no local product/customer tables',
-    counts: {
-      products: 'N/A - use Shopify API',
-      customers: 'N/A - use Shopify API',
-    },
-    recentSyncs: [],
-  });
+  try {
+    // Get counts from database
+    const [productCount, customerCount, lastSyncs] = await Promise.all([
+      prisma.product.count(),
+      prisma.customer.count(),
+      prisma.shopifySync.findMany({
+        orderBy: { createdAt: 'desc' },
+        take: 10,
+      }),
+    ]);
+
+    return NextResponse.json({
+      status: 'ready',
+      counts: {
+        products: productCount,
+        customers: customerCount,
+      },
+      recentSyncs: lastSyncs,
+    });
+  } catch (error) {
+    console.error('[Sync API] Status check failed:', error);
+    return NextResponse.json(
+      {
+        status: 'error',
+        error: error instanceof Error ? error.message : 'Status check failed',
+      },
+      { status: 500 }
+    );
+  }
 }

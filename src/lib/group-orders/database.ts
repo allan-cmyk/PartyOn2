@@ -41,7 +41,7 @@ export const db = {
     return {
       id: created.id,
       name: created.name,
-      hostCustomerId: created.hostCustomerId,
+      hostCustomerId: created.hostCustomerId || '',
       hostName: created.hostName || undefined,
       shareCode: created.shareCode,
       status: created.status.toLowerCase() as 'active' | 'locked' | 'closed' | 'completed' | 'cancelled',

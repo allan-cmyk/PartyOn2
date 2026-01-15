@@ -1,9 +1,9 @@
 /**
  * Feature Flags Service
- * Note: FeatureFlag model not in Prisma schema - all flags disabled by default
+ * Control feature rollout and A/B testing
  */
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { prisma } from '@/lib/database/client';
 
 /**
  * Feature flag keys
@@ -33,45 +33,168 @@ export const FEATURE_FLAGS = {
 export type FeatureFlagKey = (typeof FEATURE_FLAGS)[keyof typeof FEATURE_FLAGS];
 
 /**
- * Get a feature flag's state (stub - always returns false)
+ * Feature flag cache to reduce database queries
+ */
+interface CachedFlag {
+  enabled: boolean;
+  rolloutPercentage: number;
+  cachedAt: number;
+}
+
+const flagCache = new Map<string, CachedFlag>();
+const CACHE_TTL = 60 * 1000; // 1 minute
+
+/**
+ * Get a feature flag's state
  */
 export async function isFeatureEnabled(
-  _key: FeatureFlagKey,
-  _userId?: string
+  key: FeatureFlagKey,
+  userId?: string
 ): Promise<boolean> {
-  // All feature flags disabled - using Shopify for all features
-  return false;
+  // Check cache first
+  const cached = flagCache.get(key);
+  if (cached && Date.now() - cached.cachedAt < CACHE_TTL) {
+    return evaluateFlag(cached, userId);
+  }
+
+  try {
+    const flag = await prisma.featureFlag.findUnique({
+      where: { key },
+    });
+
+    if (!flag) {
+      // Create default flag if it doesn't exist
+      await prisma.featureFlag.create({
+        data: {
+          key,
+          enabled: false,
+          rolloutPercentage: 0,
+        },
+      });
+      return false;
+    }
+
+    // Update cache
+    flagCache.set(key, {
+      enabled: flag.enabled,
+      rolloutPercentage: flag.rolloutPercentage,
+      cachedAt: Date.now(),
+    });
+
+    return evaluateFlag(
+      { enabled: flag.enabled, rolloutPercentage: flag.rolloutPercentage, cachedAt: Date.now() },
+      userId
+    );
+  } catch (error) {
+    console.error(`[FeatureFlags] Error checking flag ${key}:`, error);
+    return false;
+  }
 }
 
 /**
- * Enable a feature flag (no-op)
+ * Evaluate a flag considering rollout percentage
+ */
+function evaluateFlag(flag: CachedFlag, userId?: string): boolean {
+  if (!flag.enabled) return false;
+  if (flag.rolloutPercentage === 100) return true;
+  if (flag.rolloutPercentage === 0) return false;
+
+  // Use userId for consistent rollout (same user always gets same result)
+  if (userId) {
+    const hash = hashString(userId);
+    return hash % 100 < flag.rolloutPercentage;
+  }
+
+  // Random rollout for anonymous users
+  return Math.random() * 100 < flag.rolloutPercentage;
+}
+
+/**
+ * Simple hash function for consistent user bucketing
+ */
+function hashString(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return Math.abs(hash);
+}
+
+/**
+ * Enable a feature flag
  */
 export async function enableFeature(
-  _key: FeatureFlagKey,
-  _rolloutPercentage = 100
+  key: FeatureFlagKey,
+  rolloutPercentage = 100
 ): Promise<void> {
-  // No-op - feature flags not implemented
+  await prisma.featureFlag.upsert({
+    where: { key },
+    update: {
+      enabled: true,
+      rolloutPercentage,
+    },
+    create: {
+      key,
+      enabled: true,
+      rolloutPercentage,
+    },
+  });
+
+  // Invalidate cache
+  flagCache.delete(key);
 }
 
 /**
- * Disable a feature flag (no-op)
+ * Disable a feature flag
  */
-export async function disableFeature(_key: FeatureFlagKey): Promise<void> {
-  // No-op - feature flags not implemented
+export async function disableFeature(key: FeatureFlagKey): Promise<void> {
+  await prisma.featureFlag.upsert({
+    where: { key },
+    update: {
+      enabled: false,
+    },
+    create: {
+      key,
+      enabled: false,
+      rolloutPercentage: 0,
+    },
+  });
+
+  // Invalidate cache
+  flagCache.delete(key);
 }
 
 /**
- * Set rollout percentage (no-op)
+ * Set rollout percentage for gradual migration
  */
 export async function setRolloutPercentage(
-  _key: FeatureFlagKey,
-  _percentage: number
+  key: FeatureFlagKey,
+  percentage: number
 ): Promise<void> {
-  // No-op - feature flags not implemented
+  if (percentage < 0 || percentage > 100) {
+    throw new Error('Rollout percentage must be between 0 and 100');
+  }
+
+  await prisma.featureFlag.upsert({
+    where: { key },
+    update: {
+      rolloutPercentage: percentage,
+    },
+    create: {
+      key,
+      enabled: percentage > 0,
+      rolloutPercentage: percentage,
+    },
+  });
+
+  // Invalidate cache
+  flagCache.delete(key);
 }
 
 /**
- * Get all feature flags status (stub)
+ * Get all feature flags status
  */
 export async function getAllFeatureFlags(): Promise<
   Array<{
@@ -80,17 +203,20 @@ export async function getAllFeatureFlags(): Promise<
     rolloutPercentage: number;
   }>
 > {
-  // Return all flags as disabled
-  return Object.values(FEATURE_FLAGS).map((key) => ({
-    key,
-    enabled: false,
-    rolloutPercentage: 0,
+  const flags = await prisma.featureFlag.findMany({
+    orderBy: { key: 'asc' },
+  });
+
+  return flags.map((f) => ({
+    key: f.key,
+    enabled: f.enabled,
+    rolloutPercentage: f.rolloutPercentage,
   }));
 }
 
 /**
- * Clear all cached flags (no-op)
+ * Clear all cached flags
  */
 export function clearFlagCache(): void {
-  // No-op - no cache
+  flagCache.clear();
 }

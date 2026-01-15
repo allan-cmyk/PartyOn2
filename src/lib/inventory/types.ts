@@ -1,7 +1,9 @@
 /**
  * Inventory Management System Types
- * Note: Many Prisma models don't exist - using local type definitions
+ * Shared types for APIs and services
  */
+
+import { Prisma } from '@prisma/client';
 
 // ==========================================
 // API Response Types
@@ -61,70 +63,13 @@ export interface ProductFilters {
   inStock?: boolean;
 }
 
-// Local type since Prisma Product model doesn't exist
-export interface ProductWithRelations {
-  id: string;
-  handle: string;
-  title: string;
-  description: string | null;
-  descriptionHtml: string | null;
-  vendor: string | null;
-  productType: string | null;
-  tags: string[];
-  basePrice: number;
-  compareAtPrice: number | null;
-  status: 'ACTIVE' | 'DRAFT' | 'ARCHIVED';
-  metaTitle: string | null;
-  metaDescription: string | null;
-  abv: number | null;
-  createdAt: Date;
-  updatedAt: Date;
-  variants: ProductVariant[];
-  images: ProductImage[];
-  categories: { category: Category }[];
-}
-
-export interface ProductVariant {
-  id: string;
-  productId: string;
-  sku: string | null;
-  title: string;
-  price: number;
-  compareAtPrice: number | null;
-  option1Name: string | null;
-  option1Value: string | null;
-  option2Name: string | null;
-  option2Value: string | null;
-  option3Name: string | null;
-  option3Value: string | null;
-  inventoryQuantity: number;
-  trackInventory: boolean;
-  allowBackorder: boolean;
-  weight: number | null;
-  weightUnit: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface ProductImage {
-  id: string;
-  productId: string;
-  url: string;
-  altText: string | null;
-  position: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface Category {
-  id: string;
-  name: string;
-  handle: string;
-  description: string | null;
-  parentId: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
+export type ProductWithRelations = Prisma.ProductGetPayload<{
+  include: {
+    variants: true;
+    images: true;
+    categories: { include: { category: true } };
+  };
+}>;
 
 // ==========================================
 // Variant Types

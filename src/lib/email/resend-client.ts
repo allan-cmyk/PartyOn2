@@ -1,9 +1,11 @@
 /**
  * Resend Email Client
- * Note: EmailLog model not in Prisma schema - email logging not implemented
+ * Handles all transactional email sending for PartyOn Delivery
  */
 
 import { Resend } from 'resend';
+import { prisma } from '@/lib/database/client';
+import { EmailType, EmailStatus } from '@prisma/client';
 
 // Initialize Resend client
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -15,18 +17,6 @@ if (!RESEND_API_KEY) {
 }
 
 export const resend = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null;
-
-/**
- * Email type enum (local since Prisma model doesn't exist)
- */
-export type EmailType =
-  | 'ORDER_CONFIRMATION'
-  | 'DELIVERY_EN_ROUTE'
-  | 'DELIVERY_COMPLETED'
-  | 'PAYMENT_FAILED'
-  | 'REFUND_PROCESSED'
-  | 'PASSWORD_RESET'
-  | 'WELCOME';
 
 /**
  * Email sending options
@@ -43,14 +33,34 @@ export interface SendEmailOptions {
 }
 
 /**
- * Send an email (without logging to DB)
+ * Send an email and log it
  */
 export async function sendEmail(options: SendEmailOptions): Promise<string | null> {
-  const { to, subject, html, text, type } = options;
+  const { to, subject, html, text, type, orderId, customerId, metadata } = options;
 
-  // If Resend is not configured, just log
+  // Create email log entry
+  const emailLog = await prisma.emailLog.create({
+    data: {
+      type,
+      to,
+      subject,
+      status: EmailStatus.PENDING,
+      orderId,
+      customerId,
+      metadata: metadata ? JSON.parse(JSON.stringify(metadata)) : undefined,
+    },
+  });
+
+  // If Resend is not configured, log and return
   if (!resend) {
     console.log('[Email] Would send email:', { to, subject, type });
+    await prisma.emailLog.update({
+      where: { id: emailLog.id },
+      data: {
+        status: EmailStatus.FAILED,
+        errorMessage: 'RESEND_API_KEY not configured',
+      },
+    });
     return null;
   }
 
@@ -63,10 +73,29 @@ export async function sendEmail(options: SendEmailOptions): Promise<string | nul
       text,
     });
 
+    // Update log with success
+    await prisma.emailLog.update({
+      where: { id: emailLog.id },
+      data: {
+        status: EmailStatus.SENT,
+        resendId: result.data?.id,
+        sentAt: new Date(),
+      },
+    });
+
     console.log('[Email] Sent successfully:', { to, subject, type, resendId: result.data?.id });
     return result.data?.id || null;
   } catch (error) {
+    // Update log with error
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    await prisma.emailLog.update({
+      where: { id: emailLog.id },
+      data: {
+        status: EmailStatus.FAILED,
+        errorMessage,
+      },
+    });
+
     console.error('[Email] Failed to send:', { to, subject, type, error: errorMessage });
     return null;
   }
@@ -100,6 +129,7 @@ export function formatDate(date: Date | string): string {
  * Format time for display
  */
 export function formatTime(time: string): string {
+  // Handle various time formats (e.g., "14:00", "2:00 PM")
   if (time.includes('AM') || time.includes('PM')) {
     return time;
   }

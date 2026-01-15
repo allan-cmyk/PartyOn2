@@ -36,7 +36,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     const where: Record<string, unknown> = {};
 
-    if (status && ['DRAFT', 'ACTIVE', 'PAUSED', 'COMPLETED'].includes(status)) {
+    if (status && ['DRAFT', 'RUNNING', 'PAUSED', 'COMPLETED'].includes(status)) {
       where.status = status;
     }
 
@@ -95,7 +95,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     // Group by status for summary
     const summary = {
-      active: transformedExperiments.filter((e) => e.status === 'ACTIVE').length,
+      active: transformedExperiments.filter((e) => e.status === 'RUNNING').length,
       paused: transformedExperiments.filter((e) => e.status === 'PAUSED').length,
       completed: transformedExperiments.filter((e) => e.status === 'COMPLETED').length,
       draft: transformedExperiments.filter((e) => e.status === 'DRAFT').length,
