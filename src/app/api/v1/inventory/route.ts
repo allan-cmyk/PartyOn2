@@ -1,13 +1,15 @@
 /**
  * Inventory API - Overview and Management
  *
- * GET /api/v1/inventory - Get inventory overview
+ * GET /api/v1/inventory - Get inventory items (with optional location filter)
+ * GET /api/v1/inventory?view=locations - Get locations summary
  * POST /api/v1/inventory/adjust - Adjust inventory
  * POST /api/v1/inventory/transfer - Transfer between locations
  * POST /api/v1/inventory/count - Set inventory count
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 import {
   getLocations,
   getLocationInventory,
@@ -18,45 +20,107 @@ import {
 
 /**
  * GET /api/v1/inventory
- * Get inventory overview - locations and their stock
+ * Get inventory items with product info
+ * Query params:
+ *   - locationId: Filter by location
+ *   - search: Search by product name or SKU
+ *   - filter: 'all' | 'low_stock' | 'out_of_stock'
+ *   - view: 'locations' returns location summaries instead
+ *   - page: Page number (default 1)
+ *   - limit: Items per page (default 100)
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
-    const locationId = request.nextUrl.searchParams.get('locationId');
+    const searchParams = request.nextUrl.searchParams;
+    const locationId = searchParams.get('locationId');
+    const search = searchParams.get('search') || '';
+    const filter = searchParams.get('filter') || 'all';
+    const view = searchParams.get('view');
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1'));
+    const limit = Math.min(500, Math.max(1, parseInt(searchParams.get('limit') || '100')));
 
-    if (locationId) {
-      // Get inventory for specific location
-      const inventory = await getLocationInventory(locationId);
-      return NextResponse.json({
-        success: true,
-        data: inventory,
-        meta: { count: inventory.length },
-      });
+    // Legacy behavior: return locations summary when view=locations
+    if (view === 'locations') {
+      const locations = await getLocations();
+      const locationsWithInventory = await Promise.all(
+        locations.map(async location => {
+          const inventory = await getLocationInventory(location.id);
+          const totalItems = inventory.reduce((sum, item) => sum + item.quantity, 0);
+          const uniqueProducts = new Set(inventory.map(i => i.productId)).size;
+          return {
+            ...location,
+            summary: { totalItems, uniqueProducts, itemCount: inventory.length },
+          };
+        })
+      );
+      return NextResponse.json({ success: true, data: locationsWithInventory });
     }
 
-    // Get all locations with summary
-    const locations = await getLocations();
+    // Build where clause for inventory items
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const where: any = {};
 
-    const locationsWithInventory = await Promise.all(
-      locations.map(async location => {
-        const inventory = await getLocationInventory(location.id);
-        const totalItems = inventory.reduce((sum, item) => sum + item.quantity, 0);
-        const uniqueProducts = new Set(inventory.map(i => i.productId)).size;
+    if (locationId) {
+      where.locationId = locationId;
+    }
 
-        return {
-          ...location,
-          summary: {
-            totalItems,
-            uniqueProducts,
-            itemCount: inventory.length,
-          },
-        };
-      })
-    );
+    // Filter by stock status (out_of_stock only - low_stock is filtered client-side)
+    if (filter === 'out_of_stock') {
+      where.quantity = 0;
+    }
+
+    // Search by product name or SKU
+    if (search) {
+      where.OR = [
+        { product: { title: { contains: search, mode: 'insensitive' } } },
+        { variant: { sku: { contains: search, mode: 'insensitive' } } },
+        { variant: { title: { contains: search, mode: 'insensitive' } } },
+      ];
+    }
+
+    // Get total count for pagination
+    const totalCount = await prisma.inventoryItem.count({ where });
+
+    // Fetch inventory items with relations
+    const items = await prisma.inventoryItem.findMany({
+      where,
+      include: {
+        product: { select: { id: true, title: true, handle: true } },
+        variant: { select: { id: true, title: true, sku: true } },
+        location: { select: { id: true, name: true } },
+      },
+      orderBy: [{ product: { title: 'asc' } }, { variant: { title: 'asc' } }],
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    // Transform to expected format
+    const formattedItems = items.map(item => ({
+      id: item.id,
+      productId: item.productId,
+      productName: item.product.title,
+      variantId: item.variantId,
+      variantName: item.variant?.title || null,
+      sku: item.variant?.sku || null,
+      quantity: item.quantity,
+      reservedQuantity: item.reservedQuantity,
+      lowStockThreshold: item.lowStockThreshold,
+      reorderPoint: item.reorderPoint,
+      locationId: item.locationId,
+      locationName: item.location.name,
+      lastCountedAt: item.lastCountedAt?.toISOString() || null,
+    }));
 
     return NextResponse.json({
       success: true,
-      data: locationsWithInventory,
+      data: formattedItems,
+      meta: {
+        count: formattedItems.length,
+        total: totalCount,
+        page,
+        limit,
+        totalPages: Math.ceil(totalCount / limit),
+      },
     });
   } catch (error) {
     console.error('[Inventory API] GET error:', error);

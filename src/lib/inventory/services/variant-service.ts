@@ -28,9 +28,10 @@ export async function getVariant(id: string): Promise<ProductVariant | null> {
 
 /**
  * Get variant by SKU
+ * Note: SKU may not be unique, returns first match
  */
 export async function getVariantBySku(sku: string): Promise<ProductVariant | null> {
-  return prisma.productVariant.findUnique({ where: { sku } });
+  return prisma.productVariant.findFirst({ where: { sku } });
 }
 
 /**
