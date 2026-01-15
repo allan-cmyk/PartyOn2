@@ -1,31 +1,51 @@
 'use client';
 
-import React, { createContext, useContext, useState } from 'react';
-import { useCart } from '@/lib/shopify/hooks/useCart';
+import React, { createContext, useContext, useState, ReactElement } from 'react';
+import { useCart as useShopifyCart } from '@/lib/shopify/hooks/useCart';
+import { useCustomCart } from '@/lib/cart/hooks/useCustomCart';
 import { ShopifyCart } from '@/lib/shopify/types';
 import { trackMetaEvent } from '@/components/MetaPixel';
 import { trackCartAction, trackEvent, ANALYTICS_EVENTS } from '@/lib/analytics/track';
 
-interface CartContextType extends ReturnType<typeof useCart> {
+// Feature flag - set to true to use custom cart instead of Shopify
+const USE_CUSTOM_CART = process.env.NEXT_PUBLIC_USE_CUSTOM_CART === 'true';
+
+interface CartContextType {
+  cart: ShopifyCart | null;
+  loading: boolean;
+  error: Error | null;
+  addToCart: (variantId: string, quantity?: number) => Promise<ShopifyCart>;
+  createCartWithItems: (items: Array<{ merchandiseId: string; quantity: number }>) => Promise<ShopifyCart | null | undefined>;
+  updateCartItem: (lineId: string, quantity: number) => Promise<void>;
+  removeFromCart: (lineId: string) => Promise<void>;
+  clearCart: () => void | Promise<void>;
+  updateCartAttributes: (attributes: Array<{ key: string; value: string }>) => Promise<ShopifyCart | undefined>;
   isCartOpen: boolean;
   openCart: () => void;
   closeCart: () => void;
   toggleCart: () => void;
+  isCustomCart: boolean;
 }
 
 const CartContext = createContext<CartContextType | null>(null);
 
-export function CartProvider({ children }: { children: React.ReactNode }) {
-  const cartHook = useCart();
+export function CartProvider({ children }: { children: React.ReactNode }): ReactElement {
+  // Use either custom cart or Shopify cart based on feature flag
+  const shopifyCartHook = useShopifyCart();
+  const customCartHook = useCustomCart();
+
+  // Select which cart hook to use
+  const cartHook = USE_CUSTOM_CART ? customCartHook : shopifyCartHook;
+
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const checkAgeVerification = () => {
+  const checkAgeVerification = (): boolean => {
     // Check both possible keys for backwards compatibility
     const ageVerified = localStorage.getItem('age_verified') || localStorage.getItem('ageVerified');
     return ageVerified === 'true';
   };
 
-  const openCart = () => {
+  const openCart = (): void => {
     if (!checkAgeVerification()) {
       // Reload the page to show age verification modal
       localStorage.removeItem('age_verified');
@@ -44,8 +64,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const closeCart = () => setIsCartOpen(false);
-  const toggleCart = () => {
+  const closeCart = (): void => setIsCartOpen(false);
+
+  const toggleCart = (): void => {
     if (!checkAgeVerification()) {
       localStorage.removeItem('age_verified');
       localStorage.removeItem('ageVerified');
@@ -57,7 +78,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   // Override addToCart to check age verification and fire tracking events
   const addToCart = async (variantId: string, quantity: number = 1): Promise<ShopifyCart> => {
-    console.log('CartContext addToCart called with:', { variantId, quantity, variantIdType: typeof variantId });
+    console.log('CartContext addToCart called with:', {
+      variantId,
+      quantity,
+      variantIdType: typeof variantId,
+      usingCustomCart: USE_CUSTOM_CART
+    });
 
     if (!checkAgeVerification()) {
       localStorage.removeItem('age_verified');
@@ -69,7 +95,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const result = await cartHook.addToCart(variantId, quantity);
 
     // Find the added item to get product details for tracking
-    const addedLine = result.lines?.edges?.find(
+    const addedLine = result?.lines?.edges?.find(
       edge => edge.node.merchandise.id === variantId
     )?.node;
 
@@ -136,20 +162,26 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const value: CartContextType = {
-    ...cartHook,
+    cart: cartHook.cart,
+    loading: cartHook.loading,
+    error: cartHook.error,
     addToCart,
-    removeFromCart,
+    createCartWithItems: cartHook.createCartWithItems,
     updateCartItem,
+    removeFromCart,
+    clearCart: cartHook.clearCart,
+    updateCartAttributes: cartHook.updateCartAttributes,
     isCartOpen,
     openCart,
     closeCart,
     toggleCart,
+    isCustomCart: USE_CUSTOM_CART,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
-export const useCartContext = () => {
+export const useCartContext = (): CartContextType => {
   const context = useContext(CartContext);
   if (!context) {
     throw new Error('useCartContext must be used within CartProvider');

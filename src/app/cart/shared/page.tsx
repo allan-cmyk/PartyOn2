@@ -78,9 +78,9 @@ function SharedCartContent() {
       const newCart = await createCartWithItems(cartItems);
 
       console.log('✅ Successfully created cart with all items');
-      console.log('📊 Cart ID:', newCart.id);
-      console.log('📊 Total quantity:', newCart.totalQuantity);
-      console.log('📊 Items in cart:', newCart.lines?.edges?.length || 0);
+      console.log('📊 Cart ID:', newCart?.id);
+      console.log('📊 Total quantity:', newCart?.totalQuantity);
+      console.log('📊 Items in cart:', newCart?.lines?.edges?.length || 0);
 
       // Open cart drawer to show the added items
       setTimeout(() => {
