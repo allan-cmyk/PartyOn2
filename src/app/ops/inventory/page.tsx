@@ -200,9 +200,12 @@ export default function InventoryPage(): ReactElement {
                   <tr key={item.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div>
-                        <p className="font-medium text-gray-900">
+                        <Link
+                          href={`/ops/products/${item.productId}`}
+                          className="font-medium text-gray-900 hover:text-blue-600 hover:underline"
+                        >
                           {item.productName}
-                        </p>
+                        </Link>
                         {item.variantName && (
                           <p className="text-sm text-gray-500">{item.variantName}</p>
                         )}
@@ -255,15 +258,23 @@ export default function InventoryPage(): ReactElement {
                           </button>
                         </div>
                       ) : (
-                        <button
-                          onClick={() => {
-                            setEditingItem(item.id);
-                            setEditQuantity(item.quantity);
-                          }}
-                          className="text-sm text-blue-600 hover:text-blue-800"
-                        >
-                          Edit
-                        </button>
+                        <div className="flex justify-end gap-3">
+                          <Link
+                            href={`/ops/products/${item.productId}`}
+                            className="text-sm text-purple-600 hover:text-purple-800"
+                          >
+                            View Product
+                          </Link>
+                          <button
+                            onClick={() => {
+                              setEditingItem(item.id);
+                              setEditQuantity(item.quantity);
+                            }}
+                            className="text-sm text-blue-600 hover:text-blue-800"
+                          >
+                            Edit Qty
+                          </button>
+                        </div>
                       )}
                     </td>
                   </tr>
