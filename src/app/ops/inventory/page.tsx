@@ -26,6 +26,98 @@ interface PaginationMeta {
   totalPages: number;
 }
 
+// Stats card component for consistent styling
+function StatCard({
+  title,
+  value,
+  color = 'blue',
+  icon
+}: {
+  title: string;
+  value: string | number;
+  color?: 'blue' | 'green' | 'yellow' | 'red' | 'purple';
+  icon?: ReactElement;
+}): ReactElement {
+  const colors = {
+    blue: 'from-blue-500 to-blue-600',
+    green: 'from-green-500 to-green-600',
+    yellow: 'from-amber-500 to-amber-600',
+    red: 'from-red-500 to-red-600',
+    purple: 'from-purple-500 to-purple-600',
+  };
+
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">{title}</p>
+          <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
+        </div>
+        {icon && (
+          <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${colors[color]} flex items-center justify-center text-white`}>
+            {icon}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Filter button component
+function FilterButton({
+  children,
+  active,
+  onClick,
+  count
+}: {
+  children: React.ReactNode;
+  active: boolean;
+  onClick: () => void;
+  count?: number;
+}): ReactElement {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-4 py-2 text-sm font-medium rounded-lg transition-all flex items-center gap-2 ${
+        active
+          ? 'bg-blue-600 text-white shadow-sm'
+          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+      }`}
+    >
+      {children}
+      {count !== undefined && (
+        <span className={`px-2 py-0.5 text-xs rounded-full ${
+          active ? 'bg-white/20' : 'bg-gray-200'
+        }`}>
+          {count}
+        </span>
+      )}
+    </button>
+  );
+}
+
+function StockStatus({ quantity, threshold }: { quantity: number; threshold: number }): ReactElement {
+  if (quantity === 0) {
+    return (
+      <span className="px-3 py-1 bg-red-100 text-red-700 border border-red-200 rounded-full text-xs font-semibold">
+        Out of Stock
+      </span>
+    );
+  }
+  if (quantity <= threshold) {
+    return (
+      <span className="px-3 py-1 bg-yellow-100 text-yellow-700 border border-yellow-200 rounded-full text-xs font-semibold">
+        Low Stock
+      </span>
+    );
+  }
+  return (
+    <span className="px-3 py-1 bg-green-100 text-green-700 border border-green-200 rounded-full text-xs font-semibold">
+      In Stock
+    </span>
+  );
+}
+
 export default function InventoryPage(): ReactElement {
   const searchParams = useSearchParams();
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
@@ -36,6 +128,14 @@ export default function InventoryPage(): ReactElement {
   const [page, setPage] = useState(1);
   const [editingItem, setEditingItem] = useState<string | null>(null);
   const [editQuantity, setEditQuantity] = useState<number>(0);
+
+  // Stats derived from inventory data
+  const [stats, setStats] = useState({
+    total: 0,
+    inStock: 0,
+    lowStock: 0,
+    outOfStock: 0
+  });
 
   const fetchInventory = useCallback(async () => {
     setIsLoading(true);
@@ -52,6 +152,19 @@ export default function InventoryPage(): ReactElement {
         if (data.success) {
           setInventory(data.data || []);
           setMeta(data.meta || null);
+
+          // Calculate stats from meta if available, or from inventory
+          const items = data.data || [];
+          const lowStockCount = items.filter((i: InventoryItem) => i.quantity > 0 && i.quantity <= i.lowStockThreshold).length;
+          const outOfStockCount = items.filter((i: InventoryItem) => i.quantity === 0).length;
+          const inStockCount = items.filter((i: InventoryItem) => i.quantity > i.lowStockThreshold).length;
+
+          setStats({
+            total: data.meta?.total || items.length,
+            inStock: inStockCount,
+            lowStock: lowStockCount,
+            outOfStock: outOfStockCount
+          });
         }
       }
     } catch (error) {
@@ -65,7 +178,6 @@ export default function InventoryPage(): ReactElement {
     fetchInventory();
   }, [fetchInventory]);
 
-  // Reset page when filter or search changes
   useEffect(() => {
     setPage(1);
   }, [filter, search]);
@@ -98,111 +210,201 @@ export default function InventoryPage(): ReactElement {
   });
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
+    <div className="p-8 bg-gray-50 min-h-screen">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Inventory Management</h1>
-          {meta && (
-            <p className="text-sm text-gray-500 mt-1">
-              {meta.total.toLocaleString()} total items across all locations
-            </p>
-          )}
+          <h1 className="text-3xl font-bold text-gray-900">Inventory</h1>
+          <p className="text-gray-500 mt-1">
+            Manage and track product stock levels
+          </p>
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-3">
+          <button
+            onClick={() => fetchInventory()}
+            className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors shadow-sm flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Refresh
+          </button>
           <Link
             href="/ops/inventory/count"
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-2"
           >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
             AI Count
           </Link>
           <Link
             href="/ops/inventory/predictions"
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            className="px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors shadow-sm flex items-center gap-2"
           >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
             Predictions
           </Link>
         </div>
       </div>
 
+      {/* Stats Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <StatCard
+          title="Total Items"
+          value={stats.total.toLocaleString()}
+          color="blue"
+          icon={
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+          }
+        />
+        <StatCard
+          title="In Stock"
+          value={stats.inStock.toLocaleString()}
+          color="green"
+          icon={
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          }
+        />
+        <StatCard
+          title="Low Stock"
+          value={stats.lowStock.toLocaleString()}
+          color="yellow"
+          icon={
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          }
+        />
+        <StatCard
+          title="Out of Stock"
+          value={stats.outOfStock.toLocaleString()}
+          color="red"
+          icon={
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+            </svg>
+          }
+        />
+      </div>
+
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
         <div className="flex flex-wrap gap-4 items-center">
           <div className="flex-1 min-w-64">
-            <input
-              type="text"
-              placeholder="Search products by name or SKU..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <div className="relative">
+              <svg className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search products by name or SKU..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
           </div>
           <div className="flex gap-2">
             <FilterButton
               active={filter === 'all'}
               onClick={() => setFilter('all')}
             >
-              All
+              All Items
             </FilterButton>
             <FilterButton
               active={filter === 'low_stock'}
               onClick={() => setFilter('low_stock')}
+              count={stats.lowStock}
             >
               Low Stock
             </FilterButton>
             <FilterButton
               active={filter === 'out_of_stock'}
               onClick={() => setFilter('out_of_stock')}
+              count={stats.outOfStock}
             >
               Out of Stock
             </FilterButton>
           </div>
         </div>
+        {meta && (
+          <div className="mt-4 pt-4 border-t border-gray-100">
+            <span className="text-sm text-gray-500">
+              {meta.total.toLocaleString()} item{meta.total !== 1 ? 's' : ''} total
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Inventory Table */}
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         {isLoading ? (
-          <div className="p-8 text-center text-gray-500">Loading...</div>
+          <div className="p-8">
+            <div className="space-y-4">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="animate-pulse flex items-center gap-4">
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-gray-200 rounded w-1/3" />
+                    <div className="h-3 bg-gray-200 rounded w-1/4" />
+                  </div>
+                  <div className="w-16 h-6 bg-gray-200 rounded" />
+                  <div className="w-24 h-6 bg-gray-200 rounded-full" />
+                  <div className="w-20 h-6 bg-gray-200 rounded" />
+                </div>
+              ))}
+            </div>
+          </div>
         ) : filteredInventory.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">
-            No inventory items found
+          <div className="p-12 text-center">
+            <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+            <p className="text-gray-500 text-lg">No inventory items found</p>
+            <p className="text-gray-400 text-sm mt-1">Try adjusting your filters or search term</p>
           </div>
         ) : (
           <>
             <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-gray-50 border-b border-gray-100">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Product
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     SKU
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Location
                   </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="text-center px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Quantity
                   </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="text-center px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Reserved
                   </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="text-center px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="text-right px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-100">
                 {filteredInventory.map((item) => (
-                  <tr key={item.id} className="hover:bg-gray-50">
+                  <tr key={item.id} className="hover:bg-blue-50/50 transition-colors group">
                     <td className="px-6 py-4">
                       <div>
                         <Link
                           href={`/ops/products/${item.productId}`}
-                          className="font-medium text-gray-900 hover:text-blue-600 hover:underline"
+                          className="font-medium text-gray-900 group-hover:text-blue-600 transition-colors"
                         >
                           {item.productName}
                         </Link>
@@ -211,11 +413,13 @@ export default function InventoryPage(): ReactElement {
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
-                      {item.sku || '-'}
+                    <td className="px-6 py-4">
+                      <span className="font-mono text-sm text-gray-600">
+                        {item.sku || '-'}
+                      </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
-                      {item.locationName}
+                    <td className="px-6 py-4">
+                      <span className="text-sm text-gray-600">{item.locationName}</span>
                     </td>
                     <td className="px-6 py-4 text-center">
                       {editingItem === item.id ? (
@@ -223,17 +427,27 @@ export default function InventoryPage(): ReactElement {
                           type="number"
                           value={editQuantity}
                           onChange={(e) => setEditQuantity(parseInt(e.target.value) || 0)}
-                          className="w-20 px-2 py-1 border border-gray-300 rounded text-center"
+                          className="w-20 px-3 py-1.5 border border-gray-200 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
                           min={0}
                         />
                       ) : (
-                        <span className="font-medium text-gray-900">
+                        <span className={`text-lg font-bold ${
+                          item.quantity === 0 ? 'text-red-600' :
+                          item.quantity <= item.lowStockThreshold ? 'text-yellow-600' :
+                          'text-gray-900'
+                        }`}>
                           {item.quantity}
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-center text-sm text-gray-500">
-                      {item.reservedQuantity}
+                    <td className="px-6 py-4 text-center">
+                      {item.reservedQuantity > 0 ? (
+                        <span className="inline-flex items-center justify-center px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
+                          {item.reservedQuantity}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400">—</span>
+                      )}
                     </td>
                     <td className="px-6 py-4 text-center">
                       <StockStatus
@@ -246,31 +460,31 @@ export default function InventoryPage(): ReactElement {
                         <div className="flex justify-end gap-2">
                           <button
                             onClick={() => handleUpdateQuantity(item.id)}
-                            className="text-sm text-green-600 hover:text-green-800"
+                            className="px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors"
                           >
                             Save
                           </button>
                           <button
                             onClick={() => setEditingItem(null)}
-                            className="text-sm text-gray-600 hover:text-gray-800"
+                            className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm rounded-lg hover:bg-gray-200 transition-colors"
                           >
                             Cancel
                           </button>
                         </div>
                       ) : (
-                        <div className="flex justify-end gap-3">
+                        <div className="flex justify-end gap-2">
                           <Link
                             href={`/ops/products/${item.productId}`}
-                            className="text-sm text-purple-600 hover:text-purple-800"
+                            className="px-3 py-1.5 text-sm font-medium text-purple-600 hover:text-purple-800 hover:bg-purple-50 rounded-lg transition-colors"
                           >
-                            View Product
+                            View
                           </Link>
                           <button
                             onClick={() => {
                               setEditingItem(item.id);
                               setEditQuantity(item.quantity);
                             }}
-                            className="text-sm text-blue-600 hover:text-blue-800"
+                            className="px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
                           >
                             Edit Qty
                           </button>
@@ -284,82 +498,55 @@ export default function InventoryPage(): ReactElement {
 
             {/* Pagination */}
             {meta && meta.totalPages > 1 && (
-              <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-                <p className="text-sm text-gray-500">
-                  Showing {((page - 1) * 50) + 1} to {Math.min(page * 50, meta.total)} of {meta.total.toLocaleString()} items
-                </p>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setPage(p => Math.max(1, p - 1))}
-                    disabled={page === 1}
-                    className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Previous
-                  </button>
-                  <span className="px-3 py-1 text-sm text-gray-700">
-                    Page {page} of {meta.totalPages}
-                  </span>
-                  <button
-                    onClick={() => setPage(p => Math.min(meta.totalPages, p + 1))}
-                    disabled={page === meta.totalPages}
-                    className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Next
-                  </button>
+              <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50">
+                <button
+                  onClick={() => setPage(Math.max(1, page - 1))}
+                  disabled={page === 1}
+                  className="px-4 py-2 text-sm font-medium bg-white border border-gray-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors flex items-center gap-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Previous
+                </button>
+                <div className="flex items-center gap-2">
+                  {Array.from({ length: Math.min(5, meta.totalPages) }, (_, i) => {
+                    let pageNum = i + 1;
+                    if (meta.totalPages > 5) {
+                      if (page <= 3) pageNum = i + 1;
+                      else if (page >= meta.totalPages - 2) pageNum = meta.totalPages - 4 + i;
+                      else pageNum = page - 2 + i;
+                    }
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => setPage(pageNum)}
+                        className={`w-10 h-10 text-sm font-medium rounded-lg transition-colors ${
+                          page === pageNum
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
                 </div>
+                <button
+                  onClick={() => setPage(Math.min(meta.totalPages, page + 1))}
+                  disabled={page === meta.totalPages}
+                  className="px-4 py-2 text-sm font-medium bg-white border border-gray-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors flex items-center gap-2"
+                >
+                  Next
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
               </div>
             )}
           </>
         )}
       </div>
     </div>
-  );
-}
-
-interface FilterButtonProps {
-  children: React.ReactNode;
-  active: boolean;
-  onClick: () => void;
-}
-
-function FilterButton({ children, active, onClick }: FilterButtonProps): ReactElement {
-  return (
-    <button
-      onClick={onClick}
-      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-        active
-          ? 'bg-blue-600 text-white'
-          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-      }`}
-    >
-      {children}
-    </button>
-  );
-}
-
-interface StockStatusProps {
-  quantity: number;
-  threshold: number;
-}
-
-function StockStatus({ quantity, threshold }: StockStatusProps): ReactElement {
-  if (quantity === 0) {
-    return (
-      <span className="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">
-        Out of Stock
-      </span>
-    );
-  }
-  if (quantity <= threshold) {
-    return (
-      <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">
-        Low Stock
-      </span>
-    );
-  }
-  return (
-    <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
-      In Stock
-    </span>
   );
 }
