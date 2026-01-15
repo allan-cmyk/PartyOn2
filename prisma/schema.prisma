@@ -332,7 +332,7 @@ model Product {
 model ProductVariant {
   id             String   @id @default(uuid())
   productId      String   @map("product_id")
-  sku            String?  @unique
+  sku            String?  // Not unique - multiple variants can share SKUs or have null
   title          String   @default("Default")
   price          Decimal  @db.Decimal(10, 2)
   compareAtPrice Decimal? @map("compare_at_price") @db.Decimal(10, 2)
