@@ -113,7 +113,6 @@ export default function ProductsPage(): ReactElement {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [vendorFilter, setVendorFilter] = useState<string>('');
-  const [categoryFilter, setCategoryFilter] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>('');
   const [page, setPage] = useState(1);
@@ -131,7 +130,6 @@ export default function ProductsPage(): ReactElement {
       if (search) params.set('search', search);
       if (statusFilter) params.set('status', statusFilter);
       if (vendorFilter) params.set('vendor', vendorFilter);
-      if (categoryFilter) params.set('category', categoryFilter);
 
       // Add productTypes filter based on selected category/subcategory
       if (selectedSubcategory && activeCategory) {
@@ -158,7 +156,7 @@ export default function ProductsPage(): ReactElement {
     } finally {
       setLoading(false);
     }
-  }, [search, statusFilter, vendorFilter, categoryFilter, selectedCategory, selectedSubcategory, activeCategory, page, sortBy, sortOrder]);
+  }, [search, statusFilter, vendorFilter, selectedCategory, selectedSubcategory, activeCategory, page, sortBy, sortOrder]);
 
   useEffect(() => {
     const debounce = setTimeout(() => {
