@@ -532,7 +532,7 @@ export default function ProductsPage(): ReactElement {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <span className="font-bold text-gray-900 text-lg">{formatCurrency(product.price)}</span>
-                    {product.compareAtPrice && (
+                    {product.compareAtPrice != null && product.compareAtPrice > 0 && (
                       <span className="text-xs text-gray-400 line-through block">
                         {formatCurrency(product.compareAtPrice)}
                       </span>
