@@ -4,8 +4,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("POSTGRES_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 // Partner Inquiries from the partner pages
@@ -332,7 +333,7 @@ model Product {
 model ProductVariant {
   id             String   @id @default(uuid())
   productId      String   @map("product_id")
-  sku            String?  // Not unique - multiple variants can share SKUs or have null
+  sku            String?  @unique
   title          String   @default("Default")
   price          Decimal  @db.Decimal(10, 2)
   compareAtPrice Decimal? @map("compare_at_price") @db.Decimal(10, 2)
@@ -1312,61 +1313,4 @@ enum PointsType {
   EXPIRED
   ADJUSTED
   BONUS
-}
-
-// ==========================================
-// VERCEL ANALYTICS DRAIN
-// ==========================================
-
-model VercelAnalyticsEvent {
-  id         String   @id @default(uuid())
-  receivedAt DateTime @default(now()) @map("received_at")
-
-  // Event identification
-  eventType String  @map("event_type") // "pageview" or "event"
-  eventName String? @map("event_name") // For custom events
-  eventData Json?   @map("event_data") // Custom event data
-  timestamp BigInt  // Unix ms from Vercel
-
-  // Session/Device
-  sessionId BigInt? @map("session_id")
-  deviceId  BigInt? @map("device_id")
-
-  // Page data
-  origin      String?
-  path        String?
-  route       String? // Dynamic route pattern
-  referrer    String?
-  queryParams String? @map("query_params") // UTM params etc.
-
-  // Geo data
-  country String?
-  region  String?
-  city    String?
-
-  // Device/Browser
-  deviceType    String? @map("device_type") // desktop, mobile, tablet
-  osName        String? @map("os_name")
-  osVersion     String? @map("os_version")
-  clientName    String? @map("client_name") // browser name
-  clientVersion String? @map("client_version")
-
-  // Vercel metadata
-  projectId  String? @map("project_id")
-  deployment String?
-  vercelEnv  String? @map("vercel_environment")
-
-  // Store complete payload for future flexibility
-  rawJson Json @map("raw_json")
-
-  // Dedup hash (sessionId + timestamp + path + eventType)
-  dedupHash String? @unique @map("dedup_hash")
-
-  @@index([receivedAt])
-  @@index([path])
-  @@index([referrer])
-  @@index([country])
-  @@index([eventType])
-  @@index([timestamp])
-  @@map("vercel_analytics_events")
 }

@@ -583,6 +583,8 @@ export default function ProductDetailPage({ params }: PageProps) {
             className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500" />
         ) : product.descriptionHtml ? (
           <div className="prose prose-sm max-w-none text-gray-700" dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
+        ) : product.description ? (
+          <p className="text-gray-700 whitespace-pre-wrap">{product.description}</p>
         ) : (
           <p className="text-gray-400">No description</p>
         )}

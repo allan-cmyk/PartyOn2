@@ -170,10 +170,30 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }
 }
 
+interface ImageInput {
+  url: string;
+  altText?: string;
+  position?: number;
+}
+
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body = await request.json();
-    const { title, handle, description, vendor, productType, basePrice, tags, status } = body;
+    const {
+      title,
+      handle,
+      description,
+      vendor,
+      productType,
+      basePrice,
+      compareAtPrice,
+      tags,
+      status,
+      abv,
+      metaTitle,
+      metaDescription,
+      images,
+    } = body;
 
     if (!title || !handle || basePrice === undefined) {
       return NextResponse.json(
@@ -194,22 +214,40 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const product = await prisma.product.create({
-      data: {
-        title,
-        handle,
-        description: description || null,
-        vendor: vendor || null,
-        productType: productType || null,
-        basePrice,
-        tags: tags || [],
-        status: status || 'DRAFT',
-      },
-      include: {
-        variants: true,
-        images: true,
-        categories: { include: { category: true } },
-      },
+    // Create product with images in a transaction
+    const product = await prisma.$transaction(async (tx) => {
+      const newProduct = await tx.product.create({
+        data: {
+          title,
+          handle,
+          description: description || null,
+          vendor: vendor || null,
+          productType: productType || null,
+          basePrice,
+          compareAtPrice: compareAtPrice || null,
+          tags: tags || [],
+          status: status || 'DRAFT',
+          abv: abv || null,
+          metaTitle: metaTitle || null,
+          metaDescription: metaDescription || null,
+        },
+      });
+
+      // Create images if provided
+      if (images && Array.isArray(images) && images.length > 0) {
+        await tx.productImage.createMany({
+          data: images.map((img: ImageInput, idx: number) => ({
+            productId: newProduct.id,
+            url: img.url,
+            altText: img.altText || null,
+            position: img.position ?? idx,
+            width: null,
+            height: null,
+          })),
+        });
+      }
+
+      return newProduct;
     });
 
     return NextResponse.json({
