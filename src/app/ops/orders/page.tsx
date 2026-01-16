@@ -9,6 +9,13 @@ interface OrderCustomer {
   name: string;
 }
 
+interface GroupOrderInfo {
+  id: string;
+  shareCode: string;
+  name: string;
+  status: string;
+}
+
 interface Order {
   id: string;
   orderNumber: number;
@@ -29,6 +36,8 @@ interface Order {
   deliveryTime: string;
   deliveryType: string;
   createdAt: string;
+  groupOrderId: string | null;
+  groupOrder: GroupOrderInfo | null;
 }
 
 interface OrdersData {
@@ -118,6 +127,7 @@ export default function OrdersPage(): ReactElement {
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [fulfillmentFilter, setFulfillmentFilter] = useState<string>('');
   const [deliveryTypeFilter, setDeliveryTypeFilter] = useState<string>('');
+  const [groupTypeFilter, setGroupTypeFilter] = useState<string>('');
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<string>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
@@ -130,6 +140,7 @@ export default function OrdersPage(): ReactElement {
       if (statusFilter) params.set('status', statusFilter);
       if (fulfillmentFilter) params.set('fulfillmentStatus', fulfillmentFilter);
       if (deliveryTypeFilter) params.set('deliveryType', deliveryTypeFilter);
+      if (groupTypeFilter) params.set('groupType', groupTypeFilter);
       params.set('page', page.toString());
       params.set('sortBy', sortBy);
       params.set('sortOrder', sortOrder);
@@ -145,7 +156,7 @@ export default function OrdersPage(): ReactElement {
     } finally {
       setLoading(false);
     }
-  }, [search, statusFilter, fulfillmentFilter, deliveryTypeFilter, page, sortBy, sortOrder]);
+  }, [search, statusFilter, fulfillmentFilter, deliveryTypeFilter, groupTypeFilter, page, sortBy, sortOrder]);
 
   useEffect(() => {
     const debounce = setTimeout(() => {
@@ -388,6 +399,22 @@ export default function OrdersPage(): ReactElement {
           </select>
         </div>
 
+        {/* Group Order Filter */}
+        <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-100">
+          <span className="text-sm text-gray-500">Order type:</span>
+          <div className="flex gap-2">
+            <FilterButton active={groupTypeFilter === ''} onClick={() => { setGroupTypeFilter(''); setPage(1); }}>
+              All
+            </FilterButton>
+            <FilterButton active={groupTypeFilter === 'regular'} onClick={() => { setGroupTypeFilter('regular'); setPage(1); }}>
+              Regular
+            </FilterButton>
+            <FilterButton active={groupTypeFilter === 'group'} onClick={() => { setGroupTypeFilter('group'); setPage(1); }}>
+              Group Orders
+            </FilterButton>
+          </div>
+        </div>
+
         <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-100">
           <span className="text-sm text-gray-500">Sort by:</span>
           <div className="flex gap-2">
@@ -481,6 +508,18 @@ export default function OrdersPage(): ReactElement {
                         #{order.orderNumber}
                       </span>
                     </Link>
+                    {order.groupOrder && (
+                      <Link
+                        href={`/ops/group-orders/${order.groupOrder.id}`}
+                        className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 text-xs font-medium bg-purple-100 text-purple-700 rounded-full hover:bg-purple-200 transition-colors"
+                        title={`Part of "${order.groupOrder.name}"`}
+                      >
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        {order.groupOrder.shareCode}
+                      </Link>
+                    )}
                   </td>
                   <td className="px-6 py-4">
                     <div>

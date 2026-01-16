@@ -41,6 +41,14 @@ export async function GET(
             },
           },
         },
+        groupOrder: {
+          select: {
+            id: true,
+            name: true,
+            shareCode: true,
+            status: true,
+          },
+        },
       },
     });
 
@@ -60,6 +68,32 @@ export async function GET(
       zip?: string;
       country?: string;
     };
+
+    // Fetch sibling orders if this is a group order
+    let siblingOrders: { id: string; orderNumber: string; customerName: string; total: number; status: string }[] = [];
+    if (order.groupOrderId) {
+      const siblings = await prisma.order.findMany({
+        where: {
+          groupOrderId: order.groupOrderId,
+          id: { not: order.id }, // Exclude current order
+        },
+        select: {
+          id: true,
+          orderNumber: true,
+          customerName: true,
+          total: true,
+          status: true,
+        },
+        orderBy: { orderNumber: 'asc' },
+      });
+      siblingOrders = siblings.map((s) => ({
+        id: s.id,
+        orderNumber: String(s.orderNumber),
+        customerName: s.customerName || 'Guest',
+        total: Number(s.total),
+        status: String(s.status),
+      }));
+    }
 
     return NextResponse.json({
       success: true,
@@ -134,6 +168,10 @@ export async function GET(
         groupOrder: {
           id: order.groupOrderId,
           isGroupOrder: !!order.groupOrderId,
+          name: order.groupOrder?.name || null,
+          shareCode: order.groupOrder?.shareCode || null,
+          status: order.groupOrder?.status || null,
+          siblingOrders,
         },
         notes: {
           customer: order.customerNote,

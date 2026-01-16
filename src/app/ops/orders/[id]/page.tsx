@@ -69,6 +69,16 @@ interface OrderDetail {
   groupOrder: {
     id: string | null;
     isGroupOrder: boolean;
+    name: string | null;
+    shareCode: string | null;
+    status: string | null;
+    siblingOrders: {
+      id: string;
+      orderNumber: string;
+      customerName: string;
+      total: number;
+      status: string;
+    }[];
   };
   notes: {
     customer: string | null;
@@ -541,6 +551,74 @@ export default function OrderDetailPage(): ReactElement {
                   </div>
                 </div>
               </div>
+
+              {/* Group Order Info - Only show if part of a group */}
+              {order.groupOrder.isGroupOrder && order.groupOrder.id && (
+                <div className="bg-white rounded-xl shadow-sm border border-purple-200 overflow-hidden">
+                  <div className="flex items-center gap-3 px-6 py-4 border-b border-purple-100 bg-purple-50">
+                    <span className="text-purple-500">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                    </span>
+                    <h2 className="text-lg font-semibold text-purple-900">Part of Group Order</h2>
+                  </div>
+                  <div className="p-6 space-y-4">
+                    <div>
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Parent Group</p>
+                      <Link
+                        href={`/ops/group-orders/${order.groupOrder.id}`}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors font-medium"
+                      >
+                        <span className="font-mono">{order.groupOrder.shareCode}</span>
+                        {order.groupOrder.name && (
+                          <span className="text-purple-600">- {order.groupOrder.name}</span>
+                        )}
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </Link>
+                      {order.groupOrder.status && (
+                        <span className={`ml-2 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                          order.groupOrder.status === 'COMPLETED' ? 'bg-green-100 text-green-700' :
+                          order.groupOrder.status === 'ACTIVE' ? 'bg-blue-100 text-blue-700' :
+                          'bg-gray-100 text-gray-700'
+                        }`}>
+                          {order.groupOrder.status}
+                        </span>
+                      )}
+                    </div>
+
+                    {order.groupOrder.siblingOrders.length > 0 && (
+                      <div>
+                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
+                          Other Orders in This Group ({order.groupOrder.siblingOrders.length})
+                        </p>
+                        <div className="space-y-2">
+                          {order.groupOrder.siblingOrders.map((sibling) => (
+                            <Link
+                              key={sibling.id}
+                              href={`/ops/orders/${sibling.id}`}
+                              className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                            >
+                              <div>
+                                <span className="font-mono text-sm text-gray-900">#{sibling.orderNumber}</span>
+                                <span className="text-gray-500 ml-2">- {sibling.customerName}</span>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <span className="font-medium text-gray-900">${sibling.total.toFixed(2)}</span>
+                                <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${getStatusColor(sibling.status)}`}>
+                                  {sibling.status}
+                                </span>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Payment Info */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">

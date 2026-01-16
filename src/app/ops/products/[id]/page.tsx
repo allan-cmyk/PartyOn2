@@ -75,6 +75,20 @@ interface ProductData {
   updatedAt: string;
 }
 
+interface EditFormData {
+  title: string;
+  handle: string;
+  description: string;
+  vendor: string;
+  productType: string;
+  tags: string;
+  basePrice: string;
+  compareAtPrice: string;
+  abv: string;
+  metaTitle: string;
+  metaDescription: string;
+}
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }
@@ -86,25 +100,99 @@ export default function ProductDetailPage({ params }: PageProps) {
   const [error, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<number>(0);
   const [saving, setSaving] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const [formData, setFormData] = useState<EditFormData>({
+    title: '', handle: '', description: '', vendor: '', productType: '',
+    tags: '', basePrice: '', compareAtPrice: '', abv: '', metaTitle: '', metaDescription: ''
+  });
 
   useEffect(() => {
-    async function fetchProduct() {
-      try {
-        const response = await fetch(`/api/v1/admin/products/${id}`);
-        const result = await response.json();
-        if (result.success) {
-          setProduct(result.data);
-        } else {
-          setError(result.error || 'Failed to load product');
-        }
-      } catch {
-        setError('Failed to fetch product');
-      } finally {
-        setLoading(false);
-      }
-    }
     fetchProduct();
   }, [id]);
+
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
+
+  async function fetchProduct() {
+    try {
+      const response = await fetch(`/api/v1/admin/products/${id}`);
+      const result = await response.json();
+      if (result.success) {
+        setProduct(result.data);
+        initFormData(result.data);
+      } else {
+        setError(result.error || 'Failed to load product');
+      }
+    } catch {
+      setError('Failed to fetch product');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function initFormData(p: ProductData) {
+    setFormData({
+      title: p.title,
+      handle: p.handle,
+      description: p.description || '',
+      vendor: p.vendor || '',
+      productType: p.productType || '',
+      tags: p.tags.join(', '),
+      basePrice: p.basePrice.toString(),
+      compareAtPrice: p.compareAtPrice?.toString() || '',
+      abv: p.abv?.toString() || '',
+      metaTitle: p.metaTitle || '',
+      metaDescription: p.metaDescription || '',
+    });
+  }
+
+  const handleSave = async () => {
+    if (!product) return;
+    setSaving(true);
+    try {
+      const response = await fetch(`/api/v1/admin/products/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: formData.title,
+          handle: formData.handle,
+          description: formData.description || null,
+          vendor: formData.vendor || null,
+          productType: formData.productType || null,
+          tags: formData.tags ? formData.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
+          basePrice: parseFloat(formData.basePrice) || 0,
+          compareAtPrice: formData.compareAtPrice ? parseFloat(formData.compareAtPrice) : null,
+          abv: formData.abv ? parseFloat(formData.abv) : null,
+          metaTitle: formData.metaTitle || null,
+          metaDescription: formData.metaDescription || null,
+        }),
+      });
+      const result = await response.json();
+      if (result.success) {
+        setProduct(result.data);
+        setEditMode(false);
+        setToast({ message: 'Product saved successfully', type: 'success' });
+      } else {
+        setToast({ message: result.error || 'Failed to save', type: 'error' });
+      }
+    } catch {
+      setToast({ message: 'Failed to save product', type: 'error' });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleCancel = () => {
+    if (product) initFormData(product);
+    setEditMode(false);
+  };
 
   const updateStatus = async (newStatus: string) => {
     if (!product) return;
@@ -118,11 +206,32 @@ export default function ProductDetailPage({ params }: PageProps) {
       const result = await response.json();
       if (result.success) {
         setProduct({ ...product, status: newStatus as ProductData['status'] });
+        setToast({ message: `Product ${newStatus.toLowerCase()}`, type: 'success' });
       }
     } catch {
-      console.error('Failed to update status');
+      setToast({ message: 'Failed to update status', type: 'error' });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleDelete = async (permanent: boolean) => {
+    setDeleting(true);
+    try {
+      const url = permanent ? `/api/v1/admin/products/${id}?permanent=true` : `/api/v1/admin/products/${id}`;
+      const response = await fetch(url, { method: 'DELETE' });
+      const result = await response.json();
+      if (result.success) {
+        window.location.href = '/ops/products';
+      } else {
+        setToast({ message: result.error || 'Failed to delete', type: 'error' });
+        setShowDeleteModal(false);
+      }
+    } catch {
+      setToast({ message: 'Failed to delete product', type: 'error' });
+      setShowDeleteModal(false);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -172,10 +281,7 @@ export default function ProductDetailPage({ params }: PageProps) {
         <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6 text-center">
           <h2 className="text-lg font-semibold text-red-800 mb-2">Error Loading Product</h2>
           <p className="text-red-600 mb-4">{error || 'Product not found'}</p>
-          <Link
-            href="/ops/products"
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-          >
+          <Link href="/ops/products" className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
             Back to Products
           </Link>
         </div>
@@ -187,55 +293,121 @@ export default function ProductDetailPage({ params }: PageProps) {
 
   return (
     <div className="p-8">
+      {/* Toast Notification */}
+      {toast && (
+        <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg ${
+          toast.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+        }`}>
+          {toast.message}
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-xl">
+            <h3 className="text-lg font-bold text-black mb-2">Delete Product?</h3>
+            <p className="text-gray-600 mb-4">
+              {product.stats.orderCount > 0
+                ? `This product has ${product.stats.orderCount} orders. It will be archived instead of permanently deleted.`
+                : 'This will permanently delete the product. This action cannot be undone.'}
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
+                disabled={deleting}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleDelete(product.stats.orderCount === 0)}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
+                disabled={deleting}
+              >
+                {deleting ? 'Deleting...' : product.stats.orderCount > 0 ? 'Archive' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Breadcrumb */}
       <nav className="mb-6 flex items-center gap-2 text-sm">
-        <Link href="/ops/products" className="text-blue-600 hover:underline">
-          Products
-        </Link>
+        <Link href="/ops/products" className="text-blue-600 hover:underline">Products</Link>
         <span className="text-gray-400">/</span>
         <span className="text-gray-600 truncate max-w-xs">{product.title}</span>
       </nav>
 
       {/* Header */}
       <div className="flex items-start justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-black mb-2">{product.title}</h1>
+        <div className="flex-1">
+          {editMode ? (
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              className="text-2xl font-bold text-black mb-2 w-full border-2 border-blue-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500"
+              placeholder="Product title"
+            />
+          ) : (
+            <h1 className="text-2xl font-bold text-black mb-2">{product.title}</h1>
+          )}
           <div className="flex items-center gap-3">
             <span className={`inline-flex px-3 py-1 text-sm font-medium rounded-full border ${getStatusColor(product.status)}`}>
               {product.status}
             </span>
-            {product.vendor && (
-              <span className="text-gray-500">by {product.vendor}</span>
-            )}
-            {product.productType && (
-              <span className="text-gray-400">| {product.productType}</span>
-            )}
+            {!editMode && product.vendor && <span className="text-gray-500">by {product.vendor}</span>}
+            {!editMode && product.productType && <span className="text-gray-400">| {product.productType}</span>}
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {product.status === 'ACTIVE' ? (
-            <button
-              onClick={() => updateStatus('DRAFT')}
-              disabled={saving}
-              className="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-lg hover:bg-yellow-200 disabled:opacity-50"
-            >
-              {saving ? 'Saving...' : 'Deactivate'}
-            </button>
+          {editMode ? (
+            <>
+              <button onClick={handleCancel} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              >
+                {saving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </>
           ) : (
-            <button
-              onClick={() => updateStatus('ACTIVE')}
-              disabled={saving}
-              className="px-4 py-2 bg-green-100 text-green-800 rounded-lg hover:bg-green-200 disabled:opacity-50"
-            >
-              {saving ? 'Saving...' : 'Activate'}
-            </button>
+            <>
+              <button
+                onClick={() => setEditMode(true)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
+                Edit
+              </button>
+              {product.status === 'ACTIVE' ? (
+                <button onClick={() => updateStatus('DRAFT')} disabled={saving}
+                  className="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-lg hover:bg-yellow-200 disabled:opacity-50">
+                  {saving ? 'Saving...' : 'Deactivate'}
+                </button>
+              ) : product.status === 'ARCHIVED' ? (
+                <button onClick={() => updateStatus('ACTIVE')} disabled={saving}
+                  className="px-4 py-2 bg-green-100 text-green-800 rounded-lg hover:bg-green-200 disabled:opacity-50">
+                  {saving ? 'Saving...' : 'Restore'}
+                </button>
+              ) : (
+                <button onClick={() => updateStatus('ACTIVE')} disabled={saving}
+                  className="px-4 py-2 bg-green-100 text-green-800 rounded-lg hover:bg-green-200 disabled:opacity-50">
+                  {saving ? 'Saving...' : 'Activate'}
+                </button>
+              )}
+              <button onClick={() => setShowDeleteModal(true)}
+                className="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200">
+                Delete
+              </button>
+              <Link href="/ops/products" className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                Back
+              </Link>
+            </>
           )}
-          <Link
-            href="/ops/products"
-            className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
-          >
-            Back
-          </Link>
         </div>
       </div>
 
@@ -244,38 +416,17 @@ export default function ProductDetailPage({ params }: PageProps) {
         {/* Image Gallery */}
         <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
           <h2 className="font-semibold text-black mb-4">Images ({product.images.length})</h2>
-
           {product.images.length > 0 ? (
             <>
-              {/* Main Image */}
               <div className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden mb-4">
-                <Image
-                  src={mainImage.url}
-                  alt={mainImage.altText || product.title}
-                  fill
-                  className="object-contain"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
+                <Image src={mainImage.url} alt={mainImage.altText || product.title} fill className="object-contain" sizes="(max-width: 768px) 100vw, 50vw" />
               </div>
-
-              {/* Thumbnail Strip */}
               {product.images.length > 1 && (
                 <div className="flex gap-2 overflow-x-auto pb-2">
                   {product.images.map((img, idx) => (
-                    <button
-                      key={img.id}
-                      onClick={() => setSelectedImage(idx)}
-                      className={`relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border-2 ${
-                        selectedImage === idx ? 'border-blue-500' : 'border-gray-200'
-                      }`}
-                    >
-                      <Image
-                        src={img.url}
-                        alt={img.altText || `Image ${idx + 1}`}
-                        fill
-                        className="object-cover"
-                        sizes="80px"
-                      />
+                    <button key={img.id} onClick={() => setSelectedImage(idx)}
+                      className={`relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border-2 ${selectedImage === idx ? 'border-blue-500' : 'border-gray-200'}`}>
+                      <Image src={img.url} alt={img.altText || `Image ${idx + 1}`} fill className="object-cover" sizes="80px" />
                     </button>
                   ))}
                 </div>
@@ -298,20 +449,77 @@ export default function ProductDetailPage({ params }: PageProps) {
           {/* Pricing */}
           <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
             <h2 className="font-semibold text-black mb-4">Pricing</h2>
-            <div className="flex items-baseline gap-4">
-              <span className="text-3xl font-bold text-black">
-                {formatCurrency(product.basePrice)}
-              </span>
-              {product.compareAtPrice && (
-                <span className="text-xl text-gray-400 line-through">
-                  {formatCurrency(product.compareAtPrice)}
-                </span>
-              )}
-            </div>
-            {product.abv !== null && (
-              <p className="text-sm text-gray-500 mt-2">ABV: {product.abv}%</p>
+            {editMode ? (
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm text-gray-500 mb-1">Price ($)</label>
+                  <input type="number" step="0.01" value={formData.basePrice}
+                    onChange={(e) => setFormData({ ...formData, basePrice: e.target.value })}
+                    className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500" />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-500 mb-1">Compare At ($)</label>
+                  <input type="number" step="0.01" value={formData.compareAtPrice}
+                    onChange={(e) => setFormData({ ...formData, compareAtPrice: e.target.value })}
+                    placeholder="Original price"
+                    className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500" />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-500 mb-1">ABV (%)</label>
+                  <input type="number" step="0.1" value={formData.abv}
+                    onChange={(e) => setFormData({ ...formData, abv: e.target.value })}
+                    placeholder="Alcohol by volume"
+                    className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500" />
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-baseline gap-4">
+                  <span className="text-3xl font-bold text-black">{formatCurrency(product.basePrice)}</span>
+                  {product.compareAtPrice && (
+                    <span className="text-xl text-gray-400 line-through">{formatCurrency(product.compareAtPrice)}</span>
+                  )}
+                </div>
+                {product.abv !== null && <p className="text-sm text-gray-500 mt-2">ABV: {product.abv}%</p>}
+              </>
             )}
           </div>
+
+          {/* Details */}
+          {editMode && (
+            <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
+              <h2 className="font-semibold text-black mb-4">Details</h2>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm text-gray-500 mb-1">Handle (URL slug)</label>
+                  <input type="text" value={formData.handle}
+                    onChange={(e) => setFormData({ ...formData, handle: e.target.value })}
+                    className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm text-gray-500 mb-1">Vendor</label>
+                    <input type="text" value={formData.vendor}
+                      onChange={(e) => setFormData({ ...formData, vendor: e.target.value })}
+                      className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500" />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-500 mb-1">Product Type</label>
+                    <input type="text" value={formData.productType}
+                      onChange={(e) => setFormData({ ...formData, productType: e.target.value })}
+                      className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-500 mb-1">Tags (comma separated)</label>
+                  <input type="text" value={formData.tags}
+                    onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                    placeholder="wine, red, premium"
+                    className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500" />
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Stats */}
           <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
@@ -332,56 +540,53 @@ export default function ProductDetailPage({ params }: PageProps) {
             </div>
           </div>
 
-          {/* Categories & Tags */}
-          <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
-            <h2 className="font-semibold text-black mb-4">Organization</h2>
-            {product.categories.length > 0 && (
-              <div className="mb-4">
-                <p className="text-sm text-gray-500 mb-2">Categories</p>
-                <div className="flex flex-wrap gap-2">
-                  {product.categories.map((cat) => (
-                    <span
-                      key={cat.id}
-                      className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
-                    >
-                      {cat.title}
-                    </span>
-                  ))}
+          {/* Categories & Tags (view mode only) */}
+          {!editMode && (
+            <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
+              <h2 className="font-semibold text-black mb-4">Organization</h2>
+              {product.categories.length > 0 && (
+                <div className="mb-4">
+                  <p className="text-sm text-gray-500 mb-2">Categories</p>
+                  <div className="flex flex-wrap gap-2">
+                    {product.categories.map((cat) => (
+                      <span key={cat.id} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">{cat.title}</span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-            {product.tags.length > 0 && (
-              <div>
-                <p className="text-sm text-gray-500 mb-2">Tags</p>
-                <div className="flex flex-wrap gap-2">
-                  {product.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+              )}
+              {product.tags.length > 0 && (
+                <div>
+                  <p className="text-sm text-gray-500 mb-2">Tags</p>
+                  <div className="flex flex-wrap gap-2">
+                    {product.tags.map((tag) => (
+                      <span key={tag} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">{tag}</span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-            {product.categories.length === 0 && product.tags.length === 0 && (
-              <p className="text-gray-400 text-sm">No categories or tags</p>
-            )}
-          </div>
+              )}
+              {product.categories.length === 0 && product.tags.length === 0 && (
+                <p className="text-gray-400 text-sm">No categories or tags</p>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
       {/* Description */}
-      {product.descriptionHtml && (
-        <div className="bg-white border-2 border-gray-200 rounded-lg p-6 mb-8">
-          <h2 className="font-semibold text-black mb-4">Description</h2>
-          <div
-            className="prose prose-sm max-w-none text-gray-700"
-            dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
-          />
-        </div>
-      )}
+      <div className="bg-white border-2 border-gray-200 rounded-lg p-6 mb-8">
+        <h2 className="font-semibold text-black mb-4">Description</h2>
+        {editMode ? (
+          <textarea value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            rows={6}
+            placeholder="Product description..."
+            className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500" />
+        ) : product.descriptionHtml ? (
+          <div className="prose prose-sm max-w-none text-gray-700" dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
+        ) : (
+          <p className="text-gray-400">No description</p>
+        )}
+      </div>
 
       {/* Variants Table */}
       <div className="bg-white border-2 border-gray-200 rounded-lg overflow-hidden mb-8">
@@ -406,39 +611,25 @@ export default function ProductDetailPage({ params }: PageProps) {
                     <div className="flex items-center gap-3">
                       {variant.image && (
                         <div className="relative w-10 h-10 rounded overflow-hidden flex-shrink-0">
-                          <Image
-                            src={variant.image.url}
-                            alt={variant.image.altText || variant.title}
-                            fill
-                            className="object-cover"
-                            sizes="40px"
-                          />
+                          <Image src={variant.image.url} alt={variant.image.altText || variant.title} fill className="object-cover" sizes="40px" />
                         </div>
                       )}
                       <div>
                         <p className="font-medium text-black">{variant.title}</p>
                         <div className="flex gap-2 text-xs text-gray-500">
-                          {variant.options.option1 && (
-                            <span>{variant.options.option1.name}: {variant.options.option1.value}</span>
-                          )}
-                          {variant.options.option2 && (
-                            <span>| {variant.options.option2.name}: {variant.options.option2.value}</span>
-                          )}
+                          {variant.options.option1 && <span>{variant.options.option1.name}: {variant.options.option1.value}</span>}
+                          {variant.options.option2 && <span>| {variant.options.option2.name}: {variant.options.option2.value}</span>}
                         </div>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <code className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded">
-                      {variant.sku || '-'}
-                    </code>
+                    <code className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded">{variant.sku || '-'}</code>
                   </td>
                   <td className="px-6 py-4 text-right">
                     <span className="font-medium text-black">{formatCurrency(variant.price)}</span>
                     {variant.compareAtPrice && (
-                      <span className="text-xs text-gray-400 line-through block">
-                        {formatCurrency(variant.compareAtPrice)}
-                      </span>
+                      <span className="text-xs text-gray-400 line-through block">{formatCurrency(variant.compareAtPrice)}</span>
                     )}
                   </td>
                   <td className="px-6 py-4 text-right">
@@ -478,23 +669,46 @@ export default function ProductDetailPage({ params }: PageProps) {
       {/* Metadata */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* SEO */}
-        {(product.metaTitle || product.metaDescription) && (
-          <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
-            <h2 className="font-semibold text-black mb-4">SEO</h2>
-            {product.metaTitle && (
-              <div className="mb-3">
-                <p className="text-xs text-gray-500 uppercase mb-1">Meta Title</p>
-                <p className="text-gray-800">{product.metaTitle}</p>
-              </div>
-            )}
-            {product.metaDescription && (
+        <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
+          <h2 className="font-semibold text-black mb-4">SEO</h2>
+          {editMode ? (
+            <div className="space-y-4">
               <div>
-                <p className="text-xs text-gray-500 uppercase mb-1">Meta Description</p>
-                <p className="text-gray-600 text-sm">{product.metaDescription}</p>
+                <label className="block text-sm text-gray-500 mb-1">Meta Title</label>
+                <input type="text" value={formData.metaTitle}
+                  onChange={(e) => setFormData({ ...formData, metaTitle: e.target.value })}
+                  placeholder="Page title for search engines"
+                  className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500" />
               </div>
-            )}
-          </div>
-        )}
+              <div>
+                <label className="block text-sm text-gray-500 mb-1">Meta Description</label>
+                <textarea value={formData.metaDescription}
+                  onChange={(e) => setFormData({ ...formData, metaDescription: e.target.value })}
+                  rows={3}
+                  placeholder="Brief description for search results"
+                  className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500" />
+              </div>
+            </div>
+          ) : (
+            <>
+              {product.metaTitle && (
+                <div className="mb-3">
+                  <p className="text-xs text-gray-500 uppercase mb-1">Meta Title</p>
+                  <p className="text-gray-800">{product.metaTitle}</p>
+                </div>
+              )}
+              {product.metaDescription && (
+                <div>
+                  <p className="text-xs text-gray-500 uppercase mb-1">Meta Description</p>
+                  <p className="text-gray-600 text-sm">{product.metaDescription}</p>
+                </div>
+              )}
+              {!product.metaTitle && !product.metaDescription && (
+                <p className="text-gray-400 text-sm">No SEO metadata</p>
+              )}
+            </>
+          )}
+        </div>
 
         {/* System Info */}
         <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
@@ -522,12 +736,6 @@ export default function ProductDetailPage({ params }: PageProps) {
               <span className="text-gray-500">Last Updated</span>
               <span className="text-gray-700">{new Date(product.updatedAt).toLocaleDateString()}</span>
             </div>
-            {product.shopifySyncedAt && (
-              <div className="flex justify-between">
-                <span className="text-gray-500">Last Synced</span>
-                <span className="text-gray-700">{new Date(product.shopifySyncedAt).toLocaleDateString()}</span>
-              </div>
-            )}
           </div>
         </div>
       </div>

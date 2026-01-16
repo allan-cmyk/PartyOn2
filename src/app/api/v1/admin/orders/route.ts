@@ -13,6 +13,8 @@ interface OrderListParams {
   financialStatus?: FinancialStatus;
   fulfillmentStatus?: FulfillmentStatus;
   deliveryType?: DeliveryType;
+  groupType?: 'all' | 'regular' | 'group';
+  groupOrderId?: string;
   dateFrom?: string;
   dateTo?: string;
   customerId?: string;
@@ -32,6 +34,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       financialStatus: (searchParams.get('financialStatus') as FinancialStatus) || undefined,
       fulfillmentStatus: (searchParams.get('fulfillmentStatus') as FulfillmentStatus) || undefined,
       deliveryType: (searchParams.get('deliveryType') as DeliveryType) || undefined,
+      groupType: (searchParams.get('groupType') as 'all' | 'regular' | 'group') || undefined,
+      groupOrderId: searchParams.get('groupOrderId') || undefined,
       dateFrom: searchParams.get('dateFrom') || undefined,
       dateTo: searchParams.get('dateTo') || undefined,
       customerId: searchParams.get('customerId') || undefined,
@@ -58,6 +62,16 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     if (params.fulfillmentStatus) where.fulfillmentStatus = params.fulfillmentStatus;
     if (params.deliveryType) where.deliveryType = params.deliveryType;
     if (params.customerId) where.customerId = params.customerId;
+
+    // Group order filtering
+    if (params.groupType === 'regular') {
+      where.groupOrderId = null;
+    } else if (params.groupType === 'group') {
+      where.groupOrderId = { not: null };
+    }
+    if (params.groupOrderId) {
+      where.groupOrderId = params.groupOrderId;
+    }
 
     if (params.dateFrom || params.dateTo) {
       where.createdAt = {};
@@ -87,6 +101,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
           include: {
             product: { select: { title: true } },
           },
+        },
+        groupOrder: {
+          select: { id: true, shareCode: true, name: true, status: true },
         },
         _count: {
           select: { items: true },
@@ -119,6 +136,14 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       deliveryTime: order.deliveryTime,
       deliveryType: order.deliveryType,
       createdAt: order.createdAt.toISOString(),
+      // Group order info
+      groupOrderId: order.groupOrderId,
+      groupOrder: order.groupOrder ? {
+        id: order.groupOrder.id,
+        shareCode: order.groupOrder.shareCode,
+        name: order.groupOrder.name,
+        status: order.groupOrder.status,
+      } : null,
     }));
 
     // Get summary stats
