@@ -13,6 +13,7 @@ interface ProductListParams {
   status?: ProductStatus;
   category?: string;
   vendor?: string;
+  productTypes?: string[]; // Filter by multiple product types
   sortBy?: 'title' | 'price' | 'createdAt' | 'inventory';
   sortOrder?: 'asc' | 'desc';
   page?: number;
@@ -23,11 +24,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const searchParams = request.nextUrl.searchParams;
 
+    const productTypesParam = searchParams.get('productTypes');
     const params: ProductListParams = {
       search: searchParams.get('search') || undefined,
       status: (searchParams.get('status') as ProductStatus) || undefined,
       category: searchParams.get('category') || undefined,
       vendor: searchParams.get('vendor') || undefined,
+      productTypes: productTypesParam ? productTypesParam.split(',').filter(Boolean) : undefined,
       sortBy: (searchParams.get('sortBy') as ProductListParams['sortBy']) || 'title',
       sortOrder: (searchParams.get('sortOrder') as 'asc' | 'desc') || 'asc',
       page: parseInt(searchParams.get('page') || '1'),
@@ -57,6 +60,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     if (params.category) {
       where.categories = {
         some: { category: { handle: params.category } },
+      };
+    }
+
+    // Filter by product types (for hierarchical category filtering)
+    if (params.productTypes && params.productTypes.length > 0) {
+      where.productType = {
+        in: params.productTypes,
       };
     }
 

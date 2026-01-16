@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, ReactElement } from 'react';
 import Link from 'next/link';
+import { PRODUCT_CATEGORIES, getCategoryByProductType, getCategoryColor } from '@/lib/product-categories';
 
 interface ProductVariant {
   id: string;
@@ -113,9 +114,15 @@ export default function ProductsPage(): ReactElement {
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [vendorFilter, setVendorFilter] = useState<string>('');
   const [categoryFilter, setCategoryFilter] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string>('');
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<string>('title');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  // Get subcategories for selected category
+  const activeCategory = PRODUCT_CATEGORIES.find(c => c.id === selectedCategory);
+  const subcategories = activeCategory?.subcategories || [];
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
@@ -125,6 +132,17 @@ export default function ProductsPage(): ReactElement {
       if (statusFilter) params.set('status', statusFilter);
       if (vendorFilter) params.set('vendor', vendorFilter);
       if (categoryFilter) params.set('category', categoryFilter);
+
+      // Add productTypes filter based on selected category/subcategory
+      if (selectedSubcategory && activeCategory) {
+        const sub = activeCategory.subcategories.find(s => s.label === selectedSubcategory);
+        if (sub) {
+          params.set('productTypes', sub.productTypes.join(','));
+        }
+      } else if (selectedCategory && activeCategory) {
+        params.set('productTypes', activeCategory.allProductTypes.join(','));
+      }
+
       params.set('page', page.toString());
       params.set('sortBy', sortBy);
       params.set('sortOrder', sortOrder);
@@ -140,7 +158,7 @@ export default function ProductsPage(): ReactElement {
     } finally {
       setLoading(false);
     }
-  }, [search, statusFilter, vendorFilter, categoryFilter, page, sortBy, sortOrder]);
+  }, [search, statusFilter, vendorFilter, categoryFilter, selectedCategory, selectedSubcategory, activeCategory, page, sortBy, sortOrder]);
 
   useEffect(() => {
     const debounce = setTimeout(() => {
@@ -277,9 +295,71 @@ export default function ProductsPage(): ReactElement {
         />
       </div>
 
+      {/* Category Filter Pills */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-4">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
+          <button
+            onClick={() => { setSelectedCategory(''); setSelectedSubcategory(''); setPage(1); }}
+            className={`px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-all flex items-center gap-2 ${
+              !selectedCategory
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+            </svg>
+            All Products
+          </button>
+          {PRODUCT_CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => { setSelectedCategory(cat.id); setSelectedSubcategory(''); setPage(1); }}
+              className={`px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-all ${
+                selectedCategory === cat.id
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Subcategory Pills */}
+        {subcategories.length > 0 && (
+          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100 overflow-x-auto pb-1">
+            <span className="text-xs text-gray-500 font-medium mr-1">Subcategory:</span>
+            <button
+              onClick={() => { setSelectedSubcategory(''); setPage(1); }}
+              className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-all ${
+                !selectedSubcategory
+                  ? 'bg-blue-100 text-blue-700 border border-blue-200'
+                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
+              }`}
+            >
+              All {activeCategory?.label}
+            </button>
+            {subcategories.map((sub) => (
+              <button
+                key={sub.label}
+                onClick={() => { setSelectedSubcategory(sub.label); setPage(1); }}
+                className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-all ${
+                  selectedSubcategory === sub.label
+                    ? 'bg-blue-100 text-blue-700 border border-blue-200'
+                    : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
+                }`}
+              >
+                {sub.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Filters */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="md:col-span-2">
             <div className="relative">
               <svg className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -314,17 +394,6 @@ export default function ProductsPage(): ReactElement {
             <option value="">All Vendors</option>
             {data?.filters.vendors.map((vendor) => (
               <option key={vendor} value={vendor}>{vendor}</option>
-            ))}
-          </select>
-
-          <select
-            value={categoryFilter}
-            onChange={(e) => { setCategoryFilter(e.target.value); setPage(1); }}
-            className="px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-          >
-            <option value="">All Categories</option>
-            {data?.filters.categories.map((cat) => (
-              <option key={cat.handle} value={cat.handle}>{cat.title}</option>
             ))}
           </select>
         </div>
@@ -429,19 +498,30 @@ export default function ProductsPage(): ReactElement {
                           </svg>
                         </div>
                       )}
-                      <div>
+                      <div className="min-w-0">
                         <Link
                           href={`/ops/products/${product.id}`}
                           className="font-medium text-gray-900 group-hover:text-blue-600 transition-colors"
                         >
                           {product.title}
                         </Link>
-                        <p className="text-sm text-gray-500">
-                          {product.variantCount} variant{product.variantCount !== 1 ? 's' : ''}
-                          {product.categories.length > 0 && (
-                            <span className="text-gray-400"> · {product.categories.map(c => c.title).join(', ')}</span>
-                          )}
-                        </p>
+                        <div className="flex items-center gap-2 mt-1 flex-wrap">
+                          {product.productType && (() => {
+                            const category = getCategoryByProductType(product.productType);
+                            return category ? (
+                              <span className={`inline-flex px-2 py-0.5 text-xs font-medium rounded border ${getCategoryColor(category.id)}`}>
+                                {category.label}
+                              </span>
+                            ) : (
+                              <span className="inline-flex px-2 py-0.5 text-xs font-medium rounded border bg-gray-100 text-gray-600 border-gray-200">
+                                {product.productType}
+                              </span>
+                            );
+                          })()}
+                          <span className="text-xs text-gray-400">
+                            {product.variantCount} variant{product.variantCount !== 1 ? 's' : ''}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </td>

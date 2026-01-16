@@ -40,6 +40,20 @@ interface Order {
   groupOrder: GroupOrderInfo | null;
 }
 
+// Grouped order type for accordion display
+interface GroupedOrder {
+  groupId: string;
+  groupInfo: GroupOrderInfo;
+  orders: Order[];
+  totalAmount: number;
+  totalItems: number;
+}
+
+// Type for display items (either individual order or grouped order)
+type DisplayItem =
+  | { type: 'individual'; order: Order }
+  | { type: 'group'; group: GroupedOrder };
+
 interface OrdersData {
   orders: Order[];
   pagination: { page: number; limit: number; total: number; pages: number };
@@ -120,6 +134,332 @@ function FilterButton({
   );
 }
 
+// Helper functions for formatting
+function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(amount);
+}
+
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
+function formatDateTime(dateStr: string): string {
+  return new Date(dateStr).toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+}
+
+function getStatusColor(status: string): string {
+  switch (status) {
+    case 'CONFIRMED':
+      return 'bg-green-100 text-green-700 border border-green-200';
+    case 'PENDING':
+      return 'bg-yellow-100 text-yellow-700 border border-yellow-200';
+    case 'CANCELLED':
+      return 'bg-red-100 text-red-700 border border-red-200';
+    case 'COMPLETED':
+      return 'bg-blue-100 text-blue-700 border border-blue-200';
+    case 'PROCESSING':
+      return 'bg-purple-100 text-purple-700 border border-purple-200';
+    default:
+      return 'bg-gray-100 text-gray-700 border border-gray-200';
+  }
+}
+
+function getFulfillmentColor(status: string): string {
+  switch (status) {
+    case 'FULFILLED':
+      return 'bg-green-100 text-green-700 border border-green-200';
+    case 'UNFULFILLED':
+      return 'bg-orange-100 text-orange-700 border border-orange-200';
+    case 'PARTIAL':
+      return 'bg-yellow-100 text-yellow-700 border border-yellow-200';
+    default:
+      return 'bg-gray-100 text-gray-700 border border-gray-200';
+  }
+}
+
+function getGroupStatusColor(status: string): string {
+  switch (status) {
+    case 'ACTIVE':
+      return 'bg-green-100 text-green-700 border border-green-200';
+    case 'LOCKED':
+      return 'bg-blue-100 text-blue-700 border border-blue-200';
+    case 'COMPLETED':
+      return 'bg-gray-100 text-gray-700 border border-gray-200';
+    case 'CANCELLED':
+      return 'bg-red-100 text-red-700 border border-red-200';
+    case 'CLOSED':
+      return 'bg-gray-100 text-gray-700 border border-gray-200';
+    default:
+      return 'bg-gray-100 text-gray-700 border border-gray-200';
+  }
+}
+
+// Group Order Accordion Row Component
+function GroupOrderRow({
+  group,
+  isExpanded,
+  onToggle,
+}: {
+  group: GroupedOrder;
+  isExpanded: boolean;
+  onToggle: () => void;
+}): ReactElement {
+  return (
+    <>
+      {/* Main Group Row */}
+      <tr
+        className="bg-purple-50/50 hover:bg-purple-100/50 transition-colors cursor-pointer border-l-4 border-l-purple-500"
+        onClick={onToggle}
+      >
+        <td className="px-6 py-4">
+          <div className="flex items-center gap-2">
+            <button
+              className="p-1 hover:bg-purple-200 rounded transition-colors"
+              aria-label={isExpanded ? 'Collapse' : 'Expand'}
+            >
+              <svg
+                className={`w-5 h-5 text-purple-600 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+            <div>
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span className="font-bold text-purple-700 text-lg">
+                  Group: {group.groupInfo.shareCode}
+                </span>
+              </div>
+              <p className="text-sm text-purple-600 mt-0.5">{group.groupInfo.name}</p>
+            </div>
+          </div>
+        </td>
+        <td className="px-6 py-4">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center justify-center w-8 h-8 bg-purple-200 text-purple-700 rounded-full font-semibold text-sm">
+              {group.orders.length}
+            </span>
+            <span className="text-gray-600 text-sm">orders</span>
+          </div>
+        </td>
+        <td className="px-6 py-4 text-center">
+          <span className="inline-flex items-center justify-center w-8 h-8 bg-purple-100 rounded-full font-semibold text-purple-700">
+            {group.totalItems}
+          </span>
+        </td>
+        <td className="px-6 py-4 text-right">
+          <span className="font-bold text-purple-700 text-lg">{formatCurrency(group.totalAmount)}</span>
+        </td>
+        <td className="px-6 py-4 text-center">
+          <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${getGroupStatusColor(group.groupInfo.status)}`}>
+            {group.groupInfo.status}
+          </span>
+        </td>
+        <td className="px-6 py-4 text-center">
+          <span className="text-gray-500 text-sm">—</span>
+        </td>
+        <td className="px-6 py-4">
+          <div>
+            <p className="font-medium text-gray-900">{formatDate(group.orders[0]?.deliveryDate || '')}</p>
+            <p className="text-sm text-gray-500">{group.orders[0]?.deliveryTime || ''}</p>
+          </div>
+        </td>
+        <td className="px-6 py-4 text-right">
+          <Link
+            href={`/ops/group-orders/${group.groupId}`}
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-purple-700 bg-purple-100 rounded-lg hover:bg-purple-200 transition-colors"
+          >
+            View Details
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </Link>
+        </td>
+      </tr>
+
+      {/* Expanded Sub-Orders */}
+      {isExpanded && group.orders.map((order) => (
+        <tr key={order.id} className="bg-gray-50/80 hover:bg-gray-100/80 transition-colors border-l-4 border-l-purple-300">
+          <td className="px-6 py-3 pl-16">
+            <Link href={`/ops/orders/${order.id}`} className="block">
+              <span className="font-mono font-semibold text-blue-600 hover:text-blue-700">
+                #{order.orderNumber}
+              </span>
+            </Link>
+          </td>
+          <td className="px-6 py-3">
+            <div>
+              <p className="font-medium text-gray-900 text-sm">{order.customerName}</p>
+              <p className="text-xs text-gray-500">{order.customerEmail}</p>
+            </div>
+          </td>
+          <td className="px-6 py-3 text-center">
+            <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-200 rounded-full font-medium text-gray-700 text-sm">
+              {order.itemCount}
+            </span>
+          </td>
+          <td className="px-6 py-3 text-right">
+            <span className="font-semibold text-gray-900">{formatCurrency(order.total)}</span>
+          </td>
+          <td className="px-6 py-3 text-center">
+            <span className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
+              {order.status}
+            </span>
+          </td>
+          <td className="px-6 py-3 text-center">
+            <span className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${getFulfillmentColor(order.fulfillmentStatus)}`}>
+              {order.fulfillmentStatus}
+            </span>
+          </td>
+          <td className="px-6 py-3">
+            <span className="inline-flex px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded">
+              {order.deliveryType}
+            </span>
+          </td>
+          <td className="px-6 py-3 text-right">
+            <span className="text-gray-500 text-xs">{formatDateTime(order.createdAt)}</span>
+          </td>
+        </tr>
+      ))}
+    </>
+  );
+}
+
+// Regular Order Row Component
+function OrderRow({ order }: { order: Order }): ReactElement {
+  return (
+    <tr className="hover:bg-blue-50/50 transition-colors group">
+      <td className="px-6 py-4">
+        <Link href={`/ops/orders/${order.id}`} className="block">
+          <span className="font-mono font-bold text-blue-600 group-hover:text-blue-700 text-lg">
+            #{order.orderNumber}
+          </span>
+        </Link>
+        {order.groupOrder && (
+          <Link
+            href={`/ops/group-orders/${order.groupOrder.id}`}
+            className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 text-xs font-medium bg-purple-100 text-purple-700 rounded-full hover:bg-purple-200 transition-colors"
+            title={`Part of "${order.groupOrder.name}"`}
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            {order.groupOrder.shareCode}
+          </Link>
+        )}
+      </td>
+      <td className="px-6 py-4">
+        <div>
+          <p className="font-medium text-gray-900">{order.customerName}</p>
+          <p className="text-sm text-gray-500">{order.customerEmail}</p>
+        </div>
+      </td>
+      <td className="px-6 py-4 text-center">
+        <span className="inline-flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full font-semibold text-gray-700">
+          {order.itemCount}
+        </span>
+      </td>
+      <td className="px-6 py-4 text-right">
+        <span className="font-bold text-gray-900 text-lg">{formatCurrency(order.total)}</span>
+        {order.discountCode && (
+          <p className="text-xs text-green-600 font-medium">-{formatCurrency(order.discountAmount)} ({order.discountCode})</p>
+        )}
+      </td>
+      <td className="px-6 py-4 text-center">
+        <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
+          {order.status}
+        </span>
+      </td>
+      <td className="px-6 py-4 text-center">
+        <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${getFulfillmentColor(order.fulfillmentStatus)}`}>
+          {order.fulfillmentStatus}
+        </span>
+      </td>
+      <td className="px-6 py-4">
+        <div>
+          <p className="font-medium text-gray-900">{formatDate(order.deliveryDate)}</p>
+          <p className="text-sm text-gray-500">{order.deliveryTime}</p>
+          <span className="inline-flex px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded mt-1">
+            {order.deliveryType}
+          </span>
+        </div>
+      </td>
+      <td className="px-6 py-4 text-right">
+        <span className="text-gray-500 text-sm">{formatDateTime(order.createdAt)}</span>
+      </td>
+    </tr>
+  );
+}
+
+// Helper function to process orders into display items (grouped or individual)
+function processOrdersForDisplay(orders: Order[]): DisplayItem[] {
+  const groupMap = new Map<string, Order[]>();
+  const individualOrders: Order[] = [];
+
+  // Separate orders into groups and individuals
+  for (const order of orders) {
+    if (order.groupOrderId && order.groupOrder) {
+      const existing = groupMap.get(order.groupOrderId) || [];
+      existing.push(order);
+      groupMap.set(order.groupOrderId, existing);
+    } else {
+      individualOrders.push(order);
+    }
+  }
+
+  // Build display items
+  const displayItems: DisplayItem[] = [];
+
+  // Add grouped orders
+  for (const [groupId, groupOrders] of groupMap) {
+    const firstOrder = groupOrders[0];
+    if (firstOrder.groupOrder) {
+      displayItems.push({
+        type: 'group',
+        group: {
+          groupId,
+          groupInfo: firstOrder.groupOrder,
+          orders: groupOrders.sort((a, b) => a.orderNumber - b.orderNumber),
+          totalAmount: groupOrders.reduce((sum, o) => sum + o.total, 0),
+          totalItems: groupOrders.reduce((sum, o) => sum + o.itemCount, 0),
+        },
+      });
+    }
+  }
+
+  // Add individual orders
+  for (const order of individualOrders) {
+    displayItems.push({ type: 'individual', order });
+  }
+
+  // Sort by most recent first (using the first order's createdAt for groups)
+  displayItems.sort((a, b) => {
+    const dateA = a.type === 'group' ? new Date(a.group.orders[0].createdAt) : new Date(a.order.createdAt);
+    const dateB = b.type === 'group' ? new Date(b.group.orders[0].createdAt) : new Date(b.order.createdAt);
+    return dateB.getTime() - dateA.getTime();
+  });
+
+  return displayItems;
+}
+
 export default function OrdersPage(): ReactElement {
   const [data, setData] = useState<OrdersData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -131,6 +471,20 @@ export default function OrdersPage(): ReactElement {
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<string>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+
+  // Toggle group expansion
+  const toggleGroupExpansion = (groupId: string) => {
+    setExpandedGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(groupId)) {
+        next.delete(groupId);
+      } else {
+        next.add(groupId);
+      }
+      return next;
+    });
+  };
 
   const fetchOrders = useCallback(async () => {
     setLoading(true);
@@ -164,60 +518,6 @@ export default function OrdersPage(): ReactElement {
     }, 300);
     return () => clearTimeout(debounce);
   }, [fetchOrders]);
-
-  const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
-  };
-
-  const formatDate = (dateStr: string): string => {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
-
-  const formatDateTime = (dateStr: string): string => {
-    return new Date(dateStr).toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-    });
-  };
-
-  const getStatusColor = (status: string): string => {
-    switch (status) {
-      case 'CONFIRMED':
-        return 'bg-green-100 text-green-700 border border-green-200';
-      case 'PENDING':
-        return 'bg-yellow-100 text-yellow-700 border border-yellow-200';
-      case 'CANCELLED':
-        return 'bg-red-100 text-red-700 border border-red-200';
-      case 'COMPLETED':
-        return 'bg-blue-100 text-blue-700 border border-blue-200';
-      case 'PROCESSING':
-        return 'bg-purple-100 text-purple-700 border border-purple-200';
-      default:
-        return 'bg-gray-100 text-gray-700 border border-gray-200';
-    }
-  };
-
-  const getFulfillmentColor = (status: string): string => {
-    switch (status) {
-      case 'FULFILLED':
-        return 'bg-green-100 text-green-700 border border-green-200';
-      case 'UNFULFILLED':
-        return 'bg-orange-100 text-orange-700 border border-orange-200';
-      case 'PARTIAL':
-        return 'bg-yellow-100 text-yellow-700 border border-yellow-200';
-      default:
-        return 'bg-gray-100 text-gray-700 border border-gray-200';
-    }
-  };
 
   const exportOrders = async () => {
     try {
@@ -500,68 +800,18 @@ export default function OrdersPage(): ReactElement {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {data?.orders.map((order) => (
-                <tr key={order.id} className="hover:bg-blue-50/50 transition-colors group">
-                  <td className="px-6 py-4">
-                    <Link href={`/ops/orders/${order.id}`} className="block">
-                      <span className="font-mono font-bold text-blue-600 group-hover:text-blue-700 text-lg">
-                        #{order.orderNumber}
-                      </span>
-                    </Link>
-                    {order.groupOrder && (
-                      <Link
-                        href={`/ops/group-orders/${order.groupOrder.id}`}
-                        className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 text-xs font-medium bg-purple-100 text-purple-700 rounded-full hover:bg-purple-200 transition-colors"
-                        title={`Part of "${order.groupOrder.name}"`}
-                      >
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        {order.groupOrder.shareCode}
-                      </Link>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div>
-                      <p className="font-medium text-gray-900">{order.customerName}</p>
-                      <p className="text-sm text-gray-500">{order.customerEmail}</p>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <span className="inline-flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full font-semibold text-gray-700">
-                      {order.itemCount}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <span className="font-bold text-gray-900 text-lg">{formatCurrency(order.total)}</span>
-                    {order.discountCode && (
-                      <p className="text-xs text-green-600 font-medium">-{formatCurrency(order.discountAmount)} ({order.discountCode})</p>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
-                      {order.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${getFulfillmentColor(order.fulfillmentStatus)}`}>
-                      {order.fulfillmentStatus}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div>
-                      <p className="font-medium text-gray-900">{formatDate(order.deliveryDate)}</p>
-                      <p className="text-sm text-gray-500">{order.deliveryTime}</p>
-                      <span className="inline-flex px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded mt-1">
-                        {order.deliveryType}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <span className="text-gray-500 text-sm">{formatDateTime(order.createdAt)}</span>
-                  </td>
-                </tr>
-              ))}
+              {processOrdersForDisplay(data?.orders || []).map((item) =>
+                item.type === 'group' ? (
+                  <GroupOrderRow
+                    key={`group-${item.group.groupId}`}
+                    group={item.group}
+                    isExpanded={expandedGroups.has(item.group.groupId)}
+                    onToggle={() => toggleGroupExpansion(item.group.groupId)}
+                  />
+                ) : (
+                  <OrderRow key={item.order.id} order={item.order} />
+                )
+              )}
             </tbody>
           </table>
         )}
