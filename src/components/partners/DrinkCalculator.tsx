@@ -289,7 +289,6 @@ export default function DrinkCalculator(): ReactElement {
   const [cocktailSpirits, setCocktailSpirits] = useState<string[]>([]);
   const [addWineChampagne, setAddWineChampagne] = useState(false);
   const [wineTypes, setWineTypes] = useState<string[]>([]);
-  const [addChampagne, setAddChampagne] = useState(false);
 
   // Lead capture state
   const [firstName, setFirstName] = useState('');
