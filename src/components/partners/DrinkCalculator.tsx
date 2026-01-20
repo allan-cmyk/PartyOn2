@@ -1,326 +1,929 @@
 'use client';
 
 import { useState, useMemo, type ReactElement } from 'react';
-import type { DrinkCalculatorResult } from '@/lib/partners/types';
+import { motion, AnimatePresence } from 'framer-motion';
 
-/**
- * Calculate recommended drink quantities based on event parameters
- */
-function calculateDrinks(
-  guestCount: number,
-  eventDuration: number,
-  beerPercent: number,
-  winePercent: number,
-  cocktailPercent: number
-): DrinkCalculatorResult {
-  // Average drinks per person per hour
-  const drinksPerPersonPerHour = 2;
-  const totalDrinks = guestCount * eventDuration * drinksPerPersonPerHour;
+// ============================================
+// Types
+// ============================================
 
-  // Calculate drinks by type
-  const beerDrinks = Math.ceil((totalDrinks * beerPercent) / 100);
-  const wineDrinks = Math.ceil((totalDrinks * winePercent) / 100);
-  const cocktailDrinks = Math.ceil((totalDrinks * cocktailPercent) / 100);
+type DrinkingLevel = 'light' | 'average' | 'heavy';
+type PartyType = 'bachelor' | 'bachelorette' | 'other';
+type BachelorPreference = 'mostly_beer' | 'mostly_seltzers' | 'good_mix';
+type BachelorettePreference = 'seltzers_only' | 'seltzers_wine';
+type DrinkPreference = BachelorPreference | BachelorettePreference;
+type Stage = 'calculate' | 'preferences' | 'lead_capture' | 'results';
 
-  // Beer: 12oz per can, 24 per case
-  const beerCans = beerDrinks;
-  const beerCases = Math.ceil(beerCans / 24);
-
-  // Wine: ~5 glasses per bottle
-  const wineBottles = Math.ceil(wineDrinks / 5);
-
-  // Cocktails: ~1.5oz liquor per drink, 750ml bottle = 17 drinks
-  const liquorBottles = Math.ceil(cocktailDrinks / 17);
-
-  // Mixers: roughly 1 bottle per 6-8 cocktails
-  const mixerBottles = Math.ceil(cocktailDrinks / 7);
-
-  // Ice: 1 bag per 5-6 guests
-  const iceBags = Math.ceil(guestCount / 5);
-
-  return {
-    beer: { cans: beerCans, cases: beerCases },
-    wine: { bottles: wineBottles },
-    liquor: { bottles: liquorBottles },
-    mixers: { bottles: mixerBottles },
-    ice: { bags: iceBags },
-  };
+interface ProductRecommendation {
+  name: string;
+  quantity: number;
+  unit: string;
 }
 
-/**
- * Result card component for displaying calculated quantities
- */
-function ResultCard({
-  icon,
-  label,
-  value,
-  subvalue,
+// ============================================
+// Constants
+// ============================================
+
+const DRINKS_PER_HOUR: Record<PartyType, Record<DrinkingLevel, number>> = {
+  bachelor: { light: 1.5, average: 2.0, heavy: 2.5 },
+  bachelorette: { light: 1.25, average: 1.75, heavy: 2.0 },
+  other: { light: 1.5, average: 2.0, heavy: 2.5 }, // Use bachelor rates as default
+};
+
+// Use bachelor rates as default for stage 1 (higher = safer to overestimate)
+const DEFAULT_DRINKS_PER_HOUR: Record<DrinkingLevel, number> = DRINKS_PER_HOUR.bachelor;
+
+// ============================================
+// Calculation Logic
+// ============================================
+
+function calculateTotalDrinks(
+  guests: number,
+  hours: number,
+  level: DrinkingLevel,
+  partyType?: PartyType
+): number {
+  const rate = partyType
+    ? DRINKS_PER_HOUR[partyType][level]
+    : DEFAULT_DRINKS_PER_HOUR[level];
+  return Math.ceil(guests * hours * rate);
+}
+
+function generateRecommendations(
+  totalDrinks: number,
+  partyType: PartyType,
+  preference: DrinkPreference,
+  addChampagne: boolean,
+  addCocktailKits: boolean,
+  guestCount: number
+): ProductRecommendation[] {
+  const recommendations: ProductRecommendation[] = [];
+
+  // Reduce total drinks by 25% if cocktail kits are included
+  const adjustedDrinks = addCocktailKits
+    ? Math.ceil(totalDrinks * 0.75)
+    : totalDrinks;
+
+  if (partyType === 'bachelor') {
+    if (preference === 'mostly_beer') {
+      // 40% Miller Lite, 40% Modelo, 20% Austin Beerworks
+      const millerLite = Math.ceil(adjustedDrinks * 0.4);
+      const modelo = Math.ceil(adjustedDrinks * 0.4);
+      const austinBeerworks = Math.ceil(adjustedDrinks * 0.2);
+
+      const millerCases = Math.ceil(millerLite / 24);
+      const modeloCases = Math.ceil(modelo / 24);
+      const austinPacks = Math.ceil(austinBeerworks / 12);
+
+      recommendations.push({ name: 'Miller Lite 24-pack', quantity: millerCases, unit: 'cases' });
+      recommendations.push({ name: 'Modelo Especial 24-pack', quantity: modeloCases, unit: 'cases' });
+      recommendations.push({ name: 'Austin Beerworks Variety 12-pack', quantity: austinPacks, unit: 'packs' });
+
+      // Add seltzers
+      if (guestCount >= 8) {
+        recommendations.push({ name: 'High Noon Variety 12-pack', quantity: 1, unit: 'pack' });
+        recommendations.push({ name: 'Surfside Variety 8-pack', quantity: 1, unit: 'pack' });
+      } else {
+        recommendations.push({ name: 'High Noon Variety 12-pack', quantity: 1, unit: 'pack' });
+      }
+    } else if (preference === 'mostly_seltzers') {
+      // All seltzers distributed across brands
+      const perBrand = Math.ceil(adjustedDrinks / 3);
+      const highNoonPacks = Math.ceil(perBrand / 24);
+      const surfsidePacks = Math.ceil(perBrand / 24);
+      const whiteclawPacks = Math.ceil(perBrand / 24);
+
+      recommendations.push({ name: 'High Noon Variety 24-pack', quantity: highNoonPacks, unit: 'packs' });
+      recommendations.push({ name: 'Surfside Variety 24-pack', quantity: surfsidePacks, unit: 'packs' });
+      recommendations.push({ name: 'Whiteclaw Variety 24-pack', quantity: whiteclawPacks, unit: 'packs' });
+
+      // Add some beer
+      if (guestCount >= 8) {
+        recommendations.push({ name: 'Miller Lite 24-pack', quantity: 1, unit: 'case' });
+      } else {
+        recommendations.push({ name: 'Miller Lite 12-pack', quantity: 1, unit: 'pack' });
+      }
+    } else {
+      // Good mix: 50% beer, 50% seltzers
+      const beerDrinks = Math.ceil(adjustedDrinks * 0.5);
+      const seltzerDrinks = Math.ceil(adjustedDrinks * 0.5);
+
+      // Beer split
+      const millerLite = Math.ceil(beerDrinks * 0.4);
+      const modelo = Math.ceil(beerDrinks * 0.4);
+      const austinBeerworks = Math.ceil(beerDrinks * 0.2);
+
+      recommendations.push({ name: 'Miller Lite 24-pack', quantity: Math.ceil(millerLite / 24), unit: 'cases' });
+      recommendations.push({ name: 'Modelo Especial 24-pack', quantity: Math.ceil(modelo / 24), unit: 'cases' });
+      recommendations.push({ name: 'Austin Beerworks Variety 12-pack', quantity: Math.ceil(austinBeerworks / 12), unit: 'packs' });
+
+      // Seltzer split
+      const perBrand = Math.ceil(seltzerDrinks / 3);
+      recommendations.push({ name: 'High Noon Variety 24-pack', quantity: Math.ceil(perBrand / 24), unit: 'packs' });
+      recommendations.push({ name: 'Surfside Variety 24-pack', quantity: Math.ceil(perBrand / 24), unit: 'packs' });
+      recommendations.push({ name: 'Whiteclaw Variety 24-pack', quantity: Math.ceil(perBrand / 24), unit: 'packs' });
+    }
+  } else {
+    // Bachelorette party
+    if (preference === 'seltzers_only' || preference === 'seltzers_wine') {
+      const seltzerDrinks = preference === 'seltzers_wine'
+        ? Math.ceil(adjustedDrinks * 0.7)
+        : adjustedDrinks;
+
+      const perBrand = Math.ceil(seltzerDrinks / 3);
+      const packs24 = Math.ceil(perBrand / 24);
+
+      recommendations.push({ name: 'High Noon Variety 24-pack', quantity: packs24, unit: 'packs' });
+      recommendations.push({ name: 'Surfside Variety 24-pack', quantity: packs24, unit: 'packs' });
+      recommendations.push({ name: 'Whiteclaw Variety 24-pack', quantity: packs24, unit: 'packs' });
+
+      if (preference === 'seltzers_wine') {
+        // 30% wine, 5 glasses per bottle
+        const wineDrinks = Math.ceil(adjustedDrinks * 0.3);
+        const wineBottles = Math.ceil(wineDrinks / 5);
+        recommendations.push({ name: 'Wine (Rosé or White)', quantity: wineBottles, unit: 'bottles' });
+      }
+    }
+
+    // Champagne for bachelorette
+    if (addChampagne) {
+      const champagneBottles = Math.ceil(guestCount / 4);
+      recommendations.push({ name: 'Champagne', quantity: champagneBottles, unit: 'bottles' });
+    }
+  }
+
+  // Cocktail kits
+  if (addCocktailKits) {
+    const cocktailKitDrinks = Math.ceil(totalDrinks * 0.25);
+    const kits = Math.ceil(cocktailKitDrinks / 16); // Assume 16 drinks per kit
+    recommendations.push({ name: 'Cocktail Kit', quantity: kits, unit: 'kits' });
+  }
+
+  // Ice: 1 bag per 4-5 guests
+  const iceBags = Math.ceil(guestCount / 4);
+  recommendations.push({ name: 'Ice Bags', quantity: iceBags, unit: 'bags' });
+
+  // Filter out zero quantities and dedupe
+  return recommendations.filter(r => r.quantity > 0);
+}
+
+// ============================================
+// Sub-components
+// ============================================
+
+function DrinkingLevelButton({
+  level,
+  selected,
+  onClick,
 }: {
-  icon: ReactElement;
+  level: DrinkingLevel;
+  selected: boolean;
+  onClick: () => void;
+}): ReactElement {
+  const labels: Record<DrinkingLevel, string> = {
+    light: 'Light',
+    average: 'Average',
+    heavy: 'Heavy',
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex-1 py-2.5 px-3 rounded-lg font-medium transition-all text-sm ${
+        selected
+          ? 'bg-gold-500 text-gray-900'
+          : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+      }`}
+    >
+      {labels[level]}
+    </button>
+  );
+}
+
+function PartyTypeButton({
+  type,
+  selected,
+  onClick,
+}: {
+  type: PartyType;
+  selected: boolean;
+  onClick: () => void;
+}): ReactElement {
+  const config: Record<PartyType, { label: string; accent: string }> = {
+    bachelor: { label: 'Bachelor', accent: 'blue' },
+    bachelorette: { label: 'Bachelorette', accent: 'pink' },
+    other: { label: 'Other', accent: 'gold' },
+  };
+
+  const { label, accent } = config[type];
+
+  const getSelectedClasses = () => {
+    if (accent === 'blue') return 'bg-blue-600 border-blue-500 text-white';
+    if (accent === 'pink') return 'bg-pink-600 border-pink-500 text-white';
+    return 'bg-gold-500 border-gold-400 text-gray-900';
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex-1 py-2.5 px-4 rounded-lg font-medium transition-all border-2 text-sm ${
+        selected
+          ? getSelectedClasses()
+          : 'bg-gray-700 border-gray-600 text-gray-300 hover:border-gray-500'
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function PreferenceOption({
+  label,
+  selected,
+  onClick,
+}: {
   label: string;
-  value: string;
-  subvalue?: string;
+  selected: boolean;
+  onClick: () => void;
 }): ReactElement {
   return (
-    <div className="bg-white rounded-lg p-4 text-center border border-gray-100 shadow-sm">
-      <div className="w-10 h-10 mx-auto mb-2 text-gold-600">{icon}</div>
-      <p className="text-2xl font-bold text-gray-900">{value}</p>
-      <p className="text-sm text-gray-600">{label}</p>
-      {subvalue && <p className="text-xs text-gray-400 mt-1">{subvalue}</p>}
+    <button
+      type="button"
+      onClick={onClick}
+      className={`py-2 px-3 rounded-lg font-medium transition-all text-left text-sm ${
+        selected
+          ? 'bg-gold-500 text-gray-900'
+          : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function ProductCard({ product }: { product: ProductRecommendation }): ReactElement {
+  return (
+    <div className="bg-white rounded-lg p-3 text-center border border-gray-100 shadow-sm">
+      <p className="text-xl font-bold text-gray-900">{product.quantity}</p>
+      <p className="text-xs text-gray-600 leading-tight">{product.name}</p>
     </div>
   );
 }
 
-/**
- * Drink calculator widget for partner pages
- * Helps guests estimate how much alcohol they need for their event
- */
-export default function DrinkCalculator(): ReactElement {
-  const [guestCount, setGuestCount] = useState(20);
-  const [eventDuration, setEventDuration] = useState(4);
-  const [beerPercent, setBeerPercent] = useState(40);
-  const [winePercent, setWinePercent] = useState(30);
-  const [cocktailPercent, setCocktailPercent] = useState(30);
+// ============================================
+// Main Component
+// ============================================
 
-  const results = useMemo(
-    () =>
-      calculateDrinks(
-        guestCount,
-        eventDuration,
-        beerPercent,
-        winePercent,
-        cocktailPercent
-      ),
-    [guestCount, eventDuration, beerPercent, winePercent, cocktailPercent]
+export default function DrinkCalculator(): ReactElement {
+  // Stage 1 state
+  const [guestCount, setGuestCount] = useState(12);
+  const [hours, setHours] = useState(4);
+  const [drinkingLevel, setDrinkingLevel] = useState<DrinkingLevel>('average');
+
+  // Stage 2 state
+  const [partyType, setPartyType] = useState<PartyType>('bachelor');
+  const [drinkPreference, setDrinkPreference] = useState<DrinkPreference>('good_mix');
+  const [addCocktailKits, setAddCocktailKits] = useState(false);
+  const [cocktailSpirits, setCocktailSpirits] = useState<string[]>([]);
+  const [addWineChampagne, setAddWineChampagne] = useState(false);
+  const [wineTypes, setWineTypes] = useState<string[]>([]);
+  const [addChampagne, setAddChampagne] = useState(false);
+
+  // Lead capture state
+  const [firstName, setFirstName] = useState('');
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+
+  // Flow state
+  const [stage, setStage] = useState<Stage>('calculate');
+
+  // Calculate total drinks
+  const totalDrinks = useMemo(
+    () => calculateTotalDrinks(
+      guestCount,
+      hours,
+      drinkingLevel,
+      stage === 'calculate' ? undefined : partyType
+    ),
+    [guestCount, hours, drinkingLevel, partyType, stage]
   );
 
-  // Ensure percentages add up to 100
-  const adjustPercentage = (
-    setter: (v: number) => void,
-    value: number,
-    others: number[]
-  ) => {
-    const otherSum = others.reduce((a, b) => a + b, 0);
-    const maxValue = 100 - otherSum;
-    setter(Math.min(Math.max(0, value), maxValue));
+  // Generate recommendations
+  const recommendations = useMemo(
+    () => generateRecommendations(
+      totalDrinks,
+      partyType,
+      drinkPreference,
+      addChampagne,
+      addCocktailKits,
+      guestCount
+    ),
+    [totalDrinks, partyType, drinkPreference, addChampagne, addCocktailKits, guestCount]
+  );
+
+  // Drink preference options (same for all party types)
+  const preferenceOptions = [
+    { value: 'mostly_beer', label: 'Mostly Beer' },
+    { value: 'mostly_seltzers', label: 'Mostly Seltzers' },
+    { value: 'good_mix', label: 'Good Mix' },
+  ];
+
+  // Handle party type change
+  const handlePartyTypeChange = (type: PartyType) => {
+    setPartyType(type);
+  };
+
+  // Handle lead submission
+  const handleSubmit = async () => {
+    if (!firstName.trim() || !email.trim()) {
+      setSubmitError('Please fill in all fields');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setSubmitError('Please enter a valid email');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError('');
+
+    try {
+      const response = await fetch('/api/leads/drink-calculator', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: firstName.trim(),
+          email: email.trim(),
+          guestCount,
+          hours,
+          drinkingLevel,
+          partyType,
+          drinkPreference,
+          addChampagne,
+          addCocktailKits,
+          totalDrinks,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit');
+      }
+
+      setStage('results');
+    } catch {
+      setSubmitError('Something went wrong. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <section id="drink-calculator" className="py-16 px-6 bg-gray-900">
-      <div className="max-w-4xl mx-auto">
+    <section id="drink-calculator" className="py-8 md:py-12 px-4 md:px-6 bg-gray-900">
+      <div className="max-w-6xl mx-auto">
         {/* Section Header */}
-        <div className="text-center mb-10">
-          <h2 className="font-serif text-3xl md:text-4xl text-white mb-4 tracking-wide">
-            Drink Calculator
+        <div className="text-center mb-6">
+          <h2 className="font-serif text-2xl md:text-3xl text-white mb-2 tracking-wide">
+            Drink Calculator and Recs
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            Estimate how much you need for your party. Adjust the sliders to match
-            your crowd.
+          <p className="text-gray-400 text-sm md:text-base">
+            Plan the perfect party bar. Get personalized recommendations.
           </p>
         </div>
 
-        {/* Calculator Inputs */}
-        <div className="bg-gray-800 rounded-xl p-6 md:p-8 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            {/* Guest Count */}
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Number of Guests
-              </label>
-              <div className="flex items-center gap-4">
-                <input
-                  type="range"
-                  min="5"
-                  max="100"
-                  value={guestCount}
-                  onChange={(e) => setGuestCount(Number(e.target.value))}
-                  className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-gold-500"
-                />
-                <span className="w-12 text-center text-white font-semibold">
-                  {guestCount}
-                </span>
+        {/* Two-column layout on desktop */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+          {/* Stage 1: Basic Calculations */}
+          <div className="bg-gray-800 rounded-xl p-4 md:p-6">
+            <div className="space-y-4">
+              {/* Guest Count */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1.5 text-center">
+                  How many people?
+                </label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="range"
+                    min="5"
+                    max="50"
+                    value={guestCount}
+                    onChange={(e) => setGuestCount(Number(e.target.value))}
+                    className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-gold-500"
+                  />
+                  <span className="w-10 text-center text-white font-semibold">
+                    {guestCount}
+                  </span>
+                </div>
+              </div>
+
+              {/* Hours */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1.5 text-center">
+                  How long is your party?
+                </label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="range"
+                    min="2"
+                    max="6"
+                    value={hours}
+                    onChange={(e) => setHours(Number(e.target.value))}
+                    className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-gold-500"
+                  />
+                  <span className="w-14 text-center text-white font-semibold">
+                    {hours} hrs
+                  </span>
+                </div>
+              </div>
+
+              {/* Drinking Level */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2 text-center">
+                  How hard does your crew drink?
+                </label>
+                <div className="flex gap-2">
+                  {(['light', 'average', 'heavy'] as DrinkingLevel[]).map((level) => (
+                    <DrinkingLevelButton
+                      key={level}
+                      level={level}
+                      selected={drinkingLevel === level}
+                      onClick={() => setDrinkingLevel(level)}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* Event Duration */}
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Event Duration (hours)
-              </label>
-              <div className="flex items-center gap-4">
-                <input
-                  type="range"
-                  min="1"
-                  max="8"
-                  value={eventDuration}
-                  onChange={(e) => setEventDuration(Number(e.target.value))}
-                  className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-gold-500"
-                />
-                <span className="w-12 text-center text-white font-semibold">
-                  {eventDuration}h
-                </span>
+            {/* Total Drinks Display */}
+            <div className="mt-4 pt-4 border-t border-gray-700 text-center">
+              <p className="text-gray-400 text-sm">You&apos;ll need approximately</p>
+              <p className="text-4xl font-bold text-gold-400 my-1">{totalDrinks}</p>
+              <p className="text-gray-400 text-sm">drinks for your party</p>
+            </div>
+
+            {/* Stage 1 CTA - only on mobile when stage 2 not visible */}
+            {stage === 'calculate' && (
+              <div className="mt-4 lg:hidden">
+                <button
+                  type="button"
+                  onClick={() => setStage('preferences')}
+                  className="w-full px-6 py-3 bg-gold-500 hover:bg-gold-600 text-gray-900 font-semibold rounded-lg transition-colors"
+                >
+                  Get a recommendation →
+                </button>
               </div>
+            )}
+          </div>
+
+          {/* Stage 2: Preferences - Always visible on desktop, animated on mobile */}
+          <div className="hidden lg:block">
+            <div className="bg-gray-800 rounded-xl p-4 md:p-6 h-full">
+              <div className="space-y-4">
+                {/* Party Type */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2 text-center">
+                    What kind of party?
+                  </label>
+                  <div className="flex gap-2">
+                    {(['bachelor', 'bachelorette', 'other'] as PartyType[]).map((type) => (
+                      <PartyTypeButton
+                        key={type}
+                        type={type}
+                        selected={partyType === type}
+                        onClick={() => handlePartyTypeChange(type)}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Drink Preference */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2 text-center">
+                    Drink preference
+                  </label>
+                  <div className="flex flex-wrap gap-2 justify-center">
+                    {preferenceOptions.map((option) => (
+                      <PreferenceOption
+                        key={option.value}
+                        label={option.label}
+                        selected={drinkPreference === option.value}
+                        onClick={() => setDrinkPreference(option.value as DrinkPreference)}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Add-ons */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-3 text-center">
+                    Add-ons
+                  </label>
+                  <div className="space-y-3">
+                    {/* Fresh Cocktail Kits Button */}
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAddCocktailKits(!addCocktailKits);
+                          if (addCocktailKits) setCocktailSpirits([]);
+                        }}
+                        className={`w-full py-3 px-4 rounded-lg font-medium transition-all border-2 flex items-center justify-center gap-2 ${
+                          addCocktailKits
+                            ? 'bg-gold-500 border-gold-400 text-gray-900'
+                            : 'bg-gray-700 border-gray-600 text-gray-300 hover:border-gold-500'
+                        }`}
+                      >
+                        <span>Fresh Cocktail Kits</span>
+                        <span className={`transition-transform ${addCocktailKits ? 'rotate-180' : ''}`}>▼</span>
+                      </button>
+                      <AnimatePresence>
+                        {addCocktailKits && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="flex flex-wrap gap-3 mt-2 justify-center">
+                              {['Tequila', 'Vodka', 'Rum', 'Gin', 'Whiskey'].map((spirit) => (
+                                <label key={spirit} className="flex items-center gap-1.5 cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    value={spirit.toLowerCase()}
+                                    checked={cocktailSpirits.includes(spirit.toLowerCase())}
+                                    onChange={(e) => {
+                                      if (e.target.checked) {
+                                        setCocktailSpirits([...cocktailSpirits, spirit.toLowerCase()]);
+                                      } else {
+                                        setCocktailSpirits(cocktailSpirits.filter(s => s !== spirit.toLowerCase()));
+                                      }
+                                    }}
+                                    className="w-4 h-4 rounded text-gold-500 bg-gray-700 border-gray-600 focus:ring-gold-500"
+                                  />
+                                  <span className="text-gray-300 text-sm">{spirit}</span>
+                                </label>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+
+                    {/* Wine & Champagne Button */}
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAddWineChampagne(!addWineChampagne);
+                          if (addWineChampagne) setWineTypes([]);
+                        }}
+                        className={`w-full py-3 px-4 rounded-lg font-medium transition-all border-2 flex items-center justify-center gap-2 ${
+                          addWineChampagne
+                            ? 'bg-gold-500 border-gold-400 text-gray-900'
+                            : 'bg-gray-700 border-gray-600 text-gray-300 hover:border-gold-500'
+                        }`}
+                      >
+                        <span>Wine & Champagne</span>
+                        <span className={`transition-transform ${addWineChampagne ? 'rotate-180' : ''}`}>▼</span>
+                      </button>
+                      <AnimatePresence>
+                        {addWineChampagne && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="flex flex-wrap gap-3 mt-2 justify-center">
+                              {['White', 'Sparkling', 'Champagne'].map((type) => (
+                                <label key={type} className="flex items-center gap-1.5 cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    value={type.toLowerCase()}
+                                    checked={wineTypes.includes(type.toLowerCase())}
+                                    onChange={(e) => {
+                                      if (e.target.checked) {
+                                        setWineTypes([...wineTypes, type.toLowerCase()]);
+                                      } else {
+                                        setWineTypes(wineTypes.filter(t => t !== type.toLowerCase()));
+                                      }
+                                    }}
+                                    className="w-4 h-4 rounded text-gold-500 bg-gray-700 border-gray-600 focus:ring-gold-500"
+                                  />
+                                  <span className="text-gray-300 text-sm">{type}</span>
+                                </label>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Desktop CTA */}
+              {stage !== 'results' && (
+                <div className="mt-4 pt-4 border-t border-gray-700">
+                  <button
+                    type="button"
+                    onClick={() => setStage('lead_capture')}
+                    className="w-full px-6 py-3 bg-gold-500 hover:bg-gold-600 text-gray-900 font-semibold rounded-lg transition-colors"
+                  >
+                    Get my recommendation →
+                  </button>
+                  <p className="text-gray-400 text-xs text-center mt-2">
+                    You can add, edit, anything before checkout
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Drink Type Percentages */}
-          <div className="space-y-4">
-            <p className="text-sm font-medium text-gray-300 mb-3">
-              Drink Preferences
-            </p>
+          {/* Mobile Stage 2: Preferences (animated reveal) */}
+          <AnimatePresence>
+            {(stage === 'preferences' || stage === 'lead_capture' || stage === 'results') && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="lg:hidden bg-gray-800 rounded-xl p-4 overflow-hidden"
+              >
+                <div className="space-y-4">
+                  {/* Party Type */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2 text-center">
+                      What kind of party?
+                    </label>
+                    <div className="flex gap-2">
+                      {(['bachelor', 'bachelorette', 'other'] as PartyType[]).map((type) => (
+                        <PartyTypeButton
+                          key={type}
+                          type={type}
+                          selected={partyType === type}
+                          onClick={() => handlePartyTypeChange(type)}
+                        />
+                      ))}
+                    </div>
+                  </div>
 
-            {/* Beer */}
-            <div className="flex items-center gap-4">
-              <span className="w-20 text-sm text-gray-400">Beer</span>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={beerPercent}
-                onChange={(e) =>
-                  adjustPercentage(setBeerPercent, Number(e.target.value), [
-                    winePercent,
-                    cocktailPercent,
-                  ])
-                }
-                className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
-              />
-              <span className="w-12 text-center text-white">{beerPercent}%</span>
-            </div>
+                  {/* Drink Preference */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2 text-center">
+                      Drink preference
+                    </label>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {preferenceOptions.map((option) => (
+                        <PreferenceOption
+                          key={option.value}
+                          label={option.label}
+                          selected={drinkPreference === option.value}
+                          onClick={() => setDrinkPreference(option.value as DrinkPreference)}
+                        />
+                      ))}
+                    </div>
+                  </div>
 
-            {/* Wine */}
-            <div className="flex items-center gap-4">
-              <span className="w-20 text-sm text-gray-400">Wine</span>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={winePercent}
-                onChange={(e) =>
-                  adjustPercentage(setWinePercent, Number(e.target.value), [
-                    beerPercent,
-                    cocktailPercent,
-                  ])
-                }
-                className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-rose-500"
-              />
-              <span className="w-12 text-center text-white">{winePercent}%</span>
-            </div>
+                  {/* Add-ons */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-3 text-center">
+                      Add-ons
+                    </label>
+                    <div className="space-y-3">
+                      {/* Fresh Cocktail Kits Button */}
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setAddCocktailKits(!addCocktailKits);
+                            if (addCocktailKits) setCocktailSpirits([]);
+                          }}
+                          className={`w-full py-3 px-4 rounded-lg font-medium transition-all border-2 flex items-center justify-center gap-2 ${
+                            addCocktailKits
+                              ? 'bg-gold-500 border-gold-400 text-gray-900'
+                              : 'bg-gray-700 border-gray-600 text-gray-300 hover:border-gold-500'
+                          }`}
+                        >
+                          <span>Fresh Cocktail Kits</span>
+                          <span className={`transition-transform ${addCocktailKits ? 'rotate-180' : ''}`}>▼</span>
+                        </button>
+                        <AnimatePresence>
+                          {addCocktailKits && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              exit={{ opacity: 0, height: 0 }}
+                              className="overflow-hidden"
+                            >
+                              <div className="flex flex-wrap gap-3 mt-2 justify-center">
+                                {['Tequila', 'Vodka', 'Rum', 'Gin', 'Whiskey'].map((spirit) => (
+                                  <label key={spirit} className="flex items-center gap-1.5 cursor-pointer">
+                                    <input
+                                      type="checkbox"
+                                      value={spirit.toLowerCase()}
+                                      checked={cocktailSpirits.includes(spirit.toLowerCase())}
+                                      onChange={(e) => {
+                                        if (e.target.checked) {
+                                          setCocktailSpirits([...cocktailSpirits, spirit.toLowerCase()]);
+                                        } else {
+                                          setCocktailSpirits(cocktailSpirits.filter(s => s !== spirit.toLowerCase()));
+                                        }
+                                      }}
+                                      className="w-4 h-4 rounded text-gold-500 bg-gray-700 border-gray-600 focus:ring-gold-500"
+                                    />
+                                    <span className="text-gray-300 text-sm">{spirit}</span>
+                                  </label>
+                                ))}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
 
-            {/* Cocktails */}
-            <div className="flex items-center gap-4">
-              <span className="w-20 text-sm text-gray-400">Cocktails</span>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={cocktailPercent}
-                onChange={(e) =>
-                  adjustPercentage(setCocktailPercent, Number(e.target.value), [
-                    beerPercent,
-                    winePercent,
-                  ])
-                }
-                className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-gold-500"
-              />
-              <span className="w-12 text-center text-white">
-                {cocktailPercent}%
-              </span>
-            </div>
-          </div>
+                      {/* Wine & Champagne Button */}
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setAddWineChampagne(!addWineChampagne);
+                            if (addWineChampagne) setWineTypes([]);
+                          }}
+                          className={`w-full py-3 px-4 rounded-lg font-medium transition-all border-2 flex items-center justify-center gap-2 ${
+                            addWineChampagne
+                              ? 'bg-gold-500 border-gold-400 text-gray-900'
+                              : 'bg-gray-700 border-gray-600 text-gray-300 hover:border-gold-500'
+                          }`}
+                        >
+                          <span>Wine & Champagne</span>
+                          <span className={`transition-transform ${addWineChampagne ? 'rotate-180' : ''}`}>▼</span>
+                        </button>
+                        <AnimatePresence>
+                          {addWineChampagne && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              exit={{ opacity: 0, height: 0 }}
+                              className="overflow-hidden"
+                            >
+                              <div className="flex flex-wrap gap-3 mt-2 justify-center">
+                                {['White', 'Sparkling', 'Champagne'].map((type) => (
+                                  <label key={type} className="flex items-center gap-1.5 cursor-pointer">
+                                    <input
+                                      type="checkbox"
+                                      value={type.toLowerCase()}
+                                      checked={wineTypes.includes(type.toLowerCase())}
+                                      onChange={(e) => {
+                                        if (e.target.checked) {
+                                          setWineTypes([...wineTypes, type.toLowerCase()]);
+                                        } else {
+                                          setWineTypes(wineTypes.filter(t => t !== type.toLowerCase()));
+                                        }
+                                      }}
+                                      className="w-4 h-4 rounded text-gold-500 bg-gray-700 border-gray-600 focus:ring-gold-500"
+                                    />
+                                    <span className="text-gray-300 text-sm">{type}</span>
+                                  </label>
+                                ))}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mobile Stage 2 CTA */}
+                {stage === 'preferences' && (
+                  <div className="mt-4">
+                    <button
+                      type="button"
+                      onClick={() => setStage('lead_capture')}
+                      className="w-full px-6 py-3 bg-gold-500 hover:bg-gold-600 text-gray-900 font-semibold rounded-lg transition-colors"
+                    >
+                      Get my recommendation →
+                    </button>
+                    <p className="text-gray-400 text-xs text-center mt-2">
+                      You can add, edit, anything before checkout
+                    </p>
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
+
+        {/* Lead Capture */}
+        <AnimatePresence>
+          {stage === 'lead_capture' && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="mt-4 bg-gray-800 rounded-xl p-4 md:p-6 overflow-hidden"
+            >
+              <div className="text-center mb-4">
+                <h3 className="text-lg font-semibold text-white mb-1">
+                  Almost there!
+                </h3>
+                <p className="text-gray-400 text-sm">
+                  Enter your info to see personalized recommendations.
+                </p>
+              </div>
+
+              <div className="max-w-md mx-auto space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                    First Name
+                  </label>
+                  <input
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="Your first name"
+                    className="w-full px-3 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-gold-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="your@email.com"
+                    className="w-full px-3 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-gold-500"
+                  />
+                </div>
+
+                {submitError && (
+                  <p className="text-red-400 text-sm text-center">{submitError}</p>
+                )}
+
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={isSubmitting}
+                  className="w-full px-6 py-3 bg-gold-500 hover:bg-gold-600 disabled:bg-gray-600 text-gray-900 font-semibold rounded-lg transition-colors"
+                >
+                  {isSubmitting ? 'Loading...' : 'See My Recommendations'}
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Results */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <ResultCard
-            icon={
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                />
-              </svg>
-            }
-            label="Beer Cases"
-            value={String(results.beer.cases)}
-            subvalue={`${results.beer.cans} cans`}
-          />
-          <ResultCard
-            icon={
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            }
-            label="Wine Bottles"
-            value={String(results.wine.bottles)}
-          />
-          <ResultCard
-            icon={
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                />
-              </svg>
-            }
-            label="Liquor Bottles"
-            value={String(results.liquor.bottles)}
-          />
-          <ResultCard
-            icon={
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
-                />
-              </svg>
-            }
-            label="Mixer Bottles"
-            value={String(results.mixers.bottles)}
-          />
-          <ResultCard
-            icon={
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                />
-              </svg>
-            }
-            label="Bags of Ice"
-            value={String(results.ice.bags)}
-          />
-        </div>
+        <AnimatePresence>
+          {stage === 'results' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="mt-4"
+            >
+              <div className="bg-gray-800 rounded-xl p-4 md:p-6 mb-4">
+                <h3 className="text-lg font-semibold text-white mb-1 text-center">
+                  Your Personalized Recommendations
+                </h3>
+                <p className="text-gray-400 text-center text-sm mb-4">
+                  For {guestCount} guests over {hours} hours
+                </p>
 
-        {/* CTA */}
-        <div className="text-center mt-10">
-          <button
-            onClick={() =>
-              document
-                .getElementById('start-order')
-                ?.scrollIntoView({ behavior: 'smooth' })
-            }
-            className="px-8 py-3 bg-gold-500 hover:bg-gold-600 text-gray-900 font-semibold rounded-lg transition-colors text-lg"
-          >
-            Start Shopping
-          </button>
-          <p className="text-sm text-gray-500 mt-3">
-            Estimates are approximate. When in doubt, order a little extra!
-          </p>
-        </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {recommendations.map((product, index) => (
+                    <ProductCard key={`${product.name}-${index}`} product={product} />
+                  ))}
+                </div>
+              </div>
+
+              {/* Final CTA */}
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={() =>
+                    document
+                      .getElementById('boat-collections')
+                      ?.scrollIntoView({ behavior: 'smooth' })
+                  }
+                  className="px-6 py-3 bg-gold-500 hover:bg-gold-600 text-gray-900 font-semibold rounded-lg transition-colors"
+                >
+                  Start Shopping →
+                </button>
+                <p className="text-xs text-gray-500 mt-2">
+                  Estimates are approximate. When in doubt, order extra!
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );
