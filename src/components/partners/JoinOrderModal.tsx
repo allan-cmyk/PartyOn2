@@ -40,8 +40,8 @@ export default function JoinOrderModal({
       // Convert share code to URL-safe format
       const urlSafeCode = shareCode.trim().toLowerCase().replace(/\s+/g, '-');
 
-      // Navigate to the group order join page
-      router.push(`/group/join/${encodeURIComponent(urlSafeCode)}`);
+      // Navigate to the group order page
+      router.push(`/group/${encodeURIComponent(urlSafeCode)}`);
       onClose();
     } catch {
       setError('Unable to find that order. Please check the code and try again.');
