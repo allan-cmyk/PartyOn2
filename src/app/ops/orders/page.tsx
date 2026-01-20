@@ -95,15 +95,6 @@ function StatCard({
     orange: 'from-orange-500 to-orange-600',
   };
 
-  const bgColors = {
-    blue: 'bg-blue-50',
-    green: 'bg-green-50',
-    purple: 'bg-purple-50',
-    indigo: 'bg-indigo-50',
-    yellow: 'bg-amber-50',
-    orange: 'bg-orange-50',
-  };
-
   return (
     <div className="group relative bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-lg hover:border-gray-200 hover:-translate-y-0.5 transition-all duration-300 overflow-hidden">
       <div className="flex items-center justify-between">

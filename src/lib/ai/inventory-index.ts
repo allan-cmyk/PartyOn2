@@ -4,7 +4,8 @@
  */
 
 // Client and utilities
-export { getAnthropicClient, AI_MODELS, extractJSON, formatDateForAI, daysBetween } from './inventory-client';
+export { callOpenRouter, AI_MODELS, extractJSON, formatDateForAI, daysBetween } from './inventory-client';
+export type { OpenRouterMessage, OpenRouterContentPart, OpenRouterResponse } from './inventory-client';
 export type { AIResponse } from './inventory-client';
 
 // Image-based inventory counter
