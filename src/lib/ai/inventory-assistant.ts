@@ -1,9 +1,9 @@
 /**
  * Natural Language Inventory Assistant
- * Answer questions about inventory in plain English
+ * Answer questions about inventory in plain English via OpenRouter
  */
 
-import { getAnthropicClient, AI_MODELS, extractJSON, type AIResponse } from './inventory-client';
+import { callOpenRouter, AI_MODELS, extractJSON, type AIResponse, type OpenRouterMessage } from './inventory-client';
 
 /**
  * Inventory item summary for context
@@ -97,8 +97,6 @@ export async function processInventoryQuery(
   inventoryContext: InventoryItemSummary[]
 ): Promise<AIResponse<InventoryQueryResult>> {
   try {
-    const client = getAnthropicClient();
-
     // Build context about current inventory
     const contextSummary = buildInventoryContext(inventoryContext);
 
@@ -109,21 +107,18 @@ User Question: ${query}
 
 Please analyze the inventory data and answer the user's question.`;
 
-    const response = await client.messages.create({
-      model: AI_MODELS.query,
-      max_tokens: 1500,
-      system: ASSISTANT_SYSTEM_PROMPT,
-      messages: [
-        {
-          role: 'user',
-          content: userPrompt,
-        },
-      ],
+    const messages: OpenRouterMessage[] = [
+      { role: 'system', content: ASSISTANT_SYSTEM_PROMPT },
+      { role: 'user', content: userPrompt },
+    ];
+
+    const response = await callOpenRouter(AI_MODELS.query, messages, {
+      maxTokens: 1500,
     });
 
     // Extract text response
-    const textContent = response.content.find((c) => c.type === 'text');
-    if (!textContent || textContent.type !== 'text') {
+    const textContent = response.choices?.[0]?.message?.content;
+    if (!textContent) {
       return {
         success: false,
         error: 'No text response from AI model',
@@ -136,14 +131,14 @@ Please analyze the inventory data and answer the user's question.`;
       relevantItemIds?: string[];
       suggestedActions?: SuggestedAction[];
       queryType: QueryType;
-    }>(textContent.text);
+    }>(textContent);
 
     if (!parsed) {
       // Return the raw text if JSON parsing fails
       return {
         success: true,
         data: {
-          answer: textContent.text,
+          answer: textContent,
           queryType: 'general',
         },
       };

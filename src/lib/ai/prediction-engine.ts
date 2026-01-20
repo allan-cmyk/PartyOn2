@@ -1,9 +1,9 @@
 /**
  * Stock Prediction Engine
- * Predicts stockouts, recommends reorder timing and quantities
+ * Predicts stockouts, recommends reorder timing and quantities via OpenRouter
  */
 
-import { getAnthropicClient, AI_MODELS, extractJSON, formatDateForAI, type AIResponse } from './inventory-client';
+import { callOpenRouter, AI_MODELS, extractJSON, formatDateForAI, type AIResponse, type OpenRouterMessage } from './inventory-client';
 
 /**
  * Sales history data point
@@ -109,8 +109,6 @@ export async function predictStockForProduct(
   product: PredictionProduct
 ): Promise<AIResponse<StockPrediction>> {
   try {
-    const client = getAnthropicClient();
-
     // Prepare sales history summary
     const salesSummary = summarizeSalesHistory(product.salesHistory);
 
@@ -130,21 +128,18 @@ Today's Date: ${formatDateForAI(new Date())}
 
 Provide your prediction and recommendation.`;
 
-    const response = await client.messages.create({
-      model: AI_MODELS.analysis,
-      max_tokens: 1000,
-      system: PREDICTION_SYSTEM_PROMPT,
-      messages: [
-        {
-          role: 'user',
-          content: userPrompt,
-        },
-      ],
+    const messages: OpenRouterMessage[] = [
+      { role: 'system', content: PREDICTION_SYSTEM_PROMPT },
+      { role: 'user', content: userPrompt },
+    ];
+
+    const response = await callOpenRouter(AI_MODELS.analysis, messages, {
+      maxTokens: 1000,
     });
 
     // Extract text response
-    const textContent = response.content.find((c) => c.type === 'text');
-    if (!textContent || textContent.type !== 'text') {
+    const textContent = response.choices?.[0]?.message?.content;
+    if (!textContent) {
       return {
         success: false,
         error: 'No text response from AI model',
@@ -164,7 +159,7 @@ Provide your prediction and recommendation.`;
         recommendOrderInDays: number;
         reasoning: string;
       } | null;
-    }>(textContent.text);
+    }>(textContent);
 
     if (!parsed) {
       return {

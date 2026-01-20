@@ -1,10 +1,9 @@
 /**
  * Image-Based Inventory Counter
- * Uses Claude Vision to count products in photos
+ * Uses Claude Vision via OpenRouter to count products in photos
  */
 
-import { getAnthropicClient, AI_MODELS, extractJSON, type AIResponse } from './inventory-client';
-import type { ContentBlockParam, ImageBlockParam, TextBlockParam } from '@anthropic-ai/sdk/resources/messages';
+import { callOpenRouter, AI_MODELS, extractJSON, type AIResponse, type OpenRouterMessage, type OpenRouterContentPart } from './inventory-client';
 
 /**
  * Product count result from image analysis
@@ -77,8 +76,6 @@ export async function countInventoryFromImage(
   const startTime = Date.now();
 
   try {
-    const client = getAnthropicClient();
-
     // Build user prompt with known products context
     let userPrompt = 'Please count all products visible in this inventory image.';
     if (knownProducts && knownProducts.length > 0) {
@@ -94,45 +91,32 @@ export async function countInventoryFromImage(
     // Determine if imageData is URL or base64
     const isUrl = imageData.startsWith('http://') || imageData.startsWith('https://');
 
-    const imageBlock: ImageBlockParam = isUrl
-      ? {
-          type: 'image',
-          source: {
-            type: 'url',
-            url: imageData,
-          },
-        }
-      : {
-          type: 'image',
-          source: {
-            type: 'base64',
-            media_type: detectMediaType(imageData),
-            data: imageData.replace(/^data:image\/\w+;base64,/, ''),
-          },
-        };
-
-    const textBlock: TextBlockParam = {
-      type: 'text',
-      text: userPrompt,
-    };
-
-    const content: ContentBlockParam[] = [imageBlock, textBlock];
-
-    const response = await client.messages.create({
-      model: AI_MODELS.vision,
-      max_tokens: 2000,
-      system: INVENTORY_COUNT_PROMPT,
-      messages: [
-        {
-          role: 'user',
-          content,
+    // Build content array for OpenRouter vision request
+    const contentParts: OpenRouterContentPart[] = [
+      {
+        type: 'image_url',
+        image_url: {
+          url: isUrl ? imageData : `data:${detectMediaType(imageData)};base64,${imageData.replace(/^data:image\/\w+;base64,/, '')}`,
         },
-      ],
+      },
+      {
+        type: 'text',
+        text: userPrompt,
+      },
+    ];
+
+    const messages: OpenRouterMessage[] = [
+      { role: 'system', content: INVENTORY_COUNT_PROMPT },
+      { role: 'user', content: contentParts },
+    ];
+
+    const response = await callOpenRouter(AI_MODELS.vision, messages, {
+      maxTokens: 2000,
     });
 
     // Extract text response
-    const textContent = response.content.find((c) => c.type === 'text');
-    if (!textContent || textContent.type !== 'text') {
+    const textContent = response.choices?.[0]?.message?.content;
+    if (!textContent) {
       return {
         success: false,
         error: 'No text response from AI model',
@@ -144,7 +128,7 @@ export async function countInventoryFromImage(
       products: ProductCount[];
       imageQuality: InventoryCountResult['imageQuality'];
       suggestions?: string[];
-    }>(textContent.text);
+    }>(textContent);
 
     if (!parsed) {
       return {

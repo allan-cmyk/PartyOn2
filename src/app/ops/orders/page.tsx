@@ -77,12 +77,14 @@ function StatCard({
   title,
   value,
   color = 'blue',
-  icon
+  icon,
+  trend
 }: {
   title: string;
   value: string | number;
   color?: 'blue' | 'green' | 'purple' | 'indigo' | 'yellow' | 'orange';
   icon?: ReactElement;
+  trend?: 'up' | 'down' | 'neutral';
 }): ReactElement {
   const colors = {
     blue: 'from-blue-500 to-blue-600',
@@ -93,19 +95,38 @@ function StatCard({
     orange: 'from-orange-500 to-orange-600',
   };
 
+  const bgColors = {
+    blue: 'bg-blue-50',
+    green: 'bg-green-50',
+    purple: 'bg-purple-50',
+    indigo: 'bg-indigo-50',
+    yellow: 'bg-amber-50',
+    orange: 'bg-orange-50',
+  };
+
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+    <div className="group relative bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-lg hover:border-gray-200 hover:-translate-y-0.5 transition-all duration-300 overflow-hidden">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{title}</p>
+          <p className="text-2xl font-bold text-gray-900 mt-1 tabular-nums">{value}</p>
+          {trend && (
+            <div className={`flex items-center gap-1 mt-1 text-xs font-medium ${
+              trend === 'up' ? 'text-green-600' : trend === 'down' ? 'text-red-600' : 'text-gray-500'
+            }`}>
+              {trend === 'up' && <span>↑</span>}
+              {trend === 'down' && <span>↓</span>}
+              <span>{trend === 'up' ? 'Trending up' : trend === 'down' ? 'Trending down' : 'Stable'}</span>
+            </div>
+          )}
         </div>
         {icon && (
-          <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${colors[color]} flex items-center justify-center text-white`}>
+          <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${colors[color]} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}>
             {icon}
           </div>
         )}
       </div>
+      <div className={`absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r ${colors[color]} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
     </div>
   );
 }
@@ -114,21 +135,24 @@ function StatCard({
 function FilterButton({
   active,
   onClick,
-  children
+  children,
+  icon
 }: {
   active: boolean;
   onClick: () => void;
   children: React.ReactNode;
+  icon?: ReactElement;
 }): ReactElement {
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+      className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 flex items-center gap-2 ${
         active
-          ? 'bg-blue-600 text-white shadow-sm'
-          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md shadow-blue-200 scale-[1.02]'
+          : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900'
       }`}
     >
+      {icon}
       {children}
     </button>
   );
@@ -162,47 +186,52 @@ function formatDateTime(dateStr: string): string {
 function getStatusColor(status: string): string {
   switch (status) {
     case 'CONFIRMED':
-      return 'bg-green-100 text-green-700 border border-green-200';
+      return 'bg-gradient-to-r from-green-50 to-green-100 text-green-700 border border-green-200 shadow-sm';
     case 'PENDING':
-      return 'bg-yellow-100 text-yellow-700 border border-yellow-200';
+      return 'bg-gradient-to-r from-yellow-50 to-yellow-100 text-yellow-700 border border-yellow-200 shadow-sm';
     case 'CANCELLED':
-      return 'bg-red-100 text-red-700 border border-red-200';
+      return 'bg-gradient-to-r from-red-50 to-red-100 text-red-700 border border-red-200 shadow-sm';
     case 'COMPLETED':
-      return 'bg-blue-100 text-blue-700 border border-blue-200';
+    case 'DELIVERED':
+      return 'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 border border-blue-200 shadow-sm';
     case 'PROCESSING':
-      return 'bg-purple-100 text-purple-700 border border-purple-200';
+    case 'OUT_FOR_DELIVERY':
+      return 'bg-gradient-to-r from-purple-50 to-purple-100 text-purple-700 border border-purple-200 shadow-sm';
     default:
-      return 'bg-gray-100 text-gray-700 border border-gray-200';
+      return 'bg-gradient-to-r from-gray-50 to-gray-100 text-gray-700 border border-gray-200 shadow-sm';
   }
 }
 
 function getFulfillmentColor(status: string): string {
   switch (status) {
     case 'FULFILLED':
-      return 'bg-green-100 text-green-700 border border-green-200';
+    case 'DELIVERED':
+      return 'bg-gradient-to-r from-green-50 to-green-100 text-green-700 border border-green-200 shadow-sm';
     case 'UNFULFILLED':
-      return 'bg-orange-100 text-orange-700 border border-orange-200';
+      return 'bg-gradient-to-r from-orange-50 to-orange-100 text-orange-700 border border-orange-200 shadow-sm';
     case 'PARTIAL':
-      return 'bg-yellow-100 text-yellow-700 border border-yellow-200';
+    case 'IN_TRANSIT':
+    case 'OUT_FOR_DELIVERY':
+      return 'bg-gradient-to-r from-yellow-50 to-yellow-100 text-yellow-700 border border-yellow-200 shadow-sm';
     default:
-      return 'bg-gray-100 text-gray-700 border border-gray-200';
+      return 'bg-gradient-to-r from-gray-50 to-gray-100 text-gray-700 border border-gray-200 shadow-sm';
   }
 }
 
 function getGroupStatusColor(status: string): string {
   switch (status) {
     case 'ACTIVE':
-      return 'bg-green-100 text-green-700 border border-green-200';
+      return 'bg-gradient-to-r from-green-50 to-green-100 text-green-700 border border-green-200 shadow-sm';
     case 'LOCKED':
-      return 'bg-blue-100 text-blue-700 border border-blue-200';
+      return 'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 border border-blue-200 shadow-sm';
     case 'COMPLETED':
-      return 'bg-gray-100 text-gray-700 border border-gray-200';
+      return 'bg-gradient-to-r from-purple-50 to-purple-100 text-purple-700 border border-purple-200 shadow-sm';
     case 'CANCELLED':
-      return 'bg-red-100 text-red-700 border border-red-200';
+      return 'bg-gradient-to-r from-red-50 to-red-100 text-red-700 border border-red-200 shadow-sm';
     case 'CLOSED':
-      return 'bg-gray-100 text-gray-700 border border-gray-200';
+      return 'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-600 border border-gray-300 shadow-sm';
     default:
-      return 'bg-gray-100 text-gray-700 border border-gray-200';
+      return 'bg-gradient-to-r from-gray-50 to-gray-100 text-gray-700 border border-gray-200 shadow-sm';
   }
 }
 
@@ -564,26 +593,35 @@ export default function OrdersPage(): ReactElement {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Orders</h1>
-          <p className="text-gray-500 mt-1">
-            Manage and track all customer orders
-          </p>
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Orders</h1>
+              <p className="text-gray-500 mt-0.5">
+                Manage and track all customer orders
+              </p>
+            </div>
+          </div>
         </div>
         <div className="flex gap-3">
           <button
             onClick={() => fetchOrders()}
-            className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors shadow-sm flex items-center gap-2"
+            className="group px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl font-medium hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 shadow-sm flex items-center gap-2"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
             Refresh
           </button>
           <button
             onClick={exportOrders}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors shadow-sm flex items-center gap-2"
+            className="group px-4 py-2.5 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-medium hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-md shadow-green-200 hover:shadow-lg hover:shadow-green-300 flex items-center gap-2"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             Export CSV
@@ -651,8 +689,8 @@ export default function OrdersPage(): ReactElement {
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div className="md:col-span-2">
-            <div className="relative">
-              <svg className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="relative group">
+              <svg className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input
@@ -660,7 +698,7 @@ export default function OrdersPage(): ReactElement {
                 placeholder="Search by order #, customer name, or email..."
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
               />
             </div>
           </div>
@@ -668,7 +706,7 @@ export default function OrdersPage(): ReactElement {
           <select
             value={statusFilter}
             onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-            className="px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            className="px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white cursor-pointer transition-all duration-200 hover:border-gray-300"
           >
             <option value="">All Statuses</option>
             {data?.filters.statuses.map((status) => (
@@ -679,7 +717,7 @@ export default function OrdersPage(): ReactElement {
           <select
             value={fulfillmentFilter}
             onChange={(e) => { setFulfillmentFilter(e.target.value); setPage(1); }}
-            className="px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            className="px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white cursor-pointer transition-all duration-200 hover:border-gray-300"
           >
             <option value="">All Fulfillment</option>
             {data?.filters.fulfillmentStatuses.map((status) => (
@@ -690,7 +728,7 @@ export default function OrdersPage(): ReactElement {
           <select
             value={deliveryTypeFilter}
             onChange={(e) => { setDeliveryTypeFilter(e.target.value); setPage(1); }}
-            className="px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            className="px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white cursor-pointer transition-all duration-200 hover:border-gray-300"
           >
             <option value="">All Delivery Types</option>
             {data?.filters.deliveryTypes.map((type) => (
@@ -765,38 +803,54 @@ export default function OrdersPage(): ReactElement {
           <div className="p-8">
             <div className="space-y-4">
               {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="animate-pulse flex items-center gap-4">
-                  <div className="w-20 h-8 bg-gray-200 rounded-lg" />
+                <div key={i} className="animate-pulse flex items-center gap-4 p-4 rounded-lg bg-gray-50">
+                  <div className="w-24 h-10 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg" />
                   <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-gray-200 rounded w-1/4" />
-                    <div className="h-3 bg-gray-200 rounded w-1/3" />
+                    <div className="h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-1/4" />
+                    <div className="h-3 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-1/3" />
                   </div>
-                  <div className="w-24 h-6 bg-gray-200 rounded-full" />
-                  <div className="w-20 h-6 bg-gray-200 rounded" />
+                  <div className="w-24 h-7 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full" />
+                  <div className="w-20 h-7 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full" />
+                  <div className="w-28 h-10 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg" />
                 </div>
               ))}
             </div>
           </div>
         ) : data?.orders.length === 0 ? (
-          <div className="p-12 text-center">
-            <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-            </svg>
-            <p className="text-gray-500 text-lg">No orders found matching your criteria</p>
-            <p className="text-gray-400 text-sm mt-1">Try adjusting your filters or search term</p>
+          <div className="p-16 text-center">
+            <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+              <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+            </div>
+            <p className="text-gray-700 text-xl font-semibold">No orders found</p>
+            <p className="text-gray-500 mt-2 max-w-sm mx-auto">Try adjusting your filters or search term to find what you&apos;re looking for</p>
+            <button
+              onClick={() => {
+                setSearch('');
+                setStatusFilter('');
+                setFulfillmentFilter('');
+                setDeliveryTypeFilter('');
+                setGroupTypeFilter('');
+                setPage(1);
+              }}
+              className="mt-6 px-5 py-2.5 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+            >
+              Clear all filters
+            </button>
           </div>
         ) : (
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-100">
+            <thead className="bg-gradient-to-r from-gray-50 to-gray-100/50 border-b border-gray-200">
               <tr>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Order</th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Customer</th>
-                <th className="text-center px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Items</th>
-                <th className="text-right px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Total</th>
-                <th className="text-center px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="text-center px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Fulfillment</th>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Delivery</th>
-                <th className="text-right px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Created</th>
+                <th className="text-left px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Order</th>
+                <th className="text-left px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Customer</th>
+                <th className="text-center px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Items</th>
+                <th className="text-right px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Total</th>
+                <th className="text-center px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Status</th>
+                <th className="text-center px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Fulfillment</th>
+                <th className="text-left px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Delivery</th>
+                <th className="text-right px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Created</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -818,13 +872,13 @@ export default function OrdersPage(): ReactElement {
 
         {/* Pagination */}
         {data && data.pagination.pages > 1 && (
-          <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50">
+          <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between bg-gradient-to-r from-gray-50 to-white">
             <button
               onClick={() => setPage(Math.max(1, page - 1))}
               disabled={page === 1}
-              className="px-4 py-2 text-sm font-medium bg-white border border-gray-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors flex items-center gap-2"
+              className="group px-4 py-2.5 text-sm font-medium bg-white border border-gray-200 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 flex items-center gap-2 shadow-sm"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
               Previous
@@ -841,10 +895,10 @@ export default function OrdersPage(): ReactElement {
                   <button
                     key={pageNum}
                     onClick={() => setPage(pageNum)}
-                    className={`w-10 h-10 text-sm font-medium rounded-lg transition-colors ${
+                    className={`w-10 h-10 text-sm font-semibold rounded-xl transition-all duration-200 ${
                       page === pageNum
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
+                        ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-md shadow-blue-200 scale-105'
+                        : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 shadow-sm'
                     }`}
                   >
                     {pageNum}
@@ -855,10 +909,10 @@ export default function OrdersPage(): ReactElement {
             <button
               onClick={() => setPage(Math.min(data.pagination.pages, page + 1))}
               disabled={page === data.pagination.pages}
-              className="px-4 py-2 text-sm font-medium bg-white border border-gray-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors flex items-center gap-2"
+              className="group px-4 py-2.5 text-sm font-medium bg-white border border-gray-200 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 flex items-center gap-2 shadow-sm"
             >
               Next
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </button>
