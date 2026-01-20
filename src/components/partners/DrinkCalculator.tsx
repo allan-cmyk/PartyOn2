@@ -53,7 +53,7 @@ function generateRecommendations(
   totalDrinks: number,
   partyType: PartyType,
   preference: DrinkPreference,
-  addChampagne: boolean,
+  addWineChampagne: boolean,
   addCocktailKits: boolean,
   guestCount: number
 ): ProductRecommendation[] {
@@ -146,7 +146,7 @@ function generateRecommendations(
     }
 
     // Champagne for bachelorette
-    if (addChampagne) {
+    if (addWineChampagne) {
       const champagneBottles = Math.ceil(guestCount / 4);
       recommendations.push({ name: 'Champagne', quantity: champagneBottles, unit: 'bottles' });
     }
@@ -363,7 +363,7 @@ export default function DrinkCalculator(): ReactElement {
           drinkingLevel,
           partyType,
           drinkPreference,
-          addChampagne,
+          addWineChampagne,
           addCocktailKits,
           totalDrinks,
         }),
