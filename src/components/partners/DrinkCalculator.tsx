@@ -316,11 +316,11 @@ export default function DrinkCalculator(): ReactElement {
       totalDrinks,
       partyType,
       drinkPreference,
-      addChampagne,
+      addWineChampagne,
       addCocktailKits,
       guestCount
     ),
-    [totalDrinks, partyType, drinkPreference, addChampagne, addCocktailKits, guestCount]
+    [totalDrinks, partyType, drinkPreference, addWineChampagne, addCocktailKits, guestCount]
   );
 
   // Drink preference options (same for all party types)
