@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
-import PartnerHeroVideo from '@/components/partners/PartnerHeroVideo';
 import JoinOrderModal from '@/components/partners/JoinOrderModal';
 import DrinkCalculator from '@/components/partners/DrinkCalculator';
 import QuickOrderGrid from '@/components/quick-order/QuickOrderGrid';
@@ -141,13 +140,19 @@ export default function PremierPartyCruisesPage(): ReactElement {
       {/* HERO SECTION */}
       <section
         ref={heroRef}
-        className="relative h-[90vh] min-h-[600px] mt-24 flex items-center overflow-hidden"
+        className="relative h-[70vh] min-h-[500px] mt-24 flex items-center overflow-hidden"
       >
-        <PartnerHeroVideo
-          videoId="4-Yx24Y6oro"
-          fallbackImage="/images/partners/premierpartycruises-hero.webp"
+        {/* Static Image Background */}
+        <Image
+          src="/images/partners/premierpartycruises-hero.webp"
           alt="Premier Party Cruises boat party on Lake Travis"
+          fill
+          className="object-cover"
+          priority
+          sizes="100vw"
         />
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 via-gray-900/60 to-gray-900/40" />
 
         {/* Hero Content - Two Column Layout */}
         <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full">
@@ -249,6 +254,35 @@ export default function PremierPartyCruisesPage(): ReactElement {
               <span className="text-sm md:text-base">Easy Group Ordering</span>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* VIDEO SHOWCASE SECTION */}
+      <section className="py-12 px-6 md:px-12 bg-gray-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-8">
+            <p className="text-gold-600 tracking-[0.2em] uppercase text-sm mb-2">
+              See the Experience
+            </p>
+            <h2 className="font-serif text-2xl md:text-3xl text-gray-900 tracking-wide">
+              What a Boat Day Looks Like
+            </h2>
+          </div>
+
+          {/* Video Container with 16:9 aspect ratio */}
+          <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-2xl bg-gray-900">
+            <iframe
+              src="https://www.youtube.com/embed/4-Yx24Y6oro?rel=0&modestbranding=1"
+              title="Premier Party Cruises boat party experience"
+              className="absolute inset-0 w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+
+          <p className="text-center text-gray-500 text-sm mt-4">
+            Your drinks delivered, iced, and waiting when you arrive at the marina
+          </p>
         </div>
       </section>
 
