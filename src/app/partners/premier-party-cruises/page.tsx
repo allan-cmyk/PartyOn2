@@ -13,7 +13,6 @@ import QuickOrderSearch from '@/components/quick-order/QuickOrderSearch';
 import CartSummaryBar from '@/components/quick-order/CartSummaryBar';
 import WelcomePackageGrid from '@/components/partners/WelcomePackageGrid';
 import { useQuickOrderProducts } from '@/hooks/useQuickOrderProducts';
-import { useIsMobile } from '@/hooks/useIsMobile';
 import { SHOPIFY_COLLECTIONS } from '@/lib/shopify/categories';
 
 /** Real Google reviews for boat parties */
@@ -46,7 +45,6 @@ export default function PremierPartyCruisesPage(): ReactElement {
   const [activeCollection, setActiveCollection] = useState('favorites-home-page');
   const [showSearchOverlay, setShowSearchOverlay] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
-  const isMobile = useIsMobile();
 
   // Sticky collections state
   const [isCollectionsSticky, setIsCollectionsSticky] = useState(false);
@@ -143,7 +141,7 @@ export default function PremierPartyCruisesPage(): ReactElement {
       {/* HERO SECTION */}
       <section
         ref={heroRef}
-        className="relative h-[90vh] min-h-[600px] flex items-center overflow-hidden"
+        className="relative h-[90vh] min-h-[600px] mt-24 flex items-center overflow-hidden"
       >
         <PartnerHeroVideo
           videoId="4-Yx24Y6oro"
@@ -179,13 +177,13 @@ export default function PremierPartyCruisesPage(): ReactElement {
             <div className="flex flex-col items-start md:items-center space-y-4">
               <button
                 onClick={scrollToCollections}
-                className="w-full md:w-80 py-4 bg-gold-500 hover:bg-gold-400 text-gray-900 font-semibold tracking-wider transition-colors text-center"
+                className="w-full md:w-80 py-4 px-8 bg-gold-500 hover:bg-gold-400 text-gray-900 font-semibold tracking-wider transition-colors text-center rounded-lg"
               >
                 START AN INDIVIDUAL ORDER
               </button>
               <Link
                 href=""
-                className="w-full md:w-80 py-4 border-2 border-white/80 text-white hover:bg-white/10 font-semibold tracking-wider transition-colors text-center block"
+                className="w-full md:w-80 py-4 px-8 border-2 border-white/80 text-white hover:bg-white/10 font-semibold tracking-wider transition-colors text-center block rounded-lg"
               >
                 START A GROUP ORDER
               </Link>
@@ -223,7 +221,7 @@ export default function PremierPartyCruisesPage(): ReactElement {
       </section>
 
       {/* QUICK VALUE ROW */}
-      <section className="bg-gray-900 py-6">
+      <section className="bg-gray-900 py-8">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
             <div className="flex items-center gap-3 text-white">
@@ -291,11 +289,11 @@ export default function PremierPartyCruisesPage(): ReactElement {
             : 'py-6'
         }`}
       >
-        <div className={isMobile ? 'px-4' : 'max-w-7xl mx-auto px-8'}>
+        <div className="px-4 md:max-w-7xl md:mx-auto md:px-8">
           {/* Header - hide when sticky */}
           {!isCollectionsSticky && (
             <div className="flex items-center justify-between mb-4">
-              <h3 className={`font-serif ${isMobile ? 'text-lg' : 'text-xl'} text-gray-900 tracking-[0.1em]`}>
+              <h3 className="font-serif text-lg md:text-xl text-gray-900 tracking-[0.1em]">
                 BOAT DAY ESSENTIALS
               </h3>
             </div>
@@ -306,7 +304,7 @@ export default function PremierPartyCruisesPage(): ReactElement {
             className={
               isCollectionsSticky
                 ? 'flex items-center gap-2'
-                : `grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-7 gap-2'}`
+                : 'grid grid-cols-2 md:grid-cols-7 gap-2'
             }
           >
             {/* Search button - only show when sticky */}
@@ -343,7 +341,7 @@ export default function PremierPartyCruisesPage(): ReactElement {
                         ? `${collection.colors.bgActive} ${collection.colors.textActive} ${collection.colors.borderActive} shadow-lg ${isCollectionsSticky ? '' : 'scale-105'}`
                         : `${collection.colors.bg} ${collection.colors.text} ${collection.colors.border} hover:scale-102`
                       }
-                      ${isMobile ? 'text-xs' : 'text-sm'}
+                      text-xs md:text-sm
                       ${isCollectionsSticky ? 'flex-shrink-0 snap-start whitespace-nowrap' : ''}
                       tracking-[0.1em] font-medium
                     `}
@@ -366,7 +364,7 @@ export default function PremierPartyCruisesPage(): ReactElement {
       </div>
 
       {/* Product Grid */}
-      <main className="px-4 py-6">
+      <main className="px-4 py-8">
         <div className="max-w-7xl mx-auto">
           {error ? (
             <div className="text-center py-12">
@@ -483,7 +481,7 @@ export default function PremierPartyCruisesPage(): ReactElement {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {TESTIMONIALS.map((review, idx) => (
               <div key={idx} className="bg-gray-50 rounded-xl p-6">
                 <div className="flex gap-1 mb-4">
@@ -502,7 +500,7 @@ export default function PremierPartyCruisesPage(): ReactElement {
       </section>
 
       {/* FINAL CTA */}
-      <section className="py-20 px-6 md:px-12 bg-gradient-to-br from-gold-500 to-gold-600">
+      <section className="py-16 px-6 md:px-12 bg-gradient-to-br from-gold-500 to-gold-600">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-wide">
             Ready for the Lake?
@@ -514,19 +512,19 @@ export default function PremierPartyCruisesPage(): ReactElement {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
             <button
               onClick={scrollToCollections}
-              className="px-8 py-4 bg-gray-900 text-white hover:bg-gray-800 font-semibold tracking-wider transition-colors"
+              className="px-8 py-4 bg-gray-900 text-white hover:bg-gray-800 font-semibold tracking-wider transition-colors rounded-lg"
             >
               Start Your Order
             </button>
             <Link
               href=""
-              className="px-8 py-4 bg-white text-gray-900 hover:bg-gray-100 font-semibold tracking-wider transition-colors"
+              className="px-8 py-4 bg-white text-gray-900 hover:bg-gray-100 font-semibold tracking-wider transition-colors rounded-lg"
             >
               Start a Group Order
             </Link>
             <button
               onClick={() => setIsJoinModalOpen(true)}
-              className="px-8 py-4 border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white font-semibold tracking-wider transition-colors"
+              className="px-8 py-4 border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white font-semibold tracking-wider transition-colors rounded-lg"
             >
               Join an Order
             </button>

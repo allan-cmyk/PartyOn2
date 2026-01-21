@@ -460,7 +460,7 @@ export default function DrinkCalculator(): ReactElement {
             {/* Total Drinks Display */}
             <div className="mt-4 pt-4 border-t border-gray-700 text-center">
               <p className="text-gray-400 text-sm">You&apos;ll need approximately</p>
-              <p className="text-4xl font-bold text-gold-400 my-1">{totalDrinks}</p>
+              <p className="text-4xl font-bold text-white my-1">{totalDrinks}</p>
               <p className="text-gray-400 text-sm">drinks for your party</p>
             </div>
 
