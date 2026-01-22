@@ -168,36 +168,59 @@ export default function PremierPartyCruisesPage(): ReactElement {
                 priority
               />
               <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl text-white mb-4 tracking-wide leading-tight">
-                Drink Delivery Service for Premier Party Cruises
+                Your Drinks, Iced & Waiting When You Board
               </h1>
               <p className="text-lg md:text-xl text-gray-200 mb-4 leading-relaxed">
-                Cold drinks waiting at your boat—no liquor store, no heavy lifting.
+                Skip the liquor store. We deliver to the marina before you arrive.
               </p>
               <p className="text-gray-300 text-sm md:text-base">
-                Free delivery to the marina. Easy group ordering.
+                Free delivery + easy group ordering for your crew.
               </p>
             </div>
 
             {/* Right Column - CTAs */}
-            <div className="flex flex-col items-start md:items-center space-y-4">
-              <button
-                onClick={scrollToCollections}
-                className="w-full md:w-80 py-4 px-8 bg-gold-500 hover:bg-gold-400 text-gray-900 font-semibold tracking-wider transition-colors text-center rounded-lg"
-              >
-                START AN INDIVIDUAL ORDER
-              </button>
+            <div className="flex flex-col items-start md:items-center space-y-3">
+              {/* PRIMARY CTA - Group Order (most common for boat parties) */}
               <Link
                 href=""
-                className="w-full md:w-80 py-4 px-8 border-2 border-white/80 text-white hover:bg-white/10 font-semibold tracking-wider transition-colors text-center block rounded-lg"
+                className="w-full md:w-80 py-4 px-8 bg-gold-500 hover:bg-gold-400 text-gray-900 font-semibold tracking-wider transition-colors text-center block rounded-lg"
               >
                 START A GROUP ORDER
               </Link>
+
+              {/* SECONDARY - Individual Order (text link) */}
+              <button
+                onClick={scrollToCollections}
+                className="text-white hover:text-gold-300 font-medium tracking-wider underline underline-offset-4"
+              >
+                or start an individual order
+              </button>
+
+              {/* TERTIARY - Join Order */}
               <button
                 onClick={() => setIsJoinModalOpen(true)}
-                className="text-gold-400 hover:text-gold-300 font-medium tracking-wider underline underline-offset-4"
+                className="text-gray-400 hover:text-white text-sm tracking-wider"
               >
-                Join an Existing Order
+                Have a share code? Join an order
               </button>
+
+              {/* Friction reducer */}
+              <p className="text-gray-400 text-xs mt-1">
+                Takes 2 minutes · No account required · Free delivery
+              </p>
+
+              {/* Value indicator */}
+              <p className="text-gray-300 text-sm mt-2">
+                Includes: Free marina delivery ($50 value) + Ice & cooler stocking ($40 value)
+              </p>
+
+              {/* Phone number for users who prefer to call */}
+              <p className="text-gray-300 text-sm mt-2">
+                Questions? Call{' '}
+                <a href="tel:7373719700" className="text-gold-400 hover:text-gold-300 underline">
+                  737-371-9700
+                </a>
+              </p>
             </div>
           </div>
 
@@ -543,24 +566,29 @@ export default function PremierPartyCruisesPage(): ReactElement {
             Get your drinks delivered before you board. Free delivery. Easy group ordering. Zero hassle.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
-            <button
-              onClick={scrollToCollections}
-              className="px-8 py-4 bg-gray-900 text-white hover:bg-gray-800 font-semibold tracking-wider transition-colors rounded-lg"
-            >
-              Start Your Order
-            </button>
+          <div className="flex flex-col items-center gap-3 mb-6">
+            {/* PRIMARY CTA */}
             <Link
               href=""
-              className="px-8 py-4 bg-white text-gray-900 hover:bg-gray-100 font-semibold tracking-wider transition-colors rounded-lg"
+              className="px-10 py-4 bg-gray-900 text-white hover:bg-gray-800 font-semibold tracking-wider transition-colors rounded-lg"
             >
               Start a Group Order
             </Link>
+
+            {/* SECONDARY */}
+            <button
+              onClick={scrollToCollections}
+              className="text-gray-800 hover:text-gray-900 font-medium tracking-wider underline underline-offset-4"
+            >
+              or start an individual order
+            </button>
+
+            {/* TERTIARY */}
             <button
               onClick={() => setIsJoinModalOpen(true)}
-              className="px-8 py-4 border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white font-semibold tracking-wider transition-colors rounded-lg"
+              className="text-gray-700 hover:text-gray-900 text-sm tracking-wider"
             >
-              Join an Order
+              Have a share code? Join an order
             </button>
           </div>
 
