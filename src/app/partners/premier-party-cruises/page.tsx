@@ -10,8 +10,10 @@ import DrinkCalculator from '@/components/partners/DrinkCalculator';
 import QuickOrderGrid from '@/components/quick-order/QuickOrderGrid';
 import QuickOrderSearch from '@/components/quick-order/QuickOrderSearch';
 import CartSummaryBar from '@/components/quick-order/CartSummaryBar';
+import WelcomePackageCard from '@/components/partners/WelcomePackageCard';
 import { useQuickOrderProducts } from '@/hooks/useQuickOrderProducts';
 import { SHOPIFY_COLLECTIONS } from '@/lib/shopify/categories';
+import type { ShopifyProduct } from '@/lib/shopify/types';
 
 /** Real Google reviews for boat parties */
 const TESTIMONIALS = [
@@ -30,6 +32,50 @@ const TESTIMONIALS = [
   {
     reviewer: 'Nikita Patel',
     text: 'We picked them for delivery when we did the ATX Party Boats. We got on board, our drinks were in a cooler with our name on it, on ice. My group and I did not have to worry about lugging anything to the boat in the Texan heat.',
+  },
+];
+
+/** Perks for spending $250+ on group Airbnb order */
+const SPECIAL_PERKS = [
+  {
+    title: 'Free Delivery',
+    description: 'To your Airbnb',
+    value: '$50 value',
+    icon: (
+      <svg className="w-6 h-6 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Free Cooler Stocking',
+    description: 'We stock your coolers',
+    value: '$30 value',
+    icon: (
+      <svg className="w-6 h-6 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Free Bag of Ice',
+    description: 'Keep drinks cold',
+    value: '$10 value',
+    icon: (
+      <svg className="w-6 h-6 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Free Welcome Package',
+    description: 'Austin-themed goodies',
+    value: '$40+ value',
+    icon: (
+      <svg className="w-6 h-6 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+      </svg>
+    ),
   },
 ];
 
@@ -55,6 +101,34 @@ export default function PremierPartyCruisesPage(): ReactElement {
 
   // Load products for active collection
   const { products, loading, error } = useQuickOrderProducts(activeCollection);
+
+  // Welcome packages for Special Perks section
+  const [welcomePackages, setWelcomePackages] = useState<ShopifyProduct[]>([]);
+  const [welcomeLoading, setWelcomeLoading] = useState(true);
+
+  // Fetch welcome packages on mount
+  useEffect(() => {
+    async function fetchWelcomePackages() {
+      try {
+        const response = await fetch('/api/products?search=Welcome%20to%20Austin&first=10');
+        const data = await response.json();
+        if (data.products) {
+          // Filter for Welcome Package products
+          const packages = data.products.filter(
+            (p: ShopifyProduct) =>
+              p.productType === 'Welcome Package' ||
+              p.title.startsWith('Welcome to Austin:')
+          );
+          setWelcomePackages(packages);
+        }
+      } catch (err) {
+        console.error('Failed to fetch welcome packages:', err);
+      } finally {
+        setWelcomeLoading(false);
+      }
+    }
+    fetchWelcomePackages();
+  }, []);
 
   // Scroll-triggered navigation reveal (hero observer)
   useEffect(() => {
@@ -323,7 +397,80 @@ export default function PremierPartyCruisesPage(): ReactElement {
         </div>
       </section>
 
-      {/* WELCOME TO AUSTIN PACKAGES - Temporarily removed until product loading is fixed */}
+      {/* SPECIAL PERKS SECTION */}
+      <section className="relative py-20 px-6 md:px-12 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 overflow-hidden">
+        {/* Subtle background decoration */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gold-500 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gold-600 rounded-full blur-3xl" />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <p className="text-gold-400 tracking-[0.2em] uppercase text-sm mb-3">
+              Exclusive for Premier Customers
+            </p>
+            <h2 className="font-serif text-3xl md:text-5xl text-white tracking-wide mb-4">
+              Special Perks for Premier Customers
+            </h2>
+            <p className="text-gray-300 text-lg max-w-2xl mx-auto">
+              Spend $250 on your group Airbnb order and unlock these exclusive perks
+            </p>
+          </div>
+
+          {/* Value Stack - 4 Perks Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12">
+            {SPECIAL_PERKS.map((perk) => (
+              <div
+                key={perk.title}
+                className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 text-center hover:bg-white/10 transition-colors"
+              >
+                <div className="w-12 h-12 mx-auto mb-4 bg-gold-500/20 rounded-full flex items-center justify-center">
+                  {perk.icon}
+                </div>
+                <h3 className="text-white font-semibold mb-1">{perk.title}</h3>
+                <p className="text-gray-400 text-sm mb-2">{perk.description}</p>
+                <p className="text-gold-400 font-medium">{perk.value}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Welcome Package Carousel */}
+          <div className="mb-10">
+            <h3 className="text-white text-xl font-serif mb-6 text-center">
+              Choose Your Free Welcome Package
+            </h3>
+            {welcomeLoading ? (
+              <div className="flex gap-4 overflow-x-auto pb-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex-shrink-0 w-72 h-80 bg-gray-800 rounded-xl animate-pulse" />
+                ))}
+              </div>
+            ) : welcomePackages.length > 0 ? (
+              <div
+                className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide -mx-6 px-6"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {welcomePackages.map((pkg) => (
+                  <div key={pkg.id} className="flex-shrink-0 w-72 snap-start">
+                    <WelcomePackageCard product={pkg} discountCode="PREMIERPARTYCRUISES" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-400 text-center">Welcome packages coming soon!</p>
+            )}
+          </div>
+
+          {/* Total Value Summary */}
+          <div className="text-center">
+            <p className="text-white text-lg">
+              Total Value: <span className="text-gold-400 font-bold text-2xl">$130+</span> in free perks
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* Sentinel for sticky detection */}
       <div ref={sentinelRef} id="boat-collections" className="h-0" aria-hidden="true" />
