@@ -93,6 +93,81 @@ export default function AustinPartnersPage() {
         </div>
       </div>
 
+      {/* Featured Partners Section */}
+      <section className="py-16 px-4 sm:px-8 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <ScrollRevealCSS duration={600} y={20}>
+            <div className="text-center mb-10">
+              <p className="text-gold-600 tracking-[0.2em] uppercase text-sm mb-3">
+                Premier Partnership
+              </p>
+              <h2 className="font-serif text-3xl sm:text-4xl text-gray-900 tracking-[0.1em]">
+                Featured Partners
+              </h2>
+            </div>
+
+            {/* Premier Party Cruises Featured Tile */}
+            <Link
+              href="/partners/premier-party-cruises"
+              className="group relative block w-full aspect-[21/9] sm:aspect-[21/7] rounded-2xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500"
+            >
+              <Image
+                src="/images/partners/premierpartycruises-hero.webp"
+                alt="Premier Party Cruises - Austin's favorite Lake Travis party boat rentals"
+                fill
+                sizes="(max-width: 768px) 100vw, 1280px"
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                priority
+              />
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
+
+              {/* Content */}
+              <div className="absolute inset-0 flex flex-col justify-center px-6 sm:px-12 md:px-16">
+                {/* Premier Partner Badge */}
+                <div className="inline-flex items-center gap-2 bg-gold-500 text-gray-900 px-3 py-1.5 rounded-full w-fit mb-4">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-xs font-bold tracking-wider uppercase">Premier Partner</span>
+                </div>
+
+                {/* Partner Name & Tagline */}
+                <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white tracking-wide mb-3">
+                  Premier Party Cruises
+                </h3>
+                <p className="text-lg sm:text-xl text-gray-200 max-w-xl mb-6">
+                  Austin&apos;s favorite Lake Travis party boat rentals. Free delivery to the marina + cooler stocking included.
+                </p>
+
+                {/* CTA Button */}
+                <div className="flex items-center gap-3">
+                  <span className="inline-flex items-center gap-2 px-6 py-3 bg-gold-500 text-gray-900 rounded-lg font-semibold group-hover:bg-gold-400 transition-colors">
+                    Order Drinks for Your Boat Party
+                    <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+
+              {/* Logo (desktop only) */}
+              <div className="absolute bottom-6 right-6 hidden md:block">
+                <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-lg">
+                  <Image
+                    src="/images/partners/premierpartycruises-logo.webp"
+                    alt="Premier Party Cruises Logo"
+                    width={120}
+                    height={60}
+                    className="object-contain"
+                  />
+                </div>
+              </div>
+            </Link>
+          </ScrollRevealCSS>
+        </div>
+      </section>
+
       {/* Category Filter */}
       <CategoryFilter
         activeCategory={activeCategory}
