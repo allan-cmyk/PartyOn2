@@ -41,7 +41,7 @@ export const db = {
     return {
       id: created.id,
       name: created.name,
-      hostCustomerId: created.hostCustomerId || '',
+      hostCustomerId: created.hostCustomerId,
       hostName: created.hostName || undefined,
       shareCode: created.shareCode,
       status: created.status.toLowerCase() as 'active' | 'locked' | 'closed' | 'completed' | 'cancelled',
@@ -389,7 +389,7 @@ function mapGroupOrderFromPrisma(order: Record<string, unknown> & {
   return {
     id: order.id as string,
     name: order.name as string,
-    hostCustomerId: order.hostCustomerId as string,
+    hostCustomerId: (order.hostCustomerId as string | null),
     hostName: (order.hostName as string) || undefined,
     shareCode: order.shareCode as string,
     status: ((order.status as string) || 'active').toLowerCase() as 'active' | 'locked' | 'closed' | 'completed' | 'cancelled',

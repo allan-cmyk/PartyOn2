@@ -1,7 +1,7 @@
 export interface GroupOrder {
   id: string
   name: string
-  hostCustomerId: string
+  hostCustomerId: string | null  // null when Shopify customer ID doesn't exist in local Customer table
   hostName?: string
   shareCode: string
   status: 'active' | 'locked' | 'closed' | 'completed' | 'cancelled'
