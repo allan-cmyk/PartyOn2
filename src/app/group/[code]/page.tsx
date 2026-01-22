@@ -41,12 +41,40 @@ export default function GroupOrderLandingPage() {
   }
 
   const handleAgeVerified = async () => {
-    if (!groupOrder || !cart) return
+    if (!groupOrder) return
 
     setIsJoining(true)
     setJoinError(null)
 
     try {
+      // If user doesn't have a cart yet, save join info and redirect to products
+      // The group order will be joined when they add their first item
+      if (!cart) {
+        // Store pending join info in localStorage
+        localStorage.setItem('pendingGroupOrderJoin', JSON.stringify({
+          groupOrderId: groupOrder.id,
+          shareCode: shareCode,
+          guestName: guestName.trim(),
+          guestEmail: guestEmail.trim().toLowerCase(),
+          customerId: localStorage.getItem('customerId') || undefined,
+        }))
+
+        // Set the group order code in context
+        setGroupOrderCode(shareCode)
+
+        // Track join group order event (pending)
+        trackEvent(ANALYTICS_EVENTS.JOIN_GROUP_ORDER, {
+          group_order_id: groupOrder.id,
+          share_code: shareCode,
+          status: 'pending_cart'
+        })
+
+        // Redirect to order page to add items
+        // Using window.location for more reliable redirect
+        window.location.href = '/order?joinGroup=' + shareCode
+        return
+      }
+
       await joinGroupOrder(groupOrder.id, {
         cartId: cart.id,
         customerId: localStorage.getItem('customerId') || undefined,
@@ -63,8 +91,8 @@ export default function GroupOrderLandingPage() {
       // Set the group order code in context
       setGroupOrderCode(shareCode)
 
-      // Redirect to products page to start shopping
-      router.push('/products')
+      // Redirect to order page to start shopping
+      router.push('/order')
     } catch (err) {
       setJoinError('Failed to join group order. Please try again.')
       console.error(err)

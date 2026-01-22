@@ -6,6 +6,7 @@ import { useCustomCart } from '@/lib/cart/hooks/useCustomCart';
 import { ShopifyCart } from '@/lib/shopify/types';
 import { trackMetaEvent } from '@/components/MetaPixel';
 import { trackCartAction, trackEvent, ANALYTICS_EVENTS } from '@/lib/analytics/track';
+import { completePendingGroupOrderJoin } from '@/lib/group-orders/hooks';
 
 // Feature flag - set to true to use custom cart instead of Shopify
 const USE_CUSTOM_CART = process.env.NEXT_PUBLIC_USE_CUSTOM_CART === 'true';
@@ -92,7 +93,22 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
       throw new Error('Age verification required');
     }
 
+    // Check if this is creating a new cart (first item added)
+    const isCreatingNewCart = !cartHook.cart;
+
     const result = await cartHook.addToCart(variantId, quantity);
+
+    // If we just created a new cart, check for pending group order join
+    if (isCreatingNewCart && result?.id) {
+      try {
+        const joined = await completePendingGroupOrderJoin(result.id);
+        if (joined) {
+          console.log('✅ User automatically joined group order with new cart');
+        }
+      } catch (err) {
+        console.error('Failed to complete pending group order join:', err);
+      }
+    }
 
     // Find the added item to get product details for tracking
     const addedLine = result?.lines?.edges?.find(

@@ -58,6 +58,37 @@ export function useJoinGroupOrder() {
 }
 
 /**
+ * Complete a pending group order join after cart is created
+ * Called automatically when user adds first item to cart after clicking "JOIN"
+ */
+export async function completePendingGroupOrderJoin(cartId: string): Promise<boolean> {
+  try {
+    const pendingJoinData = localStorage.getItem('pendingGroupOrderJoin')
+    if (!pendingJoinData) return false
+
+    const pending = JSON.parse(pendingJoinData)
+
+    // Join the group order with the new cart
+    await GroupOrderAPI.join(pending.groupOrderId, {
+      cartId,
+      customerId: pending.customerId,
+      guestName: pending.guestName,
+      guestEmail: pending.guestEmail,
+    })
+
+    // Clear pending join data
+    localStorage.removeItem('pendingGroupOrderJoin')
+
+    console.log('✅ Completed pending group order join:', pending.shareCode)
+    return true
+  } catch (error) {
+    console.error('Failed to complete pending group order join:', error)
+    // Don't remove pending data on failure - user can retry
+    return false
+  }
+}
+
+/**
  * Hook for host actions on a group order
  * @param shareCode - The share code of the group order
  */
