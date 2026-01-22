@@ -19,6 +19,10 @@ export interface GroupOrder {
   expiresAt: string
   createdAt: string
   updatedAt: string
+  // Multi-payment fields
+  multiPaymentEnabled?: boolean
+  paymentDeadline?: string | null
+  hostDecision?: 'PROCEED_PARTIAL' | 'CANCEL_REFUND_ALL' | 'EXTEND_DEADLINE' | null
 }
 
 export interface GroupParticipant {
@@ -108,4 +112,35 @@ export interface GroupCheckoutStats {
   total: number
   checkedOut: number
   shopping: number
+}
+
+/**
+ * Payment status response from API for multi-payment group orders
+ */
+export interface GroupPaymentStatus {
+  payment: {
+    totalExpected: number
+    totalPaid: number
+    totalPending: number
+    isFullyPaid: boolean
+    meetsMinimum: boolean
+  }
+  participants: {
+    total: number
+    paid: number
+    pending: number
+    failed: number
+  }
+  payments: Array<{
+    participantId: string
+    participantName: string
+    amount: number
+    status: 'PENDING' | 'PROCESSING' | 'PAID' | 'FAILED' | 'EXPIRED' | 'REFUNDED'
+    paidAt: string | null
+  }>
+  deadline: {
+    deadline: string | null
+    passed: boolean
+    needsHostDecision: boolean
+  }
 }

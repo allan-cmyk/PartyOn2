@@ -1,13 +1,17 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useGroupOrderContext } from '@/contexts/GroupOrderContext'
 import { useCartContext } from '@/contexts/CartContext'
 import ShareGroupOrder from '@/components/group-orders/ShareGroupOrder'
 import GroupOrderItems from '@/components/group-orders/GroupOrderItems'
+import EnableMultiPaymentModal from '@/components/group-orders/EnableMultiPaymentModal'
+import PaymentStatusSection from '@/components/group-orders/PaymentStatusSection'
+import HostDecisionModal from '@/components/group-orders/HostDecisionModal'
 import { trackEvent, ANALYTICS_EVENTS } from '@/lib/analytics/track'
+import { type GroupPaymentStatus } from '@/lib/group-orders/types'
 
 export default function GroupOrderDashboard() {
   const router = useRouter()
@@ -15,6 +19,9 @@ export default function GroupOrderDashboard() {
   const { cart } = useCartContext()
   const [showShareModal, setShowShareModal] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
+  const [showEnableMultiPaymentModal, setShowEnableMultiPaymentModal] = useState(false)
+  const [showHostDecisionModal, setShowHostDecisionModal] = useState(false)
+  const [paymentStatus, setPaymentStatus] = useState<GroupPaymentStatus | null>(null)
 
   // Redirect if not in a group order or not the host
   // But don't redirect while still loading (code set but order not loaded yet)
@@ -39,6 +46,37 @@ export default function GroupOrderDashboard() {
 
     return () => clearInterval(interval)
   }, [refreshGroupOrder])
+
+  // Fetch payment status when multi-payment is enabled
+  const fetchPaymentStatus = useCallback(async () => {
+    if (!currentGroupOrder?.multiPaymentEnabled) return
+
+    try {
+      const response = await fetch(`/api/group-orders/${currentGroupOrder.shareCode}/payment-status`)
+      if (response.ok) {
+        const data = await response.json()
+        setPaymentStatus(data)
+      }
+    } catch (error) {
+      console.error('Failed to fetch payment status:', error)
+    }
+  }, [currentGroupOrder?.shareCode, currentGroupOrder?.multiPaymentEnabled])
+
+  // Poll payment status every 10 seconds when multi-payment is enabled
+  useEffect(() => {
+    if (!currentGroupOrder?.multiPaymentEnabled) {
+      setPaymentStatus(null)
+      return
+    }
+
+    // Initial fetch
+    fetchPaymentStatus()
+
+    // Poll every 10 seconds
+    const interval = setInterval(fetchPaymentStatus, 10000)
+
+    return () => clearInterval(interval)
+  }, [currentGroupOrder?.multiPaymentEnabled, fetchPaymentStatus])
 
   const handleCloseGroup = async () => {
     if (!currentGroupOrder) return
@@ -177,6 +215,14 @@ export default function GroupOrderDashboard() {
                     {isClosing ? 'CLOSING...' : 'CLOSE GROUP'}
                   </button>
                 )}
+                {isGroupActive && !currentGroupOrder.multiPaymentEnabled && currentGroupOrder.participants.length > 0 && (
+                  <button
+                    onClick={() => setShowEnableMultiPaymentModal(true)}
+                    className="px-4 py-2 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em]"
+                  >
+                    ENABLE SPLIT PAY
+                  </button>
+                )}
               </div>
             </div>
 
@@ -259,6 +305,15 @@ export default function GroupOrderDashboard() {
               </div>
             )}
           </div>
+
+          {/* Payment Status Section (when multi-payment enabled) */}
+          {currentGroupOrder.multiPaymentEnabled && paymentStatus && (
+            <PaymentStatusSection
+              paymentStatus={paymentStatus}
+              onHostDecisionNeeded={() => setShowHostDecisionModal(true)}
+              shareCode={currentGroupOrder.shareCode}
+            />
+          )}
 
           {/* What's Been Ordered */}
           <GroupOrderItems shareCode={currentGroupOrder.shareCode} className="mb-6" />
@@ -372,6 +427,45 @@ export default function GroupOrderDashboard() {
           onClose={() => setShowShareModal(false)}
           shareCode={currentGroupOrder.shareCode}
           eventName={currentGroupOrder.name}
+        />
+      )}
+
+      {/* Enable Multi-Payment Modal */}
+      {showEnableMultiPaymentModal && currentGroupOrder && (
+        <EnableMultiPaymentModal
+          isOpen={showEnableMultiPaymentModal}
+          onClose={() => setShowEnableMultiPaymentModal(false)}
+          shareCode={currentGroupOrder.shareCode}
+          eventName={currentGroupOrder.name}
+          deliveryDate={currentGroupOrder.deliveryDate}
+          participantCount={currentGroupOrder.participants.length}
+          totalAmount={currentGroupOrder.totalAmount || 0}
+          onSuccess={() => {
+            refreshGroupOrder()
+            fetchPaymentStatus()
+          }}
+        />
+      )}
+
+      {/* Host Decision Modal */}
+      {showHostDecisionModal && currentGroupOrder && paymentStatus && (
+        <HostDecisionModal
+          isOpen={showHostDecisionModal}
+          onClose={() => setShowHostDecisionModal(false)}
+          shareCode={currentGroupOrder.shareCode}
+          groupOrderName={currentGroupOrder.name}
+          paidParticipants={paymentStatus.payments
+            .filter(p => p.status === 'PAID')
+            .map(p => ({ participantName: p.participantName, amount: p.amount, status: 'PAID' as const }))}
+          unpaidParticipants={paymentStatus.payments
+            .filter(p => p.status !== 'PAID')
+            .map(p => ({ participantName: p.participantName, amount: p.amount, status: 'PENDING' as const }))}
+          totalPaid={paymentStatus.payment.totalPaid}
+          totalPending={paymentStatus.payment.totalPending}
+          onDecisionMade={() => {
+            refreshGroupOrder()
+            fetchPaymentStatus()
+          }}
         />
       )}
     </div>
