@@ -30,11 +30,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Create group order
+    // Note: hostCustomerId is set to null because the Shopify customer ID
+    // doesn't exist in our local Customer table. We store host info in hostName instead.
     const groupOrder = {
       id: `group_${Date.now()}`,
       name: body.name,
-      hostCustomerId: body.customerId,
-      hostName: body.customerName,
+      hostCustomerId: null, // Don't use FK - Shopify IDs don't exist in Customer table
+      hostName: body.customerName || 'Host',
       shareCode,
       status: 'active' as const,
       deliveryDate: body.deliveryDate,

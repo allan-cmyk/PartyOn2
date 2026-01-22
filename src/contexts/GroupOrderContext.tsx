@@ -53,13 +53,20 @@ export function GroupOrderProvider({ children }: GroupOrderProviderProps) {
   }, [groupOrderCode])
 
   const clearGroupOrder = () => {
+    // Remove host flag if exists
+    if (groupOrderCode) {
+      localStorage.removeItem(`hostOf_${groupOrderCode}`)
+    }
     setGroupOrderCode(null)
     localStorage.removeItem('groupOrderCode')
   }
 
-  // Get customer ID from localStorage for host check
-  const customerId = typeof window !== 'undefined' ? localStorage.getItem('customerId') : null
-  const isHost = groupOrder?.hostCustomerId === customerId && !!customerId
+  // Check if current user is host of this group order
+  // We store this in localStorage when creating a group order since hostCustomerId
+  // in the DB is a foreign key that may not match Shopify customer IDs
+  const isHost = typeof window !== 'undefined' && groupOrderCode
+    ? localStorage.getItem(`hostOf_${groupOrderCode}`) === 'true'
+    : false
   const isInGroupOrder = !!groupOrder && groupOrder.status === 'active'
 
   const value: GroupOrderContextType = {

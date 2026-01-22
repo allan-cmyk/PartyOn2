@@ -97,6 +97,9 @@ export default function CreateGroupOrderPage() {
         // Save the share code to context (and localStorage)
         setGroupOrderCode(result.shareCode)
 
+        // Mark this user as host of this group order
+        localStorage.setItem(`hostOf_${result.shareCode}`, 'true')
+
         // Short delay to let context update
         setTimeout(() => {
           router.push('/group/dashboard')
