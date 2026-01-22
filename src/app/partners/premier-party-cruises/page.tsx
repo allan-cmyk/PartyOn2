@@ -10,7 +10,6 @@ import DrinkCalculator from '@/components/partners/DrinkCalculator';
 import QuickOrderGrid from '@/components/quick-order/QuickOrderGrid';
 import QuickOrderSearch from '@/components/quick-order/QuickOrderSearch';
 import CartSummaryBar from '@/components/quick-order/CartSummaryBar';
-import WelcomePackageGrid from '@/components/partners/WelcomePackageGrid';
 import { useQuickOrderProducts } from '@/hooks/useQuickOrderProducts';
 import { SHOPIFY_COLLECTIONS } from '@/lib/shopify/categories';
 
@@ -162,9 +161,9 @@ export default function PremierPartyCruisesPage(): ReactElement {
               <Image
                 src="/images/partners/premierpartycruises-logo.webp"
                 alt="Premier Party Cruises"
-                width={200}
-                height={100}
-                className="h-16 md:h-20 w-auto mb-6 brightness-0 invert"
+                width={280}
+                height={140}
+                className="h-20 md:h-28 w-auto mb-6 brightness-0 invert drop-shadow-[0_2px_8px_rgba(255,255,255,0.3)]"
                 priority
               />
               <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl text-white mb-4 tracking-wide leading-tight">
@@ -218,7 +217,7 @@ export default function PremierPartyCruisesPage(): ReactElement {
               <p className="text-gray-300 text-sm mt-2">
                 Questions? Call{' '}
                 <a href="tel:7373719700" className="text-gold-400 hover:text-gold-300 underline">
-                  737-371-9700
+                  737.371.9700
                 </a>
               </p>
             </div>
@@ -244,6 +243,21 @@ export default function PremierPartyCruisesPage(): ReactElement {
               </svg>
               TABC Licensed
             </span>
+          </div>
+
+          {/* Social Proof Snippet */}
+          <div className="mt-6 flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 max-w-xl">
+            <div className="flex -space-x-1 flex-shrink-0">
+              {[...Array(5)].map((_, i) => (
+                <svg key={i} className="w-4 h-4 text-gold-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
+            </div>
+            <p className="text-white/90 text-sm italic">
+              &quot;Must do if going on Premier cruise in ATX! So easy, everything was set up by the time we arrived.&quot;
+              <span className="text-white/60 not-italic ml-2">— Kirby P.</span>
+            </p>
           </div>
         </div>
       </section>
@@ -309,30 +323,7 @@ export default function PremierPartyCruisesPage(): ReactElement {
         </div>
       </section>
 
-      {/* WELCOME TO AUSTIN PACKAGES - Free for Premier Party Cruises customers */}
-      <section className="py-12 px-6 md:px-12 bg-gradient-to-b from-gray-900 to-gray-800">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-8">
-            <p className="text-gold-400 tracking-[0.2em] uppercase text-sm mb-2">
-              Exclusive for Premier Party Cruises
-            </p>
-            <h2 className="font-serif text-3xl md:text-4xl text-white tracking-wide mb-4">
-              Welcome to Austin Packages
-            </h2>
-            <p className="text-gray-300 max-w-2xl mx-auto mb-4">
-              Delivered to your Airbnb before or after your cruise. Add a package to your cart and use code{' '}
-              <span className="inline-block font-mono bg-gold-500/20 text-gold-400 px-3 py-1 rounded mx-1">
-                PREMIERPARTYCRUISES
-              </span>{' '}
-              at checkout for 100% off.
-            </p>
-            <p className="text-gray-400 text-sm">
-              Perfect for pre-cruise pregaming or post-cruise afterparties at your rental
-            </p>
-          </div>
-          <WelcomePackageGrid />
-        </div>
-      </section>
+      {/* WELCOME TO AUSTIN PACKAGES - Temporarily removed until product loading is fixed */}
 
       {/* Sentinel for sticky detection */}
       <div ref={sentinelRef} id="boat-collections" className="h-0" aria-hidden="true" />
@@ -342,7 +333,7 @@ export default function PremierPartyCruisesPage(): ReactElement {
         ref={collectionsRef}
         className={`bg-gray-50 border-b border-gray-200 transition-all duration-300 ${
           isCollectionsSticky
-            ? `sticky z-40 py-3 shadow-md ${hideNavOnScroll ? 'top-0' : 'top-24'}`
+            ? `sticky z-40 py-2 shadow-md ${hideNavOnScroll ? 'top-0' : 'top-24'}`
             : 'py-6'
         }`}
       >
@@ -393,7 +384,8 @@ export default function PremierPartyCruisesPage(): ReactElement {
                     key={collection.handle}
                     onClick={() => handleCollectionChange(collection.handle)}
                     className={`
-                      px-4 py-3 text-center border transition-all rounded-lg relative
+                      text-center border transition-all rounded-lg relative
+                      ${isCollectionsSticky ? 'px-3 py-2' : 'px-4 py-3'}
                       ${isActive
                         ? `${collection.colors.bgActive} ${collection.colors.textActive} ${collection.colors.borderActive} shadow-lg ${isCollectionsSticky ? '' : 'scale-105'}`
                         : `${collection.colors.bg} ${collection.colors.text} ${collection.colors.border} hover:scale-102`
