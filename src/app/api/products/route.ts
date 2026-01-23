@@ -1,9 +1,61 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/database/client';
+import { prisma, isDatabaseConfigured } from '@/lib/database/client';
 import { Prisma } from '@prisma/client';
+import { shopifyFetch } from '@/lib/shopify/client';
+import { COLLECTION_GRID_QUERY, PRODUCTS_GRID_QUERY } from '@/lib/shopify/queries/products';
+import type { ShopifyProduct, ShopifyConnection, ShopifyCollection } from '@/lib/shopify/types';
 
 // Cache products for 5 minutes
 export const revalidate = 300;
+
+/**
+ * Fetch products directly from Shopify Storefront API
+ * Used as fallback when database isn't configured
+ */
+async function fetchFromShopify(collectionHandle: string | null, first: number = 100) {
+  try {
+    if (collectionHandle) {
+      // Fetch collection with products
+      const data = await shopifyFetch<{
+        collectionByHandle: ShopifyCollection & {
+          products: ShopifyConnection<ShopifyProduct>;
+        };
+      }>({
+        query: COLLECTION_GRID_QUERY,
+        variables: { handle: collectionHandle, first },
+      });
+
+      if (!data.collectionByHandle) {
+        return { products: { edges: [] }, collection: null };
+      }
+
+      return {
+        products: data.collectionByHandle.products,
+        collection: {
+          id: data.collectionByHandle.id,
+          handle: data.collectionByHandle.handle,
+          title: data.collectionByHandle.title,
+          description: data.collectionByHandle.description || '',
+        },
+      };
+    } else {
+      // Fetch all products
+      const data = await shopifyFetch<{
+        products: ShopifyConnection<ShopifyProduct>;
+      }>({
+        query: PRODUCTS_GRID_QUERY,
+        variables: { first },
+      });
+
+      return {
+        products: data.products,
+      };
+    }
+  } catch (error) {
+    console.error('[Products API] Shopify fallback error:', error);
+    throw error;
+  }
+}
 
 /**
  * Transform Prisma product data to Shopify-compatible format
@@ -100,6 +152,30 @@ export async function GET(request: NextRequest) {
   const tags = searchParams.get('tags')?.split(',').filter(Boolean);
   const priceMin = searchParams.get('priceMin') ? parseFloat(searchParams.get('priceMin')!) : undefined;
   const priceMax = searchParams.get('priceMax') ? parseFloat(searchParams.get('priceMax')!) : undefined;
+
+  // Check if database is configured - if not, use Shopify directly
+  // This ensures cart adds work (Shopify cart expects Shopify GIDs)
+  if (!isDatabaseConfigured()) {
+    console.log('[Products API] Database not configured, using Shopify fallback');
+    try {
+      const collectionHandle = collection || category;
+      const result = await fetchFromShopify(collectionHandle, first);
+
+      return NextResponse.json(result, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+          'CDN-Cache-Control': 'public, s-maxage=300',
+          'Vercel-CDN-Cache-Control': 'public, s-maxage=300',
+        },
+      });
+    } catch (error) {
+      console.error('[Products API] Shopify fallback failed:', error);
+      return NextResponse.json(
+        { error: 'Failed to fetch products from Shopify', details: error instanceof Error ? error.message : 'Unknown error' },
+        { status: 500 }
+      );
+    }
+  }
 
   try {
     // Build where clause
@@ -250,10 +326,26 @@ export async function GET(request: NextRequest) {
       }
     );
   } catch (error) {
-    console.error('Products API Error:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch products', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    );
+    console.error('[Products API] Database error, falling back to Shopify:', error);
+
+    // Fall back to Shopify if database query fails
+    try {
+      const collectionHandle = collection || category;
+      const result = await fetchFromShopify(collectionHandle, first);
+
+      return NextResponse.json(result, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+          'CDN-Cache-Control': 'public, s-maxage=300',
+          'Vercel-CDN-Cache-Control': 'public, s-maxage=300',
+        },
+      });
+    } catch (shopifyError) {
+      console.error('[Products API] Shopify fallback also failed:', shopifyError);
+      return NextResponse.json(
+        { error: 'Failed to fetch products', details: error instanceof Error ? error.message : 'Unknown error' },
+        { status: 500 }
+      );
+    }
   }
 }
