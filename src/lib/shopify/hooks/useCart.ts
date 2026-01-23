@@ -54,6 +54,8 @@ export function useCart() {
   const createCart = async (lineItems: CartLine[]) => {
     try {
       setLoading(true);
+      console.log('[CART DEBUG] createCart called with lineItems:', lineItems);
+
       const response = await shopifyFetch<{
         cartCreate: {
           cart: ShopifyCart;
@@ -64,11 +66,20 @@ export function useCart() {
         variables: { lineItems },
       });
 
+      console.log('[CART DEBUG] createCart response:', {
+        hasCart: !!response?.cartCreate?.cart,
+        cartId: response?.cartCreate?.cart?.id,
+        totalQuantity: response?.cartCreate?.cart?.totalQuantity,
+        userErrors: response?.cartCreate?.userErrors
+      });
+
       if (response.cartCreate.userErrors.length > 0) {
+        console.error('[CART DEBUG] createCart userErrors:', response.cartCreate.userErrors);
         throw new Error(response.cartCreate.userErrors[0].message);
       }
 
       const newCart = response.cartCreate.cart;
+      console.log('[CART DEBUG] Created new cart, storing ID:', newCart.id);
       setCart(newCart);
       setStoredCartId(newCart.id);
       return newCart;
@@ -105,25 +116,26 @@ export function useCart() {
   const addToCart = useCallback(async (merchandiseId: string, quantity: number = 1) => {
     try {
       setLoading(true);
-      
-      console.log('addToCart called with:', { merchandiseId, quantity, merchandiseIdType: typeof merchandiseId });
-      
+
+      console.log('[CART DEBUG] addToCart called with:', { merchandiseId, quantity, merchandiseIdType: typeof merchandiseId });
+
       // Ensure merchandiseId is a string
       if (typeof merchandiseId !== 'string') {
-        console.error('merchandiseId must be a string, received:', merchandiseId);
+        console.error('[CART DEBUG] merchandiseId must be a string, received:', merchandiseId);
         throw new Error('Invalid merchandiseId');
       }
-      
+
       let currentCart = cart;
-      
+
       // Create cart if it doesn't exist
       if (!currentCart) {
-        console.log('Creating new cart with:', { merchandiseId, quantity });
+        console.log('[CART DEBUG] No existing cart, creating new cart with:', { merchandiseId, quantity });
         currentCart = await createCart([{ merchandiseId, quantity }]);
+        console.log('[CART DEBUG] New cart created:', { cartId: currentCart?.id, totalQuantity: currentCart?.totalQuantity });
         return currentCart;
       }
 
-      console.log('Adding to existing cart:', { cartId: currentCart.id, merchandiseId, quantity });
+      console.log('[CART DEBUG] Adding to existing cart:', { cartId: currentCart.id, merchandiseId, quantity });
       const response = await shopifyFetch<{
         cartLinesAdd: {
           cart: ShopifyCart;
@@ -137,12 +149,27 @@ export function useCart() {
         },
       });
 
+      console.log('[CART DEBUG] Shopify response:', {
+        hasCart: !!response?.cartLinesAdd?.cart,
+        cartId: response?.cartLinesAdd?.cart?.id,
+        totalQuantity: response?.cartLinesAdd?.cart?.totalQuantity,
+        userErrors: response?.cartLinesAdd?.userErrors,
+        linesCount: response?.cartLinesAdd?.cart?.lines?.edges?.length
+      });
+
       if (response.cartLinesAdd.userErrors.length > 0) {
+        console.error('[CART DEBUG] Shopify userErrors:', response.cartLinesAdd.userErrors);
         throw new Error(response.cartLinesAdd.userErrors[0].message);
       }
 
-      setCart(response.cartLinesAdd.cart);
-      return response.cartLinesAdd.cart;
+      const updatedCart = response.cartLinesAdd.cart;
+      console.log('[CART DEBUG] Setting cart state with:', {
+        cartId: updatedCart?.id,
+        totalQuantity: updatedCart?.totalQuantity,
+        itemCount: updatedCart?.lines?.edges?.length
+      });
+      setCart(updatedCart);
+      return updatedCart;
     } catch (err) {
       setError(err as Error);
       throw err;

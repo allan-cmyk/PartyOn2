@@ -79,14 +79,17 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
 
   // Override addToCart to check age verification and fire tracking events
   const addToCart = async (variantId: string, quantity: number = 1): Promise<ShopifyCart> => {
-    console.log('CartContext addToCart called with:', {
+    console.log('[CART CONTEXT] addToCart called with:', {
       variantId,
       quantity,
       variantIdType: typeof variantId,
-      usingCustomCart: USE_CUSTOM_CART
+      usingCustomCart: USE_CUSTOM_CART,
+      currentCartId: cartHook.cart?.id,
+      currentCartQuantity: cartHook.cart?.totalQuantity
     });
 
     if (!checkAgeVerification()) {
+      console.log('[CART CONTEXT] Age verification failed, reloading page');
       localStorage.removeItem('age_verified');
       localStorage.removeItem('ageVerified');
       window.location.reload();
@@ -95,8 +98,21 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
 
     // Check if this is creating a new cart (first item added)
     const isCreatingNewCart = !cartHook.cart;
+    console.log('[CART CONTEXT] isCreatingNewCart:', isCreatingNewCart);
 
-    const result = await cartHook.addToCart(variantId, quantity);
+    let result;
+    try {
+      result = await cartHook.addToCart(variantId, quantity);
+      console.log('[CART CONTEXT] addToCart result:', {
+        success: !!result,
+        cartId: result?.id,
+        totalQuantity: result?.totalQuantity,
+        itemCount: result?.lines?.edges?.length
+      });
+    } catch (err) {
+      console.error('[CART CONTEXT] addToCart error:', err);
+      throw err;
+    }
 
     // If we just created a new cart, check for pending group order join
     if (isCreatingNewCart && result?.id) {
