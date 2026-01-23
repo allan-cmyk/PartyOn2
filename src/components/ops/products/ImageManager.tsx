@@ -9,6 +9,8 @@ interface ProductImage {
   url: string;
   altText: string | null;
   position: number;
+  width?: number | null;
+  height?: number | null;
 }
 
 interface ImageManagerProps {

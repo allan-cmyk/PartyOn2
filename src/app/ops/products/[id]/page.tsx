@@ -269,9 +269,22 @@ export default function ProductDetailPage({ params }: PageProps) {
     return 'text-green-600 bg-green-50';
   };
 
-  const handleImagesChange = (updatedImages: ProductImage[]) => {
+  const handleImagesChange = (updatedImages: Array<{
+    id: string;
+    url: string;
+    altText: string | null;
+    position: number;
+    width?: number | null;
+    height?: number | null;
+  }>) => {
     if (!product) return;
-    setProduct({ ...product, images: updatedImages });
+    // Map to full ProductImage type with defaults for width/height
+    const images: ProductImage[] = updatedImages.map(img => ({
+      ...img,
+      width: img.width ?? null,
+      height: img.height ?? null,
+    }));
+    setProduct({ ...product, images });
   };
 
   const handleVariantUpdate = (variantId: string, updates: Partial<ProductVariant>) => {
