@@ -56,6 +56,20 @@ export default function QuickProductCard({
   const cartQuantity = cartLine?.quantity ?? 0;
   const lineId = cartLine?.id;
 
+  // Debug logging for cart state
+  if (process.env.NODE_ENV === 'development' || true) {
+    const cartVariantIds = cart?.lines?.edges?.map(e => e.node.merchandise.id) || [];
+    if (cartVariantIds.length > 0 || variantId) {
+      console.log('[PRODUCT CARD]', product.title.substring(0, 20), {
+        productVariantId: variantId,
+        cartVariantIds,
+        cartQuantity,
+        totalCartQuantity: cart?.totalQuantity,
+        match: cartVariantIds.includes(variantId)
+      });
+    }
+  }
+
   // Display quantity (optimistic or actual)
   const displayQty = optimisticQty ?? cartQuantity;
 
