@@ -5,7 +5,7 @@
 
 import { prisma } from '@/lib/database/client';
 import { Prisma, Cart, CartItem } from '@prisma/client';
-import { calculateCartTax, DEFAULT_TAX_RATE } from '@/lib/tax';
+import { calculateCartTax } from '@/lib/tax';
 import { calculateDeliveryFee } from '@/lib/delivery';
 
 // ==========================================

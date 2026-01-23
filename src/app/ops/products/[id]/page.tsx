@@ -263,12 +263,6 @@ export default function ProductDetailPage({ params }: PageProps) {
     return colors[status] || 'bg-gray-100 text-gray-800 border-gray-300';
   };
 
-  const getInventoryColor = (qty: number): string => {
-    if (qty === 0) return 'text-red-600 bg-red-50';
-    if (qty < 10) return 'text-yellow-600 bg-yellow-50';
-    return 'text-green-600 bg-green-50';
-  };
-
   const handleImagesChange = (updatedImages: Array<{
     id: string;
     url: string;
