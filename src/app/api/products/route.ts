@@ -3,7 +3,16 @@ import { prisma, isDatabaseConfigured } from '@/lib/database/client';
 import { Prisma } from '@prisma/client';
 import { shopifyFetch } from '@/lib/shopify/client';
 import { COLLECTION_GRID_QUERY, PRODUCTS_GRID_QUERY } from '@/lib/shopify/queries/products';
-import type { ShopifyProduct, ShopifyConnection, ShopifyCollection } from '@/lib/shopify/types';
+import type { ShopifyProduct } from '@/lib/shopify/types';
+
+// Helper type for Shopify product edges
+interface ProductEdges {
+  edges: Array<{ node: ShopifyProduct }>;
+  pageInfo?: {
+    hasNextPage: boolean;
+    endCursor: string | null;
+  };
+}
 
 // Cache products for 5 minutes
 export const revalidate = 300;
@@ -17,9 +26,13 @@ async function fetchFromShopify(collectionHandle: string | null, first: number =
     if (collectionHandle) {
       // Fetch collection with products
       const data = await shopifyFetch<{
-        collectionByHandle: ShopifyCollection & {
-          products: ShopifyConnection<ShopifyProduct>;
-        };
+        collectionByHandle: {
+          id: string;
+          handle: string;
+          title: string;
+          description: string;
+          products: ProductEdges;
+        } | null;
       }>({
         query: COLLECTION_GRID_QUERY,
         variables: { handle: collectionHandle, first },
@@ -41,7 +54,7 @@ async function fetchFromShopify(collectionHandle: string | null, first: number =
     } else {
       // Fetch all products
       const data = await shopifyFetch<{
-        products: ShopifyConnection<ShopifyProduct>;
+        products: ProductEdges;
       }>({
         query: PRODUCTS_GRID_QUERY,
         variables: { first },
