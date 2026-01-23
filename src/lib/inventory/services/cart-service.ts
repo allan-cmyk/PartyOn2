@@ -5,6 +5,8 @@
 
 import { prisma } from '@/lib/database/client';
 import { Prisma, Cart, CartItem } from '@prisma/client';
+import { calculateCartTax, DEFAULT_TAX_RATE } from '@/lib/tax';
+import { calculateDeliveryFee } from '@/lib/delivery';
 
 // ==========================================
 // Types
@@ -44,8 +46,7 @@ export interface DeliveryInfo {
   instructions?: string;
 }
 
-// Tax rate for Austin, TX
-const TAX_RATE = 0.0825;
+// Default delivery fee (configurable rates in delivery module)
 const _DEFAULT_DELIVERY_FEE = 25; // eslint-disable-line @typescript-eslint/no-unused-vars
 
 // ==========================================
@@ -383,13 +384,35 @@ async function recalculateCart(cartId: string): Promise<CartWithItems> {
     return sum + (parseFloat(item.price.toString()) * item.quantity);
   }, 0);
 
-  // Calculate tax
-  const taxableAmount = subtotal - parseFloat(cart.discountAmount.toString());
-  const taxAmount = Math.max(0, taxableAmount * TAX_RATE);
+  // Get zip code from delivery address if available
+  let zipCode: string | undefined;
+  if (cart.deliveryAddress && typeof cart.deliveryAddress === 'object') {
+    const addr = cart.deliveryAddress as { zip?: string };
+    zipCode = addr.zip;
+  }
+
+  // Calculate tax using configurable rates
+  const discountAmount = parseFloat(cart.discountAmount.toString());
+  const taxResult = calculateCartTax({
+    subtotal,
+    discountAmount,
+    zipCode,
+  });
+  const taxAmount = taxResult.taxAmount;
+
+  // Calculate delivery fee based on zip code (if delivery address is set)
+  let deliveryFee = parseFloat(cart.deliveryFee.toString());
+  if (zipCode && cart.deliveryAddress) {
+    // Calculate delivery fee based on zone - use existing fee if manually set
+    const existingFee = parseFloat(cart.deliveryFee.toString());
+    // Only auto-calculate if fee is 0 or if we don't have a fee set
+    if (existingFee === 0) {
+      const deliveryResult = calculateDeliveryFee(zipCode, subtotal, false);
+      deliveryFee = deliveryResult.fee;
+    }
+  }
 
   // Calculate total
-  const deliveryFee = parseFloat(cart.deliveryFee.toString());
-  const discountAmount = parseFloat(cart.discountAmount.toString());
   const total = Math.max(0, subtotal - discountAmount + taxAmount + deliveryFee);
 
   // Update cart totals
@@ -398,6 +421,7 @@ async function recalculateCart(cartId: string): Promise<CartWithItems> {
     data: {
       subtotal: new Prisma.Decimal(subtotal.toFixed(2)),
       taxAmount: new Prisma.Decimal(taxAmount.toFixed(2)),
+      deliveryFee: new Prisma.Decimal(deliveryFee.toFixed(2)),
       total: new Prisma.Decimal(total.toFixed(2)),
     },
   });

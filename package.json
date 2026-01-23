@@ -43,6 +43,7 @@
     "@shopify/buy-button-js": "^3.0.5",
     "@supabase/supabase-js": "^2.56.0",
     "@vercel/analytics": "^1.5.0",
+    "@vercel/blob": "^2.0.1",
     "@vercel/kv": "^3.0.0",
     "@vercel/postgres": "^0.10.0",
     "@vercel/speed-insights": "^1.2.0",
@@ -61,8 +62,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "recharts": "^3.6.0",
-    "resend": "^6.7.0",
-    "stripe": "^20.1.2",
+    "resend": "^6.8.0",
+    "stripe": "^20.2.0",
     "swr": "^2.2.5",
     "zod": "^4.3.5"
   },

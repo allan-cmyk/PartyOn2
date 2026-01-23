@@ -7,6 +7,7 @@ import { prisma } from '@/lib/database/client';
 import { Prisma, OrderStatus, FulfillmentStatus, FinancialStatus } from '@prisma/client';
 import type Stripe from 'stripe';
 import { CartWithItems } from './cart-service';
+import type { DraftOrderWithTotal, DraftOrderItem } from '@/lib/draft-orders/types';
 
 /**
  * Order with all relations
@@ -85,8 +86,36 @@ export async function createOrderFromCheckout(
     deliveryPhone = shippingDetails.phone;
   }
 
+  // Get or create customer ID
+  let customerId = cart.customerId;
+
+  if (!customerId && customerEmail) {
+    // Create or find customer from Stripe session data (guest checkout)
+    const existingCustomer = await prisma.customer.findUnique({
+      where: { email: customerEmail }
+    });
+
+    if (existingCustomer) {
+      customerId = existingCustomer.id;
+    } else {
+      // Create new customer from checkout info
+      const nameParts = customerName.split(' ');
+      const newCustomer = await prisma.customer.create({
+        data: {
+          email: customerEmail,
+          phone: customerPhone,
+          firstName: nameParts[0] || 'Guest',
+          lastName: nameParts.slice(1).join(' ') || '',
+          ageVerified: true, // They completed checkout with age verification
+          isActive: true,
+        }
+      });
+      customerId = newCustomer.id;
+    }
+  }
+
   // Validate required fields
-  if (!cart.customerId) {
+  if (!customerId) {
     throw new Error('Customer ID is required to create an order');
   }
   if (!cart.deliveryDate) {
@@ -96,14 +125,19 @@ export async function createOrderFromCheckout(
     throw new Error('Delivery time is required to create an order');
   }
 
+  // Extract payment intent ID (can be string or expanded object)
+  const paymentIntentId = typeof session.payment_intent === 'string'
+    ? session.payment_intent
+    : session.payment_intent?.id || null;
+
   // Create order with items in a transaction
   type TransactionClient = Omit<typeof prisma, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>;
   const order = await prisma.$transaction(async (tx: TransactionClient) => {
     // Create the order
     const newOrder = await tx.order.create({
       data: {
-        customerId: cart.customerId!,
-        stripePaymentIntentId: session.payment_intent as string | null,
+        customerId: customerId!,
+        stripePaymentIntentId: paymentIntentId,
         stripeCheckoutSessionId: session.id,
         status: 'CONFIRMED',
         fulfillmentStatus: 'UNFULFILLED',
@@ -390,4 +424,160 @@ export async function getOrders(options: {
   ]);
 
   return { orders: orders as unknown as OrderWithItems[], total };
+}
+
+/**
+ * Create an order from a paid draft order (invoice)
+ */
+export async function createOrderFromDraftOrder(
+  draftOrder: DraftOrderWithTotal,
+  session: Stripe.Checkout.Session
+): Promise<OrderWithItems> {
+  // Extract customer info from session (or fallback to draft order)
+  const customerEmail = session.customer_details?.email || draftOrder.customerEmail;
+  const customerPhone = session.customer_details?.phone || draftOrder.customerPhone || null;
+  const customerName = session.customer_details?.name || draftOrder.customerName;
+
+  // Build delivery address object
+  const deliveryAddress = {
+    address1: draftOrder.deliveryAddress,
+    address2: '',
+    city: draftOrder.deliveryCity,
+    province: draftOrder.deliveryState,
+    zip: draftOrder.deliveryZip,
+    country: 'US',
+  };
+
+  // Get or create customer ID
+  let customerId: string | null = null;
+
+  if (customerEmail) {
+    const existingCustomer = await prisma.customer.findUnique({
+      where: { email: customerEmail }
+    });
+
+    if (existingCustomer) {
+      customerId = existingCustomer.id;
+    } else {
+      // Create new customer from invoice info
+      const nameParts = customerName.split(' ');
+      const newCustomer = await prisma.customer.create({
+        data: {
+          email: customerEmail,
+          phone: customerPhone,
+          firstName: nameParts[0] || 'Guest',
+          lastName: nameParts.slice(1).join(' ') || '',
+          ageVerified: true, // They completed checkout
+          isActive: true,
+        }
+      });
+      customerId = newCustomer.id;
+    }
+  }
+
+  if (!customerId) {
+    throw new Error('Customer ID is required to create an order');
+  }
+
+  // Extract payment intent ID
+  const paymentIntentId = typeof session.payment_intent === 'string'
+    ? session.payment_intent
+    : session.payment_intent?.id || null;
+
+  // Create order with items in a transaction
+  type TransactionClient = Omit<typeof prisma, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>;
+  const order = await prisma.$transaction(async (tx: TransactionClient) => {
+    // Create the order
+    const newOrder = await tx.order.create({
+      data: {
+        customerId,
+        stripePaymentIntentId: paymentIntentId,
+        stripeCheckoutSessionId: session.id,
+        status: 'CONFIRMED',
+        fulfillmentStatus: 'UNFULFILLED',
+        financialStatus: 'PAID',
+        subtotal: draftOrder.subtotal,
+        taxAmount: draftOrder.taxAmount,
+        deliveryFee: draftOrder.deliveryFee,
+        discountCode: draftOrder.discountCode,
+        discountAmount: draftOrder.discountAmount,
+        total: draftOrder.total,
+        deliveryDate: draftOrder.deliveryDate,
+        deliveryTime: draftOrder.deliveryTime,
+        deliveryAddress: deliveryAddress,
+        deliveryPhone: draftOrder.customerPhone || customerPhone || '',
+        deliveryInstructions: draftOrder.deliveryNotes,
+        customerEmail,
+        customerPhone,
+        customerName,
+        groupOrderId: draftOrder.groupOrderId,
+      },
+      include: { items: true },
+    });
+
+    // Create order items
+    const items = draftOrder.items as DraftOrderItem[];
+    for (const item of items) {
+      await tx.orderItem.create({
+        data: {
+          orderId: newOrder.id,
+          productId: item.productId,
+          variantId: item.variantId,
+          title: item.title,
+          variantTitle: item.variantTitle || null,
+          sku: null,
+          quantity: item.quantity,
+          price: new Prisma.Decimal(item.price),
+          totalPrice: new Prisma.Decimal(item.price * item.quantity),
+        },
+      });
+    }
+
+    // Decrement inventory for each item
+    for (const item of items) {
+      const inventoryItem = await tx.inventoryItem.findFirst({
+        where: {
+          productId: item.productId,
+          variantId: item.variantId,
+        },
+      });
+
+      if (inventoryItem) {
+        await tx.inventoryItem.update({
+          where: { id: inventoryItem.id },
+          data: {
+            quantity: { decrement: item.quantity },
+          },
+        });
+
+        // Record inventory movement
+        await tx.inventoryMovement.create({
+          data: {
+            inventoryItemId: inventoryItem.id,
+            type: 'SOLD',
+            quantity: -item.quantity,
+            previousQuantity: inventoryItem.quantity,
+            newQuantity: inventoryItem.quantity - item.quantity,
+            reason: `Order #${newOrder.orderNumber}`,
+            referenceId: newOrder.id,
+            referenceType: 'Order',
+          },
+        });
+      }
+    }
+
+    // Get the order with items
+    const orderWithItems = await tx.order.findUnique({
+      where: { id: newOrder.id },
+      include: { items: true },
+    });
+
+    return orderWithItems;
+  });
+
+  if (!order) {
+    throw new Error('Failed to create order');
+  }
+
+  return order as unknown as OrderWithItems;
 }
