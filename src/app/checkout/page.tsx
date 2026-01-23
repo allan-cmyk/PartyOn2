@@ -58,6 +58,40 @@ export default function CheckoutPage() {
     }
   }, [customer]);
 
+  // Initialize delivery details from cart attributes (if already collected in cart modal)
+  useEffect(() => {
+    if (cart?.attributes && !deliveryDetails) {
+      const getAttr = (key: string) => cart.attributes?.find((a: { key: string; value: string }) => a.key === key)?.value;
+
+      const dateStr = getAttr('delivery_date');
+      const time = getAttr('delivery_time');
+      const phone = getAttr('delivery_phone');
+      const instructions = getAttr('delivery_instructions');
+
+      if (dateStr && time) {
+        // Parse the formatted date string back to Date object
+        const parsedDate = new Date(dateStr);
+
+        setDeliveryDetails({
+          date: !isNaN(parsedDate.getTime()) ? parsedDate : null,
+          time: time,
+          instructions: instructions || '',
+          phone: phone || ''
+        });
+      }
+    }
+  }, [cart?.attributes, deliveryDetails]);
+
+  // Pre-fill ZIP code from cart attributes
+  useEffect(() => {
+    if (cart?.attributes) {
+      const zipAttr = cart.attributes.find((a: { key: string; value: string }) => a.key === 'delivery_zip')?.value;
+      if (zipAttr && !billingAddress.zip) {
+        setBillingAddress(prev => ({ ...prev, zip: zipAttr }));
+      }
+    }
+  }, [cart?.attributes, billingAddress.zip]);
+
   // Calculate totals - with proper null checks to prevent subtotalAmount error
   const subtotal = cart?.cost?.subtotalAmount ? parseFloat(cart.cost.subtotalAmount.amount) : 
     (cart?.lines?.edges?.reduce((total, { node }) => {
@@ -392,10 +426,47 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
+              {/* Delivery Schedule */}
+              <div className="bg-white p-6 border border-gray-200">
+                <h2 className="font-cormorant text-2xl mb-6">Delivery Schedule</h2>
+
+                {deliveryDetails ? (
+                  <div className="space-y-2">
+                    <p className="text-gray-700">
+                      <span className="font-medium">Date:</span> {deliveryDetails.date?.toLocaleDateString()}
+                    </p>
+                    <p className="text-gray-700">
+                      <span className="font-medium">Time:</span> {deliveryDetails.time}
+                    </p>
+                    <p className="text-gray-700">
+                      <span className="font-medium">Phone:</span> {deliveryDetails.phone}
+                    </p>
+                    {deliveryDetails.instructions && (
+                      <p className="text-gray-700">
+                        <span className="font-medium">Instructions:</span> {deliveryDetails.instructions}
+                      </p>
+                    )}
+                    <button
+                      onClick={() => setShowDeliveryScheduler(true)}
+                      className="text-gold-600 hover:underline text-sm mt-2"
+                    >
+                      Change delivery schedule →
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setShowDeliveryScheduler(true)}
+                    className="w-full py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-colors"
+                  >
+                    SELECT DELIVERY DATE & TIME
+                  </button>
+                )}
+              </div>
+
               {/* Delivery Address */}
               <div className="bg-white p-6 border border-gray-200">
                 <h2 className="font-cormorant text-2xl mb-6">Delivery Address</h2>
-                
+
                 <div className="space-y-4">
                   <div>
                     <label className="block text-xs tracking-[0.1em] text-gray-600 mb-2">
@@ -462,43 +533,6 @@ export default function CheckoutPage() {
                     </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Delivery Schedule */}
-              <div className="bg-white p-6 border border-gray-200">
-                <h2 className="font-cormorant text-2xl mb-6">Delivery Schedule</h2>
-                
-                {deliveryDetails ? (
-                  <div className="space-y-2">
-                    <p className="text-gray-700">
-                      <span className="font-medium">Date:</span> {deliveryDetails.date?.toLocaleDateString()}
-                    </p>
-                    <p className="text-gray-700">
-                      <span className="font-medium">Time:</span> {deliveryDetails.time}
-                    </p>
-                    <p className="text-gray-700">
-                      <span className="font-medium">Phone:</span> {deliveryDetails.phone}
-                    </p>
-                    {deliveryDetails.instructions && (
-                      <p className="text-gray-700">
-                        <span className="font-medium">Instructions:</span> {deliveryDetails.instructions}
-                      </p>
-                    )}
-                    <button 
-                      onClick={() => setShowDeliveryScheduler(true)}
-                      className="text-gold-600 hover:underline text-sm mt-2"
-                    >
-                      Change delivery schedule →
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => setShowDeliveryScheduler(true)}
-                    className="w-full py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-colors"
-                  >
-                    SELECT DELIVERY DATE & TIME
-                  </button>
-                )}
               </div>
             </div>
 

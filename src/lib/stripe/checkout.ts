@@ -7,6 +7,7 @@ import Stripe from 'stripe';
 import { stripe } from './client';
 import { CartWithItems } from '@/lib/inventory/services/cart-service';
 import { prisma } from '@/lib/database/client'; // Used for getOrCreateStripeCustomer
+import { getTaxRateForZip, DEFAULT_TAX_RATE } from '@/lib/tax';
 
 /**
  * Checkout session metadata stored with Stripe
@@ -109,6 +110,7 @@ export async function createCheckoutSession(
   ) as Record<string, string>;
 
   // Create checkout session params
+  // Note: Shipping address is collected on our checkout page, not in Stripe
   const sessionParams: Stripe.Checkout.SessionCreateParams = {
     mode: 'payment',
     payment_method_types: ['card', 'link'],
@@ -117,18 +119,10 @@ export async function createCheckoutSession(
     cancel_url: cancelUrl,
     metadata,
     automatic_tax: { enabled: false }, // We handle tax ourselves
-    shipping_address_collection: {
-      allowed_countries: ['US'],
-    },
     phone_number_collection: {
       enabled: true,
     },
     billing_address_collection: 'required',
-    custom_text: {
-      shipping_address: {
-        message: 'Please enter your delivery address for alcohol delivery.',
-      },
-    },
   };
 
   // Add customer info if available
@@ -150,15 +144,28 @@ export async function createCheckoutSession(
     sessionParams.discounts = [{ coupon: coupon.id }];
   }
 
-  // Add tax line item
+  // Add tax line item with correct rate based on delivery address
   const taxAmount = Number(cart.taxAmount);
   if (taxAmount > 0) {
+    // Get tax rate based on delivery zip code
+    let taxRate = DEFAULT_TAX_RATE;
+    let taxDescription = 'Texas Sales Tax';
+    if (cart.deliveryAddress && typeof cart.deliveryAddress === 'object') {
+      const addr = cart.deliveryAddress as { zip?: string };
+      if (addr.zip) {
+        const rateConfig = getTaxRateForZip(addr.zip);
+        taxRate = rateConfig.rate;
+        taxDescription = rateConfig.description;
+      }
+    }
+    const taxRateDisplay = `${(taxRate * 100).toFixed(2)}%`;
+
     lineItems.push({
       price_data: {
         currency: 'usd',
         product_data: {
-          name: 'Sales Tax (8.25%)',
-          description: 'Texas state and local sales tax',
+          name: `Sales Tax (${taxRateDisplay})`,
+          description: `${taxDescription} sales tax`,
         },
         unit_amount: Math.round(taxAmount * 100),
       },

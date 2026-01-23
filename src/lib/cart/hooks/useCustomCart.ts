@@ -64,6 +64,24 @@ function transformToShopifyCart(cart: CustomCart): ShopifyCart {
   const total = parseFloat(cart.total);
   const tax = parseFloat(cart.taxAmount);
 
+  // Build attributes array from delivery info
+  const attributes: Array<{ key: string; value: string }> = [];
+  if (cart.deliveryDate) {
+    attributes.push({ key: 'delivery_date', value: cart.deliveryDate });
+  }
+  if (cart.deliveryTime) {
+    attributes.push({ key: 'delivery_time', value: cart.deliveryTime });
+  }
+  if (cart.deliveryPhone) {
+    attributes.push({ key: 'delivery_phone', value: cart.deliveryPhone });
+  }
+  if (cart.deliveryInstructions) {
+    attributes.push({ key: 'delivery_instructions', value: cart.deliveryInstructions });
+  }
+  if (cart.deliveryAddress?.zip) {
+    attributes.push({ key: 'delivery_zip', value: cart.deliveryAddress.zip });
+  }
+
   return {
     id: cart.id,
     checkoutUrl: '/checkout', // Custom checkout page
@@ -105,7 +123,7 @@ function transformToShopifyCart(cart: CustomCart): ShopifyCart {
         currencyCode: 'USD',
       },
     },
-    attributes: [],
+    attributes,
   };
 }
 

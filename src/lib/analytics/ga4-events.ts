@@ -24,16 +24,20 @@ function isGtagAvailable(): boolean {
  * @param buttonText - The text displayed on the button
  * @param buttonUrl - The destination URL
  * @param section - The page section (hero, choose_path, services, footer_cta)
+ * @param experimentId - Optional experiment ID for A/B test attribution
+ * @param variantId - Optional variant ID for A/B test attribution
  */
 export function trackCTAClick(
   buttonText: string,
   buttonUrl: string,
-  section: 'hero' | 'choose_path' | 'services' | 'footer_cta' | 'navigation'
+  section: 'hero' | 'choose_path' | 'services' | 'footer_cta' | 'navigation',
+  experimentId?: string,
+  variantId?: string
 ): void {
   if (!isGtagAvailable()) {
     // Log in development for debugging
     if (process.env.NODE_ENV === 'development') {
-      console.log('[GA4 Dev] cta_click:', { buttonText, buttonUrl, section });
+      console.log('[GA4 Dev] cta_click:', { buttonText, buttonUrl, section, experimentId, variantId });
     }
     return;
   }
@@ -43,6 +47,8 @@ export function trackCTAClick(
     button_url: buttonUrl,
     section: section,
     page_location: window.location.href,
+    ...(experimentId && { experiment_id: experimentId }),
+    ...(variantId && { variant_id: variantId }),
   });
 }
 
@@ -83,20 +89,56 @@ export function trackSectionView(sectionName: string): void {
 }
 
 /**
- * Track hero variant for A/B testing
- * @param variant - The hero variant identifier (e.g., 'A', 'B', 'control')
+ * Track hero variant impression for A/B testing
+ * @param experimentId - The experiment ID from the database
+ * @param variantId - The variant content identifier (e.g., 'control', 'variant-a')
+ * @param elementId - The element being tested (default: 'hero')
  */
-export function trackHeroVariant(variant: string): void {
+export function trackHeroVariant(
+  experimentId: string,
+  variantId: string,
+  elementId: string = 'hero'
+): void {
   if (!isGtagAvailable()) {
     if (process.env.NODE_ENV === 'development') {
-      console.log('[GA4 Dev] hero_variant:', { variant });
+      console.log('[GA4 Dev] experiment_impression:', { experimentId, variantId, elementId });
     }
     return;
   }
 
   window.gtag?.('event', 'experiment_impression', {
-    experiment_id: 'homepage_hero_test',
-    variant_id: variant,
+    experiment_id: experimentId,
+    variant_id: variantId,
+    element_id: elementId,
+    page_location: window.location.href,
+  });
+}
+
+/**
+ * Track experiment conversion (purchase, signup, etc.)
+ * @param experimentId - The experiment ID
+ * @param variantId - The variant ID
+ * @param conversionType - Type of conversion (purchase, signup, etc.)
+ * @param value - Optional monetary value
+ */
+export function trackExperimentConversion(
+  experimentId: string,
+  variantId: string,
+  conversionType: 'purchase' | 'signup' | 'lead' | 'checkout',
+  value?: number
+): void {
+  if (!isGtagAvailable()) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[GA4 Dev] experiment_conversion:', { experimentId, variantId, conversionType, value });
+    }
+    return;
+  }
+
+  window.gtag?.('event', 'experiment_conversion', {
+    experiment_id: experimentId,
+    variant_id: variantId,
+    conversion_type: conversionType,
+    ...(value !== undefined && { value }),
     page_location: window.location.href,
   });
 }

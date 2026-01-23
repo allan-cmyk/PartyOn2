@@ -411,10 +411,116 @@ DATABASE_URL_UNPOOLED=postgresql://...
 
 ### ❌ Not Implemented
 - Auto-generated purchase orders
-- Shopify inventory sync
 - Barcode/QR scanning
 - Multi-location comparison dashboard
 - Supplier integration
+
+---
+
+# Part 1.5: Local Checkout + Stripe Payment System
+
+## Overview
+
+The Local Checkout System allows orders to be processed entirely through the local database with Stripe payments, bypassing Shopify checkout. This is the foundation for eventually migrating away from Shopify for inventory management.
+
+## Status: ✅ WORKING (Tested Jan 22, 2026)
+
+## Architecture
+
+```
+LOCAL CHECKOUT FLOW:
+  User adds to cart → POST /api/v1/cart
+  Cart stored in PostgreSQL (Cart, CartItem tables)
+
+  User fills checkout form → POST /api/v1/cart/delivery
+  Delivery info saved to cart
+
+  User clicks "Proceed to Payment" → POST /api/v1/checkout
+  Creates Stripe Checkout Session
+  Redirects to Stripe hosted checkout
+
+  User pays with card → Stripe processes payment
+
+  Stripe sends webhook → POST /api/webhooks/stripe
+  checkout.session.completed event triggers:
+    1. Create/find Customer record (supports guest checkout)
+    2. Create Order record with Stripe IDs
+    3. Create OrderItem records
+    4. Mark cart as CONVERTED
+
+  User redirected to success page
+```
+
+## Feature Flag
+
+**Enable local checkout by setting in `.env.local`:**
+```env
+NEXT_PUBLIC_USE_CUSTOM_CART=true
+```
+
+When `true`:
+- Cart uses `/api/v1/cart` (PostgreSQL)
+- Checkout uses `/api/v1/checkout` (Stripe)
+- Orders stored locally with Stripe payment IDs
+
+When `false`:
+- Cart uses Shopify Storefront API
+- Checkout redirects to Shopify
+
+## Environment Variables Required
+
+```env
+# Feature flag
+NEXT_PUBLIC_USE_CUSTOM_CART=true
+
+# Stripe (get from dashboard.stripe.com)
+STRIPE_SECRET_KEY=sk_test_xxx
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_xxx
+STRIPE_WEBHOOK_SECRET=whsec_xxx  # From Stripe CLI
+```
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| `src/contexts/CartContext.tsx` | Cart state, USE_CUSTOM_CART flag |
+| `src/lib/inventory/services/cart-service.ts` | Cart CRUD operations |
+| `src/lib/inventory/services/order-service.ts` | Order creation from Stripe session |
+| `src/lib/stripe/checkout.ts` | Stripe session creation |
+| `src/lib/stripe/webhooks.ts` | Webhook event processing |
+| `src/app/api/v1/cart/route.ts` | Cart API endpoint |
+| `src/app/api/v1/checkout/route.ts` | Checkout session API |
+| `src/app/api/webhooks/stripe/route.ts` | Stripe webhook endpoint |
+
+## Testing Locally
+
+```bash
+# Terminal 1: Start dev server
+npm run dev -- --port 3005
+
+# Terminal 2: Forward Stripe webhooks
+stripe listen --forward-to localhost:3005/api/webhooks/stripe
+
+# Test card: 4242 4242 4242 4242, any future expiry, any CVC
+```
+
+## What's Working ✅
+- Local cart storage (PostgreSQL)
+- Stripe Checkout session creation
+- Payment processing
+- Webhook handling (all events return 200)
+- Order creation from checkout
+- Guest checkout (auto-creates Customer record)
+- Customer email/phone capture from Stripe
+
+## What's Not Yet Tested
+- Inventory decrement on order (code exists, needs verification)
+- Order confirmation emails (RESEND_API_KEY not configured)
+- Refund handling
+
+## Bug Fixes Applied (Jan 22, 2026)
+1. **Guest checkout support**: `order-service.ts` now creates Customer record from Stripe session if cart has no customerId
+2. **Payment intent type**: Handle `session.payment_intent` as object or string
 
 ---
 

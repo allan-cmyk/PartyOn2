@@ -158,7 +158,7 @@ export default function QuickProductCard({
         {packSize && (
           <p className="text-xs sm:text-sm text-gray-500">{packSize}</p>
         )}
-        <p className="font-bold text-base sm:text-lg text-green-700">
+        <p className="font-bold text-base sm:text-lg text-gray-900">
           {formatPrice(price.amount, price.currencyCode)}
         </p>
 
@@ -167,14 +167,14 @@ export default function QuickProductCard({
           <button
             onClick={handleAdd}
             disabled={isAdding}
-            className="mx-auto mt-1.5 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-green-600 hover:bg-green-700 text-white flex items-center justify-center shadow-md transition-all disabled:opacity-50"
+            className="mx-auto mt-1.5 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gold-500 hover:bg-gold-600 text-gray-900 flex items-center justify-center shadow-md transition-all disabled:opacity-50"
             aria-label={`Add ${product.title} to cart`}
           >
             {isAdding ? (
-              <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
             ) : (
               <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
               </svg>
             )}
           </button>

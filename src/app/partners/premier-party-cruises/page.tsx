@@ -213,7 +213,7 @@ export default function PremierPartyCruisesPage(): ReactElement {
       {/* HERO SECTION */}
       <section
         ref={heroRef}
-        className="relative h-[70vh] min-h-[500px] mt-24 flex items-center overflow-hidden"
+        className="relative min-h-[100vh] md:min-h-[70vh] pt-28 pb-8 md:pt-0 flex items-center overflow-hidden"
       >
         {/* Static Image Background */}
         <Image
@@ -230,29 +230,38 @@ export default function PremierPartyCruisesPage(): ReactElement {
         {/* Hero Content - Two Column Layout */}
         <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-            {/* Left Column - Logo & Headline */}
-            <div>
-              <Image
-                src="/images/partners/premierpartycruises-logo.webp"
-                alt="Premier Party Cruises"
-                width={280}
-                height={140}
-                className="h-20 md:h-28 w-auto mb-6 brightness-0 invert drop-shadow-[0_2px_8px_rgba(255,255,255,0.3)]"
-                priority
-              />
+            {/* Left Column - Headline & Logos */}
+            <div className="text-center md:text-left">
               <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl text-white mb-4 tracking-wide leading-tight">
                 Your Drinks, Iced & Waiting When You Board
               </h1>
-              <p className="text-lg md:text-xl text-gray-200 mb-4 leading-relaxed">
+              <p className="text-lg md:text-xl text-gray-200 mb-6 leading-relaxed">
                 Skip the liquor store. We deliver to the marina before you arrive.
               </p>
-              <p className="text-gray-300 text-sm md:text-base">
-                Free delivery + easy group ordering for your crew.
-              </p>
+              {/* Partner Logos */}
+              <div className="flex items-center justify-center md:justify-start gap-4 flex-wrap">
+                <Image
+                  src="/images/partners/premierpartycruises-logo.webp"
+                  alt="Premier Party Cruises"
+                  width={200}
+                  height={100}
+                  className="h-12 md:h-16 w-auto"
+                  priority
+                />
+                <span className="text-white/60 text-2xl font-light">+</span>
+                <Image
+                  src="/images/pod-logo-2025.svg"
+                  alt="Party On Delivery"
+                  width={160}
+                  height={80}
+                  className="h-10 md:h-14 w-auto"
+                  priority
+                />
+              </div>
             </div>
 
             {/* Right Column - CTAs */}
-            <div className="flex flex-col items-start md:items-center space-y-3">
+            <div className="flex flex-col items-center space-y-3">
               {/* PRIMARY CTA - Group Order (most common for boat parties) */}
               <Link
                 href=""
@@ -260,6 +269,11 @@ export default function PremierPartyCruisesPage(): ReactElement {
               >
                 START A GROUP ORDER
               </Link>
+
+              {/* Friction reducer - moved directly below CTA */}
+              <p className="text-gray-400 text-xs">
+                Takes 2 minutes · No account required · Free delivery
+              </p>
 
               {/* SECONDARY - Individual Order (text link) */}
               <button
@@ -272,24 +286,14 @@ export default function PremierPartyCruisesPage(): ReactElement {
               {/* TERTIARY - Join Order */}
               <button
                 onClick={() => setIsJoinModalOpen(true)}
-                className="text-gray-400 hover:text-white text-sm tracking-wider"
+                className="text-gray-400 hover:text-white text-sm tracking-wider underline underline-offset-4"
               >
                 Have a share code? Join an order
               </button>
 
-              {/* Friction reducer */}
-              <p className="text-gray-400 text-xs mt-1">
-                Takes 2 minutes · No account required · Free delivery
-              </p>
-
-              {/* Value indicator */}
+              {/* Phone number for users who prefer to call or text */}
               <p className="text-gray-300 text-sm mt-2">
-                Includes: Free marina delivery ($50 value) + Ice & cooler stocking ($40 value)
-              </p>
-
-              {/* Phone number for users who prefer to call */}
-              <p className="text-gray-300 text-sm mt-2">
-                Questions? Call{' '}
+                Questions? Call or text{' '}
                 <a href="tel:7373719700" className="text-gold-400 hover:text-gold-300 underline">
                   737.371.9700
                 </a>
@@ -298,7 +302,7 @@ export default function PremierPartyCruisesPage(): ReactElement {
           </div>
 
           {/* Trust Badges */}
-          <div className="mt-12 flex flex-wrap items-center gap-4 md:gap-8 text-white/80 text-sm">
+          <div className="mt-12 flex flex-wrap items-center justify-center md:justify-start gap-4 md:gap-6 text-white/80 text-sm">
             <span className="flex items-center gap-2">
               <svg className="w-5 h-5 text-gold-400" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -309,7 +313,13 @@ export default function PremierPartyCruisesPage(): ReactElement {
               <svg className="w-5 h-5 text-gold-400" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
-              500+ Boat Parties
+              Easy Group Ordering
+            </span>
+            <span className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-gold-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              500+ Boat Parties Served
             </span>
             <span className="flex items-center gap-2">
               <svg className="w-5 h-5 text-gold-400" fill="currentColor" viewBox="0 0 20 20">
@@ -320,7 +330,7 @@ export default function PremierPartyCruisesPage(): ReactElement {
           </div>
 
           {/* Social Proof Snippet */}
-          <div className="mt-6 flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 max-w-xl">
+          <div className="mt-6 flex items-center justify-center md:justify-start gap-3 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 max-w-xl mx-auto md:mx-0">
             <div className="flex -space-x-1 flex-shrink-0">
               {[...Array(5)].map((_, i) => (
                 <svg key={i} className="w-4 h-4 text-gold-400" fill="currentColor" viewBox="0 0 20 20">
@@ -336,43 +346,11 @@ export default function PremierPartyCruisesPage(): ReactElement {
         </div>
       </section>
 
-      {/* QUICK VALUE ROW */}
-      <section className="bg-gray-900 py-8">
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-            <div className="flex items-center gap-3 text-white">
-              <svg className="w-6 h-6 text-gold-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-              </svg>
-              <span className="text-sm md:text-base">Free Marina Delivery</span>
-            </div>
-            <div className="flex items-center gap-3 text-white">
-              <svg className="w-6 h-6 text-gold-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 7.5l-2.25-1.313M21 7.5v2.25m0-2.25l-2.25 1.313M3 7.5l2.25-1.313M3 7.5l2.25 1.313M3 7.5v2.25m9 3l2.25-1.313M12 12.75l-2.25-1.313M12 12.75V15m0 6.75l2.25-1.313M12 21.75V19.5m0 2.25l-2.25-1.313m0-16.875L12 2.25l2.25 1.313M21 14.25v2.25l-2.25 1.313m-13.5 0L3 16.5v-2.25" />
-              </svg>
-              <span className="text-sm md:text-base">Coolers Stocked with Ice</span>
-            </div>
-            <div className="flex items-center gap-3 text-white">
-              <svg className="w-6 h-6 text-gold-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-              </svg>
-              <span className="text-sm md:text-base">500+ Boat Parties Served</span>
-            </div>
-            <div className="flex items-center gap-3 text-white">
-              <svg className="w-6 h-6 text-gold-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
-              </svg>
-              <span className="text-sm md:text-base">Easy Group Ordering</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* VIDEO SHOWCASE SECTION */}
+      {/* VIDEO + WHAT'S INCLUDED SECTION */}
       <section className="py-12 px-6 md:px-12 bg-gray-50">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <div className="text-center mb-8">
-            <p className="text-gold-600 tracking-[0.2em] uppercase text-sm mb-2">
+            <p className="text-gray-500 tracking-[0.2em] uppercase text-sm mb-2">
               See the Experience
             </p>
             <h2 className="font-serif text-2xl md:text-3xl text-gray-900 tracking-wide">
@@ -380,20 +358,58 @@ export default function PremierPartyCruisesPage(): ReactElement {
             </h2>
           </div>
 
-          {/* Video Container with 16:9 aspect ratio */}
-          <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-2xl bg-gray-900">
-            <iframe
-              src="https://www.youtube.com/embed/4-Yx24Y6oro?rel=0&modestbranding=1"
-              title="Premier Party Cruises boat party experience"
-              className="absolute inset-0 w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+            {/* Video Container - Takes 3 columns on desktop */}
+            <div className="lg:col-span-3">
+              <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-2xl bg-gray-900">
+                <iframe
+                  src="https://www.youtube.com/embed/4-Yx24Y6oro?rel=0&modestbranding=1"
+                  title="Premier Party Cruises boat party experience"
+                  className="absolute inset-0 w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+              <p className="text-center text-gray-500 text-sm mt-4">
+                Your drinks delivered, iced, and waiting when you arrive at the marina
+              </p>
+            </div>
 
-          <p className="text-center text-gray-500 text-sm mt-4">
-            Your drinks delivered, iced, and waiting when you arrive at the marina
-          </p>
+            {/* What's Included - Takes 2 columns on desktop */}
+            <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-lg">
+              <p className="text-gray-500 tracking-[0.2em] uppercase text-sm mb-2">
+                Everything Handled
+              </p>
+              <h3 className="font-serif text-xl md:text-2xl text-gray-900 tracking-wide mb-4">
+                What&apos;s Included
+              </h3>
+              <div className="space-y-3">
+                {[
+                  { item: 'Free delivery to Premier Party Cruises marina', value: '$50' },
+                  { item: 'Cooler stocking with ice', value: '$25' },
+                  { item: 'Ice included with every order', value: '$15' },
+                  { item: 'Group ordering with split payments', value: 'Free' },
+                ].map((row, idx) => (
+                  <div
+                    key={idx}
+                    className="flex justify-between items-center py-2 border-b border-gray-200 last:border-0"
+                  >
+                    <span className="flex items-center gap-2 text-gray-900 text-sm">
+                      <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      {row.item}
+                    </span>
+                    <span className="text-gray-900 font-semibold text-sm">{row.value}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 pt-4 border-t border-gray-300 flex justify-between items-center">
+                <span className="font-serif text-base text-gray-900">Total Value</span>
+                <span className="font-serif text-lg text-gray-900 font-semibold">$90+ FREE</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -578,85 +594,39 @@ export default function PremierPartyCruisesPage(): ReactElement {
         </div>
       </main>
 
-      {/* VALUE STACK + GUARANTEES - Side by side on desktop */}
+      {/* OUR PROMISE SECTION */}
       <section className="py-16 px-6 md:px-12 bg-gray-900">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-            {/* What's Included */}
-            <div className="bg-white rounded-xl p-6 md:p-8">
-              <p className="text-gold-600 tracking-[0.2em] uppercase text-sm mb-2">
-                Everything Handled
-              </p>
-              <h2 className="font-serif text-2xl md:text-3xl text-gray-900 tracking-wide mb-6">
-                What&apos;s Included
-              </h2>
-              <div className="space-y-3">
-                {[
-                  { item: 'Free delivery to Premier Party Cruises marina', value: '$50' },
-                  { item: 'Cooler stocking with ice', value: '$25' },
-                  { item: 'Ice included with every order', value: '$15' },
-                  { item: 'Group ordering with split payments', value: 'Convenience' },
-                ].map((row, idx) => (
-                  <div
-                    key={idx}
-                    className="flex justify-between items-center py-2 border-b border-gray-200 last:border-0"
-                  >
-                    <span className="flex items-center gap-2 text-gray-900 text-sm md:text-base">
-                      <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      {row.item}
-                    </span>
-                    <span className="text-gold-600 font-medium text-sm md:text-base">{row.value}</span>
-                  </div>
-                ))}
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-serif text-2xl md:text-3xl text-white tracking-wide mb-8 text-center">
+            Our Promise to You
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="w-14 h-14 mx-auto mb-4 bg-gold-500/20 text-gold-400 rounded-full flex items-center justify-center">
+                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
-              <div className="mt-4 pt-4 border-t border-gray-300 flex justify-between items-center">
-                <span className="font-serif text-lg text-gray-900">Total Value</span>
-                <span className="font-serif text-xl text-gold-600">$90+ FREE</span>
-              </div>
+              <h3 className="font-serif text-lg text-white mb-2">On-Time Guarantee</h3>
+              <p className="text-gray-400 text-sm">Your order arrives before your boarding time, or delivery is free.</p>
             </div>
-
-            {/* Our Promise */}
-            <div>
-              <h2 className="font-serif text-2xl md:text-3xl text-white tracking-wide mb-6">
-                Our Promise to You
-              </h2>
-              <div className="space-y-6">
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 bg-gold-500/20 text-gold-400 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-serif text-lg text-white mb-1">On-Time Guarantee</h3>
-                    <p className="text-gray-400 text-sm">Your order arrives before your boarding time, or delivery is free.</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 bg-gold-500/20 text-gold-400 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-serif text-lg text-white mb-1">Licensed & Insured</h3>
-                    <p className="text-gray-400 text-sm">Fully TABC-certified with liability coverage. Everything by the book.</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 bg-gold-500/20 text-gold-400 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-serif text-lg text-white mb-1">Order Accuracy</h3>
-                    <p className="text-gray-400 text-sm">Every item checked before delivery. If something&apos;s wrong, we make it right immediately.</p>
-                  </div>
-                </div>
+            <div className="text-center">
+              <div className="w-14 h-14 mx-auto mb-4 bg-gold-500/20 text-gold-400 rounded-full flex items-center justify-center">
+                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
               </div>
+              <h3 className="font-serif text-lg text-white mb-2">Licensed & Insured</h3>
+              <p className="text-gray-400 text-sm">Fully TABC-certified with liability coverage. Everything by the book.</p>
+            </div>
+            <div className="text-center">
+              <div className="w-14 h-14 mx-auto mb-4 bg-gold-500/20 text-gold-400 rounded-full flex items-center justify-center">
+                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="font-serif text-lg text-white mb-2">Order Accuracy</h3>
+              <p className="text-gray-400 text-sm">Every item checked before delivery. If something&apos;s wrong, we make it right immediately.</p>
             </div>
           </div>
         </div>
@@ -669,7 +639,7 @@ export default function PremierPartyCruisesPage(): ReactElement {
       <section className="py-16 px-6 md:px-12 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-gold-600 tracking-[0.2em] uppercase text-sm mb-3">
+            <p className="text-gray-500 tracking-[0.2em] uppercase text-sm mb-3">
               Real Reviews
             </p>
             <h2 className="font-serif text-3xl md:text-4xl text-gray-900 tracking-wide">

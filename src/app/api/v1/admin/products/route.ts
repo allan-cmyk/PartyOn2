@@ -197,6 +197,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       productType,
       basePrice,
       compareAtPrice,
+      costPerUnit,
       tags,
       status,
       abv,
@@ -254,6 +255,44 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             width: null,
             height: null,
           })),
+        });
+      }
+
+      // Create a default variant for the product
+      const defaultVariant = await tx.productVariant.create({
+        data: {
+          productId: newProduct.id,
+          title: 'Default',
+          price: basePrice,
+          compareAtPrice: compareAtPrice || null,
+          inventoryQuantity: 0,
+          trackInventory: true,
+          allowBackorder: false,
+          availableForSale: true,
+        },
+      });
+
+      // Get default inventory location (or create one if none exists)
+      let defaultLocation = await tx.inventoryLocation.findFirst({
+        where: { isDefault: true },
+      });
+
+      if (!defaultLocation) {
+        defaultLocation = await tx.inventoryLocation.findFirst({
+          where: { isActive: true },
+        });
+      }
+
+      // Create inventory item if we have a location
+      if (defaultLocation) {
+        await tx.inventoryItem.create({
+          data: {
+            productId: newProduct.id,
+            variantId: defaultVariant.id,
+            locationId: defaultLocation.id,
+            quantity: 0,
+            costPerUnit: costPerUnit || null,
+          },
         });
       }
 

@@ -7,8 +7,9 @@ import Stripe from 'stripe';
 import { stripe, STRIPE_WEBHOOK_SECRET } from './client';
 import { getCheckoutSession } from './checkout';
 import { prisma } from '@/lib/database/client';
-import { createOrderFromCheckout, createRefund, getOrderByCheckoutSession } from '@/lib/inventory/services/order-service';
+import { createOrderFromCheckout, createRefund, getOrderByCheckoutSession, createOrderFromDraftOrder } from '@/lib/inventory/services/order-service';
 import { getCartById } from '@/lib/inventory/services/cart-service';
+import { getDraftOrderById, updateDraftOrderStatus } from '@/lib/draft-orders';
 import {
   sendOrderConfirmationEmail,
   sendPaymentFailedEmail,
@@ -48,6 +49,12 @@ async function handleCheckoutSessionCompleted(
   const existingOrder = await getOrderByCheckoutSession(session.id);
   if (existingOrder) {
     console.log('[Stripe Webhook] Order already exists:', existingOrder.orderNumber);
+    return;
+  }
+
+  // Check if this is a draft order invoice payment
+  if (session.metadata?.type === 'draft_order_invoice' && session.metadata?.draftOrderId) {
+    await handleDraftOrderPayment(session);
     return;
   }
 
@@ -138,6 +145,110 @@ async function handleCheckoutSessionCompleted(
     }
   } catch (error) {
     console.error('[Stripe Webhook] Failed to create order:', error);
+    throw error;
+  }
+}
+
+/**
+ * Handle draft order invoice payment
+ * Converts draft order to real order when paid
+ */
+async function handleDraftOrderPayment(
+  session: Stripe.Checkout.Session
+): Promise<void> {
+  const draftOrderId = session.metadata?.draftOrderId;
+  if (!draftOrderId) {
+    console.error('[Stripe Webhook] No draftOrderId in session metadata');
+    return;
+  }
+
+  console.log('[Stripe Webhook] Processing draft order payment:', draftOrderId);
+
+  // Get the draft order
+  const draftOrder = await getDraftOrderById(draftOrderId);
+  if (!draftOrder) {
+    console.error('[Stripe Webhook] Draft order not found:', draftOrderId);
+    return;
+  }
+
+  // Check if already processed
+  if (draftOrder.status === 'PAID' || draftOrder.status === 'CONVERTED') {
+    console.log('[Stripe Webhook] Draft order already processed:', draftOrderId);
+    return;
+  }
+
+  try {
+    // Create order from draft order
+    const order = await createOrderFromDraftOrder(draftOrder, session);
+    console.log('[Stripe Webhook] Order created from draft order:', order.orderNumber);
+
+    // Update draft order status
+    await updateDraftOrderStatus(draftOrderId, 'CONVERTED', {
+      paidAt: new Date(),
+      stripePaymentIntentId: session.payment_intent as string,
+      convertedOrderId: order.id,
+    });
+    console.log('[Stripe Webhook] Draft order marked as converted:', draftOrderId);
+
+    // Create delivery task
+    try {
+      await prisma.deliveryTask.create({
+        data: {
+          orderId: order.id,
+          scheduledDate: order.deliveryDate,
+          scheduledTime: order.deliveryTime,
+          status: 'PENDING',
+        },
+      });
+      console.log('[Stripe Webhook] Delivery task created for order:', order.orderNumber);
+    } catch (deliveryError) {
+      console.error('[Stripe Webhook] Failed to create delivery task:', deliveryError);
+    }
+
+    // Send confirmation email
+    try {
+      const deliveryAddress = order.deliveryAddress as {
+        address1?: string;
+        address2?: string;
+        city?: string;
+        province?: string;
+        zip?: string;
+      } || {};
+
+      await sendOrderConfirmationEmail({
+        orderNumber: order.orderNumber,
+        customerName: order.customerName,
+        customerEmail: order.customerEmail,
+        items: order.items.map((item) => ({
+          title: item.title,
+          variantTitle: item.variantTitle,
+          quantity: item.quantity,
+          price: Number(item.price),
+          totalPrice: Number(item.totalPrice),
+        })),
+        subtotal: Number(order.subtotal),
+        deliveryFee: Number(order.deliveryFee),
+        taxAmount: Number(order.taxAmount),
+        discountAmount: Number(order.discountAmount),
+        discountCode: order.discountCode || undefined,
+        total: Number(order.total),
+        deliveryDate: order.deliveryDate,
+        deliveryTime: order.deliveryTime,
+        deliveryAddress: {
+          address1: deliveryAddress.address1 || '',
+          address2: deliveryAddress.address2,
+          city: deliveryAddress.city || 'Austin',
+          province: deliveryAddress.province || 'TX',
+          zip: deliveryAddress.zip || '',
+        },
+        deliveryInstructions: order.deliveryInstructions || undefined,
+      });
+      console.log('[Stripe Webhook] Confirmation email sent for order:', order.orderNumber);
+    } catch (emailError) {
+      console.error('[Stripe Webhook] Failed to send confirmation email:', emailError);
+    }
+  } catch (error) {
+    console.error('[Stripe Webhook] Failed to process draft order payment:', error);
     throw error;
   }
 }

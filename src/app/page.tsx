@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Script from 'next/script';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
-import HeroSection from '@/components/homepage/HeroSection';
+import HeroSectionExperimental from '@/components/homepage/HeroSectionExperimental';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import { generateFAQSchema } from '@/lib/seo/schemas';
 import TrackedLink from '@/components/analytics/TrackedLink';
@@ -53,8 +53,8 @@ export default function HomePage() {
 
       <OldFashionedNavigation />
 
-      {/* Hero Section - Client Component */}
-      <HeroSection />
+      {/* Hero Section - Client Component with A/B Testing */}
+      <HeroSectionExperimental />
 
       {/* Choose Your Path Fork */}
       <section className="py-16 bg-gray-50">

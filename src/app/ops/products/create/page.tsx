@@ -14,6 +14,7 @@ interface FormData {
   tags: string;
   basePrice: string;
   compareAtPrice: string;
+  costPerUnit: string;
   abv: string;
   metaTitle: string;
   metaDescription: string;
@@ -42,6 +43,7 @@ export default function CreateProductPage() {
     tags: '',
     basePrice: '',
     compareAtPrice: '',
+    costPerUnit: '',
     abv: '',
     metaTitle: '',
     metaDescription: '',
@@ -155,6 +157,7 @@ export default function CreateProductPage() {
           tags: formData.tags ? formData.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
           basePrice: parseFloat(formData.basePrice),
           compareAtPrice: formData.compareAtPrice ? parseFloat(formData.compareAtPrice) : null,
+          costPerUnit: formData.costPerUnit ? parseFloat(formData.costPerUnit) : null,
           abv: formData.abv ? parseFloat(formData.abv) : null,
           metaTitle: formData.metaTitle || null,
           metaDescription: formData.metaDescription || null,
@@ -327,7 +330,7 @@ export default function CreateProductPage() {
         {/* Pricing */}
         <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
           <h2 className="font-semibold text-black mb-4">Pricing</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Price ($) <span className="text-red-500">*</span>
@@ -356,6 +359,20 @@ export default function CreateProductPage() {
                 className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500"
               />
               <p className="text-xs text-gray-500 mt-1">Shows as crossed-out price if higher than sale price</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Cost ($)</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={formData.costPerUnit}
+                onChange={(e) => setFormData({ ...formData, costPerUnit: e.target.value })}
+                placeholder="Your cost per unit"
+                className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500"
+              />
+              <p className="text-xs text-gray-500 mt-1">Used to calculate profit margin</p>
             </div>
 
             <div>

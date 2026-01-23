@@ -3,6 +3,9 @@
 import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { ProfitDisplay } from '@/components/ops/products/ProfitDisplay';
+import { ImageManager } from '@/components/ops/products/ImageManager';
+import { InventoryTable } from '@/components/ops/products/InventoryTable';
 
 interface ProductImage {
   id: string;
@@ -14,8 +17,11 @@ interface ProductImage {
 }
 
 interface VariantInventory {
+  id: string;
+  locationId: string;
   location: string;
   quantity: number;
+  costPerUnit: number | null;
 }
 
 interface ProductVariant {
@@ -24,6 +30,7 @@ interface ProductVariant {
   title: string;
   price: number;
   compareAtPrice: number | null;
+  costPerUnit: number | null;
   options: {
     option1: { name: string; value: string } | null;
     option2: { name: string; value: string } | null;
@@ -67,6 +74,7 @@ interface ProductData {
   variants: ProductVariant[];
   categories: ProductCategory[];
   totalInventory: number;
+  costPerUnit: number | null;
   stats: {
     totalSold: number;
     orderCount: number;
@@ -84,6 +92,7 @@ interface EditFormData {
   tags: string;
   basePrice: string;
   compareAtPrice: string;
+  costPerUnit: string;
   abv: string;
   metaTitle: string;
   metaDescription: string;
@@ -106,7 +115,7 @@ export default function ProductDetailPage({ params }: PageProps) {
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const [formData, setFormData] = useState<EditFormData>({
     title: '', handle: '', description: '', vendor: '', productType: '',
-    tags: '', basePrice: '', compareAtPrice: '', abv: '', metaTitle: '', metaDescription: ''
+    tags: '', basePrice: '', compareAtPrice: '', costPerUnit: '', abv: '', metaTitle: '', metaDescription: ''
   });
 
   useEffect(() => {
@@ -147,6 +156,7 @@ export default function ProductDetailPage({ params }: PageProps) {
       tags: p.tags.join(', '),
       basePrice: p.basePrice.toString(),
       compareAtPrice: p.compareAtPrice?.toString() || '',
+      costPerUnit: p.costPerUnit?.toString() || '',
       abv: p.abv?.toString() || '',
       metaTitle: p.metaTitle || '',
       metaDescription: p.metaDescription || '',
@@ -169,6 +179,7 @@ export default function ProductDetailPage({ params }: PageProps) {
           tags: formData.tags ? formData.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
           basePrice: parseFloat(formData.basePrice) || 0,
           compareAtPrice: formData.compareAtPrice ? parseFloat(formData.compareAtPrice) : null,
+          costPerUnit: formData.costPerUnit ? parseFloat(formData.costPerUnit) : null,
           abv: formData.abv ? parseFloat(formData.abv) : null,
           metaTitle: formData.metaTitle || null,
           metaDescription: formData.metaDescription || null,
@@ -176,7 +187,8 @@ export default function ProductDetailPage({ params }: PageProps) {
       });
       const result = await response.json();
       if (result.success) {
-        setProduct(result.data);
+        // Refetch full product data to get updated costPerUnit
+        await fetchProduct();
         setEditMode(false);
         setToast({ message: 'Product saved successfully', type: 'success' });
       } else {
@@ -255,6 +267,20 @@ export default function ProductDetailPage({ params }: PageProps) {
     if (qty === 0) return 'text-red-600 bg-red-50';
     if (qty < 10) return 'text-yellow-600 bg-yellow-50';
     return 'text-green-600 bg-green-50';
+  };
+
+  const handleImagesChange = (updatedImages: ProductImage[]) => {
+    if (!product) return;
+    setProduct({ ...product, images: updatedImages });
+  };
+
+  const handleVariantUpdate = (variantId: string, updates: Partial<ProductVariant>) => {
+    if (!product) return;
+    const updatedVariants = product.variants.map((v) =>
+      v.id === variantId ? { ...v, ...updates } : v
+    );
+    const newTotalInventory = updatedVariants.reduce((sum, v) => sum + v.inventory, 0);
+    setProduct({ ...product, variants: updatedVariants, totalInventory: newTotalInventory });
   };
 
   if (loading) {
@@ -416,7 +442,14 @@ export default function ProductDetailPage({ params }: PageProps) {
         {/* Image Gallery */}
         <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
           <h2 className="font-semibold text-black mb-4">Images ({product.images.length})</h2>
-          {product.images.length > 0 ? (
+          {editMode ? (
+            <ImageManager
+              productId={product.id}
+              images={product.images}
+              onImagesChange={handleImagesChange}
+              disabled={saving}
+            />
+          ) : product.images.length > 0 ? (
             <>
               <div className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden mb-4">
                 <Image src={mainImage.url} alt={mainImage.altText || product.title} fill className="object-contain" sizes="(max-width: 768px) 100vw, 50vw" />
@@ -465,6 +498,13 @@ export default function ProductDetailPage({ params }: PageProps) {
                     className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500" />
                 </div>
                 <div>
+                  <label className="block text-sm text-gray-500 mb-1">Cost ($)</label>
+                  <input type="number" step="0.01" value={formData.costPerUnit}
+                    onChange={(e) => setFormData({ ...formData, costPerUnit: e.target.value })}
+                    placeholder="Your cost per unit"
+                    className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500" />
+                </div>
+                <div>
                   <label className="block text-sm text-gray-500 mb-1">ABV (%)</label>
                   <input type="number" step="0.1" value={formData.abv}
                     onChange={(e) => setFormData({ ...formData, abv: e.target.value })}
@@ -481,6 +521,12 @@ export default function ProductDetailPage({ params }: PageProps) {
                   )}
                 </div>
                 {product.abv !== null && <p className="text-sm text-gray-500 mt-2">ABV: {product.abv}%</p>}
+                <ProfitDisplay
+                  price={product.basePrice}
+                  cost={product.costPerUnit}
+                  compareAtPrice={product.compareAtPrice}
+                  currencyCode={product.currencyCode}
+                />
               </>
             )}
           </div>
@@ -595,77 +641,13 @@ export default function ProductDetailPage({ params }: PageProps) {
         <div className="px-6 py-4 border-b border-gray-200">
           <h2 className="font-semibold text-black">Variants ({product.variants.length})</h2>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Variant</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">SKU</th>
-                <th className="text-right px-6 py-3 text-xs font-medium text-gray-500 uppercase">Price</th>
-                <th className="text-right px-6 py-3 text-xs font-medium text-gray-500 uppercase">Inventory</th>
-                <th className="text-center px-6 py-3 text-xs font-medium text-gray-500 uppercase">Available</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {product.variants.map((variant) => (
-                <tr key={variant.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      {variant.image && (
-                        <div className="relative w-10 h-10 rounded overflow-hidden flex-shrink-0">
-                          <Image src={variant.image.url} alt={variant.image.altText || variant.title} fill className="object-cover" sizes="40px" />
-                        </div>
-                      )}
-                      <div>
-                        <p className="font-medium text-black">{variant.title}</p>
-                        <div className="flex gap-2 text-xs text-gray-500">
-                          {variant.options.option1 && <span>{variant.options.option1.name}: {variant.options.option1.value}</span>}
-                          {variant.options.option2 && <span>| {variant.options.option2.name}: {variant.options.option2.value}</span>}
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <code className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded">{variant.sku || '-'}</code>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <span className="font-medium text-black">{formatCurrency(variant.price)}</span>
-                    {variant.compareAtPrice && (
-                      <span className="text-xs text-gray-400 line-through block">{formatCurrency(variant.compareAtPrice)}</span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <span className={`inline-flex px-2 py-1 rounded text-sm font-medium ${getInventoryColor(variant.inventory)}`}>
-                      {variant.inventory}
-                    </span>
-                    {variant.inventoryByLocation.length > 1 && (
-                      <div className="text-xs text-gray-500 mt-1">
-                        {variant.inventoryByLocation.map((loc) => (
-                          <div key={loc.location}>{loc.location}: {loc.quantity}</div>
-                        ))}
-                      </div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    {variant.availableForSale ? (
-                      <span className="inline-flex items-center justify-center w-6 h-6 bg-green-100 text-green-600 rounded-full">
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center justify-center w-6 h-6 bg-red-100 text-red-600 rounded-full">
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <InventoryTable
+          productId={product.id}
+          variants={product.variants}
+          currencyCode={product.currencyCode}
+          editMode={editMode}
+          onVariantUpdate={handleVariantUpdate}
+        />
       </div>
 
       {/* Metadata */}

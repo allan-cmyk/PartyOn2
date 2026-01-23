@@ -1,11 +1,17 @@
 /**
  * Product Image Upload API
  * POST /api/v1/admin/products/images - Upload a product image
+ *
+ * Storage priority:
+ * 1. Vercel Blob (if BLOB_READ_WRITE_TOKEN is set)
+ * 2. Supabase Storage (fallback for existing setup)
+ * 3. Base64 (development fallback)
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase/client';
 import { prisma } from '@/lib/database/client';
+import { uploadProductImage, isBlobConfigured } from '@/lib/storage/blob';
+import { supabase } from '@/lib/supabase/client';
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
@@ -40,44 +46,60 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    let imageUrl: string;
-    let storageType: string;
+    let imageUrl = '';
+    let storageType = '';
 
-    // If Supabase is configured, upload there
-    if (supabase) {
-      const fileExt = file.name.split('.').pop();
-      const timestamp = Date.now();
-      const fileName = productId
-        ? `${productId}/${timestamp}.${fileExt}`
-        : `temp/${timestamp}.${fileExt}`;
-
-      const { data, error } = await supabase.storage
-        .from('product-images')
-        .upload(fileName, file, {
-          upsert: true,
-          contentType: file.type,
-        });
-
-      if (error) {
-        console.error('Supabase upload error:', error);
-        // Fallback to base64
-        const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
-        imageUrl = `data:${file.type};base64,${buffer.toString('base64')}`;
-        storageType = 'base64';
-      } else {
-        const { data: { publicUrl } } = supabase.storage
-          .from('product-images')
-          .getPublicUrl(data.path);
-        imageUrl = publicUrl;
-        storageType = 'supabase';
+    // Priority 1: Vercel Blob (recommended for production)
+    if (isBlobConfigured()) {
+      try {
+        const result = await uploadProductImage(file, productId || 'temp');
+        imageUrl = result.url;
+        storageType = 'vercel-blob';
+        console.log('[Image Upload] Uploaded to Vercel Blob:', result.url);
+      } catch (blobError) {
+        console.error('[Image Upload] Vercel Blob error, trying fallback:', blobError);
+        // Fall through to Supabase or base64
+        imageUrl = '';
+        storageType = '';
       }
-    } else {
-      // Fallback to base64 for local dev
+    }
+
+    // Priority 2: Supabase Storage (fallback)
+    if (!imageUrl && supabase) {
+      try {
+        const fileExt = file.name.split('.').pop();
+        const timestamp = Date.now();
+        const fileName = productId
+          ? `${productId}/${timestamp}.${fileExt}`
+          : `temp/${timestamp}.${fileExt}`;
+
+        const { data, error } = await supabase.storage
+          .from('product-images')
+          .upload(fileName, file, {
+            upsert: true,
+            contentType: file.type,
+          });
+
+        if (!error && data) {
+          const { data: { publicUrl } } = supabase.storage
+            .from('product-images')
+            .getPublicUrl(data.path);
+          imageUrl = publicUrl;
+          storageType = 'supabase';
+          console.log('[Image Upload] Uploaded to Supabase:', publicUrl);
+        }
+      } catch (supabaseError) {
+        console.error('[Image Upload] Supabase error:', supabaseError);
+      }
+    }
+
+    // Priority 3: Base64 (development fallback only)
+    if (!imageUrl) {
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
       imageUrl = `data:${file.type};base64,${buffer.toString('base64')}`;
       storageType = 'base64';
+      console.log('[Image Upload] Using base64 fallback');
     }
 
     // If productId is provided, save to database
