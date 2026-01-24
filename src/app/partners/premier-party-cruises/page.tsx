@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, type ReactElement } from 'react';
-import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
@@ -11,6 +11,8 @@ import QuickOrderGrid from '@/components/quick-order/QuickOrderGrid';
 import QuickOrderSearch from '@/components/quick-order/QuickOrderSearch';
 import CartSummaryBar from '@/components/quick-order/CartSummaryBar';
 import WelcomePackageCard from '@/components/partners/WelcomePackageCard';
+import PremierHero from '@/components/partners/PremierHero';
+import PremierHeroStickyCTA from '@/components/partners/PremierHeroStickyCTA';
 import { useQuickOrderProducts } from '@/hooks/useQuickOrderProducts';
 import { SHOPIFY_COLLECTIONS } from '@/lib/shopify/categories';
 import type { ShopifyProduct } from '@/lib/shopify/types';
@@ -35,11 +37,11 @@ const TESTIMONIALS = [
   },
 ];
 
-/** Perks for spending $250+ on group Airbnb order */
+/** Perks for spending $250+ on group boat order */
 const SPECIAL_PERKS = [
   {
     title: 'Free Delivery',
-    description: 'To your Airbnb',
+    description: 'To the marina',
     value: '$50 value',
     icon: (
       <svg className="w-6 h-6 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -84,11 +86,14 @@ const SPECIAL_PERKS = [
  * Optimized for customers who have already booked their boat
  */
 export default function PremierPartyCruisesPage(): ReactElement {
+  const searchParams = useSearchParams();
+  const heroVariant = searchParams.get('hero') === 'center' ? 'center' : 'left';
+
   const [navHidden, setNavHidden] = useState(true);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [activeCollection, setActiveCollection] = useState('favorites-home-page');
   const [showSearchOverlay, setShowSearchOverlay] = useState(false);
-  const heroRef = useRef<HTMLElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
 
   // Sticky collections state
   const [isCollectionsSticky, setIsCollectionsSticky] = useState(false);
@@ -210,141 +215,13 @@ export default function PremierPartyCruisesPage(): ReactElement {
         hideMobileLogo
       />
 
-      {/* HERO SECTION */}
-      <section
-        ref={heroRef}
-        className="relative min-h-[100vh] md:min-h-[70vh] pt-28 pb-8 md:pt-0 flex items-center overflow-hidden"
-      >
-        {/* Static Image Background */}
-        <Image
-          src="/images/partners/premierpartycruises-hero.webp"
-          alt="Premier Party Cruises boat party on Lake Travis"
-          fill
-          className="object-cover"
-          priority
-          sizes="100vw"
+      {/* HERO SECTION - A/B variant via ?hero=center */}
+      <div ref={heroRef}>
+        <PremierHero
+          variant={heroVariant}
+          onJoinOrder={() => setIsJoinModalOpen(true)}
         />
-        {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 via-gray-900/60 to-gray-900/40" />
-
-        {/* Hero Content - Two Column Layout */}
-        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-            {/* Left Column - Headline & Logos */}
-            <div className="text-center md:text-left">
-              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl text-white mb-4 tracking-wide leading-tight">
-                Your Drinks, Iced & Waiting When You Board
-              </h1>
-              <p className="text-lg md:text-xl text-gray-200 mb-6 leading-relaxed">
-                Skip the liquor store. We deliver to the marina before you arrive.
-              </p>
-              {/* Partner Logos */}
-              <div className="flex items-center justify-center md:justify-start gap-4 flex-wrap">
-                <Image
-                  src="/images/partners/premierpartycruises-logo.webp"
-                  alt="Premier Party Cruises"
-                  width={200}
-                  height={100}
-                  className="h-12 md:h-16 w-auto"
-                  priority
-                />
-                <span className="text-white/60 text-2xl font-light">+</span>
-                <Image
-                  src="/images/pod-logo-2025.svg"
-                  alt="Party On Delivery"
-                  width={160}
-                  height={80}
-                  className="h-10 md:h-14 w-auto"
-                  priority
-                />
-              </div>
-            </div>
-
-            {/* Right Column - CTAs */}
-            <div className="flex flex-col items-center space-y-3">
-              {/* PRIMARY CTA - Group Order (most common for boat parties) */}
-              <Link
-                href=""
-                className="w-full md:w-80 py-4 px-8 bg-gold-500 hover:bg-gold-400 text-gray-900 font-semibold tracking-wider transition-colors text-center block rounded-lg"
-              >
-                START A GROUP ORDER
-              </Link>
-
-              {/* Friction reducer - moved directly below CTA */}
-              <p className="text-gray-400 text-xs">
-                Takes 2 minutes · No account required · Free delivery
-              </p>
-
-              {/* SECONDARY - Individual Order (text link) */}
-              <button
-                onClick={scrollToCollections}
-                className="text-white hover:text-gold-300 font-medium tracking-wider underline underline-offset-4"
-              >
-                or start an individual order
-              </button>
-
-              {/* TERTIARY - Join Order */}
-              <button
-                onClick={() => setIsJoinModalOpen(true)}
-                className="text-gray-400 hover:text-white text-sm tracking-wider underline underline-offset-4"
-              >
-                Have a share code? Join an order
-              </button>
-
-              {/* Phone number for users who prefer to call or text */}
-              <p className="text-gray-300 text-sm mt-2">
-                Questions? Call or text{' '}
-                <a href="tel:7373719700" className="text-gold-400 hover:text-gold-300 underline">
-                  737.371.9700
-                </a>
-              </p>
-            </div>
-          </div>
-
-          {/* Trust Badges */}
-          <div className="mt-12 flex flex-wrap items-center justify-center md:justify-start gap-4 md:gap-6 text-white/80 text-sm">
-            <span className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-gold-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              Free Marina Delivery
-            </span>
-            <span className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-gold-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              Easy Group Ordering
-            </span>
-            <span className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-gold-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              500+ Boat Parties Served
-            </span>
-            <span className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-gold-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              TABC Licensed
-            </span>
-          </div>
-
-          {/* Social Proof Snippet */}
-          <div className="mt-6 flex items-center justify-center md:justify-start gap-3 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 max-w-xl mx-auto md:mx-0">
-            <div className="flex -space-x-1 flex-shrink-0">
-              {[...Array(5)].map((_, i) => (
-                <svg key={i} className="w-4 h-4 text-gold-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              ))}
-            </div>
-            <p className="text-white/90 text-sm italic">
-              &quot;Must do if going on Premier cruise in ATX! So easy, everything was set up by the time we arrived.&quot;
-              <span className="text-white/60 not-italic ml-2">— Kirby P.</span>
-            </p>
-          </div>
-        </div>
-      </section>
+      </div>
 
       {/* VIDEO + WHAT'S INCLUDED SECTION */}
       <section className="py-12 px-6 md:px-12 bg-gray-50">
@@ -431,7 +308,7 @@ export default function PremierPartyCruisesPage(): ReactElement {
               Special Perks for Premier Customers
             </h2>
             <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-              Spend $250 on your group Airbnb order and unlock these exclusive perks
+              Spend $250 on your group boat order and unlock these exclusive perks
             </p>
           </div>
 
@@ -501,12 +378,35 @@ export default function PremierPartyCruisesPage(): ReactElement {
         }`}
       >
         <div className="px-4 md:max-w-7xl md:mx-auto md:px-8">
-          {/* Header - hide when sticky */}
+          {/* CTA Buttons - hide when sticky */}
           {!isCollectionsSticky && (
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-serif text-lg md:text-xl text-gray-900 tracking-[0.1em]">
-                BOAT DAY ESSENTIALS
-              </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              {/* Individual Order Button */}
+              <button
+                onClick={scrollToCollections}
+                className="group flex items-center justify-center gap-3 py-4 px-6 bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-800 font-semibold tracking-wide transition-all rounded-xl shadow-sm hover:shadow-md"
+              >
+                <span>Scroll Down to Add Products</span>
+                <svg
+                  className="w-5 h-5 animate-bounce"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </button>
+
+              {/* Group Order Button */}
+              <Link
+                href="/orders/create"
+                className="flex items-center justify-center gap-3 py-4 px-6 bg-gold-500 hover:bg-gold-400 text-gray-900 font-semibold tracking-wide transition-all rounded-xl shadow-sm hover:shadow-md"
+              >
+                <span>Start a Group Order</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </Link>
             </div>
           )}
 
@@ -678,7 +578,7 @@ export default function PremierPartyCruisesPage(): ReactElement {
           <div className="flex flex-col items-center gap-3 mb-6">
             {/* PRIMARY CTA */}
             <Link
-              href=""
+              href="/orders/create"
               className="px-10 py-4 bg-gray-900 text-white hover:bg-gray-800 font-semibold tracking-wider transition-colors rounded-lg"
             >
               Start a Group Order
@@ -710,13 +610,16 @@ export default function PremierPartyCruisesPage(): ReactElement {
         </div>
       </section>
 
-      {/* FOOTER - with padding for CartSummaryBar */}
-      <div className="pb-20">
+      {/* FOOTER - with padding for CartSummaryBar and mobile sticky CTA */}
+      <div className="pb-24 md:pb-20">
         <Footer />
       </div>
 
       {/* Cart Summary Bar - Fixed Bottom */}
       <CartSummaryBar />
+
+      {/* Mobile Sticky CTA - only visible on mobile */}
+      <PremierHeroStickyCTA onJoinCode={() => setIsJoinModalOpen(true)} />
 
       {/* MODALS */}
       <JoinOrderModal
