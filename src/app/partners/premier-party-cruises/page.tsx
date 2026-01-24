@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, type ReactElement } from 'react';
+import { useState, useEffect, useRef, Suspense, type ReactElement } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
@@ -85,7 +85,7 @@ const SPECIAL_PERKS = [
  * Premier Party Cruises - Drink Delivery Service Landing Page
  * Optimized for customers who have already booked their boat
  */
-export default function PremierPartyCruisesPage(): ReactElement {
+function PremierPartyCruisesPageContent(): ReactElement {
   const searchParams = useSearchParams();
   const heroVariant = searchParams.get('hero') === 'center' ? 'center' : 'left';
 
@@ -217,10 +217,7 @@ export default function PremierPartyCruisesPage(): ReactElement {
 
       {/* HERO SECTION - A/B variant via ?hero=center */}
       <div ref={heroRef}>
-        <PremierHero
-          variant={heroVariant}
-          navHidden={navHidden}
-        />
+        <PremierHero variant={heroVariant} />
       </div>
 
       {/* VIDEO + WHAT'S INCLUDED SECTION */}
@@ -655,5 +652,17 @@ export default function PremierPartyCruisesPage(): ReactElement {
         </div>
       )}
     </div>
+  );
+}
+
+/**
+ * Page wrapper with Suspense boundary for useSearchParams
+ * Required by Next.js 15 for client components using search params
+ */
+export default function PremierPartyCruisesPage(): ReactElement {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-white" />}>
+      <PremierPartyCruisesPageContent />
+    </Suspense>
   );
 }
