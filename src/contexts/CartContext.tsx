@@ -88,8 +88,15 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
       currentCartQuantity: cartHook.cart?.totalQuantity
     });
 
-    if (!checkAgeVerification()) {
-      console.log('[CART CONTEXT] Age verification failed, reloading page');
+    const isAgeVerified = checkAgeVerification();
+    console.log('[CART CONTEXT] Age verification check:', {
+      isAgeVerified,
+      localStorage_age_verified: typeof window !== 'undefined' ? localStorage.getItem('age_verified') : 'N/A',
+      localStorage_ageVerified: typeof window !== 'undefined' ? localStorage.getItem('ageVerified') : 'N/A'
+    });
+
+    if (!isAgeVerified) {
+      console.log('[CART CONTEXT] Age verification failed, reloading page to show modal');
       localStorage.removeItem('age_verified');
       localStorage.removeItem('ageVerified');
       window.location.reload();

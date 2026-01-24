@@ -74,23 +74,41 @@ export default function QuickProductCard({
   const displayQty = optimisticQty ?? cartQuantity;
 
   const handleAdd = useCallback(async () => {
+    // Immediate visual feedback for debugging
     console.log('[QUICK ADD] Button clicked', { variantId, isAdding, productTitle: product.title });
+
     if (!variantId) {
       console.error('[QUICK ADD] No variantId available!', { product: product.title, variants: product.variants });
+      alert('Error: No variant ID for this product');
       return;
     }
     if (isAdding) {
       console.log('[QUICK ADD] Already adding, skipping');
       return;
     }
+
+    // Check age verification before proceeding
+    const ageVerified = typeof window !== 'undefined' && (
+      localStorage.getItem('age_verified') === 'true' ||
+      localStorage.getItem('ageVerified') === 'true'
+    );
+    console.log('[QUICK ADD] Age verified:', ageVerified);
+
     setIsAdding(true);
     setOptimisticQty(1);
     try {
       console.log('[QUICK ADD] Calling addToCart with:', variantId);
-      await addToCart(variantId, 1);
-      console.log('[QUICK ADD] addToCart completed successfully');
+      const result = await addToCart(variantId, 1);
+      console.log('[QUICK ADD] addToCart completed successfully', {
+        cartId: result?.id,
+        totalQuantity: result?.totalQuantity
+      });
     } catch (error) {
       console.error('[QUICK ADD] Failed to add to cart:', error);
+      // Show error to user
+      if (error instanceof Error && error.message !== 'Age verification required') {
+        alert('Error adding to cart: ' + error.message);
+      }
       setOptimisticQty(null);
     } finally {
       setIsAdding(false);
