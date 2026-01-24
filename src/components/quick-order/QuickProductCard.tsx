@@ -74,19 +74,29 @@ export default function QuickProductCard({
   const displayQty = optimisticQty ?? cartQuantity;
 
   const handleAdd = useCallback(async () => {
-    if (!variantId || isAdding) return;
+    console.log('[QUICK ADD] Button clicked', { variantId, isAdding, productTitle: product.title });
+    if (!variantId) {
+      console.error('[QUICK ADD] No variantId available!', { product: product.title, variants: product.variants });
+      return;
+    }
+    if (isAdding) {
+      console.log('[QUICK ADD] Already adding, skipping');
+      return;
+    }
     setIsAdding(true);
     setOptimisticQty(1);
     try {
+      console.log('[QUICK ADD] Calling addToCart with:', variantId);
       await addToCart(variantId, 1);
+      console.log('[QUICK ADD] addToCart completed successfully');
     } catch (error) {
-      console.error('Failed to add to cart:', error);
+      console.error('[QUICK ADD] Failed to add to cart:', error);
       setOptimisticQty(null);
     } finally {
       setIsAdding(false);
       setOptimisticQty(null);
     }
-  }, [variantId, addToCart, isAdding]);
+  }, [variantId, addToCart, isAdding, product.title, product.variants]);
 
   const handleIncrement = useCallback(async () => {
     if (!lineId || isAdding) return;
