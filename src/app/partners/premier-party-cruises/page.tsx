@@ -219,7 +219,7 @@ export default function PremierPartyCruisesPage(): ReactElement {
       <div ref={heroRef}>
         <PremierHero
           variant={heroVariant}
-          onJoinOrder={() => setIsJoinModalOpen(true)}
+          navHidden={navHidden}
         />
       </div>
 
