@@ -80,7 +80,8 @@ function transformToShopifyFormat(product: ProductWithRelations) {
     : Number(product.basePrice);
 
   return {
-    id: product.id,
+    // Use Shopify ID if available for consistency with Shopify API expectations
+    id: product.shopifyId || product.id,
     handle: product.handle,
     title: product.title,
     description: product.description || '',
@@ -106,9 +107,15 @@ function transformToShopifyFormat(product: ProductWithRelations) {
       })),
     },
     variants: {
-      edges: product.variants.map(v => ({
+      edges: product.variants.map(v => {
+        // CRITICAL: Warn if variant is missing Shopify ID (cart will fail)
+        if (!v.shopifyId) {
+          console.warn(`[Products API] Variant "${v.title}" for product "${product.title}" missing shopifyId - cart add will fail!`);
+        }
+        return {
         node: {
-          id: v.id,
+          // CRITICAL: Use shopifyId for cart operations, fall back to Prisma id if not synced
+          id: v.shopifyId || v.id,
           title: v.title,
           availableForSale: v.availableForSale,
           quantityAvailable: v.inventoryQuantity,
@@ -130,7 +137,8 @@ function transformToShopifyFormat(product: ProductWithRelations) {
             altText: v.image.altText,
           } : undefined,
         },
-      })),
+        };
+      }),
     },
     collections: {
       edges: product.categories.map(pc => ({
@@ -166,10 +174,15 @@ export async function GET(request: NextRequest) {
   const priceMin = searchParams.get('priceMin') ? parseFloat(searchParams.get('priceMin')!) : undefined;
   const priceMax = searchParams.get('priceMax') ? parseFloat(searchParams.get('priceMax')!) : undefined;
 
+  // TEMPORARY FIX: Always use Shopify directly until database variants have shopifyId populated
+  // The database stores Prisma UUIDs as variant IDs, but Shopify cart requires Shopify GIDs
+  // This ensures cart add operations work correctly
+  const forceShopify = true; // Set to false once database is properly synced with Shopify IDs
+
   // Check if database is configured - if not, use Shopify directly
   // This ensures cart adds work (Shopify cart expects Shopify GIDs)
-  if (!isDatabaseConfigured()) {
-    console.log('[Products API] Database not configured, using Shopify fallback');
+  if (!isDatabaseConfigured() || forceShopify) {
+    console.log('[Products API] Using Shopify directly for cart-compatible product data');
     try {
       const collectionHandle = collection || category;
       const result = await fetchFromShopify(collectionHandle, first);
