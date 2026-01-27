@@ -9,18 +9,10 @@ import { useState, type ReactElement } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-interface PremierHeroProps {
-  /** Hero layout variant - 'left' positions card on left, 'center' centers it */
-  variant: 'left' | 'center';
-}
-
 /**
  * Premier Party Cruises hero section with glass conversion card
- * Supports A/B testing via variant prop
  */
-export default function PremierHero({
-  variant,
-}: PremierHeroProps): ReactElement {
+export default function PremierHero(): ReactElement {
   const [joinCode, setJoinCode] = useState('');
 
   const scrollToProducts = () => {
@@ -100,7 +92,7 @@ export default function PremierHero({
               >
                 Get a Recommended Order
               </button>
-              <p className="text-xs text-white/50 mt-1.5">Not sure what to buy? We'll help</p>
+              <p className="text-xs text-white/50 mt-1.5">Not sure what to buy? We&apos;ll help</p>
             </div>
           </div>
 

@@ -51,7 +51,8 @@ const SPECIAL_PERKS = [
  */
 function PremierPartyCruisesPageContent(): ReactElement {
   const searchParams = useSearchParams();
-  const heroVariant = searchParams.get('hero') === 'center' ? 'center' : 'left';
+  // Search params available for future use
+  void searchParams;
 
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [activeCollection, setActiveCollection] = useState('favorites-home-page');
@@ -167,7 +168,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
       <OldFashionedNavigation hidden />
 
       {/* HERO SECTION - A/B variant via ?hero=center */}
-      <PremierHero variant={heroVariant} />
+      <PremierHero />
 
       {/* VIDEO + WHAT'S INCLUDED SECTION */}
       <section className="py-12 px-6 md:px-12 bg-gray-50">
@@ -374,12 +375,16 @@ function PremierPartyCruisesPageContent(): ReactElement {
       </div>
 
       {/* SPECIAL PERKS SECTION */}
-      <section className="relative py-20 px-6 md:px-12 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 overflow-hidden">
-        {/* Subtle background decoration */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gold-500 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gold-600 rounded-full blur-3xl" />
-        </div>
+      <section className="relative py-20 px-6 md:px-12 overflow-hidden">
+        {/* Background Image */}
+        <Image
+          src="/images/partners/premierpartycruises-testimonials-bg.jpg"
+          alt="Premier Party Cruises team"
+          fill
+          className="object-cover"
+        />
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-gray-900/70" />
 
         <div className="relative max-w-7xl mx-auto">
           {/* Header */}
@@ -482,16 +487,10 @@ function PremierPartyCruisesPageContent(): ReactElement {
       </section>
 
       {/* TESTIMONIALS */}
-      <section className="relative py-16 px-6 md:px-12 overflow-hidden">
-        {/* Background Image */}
-        <Image
-          src="/images/partners/premierpartycruises-testimonials-bg.jpg"
-          alt="Boat party on Lake Travis"
-          fill
-          className="object-cover"
-        />
-        {/* Light Overlay */}
-        <div className="absolute inset-0 bg-gray-900/30" />
+      <section className="relative py-16 px-6 md:px-12 bg-gray-800 overflow-hidden">
+        {/* Background Image - TODO: Add new testimonials background image */}
+        {/* <Image src="/images/partners/premierpartycruises-testimonials-bg.jpg" alt="Boat party" fill className="object-cover" /> */}
+        {/* <div className="absolute inset-0 bg-gray-900/30" /> */}
 
         <div className="relative z-10 max-w-6xl mx-auto">
           <div className="text-center mb-10">
