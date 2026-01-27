@@ -716,9 +716,34 @@ export default function CheckoutPage() {
       <DeliveryScheduler
         isOpen={showDeliveryScheduler}
         onClose={() => setShowDeliveryScheduler(false)}
-        onConfirm={(date, time, instructions, phone) => {
+        onConfirm={(date, time, instructions, phone, address, zipCode, firstName, lastName, email) => {
+          // Set delivery scheduling details
           setDeliveryDetails({ date, time, instructions, phone });
+
+          // Pre-fill billing address from DeliveryScheduler data to avoid duplicate entry
+          setBillingAddress(prev => ({
+            ...prev,
+            firstName: firstName || prev.firstName,
+            lastName: lastName || prev.lastName,
+            email: email || prev.email,
+            phone: phone || prev.phone,
+            address1: address || prev.address1,
+            zip: zipCode || prev.zip,
+          }));
+
           setShowDeliveryScheduler(false);
+        }}
+        defaultAddress={{
+          address: billingAddress.address1,
+          city: billingAddress.city,
+          province: billingAddress.state,
+          zip: billingAddress.zip,
+          phone: billingAddress.phone,
+        }}
+        customerInfo={{
+          firstName: billingAddress.firstName,
+          lastName: billingAddress.lastName,
+          email: billingAddress.email,
         }}
       />
 

@@ -161,7 +161,7 @@ export function useCustomCart() {
 
   /**
    * Add item to cart
-   * @param variantId - The variant ID to add (matches Shopify interface)
+   * @param variantId - The variant ID to add (can be Shopify GID or local UUID)
    * @param quantity - Quantity to add
    * @param productId - Optional product ID (required for custom cart)
    * @param price - Optional price (required for custom cart)
@@ -175,20 +175,23 @@ export function useCustomCart() {
     try {
       setLoading(true);
 
-      // If productId/price not provided, try to fetch product details
+      // Always fetch product details to get local UUIDs
+      // This resolves Shopify GIDs to local database IDs
       let resolvedProductId = productId;
+      let resolvedVariantId = variantId;
       let resolvedPrice = price;
 
-      if (!resolvedProductId || resolvedPrice === undefined) {
-        // Fetch product details by variant ID
-        const productResponse = await fetch(`/api/v1/products/variant/${variantId}`);
-        if (productResponse.ok) {
-          const productData = await productResponse.json();
-          resolvedProductId = productData.productId;
-          resolvedPrice = parseFloat(productData.price);
-        } else {
-          throw new Error('Could not find product for variant');
-        }
+      // Fetch product details by variant ID to resolve to local IDs
+      const productResponse = await fetch(`/api/v1/products/variant/${encodeURIComponent(variantId)}`);
+      if (productResponse.ok) {
+        const productData = await productResponse.json();
+        // Use local UUIDs for cart operations
+        resolvedProductId = productData.productId;
+        resolvedVariantId = productData.variantId;
+        resolvedPrice = parseFloat(productData.price);
+      } else if (!resolvedProductId || resolvedPrice === undefined) {
+        // Only throw if we don't have the required data
+        throw new Error('Could not find product for variant');
       }
 
       const response = await fetch('/api/v1/cart', {
@@ -198,7 +201,7 @@ export function useCustomCart() {
         body: JSON.stringify({
           operation: 'add',
           productId: resolvedProductId,
-          variantId,
+          variantId: resolvedVariantId,
           quantity,
           price: resolvedPrice,
         }),
