@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, Suspense, type ReactElement } from 'react';
 import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
@@ -10,7 +11,6 @@ import DrinkCalculator from '@/components/partners/DrinkCalculator';
 import QuickOrderGrid from '@/components/quick-order/QuickOrderGrid';
 import QuickOrderSearch from '@/components/quick-order/QuickOrderSearch';
 import CartSummaryBar from '@/components/quick-order/CartSummaryBar';
-import WelcomePackageCard from '@/components/partners/WelcomePackageCard';
 import PremierHero from '@/components/partners/PremierHero';
 import PremierHeroStickyCTA from '@/components/partners/PremierHeroStickyCTA';
 import { useQuickOrderProducts } from '@/hooks/useQuickOrderProducts';
@@ -39,46 +39,10 @@ const TESTIMONIALS = [
 
 /** Perks for spending $250+ on group boat order */
 const SPECIAL_PERKS = [
-  {
-    title: 'Free Delivery',
-    description: 'To the marina',
-    value: '$50 value',
-    icon: (
-      <svg className="w-6 h-6 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Free Cooler Stocking',
-    description: 'We stock your coolers',
-    value: '$30 value',
-    icon: (
-      <svg className="w-6 h-6 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Free Bag of Ice',
-    description: 'Keep drinks cold',
-    value: '$10 value',
-    icon: (
-      <svg className="w-6 h-6 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Free Welcome Package',
-    description: 'Austin-themed goodies',
-    value: '$40+ value',
-    icon: (
-      <svg className="w-6 h-6 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-      </svg>
-    ),
-  },
+  { title: 'FREE Delivery to marina', value: '$50 value' },
+  { title: 'FREE Cooler Stocking', value: '$30 value' },
+  { title: 'FREE Bag of Ice', value: '$10 value' },
+  { title: 'FREE Welcome Package', value: '$40+ value' },
 ];
 
 /**
@@ -89,20 +53,16 @@ function PremierPartyCruisesPageContent(): ReactElement {
   const searchParams = useSearchParams();
   const heroVariant = searchParams.get('hero') === 'center' ? 'center' : 'left';
 
-  const [navHidden, setNavHidden] = useState(true);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [activeCollection, setActiveCollection] = useState('favorites-home-page');
   const [showSearchOverlay, setShowSearchOverlay] = useState(false);
-  const heroRef = useRef<HTMLDivElement>(null);
 
   // Sticky collections state
   const [isCollectionsSticky, setIsCollectionsSticky] = useState(false);
   const collectionsRef = useRef<HTMLElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
-
-  // Nav hide/show on scroll direction (when in ordering section)
-  const [hideNavOnScroll, setHideNavOnScroll] = useState(false);
-  const lastScrollY = useRef(0);
+  const endSentinelRef = useRef<HTMLDivElement>(null);
+  const [isPastProductSection, setIsPastProductSection] = useState(false);
 
   // Load products for active collection
   const { products, loading, error } = useQuickOrderProducts(activeCollection);
@@ -111,20 +71,40 @@ function PremierPartyCruisesPageContent(): ReactElement {
   const [welcomePackages, setWelcomePackages] = useState<ShopifyProduct[]>([]);
   const [welcomeLoading, setWelcomeLoading] = useState(true);
 
-  // Fetch welcome packages on mount
+  // Fetch welcome packages from collection on mount
   useEffect(() => {
     async function fetchWelcomePackages() {
       try {
-        const response = await fetch('/api/products?search=Welcome%20to%20Austin&first=10');
-        const data = await response.json();
-        if (data.products) {
+        // Try collection first, fall back to search
+        let response = await fetch('/api/products?collection=welcome-to-austin-packages&first=10');
+        let data = await response.json();
+
+        // If collection is empty, try search as fallback
+        if (!data.products?.length && !data.products?.edges?.length) {
+          response = await fetch('/api/products?search=Welcome%20to%20Austin&first=20');
+          data = await response.json();
+
           // Filter for Welcome Package products
-          const packages = data.products.filter(
-            (p: ShopifyProduct) =>
-              p.productType === 'Welcome Package' ||
-              p.title.startsWith('Welcome to Austin:')
-          );
-          setWelcomePackages(packages);
+          if (data.products) {
+            const filtered = (data.products.edges || data.products).filter(
+              (item: { node?: ShopifyProduct } | ShopifyProduct) => {
+                const p = 'node' in item ? item.node : item;
+                return p.productType === 'Welcome Package' ||
+                       p.title?.startsWith('Welcome to Austin:');
+              }
+            ).map((item: { node?: ShopifyProduct } | ShopifyProduct) =>
+              'node' in item ? item.node : item
+            );
+            setWelcomePackages(filtered);
+            return;
+          }
+        }
+
+        // Handle collection response
+        if (data.products?.edges) {
+          setWelcomePackages(data.products.edges.map((e: { node: ShopifyProduct }) => e.node));
+        } else if (data.products) {
+          setWelcomePackages(data.products);
         }
       } catch (err) {
         console.error('Failed to fetch welcome packages:', err);
@@ -135,27 +115,11 @@ function PremierPartyCruisesPageContent(): ReactElement {
     fetchWelcomePackages();
   }, []);
 
-  // Scroll-triggered navigation reveal (hero observer)
-  useEffect(() => {
-    const hero = heroRef.current;
-    if (!hero) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setNavHidden(entry.intersectionRatio > 0.5);
-      },
-      { threshold: [0, 0.25, 0.5, 0.75, 1] }
-    );
-
-    observer.observe(hero);
-    return () => observer.disconnect();
-  }, []);
-
-  // Intersection Observer for sticky detection
+  // Intersection Observer for sticky detection (start and end of product section)
   useEffect(() => {
     if (!sentinelRef.current) return;
 
-    const observer = new IntersectionObserver(
+    const startObserver = new IntersectionObserver(
       ([entry]) => {
         setIsCollectionsSticky(!entry.isIntersecting);
       },
@@ -165,37 +129,28 @@ function PremierPartyCruisesPageContent(): ReactElement {
       }
     );
 
-    observer.observe(sentinelRef.current);
-    return () => observer.disconnect();
+    startObserver.observe(sentinelRef.current);
+    return () => startObserver.disconnect();
   }, []);
 
-  // Hide nav on scroll down, show on scroll up (only when collections are sticky)
+  // Detect when user scrolls past the product section
   useEffect(() => {
-    let ticking = false;
+    if (!endSentinelRef.current) return;
 
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const currentScrollY = window.scrollY;
-          const scrollDelta = currentScrollY - lastScrollY.current;
-
-          if (scrollDelta > 30 && isCollectionsSticky) {
-            setHideNavOnScroll(true);
-            lastScrollY.current = currentScrollY;
-          } else if (scrollDelta < -5) {
-            setHideNavOnScroll(false);
-            lastScrollY.current = currentScrollY;
-          }
-
-          ticking = false;
-        });
-        ticking = true;
+    const endObserver = new IntersectionObserver(
+      ([entry]) => {
+        // When end sentinel enters viewport from above, we're past the product section
+        setIsPastProductSection(!entry.isIntersecting && entry.boundingClientRect.top < 0);
+      },
+      {
+        rootMargin: '0px 0px 0px 0px',
+        threshold: 0,
       }
-    };
+    );
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isCollectionsSticky]);
+    endObserver.observe(endSentinelRef.current);
+    return () => endObserver.disconnect();
+  }, []);
 
   const scrollToCollections = () => {
     document.getElementById('boat-collections')?.scrollIntoView({ behavior: 'smooth' });
@@ -208,17 +163,11 @@ function PremierPartyCruisesPageContent(): ReactElement {
 
   return (
     <div className="bg-white min-h-screen">
-      {/* Navigation - Hidden initially, reveals on scroll, hides when scrolling down in order section */}
-      <OldFashionedNavigation
-        hidden={navHidden || hideNavOnScroll}
-        forceWhiteHamburger={navHidden}
-        hideMobileLogo
-      />
+      {/* Navigation - Always hidden on this partner page */}
+      <OldFashionedNavigation hidden />
 
       {/* HERO SECTION - A/B variant via ?hero=center */}
-      <div ref={heroRef}>
-        <PremierHero variant={heroVariant} />
-      </div>
+      <PremierHero variant={heroVariant} />
 
       {/* VIDEO + WHAT'S INCLUDED SECTION */}
       <section className="py-12 px-6 md:px-12 bg-gray-50">
@@ -250,114 +199,39 @@ function PremierPartyCruisesPageContent(): ReactElement {
             </div>
 
             {/* What's Included - Takes 2 columns on desktop */}
-            <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-lg">
-              <p className="text-gray-500 tracking-[0.2em] uppercase text-sm mb-2">
-                Everything Handled
+            <div className="lg:col-span-2 bg-white rounded-xl p-8 shadow-lg">
+              <p className="text-gray-500 tracking-[0.2em] uppercase text-base mb-2 text-center">
+                Boat Day = Handled
               </p>
-              <h3 className="font-serif text-xl md:text-2xl text-gray-900 tracking-wide mb-4">
-                What&apos;s Included
+              <h3 className="font-serif text-2xl md:text-3xl text-gray-900 tracking-wide mb-6 text-center">
+                Every Order Includes
               </h3>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {[
-                  { item: 'Free delivery to Premier Party Cruises marina', value: '$50' },
+                  { item: 'FREE delivery to Premier Party Cruises marina', value: '$50' },
                   { item: 'Cooler stocking with ice', value: '$25' },
-                  { item: 'Ice included with every order', value: '$15' },
-                  { item: 'Group ordering with split payments', value: 'Free' },
+                  { item: 'Group ordering with split payments', value: 'FREE' },
+                  { item: 'Private reserved cooler on Disco Cruise', value: 'FREE' },
                 ].map((row, idx) => (
                   <div
                     key={idx}
-                    className="flex justify-between items-center py-2 border-b border-gray-200 last:border-0"
+                    className="flex justify-between items-center py-3 border-b border-gray-200 last:border-0"
                   >
-                    <span className="flex items-center gap-2 text-gray-900 text-sm">
-                      <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <span className="flex items-center gap-3 text-gray-900 text-base">
+                      <svg className="w-6 h-6 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                       </svg>
                       {row.item}
                     </span>
-                    <span className="text-gray-900 font-semibold text-sm">{row.value}</span>
+                    <span className="text-gray-900 font-semibold text-base">{row.value}</span>
                   </div>
                 ))}
               </div>
-              <div className="mt-4 pt-4 border-t border-gray-300 flex justify-between items-center">
-                <span className="font-serif text-base text-gray-900">Total Value</span>
-                <span className="font-serif text-lg text-gray-900 font-semibold">$90+ FREE</span>
+              <div className="mt-6 pt-4 border-t border-gray-300 flex justify-between items-center">
+                <span className="font-serif text-lg text-gray-900">Total Value</span>
+                <span className="font-serif text-xl text-gray-900 font-semibold">$75+ FREE</span>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SPECIAL PERKS SECTION */}
-      <section className="relative py-20 px-6 md:px-12 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 overflow-hidden">
-        {/* Subtle background decoration */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gold-500 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gold-600 rounded-full blur-3xl" />
-        </div>
-
-        <div className="relative max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <p className="text-gold-400 tracking-[0.2em] uppercase text-sm mb-3">
-              Exclusive for Premier Customers
-            </p>
-            <h2 className="font-serif text-3xl md:text-5xl text-white tracking-wide mb-4">
-              Special Perks for Premier Customers
-            </h2>
-            <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-              Spend $250 on your group boat order and unlock these exclusive perks
-            </p>
-          </div>
-
-          {/* Value Stack - 4 Perks Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12">
-            {SPECIAL_PERKS.map((perk) => (
-              <div
-                key={perk.title}
-                className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 text-center hover:bg-white/10 transition-colors"
-              >
-                <div className="w-12 h-12 mx-auto mb-4 bg-gold-500/20 rounded-full flex items-center justify-center">
-                  {perk.icon}
-                </div>
-                <h3 className="text-white font-semibold mb-1">{perk.title}</h3>
-                <p className="text-gray-400 text-sm mb-2">{perk.description}</p>
-                <p className="text-gold-400 font-medium">{perk.value}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Welcome Package Carousel */}
-          <div className="mb-10">
-            <h3 className="text-white text-xl font-serif mb-6 text-center">
-              Choose Your Free Welcome Package
-            </h3>
-            {welcomeLoading ? (
-              <div className="flex gap-4 overflow-x-auto pb-4">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="flex-shrink-0 w-72 h-80 bg-gray-800 rounded-xl animate-pulse" />
-                ))}
-              </div>
-            ) : welcomePackages.length > 0 ? (
-              <div
-                className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide -mx-6 px-6"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-              >
-                {welcomePackages.map((pkg) => (
-                  <div key={pkg.id} className="flex-shrink-0 w-72 snap-start">
-                    <WelcomePackageCard product={pkg} discountCode="PREMIERPARTYCRUISES" />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-400 text-center">Welcome packages coming soon!</p>
-            )}
-          </div>
-
-          {/* Total Value Summary */}
-          <div className="text-center">
-            <p className="text-white text-lg">
-              Total Value: <span className="text-gold-400 font-bold text-2xl">$130+</span> in free perks
-            </p>
           </div>
         </div>
       </section>
@@ -365,12 +239,12 @@ function PremierPartyCruisesPageContent(): ReactElement {
       {/* Sentinel for sticky detection */}
       <div ref={sentinelRef} id="boat-collections" className="h-0" aria-hidden="true" />
 
-      {/* Featured Collections - Sticky (matches /order page exactly) */}
+      {/* Featured Collections - Sticky only in product section */}
       <section
         ref={collectionsRef}
         className={`bg-gray-50 border-b border-gray-200 transition-all duration-300 ${
-          isCollectionsSticky
-            ? `sticky z-40 py-2 shadow-md ${hideNavOnScroll ? 'top-0' : 'top-24'}`
+          isCollectionsSticky && !isPastProductSection
+            ? 'sticky z-40 py-2 shadow-md top-0'
             : 'py-6'
         }`}
       >
@@ -474,7 +348,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
 
       {/* Product Grid */}
       <main className="px-4 py-8">
-        <div className="max-w-7xl mx-auto">
+        <div id="product-grid" className="scroll-mt-24 max-w-7xl mx-auto">
           {error ? (
             <div className="text-center py-12">
               <p className="text-red-500">Failed to load products. Please try again.</p>
@@ -491,11 +365,167 @@ function PremierPartyCruisesPageContent(): ReactElement {
         </div>
       </main>
 
-      {/* OUR PROMISE SECTION */}
+      {/* End sentinel for product section */}
+      <div ref={endSentinelRef} className="h-0" aria-hidden="true" />
+
+      {/* DRINK CALCULATOR */}
+      <div id="order-builder" className="scroll-mt-24">
+        <DrinkCalculator />
+      </div>
+
+      {/* SPECIAL PERKS SECTION */}
+      <section className="relative py-20 px-6 md:px-12 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 overflow-hidden">
+        {/* Subtle background decoration */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gold-500 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gold-600 rounded-full blur-3xl" />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-10">
+            <h2 className="font-serif text-3xl md:text-5xl text-white tracking-wide mb-4">
+              Special Perks for Premier Customers
+            </h2>
+            <p className="text-gray-300 text-lg max-w-2xl mx-auto">
+              Spend $250 on your group boat order and unlock exclusive perks
+            </p>
+          </div>
+
+          {/* Two Column Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* LEFT: Value Stack Tile */}
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8">
+              <h3 className="font-serif text-xl text-white mb-6">What You Get</h3>
+              <div className="space-y-4">
+                {SPECIAL_PERKS.map((perk) => (
+                  <div
+                    key={perk.title}
+                    className="flex items-center justify-between py-3 border-b border-white/10 last:border-0"
+                  >
+                    <span className="flex items-center gap-3 text-white">
+                      <svg className="w-6 h-6 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      {perk.title}
+                    </span>
+                    <span className="text-gold-400 font-semibold">{perk.value}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-6 pt-4 border-t border-white/20 flex justify-between items-center">
+                <span className="text-white font-serif text-lg">Total Value</span>
+                <span className="text-gold-400 font-bold text-2xl">$130+ FREE</span>
+              </div>
+            </div>
+
+            {/* RIGHT: Welcome Package Carousel Tile */}
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8">
+              <h3 className="font-serif text-xl text-white mb-6">Choose Your FREE Welcome Package</h3>
+              {welcomeLoading ? (
+                <div className="flex gap-4 overflow-x-auto pb-4">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="flex-shrink-0 w-48 h-48 bg-gray-800 rounded-xl animate-pulse" />
+                  ))}
+                </div>
+              ) : welcomePackages.length > 0 ? (
+                <div
+                  className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide -mx-2 px-2"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                  {welcomePackages.map((pkg) => {
+                    const imageUrl = pkg.images?.edges?.[0]?.node?.url || pkg.featuredImage?.url;
+                    const packageName = pkg.title.includes(':')
+                      ? pkg.title.split(':')[1].trim()
+                      : pkg.title;
+                    return (
+                      <div
+                        key={pkg.id}
+                        className="flex-shrink-0 w-48 snap-start group cursor-pointer"
+                      >
+                        <div className="relative aspect-square rounded-xl overflow-hidden bg-gray-800">
+                          {imageUrl ? (
+                            <Image
+                              src={imageUrl}
+                              alt={pkg.title}
+                              fill
+                              sizes="192px"
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          ) : (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <svg className="w-12 h-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                              </svg>
+                            </div>
+                          )}
+                          {/* Name overlay */}
+                          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                            <p className="text-white text-sm font-medium text-center line-clamp-2">
+                              {packageName}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-gray-400 text-center py-8">Welcome packages coming soon!</p>
+              )}
+              <p className="text-gray-400 text-sm text-center mt-4">
+                Swipe to browse • Added FREE at checkout
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section className="relative py-16 px-6 md:px-12 overflow-hidden">
+        {/* Background Image */}
+        <Image
+          src="/images/partners/premierpartycruises-testimonials-bg.jpg"
+          alt="Boat party on Lake Travis"
+          fill
+          className="object-cover"
+        />
+        {/* Light Overlay */}
+        <div className="absolute inset-0 bg-gray-900/30" />
+
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <div className="text-center mb-10">
+            <p className="text-gold-400 tracking-[0.2em] uppercase text-sm mb-3">
+              Real Reviews
+            </p>
+            <h2 className="font-serif text-3xl md:text-4xl text-white tracking-wide">
+              What Boat Party Hosts Say
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+            {TESTIMONIALS.map((review, idx) => (
+              <div key={idx} className="bg-black/50 backdrop-blur-md border border-white/20 rounded-xl p-6">
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-5 h-5 text-gold-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-gray-200 mb-4 leading-relaxed">&quot;{review.text}&quot;</p>
+                <p className="font-medium text-white">— {review.reviewer}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TRUST SECTION */}
       <section className="py-16 px-6 md:px-12 bg-gray-900">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-serif text-2xl md:text-3xl text-white tracking-wide mb-8 text-center">
-            Our Promise to You
+            Austin-Born. Fully Licensed. Always On Time.
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
@@ -505,7 +535,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
                 </svg>
               </div>
               <h3 className="font-serif text-lg text-white mb-2">On-Time Guarantee</h3>
-              <p className="text-gray-400 text-sm">Your order arrives before your boarding time, or delivery is free.</p>
+              <p className="text-gray-400 text-sm">Your order arrives before your boarding time, or delivery is FREE.</p>
             </div>
             <div className="text-center">
               <div className="w-14 h-14 mx-auto mb-4 bg-gold-500/20 text-gold-400 rounded-full flex items-center justify-center">
@@ -525,39 +555,6 @@ function PremierPartyCruisesPageContent(): ReactElement {
               <h3 className="font-serif text-lg text-white mb-2">Order Accuracy</h3>
               <p className="text-gray-400 text-sm">Every item checked before delivery. If something&apos;s wrong, we make it right immediately.</p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* DRINK CALCULATOR */}
-      <DrinkCalculator />
-
-      {/* TESTIMONIALS */}
-      <section className="py-16 px-6 md:px-12 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-10">
-            <p className="text-gray-500 tracking-[0.2em] uppercase text-sm mb-3">
-              Real Reviews
-            </p>
-            <h2 className="font-serif text-3xl md:text-4xl text-gray-900 tracking-wide">
-              What Boat Party Hosts Say
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-            {TESTIMONIALS.map((review, idx) => (
-              <div key={idx} className="bg-gray-50 rounded-xl p-6">
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-gold-500" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-gray-700 mb-4 leading-relaxed">&quot;{review.text}&quot;</p>
-                <p className="font-medium text-gray-900">— {review.reviewer}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
