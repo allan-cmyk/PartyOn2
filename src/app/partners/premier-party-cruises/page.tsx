@@ -15,7 +15,6 @@ import PremierHero from '@/components/partners/PremierHero';
 import PremierHeroStickyCTA from '@/components/partners/PremierHeroStickyCTA';
 import { useQuickOrderProducts } from '@/hooks/useQuickOrderProducts';
 import { SHOPIFY_COLLECTIONS } from '@/lib/shopify/categories';
-import type { ShopifyProduct } from '@/lib/shopify/types';
 
 /** Real Google reviews for boat parties */
 const TESTIMONIALS = [
@@ -39,10 +38,10 @@ const TESTIMONIALS = [
 
 /** Perks for spending $250+ on group boat order */
 const SPECIAL_PERKS = [
-  { title: 'FREE Delivery to marina', value: '$50 value' },
-  { title: 'FREE Cooler Stocking', value: '$30 value' },
-  { title: 'FREE Bag of Ice', value: '$10 value' },
-  { title: 'FREE Welcome Package', value: '$40+ value' },
+  { title: 'FREE Delivery to Airbnb', value: '$40 value' },
+  { title: 'FREE Fridge Stocking (when possible)', value: '$20 value' },
+  { title: 'FREE Welcome to Austin Package', value: '$50 value' },
+  { title: 'Group Ordering and Split Payments', value: 'FREE' },
 ];
 
 /**
@@ -67,54 +66,6 @@ function PremierPartyCruisesPageContent(): ReactElement {
 
   // Load products for active collection
   const { products, loading, error } = useQuickOrderProducts(activeCollection);
-
-  // Welcome packages for Special Perks section
-  const [welcomePackages, setWelcomePackages] = useState<ShopifyProduct[]>([]);
-  const [welcomeLoading, setWelcomeLoading] = useState(true);
-
-  // Fetch welcome packages from collection on mount
-  useEffect(() => {
-    async function fetchWelcomePackages() {
-      try {
-        // Try collection first, fall back to search
-        let response = await fetch('/api/products?collection=welcome-to-austin-packages&first=10');
-        let data = await response.json();
-
-        // If collection is empty, try search as fallback
-        if (!data.products?.length && !data.products?.edges?.length) {
-          response = await fetch('/api/products?search=Welcome%20to%20Austin&first=20');
-          data = await response.json();
-
-          // Filter for Welcome Package products
-          if (data.products) {
-            const filtered = (data.products.edges || data.products).filter(
-              (item: { node?: ShopifyProduct } | ShopifyProduct) => {
-                const p = 'node' in item ? item.node : item;
-                return p.productType === 'Welcome Package' ||
-                       p.title?.startsWith('Welcome to Austin:');
-              }
-            ).map((item: { node?: ShopifyProduct } | ShopifyProduct) =>
-              'node' in item ? item.node : item
-            );
-            setWelcomePackages(filtered);
-            return;
-          }
-        }
-
-        // Handle collection response
-        if (data.products?.edges) {
-          setWelcomePackages(data.products.edges.map((e: { node: ShopifyProduct }) => e.node));
-        } else if (data.products) {
-          setWelcomePackages(data.products);
-        }
-      } catch (err) {
-        console.error('Failed to fetch welcome packages:', err);
-      } finally {
-        setWelcomeLoading(false);
-      }
-    }
-    fetchWelcomePackages();
-  }, []);
 
   // Intersection Observer for sticky detection (start and end of product section)
   useEffect(() => {
@@ -182,10 +133,10 @@ function PremierPartyCruisesPageContent(): ReactElement {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-stretch">
             {/* Video Container - Takes 3 columns on desktop */}
-            <div className="lg:col-span-3">
-              <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-2xl bg-gray-900">
+            <div className="lg:col-span-3 flex">
+              <div className="relative w-full aspect-video lg:aspect-auto lg:h-full rounded-xl overflow-hidden shadow-2xl bg-gray-900">
                 <iframe
                   src="https://www.youtube.com/embed/4-Yx24Y6oro?rel=0&modestbranding=1"
                   title="Premier Party Cruises boat party experience"
@@ -194,20 +145,17 @@ function PremierPartyCruisesPageContent(): ReactElement {
                   allowFullScreen
                 />
               </div>
-              <p className="text-center text-gray-500 text-sm mt-4">
-                Your drinks delivered, iced, and waiting when you arrive at the marina
-              </p>
             </div>
 
             {/* What's Included - Takes 2 columns on desktop */}
-            <div className="lg:col-span-2 bg-white rounded-xl p-8 shadow-lg">
+            <div className="lg:col-span-2 bg-white rounded-xl p-8 shadow-lg flex flex-col">
               <p className="text-gray-500 tracking-[0.2em] uppercase text-base mb-2 text-center">
                 Boat Day = Handled
               </p>
               <h3 className="font-serif text-2xl md:text-3xl text-gray-900 tracking-wide mb-6 text-center">
                 Every Order Includes
               </h3>
-              <div className="space-y-4">
+              <div className="space-y-4 flex-grow">
                 {[
                   { item: 'FREE delivery to Premier Party Cruises marina', value: '$50' },
                   { item: 'Cooler stocking with ice', value: '$25' },
@@ -228,7 +176,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
                   </div>
                 ))}
               </div>
-              <div className="mt-6 pt-4 border-t border-gray-300 flex justify-between items-center">
+              <div className="mt-auto pt-4 border-t border-gray-300 flex justify-between items-center">
                 <span className="font-serif text-lg text-gray-900">Total Value</span>
                 <span className="font-serif text-xl text-gray-900 font-semibold">$75+ FREE</span>
               </div>
@@ -252,13 +200,13 @@ function PremierPartyCruisesPageContent(): ReactElement {
         <div className="px-4 md:max-w-7xl md:mx-auto md:px-8">
           {/* CTA Buttons - hide when sticky */}
           {!isCollectionsSticky && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 mb-6">
               {/* Individual Order Button */}
               <button
                 onClick={scrollToCollections}
-                className="group flex items-center justify-center gap-3 py-4 px-6 bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-800 font-semibold tracking-wide transition-all rounded-xl shadow-sm hover:shadow-md"
+                className="w-full md:flex-1 group flex items-center justify-center gap-3 py-4 px-6 bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-800 font-semibold tracking-wide transition-all rounded-xl shadow-sm hover:shadow-md"
               >
-                <span>Scroll Down to Add Products</span>
+                <span>Scroll Down to Make a Cart</span>
                 <svg
                   className="w-5 h-5 animate-bounce"
                   fill="none"
@@ -269,10 +217,13 @@ function PremierPartyCruisesPageContent(): ReactElement {
                 </svg>
               </button>
 
+              {/* Or divider */}
+              <span className="text-gray-400 font-medium text-sm uppercase tracking-wider">or</span>
+
               {/* Group Order Button */}
               <Link
                 href="/orders/create"
-                className="flex items-center justify-center gap-3 py-4 px-6 bg-gold-500 hover:bg-gold-400 text-gray-900 font-semibold tracking-wide transition-all rounded-xl shadow-sm hover:shadow-md"
+                className="w-full md:flex-1 flex items-center justify-center gap-3 py-4 px-6 bg-gold-500 hover:bg-gold-400 text-gray-900 font-semibold tracking-wide transition-all rounded-xl shadow-sm hover:shadow-md"
               >
                 <span>Start a Group Order</span>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -287,7 +238,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
             className={
               isCollectionsSticky
                 ? 'flex items-center gap-2'
-                : 'grid grid-cols-2 md:grid-cols-7 gap-2'
+                : 'grid grid-cols-2 md:grid-cols-5 gap-2'
             }
           >
             {/* Search button - only show when sticky */}
@@ -388,97 +339,80 @@ function PremierPartyCruisesPageContent(): ReactElement {
 
         <div className="relative max-w-7xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-10">
-            <h2 className="font-serif text-3xl md:text-5xl text-white tracking-wide mb-4">
-              Special Perks for Premier Customers
+          <div className="text-center mb-12">
+            <h2 className="font-serif text-4xl md:text-6xl text-white tracking-wide mb-4">
+              Special Offer for Premier Customers
             </h2>
-            <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-              Spend $250 on your group boat order and unlock exclusive perks
+            <p className="text-gray-300 text-xl md:text-2xl max-w-2xl mx-auto">
+              Spend $250 on your Group Airbnb Order and Get Free Stuff!
             </p>
           </div>
 
           {/* Two Column Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* LEFT: Value Stack Tile */}
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8">
-              <h3 className="font-serif text-xl text-white mb-6">What You Get</h3>
-              <div className="space-y-4">
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8 md:p-10">
+              <h3 className="font-serif text-2xl md:text-3xl text-white mb-8">What You Get</h3>
+              <div className="space-y-5">
                 {SPECIAL_PERKS.map((perk) => (
                   <div
                     key={perk.title}
-                    className="flex items-center justify-between py-3 border-b border-white/10 last:border-0"
+                    className="flex items-center justify-between py-4 border-b border-white/10 last:border-0"
                   >
-                    <span className="flex items-center gap-3 text-white">
-                      <svg className="w-6 h-6 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <span className="flex items-center gap-4 text-white text-lg md:text-xl">
+                      <svg className="w-7 h-7 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                       </svg>
                       {perk.title}
                     </span>
-                    <span className="text-gold-400 font-semibold">{perk.value}</span>
+                    <span className="text-gold-400 font-semibold text-lg md:text-xl">{perk.value}</span>
                   </div>
                 ))}
               </div>
-              <div className="mt-6 pt-4 border-t border-white/20 flex justify-between items-center">
-                <span className="text-white font-serif text-lg">Total Value</span>
-                <span className="text-gold-400 font-bold text-2xl">$130+ FREE</span>
+              <div className="mt-8 pt-6 border-t border-white/20 flex justify-between items-center">
+                <span className="text-white font-serif text-xl md:text-2xl">Total Value</span>
+                <span className="text-gold-400 font-bold text-3xl md:text-4xl">$110+ FREE</span>
               </div>
             </div>
 
             {/* RIGHT: Welcome Package Carousel Tile */}
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8">
-              <h3 className="font-serif text-xl text-white mb-6">Choose Your FREE Welcome Package</h3>
-              {welcomeLoading ? (
-                <div className="flex gap-4 overflow-x-auto pb-4">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="flex-shrink-0 w-48 h-48 bg-gray-800 rounded-xl animate-pulse" />
-                  ))}
-                </div>
-              ) : welcomePackages.length > 0 ? (
-                <div
-                  className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide -mx-2 px-2"
-                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                >
-                  {welcomePackages.map((pkg) => {
-                    const imageUrl = pkg.images?.edges?.[0]?.node?.url || pkg.featuredImage?.url;
-                    const packageName = pkg.title.includes(':')
-                      ? pkg.title.split(':')[1].trim()
-                      : pkg.title;
-                    return (
-                      <div
-                        key={pkg.id}
-                        className="flex-shrink-0 w-48 snap-start group cursor-pointer"
-                      >
-                        <div className="relative aspect-square rounded-xl overflow-hidden bg-gray-800">
-                          {imageUrl ? (
-                            <Image
-                              src={imageUrl}
-                              alt={pkg.title}
-                              fill
-                              sizes="192px"
-                              className="object-cover group-hover:scale-105 transition-transform duration-300"
-                            />
-                          ) : (
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <svg className="w-12 h-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                              </svg>
-                            </div>
-                          )}
-                          {/* Name overlay */}
-                          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3">
-                            <p className="text-white text-sm font-medium text-center line-clamp-2">
-                              {packageName}
-                            </p>
-                          </div>
-                        </div>
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8 md:p-10">
+              <h3 className="font-serif text-2xl md:text-3xl text-white mb-8">Choose Your FREE Welcome Package</h3>
+              <div
+                className="flex gap-5 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide -mx-2 px-2"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {[
+                  { name: '6th Street Old Fashioned', image: '/welcome-packages-export/6th-Street-Old-Fashioned.png' },
+                  { name: 'Austin Brunch', image: '/welcome-packages-export/Austin-Brunch.png' },
+                  { name: 'Keep Austin Weird Shots', image: '/welcome-packages-export/Keep-Austin-Weird-Shots.png' },
+                  { name: 'South Congress Chill', image: '/welcome-packages-export/South-Congress-Chill.png' },
+                  { name: 'Texas Pong Pack', image: '/welcome-packages-export/Texas-Pong-Pack.png' },
+                  { name: "Tito's & Topo", image: '/welcome-packages-export/Titos-and-Topo.png' },
+                ].map((pkg) => (
+                  <div
+                    key={pkg.name}
+                    className="flex-shrink-0 w-52 md:w-56 snap-start group cursor-pointer"
+                  >
+                    <div className="relative aspect-square rounded-xl overflow-hidden bg-gray-800">
+                      <Image
+                        src={pkg.image}
+                        alt={pkg.name}
+                        fill
+                        sizes="224px"
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      {/* Name overlay */}
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                        <p className="text-white text-base md:text-lg font-medium text-center line-clamp-2">
+                          {pkg.name}
+                        </p>
                       </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <p className="text-gray-400 text-center py-8">Welcome packages coming soon!</p>
-              )}
-              <p className="text-gray-400 text-sm text-center mt-4">
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-gray-400 text-base md:text-lg text-center mt-6">
                 Swipe to browse • Added FREE at checkout
               </p>
             </div>
@@ -487,33 +421,29 @@ function PremierPartyCruisesPageContent(): ReactElement {
       </section>
 
       {/* TESTIMONIALS */}
-      <section className="relative py-16 px-6 md:px-12 bg-gray-800 overflow-hidden">
-        {/* Background Image - TODO: Add new testimonials background image */}
-        {/* <Image src="/images/partners/premierpartycruises-testimonials-bg.jpg" alt="Boat party" fill className="object-cover" /> */}
-        {/* <div className="absolute inset-0 bg-gray-900/30" /> */}
-
+      <section className="relative py-16 px-6 md:px-12 bg-gray-100 overflow-hidden">
         <div className="relative z-10 max-w-6xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-gold-400 tracking-[0.2em] uppercase text-sm mb-3">
+            <p className="text-gold-600 tracking-[0.2em] uppercase text-sm mb-3">
               Real Reviews
             </p>
-            <h2 className="font-serif text-3xl md:text-4xl text-white tracking-wide">
+            <h2 className="font-serif text-3xl md:text-4xl text-gray-900 tracking-wide">
               What Boat Party Hosts Say
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {TESTIMONIALS.map((review, idx) => (
-              <div key={idx} className="bg-black/50 backdrop-blur-md border border-white/20 rounded-xl p-6">
+              <div key={idx} className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                 <div className="flex gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-gold-400" fill="currentColor" viewBox="0 0 20 20">
+                    <svg key={i} className="w-5 h-5 text-gold-500" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   ))}
                 </div>
-                <p className="text-gray-200 mb-4 leading-relaxed">&quot;{review.text}&quot;</p>
-                <p className="font-medium text-white">— {review.reviewer}</p>
+                <p className="text-gray-700 mb-4 leading-relaxed">&quot;{review.text}&quot;</p>
+                <p className="font-medium text-gray-900">— {review.reviewer}</p>
               </div>
             ))}
           </div>
@@ -521,38 +451,89 @@ function PremierPartyCruisesPageContent(): ReactElement {
       </section>
 
       {/* TRUST SECTION */}
-      <section className="py-16 px-6 md:px-12 bg-gray-900">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="font-serif text-2xl md:text-3xl text-white tracking-wide mb-8 text-center">
-            Austin-Born. Fully Licensed. Always On Time.
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-14 h-14 mx-auto mb-4 bg-gold-500/20 text-gold-400 rounded-full flex items-center justify-center">
-                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+      <section className="py-20 px-6 md:px-12 bg-gray-900">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* LEFT: Video/GIF */}
+            <div className="flex justify-center lg:justify-end">
+              <div className="relative w-48 h-72 md:w-56 md:h-80 rounded-2xl overflow-hidden bg-gray-800 shadow-2xl">
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover"
+                >
+                  <source src="/videos/trust-section.mp4" type="video/mp4" />
+                </video>
               </div>
-              <h3 className="font-serif text-lg text-white mb-2">On-Time Guarantee</h3>
-              <p className="text-gray-400 text-sm">Your order arrives before your boarding time, or delivery is FREE.</p>
             </div>
-            <div className="text-center">
-              <div className="w-14 h-14 mx-auto mb-4 bg-gold-500/20 text-gold-400 rounded-full flex items-center justify-center">
-                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
+
+            {/* RIGHT: Title + Accordions */}
+            <div>
+              <h2 className="font-serif text-3xl md:text-4xl text-white tracking-wide mb-8">
+                Austin-Born. Fully Licensed. Always On Time.
+              </h2>
+
+              {/* Accordions */}
+              <div className="space-y-4">
+                {[
+                  {
+                    id: 'ontime',
+                    title: 'On-Time Guarantee',
+                    icon: (
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    ),
+                    content: 'Your order arrives before your boarding time, or delivery is FREE. We coordinate directly with your Airbnb host or property manager to ensure seamless delivery.',
+                  },
+                  {
+                    id: 'licensed',
+                    title: 'Licensed & Insured',
+                    icon: (
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                    ),
+                    content: 'Fully TABC-certified with liability coverage. We operate 100% by the book so you can focus on having fun, not worrying about compliance.',
+                  },
+                  {
+                    id: 'accuracy',
+                    title: 'Order Accuracy',
+                    icon: (
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
+                      </svg>
+                    ),
+                    content: 'Every item is double-checked before delivery. If something is wrong or missing, we make it right immediately - no questions asked.',
+                  },
+                ].map((item, index) => (
+                  <details
+                    key={item.id}
+                    className="group bg-white/5 border border-white/10 rounded-xl overflow-hidden"
+                    open={index === 0}
+                  >
+                    <summary className="flex items-center gap-4 p-5 cursor-pointer list-none hover:bg-white/5 transition-colors">
+                      <div className="w-12 h-12 bg-gold-500/20 text-gold-400 rounded-full flex items-center justify-center flex-shrink-0">
+                        {item.icon}
+                      </div>
+                      <h3 className="font-serif text-xl text-white flex-grow">{item.title}</h3>
+                      <svg
+                        className="w-5 h-5 text-gold-400 transition-transform group-open:rotate-180"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </summary>
+                    <div className="px-5 pb-5 pl-[4.5rem]">
+                      <p className="text-gray-400 text-base leading-relaxed">{item.content}</p>
+                    </div>
+                  </details>
+                ))}
               </div>
-              <h3 className="font-serif text-lg text-white mb-2">Licensed & Insured</h3>
-              <p className="text-gray-400 text-sm">Fully TABC-certified with liability coverage. Everything by the book.</p>
-            </div>
-            <div className="text-center">
-              <div className="w-14 h-14 mx-auto mb-4 bg-gold-500/20 text-gold-400 rounded-full flex items-center justify-center">
-                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <h3 className="font-serif text-lg text-white mb-2">Order Accuracy</h3>
-              <p className="text-gray-400 text-sm">Every item checked before delivery. If something&apos;s wrong, we make it right immediately.</p>
             </div>
           </div>
         </div>

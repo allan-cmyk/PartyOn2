@@ -7,7 +7,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { getDraftOrderById, updateDraftOrderStatus } from '@/lib/draft-orders';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend lazily to avoid build-time errors when env var is missing
+let resend: Resend | null = null;
+function getResend(): Resend {
+  if (!resend) {
+    if (!process.env.RESEND_API_KEY) {
+      throw new Error('RESEND_API_KEY environment variable is required');
+    }
+    resend = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resend;
+}
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -70,7 +80,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       .join('');
 
     // Send email via Resend
-    const { data, error: resendError } = await resend.emails.send({
+    const { data, error: resendError } = await getResend().emails.send({
       from: 'PartyOn Delivery <orders@partyondelivery.com>',
       to: draftOrder.customerEmail,
       subject: `Your Invoice from PartyOn Delivery - $${Number(draftOrder.total).toFixed(2)}`,
