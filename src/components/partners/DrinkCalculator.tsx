@@ -190,10 +190,10 @@ function DrinkingLevelButton({
     <button
       type="button"
       onClick={onClick}
-      className={`flex-1 py-2.5 px-3 rounded-lg font-medium transition-all text-sm ${
+      className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all text-base ${
         selected
           ? 'bg-gold-500 text-gray-900'
-          : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
       }`}
     >
       {labels[level]}
@@ -228,10 +228,10 @@ function PartyTypeButton({
     <button
       type="button"
       onClick={onClick}
-      className={`flex-1 py-2.5 px-4 rounded-lg font-medium transition-all border-2 text-sm ${
+      className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all border-2 text-base ${
         selected
           ? getSelectedClasses()
-          : 'bg-gray-700 border-gray-600 text-gray-300 hover:border-gray-500'
+          : 'bg-gray-100 border-gray-300 text-gray-700 hover:border-gray-400'
       }`}
     >
       {label}
@@ -252,10 +252,10 @@ function PreferenceOption({
     <button
       type="button"
       onClick={onClick}
-      className={`py-2 px-3 rounded-lg font-medium transition-all text-left text-sm ${
+      className={`py-3 px-4 rounded-lg font-medium transition-all text-left text-base ${
         selected
           ? 'bg-gold-500 text-gray-900'
-          : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
       }`}
     >
       {label}
@@ -265,9 +265,9 @@ function PreferenceOption({
 
 function ProductCard({ product }: { product: ProductRecommendation }): ReactElement {
   return (
-    <div className="bg-white rounded-lg p-3 text-center border border-gray-100 shadow-sm">
-      <p className="text-xl font-bold text-gray-900">{product.quantity}</p>
-      <p className="text-xs text-gray-600 leading-tight">{product.name}</p>
+    <div className="bg-white rounded-lg p-4 text-center border border-gray-100 shadow-sm">
+      <p className="text-2xl md:text-3xl font-bold text-gray-900">{product.quantity}</p>
+      <p className="text-sm text-gray-600 leading-tight">{product.name}</p>
     </div>
   );
 }
@@ -382,14 +382,15 @@ export default function DrinkCalculator(): ReactElement {
   };
 
   return (
-    <section id="drink-calculator" className="py-8 md:py-12 px-4 md:px-6 bg-gray-900">
-      <div className="max-w-6xl mx-auto">
+    <section id="drink-calculator" className="relative py-8 md:py-12 px-4 md:px-6 bg-gray-100 overflow-hidden">
+
+      <div className="relative z-10 max-w-6xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-6">
-          <h2 className="font-serif text-2xl md:text-3xl text-white mb-2 tracking-wide">
+          <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-2 tracking-wide">
             Drink Calculator and Recs
           </h2>
-          <p className="text-gray-400 text-sm md:text-base">
+          <p className="text-gray-600 text-base md:text-lg">
             Plan the perfect party bar. Get personalized recommendations.
           </p>
         </div>
@@ -397,11 +398,11 @@ export default function DrinkCalculator(): ReactElement {
         {/* Two-column layout on desktop */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
           {/* Stage 1: Basic Calculations */}
-          <div className="bg-gray-800 rounded-xl p-4 md:p-6">
+          <div className="bg-white rounded-xl p-4 md:p-6 shadow-lg">
             <div className="space-y-4">
               {/* Guest Count */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1.5 text-center">
+                <label className="block text-base md:text-lg font-medium text-gray-700 mb-2 text-center">
                   How many people?
                 </label>
                 <div className="flex items-center gap-3">
@@ -411,9 +412,9 @@ export default function DrinkCalculator(): ReactElement {
                     max="50"
                     value={guestCount}
                     onChange={(e) => setGuestCount(Number(e.target.value))}
-                    className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-gold-500"
+                    className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gold-500"
                   />
-                  <span className="w-10 text-center text-white font-semibold">
+                  <span className="w-12 text-center text-gray-900 font-semibold text-lg md:text-xl">
                     {guestCount}
                   </span>
                 </div>
@@ -421,7 +422,7 @@ export default function DrinkCalculator(): ReactElement {
 
               {/* Hours */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1.5 text-center">
+                <label className="block text-base md:text-lg font-medium text-gray-700 mb-2 text-center">
                   How long is your party?
                 </label>
                 <div className="flex items-center gap-3">
@@ -431,9 +432,9 @@ export default function DrinkCalculator(): ReactElement {
                     max="6"
                     value={hours}
                     onChange={(e) => setHours(Number(e.target.value))}
-                    className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-gold-500"
+                    className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gold-500"
                   />
-                  <span className="w-14 text-center text-white font-semibold">
+                  <span className="w-16 text-center text-gray-900 font-semibold text-lg md:text-xl">
                     {hours} hrs
                   </span>
                 </div>
@@ -441,7 +442,7 @@ export default function DrinkCalculator(): ReactElement {
 
               {/* Drinking Level */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2 text-center">
+                <label className="block text-base md:text-lg font-medium text-gray-700 mb-2 text-center">
                   How hard does your crew drink?
                 </label>
                 <div className="flex gap-2">
@@ -458,10 +459,10 @@ export default function DrinkCalculator(): ReactElement {
             </div>
 
             {/* Total Drinks Display */}
-            <div className="mt-4 pt-4 border-t border-gray-700 text-center">
-              <p className="text-gray-400 text-sm">You&apos;ll need approximately</p>
-              <p className="text-4xl font-bold text-white my-1">{totalDrinks}</p>
-              <p className="text-gray-400 text-sm">drinks for your party</p>
+            <div className="mt-4 pt-4 border-t border-gray-200 text-center">
+              <p className="text-gray-600 text-base">You&apos;ll need approximately</p>
+              <p className="text-5xl md:text-6xl font-bold text-gray-900 my-2">{totalDrinks}</p>
+              <p className="text-gray-600 text-base">drinks for your party</p>
             </div>
 
             {/* Stage 1 CTA - only on mobile when stage 2 not visible */}
@@ -470,7 +471,7 @@ export default function DrinkCalculator(): ReactElement {
                 <button
                   type="button"
                   onClick={() => setStage('preferences')}
-                  className="w-full px-6 py-3 bg-gold-500 hover:bg-gold-600 text-gray-900 font-semibold rounded-lg transition-colors"
+                  className="w-full px-6 py-4 bg-gold-500 hover:bg-gold-600 text-gray-900 font-semibold rounded-lg transition-colors text-lg"
                 >
                   Get a recommendation →
                 </button>
@@ -480,11 +481,11 @@ export default function DrinkCalculator(): ReactElement {
 
           {/* Stage 2: Preferences - Always visible on desktop, animated on mobile */}
           <div className="hidden lg:block">
-            <div className="bg-gray-800 rounded-xl p-4 md:p-6 h-full">
+            <div className="bg-white rounded-xl p-4 md:p-6 h-full shadow-lg">
               <div className="space-y-4">
                 {/* Party Type */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2 text-center">
+                  <label className="block text-base md:text-lg font-medium text-gray-700 mb-2 text-center">
                     What kind of party?
                   </label>
                   <div className="flex gap-2">
@@ -501,7 +502,7 @@ export default function DrinkCalculator(): ReactElement {
 
                 {/* Drink Preference */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2 text-center">
+                  <label className="block text-base md:text-lg font-medium text-gray-700 mb-2 text-center">
                     Drink preference
                   </label>
                   <div className="flex flex-wrap gap-2 justify-center">
@@ -518,7 +519,7 @@ export default function DrinkCalculator(): ReactElement {
 
                 {/* Add-ons */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-3 text-center">
+                  <label className="block text-base md:text-lg font-medium text-gray-700 mb-3 text-center">
                     Add-ons
                   </label>
                   <div className="space-y-3">
@@ -530,10 +531,10 @@ export default function DrinkCalculator(): ReactElement {
                           setAddCocktailKits(!addCocktailKits);
                           if (addCocktailKits) setCocktailSpirits([]);
                         }}
-                        className={`w-full py-3 px-4 rounded-lg font-medium transition-all border-2 flex items-center justify-center gap-2 ${
+                        className={`w-full py-3.5 px-4 rounded-lg font-medium transition-all border-2 flex items-center justify-center gap-2 text-base ${
                           addCocktailKits
                             ? 'bg-gold-500 border-gold-400 text-gray-900'
-                            : 'bg-gray-700 border-gray-600 text-gray-300 hover:border-gold-500'
+                            : 'bg-gray-100 border-gray-300 text-gray-700 hover:border-gold-500'
                         }`}
                       >
                         <span>Fresh Cocktail Kits</span>
@@ -561,9 +562,9 @@ export default function DrinkCalculator(): ReactElement {
                                         setCocktailSpirits(cocktailSpirits.filter(s => s !== spirit.toLowerCase()));
                                       }
                                     }}
-                                    className="w-4 h-4 rounded text-gold-500 bg-gray-700 border-gray-600 focus:ring-gold-500"
+                                    className="w-4 h-4 rounded text-gold-500 bg-gray-100 border-gray-300 focus:ring-gold-500"
                                   />
-                                  <span className="text-gray-300 text-sm">{spirit}</span>
+                                  <span className="text-gray-700 text-sm">{spirit}</span>
                                 </label>
                               ))}
                             </div>
@@ -580,10 +581,10 @@ export default function DrinkCalculator(): ReactElement {
                           setAddWineChampagne(!addWineChampagne);
                           if (addWineChampagne) setWineTypes([]);
                         }}
-                        className={`w-full py-3 px-4 rounded-lg font-medium transition-all border-2 flex items-center justify-center gap-2 ${
+                        className={`w-full py-3.5 px-4 rounded-lg font-medium transition-all border-2 flex items-center justify-center gap-2 text-base ${
                           addWineChampagne
                             ? 'bg-gold-500 border-gold-400 text-gray-900'
-                            : 'bg-gray-700 border-gray-600 text-gray-300 hover:border-gold-500'
+                            : 'bg-gray-100 border-gray-300 text-gray-700 hover:border-gold-500'
                         }`}
                       >
                         <span>Wine & Champagne</span>
@@ -611,9 +612,9 @@ export default function DrinkCalculator(): ReactElement {
                                         setWineTypes(wineTypes.filter(t => t !== type.toLowerCase()));
                                       }
                                     }}
-                                    className="w-4 h-4 rounded text-gold-500 bg-gray-700 border-gray-600 focus:ring-gold-500"
+                                    className="w-4 h-4 rounded text-gold-500 bg-gray-100 border-gray-300 focus:ring-gold-500"
                                   />
-                                  <span className="text-gray-300 text-sm">{type}</span>
+                                  <span className="text-gray-700 text-sm">{type}</span>
                                 </label>
                               ))}
                             </div>
@@ -627,15 +628,15 @@ export default function DrinkCalculator(): ReactElement {
 
               {/* Desktop CTA */}
               {stage !== 'results' && (
-                <div className="mt-4 pt-4 border-t border-gray-700">
+                <div className="mt-4 pt-4 border-t border-gray-200">
                   <button
                     type="button"
                     onClick={() => setStage('lead_capture')}
-                    className="w-full px-6 py-3 bg-gold-500 hover:bg-gold-600 text-gray-900 font-semibold rounded-lg transition-colors"
+                    className="w-full px-6 py-4 bg-gold-500 hover:bg-gold-600 text-gray-900 font-semibold rounded-lg transition-colors text-lg"
                   >
                     Get my recommendation →
                   </button>
-                  <p className="text-gray-400 text-xs text-center mt-2">
+                  <p className="text-gray-500 text-xs text-center mt-2">
                     You can add, edit, anything before checkout
                   </p>
                 </div>
@@ -651,12 +652,12 @@ export default function DrinkCalculator(): ReactElement {
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3 }}
-                className="lg:hidden bg-gray-800 rounded-xl p-4 overflow-hidden"
+                className="lg:hidden bg-white rounded-xl p-4 overflow-hidden shadow-lg"
               >
                 <div className="space-y-4">
                   {/* Party Type */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2 text-center">
+                    <label className="block text-base font-medium text-gray-700 mb-2 text-center">
                       What kind of party?
                     </label>
                     <div className="flex gap-2">
@@ -673,7 +674,7 @@ export default function DrinkCalculator(): ReactElement {
 
                   {/* Drink Preference */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2 text-center">
+                    <label className="block text-base font-medium text-gray-700 mb-2 text-center">
                       Drink preference
                     </label>
                     <div className="flex flex-wrap gap-2 justify-center">
@@ -690,7 +691,7 @@ export default function DrinkCalculator(): ReactElement {
 
                   {/* Add-ons */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-3 text-center">
+                    <label className="block text-base font-medium text-gray-700 mb-3 text-center">
                       Add-ons
                     </label>
                     <div className="space-y-3">
@@ -702,10 +703,10 @@ export default function DrinkCalculator(): ReactElement {
                             setAddCocktailKits(!addCocktailKits);
                             if (addCocktailKits) setCocktailSpirits([]);
                           }}
-                          className={`w-full py-3 px-4 rounded-lg font-medium transition-all border-2 flex items-center justify-center gap-2 ${
+                          className={`w-full py-3.5 px-4 rounded-lg font-medium transition-all border-2 flex items-center justify-center gap-2 text-base ${
                             addCocktailKits
                               ? 'bg-gold-500 border-gold-400 text-gray-900'
-                              : 'bg-gray-700 border-gray-600 text-gray-300 hover:border-gold-500'
+                              : 'bg-gray-100 border-gray-300 text-gray-700 hover:border-gold-500'
                           }`}
                         >
                           <span>Fresh Cocktail Kits</span>
@@ -733,9 +734,9 @@ export default function DrinkCalculator(): ReactElement {
                                           setCocktailSpirits(cocktailSpirits.filter(s => s !== spirit.toLowerCase()));
                                         }
                                       }}
-                                      className="w-4 h-4 rounded text-gold-500 bg-gray-700 border-gray-600 focus:ring-gold-500"
+                                      className="w-4 h-4 rounded text-gold-500 bg-gray-100 border-gray-300 focus:ring-gold-500"
                                     />
-                                    <span className="text-gray-300 text-sm">{spirit}</span>
+                                    <span className="text-gray-700 text-sm">{spirit}</span>
                                   </label>
                                 ))}
                               </div>
@@ -752,10 +753,10 @@ export default function DrinkCalculator(): ReactElement {
                             setAddWineChampagne(!addWineChampagne);
                             if (addWineChampagne) setWineTypes([]);
                           }}
-                          className={`w-full py-3 px-4 rounded-lg font-medium transition-all border-2 flex items-center justify-center gap-2 ${
+                          className={`w-full py-3.5 px-4 rounded-lg font-medium transition-all border-2 flex items-center justify-center gap-2 text-base ${
                             addWineChampagne
                               ? 'bg-gold-500 border-gold-400 text-gray-900'
-                              : 'bg-gray-700 border-gray-600 text-gray-300 hover:border-gold-500'
+                              : 'bg-gray-100 border-gray-300 text-gray-700 hover:border-gold-500'
                           }`}
                         >
                           <span>Wine & Champagne</span>
@@ -783,9 +784,9 @@ export default function DrinkCalculator(): ReactElement {
                                           setWineTypes(wineTypes.filter(t => t !== type.toLowerCase()));
                                         }
                                       }}
-                                      className="w-4 h-4 rounded text-gold-500 bg-gray-700 border-gray-600 focus:ring-gold-500"
+                                      className="w-4 h-4 rounded text-gold-500 bg-gray-100 border-gray-300 focus:ring-gold-500"
                                     />
-                                    <span className="text-gray-300 text-sm">{type}</span>
+                                    <span className="text-gray-700 text-sm">{type}</span>
                                   </label>
                                 ))}
                               </div>
@@ -803,11 +804,11 @@ export default function DrinkCalculator(): ReactElement {
                     <button
                       type="button"
                       onClick={() => setStage('lead_capture')}
-                      className="w-full px-6 py-3 bg-gold-500 hover:bg-gold-600 text-gray-900 font-semibold rounded-lg transition-colors"
+                      className="w-full px-6 py-4 bg-gold-500 hover:bg-gold-600 text-gray-900 font-semibold rounded-lg transition-colors text-lg"
                     >
                       Get my recommendation →
                     </button>
-                    <p className="text-gray-400 text-xs text-center mt-2">
+                    <p className="text-gray-500 text-xs text-center mt-2">
                       You can add, edit, anything before checkout
                     </p>
                   </div>
@@ -825,20 +826,20 @@ export default function DrinkCalculator(): ReactElement {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="mt-4 bg-gray-800 rounded-xl p-4 md:p-6 overflow-hidden"
+              className="mt-4 bg-white rounded-xl p-4 md:p-6 overflow-hidden shadow-lg"
             >
               <div className="text-center mb-4">
-                <h3 className="text-lg font-semibold text-white mb-1">
+                <h3 className="text-xl md:text-2xl font-semibold text-gray-900 mb-1">
                   Almost there!
                 </h3>
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-600 text-base">
                   Enter your info to see personalized recommendations.
                 </p>
               </div>
 
               <div className="max-w-md mx-auto space-y-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                  <label className="block text-base font-medium text-gray-700 mb-1">
                     First Name
                   </label>
                   <input
@@ -846,11 +847,11 @@ export default function DrinkCalculator(): ReactElement {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="Your first name"
-                    className="w-full px-3 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gold-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                  <label className="block text-base font-medium text-gray-700 mb-1">
                     Email
                   </label>
                   <input
@@ -858,19 +859,19 @@ export default function DrinkCalculator(): ReactElement {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="your@email.com"
-                    className="w-full px-3 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gold-500"
                   />
                 </div>
 
                 {submitError && (
-                  <p className="text-red-400 text-sm text-center">{submitError}</p>
+                  <p className="text-red-500 text-sm text-center">{submitError}</p>
                 )}
 
                 <button
                   type="button"
                   onClick={handleSubmit}
                   disabled={isSubmitting}
-                  className="w-full px-6 py-3 bg-gold-500 hover:bg-gold-600 disabled:bg-gray-600 text-gray-900 font-semibold rounded-lg transition-colors"
+                  className="w-full px-6 py-4 bg-gold-500 hover:bg-gold-600 disabled:bg-gray-300 text-gray-900 font-semibold rounded-lg transition-colors text-lg"
                 >
                   {isSubmitting ? 'Loading...' : 'See My Recommendations'}
                 </button>
@@ -888,11 +889,11 @@ export default function DrinkCalculator(): ReactElement {
               transition={{ duration: 0.4 }}
               className="mt-4"
             >
-              <div className="bg-gray-800 rounded-xl p-4 md:p-6 mb-4">
-                <h3 className="text-lg font-semibold text-white mb-1 text-center">
+              <div className="bg-white rounded-xl p-4 md:p-6 mb-4 shadow-lg">
+                <h3 className="text-xl md:text-2xl font-semibold text-gray-900 mb-1 text-center">
                   Your Personalized Recommendations
                 </h3>
-                <p className="text-gray-400 text-center text-sm mb-4">
+                <p className="text-gray-600 text-center text-base mb-4">
                   For {guestCount} guests over {hours} hours
                 </p>
 
@@ -912,11 +913,11 @@ export default function DrinkCalculator(): ReactElement {
                       .getElementById('boat-collections')
                       ?.scrollIntoView({ behavior: 'smooth' })
                   }
-                  className="px-6 py-3 bg-gold-500 hover:bg-gold-600 text-gray-900 font-semibold rounded-lg transition-colors"
+                  className="px-8 py-4 bg-gold-500 hover:bg-gold-600 text-gray-900 font-semibold rounded-lg transition-colors text-lg"
                 >
                   Start Shopping →
                 </button>
-                <p className="text-xs text-gray-500 mt-2">
+                <p className="text-sm text-gray-600 mt-2">
                   Estimates are approximate. When in doubt, order extra!
                 </p>
               </div>
