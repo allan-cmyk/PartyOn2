@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { groupOrderStore } from '@/lib/group-orders/store';
+import { db } from '@/lib/group-orders/database';
 import { createDraftOrder, calculateDraftOrderAmounts } from '@/lib/draft-orders';
 import type { DraftOrderItem } from '@/lib/draft-orders/types';
 import { getCartById } from '@/lib/inventory/services/cart-service';
 import { sendEmail } from '@/lib/email';
 import { EmailType } from '@prisma/client';
 import { calculateDeliveryFee } from '@/lib/delivery';
+import type { GroupOrderWithParticipants } from '@/lib/group-orders/types';
 
 // Feature flag for custom cart
 const USE_CUSTOM_CART = process.env.NEXT_PUBLIC_USE_CUSTOM_CART === 'true';
@@ -89,7 +90,7 @@ function ensureReliableInvoiceUrl(invoiceUrl: string | null | undefined): string
  * Create checkout for a group order using local Draft Order system
  */
 async function createLocalCheckout(
-  groupOrder: ReturnType<typeof groupOrderStore.getOrderByCode>,
+  groupOrder: GroupOrderWithParticipants,
   hostEmail: string,
   hostPhone: string | undefined
 ): Promise<{
@@ -267,7 +268,7 @@ async function createLocalCheckout(
  * Create checkout for a group order using Shopify Draft Orders (legacy)
  */
 async function createShopifyCheckout(
-  groupOrder: ReturnType<typeof groupOrderStore.getOrderByCode>,
+  groupOrder: GroupOrderWithParticipants,
   hostCustomerId: string,
   hostEmail: string,
   hostPhone: string | undefined
@@ -376,8 +377,8 @@ export async function POST(
       );
     }
 
-    // Get the group order
-    const groupOrder = groupOrderStore.getOrderByCode(code);
+    // Get the group order from database
+    const groupOrder = await db.getOrderByCode(code);
     if (!groupOrder) {
       return NextResponse.json(
         { error: 'Group order not found' },
@@ -420,9 +421,7 @@ export async function POST(
     }
 
     // Update group order status to completed
-    groupOrderStore.updateOrder(code, {
-      status: 'completed' as const,
-    });
+    await db.updateOrderStatus(code, 'completed');
 
     return NextResponse.json(result);
   } catch (error) {
