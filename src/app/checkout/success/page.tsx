@@ -93,20 +93,22 @@ function CheckoutSuccessContent() {
     <>
       <OldFashionedNavigation />
       
-      <main className="min-h-screen pt-32">
-        <div className="max-w-4xl mx-auto px-8 md:px-12 py-12 text-center">
-          {/* Success Icon */}
-          <div className="mb-8">
-            <div className="w-24 h-24 mx-auto bg-green-100 rounded-full flex items-center justify-center">
-              <svg className="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
+      <main className="min-h-screen">
+        {/* Hero Image */}
+        <div className="relative h-64 md:h-80 w-full">
+          <img
+            src="/images/lake-travis/the-oasis-sunset.webp"
+            alt="Sunset over Lake Travis"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+            <h1 className="font-cormorant text-5xl md:text-6xl text-white tracking-[0.15em] drop-shadow-lg">
+              THANK YOU!
+            </h1>
           </div>
+        </div>
 
-          <h1 className="font-cormorant text-4xl tracking-[0.15em] mb-4">
-            THANK YOU FOR YOUR ORDER
-          </h1>
+        <div className="max-w-4xl mx-auto px-8 md:px-12 py-12 text-center">
 
           <p className="text-lg text-gray-600 mb-8">
             Your order has been successfully placed and our team is preparing your delivery.
@@ -156,9 +158,9 @@ function CheckoutSuccessContent() {
                 <p className="text-gray-600 mb-4">
                   Create an account to track your order and save time on future purchases
                 </p>
-                <Link 
+                <Link
                   href="/account"
-                  className="inline-block px-8 py-3 bg-gold text-gray-900 text-sm tracking-[0.15em] hover:bg-gold/90 transition-colors"
+                  className="inline-block px-8 py-4 bg-yellow-400 text-gray-900 text-sm font-semibold tracking-[0.15em] rounded-lg hover:bg-yellow-500 transition-colors shadow-md"
                 >
                   CREATE ACCOUNT
                 </Link>
