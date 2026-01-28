@@ -377,44 +377,70 @@ function PremierPartyCruisesPageContent(): ReactElement {
 
             {/* RIGHT: Welcome Package Carousel Tile */}
             <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8 md:p-10">
-              <h3 className="font-serif text-2xl md:text-3xl text-white mb-8">Choose Your FREE Welcome Package</h3>
-              <div
-                className="flex gap-5 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide -mx-2 px-2"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-              >
-                {[
-                  { name: '6th Street Old Fashioned', image: '/welcome-packages-export/6th-Street-Old-Fashioned.png' },
-                  { name: 'Austin Brunch', image: '/welcome-packages-export/Austin-Brunch.png' },
-                  { name: 'Keep Austin Weird Shots', image: '/welcome-packages-export/Keep-Austin-Weird-Shots.png' },
-                  { name: 'South Congress Chill', image: '/welcome-packages-export/South-Congress-Chill.png' },
-                  { name: 'Texas Pong Pack', image: '/welcome-packages-export/Texas-Pong-Pack.png' },
-                  { name: "Tito's & Topo", image: '/welcome-packages-export/Titos-and-Topo.png' },
-                ].map((pkg) => (
-                  <div
-                    key={pkg.name}
-                    className="flex-shrink-0 w-52 md:w-56 snap-start group cursor-pointer"
-                  >
-                    <div className="relative aspect-square rounded-xl overflow-hidden bg-gray-800">
-                      <Image
-                        src={pkg.image}
-                        alt={pkg.name}
-                        fill
-                        sizes="224px"
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      {/* Name overlay */}
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                        <p className="text-white text-base md:text-lg font-medium text-center line-clamp-2">
-                          {pkg.name}
-                        </p>
+              <h3 className="font-serif text-2xl md:text-3xl text-white mb-6">Choose Your FREE Welcome Package</h3>
+
+              {/* Carousel with scroll indicator */}
+              <div className="relative">
+                <div
+                  className="flex gap-3 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide -mx-2 px-2"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                  {[
+                    { name: '6th Street Old Fashioned', image: '/welcome-packages-export/6th-Street-Old-Fashioned.png' },
+                    { name: 'Austin Brunch', image: '/welcome-packages-export/Austin-Brunch.png' },
+                    { name: 'Keep Austin Weird Shots', image: '/welcome-packages-export/Keep-Austin-Weird-Shots.png' },
+                    { name: 'South Congress Chill', image: '/welcome-packages-export/South-Congress-Chill.png' },
+                    { name: 'Texas Pong Pack', image: '/welcome-packages-export/Texas-Pong-Pack.png' },
+                    { name: "Tito's & Topo", image: '/welcome-packages-export/Titos-and-Topo.png' },
+                  ].map((pkg) => (
+                    <div
+                      key={pkg.name}
+                      className="flex-shrink-0 w-72 md:w-80 snap-start group cursor-pointer"
+                    >
+                      <div className="relative aspect-square rounded-xl overflow-hidden bg-gray-800">
+                        <Image
+                          src={pkg.image}
+                          alt={pkg.name}
+                          fill
+                          sizes="320px"
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
                       </div>
                     </div>
+                  ))}
+                </div>
+
+                {/* Animated scroll arrow */}
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <div className="bg-gradient-to-l from-gray-900/80 via-gray-900/50 to-transparent pl-8 pr-2 py-8">
+                    <svg
+                      className="w-8 h-8 text-gold-400 animate-bounce-horizontal"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
                   </div>
-                ))}
+                </div>
               </div>
-              <p className="text-gray-400 text-base md:text-lg text-center mt-6">
+
+              <p className="text-gray-400 text-base md:text-lg text-center mt-4">
                 Swipe to browse • Added FREE at checkout
               </p>
+
+              {/* CTA Button */}
+              <div className="mt-6 text-center">
+                <Link
+                  href="/orders/create"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-gold-500 hover:bg-gold-400 text-gray-900 font-semibold tracking-wide transition-all rounded-xl shadow-lg hover:shadow-xl"
+                >
+                  <span>Start My Group Order</span>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -424,7 +450,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
       <section className="relative py-16 px-6 md:px-12 bg-gray-100 overflow-hidden">
         <div className="relative z-10 max-w-6xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-gold-600 tracking-[0.2em] uppercase text-sm mb-3">
+            <p className="text-gray-500 tracking-[0.2em] uppercase text-sm mb-3">
               Real Reviews
             </p>
             <h2 className="font-serif text-3xl md:text-4xl text-gray-900 tracking-wide">
@@ -453,10 +479,10 @@ function PremierPartyCruisesPageContent(): ReactElement {
       {/* TRUST SECTION */}
       <section className="py-20 px-6 md:px-12 bg-gray-900">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* LEFT: Video/GIF */}
-            <div className="flex justify-center lg:justify-end">
-              <div className="relative w-48 h-72 md:w-56 md:h-80 rounded-2xl overflow-hidden bg-gray-800 shadow-2xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
+            {/* LEFT: Video/GIF - matches height of right side */}
+            <div className="flex justify-center lg:justify-end items-stretch">
+              <div className="relative w-48 md:w-56 lg:w-full lg:max-w-xs rounded-2xl overflow-hidden bg-gray-800 shadow-2xl aspect-[9/16] lg:aspect-auto">
                 <video
                   autoPlay
                   loop
@@ -469,71 +495,30 @@ function PremierPartyCruisesPageContent(): ReactElement {
               </div>
             </div>
 
-            {/* RIGHT: Title + Accordions */}
-            <div>
-              <h2 className="font-serif text-3xl md:text-4xl text-white tracking-wide mb-8">
+            {/* RIGHT: Logo + Title + Paragraph */}
+            <div className="flex flex-col">
+              {/* Logo - centered at top */}
+              <div className="flex justify-center mb-6">
+                <Image
+                  src="/images/pod-logo-2025.svg"
+                  alt="Party On Delivery"
+                  width={180}
+                  height={180}
+                  className="w-32 h-32 md:w-44 md:h-44"
+                />
+              </div>
+
+              <h2 className="font-serif text-3xl md:text-4xl text-white tracking-wide mb-6 text-center">
                 Austin-Born. Fully Licensed. Always On Time.
               </h2>
 
-              {/* Accordions */}
-              <div className="space-y-4">
-                {[
-                  {
-                    id: 'ontime',
-                    title: 'On-Time Guarantee',
-                    icon: (
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    ),
-                    content: 'Your order arrives before your boarding time, or delivery is FREE. We coordinate directly with your Airbnb host or property manager to ensure seamless delivery.',
-                  },
-                  {
-                    id: 'licensed',
-                    title: 'Licensed & Insured',
-                    icon: (
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                      </svg>
-                    ),
-                    content: 'Fully TABC-certified with liability coverage. We operate 100% by the book so you can focus on having fun, not worrying about compliance.',
-                  },
-                  {
-                    id: 'accuracy',
-                    title: 'Order Accuracy',
-                    icon: (
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
-                      </svg>
-                    ),
-                    content: 'Every item is double-checked before delivery. If something is wrong or missing, we make it right immediately - no questions asked.',
-                  },
-                ].map((item, index) => (
-                  <details
-                    key={item.id}
-                    className="group bg-white/5 border border-white/10 rounded-xl overflow-hidden"
-                    open={index === 0}
-                  >
-                    <summary className="flex items-center gap-4 p-5 cursor-pointer list-none hover:bg-white/5 transition-colors">
-                      <div className="w-12 h-12 bg-gold-500/20 text-gold-400 rounded-full flex items-center justify-center flex-shrink-0">
-                        {item.icon}
-                      </div>
-                      <h3 className="font-serif text-xl text-white flex-grow">{item.title}</h3>
-                      <svg
-                        className="w-5 h-5 text-gold-400 transition-transform group-open:rotate-180"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </summary>
-                    <div className="px-5 pb-5 pl-[4.5rem]">
-                      <p className="text-gray-400 text-base leading-relaxed">{item.content}</p>
-                    </div>
-                  </details>
-                ))}
-              </div>
+              {/* About Paragraph */}
+              <p className="text-gray-300 text-lg md:text-xl leading-relaxed text-center">
+                Howdy! We&apos;re Allan and Brian, owners of Party On Delivery. Austin natives with 15+ years in events and hospitality, we built this business around one thing: taking care of people. We pride ourselves on clear communication, on-time delivery, and showing people the best of our great city. Our goal is simple - make your weekend easy, safe, and fun.
+              </p>
+              <p className="text-gold-400 text-xl md:text-2xl font-serif mt-6 text-center tracking-wide">
+                PARTY ON Y&apos;ALL
+              </p>
             </div>
           </div>
         </div>

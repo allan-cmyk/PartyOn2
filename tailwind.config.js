@@ -211,6 +211,7 @@ module.exports = {
         'pulse-slow': 'pulse 3s ease-in-out infinite',
         'party': 'party 1s ease-in-out',
         'scroll-left': 'scrollLeft 40s linear infinite',
+        'bounce-horizontal': 'bounceHorizontal 1.5s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -248,6 +249,10 @@ module.exports = {
         scrollLeft: {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-50%)' },
+        },
+        bounceHorizontal: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '50%': { transform: 'translateX(8px)' },
         },
       },
       backgroundImage: {

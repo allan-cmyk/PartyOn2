@@ -81,7 +81,7 @@ export default function PremierHero(): ReactElement {
                 onClick={scrollToProducts}
                 className="w-full h-12 px-5 bg-gold-500 hover:bg-gold-400 text-gray-900 font-semibold tracking-wider transition-colors rounded-lg text-base"
               >
-                Pick Your Drinks
+                Shop Drinks
               </button>
               <p className="text-xs text-white/50 mt-1.5">Checkout right on this page</p>
             </div>
