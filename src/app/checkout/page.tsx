@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
-import DeliveryScheduler from '@/components/DeliveryScheduler';
+import DeliveryDateTimePicker from '@/components/checkout/DeliveryDateTimePicker';
 import { useCartContext } from '@/contexts/CartContext';
 import { useCustomerContext } from '@/contexts/CustomerContext';
 import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
@@ -15,14 +15,12 @@ export default function CheckoutPage() {
   const { customer, isAuthenticated } = useCustomerContext();
   const { isInGroupOrder, currentGroupOrder, isHost } = useGroupOrderContext();
   
-  const [showDeliveryScheduler, setShowDeliveryScheduler] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [deliveryDetails, setDeliveryDetails] = useState<{
-    date: Date | null;
-    time: string;
-    instructions: string;
-    phone: string;
-  } | null>(null);
+
+  // Delivery schedule state (inline picker)
+  const [deliveryDate, setDeliveryDate] = useState<Date | null>(null);
+  const [deliveryTime, setDeliveryTime] = useState('');
+  const [deliveryInstructions, setDeliveryInstructions] = useState('');
   
   const [billingAddress, setBillingAddress] = useState({
     firstName: '',
@@ -58,29 +56,25 @@ export default function CheckoutPage() {
     }
   }, [customer]);
 
-  // Initialize delivery details from cart attributes (if already collected in cart modal)
+  // Initialize delivery details from cart attributes (if already collected)
   useEffect(() => {
-    if (cart?.attributes && !deliveryDetails) {
+    if (cart?.attributes && !deliveryDate) {
       const getAttr = (key: string) => cart.attributes?.find((a: { key: string; value: string }) => a.key === key)?.value;
 
       const dateStr = getAttr('delivery_date');
       const time = getAttr('delivery_time');
-      const phone = getAttr('delivery_phone');
       const instructions = getAttr('delivery_instructions');
 
-      if (dateStr && time) {
-        // Parse the formatted date string back to Date object
+      if (dateStr) {
         const parsedDate = new Date(dateStr);
-
-        setDeliveryDetails({
-          date: !isNaN(parsedDate.getTime()) ? parsedDate : null,
-          time: time,
-          instructions: instructions || '',
-          phone: phone || ''
-        });
+        if (!isNaN(parsedDate.getTime())) {
+          setDeliveryDate(parsedDate);
+        }
       }
+      if (time) setDeliveryTime(time);
+      if (instructions) setDeliveryInstructions(instructions);
     }
-  }, [cart?.attributes, deliveryDetails]);
+  }, [cart?.attributes, deliveryDate]);
 
   // Pre-fill ZIP code from cart attributes
   useEffect(() => {
@@ -210,8 +204,8 @@ export default function CheckoutPage() {
       return;
     }
 
-    if (!deliveryDetails) {
-      setShowDeliveryScheduler(true);
+    if (!deliveryDate || !deliveryTime) {
+      alert('Please select a delivery date and time');
       return;
     }
 
@@ -232,8 +226,8 @@ export default function CheckoutPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             operation: 'delivery',
-            date: deliveryDetails.date?.toISOString(),
-            time: deliveryDetails.time,
+            date: deliveryDate?.toISOString(),
+            time: deliveryTime,
             address: {
               address1: billingAddress.address1,
               address2: billingAddress.address2 || '',
@@ -242,8 +236,8 @@ export default function CheckoutPage() {
               zip: billingAddress.zip,
               country: billingAddress.country,
             },
-            phone: deliveryDetails.phone || billingAddress.phone,
-            instructions: deliveryDetails.instructions,
+            phone: billingAddress.phone,
+            instructions: deliveryInstructions,
           }),
         });
 
@@ -277,11 +271,12 @@ export default function CheckoutPage() {
         // Legacy: Store order info and redirect to custom payment page
         const orderInfo = {
           customer: {
-            ...billingAddress,
-            phone: deliveryDetails.phone || billingAddress.phone
+            ...billingAddress
           },
           delivery: {
-            ...deliveryDetails,
+            date: deliveryDate,
+            time: deliveryTime,
+            instructions: deliveryInstructions,
             address: `${billingAddress.address1}${billingAddress.address2 ? ` ${billingAddress.address2}` : ''}, ${billingAddress.city}, ${billingAddress.state} ${billingAddress.zip}`
           },
           groupOrder: isGroupCheckout ? currentGroupOrder : null,
@@ -426,42 +421,15 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Delivery Schedule */}
-              <div className="bg-white p-6 border border-gray-200">
-                <h2 className="font-cormorant text-2xl mb-6">Delivery Schedule</h2>
-
-                {deliveryDetails ? (
-                  <div className="space-y-2">
-                    <p className="text-gray-700">
-                      <span className="font-medium">Date:</span> {deliveryDetails.date?.toLocaleDateString()}
-                    </p>
-                    <p className="text-gray-700">
-                      <span className="font-medium">Time:</span> {deliveryDetails.time}
-                    </p>
-                    <p className="text-gray-700">
-                      <span className="font-medium">Phone:</span> {deliveryDetails.phone}
-                    </p>
-                    {deliveryDetails.instructions && (
-                      <p className="text-gray-700">
-                        <span className="font-medium">Instructions:</span> {deliveryDetails.instructions}
-                      </p>
-                    )}
-                    <button
-                      onClick={() => setShowDeliveryScheduler(true)}
-                      className="text-gold-600 hover:underline text-sm mt-2"
-                    >
-                      Change delivery schedule →
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => setShowDeliveryScheduler(true)}
-                    className="w-full py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-colors"
-                  >
-                    SELECT DELIVERY DATE & TIME
-                  </button>
-                )}
-              </div>
+              {/* Delivery Schedule - Inline Picker */}
+              <DeliveryDateTimePicker
+                selectedDate={deliveryDate}
+                selectedTime={deliveryTime}
+                instructions={deliveryInstructions}
+                onDateChange={setDeliveryDate}
+                onTimeChange={setDeliveryTime}
+                onInstructionsChange={setDeliveryInstructions}
+              />
 
               {/* Delivery Address */}
               <div className="bg-white p-6 border border-gray-200">
@@ -680,9 +648,9 @@ export default function CheckoutPage() {
                 {/* Checkout Button */}
                 <button
                   onClick={handleProceedToPayment}
-                  disabled={!acceptTerms || !deliveryDetails || isProcessingCheckout}
+                  disabled={!acceptTerms || !deliveryDate || !deliveryTime || isProcessingCheckout}
                   className={`w-full mt-6 py-4 font-medium tracking-[0.15em] transition-colors ${
-                    acceptTerms && deliveryDetails && !isProcessingCheckout
+                    acceptTerms && deliveryDate && deliveryTime && !isProcessingCheckout
                       ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
@@ -711,41 +679,6 @@ export default function CheckoutPage() {
           </div>
         </div>
       </main>
-
-      {/* Delivery Scheduler Modal */}
-      <DeliveryScheduler
-        isOpen={showDeliveryScheduler}
-        onClose={() => setShowDeliveryScheduler(false)}
-        onConfirm={(date, time, instructions, phone, address, zipCode, firstName, lastName, email) => {
-          // Set delivery scheduling details
-          setDeliveryDetails({ date, time, instructions, phone });
-
-          // Pre-fill billing address from DeliveryScheduler data to avoid duplicate entry
-          setBillingAddress(prev => ({
-            ...prev,
-            firstName: firstName || prev.firstName,
-            lastName: lastName || prev.lastName,
-            email: email || prev.email,
-            phone: phone || prev.phone,
-            address1: address || prev.address1,
-            zip: zipCode || prev.zip,
-          }));
-
-          setShowDeliveryScheduler(false);
-        }}
-        defaultAddress={{
-          address: billingAddress.address1,
-          city: billingAddress.city,
-          province: billingAddress.state,
-          zip: billingAddress.zip,
-          phone: billingAddress.phone,
-        }}
-        customerInfo={{
-          firstName: billingAddress.firstName,
-          lastName: billingAddress.lastName,
-          email: billingAddress.email,
-        }}
-      />
 
       {/* Auth Modal */}
       <CustomerAuth
