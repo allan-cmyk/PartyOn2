@@ -103,7 +103,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     // Build success and cancel URLs
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';
-    const successUrl = `${baseUrl}/invoice/${token}?success=true&session_id={CHECKOUT_SESSION_ID}`;
+    const successUrl = `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
     const cancelUrl = `${baseUrl}/invoice/${token}?cancelled=true`;
 
     // Create Stripe Checkout session
