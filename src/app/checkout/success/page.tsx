@@ -97,8 +97,8 @@ function CheckoutSuccessContent() {
         {/* Hero Image */}
         <div className="relative h-64 md:h-80 w-full">
           <img
-            src="/images/lake-travis/the-oasis-sunset.webp"
-            alt="Sunset over Lake Travis"
+            src="/images/checkout/thank-you-hero.png"
+            alt="Thank you for your order"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
@@ -180,8 +180,8 @@ function CheckoutSuccessContent() {
             <p className="text-sm text-gray-600 mb-2">Questions about your order?</p>
             <p className="text-lg">
               Call us at{' '}
-              <a href="tel:512-555-0123" className="text-gold hover:underline">
-                (512) 555-0123
+              <a href="tel:737-371-9700" className="text-gold hover:underline">
+                (737) 371-9700
               </a>
               {' '}or email{' '}
               <a href="mailto:info@partyondelivery.com" className="text-gold hover:underline">
