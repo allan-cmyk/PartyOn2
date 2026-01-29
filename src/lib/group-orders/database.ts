@@ -104,7 +104,7 @@ export const db = {
       data: {
         id: participant.id,
         groupOrderId: orderId,
-        customerId: participant.customerId,
+        customerId: participant.customerId || null,
         guestName: participant.guestName,
         guestEmail: participant.guestEmail,
         cartId: participant.cartId,
