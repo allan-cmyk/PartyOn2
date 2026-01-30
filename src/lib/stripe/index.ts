@@ -42,3 +42,11 @@ export type {
   CreateParticipantCheckoutOptions,
   GroupPaymentSummary,
 } from './group-payments';
+
+// Group Orders V2 Payments
+export {
+  createGroupV2CheckoutSession,
+  createDeliveryInvoiceSession,
+  handleGroupV2PaymentCompleted,
+  handleGroupV2DeliveryPayment,
+} from './group-v2-payments';

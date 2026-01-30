@@ -20,6 +20,7 @@ export interface HeroVariantContent {
   headline: {
     line1: string;
     line2: string;
+    rotatingWords?: string[];
   };
   tagline: string;
   trustBadges: string;
@@ -37,6 +38,7 @@ export const heroControl: HeroVariantContent = {
   headline: {
     line1: 'Drinks, Ice, Bar Setups',
     line2: 'Delivered on Time',
+    rotatingWords: ['Drinks', 'Ice', 'Cocktails', 'Bar Supplies', 'Party Rentals', 'Beer', 'Seltzers'],
   },
   tagline: 'From house parties to Lake Travis weddings—everything arrives cold with ice, cups, and mixers handled.',
   trustBadges: 'Licensed • Insured • TABC-certified • 5.0★ on Google',
@@ -63,6 +65,7 @@ export const heroVariantA: HeroVariantContent = {
   headline: {
     line1: 'Drinks, Ice, Bar Setups',
     line2: 'Delivered on Time',
+    rotatingWords: ['Drinks', 'Ice', 'Cocktails', 'Bar Supplies', 'Party Rentals', 'Beer', 'Seltzers'],
   },
   tagline: 'From house parties to Lake Travis weddings—everything arrives cold with ice, cups, and mixers handled.',
   trustBadges: 'Licensed • Insured • TABC-certified • 5.0★ on Google',
@@ -89,6 +92,7 @@ export const heroVariantB: HeroVariantContent = {
   headline: {
     line1: 'Party Supplies',
     line2: 'Delivered to Your Door',
+    rotatingWords: ['Drinks', 'Ice', 'Cocktails', 'Bar Supplies', 'Party Rentals', 'Beer', 'Seltzers'],
   },
   tagline: 'Beer, spirits, ice, cups & more—Austin same-day delivery for any event.',
   trustBadges: 'Licensed • Insured • TABC-certified • 5.0★ on Google',
@@ -115,6 +119,7 @@ export const heroVariantC: HeroVariantContent = {
   headline: {
     line1: "Austin's Premium",
     line2: 'Alcohol Delivery',
+    rotatingWords: ['Drinks', 'Ice', 'Cocktails', 'Bar Supplies', 'Party Rentals', 'Beer', 'Seltzers'],
   },
   tagline: 'Full bar setups delivered—spirits, beer, wine, ice, and all the essentials for your event.',
   trustBadges: 'Licensed • Insured • TABC-certified • 5.0★ on Google',

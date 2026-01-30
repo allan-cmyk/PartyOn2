@@ -92,10 +92,10 @@ When the full URL is used, checkout pages load correctly.
 ## Test Cases
 
 ### 2.1 Regular Cart Checkout (Baseline - Should Work)
-- [ ] **Test:** Add items to cart → Checkout → Pay with test card
-- [ ] **Expected:** Stripe page loads, payment succeeds, order created
-- [ ] **Test Card:** `4242 4242 4242 4242`
-- [ ] **Command:**
+- [x] **Test:** Add items to cart → Checkout → Pay with test card
+- [x] **Expected:** Stripe page loads, payment succeeds, order created
+- [x] **Test Card:** `4242 4242 4242 4242`
+- [x] **Command:**
   ```bash
   # After checkout, verify order created:
   node -e "
@@ -120,9 +120,9 @@ When the full URL is used, checkout pages load correctly.
 - [x] **Result:** Created draft order `5d4544ae-2e81-4595-8d00-a4ce85cf70f9` with token `1fce62bf-9ed1-42e8-97a2-c45bfa8a36aa`
 
 ### 2.4 View Invoice Page
-- [ ] **Test:** Open invoice URL in browser (manual test)
-- [ ] **Expected:** Invoice page loads with order details
-- [ ] **URL:** `http://localhost:3000/invoice/1fce62bf-9ed1-42e8-97a2-c45bfa8a36aa`
+- [x] **Test:** Open invoice URL in browser (manual test)
+- [x] **Expected:** Invoice page loads with order details
+- [x] **URL:** `http://localhost:3000/invoice/1fce62bf-9ed1-42e8-97a2-c45bfa8a36aa`
 
 ### 2.5 Invoice Checkout
 - [x] **Test:** Create Stripe checkout from invoice API
@@ -166,9 +166,10 @@ When the full URL is used, checkout pages load correctly.
 ## Test Cases
 
 ### 3.1 Create Group Order
-- [ ] **Test:** Create a new group order
-- [ ] **Expected:** Share code generated, stored in DB
-- [ ] **Command:**
+- [x] **Test:** Create a new group order
+- [x] **Expected:** Share code generated, stored in DB
+- [x] **Result:** Created group order `group_1769662656557` with share code `DSU6PC`
+- [x] **Command:**
   ```bash
   curl -X POST http://localhost:3000/api/group-orders/create \
     -H "Content-Type: application/json" \
@@ -183,9 +184,11 @@ When the full URL is used, checkout pages load correctly.
   ```
 
 ### 3.2 Join Group Order
-- [ ] **Test:** Join the group order with a cart
-- [ ] **Expected:** Participant added to group
-- [ ] **Command:** (Use share code from 3.1)
+- [x] **Test:** Join the group order with a cart
+- [x] **Expected:** Participant added to group
+- [x] **Result:** Joined as guest participant `participant_1769662709973` with cart `82837dbf`
+- [x] **Note:** `customerId` requires valid FK — use `guestName`/`guestEmail` for non-registered users
+- [x] **Command:** (Use share code from 3.1)
   ```bash
   # First create a cart
   curl http://localhost:3000/api/v1/cart

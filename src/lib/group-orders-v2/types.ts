@@ -1,0 +1,194 @@
+/**
+ * Group Orders V2 - TypeScript Interfaces
+ * Tab-based architecture with shared draft carts and individual checkout
+ */
+
+import type { Decimal } from '@prisma/client/runtime/library';
+
+// ==========================================
+// Enums (matching Prisma)
+// ==========================================
+
+export type GroupOrderV2Status = 'ACTIVE' | 'CLOSED' | 'COMPLETED' | 'CANCELLED';
+export type SubOrderStatus = 'OPEN' | 'LOCKED' | 'FULFILLED' | 'CANCELLED';
+export type GroupV2ParticipantStatus = 'ACTIVE' | 'REMOVED';
+export type GroupV2PaymentStatus = 'PENDING' | 'PAID' | 'FAILED' | 'EXPIRED';
+
+// ==========================================
+// Base Types
+// ==========================================
+
+export interface DeliveryAddressV2 {
+  address1: string;
+  address2?: string;
+  city: string;
+  province: string;
+  zip: string;
+  country: string;
+}
+
+export interface ParticipantInfo {
+  id: string;
+  name: string;
+  email?: string;
+  isHost: boolean;
+}
+
+// ==========================================
+// API Response Types (full nested objects)
+// ==========================================
+
+export interface GroupOrderV2Full {
+  id: string;
+  name: string;
+  shareCode: string;
+  status: GroupOrderV2Status;
+  hostName: string;
+  hostEmail: string | null;
+  hostPhone: string | null;
+  expiresAt: string;
+  createdAt: string;
+  tabs: SubOrderFull[];
+  participants: ParticipantSummary[];
+  timer: TimerInfo;
+}
+
+export interface SubOrderFull {
+  id: string;
+  name: string;
+  position: number;
+  status: SubOrderStatus;
+  deliveryDate: string;
+  deliveryTime: string;
+  deliveryAddress: DeliveryAddressV2;
+  deliveryPhone: string | null;
+  deliveryNotes: string | null;
+  orderDeadline: string;
+  deliveryFee: number;
+  deliveryFeeWaived: boolean;
+  draftItems: DraftCartItemView[];
+  purchasedItems: PurchasedItemView[];
+  deliveryInvoice: DeliveryInvoiceView | null;
+  totals: TabTotals;
+}
+
+export interface DraftCartItemView {
+  id: string;
+  productId: string;
+  variantId: string;
+  title: string;
+  variantTitle: string | null;
+  price: number;
+  imageUrl: string | null;
+  quantity: number;
+  addedBy: ParticipantInfo;
+}
+
+export interface PurchasedItemView {
+  id: string;
+  productId: string;
+  variantId: string;
+  title: string;
+  variantTitle: string | null;
+  price: number;
+  imageUrl: string | null;
+  quantity: number;
+  purchaser: ParticipantInfo;
+  paidAt: string;
+}
+
+export interface DeliveryInvoiceView {
+  id: string;
+  deliveryFee: number;
+  discountCode: string | null;
+  discountAmount: number;
+  total: number;
+  status: GroupV2PaymentStatus;
+  paidAt: string | null;
+}
+
+export interface TabTotals {
+  draftSubtotal: number;
+  purchasedSubtotal: number;
+  deliveryFee: number;
+}
+
+export interface ParticipantSummary {
+  id: string;
+  name: string;
+  email: string | null;
+  isHost: boolean;
+  ageVerified: boolean;
+  status: GroupV2ParticipantStatus;
+  joinedAt: string;
+}
+
+export interface TimerInfo {
+  earliestDeadline: string | null;
+  earliestDelivery: string | null;
+  countdownTarget: string | null;
+}
+
+// ==========================================
+// Input Types (for create/update)
+// ==========================================
+
+export interface CreateGroupOrderV2Input {
+  name: string;
+  hostName: string;
+  hostEmail?: string;
+  hostPhone?: string;
+  hostCustomerId?: string;
+  tabs: CreateTabInput[];
+}
+
+export interface CreateTabInput {
+  name: string;
+  deliveryDate: string;
+  deliveryTime: string;
+  deliveryAddress: DeliveryAddressV2;
+  deliveryPhone?: string;
+  deliveryNotes?: string;
+}
+
+export interface UpdateTabInput {
+  name?: string;
+  status?: 'OPEN' | 'LOCKED';
+  deliveryDate?: string;
+  deliveryTime?: string;
+  deliveryAddress?: DeliveryAddressV2;
+  deliveryPhone?: string;
+  deliveryNotes?: string;
+}
+
+export interface JoinGroupOrderInput {
+  guestName: string;
+  guestEmail: string;
+  ageVerified: boolean;
+  customerId?: string;
+}
+
+export interface AddDraftItemInput {
+  participantId: string;
+  productId: string;
+  variantId: string;
+  title: string;
+  variantTitle?: string;
+  price: number;
+  imageUrl?: string;
+  quantity: number;
+}
+
+export interface UpdateDraftItemInput {
+  quantity: number;
+}
+
+// ==========================================
+// Helpers
+// ==========================================
+
+/** Convert Prisma Decimal to number */
+export function toNumber(val: Decimal | number | null | undefined): number {
+  if (val === null || val === undefined) return 0;
+  return typeof val === 'number' ? val : Number(val);
+}

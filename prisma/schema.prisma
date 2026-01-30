@@ -321,6 +321,8 @@ model Product {
   inventoryItems InventoryItem[]
   cartItems      CartItem[]
   orderItems     OrderItem[]
+  draftCartItems DraftCartItem[]
+  purchasedItemsV2 PurchasedItem[]
 
   @@index([handle])
   @@index([productType])
@@ -370,6 +372,8 @@ model ProductVariant {
   inventoryItems InventoryItem[]
   cartItems      CartItem[]
   orderItems     OrderItem[]
+  draftCartItems DraftCartItem[]
+  purchasedItemsV2 PurchasedItem[]
 
   @@index([productId])
   @@index([sku])
@@ -595,6 +599,8 @@ model Customer {
   groupOrdersHosted   GroupOrder[]       @relation("GroupOrderHost")
   groupParticipations GroupParticipant[] @relation("CustomerParticipations")
   loyalty             CustomerLoyalty?
+  groupOrdersV2Hosted    GroupOrderV2[]        @relation("GroupOrderV2Host")
+  groupParticipationsV2  GroupParticipantV2[]  @relation("CustomerParticipationsV2")
 
   @@index([email])
   @@index([shopifyId])
@@ -1509,4 +1515,213 @@ model TaxRate {
   @@index([zipCode])
   @@index([state, city])
   @@map("tax_rates")
+}
+
+// ==========================================
+// GROUP ORDERS V2 (Tab-Based Architecture)
+// ==========================================
+
+enum GroupOrderV2Status {
+  ACTIVE
+  CLOSED
+  COMPLETED
+  CANCELLED
+}
+
+enum SubOrderStatus {
+  OPEN
+  LOCKED
+  FULFILLED
+  CANCELLED
+}
+
+enum GroupV2ParticipantStatus {
+  ACTIVE
+  REMOVED
+}
+
+enum GroupV2PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  EXPIRED
+}
+
+model GroupOrderV2 {
+  id              String             @id @default(uuid())
+  name            String
+  hostCustomerId  String?            @map("host_customer_id")
+  hostName        String             @map("host_name")
+  hostEmail       String?            @map("host_email")
+  hostPhone       String?            @map("host_phone")
+  shareCode       String             @unique @map("share_code")
+  status          GroupOrderV2Status @default(ACTIVE)
+  expiresAt       DateTime           @map("expires_at")
+  createdAt       DateTime           @default(now()) @map("created_at")
+  updatedAt       DateTime           @updatedAt @map("updated_at")
+
+  tabs         SubOrder[]
+  participants GroupParticipantV2[]
+
+  hostCustomer Customer? @relation("GroupOrderV2Host", fields: [hostCustomerId], references: [id], onDelete: SetNull)
+
+  @@index([shareCode])
+  @@index([hostCustomerId])
+  @@index([status])
+  @@map("group_orders_v2")
+}
+
+model SubOrder {
+  id             String         @id @default(uuid())
+  groupOrderId   String         @map("group_order_id")
+  name           String
+  position       Int            @default(0)
+  deliveryDate   DateTime       @map("delivery_date")
+  deliveryTime   String         @map("delivery_time")
+  deliveryAddress Json          @map("delivery_address")
+  deliveryPhone  String?        @map("delivery_phone")
+  deliveryNotes  String?        @map("delivery_notes") @db.Text
+  orderDeadline  DateTime       @map("order_deadline")
+  deliveryFee    Decimal        @default(0) @map("delivery_fee") @db.Decimal(10, 2)
+  deliveryFeeWaived Boolean     @default(false) @map("delivery_fee_waived")
+  status         SubOrderStatus @default(OPEN)
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+
+  groupOrder      GroupOrderV2         @relation(fields: [groupOrderId], references: [id], onDelete: Cascade)
+  draftItems      DraftCartItem[]
+  purchasedItems  PurchasedItem[]
+  payments        ParticipantPayment[]
+  deliveryInvoice GroupDeliveryInvoice?
+
+  @@index([groupOrderId])
+  @@index([orderDeadline])
+  @@index([status])
+  @@map("sub_orders")
+}
+
+model GroupParticipantV2 {
+  id             String                  @id @default(uuid())
+  groupOrderId   String                  @map("group_order_id")
+  customerId     String?                 @map("customer_id")
+  guestName      String?                 @map("guest_name")
+  guestEmail     String?                 @map("guest_email")
+  ageVerified    Boolean                 @default(false) @map("age_verified")
+  isHost         Boolean                 @default(false) @map("is_host")
+  status         GroupV2ParticipantStatus @default(ACTIVE)
+  joinedAt       DateTime                @default(now()) @map("joined_at")
+
+  groupOrder     GroupOrderV2       @relation(fields: [groupOrderId], references: [id], onDelete: Cascade)
+  customer       Customer?          @relation("CustomerParticipationsV2", fields: [customerId], references: [id], onDelete: SetNull)
+  draftItems     DraftCartItem[]
+  purchasedItems PurchasedItem[]
+  payments       ParticipantPayment[]
+
+  @@unique([groupOrderId, customerId])
+  @@unique([groupOrderId, guestEmail])
+  @@index([groupOrderId])
+  @@index([status])
+  @@map("group_participants_v2")
+}
+
+model DraftCartItem {
+  id                   String   @id @default(uuid())
+  subOrderId           String   @map("sub_order_id")
+  addedByParticipantId String   @map("added_by_participant_id")
+  productId            String   @map("product_id")
+  variantId            String   @map("variant_id")
+  title                String
+  variantTitle         String?  @map("variant_title")
+  price                Decimal  @db.Decimal(10, 2)
+  imageUrl             String?  @map("image_url")
+  quantity             Int
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  subOrder    SubOrder           @relation(fields: [subOrderId], references: [id], onDelete: Cascade)
+  addedBy     GroupParticipantV2 @relation(fields: [addedByParticipantId], references: [id], onDelete: Cascade)
+  product     Product            @relation(fields: [productId], references: [id])
+  variant     ProductVariant     @relation(fields: [variantId], references: [id])
+
+  @@unique([subOrderId, addedByParticipantId, variantId])
+  @@index([subOrderId])
+  @@index([addedByParticipantId])
+  @@map("draft_cart_items")
+}
+
+model PurchasedItem {
+  id            String   @id @default(uuid())
+  subOrderId    String   @map("sub_order_id")
+  participantId String   @map("participant_id")
+  paymentId     String   @map("payment_id")
+  productId     String   @map("product_id")
+  variantId     String   @map("variant_id")
+  title         String
+  variantTitle  String?  @map("variant_title")
+  price         Decimal  @db.Decimal(10, 2)
+  imageUrl      String?  @map("image_url")
+  quantity      Int
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  subOrder    SubOrder           @relation(fields: [subOrderId], references: [id], onDelete: Cascade)
+  participant GroupParticipantV2 @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  payment     ParticipantPayment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  product     Product            @relation(fields: [productId], references: [id])
+  variant     ProductVariant     @relation(fields: [variantId], references: [id])
+
+  @@index([subOrderId])
+  @@index([participantId])
+  @@index([paymentId])
+  @@map("purchased_items")
+}
+
+model ParticipantPayment {
+  id                      String               @id @default(uuid())
+  subOrderId              String               @map("sub_order_id")
+  participantId           String               @map("participant_id")
+  stripeCheckoutSessionId String?              @unique @map("stripe_checkout_session_id")
+  stripePaymentIntentId   String?              @unique @map("stripe_payment_intent_id")
+  subtotal                Decimal              @default(0) @db.Decimal(10, 2)
+  taxAmount               Decimal              @default(0) @map("tax_amount") @db.Decimal(10, 2)
+  discountCode            String?              @map("discount_code")
+  discountAmount          Decimal              @default(0) @map("discount_amount") @db.Decimal(10, 2)
+  total                   Decimal              @default(0) @db.Decimal(10, 2)
+  status                  GroupV2PaymentStatus @default(PENDING)
+  paidAt                  DateTime?            @map("paid_at")
+  orderId                 String?              @map("order_id")
+  createdAt               DateTime             @default(now()) @map("created_at")
+  updatedAt               DateTime             @updatedAt @map("updated_at")
+
+  subOrder       SubOrder           @relation(fields: [subOrderId], references: [id], onDelete: Cascade)
+  participant    GroupParticipantV2 @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  purchasedItems PurchasedItem[]
+
+  @@index([subOrderId])
+  @@index([participantId])
+  @@index([status])
+  @@map("participant_payments")
+}
+
+model GroupDeliveryInvoice {
+  id                      String               @id @default(uuid())
+  subOrderId              String               @unique @map("sub_order_id")
+  hostParticipantId       String               @map("host_participant_id")
+  deliveryFee             Decimal              @db.Decimal(10, 2)
+  discountCode            String?              @map("discount_code")
+  discountAmount          Decimal              @default(0) @map("discount_amount") @db.Decimal(10, 2)
+  total                   Decimal              @db.Decimal(10, 2)
+  stripeCheckoutSessionId String?              @unique @map("stripe_checkout_session_id")
+  stripePaymentIntentId   String?              @unique @map("stripe_payment_intent_id")
+  status                  GroupV2PaymentStatus @default(PENDING)
+  paidAt                  DateTime?            @map("paid_at")
+  sentAt                  DateTime?            @map("sent_at")
+  createdAt               DateTime             @default(now()) @map("created_at")
+  updatedAt               DateTime             @updatedAt @map("updated_at")
+
+  subOrder SubOrder @relation(fields: [subOrderId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@map("group_delivery_invoices")
 }

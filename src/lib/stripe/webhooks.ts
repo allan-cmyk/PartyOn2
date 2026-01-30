@@ -15,6 +15,10 @@ import {
   sendPaymentFailedEmail,
   sendRefundProcessedEmail,
 } from '@/lib/email';
+import {
+  handleGroupV2PaymentCompleted,
+  handleGroupV2DeliveryPayment,
+} from './group-v2-payments';
 
 /**
  * Verify webhook signature and construct event
@@ -55,6 +59,18 @@ async function handleCheckoutSessionCompleted(
   // Check if this is a draft order invoice payment
   if (session.metadata?.type === 'draft_order_invoice' && session.metadata?.draftOrderId) {
     await handleDraftOrderPayment(session);
+    return;
+  }
+
+  // Check if this is a Group V2 participant checkout
+  if (session.metadata?.type === 'group_v2') {
+    await handleGroupV2PaymentCompleted(session);
+    return;
+  }
+
+  // Check if this is a Group V2 delivery fee payment
+  if (session.metadata?.type === 'group_v2_delivery') {
+    await handleGroupV2DeliveryPayment(session);
     return;
   }
 
