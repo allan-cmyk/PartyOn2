@@ -14,7 +14,7 @@ export default function ParticipantList({
   isHost,
   onRemove,
 }: Props): ReactElement {
-  const active = participants.filter((p) => p.status === 'ACTIVE');
+  const active = (participants || []).filter((p) => p.status === 'ACTIVE');
 
   return (
     <div>

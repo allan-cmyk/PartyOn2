@@ -34,7 +34,7 @@ export default function DashboardPage(): ReactElement {
 
   // Set first tab as active
   useEffect(() => {
-    if (groupOrder && !activeTabId && groupOrder.tabs.length > 0) {
+    if (groupOrder && !activeTabId && (groupOrder.tabs || []).length > 0) {
       setActiveTabId(groupOrder.tabs[0].id);
     }
   }, [groupOrder, activeTabId]);
@@ -42,7 +42,7 @@ export default function DashboardPage(): ReactElement {
   // Redirect if not a participant
   useEffect(() => {
     if (groupOrder && participantId) {
-      const isParticipant = groupOrder.participants.some(
+      const isParticipant = (groupOrder.participants || []).some(
         (p) => p.id === participantId && p.status === 'ACTIVE'
       );
       if (!isParticipant) {
@@ -51,7 +51,7 @@ export default function DashboardPage(): ReactElement {
     }
   }, [groupOrder, participantId, code, router]);
 
-  const isHost = !!groupOrder?.participants.find(
+  const isHost = !!(groupOrder?.participants || []).find(
     (p) => p.id === participantId && p.isHost
   );
 
@@ -87,7 +87,7 @@ export default function DashboardPage(): ReactElement {
     );
   }
 
-  const activeTab = groupOrder.tabs.find((t) => t.id === activeTabId);
+  const activeTab = (groupOrder.tabs || []).find((t) => t.id === activeTabId);
 
   return (
     <div className="pt-24 min-h-screen bg-gray-50">
@@ -96,7 +96,7 @@ export default function DashboardPage(): ReactElement {
 
       {/* Tab Bar */}
       <TabBar
-        tabs={groupOrder.tabs}
+        tabs={groupOrder.tabs || []}
         activeTabId={activeTabId}
         onTabChange={setActiveTabId}
         onAddTab={isHost ? () => setShowCreateTab(true) : undefined}
@@ -140,7 +140,7 @@ export default function DashboardPage(): ReactElement {
           <div className="space-y-4">
             <div className="bg-white rounded-lg border border-gray-200 p-4">
               <ParticipantList
-                participants={groupOrder.participants}
+                participants={groupOrder.participants || []}
                 isHost={isHost}
                 onRemove={isHost ? handleRemoveParticipant : undefined}
               />
@@ -211,7 +211,7 @@ export default function DashboardPage(): ReactElement {
       {/* Mobile Sticky Checkout Bar */}
       {activeTab && (
         <MobileCheckoutBar
-          items={activeTab.draftItems}
+          items={activeTab.draftItems || []}
           participantId={participantId}
           onCheckout={() => setShowCheckout(true)}
         />
@@ -223,7 +223,7 @@ export default function DashboardPage(): ReactElement {
           shareCode={code}
           tab={activeTab}
           participantId={participantId}
-          items={activeTab.draftItems}
+          items={activeTab.draftItems || []}
           isOpen={showCheckout}
           onClose={() => setShowCheckout(false)}
         />

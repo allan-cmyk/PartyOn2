@@ -72,8 +72,9 @@ export default function TabContent({
     [shareCode, tab.id, currentParticipantId, onRefresh]
   );
 
+  const draftItems = tab.draftItems || [];
   const myItems = currentParticipantId
-    ? tab.draftItems.filter((i) => i.addedBy.id === currentParticipantId)
+    ? draftItems.filter((i) => i.addedBy.id === currentParticipantId)
     : [];
 
   return (
@@ -126,7 +127,7 @@ export default function TabContent({
       {tab.status !== 'CANCELLED' && tab.status !== 'FULFILLED' && (
         <div className="bg-white rounded-lg border border-gray-200 p-4">
           <DraftCartSection
-            items={tab.draftItems}
+            items={draftItems}
             currentParticipantId={currentParticipantId}
             isHost={isHost}
             onUpdateQty={isLocked ? undefined : handleUpdateQty}
@@ -142,14 +143,14 @@ export default function TabContent({
             shareCode={shareCode}
             tabId={tab.id}
             participantId={currentParticipantId}
-            items={tab.draftItems}
+            items={draftItems}
             onCheckout={onCheckout}
           />
         </div>
       )}
 
       {/* Purchased Items */}
-      <PurchasedSection items={tab.purchasedItems} />
+      <PurchasedSection items={tab.purchasedItems || []} />
 
       {/* Host: Delivery Fee Invoice */}
       {isHost && currentParticipantId && (

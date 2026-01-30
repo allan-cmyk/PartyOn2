@@ -19,7 +19,7 @@ export default function DraftCartSection({
   onUpdateQty,
   onRemove,
 }: Props): ReactElement {
-  if (items.length === 0) {
+  if (!items || items.length === 0) {
     return (
       <div className="text-center py-8 text-gray-400">
         <svg className="w-10 h-10 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -31,7 +31,8 @@ export default function DraftCartSection({
     );
   }
 
-  const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const safeItems = items || [];
+  const total = safeItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
   return (
     <div>
@@ -44,7 +45,7 @@ export default function DraftCartSection({
         </span>
       </div>
       <div className="divide-y divide-gray-100">
-        {items.map((item) => (
+        {safeItems.map((item) => (
           <DraftCartItemRow
             key={item.id}
             item={item}

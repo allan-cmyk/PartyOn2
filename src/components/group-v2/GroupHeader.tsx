@@ -44,7 +44,7 @@ export default function GroupHeader({ groupOrder, isHost }: Props): ReactElement
             <p className="text-sm text-gray-500 mt-0.5">
               Code: <span className="font-mono font-semibold">{groupOrder.shareCode}</span>
               {' · '}
-              {groupOrder.participants.filter((p) => p.status === 'ACTIVE').length} participants
+              {(groupOrder.participants || []).filter((p) => p.status === 'ACTIVE').length} participants
             </p>
           </div>
 

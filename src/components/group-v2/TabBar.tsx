@@ -29,7 +29,7 @@ export default function TabBar({
   return (
     <div className="bg-white border-b border-gray-200 px-4 md:px-6 py-2">
       <div className="flex items-center gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
-        {tabs.map((tab) => {
+        {(tabs || []).map((tab) => {
           const isActive = tab.id === activeTabId;
 
           return (

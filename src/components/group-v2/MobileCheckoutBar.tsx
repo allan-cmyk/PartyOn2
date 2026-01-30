@@ -20,7 +20,7 @@ export default function MobileCheckoutBar({
 }: Props): ReactElement | null {
   if (!participantId) return null;
 
-  const myItems = items.filter((i) => i.addedBy.id === participantId);
+  const myItems = (items || []).filter((i) => i.addedBy.id === participantId);
   const myTotal = myItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
   if (myItems.length === 0) return null;

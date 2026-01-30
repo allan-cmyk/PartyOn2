@@ -10,7 +10,7 @@ interface Props {
 export default function PurchasedSection({ items }: Props): ReactElement {
   const [isOpen, setIsOpen] = useState(false);
 
-  if (items.length === 0) return <></>;
+  if (!items || items.length === 0) return <></>;
 
   const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
