@@ -4,10 +4,12 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import { Prisma } from '@prisma/client';
 import {
   validateCartMinimum,
   cartToCheckoutData,
   hasDeliveryInfo,
+  CartWithItems,
 } from '@/lib/inventory/services/cart-service';
 
 // Mock cart item for testing
@@ -17,10 +19,7 @@ const mockCartItem = {
   productId: 'prod-1',
   variantId: 'var-1',
   quantity: 3,
-  price: 15.99,
-  title: 'Test Product',
-  variantTitle: 'Default',
-  imageUrl: null,
+  price: new Prisma.Decimal(15.99),
   product: {
     id: 'prod-1',
     title: 'Test Product',
@@ -30,35 +29,39 @@ const mockCartItem = {
     id: 'var-1',
     title: 'Default',
     sku: 'TEST-001',
+    price: new Prisma.Decimal(15.99),
   },
   createdAt: new Date(),
   updatedAt: new Date(),
 };
 
 // Helper to create a mock cart
-function createMockCart(subtotal: number, overrides = {}) {
+function createMockCart(subtotal: number, overrides = {}): CartWithItems {
   return {
     id: 'cart-1',
     sessionId: 'session-1',
     customerId: null,
     items: [] as typeof mockCartItem[],
-    subtotal,
-    taxRate: 0.0825,
-    taxAmount: subtotal * 0.0825,
-    deliveryFee: 25,
-    total: subtotal + subtotal * 0.0825 + 25,
+    subtotal: new Prisma.Decimal(subtotal),
+    taxAmount: new Prisma.Decimal(subtotal * 0.0825),
+    deliveryFee: new Prisma.Decimal(25),
+    total: new Prisma.Decimal(subtotal + subtotal * 0.0825 + 25),
     deliveryDate: null,
     deliveryTime: null,
     deliveryAddress: null,
     deliveryPhone: null,
     deliveryInstructions: null,
     discountCode: null,
-    discountAmount: 0,
+    discountAmount: new Prisma.Decimal(0),
+    groupOrderId: null,
+    expiresAt: null,
+    abandonedAt: null,
+    recoveryEmailSent: false,
     status: 'ACTIVE' as const,
     createdAt: new Date(),
     updatedAt: new Date(),
     ...overrides,
-  };
+  } as CartWithItems;
 }
 
 describe('Cart Minimum Validation', () => {

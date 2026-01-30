@@ -4,6 +4,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { Prisma } from '@prisma/client';
 
 // Create mock functions that persist across imports
 const mockSessionCreate = vi.fn().mockResolvedValue({
@@ -124,10 +125,7 @@ describe('Checkout Session Creation', () => {
         productId: 'prod-1',
         variantId: 'var-1',
         quantity: 2,
-        price: 24.99,
-        title: 'Test Wine',
-        variantTitle: '750ml',
-        imageUrl: null,
+        price: new Prisma.Decimal(24.99),
         product: {
           id: 'prod-1',
           title: 'Test Wine',
@@ -137,23 +135,27 @@ describe('Checkout Session Creation', () => {
           id: 'var-1',
           title: '750ml',
           sku: 'WINE-001',
+          price: new Prisma.Decimal(24.99),
         },
         createdAt: new Date(),
         updatedAt: new Date(),
       },
     ],
-    subtotal: 49.98,
-    taxRate: 0.0825,
-    taxAmount: 4.12,
-    deliveryFee: 25,
-    total: 79.10,
+    subtotal: new Prisma.Decimal(49.98),
+    taxAmount: new Prisma.Decimal(4.12),
+    deliveryFee: new Prisma.Decimal(25),
+    total: new Prisma.Decimal(79.10),
     deliveryDate: new Date('2025-01-20'),
     deliveryTime: '2:00 PM - 4:00 PM',
     deliveryAddress: { address1: '123 Main St', city: 'Austin', state: 'TX', zip: '78701' },
     deliveryPhone: '512-555-1234',
     deliveryInstructions: null,
     discountCode: null,
-    discountAmount: 0,
+    discountAmount: new Prisma.Decimal(0),
+    groupOrderId: null,
+    expiresAt: null,
+    abandonedAt: null,
+    recoveryEmailSent: false,
     status: 'ACTIVE' as const,
     createdAt: new Date(),
     updatedAt: new Date(),

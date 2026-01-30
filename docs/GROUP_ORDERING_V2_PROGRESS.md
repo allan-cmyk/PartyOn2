@@ -9,6 +9,12 @@
 
 **All code is written (50+ files, ~7,500 lines). Database deployed. ALL TESTS PASSING. Build clean. Mobile tested. FULLY COMPLETE.**
 
+### Completed (Session 8 - Jan 30, 2026)
+1. ✅ Fixed 21 TypeScript errors in `src/__tests__/cart-service.test.ts` — updated mock data to use `Prisma.Decimal` for numeric fields and added missing Cart fields (`groupOrderId`, `expiresAt`, `abandonedAt`, `recoveryEmailSent`)
+2. ✅ Fixed 1 TypeScript error in `src/__tests__/stripe-integration.test.ts` — same mock data updates (Decimal types + missing fields)
+3. ✅ Fixed 1 TypeScript error in `src/__tests__/setup.ts` — added missing `beforeEach` import from vitest
+4. ✅ All 30 tests passing (14 cart-service + 16 stripe-integration), 0 TypeScript errors
+
 ### Completed (Session 7 - Jan 30, 2026)
 1. ✅ Visual mobile testing via Playwright — all 3 pages at 3 viewports (mobile 375px, tablet 768px, desktop 1440px)
 2. ✅ Created test group order with real data (2 tabs, 2 participants, 5 draft items) for visual verification
@@ -50,7 +56,7 @@
 **Nothing — all phases and testing complete.**
 
 ### Known Issues
-- Pre-existing test failures in `src/__tests__/cart-service.test.ts` (23 errors) — unrelated to V2, caused by stale mock data missing new Cart fields
+- None — all pre-existing test failures resolved (Session 8)
 - The 4 enums in schema.prisma verified: `GroupOrderV2Status`, `SubOrderStatus`, `GroupV2ParticipantStatus`, `GroupV2PaymentStatus`
 
 ### Key Files for Context
