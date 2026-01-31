@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function TabDeliveryInfo({ tab, isHost, onEdit }: Props): ReactElement {
-  const isPastDeadline = new Date(tab.orderDeadline) < new Date();
+  const isPastDeadline = tab.orderDeadline ? new Date(tab.orderDeadline) < new Date() : false;
   const addr = tab.deliveryAddress;
 
   return (
@@ -37,10 +37,11 @@ export default function TabDeliveryInfo({ tab, isHost, onEdit }: Props): ReactEl
           )}
         </div>
         <p className="text-sm text-gray-500">
-          {addr.address1}
-          {addr.address2 ? `, ${addr.address2}` : ''}
-          {', '}
-          {addr.city}, {addr.province} {addr.zip}
+          {addr?.address1 ?? ''}
+          {addr?.address2 ? `, ${addr.address2}` : ''}
+          {addr?.city ? `, ${addr.city}` : ''}
+          {addr?.province ? `, ${addr.province}` : ''}{' '}
+          {addr?.zip ?? ''}
         </p>
         {tab.deliveryNotes && (
           <p className="text-xs text-gray-400">Notes: {tab.deliveryNotes}</p>
@@ -48,17 +49,19 @@ export default function TabDeliveryInfo({ tab, isHost, onEdit }: Props): ReactEl
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="text-sm text-gray-500">
-          <span>Deadline: </span>
-          <span className={`font-medium ${isPastDeadline ? 'text-red-600' : 'text-gray-700'}`}>
-            {new Date(tab.orderDeadline).toLocaleString('en-US', {
-              month: 'short',
-              day: 'numeric',
-              hour: 'numeric',
-              minute: '2-digit',
-            })}
-          </span>
-        </div>
+        {tab.orderDeadline && (
+          <div className="text-sm text-gray-500">
+            <span>Deadline: </span>
+            <span className={`font-medium ${isPastDeadline ? 'text-red-600' : 'text-gray-700'}`}>
+              {new Date(tab.orderDeadline).toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+              })}
+            </span>
+          </div>
+        )}
         {isHost && onEdit && tab.status === 'OPEN' && !isPastDeadline && (
           <button
             onClick={onEdit}

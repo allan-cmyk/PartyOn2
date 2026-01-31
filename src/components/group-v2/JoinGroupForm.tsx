@@ -25,7 +25,7 @@ export default function JoinGroupForm({ groupOrder, onJoined }: Props): ReactEle
       const participant = await joinGroupOrderV2(groupOrder.shareCode, {
         guestName: name,
         guestEmail: email,
-        ageVerified: true,
+        ageVerified,
       });
       onJoined(participant.id);
     } catch (err) {

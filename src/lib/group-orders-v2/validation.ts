@@ -29,15 +29,19 @@ const CreateTabSchema = z.object({
     'Invalid delivery date'
   ).refine(
     (val) => {
-      const date = new Date(val);
+      // Normalize to local noon to avoid timezone edge cases
+      const raw = val.includes('T') ? val : `${val}T12:00:00`;
+      const date = new Date(raw);
       const now = new Date();
       const diff = date.getTime() - now.getTime();
-      return diff >= 72 * 60 * 60 * 1000;
+      // Use 71h to give buffer for timezone edge cases
+      return diff >= 71 * 60 * 60 * 1000;
     },
     'Delivery date must be at least 72 hours in the future'
   ).refine(
     (val) => {
-      const date = new Date(val);
+      const raw = val.includes('T') ? val : `${val}T12:00:00`;
+      const date = new Date(raw);
       return date.getDay() !== 0;
     },
     'Sunday deliveries are not available'
@@ -70,15 +74,17 @@ export const UpdateTabSchema = z.object({
     'Invalid delivery date'
   ).refine(
     (val) => {
-      const date = new Date(val);
+      const raw = val.includes('T') ? val : `${val}T12:00:00`;
+      const date = new Date(raw);
       const now = new Date();
       const diff = date.getTime() - now.getTime();
-      return diff >= 72 * 60 * 60 * 1000;
+      return diff >= 71 * 60 * 60 * 1000;
     },
     'Delivery date must be at least 72 hours in the future'
   ).refine(
     (val) => {
-      const date = new Date(val);
+      const raw = val.includes('T') ? val : `${val}T12:00:00`;
+      const date = new Date(raw);
       return date.getDay() !== 0;
     },
     'Sunday deliveries are not available'

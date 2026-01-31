@@ -32,7 +32,7 @@ export default function DraftCartSection({
   }
 
   const safeItems = items || [];
-  const total = safeItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const total = safeItems.reduce((sum, i) => sum + Number(i.price) * Number(i.quantity), 0);
 
   return (
     <div>

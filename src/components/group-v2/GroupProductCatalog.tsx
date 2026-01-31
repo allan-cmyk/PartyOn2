@@ -40,6 +40,7 @@ export default function GroupProductCatalog({
     async function fetchProducts() {
       try {
         const res = await fetch('/api/v1/admin/products?limit=50&status=ACTIVE');
+        if (!res.ok) throw new Error(`Server error: ${res.status}`);
         const json = await res.json();
         if (json.success) {
           // API returns { data: { products: [...], pagination, filters } }
@@ -76,7 +77,7 @@ export default function GroupProductCatalog({
         title: product.title,
         variantTitle: variant.title !== 'Default' ? variant.title : undefined,
         price: Number(variant.price),
-        imageUrl: product.images[0]?.url,
+        imageUrl: product.images?.[0]?.url,
         quantity: 1,
       });
       onItemAdded();
@@ -118,9 +119,9 @@ export default function GroupProductCatalog({
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-[500px] overflow-y-auto">
           {filtered.map((product) => {
-            const variant = product.variants[0];
+            const variant = product.variants?.[0];
             const price = variant ? Number(variant.price) : Number(product.basePrice);
-            const imgUrl = product.images[0]?.url;
+            const imgUrl = product.images?.[0]?.url;
             const isAdding = addingId === product.id;
 
             return (

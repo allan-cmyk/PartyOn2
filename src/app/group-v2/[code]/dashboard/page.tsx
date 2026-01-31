@@ -26,16 +26,24 @@ export default function DashboardPage(): ReactElement {
   const [showCheckout, setShowCheckout] = useState(false);
   const [participantId, setParticipantId] = useState<string | null>(null);
 
-  // Restore participant ID from localStorage
+  // Restore participant ID from localStorage (scoped to this group code)
   useEffect(() => {
-    const savedPid = localStorage.getItem('groupV2ParticipantId');
-    if (savedPid) setParticipantId(savedPid);
-  }, []);
+    try {
+      const savedCode = localStorage.getItem('groupV2Code');
+      const savedPid = localStorage.getItem('groupV2ParticipantId');
+      if (savedPid && savedCode === code) setParticipantId(savedPid);
+    } catch {
+      // localStorage may be unavailable (private browsing, SSR)
+    }
+  }, [code]);
 
-  // Set first tab as active
+  // Set first tab as active, or reset if active tab was deleted
   useEffect(() => {
-    if (groupOrder && !activeTabId && (groupOrder.tabs || []).length > 0) {
-      setActiveTabId(groupOrder.tabs[0].id);
+    const tabs = groupOrder?.tabs || [];
+    if (!groupOrder || tabs.length === 0) return;
+    const activeStillExists = activeTabId && tabs.some((t) => t.id === activeTabId);
+    if (!activeStillExists) {
+      setActiveTabId(tabs[0].id);
     }
   }, [groupOrder, activeTabId]);
 

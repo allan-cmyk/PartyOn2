@@ -28,7 +28,7 @@ export default function CheckoutSummaryModal({
   if (!isOpen) return null;
 
   const myItems = (items || []).filter((i) => i.addedBy?.id === participantId);
-  const subtotal = myItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const subtotal = myItems.reduce((sum, i) => sum + Number(i.price) * Number(i.quantity), 0);
   const addr = tab.deliveryAddress;
 
   const handleCheckout = async () => {
@@ -41,6 +41,9 @@ export default function CheckoutSummaryModal({
         participantId,
         discountCode || undefined
       );
+      if (!result.checkoutUrl) {
+        throw new Error('No checkout URL returned');
+      }
       window.location.href = result.checkoutUrl;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Checkout failed');
@@ -72,7 +75,7 @@ export default function CheckoutSummaryModal({
             at {tab.deliveryTime}
           </p>
           <p>
-            {addr.address1}, {addr.city}, {addr.province} {addr.zip}
+            {addr?.address1 ?? ''}{addr?.city ? `, ${addr.city}` : ''}{addr?.province ? `, ${addr.province}` : ''} {addr?.zip ?? ''}
           </p>
         </div>
 
@@ -92,11 +95,11 @@ export default function CheckoutSummaryModal({
                 </div>
                 <div className="text-right ml-3 shrink-0">
                   <p className="text-gray-900">
-                    ${(item.price * item.quantity).toFixed(2)}
+                    ${(Number(item.price) * Number(item.quantity)).toFixed(2)}
                   </p>
                   {item.quantity > 1 && (
                     <p className="text-gray-400 text-xs">
-                      {item.quantity} x ${item.price.toFixed(2)}
+                      {item.quantity} x ${Number(item.price).toFixed(2)}
                     </p>
                   )}
                 </div>

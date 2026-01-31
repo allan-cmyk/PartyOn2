@@ -15,7 +15,7 @@ function getTabStatusColor(tab: SubOrderFull): string {
   if (tab.status === 'CANCELLED') return 'bg-red-500';
   if (tab.status === 'FULFILLED') return 'bg-blue-500';
   if (tab.status === 'LOCKED') return 'bg-gray-400';
-  if (new Date(tab.orderDeadline) < new Date()) return 'bg-amber-500';
+  if (tab.orderDeadline && new Date(tab.orderDeadline) < new Date()) return 'bg-amber-500';
   return 'bg-green-500';
 }
 

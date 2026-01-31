@@ -24,9 +24,9 @@ export default function EditTabModal({
   const [name, setName] = useState(tab.name);
   const [deliveryDate, setDeliveryDate] = useState('');
   const [deliveryTime, setDeliveryTime] = useState(tab.deliveryTime);
-  const [address1, setAddress1] = useState(tab.deliveryAddress.address1);
-  const [city, setCity] = useState(tab.deliveryAddress.city);
-  const [zip, setZip] = useState(tab.deliveryAddress.zip);
+  const [address1, setAddress1] = useState(tab.deliveryAddress?.address1 ?? '');
+  const [city, setCity] = useState(tab.deliveryAddress?.city ?? '');
+  const [zip, setZip] = useState(tab.deliveryAddress?.zip ?? '');
   const [notes, setNotes] = useState(tab.deliveryNotes || '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -37,14 +37,14 @@ export default function EditTabModal({
       setName(tab.name);
       // Convert ISO date to YYYY-MM-DD for input
       const d = new Date(tab.deliveryDate);
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
+      const yyyy = d.getUTCFullYear();
+      const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+      const dd = String(d.getUTCDate()).padStart(2, '0');
       setDeliveryDate(`${yyyy}-${mm}-${dd}`);
       setDeliveryTime(tab.deliveryTime);
-      setAddress1(tab.deliveryAddress.address1);
-      setCity(tab.deliveryAddress.city);
-      setZip(tab.deliveryAddress.zip);
+      setAddress1(tab.deliveryAddress?.address1 ?? '');
+      setCity(tab.deliveryAddress?.city ?? '');
+      setZip(tab.deliveryAddress?.zip ?? '');
       setNotes(tab.deliveryNotes || '');
       setError('');
     }
@@ -61,7 +61,7 @@ export default function EditTabModal({
       await updateTabV2(shareCode, tab.id, {
         hostParticipantId,
         name,
-        deliveryDate,
+        deliveryDate: deliveryDate.includes('T') ? deliveryDate : `${deliveryDate}T12:00:00Z`,
         deliveryTime,
         deliveryAddress: {
           address1,

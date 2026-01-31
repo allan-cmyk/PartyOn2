@@ -49,10 +49,12 @@ export default function GroupHeader({ groupOrder, isHost }: Props): ReactElement
           </div>
 
           <div className="flex items-center gap-3">
-            <CountdownTimer
-              targetDate={groupOrder.timer.countdownTarget}
-              label="Next deadline:"
-            />
+            {groupOrder.timer?.countdownTarget && (
+              <CountdownTimer
+                targetDate={groupOrder.timer.countdownTarget}
+                label="Next deadline:"
+              />
+            )}
             <button
               onClick={() => setShowShare(true)}
               className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800"

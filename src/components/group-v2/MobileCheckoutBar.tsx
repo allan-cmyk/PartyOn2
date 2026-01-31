@@ -21,7 +21,7 @@ export default function MobileCheckoutBar({
   if (!participantId) return null;
 
   const myItems = (items || []).filter((i) => i.addedBy?.id === participantId);
-  const myTotal = myItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const myTotal = myItems.reduce((sum, i) => sum + Number(i.price) * Number(i.quantity), 0);
 
   if (myItems.length === 0) return null;
 

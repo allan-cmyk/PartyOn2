@@ -23,8 +23,14 @@ export default function JoinGroupPage(): ReactElement {
         setGroupOrder(data);
 
         // Check if already joined
-        const savedPid = localStorage.getItem('groupV2ParticipantId');
-        const savedCode = localStorage.getItem('groupV2Code');
+        let savedPid: string | null = null;
+        let savedCode: string | null = null;
+        try {
+          savedPid = localStorage.getItem('groupV2ParticipantId');
+          savedCode = localStorage.getItem('groupV2Code');
+        } catch {
+          // localStorage may be unavailable
+        }
         if (savedPid && savedCode === code) {
           const isParticipant = (data.participants || []).some(
             (p) => p.id === savedPid && p.status === 'ACTIVE'
@@ -44,8 +50,12 @@ export default function JoinGroupPage(): ReactElement {
   }, [code, router]);
 
   const handleJoined = (participantId: string) => {
-    localStorage.setItem('groupV2Code', code);
-    localStorage.setItem('groupV2ParticipantId', participantId);
+    try {
+      localStorage.setItem('groupV2Code', code);
+      localStorage.setItem('groupV2ParticipantId', participantId);
+    } catch {
+      // localStorage may be unavailable
+    }
     router.push(`/group-v2/${code}/dashboard`);
   };
 

@@ -12,6 +12,9 @@ const POLL_INTERVAL = 5000; // 5 seconds
 
 const fetcher = async (url: string): Promise<GroupOrderV2Full> => {
   const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Server error: ${res.status}`);
+  }
   const json = await res.json();
   if (!json.success || !json.data) {
     throw new Error(json.error || 'Failed to fetch');
@@ -49,6 +52,7 @@ export function useMyGroupOrdersV2(customerId: string | null) {
     customerId ? `/api/v2/group-orders/my-orders?customerId=${customerId}` : null,
     async (url: string) => {
       const res = await fetch(url);
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
       const json = await res.json();
       if (!json.success || !json.data) throw new Error(json.error || 'Failed to fetch');
       return json.data;

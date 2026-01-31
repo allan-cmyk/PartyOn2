@@ -22,7 +22,19 @@ export default function ShareGroupModal({
   const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/group-v2/${shareCode}`;
 
   const handleCopy = async (text: string) => {
-    await navigator.clipboard.writeText(text);
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // Fallback: select the text so user can Ctrl+C
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

@@ -31,7 +31,7 @@ export default function TabContent({
   onRefresh,
   onCheckout,
 }: Props): ReactElement {
-  const isPastDeadline = new Date(tab.orderDeadline) < new Date();
+  const isPastDeadline = tab.orderDeadline ? new Date(tab.orderDeadline) < new Date() : false;
   const isLocked = tab.status !== 'OPEN' || isPastDeadline;
   const [showEditTab, setShowEditTab] = useState(false);
 

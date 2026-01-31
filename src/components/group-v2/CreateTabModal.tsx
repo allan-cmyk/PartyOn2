@@ -39,7 +39,9 @@ export default function CreateTabModal({
       await createTabV2(shareCode, {
         hostParticipantId,
         name,
-        deliveryDate,
+        deliveryDate: deliveryDate.includes('T')
+          ? deliveryDate
+          : `${deliveryDate}T12:00:00Z`,
         deliveryTime,
         deliveryAddress: {
           address1,

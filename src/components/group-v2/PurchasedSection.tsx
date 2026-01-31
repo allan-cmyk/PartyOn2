@@ -12,11 +12,11 @@ export default function PurchasedSection({ items }: Props): ReactElement {
 
   if (!items || items.length === 0) return <></>;
 
-  const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const total = items.reduce((sum, i) => sum + Number(i.price) * Number(i.quantity), 0);
 
   // Group by purchaser
   const byPurchaser = items.reduce<Record<string, PurchasedItemView[]>>((acc, item) => {
-    const key = item.purchaser.id;
+    const key = item.purchaser?.id ?? 'unknown';
     if (!acc[key]) acc[key] = [];
     acc[key].push(item);
     return acc;
@@ -53,12 +53,12 @@ export default function PurchasedSection({ items }: Props): ReactElement {
 
       {isOpen && (
         <div className="px-4 pb-4 space-y-4">
-          {Object.entries(byPurchaser).map(([, purchaserItems]) => {
-            const purchaser = purchaserItems[0].purchaser;
+          {Object.entries(byPurchaser).map(([key, purchaserItems]) => {
+            const purchaser = purchaserItems[0]?.purchaser;
             return (
-              <div key={purchaser.id}>
+              <div key={key}>
                 <p className="text-xs font-medium text-green-700 mb-2">
-                  {purchaser.name}
+                  {purchaser?.name ?? 'Unknown'}
                 </p>
                 {purchaserItems.map((item) => (
                   <div key={item.id} className="flex items-center justify-between py-1.5 text-sm">
@@ -67,7 +67,7 @@ export default function PurchasedSection({ items }: Props): ReactElement {
                       <span className="text-gray-400">x{item.quantity}</span>
                     </div>
                     <span className="text-gray-700">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      ${(Number(item.price) * Number(item.quantity)).toFixed(2)}
                     </span>
                   </div>
                 ))}

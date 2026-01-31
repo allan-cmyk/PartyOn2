@@ -28,8 +28,18 @@ async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
     headers: { 'Content-Type': 'application/json' },
     ...options,
   });
+  if (!res.ok) {
+    let message = `Server error: ${res.status}`;
+    try {
+      const errJson = await res.json();
+      if (errJson.error) message = errJson.error;
+    } catch {
+      // Response wasn't JSON (e.g. 502 HTML page)
+    }
+    throw new Error(message);
+  }
   const json: ApiResponse<T> = await res.json();
-  if (!json.success || !json.data) {
+  if (!json.success) {
     // Extract field-level validation errors if available
     let message = json.error || 'API request failed';
     if (json.details && typeof json.details === 'object') {
@@ -43,7 +53,7 @@ async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
     }
     throw new Error(message);
   }
-  return json.data;
+  return json.data as T;
 }
 
 /** Create a new group order */

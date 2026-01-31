@@ -19,7 +19,7 @@ export default function DraftCartItemRow({
   onRemove,
 }: Props): ReactElement {
   const canEdit = (isOwner || isHost) && !!onUpdateQty && !!onRemove;
-  const lineTotal = (item.price * item.quantity).toFixed(2);
+  const lineTotal = (Number(item.price) * Number(item.quantity)).toFixed(2);
 
   return (
     <div className="flex items-center gap-3 py-3 border-b border-gray-100 last:border-0">
@@ -51,7 +51,7 @@ export default function DraftCartItemRow({
         {item.variantTitle && (
           <p className="text-xs text-gray-500">{item.variantTitle}</p>
         )}
-        <p className="text-sm text-gray-700">${item.price.toFixed(2)} each</p>
+        <p className="text-sm text-gray-700">${Number(item.price).toFixed(2)} each</p>
       </div>
 
       {/* Quantity Controls */}
