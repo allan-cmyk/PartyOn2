@@ -42,7 +42,9 @@ export default function GroupProductCatalog({
         const res = await fetch('/api/v1/admin/products?limit=50&status=ACTIVE');
         const json = await res.json();
         if (json.success) {
-          setProducts(json.data || []);
+          // API returns { data: { products: [...], pagination, filters } }
+          const productsArray = json.data?.products ?? json.data;
+          setProducts(Array.isArray(productsArray) ? productsArray : []);
         }
       } catch {
         console.error('Failed to fetch products');
@@ -62,7 +64,7 @@ export default function GroupProductCatalog({
     : products;
 
   const handleAdd = async (product: CatalogProduct) => {
-    const variant = product.variants[0];
+    const variant = (product.variants || [])[0];
     if (!variant) return;
 
     setAddingId(product.id);
