@@ -136,7 +136,7 @@ export default function JoinGroupOrderPage(): ReactElement {
                   Want to host your own group order?
                 </p>
                 <Link
-                  href="/group/create"
+                  href="/group-v2/create"
                   className="inline-flex items-center gap-2 text-gold-600 hover:text-gold-700 font-medium transition-colors"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

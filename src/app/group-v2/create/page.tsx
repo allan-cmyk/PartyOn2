@@ -75,14 +75,24 @@ export default function CreateGroupPage(): ReactElement {
         hostEmail: hostEmail || undefined,
         hostPhone: hostPhone || undefined,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        tabs: tabs.map(({ key, ...rest }) => rest),
+        tabs: tabs.map(({ key, ...rest }) => ({
+          ...rest,
+          // Convert date input (YYYY-MM-DD) to ISO string with noon time
+          deliveryDate: rest.deliveryDate.includes('T')
+            ? rest.deliveryDate
+            : `${rest.deliveryDate}T12:00:00Z`,
+        })),
       });
 
       // Store host info
-      localStorage.setItem('groupV2Code', group.shareCode);
-      const hostP = group.participants.find((p) => p.isHost);
-      if (hostP) {
-        localStorage.setItem('groupV2ParticipantId', hostP.id);
+      try {
+        localStorage.setItem('groupV2Code', group.shareCode);
+        const hostP = (group.participants || []).find((p) => p.isHost);
+        if (hostP) {
+          localStorage.setItem('groupV2ParticipantId', hostP.id);
+        }
+      } catch {
+        // localStorage may be unavailable
       }
 
       router.push(`/group-v2/${group.shareCode}/dashboard`);

@@ -24,7 +24,7 @@ export default function PremierHeroStickyCTA({
     <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-gray-900 border-t border-gray-800 shadow-lg pb-safe">
       <div className="px-4 py-3 flex items-center gap-3">
         <Link
-          href="/orders/create"
+          href="/group-v2/create"
           className="flex-1 py-3 bg-gold-500 hover:bg-gold-400 text-gray-900 font-semibold tracking-wider text-center rounded-lg transition-colors text-sm"
         >
           Start Group Order

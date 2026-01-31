@@ -9,6 +9,14 @@
 
 **All code is written (50+ files, ~7,500 lines). Database deployed. ALL TESTS PASSING. Build clean. Mobile tested. FULLY COMPLETE.**
 
+### Completed (Session 9 - Jan 30, 2026)
+1. ✅ Fixed `p.map is not a function` crash — added defensive `(array || [])` guards to all unguarded `.map()`, `.some()`, `.filter()` calls across 9 files
+2. ✅ Added optional chaining for unsafe nested property access (`i.addedBy?.id`, `item.addedBy?.name ?? 'Unknown'`, `activeTab.totals?.draftSubtotal ?? 0`)
+3. ✅ Created global error boundary (`src/app/global-error.tsx`) — catches uncaught errors app-wide, shows "Something went wrong" with Try Again / Go Home buttons
+4. ✅ Hardened `GroupOrderContext.tsx` — all localStorage calls wrapped in try/catch, clears saved group order code on any API error
+5. ✅ Fixed ESLint: added eslint-disable for `no-html-link-for-pages` in global-error.tsx (renders outside Next.js router)
+6. ⚠️ Unresolved: `/group-v2/create` showing "Application error: a client-side exception" on Vercel — routing structure is correct (static `create/` alongside `[code]/`), error boundary should prevent crash but root cause not fully identified
+
 ### Completed (Session 8 - Jan 30, 2026)
 1. ✅ Fixed 21 TypeScript errors in `src/__tests__/cart-service.test.ts` — updated mock data to use `Prisma.Decimal` for numeric fields and added missing Cart fields (`groupOrderId`, `expiresAt`, `abandonedAt`, `recoveryEmailSent`)
 2. ✅ Fixed 1 TypeScript error in `src/__tests__/stripe-integration.test.ts` — same mock data updates (Decimal types + missing fields)
@@ -53,10 +61,11 @@
 16. ✅ `next build` passes cleanly (0 errors)
 
 ### What Remains
-**Nothing — all phases and testing complete.**
+- ⚠️ Investigate `/group-v2/create` client-side exception on Vercel deployment (may be resolved by Session 9 error boundary + context hardening — needs retest after deploy)
+- Uncommitted files from before Session 9: create page deliveryDate conversion, link updates to `/group-v2/create`, Cart link update, api-client field-level validation
 
 ### Known Issues
-- None — all pre-existing test failures resolved (Session 8)
+- `/group-v2/create` client-side exception on Vercel — root cause not fully identified (Session 9)
 - The 4 enums in schema.prisma verified: `GroupOrderV2Status`, `SubOrderStatus`, `GroupV2ParticipantStatus`, `GroupV2PaymentStatus`
 
 ### Key Files for Context
@@ -398,6 +407,48 @@
 
 **Blockers:** None
 **Status:** ALL PHASES COMPLETE. Group Ordering V2 is fully implemented and tested.
+
+---
+
+### Session 9 - January 30, 2026
+**Focus:** Fix `p.map is not a function` crash + Global Error Boundary + Context Hardening
+
+**What was done:**
+
+**Defensive Array Guards (Commit: 3a6b3ab, 9 files):**
+- `src/app/group-v2/[code]/page.tsx` — `(data.participants || []).some()`, `(groupOrder.tabs || []).map()`
+- `src/components/group-v2/ParticipantCheckoutButton.tsx` — `(items || []).filter()`, `i.addedBy?.id`
+- `src/components/group-v2/TabContent.tsx` — `i.addedBy?.id`
+- `src/components/group-v2/MobileCheckoutBar.tsx` — `i.addedBy?.id`
+- `src/components/group-v2/CheckoutSummaryModal.tsx` — `i.addedBy?.id`
+- `src/components/group-v2/DraftCartItemRow.tsx` — `item.addedBy?.name ?? 'Unknown'`
+- `src/components/group-v2/DraftCartSection.tsx` — `item.addedBy?.id`
+- `src/app/group-v2/[code]/dashboard/page.tsx` — `activeTab.totals?.draftSubtotal ?? 0` (all totals fields)
+- `src/app/account/group-orders/page.tsx` — `setOrders(data.orders || [])`
+
+**Global Error Boundary (Commit: 79360ba):**
+- Created `src/app/global-error.tsx` — catches uncaught errors, shows "Something went wrong" with Try Again / Go Home buttons instead of blank crash page
+- Hardened `src/contexts/GroupOrderContext.tsx` — all localStorage calls in try/catch, clears saved code on any API error
+
+**Lint Fix (Commit: 2bde07d):**
+- Added eslint-disable for `no-html-link-for-pages` in global-error.tsx (renders outside Next.js router, must use `<a>`)
+
+**Unresolved:**
+- `/group-v2/create` page showing "Application error: a client-side exception has occurred" on Vercel deployment. Routing structure correct (static `create/` alongside `[code]/`). Error boundary + context hardening should prevent the crash, but root cause not fully identified.
+
+**Uncommitted files (from before this session):**
+- `src/app/group-v2/create/page.tsx` — deliveryDate conversion
+- `src/app/group/join/page.tsx` — link update to `/group-v2/create`
+- `src/app/partners/premier-party-cruises/page.tsx` — link update
+- `src/components/partners/PremierHero.tsx` — link update
+- `src/components/partners/PremierHeroStickyCTA.tsx` — link update
+- `src/components/shopify/Cart.tsx` — link update
+- `src/lib/group-orders-v2/api-client.ts` — field-level validation error extraction
+
+**Next Session:**
+- Retest `/group-v2/create` after Vercel deploy completes
+- Commit uncommitted files if verified working
+- Investigate root cause of client-side exception if it persists
 
 ---
 

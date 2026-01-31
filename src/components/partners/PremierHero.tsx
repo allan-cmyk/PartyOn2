@@ -82,7 +82,7 @@ export default function PremierHero(): ReactElement {
             {/* Group Order + Join */}
             <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-base mb-4">
               <Link
-                href="/orders/create"
+                href="/group-v2/create"
                 className="text-white/70 hover:text-white transition-colors"
               >
                 Ordering with friends?{' '}
