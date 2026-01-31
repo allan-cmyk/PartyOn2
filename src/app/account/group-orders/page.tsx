@@ -51,7 +51,7 @@ export default function GroupOrdersPage() {
           throw new Error(data.error || 'Failed to fetch orders')
         }
 
-        setOrders(data.orders)
+        setOrders(data.orders || [])
       } catch (err) {
         console.error('Error fetching group orders:', err)
         setError(err instanceof Error ? err.message : 'Failed to load group orders')
@@ -67,7 +67,7 @@ export default function GroupOrdersPage() {
 
   const handleViewDashboard = (order: GroupOrderSummary) => {
     setGroupOrderCode(order.shareCode)
-    router.push('/group/dashboard')
+    router.push(`/group-v2/${order.shareCode}/dashboard`)
   }
 
   const formatDate = (dateString: string) => {
@@ -153,7 +153,7 @@ export default function GroupOrdersPage() {
             <h3 className="text-xl font-cormorant text-gray-900 mb-2">No Group Orders Yet</h3>
             <p className="text-gray-600 mb-6">Create a group order to share with friends and family</p>
             <Link
-              href="/group/create"
+              href="/group-v2/create"
               className="inline-block px-8 py-3 bg-gold-600 text-gray-900 text-sm tracking-[0.1em] hover:bg-gold-700 transition-colors rounded"
             >
               CREATE GROUP ORDER
@@ -263,7 +263,7 @@ export default function GroupOrdersPage() {
           {/* Create New Button */}
           <div className="text-center pt-4">
             <Link
-              href="/group/create"
+              href="/group-v2/create"
               className="inline-flex items-center gap-2 px-6 py-3 border-2 border-dashed border-gray-300 text-gray-600 hover:border-gold-600 hover:text-gold-600 transition-colors rounded-lg"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -165,18 +165,18 @@ export default function DashboardPage(): ReactElement {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between text-gray-600">
                     <span>Draft Subtotal</span>
-                    <span>${activeTab.totals.draftSubtotal.toFixed(2)}</span>
+                    <span>${(activeTab.totals?.draftSubtotal ?? 0).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-gray-600">
                     <span>Purchased Subtotal</span>
-                    <span>${activeTab.totals.purchasedSubtotal.toFixed(2)}</span>
+                    <span>${(activeTab.totals?.purchasedSubtotal ?? 0).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-gray-600">
                     <span>Delivery Fee</span>
                     <span>
                       {activeTab.deliveryFeeWaived
                         ? 'Waived'
-                        : `$${activeTab.totals.deliveryFee.toFixed(2)}`}
+                        : `$${(activeTab.totals?.deliveryFee ?? 0).toFixed(2)}`}
                     </span>
                   </div>
                   <div className="border-t border-gray-200 pt-2 flex justify-between font-medium text-gray-900">
@@ -184,9 +184,9 @@ export default function DashboardPage(): ReactElement {
                     <span>
                       $
                       {(
-                        activeTab.totals.draftSubtotal +
-                        activeTab.totals.purchasedSubtotal +
-                        (activeTab.deliveryFeeWaived ? 0 : activeTab.totals.deliveryFee)
+                        (activeTab.totals?.draftSubtotal ?? 0) +
+                        (activeTab.totals?.purchasedSubtotal ?? 0) +
+                        (activeTab.deliveryFeeWaived ? 0 : (activeTab.totals?.deliveryFee ?? 0))
                       ).toFixed(2)}
                     </span>
                   </div>

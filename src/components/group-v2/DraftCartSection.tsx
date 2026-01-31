@@ -49,7 +49,7 @@ export default function DraftCartSection({
           <DraftCartItemRow
             key={item.id}
             item={item}
-            isOwner={item.addedBy.id === currentParticipantId}
+            isOwner={item.addedBy?.id === currentParticipantId}
             isHost={isHost}
             onUpdateQty={onUpdateQty}
             onRemove={onRemove}

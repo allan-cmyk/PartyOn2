@@ -27,7 +27,7 @@ export default function CheckoutSummaryModal({
 
   if (!isOpen) return null;
 
-  const myItems = (items || []).filter((i) => i.addedBy.id === participantId);
+  const myItems = (items || []).filter((i) => i.addedBy?.id === participantId);
   const subtotal = myItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const addr = tab.deliveryAddress;
 

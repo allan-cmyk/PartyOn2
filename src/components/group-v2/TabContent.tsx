@@ -74,7 +74,7 @@ export default function TabContent({
 
   const draftItems = tab.draftItems || [];
   const myItems = currentParticipantId
-    ? draftItems.filter((i) => i.addedBy.id === currentParticipantId)
+    ? draftItems.filter((i) => i.addedBy?.id === currentParticipantId)
     : [];
 
   return (

@@ -26,7 +26,7 @@ export default function JoinGroupPage(): ReactElement {
         const savedPid = localStorage.getItem('groupV2ParticipantId');
         const savedCode = localStorage.getItem('groupV2Code');
         if (savedPid && savedCode === code) {
-          const isParticipant = data.participants.some(
+          const isParticipant = (data.participants || []).some(
             (p) => p.id === savedPid && p.status === 'ACTIVE'
           );
           if (isParticipant) {
@@ -113,7 +113,7 @@ export default function JoinGroupPage(): ReactElement {
           <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
             Deliveries
           </h3>
-          {groupOrder.tabs.map((tab) => (
+          {(groupOrder.tabs || []).map((tab) => (
             <div
               key={tab.id}
               className="flex justify-between items-center text-sm"

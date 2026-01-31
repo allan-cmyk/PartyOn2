@@ -45,7 +45,7 @@ export default function DraftCartItemRow({
             {item.title}
           </span>
           <span className="text-xs px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-500 whitespace-nowrap">
-            {item.addedBy.name}
+            {item.addedBy?.name ?? 'Unknown'}
           </span>
         </div>
         {item.variantTitle && (
