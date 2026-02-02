@@ -103,7 +103,7 @@ export default function GroupProductCatalog({
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold text-v2-text uppercase tracking-wide">
+        <h3 className="text-sm font-semibold text-v2-text uppercase tracking-wide text-center md:text-left">
           Browse Products
         </h3>
       </div>

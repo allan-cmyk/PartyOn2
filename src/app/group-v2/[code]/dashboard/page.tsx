@@ -161,7 +161,7 @@ export default function DashboardPage(): ReactElement {
             {/* Tab Summary */}
             {activeTab && (
               <div className="bg-v2-card rounded-lg border border-v2-border p-4">
-                <h3 className="text-sm font-semibold text-v2-text uppercase tracking-wide mb-3">
+                <h3 className="text-sm font-semibold text-v2-text uppercase tracking-wide mb-3 text-center md:text-left">
                   Tab Summary
                 </h3>
                 <div className="space-y-2 text-sm">

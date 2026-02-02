@@ -111,7 +111,7 @@ export default function HostControlBar({
 
   return (
     <div className="bg-v2-card rounded-lg border border-v2-border p-4">
-      <h3 className="text-sm font-semibold text-v2-text uppercase tracking-wide mb-3">
+      <h3 className="text-sm font-semibold text-v2-text uppercase tracking-wide mb-3 text-center md:text-left">
         Host Controls
       </h3>
 

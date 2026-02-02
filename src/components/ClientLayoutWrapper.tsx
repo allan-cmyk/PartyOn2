@@ -9,6 +9,8 @@ import MobileNavigation from '@/components/mobile/MobileNavigation';
 
 // Pages where MobileNavigation should be hidden (they have their own nav)
 const HIDE_MOBILE_NAV_PATHS = ['/order'];
+// Path prefixes where MobileNavigation should be hidden
+const HIDE_MOBILE_NAV_PREFIXES = ['/group-v2'];
 
 export default function ClientLayoutWrapper({ children }: { children: React.ReactNode }) {
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
@@ -17,7 +19,8 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
   // Sync cart totals with group order if in a group
   useGroupCartSync();
 
-  const showMobileNav = isMobile && !HIDE_MOBILE_NAV_PATHS.includes(pathname);
+  const hiddenByPrefix = HIDE_MOBILE_NAV_PREFIXES.some((p) => pathname.startsWith(p));
+  const showMobileNav = isMobile && !HIDE_MOBILE_NAV_PATHS.includes(pathname) && !hiddenByPrefix;
   
   useEffect(() => {
     // Check if mobile on client side

@@ -18,7 +18,7 @@ export default function ParticipantList({
 
   return (
     <div>
-      <h3 className="text-sm font-semibold text-v2-text uppercase tracking-wide mb-3">
+      <h3 className="text-sm font-semibold text-v2-text uppercase tracking-wide mb-3 text-center md:text-left">
         Participants ({active.length})
       </h3>
       <div className="space-y-2">

@@ -13,6 +13,7 @@ interface Props {
   label?: string;
   helperText?: string;
   variant?: 'delivery' | 'deadline';
+  colorScheme?: 'blue' | 'yellow';
 }
 
 function parseTimeLeft(diff: number, daysOnly?: boolean): TimeSegment[] {
@@ -33,13 +34,22 @@ function parseTimeLeft(diff: number, daysOnly?: boolean): TimeSegment[] {
   return segments;
 }
 
-function getDeadlineColor(diff: number): string {
-  const twoHours = 2 * 60 * 60 * 1000;
-  const twentyFourHours = 24 * 60 * 60 * 1000;
-  if (diff < twoHours) return 'text-v2-danger';
-  if (diff < twentyFourHours) return 'text-amber-500';
-  return 'text-v2-text';
-}
+const COLOR_SCHEMES = {
+  blue: {
+    card: 'bg-sky-50 border-sky-200',
+    label: 'text-sky-700',
+    pill: 'bg-sky-100',
+    number: 'text-v2-text',
+    unit: 'text-sky-600',
+  },
+  yellow: {
+    card: 'bg-amber-50 border-amber-200',
+    label: 'text-amber-700',
+    pill: 'bg-amber-100',
+    number: 'text-v2-text',
+    unit: 'text-amber-600',
+  },
+} as const;
 
 interface DigitProps {
   value: string;
@@ -79,11 +89,12 @@ export default function CountdownTimer({
   label,
   helperText,
   variant = 'delivery',
+  colorScheme = 'blue',
 }: Props): ReactElement | null {
   const [segments, setSegments] = useState<TimeSegment[]>([]);
   const [expired, setExpired] = useState(false);
-  const [diff, setDiff] = useState(0);
   const reducedMotion = useReducedMotion() ?? false;
+  const scheme = COLOR_SCHEMES[colorScheme];
 
   useEffect(() => {
     if (!targetDate) return;
@@ -99,7 +110,6 @@ export default function CountdownTimer({
         return;
       }
 
-      setDiff(remaining);
       setSegments(parseTimeLeft(remaining, variant === 'delivery'));
     };
 
@@ -110,14 +120,10 @@ export default function CountdownTimer({
 
   if (!targetDate) return null;
 
-  const numberColor = variant === 'delivery'
-    ? 'text-brand-yellow'
-    : getDeadlineColor(diff);
-
   return (
-    <div className="bg-v2-card border border-v2-border rounded-xl px-4 py-3 min-w-[160px] shadow-sm v2-card-hover text-center">
+    <div className={`border rounded-xl px-4 py-3 min-w-[160px] shadow-sm v2-card-hover text-center ${scheme.card}`}>
       {label && (
-        <p className="text-xs uppercase tracking-wider text-brand-blue font-semibold mb-1.5">
+        <p className={`text-xs uppercase tracking-wider font-semibold mb-1.5 ${scheme.label}`}>
           {label}
         </p>
       )}
@@ -127,13 +133,13 @@ export default function CountdownTimer({
       ) : (
         <div className="flex items-baseline justify-center gap-2">
           {segments.map((seg) => (
-            <div key={seg.label} className="flex items-baseline gap-0.5 bg-v2-bgSoft rounded-lg px-2.5 py-1.5">
+            <div key={seg.label} className={`flex items-baseline gap-0.5 rounded-lg px-2.5 py-1.5 ${scheme.pill}`}>
               <AnimatedDigit
                 value={String(seg.value).padStart(2, '0')}
-                colorClass={numberColor}
+                colorClass={scheme.number}
                 reducedMotion={reducedMotion}
               />
-              <span className="text-xs text-v2-muted">{seg.label}</span>
+              <span className={`text-xs ${scheme.unit}`}>{seg.label}</span>
             </div>
           ))}
         </div>

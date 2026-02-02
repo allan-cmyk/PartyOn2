@@ -24,6 +24,15 @@ function getStatusChip(status: string): { bg: string; text: string; border: stri
   }
 }
 
+function getDateSubtitle(groupOrder: GroupOrderV2Full): string {
+  const tab = (groupOrder.tabs || [])[0];
+  const dateStr = tab?.deliveryDate;
+  const date = dateStr ? new Date(dateStr) : new Date();
+  const month = date.toLocaleString('en-US', { month: 'short' }).toUpperCase();
+  const year = date.getFullYear();
+  return `${month} ${year} ATX`;
+}
+
 export default function GroupHeader({ groupOrder, isHost }: Props): ReactElement {
   const [showShare, setShowShare] = useState(false);
   const statusStyle = getStatusChip(groupOrder.status);
@@ -42,14 +51,19 @@ export default function GroupHeader({ groupOrder, isHost }: Props): ReactElement
           priority
         />
         <div className="absolute inset-0 bg-white/80" />
-        <div className="relative grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 py-5 px-4 md:py-6 md:px-6">
-          {/* Left column - Info */}
+        <div className="relative py-5 px-4 md:py-6 md:px-6 space-y-4">
+          {/* Top row - Info */}
           <div className="flex flex-col gap-2">
-            <h1 className="font-sans text-2xl md:text-3xl font-bold text-v2-text tracking-tight">
-              {groupOrder.name}
-            </h1>
+            <div className="text-center md:text-left">
+              <h1 className="font-sans text-2xl md:text-3xl font-bold text-v2-text tracking-tight">
+                {groupOrder.name}
+              </h1>
+              <p className="text-xs font-semibold tracking-[0.2em] text-v2-muted mt-0.5">
+                {getDateSubtitle(groupOrder)}
+              </p>
+            </div>
 
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap justify-center md:justify-start">
               <span
                 className={`text-xs font-medium px-2.5 py-0.5 rounded-full border flex items-center gap-1.5 ${statusStyle.bg} ${statusStyle.text} ${statusStyle.border}`}
               >
@@ -65,7 +79,7 @@ export default function GroupHeader({ groupOrder, isHost }: Props): ReactElement
               )}
             </div>
 
-            <p className="text-sm text-v2-muted">
+            <p className="text-sm text-v2-muted text-center md:text-left">
               Code:{' '}
               <span className="font-mono font-semibold text-v2-text">
                 {groupOrder.shareCode}
@@ -86,22 +100,16 @@ export default function GroupHeader({ groupOrder, isHost }: Props): ReactElement
               </svg>
               {activeParticipants} participant{activeParticipants !== 1 ? 's' : ''}
             </p>
-
-            <button
-              onClick={() => setShowShare(true)}
-              className="w-full md:w-auto mt-1 px-4 py-2 text-sm font-medium rounded-lg border border-v2-border text-v2-muted hover:text-brand-blue hover:border-brand-blue active:scale-[0.98] transition-all v2-btn-press"
-            >
-              Share
-            </button>
           </div>
 
-          {/* Right column - Timers */}
-          <div className="flex flex-col sm:flex-row gap-3 md:justify-end md:items-start">
+          {/* Timers row */}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
             {groupOrder.timer?.earliestDelivery && (
               <CountdownTimer
                 targetDate={groupOrder.timer.earliestDelivery}
                 label="Party starts in"
                 variant="delivery"
+                colorScheme="blue"
               />
             )}
             {groupOrder.timer?.earliestDeadline && (
@@ -109,8 +117,19 @@ export default function GroupHeader({ groupOrder, isHost }: Props): ReactElement
                 targetDate={groupOrder.timer.earliestDeadline}
                 label="Order closes in"
                 variant="deadline"
+                colorScheme="yellow"
               />
             )}
+          </div>
+
+          {/* Share button - below timers */}
+          <div className="flex justify-center md:justify-start">
+            <button
+              onClick={() => setShowShare(true)}
+              className="px-6 py-2 text-sm font-medium rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 active:scale-[0.98] transition-all v2-btn-press"
+            >
+              Share Group Link
+            </button>
           </div>
         </div>
       </div>
