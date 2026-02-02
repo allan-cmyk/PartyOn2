@@ -147,6 +147,7 @@ function serializeTab(tab: any): SubOrderFull {
     name: tab.name,
     position: tab.position,
     status: tab.status,
+    orderType: tab.orderType ?? null,
     deliveryDate: tab.deliveryDate.toISOString(),
     deliveryTime: tab.deliveryTime,
     deliveryAddress: tab.deliveryAddress as any,
@@ -237,6 +238,7 @@ export async function createGroupOrder(
           return {
             name: tab.name,
             position: idx,
+            orderType: tab.orderType ?? null,
             deliveryDate,
             deliveryTime: tab.deliveryTime,
             deliveryAddress: tab.deliveryAddress as unknown as Record<string, string>,
@@ -358,6 +360,7 @@ export async function createTab(
       groupOrderId,
       name: input.name,
       position: nextPos,
+      orderType: input.orderType ?? null,
       deliveryDate,
       deliveryTime: input.deliveryTime,
       deliveryAddress: input.deliveryAddress as unknown as Record<string, string>,
@@ -385,6 +388,7 @@ export async function updateTab(
 
   const data: Record<string, unknown> = {};
   if (input.name) data.name = input.name;
+  if (input.orderType !== undefined) data.orderType = input.orderType || null;
   if (input.status) data.status = input.status;
   if (input.deliveryTime) data.deliveryTime = input.deliveryTime;
   if (input.deliveryAddress) {

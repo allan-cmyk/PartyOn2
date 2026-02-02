@@ -1584,6 +1584,7 @@ model SubOrder {
   orderDeadline  DateTime       @map("order_deadline")
   deliveryFee    Decimal        @default(0) @map("delivery_fee") @db.Decimal(10, 2)
   deliveryFeeWaived Boolean     @default(false) @map("delivery_fee_waived")
+  orderType      String?        @map("order_type")
   status         SubOrderStatus @default(OPEN)
   createdAt      DateTime       @default(now()) @map("created_at")
   updatedAt      DateTime       @updatedAt @map("updated_at")

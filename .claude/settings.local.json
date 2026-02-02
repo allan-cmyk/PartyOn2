@@ -44,7 +44,17 @@
       "Bash(taskkill:*)",
       "Bash(dir /b /s \"C:\\\\Party On Delivery\\\\WEBSITE FILES\\\\PartyOn2\\\\public\\\\images\\\\products\")",
       "Bash(node scripts/create-spirits-order-jan26.mjs:*)",
-      "Bash(node scripts/search-missing-items.mjs:*)"
+      "Bash(node scripts/search-missing-items.mjs:*)",
+      "Bash(npx next build:*)",
+      "Bash(npx vitest:*)",
+      "Bash(echo:*)",
+      "Bash(dir \"C:\\\\Party On Delivery\\\\WEBSITE FILES\\\\PartyOn2\\\\src\\\\app\\\\group-v2\" /b)",
+      "Bash(git diff:*)",
+      "Bash(powershell -Command \"Start-Sleep -Seconds 15; try { $r = Invoke-WebRequest -Uri ''http://localhost:3000'' -TimeoutSec 10 -UseBasicParsing; Write-Output $r.StatusCode } catch { Write-Output ''not ready'' }\")",
+      "Bash(powershell:*)",
+      "Bash(python test-screenshots/test_create_flow.py:*)",
+      "Bash(python:*)",
+      "Bash(npx next dev)"
     ],
     "deny": [],
     "ask": []

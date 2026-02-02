@@ -21,6 +21,7 @@ const DeliveryAddressSchema = z.object({
 /** Single tab input */
 const CreateTabSchema = z.object({
   name: z.string().min(1, 'Tab name is required').max(100),
+  orderType: z.enum(['boat', 'house', 'bus', 'other']).optional(),
   deliveryDate: z.string().refine(
     (val) => {
       const date = new Date(val);
@@ -65,6 +66,7 @@ export const CreateGroupOrderV2Schema = z.object({
 /** Update tab */
 export const UpdateTabSchema = z.object({
   name: z.string().min(1).max(100).optional(),
+  orderType: z.enum(['boat', 'house', 'bus', 'other']).optional(),
   status: z.enum(['OPEN', 'LOCKED']).optional(),
   deliveryDate: z.string().refine(
     (val) => {

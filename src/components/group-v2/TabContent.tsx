@@ -168,6 +168,7 @@ export default function TabContent({
             shareCode={shareCode}
             tabId={tab.id}
             participantId={currentParticipantId}
+            orderType={tab.orderType}
             onItemAdded={onRefresh}
           />
         </div>

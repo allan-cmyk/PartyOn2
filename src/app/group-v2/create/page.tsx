@@ -4,6 +4,8 @@ import { useState, ReactElement } from 'react';
 import { useRouter } from 'next/navigation';
 import { createGroupOrderV2 } from '@/lib/group-orders-v2/api-client';
 import type { CreateTabInput } from '@/lib/group-orders-v2/types';
+import { ORDER_TYPES } from '@/lib/group-orders-v2/order-types';
+import OrderTypeIcon from '@/components/group-v2/OrderTypeIcon';
 
 interface TabFormData extends CreateTabInput {
   key: string;
@@ -13,6 +15,7 @@ function newTab(idx: number): TabFormData {
   return {
     key: `tab-${Date.now()}-${idx}`,
     name: idx === 0 ? 'Main Order' : `Order ${idx + 1}`,
+    orderType: '',
     deliveryDate: '',
     deliveryTime: '',
     deliveryAddress: {
@@ -77,6 +80,7 @@ export default function CreateGroupPage(): ReactElement {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         tabs: tabs.map(({ key, ...rest }) => ({
           ...rest,
+          orderType: rest.orderType || undefined,
           // Convert date input (YYYY-MM-DD) to ISO string with noon time
           deliveryDate: rest.deliveryDate.includes('T')
             ? rest.deliveryDate
@@ -188,6 +192,30 @@ export default function CreateGroupPage(): ReactElement {
                     Remove
                   </button>
                 )}
+              </div>
+
+              {/* Order Type Selector */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Order Type
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  {ORDER_TYPES.map((ot) => (
+                    <button
+                      key={ot.value}
+                      type="button"
+                      onClick={() => updateTab(tab.key, 'orderType', ot.value)}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium border transition-colors ${
+                        tab.orderType === ot.value
+                          ? 'bg-gray-900 text-white border-gray-900'
+                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                      }`}
+                    >
+                      <OrderTypeIcon type={ot.icon} selected={tab.orderType === ot.value} />
+                      {ot.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -2,6 +2,8 @@
 
 import { useState, FormEvent, ReactElement } from 'react';
 import { createTabV2 } from '@/lib/group-orders-v2/api-client';
+import { ORDER_TYPES } from '@/lib/group-orders-v2/order-types';
+import OrderTypeIcon from './OrderTypeIcon';
 
 interface Props {
   shareCode: string;
@@ -18,6 +20,7 @@ export default function CreateTabModal({
   onClose,
   onCreated,
 }: Props): ReactElement | null {
+  const [orderType, setOrderType] = useState('');
   const [name, setName] = useState('');
   const [deliveryDate, setDeliveryDate] = useState('');
   const [deliveryTime, setDeliveryTime] = useState('');
@@ -39,6 +42,7 @@ export default function CreateTabModal({
       await createTabV2(shareCode, {
         hostParticipantId,
         name,
+        orderType: orderType || undefined,
         deliveryDate: deliveryDate.includes('T')
           ? deliveryDate
           : `${deliveryDate}T12:00:00Z`,
@@ -55,6 +59,7 @@ export default function CreateTabModal({
       onCreated();
       onClose();
       // Reset form
+      setOrderType('');
       setName('');
       setDeliveryDate('');
       setDeliveryTime('');
@@ -81,6 +86,28 @@ export default function CreateTabModal({
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Order Type Selector */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Order Type</label>
+            <div className="grid grid-cols-2 gap-2">
+              {ORDER_TYPES.map((ot) => (
+                <button
+                  key={ot.value}
+                  type="button"
+                  onClick={() => setOrderType(ot.value)}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium border transition-colors ${
+                    orderType === ot.value
+                      ? 'bg-gray-900 text-white border-gray-900'
+                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
+                  <OrderTypeIcon type={ot.icon} selected={orderType === ot.value} />
+                  {ot.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Tab Name</label>
             <input

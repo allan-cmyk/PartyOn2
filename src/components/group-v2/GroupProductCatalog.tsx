@@ -2,6 +2,7 @@
 
 import { useState, useEffect, ReactElement } from 'react';
 import { addDraftItemV2 } from '@/lib/group-orders-v2/api-client';
+import { getCollectionsForOrderType, ORDER_TYPES } from '@/lib/group-orders-v2/order-types';
 
 interface CatalogProduct {
   id: string;
@@ -22,6 +23,7 @@ interface Props {
   shareCode: string;
   tabId: string;
   participantId: string;
+  orderType?: string | null;
   onItemAdded: () => void;
 }
 
@@ -29,6 +31,7 @@ export default function GroupProductCatalog({
   shareCode,
   tabId,
   participantId,
+  orderType,
   onItemAdded,
 }: Props): ReactElement {
   const [products, setProducts] = useState<CatalogProduct[]>([]);
@@ -36,10 +39,18 @@ export default function GroupProductCatalog({
   const [search, setSearch] = useState('');
   const [addingId, setAddingId] = useState<string | null>(null);
 
+  const collections = getCollectionsForOrderType(orderType);
+  const orderTypeLabel = ORDER_TYPES.find((t) => t.value === orderType)?.label;
+
   useEffect(() => {
     async function fetchProducts() {
+      setLoading(true);
       try {
-        const res = await fetch('/api/v1/admin/products?limit=50&status=ACTIVE');
+        let url = '/api/v1/admin/products?limit=50&status=ACTIVE';
+        if (collections.length > 0) {
+          url += `&category=${encodeURIComponent(collections[0])}`;
+        }
+        const res = await fetch(url);
         if (!res.ok) throw new Error(`Server error: ${res.status}`);
         const json = await res.json();
         if (json.success) {
@@ -54,7 +65,8 @@ export default function GroupProductCatalog({
       }
     }
     fetchProducts();
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderType]);
 
   const filtered = search
     ? products.filter(
@@ -95,6 +107,12 @@ export default function GroupProductCatalog({
           Browse Products
         </h3>
       </div>
+
+      {orderTypeLabel && collections.length > 0 && (
+        <div className="mb-3 text-xs text-gray-500">
+          Showing products for: <span className="font-medium text-gray-700">{orderTypeLabel}</span>
+        </div>
+      )}
 
       <div className="mb-3">
         <input
