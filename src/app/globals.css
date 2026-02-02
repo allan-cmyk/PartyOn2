@@ -245,6 +245,29 @@
     }
   }
   
+  /* Group V2 card hover lift */
+  .v2-card-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .v2-card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Group V2 button press */
+  .v2-btn-press:active {
+    transform: scale(0.98);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .v2-card-hover:hover {
+      transform: none;
+    }
+    .v2-btn-press:active {
+      transform: none;
+    }
+  }
+
   /* Touch-friendly tap targets */
   @media (hover: none) {
     .btn {

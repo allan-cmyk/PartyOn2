@@ -63,10 +63,10 @@ export default function PurchasedSection({ items }: Props): ReactElement {
                 {purchaserItems.map((item) => (
                   <div key={item.id} className="flex items-center justify-between py-1.5 text-sm">
                     <div className="flex items-center gap-2">
-                      <span className="text-gray-700">{item.title}</span>
-                      <span className="text-gray-400">x{item.quantity}</span>
+                      <span className="text-v2-text">{item.title}</span>
+                      <span className="text-v2-muted">x{item.quantity}</span>
                     </div>
-                    <span className="text-gray-700">
+                    <span className="text-v2-text">
                       ${(Number(item.price) * Number(item.quantity)).toFixed(2)}
                     </span>
                   </div>

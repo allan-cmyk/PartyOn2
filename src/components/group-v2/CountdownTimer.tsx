@@ -15,11 +15,15 @@ interface Props {
   variant?: 'delivery' | 'deadline';
 }
 
-function parseTimeLeft(diff: number): TimeSegment[] {
+function parseTimeLeft(diff: number, daysOnly?: boolean): TimeSegment[] {
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+  if (daysOnly) {
+    return [{ value: days, label: days === 1 ? 'day' : 'days' }];
+  }
 
   const segments: TimeSegment[] = [];
   if (days > 0) segments.push({ value: days, label: 'd' });
@@ -32,9 +36,9 @@ function parseTimeLeft(diff: number): TimeSegment[] {
 function getDeadlineColor(diff: number): string {
   const twoHours = 2 * 60 * 60 * 1000;
   const twentyFourHours = 24 * 60 * 60 * 1000;
-  if (diff < twoHours) return 'text-red-400';
-  if (diff < twentyFourHours) return 'text-amber-400';
-  return 'text-white';
+  if (diff < twoHours) return 'text-v2-danger';
+  if (diff < twentyFourHours) return 'text-amber-500';
+  return 'text-v2-text';
 }
 
 interface DigitProps {
@@ -96,47 +100,47 @@ export default function CountdownTimer({
       }
 
       setDiff(remaining);
-      setSegments(parseTimeLeft(remaining));
+      setSegments(parseTimeLeft(remaining, variant === 'delivery'));
     };
 
     update();
     const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
-  }, [targetDate]);
+  }, [targetDate, variant]);
 
   if (!targetDate) return null;
 
   const numberColor = variant === 'delivery'
-    ? 'text-gold-400'
+    ? 'text-brand-yellow'
     : getDeadlineColor(diff);
 
   return (
-    <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-3 min-w-[160px] hover:-translate-y-0.5 hover:shadow-md transition-all">
+    <div className="bg-v2-card border border-v2-border rounded-xl px-4 py-3 min-w-[160px] shadow-sm v2-card-hover text-center">
       {label && (
-        <p className="text-xs uppercase tracking-wider text-gray-400 mb-1.5">
+        <p className="text-xs uppercase tracking-wider text-brand-blue font-semibold mb-1.5">
           {label}
         </p>
       )}
 
       {expired ? (
-        <p className="font-mono text-xl font-bold text-red-400">Expired</p>
+        <p className="font-mono text-xl font-bold text-v2-danger">Expired</p>
       ) : (
-        <div className="flex items-baseline gap-2">
+        <div className="flex items-baseline justify-center gap-2">
           {segments.map((seg) => (
-            <div key={seg.label} className="flex items-baseline gap-0.5">
+            <div key={seg.label} className="flex items-baseline gap-0.5 bg-v2-bgSoft rounded-lg px-2.5 py-1.5">
               <AnimatedDigit
                 value={String(seg.value).padStart(2, '0')}
                 colorClass={numberColor}
                 reducedMotion={reducedMotion}
               />
-              <span className="text-xs text-gray-500">{seg.label}</span>
+              <span className="text-xs text-v2-muted">{seg.label}</span>
             </div>
           ))}
         </div>
       )}
 
       {helperText && (
-        <p className="text-xs text-gray-500 mt-1">{helperText}</p>
+        <p className="text-xs text-v2-muted mt-1">{helperText}</p>
       )}
     </div>
   );

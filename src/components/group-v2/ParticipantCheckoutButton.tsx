@@ -23,7 +23,7 @@ export default function ParticipantCheckoutButton({
 
   if (myItems.length === 0) {
     return (
-      <div className="py-3 px-4 bg-gray-50 rounded-lg text-center text-sm text-gray-400">
+      <div className="py-3 px-4 bg-v2-bgSoft rounded-lg text-center text-sm text-v2-muted">
         Add items to checkout
       </div>
     );
@@ -33,7 +33,7 @@ export default function ParticipantCheckoutButton({
     <button
       onClick={onCheckout}
       disabled={disabled}
-      className="w-full py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+      className="w-full py-3 bg-brand-blue text-white font-semibold rounded-lg hover:bg-brand-blue/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 v2-btn-press"
     >
       Checkout My Items ({myItems.length})
       <span className="font-normal">·</span>

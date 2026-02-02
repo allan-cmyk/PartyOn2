@@ -18,25 +18,25 @@ export default function ParticipantList({
 
   return (
     <div>
-      <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">
+      <h3 className="text-sm font-semibold text-v2-text uppercase tracking-wide mb-3">
         Participants ({active.length})
       </h3>
       <div className="space-y-2">
         {active.map((p) => (
           <div
             key={p.id}
-            className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg"
+            className="flex items-center justify-between py-2 px-3 bg-v2-bgSoft rounded-lg"
           >
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium text-gray-600">
+              <div className="w-8 h-8 rounded-full bg-brand-blue/10 flex items-center justify-center text-sm font-medium text-brand-blue">
                 {(p.name || '?')[0].toUpperCase()}
               </div>
               <div>
-                <span className="text-sm font-medium text-gray-900">
+                <span className="text-sm font-medium text-v2-text">
                   {p.name}
                 </span>
                 {p.isHost && (
-                  <span className="ml-1.5 text-xs font-medium text-gold-600">
+                  <span className="ml-1.5 text-xs font-medium text-brand-blue">
                     Host
                   </span>
                 )}

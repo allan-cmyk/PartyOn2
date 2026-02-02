@@ -66,14 +66,14 @@ export default function ShareGroupModal({
             Share Code
           </label>
           <div className="flex items-center gap-2">
-            <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-center">
-              <span className="text-2xl font-mono font-bold tracking-[0.3em] text-gray-900">
+            <div className="flex-1 bg-v2-bgSoft border border-v2-border rounded-lg px-4 py-3 text-center">
+              <span className="text-2xl font-mono font-bold tracking-[0.3em] text-v2-text">
                 {shareCode}
               </span>
             </div>
             <button
               onClick={() => handleCopy(shareCode)}
-              className="px-3 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 text-sm"
+              className="px-3 py-3 bg-brand-blue text-white rounded-lg hover:bg-brand-blue/90 text-sm"
             >
               {copied ? 'Copied!' : 'Copy'}
             </button>
@@ -89,11 +89,11 @@ export default function ShareGroupModal({
             <input
               readOnly
               value={shareUrl}
-              className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700"
+              className="flex-1 bg-v2-bgSoft border border-v2-border rounded-lg px-3 py-2 text-sm text-v2-text"
             />
             <button
               onClick={() => handleCopy(shareUrl)}
-              className="px-3 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 text-sm"
+              className="px-3 py-2 bg-brand-blue text-white rounded-lg hover:bg-brand-blue/90 text-sm"
             >
               Copy
             </button>
@@ -102,7 +102,7 @@ export default function ShareGroupModal({
 
         <button
           onClick={onClose}
-          className="w-full py-2.5 bg-gold-600 text-gray-900 font-semibold rounded-lg hover:bg-gold-500"
+          className="w-full py-2.5 bg-brand-yellow text-v2-text font-semibold rounded-lg hover:bg-brand-yellow/90"
         >
           Done
         </button>

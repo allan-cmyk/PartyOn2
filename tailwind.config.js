@@ -146,6 +146,23 @@ module.exports = {
           800: '#212529',
           900: '#191C1F',
         },
+        // Group V2 Design System
+        brand: {
+          blue: '#0B74B8',
+          yellow: '#F2D34F',
+        },
+        v2: {
+          bg: '#FFFFFF',
+          bgSoft: '#F6F8FB',
+          card: '#FFFFFF',
+          border: '#E6EAF0',
+          text: '#0F172A',
+          muted: '#64748B',
+          blueTint: '#F1F8FF',
+          yellowTint: '#FFF9E6',
+          success: '#16A34A',
+          danger: '#EF4444',
+        },
         // Legacy colors for backward compatibility
         gold: {
           50: '#FFFDF5',
@@ -261,6 +278,7 @@ module.exports = {
         'gradient-primary': 'linear-gradient(135deg, #FF6B35 0%, #E74C3C 100%)',
         'gradient-fun': 'linear-gradient(135deg, #FF6B35 0%, #4ECDC4 50%, #FFE66D 100%)',
         'gradient-party': 'linear-gradient(45deg, #FF6B35, #FFE66D, #4ECDC4, #FF6B35)',
+        'gradient-v2-hero': 'linear-gradient(135deg, #F1F8FF 0%, #FFFFFF 55%, #FFF9E6 100%)',
       },
       boxShadow: {
         'premium': '0 4px 20px rgba(0, 0, 0, 0.08)',

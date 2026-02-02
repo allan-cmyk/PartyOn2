@@ -56,17 +56,17 @@ export default function DeliveryFeeInvoice({
     <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-900">
+          <p className="text-sm font-medium text-v2-text">
             Delivery Fee: ${Number(tab.deliveryFee ?? 0).toFixed(2)}
           </p>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-v2-muted">
             Host is responsible for the delivery fee.
           </p>
         </div>
         <button
           onClick={handlePay}
           disabled={loading}
-          className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 disabled:opacity-50"
+          className="px-4 py-2 bg-brand-blue text-white text-sm font-medium rounded-lg hover:bg-brand-blue/90 disabled:opacity-50"
         >
           {loading ? 'Processing...' : 'Pay Delivery Fee'}
         </button>

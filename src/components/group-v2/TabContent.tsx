@@ -125,7 +125,7 @@ export default function TabContent({
 
       {/* Draft Cart */}
       {tab.status !== 'CANCELLED' && tab.status !== 'FULFILLED' && (
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-white rounded-lg border border-v2-border p-4">
           <DraftCartSection
             items={draftItems}
             currentParticipantId={currentParticipantId}
@@ -163,7 +163,7 @@ export default function TabContent({
 
       {/* Product Catalog (only when tab is open) */}
       {!isLocked && currentParticipantId && tab.status !== 'CANCELLED' && tab.status !== 'FULFILLED' && (
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-white rounded-lg border border-v2-border p-4">
           <GroupProductCatalog
             shareCode={shareCode}
             tabId={tab.id}

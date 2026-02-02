@@ -32,9 +32,9 @@ export default function TabBar({
   isHost,
 }: Props): ReactElement {
   return (
-    <div className="bg-white border-b border-gray-200 py-3">
+    <div className="bg-white border-b border-v2-border py-3">
       <div className="max-w-5xl mx-auto flex items-center justify-between px-4 md:px-6">
-        <div className="bg-gray-100 rounded-lg p-1 flex gap-0.5 overflow-x-auto snap-x scrollbar-hide">
+        <div className="bg-v2-bgSoft rounded-lg p-1 flex gap-0.5 overflow-x-auto snap-x scrollbar-hide">
           {(tabs || []).map((tab) => {
             const isActive = tab.id === activeTabId;
             const count = getItemCount(tab);
@@ -43,14 +43,14 @@ export default function TabBar({
               <button
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
-                className={`relative flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap snap-start shrink-0 active:scale-[0.97] transition-transform duration-100 ${
-                  isActive ? 'text-white' : 'text-gray-600 hover:text-gray-900'
+                className={`relative flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap snap-start shrink-0 v2-btn-press transition-transform duration-100 ${
+                  isActive ? 'text-white' : 'text-v2-muted hover:text-v2-text'
                 }`}
               >
                 {isActive && (
                   <motion.div
                     layoutId="activeTab"
-                    className="absolute inset-0 bg-gray-900 rounded-md shadow-sm"
+                    className="absolute inset-0 bg-brand-blue rounded-md shadow-sm"
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                   />
                 )}
@@ -64,7 +64,7 @@ export default function TabBar({
                       className={`text-xs rounded-full px-1.5 py-0.5 ${
                         isActive
                           ? 'bg-white/20 text-white'
-                          : 'bg-gray-200 text-gray-600'
+                          : 'bg-v2-bgSoft text-v2-muted'
                       }`}
                     >
                       {count}
@@ -78,7 +78,7 @@ export default function TabBar({
           {isHost && (
             <button
               onClick={onAddTab}
-              className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap snap-start shrink-0 border border-dashed border-gray-300 text-gray-400 hover:text-gray-600 hover:border-gray-400 transition-colors"
+              className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap snap-start shrink-0 border border-dashed border-v2-border text-v2-muted hover:text-brand-blue hover:border-brand-blue transition-colors v2-btn-press"
             >
               + Add Tab
             </button>

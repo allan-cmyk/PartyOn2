@@ -53,9 +53,9 @@ export default function CheckoutSummaryModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6 max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-xl border border-v2-border max-w-md w-full mx-4 p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Order Summary</h3>
+          <h3 className="text-lg font-sans font-semibold text-v2-text">Order Summary</h3>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -64,8 +64,8 @@ export default function CheckoutSummaryModal({
         </div>
 
         {/* Delivery info */}
-        <div className="bg-gray-50 rounded-lg p-3 mb-4 text-sm text-gray-600">
-          <p className="font-medium text-gray-900">{tab.name}</p>
+        <div className="bg-v2-bgSoft rounded-lg p-3 mb-4 text-sm text-v2-muted">
+          <p className="font-medium text-v2-text">{tab.name}</p>
           <p>
             {new Date(tab.deliveryDate).toLocaleDateString('en-US', {
               weekday: 'short',
@@ -118,12 +118,12 @@ export default function CheckoutSummaryModal({
             value={discountCode}
             onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
             placeholder="Enter code"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-gold-500"
+            className="w-full border border-v2-border rounded-lg px-3 py-2 text-sm text-v2-text focus:ring-2 focus:ring-brand-blue"
           />
         </div>
 
         {/* Totals */}
-        <div className="border-t border-gray-200 pt-3 mb-4 space-y-1 text-sm">
+        <div className="border-t border-v2-border pt-3 mb-4 space-y-1 text-sm">
           <div className="flex justify-between text-gray-600">
             <span>Subtotal</span>
             <span>${subtotal.toFixed(2)}</span>
@@ -150,7 +150,7 @@ export default function CheckoutSummaryModal({
         <button
           onClick={handleCheckout}
           disabled={loading || myItems.length === 0}
-          className="w-full py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-3 bg-brand-blue text-white font-semibold rounded-lg hover:bg-brand-blue/90 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? 'Redirecting to checkout...' : `Pay $${subtotal.toFixed(2)}`}
         </button>

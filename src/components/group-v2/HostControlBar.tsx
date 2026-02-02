@@ -110,8 +110,8 @@ export default function HostControlBar({
   }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4">
-      <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">
+    <div className="bg-v2-card rounded-lg border border-v2-border p-4">
+      <h3 className="text-sm font-semibold text-v2-text uppercase tracking-wide mb-3">
         Host Controls
       </h3>
 
@@ -147,9 +147,9 @@ export default function HostControlBar({
         {/* Tab-level controls */}
         {activeTab && activeTab.status !== 'CANCELLED' && activeTab.status !== 'FULFILLED' && (
           <>
-            <div className="border-t border-gray-100 pt-2 mt-2">
-              <p className="text-xs text-gray-500 mb-2">
-                Tab: <span className="font-medium text-gray-700">{activeTab.name}</span>
+            <div className="border-t border-v2-border pt-2 mt-2">
+              <p className="text-xs text-v2-muted mb-2">
+                Tab: <span className="font-medium text-v2-text">{activeTab.name}</span>
               </p>
               <div className="flex flex-wrap gap-2">
                 <button

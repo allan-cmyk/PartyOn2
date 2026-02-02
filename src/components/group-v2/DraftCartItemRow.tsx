@@ -22,7 +22,7 @@ export default function DraftCartItemRow({
   const lineTotal = (Number(item.price) * Number(item.quantity)).toFixed(2);
 
   return (
-    <div className="flex items-center gap-3 py-3 border-b border-gray-100 last:border-0">
+    <div className="flex items-center gap-3 py-3 border-b border-v2-border last:border-0">
       {/* Image */}
       {item.imageUrl ? (
         <img
@@ -41,10 +41,10 @@ export default function DraftCartItemRow({
       {/* Details */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
-          <span className="text-sm font-medium text-gray-900 truncate">
+          <span className="text-sm font-medium text-v2-text truncate">
             {item.title}
           </span>
-          <span className="text-xs px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-500 whitespace-nowrap">
+          <span className="text-xs px-1.5 py-0.5 rounded-full bg-v2-bgSoft text-v2-muted whitespace-nowrap">
             {item.addedBy?.name ?? 'Unknown'}
           </span>
         </div>
@@ -57,7 +57,7 @@ export default function DraftCartItemRow({
       {/* Quantity Controls */}
       <div className="flex items-center gap-2">
         {canEdit ? (
-          <div className="flex items-center border border-gray-200 rounded-lg">
+          <div className="flex items-center border border-v2-border rounded-lg">
             <button
               onClick={() =>
                 item.quantity > 1
@@ -68,7 +68,7 @@ export default function DraftCartItemRow({
             >
               -
             </button>
-            <span className="px-2 text-sm font-medium text-gray-900">
+            <span className="px-2 text-sm font-medium text-v2-text">
               {item.quantity}
             </span>
             <button
@@ -85,7 +85,7 @@ export default function DraftCartItemRow({
 
       {/* Line Total + Remove */}
       <div className="text-right">
-        <p className="text-sm font-medium text-gray-900">${lineTotal}</p>
+        <p className="text-sm font-medium text-v2-text">${lineTotal}</p>
         {canEdit && (
           <button
             onClick={() => onRemove(item.id)}

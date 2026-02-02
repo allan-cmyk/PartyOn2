@@ -103,14 +103,14 @@ export default function GroupProductCatalog({
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+        <h3 className="text-sm font-semibold text-v2-text uppercase tracking-wide">
           Browse Products
         </h3>
       </div>
 
       {orderTypeLabel && collections.length > 0 && (
-        <div className="mb-3 text-xs text-gray-500">
-          Showing products for: <span className="font-medium text-gray-700">{orderTypeLabel}</span>
+        <div className="mb-3 text-xs text-v2-muted">
+          Showing products for: <span className="font-medium text-v2-text">{orderTypeLabel}</span>
         </div>
       )}
 
@@ -120,7 +120,7 @@ export default function GroupProductCatalog({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search products..."
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-gold-500"
+          className="w-full border border-v2-border rounded-lg px-3 py-2 text-sm text-v2-text focus:ring-2 focus:ring-brand-blue"
         />
       </div>
 
@@ -131,7 +131,7 @@ export default function GroupProductCatalog({
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <p className="text-sm text-gray-400 text-center py-6">
+        <p className="text-sm text-v2-muted text-center py-6">
           No products found.
         </p>
       ) : (
@@ -145,7 +145,7 @@ export default function GroupProductCatalog({
             return (
               <div
                 key={product.id}
-                className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-gray-300 transition-colors"
+                className="bg-v2-card border border-v2-border rounded-lg overflow-hidden hover:border-brand-blue/30 transition-colors v2-card-hover"
               >
                 {imgUrl ? (
                   <img
@@ -162,17 +162,17 @@ export default function GroupProductCatalog({
                   </div>
                 )}
                 <div className="p-2.5">
-                  <p className="text-xs font-medium text-gray-900 line-clamp-2 mb-1">
+                  <p className="text-xs font-medium text-v2-text line-clamp-2 mb-1">
                     {product.title}
                   </p>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold text-gray-900">
+                    <span className="text-sm font-semibold text-v2-text">
                       ${price.toFixed(2)}
                     </span>
                     <button
                       onClick={() => handleAdd(product)}
                       disabled={isAdding}
-                      className="text-xs px-2.5 py-1 bg-gray-900 text-white rounded-md hover:bg-gray-800 disabled:opacity-50"
+                      className="text-xs px-2.5 py-1 bg-brand-blue text-white rounded-md hover:bg-brand-blue/90 disabled:opacity-50 v2-btn-press"
                     >
                       {isAdding ? '...' : '+ Add'}
                     </button>

@@ -79,14 +79,14 @@ export default function DashboardPage(): ReactElement {
 
   if (error || !groupOrder) {
     return (
-      <div className="pt-28 min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="pt-28 min-h-screen bg-v2-bgSoft flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-xl font-bold text-gray-900 mb-2">
+          <h1 className="text-xl font-bold text-v2-text mb-2">
             Group Order Not Found
           </h1>
           <Link
             href="/group-v2/create"
-            className="text-gold-600 hover:underline"
+            className="text-brand-blue hover:underline"
           >
             Create a new group order
           </Link>
@@ -98,7 +98,7 @@ export default function DashboardPage(): ReactElement {
   const activeTab = (groupOrder.tabs || []).find((t) => t.id === activeTabId);
 
   return (
-    <div className="pt-24 min-h-screen bg-gray-50">
+    <div className="pt-24 min-h-screen bg-v2-bgSoft">
       {/* Header */}
       <GroupHeader groupOrder={groupOrder} isHost={isHost} />
 
@@ -126,27 +126,21 @@ export default function DashboardPage(): ReactElement {
                 onCheckout={() => setShowCheckout(true)}
               />
             ) : (
-              <div className="bg-white rounded-lg border border-gray-200 p-10 text-center">
-                <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              <div className="bg-v2-card rounded-lg border border-v2-border p-10 text-center">
+                <svg className="w-12 h-12 mx-auto mb-3 text-v2-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0A1.75 1.75 0 003 15.546m18-3.046c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0A1.75 1.75 0 003 12.5m18-3.046c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0" />
                 </svg>
-                <p className="text-gray-500 font-medium">No delivery tabs yet</p>
-                {isHost ? (
-                  <p className="text-sm text-gray-400 mt-1">
-                    Add a delivery tab to start planning your group order.
-                  </p>
-                ) : (
-                  <p className="text-sm text-gray-400 mt-1">
-                    The host hasn&apos;t added any delivery tabs yet. Hang tight!
-                  </p>
-                )}
+                <p className="text-v2-text font-medium">No items yet</p>
+                <p className="text-sm text-v2-muted mt-1">
+                  Share the link to get the party started!
+                </p>
               </div>
             )}
           </div>
 
           {/* Sidebar - Participants + Host Controls */}
           <div className="space-y-4">
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
+            <div className="bg-v2-card rounded-lg border border-v2-border p-4">
               <ParticipantList
                 participants={groupOrder.participants || []}
                 isHost={isHost}
@@ -166,20 +160,20 @@ export default function DashboardPage(): ReactElement {
 
             {/* Tab Summary */}
             {activeTab && (
-              <div className="bg-white rounded-lg border border-gray-200 p-4">
-                <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">
+              <div className="bg-v2-card rounded-lg border border-v2-border p-4">
+                <h3 className="text-sm font-semibold text-v2-text uppercase tracking-wide mb-3">
                   Tab Summary
                 </h3>
                 <div className="space-y-2 text-sm">
-                  <div className="flex justify-between text-gray-600">
+                  <div className="flex justify-between text-v2-muted">
                     <span>Draft Subtotal</span>
                     <span>${(activeTab.totals?.draftSubtotal ?? 0).toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-gray-600">
+                  <div className="flex justify-between text-v2-muted">
                     <span>Purchased Subtotal</span>
                     <span>${(activeTab.totals?.purchasedSubtotal ?? 0).toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-gray-600">
+                  <div className="flex justify-between text-v2-muted">
                     <span>Delivery Fee</span>
                     <span>
                       {activeTab.deliveryFeeWaived
@@ -187,7 +181,7 @@ export default function DashboardPage(): ReactElement {
                         : `$${(activeTab.totals?.deliveryFee ?? 0).toFixed(2)}`}
                     </span>
                   </div>
-                  <div className="border-t border-gray-200 pt-2 flex justify-between font-medium text-gray-900">
+                  <div className="border-t border-v2-border pt-2 flex justify-between font-medium text-v2-text">
                     <span>Total</span>
                     <span>
                       $
