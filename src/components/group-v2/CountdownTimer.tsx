@@ -1,39 +1,102 @@
 'use client';
 
 import { useState, useEffect, ReactElement } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+
+interface TimeSegment {
+  value: number;
+  label: string;
+}
 
 interface Props {
   targetDate: string | null;
   label?: string;
+  helperText?: string;
+  variant?: 'delivery' | 'deadline';
 }
 
-export default function CountdownTimer({ targetDate, label }: Props): ReactElement | null {
-  const [timeLeft, setTimeLeft] = useState('');
+function parseTimeLeft(diff: number): TimeSegment[] {
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+  const segments: TimeSegment[] = [];
+  if (days > 0) segments.push({ value: days, label: 'd' });
+  segments.push({ value: hours, label: 'h' });
+  segments.push({ value: minutes, label: 'm' });
+  segments.push({ value: seconds, label: 's' });
+  return segments;
+}
+
+function getDeadlineColor(diff: number): string {
+  const twoHours = 2 * 60 * 60 * 1000;
+  const twentyFourHours = 24 * 60 * 60 * 1000;
+  if (diff < twoHours) return 'text-red-400';
+  if (diff < twentyFourHours) return 'text-amber-400';
+  return 'text-white';
+}
+
+interface DigitProps {
+  value: string;
+  colorClass: string;
+  reducedMotion: boolean;
+}
+
+function AnimatedDigit({ value, colorClass, reducedMotion }: DigitProps): ReactElement {
+  if (reducedMotion) {
+    return (
+      <span className={`font-mono text-xl md:text-2xl font-bold ${colorClass}`}>
+        {value}
+      </span>
+    );
+  }
+
+  return (
+    <span className="inline-flex overflow-hidden">
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.span
+          key={value}
+          initial={{ y: -8, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 8, opacity: 0 }}
+          transition={{ duration: 0.15 }}
+          className={`font-mono text-xl md:text-2xl font-bold ${colorClass}`}
+        >
+          {value}
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  );
+}
+
+export default function CountdownTimer({
+  targetDate,
+  label,
+  helperText,
+  variant = 'delivery',
+}: Props): ReactElement | null {
+  const [segments, setSegments] = useState<TimeSegment[]>([]);
+  const [expired, setExpired] = useState(false);
+  const [diff, setDiff] = useState(0);
+  const reducedMotion = useReducedMotion() ?? false;
 
   useEffect(() => {
     if (!targetDate) return;
 
     const update = () => {
-      const now = new Date().getTime();
+      const now = Date.now();
       const target = new Date(targetDate).getTime();
-      const diff = target - now;
+      const remaining = target - now;
 
-      if (diff <= 0) {
-        setTimeLeft('Expired');
+      if (remaining <= 0) {
+        setExpired(true);
+        setSegments([]);
         return;
       }
 
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-      const parts = [];
-      if (days > 0) parts.push(`${days}d`);
-      parts.push(`${hours}h`);
-      parts.push(`${String(minutes).padStart(2, '0')}m`);
-      parts.push(`${String(seconds).padStart(2, '0')}s`);
-      setTimeLeft(parts.join(' '));
+      setDiff(remaining);
+      setSegments(parseTimeLeft(remaining));
     };
 
     update();
@@ -43,14 +106,38 @@ export default function CountdownTimer({ targetDate, label }: Props): ReactEleme
 
   if (!targetDate) return null;
 
+  const numberColor = variant === 'delivery'
+    ? 'text-gold-400'
+    : getDeadlineColor(diff);
+
   return (
-    <div className="flex items-center gap-2 text-sm">
-      {label && <span className="text-gray-500">{label}</span>}
-      <span className={`font-mono font-semibold ${
-        timeLeft === 'Expired' ? 'text-red-600' : 'text-gray-900'
-      }`}>
-        {timeLeft}
-      </span>
+    <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-3 min-w-[160px] hover:-translate-y-0.5 hover:shadow-md transition-all">
+      {label && (
+        <p className="text-xs uppercase tracking-wider text-gray-400 mb-1.5">
+          {label}
+        </p>
+      )}
+
+      {expired ? (
+        <p className="font-mono text-xl font-bold text-red-400">Expired</p>
+      ) : (
+        <div className="flex items-baseline gap-2">
+          {segments.map((seg) => (
+            <div key={seg.label} className="flex items-baseline gap-0.5">
+              <AnimatedDigit
+                value={String(seg.value).padStart(2, '0')}
+                colorClass={numberColor}
+                reducedMotion={reducedMotion}
+              />
+              <span className="text-xs text-gray-500">{seg.label}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {helperText && (
+        <p className="text-xs text-gray-500 mt-1">{helperText}</p>
+      )}
     </div>
   );
 }

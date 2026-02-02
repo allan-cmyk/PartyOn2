@@ -2,36 +2,45 @@
 
 import { ReactElement } from 'react';
 
-/**
- * Loading skeleton for the group order dashboard.
- * Shows placeholder shapes while data loads.
- */
 export default function DashboardSkeleton(): ReactElement {
   return (
     <div className="pt-24 min-h-screen bg-gray-50 animate-pulse">
-      {/* Header skeleton */}
-      <div className="bg-white border-b border-gray-200 px-4 md:px-6 py-4">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <div>
+      {/* Header skeleton - dark gradient hero */}
+      <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 py-5 px-4 md:py-6 md:px-6">
+          {/* Left column */}
+          <div className="flex flex-col gap-2">
+            <div className="h-8 w-56 bg-white/10 rounded" />
             <div className="flex items-center gap-2">
-              <div className="h-6 w-48 bg-gray-200 rounded" />
-              <div className="h-5 w-16 bg-gray-200 rounded-full" />
+              <div className="h-5 w-16 bg-white/10 rounded-full" />
+              <div className="h-5 w-12 bg-white/10 rounded-full" />
             </div>
-            <div className="h-4 w-32 bg-gray-100 rounded mt-1.5" />
+            <div className="h-4 w-40 bg-white/10 rounded mt-0.5" />
+            <div className="h-9 w-24 bg-white/10 rounded-lg mt-1" />
           </div>
-          <div className="flex items-center gap-3">
-            <div className="h-5 w-24 bg-gray-100 rounded" />
-            <div className="h-9 w-20 bg-gray-200 rounded-lg" />
+
+          {/* Right column - timer card placeholders */}
+          <div className="flex flex-col sm:flex-row gap-3 md:justify-end md:items-start">
+            <div className="bg-white/10 border border-white/20 rounded-xl px-4 py-3 min-w-[160px]">
+              <div className="h-3 w-24 bg-white/10 rounded mb-2" />
+              <div className="h-7 w-32 bg-white/10 rounded" />
+            </div>
+            <div className="bg-white/10 border border-white/20 rounded-xl px-4 py-3 min-w-[160px]">
+              <div className="h-3 w-24 bg-white/10 rounded mb-2" />
+              <div className="h-7 w-32 bg-white/10 rounded" />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Tab bar skeleton */}
-      <div className="bg-white border-b border-gray-200 px-4 md:px-6 py-2">
-        <div className="flex items-center gap-2">
-          <div className="h-9 w-28 bg-gray-200 rounded-full" />
-          <div className="h-9 w-24 bg-gray-100 rounded-full" />
-          <div className="h-9 w-20 bg-gray-100 rounded-full" />
+      {/* Tab bar skeleton - segmented control */}
+      <div className="bg-white border-b border-gray-200 py-3">
+        <div className="max-w-5xl mx-auto px-4 md:px-6">
+          <div className="bg-gray-100 rounded-lg p-1 flex gap-0.5 w-fit">
+            <div className="h-9 w-28 bg-gray-200 rounded-md" />
+            <div className="h-9 w-24 bg-gray-50 rounded-md" />
+            <div className="h-9 w-20 bg-gray-50 rounded-md" />
+          </div>
         </div>
       </div>
 
@@ -40,10 +49,7 @@ export default function DashboardSkeleton(): ReactElement {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Delivery info */}
             <div className="bg-gray-100 rounded-lg p-4 h-20" />
-
-            {/* Draft cart */}
             <div className="bg-white rounded-lg border border-gray-200 p-4">
               <div className="flex justify-between mb-3">
                 <div className="h-4 w-28 bg-gray-200 rounded" />
@@ -60,8 +66,6 @@ export default function DashboardSkeleton(): ReactElement {
                 </div>
               ))}
             </div>
-
-            {/* Product catalog placeholder */}
             <div className="bg-white rounded-lg border border-gray-200 p-4">
               <div className="h-4 w-32 bg-gray-200 rounded mb-3" />
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
