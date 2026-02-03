@@ -79,9 +79,14 @@ function transformToShopifyFormat(product: ProductWithRelations) {
     ? Math.min(...product.variants.map(v => Number(v.price)))
     : Number(product.basePrice);
 
+  // Convert shopifyId to GID format if it's a raw numeric ID
+  const productId = product.shopifyId
+    ? (product.shopifyId.startsWith('gid://') ? product.shopifyId : `gid://shopify/Product/${product.shopifyId}`)
+    : product.id;
+
   return {
-    // Use Shopify ID if available for consistency with Shopify API expectations
-    id: product.shopifyId || product.id,
+    // Use Shopify ID in GID format for consistency with Shopify API expectations
+    id: productId,
     handle: product.handle,
     title: product.title,
     description: product.description || '',
@@ -113,10 +118,14 @@ function transformToShopifyFormat(product: ProductWithRelations) {
         if (!v.shopifyId) {
           console.log(`[Products API] Variant "${v.title}" for "${product.title}" using local UUID (no shopifyId)`);
         }
+        // Convert shopifyId to GID format if it's a raw numeric ID
+        const variantId = v.shopifyId
+          ? (v.shopifyId.startsWith('gid://') ? v.shopifyId : `gid://shopify/ProductVariant/${v.shopifyId}`)
+          : v.id;
         return {
         node: {
-          // Use shopifyId for Shopify cart compatibility, fall back to local UUID for custom cart
-          id: v.shopifyId || v.id,
+          // Use shopifyId in GID format for Shopify cart compatibility, fall back to local UUID for custom cart
+          id: variantId,
           title: v.title,
           availableForSale: v.availableForSale,
           quantityAvailable: v.inventoryQuantity,
@@ -280,13 +289,19 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    // Search filter
-    if (searchTerm) {
+    // Search filter - search across multiple fields with relevance-based ordering
+    // We'll handle search separately below for relevance sorting
+    const isSearchQuery = !!searchTerm;
+
+    if (searchTerm && !isSearchQuery) {
+      // This block is now unused - search handled below
+      const searchLower = searchTerm.toLowerCase();
       where.OR = [
         { title: { contains: searchTerm, mode: 'insensitive' } },
         { description: { contains: searchTerm, mode: 'insensitive' } },
         { vendor: { contains: searchTerm, mode: 'insensitive' } },
-        { tags: { has: searchTerm } },
+        { productType: { contains: searchTerm, mode: 'insensitive' } },
+        { tags: { hasSome: [searchTerm, searchLower, searchTerm.toUpperCase()] } },
       ];
     }
 
@@ -330,25 +345,86 @@ export async function GET(request: NextRequest) {
     // Get total count for pagination
     const totalCount = await prisma.product.count({ where });
 
-    // Fetch products with relations
-    const products = await prisma.product.findMany({
-      where,
-      include: {
-        images: {
-          orderBy: { position: 'asc' },
-        },
-        variants: {
-          include: { image: true },
-          orderBy: { createdAt: 'asc' },
-        },
-        categories: {
-          include: { category: true },
-        },
+    // Shared include for all product queries
+    const productInclude = {
+      images: {
+        orderBy: { position: 'asc' as const },
       },
-      orderBy: { title: 'asc' },
-      take: first,
-      skip,
-    });
+      variants: {
+        include: { image: true },
+        orderBy: { createdAt: 'asc' as const },
+      },
+      categories: {
+        include: { category: true },
+      },
+    };
+
+    let products: ProductWithRelations[];
+
+    // For search queries, use relevance-based ordering:
+    // 1. Products where productType matches (highest relevance)
+    // 2. Products where title matches
+    // 3. Products where description/vendor/tags match
+    if (isSearchQuery && searchTerm) {
+      const searchLower = searchTerm.toLowerCase();
+      const baseWhere = { ...where, status: 'ACTIVE' as const };
+
+      // Query 1: productType matches (highest relevance)
+      const productTypeMatches = await prisma.product.findMany({
+        where: {
+          ...baseWhere,
+          productType: { contains: searchTerm, mode: 'insensitive' },
+        },
+        include: productInclude,
+        orderBy: { title: 'asc' },
+        take: first,
+      });
+
+      const productTypeIds = new Set(productTypeMatches.map(p => p.id));
+
+      // Query 2: title matches (not already in productType results)
+      const titleMatches = await prisma.product.findMany({
+        where: {
+          ...baseWhere,
+          id: { notIn: Array.from(productTypeIds) },
+          title: { contains: searchTerm, mode: 'insensitive' },
+        },
+        include: productInclude,
+        orderBy: { title: 'asc' },
+        take: first,
+      });
+
+      const titleIds = new Set(titleMatches.map(p => p.id));
+      const usedIds = new Set([...productTypeIds, ...titleIds]);
+
+      // Query 3: other matches (description, vendor, tags)
+      const otherMatches = await prisma.product.findMany({
+        where: {
+          ...baseWhere,
+          id: { notIn: Array.from(usedIds) },
+          OR: [
+            { description: { contains: searchTerm, mode: 'insensitive' } },
+            { vendor: { contains: searchTerm, mode: 'insensitive' } },
+            { tags: { hasSome: [searchTerm, searchLower, searchTerm.toUpperCase()] } },
+          ],
+        },
+        include: productInclude,
+        orderBy: { title: 'asc' },
+        take: first,
+      });
+
+      // Combine results in relevance order, then slice to requested count
+      products = [...productTypeMatches, ...titleMatches, ...otherMatches].slice(skip, skip + first);
+    } else {
+      // Non-search queries: use simple alphabetical ordering
+      products = await prisma.product.findMany({
+        where,
+        include: productInclude,
+        orderBy: { title: 'asc' },
+        take: first,
+        skip,
+      });
+    }
 
     // Transform to Shopify-compatible format
     const edges = products.map(product => ({
