@@ -30,11 +30,16 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const experiment = await getActiveExperiment(page, elementId);
 
     if (!experiment) {
-      // No active experiment
-      return NextResponse.json(
-        { error: 'No active experiment found' },
-        { status: 404 }
-      );
+      // No active experiment - return 200 with null values (not 404)
+      // This is expected when no experiments are configured
+      return NextResponse.json({
+        experimentId: null,
+        experimentName: null,
+        variantId: null,
+        variantName: null,
+        variantDbId: null,
+        message: 'No active experiment for this page/element',
+      });
     }
 
     // Map variants to weight structure
