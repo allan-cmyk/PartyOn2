@@ -108,13 +108,14 @@ function transformToShopifyFormat(product: ProductWithRelations) {
     },
     variants: {
       edges: product.variants.map(v => {
-        // CRITICAL: Warn if variant is missing Shopify ID (cart will fail)
+        // Log info for variants missing shopifyId (test products only)
+        // Cart system handles both Shopify GIDs and local UUIDs via /api/v1/products/variant endpoint
         if (!v.shopifyId) {
-          console.warn(`[Products API] Variant "${v.title}" for product "${product.title}" missing shopifyId - cart add will fail!`);
+          console.log(`[Products API] Variant "${v.title}" for "${product.title}" using local UUID (no shopifyId)`);
         }
         return {
         node: {
-          // CRITICAL: Use shopifyId for cart operations, fall back to Prisma id if not synced
+          // Use shopifyId for Shopify cart compatibility, fall back to local UUID for custom cart
           id: v.shopifyId || v.id,
           title: v.title,
           availableForSale: v.availableForSale,
@@ -174,10 +175,61 @@ export async function GET(request: NextRequest) {
   const priceMin = searchParams.get('priceMin') ? parseFloat(searchParams.get('priceMin')!) : undefined;
   const priceMax = searchParams.get('priceMax') ? parseFloat(searchParams.get('priceMax')!) : undefined;
 
-  // TEMPORARY FIX: Always use Shopify directly until database variants have shopifyId populated
-  // The database stores Prisma UUIDs as variant IDs, but Shopify cart requires Shopify GIDs
-  // This ensures cart add operations work correctly
-  const forceShopify = true; // Set to false once database is properly synced with Shopify IDs
+  // Local collection shortcut -- queries Postgres directly and returns
+  // Shopify-compatible response format. Skips Shopify entirely.
+  const localCollection = searchParams.get('localCollection');
+  if (localCollection && isDatabaseConfigured()) {
+    try {
+      const collectionData = await prisma.category.findUnique({
+        where: { handle: localCollection },
+      });
+
+      const products = await prisma.product.findMany({
+        where: {
+          status: 'ACTIVE',
+          categories: { some: { category: { handle: localCollection } } },
+        },
+        include: {
+          images: { orderBy: { position: 'asc' } },
+          variants: { include: { image: true }, orderBy: { createdAt: 'asc' } },
+          categories: { include: { category: true } },
+        },
+        orderBy: { title: 'asc' },
+        take: first,
+      });
+
+      const edges = products.map((product) => ({
+        node: transformToShopifyFormat(product),
+      }));
+
+      return NextResponse.json(
+        {
+          products: { edges },
+          collection: collectionData
+            ? { id: collectionData.id, handle: collectionData.handle, title: collectionData.title, description: collectionData.description || '' }
+            : null,
+        },
+        {
+          headers: {
+            'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+            'CDN-Cache-Control': 'public, s-maxage=300',
+            'Vercel-CDN-Cache-Control': 'public, s-maxage=300',
+          },
+        }
+      );
+    } catch (error) {
+      console.error('[Products API] Local collection query failed:', error);
+      return NextResponse.json(
+        { error: 'Failed to fetch local collection', details: error instanceof Error ? error.message : 'Unknown error' },
+        { status: 500 }
+      );
+    }
+  }
+
+  // Database variant IDs are now synced with Shopify - use local database
+  // Only 3 test products are missing shopifyId (they don't exist in Shopify)
+  // Cart system handles ID resolution via /api/v1/products/variant endpoint
+  const forceShopify = false;
 
   // Check if database is configured - if not, use Shopify directly
   // This ensures cart adds work (Shopify cart expects Shopify GIDs)

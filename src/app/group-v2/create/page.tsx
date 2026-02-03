@@ -11,9 +11,11 @@ interface TabFormData extends CreateTabInput {
   key: string;
 }
 
+// Use stable index-based keys to avoid SSR/client hydration mismatch
+// Date.now() generates different values on server vs client, causing React errors
 function newTab(idx: number): TabFormData {
   return {
-    key: `tab-${Date.now()}-${idx}`,
+    key: `tab-${idx}`,
     name: idx === 0 ? 'Main Order' : `Order ${idx + 1}`,
     orderType: '',
     deliveryDate: '',
@@ -37,12 +39,15 @@ export default function CreateGroupPage(): ReactElement {
   const [hostEmail, setHostEmail] = useState('');
   const [hostPhone, setHostPhone] = useState('');
   const [tabs, setTabs] = useState<TabFormData[]>([newTab(0)]);
+  // Counter ensures unique keys even when tabs are removed and re-added
+  const [tabCounter, setTabCounter] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const addTab = () => {
     if (tabs.length >= 10) return;
-    setTabs([...tabs, newTab(tabs.length)]);
+    setTabs([...tabs, newTab(tabCounter)]);
+    setTabCounter(tabCounter + 1);
   };
 
   const removeTab = (key: string) => {
