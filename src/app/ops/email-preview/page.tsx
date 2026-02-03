@@ -4,13 +4,6 @@ import { useState, ReactElement } from 'react';
 
 type EmailType = 'order-confirmation' | 'delivery-en-route' | 'delivery-completed' | 'payment-failed' | 'refund-processed';
 
-const EMAIL_LABELS: Record<EmailType, string> = {
-  'order-confirmation': 'Order Confirmation',
-  'delivery-en-route': 'Delivery En Route',
-  'delivery-completed': 'Delivery Completed',
-  'payment-failed': 'Payment Failed',
-  'refund-processed': 'Refund Processed',
-};
 
 const SAMPLE_DATA = {
   orderNumber: 1234,

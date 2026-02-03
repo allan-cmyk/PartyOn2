@@ -231,14 +231,14 @@ export default function CollectionsPage(): ReactElement {
               {topLevel.map((col) => {
                 const children = childrenOf(col.id);
                 return (
-                  <CollectionRow key={col.id} collection={col} children={children} onRefresh={fetchCollections} />
+                  <CollectionRow key={col.id} collection={col} childCollections={children} onRefresh={fetchCollections} />
                 );
               })}
               {/* Orphaned children (parent not in top-level — shouldn't happen but safe) */}
               {collections
                 .filter((c) => c.parentId && !topLevel.some((t) => t.id === c.parentId))
                 .map((col) => (
-                  <CollectionRow key={col.id} collection={col} children={[]} onRefresh={fetchCollections} />
+                  <CollectionRow key={col.id} collection={col} childCollections={[]} onRefresh={fetchCollections} />
                 ))}
             </tbody>
           </table>
@@ -250,12 +250,12 @@ export default function CollectionsPage(): ReactElement {
 
 function CollectionRow({
   collection,
-  children,
+  childCollections,
   indent = false,
   onRefresh,
 }: {
   collection: Collection;
-  children: Collection[];
+  childCollections: Collection[];
   indent?: boolean;
   onRefresh: () => void;
 }): ReactElement {
@@ -305,7 +305,7 @@ function CollectionRow({
           <span className="text-lg font-bold text-gray-900">{collection.productCount}</span>
         </td>
         <td className="px-6 py-4 text-center">
-          <span className="text-gray-600">{children.length}</span>
+          <span className="text-gray-600">{childCollections.length}</span>
         </td>
         <td className="px-6 py-4 text-right">
           <div className="flex items-center justify-end gap-2">
@@ -317,17 +317,17 @@ function CollectionRow({
             </Link>
             <button
               onClick={handleDelete}
-              disabled={deleting || children.length > 0}
+              disabled={deleting || childCollections.length > 0}
               className="px-3 py-1.5 text-sm font-medium bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              title={children.length > 0 ? 'Remove child collections first' : 'Delete collection'}
+              title={childCollections.length > 0 ? 'Remove child collections first' : 'Delete collection'}
             >
               {deleting ? '...' : 'Delete'}
             </button>
           </div>
         </td>
       </tr>
-      {children.map((child) => (
-        <CollectionRow key={child.id} collection={child} children={[]} indent onRefresh={onRefresh} />
+      {childCollections.map((child) => (
+        <CollectionRow key={child.id} collection={child} childCollections={[]} indent onRefresh={onRefresh} />
       ))}
     </>
   );
