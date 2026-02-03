@@ -37,8 +37,16 @@ const SAMPLE_DELIVERY = {
   customerName: 'John Smith',
   driverName: 'Mike',
   estimatedArrival: '15 minutes',
-  deliveryAddress: '123 Lake Austin Blvd, Apt 4B, Austin, TX 78703',
+  deliveryAddress: {
+    address1: '123 Lake Austin Blvd',
+    address2: 'Apt 4B',
+    city: 'Austin',
+    province: 'TX',
+    zip: '78703',
+  },
   trackingUrl: 'https://partyondelivery.com/track/abc123',
+  deliveryDate: new Date('2026-02-10'),
+  deliveryTime: '2-4 PM',
 };
 
 const SUBJECT_MAP: Record<string, string> = {
