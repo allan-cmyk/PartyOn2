@@ -3,6 +3,7 @@
 import { useState, useEffect, ReactElement } from 'react';
 import { addDraftItemV2 } from '@/lib/group-orders-v2/api-client';
 import { getCollectionsForOrderType, ORDER_TYPES } from '@/lib/group-orders-v2/order-types';
+import CollectionTabs from './CollectionTabs';
 
 interface CatalogProduct {
   id: string;
@@ -41,20 +42,26 @@ export default function GroupProductCatalog({
 
   const collections = getCollectionsForOrderType(orderType);
   const orderTypeLabel = ORDER_TYPES.find((t) => t.value === orderType)?.label;
+  const [activeCollection, setActiveCollection] = useState(collections[0]?.handle ?? '');
+
+  // Reset active collection when order type changes
+  useEffect(() => {
+    setActiveCollection(collections[0]?.handle ?? '');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderType]);
 
   useEffect(() => {
     async function fetchProducts() {
       setLoading(true);
       try {
         let url = '/api/v1/admin/products?limit=50&status=ACTIVE';
-        if (collections.length > 0) {
-          url += `&category=${encodeURIComponent(collections[0])}`;
+        if (activeCollection) {
+          url += `&category=${encodeURIComponent(activeCollection)}`;
         }
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Server error: ${res.status}`);
         const json = await res.json();
         if (json.success) {
-          // API returns { data: { products: [...], pagination, filters } }
           const productsArray = json.data?.products ?? json.data;
           setProducts(Array.isArray(productsArray) ? productsArray : []);
         }
@@ -65,8 +72,7 @@ export default function GroupProductCatalog({
       }
     }
     fetchProducts();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orderType]);
+  }, [activeCollection]);
 
   const filtered = search
     ? products.filter(
@@ -108,11 +114,17 @@ export default function GroupProductCatalog({
         </h3>
       </div>
 
-      {orderTypeLabel && collections.length > 0 && (
+      {collections.length > 1 ? (
+        <CollectionTabs
+          collections={collections}
+          activeHandle={activeCollection}
+          onSelect={setActiveCollection}
+        />
+      ) : orderTypeLabel && collections.length === 1 ? (
         <div className="mb-3 text-xs text-v2-muted">
           Showing products for: <span className="font-medium text-v2-text">{orderTypeLabel}</span>
         </div>
-      )}
+      ) : null}
 
       <div className="mb-3">
         <input
