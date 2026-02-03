@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, ReactElement } from 'react';
+import { ReactElement } from 'react';
 import Image from 'next/image';
 import CountdownTimer from './CountdownTimer';
-import ShareGroupModal from './ShareGroupModal';
 import type { GroupOrderV2Full } from '@/lib/group-orders-v2/types';
 
 interface Props {
@@ -34,27 +33,28 @@ function getDateSubtitle(groupOrder: GroupOrderV2Full): string {
 }
 
 export default function GroupHeader({ groupOrder, isHost }: Props): ReactElement {
-  const [showShare, setShowShare] = useState(false);
   const statusStyle = getStatusChip(groupOrder.status);
   const activeParticipants = (groupOrder.participants || []).filter(
     (p) => p.status === 'ACTIVE'
   ).length;
 
   return (
-    <>
-      <div className="relative overflow-hidden border-b border-v2-border">
-        <Image
-          src="/images/partners/group-dashboard-bg.png"
-          alt=""
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-white/80" />
-        <div className="relative py-5 px-4 md:py-6 md:px-6 space-y-4">
-          {/* Top row - Info */}
-          <div className="flex flex-col gap-2">
-            <div className="text-center md:text-left">
+    <div className="relative overflow-hidden border-b border-v2-border">
+      <Image
+        src="/images/partners/group-dashboard-bg.png"
+        alt=""
+        fill
+        className="object-cover"
+        priority
+      />
+      <div className="absolute inset-0 bg-white/80" />
+
+      {/* Single horizontal row: name+date LEFT, timers RIGHT */}
+      <div className="relative py-5 px-4 md:py-6 md:px-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          {/* Left side - Name, date, badges, code */}
+          <div className="flex flex-col gap-1.5">
+            <div>
               <h1 className="font-sans text-2xl md:text-3xl font-bold text-v2-text tracking-tight">
                 {groupOrder.name}
               </h1>
@@ -63,7 +63,7 @@ export default function GroupHeader({ groupOrder, isHost }: Props): ReactElement
               </p>
             </div>
 
-            <div className="flex items-center gap-2 flex-wrap justify-center md:justify-start">
+            <div className="flex items-center gap-2 flex-wrap">
               <span
                 className={`text-xs font-medium px-2.5 py-0.5 rounded-full border flex items-center gap-1.5 ${statusStyle.bg} ${statusStyle.text} ${statusStyle.border}`}
               >
@@ -77,33 +77,19 @@ export default function GroupHeader({ groupOrder, isHost }: Props): ReactElement
                   Host
                 </span>
               )}
-            </div>
-
-            <p className="text-sm text-v2-muted text-center md:text-left">
-              Code:{' '}
-              <span className="font-mono font-semibold text-v2-text">
-                {groupOrder.shareCode}
+              <span className="text-xs text-v2-muted">
+                Code:{' '}
+                <span className="font-mono font-semibold text-v2-text">
+                  {groupOrder.shareCode}
+                </span>
+                {' \u00B7 '}
+                {activeParticipants} participant{activeParticipants !== 1 ? 's' : ''}
               </span>
-              {' \u00B7 '}
-              <svg
-                className="inline-block w-3.5 h-3.5 -mt-0.5 mr-0.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-              {activeParticipants} participant{activeParticipants !== 1 ? 's' : ''}
-            </p>
+            </div>
           </div>
 
-          {/* Timers row */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+          {/* Right side - Timers side by side */}
+          <div className="flex flex-row gap-3 shrink-0">
             {groupOrder.timer?.earliestDelivery && (
               <CountdownTimer
                 targetDate={groupOrder.timer.earliestDelivery}
@@ -121,25 +107,8 @@ export default function GroupHeader({ groupOrder, isHost }: Props): ReactElement
               />
             )}
           </div>
-
-          {/* Share button - below timers */}
-          <div className="flex justify-center md:justify-start">
-            <button
-              onClick={() => setShowShare(true)}
-              className="px-6 py-2 text-sm font-medium rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 active:scale-[0.98] transition-all v2-btn-press"
-            >
-              Share Group Link
-            </button>
-          </div>
         </div>
       </div>
-
-      <ShareGroupModal
-        isOpen={showShare}
-        onClose={() => setShowShare(false)}
-        shareCode={groupOrder.shareCode}
-        groupName={groupOrder.name}
-      />
-    </>
+    </div>
   );
 }

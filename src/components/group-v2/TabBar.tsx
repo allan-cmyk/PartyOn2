@@ -10,6 +10,7 @@ interface Props {
   onTabChange: (tabId: string) => void;
   onAddTab?: () => void;
   isHost: boolean;
+  onShare?: () => void;
 }
 
 function getTabStatusColor(tab: SubOrderFull): string {
@@ -30,11 +31,13 @@ export default function TabBar({
   onTabChange,
   onAddTab,
   isHost,
+  onShare,
 }: Props): ReactElement {
   return (
     <div className="bg-white border-b border-v2-border py-3">
-      <div className="max-w-5xl mx-auto flex items-center justify-between px-4 md:px-6">
-        <div className="bg-v2-bgSoft rounded-lg p-1 flex gap-0.5 overflow-x-auto snap-x scrollbar-hide">
+      <div className="max-w-5xl mx-auto flex items-center justify-between gap-3 px-4 md:px-6">
+        {/* Left - Tabs */}
+        <div className="bg-v2-bgSoft rounded-lg p-1 flex gap-0.5 overflow-x-auto snap-x scrollbar-hide min-w-0">
           {(tabs || []).map((tab) => {
             const isActive = tab.id === activeTabId;
             const count = getItemCount(tab);
@@ -84,6 +87,16 @@ export default function TabBar({
             </button>
           )}
         </div>
+
+        {/* Right - Share button */}
+        {onShare && (
+          <button
+            onClick={onShare}
+            className="shrink-0 px-4 py-2 text-sm font-medium rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 active:scale-[0.98] transition-all v2-btn-press"
+          >
+            Share
+          </button>
+        )}
       </div>
     </div>
   );

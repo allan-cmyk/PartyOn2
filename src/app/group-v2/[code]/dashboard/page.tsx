@@ -14,6 +14,7 @@ import MobileCheckoutBar from '@/components/group-v2/MobileCheckoutBar';
 import CheckoutSummaryModal from '@/components/group-v2/CheckoutSummaryModal';
 import DashboardSkeleton from '@/components/group-v2/DashboardSkeleton';
 import CreateTabModal from '@/components/group-v2/CreateTabModal';
+import ShareGroupModal from '@/components/group-v2/ShareGroupModal';
 
 export default function DashboardPage(): ReactElement {
   const params = useParams();
@@ -24,6 +25,7 @@ export default function DashboardPage(): ReactElement {
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
   const [showCreateTab, setShowCreateTab] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
+  const [showShare, setShowShare] = useState(false);
   const [participantId, setParticipantId] = useState<string | null>(null);
 
   // Restore participant ID from localStorage (scoped to this group code)
@@ -102,13 +104,14 @@ export default function DashboardPage(): ReactElement {
       {/* Header */}
       <GroupHeader groupOrder={groupOrder} isHost={isHost} />
 
-      {/* Tab Bar */}
+      {/* Tab Bar + Share */}
       <TabBar
         tabs={groupOrder.tabs || []}
         activeTabId={activeTabId}
         onTabChange={setActiveTabId}
         onAddTab={isHost ? () => setShowCreateTab(true) : undefined}
         isHost={isHost}
+        onShare={() => setShowShare(true)}
       />
 
       {/* Content */}
@@ -218,6 +221,14 @@ export default function DashboardPage(): ReactElement {
           onCheckout={() => setShowCheckout(true)}
         />
       )}
+
+      {/* Share Group Modal */}
+      <ShareGroupModal
+        isOpen={showShare}
+        onClose={() => setShowShare(false)}
+        shareCode={groupOrder.shareCode}
+        groupName={groupOrder.name}
+      />
 
       {/* Checkout Summary Modal (shared between mobile bar + inline button) */}
       {activeTab && participantId && (
