@@ -37,6 +37,8 @@ const SAMPLE_DELIVERY = {
   estimatedArrival: '15 minutes',
   deliveryAddress: '123 Lake Austin Blvd, Apt 4B, Austin, TX 78703',
   trackingUrl: 'https://partyondelivery.com/track/abc123',
+  deliveryDate: new Date('2026-02-10'),
+  deliveryTime: '2-4 PM',
 };
 
 export async function GET(request: NextRequest) {
