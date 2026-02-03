@@ -11,13 +11,42 @@ interface TabFormData extends CreateTabInput {
   key: string;
 }
 
+// Get tomorrow's date in YYYY-MM-DD format for min date attribute
+function getMinDate(): string {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return tomorrow.toISOString().split('T')[0];
+}
+
+// Check if a date string (YYYY-MM-DD) falls on a Sunday
+function isSunday(dateStr: string): boolean {
+  const date = new Date(dateStr + 'T12:00:00');
+  return date.getDay() === 0;
+}
+
+// Validate delivery date: must be in future and not Sunday
+function validateDeliveryDate(dateStr: string): string | null {
+  if (!dateStr) return null;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const selectedDate = new Date(dateStr + 'T12:00:00');
+
+  if (selectedDate <= today) {
+    return 'Delivery date must be in the future';
+  }
+  if (isSunday(dateStr)) {
+    return 'Delivery is not available on Sundays';
+  }
+  return null;
+}
+
 // Use stable index-based keys to avoid SSR/client hydration mismatch
 // Date.now() generates different values on server vs client, causing React errors
 function newTab(idx: number): TabFormData {
   return {
     key: `tab-${idx}`,
-    name: idx === 0 ? 'Main Order' : `Order ${idx + 1}`,
-    orderType: '',
+    name: idx === 0 ? 'House Order' : `Order ${idx + 1}`,
+    orderType: 'house',
     deliveryDate: '',
     deliveryTime: '',
     deliveryAddress: {
@@ -43,6 +72,7 @@ export default function CreateGroupPage(): ReactElement {
   const [tabCounter, setTabCounter] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [dateErrors, setDateErrors] = useState<Record<string, string>>({});
 
   const addTab = () => {
     if (tabs.length >= 10) return;
@@ -56,6 +86,15 @@ export default function CreateGroupPage(): ReactElement {
   };
 
   const updateTab = (key: string, field: string, value: string) => {
+    // Validate delivery date
+    if (field === 'deliveryDate') {
+      const dateError = validateDeliveryDate(value);
+      setDateErrors((prev) => ({
+        ...prev,
+        [key]: dateError || '',
+      }));
+    }
+
     setTabs(
       tabs.map((t) => {
         if (t.key !== key) return t;
@@ -76,12 +115,29 @@ export default function CreateGroupPage(): ReactElement {
     setError('');
     setLoading(true);
 
+    // Validate required fields
+    if (!hostEmail || !hostPhone) {
+      setError('Email and phone are required');
+      setLoading(false);
+      return;
+    }
+
+    // Validate all delivery dates
+    for (const tab of tabs) {
+      const dateError = validateDeliveryDate(tab.deliveryDate);
+      if (dateError) {
+        setError(`${tab.name}: ${dateError}`);
+        setLoading(false);
+        return;
+      }
+    }
+
     try {
       const group = await createGroupOrderV2({
         name,
         hostName,
-        hostEmail: hostEmail || undefined,
-        hostPhone: hostPhone || undefined,
+        hostEmail,
+        hostPhone,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         tabs: tabs.map(({ key, ...rest }) => ({
           ...rest,
@@ -155,10 +211,11 @@ export default function CreateGroupPage(): ReactElement {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email (optional)
+                  Email *
                 </label>
                 <input
                   type="email"
+                  required
                   value={hostEmail}
                   onChange={(e) => setHostEmail(e.target.value)}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500"
@@ -167,10 +224,11 @@ export default function CreateGroupPage(): ReactElement {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Phone (optional)
+                Phone *
               </label>
               <input
                 type="tel"
+                required
                 value={hostPhone}
                 onChange={(e) => setHostPhone(e.target.value)}
                 className="w-full md:w-1/2 border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500"
@@ -243,12 +301,21 @@ export default function CreateGroupPage(): ReactElement {
                   <input
                     type="date"
                     required
+                    min={getMinDate()}
                     value={tab.deliveryDate}
                     onChange={(e) =>
                       updateTab(tab.key, 'deliveryDate', e.target.value)
                     }
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500"
+                    className={`w-full border rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500 ${
+                      dateErrors[tab.key] ? 'border-red-500' : 'border-gray-300'
+                    }`}
                   />
+                  {dateErrors[tab.key] && (
+                    <p className="text-red-500 text-sm mt-1">{dateErrors[tab.key]}</p>
+                  )}
+                  <p className="text-gray-500 text-xs mt-1">
+                    Note: Deliveries are not available on Sundays
+                  </p>
                 </div>
               </div>
 
