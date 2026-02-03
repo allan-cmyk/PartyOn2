@@ -131,6 +131,7 @@ export default function OpsLayout({ children }: OpsLayoutProps): ReactElement {
     { href: '/ops/products', label: 'Products' },
     { href: '/ops/orders', label: 'Orders' },
     { href: '/ops/customers', label: 'Customers' },
+    { href: '/ops/email-preview', label: 'Emails' },
     { href: '/ops/sync', label: 'Sync' },
     { href: '/ops/reports', label: 'Reports' },
   ];
