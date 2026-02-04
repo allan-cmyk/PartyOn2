@@ -13,20 +13,23 @@ export default function CollectionTabs({ collections, activeHandle, onSelect }: 
   if (collections.length <= 1) return null;
 
   return (
-    <div className="mb-3 overflow-x-auto flex gap-1.5">
-      {collections.map((col) => (
-        <button
-          key={col.handle}
-          onClick={() => onSelect(col.handle)}
-          className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium transition-colors ${
-            col.handle === activeHandle
-              ? 'bg-brand-blue text-white rounded-md shadow-sm'
-              : 'bg-v2-bgSoft text-v2-muted hover:text-v2-text rounded-md'
-          }`}
-        >
-          {col.label}
-        </button>
-      ))}
+    <div className="mb-4 overflow-x-auto flex gap-2 pb-1">
+      {collections.map((col) => {
+        const isActive = col.handle === activeHandle;
+        return (
+          <button
+            key={col.handle}
+            onClick={() => onSelect(col.handle)}
+            className={`whitespace-nowrap px-4 py-2.5 text-xs md:text-sm font-medium tracking-[0.05em] transition-all rounded-lg border ${
+              isActive
+                ? `${col.colors.bgActive} ${col.colors.textActive} ${col.colors.borderActive} shadow-md`
+                : `${col.colors.bg} ${col.colors.text} ${col.colors.border}`
+            }`}
+          >
+            {col.label}
+          </button>
+        );
+      })}
     </div>
   );
 }

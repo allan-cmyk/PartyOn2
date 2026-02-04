@@ -137,9 +137,9 @@ export default function GroupProductCatalog({
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="animate-pulse bg-gray-100 rounded-lg h-48" />
+        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
+            <div key={i} className="animate-pulse bg-gray-100 rounded-lg aspect-square" />
           ))}
         </div>
       ) : filtered.length === 0 ? (
@@ -147,7 +147,7 @@ export default function GroupProductCatalog({
           No products found.
         </p>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-[500px] overflow-y-auto">
+        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
           {filtered.map((product) => {
             const variant = product.variants?.[0];
             const price = variant ? Number(variant.price) : Number(product.basePrice);
@@ -157,38 +157,50 @@ export default function GroupProductCatalog({
             return (
               <div
                 key={product.id}
-                className="bg-v2-card border border-v2-border rounded-lg overflow-hidden hover:border-brand-blue/30 transition-colors v2-card-hover"
+                className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
               >
-                {imgUrl ? (
-                  <img
-                    src={imgUrl}
-                    alt={product.title}
-                    className="w-full h-28 object-cover bg-gray-50"
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="w-full h-28 bg-gray-50 flex items-center justify-center">
-                    <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg>
-                  </div>
-                )}
-                <div className="p-2.5">
-                  <p className="text-xs font-medium text-v2-text line-clamp-2 mb-1">
+                {/* Image - aspect square */}
+                <div className="relative aspect-square bg-gray-100 w-full group">
+                  {imgUrl ? (
+                    <img
+                      src={imgUrl}
+                      alt={product.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+
+                {/* Content - centered text */}
+                <div className="p-2 space-y-0.5 text-center">
+                  <h3 className="font-medium text-sm sm:text-base text-gray-900 line-clamp-2 leading-tight">
                     {product.title}
+                  </h3>
+                  <p className="font-bold text-base sm:text-lg text-gray-900">
+                    ${price.toFixed(2)}
                   </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold text-v2-text">
-                      ${price.toFixed(2)}
-                    </span>
-                    <button
-                      onClick={() => handleAdd(product)}
-                      disabled={isAdding}
-                      className="text-xs px-2.5 py-1 bg-brand-blue text-white rounded-md hover:bg-brand-blue/90 disabled:opacity-50 v2-btn-press"
-                    >
-                      {isAdding ? '...' : '+ Add'}
-                    </button>
-                  </div>
+
+                  {/* Golden circular add button */}
+                  <button
+                    onClick={() => handleAdd(product)}
+                    disabled={isAdding}
+                    className="mx-auto mt-1.5 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gold-500 hover:bg-gold-600 text-gray-900 flex items-center justify-center shadow-md transition-all disabled:opacity-50"
+                    aria-label={`Add ${product.title} to group order`}
+                  >
+                    {isAdding ? (
+                      <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                      </svg>
+                    )}
+                  </button>
                 </div>
               </div>
             );
