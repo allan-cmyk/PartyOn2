@@ -10,7 +10,7 @@ import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
 import CustomerAuth from '@/components/CustomerAuth';
 
 export default function CheckoutPage() {
-  const { cart, customCartData, loading: cartLoading, isCustomCart, refetchCart } = useCartContext();
+  const { cart, customCartData, loading: cartLoading, isCustomCart, refetchCart, updateCartFromApiResponse } = useCartContext();
   const { customer, isAuthenticated } = useCustomerContext();
   const { isInGroupOrder, currentGroupOrder, isHost } = useGroupOrderContext();
   
@@ -165,13 +165,24 @@ export default function CheckoutPage() {
           });
         } else {
           console.log('[Checkout] Discount applied successfully:', data);
+          console.log('[Checkout] Cart from discount API:', {
+            discountCode: data.data?.cart?.discountCode,
+            discountAmount: data.data?.cart?.discountAmount,
+            subtotal: data.data?.cart?.subtotal,
+            total: data.data?.cart?.total,
+          });
           setDiscountFeedback({
             type: 'success',
             message: data.message || `Discount code "${discountCode.toUpperCase()}" applied!`
           });
           setDiscountCode('');
-          // Refetch cart to get updated totals (without full page reload)
-          await refetchCart();
+          // Update cart directly from API response (more reliable than refetch)
+          if (data.data?.cart) {
+            updateCartFromApiResponse(data.data.cart);
+          } else {
+            // Fallback to refetch if cart not in response
+            await refetchCart();
+          }
         }
       } else {
         // Shopify discount - dynamic import to avoid build errors when not using Shopify
@@ -224,9 +235,15 @@ export default function CheckoutPage() {
           method: 'DELETE',
           credentials: 'include',
         });
-        if (response.ok) {
-          // Refetch cart to get updated totals
-          await refetchCart();
+        const data = await response.json();
+        if (response.ok && data.success) {
+          // Update cart directly from API response
+          if (data.data?.cart) {
+            updateCartFromApiResponse(data.data.cart);
+          } else {
+            // Fallback to refetch
+            await refetchCart();
+          }
           setDiscountFeedback({
             type: 'success',
             message: 'Discount removed'

@@ -18,6 +18,26 @@ interface CustomCartData {
   total?: string | number;
 }
 
+// Custom cart data structure from API
+interface CustomCartApiData {
+  id: string;
+  items: Array<{
+    id: string;
+    productId: string;
+    variantId: string;
+    quantity: number;
+    price: string;
+    product: { id: string; title: string; handle: string };
+    variant: { id: string; title: string; sku: string | null; price: string };
+  }>;
+  subtotal: string;
+  taxAmount: string;
+  deliveryFee: string;
+  discountAmount: string;
+  discountCode?: string;
+  total: string;
+}
+
 interface CartContextType {
   cart: ShopifyCart | null;
   customCartData: CustomCartData | null;  // Direct access to custom cart discount data
@@ -30,6 +50,7 @@ interface CartContextType {
   clearCart: () => void | Promise<void>;
   updateCartAttributes: (attributes: Array<{ key: string; value: string }>) => Promise<ShopifyCart | undefined>;
   refetchCart: () => Promise<void>;  // Allow manual refetch after discount applied
+  updateCartFromApiResponse: (cart: CustomCartApiData) => void;  // Direct update from API response
   isCartOpen: boolean;
   openCart: () => void;
   closeCart: () => void;
@@ -243,6 +264,9 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
     clearCart: cartHook.clearCart,
     updateCartAttributes: cartHook.updateCartAttributes,
     refetchCart: USE_CUSTOM_CART ? customCartHook.refetchCart : async () => {},
+    updateCartFromApiResponse: USE_CUSTOM_CART
+      ? customCartHook.setCartFromApiResponse
+      : () => { console.warn('updateCartFromApiResponse not available for Shopify cart'); },
     isCartOpen,
     openCart,
     closeCart,

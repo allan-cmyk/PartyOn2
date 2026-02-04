@@ -426,6 +426,22 @@ export function useCustomCart() {
     }
   }, [customCart]);
 
+  /**
+   * Directly set the custom cart state (useful when API returns updated cart)
+   * This avoids the need for a separate refetch after mutations
+   */
+  const setCartFromApiResponse = useCallback((apiCart: CustomCart) => {
+    console.log('[useCustomCart] setCartFromApiResponse called with:', {
+      discountCode: apiCart.discountCode,
+      discountAmount: apiCart.discountAmount,
+      discountAmountType: typeof apiCart.discountAmount,
+      subtotal: apiCart.subtotal,
+      total: apiCart.total,
+    });
+    setCustomCart(apiCart);
+    setCart(transformToShopifyCart(apiCart));
+  }, []);
+
   return {
     cart,
     customCart, // Expose raw custom cart for advanced features
@@ -438,5 +454,6 @@ export function useCustomCart() {
     clearCart,
     updateCartAttributes,
     refetchCart: fetchCart,
+    setCartFromApiResponse, // Direct state update from API response
   };
 }
