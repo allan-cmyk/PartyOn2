@@ -33,6 +33,7 @@ interface CustomCart {
   taxAmount: string;
   deliveryFee: string;
   discountAmount: string;
+  discountCode?: string;
   total: string;
   deliveryDate?: string;
   deliveryTime?: string;
