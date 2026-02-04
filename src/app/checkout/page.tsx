@@ -10,7 +10,7 @@ import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
 import CustomerAuth from '@/components/CustomerAuth';
 
 export default function CheckoutPage() {
-  const { cart, loading: cartLoading, isCustomCart } = useCartContext();
+  const { cart, customCartData, loading: cartLoading, isCustomCart, refetchCart } = useCartContext();
   const { customer, isAuthenticated } = useCustomerContext();
   const { isInGroupOrder, currentGroupOrder, isHost } = useGroupOrderContext();
   
@@ -95,11 +95,31 @@ export default function CheckoutPage() {
   const tax = subtotal * 0.0825; // Texas sales tax
 
   // Get discount amount from cart
-  // For custom cart, read from attributes where we stored it
+  // For custom cart, read directly from customCartData (most reliable)
+  // Falls back to attributes for backward compatibility
   // For Shopify cart, discounts are already reflected in cart totals (we don't apply our own)
   const discountAmount = isCustomCart
-    ? parseFloat(cart?.attributes?.find(a => a.key === '_discountAmount')?.value || '0')
+    ? (() => {
+        // First try customCartData (direct from API)
+        if (customCartData?.discountAmount) {
+          const amount = typeof customCartData.discountAmount === 'string'
+            ? parseFloat(customCartData.discountAmount)
+            : Number(customCartData.discountAmount);
+          console.log('[Checkout] Discount from customCartData:', amount);
+          return amount || 0;
+        }
+        // Fallback to attributes
+        const attrValue = cart?.attributes?.find(a => a.key === '_discountAmount')?.value;
+        if (attrValue) {
+          console.log('[Checkout] Discount from attributes:', attrValue);
+          return parseFloat(attrValue) || 0;
+        }
+        return 0;
+      })()
     : 0; // Shopify handles its own discounts through cart.cost
+
+  // Get applied discount code
+  const appliedDiscountCode = isCustomCart ? customCartData?.discountCode : null;
 
   const total = subtotal + deliveryFee + tax - Math.abs(discountAmount);
 
@@ -128,13 +148,14 @@ export default function CheckoutPage() {
             message: data.error || 'Invalid or expired discount code'
           });
         } else {
+          console.log('[Checkout] Discount applied successfully:', data);
           setDiscountFeedback({
             type: 'success',
             message: data.message || `Discount code "${discountCode.toUpperCase()}" applied!`
           });
           setDiscountCode('');
-          // Refresh the page to show updated cart totals
-          window.location.reload();
+          // Refetch cart to get updated totals (without full page reload)
+          await refetchCart();
         }
       } else {
         // Shopify discount - dynamic import to avoid build errors when not using Shopify
@@ -187,7 +208,12 @@ export default function CheckoutPage() {
           method: 'DELETE',
         });
         if (response.ok) {
-          window.location.reload();
+          // Refetch cart to get updated totals
+          await refetchCart();
+          setDiscountFeedback({
+            type: 'success',
+            message: 'Discount removed'
+          });
         }
         return;
       }
@@ -583,10 +609,11 @@ export default function CheckoutPage() {
                     </p>
                   )}
                   
-                  {/* Applied Discounts */}
-                  {cart?.discountCodes && cart.discountCodes.length > 0 && (
+                  {/* Applied Discounts - Show from cart.discountCodes OR customCartData */}
+                  {((cart?.discountCodes && cart.discountCodes.length > 0) || appliedDiscountCode) && (
                     <div className="mt-2 space-y-1">
-                      {cart.discountCodes.map((discount) => (
+                      {/* Show discount codes from transformed cart */}
+                      {cart?.discountCodes && cart.discountCodes.map((discount) => (
                         <div key={discount.code} className="flex items-center justify-between bg-green-50 px-3 py-2 rounded">
                           <span className="text-sm text-green-700">
                             {discount.code} {discount.applicable && '✓ Applied'}
@@ -599,6 +626,20 @@ export default function CheckoutPage() {
                           </button>
                         </div>
                       ))}
+                      {/* Fallback: Show from customCartData if cart.discountCodes is empty */}
+                      {(!cart?.discountCodes || cart.discountCodes.length === 0) && appliedDiscountCode && (
+                        <div className="flex items-center justify-between bg-green-50 px-3 py-2 rounded">
+                          <span className="text-sm text-green-700">
+                            {appliedDiscountCode} ✓ Applied
+                          </span>
+                          <button
+                            onClick={() => handleRemoveDiscount(appliedDiscountCode)}
+                            className="text-red-600 hover:text-red-700 text-sm"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

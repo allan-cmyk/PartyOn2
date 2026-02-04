@@ -61,9 +61,20 @@ interface CartApiResponse {
  * Transform custom cart to ShopifyCart format for backwards compatibility
  */
 function transformToShopifyCart(cart: CustomCart): ShopifyCart {
-  const subtotal = parseFloat(cart.subtotal);
-  const total = parseFloat(cart.total);
-  const tax = parseFloat(cart.taxAmount);
+  // Safely parse numeric values - handle both string and number types
+  const subtotal = typeof cart.subtotal === 'string' ? parseFloat(cart.subtotal) : Number(cart.subtotal) || 0;
+  const total = typeof cart.total === 'string' ? parseFloat(cart.total) : Number(cart.total) || 0;
+  const tax = typeof cart.taxAmount === 'string' ? parseFloat(cart.taxAmount) : Number(cart.taxAmount) || 0;
+
+  // Debug logging for discount troubleshooting
+  if (cart.discountCode || cart.discountAmount) {
+    console.log('[CustomCart Transform] Discount data:', {
+      discountCode: cart.discountCode,
+      discountCodeType: typeof cart.discountCode,
+      discountAmount: cart.discountAmount,
+      discountAmountType: typeof cart.discountAmount,
+    });
+  }
 
   // Build attributes array from delivery info
   const attributes: Array<{ key: string; value: string }> = [];
@@ -128,9 +139,13 @@ function transformToShopifyCart(cart: CustomCart): ShopifyCart {
       ? [{ code: cart.discountCode, applicable: true }]
       : [],
     // Store raw discount amount in attributes for checkout page
+    // IMPORTANT: Explicitly convert discountAmount to string - Prisma Decimal may serialize differently
     attributes: [
       ...attributes,
-      ...(cart.discountCode ? [{ key: '_discountAmount', value: cart.discountAmount }] : []),
+      ...(cart.discountCode ? [{
+        key: '_discountAmount',
+        value: String(cart.discountAmount || '0')
+      }] : []),
     ],
   };
 }

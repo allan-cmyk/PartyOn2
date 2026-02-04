@@ -11,8 +11,16 @@ import { completePendingGroupOrderJoin } from '@/lib/group-orders/hooks';
 // Feature flag - set to true to use custom cart instead of Shopify
 const USE_CUSTOM_CART = process.env.NEXT_PUBLIC_USE_CUSTOM_CART === 'true';
 
+interface CustomCartData {
+  discountCode?: string | null;
+  discountAmount?: string | number;
+  subtotal?: string | number;
+  total?: string | number;
+}
+
 interface CartContextType {
   cart: ShopifyCart | null;
+  customCartData: CustomCartData | null;  // Direct access to custom cart discount data
   loading: boolean;
   error: Error | null;
   addToCart: (variantId: string, quantity?: number) => Promise<ShopifyCart>;
@@ -21,6 +29,7 @@ interface CartContextType {
   removeFromCart: (lineId: string) => Promise<void>;
   clearCart: () => void | Promise<void>;
   updateCartAttributes: (attributes: Array<{ key: string; value: string }>) => Promise<ShopifyCart | undefined>;
+  refetchCart: () => Promise<void>;  // Allow manual refetch after discount applied
   isCartOpen: boolean;
   openCart: () => void;
   closeCart: () => void;
@@ -200,8 +209,19 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
     }
   };
 
+  // Extract custom cart data for direct access to discount info (custom cart only)
+  const customCartData: CustomCartData | null = USE_CUSTOM_CART && customCartHook.customCart
+    ? {
+        discountCode: customCartHook.customCart.discountCode,
+        discountAmount: customCartHook.customCart.discountAmount,
+        subtotal: customCartHook.customCart.subtotal,
+        total: customCartHook.customCart.total,
+      }
+    : null;
+
   const value: CartContextType = {
     cart: cartHook.cart,
+    customCartData,
     loading: cartHook.loading,
     error: cartHook.error,
     addToCart,
@@ -210,6 +230,7 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
     removeFromCart,
     clearCart: cartHook.clearCart,
     updateCartAttributes: cartHook.updateCartAttributes,
+    refetchCart: USE_CUSTOM_CART ? customCartHook.refetchCart : async () => {},
     isCartOpen,
     openCart,
     closeCart,
