@@ -101,8 +101,8 @@ export default function DashboardPage(): ReactElement {
   const activeTab = (groupOrder.tabs || []).find((t) => t.id === activeTabId);
 
   return (
-    <div className="pt-24 min-h-screen bg-gray-50">
-      {/* Header */}
+    <div className="min-h-screen bg-gray-50">
+      {/* Header - mt-24 pushes below fixed nav */}
       <GroupHeader groupOrder={groupOrder} isHost={isHost} />
 
       {/* Tab Bar + Share */}
@@ -116,12 +116,12 @@ export default function DashboardPage(): ReactElement {
       />
 
       {/* Full-width Info Bar - Participants, Summary, Host Controls */}
-      <div className="bg-white border-b border-gray-200 py-6">
-        <div className="px-4 md:px-8">
+      <div className="bg-white border-b border-gray-200 py-8">
+        <div className="px-4 md:px-8 lg:px-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Participants */}
-            <div className="bg-gray-50 rounded-xl p-5">
-              <h3 className="text-base font-bold text-gray-900 uppercase tracking-wide mb-4">
+            <div className="bg-gray-50 rounded-xl p-6">
+              <h3 className="font-candal text-xl text-gray-900 uppercase tracking-wide mb-4">
                 Participants
               </h3>
               <ParticipantList
@@ -133,28 +133,28 @@ export default function DashboardPage(): ReactElement {
 
             {/* Tab Summary */}
             {activeTab && (
-              <div className="bg-gray-50 rounded-xl p-5">
-                <h3 className="text-base font-bold text-gray-900 uppercase tracking-wide mb-4">
+              <div className="bg-gray-50 rounded-xl p-6">
+                <h3 className="font-candal text-xl text-gray-900 uppercase tracking-wide mb-4">
                   Order Summary
                 </h3>
-                <div className="space-y-3 text-base">
+                <div className="space-y-3 text-lg">
                   <div className="flex justify-between text-gray-600">
                     <span>Draft Subtotal</span>
-                    <span className="font-medium">${(activeTab.totals?.draftSubtotal ?? 0).toFixed(2)}</span>
+                    <span className="font-semibold">${(activeTab.totals?.draftSubtotal ?? 0).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-gray-600">
                     <span>Purchased</span>
-                    <span className="font-medium">${(activeTab.totals?.purchasedSubtotal ?? 0).toFixed(2)}</span>
+                    <span className="font-semibold">${(activeTab.totals?.purchasedSubtotal ?? 0).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-gray-600">
                     <span>Delivery Fee</span>
-                    <span className="font-medium">
+                    <span className="font-semibold">
                       {activeTab.deliveryFeeWaived
                         ? 'Waived'
                         : `$${(activeTab.totals?.deliveryFee ?? 0).toFixed(2)}`}
                     </span>
                   </div>
-                  <div className="border-t border-gray-300 pt-3 flex justify-between text-lg font-bold text-gray-900">
+                  <div className="border-t border-gray-300 pt-3 flex justify-between text-xl font-bold text-gray-900">
                     <span>Total</span>
                     <span>
                       $
@@ -171,8 +171,8 @@ export default function DashboardPage(): ReactElement {
 
             {/* Host Controls */}
             {isHost && participantId && (
-              <div className="bg-gray-50 rounded-xl p-5">
-                <h3 className="text-base font-bold text-gray-900 uppercase tracking-wide mb-4">
+              <div className="bg-gray-50 rounded-xl p-6">
+                <h3 className="font-candal text-xl text-gray-900 uppercase tracking-wide mb-4">
                   Host Controls
                 </h3>
                 <HostControlBar
@@ -186,13 +186,13 @@ export default function DashboardPage(): ReactElement {
 
             {/* Empty State or Additional Info */}
             {!activeTab && (
-              <div className="bg-gray-50 rounded-xl p-5 flex items-center justify-center">
+              <div className="bg-gray-50 rounded-xl p-6 flex items-center justify-center">
                 <div className="text-center">
-                  <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-20 h-20 mx-auto mb-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0A1.75 1.75 0 003 15.546m18-3.046c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0A1.75 1.75 0 003 12.5m18-3.046c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0" />
                   </svg>
-                  <p className="text-lg font-medium text-gray-700">No items yet</p>
-                  <p className="text-base text-gray-500 mt-1">
+                  <p className="text-xl font-semibold text-gray-700">No items yet</p>
+                  <p className="text-lg text-gray-500 mt-2">
                     Share the link to get the party started!
                   </p>
                 </div>
@@ -204,8 +204,8 @@ export default function DashboardPage(): ReactElement {
 
       {/* Full-width Cart Content */}
       {activeTab && (
-        <div className="bg-white py-6">
-          <div className="px-4 md:px-8">
+        <div className="bg-white py-8">
+          <div className="px-4 md:px-8 lg:px-12">
             <TabContent
               shareCode={code}
               tab={activeTab}
@@ -220,8 +220,8 @@ export default function DashboardPage(): ReactElement {
 
       {/* Full-width Product Catalog */}
       {activeTab && participantId && activeTab.status === 'OPEN' && (
-        <div className="bg-gray-50 border-t border-gray-200 py-8 pb-32 md:pb-8">
-          <div className="px-4 md:px-8">
+        <div className="bg-gray-50 border-t border-gray-200 py-10 pb-32 md:pb-10">
+          <div className="px-4 md:px-8 lg:px-12">
             <GroupProductCatalog
               shareCode={code}
               tabId={activeTab.id}

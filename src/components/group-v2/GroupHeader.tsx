@@ -39,7 +39,7 @@ export default function GroupHeader({ groupOrder, isHost }: Props): ReactElement
   ).length;
 
   return (
-    <div className="relative overflow-hidden border-b border-v2-border">
+    <div className="relative overflow-hidden border-b border-v2-border mt-24">
       <Image
         src="/images/partners/group-dashboard-bg.png"
         alt=""
@@ -50,36 +50,36 @@ export default function GroupHeader({ groupOrder, isHost }: Props): ReactElement
       <div className="absolute inset-0 bg-white/80" />
 
       {/* Single horizontal row: name+date LEFT, timers RIGHT */}
-      <div className="relative py-5 px-4 md:py-6 md:px-6">
+      <div className="relative py-6 px-4 md:py-8 md:px-8 lg:px-12">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           {/* Left side - Name, date, badges, code */}
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-2">
             <div>
-              <h1 className="font-sans text-3xl md:text-4xl font-bold text-v2-text tracking-tight">
+              <h1 className="font-candal text-4xl md:text-5xl text-v2-text tracking-tight">
                 {groupOrder.name}
               </h1>
-              <p className="text-sm font-semibold tracking-[0.2em] text-v2-muted mt-0.5">
+              <p className="text-base font-semibold tracking-[0.2em] text-v2-muted mt-1">
                 {getDateSubtitle(groupOrder)}
               </p>
             </div>
 
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-3 flex-wrap">
               <span
-                className={`text-sm font-medium px-3 py-1 rounded-full border flex items-center gap-1.5 ${statusStyle.bg} ${statusStyle.text} ${statusStyle.border}`}
+                className={`text-base font-medium px-4 py-1.5 rounded-full border flex items-center gap-2 ${statusStyle.bg} ${statusStyle.text} ${statusStyle.border}`}
               >
                 {statusStyle.dot && (
-                  <span className={`w-2 h-2 rounded-full ${statusStyle.dot}`} />
+                  <span className={`w-2.5 h-2.5 rounded-full ${statusStyle.dot}`} />
                 )}
                 {groupOrder.status}
               </span>
               {isHost && (
-                <span className="text-sm font-medium px-3 py-1 rounded-full border bg-v2-blueTint text-brand-blue border-brand-blue/20">
+                <span className="text-base font-medium px-4 py-1.5 rounded-full border bg-v2-blueTint text-brand-blue border-brand-blue/20">
                   Host
                 </span>
               )}
-              <span className="text-sm text-v2-muted">
+              <span className="text-base text-v2-muted">
                 Code:{' '}
-                <span className="font-mono font-semibold text-v2-text">
+                <span className="font-mono font-bold text-v2-text text-lg">
                   {groupOrder.shareCode}
                 </span>
                 {' \u00B7 '}
@@ -89,7 +89,7 @@ export default function GroupHeader({ groupOrder, isHost }: Props): ReactElement
           </div>
 
           {/* Right side - Timers side by side */}
-          <div className="flex flex-row gap-3 shrink-0">
+          <div className="flex flex-row gap-4 shrink-0">
             {groupOrder.timer?.earliestDelivery && (
               <CountdownTimer
                 targetDate={groupOrder.timer.earliestDelivery}

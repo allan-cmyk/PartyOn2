@@ -110,8 +110,8 @@ export default function GroupProductCatalog({
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">
+      <div className="flex items-center justify-between mb-8">
+        <h3 className="font-candal text-3xl md:text-4xl text-gray-900 uppercase tracking-wide">
           Browse Products
         </h3>
       </div>
@@ -123,33 +123,33 @@ export default function GroupProductCatalog({
           onSelect={setActiveCollection}
         />
       ) : orderTypeLabel && collections.length === 1 ? (
-        <div className="mb-4 text-base text-gray-600">
+        <div className="mb-6 text-lg text-gray-600">
           Showing products for: <span className="font-semibold text-gray-900">{orderTypeLabel}</span>
         </div>
       ) : null}
 
-      <div className="mb-6">
+      <div className="mb-8">
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search products..."
-          className="w-full border-2 border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900 focus:ring-2 focus:ring-gold-500 focus:border-gold-500"
+          className="w-full border-2 border-gray-300 rounded-xl px-5 py-4 text-lg text-gray-900 focus:ring-2 focus:ring-gold-500 focus:border-gold-500"
         />
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
-            <div key={i} className="animate-pulse bg-gray-100 rounded-lg aspect-square" />
+            <div key={i} className="animate-pulse bg-gray-100 rounded-xl aspect-square" />
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <p className="text-sm text-v2-muted text-center py-6">
+        <p className="text-lg text-v2-muted text-center py-8">
           No products found.
         </p>
       ) : (
-        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
           {filtered.map((product) => {
             const variant = product.variants?.[0];
             const price = variant ? Number(variant.price) : Number(product.basePrice);
@@ -160,7 +160,7 @@ export default function GroupProductCatalog({
             return (
               <div
                 key={product.id}
-                className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+                className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow"
               >
                 {/* Image - aspect square */}
                 <div className="relative aspect-square bg-gray-100 w-full group">
@@ -173,7 +173,7 @@ export default function GroupProductCatalog({
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-10 h-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                       </svg>
                     </div>
@@ -181,11 +181,11 @@ export default function GroupProductCatalog({
                 </div>
 
                 {/* Content - centered text */}
-                <div className="p-2 space-y-0.5 text-center">
-                  <h3 className="font-medium text-sm sm:text-base text-gray-900 line-clamp-2 leading-tight">
+                <div className="p-3 space-y-1 text-center">
+                  <h3 className="font-semibold text-base sm:text-lg text-gray-900 line-clamp-2 leading-tight">
                     {product.title}
                   </h3>
-                  <p className="font-bold text-base sm:text-lg text-gray-900">
+                  <p className="font-bold text-lg sm:text-xl text-gray-900">
                     ${price.toFixed(2)}
                   </p>
 
@@ -193,13 +193,13 @@ export default function GroupProductCatalog({
                   <button
                     onClick={() => handleAdd(product)}
                     disabled={isAdding}
-                    className="mx-auto mt-1.5 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gold-500 hover:bg-gold-600 text-gray-900 flex items-center justify-center shadow-md transition-all disabled:opacity-50"
+                    className="mx-auto mt-2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gold-500 hover:bg-gold-600 text-gray-900 flex items-center justify-center shadow-md transition-all disabled:opacity-50"
                     aria-label={`Add ${product.title} to group order`}
                   >
                     {isAdding ? (
-                      <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
+                      <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
                     ) : (
-                      <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                       </svg>
                     )}

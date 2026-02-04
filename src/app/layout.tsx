@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Inter, Abril_Fatface, Caveat, Playfair_Display } from 'next/font/google';
+import { Cormorant_Garamond, Inter, Abril_Fatface, Caveat, Playfair_Display, Candal } from 'next/font/google';
 import dynamic from 'next/dynamic';
 import "./globals.css";
 import AgeVerification from "@/components/AgeVerification";
@@ -50,6 +50,13 @@ const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700', '800', '900'],
   variable: '--font-playfair-display',
+  display: 'swap',
+});
+
+const candal = Candal({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-candal',
   display: 'swap',
 });
 
@@ -123,7 +130,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
       </head>
-      <body className={`${inter.variable} ${cormorantGaramond.variable} ${abrilFatface.variable} ${caveat.variable} ${playfairDisplay.variable} antialiased bg-white text-navy-900`}>
+      <body className={`${inter.variable} ${cormorantGaramond.variable} ${abrilFatface.variable} ${caveat.variable} ${playfairDisplay.variable} ${candal.variable} antialiased bg-white text-navy-900`}>
         <CustomerProvider>
           <CartProvider>
             <GroupOrderProvider>

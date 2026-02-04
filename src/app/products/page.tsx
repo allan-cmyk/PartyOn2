@@ -290,6 +290,7 @@ function ProductsContent() {
             {/* Collections Grid */}
             <div className={`grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-7 gap-2'}`}>
               {SHOPIFY_COLLECTIONS.map((collection) => {
+                if (!collection?.colors) return null;
                 const isActive = collectionFilter === collection.handle;
                 return (
                   <button

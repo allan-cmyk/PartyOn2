@@ -216,6 +216,7 @@ module.exports = {
         abril: ['var(--font-abril-fatface)', 'Georgia', 'serif'],
         caveat: ['var(--font-caveat)', 'cursive'],
         playfair: ['var(--font-playfair-display)', 'Georgia', 'serif'],
+        candal: ['var(--font-candal)', 'Impact', 'sans-serif'],
       },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-in-out',

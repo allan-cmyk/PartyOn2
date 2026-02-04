@@ -264,6 +264,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {SHOPIFY_COLLECTIONS.map((collection) => {
+                if (!collection?.colors) return null;
                 const isActive = activeCollection === collection.handle;
                 return (
                   <button

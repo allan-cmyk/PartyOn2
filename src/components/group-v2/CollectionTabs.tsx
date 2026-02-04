@@ -15,6 +15,7 @@ export default function CollectionTabs({ collections, activeHandle, onSelect }: 
   return (
     <div className="mb-4 overflow-x-auto flex gap-2 pb-1">
       {collections.map((col) => {
+        if (!col?.colors) return null;
         const isActive = col.handle === activeHandle;
         return (
           <button

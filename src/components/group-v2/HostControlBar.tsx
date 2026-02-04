@@ -103,82 +103,74 @@ export default function HostControlBar({
 
   if (isCancelled) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-700">
+      <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-base text-red-700">
         This group order has been cancelled.
       </div>
     );
   }
 
   return (
-    <div className="bg-v2-card rounded-lg border border-v2-border p-4">
-      <h3 className="text-sm font-semibold text-v2-text uppercase tracking-wide mb-3 text-center md:text-left">
-        Host Controls
-      </h3>
-
-      <div className="space-y-2">
-        {/* Group-level controls */}
-        <div className="flex flex-wrap gap-2">
-          {isClosed ? (
-            <button
-              onClick={handleReopenGroup}
-              disabled={!!loading}
-              className="px-3 py-1.5 text-xs font-medium rounded-lg bg-green-50 text-green-700 hover:bg-green-100 disabled:opacity-50"
-            >
-              {loading === 'reopen' ? 'Reopening...' : 'Reopen Group'}
-            </button>
-          ) : (
-            <button
-              onClick={handleCloseGroup}
-              disabled={!!loading}
-              className="px-3 py-1.5 text-xs font-medium rounded-lg bg-yellow-50 text-yellow-700 hover:bg-yellow-100 disabled:opacity-50"
-            >
-              {loading === 'close' ? 'Closing...' : 'Close Group'}
-            </button>
-          )}
+    <div className="space-y-4">
+      {/* Group-level controls */}
+      <div className="flex flex-wrap gap-3">
+        {isClosed ? (
           <button
-            onClick={handleCancelGroup}
+            onClick={handleReopenGroup}
             disabled={!!loading}
-            className="px-3 py-1.5 text-xs font-medium rounded-lg bg-red-50 text-red-700 hover:bg-red-100 disabled:opacity-50"
+            className="px-4 py-2 text-base font-semibold rounded-lg bg-green-50 text-green-700 hover:bg-green-100 disabled:opacity-50 transition-colors"
           >
-            {loading === 'cancel' ? 'Cancelling...' : 'Cancel Group'}
+            {loading === 'reopen' ? 'Reopening...' : 'Reopen Group'}
           </button>
-        </div>
-
-        {/* Tab-level controls */}
-        {activeTab && activeTab.status !== 'CANCELLED' && activeTab.status !== 'FULFILLED' && (
-          <>
-            <div className="border-t border-v2-border pt-2 mt-2">
-              <p className="text-xs text-v2-muted mb-2">
-                Tab: <span className="font-medium text-v2-text">{activeTab.name}</span>
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={handleToggleTabLock}
-                  disabled={!!loading}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-lg disabled:opacity-50 ${
-                    activeTab.status === 'LOCKED'
-                      ? 'bg-green-50 text-green-700 hover:bg-green-100'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {loading === 'lockTab'
-                    ? 'Updating...'
-                    : activeTab.status === 'LOCKED'
-                    ? 'Unlock Tab'
-                    : 'Lock Tab'}
-                </button>
-                <button
-                  onClick={handleDeleteTab}
-                  disabled={!!loading}
-                  className="px-3 py-1.5 text-xs font-medium rounded-lg bg-red-50 text-red-700 hover:bg-red-100 disabled:opacity-50"
-                >
-                  {loading === 'deleteTab' ? 'Deleting...' : 'Delete Tab'}
-                </button>
-              </div>
-            </div>
-          </>
+        ) : (
+          <button
+            onClick={handleCloseGroup}
+            disabled={!!loading}
+            className="px-4 py-2 text-base font-semibold rounded-lg bg-yellow-50 text-yellow-700 hover:bg-yellow-100 disabled:opacity-50 transition-colors"
+          >
+            {loading === 'close' ? 'Closing...' : 'Close Group'}
+          </button>
         )}
+        <button
+          onClick={handleCancelGroup}
+          disabled={!!loading}
+          className="px-4 py-2 text-base font-semibold rounded-lg bg-red-50 text-red-700 hover:bg-red-100 disabled:opacity-50 transition-colors"
+        >
+          {loading === 'cancel' ? 'Cancelling...' : 'Cancel Group'}
+        </button>
       </div>
+
+      {/* Tab-level controls */}
+      {activeTab && activeTab.status !== 'CANCELLED' && activeTab.status !== 'FULFILLED' && (
+        <div className="border-t border-gray-200 pt-4">
+          <p className="text-base text-v2-muted mb-3">
+            Tab: <span className="font-semibold text-v2-text">{activeTab.name}</span>
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={handleToggleTabLock}
+              disabled={!!loading}
+              className={`px-4 py-2 text-base font-semibold rounded-lg disabled:opacity-50 transition-colors ${
+                activeTab.status === 'LOCKED'
+                  ? 'bg-green-50 text-green-700 hover:bg-green-100'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {loading === 'lockTab'
+                ? 'Updating...'
+                : activeTab.status === 'LOCKED'
+                ? 'Unlock Tab'
+                : 'Lock Tab'}
+            </button>
+            <button
+              onClick={handleDeleteTab}
+              disabled={!!loading}
+              className="px-4 py-2 text-base font-semibold rounded-lg bg-red-50 text-red-700 hover:bg-red-100 disabled:opacity-50 transition-colors"
+            >
+              {loading === 'deleteTab' ? 'Deleting...' : 'Delete Tab'}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
