@@ -110,8 +110,8 @@ export default function GroupProductCatalog({
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold text-v2-text uppercase tracking-wide text-center md:text-left">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">
           Browse Products
         </h3>
       </div>
@@ -123,18 +123,18 @@ export default function GroupProductCatalog({
           onSelect={setActiveCollection}
         />
       ) : orderTypeLabel && collections.length === 1 ? (
-        <div className="mb-3 text-xs text-v2-muted">
-          Showing products for: <span className="font-medium text-v2-text">{orderTypeLabel}</span>
+        <div className="mb-4 text-base text-gray-600">
+          Showing products for: <span className="font-semibold text-gray-900">{orderTypeLabel}</span>
         </div>
       ) : null}
 
-      <div className="mb-3">
+      <div className="mb-6">
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search products..."
-          className="w-full border border-v2-border rounded-lg px-3 py-2 text-sm text-v2-text focus:ring-2 focus:ring-brand-blue"
+          className="w-full border-2 border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900 focus:ring-2 focus:ring-gold-500 focus:border-gold-500"
         />
       </div>
 

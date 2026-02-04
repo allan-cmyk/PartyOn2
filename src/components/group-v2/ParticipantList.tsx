@@ -18,38 +18,39 @@ export default function ParticipantList({
 
   return (
     <div>
-      <h3 className="text-sm font-semibold text-v2-text uppercase tracking-wide mb-3 text-center md:text-left">
-        Participants ({active.length})
-      </h3>
-      <div className="space-y-2">
+      <div className="flex items-center gap-2 mb-4">
+        <span className="text-2xl font-bold text-gray-900">{active.length}</span>
+        <span className="text-base text-gray-600">participants</span>
+      </div>
+      <div className="space-y-3">
         {active.map((p) => (
           <div
             key={p.id}
-            className="flex items-center justify-between py-2 px-3 bg-v2-bgSoft rounded-lg"
+            className="flex items-center justify-between py-3 px-4 bg-white rounded-xl border border-gray-200"
           >
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-brand-blue/10 flex items-center justify-center text-sm font-medium text-brand-blue">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gold-100 flex items-center justify-center text-base font-bold text-gold-700">
                 {(p.name || '?')[0].toUpperCase()}
               </div>
               <div>
-                <span className="text-sm font-medium text-v2-text">
+                <span className="text-base font-semibold text-gray-900">
                   {p.name}
                 </span>
                 {p.isHost && (
-                  <span className="ml-1.5 text-xs font-medium text-brand-blue">
+                  <span className="ml-2 text-sm font-medium text-gold-600 bg-gold-50 px-2 py-0.5 rounded-full">
                     Host
                   </span>
                 )}
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               {p.ageVerified && (
-                <span className="text-xs text-green-600">21+</span>
+                <span className="text-sm font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">21+</span>
               )}
               {isHost && !p.isHost && onRemove && (
                 <button
                   onClick={() => onRemove(p.id)}
-                  className="text-xs text-red-500 hover:text-red-700"
+                  className="text-sm text-red-500 hover:text-red-700 font-medium"
                 >
                   Remove
                 </button>

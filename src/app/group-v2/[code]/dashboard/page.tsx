@@ -101,7 +101,7 @@ export default function DashboardPage(): ReactElement {
   const activeTab = (groupOrder.tabs || []).find((t) => t.id === activeTabId);
 
   return (
-    <div className="pt-24 min-h-screen bg-v2-bgSoft">
+    <div className="pt-24 min-h-screen bg-gray-50">
       {/* Header */}
       <GroupHeader groupOrder={groupOrder} isHost={isHost} />
 
@@ -115,36 +115,15 @@ export default function DashboardPage(): ReactElement {
         onShare={() => setShowShare(true)}
       />
 
-      {/* Content */}
-      <div className="max-w-5xl mx-auto px-4 md:px-6 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Content - Tab Items */}
-          <div className="lg:col-span-2">
-            {activeTab ? (
-              <TabContent
-                shareCode={code}
-                tab={activeTab}
-                currentParticipantId={participantId}
-                isHost={isHost}
-                onRefresh={refresh}
-                onCheckout={() => setShowCheckout(true)}
-              />
-            ) : (
-              <div className="bg-v2-card rounded-lg border border-v2-border p-10 text-center">
-                <svg className="w-12 h-12 mx-auto mb-3 text-v2-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0A1.75 1.75 0 003 15.546m18-3.046c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0A1.75 1.75 0 003 12.5m18-3.046c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0" />
-                </svg>
-                <p className="text-v2-text font-medium">No items yet</p>
-                <p className="text-sm text-v2-muted mt-1">
-                  Share the link to get the party started!
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Sidebar - Participants + Host Controls */}
-          <div className="space-y-4">
-            <div className="bg-v2-card rounded-lg border border-v2-border p-4">
+      {/* Full-width Info Bar - Participants, Summary, Host Controls */}
+      <div className="bg-white border-b border-gray-200 py-6">
+        <div className="px-4 md:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Participants */}
+            <div className="bg-gray-50 rounded-xl p-5">
+              <h3 className="text-base font-bold text-gray-900 uppercase tracking-wide mb-4">
+                Participants
+              </h3>
               <ParticipantList
                 participants={groupOrder.participants || []}
                 isHost={isHost}
@@ -152,40 +131,30 @@ export default function DashboardPage(): ReactElement {
               />
             </div>
 
-            {/* Host Controls */}
-            {isHost && participantId && (
-              <HostControlBar
-                groupOrder={groupOrder}
-                activeTab={activeTab}
-                hostParticipantId={participantId}
-                onRefresh={refresh}
-              />
-            )}
-
             {/* Tab Summary */}
             {activeTab && (
-              <div className="bg-v2-card rounded-lg border border-v2-border p-4">
-                <h3 className="text-sm font-semibold text-v2-text uppercase tracking-wide mb-3 text-center md:text-left">
-                  Tab Summary
+              <div className="bg-gray-50 rounded-xl p-5">
+                <h3 className="text-base font-bold text-gray-900 uppercase tracking-wide mb-4">
+                  Order Summary
                 </h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between text-v2-muted">
+                <div className="space-y-3 text-base">
+                  <div className="flex justify-between text-gray-600">
                     <span>Draft Subtotal</span>
-                    <span>${(activeTab.totals?.draftSubtotal ?? 0).toFixed(2)}</span>
+                    <span className="font-medium">${(activeTab.totals?.draftSubtotal ?? 0).toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-v2-muted">
-                    <span>Purchased Subtotal</span>
-                    <span>${(activeTab.totals?.purchasedSubtotal ?? 0).toFixed(2)}</span>
+                  <div className="flex justify-between text-gray-600">
+                    <span>Purchased</span>
+                    <span className="font-medium">${(activeTab.totals?.purchasedSubtotal ?? 0).toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-v2-muted">
+                  <div className="flex justify-between text-gray-600">
                     <span>Delivery Fee</span>
-                    <span>
+                    <span className="font-medium">
                       {activeTab.deliveryFeeWaived
                         ? 'Waived'
                         : `$${(activeTab.totals?.deliveryFee ?? 0).toFixed(2)}`}
                     </span>
                   </div>
-                  <div className="border-t border-v2-border pt-2 flex justify-between font-medium text-v2-text">
+                  <div className="border-t border-gray-300 pt-3 flex justify-between text-lg font-bold text-gray-900">
                     <span>Total</span>
                     <span>
                       $
@@ -199,13 +168,59 @@ export default function DashboardPage(): ReactElement {
                 </div>
               </div>
             )}
+
+            {/* Host Controls */}
+            {isHost && participantId && (
+              <div className="bg-gray-50 rounded-xl p-5">
+                <h3 className="text-base font-bold text-gray-900 uppercase tracking-wide mb-4">
+                  Host Controls
+                </h3>
+                <HostControlBar
+                  groupOrder={groupOrder}
+                  activeTab={activeTab}
+                  hostParticipantId={participantId}
+                  onRefresh={refresh}
+                />
+              </div>
+            )}
+
+            {/* Empty State or Additional Info */}
+            {!activeTab && (
+              <div className="bg-gray-50 rounded-xl p-5 flex items-center justify-center">
+                <div className="text-center">
+                  <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0A1.75 1.75 0 003 15.546m18-3.046c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0A1.75 1.75 0 003 12.5m18-3.046c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0" />
+                  </svg>
+                  <p className="text-lg font-medium text-gray-700">No items yet</p>
+                  <p className="text-base text-gray-500 mt-1">
+                    Share the link to get the party started!
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Full-width Product Catalog - outside the constrained grid */}
+      {/* Full-width Cart Content */}
+      {activeTab && (
+        <div className="bg-white py-6">
+          <div className="px-4 md:px-8">
+            <TabContent
+              shareCode={code}
+              tab={activeTab}
+              currentParticipantId={participantId}
+              isHost={isHost}
+              onRefresh={refresh}
+              onCheckout={() => setShowCheckout(true)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Full-width Product Catalog */}
       {activeTab && participantId && activeTab.status === 'OPEN' && (
-        <div className="bg-white border-t border-gray-200 py-8 pb-32 md:pb-8">
+        <div className="bg-gray-50 border-t border-gray-200 py-8 pb-32 md:pb-8">
           <div className="px-4 md:px-8">
             <GroupProductCatalog
               shareCode={code}
