@@ -94,12 +94,14 @@ export default function CheckoutPage() {
   const deliveryFee = 25; // Standard delivery fee
   const tax = subtotal * 0.0825; // Texas sales tax
 
-  // For custom cart, discount is handled at Stripe checkout - set to 0 here
+  // Get discount amount from cart
+  // For custom cart, read from attributes where we stored it
   // For Shopify cart, calculate from the difference between subtotal and total
-  const discountAmount = isCustomCart ? 0 : (
-    cart?.cost?.totalAmount && cart?.cost?.subtotalAmount ?
-      parseFloat(cart.cost.subtotalAmount.amount) - parseFloat(cart.cost.totalAmount.amount) + deliveryFee + tax : 0
-  );
+  const discountAmount = isCustomCart
+    ? parseFloat(cart?.attributes?.find(a => a.key === '_discountAmount')?.value || '0')
+    : (cart?.cost?.totalAmount && cart?.cost?.subtotalAmount
+      ? parseFloat(cart.cost.subtotalAmount.amount) - parseFloat(cart.cost.totalAmount.amount) + deliveryFee + tax
+      : 0);
 
   const total = subtotal + deliveryFee + tax - Math.abs(discountAmount);
 
@@ -114,11 +116,28 @@ export default function CheckoutPage() {
 
     try {
       if (isCustomCart) {
-        // Custom cart discount - not yet implemented
-        setDiscountFeedback({
-          type: 'error',
-          message: 'Discount codes are not available at this time'
+        // Custom cart discount - call our API
+        const response = await fetch('/api/v1/cart/discount', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: discountCode.trim().toUpperCase() }),
         });
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          setDiscountFeedback({
+            type: 'error',
+            message: data.error || 'Invalid or expired discount code'
+          });
+        } else {
+          setDiscountFeedback({
+            type: 'success',
+            message: data.message || `Discount code "${discountCode.toUpperCase()}" applied!`
+          });
+          setDiscountCode('');
+          // Refresh the page to show updated cart totals
+          window.location.reload();
+        }
       } else {
         // Shopify discount - dynamic import to avoid build errors when not using Shopify
         const { shopifyFetch } = await import('@/lib/shopify/client');
@@ -165,7 +184,13 @@ export default function CheckoutPage() {
 
     try {
       if (isCustomCart) {
-        // Custom cart - not yet implemented
+        // Custom cart - call our API
+        const response = await fetch('/api/v1/cart/discount', {
+          method: 'DELETE',
+        });
+        if (response.ok) {
+          window.location.reload();
+        }
         return;
       }
 

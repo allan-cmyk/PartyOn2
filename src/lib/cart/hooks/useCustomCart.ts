@@ -123,7 +123,14 @@ function transformToShopifyCart(cart: CustomCart): ShopifyCart {
         currencyCode: 'USD',
       },
     },
-    attributes,
+    discountCodes: cart.discountCode
+      ? [{ code: cart.discountCode, applicable: true }]
+      : [],
+    // Store raw discount amount in attributes for checkout page
+    attributes: [
+      ...attributes,
+      ...(cart.discountCode ? [{ key: '_discountAmount', value: cart.discountAmount }] : []),
+    ],
   };
 }
 
