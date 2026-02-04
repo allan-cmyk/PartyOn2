@@ -138,6 +138,7 @@ export default function CheckoutPage() {
         const response = await fetch('/api/v1/cart/discount', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify({ code: discountCode.trim().toUpperCase() }),
         });
         const data = await response.json();
@@ -206,6 +207,7 @@ export default function CheckoutPage() {
         // Custom cart - call our API
         const response = await fetch('/api/v1/cart/discount', {
           method: 'DELETE',
+          credentials: 'include',
         });
         if (response.ok) {
           // Refetch cart to get updated totals
