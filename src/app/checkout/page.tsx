@@ -98,6 +98,18 @@ export default function CheckoutPage() {
   // For custom cart, read directly from customCartData (most reliable)
   // Falls back to attributes for backward compatibility
   // For Shopify cart, discounts are already reflected in cart totals (we don't apply our own)
+
+  // DEBUG: Log all discount-related data
+  console.log('[Checkout] DEBUG - Discount data:', {
+    isCustomCart,
+    customCartData,
+    customCartDataDiscountCode: customCartData?.discountCode,
+    customCartDataDiscountAmount: customCartData?.discountAmount,
+    customCartDataDiscountAmountType: typeof customCartData?.discountAmount,
+    cartAttributes: cart?.attributes,
+    cartDiscountCodes: cart?.discountCodes,
+  });
+
   const discountAmount = isCustomCart
     ? (() => {
         // First try customCartData (direct from API)
@@ -105,7 +117,7 @@ export default function CheckoutPage() {
           const amount = typeof customCartData.discountAmount === 'string'
             ? parseFloat(customCartData.discountAmount)
             : Number(customCartData.discountAmount);
-          console.log('[Checkout] Discount from customCartData:', amount);
+          console.log('[Checkout] Discount from customCartData:', amount, 'raw:', customCartData.discountAmount);
           return amount || 0;
         }
         // Fallback to attributes
@@ -114,9 +126,12 @@ export default function CheckoutPage() {
           console.log('[Checkout] Discount from attributes:', attrValue);
           return parseFloat(attrValue) || 0;
         }
+        console.log('[Checkout] No discount found, returning 0');
         return 0;
       })()
     : 0; // Shopify handles its own discounts through cart.cost
+
+  console.log('[Checkout] Final discountAmount:', discountAmount);
 
   // Get applied discount code
   const appliedDiscountCode = isCustomCart ? customCartData?.discountCode : null;

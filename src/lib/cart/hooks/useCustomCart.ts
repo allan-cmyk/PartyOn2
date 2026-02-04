@@ -170,6 +170,15 @@ export function useCustomCart() {
 
       const data: CartApiResponse = await response.json();
 
+      console.log('[useCustomCart] fetchCart API response:', {
+        success: data.success,
+        hasData: !!data.data,
+        discountCode: data.data?.cart?.discountCode,
+        discountAmount: data.data?.cart?.discountAmount,
+        discountAmountType: typeof data.data?.cart?.discountAmount,
+        rawCart: data.data?.cart,
+      });
+
       if (data.success && data.data) {
         setCustomCart(data.data.cart);
         setCart(transformToShopifyCart(data.data.cart));

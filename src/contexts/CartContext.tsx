@@ -219,6 +219,18 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
       }
     : null;
 
+  // DEBUG: Log customCartData when it changes
+  if (customCartData) {
+    console.log('[CartContext] customCartData derived:', {
+      discountCode: customCartData.discountCode,
+      discountAmount: customCartData.discountAmount,
+      discountAmountType: typeof customCartData.discountAmount,
+      subtotal: customCartData.subtotal,
+      total: customCartData.total,
+      rawCustomCart: customCartHook.customCart,
+    });
+  }
+
   const value: CartContextType = {
     cart: cartHook.cart,
     customCartData,
