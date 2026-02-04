@@ -1,15 +1,28 @@
 /**
- * @fileoverview Inline delivery date and time picker for checkout
+ * @fileoverview Delivery date and time picker with popup calendar
  * @module components/checkout/DeliveryDateTimePicker
  *
- * Simple inline component that handles ONLY date/time selection.
- * Customer info and address are handled by the checkout form.
+ * Calendar popup with month navigation for selecting delivery dates.
+ * Excludes Sundays and past dates.
  */
 
 'use client';
 
-import { useState, type ReactElement } from 'react';
-import { format, addDays } from 'date-fns';
+import { useState, useRef, useEffect, type ReactElement } from 'react';
+import {
+  format,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  addDays,
+  addMonths,
+  subMonths,
+  isSameMonth,
+  isSameDay,
+  isBefore,
+  startOfDay,
+} from 'date-fns';
 
 interface DeliveryDateTimePickerProps {
   /** Currently selected delivery date */
@@ -48,28 +61,25 @@ const TIME_SLOTS = [
   '6:30 PM - 7:30 PM',
   '7:00 PM - 8:00 PM',
   '7:30 PM - 8:30 PM',
-  '8:00 PM - 9:00 PM'
+  '8:00 PM - 9:00 PM',
 ];
 
 /**
- * Generate available dates for the next 14 days (Mon-Sat only)
+ * Check if a date is available for delivery
+ * - Must be in the future (or today with available time slots)
+ * - Cannot be Sunday
  */
-function getAvailableDates(): Date[] {
-  const dates: Date[] = [];
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+function isDateAvailable(date: Date): boolean {
+  const today = startOfDay(new Date());
+  const checkDate = startOfDay(date);
 
-  for (let i = 0; i < 30 && dates.length < 14; i++) {
-    const date = addDays(today, i);
-    const dayOfWeek = date.getDay(); // 0 = Sunday
+  // Cannot be in the past
+  if (isBefore(checkDate, today)) return false;
 
-    // Exclude Sundays
-    if (dayOfWeek !== 0) {
-      dates.push(date);
-    }
-  }
+  // Cannot be Sunday (0 = Sunday)
+  if (date.getDay() === 0) return false;
 
-  return dates;
+  return true;
 }
 
 /**
@@ -77,13 +87,11 @@ function getAvailableDates(): Date[] {
  * For today, filters out slots within 3 hours
  */
 function getAvailableTimeSlots(date: Date): string[] {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const selectedDay = new Date(date);
-  selectedDay.setHours(0, 0, 0, 0);
+  const today = startOfDay(new Date());
+  const selectedDay = startOfDay(date);
 
   // If not today, return all time slots
-  if (selectedDay.getTime() !== today.getTime()) {
+  if (!isSameDay(selectedDay, today)) {
     return TIME_SLOTS;
   }
 
@@ -91,7 +99,7 @@ function getAvailableTimeSlots(date: Date): string[] {
   const now = new Date();
   const threeHoursFromNow = new Date(now.getTime() + 3 * 60 * 60 * 1000);
 
-  return TIME_SLOTS.filter(slot => {
+  return TIME_SLOTS.filter((slot) => {
     const startTime = slot.split(' - ')[0];
     const [time, period] = startTime.split(' ');
     const [hours, minutes] = time.split(':').map(Number);
@@ -108,10 +116,7 @@ function getAvailableTimeSlots(date: Date): string[] {
 }
 
 /**
- * Inline delivery date and time picker
- *
- * Shows a calendar grid for date selection and time slot buttons.
- * Does NOT collect customer info or address (handled by checkout form).
+ * Delivery date and time picker with popup calendar
  */
 export default function DeliveryDateTimePicker({
   selectedDate,
@@ -121,16 +126,87 @@ export default function DeliveryDateTimePicker({
   onTimeChange,
   onInstructionsChange,
 }: DeliveryDateTimePickerProps): ReactElement {
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [showTimeSlots, setShowTimeSlots] = useState(!!selectedDate);
-  const availableDates = getAvailableDates();
+  const calendarRef = useRef<HTMLDivElement>(null);
+
+  // Close calendar when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (calendarRef.current && !calendarRef.current.contains(event.target as Node)) {
+        setIsCalendarOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleDateSelect = (date: Date) => {
+    if (!isDateAvailable(date)) return;
+
     onDateChange(date);
     onTimeChange(''); // Clear time when date changes
     setShowTimeSlots(true);
+    setIsCalendarOpen(false);
+  };
+
+  const goToPreviousMonth = () => {
+    setCurrentMonth(subMonths(currentMonth, 1));
+  };
+
+  const goToNextMonth = () => {
+    setCurrentMonth(addMonths(currentMonth, 1));
+  };
+
+  // Generate calendar days
+  const renderCalendarDays = () => {
+    const monthStart = startOfMonth(currentMonth);
+    const monthEnd = endOfMonth(monthStart);
+    const calendarStart = startOfWeek(monthStart);
+    const calendarEnd = endOfWeek(monthEnd);
+
+    const days: ReactElement[] = [];
+    let day = calendarStart;
+
+    while (day <= calendarEnd) {
+      const currentDay = day;
+      const isCurrentMonth = isSameMonth(day, monthStart);
+      const isSelected = selectedDate && isSameDay(day, selectedDate);
+      const isAvailable = isDateAvailable(day);
+      const isSunday = day.getDay() === 0;
+
+      days.push(
+        <button
+          key={day.toISOString()}
+          type="button"
+          disabled={!isAvailable || !isCurrentMonth}
+          onClick={() => handleDateSelect(currentDay)}
+          className={`
+            p-2 text-center text-sm rounded transition-all
+            ${!isCurrentMonth ? 'text-gray-300 cursor-default' : ''}
+            ${isCurrentMonth && !isAvailable ? 'text-gray-300 cursor-not-allowed' : ''}
+            ${isCurrentMonth && isAvailable && !isSelected ? 'hover:bg-gold-100 text-gray-900 cursor-pointer' : ''}
+            ${isSelected ? 'bg-gold-600 text-gray-900 font-semibold' : ''}
+            ${isSunday && isCurrentMonth ? 'text-gray-300' : ''}
+          `}
+        >
+          {format(day, 'd')}
+        </button>
+      );
+
+      day = addDays(day, 1);
+    }
+
+    return days;
   };
 
   const availableSlots = selectedDate ? getAvailableTimeSlots(selectedDate) : [];
+
+  // Check if we can go to previous month (not before current month)
+  const canGoPrevious = !isSameMonth(currentMonth, new Date()) ||
+    startOfMonth(currentMonth) > startOfMonth(new Date());
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
@@ -150,29 +226,100 @@ export default function DeliveryDateTimePicker({
           <label className="block text-sm font-medium text-gray-700 mb-3 tracking-[0.1em]">
             SELECT DATE
           </label>
-          <div className="grid grid-cols-7 gap-2">
-            {availableDates.map((date) => {
-              const isSelected = selectedDate?.toDateString() === date.toDateString();
-              return (
-                <button
-                  key={date.toISOString()}
-                  type="button"
-                  onClick={() => handleDateSelect(date)}
-                  className={`p-3 text-center border transition-all rounded ${
-                    isSelected
-                      ? 'border-gold-600 bg-gold-50 ring-1 ring-gold-600'
-                      : 'border-gray-200 hover:border-gold-400 hover:bg-gray-50'
-                  }`}
-                >
-                  <div className="text-xs text-gray-500 uppercase">
-                    {format(date, 'EEE')}
-                  </div>
-                  <div className={`text-lg font-medium ${isSelected ? 'text-gold-700' : 'text-gray-900'}`}>
-                    {format(date, 'd')}
-                  </div>
-                </button>
-              );
-            })}
+
+          {/* Date Input with Calendar Popup */}
+          <div className="relative" ref={calendarRef}>
+            <button
+              type="button"
+              onClick={() => setIsCalendarOpen(!isCalendarOpen)}
+              className={`
+                w-full px-4 py-3 border rounded text-left flex items-center justify-between
+                transition-colors
+                ${selectedDate
+                  ? 'border-gold-600 bg-gold-50'
+                  : 'border-gray-300 hover:border-gold-400'
+                }
+              `}
+            >
+              <span className={selectedDate ? 'text-gray-900' : 'text-gray-500'}>
+                {selectedDate
+                  ? format(selectedDate, 'EEEE, MMMM d, yyyy')
+                  : 'Click to select a delivery date'
+                }
+              </span>
+              <svg
+                className={`w-5 h-5 text-gray-400 transition-transform ${isCalendarOpen ? 'rotate-180' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+            </button>
+
+            {/* Calendar Popup */}
+            {isCalendarOpen && (
+              <div className="absolute z-50 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg p-4">
+                {/* Month Navigation */}
+                <div className="flex items-center justify-between mb-4">
+                  <button
+                    type="button"
+                    onClick={goToPreviousMonth}
+                    disabled={!canGoPrevious}
+                    className={`p-2 rounded hover:bg-gray-100 ${
+                      !canGoPrevious ? 'opacity-30 cursor-not-allowed' : ''
+                    }`}
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+
+                  <h4 className="font-medium text-gray-900">
+                    {format(currentMonth, 'MMMM yyyy')}
+                  </h4>
+
+                  <button
+                    type="button"
+                    onClick={goToNextMonth}
+                    className="p-2 rounded hover:bg-gray-100"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Day Headers */}
+                <div className="grid grid-cols-7 gap-1 mb-2">
+                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+                    <div
+                      key={day}
+                      className={`text-center text-xs font-medium py-1 ${
+                        day === 'Sun' ? 'text-gray-400' : 'text-gray-600'
+                      }`}
+                    >
+                      {day}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Calendar Grid */}
+                <div className="grid grid-cols-7 gap-1">
+                  {renderCalendarDays()}
+                </div>
+
+                {/* Legend */}
+                <div className="mt-4 pt-3 border-t border-gray-100 text-xs text-gray-500">
+                  <span className="text-gray-400">● Sundays unavailable</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

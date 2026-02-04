@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
 import DeliveryDateTimePicker from '@/components/checkout/DeliveryDateTimePicker';
 import { useCartContext } from '@/contexts/CartContext';
@@ -87,21 +86,21 @@ export default function CheckoutPage() {
   }, [cart?.attributes, billingAddress.zip]);
 
   // Calculate totals - with proper null checks to prevent subtotalAmount error
-  const subtotal = cart?.cost?.subtotalAmount ? parseFloat(cart.cost.subtotalAmount.amount) : 
+  const subtotal = cart?.cost?.subtotalAmount ? parseFloat(cart.cost.subtotalAmount.amount) :
     (cart?.lines?.edges?.reduce((total, { node }) => {
       return total + (parseFloat(node.merchandise.price?.amount || '0') * (node.quantity || 0));
     }, 0) || 0);
 
   const deliveryFee = 25; // Standard delivery fee
   const tax = subtotal * 0.0825; // Texas sales tax
-  
-  // Calculate discount amount from cart
-  const discountAmount = cart?.cost?.totalAmount && cart?.cost?.subtotalAmount ? 
-    parseFloat(cart.cost.subtotalAmount.amount) - parseFloat(cart.cost.totalAmount.amount) + deliveryFee + tax : 0;
-  
-  // Loyalty points disabled for now
-  // const loyaltyDiscount = 0;
-  
+
+  // For custom cart, discount is handled at Stripe checkout - set to 0 here
+  // For Shopify cart, calculate from the difference between subtotal and total
+  const discountAmount = isCustomCart ? 0 : (
+    cart?.cost?.totalAmount && cart?.cost?.subtotalAmount ?
+      parseFloat(cart.cost.subtotalAmount.amount) - parseFloat(cart.cost.totalAmount.amount) + deliveryFee + tax : 0
+  );
+
   const total = subtotal + deliveryFee + tax - Math.abs(discountAmount);
 
   // Check if this is a group order checkout
@@ -295,20 +294,16 @@ export default function CheckoutPage() {
 
   if (cartLoading) {
     return (
-      <>
-        <OldFashionedNavigation />
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold-600"></div>
-        </div>
-      </>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold-600"></div>
+      </div>
     );
   }
 
   if (!cart || cart.lines.edges.length === 0) {
     return (
       <>
-        <OldFashionedNavigation />
-        <div className="min-h-screen pt-32">
+        <div className="min-h-screen pt-12">
           <div className="max-w-4xl mx-auto px-8 text-center">
             <h1 className="font-cormorant text-4xl mb-4">Your Cart is Empty</h1>
             <p className="text-gray-600 mb-8">Add some products to your cart to proceed with checkout.</p>
@@ -326,10 +321,21 @@ export default function CheckoutPage() {
 
   return (
     <>
-      <OldFashionedNavigation />
-      
-      <main className="min-h-screen pt-32 pb-16">
+      <main className="min-h-screen pt-8 pb-16">
         <div className="max-w-7xl mx-auto px-8">
+          {/* Back to Cart Link */}
+          <div className="mb-6">
+            <Link
+              href="/order"
+              className="inline-flex items-center text-gray-600 hover:text-gold-600 transition-colors"
+            >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Shopping
+            </Link>
+          </div>
+
           <h1 className="font-cormorant text-4xl tracking-[0.15em] text-center mb-12">
             CHECKOUT
           </h1>
@@ -506,7 +512,7 @@ export default function CheckoutPage() {
 
             {/* Right Column - Order Summary */}
             <div className="lg:col-span-1">
-              <div className="bg-gray-50 p-6 border border-gray-200 sticky top-32">
+              <div className="bg-gray-50 p-6 border border-gray-200 sticky top-8">
                 <h2 className="font-cormorant text-2xl mb-6">Order Summary</h2>
                 
                 {/* Cart Items */}
