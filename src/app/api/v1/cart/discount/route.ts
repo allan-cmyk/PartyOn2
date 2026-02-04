@@ -95,10 +95,28 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       result.discountAmount
     );
 
+    // Serialize cart with proper decimal conversion for JSON
+    const serializedCart = {
+      ...updatedCart,
+      subtotal: updatedCart.subtotal.toString(),
+      taxAmount: updatedCart.taxAmount.toString(),
+      deliveryFee: updatedCart.deliveryFee.toString(),
+      discountAmount: updatedCart.discountAmount.toString(),
+      total: updatedCart.total.toString(),
+      items: updatedCart.items.map(item => ({
+        ...item,
+        price: item.price.toString(),
+        variant: {
+          ...item.variant,
+          price: item.variant.price.toString(),
+        },
+      })),
+    };
+
     return NextResponse.json({
       success: true,
       data: {
-        cart: updatedCart,
+        cart: serializedCart,
         discount: {
           code: result.discountCode,
           type: result.discountType,
@@ -152,9 +170,27 @@ export async function DELETE(): Promise<NextResponse> {
 
     const updatedCart = await removeDiscount(cartId);
 
+    // Serialize cart with proper decimal conversion for JSON
+    const serializedCart = {
+      ...updatedCart,
+      subtotal: updatedCart.subtotal.toString(),
+      taxAmount: updatedCart.taxAmount.toString(),
+      deliveryFee: updatedCart.deliveryFee.toString(),
+      discountAmount: updatedCart.discountAmount.toString(),
+      total: updatedCart.total.toString(),
+      items: updatedCart.items.map(item => ({
+        ...item,
+        price: item.price.toString(),
+        variant: {
+          ...item.variant,
+          price: item.variant.price.toString(),
+        },
+      })),
+    };
+
     return NextResponse.json({
       success: true,
-      data: { cart: updatedCart },
+      data: { cart: serializedCart },
       message: 'Discount removed',
     });
   } catch (error) {

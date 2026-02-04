@@ -69,10 +69,29 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const validation = validateCartMinimum(cart);
     const checkoutData = cartToCheckoutData(cart);
 
+    // Serialize cart with proper decimal conversion for JSON
+    // Prisma Decimal types don't serialize properly to JSON
+    const serializedCart = {
+      ...cart,
+      subtotal: cart.subtotal.toString(),
+      taxAmount: cart.taxAmount.toString(),
+      deliveryFee: cart.deliveryFee.toString(),
+      discountAmount: cart.discountAmount.toString(),
+      total: cart.total.toString(),
+      items: cart.items.map(item => ({
+        ...item,
+        price: item.price.toString(),
+        variant: {
+          ...item.variant,
+          price: item.variant.price.toString(),
+        },
+      })),
+    };
+
     const response = NextResponse.json({
       success: true,
       data: {
-        cart,
+        cart: serializedCart,
         checkout: checkoutData,
         validation,
       },
@@ -207,10 +226,28 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const validation = validateCartMinimum(cart);
     const checkoutData = cartToCheckoutData(cart);
 
+    // Serialize cart with proper decimal conversion for JSON
+    const serializedCart = {
+      ...cart,
+      subtotal: cart.subtotal.toString(),
+      taxAmount: cart.taxAmount.toString(),
+      deliveryFee: cart.deliveryFee.toString(),
+      discountAmount: cart.discountAmount.toString(),
+      total: cart.total.toString(),
+      items: cart.items.map(item => ({
+        ...item,
+        price: item.price.toString(),
+        variant: {
+          ...item.variant,
+          price: item.variant.price.toString(),
+        },
+      })),
+    };
+
     const response = NextResponse.json({
       success: true,
       data: {
-        cart,
+        cart: serializedCart,
         checkout: checkoutData,
         validation,
       },
