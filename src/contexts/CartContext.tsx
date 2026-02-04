@@ -15,6 +15,8 @@ interface CustomCartData {
   discountCode?: string | null;
   discountAmount?: string | number;
   subtotal?: string | number;
+  taxAmount?: string | number;
+  deliveryFee?: string | number;
   total?: string | number;
 }
 
@@ -236,6 +238,8 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
         discountCode: customCartHook.customCart.discountCode,
         discountAmount: customCartHook.customCart.discountAmount,
         subtotal: customCartHook.customCart.subtotal,
+        taxAmount: customCartHook.customCart.taxAmount,
+        deliveryFee: customCartHook.customCart.deliveryFee,
         total: customCartHook.customCart.total,
       }
     : null;

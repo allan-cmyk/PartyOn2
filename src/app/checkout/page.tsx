@@ -91,47 +91,32 @@ export default function CheckoutPage() {
       return total + (parseFloat(node.merchandise.price?.amount || '0') * (node.quantity || 0));
     }, 0) || 0);
 
-  const deliveryFee = 25; // Standard delivery fee
-  const tax = subtotal * 0.0825; // Texas sales tax
+  // Use API-calculated values for custom cart, fallback for Shopify cart
+  const deliveryFee = isCustomCart && customCartData?.deliveryFee
+    ? parseFloat(String(customCartData.deliveryFee))
+    : 25;
+
+  const tax = isCustomCart && customCartData?.taxAmount
+    ? parseFloat(String(customCartData.taxAmount))
+    : subtotal * 0.0825;
 
   // Get discount amount from cart
   // For custom cart, read directly from customCartData (most reliable)
-  // Falls back to attributes for backward compatibility
-  // For Shopify cart, discounts are already reflected in cart totals (we don't apply our own)
-
-  // DEBUG: Log all discount-related data
-  console.log('[Checkout] DEBUG - Discount data:', {
-    isCustomCart,
-    customCartData,
-    customCartDataDiscountCode: customCartData?.discountCode,
-    customCartDataDiscountAmount: customCartData?.discountAmount,
-    customCartDataDiscountAmountType: typeof customCartData?.discountAmount,
-    cartAttributes: cart?.attributes,
-    cartDiscountCodes: cart?.discountCodes,
-  });
-
+  // For Shopify cart, discounts are already reflected in cart.cost totals
   const discountAmount = isCustomCart
     ? (() => {
-        // First try customCartData (direct from API)
         if (customCartData?.discountAmount) {
-          const amount = typeof customCartData.discountAmount === 'string'
-            ? parseFloat(customCartData.discountAmount)
-            : Number(customCartData.discountAmount);
-          console.log('[Checkout] Discount from customCartData:', amount, 'raw:', customCartData.discountAmount);
+          const amount = parseFloat(String(customCartData.discountAmount));
           return amount || 0;
         }
-        // Fallback to attributes
+        // Fallback to attributes for backward compatibility
         const attrValue = cart?.attributes?.find(a => a.key === '_discountAmount')?.value;
         if (attrValue) {
-          console.log('[Checkout] Discount from attributes:', attrValue);
           return parseFloat(attrValue) || 0;
         }
-        console.log('[Checkout] No discount found, returning 0');
         return 0;
       })()
-    : 0; // Shopify handles its own discounts through cart.cost
-
-  console.log('[Checkout] Final discountAmount:', discountAmount);
+    : 0;
 
   // Get applied discount code
   const appliedDiscountCode = isCustomCart ? customCartData?.discountCode : null;
