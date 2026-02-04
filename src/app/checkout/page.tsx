@@ -96,12 +96,10 @@ export default function CheckoutPage() {
 
   // Get discount amount from cart
   // For custom cart, read from attributes where we stored it
-  // For Shopify cart, calculate from the difference between subtotal and total
+  // For Shopify cart, discounts are already reflected in cart totals (we don't apply our own)
   const discountAmount = isCustomCart
     ? parseFloat(cart?.attributes?.find(a => a.key === '_discountAmount')?.value || '0')
-    : (cart?.cost?.totalAmount && cart?.cost?.subtotalAmount
-      ? parseFloat(cart.cost.subtotalAmount.amount) - parseFloat(cart.cost.totalAmount.amount) + deliveryFee + tax
-      : 0);
+    : 0; // Shopify handles its own discounts through cart.cost
 
   const total = subtotal + deliveryFee + tax - Math.abs(discountAmount);
 
