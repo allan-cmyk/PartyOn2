@@ -6,7 +6,6 @@ import DraftCartSection from './DraftCartSection';
 import PurchasedSection from './PurchasedSection';
 import ParticipantCheckoutButton from './ParticipantCheckoutButton';
 import EditTabModal from './EditTabModal';
-import GroupProductCatalog from './GroupProductCatalog';
 import DeliveryFeeInvoice from './DeliveryFeeInvoice';
 import {
   updateDraftItemV2,
@@ -159,19 +158,6 @@ export default function TabContent({
           tab={tab}
           hostParticipantId={currentParticipantId}
         />
-      )}
-
-      {/* Product Catalog (only when tab is open) */}
-      {!isLocked && currentParticipantId && tab.status !== 'CANCELLED' && tab.status !== 'FULFILLED' && (
-        <div className="bg-white rounded-lg border border-v2-border p-4">
-          <GroupProductCatalog
-            shareCode={shareCode}
-            tabId={tab.id}
-            participantId={currentParticipantId}
-            orderType={tab.orderType}
-            onItemAdded={onRefresh}
-          />
-        </div>
       )}
 
       {/* Edit Tab Modal (host only) */}

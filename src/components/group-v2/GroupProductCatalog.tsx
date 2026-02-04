@@ -11,7 +11,9 @@ interface CatalogProduct {
   handle: string;
   basePrice: number;
   productType: string | null;
-  images: { url: string }[];
+  // API returns image (singular) not images (array)
+  image?: { url: string; altText?: string | null };
+  images?: { url: string }[];
   variants: {
     id: string;
     title: string;
@@ -95,7 +97,7 @@ export default function GroupProductCatalog({
         title: product.title,
         variantTitle: variant.title !== 'Default' ? variant.title : undefined,
         price: Number(variant.price),
-        imageUrl: product.images?.[0]?.url,
+        imageUrl: product.image?.url || product.images?.[0]?.url,
         quantity: 1,
       });
       onItemAdded();
@@ -151,7 +153,8 @@ export default function GroupProductCatalog({
           {filtered.map((product) => {
             const variant = product.variants?.[0];
             const price = variant ? Number(variant.price) : Number(product.basePrice);
-            const imgUrl = product.images?.[0]?.url;
+            // Handle both image (singular from API) and images (array)
+            const imgUrl = product.image?.url || product.images?.[0]?.url;
             const isAdding = addingId === product.id;
 
             return (

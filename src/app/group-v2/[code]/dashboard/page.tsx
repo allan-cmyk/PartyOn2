@@ -15,6 +15,7 @@ import CheckoutSummaryModal from '@/components/group-v2/CheckoutSummaryModal';
 import DashboardSkeleton from '@/components/group-v2/DashboardSkeleton';
 import CreateTabModal from '@/components/group-v2/CreateTabModal';
 import ShareGroupModal from '@/components/group-v2/ShareGroupModal';
+import GroupProductCatalog from '@/components/group-v2/GroupProductCatalog';
 
 export default function DashboardPage(): ReactElement {
   const params = useParams();
@@ -115,9 +116,9 @@ export default function DashboardPage(): ReactElement {
       />
 
       {/* Content */}
-      <div className="max-w-5xl mx-auto px-4 md:px-6 py-6 pb-24 md:pb-6">
+      <div className="max-w-5xl mx-auto px-4 md:px-6 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Content - Tab Items + Catalog */}
+          {/* Main Content - Tab Items */}
           <div className="lg:col-span-2">
             {activeTab ? (
               <TabContent
@@ -201,6 +202,21 @@ export default function DashboardPage(): ReactElement {
           </div>
         </div>
       </div>
+
+      {/* Full-width Product Catalog - outside the constrained grid */}
+      {activeTab && participantId && activeTab.status === 'OPEN' && (
+        <div className="bg-white border-t border-gray-200 py-8 pb-32 md:pb-8">
+          <div className="px-4 md:px-8">
+            <GroupProductCatalog
+              shareCode={code}
+              tabId={activeTab.id}
+              participantId={participantId}
+              orderType={activeTab.orderType}
+              onItemAdded={refresh}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Create Tab Modal */}
       {participantId && (
