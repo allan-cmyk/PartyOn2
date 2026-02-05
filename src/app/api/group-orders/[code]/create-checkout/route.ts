@@ -8,84 +8,6 @@ import { EmailType } from '@prisma/client';
 import { calculateDeliveryFee } from '@/lib/delivery';
 import type { GroupOrderWithParticipants } from '@/lib/group-orders/types';
 
-// Feature flag for custom cart
-const USE_CUSTOM_CART = process.env.NEXT_PUBLIC_USE_CUSTOM_CART === 'true';
-
-// Shopify fallback imports (only used when custom cart is disabled)
-import { createGroupDraftOrder, sendDraftOrderInvoice } from '@/lib/shopify/draft-orders';
-import { shopifyFetch } from '@/lib/shopify/client';
-
-const GET_CART_QUERY = `
-  query getCart($cartId: ID!) {
-    cart(id: $cartId) {
-      id
-      lines(first: 250) {
-        edges {
-          node {
-            id
-            quantity
-            merchandise {
-              ... on ProductVariant {
-                id
-                title
-                product {
-                  title
-                }
-                price {
-                  amount
-                  currencyCode
-                }
-              }
-            }
-          }
-        }
-      }
-      cost {
-        totalAmount {
-          amount
-          currencyCode
-        }
-        subtotalAmount {
-          amount
-          currencyCode
-        }
-      }
-    }
-  }
-`;
-
-/**
- * Additional invoice URL fix for API responses (Shopify fallback only)
- * Ensures invoice URLs are always using the reliable Shopify domain
- */
-function ensureReliableInvoiceUrl(invoiceUrl: string | null | undefined): string | null {
-  if (!invoiceUrl) return null;
-
-  const storeDomain = process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN || 'premier-concierge.myshopify.com';
-
-  // List of custom domains that might cause issues
-  const customDomains = [
-    'partyondelivery.com',
-    'party-on-delivery.com',
-    'www.partyondelivery.com',
-    'www.party-on-delivery.com'
-  ];
-
-  let fixedUrl = invoiceUrl;
-
-  // Replace any custom domain with the reliable store domain
-  for (const customDomain of customDomains) {
-    fixedUrl = fixedUrl.replace(new RegExp(`https?://${customDomain.replace('.', '\\.')}`, 'gi'), `https://${storeDomain}`);
-  }
-
-  // Ensure the URL uses HTTPS
-  if (fixedUrl.startsWith('http://')) {
-    fixedUrl = fixedUrl.replace('http://', 'https://');
-  }
-
-  return fixedUrl;
-}
-
 /**
  * Create checkout for a group order using local Draft Order system
  */
@@ -264,104 +186,6 @@ async function createLocalCheckout(
   };
 }
 
-/**
- * Create checkout for a group order using Shopify Draft Orders (legacy)
- */
-async function createShopifyCheckout(
-  groupOrder: GroupOrderWithParticipants,
-  hostCustomerId: string,
-  hostEmail: string,
-  hostPhone: string | undefined
-): Promise<{
-  success: true;
-  draftOrder: {
-    id: string;
-    name: string;
-    invoiceUrl: string | null;
-    totalPrice: string;
-  };
-  checkoutUrl: string | null;
-}> {
-  if (!groupOrder) {
-    throw new Error('Group order not found');
-  }
-
-  const activeParticipants = groupOrder.participants.filter(p => p.status === 'active');
-  const participantCarts = [];
-
-  // Fetch carts from Shopify
-  for (const participant of activeParticipants) {
-    if (!participant.cartId || participant.cartTotal === 0) continue;
-
-    try {
-      const cartResponse = await shopifyFetch<{
-        cart: {
-          id: string;
-          lines: { edges: Array<{ node: { id: string; quantity: number; merchandise: { id: string } } }> };
-        };
-      }>({
-        query: GET_CART_QUERY,
-        variables: { cartId: participant.cartId },
-      });
-
-      if (cartResponse.cart) {
-        participantCarts.push({
-          id: participant.cartId,
-          lines: cartResponse.cart.lines.edges.map((e) => e.node),
-          participantName: participant.guestName || 'Guest',
-        });
-      }
-    } catch (error) {
-      console.error(`Failed to fetch Shopify cart ${participant.cartId}:`, error);
-    }
-  }
-
-  if (participantCarts.length === 0) {
-    throw new Error('No valid carts found for group order');
-  }
-
-  // Create Shopify draft order
-  const draftOrder = await createGroupDraftOrder(participantCarts, {
-    hostEmail,
-    hostPhone,
-    hostCustomerId,
-    deliveryAddress: groupOrder.deliveryAddress,
-    deliveryDate: groupOrder.deliveryDate,
-    deliveryTime: groupOrder.deliveryTime,
-    groupName: groupOrder.name,
-    shareCode: groupOrder.shareCode,
-  });
-
-  // Send the invoice via Shopify
-  if (draftOrder.id) {
-    await sendDraftOrderInvoice(
-      draftOrder.id,
-      hostEmail,
-      `Your Party On Delivery Group Order - ${groupOrder.name}`,
-      `Hello! Your group order "${groupOrder.name}" is ready for payment.
-
-Total participants: ${activeParticipants.length}
-Delivery date: ${new Date(groupOrder.deliveryDate).toLocaleDateString()}
-Delivery time: ${groupOrder.deliveryTime}
-
-Click the link below to complete your order.`
-    );
-  }
-
-  const reliableInvoiceUrl = ensureReliableInvoiceUrl(draftOrder.invoiceUrl);
-
-  return {
-    success: true,
-    draftOrder: {
-      id: draftOrder.id,
-      name: draftOrder.name,
-      invoiceUrl: reliableInvoiceUrl,
-      totalPrice: draftOrder.totalPrice,
-    },
-    checkoutUrl: reliableInvoiceUrl,
-  };
-}
-
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ code: string }> }
@@ -402,23 +226,7 @@ export async function POST(
       );
     }
 
-    let result;
-
-    // Use local checkout when custom cart is enabled
-    if (USE_CUSTOM_CART) {
-      console.log('[Group Checkout] Using local Draft Order system');
-      result = await createLocalCheckout(groupOrder, hostEmail, hostPhone);
-    } else {
-      // Fall back to Shopify for legacy cart system
-      console.log('[Group Checkout] Using Shopify Draft Orders (legacy)');
-      if (!hostCustomerId) {
-        return NextResponse.json(
-          { error: 'Host customer ID required for Shopify checkout' },
-          { status: 400 }
-        );
-      }
-      result = await createShopifyCheckout(groupOrder, hostCustomerId, hostEmail, hostPhone);
-    }
+    const result = await createLocalCheckout(groupOrder, hostEmail, hostPhone);
 
     // Update group order status to completed
     await db.updateOrderStatus(code, 'completed');

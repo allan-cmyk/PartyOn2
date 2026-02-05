@@ -4,12 +4,12 @@ import Image from 'next/image'
 import ChristmasDeadlineBanner from '@/components/ChristmasDeadlineBanner'
 import FeaturedKitCard from '@/components/gifts/FeaturedKitCard'
 import LuxuryCard from '@/components/LuxuryCard'
-import { shopifyFetch } from '@/lib/shopify/client'
-import { PRODUCTS_GRID_QUERY } from '@/lib/shopify/queries/products'
+import { prisma } from '@/lib/database/client'
+import { transformToProduct } from '@/lib/products/transform'
 import { Product } from '@/lib/types'
 
-// Force dynamic rendering to ensure environment variables are available
-export const dynamic = 'force-dynamic'
+// Revalidate every 5 minutes
+export const revalidate = 300
 
 export const metadata: Metadata = {
   title: 'Christmas Cocktail Kit Gifts | Austin Delivery | Party On Delivery',
@@ -24,16 +24,22 @@ export const metadata: Metadata = {
 
 
 export default async function CocktailKitsGiftPage() {
-  // Fetch cocktail kit products from Shopify using productType filter
-  const response = await shopifyFetch<{ products: { edges: Array<{ node: Product }> } }>({
-    query: PRODUCTS_GRID_QUERY,
-    variables: {
-      first: 50,
-      query: 'product_type:"Cocktail Kits"'
-    }
+  // Fetch cocktail kit products from PostgreSQL
+  const products = await prisma.product.findMany({
+    where: {
+      status: 'ACTIVE',
+      productType: { equals: 'Cocktail Kits', mode: 'insensitive' },
+    },
+    include: {
+      images: { orderBy: { position: 'asc' } },
+      variants: { include: { image: true }, orderBy: { createdAt: 'asc' } },
+      categories: { include: { category: true } },
+    },
+    orderBy: { title: 'asc' },
+    take: 50,
   })
 
-  const cocktailKits = response.products.edges.map((edge: { node: Product }) => edge.node)
+  const cocktailKits = products.map(p => transformToProduct(p))
 
   // Find specific featured kits by name patterns
   const findKit = (pattern: string) =>

@@ -1,7 +1,7 @@
 /** Product utility functions */
 
 import type { Product, ProductVariant } from '@/lib/types';
-import { getProductCardImage } from '@/lib/shopify/image-utils';
+import { getProductCardImage } from '@/lib/utils/image';
 
 export function getFirstAvailableVariant(product: Product): ProductVariant | null {
   const availableVariant = product.variants.edges.find(

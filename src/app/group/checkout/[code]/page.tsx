@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useGroupOrder } from '@/lib/group-orders/hooks'
-// import { formatPrice } from '@/lib/shopify/utils' // Not used currently
 
 export default function GroupCheckoutPage() {
   const params = useParams()

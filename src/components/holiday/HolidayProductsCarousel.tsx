@@ -3,11 +3,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { shopifyFetch, PRODUCT_BY_HANDLE_QUERY } from '@/lib/shopify';
 import { Product } from '@/lib/types';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
-// Holiday product handles - these should match exact Shopify handles
+// Holiday product handles
 const HOLIDAY_PRODUCT_HANDLES = [
   'peppermint-martini',
   'apple-cider-aperol-cider-bundle',
@@ -16,10 +15,6 @@ const HOLIDAY_PRODUCT_HANDLES = [
   'hugo-spritz-cocktail-kit',
   'the-hill-country-old-fashioned',
 ];
-
-interface ProductByHandleResponse {
-  productByHandle: Product | null;
-}
 
 export default function HolidayProductsCarousel(): React.ReactElement {
   const [products, setProducts] = useState<Product[]>([]);
@@ -30,27 +25,20 @@ export default function HolidayProductsCarousel(): React.ReactElement {
   useEffect(() => {
     async function fetchHolidayProducts(): Promise<void> {
       try {
-        console.log('Holiday carousel: Fetching products individually by handle');
-
-        // Fetch each product individually using productByHandle query
+        // Fetch each product by handle from custom PostgreSQL API
         const productPromises = HOLIDAY_PRODUCT_HANDLES.map(async (handle) => {
           try {
-            const response = await shopifyFetch<ProductByHandleResponse>({
-              query: PRODUCT_BY_HANDLE_QUERY,
-              variables: { handle },
-            });
-            console.log('Holiday carousel: Fetched', handle, response?.productByHandle?.title || 'NOT FOUND');
-            return response?.productByHandle;
-          } catch (err) {
-            console.error(`Failed to fetch product ${handle}:`, err);
+            const response = await fetch(`/api/products/${handle}`);
+            if (!response.ok) return null;
+            const product: Product = await response.json();
+            return product;
+          } catch {
             return null;
           }
         });
 
         const fetchedProducts = await Promise.all(productPromises);
         const validProducts = fetchedProducts.filter((p): p is Product => p !== null);
-
-        console.log('Holiday carousel: Total products found:', validProducts.length);
         setProducts(validProducts);
       } catch (err) {
         console.error('Error fetching holiday products:', err);
