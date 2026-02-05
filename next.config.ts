@@ -278,7 +278,7 @@ const nextConfig: NextConfig = {
               "font-src 'self' fonts.gstatic.com data:",
               "img-src 'self' data: blob: https: http: *.shopify.com *.myshopify.com images.unsplash.com *.squarespace-cdn.com *.wixstatic.com *.showit.co *.googleapis.com *.website-files.com *.simpleviewinc.com *.facebook.com www.facebook.com",
               "connect-src 'self' *.shopify.com *.myshopify.com *.google-analytics.com *.googletagmanager.com vitals.vercel-insights.com hooks.zapier.com connect.facebook.net *.facebook.com *.doubleclick.net www.googleadservices.com *.google.com",
-              "frame-src 'self' *.shopify.com *.myshopify.com *.youtube.com *.youtube-nocookie.com *.recomsale.com vercel.live *.googletagmanager.com",
+              "frame-src 'self' *.shopify.com *.myshopify.com *.youtube.com *.youtube-nocookie.com *.recomsale.com vercel.live *.googletagmanager.com *.instagram.com",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self' *.shopify.com *.myshopify.com",
