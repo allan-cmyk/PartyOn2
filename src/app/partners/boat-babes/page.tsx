@@ -108,23 +108,24 @@ function BoatBabesPageContent(): ReactElement {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-8">
             <p className="text-gray-500 tracking-[0.2em] uppercase text-sm mb-2">
-              See the Experience
+              See the Vibes
             </p>
             <h2 className="font-heading text-2xl md:text-3xl text-gray-900 tracking-wide">
-              What a Lake Day Looks Like
+              A Day with Boat Babes
             </h2>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-stretch">
-            {/* Video Container - Takes 3 columns on desktop */}
-            <div className="lg:col-span-3 flex">
-              <div className="relative w-full aspect-video lg:aspect-auto lg:h-full rounded-xl overflow-hidden shadow-2xl bg-gray-900">
+            {/* Instagram Reel - Takes 3 columns on desktop */}
+            <div className="lg:col-span-3 flex justify-center">
+              <div className="w-full max-w-[400px] rounded-xl overflow-hidden shadow-2xl bg-gray-900">
                 <iframe
-                  src="https://www.youtube.com/embed/4-Yx24Y6oro?rel=0&modestbranding=1"
-                  title="Lake day boat party experience"
-                  className="absolute inset-0 w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  src="https://www.instagram.com/reel/DT_T77Tkn96/embed/"
+                  title="Boat Babes getting ready for Austin lake season"
+                  className="w-full border-0"
+                  style={{ minHeight: '500px' }}
                   allowFullScreen
+                  scrolling="no"
                 />
               </div>
             </div>
