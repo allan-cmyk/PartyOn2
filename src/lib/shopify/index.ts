@@ -16,6 +16,5 @@ export * from './mutations/customer';
 export * from './utils';
 
 // Hooks
-export { useProducts, useProduct } from './hooks/useProducts';
 export { useCart } from './hooks/useCart';
 export { useCustomer } from './hooks/useCustomer';
