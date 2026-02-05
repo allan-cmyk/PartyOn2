@@ -1,11 +1,11 @@
 /**
  * Custom Cart Hook
  * Replaces Shopify cart with local PostgreSQL-backed cart
- * Transforms data to match ShopifyCart interface for backwards compatibility
+ * Transforms data to match Cart interface for backwards compatibility
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { ShopifyCart } from '@/lib/shopify/types';
+import type { Cart } from '@/lib/types';
 
 interface CustomCartItem {
   id: string;
@@ -58,9 +58,9 @@ interface CartApiResponse {
 }
 
 /**
- * Transform custom cart to ShopifyCart format for backwards compatibility
+ * Transform custom cart to Cart format for backwards compatibility
  */
-function transformToShopifyCart(cart: CustomCart): ShopifyCart {
+function transformToCart(cart: CustomCart): Cart {
   // Safely parse numeric values - handle both string and number types
   const subtotal = typeof cart.subtotal === 'string' ? parseFloat(cart.subtotal) : Number(cart.subtotal) || 0;
   const total = typeof cart.total === 'string' ? parseFloat(cart.total) : Number(cart.total) || 0;
@@ -141,7 +141,7 @@ function transformToShopifyCart(cart: CustomCart): ShopifyCart {
 }
 
 export function useCustomCart() {
-  const [cart, setCart] = useState<ShopifyCart | null>(null);
+  const [cart, setCart] = useState<Cart | null>(null);
   const [customCart, setCustomCart] = useState<CustomCart | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -162,7 +162,7 @@ export function useCustomCart() {
 
       if (data.success && data.data) {
         setCustomCart(data.data.cart);
-        setCart(transformToShopifyCart(data.data.cart));
+        setCart(transformToCart(data.data.cart));
       }
     } catch (err) {
       console.error('Error fetching cart:', err);
@@ -184,7 +184,7 @@ export function useCustomCart() {
     quantity: number = 1,
     productId?: string,
     price?: number
-  ): Promise<ShopifyCart> => {
+  ): Promise<Cart> => {
     try {
       setLoading(true);
 
@@ -227,7 +227,7 @@ export function useCustomCart() {
       }
 
       setCustomCart(data.data.cart);
-      const transformedCart = transformToShopifyCart(data.data.cart);
+      const transformedCart = transformToCart(data.data.cart);
       setCart(transformedCart);
       return transformedCart;
     } catch (err) {
@@ -265,7 +265,7 @@ export function useCustomCart() {
       }
 
       setCustomCart(data.data.cart);
-      setCart(transformToShopifyCart(data.data.cart));
+      setCart(transformToCart(data.data.cart));
     } catch (err) {
       setError(err as Error);
       throw err;
@@ -300,7 +300,7 @@ export function useCustomCart() {
       }
 
       setCustomCart(data.data.cart);
-      setCart(transformToShopifyCart(data.data.cart));
+      setCart(transformToCart(data.data.cart));
     } catch (err) {
       setError(err as Error);
       throw err;
@@ -329,7 +329,7 @@ export function useCustomCart() {
 
       if (data.success && data.data) {
         setCustomCart(data.data.cart);
-        setCart(transformToShopifyCart(data.data.cart));
+        setCart(transformToCart(data.data.cart));
       } else {
         setCustomCart(null);
         setCart(null);
@@ -354,7 +354,7 @@ export function useCustomCart() {
       await clearCart();
 
       // Add items one by one (API doesn't support batch add yet)
-      let resultCart: ShopifyCart | null = null;
+      let resultCart: Cart | null = null;
       for (const item of items) {
         resultCart = await addToCart(item.merchandiseId, item.quantity, item.productId, item.price);
       }
@@ -395,7 +395,7 @@ export function useCustomCart() {
 
       if (data.success && data.data) {
         setCustomCart(data.data.cart);
-        const transformedCart = transformToShopifyCart(data.data.cart);
+        const transformedCart = transformToCart(data.data.cart);
         setCart(transformedCart);
         return transformedCart;
       }
@@ -413,7 +413,7 @@ export function useCustomCart() {
    */
   const setCartFromApiResponse = useCallback((apiCart: CustomCart) => {
     setCustomCart(apiCart);
-    setCart(transformToShopifyCart(apiCart));
+    setCart(transformToCart(apiCart));
   }, []);
 
   return {

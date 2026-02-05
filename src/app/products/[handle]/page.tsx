@@ -2,8 +2,8 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { prisma } from '@/lib/database/client';
-import { transformToShopifyProduct } from '@/lib/products/transform';
-import { ShopifyProduct } from '@/lib/shopify/types';
+import { transformToProduct } from '@/lib/products/transform';
+import { Product } from '@/lib/types';
 import ProductDetailClient from '@/components/products/ProductDetailClient';
 import SneebergFAQ from '@/components/products/SneebergFAQ';
 import FatEsMatorMixFAQ from '@/components/products/FatEsMatorMixFAQ';
@@ -12,7 +12,7 @@ import PinthouseElectricJellyfishFAQ from '@/components/products/PinthouseElectr
 import CoronaExtraKegFAQ from '@/components/products/CoronaExtraKegFAQ';
 import BorrascaBrutCavaFAQ from '@/components/products/BorrascaBrutCavaFAQ';
 import ProductBreadcrumbs from '@/components/products/ProductBreadcrumbs';
-import { formatPrice } from '@/lib/shopify/utils';
+import { formatPrice } from '@/lib/utils';
 import { getProductRobotsMeta } from '@/lib/noindex-products';
 
 interface Props {
@@ -29,7 +29,7 @@ const productInclude = {
 };
 
 /** Fetch product from PostgreSQL by handle */
-async function getProduct(handle: string): Promise<ShopifyProduct | null> {
+async function getProduct(handle: string): Promise<Product | null> {
   try {
     const dbProduct = await prisma.product.findFirst({
       where: {
@@ -40,7 +40,7 @@ async function getProduct(handle: string): Promise<ShopifyProduct | null> {
 
     if (!dbProduct) return null;
 
-    return transformToShopifyProduct(dbProduct) as ShopifyProduct;
+    return transformToProduct(dbProduct) as Product;
   } catch (error) {
     console.error('Error fetching product:', error);
     return null;

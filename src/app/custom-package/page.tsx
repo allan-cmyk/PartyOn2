@@ -7,8 +7,8 @@ import Image from 'next/image';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
 import { useCustomProducts } from '@/lib/cart/hooks/useCustomProducts';
-import { ShopifyProduct } from '@/lib/shopify/types';
-import { formatPrice } from '@/lib/shopify/utils';
+import { Product } from '@/lib/types';
+import { formatPrice } from '@/lib/utils';
 import { useCartContext } from '@/contexts/CartContext';
 
 interface PackageItem {
@@ -25,7 +25,7 @@ interface PackageData {
 export default function CustomPackagePage() {
   const router = useRouter();
   const [packageData, setPackageData] = useState<PackageData | null>(null);
-  const [matchedProducts, setMatchedProducts] = useState<{ item: PackageItem; products: ShopifyProduct[] }[]>([]);
+  const [matchedProducts, setMatchedProducts] = useState<{ item: PackageItem; products: Product[] }[]>([]);
   const { products, loading, loadMore, hasNextPage } = useCustomProducts(50);
   const { addToCart, loading: cartLoading } = useCartContext();
   const [addingToCart, setAddingToCart] = useState<string | null>(null);
@@ -106,7 +106,7 @@ export default function CustomPackagePage() {
     }
   }, [packageData, products]);
 
-  const handleAddToCart = async (product: ShopifyProduct, quantity: number) => {
+  const handleAddToCart = async (product: Product, quantity: number) => {
     if (!product.variants.edges[0]) return;
     
     const variantId = product.variants.edges[0].node.id;

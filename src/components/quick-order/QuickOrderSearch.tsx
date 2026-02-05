@@ -6,8 +6,8 @@
 'use client';
 
 import { useState, useEffect, useRef, type ReactElement } from 'react';
-import { ShopifyProduct } from '@/lib/shopify/types';
-import { formatPrice, getProductImageUrl, getFirstAvailableVariant } from '@/lib/shopify/utils';
+import { Product } from '@/lib/types';
+import { formatPrice, getProductImageUrl, getFirstAvailableVariant } from '@/lib/utils';
 import { useCartContext } from '@/contexts/CartContext';
 
 interface QuickOrderSearchProps {
@@ -27,7 +27,7 @@ export default function QuickOrderSearch({
 }: QuickOrderSearchProps): ReactElement {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [results, setResults] = useState<ShopifyProduct[]>([]);
+  const [results, setResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [addingId, setAddingId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -60,7 +60,7 @@ export default function QuickOrderSearch({
         );
         const data = await response.json();
         const products = data.products?.edges?.map(
-          (edge: { node: ShopifyProduct }) => edge.node
+          (edge: { node: Product }) => edge.node
         ) || [];
         setResults(products);
       } catch (error) {
@@ -74,7 +74,7 @@ export default function QuickOrderSearch({
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  const handleQuickAdd = async (product: ShopifyProduct) => {
+  const handleQuickAdd = async (product: Product) => {
     const variant = getFirstAvailableVariant(product);
     if (!variant) return;
 

@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCartContext } from '@/contexts/CartContext';
 import CartItem from './CartItem';
-import { formatPrice } from '@/lib/shopify/utils';
+import { formatPrice } from '@/lib/utils';
 import AIConcierge from '@/components/AIConcierge';
 import { copyToClipboard, type SharedCartVariant } from '@/lib/cart/shareCart';
 import { trackBeginCheckout, trackEvent, ANALYTICS_EVENTS } from '@/lib/analytics/track';

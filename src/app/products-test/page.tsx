@@ -1,7 +1,7 @@
 'use client';
 
 import { useCustomProducts } from '@/lib/cart/hooks/useCustomProducts';
-import { formatPrice, getProductImageUrl } from '@/lib/shopify/utils';
+import { formatPrice, getProductImageUrl } from '@/lib/utils';
 import Link from 'next/link';
 
 export default function ProductsTestPage() {

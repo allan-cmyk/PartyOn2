@@ -11,12 +11,12 @@ import CompactProductCard from '@/components/shopify/CompactProductCard';
 import MobileProductCard from '@/components/mobile/MobileProductCard';
 import MobileFilterDrawer from '@/components/mobile/MobileFilterDrawer';
 import { useCustomCollectionProducts } from '@/lib/cart/hooks/useCustomProducts';
-import { ShopifyProduct } from '@/lib/shopify/types';
+import { Product } from '@/lib/types';
 import AIConcierge from '@/components/AIConcierge';
 import AgeVerificationModal from '@/components/AgeVerificationModal';
 import ProductModal from '@/components/ProductModal';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { getProductCategory, FILTER_OPTIONS, SHOPIFY_COLLECTIONS, getUniqueTags } from '@/lib/shopify/categories';
+import { getProductCategory, FILTER_OPTIONS, SHOPIFY_COLLECTIONS, getUniqueTags } from '@/lib/products/categories';
 import { ProductCardSkeletonGrid } from '@/components/skeletons/ProductCardSkeleton';
 import { MobileProductCardSkeletonGrid } from '@/components/skeletons/MobileProductCardSkeleton';
 
@@ -25,7 +25,7 @@ function ProductsContent() {
   const searchQuery = searchParams.get('search');
   const isMobile = useIsMobile();
   const initialLoadCount = isMobile ? 12 : 20;
-  const [searchResults, setSearchResults] = useState<ShopifyProduct[]>([]);
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [filter, setFilter] = useState('all');
   const [collectionFilter, setCollectionFilter] = useState<string | null>(null);
@@ -45,7 +45,7 @@ function ProductsContent() {
   const [isCompactView, setIsCompactView] = useState(true);
   
   // Product modal state
-  const [selectedProduct, setSelectedProduct] = useState<ShopifyProduct | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showProductModal, setShowProductModal] = useState(false);
 
   // Sticky collections disabled - was causing scroll conflicts on mobile
@@ -77,7 +77,7 @@ function ProductsContent() {
     }
   };
 
-  const handleProductClick = (product: ShopifyProduct) => {
+  const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
     setShowProductModal(true);
   };
@@ -110,7 +110,7 @@ function ProductsContent() {
       fetch(`/api/products?search=${encodeURIComponent(searchQuery)}&first=50`)
         .then(response => response.json())
         .then(data => {
-          setSearchResults(data.products.edges.map((edge: { node: ShopifyProduct }) => edge.node));
+          setSearchResults(data.products.edges.map((edge: { node: Product }) => edge.node));
         })
         .catch(console.error)
         .finally(() => setSearchLoading(false));

@@ -6,7 +6,7 @@
 'use client';
 
 import { useState, useEffect, type ReactElement } from 'react';
-import type { ShopifyProduct } from '@/lib/shopify/types';
+import type { Product } from '@/lib/types';
 import WelcomePackageCard from './WelcomePackageCard';
 
 interface WelcomePackageGridProps {
@@ -20,7 +20,7 @@ interface WelcomePackageGridProps {
 export default function WelcomePackageGrid({
   discountCode = 'PREMIERPARTYCRUISES',
 }: WelcomePackageGridProps): ReactElement {
-  const [packages, setPackages] = useState<ShopifyProduct[]>([]);
+  const [packages, setPackages] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,7 +41,7 @@ export default function WelcomePackageGrid({
 
         // Filter to only Welcome Package product type
         const welcomeProducts = (data.products || []).filter(
-          (p: ShopifyProduct) =>
+          (p: Product) =>
             p.productType === 'Welcome Package' ||
             p.title.startsWith('Welcome to Austin:')
         );

@@ -6,7 +6,7 @@ import FeaturedKitCard from '@/components/gifts/FeaturedKitCard'
 import LuxuryCard from '@/components/LuxuryCard'
 import { shopifyFetch } from '@/lib/shopify/client'
 import { PRODUCTS_GRID_QUERY } from '@/lib/shopify/queries/products'
-import { ShopifyProduct } from '@/lib/shopify/types'
+import { Product } from '@/lib/types'
 
 // Force dynamic rendering to ensure environment variables are available
 export const dynamic = 'force-dynamic'
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 
 export default async function CocktailKitsGiftPage() {
   // Fetch cocktail kit products from Shopify using productType filter
-  const response = await shopifyFetch<{ products: { edges: Array<{ node: ShopifyProduct }> } }>({
+  const response = await shopifyFetch<{ products: { edges: Array<{ node: Product }> } }>({
     query: PRODUCTS_GRID_QUERY,
     variables: {
       first: 50,
@@ -33,11 +33,11 @@ export default async function CocktailKitsGiftPage() {
     }
   })
 
-  const cocktailKits = response.products.edges.map((edge: { node: ShopifyProduct }) => edge.node)
+  const cocktailKits = response.products.edges.map((edge: { node: Product }) => edge.node)
 
   // Find specific featured kits by name patterns
   const findKit = (pattern: string) =>
-    cocktailKits.find((p: ShopifyProduct) =>
+    cocktailKits.find((p: Product) =>
       p.title.toLowerCase().includes(pattern.toLowerCase())
     )
 
@@ -53,13 +53,13 @@ export default async function CocktailKitsGiftPage() {
     espressoMartiniKit,
     oldFashionedKit,
     aperolSpritzKit
-  ].filter(Boolean) as ShopifyProduct[]
+  ].filter(Boolean) as Product[]
 
   // Get IDs of featured kits to exclude from secondary grid
   const featuredKitIds = new Set(featuredKits.map(kit => kit.id))
 
   // Get other cocktail kits not in featured list (exclude limes and other non-kit items)
-  const otherKits = cocktailKits.filter((kit: ShopifyProduct) =>
+  const otherKits = cocktailKits.filter((kit: Product) =>
     !featuredKitIds.has(kit.id) &&
     !kit.title.toLowerCase().includes('lime')
   )
@@ -73,7 +73,7 @@ export default async function CocktailKitsGiftPage() {
   }
 
   // Get short subheadline for a kit
-  const getKitSubheadline = (product: ShopifyProduct): string => {
+  const getKitSubheadline = (product: Product): string => {
     const titleLower = product.title.toLowerCase()
     for (const [key, subheadline] of Object.entries(kitSubheadlines)) {
       if (titleLower.includes(key)) return subheadline
@@ -188,7 +188,7 @@ export default async function CocktailKitsGiftPage() {
                 More Cocktail Kits
               </h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {otherKits.slice(0, 6).map((kit: ShopifyProduct) => {
+                {otherKits.slice(0, 6).map((kit: Product) => {
                   const kitImage = kit.images.edges[0]?.node.url
                   const kitPrice = kit.priceRange.minVariantPrice
                   const kitVariant = kit.variants.edges[0]?.node

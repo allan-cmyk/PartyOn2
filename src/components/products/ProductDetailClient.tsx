@@ -5,13 +5,13 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import { useCartContext } from '@/contexts/CartContext';
-import { formatPrice, getFirstAvailableVariant } from '@/lib/shopify/utils';
-import { ShopifyProduct } from '@/lib/shopify/types';
+import { formatPrice, getFirstAvailableVariant } from '@/lib/utils';
+import { Product } from '@/lib/types';
 import { trackMetaEvent } from '@/components/MetaPixel';
 import { trackProductView } from '@/lib/analytics/track';
 
 interface Props {
-  product: ShopifyProduct;
+  product: Product;
 }
 
 export default function ProductDetailClient({ product }: Props) {

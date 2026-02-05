@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useCartContext } from '@/contexts/CartContext';
-import { formatPrice } from '@/lib/shopify/utils';
+import { formatPrice } from '@/lib/utils';
 
 interface CartItemProps {
   item: {

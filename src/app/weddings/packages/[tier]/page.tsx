@@ -7,12 +7,12 @@ import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import { useCustomProducts } from '@/lib/cart/hooks/useCustomProducts';
 import { useCartContext } from '@/contexts/CartContext';
-import { ShopifyProduct } from '@/lib/shopify/types';
-import { formatPrice } from '@/lib/shopify/utils';
+import { Product } from '@/lib/types';
+import { formatPrice } from '@/lib/utils';
 import { calculatePackageQuantity, getUnitSize } from '@/lib/package-calculations';
 
 interface PackageItem {
-  product: ShopifyProduct;
+  product: Product;
   quantity: number;
   category: string;
 }

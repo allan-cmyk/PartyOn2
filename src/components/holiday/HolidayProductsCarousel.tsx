@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { shopifyFetch, PRODUCT_BY_HANDLE_QUERY } from '@/lib/shopify';
-import { ShopifyProduct } from '@/lib/shopify/types';
+import { Product } from '@/lib/types';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 // Holiday product handles - these should match exact Shopify handles
@@ -18,11 +18,11 @@ const HOLIDAY_PRODUCT_HANDLES = [
 ];
 
 interface ProductByHandleResponse {
-  productByHandle: ShopifyProduct | null;
+  productByHandle: Product | null;
 }
 
 export default function HolidayProductsCarousel(): React.ReactElement {
-  const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -48,7 +48,7 @@ export default function HolidayProductsCarousel(): React.ReactElement {
         });
 
         const fetchedProducts = await Promise.all(productPromises);
-        const validProducts = fetchedProducts.filter((p): p is ShopifyProduct => p !== null);
+        const validProducts = fetchedProducts.filter((p): p is Product => p !== null);
 
         console.log('Holiday carousel: Total products found:', validProducts.length);
         setProducts(validProducts);

@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ShopifyProduct } from '@/lib/shopify/types';
-import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseAlcohol } from '@/lib/shopify/utils';
+import { Product } from '@/lib/types';
+import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseAlcohol } from '@/lib/utils';
 import { useCartContext } from '@/contexts/CartContext';
 import AgeVerificationModal from '../AgeVerificationModal';
 
@@ -51,7 +51,7 @@ const kitIngredients: Record<string, string[]> = {
 };
 
 interface FeaturedKitCardProps {
-  product: ShopifyProduct;
+  product: Product;
   imagePosition?: 'left' | 'right';
   description?: string;
   showIngredients?: boolean;

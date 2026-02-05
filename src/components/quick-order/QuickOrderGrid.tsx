@@ -6,13 +6,13 @@
 'use client';
 
 import { useState, type ReactElement } from 'react';
-import type { ShopifyProduct } from '@/lib/shopify/types';
+import type { Product } from '@/lib/types';
 import QuickProductCard from './QuickProductCard';
 import ProductModal from '../ProductModal';
 
 interface QuickOrderGridProps {
   /** Products to display */
-  products: ShopifyProduct[];
+  products: Product[];
   /** Loading state */
   loading?: boolean;
 }
@@ -45,10 +45,10 @@ export default function QuickOrderGrid({
   products,
   loading = false,
 }: QuickOrderGridProps): ReactElement {
-  const [selectedProduct, setSelectedProduct] = useState<ShopifyProduct | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleProductClick = (product: ShopifyProduct) => {
+  const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
   };

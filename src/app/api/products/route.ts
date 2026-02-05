@@ -8,7 +8,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/database/client';
 import { Prisma } from '@prisma/client';
-import { transformToShopifyProduct, type ProductWithRelations } from '@/lib/products/transform';
+import { transformToProduct, type ProductWithRelations } from '@/lib/products/transform';
 
 // Cache products for 5 minutes
 export const revalidate = 300;
@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
       });
 
       const edges = products.map((product) => ({
-        node: transformToShopifyProduct(product),
+        node: transformToProduct(product),
       }));
 
       return NextResponse.json(
@@ -188,7 +188,7 @@ export async function GET(request: NextRequest) {
     }
 
     const edges = products.map(product => ({
-      node: transformToShopifyProduct(product),
+      node: transformToProduct(product),
     }));
 
     const hasNextPage = skip + products.length < totalCount;

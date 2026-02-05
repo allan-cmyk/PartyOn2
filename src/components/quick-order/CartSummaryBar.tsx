@@ -7,7 +7,7 @@
 
 import type { ReactElement } from 'react';
 import { useCartContext } from '@/contexts/CartContext';
-import { formatPrice } from '@/lib/shopify/utils';
+import { formatPrice } from '@/lib/utils';
 
 /**
  * Fixed bottom bar showing cart summary with checkout button

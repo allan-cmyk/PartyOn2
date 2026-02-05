@@ -1,15 +1,11 @@
 'use client';
 
 import React, { createContext, useContext, useState, ReactElement } from 'react';
-import { useCart as useShopifyCart } from '@/lib/shopify/hooks/useCart';
 import { useCustomCart } from '@/lib/cart/hooks/useCustomCart';
-import { ShopifyCart } from '@/lib/shopify/types';
+import type { Cart } from '@/lib/types';
 import { trackMetaEvent } from '@/components/MetaPixel';
 import { trackCartAction, trackEvent, ANALYTICS_EVENTS } from '@/lib/analytics/track';
 import { completePendingGroupOrderJoin } from '@/lib/group-orders/hooks';
-
-// Feature flag - set to true to use custom cart instead of Shopify
-const USE_CUSTOM_CART = process.env.NEXT_PUBLIC_USE_CUSTOM_CART === 'true';
 
 interface CustomCartData {
   discountCode?: string | null;
@@ -20,7 +16,6 @@ interface CustomCartData {
   total?: string | number;
 }
 
-// Custom cart data structure from API
 interface CustomCartApiData {
   id: string;
   items: Array<{
@@ -41,46 +36,38 @@ interface CustomCartApiData {
 }
 
 interface CartContextType {
-  cart: ShopifyCart | null;
-  customCartData: CustomCartData | null;  // Direct access to custom cart discount data
+  cart: Cart | null;
+  customCartData: CustomCartData | null;
   loading: boolean;
   error: Error | null;
-  addToCart: (variantId: string, quantity?: number) => Promise<ShopifyCart>;
-  createCartWithItems: (items: Array<{ merchandiseId: string; quantity: number }>) => Promise<ShopifyCart | null | undefined>;
+  addToCart: (variantId: string, quantity?: number) => Promise<Cart>;
+  createCartWithItems: (items: Array<{ merchandiseId: string; quantity: number }>) => Promise<Cart | null | undefined>;
   updateCartItem: (lineId: string, quantity: number) => Promise<void>;
   removeFromCart: (lineId: string) => Promise<void>;
   clearCart: () => void | Promise<void>;
-  updateCartAttributes: (attributes: Array<{ key: string; value: string }>) => Promise<ShopifyCart | undefined>;
-  refetchCart: () => Promise<void>;  // Allow manual refetch after discount applied
-  updateCartFromApiResponse: (cart: CustomCartApiData) => void;  // Direct update from API response
+  updateCartAttributes: (attributes: Array<{ key: string; value: string }>) => Promise<Cart | undefined>;
+  refetchCart: () => Promise<void>;
+  updateCartFromApiResponse: (cart: CustomCartApiData) => void;
   isCartOpen: boolean;
   openCart: () => void;
   closeCart: () => void;
   toggleCart: () => void;
-  isCustomCart: boolean;
 }
 
 const CartContext = createContext<CartContextType | null>(null);
 
 export function CartProvider({ children }: { children: React.ReactNode }): ReactElement {
-  // Use either custom cart or Shopify cart based on feature flag
-  const shopifyCartHook = useShopifyCart();
-  const customCartHook = useCustomCart();
-
-  // Select which cart hook to use
-  const cartHook = USE_CUSTOM_CART ? customCartHook : shopifyCartHook;
+  const cartHook = useCustomCart();
 
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   const checkAgeVerification = (): boolean => {
-    // Check both possible keys for backwards compatibility
     const ageVerified = localStorage.getItem('age_verified') || localStorage.getItem('ageVerified');
     return ageVerified === 'true';
   };
 
   const openCart = (): void => {
     if (!checkAgeVerification()) {
-      // Reload the page to show age verification modal
       localStorage.removeItem('age_verified');
       localStorage.removeItem('ageVerified');
       window.location.reload();
@@ -88,7 +75,6 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
     }
     setIsCartOpen(true);
 
-    // Track cart open event with cart info
     if (cartHook.cart) {
       trackEvent(ANALYTICS_EVENTS.OPEN_CART, {
         cart_total: parseFloat(cartHook.cart.cost?.totalAmount?.amount || '0'),
@@ -109,8 +95,7 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
     setIsCartOpen(prev => !prev);
   };
 
-  // Override addToCart to check age verification and fire tracking events
-  const addToCart = async (variantId: string, quantity: number = 1): Promise<ShopifyCart> => {
+  const addToCart = async (variantId: string, quantity: number = 1): Promise<Cart> => {
     const isAgeVerified = checkAgeVerification();
 
     if (!isAgeVerified) {
@@ -124,7 +109,6 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
 
     const result = await cartHook.addToCart(variantId, quantity);
 
-    // If we just created a new cart, check for pending group order join
     if (isCreatingNewCart && result?.id) {
       try {
         await completePendingGroupOrderJoin(result.id);
@@ -133,12 +117,10 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
       }
     }
 
-    // Find the added item to get product details for tracking
     const addedLine = result?.lines?.edges?.find(
       edge => edge.node.merchandise.id === variantId
     )?.node;
 
-    // Fire Vercel Analytics AddToCart event
     trackCartAction(
       'add',
       variantId,
@@ -147,7 +129,6 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
       quantity
     );
 
-    // Fire Meta Pixel AddToCart event
     trackMetaEvent('AddToCart', {
       content_type: 'product',
       content_ids: variantId,
@@ -158,16 +139,13 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
     return result;
   };
 
-  // Override removeFromCart to fire tracking events
   const removeFromCart = async (lineId: string): Promise<void> => {
-    // Get item details before removing for tracking
     const removedLine = cartHook.cart?.lines?.edges?.find(
       edge => edge.node.id === lineId
     )?.node;
 
     await cartHook.removeFromCart(lineId);
 
-    // Fire Vercel Analytics RemoveFromCart event
     if (removedLine) {
       trackCartAction(
         'remove',
@@ -179,16 +157,13 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
     }
   };
 
-  // Override updateCartItem to fire tracking events
   const updateCartItem = async (lineId: string, quantity: number): Promise<void> => {
-    // Get item details for tracking
     const updatedLine = cartHook.cart?.lines?.edges?.find(
       edge => edge.node.id === lineId
     )?.node;
 
     await cartHook.updateCartItem(lineId, quantity);
 
-    // Fire Vercel Analytics UpdateCartQuantity event
     if (updatedLine) {
       trackCartAction(
         'update',
@@ -200,15 +175,14 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
     }
   };
 
-  // Extract custom cart data for direct access to discount info (custom cart only)
-  const customCartData: CustomCartData | null = USE_CUSTOM_CART && customCartHook.customCart
+  const customCartData: CustomCartData | null = cartHook.customCart
     ? {
-        discountCode: customCartHook.customCart.discountCode,
-        discountAmount: customCartHook.customCart.discountAmount,
-        subtotal: customCartHook.customCart.subtotal,
-        taxAmount: customCartHook.customCart.taxAmount,
-        deliveryFee: customCartHook.customCart.deliveryFee,
-        total: customCartHook.customCart.total,
+        discountCode: cartHook.customCart.discountCode,
+        discountAmount: cartHook.customCart.discountAmount,
+        subtotal: cartHook.customCart.subtotal,
+        taxAmount: cartHook.customCart.taxAmount,
+        deliveryFee: cartHook.customCart.deliveryFee,
+        total: cartHook.customCart.total,
       }
     : null;
 
@@ -223,15 +197,12 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
     removeFromCart,
     clearCart: cartHook.clearCart,
     updateCartAttributes: cartHook.updateCartAttributes,
-    refetchCart: USE_CUSTOM_CART ? customCartHook.refetchCart : async () => {},
-    updateCartFromApiResponse: USE_CUSTOM_CART
-      ? customCartHook.setCartFromApiResponse
-      : () => { console.warn('updateCartFromApiResponse not available for Shopify cart'); },
+    refetchCart: cartHook.refetchCart,
+    updateCartFromApiResponse: cartHook.setCartFromApiResponse,
     isCartOpen,
     openCart,
     closeCart,
     toggleCart,
-    isCustomCart: USE_CUSTOM_CART,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

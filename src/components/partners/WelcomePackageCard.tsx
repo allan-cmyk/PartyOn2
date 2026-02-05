@@ -7,12 +7,12 @@
 
 import { useState, useCallback, type ReactElement } from 'react';
 import Image from 'next/image';
-import type { ShopifyProduct } from '@/lib/shopify/types';
-import { formatPrice, getProductImageUrl, getFirstAvailableVariant } from '@/lib/shopify/utils';
+import type { Product } from '@/lib/types';
+import { formatPrice, getProductImageUrl, getFirstAvailableVariant } from '@/lib/utils';
 import { useCartContext } from '@/contexts/CartContext';
 
 interface WelcomePackageCardProps {
-  product: ShopifyProduct;
+  product: Product;
   /** Discount code to display */
   discountCode?: string;
 }

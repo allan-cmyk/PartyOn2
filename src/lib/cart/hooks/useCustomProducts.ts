@@ -6,11 +6,11 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import useSWR from 'swr';
-import { ShopifyProduct } from '@/lib/shopify/types';
+import { Product } from '@/lib/types';
 
 interface ProductsApiResponse {
   products: {
-    edges: Array<{ node: ShopifyProduct }>;
+    edges: Array<{ node: Product }>;
     pageInfo?: {
       hasNextPage: boolean;
       endCursor: string;
@@ -41,7 +41,7 @@ const fetcher = async (url: string) => {
  * Replaces useProducts from Shopify hooks.
  */
 export function useCustomProducts(first: number = 20, loadAll: boolean = false) {
-  const [allProducts, setAllProducts] = useState<ShopifyProduct[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [endCursor, setEndCursor] = useState<string | null>(null);
   const [hasNextPage, setHasNextPage] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -76,7 +76,7 @@ export function useCustomProducts(first: number = 20, loadAll: boolean = false) 
     }
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const loadRemainingPages = async (existing: ShopifyProduct[], cursor: string) => {
+  const loadRemainingPages = async (existing: Product[], cursor: string) => {
     let accumulated = [...existing];
     let currentCursor: string | null = cursor;
 
@@ -138,7 +138,7 @@ export function useCustomCollectionProducts(
   collectionHandle: string | null,
   initialLoadCount: number = 20
 ) {
-  const [allProducts, setAllProducts] = useState<ShopifyProduct[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [endCursor, setEndCursor] = useState<string | null>(null);
   const [hasNextPage, setHasNextPage] = useState(false);
 
@@ -209,7 +209,7 @@ export function useCustomProduct(handle: string) {
 
   // The /api/v1/products/[id] returns raw Prisma data, not transformed
   // For now return null - product detail pages use server components with direct DB access
-  const product = data?.success && data?.data ? (data.data as unknown as ShopifyProduct) : null;
+  const product = data?.success && data?.data ? (data.data as unknown as Product) : null;
 
   return {
     product,

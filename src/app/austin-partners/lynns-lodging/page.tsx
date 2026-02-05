@@ -7,7 +7,7 @@ import { useCustomProducts } from '@/lib/cart/hooks/useCustomProducts';
 import MobileProductCard from '@/components/mobile/MobileProductCard';
 import CompactProductCard from '@/components/shopify/CompactProductCard';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { getProductCategory } from '@/lib/shopify/categories';
+import { getProductCategory } from '@/lib/products/categories';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 export default function LynnsLodgingPartnerPage() {

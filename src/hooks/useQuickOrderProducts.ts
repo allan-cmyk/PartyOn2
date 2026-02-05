@@ -4,12 +4,12 @@
  */
 
 import useSWR from 'swr';
-import type { ShopifyProduct } from '@/lib/shopify/types';
+import type { Product } from '@/lib/types';
 
 interface ProductsResponse {
   products: {
     edges: Array<{
-      node: ShopifyProduct;
+      node: Product;
     }>;
   };
 }
@@ -34,7 +34,7 @@ const fetcher = async (url: string): Promise<ProductsResponse> => {
  * ```
  */
 export function useQuickOrderProducts(collectionHandle: string): {
-  products: ShopifyProduct[];
+  products: Product[];
   loading: boolean;
   error: Error | undefined;
 } {

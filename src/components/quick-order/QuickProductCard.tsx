@@ -7,21 +7,21 @@
 
 import { useState, useCallback, type ReactElement } from 'react';
 import Image from 'next/image';
-import type { ShopifyProduct } from '@/lib/shopify/types';
-import { formatPrice, getProductImageUrl, getFirstAvailableVariant } from '@/lib/shopify/utils';
+import type { Product } from '@/lib/types';
+import { formatPrice, getProductImageUrl, getFirstAvailableVariant } from '@/lib/utils';
 import { useCartContext } from '@/contexts/CartContext';
 import QuantityStepper from './QuantityStepper';
 
 interface QuickProductCardProps {
-  product: ShopifyProduct;
+  product: Product;
   /** Callback when product image is clicked to open detail modal */
-  onImageClick?: (product: ShopifyProduct) => void;
+  onImageClick?: (product: Product) => void;
 }
 
 /**
  * Extract pack size from variant title
  */
-function getPackSize(product: ShopifyProduct): string {
+function getPackSize(product: Product): string {
   const variant = product.variants.edges[0]?.node;
   const title = variant?.title;
   if (title && title !== 'Default Title') {

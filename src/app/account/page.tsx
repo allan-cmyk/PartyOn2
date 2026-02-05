@@ -5,7 +5,7 @@ import { useCustomerContext } from '@/contexts/CustomerContext';
 import CustomerAuth from '@/components/CustomerAuth';
 import AccountLayout from '@/components/account/AccountLayout';
 import Link from 'next/link';
-import { formatPrice } from '@/lib/shopify/utils';
+import { formatPrice } from '@/lib/utils';
 
 export default function AccountPage() {
   const { customer, isAuthenticated, loading } = useCustomerContext();

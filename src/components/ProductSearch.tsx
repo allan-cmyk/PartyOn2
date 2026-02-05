@@ -3,8 +3,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShopifyProduct } from '@/lib/shopify/types';
-import { formatPrice } from '@/lib/shopify/utils';
+import { Product } from '@/lib/types';
+import { formatPrice } from '@/lib/utils';
 
 interface ProductSearchProps {
   isScrolled?: boolean;
@@ -13,7 +13,7 @@ interface ProductSearchProps {
 export default function ProductSearch({ isScrolled = true }: ProductSearchProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [results, setResults] = useState<ShopifyProduct[]>([]);
+  const [results, setResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
@@ -45,7 +45,7 @@ export default function ProductSearch({ isScrolled = true }: ProductSearchProps)
         const response = await fetch(`/api/products?search=${encodeURIComponent(searchTerm)}&first=10`);
         const data = await response.json();
 
-        setResults(data.products.edges.map((edge: { node: ShopifyProduct }) => edge.node));
+        setResults(data.products.edges.map((edge: { node: Product }) => edge.node));
       } catch (error) {
         console.error('Search error:', error);
         setResults([]);

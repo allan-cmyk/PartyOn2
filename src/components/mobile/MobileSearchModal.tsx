@@ -3,8 +3,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShopifyProduct } from '@/lib/shopify/types';
-import { formatPrice } from '@/lib/shopify/utils';
+import { Product } from '@/lib/types';
+import { formatPrice } from '@/lib/utils';
 
 interface MobileSearchModalProps {
   isOpen: boolean;
@@ -13,7 +13,7 @@ interface MobileSearchModalProps {
 
 export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModalProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [results, setResults] = useState<ShopifyProduct[]>([]);
+  const [results, setResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -38,7 +38,7 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
         const response = await fetch(`/api/products?search=${encodeURIComponent(searchTerm)}&first=20`);
         const data = await response.json();
 
-        setResults(data.products.edges.map((edge: { node: ShopifyProduct }) => edge.node));
+        setResults(data.products.edges.map((edge: { node: Product }) => edge.node));
       } catch (error) {
         console.error('Search error:', error);
         setResults([]);

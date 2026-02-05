@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
-import { ShopifyProduct } from '@/lib/shopify/types';
-import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseAlcohol } from '@/lib/shopify/utils';
+import { Product } from '@/lib/types';
+import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseAlcohol } from '@/lib/utils';
 import { useCartContext } from '@/contexts/CartContext';
 import AgeVerificationModal from '@/components/AgeVerificationModal';
 
@@ -27,7 +27,7 @@ const EQUIPMENT_HANDLES = [
 const FEATURED_HANDLE = 'ultimate-keg-party-package';
 
 interface EquipmentCardProps {
-  product: ShopifyProduct;
+  product: Product;
   featured?: boolean;
 }
 
@@ -221,7 +221,7 @@ function EquipmentCard({ product, featured = false }: EquipmentCardProps) {
 }
 
 export default function EquipmentRentals() {
-  const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -234,7 +234,7 @@ export default function EquipmentRentals() {
           )
         );
 
-        const validProducts = responses.filter(Boolean) as ShopifyProduct[];
+        const validProducts = responses.filter(Boolean) as Product[];
         setProducts(validProducts);
       } catch (error) {
         console.error('Error fetching equipment products:', error);

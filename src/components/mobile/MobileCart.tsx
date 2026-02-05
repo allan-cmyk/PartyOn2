@@ -7,7 +7,7 @@ import { motion, AnimatePresence, PanInfo, useAnimation, useDragControls } from 
 import { useCartContext } from '@/contexts/CartContext';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import CartItem from '../shopify/CartItem';
-import { formatPrice } from '@/lib/shopify/utils';
+import { formatPrice } from '@/lib/utils';
 import { copyToClipboard, type SharedCartVariant } from '@/lib/cart/shareCart';
 import { trackBeginCheckout } from '@/lib/analytics/track';
 

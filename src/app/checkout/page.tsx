@@ -10,7 +10,7 @@ import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
 import CustomerAuth from '@/components/CustomerAuth';
 
 export default function CheckoutPage() {
-  const { cart, customCartData, loading: cartLoading, isCustomCart, refetchCart, updateCartFromApiResponse } = useCartContext();
+  const { cart, customCartData, loading: cartLoading, refetchCart, updateCartFromApiResponse } = useCartContext();
   const { customer, isAuthenticated } = useCustomerContext();
   const { isInGroupOrder, currentGroupOrder, isHost } = useGroupOrderContext();
   
@@ -91,35 +91,31 @@ export default function CheckoutPage() {
       return total + (parseFloat(node.merchandise.price?.amount || '0') * (node.quantity || 0));
     }, 0) || 0);
 
-  // Use API-calculated values for custom cart, fallback for Shopify cart
-  const deliveryFee = isCustomCart && customCartData?.deliveryFee
+  // Use API-calculated values from custom cart
+  const deliveryFee = customCartData?.deliveryFee
     ? parseFloat(String(customCartData.deliveryFee))
     : 25;
 
-  const tax = isCustomCart && customCartData?.taxAmount
+  const tax = customCartData?.taxAmount
     ? parseFloat(String(customCartData.taxAmount))
     : subtotal * 0.0825;
 
-  // Get discount amount from cart
-  // For custom cart, read directly from customCartData (most reliable)
-  // For Shopify cart, discounts are already reflected in cart.cost totals
-  const discountAmount = isCustomCart
-    ? (() => {
-        if (customCartData?.discountAmount) {
-          const amount = parseFloat(String(customCartData.discountAmount));
-          return amount || 0;
-        }
-        // Fallback to attributes for backward compatibility
-        const attrValue = cart?.attributes?.find(a => a.key === '_discountAmount')?.value;
-        if (attrValue) {
-          return parseFloat(attrValue) || 0;
-        }
-        return 0;
-      })()
-    : 0;
+  // Get discount amount from cart data
+  const discountAmount = (() => {
+    if (customCartData?.discountAmount) {
+      const amount = parseFloat(String(customCartData.discountAmount));
+      return amount || 0;
+    }
+    // Fallback to attributes for backward compatibility
+    const attrValue = cart?.attributes?.find(a => a.key === '_discountAmount')?.value;
+    if (attrValue) {
+      return parseFloat(attrValue) || 0;
+    }
+    return 0;
+  })();
 
   // Get applied discount code
-  const appliedDiscountCode = isCustomCart ? customCartData?.discountCode : null;
+  const appliedDiscountCode = customCartData?.discountCode ?? null;
 
   const total = subtotal + deliveryFee + tax - Math.abs(discountAmount);
 
@@ -133,64 +129,29 @@ export default function CheckoutPage() {
     setDiscountFeedback({ type: null, message: '' });
 
     try {
-      if (isCustomCart) {
-        // Custom cart discount - call our API
-        const response = await fetch('/api/v1/cart/discount', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ code: discountCode.trim().toUpperCase() }),
+      const response = await fetch('/api/v1/cart/discount', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ code: discountCode.trim().toUpperCase() }),
+      });
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        setDiscountFeedback({
+          type: 'error',
+          message: data.error || 'Invalid or expired discount code'
         });
-        const data = await response.json();
-
-        if (!response.ok || !data.success) {
-          setDiscountFeedback({
-            type: 'error',
-            message: data.error || 'Invalid or expired discount code'
-          });
-        } else {
-          setDiscountFeedback({
-            type: 'success',
-            message: data.message || `Discount code "${discountCode.toUpperCase()}" applied!`
-          });
-          setDiscountCode('');
-          // Update cart directly from API response (more reliable than refetch)
-          if (data.data?.cart) {
-            updateCartFromApiResponse(data.data.cart);
-          } else {
-            // Fallback to refetch if cart not in response
-            await refetchCart();
-          }
-        }
       } else {
-        // Shopify discount - dynamic import to avoid build errors when not using Shopify
-        const { shopifyFetch } = await import('@/lib/shopify/client');
-        const { CART_DISCOUNT_CODES_UPDATE_MUTATION } = await import('@/lib/shopify/mutations/discount');
-
-        const response = await shopifyFetch({
-          query: CART_DISCOUNT_CODES_UPDATE_MUTATION,
-          variables: {
-            cartId: cart.id,
-            discountCodes: [...(cart.discountCodes?.map(d => d.code) || []), discountCode.trim().toUpperCase()]
-          }
-        }) as {
-          cartDiscountCodesUpdate?: {
-            userErrors?: Array<{ field?: string; message?: string }>;
-            cart?: unknown;
-          };
-        };
-
-        if (response?.cartDiscountCodesUpdate?.userErrors?.length && response.cartDiscountCodesUpdate.userErrors.length > 0) {
-          setDiscountFeedback({
-            type: 'error',
-            message: 'Invalid or expired discount code'
-          });
+        setDiscountFeedback({
+          type: 'success',
+          message: data.message || `Discount code "${discountCode.toUpperCase()}" applied!`
+        });
+        setDiscountCode('');
+        if (data.data?.cart) {
+          updateCartFromApiResponse(data.data.cart);
         } else {
-          setDiscountFeedback({
-            type: 'success',
-            message: `Discount code "${discountCode.toUpperCase()}" applied successfully!`
-          });
-          setDiscountCode('');
+          await refetchCart();
         }
       }
     } catch {
@@ -207,47 +168,22 @@ export default function CheckoutPage() {
     if (!cart) return;
 
     try {
-      if (isCustomCart) {
-        // Custom cart - call our API
-        const response = await fetch('/api/v1/cart/discount', {
-          method: 'DELETE',
-          credentials: 'include',
+      const response = await fetch('/api/v1/cart/discount', {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        if (data.data?.cart) {
+          updateCartFromApiResponse(data.data.cart);
+        } else {
+          await refetchCart();
+        }
+        setDiscountFeedback({
+          type: 'success',
+          message: 'Discount removed'
         });
-        const data = await response.json();
-        if (response.ok && data.success) {
-          // Update cart directly from API response
-          if (data.data?.cart) {
-            updateCartFromApiResponse(data.data.cart);
-          } else {
-            // Fallback to refetch
-            await refetchCart();
-          }
-          setDiscountFeedback({
-            type: 'success',
-            message: 'Discount removed'
-          });
-        }
-        return;
       }
-
-      // Shopify discount - dynamic import
-      const { shopifyFetch } = await import('@/lib/shopify/client');
-      const { CART_DISCOUNT_CODES_UPDATE_MUTATION } = await import('@/lib/shopify/mutations/discount');
-
-      const currentCodes = cart.discountCodes?.filter(d => d.code !== code).map(d => d.code) || [];
-
-      await shopifyFetch({
-        query: CART_DISCOUNT_CODES_UPDATE_MUTATION,
-        variables: {
-          cartId: cart.id,
-          discountCodes: currentCodes
-        }
-      });
-
-      setDiscountFeedback({
-        type: 'success',
-        message: `Discount code "${code}" removed`
-      });
     } catch {
       setDiscountFeedback({
         type: 'error',
@@ -278,73 +214,52 @@ export default function CheckoutPage() {
     setCheckoutError(null);
 
     try {
-      // For custom cart, use Stripe checkout
-      if (isCustomCart) {
-        // Save delivery info to cart
-        const deliveryResponse = await fetch('/api/v1/cart', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            operation: 'delivery',
-            date: deliveryDate?.toISOString(),
-            time: deliveryTime,
-            address: {
-              address1: billingAddress.address1,
-              address2: billingAddress.address2 || '',
-              city: billingAddress.city,
-              province: billingAddress.state,
-              zip: billingAddress.zip,
-              country: billingAddress.country,
-            },
-            phone: billingAddress.phone,
-            instructions: deliveryInstructions,
-          }),
-        });
+      // Save delivery info to cart
+      const deliveryResponse = await fetch('/api/v1/cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          operation: 'delivery',
+          date: deliveryDate?.toISOString(),
+          time: deliveryTime,
+          address: {
+            address1: billingAddress.address1,
+            address2: billingAddress.address2 || '',
+            city: billingAddress.city,
+            province: billingAddress.state,
+            zip: billingAddress.zip,
+            country: billingAddress.country,
+          },
+          phone: billingAddress.phone,
+          instructions: deliveryInstructions,
+        }),
+      });
 
-        if (!deliveryResponse.ok) {
-          const data = await deliveryResponse.json();
-          throw new Error(data.error || 'Failed to save delivery info');
-        }
+      if (!deliveryResponse.ok) {
+        const data = await deliveryResponse.json();
+        throw new Error(data.error || 'Failed to save delivery info');
+      }
 
-        // Create Stripe checkout session
-        const checkoutResponse = await fetch('/api/v1/checkout', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            customerEmail: billingAddress.email,
-          }),
-        });
+      // Create Stripe checkout session
+      const checkoutResponse = await fetch('/api/v1/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customerEmail: billingAddress.email,
+        }),
+      });
 
-        const checkoutData = await checkoutResponse.json();
+      const checkoutData = await checkoutResponse.json();
 
-        if (!checkoutData.success) {
-          throw new Error(checkoutData.error || 'Failed to create checkout session');
-        }
+      if (!checkoutData.success) {
+        throw new Error(checkoutData.error || 'Failed to create checkout session');
+      }
 
-        // Redirect to Stripe checkout
-        if (checkoutData.data.checkoutUrl) {
-          window.location.href = checkoutData.data.checkoutUrl;
-        } else {
-          throw new Error('No checkout URL received');
-        }
+      // Redirect to Stripe checkout
+      if (checkoutData.data.checkoutUrl) {
+        window.location.href = checkoutData.data.checkoutUrl;
       } else {
-        // Legacy: Store order info and redirect to custom payment page
-        const orderInfo = {
-          customer: {
-            ...billingAddress
-          },
-          delivery: {
-            date: deliveryDate,
-            time: deliveryTime,
-            instructions: deliveryInstructions,
-            address: `${billingAddress.address1}${billingAddress.address2 ? ` ${billingAddress.address2}` : ''}, ${billingAddress.city}, ${billingAddress.state} ${billingAddress.zip}`
-          },
-          groupOrder: isGroupCheckout ? currentGroupOrder : null,
-          cartId: cart?.id
-        };
-
-        localStorage.setItem('checkoutInfo', JSON.stringify(orderInfo));
-        window.location.href = '/payment';
+        throw new Error('No checkout URL received');
       }
     } catch (error) {
       console.error('Checkout error:', error);
@@ -753,7 +668,7 @@ export default function CheckoutPage() {
                 {/* Security Badge */}
                 <div className="mt-4 text-center">
                   <p className="text-xs text-gray-500">
-                    Secure checkout powered by {isCustomCart ? 'Stripe' : 'Shopify'}
+                    Secure checkout powered by Stripe
                   </p>
                 </div>
               </div>

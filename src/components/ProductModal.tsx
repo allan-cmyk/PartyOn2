@@ -3,14 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShopifyProduct } from '@/lib/shopify/types';
-import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseAlcohol } from '@/lib/shopify/utils';
+import { Product } from '@/lib/types';
+import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseAlcohol } from '@/lib/utils';
 import { useCartContext } from '@/contexts/CartContext';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import AgeVerificationModal from './AgeVerificationModal';
 
 interface ProductModalProps {
-  product: ShopifyProduct | null;
+  product: Product | null;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -23,7 +23,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
   const [showAgeVerification, setShowAgeVerification] = useState(false);
 
   // Full product details state (fetched when modal opens)
-  const [fullProduct, setFullProduct] = useState<ShopifyProduct | null>(null);
+  const [fullProduct, setFullProduct] = useState<Product | null>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
 
   // Touch swipe state

@@ -15,7 +15,7 @@ import CartSummaryBar from '@/components/quick-order/CartSummaryBar';
 import QuickOrderSearch from '@/components/quick-order/QuickOrderSearch';
 import QuickOrderFAQs from '@/components/quick-order/QuickOrderFAQs';
 import DeliveryAreasPreview from '@/components/quick-order/DeliveryAreasPreview';
-import { SHOPIFY_COLLECTIONS } from '@/lib/shopify/categories';
+import { SHOPIFY_COLLECTIONS } from '@/lib/products/categories';
 import { useIsMobile } from '@/hooks/useIsMobile';
 
 /**

@@ -2,15 +2,15 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShopifyProduct } from '@/lib/shopify/types';
-import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseAlcohol } from '@/lib/shopify/utils';
+import { Product } from '@/lib/types';
+import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseAlcohol } from '@/lib/utils';
 import { useCartContext } from '@/contexts/CartContext';
 import AgeVerificationModal from '../AgeVerificationModal';
 
 interface ProductCardProps {
-  product: ShopifyProduct;
+  product: Product;
   index?: number;
-  onProductClick?: (product: ShopifyProduct) => void;
+  onProductClick?: (product: Product) => void;
 }
 
 export default function ProductCard({ product, index = 0, onProductClick }: ProductCardProps) {

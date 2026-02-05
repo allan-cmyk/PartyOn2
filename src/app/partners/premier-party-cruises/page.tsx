@@ -14,7 +14,7 @@ import CartSummaryBar from '@/components/quick-order/CartSummaryBar';
 import PremierHero from '@/components/partners/PremierHero';
 import PremierHeroStickyCTA from '@/components/partners/PremierHeroStickyCTA';
 import { useQuickOrderProducts } from '@/hooks/useQuickOrderProducts';
-import { SHOPIFY_COLLECTIONS } from '@/lib/shopify/categories';
+import { SHOPIFY_COLLECTIONS } from '@/lib/products/categories';
 
 /** Real Google reviews for boat parties */
 const TESTIMONIALS = [

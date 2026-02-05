@@ -5,7 +5,7 @@
  */
 
 import { Prisma } from '@prisma/client';
-import type { ShopifyProduct } from '@/lib/shopify/types';
+import type { Product } from '@/lib/types';
 
 export type ProductWithRelations = Prisma.ProductGetPayload<{
   include: {
@@ -16,11 +16,11 @@ export type ProductWithRelations = Prisma.ProductGetPayload<{
 }>;
 
 /**
- * Transform a Prisma product with relations to ShopifyProduct format.
+ * Transform a Prisma product with relations to Product format.
  * Maintains backwards compatibility with all frontend components
  * that expect the Shopify data shape.
  */
-export function transformToShopifyProduct(product: ProductWithRelations): ShopifyProduct {
+export function transformToProduct(product: ProductWithRelations): Product {
   const minPrice = product.variants.length > 0
     ? Math.min(...product.variants.map(v => Number(v.price)))
     : Number(product.basePrice);

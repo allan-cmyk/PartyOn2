@@ -5,9 +5,9 @@ import Link from 'next/link';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import ProductModal from '@/components/ProductModal';
 import AgeVerificationModal from '@/components/AgeVerificationModal';
-import { ShopifyProduct } from '@/lib/shopify/types';
+import { Product } from '@/lib/types';
 import { useCartContext } from '@/contexts/CartContext';
-import { canPurchaseAlcohol } from '@/lib/shopify/utils';
+import { canPurchaseAlcohol } from '@/lib/utils';
 
 /**
  * Keg product grid with category tabs
@@ -64,13 +64,13 @@ const CATEGORIES = [
 
 export default function KegProductGrid() {
   const [activeCategory, setActiveCategory] = useState('all');
-  const [selectedProduct, setSelectedProduct] = useState<ShopifyProduct | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loadingHandle, setLoadingHandle] = useState<string | null>(null);
   const [showAgeVerification, setShowAgeVerification] = useState(false);
   const [pendingCartAdd, setPendingCartAdd] = useState<string | null>(null);
   const [addingToCart, setAddingToCart] = useState<string | null>(null);
-  const [productCache, setProductCache] = useState<Record<string, ShopifyProduct>>({});
+  const [productCache, setProductCache] = useState<Record<string, Product>>({});
 
   const { addToCart, loading: cartLoading } = useCartContext();
 
@@ -81,7 +81,7 @@ export default function KegProductGrid() {
       : ALL_KEGS.filter(keg => keg.category === activeCategory);
 
   // Fetch product by handle
-  const fetchProduct = async (handle: string): Promise<ShopifyProduct | null> => {
+  const fetchProduct = async (handle: string): Promise<Product | null> => {
     // Check cache first
     if (productCache[handle]) {
       return productCache[handle];
