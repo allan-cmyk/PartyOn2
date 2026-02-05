@@ -65,7 +65,7 @@ export default function CoronaExtraKegFAQ() {
 
       <section className="py-16 px-4 md:px-8 bg-gray-50">
         <div className="max-w-4xl mx-auto">
-          <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-8 tracking-[0.15em] text-center">
+          <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-8 tracking-[0.15em] text-center">
             CORONA EXTRA KEG - FREQUENTLY ASKED QUESTIONS
           </h2>
 
@@ -73,7 +73,7 @@ export default function CoronaExtraKegFAQ() {
             {faqs.map((faq, index) => (
               <LuxuryCard key={index} index={index}>
                 <div className="p-6">
-                  <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+                  <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.05em]">
                     {faq.question}
                   </h3>
                   <p className="text-gray-600 leading-relaxed">
@@ -86,7 +86,7 @@ export default function CoronaExtraKegFAQ() {
 
           {/* Lake Travis CTA */}
           <div className="mt-12 bg-gradient-to-br from-blue-50 to-cyan-50 p-8 rounded-lg border border-blue-200">
-            <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
+            <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
               PERFECT FOR LAKE TRAVIS PARTIES
             </h3>
             <p className="text-gray-600 mb-6 max-w-2xl mx-auto text-center">
@@ -95,7 +95,7 @@ export default function CoronaExtraKegFAQ() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="#add-to-cart"
-                className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium rounded text-center"
+                className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm font-medium rounded text-center"
               >
                 ORDER CORONA KEG
               </Link>

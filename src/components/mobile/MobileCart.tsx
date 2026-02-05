@@ -152,14 +152,14 @@ export default function MobileCart() {
                 
               {/* Header */}
               <div className="flex items-center justify-between px-5 pb-3 border-b border-gray-100">
-                  <h2 className="font-serif text-xl tracking-[0.1em]">YOUR CART</h2>
+                  <h2 className="font-heading text-xl tracking-[0.1em]">YOUR CART</h2>
                   <div className="flex items-center gap-1">
                     {hasItems && (
                       <>
                         {/* Share Cart Button */}
                         <button
                           onClick={handleShareCart}
-                          className="p-2 hover:bg-gold-50 transition-colors rounded-full text-gray-500 hover:text-gold-600"
+                          className="p-2 hover:bg-yellow-50 transition-colors rounded-full text-gray-500 hover:text-brand-yellow"
                           aria-label="Share cart"
                           title={shareSuccess ? "Link copied!" : "Share cart"}
                         >
@@ -212,7 +212,7 @@ export default function MobileCart() {
                     </svg>
                     <p className="text-gray-500 mb-6 text-center">Your cart is empty</p>
                     <Link href="/order" onClick={closeCart}>
-                      <button className="px-6 py-3 bg-gold-600 text-gray-900 rounded-lg tracking-[0.1em] text-sm">
+                      <button className="px-6 py-3 bg-brand-yellow text-gray-900 rounded-lg tracking-[0.1em] text-sm">
                         START ORDERING
                       </button>
                     </Link>
@@ -242,7 +242,7 @@ export default function MobileCart() {
                     <button
                       onClick={handleProceedToCheckout}
                       disabled={loading}
-                      className="w-full py-4 bg-gold-600 text-gray-900 rounded-lg tracking-[0.1em] text-sm font-medium disabled:opacity-50 transition-all active:scale-[0.98]"
+                      className="w-full py-4 bg-brand-yellow text-gray-900 rounded-lg tracking-[0.1em] text-sm font-medium disabled:opacity-50 transition-all active:scale-[0.98]"
                     >
                       {`CHECKOUT • ${subtotal && formatPrice(subtotal.amount, subtotal.currencyCode)}`}
                     </button>

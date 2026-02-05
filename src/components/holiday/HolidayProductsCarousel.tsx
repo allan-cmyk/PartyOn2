@@ -106,10 +106,10 @@ export default function HolidayProductsCarousel(): React.ReactElement {
     <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
         <ScrollRevealCSS duration={600} y={20} className="text-center mb-12">
-          <h2 className="font-serif text-3xl sm:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+          <h2 className="font-heading text-3xl sm:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
             Holiday Cocktail Kits & Gift Baskets
           </h2>
-          <div className="w-16 h-px bg-gold-600 mx-auto mb-4" />
+          <div className="w-16 h-px bg-brand-yellow mx-auto mb-4" />
           <p className="text-gray-600 max-w-2xl mx-auto">
             Perfect additions to your holiday party order. All kits include everything you need to mix amazing cocktails.
           </p>
@@ -173,14 +173,14 @@ export default function HolidayProductsCarousel(): React.ReactElement {
 
                     {/* Product Info */}
                     <div className="p-4">
-                      <h3 className="font-serif text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-gold-600 transition-colors">
+                      <h3 className="font-heading text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-brand-yellow transition-colors">
                         {product.title}
                       </h3>
                       <div className="flex items-center justify-between">
                         <span className="text-lg font-medium text-gray-900">
                           {price ? formatPrice(price) : 'Price unavailable'}
                         </span>
-                        <span className="text-sm text-gold-600 font-medium group-hover:underline">
+                        <span className="text-sm text-brand-yellow font-medium group-hover:underline">
                           View Product
                         </span>
                       </div>
@@ -212,7 +212,7 @@ export default function HolidayProductsCarousel(): React.ReactElement {
         <div className="text-center mt-10">
           <Link
             href="/products"
-            className="inline-block border-2 border-gold-600 text-gold-600 px-8 py-3 tracking-[0.1em] hover:bg-gold-600 hover:text-white transition-colors font-medium"
+            className="inline-block border-2 border-brand-yellow text-brand-yellow px-8 py-3 tracking-[0.1em] hover:bg-brand-yellow hover:text-white transition-colors font-medium"
           >
             VIEW ALL PRODUCTS
           </Link>

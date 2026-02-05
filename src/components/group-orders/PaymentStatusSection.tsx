@@ -52,7 +52,7 @@ export default function PaymentStatusSection({
               payment.isFullyPaid
                 ? 'bg-green-500'
                 : payment.meetsMinimum
-                ? 'bg-gold-500'
+                ? 'bg-yellow-500'
                 : 'bg-amber-400'
             }`}
             style={{ width: `${Math.min(paymentPercentage, 100)}%` }}

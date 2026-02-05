@@ -22,7 +22,7 @@ export default function LuxuryGoyardPage() {
         <div className="relative z-10 text-center max-w-4xl mx-auto px-8">
           <div className="hero-fade-in">
             <p className="text-sm tracking-[0.3em] text-gray-700 mb-8">ESTABLISHED 2016</p>
-            <h1 className="text-6xl md:text-8xl font-serif text-gray-900 mb-6">Classic Gin Martini Recipe</h1>
+            <h1 className="text-6xl md:text-8xl font-heading text-gray-900 mb-6">Classic Gin Martini Recipe</h1>
             <p className="text-xl text-gray-700 tracking-[0.1em] mb-12 max-w-2xl mx-auto">
               Austin&apos;s Premier Alcohol Delivery Service
             </p>
@@ -51,7 +51,7 @@ export default function LuxuryGoyardPage() {
         <div className="max-w-6xl mx-auto px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
             <div>
-              <h2 className="text-5xl font-serif text-gray-900 mb-8">The Craft of Excellence</h2>
+              <h2 className="text-5xl font-heading text-gray-900 mb-8">The Craft of Excellence</h2>
               <div className="space-y-6 text-gray-700 leading-relaxed">
                 <p>
                   Since 2016, PartyOn has revolutionized alcohol delivery in Austin, 
@@ -98,7 +98,7 @@ export default function LuxuryGoyardPage() {
       <section className="py-32 bg-white">
         <div className="max-w-7xl mx-auto px-8">
           <div className="text-center mb-20">
-            <h2 className="text-5xl font-serif text-gray-900 mb-6">Savoir-Faire</h2>
+            <h2 className="text-5xl font-heading text-gray-900 mb-6">Savoir-Faire</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Premium alcohol delivery perfected through years of serving Austin&apos;s most discerning clients
             </p>
@@ -108,10 +108,10 @@ export default function LuxuryGoyardPage() {
             <div className="text-center">
               <div className="mb-8">
                 <div className="w-24 h-24 mx-auto border-2 border-gray-300 rounded-full flex items-center justify-center">
-                  <span className="text-3xl font-serif text-gray-700">I</span>
+                  <span className="text-3xl font-heading text-gray-700">I</span>
                 </div>
               </div>
-              <h3 className="text-2xl font-serif mb-4">Selection</h3>
+              <h3 className="text-2xl font-heading mb-4">Selection</h3>
               <p className="text-gray-600 leading-relaxed">
                 Top-shelf spirits, rare finds, craft cocktails, and party essentials. 
                 Expert recommendations available 24/7.
@@ -121,10 +121,10 @@ export default function LuxuryGoyardPage() {
             <div className="text-center">
               <div className="mb-8">
                 <div className="w-24 h-24 mx-auto border-2 border-gray-300 rounded-full flex items-center justify-center">
-                  <span className="text-3xl font-serif text-gray-700">II</span>
+                  <span className="text-3xl font-heading text-gray-700">II</span>
                 </div>
               </div>
-              <h3 className="text-2xl font-serif mb-4">Delivery</h3>
+              <h3 className="text-2xl font-heading mb-4">Delivery</h3>
               <p className="text-gray-600 leading-relaxed">
                 2-hour delivery across Austin. Temperature-controlled vehicles, 
                 professional presentation, and white-glove service.
@@ -134,10 +134,10 @@ export default function LuxuryGoyardPage() {
             <div className="text-center">
               <div className="mb-8">
                 <div className="w-24 h-24 mx-auto border-2 border-gray-300 rounded-full flex items-center justify-center">
-                  <span className="text-3xl font-serif text-gray-700">III</span>
+                  <span className="text-3xl font-heading text-gray-700">III</span>
                 </div>
               </div>
-              <h3 className="text-2xl font-serif mb-4">Experience</h3>
+              <h3 className="text-2xl font-heading mb-4">Experience</h3>
               <p className="text-gray-600 leading-relaxed">
                 Cocktail consultations, party planning, and custom orders. 
                 Your personal sommelier and mixologist on demand.
@@ -155,7 +155,7 @@ export default function LuxuryGoyardPage() {
               <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
             </svg>
           </div>
-          <blockquote className="text-2xl font-serif text-gray-800 mb-8 leading-relaxed">
+          <blockquote className="text-2xl font-heading text-gray-800 mb-8 leading-relaxed">
             PartyOn has transformed how we entertain. Their 2-hour delivery of 
             premium spirits and cocktail kits means we&apos;re always prepared for 
             clients and celebrations. Simply exceptional service.
@@ -170,7 +170,7 @@ export default function LuxuryGoyardPage() {
       {/* Call to Action */}
       <section className="py-32 bg-gray-900 text-white">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <h2 className="text-5xl font-serif mb-8">Begin Your Journey</h2>
+          <h2 className="text-5xl font-heading mb-8">Begin Your Journey</h2>
           <p className="text-xl mb-12 text-gray-300 max-w-2xl mx-auto">
             Experience Austin&apos;s premier alcohol delivery service. Premium spirits, 
             craft cocktails, and party essentials delivered in 2 hours.
@@ -187,7 +187,7 @@ export default function LuxuryGoyardPage() {
               </button>
             </Link>
             <Link href="/order-now">
-              <button className="px-12 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em]">
+              <button className="px-12 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em]">
                 ORDER NOW
               </button>
             </Link>
@@ -200,14 +200,14 @@ export default function LuxuryGoyardPage() {
         <div className="max-w-7xl mx-auto px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
             <div className="md:col-span-2">
-              <h3 className="text-3xl font-serif mb-4">PARTYON</h3>
+              <h3 className="text-3xl font-heading mb-4">PARTYON</h3>
               <p className="text-gray-600 max-w-sm">
                 Austin&apos;s premier alcohol delivery service. Premium spirits, 
                 cocktail kits, and party packages delivered in 2 hours.
               </p>
             </div>
             <div>
-              <h4 className="font-serif text-lg mb-4">Services</h4>
+              <h4 className="font-heading text-lg mb-4">Services</h4>
               <ul className="space-y-2 text-gray-600">
                 <li><Link href="/corporate" className="hover:text-gray-900 transition-colors">Corporate Delivery</Link></li>
                 <li><Link href="/cocktails" className="hover:text-gray-900 transition-colors">Cocktail Kits</Link></li>
@@ -215,7 +215,7 @@ export default function LuxuryGoyardPage() {
               </ul>
             </div>
             <div>
-              <h4 className="font-serif text-lg mb-4">Contact</h4>
+              <h4 className="font-heading text-lg mb-4">Contact</h4>
               <ul className="space-y-2 text-gray-600">
                 <li>Austin, Texas</li>
                 <li><a href="tel:5125550100" className="hover:text-gray-900 transition-colors">(512) 555-0100</a></li>

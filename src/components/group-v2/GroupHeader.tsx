@@ -13,13 +13,13 @@ interface Props {
 function getStatusChip(status: string): { bg: string; text: string; border: string; dot?: string } {
   switch (status) {
     case 'ACTIVE':
-      return { bg: 'bg-v2-success/10', text: 'text-v2-success', border: 'border-v2-success/30', dot: 'bg-v2-success' };
+      return { bg: 'bg-success/10', text: 'text-success', border: 'border-success/30', dot: 'bg-success' };
     case 'CLOSED':
       return { bg: 'bg-amber-500/10', text: 'text-amber-600', border: 'border-amber-500/30' };
     case 'COMPLETED':
       return { bg: 'bg-brand-blue/10', text: 'text-brand-blue', border: 'border-brand-blue/30' };
     default:
-      return { bg: 'bg-v2-danger/10', text: 'text-v2-danger', border: 'border-v2-danger/30' };
+      return { bg: 'bg-error/10', text: 'text-error', border: 'border-error/30' };
   }
 }
 
@@ -39,7 +39,7 @@ export default function GroupHeader({ groupOrder, isHost }: Props): ReactElement
   ).length;
 
   return (
-    <div className="relative overflow-hidden border-b border-v2-border mt-24">
+    <div className="relative overflow-hidden border-b border-gray-200 mt-24">
       <Image
         src="/images/partners/group-dashboard-bg.png"
         alt=""
@@ -55,10 +55,10 @@ export default function GroupHeader({ groupOrder, isHost }: Props): ReactElement
           {/* Left side - Name, date, badges, code */}
           <div className="flex flex-col gap-2">
             <div>
-              <h1 className="font-candal text-4xl md:text-5xl text-v2-text tracking-tight">
+              <h1 className="font-heading text-4xl md:text-5xl text-gray-900 tracking-tight">
                 {groupOrder.name}
               </h1>
-              <p className="text-base font-semibold tracking-[0.2em] text-v2-muted mt-1">
+              <p className="text-base font-semibold tracking-[0.2em] text-gray-500 mt-1">
                 {getDateSubtitle(groupOrder)}
               </p>
             </div>
@@ -73,13 +73,13 @@ export default function GroupHeader({ groupOrder, isHost }: Props): ReactElement
                 {groupOrder.status}
               </span>
               {isHost && (
-                <span className="text-base font-medium px-4 py-1.5 rounded-full border bg-v2-blueTint text-brand-blue border-brand-blue/20">
+                <span className="text-base font-medium px-4 py-1.5 rounded-full border bg-blue-50 text-brand-blue border-brand-blue/20">
                   Host
                 </span>
               )}
-              <span className="text-base text-v2-muted">
+              <span className="text-base text-gray-500">
                 Code:{' '}
-                <span className="font-mono font-bold text-v2-text text-lg">
+                <span className="font-mono font-bold text-gray-900 text-lg">
                   {groupOrder.shareCode}
                 </span>
                 {' \u00B7 '}

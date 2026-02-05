@@ -85,10 +85,10 @@ export default function FastDeliveryPage() {
       {/* How It Works */}
       <Section>
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="font-serif text-4xl md:text-5xl text-navy-500 mb-4">
+          <h2 className="font-heading text-4xl md:text-5xl text-gray-900 mb-4">
             Party Delivery in 3 Easy Steps
           </h2>
-          <p className="font-sans text-lg text-neutral-600">
+          <p className="font-sans text-lg text-gray-700">
             From browsing to buzzing in under 30 minutes
           </p>
         </div>
@@ -98,8 +98,8 @@ export default function FastDeliveryPage() {
             <div className="w-24 h-24 mx-auto bg-gradient-gold rounded-full flex items-center justify-center">
               <span className="text-5xl text-white">1</span>
             </div>
-            <h3 className="font-sans font-bold text-xl text-navy-500">Browse & Order</h3>
-            <p className="font-sans text-neutral-600">
+            <h3 className="font-sans font-bold text-xl text-gray-900">Browse & Order</h3>
+            <p className="font-sans text-gray-700">
               Shop our curated selection of spirits, beer, wine, and party supplies. 
               Add to cart with a tap.
             </p>
@@ -109,8 +109,8 @@ export default function FastDeliveryPage() {
             <div className="w-24 h-24 mx-auto bg-gradient-gold rounded-full flex items-center justify-center">
               <span className="text-5xl text-white">2</span>
             </div>
-            <h3 className="font-sans font-bold text-xl text-navy-500">Track in Real-Time</h3>
-            <p className="font-sans text-neutral-600">
+            <h3 className="font-sans font-bold text-xl text-gray-900">Track in Real-Time</h3>
+            <p className="font-sans text-gray-700">
               Watch your order move from our warehouse to your door with live GPS tracking.
             </p>
           </div>
@@ -119,8 +119,8 @@ export default function FastDeliveryPage() {
             <div className="w-24 h-24 mx-auto bg-gradient-gold rounded-full flex items-center justify-center">
               <span className="text-5xl text-white">3</span>
             </div>
-            <h3 className="font-sans font-bold text-xl text-navy-500">Party Time!</h3>
-            <p className="font-sans text-neutral-600">
+            <h3 className="font-sans font-bold text-xl text-gray-900">Party Time!</h3>
+            <p className="font-sans text-gray-700">
               Receive your order with a smile. Everything arrives cold and ready to enjoy.
             </p>
           </div>
@@ -128,14 +128,14 @@ export default function FastDeliveryPage() {
       </Section>
 
       {/* Speed Stats */}
-      <section className="section-padding bg-gradient-to-br from-austin-sunset/10 to-gold-50">
+      <section className="section-padding bg-gradient-to-br from-austin-sunset/10 to-yellow-50">
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
-              <h2 className="font-serif text-4xl md:text-5xl text-navy-500">
+              <h2 className="font-heading text-4xl md:text-5xl text-gray-900">
                 Speed That Impresses
               </h2>
-              <p className="font-sans text-xl text-neutral-600 leading-relaxed">
+              <p className="font-sans text-xl text-gray-700 leading-relaxed">
                 We&apos;ve revolutionized alcohol delivery in Austin. Our strategic warehouse 
                 locations and dedicated delivery fleet ensure your drinks arrive faster 
                 than you can say &quot;cheers!&quot;
@@ -143,20 +143,20 @@ export default function FastDeliveryPage() {
               
               <div className="grid grid-cols-2 gap-6">
                 <div className="bg-white p-6 rounded-xl shadow-md">
-                  <p className="font-display text-5xl text-gold-500">23</p>
-                  <p className="font-sans text-sm text-neutral-600">Average delivery minutes</p>
+                  <p className="font-heading text-5xl text-yellow-500">23</p>
+                  <p className="font-sans text-sm text-gray-700">Average delivery minutes</p>
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-md">
-                  <p className="font-display text-5xl text-gold-500">98%</p>
-                  <p className="font-sans text-sm text-neutral-600">On-time delivery rate</p>
+                  <p className="font-heading text-5xl text-yellow-500">98%</p>
+                  <p className="font-sans text-sm text-gray-700">On-time delivery rate</p>
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-md">
-                  <p className="font-display text-5xl text-gold-500">15K+</p>
-                  <p className="font-sans text-sm text-neutral-600">Monthly deliveries</p>
+                  <p className="font-heading text-5xl text-yellow-500">15K+</p>
+                  <p className="font-sans text-sm text-gray-700">Monthly deliveries</p>
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-md">
-                  <p className="font-display text-5xl text-gold-500">5.0</p>
-                  <p className="font-sans text-sm text-neutral-600">Star rating</p>
+                  <p className="font-heading text-5xl text-yellow-500">5.0</p>
+                  <p className="font-sans text-sm text-gray-700">Star rating</p>
                 </div>
               </div>
             </div>
@@ -168,7 +168,7 @@ export default function FastDeliveryPage() {
                 className="rounded-2xl shadow-premium"
               />
               <div className="absolute top-4 right-4 bg-white px-4 py-2 rounded-full shadow-lg animate-pulse">
-                <p className="font-sans font-bold text-sm text-gold-500">Live Tracking</p>
+                <p className="font-sans font-bold text-sm text-yellow-500">Live Tracking</p>
               </div>
             </div>
           </div>
@@ -176,12 +176,12 @@ export default function FastDeliveryPage() {
       </section>
 
       {/* Delivery Options */}
-      <Section className="bg-neutral-50">
+      <Section className="bg-gray-50">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="font-serif text-4xl md:text-5xl text-navy-500 mb-4">
+          <h2 className="font-heading text-4xl md:text-5xl text-gray-900 mb-4">
             Delivery Options for Every Occasion
           </h2>
-          <p className="font-sans text-lg text-neutral-600">
+          <p className="font-sans text-lg text-gray-700">
             From a quick six-pack to a full party setup, we&apos;ve got you covered
           </p>
         </div>
@@ -198,10 +198,10 @@ export default function FastDeliveryPage() {
       {/* Popular Items */}
       <Section>
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="font-serif text-4xl md:text-5xl text-navy-500 mb-4">
+          <h2 className="font-heading text-4xl md:text-5xl text-gray-900 mb-4">
             Austin&apos;s Favorites
           </h2>
-          <p className="font-sans text-lg text-neutral-600">
+          <p className="font-sans text-lg text-gray-700">
             Most ordered items ready for quick delivery
           </p>
         </div>
@@ -210,12 +210,12 @@ export default function FastDeliveryPage() {
           {popularItems.map((item) => (
             <div key={item.name} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
               <div className="flex justify-between items-start mb-2">
-                <h3 className="font-sans font-bold text-lg text-navy-500">{item.name}</h3>
+                <h3 className="font-sans font-bold text-lg text-gray-900">{item.name}</h3>
                 <span className="text-sm bg-green-100 text-green-700 px-2 py-1 rounded-full">
                   {item.time}
                 </span>
               </div>
-              <p className="font-sans text-2xl text-gold-500 mb-4">{item.price}</p>
+              <p className="font-sans text-2xl text-yellow-500 mb-4">{item.price}</p>
               <button className="w-full btn-primary py-2">
                 Add to Cart
               </button>
@@ -225,13 +225,13 @@ export default function FastDeliveryPage() {
       </Section>
 
       {/* Coverage Area */}
-      <section className="section-padding bg-gradient-to-br from-navy-50 to-austin-lake/10">
+      <section className="section-padding bg-gradient-to-br from-gray-50 to-austin-lake/10">
         <div className="container-custom">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="font-serif text-4xl md:text-5xl text-navy-500 mb-4">
+            <h2 className="font-heading text-4xl md:text-5xl text-gray-900 mb-4">
               We Deliver All Over Austin
             </h2>
-            <p className="font-sans text-lg text-neutral-600">
+            <p className="font-sans text-lg text-gray-700">
               From downtown lofts to lakeside homes, we&apos;ve got Austin covered
             </p>
           </div>
@@ -240,15 +240,15 @@ export default function FastDeliveryPage() {
             {neighborhoods.map((hood) => (
               <div 
                 key={hood} 
-                className="bg-white px-6 py-4 rounded-lg text-center hover:bg-gold-50 transition-colors"
+                className="bg-white px-6 py-4 rounded-lg text-center hover:bg-yellow-50 transition-colors"
               >
-                <p className="font-sans font-medium text-navy-500">{hood}</p>
+                <p className="font-sans font-medium text-gray-900">{hood}</p>
               </div>
             ))}
           </div>
 
           <div className="text-center mt-12">
-            <p className="font-sans text-neutral-600 mb-4">
+            <p className="font-sans text-gray-700 mb-4">
               Don&apos;t see your neighborhood? Enter your address to check coverage.
             </p>
             <button className="btn-secondary">
@@ -260,31 +260,31 @@ export default function FastDeliveryPage() {
 
       {/* App Download */}
       <Section>
-        <div className="bg-gradient-to-br from-gold-100 to-austin-sunset/20 rounded-2xl p-8 md:p-12">
+        <div className="bg-gradient-to-br from-yellow-100 to-austin-sunset/20 rounded-2xl p-8 md:p-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div className="space-y-6">
-              <h2 className="font-serif text-4xl text-navy-500">
+              <h2 className="font-heading text-4xl text-gray-900">
                 Order Even Faster with Our App
               </h2>
-              <p className="font-sans text-lg text-neutral-600">
+              <p className="font-sans text-lg text-gray-700">
                 Get exclusive app-only deals, save your favorites, and track deliveries 
                 in real-time. Available for iOS and Android.
               </p>
               <ul className="space-y-3">
                 <li className="flex items-center gap-3">
-                  <svg className="w-6 h-6 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <span className="font-sans">One-tap reorder your favorites</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <svg className="w-6 h-6 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <span className="font-sans">Exclusive app-only discounts</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <svg className="w-6 h-6 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <span className="font-sans">Schedule deliveries in advance</span>
@@ -307,13 +307,13 @@ export default function FastDeliveryPage() {
       </Section>
 
       {/* Testimonials */}
-      <section className="section-padding bg-neutral-50">
+      <section className="section-padding bg-gray-50">
         <div className="container-custom">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="font-serif text-4xl md:text-5xl text-navy-500 mb-4">
+            <h2 className="font-heading text-4xl md:text-5xl text-gray-900 mb-4">
               Austin Loves Our Speed
             </h2>
-            <p className="font-sans text-lg text-neutral-600">
+            <p className="font-sans text-lg text-gray-700">
               Real reviews from real Austinites
             </p>
           </div>
@@ -322,49 +322,49 @@ export default function FastDeliveryPage() {
             <div className="bg-white p-8 rounded-lg shadow-md">
               <div className="flex gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-5 h-5 text-gold-500" fill="currentColor" viewBox="0 0 20 20">
+                  <svg key={i} className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                 ))}
               </div>
-              <p className="font-sans text-neutral-600 mb-4">
+              <p className="font-sans text-gray-700 mb-4">
                 &quot;Ordered at 7:15, delivered by 7:35. Faster than getting pizza! 
                 The driver even helped carry everything up to my apartment.&quot;
               </p>
               <p className="font-sans font-semibold">Michael R.</p>
-              <p className="font-sans text-sm text-neutral-500">Downtown Austin</p>
+              <p className="font-sans text-sm text-gray-500">Downtown Austin</p>
             </div>
 
             <div className="bg-white p-8 rounded-lg shadow-md">
               <div className="flex gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-5 h-5 text-gold-500" fill="currentColor" viewBox="0 0 20 20">
+                  <svg key={i} className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                 ))}
               </div>
-              <p className="font-sans text-neutral-600 mb-4">
+              <p className="font-sans text-gray-700 mb-4">
                 &quot;Game changer for hosting! Realized we were out of wine 20 minutes 
                 before guests arrived. Party On saved the day!&quot;
               </p>
               <p className="font-sans font-semibold">Lauren P.</p>
-              <p className="font-sans text-sm text-neutral-500">Westlake Hills</p>
+              <p className="font-sans text-sm text-gray-500">Westlake Hills</p>
             </div>
 
             <div className="bg-white p-8 rounded-lg shadow-md">
               <div className="flex gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-5 h-5 text-gold-500" fill="currentColor" viewBox="0 0 20 20">
+                  <svg key={i} className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                 ))}
               </div>
-              <p className="font-sans text-neutral-600 mb-4">
+              <p className="font-sans text-gray-700 mb-4">
                 &quot;Use them every weekend. The app is super easy and tracking is 
                 spot on. Best alcohol delivery in Austin, hands down.&quot;
               </p>
               <p className="font-sans font-semibold">David K.</p>
-              <p className="font-sans text-sm text-neutral-500">South Congress</p>
+              <p className="font-sans text-sm text-gray-500">South Congress</p>
             </div>
           </div>
         </div>

@@ -106,7 +106,7 @@ export default function EditTabModal({
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
             />
           </div>
 
@@ -118,7 +118,7 @@ export default function EditTabModal({
                 required
                 value={deliveryDate}
                 onChange={(e) => setDeliveryDate(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
               />
             </div>
             <div>
@@ -127,7 +127,7 @@ export default function EditTabModal({
                 required
                 value={deliveryTime}
                 onChange={(e) => setDeliveryTime(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
               >
                 <option value="">Select</option>
                 {timeOptions.map((t) => (
@@ -144,7 +144,7 @@ export default function EditTabModal({
               required
               value={address1}
               onChange={(e) => setAddress1(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500 mb-2"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500 mb-2"
             />
             <div className="grid grid-cols-3 gap-2">
               <input

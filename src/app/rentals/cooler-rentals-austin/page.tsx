@@ -84,7 +84,7 @@ export default function CoolerRentalsAustinPage() {
           <div className="max-w-7xl mx-auto">
             <ol className="flex items-center space-x-2 text-sm">
               <li>
-                <Link href="/" className="text-gray-700 hover:text-gold-600 transition-colors">
+                <Link href="/" className="text-gray-700 hover:text-brand-yellow transition-colors">
                   Home
                 </Link>
               </li>
@@ -92,7 +92,7 @@ export default function CoolerRentalsAustinPage() {
                 <span className="text-gray-400 mx-2">›</span>
               </li>
               <li>
-                <Link href="/rentals" className="text-gray-700 hover:text-gold-600 transition-colors">
+                <Link href="/rentals" className="text-gray-700 hover:text-brand-yellow transition-colors">
                   Rentals
                 </Link>
               </li>
@@ -109,7 +109,7 @@ export default function CoolerRentalsAustinPage() {
         {/* Hero Section */}
         <section className="py-24 px-8">
           <div className="max-w-6xl mx-auto">
-            <h1 className="font-serif text-5xl md:text-6xl text-gray-900 mb-6 tracking-[0.15em]">
+            <h1 className="font-heading text-5xl md:text-6xl text-gray-900 mb-6 tracking-[0.15em]">
               COOLER RENTALS AUSTIN
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl leading-relaxed">
@@ -118,12 +118,12 @@ export default function CoolerRentalsAustinPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/contact">
-                <button className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
                   REQUEST QUOTE
                 </button>
               </Link>
               <a href="tel:7373719700">
-                <button className="px-8 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+                <button className="px-8 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-white transition-all duration-300 tracking-[0.15em] text-sm font-medium">
                   CALL (737) 371-9700
                 </button>
               </a>
@@ -134,7 +134,7 @@ export default function CoolerRentalsAustinPage() {
         {/* Cooler Options */}
         <section className="py-16 px-8 bg-gray-50">
           <div className="max-w-6xl mx-auto">
-            <h2 className="font-serif text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
+            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
               COOLER & ICE TUB OPTIONS
             </h2>
 
@@ -142,10 +142,10 @@ export default function CoolerRentalsAustinPage() {
               <table className="w-full bg-white rounded-lg shadow-sm border border-gray-200">
                 <thead>
                   <tr className="bg-gray-900 text-white">
-                    <th className="py-4 px-6 text-left font-serif tracking-[0.1em]">SIZE</th>
-                    <th className="py-4 px-6 text-left font-serif tracking-[0.1em]">CAPACITY</th>
-                    <th className="py-4 px-6 text-left font-serif tracking-[0.1em]">RENTAL PRICE</th>
-                    <th className="py-4 px-6 text-left font-serif tracking-[0.1em]">BEST FOR</th>
+                    <th className="py-4 px-6 text-left font-heading tracking-[0.1em]">SIZE</th>
+                    <th className="py-4 px-6 text-left font-heading tracking-[0.1em]">CAPACITY</th>
+                    <th className="py-4 px-6 text-left font-heading tracking-[0.1em]">RENTAL PRICE</th>
+                    <th className="py-4 px-6 text-left font-heading tracking-[0.1em]">BEST FOR</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -158,19 +158,19 @@ export default function CoolerRentalsAustinPage() {
                   <tr className="hover:bg-gray-50 transition-colors">
                     <td className="py-4 px-6 font-medium">100-Quart Cooler</td>
                     <td className="py-4 px-6 text-gray-700">120+ cans + ice</td>
-                    <td className="py-4 px-6 text-gold-600 font-bold">$25 / day</td>
+                    <td className="py-4 px-6 text-brand-yellow font-bold">$25 / day</td>
                     <td className="py-4 px-6 text-gray-600">Lake Travis boat parties</td>
                   </tr>
                   <tr className="hover:bg-gray-50 transition-colors">
                     <td className="py-4 px-6 font-medium">50-Gallon Ice Tub</td>
                     <td className="py-4 px-6 text-gray-700">Half-barrel keg + ice</td>
-                    <td className="py-4 px-6 text-gold-600 font-bold">$35 / day</td>
+                    <td className="py-4 px-6 text-brand-yellow font-bold">$35 / day</td>
                     <td className="py-4 px-6 text-gray-600">Weddings, keg parties</td>
                   </tr>
-                  <tr className="hover:bg-gray-50 transition-colors bg-gold-50 border-2 border-gold-600">
+                  <tr className="hover:bg-gray-50 transition-colors bg-yellow-50 border-2 border-brand-yellow">
                     <td className="py-4 px-6 font-bold">Party Package</td>
                     <td className="py-4 px-6 text-gray-700">2 large coolers + ice tub</td>
-                    <td className="py-4 px-6 text-gold-600 font-bold">$65 / day</td>
+                    <td className="py-4 px-6 text-brand-yellow font-bold">$65 / day</td>
                     <td className="py-4 px-6 text-gray-600">Large events, multi-day parties</td>
                   </tr>
                 </tbody>
@@ -179,7 +179,7 @@ export default function CoolerRentalsAustinPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+                <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.05em]">
                   Weekend Rentals
                 </h3>
                 <p className="text-gray-700">
@@ -189,7 +189,7 @@ export default function CoolerRentalsAustinPage() {
               </div>
 
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+                <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.05em]">
                   Ice Delivery Available
                 </h3>
                 <p className="text-gray-700">
@@ -204,13 +204,13 @@ export default function CoolerRentalsAustinPage() {
         {/* Lake Travis Focus */}
         <section className="py-24 px-8">
           <div className="max-w-6xl mx-auto">
-            <h2 className="font-serif text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
+            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
               LAKE TRAVIS COOLER DELIVERY
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-12">
               <div>
-                <h3 className="font-serif text-3xl text-gray-900 mb-6 tracking-[0.1em]">
+                <h3 className="font-heading text-3xl text-gray-900 mb-6 tracking-[0.1em]">
                   Boat Party Specialists
                 </h3>
                 <p className="text-gray-600 mb-6 leading-relaxed">
@@ -220,25 +220,25 @@ export default function CoolerRentalsAustinPage() {
                 </p>
                 <ul className="space-y-3 text-gray-700">
                   <li className="flex items-start">
-                    <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                     <span>Pre-filled with ice upon delivery</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                     <span>Waterproof and floating design</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                     <span>Keeps drinks cold 8+ hours in Texas heat</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                     <span>Return pickup at dock after party</span>
@@ -247,7 +247,7 @@ export default function CoolerRentalsAustinPage() {
               </div>
 
               <div className="bg-gray-100 rounded-lg p-8">
-                <h4 className="font-serif text-2xl text-gray-900 mb-6 tracking-[0.1em]">
+                <h4 className="font-heading text-2xl text-gray-900 mb-6 tracking-[0.1em]">
                   Popular Lake Travis Delivery Locations
                 </h4>
                 <ul className="space-y-3 text-gray-700">
@@ -268,18 +268,18 @@ export default function CoolerRentalsAustinPage() {
         {/* Why Choose Section */}
         <section className="py-16 px-8 bg-gray-50">
           <div className="max-w-6xl mx-auto">
-            <h2 className="font-serif text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
+            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
               WHY RENT COOLERS FROM PARTY ON
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="text-center">
-                <div className="w-16 h-16 bg-gold-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-brand-yellow rounded-full flex items-center justify-center mx-auto mb-6">
                   <svg className="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
+                <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">
                   Premium Quality
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
@@ -289,12 +289,12 @@ export default function CoolerRentalsAustinPage() {
               </div>
 
               <div className="text-center">
-                <div className="w-16 h-16 bg-gold-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-brand-yellow rounded-full flex items-center justify-center mx-auto mb-6">
                   <svg className="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
+                <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">
                   Lake Travis Experts
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
@@ -304,12 +304,12 @@ export default function CoolerRentalsAustinPage() {
               </div>
 
               <div className="text-center">
-                <div className="w-16 h-16 bg-gold-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-brand-yellow rounded-full flex items-center justify-center mx-auto mb-6">
                   <svg className="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
+                <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">
                   Flexible Rentals
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
@@ -324,14 +324,14 @@ export default function CoolerRentalsAustinPage() {
         {/* FAQ Section */}
         <section className="py-24 px-8">
           <div className="max-w-4xl mx-auto">
-            <h2 className="font-serif text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
+            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
               FREQUENTLY ASKED QUESTIONS
             </h2>
 
             <div className="space-y-6">
               {faqs.map((faq, index) => (
                 <div key={index} className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                  <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+                  <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.05em]">
                     {faq.question}
                   </h3>
                   <p className="text-gray-600 leading-relaxed">
@@ -346,7 +346,7 @@ export default function CoolerRentalsAustinPage() {
         {/* CTA Section */}
         <section className="py-24 px-8 bg-gray-900 text-white">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="font-serif text-4xl md:text-5xl mb-6 tracking-[0.15em]">
+            <h2 className="font-heading text-4xl md:text-5xl mb-6 tracking-[0.15em]">
               RENT COOLERS FOR LAKE TRAVIS
             </h2>
             <p className="text-xl text-gray-300 mb-12">
@@ -354,12 +354,12 @@ export default function CoolerRentalsAustinPage() {
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link href="/contact">
-                <button className="px-10 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
                   REQUEST QUOTE
                 </button>
               </Link>
               <Link href="/rentals">
-                <button className="px-10 py-4 border-2 border-gold-600 text-white hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+                <button className="px-10 py-4 border-2 border-brand-yellow text-white hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
                   VIEW ALL RENTALS
                 </button>
               </Link>

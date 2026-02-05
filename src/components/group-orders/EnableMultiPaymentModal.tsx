@@ -121,8 +121,8 @@ export default function EnableMultiPaymentModal({
 
           {/* Header */}
           <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </div>
@@ -134,7 +134,7 @@ export default function EnableMultiPaymentModal({
           <div className="bg-gray-50 rounded-lg p-4 mb-6">
             <div className="grid grid-cols-2 gap-4 text-center">
               <div>
-                <p className="text-2xl font-bold text-gold-600">{participantCount}</p>
+                <p className="text-2xl font-bold text-brand-yellow">{participantCount}</p>
                 <p className="text-sm text-gray-500">Participants</p>
               </div>
               <div>
@@ -186,7 +186,7 @@ export default function EnableMultiPaymentModal({
               onChange={(e) => setDeadline(e.target.value)}
               min={getMinDeadline()}
               max={getMaxDeadline()}
-              className="w-full border border-gray-300 rounded p-3 focus:ring-2 focus:ring-gold-500 focus:border-gold-500"
+              className="w-full border border-gray-300 rounded p-3 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
             />
             <p className="text-xs text-gray-500 mt-1">
               Participants must complete payment by this time
@@ -212,7 +212,7 @@ export default function EnableMultiPaymentModal({
             <button
               onClick={handleEnable}
               disabled={isEnabling}
-              className="flex-1 px-4 py-3 bg-gold-600 text-gray-900 rounded hover:bg-gold-700 transition-colors tracking-[0.1em] disabled:opacity-50"
+              className="flex-1 px-4 py-3 bg-brand-yellow text-gray-900 rounded hover:bg-yellow-600 transition-colors tracking-[0.1em] disabled:opacity-50"
             >
               {isEnabling ? 'ENABLING...' : 'ENABLE SPLIT PAY'}
             </button>

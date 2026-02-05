@@ -102,7 +102,7 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
                 className="absolute bottom-2 right-2 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg"
                 aria-label="Quick add to cart"
               >
-                <svg className="w-5 h-5 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
                 </svg>
               </button>
@@ -113,7 +113,7 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
           {/* Title */}
           <h3 
             onClick={() => onProductClick?.(product)}
-            className="font-serif text-base text-gray-900 mb-2 line-clamp-2 cursor-pointer">
+            className="font-heading text-base text-gray-900 mb-2 line-clamp-2 cursor-pointer">
             {product.title}
           </h3>
 
@@ -157,7 +157,7 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
                   className={`w-full py-3 rounded-lg text-sm font-medium tracking-[0.1em] transition-colors ${
                     isAdding || cartLoading
                       ? 'bg-gray-300 text-gray-500'
-                      : 'bg-gold-600 text-gray-900 active:bg-gold-700 active:text-gray-900'
+                      : 'bg-brand-yellow text-gray-900 active:bg-yellow-600 active:text-gray-900'
                   }`}
                 >
                   {isAdding || cartLoading ? 'ADDING...' : 'ADD TO CART'}

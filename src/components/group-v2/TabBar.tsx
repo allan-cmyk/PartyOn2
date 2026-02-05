@@ -34,10 +34,10 @@ export default function TabBar({
   onShare,
 }: Props): ReactElement {
   return (
-    <div className="bg-white border-b border-v2-border py-4">
+    <div className="bg-white border-b border-gray-200 py-4">
       <div className="flex items-center justify-between gap-4 px-4 md:px-8 lg:px-12">
         {/* Left - Tabs */}
-        <div className="bg-v2-bgSoft rounded-lg p-1.5 flex gap-1 overflow-x-auto snap-x scrollbar-hide min-w-0">
+        <div className="bg-whiteSoft rounded-lg p-1.5 flex gap-1 overflow-x-auto snap-x scrollbar-hide min-w-0">
           {(tabs || []).map((tab) => {
             const isActive = tab.id === activeTabId;
             const count = getItemCount(tab);
@@ -47,7 +47,7 @@ export default function TabBar({
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
                 className={`relative flex items-center gap-2 px-5 py-2.5 text-base font-semibold rounded-lg whitespace-nowrap snap-start shrink-0 v2-btn-press transition-transform duration-100 ${
-                  isActive ? 'text-white' : 'text-v2-muted hover:text-v2-text'
+                  isActive ? 'text-white' : 'text-gray-500 hover:text-gray-900'
                 }`}
               >
                 {isActive && (
@@ -67,7 +67,7 @@ export default function TabBar({
                       className={`text-sm rounded-full px-2 py-0.5 font-medium ${
                         isActive
                           ? 'bg-white/20 text-white'
-                          : 'bg-v2-bgSoft text-v2-muted'
+                          : 'bg-whiteSoft text-gray-500'
                       }`}
                     >
                       {count}
@@ -81,7 +81,7 @@ export default function TabBar({
           {isHost && (
             <button
               onClick={onAddTab}
-              className="flex items-center gap-1.5 px-5 py-2.5 text-base font-semibold rounded-lg whitespace-nowrap snap-start shrink-0 border border-dashed border-v2-border text-v2-muted hover:text-brand-blue hover:border-brand-blue transition-colors v2-btn-press"
+              className="flex items-center gap-1.5 px-5 py-2.5 text-base font-semibold rounded-lg whitespace-nowrap snap-start shrink-0 border border-dashed border-gray-200 text-gray-500 hover:text-brand-blue hover:border-brand-blue transition-colors v2-btn-press"
             >
               + Add Tab
             </button>
@@ -92,7 +92,7 @@ export default function TabBar({
         {onShare && (
           <button
             onClick={onShare}
-            className="shrink-0 px-6 py-2.5 text-base font-semibold rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 active:scale-[0.98] transition-all v2-btn-press"
+            className="shrink-0 px-6 py-2.5 text-base font-semibold rounded-lg bg-green-50 text-success border border-green-200 hover:bg-green-100 active:scale-[0.98] transition-all v2-btn-press"
           >
             Share
           </button>

@@ -50,7 +50,7 @@ export default function LuxuryCard({
     >
       <div
         className={`relative bg-white overflow-hidden group ${
-          featured ? 'ring-2 ring-gold-600 shadow-xl' : 'border border-gray-200 hover:shadow-lg'
+          featured ? 'ring-2 ring-brand-yellow shadow-xl' : 'border border-gray-200 hover:shadow-lg'
         } transition-all duration-500 hover:-translate-y-1 ${className}`}
       >
       {/* Primary texture background */}
@@ -76,11 +76,11 @@ export default function LuxuryCard({
         
         {/* Gold shimmer for featured cards */}
         {featured && (
-          <div className="absolute inset-0 bg-gradient-to-tr from-gold-600/5 via-transparent to-gold-600/5" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-brand-yellow/5 via-transparent to-brand-yellow/5" />
         )}
         
         {/* Hover effect gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-gold-600/0 via-gold-600/0 to-gold-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-yellow/0 via-brand-yellow/0 to-brand-yellow/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       </div>
 
       {/* Light reflection effect */}
@@ -96,7 +96,7 @@ export default function LuxuryCard({
       {/* Premium corner accent for featured */}
       {featured && (
         <div className="absolute top-0 right-0 w-20 h-20 overflow-hidden">
-          <div className="absolute transform rotate-45 bg-gold-600 text-gray-900 text-xs font-light tracking-wider py-1 right-[-25px] top-[15px] w-[100px] text-center">
+          <div className="absolute transform rotate-45 bg-brand-yellow text-gray-900 text-xs font-light tracking-wider py-1 right-[-25px] top-[15px] w-[100px] text-center">
             PREMIUM
           </div>
         </div>

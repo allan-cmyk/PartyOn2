@@ -143,7 +143,7 @@ export default function PaymentPage() {
       <>
         <OldFashionedNavigation />
         <div className="min-h-screen flex items-center justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold-600"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-yellow"></div>
         </div>
       </>
     )
@@ -173,7 +173,7 @@ export default function PaymentPage() {
               </div>
               <div className="w-16 h-px bg-gray-300 mx-4" />
               <div className="flex items-center">
-                <div className="w-8 h-8 bg-gold-600 rounded-full flex items-center justify-center text-gray-900 text-sm">
+                <div className="w-8 h-8 bg-brand-yellow rounded-full flex items-center justify-center text-gray-900 text-sm">
                   3
                 </div>
                 <span className="ml-3 text-gray-900 font-medium tracking-[0.1em] text-sm">PAYMENT</span>
@@ -181,7 +181,7 @@ export default function PaymentPage() {
             </div>
           </div>
           
-          <h1 className="text-4xl font-serif text-gray-900 text-center mb-12 tracking-[0.1em]">
+          <h1 className="text-4xl font-heading text-gray-900 text-center mb-12 tracking-[0.1em]">
             Payment Information
           </h1>
           
@@ -190,7 +190,7 @@ export default function PaymentPage() {
             <div className="lg:col-span-3">
               <form onSubmit={handleSubmit} className="space-y-8">
                 <div className="bg-white p-6 border border-gray-200">
-                  <h2 className="font-serif text-2xl text-gray-900 mb-6 tracking-[0.1em]">
+                  <h2 className="font-heading text-2xl text-gray-900 mb-6 tracking-[0.1em]">
                     Card Details
                   </h2>
                   
@@ -204,7 +204,7 @@ export default function PaymentPage() {
                         required
                         value={cardName}
                         onChange={(e) => setCardName(e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 focus:border-gold-600 focus:outline-none"
+                        className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:outline-none"
                       />
                     </div>
                     
@@ -219,7 +219,7 @@ export default function PaymentPage() {
                         onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
                         maxLength={19}
                         placeholder="1234 5678 9012 3456"
-                        className="w-full px-4 py-3 border border-gray-300 focus:border-gold-600 focus:outline-none"
+                        className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:outline-none"
                       />
                     </div>
                     
@@ -235,7 +235,7 @@ export default function PaymentPage() {
                           onChange={(e) => setCardExpiry(formatExpiry(e.target.value))}
                           maxLength={5}
                           placeholder="MM/YY"
-                          className="w-full px-4 py-3 border border-gray-300 focus:border-gold-600 focus:outline-none"
+                          className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:outline-none"
                         />
                       </div>
                       <div>
@@ -249,7 +249,7 @@ export default function PaymentPage() {
                           onChange={(e) => setCardCvc(e.target.value.replace(/\D/g, '').slice(0, 4))}
                           maxLength={4}
                           placeholder="123"
-                          className="w-full px-4 py-3 border border-gray-300 focus:border-gold-600 focus:outline-none"
+                          className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:outline-none"
                         />
                       </div>
                     </div>
@@ -283,7 +283,7 @@ export default function PaymentPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <span className="flex items-center justify-center">
@@ -304,7 +304,7 @@ export default function PaymentPage() {
             <div className="lg:col-span-2">
               <div className="bg-white border border-gray-200 sticky top-32">
                 <div className="p-6">
-                  <h2 className="font-serif text-2xl text-gray-900 mb-6 tracking-[0.1em]">
+                  <h2 className="font-heading text-2xl text-gray-900 mb-6 tracking-[0.1em]">
                     Order Summary
                   </h2>
                   
@@ -368,7 +368,7 @@ export default function PaymentPage() {
                       <span className="text-gray-900">${tax.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between font-medium text-lg pt-3 border-t border-gray-200">
-                      <span className="font-serif tracking-[0.1em]">TOTAL</span>
+                      <span className="font-heading tracking-[0.1em]">TOTAL</span>
                       <span>${total.toFixed(2)}</span>
                     </div>
                   </div>

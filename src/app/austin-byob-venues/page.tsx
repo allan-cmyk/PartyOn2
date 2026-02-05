@@ -103,10 +103,10 @@ export default function AustinBYOBVenuesPage() {
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 text-white">
           <ScrollRevealCSS duration={800} y={30}>
-            <p className="text-gold-400 tracking-[0.2em] uppercase text-sm mb-4">
+            <p className="text-brand-yellow tracking-[0.2em] uppercase text-sm mb-4">
               Austin Venue Directory
             </p>
-            <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl mb-6 tracking-[0.1em] max-w-4xl">
+            <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl mb-6 tracking-[0.1em] max-w-4xl">
               Austin BYOB Venues
             </h1>
             <p className="text-lg sm:text-xl max-w-2xl leading-relaxed text-gray-200 mb-8">
@@ -117,15 +117,15 @@ export default function AustinBYOBVenuesPage() {
             {/* Quick Stats */}
             <div className="flex flex-wrap gap-6 text-sm">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-gold-400 rounded-full" />
+                <span className="w-2 h-2 bg-brand-yellow rounded-full" />
                 <span>{venues.length} BYOB Venues</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-gold-400 rounded-full" />
+                <span className="w-2 h-2 bg-brand-yellow rounded-full" />
                 <span>{partnerVenues.length} Partner Venues</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-gold-400 rounded-full" />
+                <span className="w-2 h-2 bg-brand-yellow rounded-full" />
                 <span>Free Delivery Available</span>
               </div>
             </div>
@@ -135,12 +135,12 @@ export default function AustinBYOBVenuesPage() {
 
       {/* Partner Spotlight Section */}
       {partnerVenues.length > 0 && (
-        <section className="py-12 bg-gradient-to-b from-gold-50 to-white">
+        <section className="py-12 bg-gradient-to-b from-yellow-50 to-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-8">
             <ScrollRevealCSS duration={600} y={20}>
               <div className="flex items-center justify-between mb-8">
                 <div>
-                  <h2 className="font-serif text-2xl sm:text-3xl text-gray-900 tracking-[0.1em]">
+                  <h2 className="font-heading text-2xl sm:text-3xl text-gray-900 tracking-[0.1em]">
                     Featured Partners
                   </h2>
                   <p className="text-gray-600 mt-1">
@@ -149,7 +149,7 @@ export default function AustinBYOBVenuesPage() {
                 </div>
                 <Link
                   href="/austin-partners"
-                  className="hidden sm:inline-flex items-center gap-2 text-gold-700 hover:text-gold-800 font-medium"
+                  className="hidden sm:inline-flex items-center gap-2 text-yellow-600 hover:text-yellow-700 font-medium"
                 >
                   Become a Partner
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -163,15 +163,15 @@ export default function AustinBYOBVenuesPage() {
                   <div
                     key={venue.id}
                     className={`relative bg-white rounded-xl overflow-hidden shadow-lg border-2 ${
-                      venue.partnerStatus === 'premier' ? 'border-gold-500' : 'border-gold-300'
+                      venue.partnerStatus === 'premier' ? 'border-yellow-500' : 'border-brand-yellow'
                     }`}
                   >
                     {/* Partner Badge */}
                     <div className="absolute top-4 left-4 z-10">
                       <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold tracking-wide rounded-full ${
                         venue.partnerStatus === 'premier'
-                          ? 'bg-gold-500 text-gray-900'
-                          : 'bg-gold-400 text-gray-900'
+                          ? 'bg-yellow-500 text-gray-900'
+                          : 'bg-brand-yellow text-gray-900'
                       }`}>
                         <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -182,7 +182,7 @@ export default function AustinBYOBVenuesPage() {
 
                     {venue.partnerStatus === 'premier' && (
                       <div className="absolute top-4 right-4 z-10">
-                        <span className="px-2 py-1 bg-gray-900 text-gold-400 text-[10px] font-bold tracking-wider rounded">
+                        <span className="px-2 py-1 bg-gray-900 text-brand-yellow text-[10px] font-bold tracking-wider rounded">
                           PREMIER
                         </span>
                       </div>
@@ -227,13 +227,13 @@ export default function AustinBYOBVenuesPage() {
 
                     {/* Content */}
                     <div className="p-5">
-                      <h3 className="font-serif text-xl text-gray-900 mb-1">{venue.name}</h3>
+                      <h3 className="font-heading text-xl text-gray-900 mb-1">{venue.name}</h3>
                       <p className="text-sm text-gray-600 mb-3">{venue.subcategory}</p>
                       <p className="text-sm text-gray-600 line-clamp-2 mb-4">{venue.byobPolicy}</p>
 
                       <Link
                         href={venue.partnerSlug ? `/venues/${venue.partnerSlug}` : '/products'}
-                        className="block w-full text-center px-4 py-2.5 bg-gold-500 hover:bg-gold-600 text-gray-900 font-medium rounded transition-colors"
+                        className="block w-full text-center px-4 py-2.5 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-medium rounded transition-colors"
                       >
                         Order Alcohol for This Venue
                       </Link>
@@ -277,7 +277,7 @@ export default function AustinBYOBVenuesPage() {
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-8">
           <ScrollRevealCSS duration={600} y={20}>
-            <h2 className="font-serif text-3xl text-gray-900 tracking-[0.1em] mb-6">
+            <h2 className="font-heading text-3xl text-gray-900 tracking-[0.1em] mb-6">
               Your Guide to Austin BYOB Venues
             </h2>
             <div className="prose prose-lg text-gray-600 max-w-none">
@@ -296,7 +296,7 @@ export default function AustinBYOBVenuesPage() {
               <p>
                 Partner venues marked with the &quot;Free Delivery&quot; badge offer complimentary alcohol
                 delivery from Party On Delivery. Simply{' '}
-                <Link href="/products" className="text-gold-600 hover:text-gold-700">
+                <Link href="/products" className="text-brand-yellow hover:text-yellow-600">
                   browse our selection
                 </Link>
                 , place your order, and we&apos;ll deliver everything cold and on time to your venue.
@@ -310,7 +310,7 @@ export default function AustinBYOBVenuesPage() {
               </ul>
               <p>
                 Need help calculating how much alcohol you need? Use our{' '}
-                <Link href="/weddings/order" className="text-gold-600 hover:text-gold-700">
+                <Link href="/weddings/order" className="text-brand-yellow hover:text-yellow-600">
                   wedding drink calculator
                 </Link>{' '}
                 to get personalized recommendations based on your guest count and event duration.
@@ -324,7 +324,7 @@ export default function AustinBYOBVenuesPage() {
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-8">
           <ScrollRevealCSS duration={600} y={20}>
-            <h2 className="font-serif text-3xl text-gray-900 tracking-[0.1em] mb-8 text-center">
+            <h2 className="font-heading text-3xl text-gray-900 tracking-[0.1em] mb-8 text-center">
               Frequently Asked Questions
             </h2>
             <div className="space-y-6">
@@ -357,7 +357,7 @@ export default function AustinBYOBVenuesPage() {
       <section className="py-20 bg-gray-900">
         <div className="max-w-4xl mx-auto px-4 sm:px-8 text-center">
           <ScrollRevealCSS duration={600} y={20}>
-            <h2 className="font-serif text-3xl sm:text-4xl text-white tracking-[0.1em] mb-4">
+            <h2 className="font-heading text-3xl sm:text-4xl text-white tracking-[0.1em] mb-4">
               Own a BYOB Venue?
             </h2>
             <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
@@ -367,7 +367,7 @@ export default function AustinBYOBVenuesPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/austin-partners"
-                className="inline-block px-8 py-4 bg-gold-500 text-gray-900 hover:bg-gold-400 transition-colors tracking-[0.1em] text-sm font-medium rounded"
+                className="inline-block px-8 py-4 bg-yellow-500 text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.1em] text-sm font-medium rounded"
               >
                 BECOME A PARTNER
               </Link>

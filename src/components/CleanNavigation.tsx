@@ -44,7 +44,7 @@ export default function CleanNavigation() {
               className="flex items-center"
             >
               <span className={`text-2xl font-bold tracking-tight transition-colors duration-300 ${
-                isScrolled ? 'text-royal-800' : 'text-white'
+                isScrolled ? 'text-gray-900' : 'text-white'
               }`}>
                 PARTYON
               </span>
@@ -60,7 +60,7 @@ export default function CleanNavigation() {
               onMouseLeave={() => setIsServicesOpen(false)}
             >
               <button className={`font-medium transition-all duration-300 flex items-center gap-1 ${
-                isScrolled ? 'text-gray-700 hover:text-royal-600' : 'text-white hover:text-gold-400'
+                isScrolled ? 'text-gray-700 hover:text-brand-blue' : 'text-white hover:text-brand-yellow'
               }`}>
                 Services
                 <svg className={`w-4 h-4 transition-transform duration-300 ${isServicesOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -81,7 +81,7 @@ export default function CleanNavigation() {
                       <Link
                         key={service.name}
                         href={service.href}
-                        className="block px-6 py-3 text-gray-700 hover:bg-royal-50 hover:text-royal-600 transition-colors duration-200"
+                        className="block px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-brand-blue transition-colors duration-200"
                       >
                         {service.name}
                       </Link>
@@ -92,13 +92,13 @@ export default function CleanNavigation() {
             </div>
 
             <Link href="/about" className={`font-medium transition-all duration-300 ${
-              isScrolled ? 'text-gray-700 hover:text-royal-600' : 'text-white hover:text-gold-400'
+              isScrolled ? 'text-gray-700 hover:text-brand-blue' : 'text-white hover:text-brand-yellow'
             }`}>
               About
             </Link>
 
             <Link href="/contact" className={`font-medium transition-all duration-300 ${
-              isScrolled ? 'text-gray-700 hover:text-royal-600' : 'text-white hover:text-gold-400'
+              isScrolled ? 'text-gray-700 hover:text-brand-blue' : 'text-white hover:text-brand-yellow'
             }`}>
               Contact
             </Link>
@@ -113,8 +113,8 @@ export default function CleanNavigation() {
             <Link href="/consultation">
               <button className={`px-8 py-3 rounded-full font-semibold transition-all duration-300 ${
                 isScrolled 
-                  ? 'bg-royal-600 text-white hover:bg-royal-700' 
-                  : 'bg-gold-500 text-royal-900 hover:bg-gold-400'
+                  ? 'bg-brand-blue text-white hover:bg-blue-700' 
+                  : 'bg-yellow-500 text-gray-900 hover:bg-brand-yellow'
               }`}>
                 Get Started
               </button>
@@ -125,7 +125,7 @@ export default function CleanNavigation() {
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className={`lg:hidden p-2 transition-colors duration-300 ${
-              isScrolled ? 'text-royal-800' : 'text-white'
+              isScrolled ? 'text-gray-900' : 'text-white'
             }`}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -156,21 +156,21 @@ export default function CleanNavigation() {
                   <Link
                     key={service.name}
                     href={service.href}
-                    className="block py-2 pl-4 text-gray-700 hover:text-royal-600"
+                    className="block py-2 pl-4 text-gray-700 hover:text-brand-blue"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {service.name}
                   </Link>
                 ))}
               </div>
-              <Link href="/about" className="block py-3 text-gray-700 font-medium hover:text-royal-600" onClick={() => setIsMobileMenuOpen(false)}>
+              <Link href="/about" className="block py-3 text-gray-700 font-medium hover:text-brand-blue" onClick={() => setIsMobileMenuOpen(false)}>
                 About
               </Link>
-              <Link href="/contact" className="block py-3 text-gray-700 font-medium hover:text-royal-600" onClick={() => setIsMobileMenuOpen(false)}>
+              <Link href="/contact" className="block py-3 text-gray-700 font-medium hover:text-brand-blue" onClick={() => setIsMobileMenuOpen(false)}>
                 Contact
               </Link>
               <Link href="/consultation" className="block" onClick={() => setIsMobileMenuOpen(false)}>
-                <button className="w-full py-3 bg-royal-600 text-white rounded-full font-semibold hover:bg-royal-700 transition-colors">
+                <button className="w-full py-3 bg-brand-blue text-white rounded-full font-semibold hover:bg-blue-700 transition-colors">
                   Get Started
                 </button>
               </Link>

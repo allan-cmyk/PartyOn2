@@ -142,8 +142,8 @@ export default function HostControlBar({
       {/* Tab-level controls */}
       {activeTab && activeTab.status !== 'CANCELLED' && activeTab.status !== 'FULFILLED' && (
         <div className="border-t border-gray-200 pt-4">
-          <p className="text-base text-v2-muted mb-3">
-            Tab: <span className="font-semibold text-v2-text">{activeTab.name}</span>
+          <p className="text-base text-gray-500 mb-3">
+            Tab: <span className="font-semibold text-gray-900">{activeTab.name}</span>
           </p>
           <div className="flex flex-wrap gap-3">
             <button

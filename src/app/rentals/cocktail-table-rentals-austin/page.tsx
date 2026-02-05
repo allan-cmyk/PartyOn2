@@ -84,7 +84,7 @@ export default function CocktailTableRentalsAustinPage() {
           <div className="max-w-7xl mx-auto">
             <ol className="flex items-center space-x-2 text-sm">
               <li>
-                <Link href="/" className="text-gray-700 hover:text-gold-600 transition-colors">
+                <Link href="/" className="text-gray-700 hover:text-brand-yellow transition-colors">
                   Home
                 </Link>
               </li>
@@ -92,7 +92,7 @@ export default function CocktailTableRentalsAustinPage() {
                 <span className="text-gray-400 mx-2">›</span>
               </li>
               <li>
-                <Link href="/rentals" className="text-gray-700 hover:text-gold-600 transition-colors">
+                <Link href="/rentals" className="text-gray-700 hover:text-brand-yellow transition-colors">
                   Rentals
                 </Link>
               </li>
@@ -109,7 +109,7 @@ export default function CocktailTableRentalsAustinPage() {
         {/* Hero Section */}
         <section className="py-24 px-8">
           <div className="max-w-6xl mx-auto">
-            <h1 className="font-serif text-5xl md:text-6xl text-gray-900 mb-6 tracking-[0.15em]">
+            <h1 className="font-heading text-5xl md:text-6xl text-gray-900 mb-6 tracking-[0.15em]">
               COCKTAIL TABLE RENTALS AUSTIN
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl leading-relaxed">
@@ -118,12 +118,12 @@ export default function CocktailTableRentalsAustinPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/contact">
-                <button className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
                   REQUEST QUOTE
                 </button>
               </Link>
               <a href="tel:7373719700">
-                <button className="px-8 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+                <button className="px-8 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-white transition-all duration-300 tracking-[0.15em] text-sm font-medium">
                   CALL (737) 371-9700
                 </button>
               </a>
@@ -134,13 +134,13 @@ export default function CocktailTableRentalsAustinPage() {
         {/* Table Options */}
         <section className="py-16 px-8 bg-gray-50">
           <div className="max-w-6xl mx-auto">
-            <h2 className="font-serif text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
+            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
               TABLE RENTAL OPTIONS
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
               <div className="bg-white p-8 rounded-lg border border-gray-200">
-                <h3 className="font-serif text-3xl text-gray-900 mb-4 tracking-[0.1em]">
+                <h3 className="font-heading text-3xl text-gray-900 mb-4 tracking-[0.1em]">
                   Cocktail Tables
                 </h3>
                 <p className="text-gray-600 mb-6 leading-relaxed">
@@ -149,25 +149,25 @@ export default function CocktailTableRentalsAustinPage() {
                 </p>
                 <ul className="space-y-3 text-gray-700">
                   <li className="flex items-start">
-                    <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                     <span>30&quot; diameter: $12 per table</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                     <span>36&quot; diameter: $15 per table</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                     <span>Seats 3-4 standing guests</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                     <span>Perfect for cocktail receptions</span>
@@ -176,7 +176,7 @@ export default function CocktailTableRentalsAustinPage() {
               </div>
 
               <div className="bg-white p-8 rounded-lg border border-gray-200">
-                <h3 className="font-serif text-3xl text-gray-900 mb-4 tracking-[0.1em]">
+                <h3 className="font-heading text-3xl text-gray-900 mb-4 tracking-[0.1em]">
                   Banquet Tables
                 </h3>
                 <p className="text-gray-600 mb-6 leading-relaxed">
@@ -185,25 +185,25 @@ export default function CocktailTableRentalsAustinPage() {
                 </p>
                 <ul className="space-y-3 text-gray-700">
                   <li className="flex items-start">
-                    <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                     <span>6-foot table: $18 per table (seats 6)</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                     <span>8-foot table: $22 per table (seats 8-10)</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                     <span>Folding design for easy setup</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                     <span>Ideal for weddings and dinners</span>
@@ -224,18 +224,18 @@ export default function CocktailTableRentalsAustinPage() {
         {/* Use Cases */}
         <section className="py-24 px-8">
           <div className="max-w-6xl mx-auto">
-            <h2 className="font-serif text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
+            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
               PERFECT FOR AUSTIN EVENTS
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="text-center p-6">
-                <div className="w-16 h-16 bg-gold-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-brand-yellow rounded-full flex items-center justify-center mx-auto mb-6">
                   <svg className="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
+                <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">
                   Wedding Receptions
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
@@ -245,12 +245,12 @@ export default function CocktailTableRentalsAustinPage() {
               </div>
 
               <div className="text-center p-6">
-                <div className="w-16 h-16 bg-gold-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-brand-yellow rounded-full flex items-center justify-center mx-auto mb-6">
                   <svg className="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
+                <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">
                   Corporate Events
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
@@ -260,12 +260,12 @@ export default function CocktailTableRentalsAustinPage() {
               </div>
 
               <div className="text-center p-6">
-                <div className="w-16 h-16 bg-gold-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-brand-yellow rounded-full flex items-center justify-center mx-auto mb-6">
                   <svg className="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
+                <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">
                   Private Parties
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
@@ -280,14 +280,14 @@ export default function CocktailTableRentalsAustinPage() {
         {/* FAQ Section */}
         <section className="py-24 px-8 bg-gray-50">
           <div className="max-w-4xl mx-auto">
-            <h2 className="font-serif text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
+            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
               FREQUENTLY ASKED QUESTIONS
             </h2>
 
             <div className="space-y-6">
               {faqs.map((faq, index) => (
                 <div key={index} className="bg-white rounded-lg p-6 border border-gray-200">
-                  <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+                  <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.05em]">
                     {faq.question}
                   </h3>
                   <p className="text-gray-600 leading-relaxed">
@@ -302,7 +302,7 @@ export default function CocktailTableRentalsAustinPage() {
         {/* CTA Section */}
         <section className="py-24 px-8 bg-gray-900 text-white">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="font-serif text-4xl md:text-5xl mb-6 tracking-[0.15em]">
+            <h2 className="font-heading text-4xl md:text-5xl mb-6 tracking-[0.15em]">
               RENT TABLES FOR YOUR EVENT
             </h2>
             <p className="text-xl text-gray-300 mb-12">
@@ -310,12 +310,12 @@ export default function CocktailTableRentalsAustinPage() {
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link href="/contact">
-                <button className="px-10 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
                   REQUEST QUOTE
                 </button>
               </Link>
               <Link href="/rentals">
-                <button className="px-10 py-4 border-2 border-gold-600 text-white hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+                <button className="px-10 py-4 border-2 border-brand-yellow text-white hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
                   VIEW ALL RENTALS
                 </button>
               </Link>

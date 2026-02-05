@@ -279,7 +279,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                         onClick={() => setSelectedImageIndex(index)}
                         className={`flex-shrink-0 w-20 h-20 border-2 transition-all duration-200 ${
                           selectedImageIndex === index
-                            ? 'border-gold-600 ring-2 ring-gold-600 ring-offset-2'
+                            ? 'border-brand-yellow ring-2 ring-brand-yellow ring-offset-2'
                             : 'border-gray-200 hover:border-gray-400'
                         }`}
                       >
@@ -304,7 +304,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
               <div className="w-full md:w-1/2 lg:w-2/5 p-8 overflow-y-auto">
                 {/* Title - Clickable to product page */}
                 <Link href={`/products/${displayProduct?.handle || product.handle}`}>
-                  <h2 className="font-serif text-3xl text-gray-900 mb-4 tracking-[0.05em] hover:text-gold-600 transition-colors cursor-pointer">
+                  <h2 className="font-heading text-3xl text-gray-900 mb-4 tracking-[0.05em] hover:text-brand-yellow transition-colors cursor-pointer">
                     {displayProduct?.title || product.title}
                   </h2>
                 </Link>
@@ -368,7 +368,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                   disabled={!variant?.availableForSale || isAdding || cartLoading}
                   className={`w-full py-3 transition-colors duration-300 text-sm tracking-[0.15em] ${
                     variant?.availableForSale && !isAdding && !cartLoading
-                      ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
+                      ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
                       : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                   }`}
                 >

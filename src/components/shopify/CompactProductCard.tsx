@@ -80,7 +80,7 @@ export default function CompactProductCard({ product, index = 0, onProductClick 
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="bg-white border border-gray-200 hover:border-gold-600 transition-all duration-200 overflow-hidden h-full flex flex-col">
+      <div className="bg-white border border-gray-200 hover:border-brand-yellow transition-all duration-200 overflow-hidden h-full flex flex-col">
         {/* Compact Image - Square aspect ratio */}
         <div 
           onClick={() => onProductClick?.(product)}
@@ -128,7 +128,7 @@ export default function CompactProductCard({ product, index = 0, onProductClick 
           {/* Title - Smaller and truncated */}
           <h3
             onClick={() => onProductClick?.(product)}
-            className="font-serif text-sm text-gray-900 mb-1 line-clamp-2 hover:text-gold-600 transition-colors cursor-pointer">
+            className="font-heading text-sm text-gray-900 mb-1 line-clamp-2 hover:text-brand-yellow transition-colors cursor-pointer">
             {product.title}
           </h3>
 
@@ -172,7 +172,7 @@ export default function CompactProductCard({ product, index = 0, onProductClick 
                 disabled={!variant?.availableForSale || isAdding || cartLoading}
                 className={`flex-1 py-1.5 px-3 text-xs font-medium tracking-wider transition-colors ${
                   variant?.availableForSale && !isAdding && !cartLoading
-                    ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
+                    ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                 }`}
               >
@@ -185,7 +185,7 @@ export default function CompactProductCard({ product, index = 0, onProductClick 
               disabled={!variant?.availableForSale || isAdding || cartLoading}
               className={`w-full py-1.5 text-xs font-medium tracking-wider transition-colors ${
                 variant?.availableForSale && !isAdding && !cartLoading
-                  ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
+                  ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
                   : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
             >

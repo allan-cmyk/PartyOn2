@@ -39,29 +39,29 @@ export default function AgeVerificationModal({ isOpen, onClose, onVerify }: AgeV
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ type: "spring", duration: 0.5 }}
-            className="bg-white max-w-md w-full mx-4 border border-gold-600/20 shadow-2xl"
+            className="bg-white max-w-md w-full mx-4 border border-brand-yellow/20 shadow-2xl"
           >
             {/* Elegant Header */}
             <div className="bg-gradient-to-b from-gray-50 to-white px-12 pt-12 pb-8">
               <div className="text-center">
-                <div className="font-serif text-5xl text-gray-900 tracking-[0.25em] mb-2" aria-label="Party On Delivery">
+                <div className="font-heading text-5xl text-gray-900 tracking-[0.25em] mb-2" aria-label="Party On Delivery">
                   PARTYON
                 </div>
-                <div className="w-20 h-px bg-gold-600 mx-auto"></div>
+                <div className="w-20 h-px bg-brand-yellow mx-auto"></div>
               </div>
             </div>
 
             {/* Content */}
             <div className="px-12 pb-12">
               <div className="text-center mb-10">
-                <div className="w-20 h-20 mx-auto mb-6 bg-gold-50 rounded-full flex items-center justify-center">
-                  <svg className="w-10 h-10 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-20 h-20 mx-auto mb-6 bg-yellow-50 rounded-full flex items-center justify-center">
+                  <svg className="w-10 h-10 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" 
                       d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
                 </div>
                 
-                <h2 className="font-serif text-2xl text-gray-900 tracking-[0.1em] mb-4">
+                <h2 className="font-heading text-2xl text-gray-900 tracking-[0.1em] mb-4">
                   Age Verification
                 </h2>
                 
@@ -83,7 +83,7 @@ export default function AgeVerificationModal({ isOpen, onClose, onVerify }: AgeV
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleYes}
-                  className="py-4 bg-gold-600 text-gray-900 font-medium tracking-[0.15em] text-sm hover:bg-gold-700 transition-colors"
+                  className="py-4 bg-brand-yellow text-gray-900 font-medium tracking-[0.15em] text-sm hover:bg-yellow-600 transition-colors"
                 >
                   YES, I AM 21+
                 </motion.button>
@@ -101,15 +101,15 @@ export default function AgeVerificationModal({ isOpen, onClose, onVerify }: AgeV
               {/* Legal Text */}
               <p className="mt-8 text-xs text-gray-500 text-center leading-relaxed px-4">
                 By entering this site, you agree to our{' '}
-                <Link href="/terms" className="underline hover:text-gold-600">Terms of Service</Link>
+                <Link href="/terms" className="underline hover:text-brand-yellow">Terms of Service</Link>
                 {' '}and{' '}
-                <Link href="/privacy" className="underline hover:text-gold-600">Privacy Policy</Link>,
+                <Link href="/privacy" className="underline hover:text-brand-yellow">Privacy Policy</Link>,
                 and confirm that you are of legal drinking age in your jurisdiction.
               </p>
             </div>
 
             {/* Decorative Bottom Border */}
-            <div className="h-1 bg-gradient-to-r from-gold-500 via-gold-600 to-gold-500"></div>
+            <div className="h-1 bg-gradient-to-r from-yellow-500 via-brand-yellow to-yellow-500"></div>
           </motion.div>
         </motion.div>
       )}

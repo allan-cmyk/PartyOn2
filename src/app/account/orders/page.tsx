@@ -45,7 +45,7 @@ export default function OrderHistoryPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 pt-24">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gold-600"></div>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand-yellow"></div>
           <p className="mt-4 text-gray-600">Loading your orders...</p>
         </div>
       </div>
@@ -65,7 +65,7 @@ export default function OrderHistoryPage() {
           <p className="text-gray-600 mb-8">Please sign in to view your order history</p>
           <button
             onClick={() => setIsAuthOpen(true)}
-            className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em]"
+            className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em]"
           >
             SIGN IN TO CONTINUE
           </button>
@@ -90,7 +90,7 @@ export default function OrderHistoryPage() {
             <p className="text-gray-600 mb-6">Start shopping to see your orders appear here</p>
             <Link 
               href="/products"
-              className="inline-block px-8 py-3 bg-gold-600 text-gray-900 text-sm tracking-[0.1em] hover:bg-gold-700 transition-colors rounded"
+              className="inline-block px-8 py-3 bg-brand-yellow text-gray-900 text-sm tracking-[0.1em] hover:bg-yellow-600 transition-colors rounded"
             >
               BROWSE PRODUCTS
             </Link>
@@ -193,7 +193,7 @@ export default function OrderHistoryPage() {
                   <div className="flex flex-wrap gap-4 pt-4 border-t border-gray-100">
                     <Link 
                       href={`/account/orders/${order.id.split('/').pop()}`}
-                      className="inline-flex items-center space-x-2 text-gold-600 hover:text-gold-700 text-sm tracking-[0.1em]"
+                      className="inline-flex items-center space-x-2 text-brand-yellow hover:text-yellow-600 text-sm tracking-[0.1em]"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -206,7 +206,7 @@ export default function OrderHistoryPage() {
                         href={order.statusUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center space-x-2 text-gold-600 hover:text-gold-700 text-sm tracking-[0.1em]"
+                        className="inline-flex items-center space-x-2 text-brand-yellow hover:text-yellow-600 text-sm tracking-[0.1em]"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />

@@ -157,7 +157,7 @@ export default function GroupOrderDashboard() {
   if (!currentGroupOrder) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-yellow"></div>
       </div>
     )
   }
@@ -177,7 +177,7 @@ export default function GroupOrderDashboard() {
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
               <div>
                 <div className="flex items-center gap-4 mb-3">
-                  <h1 className="text-3xl md:text-4xl lg:text-5xl font-candal text-gray-900">
+                  <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading text-gray-900">
                     {currentGroupOrder.name}
                   </h1>
                   {/* Status Badge */}
@@ -202,7 +202,7 @@ export default function GroupOrderDashboard() {
                 </div>
                 <button
                   onClick={() => setShowShareModal(true)}
-                  className="px-5 py-2.5 border-2 border-gold-600 text-gray-900 hover:bg-gold-50 transition-colors tracking-[0.1em] text-base font-bold"
+                  className="px-5 py-2.5 border-2 border-brand-yellow text-gray-900 hover:bg-yellow-50 transition-colors tracking-[0.1em] text-base font-bold"
                 >
                   SHARE
                 </button>
@@ -218,7 +218,7 @@ export default function GroupOrderDashboard() {
                 {isGroupActive && !currentGroupOrder.multiPaymentEnabled && currentGroupOrder.participants.length > 0 && (
                   <button
                     onClick={() => setShowEnableMultiPaymentModal(true)}
-                    className="px-5 py-2.5 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-base font-bold"
+                    className="px-5 py-2.5 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-base font-bold"
                   >
                     ENABLE SPLIT PAY
                   </button>
@@ -257,28 +257,28 @@ export default function GroupOrderDashboard() {
 
           {/* Checkout Progress Summary */}
           <div className="bg-white rounded-lg shadow-sm p-6 md:p-8 mb-6">
-            <h2 className="text-2xl md:text-3xl font-candal text-gray-900 mb-6">Checkout Progress</h2>
+            <h2 className="text-2xl md:text-3xl font-heading text-gray-900 mb-6">Checkout Progress</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-              <div className="text-center p-4 bg-gold-50 rounded-lg">
-                <p className="text-4xl md:text-5xl font-candal text-gold-600">
+              <div className="text-center p-4 bg-yellow-50 rounded-lg">
+                <p className="text-4xl md:text-5xl font-heading text-brand-yellow">
                   {currentGroupOrder.participants.length}
                 </p>
                 <p className="text-base text-gray-700 tracking-[0.1em] font-semibold mt-2">PARTICIPANTS</p>
               </div>
               <div className="text-center p-4 bg-green-50 rounded-lg">
-                <p className="text-4xl md:text-5xl font-candal text-green-600">
+                <p className="text-4xl md:text-5xl font-heading text-green-600">
                   {checkedOutCount}
                 </p>
                 <p className="text-base text-gray-700 tracking-[0.1em] font-semibold mt-2">CHECKED OUT</p>
               </div>
               <div className="text-center p-4 bg-yellow-50 rounded-lg">
-                <p className="text-4xl md:text-5xl font-candal text-yellow-600">
+                <p className="text-4xl md:text-5xl font-heading text-yellow-600">
                   {shoppingCount}
                 </p>
                 <p className="text-base text-gray-700 tracking-[0.1em] font-semibold mt-2">STILL SHOPPING</p>
               </div>
-              <div className="text-center p-4 bg-gold-50 rounded-lg">
-                <p className="text-4xl md:text-5xl font-candal text-gold-600">
+              <div className="text-center p-4 bg-yellow-50 rounded-lg">
+                <p className="text-4xl md:text-5xl font-heading text-brand-yellow">
                   {totalItems}
                 </p>
                 <p className="text-base text-gray-700 tracking-[0.1em] font-semibold mt-2">TOTAL ITEMS</p>
@@ -320,14 +320,14 @@ export default function GroupOrderDashboard() {
 
           {/* Participants List */}
           <div className="bg-white rounded-lg shadow-sm p-6 md:p-8">
-            <h2 className="text-2xl md:text-3xl font-candal text-gray-900 mb-6">Participants</h2>
+            <h2 className="text-2xl md:text-3xl font-heading text-gray-900 mb-6">Participants</h2>
 
             {currentGroupOrder.participants.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-lg text-gray-500 mb-6">No participants yet. Share the group order to get started!</p>
                 <button
                   onClick={() => setShowShareModal(true)}
-                  className="bg-gold-600 text-gray-900 px-8 py-3 hover:bg-gold-700 transition-colors tracking-[0.1em] text-lg font-bold"
+                  className="bg-brand-yellow text-gray-900 px-8 py-3 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-lg font-bold"
                 >
                   SHARE ORDER
                 </button>
@@ -341,8 +341,8 @@ export default function GroupOrderDashboard() {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 bg-gold-100 rounded-full flex items-center justify-center flex-shrink-0">
-                          <svg className="w-7 h-7 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="w-14 h-14 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+                          <svg className="w-7 h-7 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                           </svg>
                         </div>
@@ -352,7 +352,7 @@ export default function GroupOrderDashboard() {
                               {participant.guestName || 'Anonymous Guest'}
                             </p>
                             {participant.cartId === cart?.id && (
-                              <span className="text-sm bg-gold-100 text-gold-700 px-3 py-1 rounded font-semibold">YOU</span>
+                              <span className="text-sm bg-yellow-100 text-yellow-600 px-3 py-1 rounded font-semibold">YOU</span>
                             )}
                           </div>
                           <p className="text-base text-gray-500">
@@ -407,12 +407,12 @@ export default function GroupOrderDashboard() {
           {/* Actions */}
           <div className="mt-8 flex flex-wrap gap-4 justify-center">
             <Link href="/products">
-              <button className="px-8 py-4 border-2 border-gray-300 hover:border-gold-600 transition-colors tracking-[0.1em] text-lg font-bold">
+              <button className="px-8 py-4 border-2 border-gray-300 hover:border-brand-yellow transition-colors tracking-[0.1em] text-lg font-bold">
                 ADD YOUR ITEMS
               </button>
             </Link>
             <Link href={`/group/${currentGroupOrder.shareCode}`}>
-              <button className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-lg font-bold">
+              <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-lg font-bold">
                 VIEW GROUP PAGE
               </button>
             </Link>

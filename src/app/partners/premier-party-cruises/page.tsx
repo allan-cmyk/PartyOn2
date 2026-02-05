@@ -128,7 +128,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
             <p className="text-gray-500 tracking-[0.2em] uppercase text-sm mb-2">
               See the Experience
             </p>
-            <h2 className="font-serif text-2xl md:text-3xl text-gray-900 tracking-wide">
+            <h2 className="font-heading text-2xl md:text-3xl text-gray-900 tracking-wide">
               What a Boat Day Looks Like
             </h2>
           </div>
@@ -152,7 +152,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
               <p className="text-gray-500 tracking-[0.2em] uppercase text-base mb-2 text-center">
                 Boat Day = Handled
               </p>
-              <h3 className="font-serif text-2xl md:text-3xl text-gray-900 tracking-wide mb-6 text-center">
+              <h3 className="font-heading text-2xl md:text-3xl text-gray-900 tracking-wide mb-6 text-center">
                 Every Order Includes
               </h3>
               <div className="space-y-4 flex-grow">
@@ -177,8 +177,8 @@ function PremierPartyCruisesPageContent(): ReactElement {
                 ))}
               </div>
               <div className="mt-auto pt-4 border-t border-gray-300 flex justify-between items-center">
-                <span className="font-serif text-lg text-gray-900">Total Value</span>
-                <span className="font-serif text-xl text-gray-900 font-semibold">$75+ FREE</span>
+                <span className="font-heading text-lg text-gray-900">Total Value</span>
+                <span className="font-heading text-xl text-gray-900 font-semibold">$75+ FREE</span>
               </div>
             </div>
           </div>
@@ -223,7 +223,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
               {/* Group Order Button */}
               <Link
                 href="/group-v2/create"
-                className="w-full md:flex-1 flex items-center justify-center gap-3 py-4 px-6 bg-gold-500 hover:bg-gold-400 text-gray-900 font-semibold tracking-wide transition-all rounded-xl shadow-sm hover:shadow-md"
+                className="w-full md:flex-1 flex items-center justify-center gap-3 py-4 px-6 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-semibold tracking-wide transition-all rounded-xl shadow-sm hover:shadow-md"
               >
                 <span>Start a Group Order</span>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -307,7 +307,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
               <p className="text-red-500">Failed to load products. Please try again.</p>
               <button
                 onClick={() => window.location.reload()}
-                className="mt-4 px-4 py-2 bg-gold-600 text-gray-900 rounded-lg hover:bg-gold-700"
+                className="mt-4 px-4 py-2 bg-brand-yellow text-gray-900 rounded-lg hover:bg-yellow-600"
               >
                 Retry
               </button>
@@ -341,7 +341,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
         <div className="relative max-w-7xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            <h2 className="font-serif text-4xl md:text-6xl text-white tracking-wide mb-4">
+            <h2 className="font-heading text-4xl md:text-6xl text-white tracking-wide mb-4">
               Special Offer for Premier Customers
             </h2>
             <p className="text-gray-300 text-xl md:text-2xl max-w-2xl mx-auto">
@@ -353,7 +353,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* LEFT: Value Stack Tile */}
             <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8 md:p-10">
-              <h3 className="font-serif text-2xl md:text-3xl text-white mb-8">What You Get</h3>
+              <h3 className="font-heading text-2xl md:text-3xl text-white mb-8">What You Get</h3>
               <div className="space-y-5">
                 {SPECIAL_PERKS.map((perk) => (
                   <div
@@ -366,19 +366,19 @@ function PremierPartyCruisesPageContent(): ReactElement {
                       </svg>
                       {perk.title}
                     </span>
-                    <span className="text-gold-400 font-semibold text-lg md:text-xl">{perk.value}</span>
+                    <span className="text-brand-yellow font-semibold text-lg md:text-xl">{perk.value}</span>
                   </div>
                 ))}
               </div>
               <div className="mt-8 pt-6 border-t border-white/20 flex justify-between items-center">
-                <span className="text-white font-serif text-xl md:text-2xl">Total Value</span>
-                <span className="text-gold-400 font-bold text-3xl md:text-4xl">$110+ FREE</span>
+                <span className="text-white font-heading text-xl md:text-2xl">Total Value</span>
+                <span className="text-brand-yellow font-bold text-3xl md:text-4xl">$110+ FREE</span>
               </div>
             </div>
 
             {/* RIGHT: Welcome Package Carousel Tile */}
             <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8 md:p-10">
-              <h3 className="font-serif text-2xl md:text-3xl text-white mb-6">Choose Your FREE Welcome Package</h3>
+              <h3 className="font-heading text-2xl md:text-3xl text-white mb-6">Choose Your FREE Welcome Package</h3>
 
               {/* Carousel with scroll indicator */}
               <div className="relative">
@@ -415,7 +415,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">
                   <div className="bg-gradient-to-l from-gray-900/80 via-gray-900/50 to-transparent pl-8 pr-2 py-8">
                     <svg
-                      className="w-8 h-8 text-gold-400 animate-bounce-horizontal"
+                      className="w-8 h-8 text-brand-yellow animate-bounce-horizontal"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -434,7 +434,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
               <div className="mt-6 text-center">
                 <Link
                   href="/group-v2/create"
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-gold-500 hover:bg-gold-400 text-gray-900 font-semibold tracking-wide transition-all rounded-xl shadow-lg hover:shadow-xl"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-semibold tracking-wide transition-all rounded-xl shadow-lg hover:shadow-xl"
                 >
                   <span>Start My Group Order</span>
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -454,7 +454,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
             <p className="text-gray-500 tracking-[0.2em] uppercase text-sm mb-3">
               Real Reviews
             </p>
-            <h2 className="font-serif text-3xl md:text-4xl text-gray-900 tracking-wide">
+            <h2 className="font-heading text-3xl md:text-4xl text-gray-900 tracking-wide">
               What Boat Party Hosts Say
             </h2>
           </div>
@@ -464,7 +464,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
               <div key={idx} className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                 <div className="flex gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-gold-500" fill="currentColor" viewBox="0 0 20 20">
+                    <svg key={i} className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   ))}
@@ -509,7 +509,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
                 />
               </div>
 
-              <h2 className="font-serif text-3xl md:text-4xl text-white tracking-wide mb-6 text-center">
+              <h2 className="font-heading text-3xl md:text-4xl text-white tracking-wide mb-6 text-center">
                 Austin-Born. Fully Licensed. Always On Time.
               </h2>
 
@@ -517,7 +517,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
               <p className="text-gray-300 text-lg md:text-xl leading-relaxed text-center">
                 Howdy! We&apos;re Allan and Brian, owners of Party On Delivery. Austin natives with 15+ years in events and hospitality, we built this business around one thing: taking care of people. We pride ourselves on clear communication, on-time delivery, and showing people the best of our great city. Our goal is simple - make your weekend easy, safe, and fun.
               </p>
-              <p className="text-gold-400 text-xl md:text-2xl font-serif mt-6 text-center tracking-wide">
+              <p className="text-brand-yellow text-xl md:text-2xl font-heading mt-6 text-center tracking-wide">
                 PARTY ON Y&apos;ALL
               </p>
             </div>
@@ -526,9 +526,9 @@ function PremierPartyCruisesPageContent(): ReactElement {
       </section>
 
       {/* FINAL CTA */}
-      <section className="py-16 px-6 md:px-12 bg-gradient-to-br from-gold-500 to-gold-600">
+      <section className="py-16 px-6 md:px-12 bg-gradient-to-br from-yellow-500 to-brand-yellow">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-wide">
+          <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4 tracking-wide">
             Ready for the Lake?
           </h2>
           <p className="text-gray-800 text-lg mb-8 max-w-2xl mx-auto">

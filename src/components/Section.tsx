@@ -15,9 +15,9 @@ export default function Section({
 }: SectionProps) {
   const backgrounds = {
     white: 'bg-white',
-    neutral: 'bg-neutral-50',
+    neutral: 'bg-gray-50',
     gradient: 'bg-gradient-to-br from-austin-sunset/10 to-austin-lake/10',
-    dark: 'bg-navy-900 text-white'
+    dark: 'bg-gray-900 text-white'
   }
 
   const paddings = {

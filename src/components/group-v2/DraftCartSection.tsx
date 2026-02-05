@@ -37,7 +37,7 @@ export default function DraftCartSection({
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h3 className="font-candal text-2xl md:text-3xl text-gray-900 uppercase tracking-wide">
+        <h3 className="font-heading text-2xl md:text-3xl text-gray-900 uppercase tracking-wide">
           Draft Cart
           <span className="ml-3 text-lg font-normal font-sans text-gray-500">({items.length} items)</span>
         </h3>

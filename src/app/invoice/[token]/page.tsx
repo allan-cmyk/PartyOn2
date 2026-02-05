@@ -76,7 +76,7 @@ export default function InvoicePage(): ReactElement {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-yellow"></div>
       </div>
     );
   }
@@ -263,7 +263,7 @@ export default function InvoicePage(): ReactElement {
               <button
                 onClick={handlePayNow}
                 disabled={paymentLoading}
-                className="w-full py-4 bg-gold-600 hover:bg-gold-700 text-gray-900 font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full py-4 bg-brand-yellow hover:bg-yellow-600 text-gray-900 font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {paymentLoading ? (
                   <>

@@ -39,7 +39,7 @@ export default function LuxuryGoyardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className={`${crimson.variable} ${inter.variable} font-serif`}>
+    <div className={`${crimson.variable} ${inter.variable} font-heading`}>
       <LuxuryNavigation variant="centered" />
       {children}
     </div>

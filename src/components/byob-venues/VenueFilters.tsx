@@ -57,17 +57,17 @@ export default function VenueFilters({
                 placeholder="Search venues..."
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-400 focus:border-gold-400 outline-none transition-colors"
+                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-yellow focus:border-brand-yellow outline-none transition-colors"
               />
             </div>
 
             {/* Partner Toggle */}
-            <label className="flex items-center gap-3 px-4 py-2 bg-gold-50 rounded-lg cursor-pointer hover:bg-gold-100 transition-colors">
+            <label className="flex items-center gap-3 px-4 py-2 bg-yellow-50 rounded-lg cursor-pointer hover:bg-yellow-100 transition-colors">
               <input
                 type="checkbox"
                 checked={showPartnersOnly}
                 onChange={(e) => onPartnersOnlyChange(e.target.checked)}
-                className="w-4 h-4 text-gold-600 border-gray-300 rounded focus:ring-gold-500"
+                className="w-4 h-4 text-brand-yellow border-gray-300 rounded focus:ring-yellow-500"
               />
               <span className="text-sm font-medium text-gray-700 whitespace-nowrap">
                 Free Delivery Only
@@ -112,7 +112,7 @@ export default function VenueFilters({
               onClick={() => onCategoryChange('all')}
               className={`px-4 py-2 text-sm whitespace-nowrap rounded-t-lg transition-colors ${
                 activeCategory === 'all'
-                  ? 'bg-gold-100 text-gold-800 font-medium border-b-2 border-gold-500'
+                  ? 'bg-yellow-100 text-yellow-700 font-medium border-b-2 border-yellow-500'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
               }`}
             >
@@ -124,7 +124,7 @@ export default function VenueFilters({
                 onClick={() => onCategoryChange(cat.id)}
                 className={`px-4 py-2 text-sm whitespace-nowrap rounded-t-lg transition-colors ${
                   activeCategory === cat.id
-                    ? 'bg-gold-100 text-gold-800 font-medium border-b-2 border-gold-500'
+                    ? 'bg-yellow-100 text-yellow-700 font-medium border-b-2 border-yellow-500'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                 }`}
               >

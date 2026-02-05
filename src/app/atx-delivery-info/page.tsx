@@ -74,10 +74,10 @@ export default function AustinAlcoholDeliveryPage() {
           />
 
           <div className="relative z-20 text-center px-4 md:px-8 max-w-5xl mx-auto">
-            <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl text-white mb-6 tracking-[0.15em] scroll-reveal">
+            <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl text-white mb-6 tracking-[0.15em] scroll-reveal">
               AUSTIN ALCOHOL DELIVERY
             </h1>
-            <h2 className="font-serif text-2xl md:text-3xl text-gold-400 mb-8 tracking-[0.1em] scroll-reveal">
+            <h2 className="font-heading text-2xl md:text-3xl text-brand-yellow mb-8 tracking-[0.1em] scroll-reveal">
               Weddings • Events • Parties
             </h2>
             <p className="text-lg md:text-xl text-white/90 mb-10 max-w-3xl mx-auto leading-relaxed scroll-reveal">
@@ -87,7 +87,7 @@ export default function AustinAlcoholDeliveryPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center scroll-reveal">
               <Link
                 href="/products"
-                className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium rounded"
+                className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm font-medium rounded"
               >
                 SHOP NOW
               </Link>
@@ -115,7 +115,7 @@ export default function AustinAlcoholDeliveryPage() {
         {/* Delivery Areas Section */}
         <section className="py-16 md:py-24 px-4 md:px-8 bg-gray-50">
           <div className="max-w-7xl mx-auto">
-            <h2 className="font-serif text-3xl md:text-5xl text-center text-gray-900 mb-4 tracking-[0.15em] scroll-reveal">
+            <h2 className="font-heading text-3xl md:text-5xl text-center text-gray-900 mb-4 tracking-[0.15em] scroll-reveal">
               WE DELIVER THROUGHOUT AUSTIN
             </h2>
             <p className="text-center text-gray-600 mb-16 max-w-2xl mx-auto scroll-reveal">
@@ -128,7 +128,7 @@ export default function AustinAlcoholDeliveryPage() {
                   title: 'Downtown Austin',
                   description: 'Fast delivery to downtown apartments, condos, hotels, and event venues. Perfect for corporate events, weddings, and celebrations.',
                   icon: (
-                    <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
                   )
@@ -137,7 +137,7 @@ export default function AustinAlcoholDeliveryPage() {
                   title: 'South Austin',
                   description: 'Serving South Lamar, South Congress, Zilker, Barton Hills, and surrounding neighborhoods. Ideal for backyard parties and events.',
                   icon: (
-                    <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
                   )
@@ -146,7 +146,7 @@ export default function AustinAlcoholDeliveryPage() {
                   title: 'East Austin',
                   description: 'Delivery to East Austin neighborhoods, wedding venues, and event spaces. Supporting local celebrations and gatherings.',
                   icon: (
-                    <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                   )
@@ -155,7 +155,7 @@ export default function AustinAlcoholDeliveryPage() {
                   title: 'Lake Travis Area',
                   description: 'Delivering to lake houses, vacation rentals, boat docks, and lakeside venues. Perfect for weekend getaways, boat parties, and lakeside weddings.',
                   icon: (
-                    <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
                     </svg>
                   )
@@ -164,7 +164,7 @@ export default function AustinAlcoholDeliveryPage() {
                   title: 'North Austin',
                   description: 'Serving Round Rock, Cedar Park, Pflugerville, and North Austin. Corporate events, weddings, and party delivery.',
                   icon: (
-                    <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
                   )
@@ -173,7 +173,7 @@ export default function AustinAlcoholDeliveryPage() {
                   title: 'West Austin',
                   description: 'Delivery to West Austin, Westlake, and surrounding areas. Supporting upscale events and celebrations.',
                   icon: (
-                    <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                     </svg>
                   )
@@ -182,7 +182,7 @@ export default function AustinAlcoholDeliveryPage() {
                 <LuxuryCard key={index} index={index}>
                   <div className="p-6">
                     <div className="mb-4">{area.icon}</div>
-                    <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.1em]">
+                    <h3 className="font-heading text-2xl text-gray-900 mb-3 tracking-[0.1em]">
                       {area.title}
                     </h3>
                     <p className="text-gray-600 leading-relaxed">
@@ -198,7 +198,7 @@ export default function AustinAlcoholDeliveryPage() {
         {/* What We Deliver Section */}
         <section className="py-16 md:py-24 px-4 md:px-8">
           <div className="max-w-7xl mx-auto">
-            <h2 className="font-serif text-3xl md:text-5xl text-center text-gray-900 mb-16 tracking-[0.15em] scroll-reveal">
+            <h2 className="font-heading text-3xl md:text-5xl text-center text-gray-900 mb-16 tracking-[0.15em] scroll-reveal">
               WHAT WE DELIVER
             </h2>
 
@@ -248,13 +248,13 @@ export default function AustinAlcoholDeliveryPage() {
               ].map((category, index) => (
                 <LuxuryCard key={index} index={index}>
                   <div className="p-6">
-                    <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
+                    <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">
                       {category.title}
                     </h3>
                     <ul className="space-y-2">
                       {category.items.map((item, i) => (
                         <li key={i} className="text-gray-600 flex items-start">
-                          <svg className="w-5 h-5 text-gold-600 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <svg className="w-5 h-5 text-brand-yellow mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                           </svg>
                           {item}
@@ -271,7 +271,7 @@ export default function AustinAlcoholDeliveryPage() {
         {/* Event Types Section */}
         <section className="py-16 md:py-24 px-4 md:px-8 bg-gray-50">
           <div className="max-w-7xl mx-auto">
-            <h2 className="font-serif text-3xl md:text-5xl text-center text-gray-900 mb-4 tracking-[0.15em] scroll-reveal">
+            <h2 className="font-heading text-3xl md:text-5xl text-center text-gray-900 mb-4 tracking-[0.15em] scroll-reveal">
               PERFECT FOR YOUR AUSTIN EVENT
             </h2>
             <p className="text-center text-gray-600 mb-16 max-w-2xl mx-auto scroll-reveal">
@@ -307,7 +307,7 @@ export default function AustinAlcoholDeliveryPage() {
               ].map((event, index) => (
                 <LuxuryCard key={index} index={index}>
                   <div className="p-8">
-                    <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
+                    <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">
                       {event.title}
                     </h3>
                     <p className="text-gray-600 leading-relaxed mb-6">
@@ -315,7 +315,7 @@ export default function AustinAlcoholDeliveryPage() {
                     </p>
                     <Link
                       href={event.link}
-                      className="inline-flex items-center text-gold-600 hover:text-gold-700 font-medium tracking-[0.1em]"
+                      className="inline-flex items-center text-brand-yellow hover:text-yellow-600 font-medium tracking-[0.1em]"
                     >
                       {event.linkText}
                       <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -332,7 +332,7 @@ export default function AustinAlcoholDeliveryPage() {
         {/* How It Works Section */}
         <section className="py-16 md:py-24 px-4 md:px-8">
           <div className="max-w-7xl mx-auto">
-            <h2 className="font-serif text-3xl md:text-5xl text-center text-gray-900 mb-16 tracking-[0.15em] scroll-reveal">
+            <h2 className="font-heading text-3xl md:text-5xl text-center text-gray-900 mb-16 tracking-[0.15em] scroll-reveal">
               HOW IT WORKS
             </h2>
 
@@ -355,10 +355,10 @@ export default function AustinAlcoholDeliveryPage() {
                 }
               ].map((step, index) => (
                 <div key={index} className="text-center scroll-reveal">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gold-600 text-gray-900 font-serif text-2xl mb-6">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-brand-yellow text-gray-900 font-heading text-2xl mb-6">
                     {step.number}
                   </div>
-                  <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
+                  <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">
                     {step.title}
                   </h3>
                   <p className="text-gray-600 leading-relaxed">
@@ -373,7 +373,7 @@ export default function AustinAlcoholDeliveryPage() {
         {/* FAQ Section */}
         <section className="py-16 md:py-24 px-4 md:px-8 bg-gray-50">
           <div className="max-w-4xl mx-auto">
-            <h2 className="font-serif text-3xl md:text-5xl text-center text-gray-900 mb-16 tracking-[0.15em] scroll-reveal">
+            <h2 className="font-heading text-3xl md:text-5xl text-center text-gray-900 mb-16 tracking-[0.15em] scroll-reveal">
               FREQUENTLY ASKED QUESTIONS
             </h2>
 
@@ -381,7 +381,7 @@ export default function AustinAlcoholDeliveryPage() {
               {faqs.map((faq, index) => (
                 <LuxuryCard key={index} index={index}>
                   <div className="p-6">
-                    <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+                    <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.05em]">
                       {faq.question}
                     </h3>
                     <p className="text-gray-600 leading-relaxed">
@@ -397,7 +397,7 @@ export default function AustinAlcoholDeliveryPage() {
         {/* CTA Section */}
         <section className="py-16 md:py-24 px-4 md:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="font-serif text-3xl md:text-5xl text-gray-900 mb-6 tracking-[0.15em] scroll-reveal">
+            <h2 className="font-heading text-3xl md:text-5xl text-gray-900 mb-6 tracking-[0.15em] scroll-reveal">
               READY TO ORDER FOR YOUR AUSTIN EVENT?
             </h2>
             <p className="text-lg text-gray-600 mb-10 scroll-reveal">
@@ -406,7 +406,7 @@ export default function AustinAlcoholDeliveryPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center scroll-reveal">
               <Link
                 href="/products"
-                className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium rounded"
+                className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm font-medium rounded"
               >
                 SHOP NOW
               </Link>

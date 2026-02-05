@@ -43,10 +43,10 @@ export default function BlogPage() {
       <section className="pt-32 pb-16 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-4xl mx-auto px-8 text-center">
           <div>
-            <h1 className="font-serif text-5xl md:text-6xl text-gray-900 mb-6 tracking-[0.15em]">
+            <h1 className="font-heading text-5xl md:text-6xl text-gray-900 mb-6 tracking-[0.15em]">
               THE BLOG
             </h1>
-            <div className="w-24 h-px bg-gold-500 mx-auto mb-8" />
+            <div className="w-24 h-px bg-yellow-500 mx-auto mb-8" />
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Expert tips, cocktail recipes, and event inspiration for your next Austin celebration
             </p>
@@ -63,7 +63,7 @@ export default function BlogPage() {
       {/* Footer CTA */}
       <section className="py-16 bg-gray-900 text-white text-center">
         <div className="max-w-4xl mx-auto px-8">
-          <h2 className="font-serif text-3xl mb-4 tracking-[0.1em]">
+          <h2 className="font-heading text-3xl mb-4 tracking-[0.1em]">
             READY TO PLAN YOUR EVENT?
           </h2>
           <p className="text-gray-300 mb-8">
@@ -71,7 +71,7 @@ export default function BlogPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/order">
-              <button className="px-8 py-3 bg-gold-500 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.15em]">
+              <button className="px-8 py-3 bg-yellow-500 text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.15em]">
                 ORDER NOW
               </button>
             </Link>

@@ -51,8 +51,8 @@ export default function ShareGroupOrder({ isOpen, onClose, shareCode, eventName 
             onClick={(e) => e.stopPropagation()}
           >
             <div className="text-center mb-6">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gold-500 bg-opacity-10 rounded-full mb-4">
-                <svg className="w-8 h-8 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-yellow-500 bg-opacity-10 rounded-full mb-4">
+                <svg className="w-8 h-8 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
                     d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m9.632 4.316C18.114 15.938 18 15.482 18 15c0-.482.114-.938.316-1.342m0 2.684a3 3 0 110-2.684M15 12a3 3 0 11-6 0 3 3 0 016 0zm6 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -69,7 +69,7 @@ export default function ShareGroupOrder({ isOpen, onClose, shareCode, eventName 
                   <span className="text-sm tracking-[0.1em] text-gray-600">SHARE CODE</span>
                   <button
                     onClick={() => copyToClipboard(shareCode, 'code')}
-                    className="text-sm text-gold-500 hover:text-gold-600 transition-colors"
+                    className="text-sm text-yellow-500 hover:text-brand-yellow transition-colors"
                   >
                     {copiedCode ? 'COPIED!' : 'COPY'}
                   </button>
@@ -82,7 +82,7 @@ export default function ShareGroupOrder({ isOpen, onClose, shareCode, eventName 
                   <span className="text-sm tracking-[0.1em] text-gray-600">SHARE LINK</span>
                   <button
                     onClick={() => copyToClipboard(shareUrl, 'link')}
-                    className="text-sm text-gold-500 hover:text-gold-600 transition-colors"
+                    className="text-sm text-yellow-500 hover:text-brand-yellow transition-colors"
                   >
                     {copiedLink ? 'COPIED!' : 'COPY'}
                   </button>

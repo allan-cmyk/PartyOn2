@@ -46,10 +46,10 @@ export default function KegSizeEducation() {
     <section className="py-16 md:py-24 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 md:px-8">
         <ScrollRevealCSS duration={800} y={20} className="text-center mb-10 md:mb-16">
-          <h2 className="font-serif font-light text-3xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+          <h2 className="font-heading font-light text-3xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
             Choose Your Keg Size
           </h2>
-          <div className="w-16 h-px bg-gold-600 mx-auto mb-4 md:mb-6" />
+          <div className="w-16 h-px bg-brand-yellow mx-auto mb-4 md:mb-6" />
           <p className="text-gray-600 text-base md:text-lg max-w-2xl mx-auto">
             Not sure how much beer you need? Here&apos;s a quick guide to help you
             pick the right keg size for your party.
@@ -62,10 +62,10 @@ export default function KegSizeEducation() {
             <table className="w-full">
               <thead className="bg-gray-900">
                 <tr>
-                  <th className="py-3 px-3 text-left text-sm font-semibold text-gold-400">Size</th>
-                  <th className="py-3 px-2 text-center text-sm font-semibold text-gold-400">Gallons</th>
-                  <th className="py-3 px-2 text-center text-sm font-semibold text-gold-400">Beers</th>
-                  <th className="py-3 px-3 text-right text-sm font-semibold text-gold-400">Best For</th>
+                  <th className="py-3 px-3 text-left text-sm font-semibold text-brand-yellow">Size</th>
+                  <th className="py-3 px-2 text-center text-sm font-semibold text-brand-yellow">Gallons</th>
+                  <th className="py-3 px-2 text-center text-sm font-semibold text-brand-yellow">Beers</th>
+                  <th className="py-3 px-3 text-right text-sm font-semibold text-brand-yellow">Best For</th>
                 </tr>
               </thead>
               <tbody>
@@ -80,7 +80,7 @@ export default function KegSizeEducation() {
                       <div className="text-base font-bold text-gray-900">{keg.name}</div>
                       <div className="text-xs text-gray-500">{keg.altName}</div>
                       {keg.popular && (
-                        <span className="inline-block mt-1 bg-gold-600 text-gray-900 px-1.5 py-0.5 rounded text-[10px] font-medium">
+                        <span className="inline-block mt-1 bg-brand-yellow text-gray-900 px-1.5 py-0.5 rounded text-[10px] font-medium">
                           POPULAR
                         </span>
                       )}
@@ -113,13 +113,13 @@ export default function KegSizeEducation() {
               <div
                 className={`relative bg-white rounded-lg p-8 shadow-lg border-2 transition-all duration-300 hover:shadow-xl ${
                   keg.popular
-                    ? 'border-gold-600'
-                    : 'border-gray-200 hover:border-gold-300'
+                    ? 'border-brand-yellow'
+                    : 'border-gray-200 hover:border-brand-yellow'
                 }`}
               >
                 {keg.popular && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-gold-600 text-gray-900 px-4 py-1 rounded-full text-xs font-medium tracking-[0.1em]">
+                    <span className="bg-brand-yellow text-gray-900 px-4 py-1 rounded-full text-xs font-medium tracking-[0.1em]">
                       MOST POPULAR
                     </span>
                   </div>
@@ -128,7 +128,7 @@ export default function KegSizeEducation() {
                 {/* Keg Icon */}
                 <div className="w-20 h-20 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
                   <svg
-                    className="w-10 h-10 text-gold-600"
+                    className="w-10 h-10 text-brand-yellow"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -142,7 +142,7 @@ export default function KegSizeEducation() {
                   </svg>
                 </div>
 
-                <h3 className="font-serif text-2xl text-gray-900 mb-1 tracking-[0.1em] text-center">
+                <h3 className="font-heading text-2xl text-gray-900 mb-1 tracking-[0.1em] text-center">
                   {keg.name}
                 </h3>
                 <p className="text-gray-500 text-sm text-center mb-6">
@@ -164,7 +164,7 @@ export default function KegSizeEducation() {
                   </div>
                   <div className="flex justify-between items-center py-2">
                     <span className="text-gray-600">Best For</span>
-                    <span className="font-medium text-gold-600">
+                    <span className="font-medium text-brand-yellow">
                       {keg.guestRange}
                     </span>
                   </div>

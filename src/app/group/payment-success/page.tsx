@@ -69,7 +69,7 @@ function PaymentSuccessContent(): React.ReactElement {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-500 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
           <p className="text-gray-600 tracking-[0.1em]">Loading payment details...</p>
         </div>
       </div>
@@ -162,15 +162,15 @@ function PaymentSuccessContent(): React.ReactElement {
                   <h3 className="font-medium mb-3">What happens next?</h3>
                   <ul className="space-y-2 text-sm text-gray-600">
                     <li className="flex items-start">
-                      <span className="w-5 h-5 bg-gold-100 text-gold-600 rounded-full flex items-center justify-center mr-2 flex-shrink-0 text-xs font-bold">1</span>
+                      <span className="w-5 h-5 bg-yellow-100 text-brand-yellow rounded-full flex items-center justify-center mr-2 flex-shrink-0 text-xs font-bold">1</span>
                       <span>You&apos;ll receive a confirmation email shortly</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="w-5 h-5 bg-gold-100 text-gold-600 rounded-full flex items-center justify-center mr-2 flex-shrink-0 text-xs font-bold">2</span>
+                      <span className="w-5 h-5 bg-yellow-100 text-brand-yellow rounded-full flex items-center justify-center mr-2 flex-shrink-0 text-xs font-bold">2</span>
                       <span>The host will finalize the group order</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="w-5 h-5 bg-gold-100 text-gold-600 rounded-full flex items-center justify-center mr-2 flex-shrink-0 text-xs font-bold">3</span>
+                      <span className="w-5 h-5 bg-yellow-100 text-brand-yellow rounded-full flex items-center justify-center mr-2 flex-shrink-0 text-xs font-bold">3</span>
                       <span>All items will be delivered together on the scheduled date</span>
                     </li>
                   </ul>
@@ -183,13 +183,13 @@ function PaymentSuccessContent(): React.ReactElement {
           <div className="flex flex-col sm:flex-row gap-3">
             {groupCode && (
               <Link href={`/group/${groupCode}`} className="flex-1">
-                <button className="w-full px-6 py-3 border border-gray-300 hover:border-gold-500 transition-colors tracking-[0.1em]">
+                <button className="w-full px-6 py-3 border border-gray-300 hover:border-yellow-500 transition-colors tracking-[0.1em]">
                   VIEW GROUP ORDER
                 </button>
               </Link>
             )}
             <Link href="/products" className="flex-1">
-              <button className="w-full px-6 py-3 bg-gold-500 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.1em]">
+              <button className="w-full px-6 py-3 bg-yellow-500 text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.1em]">
                 CONTINUE SHOPPING
               </button>
             </Link>
@@ -198,7 +198,7 @@ function PaymentSuccessContent(): React.ReactElement {
           {/* Support Info */}
           <p className="text-center text-sm text-gray-500 mt-6">
             Questions? Contact us at{' '}
-            <a href="mailto:support@partyondelivery.com" className="text-gold-600 hover:underline">
+            <a href="mailto:support@partyondelivery.com" className="text-brand-yellow hover:underline">
               support@partyondelivery.com
             </a>
           </p>
@@ -230,7 +230,7 @@ function LoadingFallback(): React.ReactElement {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-500 mx-auto mb-4"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
         <p className="text-gray-600 tracking-[0.1em]">Loading...</p>
       </div>
     </div>

@@ -57,8 +57,8 @@ export default function SpiritPicker({
   // Don't render for deluxe tier (gets all spirits automatically)
   if (tierConfig.spirits.pickCount === 'all') {
     return (
-      <div className="p-4 bg-gold-50 rounded-lg border border-gold-200">
-        <p className="text-sm text-gold-700 font-medium mb-2">
+      <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+        <p className="text-sm text-yellow-600 font-medium mb-2">
           Deluxe Bar includes all 5 premium spirits:
         </p>
         <div className="flex flex-wrap gap-2">
@@ -100,7 +100,7 @@ export default function SpiritPicker({
         <label className="block text-sm font-medium text-gray-700 tracking-[0.1em] uppercase">
           Choose Your Spirits
         </label>
-        <span className={`text-sm ${isAtLimit ? 'text-gold-600 font-medium' : 'text-gray-500'}`}>
+        <span className={`text-sm ${isAtLimit ? 'text-brand-yellow font-medium' : 'text-gray-500'}`}>
           {selectedSpirits.length} / {maxSelections} selected
         </span>
       </div>
@@ -119,7 +119,7 @@ export default function SpiritPicker({
               className={`
                 relative p-4 rounded-lg border-2 text-center transition-all duration-200
                 ${isSelected
-                  ? 'border-gold-600 bg-gold-50'
+                  ? 'border-brand-yellow bg-yellow-50'
                   : isDisabled
                     ? 'border-gray-100 bg-gray-50 opacity-50 cursor-not-allowed'
                     : 'border-gray-200 bg-white hover:border-gray-300'
@@ -129,7 +129,7 @@ export default function SpiritPicker({
               {/* Checkmark for selected */}
               {isSelected && (
                 <div className="absolute top-2 right-2">
-                  <svg className="w-5 h-5 text-gold-600" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-brand-yellow" fill="currentColor" viewBox="0 0 20 20">
                     <path
                       fillRule="evenodd"
                       d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -140,12 +140,12 @@ export default function SpiritPicker({
               )}
 
               {/* Icon */}
-              <div className={`mx-auto mb-2 ${isSelected ? 'text-gold-600' : 'text-gray-400'}`}>
+              <div className={`mx-auto mb-2 ${isSelected ? 'text-brand-yellow' : 'text-gray-400'}`}>
                 <SpiritIcon />
               </div>
 
               {/* Label */}
-              <div className={`font-medium text-sm ${isSelected ? 'text-gold-700' : 'text-gray-700'}`}>
+              <div className={`font-medium text-sm ${isSelected ? 'text-yellow-600' : 'text-gray-700'}`}>
                 {SPIRIT_LABELS[spirit]}
               </div>
 

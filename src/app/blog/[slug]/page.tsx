@@ -1075,7 +1075,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     day: 'numeric'
                   })}</span>
                 </div>
-                <h1 className="font-serif text-4xl md:text-6xl text-white mb-4 tracking-[0.1em]">
+                <h1 className="font-heading text-4xl md:text-6xl text-white mb-4 tracking-[0.1em]">
                   {mdxPost.title}
                 </h1>
                 <p className="text-xl text-white/90 max-w-3xl">
@@ -1108,7 +1108,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-serif text-2xl text-gray-900 mb-2">{mdxPost.author}</h3>
+                  <h3 className="font-heading text-2xl text-gray-900 mb-2">{mdxPost.author}</h3>
                   <p className="text-gray-600 mb-4">
                     {mdxPost.author === 'Allan Henslee'
                       ? 'Founder & CEO of Party On Delivery, helping Austin celebrate in style since 2023.'
@@ -1122,7 +1122,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
             {/* Social Sharing */}
             <div className="mt-12 pt-8 border-t border-gray-200">
-              <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">Share This Article</h3>
+              <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">Share This Article</h3>
               <ShareButtons title={mdxPost.title} slug={mdxPost.slug} />
             </div>
           </div>
@@ -1132,7 +1132,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <section className="py-12 bg-gray-900 text-white">
           <div className="max-w-4xl mx-auto px-8">
             <div className="text-center">
-              <h2 className="font-serif text-3xl mb-4 tracking-[0.1em]">
+              <h2 className="font-heading text-3xl mb-4 tracking-[0.1em]">
                 JOIN OUR INNER CIRCLE
               </h2>
               <p className="text-gray-300 mb-8">
@@ -1142,12 +1142,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 <input
                   type="email"
                   placeholder="Your email address"
-                  className="flex-1 px-4 py-3 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gold-500"
+                  className="flex-1 px-4 py-3 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   required
                 />
                 <button
                   type="submit"
-                  className="px-8 py-3 bg-gold-500 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.1em]"
+                  className="px-8 py-3 bg-yellow-500 text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.1em]"
                 >
                   SUBSCRIBE
                 </button>
@@ -1163,7 +1163,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <section className="py-16 bg-gray-900 text-white text-center">
           <div className="max-w-4xl mx-auto px-8">
             <div>
-              <h2 className="font-serif text-3xl mb-4 tracking-[0.1em]">
+              <h2 className="font-heading text-3xl mb-4 tracking-[0.1em]">
                 READY TO PLAN YOUR EVENT?
               </h2>
               <p className="text-gray-300 mb-8">
@@ -1171,7 +1171,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/order">
-                  <button className="px-8 py-3 bg-gold-500 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.15em]">
+                  <button className="px-8 py-3 bg-yellow-500 text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.15em]">
                     ORDER NOW
                   </button>
                 </Link>
@@ -1247,7 +1247,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   </>
                 )}
               </div>
-              <h1 className="font-serif text-4xl md:text-6xl text-white mb-4 tracking-[0.1em]">
+              <h1 className="font-heading text-4xl md:text-6xl text-white mb-4 tracking-[0.1em]">
                 {post.title}
               </h1>
               <p className="text-xl text-white/90 max-w-3xl">
@@ -1282,18 +1282,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 </svg>
               </div>
               <div className="flex-1">
-                <h3 className="font-serif text-2xl text-gray-900 mb-2">{post.author}</h3>
+                <h3 className="font-heading text-2xl text-gray-900 mb-2">{post.author}</h3>
                 <p className="text-gray-600 mb-4">
                   Senior Event Specialist at PartyOn Delivery with over 10 years of experience in the hospitality industry. 
                   Passionate about creating unforgettable experiences through expertly crafted beverage programs.
                 </p>
                 <div className="flex gap-4">
-                  <a href="#" className="text-gold-500 hover:text-gold-600 transition-colors">
+                  <a href="#" className="text-yellow-500 hover:text-brand-yellow transition-colors">
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84" />
                     </svg>
                   </a>
-                  <a href="#" className="text-gold-500 hover:text-gold-600 transition-colors">
+                  <a href="#" className="text-yellow-500 hover:text-brand-yellow transition-colors">
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.338 16.338H13.67V12.16c0-.995-.017-2.277-1.387-2.277-1.39 0-1.601 1.086-1.601 2.207v4.248H8.014v-8.59h2.559v1.174h.037c.356-.675 1.227-1.387 2.526-1.387 2.703 0 3.203 1.778 3.203 4.092v4.711zM5.005 6.575a1.548 1.548 0 11-.003-3.096 1.548 1.548 0 01.003 3.096zm-1.337 9.763H6.34v-8.59H3.667v8.59zM17.668 1H2.328C1.595 1 1 1.581 1 2.298v15.403C1 18.418 1.595 19 2.328 19h15.34c.734 0 1.332-.582 1.332-1.299V2.298C19 1.581 18.402 1 17.668 1z" clipRule="evenodd" />
                     </svg>
@@ -1307,7 +1307,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <div
             className="mt-12 pt-8 border-t border-gray-200"
           >
-            <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">Share This Article</h3>
+            <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">Share This Article</h3>
             <ShareButtons title={post.title} slug={post.slug} />
           </div>
         </div>
@@ -1319,7 +1319,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <div
             className="text-center"
           >
-            <h2 className="font-serif text-3xl mb-4 tracking-[0.1em]">
+            <h2 className="font-heading text-3xl mb-4 tracking-[0.1em]">
               JOIN OUR INNER CIRCLE
             </h2>
             <p className="text-gray-300 mb-8">
@@ -1329,12 +1329,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <input
                 type="email"
                 placeholder="Your email address"
-                className="flex-1 px-4 py-3 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gold-500"
+                className="flex-1 px-4 py-3 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                 required
               />
               <button
                 type="submit"
-                className="px-8 py-3 bg-gold-500 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.1em]"
+                className="px-8 py-3 bg-yellow-500 text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.1em]"
               >
                 SUBSCRIBE
               </button>
@@ -1350,7 +1350,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8">
           <h2
-            className="font-serif text-3xl text-center mb-12 tracking-[0.1em]"
+            className="font-heading text-3xl text-center mb-12 tracking-[0.1em]"
           >
             RELATED ARTICLES
           </h2>
@@ -1358,7 +1358,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {relatedPosts.map((relatedPost) => (
               <article
                 key={relatedPost.slug}
-                className="bg-white border border-gray-200 hover:border-gold-500 transition-all duration-300 group"
+                className="bg-white border border-gray-200 hover:border-yellow-500 transition-all duration-300 group"
               >
                 <Link href={`/blog/${relatedPost.slug}`}>
                   <div className="relative h-48 overflow-hidden">
@@ -1390,7 +1390,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                         </>
                       )}
                     </div>
-                    <h3 className="font-serif text-xl text-gray-900 mb-3 group-hover:text-gold-500 transition-colors">
+                    <h3 className="font-heading text-xl text-gray-900 mb-3 group-hover:text-yellow-500 transition-colors">
                       {relatedPost.title}
                     </h3>
                     <p className="text-gray-600 text-sm line-clamp-2">
@@ -1408,7 +1408,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <section className="py-16 bg-gray-900 text-white text-center">
         <div className="max-w-4xl mx-auto px-8">
           <div>
-            <h2 className="font-serif text-3xl mb-4 tracking-[0.1em]">
+            <h2 className="font-heading text-3xl mb-4 tracking-[0.1em]">
               READY TO PLAN YOUR EVENT?
             </h2>
             <p className="text-gray-300 mb-8">
@@ -1416,7 +1416,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/order">
-                <button className="px-8 py-3 bg-gold-500 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.15em]">
+                <button className="px-8 py-3 bg-yellow-500 text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.15em]">
                   ORDER NOW
                 </button>
               </Link>

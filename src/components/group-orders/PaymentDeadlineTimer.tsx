@@ -76,7 +76,7 @@ export default function PaymentDeadlineTimer({
     if (isExpired) return 'bg-red-100 border-red-300 text-red-700'
     if (timeRemaining.total < 3600000) return 'bg-red-50 border-red-200 text-red-600' // < 1 hour
     if (timeRemaining.total < 21600000) return 'bg-amber-50 border-amber-200 text-amber-600' // < 6 hours
-    if (timeRemaining.total < 86400000) return 'bg-gold-50 border-gold-200 text-gold-700' // < 24 hours
+    if (timeRemaining.total < 86400000) return 'bg-yellow-50 border-yellow-200 text-yellow-600' // < 24 hours
     return 'bg-gray-50 border-gray-200 text-gray-600'
   }
 

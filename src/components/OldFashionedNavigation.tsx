@@ -21,8 +21,8 @@ function NavLink({ href, children, isScrolled, onClick }: NavLinkProps) {
       href={href} 
       className={`text-sm tracking-[0.15em] transition-all duration-300 ${
         isScrolled 
-          ? 'text-gray-700 hover:text-gold-600' 
-          : 'text-white/90 hover:text-gold-400'
+          ? 'text-gray-700 hover:text-brand-yellow' 
+          : 'text-white/90 hover:text-brand-yellow'
       }`}
       onClick={onClick}
     >
@@ -130,8 +130,8 @@ export default function OldFashionedNavigation({
                 <button
                   className={`flex items-center text-sm tracking-[0.15em] transition-all duration-300 ${
                     isScrolled
-                      ? 'text-gray-700 hover:text-gold-600'
-                      : 'text-white/90 hover:text-gold-400'
+                      ? 'text-gray-700 hover:text-brand-yellow'
+                      : 'text-white/90 hover:text-brand-yellow'
                   }`}
                   onMouseEnter={() => setIsServicesOpen(true)}
                   onMouseLeave={() => setIsServicesOpen(false)}
@@ -152,7 +152,7 @@ export default function OldFashionedNavigation({
                     <Link
                       key={service.href}
                       href={service.href}
-                      className="block px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gray-50 hover:text-gold-600 transition-colors"
+                      className="block px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gray-50 hover:text-brand-yellow transition-colors"
                     >
                       {service.label}
                     </Link>
@@ -165,8 +165,8 @@ export default function OldFashionedNavigation({
                 <button
                   className={`flex items-center text-sm tracking-[0.15em] transition-all duration-300 ${
                     isScrolled
-                      ? 'text-gray-700 hover:text-gold-600'
-                      : 'text-white/90 hover:text-gold-400'
+                      ? 'text-gray-700 hover:text-brand-yellow'
+                      : 'text-white/90 hover:text-brand-yellow'
                   }`}
                   onMouseEnter={() => setIsRentalsOpen(true)}
                   onMouseLeave={() => setIsRentalsOpen(false)}
@@ -187,7 +187,7 @@ export default function OldFashionedNavigation({
                     <Link
                       key={rental.href}
                       href={rental.href}
-                      className="block px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gray-50 hover:text-gold-600 transition-colors"
+                      className="block px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gray-50 hover:text-brand-yellow transition-colors"
                     >
                       {rental.label}
                     </Link>
@@ -210,8 +210,8 @@ export default function OldFashionedNavigation({
                   <button 
                     className={`flex items-center text-sm tracking-[0.15em] transition-all duration-300 ${
                       isScrolled 
-                        ? 'text-gray-700 hover:text-gold-600' 
-                        : 'text-white/90 hover:text-gold-400'
+                        ? 'text-gray-700 hover:text-brand-yellow' 
+                        : 'text-white/90 hover:text-brand-yellow'
                     }`}
                   >
                     {customer.firstName || 'ACCOUNT'}
@@ -221,19 +221,19 @@ export default function OldFashionedNavigation({
                   <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                     <Link 
                       href="/account"
-                      className="block px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gray-50 hover:text-gold-600 transition-colors"
+                      className="block px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gray-50 hover:text-brand-yellow transition-colors"
                     >
                       MY ACCOUNT
                     </Link>
                     <Link 
                       href="/account/orders"
-                      className="block px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gray-50 hover:text-gold-600 transition-colors"
+                      className="block px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gray-50 hover:text-brand-yellow transition-colors"
                     >
                       ORDER HISTORY
                     </Link>
                     <button 
                       onClick={() => logout()}
-                      className="block w-full text-left px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gray-50 hover:text-gold-600 transition-colors border-t"
+                      className="block w-full text-left px-6 py-3 text-sm tracking-[0.1em] text-gray-700 hover:bg-gray-50 hover:text-brand-yellow transition-colors border-t"
                     >
                       SIGN OUT
                     </button>
@@ -244,8 +244,8 @@ export default function OldFashionedNavigation({
                   onClick={() => setIsAuthOpen(true)}
                   className={`text-sm tracking-[0.15em] transition-all duration-300 ${
                     isScrolled 
-                      ? 'text-gray-700 hover:text-gold-600' 
-                      : 'text-white/90 hover:text-gold-400'
+                      ? 'text-gray-700 hover:text-brand-yellow' 
+                      : 'text-white/90 hover:text-brand-yellow'
                   }`}
                 >
                   SIGN IN
@@ -256,8 +256,8 @@ export default function OldFashionedNavigation({
               <Link href="/order">
                 <button className={`px-8 py-3 text-sm tracking-[0.15em] border transition-all duration-300 ${
                   isScrolled 
-                    ? 'border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900' 
-                    : 'border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-gray-900'
+                    ? 'border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900' 
+                    : 'border-brand-yellow text-brand-yellow hover:bg-brand-yellow hover:text-gray-900'
                 }`}>
                   ORDER NOW
                 </button>
@@ -316,7 +316,7 @@ export default function OldFashionedNavigation({
 
             <Link
               href="/order"
-              className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors"
+              className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-brand-yellow transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               ORDER
@@ -330,7 +330,7 @@ export default function OldFashionedNavigation({
                   <Link
                     key={service.href}
                     href={service.href}
-                    className="block text-lg font-light tracking-[0.1em] text-gray-600 hover:text-gold-600 transition-colors"
+                    className="block text-lg font-light tracking-[0.1em] text-gray-600 hover:text-brand-yellow transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {service.label}
@@ -347,7 +347,7 @@ export default function OldFashionedNavigation({
                   <Link
                     key={rental.href}
                     href={rental.href}
-                    className="block text-lg font-light tracking-[0.1em] text-gray-600 hover:text-gold-600 transition-colors"
+                    className="block text-lg font-light tracking-[0.1em] text-gray-600 hover:text-brand-yellow transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {rental.label}
@@ -357,21 +357,21 @@ export default function OldFashionedNavigation({
             </div>
             <Link
               href="/contact"
-              className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors"
+              className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-brand-yellow transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               CONTACT
             </Link>
             <Link
               href="/partners"
-              className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-gold-600 transition-colors"
+              className="text-2xl font-light tracking-[0.15em] text-gray-900 hover:text-brand-yellow transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               PARTNERS
             </Link>
 
             <Link href="/order" onClick={() => setIsMenuOpen(false)}>
-              <button className="w-full mt-8 px-8 py-4 text-sm tracking-[0.15em] border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all duration-300">
+              <button className="w-full mt-8 px-8 py-4 text-sm tracking-[0.15em] border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300">
                 ORDER NOW
               </button>
             </Link>

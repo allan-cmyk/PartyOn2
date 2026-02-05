@@ -111,7 +111,7 @@ export default function GroupProductCatalog({
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h3 className="font-candal text-3xl md:text-4xl text-gray-900 uppercase tracking-wide">
+        <h3 className="font-heading text-3xl md:text-4xl text-gray-900 uppercase tracking-wide">
           Browse Products
         </h3>
       </div>
@@ -134,7 +134,7 @@ export default function GroupProductCatalog({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search products..."
-          className="w-full border-2 border-gray-300 rounded-xl px-5 py-4 text-lg text-gray-900 focus:ring-2 focus:ring-gold-500 focus:border-gold-500"
+          className="w-full border-2 border-gray-300 rounded-xl px-5 py-4 text-lg text-gray-900 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
         />
       </div>
 
@@ -145,7 +145,7 @@ export default function GroupProductCatalog({
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <p className="text-lg text-v2-muted text-center py-8">
+        <p className="text-lg text-gray-500 text-center py-8">
           No products found.
         </p>
       ) : (
@@ -193,7 +193,7 @@ export default function GroupProductCatalog({
                   <button
                     onClick={() => handleAdd(product)}
                     disabled={isAdding}
-                    className="mx-auto mt-2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gold-500 hover:bg-gold-600 text-gray-900 flex items-center justify-center shadow-md transition-all disabled:opacity-50"
+                    className="mx-auto mt-2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-yellow-500 hover:bg-brand-yellow text-gray-900 flex items-center justify-center shadow-md transition-all disabled:opacity-50"
                     aria-label={`Add ${product.title} to group order`}
                   >
                     {isAdding ? (

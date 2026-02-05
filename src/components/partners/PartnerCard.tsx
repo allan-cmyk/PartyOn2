@@ -57,7 +57,7 @@ export default function PartnerCard({ partner }: PartnerCardProps) {
         </div>
       </div>
       {partner.featured && (
-        <span className="absolute top-3 right-3 bg-gold-600 text-white text-xs px-2 py-1 rounded-full font-medium tracking-wide z-10">
+        <span className="absolute top-3 right-3 bg-brand-yellow text-white text-xs px-2 py-1 rounded-full font-medium tracking-wide z-10">
           Featured
         </span>
       )}
@@ -66,7 +66,7 @@ export default function PartnerCard({ partner }: PartnerCardProps) {
 
   return (
     <article
-      className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-gold-300"
+      className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-brand-yellow"
     >
       {/* Logo Container with Hero Background - Clickable if partnerPage exists */}
       {partner.partnerPage ? (
@@ -82,19 +82,19 @@ export default function PartnerCard({ partner }: PartnerCardProps) {
       {/* Content */}
       <div className="p-6">
         {/* Category Badge */}
-        <span className="inline-block text-xs text-gold-700 bg-gold-50 px-3 py-1 rounded-full mb-3 tracking-wide uppercase">
+        <span className="inline-block text-xs text-yellow-600 bg-yellow-50 px-3 py-1 rounded-full mb-3 tracking-wide uppercase">
           {getCategoryName(partner.category)}
         </span>
 
         {/* Partner Name */}
-        <h3 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.05em] group-hover:text-gold-700 transition-colors">
+        <h3 className="font-heading text-xl text-gray-900 mb-2 tracking-[0.05em] group-hover:text-yellow-600 transition-colors">
           {partner.name}
         </h3>
 
         {/* Expandable Description */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="text-left w-full mb-4 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 rounded"
+          className="text-left w-full mb-4 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500 focus-visible:ring-offset-2 rounded"
           aria-expanded={isExpanded}
         >
           <p
@@ -104,7 +104,7 @@ export default function PartnerCard({ partner }: PartnerCardProps) {
           >
             {partner.description}
           </p>
-          <span className="inline-flex items-center text-gold-600 text-xs mt-2 hover:text-gold-700 transition-colors">
+          <span className="inline-flex items-center text-brand-yellow text-xs mt-2 hover:text-yellow-600 transition-colors">
             {isExpanded ? 'Show less' : 'Read more'}
             <svg
               className={`w-3 h-3 ml-1 transition-transform duration-300 ${
@@ -129,7 +129,7 @@ export default function PartnerCard({ partner }: PartnerCardProps) {
           href={partner.website}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center text-gold-600 hover:text-gold-700 text-sm font-medium transition-colors group/link"
+          className="inline-flex items-center text-brand-yellow hover:text-yellow-600 text-sm font-medium transition-colors group/link"
         >
           Visit Website
           <svg

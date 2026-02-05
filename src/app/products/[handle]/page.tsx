@@ -352,19 +352,19 @@ export default async function ProductDetailPage({ params }: Props) {
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SERVICES</h4>
               <ul className="space-y-2">
-                <li><Link href="/weddings" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Weddings</Link></li>
-                <li><Link href="/boat-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Boat Parties</Link></li>
-                <li><Link href="/bach-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Celebrations</Link></li>
-                <li><Link href="/corporate" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Corporate</Link></li>
+                <li><Link href="/weddings" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Weddings</Link></li>
+                <li><Link href="/boat-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Boat Parties</Link></li>
+                <li><Link href="/bach-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Celebrations</Link></li>
+                <li><Link href="/corporate" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Corporate</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SHOP</h4>
               <ul className="space-y-2">
-                <li><Link href="/products" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">All Products</Link></li>
-                <li><Link href="/products?filter=spirits" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Spirits</Link></li>
-                <li><Link href="/products?filter=wine" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Wine</Link></li>
-                <li><Link href="/products?filter=packages" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Packages</Link></li>
+                <li><Link href="/products" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">All Products</Link></li>
+                <li><Link href="/products?filter=spirits" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Spirits</Link></li>
+                <li><Link href="/products?filter=wine" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Wine</Link></li>
+                <li><Link href="/products?filter=packages" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Packages</Link></li>
               </ul>
             </div>
             <div>
@@ -379,8 +379,8 @@ export default async function ProductDetailPage({ params }: Props) {
           <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">© 2025 PartyOn Delivery. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="/terms" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Terms</Link>
-              <Link href="/privacy" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Privacy</Link>
+              <Link href="/terms" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Terms</Link>
+              <Link href="/privacy" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Privacy</Link>
             </div>
           </div>
         </div>

@@ -116,7 +116,7 @@ export default function CreateTabModal({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., Day 2 Delivery"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
             />
           </div>
 
@@ -128,7 +128,7 @@ export default function CreateTabModal({
                 required
                 value={deliveryDate}
                 onChange={(e) => setDeliveryDate(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
               />
             </div>
             <div>
@@ -137,7 +137,7 @@ export default function CreateTabModal({
                 required
                 value={deliveryTime}
                 onChange={(e) => setDeliveryTime(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
               >
                 <option value="">Select</option>
                 {['10:00 AM','11:00 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM','6:00 PM','7:00 PM','8:00 PM'].map((t) => (
@@ -155,7 +155,7 @@ export default function CreateTabModal({
               value={address1}
               onChange={(e) => setAddress1(e.target.value)}
               placeholder="Street address"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500 mb-2"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500 mb-2"
             />
             <div className="grid grid-cols-3 gap-2">
               <input

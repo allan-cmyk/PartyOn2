@@ -87,7 +87,7 @@ export default function MobileFilterDrawer({
 
             {/* Header */}
             <div className="flex items-center justify-between px-6 pb-4 border-b border-gray-200">
-              <h2 className="font-serif text-xl tracking-[0.1em]">FILTERS</h2>
+              <h2 className="font-heading text-xl tracking-[0.1em]">FILTERS</h2>
               <button
                 onClick={onClose}
                 className="p-2 -mr-2 text-gray-500"
@@ -110,7 +110,7 @@ export default function MobileFilterDrawer({
                       onClick={() => onCategoryChange(category.value)}
                       className={`w-full flex items-center justify-between py-2 px-3 rounded-lg transition-colors ${
                         selectedCategory === category.value
-                          ? 'bg-gold-50 text-gold-700'
+                          ? 'bg-yellow-50 text-yellow-600'
                           : 'hover:bg-gray-50'
                       }`}
                     >
@@ -131,7 +131,7 @@ export default function MobileFilterDrawer({
                       onClick={() => onSortChange(option.value)}
                       className={`w-full text-left py-2 px-3 rounded-lg transition-colors ${
                         sortBy === option.value
-                          ? 'bg-gold-50 text-gold-700'
+                          ? 'bg-yellow-50 text-yellow-600'
                           : 'hover:bg-gray-50'
                       }`}
                     >
@@ -177,7 +177,7 @@ export default function MobileFilterDrawer({
                       max="500"
                       value={localPriceRange[1]}
                       onChange={(e) => setLocalPriceRange([localPriceRange[0], Number(e.target.value)])}
-                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gold-600"
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-yellow-500"
                     />
                   </div>
                 </div>
@@ -194,7 +194,7 @@ export default function MobileFilterDrawer({
               </button>
               <button
                 onClick={handleApplyFilters}
-                className="flex-1 py-3 bg-gold-600 text-gray-900 rounded-lg text-sm font-medium tracking-[0.1em]"
+                className="flex-1 py-3 bg-brand-yellow text-gray-900 rounded-lg text-sm font-medium tracking-[0.1em]"
               >
                 APPLY FILTERS
               </button>

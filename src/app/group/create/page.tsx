@@ -173,7 +173,7 @@ export default function CreateGroupOrderPage() {
             {/* Back link */}
             <Link
               href="/products"
-              className="inline-flex items-center text-gray-600 hover:text-gold-600 mb-6 transition-colors"
+              className="inline-flex items-center text-gray-600 hover:text-brand-yellow mb-6 transition-colors"
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -219,7 +219,7 @@ export default function CreateGroupOrderPage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="e.g., BACH-SARAH-2026"
-                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                 />
                 <p className="mt-1 text-sm text-gray-500">
                   (This will be the name you share with your group - make it good!)
@@ -237,7 +237,7 @@ export default function CreateGroupOrderPage() {
                   value={formData.customerName}
                   onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
                   placeholder="Your name"
-                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                 />
               </div>
 
@@ -260,7 +260,7 @@ export default function CreateGroupOrderPage() {
                     }
                     setFormData({ ...formData, deliveryDate: val })
                   }}
-                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                 />
               </div>
 
@@ -273,7 +273,7 @@ export default function CreateGroupOrderPage() {
                   required
                   value={formData.deliveryTime}
                   onChange={(e) => setFormData({ ...formData, deliveryTime: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                 >
                   {timeSlots.map((slot) => (
                     <option key={slot} value={slot}>{slot}</option>
@@ -289,12 +289,12 @@ export default function CreateGroupOrderPage() {
 
                 {/* Partner Addresses Dropdown */}
                 <div>
-                  <label className="block text-xs font-medium text-gold-700 mb-1 tracking-wide">
+                  <label className="block text-xs font-medium text-yellow-600 mb-1 tracking-wide">
                     PARTNER ADDRESSES
                   </label>
                   <select
                     onChange={(e) => handlePartnerAddressSelect(parseInt(e.target.value))}
-                    className="w-full px-4 py-3 border border-gold-300 rounded bg-gold-50 focus:ring-2 focus:ring-gold-500 focus:border-transparent text-gray-700"
+                    className="w-full px-4 py-3 border border-brand-yellow rounded bg-yellow-50 focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-gray-700"
                     defaultValue="-1"
                   >
                     <option value="-1">Select a partner location...</option>
@@ -319,14 +319,14 @@ export default function CreateGroupOrderPage() {
                   value={formData.address1}
                   onChange={(e) => setFormData({ ...formData, address1: e.target.value })}
                   placeholder="Street address"
-                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                 />
                 <input
                   type="text"
                   value={formData.address2}
                   onChange={(e) => setFormData({ ...formData, address2: e.target.value })}
                   placeholder="Apt, suite, unit (optional)"
-                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                 />
                 <div className="grid grid-cols-3 gap-4">
                   <input
@@ -335,7 +335,7 @@ export default function CreateGroupOrderPage() {
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                     placeholder="City"
-                    className="px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                    className="px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                   />
                   <input
                     type="text"
@@ -343,7 +343,7 @@ export default function CreateGroupOrderPage() {
                     value={formData.province}
                     onChange={(e) => setFormData({ ...formData, province: e.target.value })}
                     placeholder="State"
-                    className="px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                    className="px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                   />
                   <input
                     type="text"
@@ -351,7 +351,7 @@ export default function CreateGroupOrderPage() {
                     value={formData.zip}
                     onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
                     placeholder="ZIP"
-                    className="px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                    className="px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -377,7 +377,7 @@ export default function CreateGroupOrderPage() {
                 className={`w-full py-4 tracking-[0.15em] transition-colors ${
                   isLoading
                     ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-gold-600 hover:bg-gold-700'
+                    : 'bg-brand-yellow hover:bg-yellow-600'
                 } text-gray-900 font-medium`}
               >
                 {isLoading ? 'CREATING...' : 'CREATE GROUP ORDER'}

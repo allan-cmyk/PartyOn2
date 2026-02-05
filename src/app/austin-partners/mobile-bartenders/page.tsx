@@ -455,20 +455,20 @@ Source: ${formData.source}`,
         <div className="hero-fade-in relative text-center text-white z-10 max-w-5xl mx-auto px-8">
 
           {/* Primary H1 */}
-          <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
+          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
             You Pour. We Deliver.
           </h1>
 
           {/* Alternative H1 options (commented out) */}
-          {/* <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
+          {/* <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
             Austin Mobile Bartenders: Earn More, Haul Less
           </h1> */}
 
-          {/* <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
+          {/* <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
             Get Paid for Every Drink Order
           </h1> */}
 
-          <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
+          <div className="w-24 h-px bg-brand-yellow mx-auto mb-6" />
 
           <p className="text-2xl font-light tracking-[0.1em] mb-10 text-gray-200 max-w-3xl mx-auto">
             Partner with Austin&apos;s top alcohol delivery service. Earn commission on every order, skip the store runs, and focus on what you do best.
@@ -477,7 +477,7 @@ Source: ${formData.source}`,
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button
               onClick={scrollToForm}
-              className="bg-gold-600 text-gray-900 px-10 py-4 text-lg tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium"
+              className="bg-brand-yellow text-gray-900 px-10 py-4 text-lg tracking-[0.15em] hover:bg-yellow-600 transition-colors font-medium"
             >
               APPLY TO PARTNER
             </button>
@@ -499,10 +499,10 @@ Source: ${formData.source}`,
         <div className="max-w-5xl mx-auto px-8">
           <ScrollRevealCSS duration={800} delay={0} y={30}>
             <div className="text-center mb-12">
-              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+              <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
                 See How It Works
               </h2>
-              <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+              <div className="w-16 h-px bg-brand-yellow mx-auto mb-6" />
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                 Watch how Austin&apos;s top mobile bartenders are earning more with Party On Delivery
               </p>
@@ -520,7 +520,7 @@ Source: ${formData.source}`,
             <div className="mt-8 text-center">
               <button
                 onClick={scrollToForm}
-                className="bg-gold-600 text-gray-900 px-10 py-4 text-lg tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium"
+                className="bg-brand-yellow text-gray-900 px-10 py-4 text-lg tracking-[0.15em] hover:bg-yellow-600 transition-colors font-medium"
               >
                 APPLY TO PARTNER
               </button>
@@ -534,10 +534,10 @@ Source: ${formData.source}`,
         <div className="max-w-7xl mx-auto px-8">
           <ScrollRevealCSS duration={800} delay={0} y={30}>
             <div className="text-center mb-16">
-              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+              <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
                 Why Partner With Us
               </h2>
-              <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+              <div className="w-16 h-px bg-brand-yellow mx-auto mb-6" />
               <p className="text-lg text-gray-600 max-w-3xl mx-auto">
                 Join Austin&apos;s most trusted alcohol delivery network and start earning more while doing less heavy lifting.
               </p>
@@ -548,7 +548,7 @@ Source: ${formData.source}`,
             {benefits.map((benefit, index) => (
               <ScrollRevealCSS key={benefit.title} duration={800} delay={(index % 8) * 100} y={30}>
                 <div className="bg-gray-50 p-8 text-center">
-                  <div className="text-gold-600 mb-4 flex justify-center">{benefit.icon}</div>
+                  <div className="text-brand-yellow mb-4 flex justify-center">{benefit.icon}</div>
                   <h3 className="text-xl font-medium mb-3 text-gray-900 tracking-wide">{benefit.title}</h3>
                   <p className="text-gray-600">{benefit.description}</p>
                 </div>
@@ -563,10 +563,10 @@ Source: ${formData.source}`,
         <div className="max-w-7xl mx-auto px-8">
           <ScrollRevealCSS duration={800} delay={0} y={30}>
             <div className="text-center mb-16">
-              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+              <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
                 How It Works
               </h2>
-              <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+              <div className="w-16 h-px bg-brand-yellow mx-auto mb-6" />
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                 Four simple steps to start earning commission on every event
               </p>
@@ -578,9 +578,9 @@ Source: ${formData.source}`,
               <ScrollRevealCSS key={step.title} duration={800} delay={(index % 8) * 100} y={30}>
                 <div className="text-center">
                   <div className="bg-white rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6 shadow-lg">
-                    <div className="text-gold-600">{step.icon}</div>
+                    <div className="text-brand-yellow">{step.icon}</div>
                   </div>
-                  <div className="text-3xl font-serif text-gold-600 mb-3">{index + 1}</div>
+                  <div className="text-3xl font-heading text-brand-yellow mb-3">{index + 1}</div>
                   <h3 className="text-xl font-medium mb-3 text-gray-900">{step.title}</h3>
                   <p className="text-gray-600">{step.description}</p>
                 </div>
@@ -595,7 +595,7 @@ Source: ${formData.source}`,
         <div className="max-w-7xl mx-auto px-8">
           <ScrollRevealCSS duration={800} delay={0} y={30}>
             <div className="text-center mb-16">
-              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+              <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
                 Partnership Tiers
               </h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -608,36 +608,36 @@ Source: ${formData.source}`,
             <ScrollRevealCSS duration={800} delay={0} y={30}>
               <div className="bg-white p-8 border-2 border-gray-200">
 
-              <h3 className="font-serif text-2xl mb-2 text-gray-900">Tier 1 Partner</h3>
+              <h3 className="font-heading text-2xl mb-2 text-gray-900">Tier 1 Partner</h3>
               <p className="text-gray-600 mb-2">$0 - $5,000 in referred orders</p>
-              <p className="text-3xl font-light text-gold-600 mb-6">5% Commission</p>
+              <p className="text-3xl font-light text-brand-yellow mb-6">5% Commission</p>
               <ul className="space-y-3">
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-brand-yellow mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   <span className="text-gray-700">Free delivery for clients</span>
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-brand-yellow mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   <span className="text-gray-700">Dedicated account manager</span>
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-brand-yellow mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   <span className="text-gray-700">Monthly invoicing</span>
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-brand-yellow mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   <span className="text-gray-700">Priority delivery</span>
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-brand-yellow mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   <span className="text-gray-700">Event consultation</span>
@@ -649,24 +649,24 @@ Source: ${formData.source}`,
             <ScrollRevealCSS duration={800} delay={100} y={30}>
               <div className="bg-white p-8 border-2 border-gray-200">
 
-              <h3 className="font-serif text-2xl mb-2 text-gray-900">Tier 2 Partner</h3>
+              <h3 className="font-heading text-2xl mb-2 text-gray-900">Tier 2 Partner</h3>
               <p className="text-gray-600 mb-2">$10,000 - $20,000 in referred orders</p>
-              <p className="text-3xl font-light text-gold-600 mb-6">8% Commission</p>
+              <p className="text-3xl font-light text-brand-yellow mb-6">8% Commission</p>
               <ul className="space-y-3">
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-brand-yellow mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   <span className="text-gray-700">Everything in Tier 1</span>
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-brand-yellow mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   <span className="text-gray-700">Custom storefront on our website</span>
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-brand-yellow mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   <span className="text-gray-700">Social media collaborations</span>
@@ -678,24 +678,24 @@ Source: ${formData.source}`,
             <ScrollRevealCSS duration={800} delay={200} y={30}>
               <div className="bg-white p-8 border-2 border-gray-200">
 
-              <h3 className="font-serif text-2xl mb-2 text-gray-900">Tier 3 Partner</h3>
+              <h3 className="font-heading text-2xl mb-2 text-gray-900">Tier 3 Partner</h3>
               <p className="text-gray-600 mb-2">$20,000+ in referred orders</p>
-              <p className="text-3xl font-light text-gold-600 mb-6">10% Commission</p>
+              <p className="text-3xl font-light text-brand-yellow mb-6">10% Commission</p>
               <ul className="space-y-3">
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-brand-yellow mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   <span className="text-gray-700">Everything in Tier 2</span>
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-brand-yellow mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   <span className="text-gray-700">Preferred vendor list</span>
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-brand-yellow mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   <span className="text-gray-700">Free Boat Party on our sister company&apos;s biggest boat (premierpartycruises.com)!</span>
@@ -712,10 +712,10 @@ Source: ${formData.source}`,
         <div className="max-w-7xl mx-auto px-8">
           <ScrollRevealCSS duration={800} delay={0} y={30}>
             <div className="text-center mb-16">
-              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+              <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
                 Events We Serve Together
               </h2>
-              <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+              <div className="w-16 h-px bg-brand-yellow mx-auto mb-6" />
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                 From intimate gatherings to 500-person celebrations, we&apos;ve got the logistics covered
               </p>
@@ -735,7 +735,7 @@ Source: ${formData.source}`,
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                  <h3 className="font-serif text-2xl mb-2">{useCase.title}</h3>
+                  <h3 className="font-heading text-2xl mb-2">{useCase.title}</h3>
                   <p className="text-sm text-gray-200">{useCase.description}</p>
                 </div>
                 </div>
@@ -764,10 +764,10 @@ Source: ${formData.source}`,
             {/* Text Content */}
             <ScrollRevealCSS duration={800} delay={0} y={30}>
               <div>
-                <h2 className="font-serif font-light text-4xl md:text-5xl mb-6 tracking-[0.1em]">
+                <h2 className="font-heading font-light text-4xl md:text-5xl mb-6 tracking-[0.1em]">
                   Austin Born & Raised
                 </h2>
-                <div className="w-16 h-px bg-gold-400 mb-8" />
+                <div className="w-16 h-px bg-brand-yellow mb-8" />
                 <p className="text-xl mb-6 leading-relaxed">
                   We know the difference between downtown traffic at 4pm on a Friday and getting to Lakeway before sunset. We understand TABC compliance, venue delivery protocols, and exactly how much ice melts on a 95-degree July afternoon.
                 </p>
@@ -776,7 +776,7 @@ Source: ${formData.source}`,
                 </p>
                 <button
                   onClick={scrollToForm}
-                  className="bg-gold-600 text-gray-900 px-10 py-4 text-lg tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium"
+                  className="bg-brand-yellow text-gray-900 px-10 py-4 text-lg tracking-[0.15em] hover:bg-yellow-600 transition-colors font-medium"
                 >
                   BECOME A PARTNER
                 </button>
@@ -804,10 +804,10 @@ Source: ${formData.source}`,
         <div className="max-w-7xl mx-auto px-8">
           <ScrollRevealCSS duration={800} delay={0} y={30}>
             <div className="text-center mb-16">
-              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+              <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
                 What Bartenders Say
               </h2>
-              <div className="w-16 h-px bg-gold-600 mx-auto" />
+              <div className="w-16 h-px bg-brand-yellow mx-auto" />
             </div>
           </ScrollRevealCSS>
 
@@ -817,7 +817,7 @@ Source: ${formData.source}`,
                 <div className="bg-gray-50 p-8">
                 <div className="flex items-center mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-gold-400 fill-current" viewBox="0 0 20 20">
+                    <svg key={i} className="w-5 h-5 text-brand-yellow fill-current" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   ))}
@@ -850,10 +850,10 @@ Source: ${formData.source}`,
         <div className="max-w-7xl mx-auto px-8">
           <ScrollRevealCSS duration={800} delay={0} y={30}>
             <div className="text-center mb-16">
-              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+              <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
                 Our Partner Network
               </h2>
-              <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+              <div className="w-16 h-px bg-brand-yellow mx-auto mb-6" />
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                 Austin&apos;s finest mobile bartending services trust Party On Delivery for their alcohol and supply needs
               </p>
@@ -888,17 +888,17 @@ Source: ${formData.source}`,
                   </div>
                 </div>
                 <div className="p-6">
-                <h3 className="font-serif text-xl text-gray-900 mb-2 text-center">PourTwentyFour</h3>
+                <h3 className="font-heading text-xl text-gray-900 mb-2 text-center">PourTwentyFour</h3>
                 <p className="text-gray-600 text-center text-sm mb-4">
                   Upscale mobile bartending service specializing in quality craft cocktails with the freshest ingredients
                 </p>
                 <div className="flex flex-wrap gap-2 justify-center">
-                  <span className="text-xs bg-gold-100 text-gold-700 px-2 py-1">Weddings</span>
-                  <span className="text-xs bg-gold-100 text-gold-700 px-2 py-1">Corporate Events</span>
-                  <span className="text-xs bg-gold-100 text-gold-700 px-2 py-1">Private Parties</span>
+                  <span className="text-xs bg-yellow-100 text-yellow-600 px-2 py-1">Weddings</span>
+                  <span className="text-xs bg-yellow-100 text-yellow-600 px-2 py-1">Corporate Events</span>
+                  <span className="text-xs bg-yellow-100 text-yellow-600 px-2 py-1">Private Parties</span>
                 </div>
                 <div className="mt-4 text-center">
-                  <span className="text-gold-600 text-sm group-hover:text-gold-700 transition-colors">
+                  <span className="text-brand-yellow text-sm group-hover:text-yellow-600 transition-colors">
                     Visit Website →
                   </span>
                 </div>
@@ -933,17 +933,17 @@ Source: ${formData.source}`,
                   </div>
                 </div>
                 <div className="p-6">
-                <h3 className="font-serif text-xl text-gray-900 mb-2 text-center">DTR Bartending</h3>
+                <h3 className="font-heading text-xl text-gray-900 mb-2 text-center">DTR Bartending</h3>
                 <p className="text-gray-600 text-center text-sm mb-4">
                   Event bartending with five-star service, TABC licensed bartenders, and custom crafted signature cocktails
                 </p>
                 <div className="flex flex-wrap gap-2 justify-center">
-                  <span className="text-xs bg-gold-100 text-gold-700 px-2 py-1">TABC Licensed</span>
-                  <span className="text-xs bg-gold-100 text-gold-700 px-2 py-1">Fully Insured</span>
-                  <span className="text-xs bg-gold-100 text-gold-700 px-2 py-1">Custom Cocktails</span>
+                  <span className="text-xs bg-yellow-100 text-yellow-600 px-2 py-1">TABC Licensed</span>
+                  <span className="text-xs bg-yellow-100 text-yellow-600 px-2 py-1">Fully Insured</span>
+                  <span className="text-xs bg-yellow-100 text-yellow-600 px-2 py-1">Custom Cocktails</span>
                 </div>
                 <div className="mt-4 text-center">
-                  <span className="text-gold-600 text-sm group-hover:text-gold-700 transition-colors">
+                  <span className="text-brand-yellow text-sm group-hover:text-yellow-600 transition-colors">
                     Visit Website →
                   </span>
                 </div>
@@ -978,17 +978,17 @@ Source: ${formData.source}`,
                   </div>
                 </div>
                 <div className="p-6">
-                <h3 className="font-serif text-xl text-gray-900 mb-2 text-center">Tap Truck Austin</h3>
+                <h3 className="font-heading text-xl text-gray-900 mb-2 text-center">Tap Truck Austin</h3>
                 <p className="text-gray-600 text-center text-sm mb-4">
                   Full service mobile bar in a vintage 1959 Ford F100 with 6 taps for beer, wine, cocktails, and more
                 </p>
                 <div className="flex flex-wrap gap-2 justify-center">
-                  <span className="text-xs bg-gold-100 text-gold-700 px-2 py-1">Vintage Truck</span>
-                  <span className="text-xs bg-gold-100 text-gold-700 px-2 py-1">6 Taps</span>
-                  <span className="text-xs bg-gold-100 text-gold-700 px-2 py-1">Beer & Wine</span>
+                  <span className="text-xs bg-yellow-100 text-yellow-600 px-2 py-1">Vintage Truck</span>
+                  <span className="text-xs bg-yellow-100 text-yellow-600 px-2 py-1">6 Taps</span>
+                  <span className="text-xs bg-yellow-100 text-yellow-600 px-2 py-1">Beer & Wine</span>
                 </div>
                 <div className="mt-4 text-center">
-                  <span className="text-gold-600 text-sm group-hover:text-gold-700 transition-colors">
+                  <span className="text-brand-yellow text-sm group-hover:text-yellow-600 transition-colors">
                     Visit Website →
                   </span>
                 </div>
@@ -1004,7 +1004,7 @@ Source: ${formData.source}`,
               </p>
               <button
                 onClick={scrollToForm}
-                className="bg-gold-600 text-gray-900 px-8 py-3 tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium text-sm"
+                className="bg-brand-yellow text-gray-900 px-8 py-3 tracking-[0.15em] hover:bg-yellow-600 transition-colors font-medium text-sm"
               >
                 APPLY TO PARTNER
               </button>
@@ -1018,10 +1018,10 @@ Source: ${formData.source}`,
         <div className="max-w-4xl mx-auto px-8">
           <ScrollRevealCSS duration={800} delay={0} y={30}>
             <div className="text-center mb-12">
-              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+              <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
                 Apply to Partner
               </h2>
-              <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+              <div className="w-16 h-px bg-brand-yellow mx-auto mb-6" />
               <p className="text-lg text-gray-600">
                 Join Austin&apos;s premier mobile bartender network. We&apos;ll review your application within 24 hours.
               </p>
@@ -1068,7 +1068,7 @@ Source: ${formData.source}`,
                   value={formData.firstName}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition-colors"
                 />
               </div>
 
@@ -1082,7 +1082,7 @@ Source: ${formData.source}`,
                   value={formData.lastName}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition-colors"
                 />
               </div>
             </div>
@@ -1098,7 +1098,7 @@ Source: ${formData.source}`,
                 value={formData.businessName}
                 onChange={handleChange}
                 placeholder="Your bartending service name (if applicable)"
-                className="w-full px-4 py-3 border border-gray-300 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors"
+                className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition-colors"
               />
             </div>
 
@@ -1114,7 +1114,7 @@ Source: ${formData.source}`,
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition-colors"
                 />
               </div>
 
@@ -1128,7 +1128,7 @@ Source: ${formData.source}`,
                   value={formData.phone}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition-colors"
                 />
               </div>
             </div>
@@ -1144,7 +1144,7 @@ Source: ${formData.source}`,
                 value={formData.website}
                 onChange={handleChange}
                 placeholder="https://instagram.com/yourbusiness"
-                className="w-full px-4 py-3 border border-gray-300 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors"
+                className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition-colors"
               />
             </div>
 
@@ -1160,7 +1160,7 @@ Source: ${formData.source}`,
                   value={formData.serviceArea}
                   onChange={handleChange}
                   placeholder="Downtown, Lake Travis, etc."
-                  className="w-full px-4 py-3 border border-gray-300 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition-colors"
                 />
               </div>
 
@@ -1172,7 +1172,7 @@ Source: ${formData.source}`,
                   name="guestCount"
                   value={formData.guestCount}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition-colors"
                 >
                   <option value="">Select Range</option>
                   <option value="under-50">Under 50 guests</option>
@@ -1198,7 +1198,7 @@ Source: ${formData.source}`,
                       value={eventType}
                       checked={formData.eventTypes.includes(eventType)}
                       onChange={handleChange}
-                      className="w-4 h-4 text-gold-600 border-gray-300 focus:ring-gold-400"
+                      className="w-4 h-4 text-brand-yellow border-gray-300 focus:ring-brand-yellow"
                     />
                     <span className="ml-2 text-gray-700">{eventType}</span>
                   </label>
@@ -1215,7 +1215,7 @@ Source: ${formData.source}`,
                 name="timeframe"
                 value={formData.timeframe}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors"
+                className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition-colors"
               >
                 <option value="">Select Timeframe</option>
                 <option value="immediately">Immediately</option>
@@ -1235,7 +1235,7 @@ Source: ${formData.source}`,
                 value={formData.notes}
                 onChange={handleChange}
                 rows={4}
-                className="w-full px-4 py-3 border border-gray-300 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors resize-none"
+                className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition-colors resize-none"
                 placeholder="Tell us about your business, typical events, or any questions you have..."
               />
             </div>
@@ -1249,12 +1249,12 @@ Source: ${formData.source}`,
                   checked={formData.consent}
                   onChange={handleChange}
                   required
-                  className="w-4 h-4 mt-1 text-gold-600 border-gray-300 focus:ring-gold-400"
+                  className="w-4 h-4 mt-1 text-brand-yellow border-gray-300 focus:ring-brand-yellow"
                 />
                 <span className="ml-3 text-sm text-gray-600">
                   I agree to receive communications from Party On Delivery about the partnership program.
                   I understand my information will be handled per the{' '}
-                  <Link href="/privacy" className="text-gold-600 hover:underline">
+                  <Link href="/privacy" className="text-brand-yellow hover:underline">
                     Privacy Policy
                   </Link>
                   .
@@ -1276,15 +1276,15 @@ Source: ${formData.source}`,
               className={`w-full px-8 py-4 transition-colors tracking-[0.15em] text-sm font-medium ${
                 isSubmitting
                   ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
-                  : 'bg-gold-600 text-gray-900 hover:bg-gold-700'
+                  : 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
               }`}
             >
               {isSubmitting ? 'SUBMITTING...' : 'SUBMIT APPLICATION'}
             </button>
 
             <p className="text-sm text-gray-600 mt-6 text-center">
-              Questions? Call us at <a href="tel:+17373719700" className="text-gold-600 hover:underline">(737) 371-9700</a> or email{' '}
-              <a href="mailto:partners@partyondelivery.com" className="text-gold-600 hover:underline">partners@partyondelivery.com</a>
+              Questions? Call us at <a href="tel:+17373719700" className="text-brand-yellow hover:underline">(737) 371-9700</a> or email{' '}
+              <a href="mailto:partners@partyondelivery.com" className="text-brand-yellow hover:underline">partners@partyondelivery.com</a>
             </p>
             </form>
           </ScrollRevealCSS>
@@ -1296,10 +1296,10 @@ Source: ${formData.source}`,
         <div className="max-w-4xl mx-auto px-8">
           <ScrollRevealCSS duration={800} delay={0} y={30}>
             <div className="text-center mb-16">
-              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+              <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
                 Frequently Asked Questions
               </h2>
-              <div className="w-16 h-px bg-gold-600 mx-auto" />
+              <div className="w-16 h-px bg-brand-yellow mx-auto" />
             </div>
           </ScrollRevealCSS>
 
@@ -1321,17 +1321,17 @@ Source: ${formData.source}`,
         <div className="max-w-4xl mx-auto px-8 text-center">
           <ScrollRevealCSS duration={800} delay={0} y={30}>
             <div>
-              <h2 className="font-serif font-light text-4xl md:text-5xl mb-6 tracking-[0.1em]">
+              <h2 className="font-heading font-light text-4xl md:text-5xl mb-6 tracking-[0.1em]">
               Ready to Pour Smarter, Not Harder?
             </h2>
-            <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
+            <div className="w-24 h-px bg-brand-yellow mx-auto mb-6" />
             <p className="text-xl mb-8 text-gray-300 max-w-2xl mx-auto">
               Join Austin&apos;s top mobile bartenders who are already earning more while doing less heavy lifting.
               Let&apos;s grow your business together.
             </p>
             <button
               onClick={scrollToForm}
-              className="bg-gold-600 text-gray-900 px-12 py-5 text-lg tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium"
+              className="bg-brand-yellow text-gray-900 px-12 py-5 text-lg tracking-[0.15em] hover:bg-yellow-600 transition-colors font-medium"
             >
               APPLY TO PARTNER NOW
             </button>

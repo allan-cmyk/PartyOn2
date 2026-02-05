@@ -80,7 +80,7 @@ function EquipmentCard({ product, featured = false }: EquipmentCardProps) {
   if (featured) {
     return (
       <>
-        <div className="bg-gradient-to-r from-gold-50 to-amber-50 rounded-lg border-2 border-gold-300 hover:border-gold-400 transition-all duration-300 overflow-hidden">
+        <div className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-lg border-2 border-brand-yellow hover:border-brand-yellow transition-all duration-300 overflow-hidden">
           <div className="flex flex-col md:flex-row">
             {/* Image */}
             <Link href={`/products/${product.handle}`} className="md:w-1/3 aspect-video md:aspect-auto">
@@ -105,10 +105,10 @@ function EquipmentCard({ product, featured = false }: EquipmentCardProps) {
             {/* Content */}
             <div className="flex-1 p-6 md:p-8 flex flex-col justify-center">
               <div className="flex items-center gap-2 mb-2">
-                <h3 className="font-serif text-xl md:text-2xl text-gray-900 tracking-[0.05em]">
+                <h3 className="font-heading text-xl md:text-2xl text-gray-900 tracking-[0.05em]">
                   {product.title}
                 </h3>
-                <span className="bg-gold-600 text-gray-900 text-xs px-2 py-0.5 rounded font-medium">
+                <span className="bg-brand-yellow text-gray-900 text-xs px-2 py-0.5 rounded font-medium">
                   BEST VALUE
                 </span>
               </div>
@@ -117,7 +117,7 @@ function EquipmentCard({ product, featured = false }: EquipmentCardProps) {
               </p>
 
               <div className="flex items-center gap-4 flex-wrap">
-                <p className="text-3xl md:text-4xl font-medium text-gold-600">
+                <p className="text-3xl md:text-4xl font-medium text-brand-yellow">
                   {formatPrice(price.amount, price.currencyCode)}
                 </p>
 
@@ -126,7 +126,7 @@ function EquipmentCard({ product, featured = false }: EquipmentCardProps) {
                   disabled={!variant?.availableForSale || isAdding || cartLoading}
                   className={`px-6 py-2 text-sm font-medium tracking-[0.1em] transition-colors ${
                     variant?.availableForSale && !isAdding && !cartLoading
-                      ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
+                      ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
                 >
@@ -135,7 +135,7 @@ function EquipmentCard({ product, featured = false }: EquipmentCardProps) {
 
                 <Link
                   href={`/products/${product.handle}`}
-                  className="text-gold-700 text-sm font-medium tracking-[0.1em] hover:text-gold-800"
+                  className="text-yellow-600 text-sm font-medium tracking-[0.1em] hover:text-yellow-700"
                 >
                   VIEW DETAILS →
                 </Link>
@@ -156,7 +156,7 @@ function EquipmentCard({ product, featured = false }: EquipmentCardProps) {
   // Regular card
   return (
     <>
-      <div className="bg-white rounded-lg shadow-lg border border-gray-200 hover:border-gold-300 transition-all duration-300 h-full flex flex-col overflow-hidden group">
+      <div className="bg-white rounded-lg shadow-lg border border-gray-200 hover:border-brand-yellow transition-all duration-300 h-full flex flex-col overflow-hidden group">
         {/* Image */}
         <Link href={`/products/${product.handle}`} className="block">
           <div className="relative aspect-square bg-gray-50 overflow-hidden">
@@ -187,12 +187,12 @@ function EquipmentCard({ product, featured = false }: EquipmentCardProps) {
         {/* Content */}
         <div className="p-3 md:p-4 flex-1 flex flex-col">
           <Link href={`/products/${product.handle}`}>
-            <h3 className="font-serif text-xs md:text-sm text-gray-900 mb-1 tracking-[0.02em] text-center leading-tight hover:text-gold-600 transition-colors line-clamp-2">
+            <h3 className="font-heading text-xs md:text-sm text-gray-900 mb-1 tracking-[0.02em] text-center leading-tight hover:text-brand-yellow transition-colors line-clamp-2">
               {product.title}
             </h3>
           </Link>
 
-          <p className="text-lg md:text-xl font-medium text-gold-600 text-center mb-3">
+          <p className="text-lg md:text-xl font-medium text-brand-yellow text-center mb-3">
             {formatPrice(price.amount, price.currencyCode)}
           </p>
 
@@ -202,7 +202,7 @@ function EquipmentCard({ product, featured = false }: EquipmentCardProps) {
             disabled={!variant?.availableForSale || isAdding || cartLoading}
             className={`mt-auto w-full py-2 text-xs font-medium tracking-wider transition-colors ${
               variant?.availableForSale && !isAdding && !cartLoading
-                ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
+                ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
             }`}
           >
@@ -254,10 +254,10 @@ export default function EquipmentRentals() {
       <section className="py-12 md:py-24 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 md:px-8">
           <div className="text-center mb-10 md:mb-16">
-            <h2 className="font-serif font-light text-3xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-3xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               Party Supplies & Rentals
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto mb-4 md:mb-6" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto mb-4 md:mb-6" />
           </div>
 
           {/* Loading skeleton */}
@@ -278,10 +278,10 @@ export default function EquipmentRentals() {
     <section className="py-12 md:py-24 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 md:px-8">
         <ScrollRevealCSS duration={800} y={20} className="text-center mb-10 md:mb-16">
-          <h2 className="font-serif font-light text-3xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+          <h2 className="font-heading font-light text-3xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
             Party Supplies & Rentals
           </h2>
-          <div className="w-16 h-px bg-gold-600 mx-auto mb-4 md:mb-6" />
+          <div className="w-16 h-px bg-brand-yellow mx-auto mb-4 md:mb-6" />
           <p className="text-gray-600 text-sm md:text-lg max-w-2xl mx-auto">
             Everything you need to tap and serve your keg.
           </p>
@@ -312,7 +312,7 @@ export default function EquipmentRentals() {
         <ScrollRevealCSS duration={800} y={20} delay={400} className="mt-8 md:mt-12">
           <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-200 text-center max-w-2xl mx-auto">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <svg className="w-5 h-5 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <span className="font-medium text-gray-900 text-sm md:text-base">About Deposits</span>
@@ -320,7 +320,7 @@ export default function EquipmentRentals() {
             <p className="text-gray-600 text-xs md:text-sm">
               <strong>$50 keg deposit</strong> refunded when empty keg is
               returned within 7 days.{' '}
-              <Link href="/contact" className="text-gold-600 hover:text-gold-700 underline">
+              <Link href="/contact" className="text-brand-yellow hover:text-yellow-600 underline">
                 Contact us
               </Link>{' '}
               for details.

@@ -110,7 +110,7 @@ export default function PreferencesPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 pt-24">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gold-600"></div>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand-yellow"></div>
           <p className="mt-4 text-gray-600">Loading your preferences...</p>
         </div>
       </div>
@@ -130,7 +130,7 @@ export default function PreferencesPage() {
           <p className="text-gray-600 mb-8">Please sign in to manage your preferences</p>
           <button
             onClick={() => setIsAuthOpen(true)}
-            className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em]"
+            className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em]"
           >
             SIGN IN TO CONTINUE
           </button>
@@ -156,7 +156,7 @@ export default function PreferencesPage() {
         <div className="bg-white rounded-lg shadow-md border border-gray-100">
           <div className="p-6 border-b border-gray-100">
             <div className="flex items-center space-x-3">
-              <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
               <h2 className="text-xl font-cormorant tracking-[0.1em]">COMMUNICATION PREFERENCES</h2>
@@ -175,7 +175,7 @@ export default function PreferencesPage() {
                   onChange={(e) => handlePreferenceChange('acceptsMarketing', e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gold-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gold-600"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-yellow rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-yellow"></div>
               </label>
             </div>
 
@@ -191,7 +191,7 @@ export default function PreferencesPage() {
                   onChange={(e) => handlePreferenceChange('emailNotifications', e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gold-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gold-600"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-yellow rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-yellow"></div>
               </label>
             </div>
 
@@ -207,7 +207,7 @@ export default function PreferencesPage() {
                   onChange={(e) => handlePreferenceChange('smsNotifications', e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gold-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gold-600"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-yellow rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-yellow"></div>
               </label>
             </div>
           </div>
@@ -217,7 +217,7 @@ export default function PreferencesPage() {
         <div className="bg-white rounded-lg shadow-md border border-gray-100">
           <div className="p-6 border-b border-gray-100">
             <div className="flex items-center space-x-3">
-              <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
               <h2 className="text-xl font-cormorant tracking-[0.1em]">ORDER PREFERENCES</h2>
@@ -236,7 +236,7 @@ export default function PreferencesPage() {
                   onChange={(e) => handlePreferenceChange('orderUpdates', e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gold-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gold-600"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-yellow rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-yellow"></div>
               </label>
             </div>
 
@@ -252,7 +252,7 @@ export default function PreferencesPage() {
                   onChange={(e) => handlePreferenceChange('promotionalOffers', e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gold-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gold-600"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-yellow rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-yellow"></div>
               </label>
             </div>
 
@@ -268,7 +268,7 @@ export default function PreferencesPage() {
                   onChange={(e) => handlePreferenceChange('eventInvitations', e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gold-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gold-600"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-yellow rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-yellow"></div>
               </label>
             </div>
 
@@ -284,7 +284,7 @@ export default function PreferencesPage() {
                   onChange={(e) => handlePreferenceChange('newsletter', e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gold-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gold-600"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-yellow rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-yellow"></div>
               </label>
             </div>
           </div>
@@ -294,7 +294,7 @@ export default function PreferencesPage() {
         <div className="bg-white rounded-lg shadow-md border border-gray-100">
           <div className="p-6 border-b border-gray-100">
             <div className="flex items-center space-x-3">
-              <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
@@ -308,7 +308,7 @@ export default function PreferencesPage() {
                 <select
                   value={preferences.language}
                   onChange={(e) => handlePreferenceChange('language', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors rounded"
+                  className="w-full px-3 py-2 border border-gray-300 focus:border-brand-yellow focus:outline-none transition-colors rounded"
                 >
                   <option value="en">English</option>
                   <option value="es">Español</option>
@@ -319,7 +319,7 @@ export default function PreferencesPage() {
                 <select
                   value={preferences.currency}
                   onChange={(e) => handlePreferenceChange('currency', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors rounded"
+                  className="w-full px-3 py-2 border border-gray-300 focus:border-brand-yellow focus:outline-none transition-colors rounded"
                 >
                   <option value="USD">USD ($)</option>
                   <option value="CAD">CAD ($)</option>
@@ -333,7 +333,7 @@ export default function PreferencesPage() {
         <div className="bg-white rounded-lg shadow-md border border-gray-100">
           <div className="p-6 border-b border-gray-100">
             <div className="flex items-center space-x-3">
-              <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
               <h2 className="text-xl font-cormorant tracking-[0.1em]">PRIVACY & SECURITY</h2>
@@ -345,7 +345,7 @@ export default function PreferencesPage() {
                 <h3 className="font-medium text-gray-900">Account Security</h3>
                 <button 
                   onClick={() => setShowPasswordModal(true)}
-                  className="w-full text-left p-4 border border-gray-200 rounded-lg hover:border-gold-600 transition-colors"
+                  className="w-full text-left p-4 border border-gray-200 rounded-lg hover:border-brand-yellow transition-colors"
                 >
                   <div className="flex items-center justify-between">
                     <div>
@@ -362,7 +362,7 @@ export default function PreferencesPage() {
                 <h3 className="font-medium text-gray-900">Data Management</h3>
                 <button 
                   onClick={handleDownloadData}
-                  className="w-full text-left p-4 border border-gray-200 rounded-lg hover:border-gold-600 transition-colors"
+                  className="w-full text-left p-4 border border-gray-200 rounded-lg hover:border-brand-yellow transition-colors"
                 >
                   <div className="flex items-center justify-between">
                     <div>
@@ -384,7 +384,7 @@ export default function PreferencesPage() {
           <button
             onClick={handleSave}
             disabled={isLoading}
-            className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] rounded disabled:opacity-50"
+            className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] rounded disabled:opacity-50"
           >
             {isLoading ? 'SAVING...' : 'SAVE PREFERENCES'}
           </button>
@@ -420,7 +420,7 @@ export default function PreferencesPage() {
                       }
                     }
                   }}
-                  className="flex-1 px-4 py-2 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors rounded"
+                  className="flex-1 px-4 py-2 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors rounded"
                 >
                   Send Reset Email
                 </button>

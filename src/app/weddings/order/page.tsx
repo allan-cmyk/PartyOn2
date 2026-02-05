@@ -28,13 +28,13 @@ export default function WeddingOrderPage(): ReactElement {
 
         <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
           <ScrollRevealCSS>
-            <p className="text-gold-400 tracking-[0.2em] text-sm uppercase mb-4">
+            <p className="text-brand-yellow tracking-[0.2em] text-sm uppercase mb-4">
               Wedding Bar Packages
             </p>
           </ScrollRevealCSS>
 
           <ScrollRevealCSS delay={100}>
-            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white mb-6 tracking-[0.1em]">
+            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl text-white mb-6 tracking-[0.1em]">
               BUILD YOUR PERFECT
               <br />
               WEDDING BAR
@@ -42,7 +42,7 @@ export default function WeddingOrderPage(): ReactElement {
           </ScrollRevealCSS>
 
           <ScrollRevealCSS delay={200}>
-            <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
+            <div className="w-24 h-px bg-brand-yellow mx-auto mb-6" />
           </ScrollRevealCSS>
 
           <ScrollRevealCSS delay={300}>
@@ -68,8 +68,8 @@ export default function WeddingOrderPage(): ReactElement {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <ScrollRevealCSS delay={0}>
               <div className="text-center">
-                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gold-100 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-yellow-100 flex items-center justify-center">
+                  <svg className="w-6 h-6 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
                 </div>
@@ -80,8 +80,8 @@ export default function WeddingOrderPage(): ReactElement {
 
             <ScrollRevealCSS delay={100}>
               <div className="text-center">
-                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gold-100 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-yellow-100 flex items-center justify-center">
+                  <svg className="w-6 h-6 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
@@ -93,8 +93,8 @@ export default function WeddingOrderPage(): ReactElement {
 
             <ScrollRevealCSS delay={200}>
               <div className="text-center">
-                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gold-100 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-yellow-100 flex items-center justify-center">
+                  <svg className="w-6 h-6 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
@@ -105,8 +105,8 @@ export default function WeddingOrderPage(): ReactElement {
 
             <ScrollRevealCSS delay={300}>
               <div className="text-center">
-                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gold-100 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-yellow-100 flex items-center justify-center">
+                  <svg className="w-6 h-6 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                   </svg>
                 </div>
@@ -122,7 +122,7 @@ export default function WeddingOrderPage(): ReactElement {
       <section className="py-16">
         <div className="max-w-3xl mx-auto px-6">
           <ScrollRevealCSS>
-            <h2 className="font-serif text-3xl text-center text-gray-900 mb-12 tracking-[0.1em]">
+            <h2 className="font-heading text-3xl text-center text-gray-900 mb-12 tracking-[0.1em]">
               FREQUENTLY ASKED QUESTIONS
             </h2>
           </ScrollRevealCSS>
@@ -188,7 +188,7 @@ export default function WeddingOrderPage(): ReactElement {
       <section className="py-16 bg-gray-900">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <ScrollRevealCSS>
-            <h2 className="font-serif text-3xl text-white mb-4 tracking-[0.1em]">
+            <h2 className="font-heading text-3xl text-white mb-4 tracking-[0.1em]">
               NEED HELP WITH YOUR ORDER?
             </h2>
           </ScrollRevealCSS>
@@ -204,7 +204,7 @@ export default function WeddingOrderPage(): ReactElement {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center px-8 py-4 bg-gold-600 text-white rounded-lg font-medium tracking-[0.1em] uppercase hover:bg-gold-700 transition-colors"
+                className="inline-flex items-center justify-center px-8 py-4 bg-brand-yellow text-white rounded-lg font-medium tracking-[0.1em] uppercase hover:bg-yellow-600 transition-colors"
               >
                 Contact Us
               </Link>
@@ -227,17 +227,17 @@ export default function WeddingOrderPage(): ReactElement {
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="text-center md:text-left">
-              <p className="font-serif text-lg text-gray-900 tracking-[0.1em]">PARTY ON DELIVERY</p>
+              <p className="font-heading text-lg text-gray-900 tracking-[0.1em]">PARTY ON DELIVERY</p>
               <p className="text-sm text-gray-500 mt-1">Premium alcohol delivery in Austin, Texas</p>
             </div>
             <div className="flex gap-6">
-              <Link href="/weddings" className="text-sm text-gray-600 hover:text-gold-600 transition-colors">
+              <Link href="/weddings" className="text-sm text-gray-600 hover:text-brand-yellow transition-colors">
                 Wedding Services
               </Link>
-              <Link href="/products" className="text-sm text-gray-600 hover:text-gold-600 transition-colors">
+              <Link href="/products" className="text-sm text-gray-600 hover:text-brand-yellow transition-colors">
                 Full Catalog
               </Link>
-              <Link href="/contact" className="text-sm text-gray-600 hover:text-gold-600 transition-colors">
+              <Link href="/contact" className="text-sm text-gray-600 hover:text-brand-yellow transition-colors">
                 Contact
               </Link>
             </div>

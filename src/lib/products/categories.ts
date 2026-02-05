@@ -98,12 +98,12 @@ export const SHOPIFY_COLLECTIONS = [
     label: "Austin's Favorites",
     category: 'featured',
     colors: {
-      bg: 'bg-gold-50 hover:bg-gold-100',
-      bgActive: 'bg-gold-600',
-      text: 'text-gold-700',
+      bg: 'bg-yellow-50 hover:bg-yellow-100',
+      bgActive: 'bg-brand-yellow',
+      text: 'text-yellow-600',
       textActive: 'text-white',
-      border: 'border-gold-400 hover:border-gold-500',
-      borderActive: 'border-gold-600'
+      border: 'border-brand-yellow hover:border-yellow-500',
+      borderActive: 'border-brand-yellow'
     }
   },
   {
@@ -219,11 +219,11 @@ export const FILTER_OPTIONS = {
       label: 'All Products',
       colors: {
         bg: 'bg-gray-50 hover:bg-gray-100',
-        bgActive: 'bg-gold-600',
+        bgActive: 'bg-brand-yellow',
         text: 'text-gray-700',
         textActive: 'text-white',
-        border: 'border-gray-300 hover:border-gold-400',
-        borderActive: 'border-gold-600'
+        border: 'border-gray-300 hover:border-brand-yellow',
+        borderActive: 'border-brand-yellow'
       }
     },
     {

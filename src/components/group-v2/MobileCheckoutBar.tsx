@@ -26,7 +26,7 @@ export default function MobileCheckoutBar({
   if (myItems.length === 0) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-v2-border shadow-lg p-4 md:hidden">
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg p-4 md:hidden">
       <button
         onClick={onCheckout}
         className="w-full py-3 bg-brand-blue text-white font-semibold rounded-lg hover:bg-brand-blue/90 flex items-center justify-center gap-2 v2-btn-press"

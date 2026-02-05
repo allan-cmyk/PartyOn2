@@ -78,7 +78,7 @@ export default function JoinOrderModal({
           >
             {/* Header */}
             <div className="bg-gray-900 px-6 py-4 flex items-center justify-between">
-              <h2 className="font-serif text-xl text-white tracking-wide">
+              <h2 className="font-heading text-xl text-white tracking-wide">
                 Join an Order
               </h2>
               <button
@@ -104,7 +104,7 @@ export default function JoinOrderModal({
                   value={shareCode}
                   onChange={(e) => setShareCode(e.target.value)}
                   placeholder="e.g., Sarah's Boat Party"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-colors text-gray-900 placeholder:text-gray-400"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors text-gray-900 placeholder:text-gray-400"
                   autoComplete="off"
                   autoFocus
                 />
@@ -124,7 +124,7 @@ export default function JoinOrderModal({
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3 bg-gold-500 hover:bg-gold-600 disabled:bg-gold-300 text-gray-900 font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+                className="w-full py-3 bg-yellow-500 hover:bg-brand-yellow disabled:bg-brand-yellow text-gray-900 font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   <>
@@ -170,7 +170,7 @@ export default function JoinOrderModal({
                     handleClose();
                     document.getElementById('start-order')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="text-gold-600 hover:text-gold-700 font-medium"
+                  className="text-brand-yellow hover:text-yellow-600 font-medium"
                 >
                   Start an order
                 </button>

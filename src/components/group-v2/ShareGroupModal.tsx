@@ -66,8 +66,8 @@ export default function ShareGroupModal({
             Share Code
           </label>
           <div className="flex items-center gap-2">
-            <div className="flex-1 bg-v2-bgSoft border border-v2-border rounded-lg px-4 py-3 text-center">
-              <span className="text-2xl font-mono font-bold tracking-[0.3em] text-v2-text">
+            <div className="flex-1 bg-whiteSoft border border-gray-200 rounded-lg px-4 py-3 text-center">
+              <span className="text-2xl font-mono font-bold tracking-[0.3em] text-gray-900">
                 {shareCode}
               </span>
             </div>
@@ -89,7 +89,7 @@ export default function ShareGroupModal({
             <input
               readOnly
               value={shareUrl}
-              className="flex-1 bg-v2-bgSoft border border-v2-border rounded-lg px-3 py-2 text-sm text-v2-text"
+              className="flex-1 bg-whiteSoft border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900"
             />
             <button
               onClick={() => handleCopy(shareUrl)}
@@ -102,7 +102,7 @@ export default function ShareGroupModal({
 
         <button
           onClick={onClose}
-          className="w-full py-2.5 bg-brand-yellow text-v2-text font-semibold rounded-lg hover:bg-brand-yellow/90"
+          className="w-full py-2.5 bg-brand-yellow text-gray-900 font-semibold rounded-lg hover:bg-brand-yellow/90"
         >
           Done
         </button>

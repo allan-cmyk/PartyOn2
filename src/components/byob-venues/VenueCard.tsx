@@ -83,7 +83,7 @@ export default function VenueCard({ venue }: VenueCardProps) {
   return (
     <article
       className={`group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden ${
-        isPartner ? 'border-2 border-gold-400 ring-1 ring-gold-200' : 'border border-gray-100 hover:border-gold-300'
+        isPartner ? 'border-2 border-brand-yellow ring-1 ring-yellow-200' : 'border border-gray-100 hover:border-brand-yellow'
       }`}
     >
       {/* Image Container - Clickable link to venue website */}
@@ -104,8 +104,8 @@ export default function VenueCard({ venue }: VenueCardProps) {
           <div className="absolute top-2 sm:top-3 left-2 sm:left-3 z-10">
             <span className={`inline-flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-3 py-1 sm:py-1.5 text-[9px] sm:text-xs font-semibold tracking-wide rounded-full shadow-lg ${
               isPremier
-                ? 'bg-gold-500 text-gray-900'
-                : 'bg-gold-400 text-gray-900'
+                ? 'bg-yellow-500 text-gray-900'
+                : 'bg-brand-yellow text-gray-900'
             }`}>
               <svg className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -119,7 +119,7 @@ export default function VenueCard({ venue }: VenueCardProps) {
         {/* Premier Badge */}
         {isPremier && (
           <div className="absolute top-2 sm:top-3 right-2 sm:right-3 z-10">
-            <span className="inline-block px-1.5 sm:px-2 py-0.5 sm:py-1 bg-gray-900 text-gold-400 text-[8px] sm:text-[10px] font-bold tracking-wider rounded">
+            <span className="inline-block px-1.5 sm:px-2 py-0.5 sm:py-1 bg-gray-900 text-brand-yellow text-[8px] sm:text-[10px] font-bold tracking-wider rounded">
               PREMIER
             </span>
           </div>
@@ -145,7 +145,7 @@ export default function VenueCard({ venue }: VenueCardProps) {
       <div className="p-3 sm:p-5">
         {/* Category & Location */}
         <div className="flex flex-wrap items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
-          <span className="text-[10px] sm:text-xs text-gold-700 bg-gold-50 px-1.5 sm:px-2 py-0.5 rounded-full tracking-wide truncate max-w-[80%]">
+          <span className="text-[10px] sm:text-xs text-yellow-600 bg-yellow-50 px-1.5 sm:px-2 py-0.5 rounded-full tracking-wide truncate max-w-[80%]">
             {venue.subcategory}
           </span>
           <span className="text-[10px] sm:text-xs text-gray-500 hidden sm:inline">
@@ -154,7 +154,7 @@ export default function VenueCard({ venue }: VenueCardProps) {
         </div>
 
         {/* Venue Name */}
-        <h3 className="font-serif text-sm sm:text-xl text-gray-900 mb-1 sm:mb-2 tracking-wide group-hover:text-gold-700 transition-colors line-clamp-2 sm:line-clamp-1">
+        <h3 className="font-heading text-sm sm:text-xl text-gray-900 mb-1 sm:mb-2 tracking-wide group-hover:text-yellow-600 transition-colors line-clamp-2 sm:line-clamp-1">
           {venue.name}
         </h3>
 
@@ -165,7 +165,7 @@ export default function VenueCard({ venue }: VenueCardProps) {
             <span>{settingLabels[venue.setting]}</span>
           </div>
           <div className="flex items-center gap-1" title="Price Range">
-            <span className="text-gold-600 font-medium">
+            <span className="text-brand-yellow font-medium">
               {getPriceLabel(venue.priceRange)}
             </span>
           </div>
@@ -175,13 +175,13 @@ export default function VenueCard({ venue }: VenueCardProps) {
         <div className="flex sm:hidden items-center gap-2 text-[10px] text-gray-500 mb-2">
           <span>{settingLabels[venue.setting]}</span>
           <span>•</span>
-          <span className="text-gold-600">{getPriceLabel(venue.priceRange)}</span>
+          <span className="text-brand-yellow">{getPriceLabel(venue.priceRange)}</span>
         </div>
 
         {/* Mobile-only: Read Description button */}
         <button
           onClick={() => setIsModalOpen(true)}
-          className="sm:hidden w-full mb-2 px-2 py-1.5 text-[10px] font-medium text-gold-700 bg-gold-50 hover:bg-gold-100 rounded transition-colors"
+          className="sm:hidden w-full mb-2 px-2 py-1.5 text-[10px] font-medium text-yellow-600 bg-yellow-50 hover:bg-yellow-100 rounded transition-colors"
         >
           Read Description
         </button>
@@ -194,7 +194,7 @@ export default function VenueCard({ venue }: VenueCardProps) {
           {displayText && displayText.length > 150 && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="text-sm text-gold-600 hover:text-gold-700 mt-1 font-medium"
+              className="text-sm text-brand-yellow hover:text-yellow-600 mt-1 font-medium"
             >
               {isExpanded ? 'Show Less' : 'Read More'}
             </button>
@@ -205,7 +205,7 @@ export default function VenueCard({ venue }: VenueCardProps) {
         {isPartner && venue.partnerSlug && (
           <Link
             href={`/venues/${venue.partnerSlug}`}
-            className="block w-full text-center px-2 sm:px-4 py-1.5 sm:py-2.5 text-xs sm:text-sm font-medium text-gray-900 bg-gold-400 hover:bg-gold-500 rounded transition-colors"
+            className="block w-full text-center px-2 sm:px-4 py-1.5 sm:py-2.5 text-xs sm:text-sm font-medium text-gray-900 bg-brand-yellow hover:bg-yellow-500 rounded transition-colors"
           >
             Order Alcohol
           </Link>

@@ -23,9 +23,9 @@ function ServiceCard({
 }: ServiceCardProps) {
   return (
     <div className={`group relative overflow-hidden rounded-2xl transition-shadow ${
-      featured ? 'ring-2 ring-gold-500 shadow-glow' : ''
+      featured ? 'ring-2 ring-yellow-500 shadow-glow' : ''
     }`}>
-      <div className={`card ${featured ? 'border-2 border-gold-500' : ''} h-full flex flex-col`}>
+      <div className={`card ${featured ? 'border-2 border-yellow-500' : ''} h-full flex flex-col`}>
         {/* Featured Badge */}
         {featured && (
           <div className="absolute top-4 right-4 z-10">
@@ -50,11 +50,11 @@ function ServiceCard({
 
         {/* Content */}
         <div className="flex-grow space-y-4">
-          <h3 className="font-serif text-2xl md:text-3xl text-navy-500 group-hover:text-gold-500 transition-colors">
+          <h3 className="font-heading text-2xl md:text-3xl text-gray-900 group-hover:text-yellow-500 transition-colors">
             {title}
           </h3>
           
-          <p className="font-sans text-neutral-600 leading-relaxed">
+          <p className="font-sans text-gray-700 leading-relaxed">
             {description}
           </p>
 
@@ -63,7 +63,7 @@ function ServiceCard({
             {features.map((feature, index) => (
               <li key={index} className="flex items-start space-x-2">
                 <svg
-                  className="w-5 h-5 text-gold-500 flex-shrink-0 mt-0.5"
+                  className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -73,18 +73,18 @@ function ServiceCard({
                     clipRule="evenodd"
                   />
                 </svg>
-                <span className="font-sans text-sm text-neutral-700">{feature}</span>
+                <span className="font-sans text-sm text-gray-700">{feature}</span>
               </li>
             ))}
           </ul>
         </div>
 
         {/* Price and CTA */}
-        <div className="mt-6 pt-6 border-t border-neutral-200 flex items-center justify-between">
+        <div className="mt-6 pt-6 border-t border-gray-200 flex items-center justify-between">
           {price && (
             <div>
-              <p className="text-sm text-neutral-500">Starting from</p>
-              <p className="font-serif text-2xl text-navy-500">{price}</p>
+              <p className="text-sm text-gray-500">Starting from</p>
+              <p className="font-heading text-2xl text-gray-900">{price}</p>
             </div>
           )}
           

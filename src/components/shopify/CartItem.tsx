@@ -89,7 +89,7 @@ export default function CartItem({ item }: CartItemProps) {
           <button
             onClick={() => handleUpdateQuantity(item.quantity - 1)}
             disabled={loading || isRemoving}
-            className="w-8 h-8 border border-gray-300 hover:border-gold-600 transition-colors disabled:opacity-50"
+            className="w-8 h-8 border border-gray-300 hover:border-brand-yellow transition-colors disabled:opacity-50"
             aria-label="Decrease quantity"
           >
             -
@@ -98,7 +98,7 @@ export default function CartItem({ item }: CartItemProps) {
           <button
             onClick={() => handleUpdateQuantity(item.quantity + 1)}
             disabled={loading || isRemoving}
-            className="w-8 h-8 border border-gray-300 hover:border-gold-600 transition-colors disabled:opacity-50"
+            className="w-8 h-8 border border-gray-300 hover:border-brand-yellow transition-colors disabled:opacity-50"
             aria-label="Increase quantity"
           >
             +

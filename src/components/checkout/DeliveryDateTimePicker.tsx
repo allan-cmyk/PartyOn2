@@ -187,8 +187,8 @@ export default function DeliveryDateTimePicker({
             p-2 text-center text-sm rounded transition-all
             ${!isCurrentMonth ? 'text-gray-300 cursor-default' : ''}
             ${isCurrentMonth && !isAvailable ? 'text-gray-300 cursor-not-allowed' : ''}
-            ${isCurrentMonth && isAvailable && !isSelected ? 'hover:bg-gold-100 text-gray-900 cursor-pointer' : ''}
-            ${isSelected ? 'bg-gold-600 text-gray-900 font-semibold' : ''}
+            ${isCurrentMonth && isAvailable && !isSelected ? 'hover:bg-yellow-100 text-gray-900 cursor-pointer' : ''}
+            ${isSelected ? 'bg-brand-yellow text-gray-900 font-semibold' : ''}
             ${isSunday && isCurrentMonth ? 'text-gray-300' : ''}
           `}
         >
@@ -212,7 +212,7 @@ export default function DeliveryDateTimePicker({
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
       {/* Header */}
       <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
-        <h3 className="font-serif text-xl text-gray-900 tracking-[0.1em]">
+        <h3 className="font-heading text-xl text-gray-900 tracking-[0.1em]">
           Delivery Schedule
         </h3>
         <p className="text-sm text-gray-600 mt-1">
@@ -236,8 +236,8 @@ export default function DeliveryDateTimePicker({
                 w-full px-4 py-3 border rounded text-left flex items-center justify-between
                 transition-colors
                 ${selectedDate
-                  ? 'border-gold-600 bg-gold-50'
-                  : 'border-gray-300 hover:border-gold-400'
+                  ? 'border-brand-yellow bg-yellow-50'
+                  : 'border-gray-300 hover:border-brand-yellow'
                 }
               `}
             >
@@ -341,8 +341,8 @@ export default function DeliveryDateTimePicker({
                         onClick={() => onTimeChange(slot)}
                         className={`px-3 py-2 text-sm border transition-all rounded ${
                           isSelected
-                            ? 'border-gold-600 bg-gold-50 text-gold-700 ring-1 ring-gold-600'
-                            : 'border-gray-200 hover:border-gold-400 text-gray-700'
+                            ? 'border-brand-yellow bg-yellow-50 text-yellow-600 ring-1 ring-brand-yellow'
+                            : 'border-gray-200 hover:border-brand-yellow text-gray-700'
                         }`}
                       >
                         {slot}
@@ -372,7 +372,7 @@ export default function DeliveryDateTimePicker({
             value={instructions}
             onChange={(e) => onInstructionsChange(e.target.value)}
             rows={2}
-            className="w-full px-4 py-3 border border-gray-200 rounded focus:border-gold-600 focus:ring-1 focus:ring-gold-600 focus:outline-none transition-colors text-sm"
+            className="w-full px-4 py-3 border border-gray-200 rounded focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow focus:outline-none transition-colors text-sm"
             placeholder="Gate code, building entrance, special instructions..."
           />
         </div>

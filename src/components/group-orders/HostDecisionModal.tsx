@@ -133,7 +133,7 @@ export default function HostDecisionModal({
           description: `Give ${unpaidParticipants.length} participant(s) more time to complete their payments.`,
           warning: 'Participants will be notified of the new deadline.',
           buttonText: 'EXTEND DEADLINE',
-          buttonClass: 'bg-gold-600 hover:bg-gold-700',
+          buttonClass: 'bg-brand-yellow hover:bg-yellow-600',
         }
       default:
         return {
@@ -214,11 +214,11 @@ export default function HostDecisionModal({
 
                 <button
                   onClick={() => handleDecisionSelect('EXTEND_DEADLINE')}
-                  className="w-full p-4 border-2 border-gray-200 rounded-lg hover:border-gold-500 hover:bg-gold-50 transition-all text-left group"
+                  className="w-full p-4 border-2 border-gray-200 rounded-lg hover:border-yellow-500 hover:bg-yellow-50 transition-all text-left group"
                 >
                   <div className="flex items-start">
-                    <div className="w-10 h-10 bg-gold-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0 group-hover:bg-gold-200">
-                      <svg className="w-5 h-5 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0 group-hover:bg-yellow-200">
+                      <svg className="w-5 h-5 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
@@ -264,7 +264,7 @@ export default function HostDecisionModal({
                     value={newDeadline}
                     onChange={(e) => setNewDeadline(e.target.value)}
                     min={new Date().toISOString().slice(0, 16)}
-                    className="w-full border border-gray-300 rounded p-3 focus:ring-2 focus:ring-gold-500 focus:border-gold-500"
+                    className="w-full border border-gray-300 rounded p-3 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
                   />
                 </div>
               )}

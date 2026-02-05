@@ -96,7 +96,7 @@ export default function MobileNavigation() {
             <motion.span 
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              className="absolute -top-2 -right-2 bg-gold-600 text-gray-900 text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium"
+              className="absolute -top-2 -right-2 bg-brand-yellow text-gray-900 text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium"
             >
               {itemCount}
             </motion.span>
@@ -139,10 +139,10 @@ export default function MobileNavigation() {
                       onClick={item.action}
                       className="flex flex-col items-center justify-center px-3 py-2 flex-1 min-w-0 active:bg-gray-50 transition-colors rounded-lg"
                     >
-                      <div className={`transition-colors ${isActive ? 'text-gold-600' : 'text-gray-600'}`}>
+                      <div className={`transition-colors ${isActive ? 'text-brand-yellow' : 'text-gray-600'}`}>
                         {item.icon}
                       </div>
-                      <span className={`text-xs mt-1 tracking-[0.05em] font-medium ${isActive ? 'text-gold-600' : 'text-gray-600'}`}>
+                      <span className={`text-xs mt-1 tracking-[0.05em] font-medium ${isActive ? 'text-brand-yellow' : 'text-gray-600'}`}>
                         {item.label}
                       </span>
                     </button>
@@ -155,10 +155,10 @@ export default function MobileNavigation() {
                     href={item.href}
                     className="flex flex-col items-center justify-center px-3 py-2 flex-1 min-w-0 active:bg-gray-50 transition-colors rounded-lg"
                   >
-                    <div className={`transition-colors ${isActive ? 'text-gold-600' : 'text-gray-600'}`}>
+                    <div className={`transition-colors ${isActive ? 'text-brand-yellow' : 'text-gray-600'}`}>
                       {item.icon}
                     </div>
-                    <span className={`text-xs mt-1 tracking-[0.05em] font-medium ${isActive ? 'text-gold-600' : 'text-gray-600'}`}>
+                    <span className={`text-xs mt-1 tracking-[0.05em] font-medium ${isActive ? 'text-brand-yellow' : 'text-gray-600'}`}>
                       {item.label}
                     </span>
                   </Link>

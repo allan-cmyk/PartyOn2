@@ -46,7 +46,7 @@ export default function JoinGroupForm({ groupOrder, onJoined }: Props): ReactEle
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500 focus:border-gold-500"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
           placeholder="Enter your name"
         />
       </div>
@@ -60,7 +60,7 @@ export default function JoinGroupForm({ groupOrder, onJoined }: Props): ReactEle
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500 focus:border-gold-500"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
           placeholder="your@email.com"
         />
       </div>
@@ -72,7 +72,7 @@ export default function JoinGroupForm({ groupOrder, onJoined }: Props): ReactEle
           required
           checked={ageVerified}
           onChange={(e) => setAgeVerified(e.target.checked)}
-          className="mt-1 h-4 w-4 rounded border-gray-300 text-gold-600 focus:ring-gold-500"
+          className="mt-1 h-4 w-4 rounded border-gray-300 text-brand-yellow focus:ring-yellow-500"
         />
         <label htmlFor="age-verify" className="text-sm text-gray-600">
           I confirm I am 21 years of age or older. Valid ID will be required at

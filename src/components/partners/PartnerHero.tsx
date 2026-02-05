@@ -11,7 +11,7 @@ interface PartnerHeroProps {
 
 /** Icon component for bullet points */
 function BulletIcon({ type }: { type: BulletPoint['icon'] }): ReactElement {
-  const iconClass = 'w-5 h-5 text-gold-400';
+  const iconClass = 'w-5 h-5 text-brand-yellow';
 
   switch (type) {
     case 'delivery':
@@ -45,7 +45,7 @@ function BulletIcon({ type }: { type: BulletPoint['icon'] }): ReactElement {
 /** Price indicator display */
 function PriceIndicator({ price }: { price: '$' | '$$' | '$$$' }): ReactElement {
   return (
-    <div className="flex items-center gap-1 text-gold-400">
+    <div className="flex items-center gap-1 text-brand-yellow">
       {price.split('').map((_, i) => (
         <span key={i} className="text-lg font-semibold">$</span>
       ))}
@@ -83,10 +83,10 @@ export default function PartnerHero({ partner }: PartnerHeroProps): ReactElement
         {/* Content */}
         <div className="relative z-10 text-center text-white px-6 max-w-4xl mx-auto">
           {/* Partner Name & Tagline */}
-          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold mb-2 tracking-wide">
+          <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold mb-2 tracking-wide">
             {partner.name}
           </h1>
-          <p className="text-gold-400 uppercase tracking-[0.2em] text-sm md:text-base mb-6">
+          <p className="text-brand-yellow uppercase tracking-[0.2em] text-sm md:text-base mb-6">
             {partner.tagline}
           </p>
 
@@ -113,7 +113,7 @@ export default function PartnerHero({ partner }: PartnerHeroProps): ReactElement
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={scrollToOrder}
-              className="px-8 py-3 bg-gold-500 hover:bg-gold-600 text-gray-900 font-semibold rounded-lg transition-colors text-lg tracking-wide"
+              className="px-8 py-3 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-semibold rounded-lg transition-colors text-lg tracking-wide"
             >
               Start an Order
             </button>

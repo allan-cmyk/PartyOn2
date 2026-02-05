@@ -120,7 +120,7 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                 placeholder="Enter your password"
                 required
                 autoFocus
@@ -163,7 +163,7 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14">
             <div className="flex items-center gap-8">
-              <span className="font-semibold text-gold-400">
+              <span className="font-semibold text-brand-yellow">
                 Party On Staff
               </span>
               <div className="flex gap-1">

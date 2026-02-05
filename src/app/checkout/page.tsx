@@ -266,7 +266,7 @@ export default function CheckoutPage() {
   if (cartLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-yellow"></div>
       </div>
     );
   }
@@ -279,7 +279,7 @@ export default function CheckoutPage() {
             <h1 className="font-cormorant text-4xl mb-4">Your Cart is Empty</h1>
             <p className="text-gray-600 mb-8">Add some products to your cart to proceed with checkout.</p>
             <Link href="/products">
-              <button className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors">
+              <button className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors">
                 SHOP PRODUCTS
               </button>
             </Link>
@@ -298,7 +298,7 @@ export default function CheckoutPage() {
           <div className="mb-6">
             <Link
               href="/order"
-              className="inline-flex items-center text-gray-600 hover:text-gold-600 transition-colors"
+              className="inline-flex items-center text-gray-600 hover:text-brand-yellow transition-colors"
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -336,7 +336,7 @@ export default function CheckoutPage() {
                     <p className="text-sm mb-3">Already have an account?</p>
                     <button 
                       onClick={() => setShowAuthModal(true)}
-                      className="text-gold-600 hover:underline text-sm"
+                      className="text-brand-yellow hover:underline text-sm"
                     >
                       Sign in for faster checkout →
                     </button>
@@ -352,7 +352,7 @@ export default function CheckoutPage() {
                       type="text"
                       value={billingAddress.firstName}
                       onChange={(e) => setBillingAddress({...billingAddress, firstName: e.target.value})}
-                      className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none"
+                      className="w-full px-4 py-2 border border-gray-300 focus:border-brand-yellow focus:outline-none"
                       required
                     />
                   </div>
@@ -364,7 +364,7 @@ export default function CheckoutPage() {
                       type="text"
                       value={billingAddress.lastName}
                       onChange={(e) => setBillingAddress({...billingAddress, lastName: e.target.value})}
-                      className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none"
+                      className="w-full px-4 py-2 border border-gray-300 focus:border-brand-yellow focus:outline-none"
                       required
                     />
                   </div>
@@ -379,7 +379,7 @@ export default function CheckoutPage() {
                       type="email"
                       value={billingAddress.email}
                       onChange={(e) => setBillingAddress({...billingAddress, email: e.target.value})}
-                      className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none"
+                      className="w-full px-4 py-2 border border-gray-300 focus:border-brand-yellow focus:outline-none"
                       required
                     />
                   </div>
@@ -391,7 +391,7 @@ export default function CheckoutPage() {
                       type="tel"
                       value={billingAddress.phone}
                       onChange={(e) => setBillingAddress({...billingAddress, phone: e.target.value})}
-                      className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none"
+                      className="w-full px-4 py-2 border border-gray-300 focus:border-brand-yellow focus:outline-none"
                       required
                     />
                   </div>
@@ -421,7 +421,7 @@ export default function CheckoutPage() {
                       type="text"
                       value={billingAddress.address1}
                       onChange={(e) => setBillingAddress({...billingAddress, address1: e.target.value})}
-                      className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none"
+                      className="w-full px-4 py-2 border border-gray-300 focus:border-brand-yellow focus:outline-none"
                       placeholder="123 Main St"
                       required
                     />
@@ -435,7 +435,7 @@ export default function CheckoutPage() {
                       type="text"
                       value={billingAddress.address2}
                       onChange={(e) => setBillingAddress({...billingAddress, address2: e.target.value})}
-                      className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none"
+                      className="w-full px-4 py-2 border border-gray-300 focus:border-brand-yellow focus:outline-none"
                       placeholder="Apt 4B"
                     />
                   </div>
@@ -449,7 +449,7 @@ export default function CheckoutPage() {
                         type="text"
                         value={billingAddress.city}
                         onChange={(e) => setBillingAddress({...billingAddress, city: e.target.value})}
-                        className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none"
+                        className="w-full px-4 py-2 border border-gray-300 focus:border-brand-yellow focus:outline-none"
                         required
                       />
                     </div>
@@ -472,7 +472,7 @@ export default function CheckoutPage() {
                         type="text"
                         value={billingAddress.zip}
                         onChange={(e) => setBillingAddress({...billingAddress, zip: e.target.value})}
-                        className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none"
+                        className="w-full px-4 py-2 border border-gray-300 focus:border-brand-yellow focus:outline-none"
                         required
                       />
                     </div>
@@ -511,12 +511,12 @@ export default function CheckoutPage() {
                       onKeyDown={(e) => e.key === 'Enter' && handleApplyDiscount()}
                       placeholder="Discount code"
                       disabled={isApplyingDiscount}
-                      className="flex-1 px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:border-gold-600"
+                      className="flex-1 px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:border-brand-yellow"
                     />
                     <button
                       onClick={handleApplyDiscount}
                       disabled={isApplyingDiscount || !discountCode.trim()}
-                      className="px-4 py-2 bg-gray-900 text-white text-sm hover:bg-gold-600 transition-colors disabled:opacity-50"
+                      className="px-4 py-2 bg-gray-900 text-white text-sm hover:bg-brand-yellow transition-colors disabled:opacity-50"
                     >
                       {isApplyingDiscount ? 'APPLYING...' : 'APPLY'}
                     </button>
@@ -597,7 +597,7 @@ export default function CheckoutPage() {
                           type="checkbox"
                           checked={applyLoyaltyPoints}
                           onChange={(e) => setApplyLoyaltyPoints(e.target.checked)}
-                          className="rounded border-gray-300 text-gold-600 focus:ring-gold-600"
+                          className="rounded border-gray-300 text-brand-yellow focus:ring-brand-yellow"
                         />
                       </label>
                       {applyLoyaltyPoints && (
@@ -620,11 +620,11 @@ export default function CheckoutPage() {
                     type="checkbox"
                     checked={acceptTerms}
                     onChange={(e) => setAcceptTerms(e.target.checked)}
-                    className="mt-0.5 rounded border-gray-300 text-gold-600 focus:ring-gold-600"
+                    className="mt-0.5 rounded border-gray-300 text-brand-yellow focus:ring-brand-yellow"
                   />
                   <span className="text-gray-600">
                     I confirm I am 21+ years old and agree to the{' '}
-                    <Link href="/terms" className="text-gold-600 hover:underline">
+                    <Link href="/terms" className="text-brand-yellow hover:underline">
                       terms and conditions
                     </Link>
                   </span>
@@ -643,7 +643,7 @@ export default function CheckoutPage() {
                   disabled={!acceptTerms || !deliveryDate || !deliveryTime || isProcessingCheckout}
                   className={`w-full mt-6 py-4 font-medium tracking-[0.15em] transition-colors ${
                     acceptTerms && deliveryDate && deliveryTime && !isProcessingCheckout
-                      ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
+                      ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
                 >

@@ -26,10 +26,10 @@ export default function KegServiceAreas() {
     <section className="py-24 bg-gray-50">
       <div className="max-w-6xl mx-auto px-8">
         <ScrollRevealCSS duration={800} y={20} className="text-center mb-12">
-          <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+          <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
             Keg Delivery Areas
           </h2>
-          <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+          <div className="w-16 h-px bg-brand-yellow mx-auto mb-6" />
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
             We deliver cold kegs throughout Austin and the surrounding Hill Country.
           </p>
@@ -45,7 +45,7 @@ export default function KegServiceAreas() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-xl text-gray-900 tracking-[0.05em]">
+                <h3 className="font-heading text-xl text-gray-900 tracking-[0.05em]">
                   We Deliver To
                 </h3>
               </div>
@@ -72,7 +72,7 @@ export default function KegServiceAreas() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-xl text-gray-900 tracking-[0.05em]">
+                <h3 className="font-heading text-xl text-gray-900 tracking-[0.05em]">
                   Lake Travis Dock Delivery
                 </h3>
               </div>
@@ -83,7 +83,7 @@ export default function KegServiceAreas() {
               </p>
               <Link
                 href="/boat-parties"
-                className="inline-block text-gold-600 hover:text-gold-700 font-medium tracking-[0.1em] text-sm"
+                className="inline-block text-brand-yellow hover:text-yellow-600 font-medium tracking-[0.1em] text-sm"
               >
                 LEARN ABOUT BOAT PARTY DELIVERY →
               </Link>

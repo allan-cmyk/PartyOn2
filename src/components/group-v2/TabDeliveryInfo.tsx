@@ -14,17 +14,17 @@ export default function TabDeliveryInfo({ tab, isHost, onEdit }: Props): ReactEl
   const addr = tab.deliveryAddress;
 
   return (
-    <div className="bg-v2-bgSoft rounded-xl p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div className="bg-whiteSoft rounded-xl p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <div className="space-y-2">
         <div className="flex items-center gap-3 flex-wrap">
-          <span className="text-lg font-semibold text-v2-text">
+          <span className="text-lg font-semibold text-gray-900">
             {new Date(tab.deliveryDate).toLocaleDateString('en-US', {
               weekday: 'long',
               month: 'long',
               day: 'numeric',
             })}
           </span>
-          <span className="text-lg text-v2-muted">at {tab.deliveryTime}</span>
+          <span className="text-lg text-gray-500">at {tab.deliveryTime}</span>
           {isPastDeadline && (
             <span className="text-sm font-semibold px-3 py-1 rounded-full bg-red-100 text-red-700">
               Past Deadline
@@ -36,7 +36,7 @@ export default function TabDeliveryInfo({ tab, isHost, onEdit }: Props): ReactEl
             </span>
           )}
         </div>
-        <p className="text-base text-v2-muted">
+        <p className="text-base text-gray-500">
           {addr?.address1 ?? ''}
           {addr?.address2 ? `, ${addr.address2}` : ''}
           {addr?.city ? `, ${addr.city}` : ''}
@@ -44,15 +44,15 @@ export default function TabDeliveryInfo({ tab, isHost, onEdit }: Props): ReactEl
           {addr?.zip ?? ''}
         </p>
         {tab.deliveryNotes && (
-          <p className="text-base text-v2-muted">Notes: {tab.deliveryNotes}</p>
+          <p className="text-base text-gray-500">Notes: {tab.deliveryNotes}</p>
         )}
       </div>
 
       <div className="flex items-center gap-4">
         {tab.orderDeadline && (
-          <div className="text-base text-v2-muted">
+          <div className="text-base text-gray-500">
             <span>Deadline: </span>
-            <span className={`font-semibold ${isPastDeadline ? 'text-red-600' : 'text-v2-text'}`}>
+            <span className={`font-semibold ${isPastDeadline ? 'text-red-600' : 'text-gray-900'}`}>
               {new Date(tab.orderDeadline).toLocaleString('en-US', {
                 month: 'short',
                 day: 'numeric',
@@ -65,7 +65,7 @@ export default function TabDeliveryInfo({ tab, isHost, onEdit }: Props): ReactEl
         {isHost && onEdit && tab.status === 'OPEN' && !isPastDeadline && (
           <button
             onClick={onEdit}
-            className="text-base font-semibold text-v2-muted hover:text-brand-blue px-3 py-1.5 rounded-lg hover:bg-v2-blueTint transition-colors"
+            className="text-base font-semibold text-gray-500 hover:text-brand-blue px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors"
           >
             Edit
           </button>

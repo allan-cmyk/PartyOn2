@@ -24,8 +24,8 @@ export default function PolishedNavigation() {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <span className={`text-3xl font-display tracking-tight transition-colors duration-300 ${
-              isScrolled ? 'text-royal-800' : 'text-white'
+            <span className={`text-3xl font-heading tracking-tight transition-colors duration-300 ${
+              isScrolled ? 'text-gray-900' : 'text-white'
             }`}>
               PartyOn
             </span>
@@ -34,25 +34,25 @@ export default function PolishedNavigation() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-12">
             <Link href="/services" className={`font-medium transition-colors ${
-              isScrolled ? 'text-gray-700 hover:text-royal-600' : 'text-white hover:text-gold-400'
+              isScrolled ? 'text-gray-700 hover:text-brand-blue' : 'text-white hover:text-brand-yellow'
             }`}>
               Services
             </Link>
             <Link href="/about" className={`font-medium transition-colors ${
-              isScrolled ? 'text-gray-700 hover:text-royal-600' : 'text-white hover:text-gold-400'
+              isScrolled ? 'text-gray-700 hover:text-brand-blue' : 'text-white hover:text-brand-yellow'
             }`}>
               About
             </Link>
             <Link href="/contact" className={`font-medium transition-colors ${
-              isScrolled ? 'text-gray-700 hover:text-royal-600' : 'text-white hover:text-gold-400'
+              isScrolled ? 'text-gray-700 hover:text-brand-blue' : 'text-white hover:text-brand-yellow'
             }`}>
               Contact
             </Link>
             <Link href="/consultation">
               <button className={`px-8 py-3 rounded-full font-semibold transition-all duration-300 ${
                 isScrolled 
-                  ? 'bg-royal-600 text-white hover:bg-royal-700' 
-                  : 'bg-gold-500 text-royal-900 hover:bg-gold-400'
+                  ? 'bg-brand-blue text-white hover:bg-blue-700' 
+                  : 'bg-yellow-500 text-gray-900 hover:bg-brand-yellow'
               }`}>
                 Get Started
               </button>
@@ -62,7 +62,7 @@ export default function PolishedNavigation() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={`md:hidden p-2 ${isScrolled ? 'text-royal-800' : 'text-white'}`}
+            className={`md:hidden p-2 ${isScrolled ? 'text-gray-900' : 'text-white'}`}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {isMobileMenuOpen ? (
@@ -93,7 +93,7 @@ export default function PolishedNavigation() {
               Contact
             </Link>
             <Link href="/consultation" className="block">
-              <button className="w-full py-3 bg-royal-600 text-white rounded-full font-semibold">
+              <button className="w-full py-3 bg-brand-blue text-white rounded-full font-semibold">
                 Get Started
               </button>
             </Link>

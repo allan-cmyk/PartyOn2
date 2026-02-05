@@ -64,17 +64,17 @@ export default function KegsPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/90" />
 
         <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8 pt-24 pb-16">
-          <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
+          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
             Cold Beer Kegs
-            <span className="block text-gold-400 mt-2">DELIVERED TO YOUR DOOR</span>
+            <span className="block text-brand-yellow mt-2">DELIVERED TO YOUR DOOR</span>
           </h1>
-          <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
+          <div className="w-24 h-px bg-brand-yellow mx-auto mb-6" />
           <p className="text-lg md:text-xl font-light tracking-[0.1em] text-gray-200 mb-8">
             Keg delivery for parties, weddings, tailgates, and events throughout Austin.
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
             <Link href="/contact">
-              <button className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
                 REQUEST A QUOTE
               </button>
             </Link>
@@ -100,18 +100,18 @@ export default function KegsPage() {
       <section className="py-24">
         <div className="max-w-6xl mx-auto px-8">
           <ScrollRevealCSS duration={800} y={20} className="text-center mb-16">
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               How Keg Delivery Works
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto" />
           </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <ScrollRevealCSS duration={800} y={20} delay={100} className="text-center">
-              <div className="w-20 h-20 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-3xl font-serif text-gold-600">1</span>
+              <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-3xl font-heading text-brand-yellow">1</span>
               </div>
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Choose Your Brew
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -124,10 +124,10 @@ export default function KegsPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={200} className="text-center">
-              <div className="w-20 h-20 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-3xl font-serif text-gold-600">2</span>
+              <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-3xl font-heading text-brand-yellow">2</span>
               </div>
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Schedule Delivery
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -137,10 +137,10 @@ export default function KegsPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={300} className="text-center">
-              <div className="w-20 h-20 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-3xl font-serif text-gold-600">3</span>
+              <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-3xl font-heading text-brand-yellow">3</span>
               </div>
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Party On
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -166,8 +166,8 @@ export default function KegsPage() {
         <div className="max-w-4xl mx-auto px-8">
           <div className="flex flex-wrap justify-center gap-8 md:gap-16">
             <ScrollRevealCSS duration={800} y={20} delay={100} className="text-center">
-              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
@@ -176,8 +176,8 @@ export default function KegsPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={200} className="text-center">
-              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
@@ -186,8 +186,8 @@ export default function KegsPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={300} className="text-center">
-              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
@@ -196,8 +196,8 @@ export default function KegsPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={400} className="text-center">
-              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                 </svg>
               </div>
@@ -212,15 +212,15 @@ export default function KegsPage() {
       <section className="py-24 bg-gray-50">
         <div className="max-w-4xl mx-auto px-8">
           <ScrollRevealCSS duration={800} y={20} className="text-center mb-16">
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               Frequently Asked Questions
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto" />
           </ScrollRevealCSS>
 
           <div className="space-y-6">
             <ScrollRevealCSS duration={800} y={20} delay={100} className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.05em]">
                 How quickly can I get a keg delivered in Austin?
               </h3>
               <p className="text-gray-600 leading-relaxed">
@@ -231,7 +231,7 @@ export default function KegsPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={150} className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.05em]">
                 What&apos;s the difference between 1/2, 1/4, and 1/6 barrel kegs?
               </h3>
               <p className="text-gray-600 leading-relaxed">
@@ -242,7 +242,7 @@ export default function KegsPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={200} className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.05em]">
                 Do you provide taps and ice tubs with keg delivery?
               </h3>
               <p className="text-gray-600 leading-relaxed">
@@ -253,7 +253,7 @@ export default function KegsPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={250} className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.05em]">
                 Is there a keg deposit? How do returns work?
               </h3>
               <p className="text-gray-600 leading-relaxed">
@@ -264,13 +264,13 @@ export default function KegsPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={300} className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.05em]">
                 Can you deliver kegs to Lake Travis boat docks?
               </h3>
               <p className="text-gray-600 leading-relaxed">
                 Absolutely! We specialize in Lake Travis dock delivery to marinas including
                 Lakeway Marina, Point Venture, Volente Beach, and Hudson Bend. Check out our{' '}
-                <Link href="/boat-parties" className="text-gold-600 hover:text-gold-700 underline">
+                <Link href="/boat-parties" className="text-brand-yellow hover:text-yellow-600 underline">
                   boat party delivery page
                 </Link>{' '}
                 for more details.
@@ -278,7 +278,7 @@ export default function KegsPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={350} className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.05em]">
                 How long does a keg stay fresh after tapping?
               </h3>
               <p className="text-gray-600 leading-relaxed">
@@ -289,7 +289,7 @@ export default function KegsPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={400} className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.05em]">
                 Do you deliver Miller Lite and Corona kegs same-day?
               </h3>
               <p className="text-gray-600 leading-relaxed">
@@ -300,7 +300,7 @@ export default function KegsPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={450} className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.05em]">
                 What areas of Austin do you deliver kegs to?
               </h3>
               <p className="text-gray-600 leading-relaxed">
@@ -317,7 +317,7 @@ export default function KegsPage() {
       <section className="py-24 bg-gray-900">
         <div className="max-w-4xl mx-auto px-8 text-center">
           <ScrollRevealCSS duration={800} y={20}>
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-white mb-6 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-4xl md:text-5xl text-white mb-6 tracking-[0.1em]">
               Ready to Order Your Keg?
             </h2>
             <p className="text-gray-300 text-lg mb-12 tracking-[0.05em]">
@@ -325,12 +325,12 @@ export default function KegsPage() {
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link href="/contact">
-                <button className="px-10 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm">
                   REQUEST A QUOTE
                 </button>
               </Link>
               <a href="tel:7373719700">
-                <button className="px-10 py-4 border-2 border-gold-600 text-white hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 border-2 border-brand-yellow text-white hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
                   CALL (737) 371-9700
                 </button>
               </a>
@@ -356,19 +356,19 @@ export default function KegsPage() {
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SERVICES</h4>
               <ul className="space-y-2">
-                <li><Link href="/kegs" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Keg Delivery</Link></li>
-                <li><Link href="/weddings" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Weddings</Link></li>
-                <li><Link href="/boat-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Boat Parties</Link></li>
-                <li><Link href="/corporate" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Corporate</Link></li>
+                <li><Link href="/kegs" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Keg Delivery</Link></li>
+                <li><Link href="/weddings" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Weddings</Link></li>
+                <li><Link href="/boat-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Boat Parties</Link></li>
+                <li><Link href="/corporate" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Corporate</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">KEGS</h4>
               <ul className="space-y-2">
-                <li><Link href="/products/miller-lite-keg" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Miller Lite</Link></li>
-                <li><Link href="/products/corona-extra-1-2-barrel" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Corona Extra</Link></li>
-                <li><Link href="/contact" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Request a Brand</Link></li>
-                <li><Link href="/faqs" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">FAQs</Link></li>
+                <li><Link href="/products/miller-lite-keg" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Miller Lite</Link></li>
+                <li><Link href="/products/corona-extra-1-2-barrel" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Corona Extra</Link></li>
+                <li><Link href="/contact" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Request a Brand</Link></li>
+                <li><Link href="/faqs" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">FAQs</Link></li>
               </ul>
             </div>
             <div>
@@ -383,8 +383,8 @@ export default function KegsPage() {
           <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">© 2024 PartyOn Delivery. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="/terms" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Terms</Link>
-              <Link href="/privacy" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Privacy</Link>
+              <Link href="/terms" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Terms</Link>
+              <Link href="/privacy" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Privacy</Link>
             </div>
           </div>
         </div>
@@ -402,7 +402,7 @@ export default function KegsPage() {
           >
             <button
               onClick={() => openCart()}
-              className="w-full py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors text-sm tracking-[0.1em] flex items-center justify-center gap-2"
+              className="w-full py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors text-sm tracking-[0.1em] flex items-center justify-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />

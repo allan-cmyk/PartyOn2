@@ -36,13 +36,13 @@ export default function PremiumNavigation() {
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
             >
-              <span className={`text-2xl font-display tracking-wide transition-colors duration-300 ${
-                isScrolled ? 'text-royal-800' : 'text-white'
+              <span className={`text-2xl font-heading tracking-wide transition-colors duration-300 ${
+                isScrolled ? 'text-gray-900' : 'text-white'
               }`}>
                 PartyOn
               </span>
               <span className={`ml-2 text-xs font-medium tracking-widest transition-colors duration-300 ${
-                isScrolled ? 'text-gold-600' : 'text-gold-400'
+                isScrolled ? 'text-brand-yellow' : 'text-brand-yellow'
               }`}>
                 PREMIUM
               </span>
@@ -61,12 +61,12 @@ export default function PremiumNavigation() {
                 <Link 
                   href={`/${item.toLowerCase()}`} 
                   className={`relative font-medium tracking-wide transition-colors duration-300 ${
-                    isScrolled ? 'text-slate-700 hover:text-royal-600' : 'text-white/90 hover:text-white'
+                    isScrolled ? 'text-slate-700 hover:text-brand-blue' : 'text-white/90 hover:text-white'
                   }`}
                 >
                   <span>{item}</span>
                   <motion.span
-                    className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gold-500"
+                    className="absolute -bottom-1 left-0 w-0 h-0.5 bg-yellow-500"
                     whileHover={{ width: '100%' }}
                     transition={{ duration: 0.3 }}
                   />
@@ -82,8 +82,8 @@ export default function PremiumNavigation() {
               <Link href="/consultation">
                 <button className={`px-8 py-3 rounded-full font-medium transition-all duration-300 transform hover:scale-105 ${
                   isScrolled 
-                    ? 'bg-royal-500 text-white hover:bg-royal-600 shadow-md' 
-                    : 'bg-gold-500 text-royal-900 hover:bg-gold-400'
+                    ? 'bg-blue-500 text-white hover:bg-brand-blue shadow-md' 
+                    : 'bg-yellow-500 text-gray-900 hover:bg-brand-yellow'
                 }`}>
                   Get Started
                 </button>
@@ -95,7 +95,7 @@ export default function PremiumNavigation() {
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className={`lg:hidden p-2 transition-colors duration-300 ${
-              isScrolled ? 'text-royal-800' : 'text-white'
+              isScrolled ? 'text-gray-900' : 'text-white'
             }`}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -123,7 +123,7 @@ export default function PremiumNavigation() {
             <Link 
               key={item}
               href={`/${item.toLowerCase()}`} 
-              className="block py-3 text-slate-700 font-medium hover:text-royal-600 transition-colors"
+              className="block py-3 text-slate-700 font-medium hover:text-brand-blue transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               {item}
@@ -131,7 +131,7 @@ export default function PremiumNavigation() {
           ))}
           <Link 
             href="/consultation" 
-            className="block py-3 px-8 bg-royal-500 text-white text-center rounded-full font-medium hover:bg-royal-600 transition-colors"
+            className="block py-3 px-8 bg-blue-500 text-white text-center rounded-full font-medium hover:bg-brand-blue transition-colors"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             Get Started

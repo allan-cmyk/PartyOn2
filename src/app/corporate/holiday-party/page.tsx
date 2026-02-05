@@ -142,7 +142,7 @@ export default function CorporateHolidayPartyPage() {
   const benefits = [
     {
       icon: (
-        <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-12 h-12 mx-auto text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
       ),
@@ -151,7 +151,7 @@ export default function CorporateHolidayPartyPage() {
     },
     {
       icon: (
-        <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-12 h-12 mx-auto text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       ),
@@ -160,7 +160,7 @@ export default function CorporateHolidayPartyPage() {
     },
     {
       icon: (
-        <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-12 h-12 mx-auto text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
         </svg>
       ),
@@ -169,7 +169,7 @@ export default function CorporateHolidayPartyPage() {
     },
     {
       icon: (
-        <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-12 h-12 mx-auto text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
         </svg>
       ),
@@ -178,7 +178,7 @@ export default function CorporateHolidayPartyPage() {
     },
     {
       icon: (
-        <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-12 h-12 mx-auto text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
         </svg>
       ),
@@ -187,7 +187,7 @@ export default function CorporateHolidayPartyPage() {
     },
     {
       icon: (
-        <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-12 h-12 mx-auto text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
       ),
@@ -297,10 +297,10 @@ export default function CorporateHolidayPartyPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-black/50" />
 
         <div className="hero-fade-in relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-0 text-white">
-          <p className="text-gold-400 text-sm sm:text-base tracking-[0.2em] mb-4 font-medium">
+          <p className="text-brand-yellow text-sm sm:text-base tracking-[0.2em] mb-4 font-medium">
             CORPORATE HOLIDAY PARTIES
           </p>
-          <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-6 tracking-tight sm:tracking-[0.05em] max-w-4xl leading-snug sm:leading-tight">
+          <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-6 tracking-tight sm:tracking-[0.05em] max-w-4xl leading-snug sm:leading-tight">
             One Stop Shop - Drinks, Ice, Supplies - Delivered and Set Up.
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl max-w-3xl leading-relaxed mb-8 text-gray-200">
@@ -309,7 +309,7 @@ export default function CorporateHolidayPartyPage() {
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-2">
             <button
               onClick={handleScheduleCall}
-              className="px-8 py-4 bg-gold-600 text-black hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
+              className="px-8 py-4 bg-brand-yellow text-black hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm font-medium"
             >
               GET YOUR FREE QUOTE
             </button>
@@ -328,25 +328,25 @@ export default function CorporateHolidayPartyPage() {
         <div className="max-w-6xl mx-auto px-8">
           <div className="flex flex-wrap justify-center gap-8 text-gray-300 text-sm">
             <div className="flex items-center">
-              <svg className="w-5 h-5 mr-2 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
               </svg>
               TABC Licensed #P-200084398
             </div>
             <div className="flex items-center">
-              <svg className="w-5 h-5 mr-2 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
               </svg>
               Fully Insured
             </div>
             <div className="flex items-center">
-              <svg className="w-5 h-5 mr-2 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
               </svg>
               Austin Local Since 2023
             </div>
             <div className="flex items-center">
-              <svg className="w-5 h-5 mr-2 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
               </svg>
               20-500+ Guests
@@ -359,7 +359,7 @@ export default function CorporateHolidayPartyPage() {
       <section className="py-20 px-8">
         <div className="max-w-7xl mx-auto">
           <ScrollRevealCSS duration={600} y={20} className="text-center mb-16">
-            <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading text-4xl text-gray-900 mb-4 tracking-[0.1em]">
               Why Companies Choose Us for Holiday Parties
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -377,7 +377,7 @@ export default function CorporateHolidayPartyPage() {
                 className="text-center p-6"
               >
                 {benefit.icon}
-                <h3 className="font-serif text-xl text-gray-900 mt-6 mb-3 tracking-[0.05em]">
+                <h3 className="font-heading text-xl text-gray-900 mt-6 mb-3 tracking-[0.05em]">
                   {benefit.title}
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
@@ -393,7 +393,7 @@ export default function CorporateHolidayPartyPage() {
       <section className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-8">
           <ScrollRevealCSS duration={600} y={20} className="text-center mb-16">
-            <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading text-4xl text-gray-900 mb-4 tracking-[0.1em]">
               Reviews from Real Austin Companies
             </h2>
             <div className="flex justify-center items-center gap-1 mb-2">
@@ -474,7 +474,7 @@ export default function CorporateHolidayPartyPage() {
       <section className="py-20">
         <div className="max-w-6xl mx-auto px-8">
           <ScrollRevealCSS duration={600} y={20} className="text-center mb-16">
-            <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading text-4xl text-gray-900 mb-4 tracking-[0.1em]">
               How It Works
             </h2>
             <p className="text-lg text-gray-600">
@@ -491,10 +491,10 @@ export default function CorporateHolidayPartyPage() {
                 y={20}
                 className="text-center"
               >
-                <div className="w-16 h-16 mx-auto mb-6 bg-gold-600 text-gray-900 rounded-full flex items-center justify-center">
-                  <span className="font-serif text-2xl">{step.step}</span>
+                <div className="w-16 h-16 mx-auto mb-6 bg-brand-yellow text-gray-900 rounded-full flex items-center justify-center">
+                  <span className="font-heading text-2xl">{step.step}</span>
                 </div>
-                <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+                <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.05em]">
                   {step.title}
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
@@ -522,7 +522,7 @@ export default function CorporateHolidayPartyPage() {
 
         <div className="relative z-10 max-w-6xl mx-auto px-8">
           <ScrollRevealCSS duration={600} y={20} className="text-center mb-12">
-            <h2 className="font-serif text-4xl text-white mb-4 tracking-[0.1em]">
+            <h2 className="font-heading text-4xl text-white mb-4 tracking-[0.1em]">
               What We Deliver
             </h2>
             <p className="text-lg text-gray-300">
@@ -532,28 +532,28 @@ export default function CorporateHolidayPartyPage() {
 
           <div className="grid md:grid-cols-3 gap-8">
             <ScrollRevealCSS duration={600} delay={0} y={20} className="bg-white/10 backdrop-blur-sm p-8 rounded-lg border border-white/20">
-              <h3 className="font-serif text-2xl text-white mb-4">Alcohol</h3>
+              <h3 className="font-heading text-2xl text-white mb-4">Alcohol</h3>
               <ul className="space-y-3 text-gray-200">
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-brand-yellow mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Beer (domestic, craft, imports)
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-brand-yellow mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Wine (red, white, sparkling)
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-brand-yellow mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Spirits (vodka, whiskey, tequila, rum, gin)
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-brand-yellow mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Cocktail kits (margarita, mule, etc.)
@@ -562,28 +562,28 @@ export default function CorporateHolidayPartyPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={600} delay={100} y={20} className="bg-white/10 backdrop-blur-sm p-8 rounded-lg border border-white/20">
-              <h3 className="font-serif text-2xl text-white mb-4">Mixers & More</h3>
+              <h3 className="font-heading text-2xl text-white mb-4">Mixers & More</h3>
               <ul className="space-y-3 text-gray-200">
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-brand-yellow mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Sodas & tonic water
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-brand-yellow mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Juices (cranberry, orange, lime)
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-brand-yellow mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Garnishes (limes, lemons, olives)
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-brand-yellow mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Non-alcoholic options
@@ -592,28 +592,28 @@ export default function CorporateHolidayPartyPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={600} delay={200} y={20} className="bg-white/10 backdrop-blur-sm p-8 rounded-lg border border-white/20">
-              <h3 className="font-serif text-2xl text-white mb-4">Supplies</h3>
+              <h3 className="font-heading text-2xl text-white mb-4">Supplies</h3>
               <ul className="space-y-3 text-gray-200">
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-brand-yellow mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Bagged ice (we calculate for you)
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-brand-yellow mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Plastic cups & glassware
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-brand-yellow mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Napkins & cocktail straws
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-5 h-5 mr-2 text-gold-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-2 text-brand-yellow mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   Coolers available
@@ -628,7 +628,7 @@ export default function CorporateHolidayPartyPage() {
       <section className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-8">
           <ScrollRevealCSS duration={600} y={20} className="text-center mb-12">
-            <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading text-4xl text-gray-900 mb-4 tracking-[0.1em]">
               Estimate Your Holiday Party Needs
             </h2>
             <p className="text-lg text-gray-600">
@@ -644,10 +644,10 @@ export default function CorporateHolidayPartyPage() {
       </section>
 
       {/* Pricing Band */}
-      <section className="py-16 bg-gold-600 text-gray-900">
+      <section className="py-16 bg-brand-yellow text-gray-900">
         <div className="max-w-6xl mx-auto px-8 text-center">
           <ScrollRevealCSS duration={600} y={20}>
-            <h3 className="font-serif text-3xl mb-6 tracking-[0.1em]">
+            <h3 className="font-heading text-3xl mb-6 tracking-[0.1em]">
               Transparent Pricing for Any Size Party
             </h3>
             <div className="flex flex-wrap justify-center gap-8 text-lg">
@@ -678,7 +678,7 @@ export default function CorporateHolidayPartyPage() {
       <section id="inquiry-form" className="py-20 bg-white">
         <div className="max-w-3xl mx-auto px-8">
           <ScrollRevealCSS duration={600} y={20} className="text-center mb-12">
-            <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading text-4xl text-gray-900 mb-4 tracking-[0.1em]">
               Get Your Free Holiday Party Quote
             </h2>
             <p className="text-lg text-gray-600">
@@ -703,7 +703,7 @@ export default function CorporateHolidayPartyPage() {
                     required
                     value={formData.firstName}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -717,7 +717,7 @@ export default function CorporateHolidayPartyPage() {
                     required
                     value={formData.lastName}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -733,7 +733,7 @@ export default function CorporateHolidayPartyPage() {
                   required
                   value={formData.company}
                   onChange={handleFormChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                 />
               </div>
 
@@ -749,7 +749,7 @@ export default function CorporateHolidayPartyPage() {
                     required
                     value={formData.email}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -763,7 +763,7 @@ export default function CorporateHolidayPartyPage() {
                     required
                     value={formData.phone}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -780,7 +780,7 @@ export default function CorporateHolidayPartyPage() {
                     required
                     value={formData.eventDate}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -796,7 +796,7 @@ export default function CorporateHolidayPartyPage() {
                     placeholder="e.g., 50"
                     value={formData.guestCount}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -812,7 +812,7 @@ export default function CorporateHolidayPartyPage() {
                   placeholder="Office address or venue name"
                   value={formData.venue}
                   onChange={handleFormChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                 />
               </div>
 
@@ -827,7 +827,7 @@ export default function CorporateHolidayPartyPage() {
                   placeholder="Budget range, drink preferences, special requests, or calculator results..."
                   value={formData.notes}
                   onChange={handleFormChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                 />
               </div>
 
@@ -836,7 +836,7 @@ export default function CorporateHolidayPartyPage() {
                   <input
                     type="checkbox"
                     required
-                    className="w-5 h-5 text-gold-500 border-gray-300 rounded focus:ring-gold-500 mt-1 mr-3"
+                    className="w-5 h-5 text-yellow-500 border-gray-300 rounded focus:ring-yellow-500 mt-1 mr-3"
                   />
                   <span className="text-sm text-gray-600">
                     I consent to Party On Delivery contacting me about my holiday party inquiry.
@@ -854,13 +854,13 @@ export default function CorporateHolidayPartyPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'SUBMITTING...' : 'GET MY FREE QUOTE'}
               </button>
 
               <p className="text-center text-sm text-gray-500 mt-4">
-                Or call us directly: <a href="tel:+17373719700" className="text-gold-600 hover:underline">(737) 371-9700</a>
+                Or call us directly: <a href="tel:+17373719700" className="text-brand-yellow hover:underline">(737) 371-9700</a>
               </p>
             </form>
           </ScrollRevealCSS>
@@ -871,7 +871,7 @@ export default function CorporateHolidayPartyPage() {
       <section className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-8">
           <ScrollRevealCSS duration={600} y={20} className="text-center mb-12">
-            <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading text-4xl text-gray-900 mb-4 tracking-[0.1em]">
               Holiday Party FAQs
             </h2>
             <p className="text-lg text-gray-600">
@@ -894,7 +894,7 @@ export default function CorporateHolidayPartyPage() {
                 >
                   <span className="font-medium text-gray-900 pr-4">{faq.question}</span>
                   <svg
-                    className={`w-5 h-5 text-gold-600 flex-shrink-0 transform transition-transform ${
+                    className={`w-5 h-5 text-brand-yellow flex-shrink-0 transform transition-transform ${
                       showFAQ === index ? 'rotate-180' : ''
                     }`}
                     fill="none"
@@ -919,7 +919,7 @@ export default function CorporateHolidayPartyPage() {
       <section className="py-20 bg-gray-900 text-white">
         <div className="max-w-4xl mx-auto px-8 text-center">
           <ScrollRevealCSS duration={600} y={20}>
-            <h2 className="font-serif text-4xl md:text-5xl mb-6 tracking-[0.1em]">
+            <h2 className="font-heading text-4xl md:text-5xl mb-6 tracking-[0.1em]">
               December Dates Are Booking Fast
             </h2>
             <p className="text-xl mb-8 leading-relaxed text-gray-300">
@@ -928,7 +928,7 @@ export default function CorporateHolidayPartyPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={handleScheduleCall}
-                className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
+                className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm font-medium"
               >
                 GET YOUR FREE QUOTE
               </button>
@@ -962,22 +962,22 @@ export default function CorporateHolidayPartyPage() {
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SERVICES</h4>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/corporate" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">
+                  <Link href="/corporate" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">
                     Corporate Events
                   </Link>
                 </li>
                 <li>
-                  <Link href="/weddings" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">
+                  <Link href="/weddings" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">
                     Weddings
                   </Link>
                 </li>
                 <li>
-                  <Link href="/boat-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">
+                  <Link href="/boat-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">
                     Boat Parties
                   </Link>
                 </li>
                 <li>
-                  <Link href="/bach-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">
+                  <Link href="/bach-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">
                     Celebrations
                   </Link>
                 </li>
@@ -987,22 +987,22 @@ export default function CorporateHolidayPartyPage() {
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SHOP</h4>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/products" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">
+                  <Link href="/products" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">
                     All Products
                   </Link>
                 </li>
                 <li>
-                  <Link href="/collections/cocktail-kits" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">
+                  <Link href="/collections/cocktail-kits" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">
                     Cocktail Kits
                   </Link>
                 </li>
                 <li>
-                  <Link href="/collections/spirits" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">
+                  <Link href="/collections/spirits" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">
                     Spirits
                   </Link>
                 </li>
                 <li>
-                  <Link href="/collections/wine" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">
+                  <Link href="/collections/wine" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">
                     Wine
                   </Link>
                 </li>
@@ -1020,10 +1020,10 @@ export default function CorporateHolidayPartyPage() {
           <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">&copy; 2024 PartyOn Delivery. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="/terms" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">
+              <Link href="/terms" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">
                 Terms
               </Link>
-              <Link href="/privacy" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">
+              <Link href="/privacy" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">
                 Privacy
               </Link>
             </div>

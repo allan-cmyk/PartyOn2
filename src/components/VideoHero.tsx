@@ -154,12 +154,12 @@ export default function VideoHero({
 
       {/* Content - Compact & Clean */}
       <div className="relative z-10 text-center text-white px-6 max-w-4xl mx-auto">
-        <h1 className="font-display font-bold text-4xl md:text-5xl lg:text-6xl mb-4 text-shadow">
+        <h1 className="font-heading font-bold text-4xl md:text-5xl lg:text-6xl mb-4 text-shadow">
           {title}
         </h1>
         
         {subtitle && (
-          <p className="font-sans font-medium text-accent-500 uppercase tracking-widest text-xs md:text-sm mb-4">
+          <p className="font-sans font-medium text-brand-yellow uppercase tracking-widest text-xs md:text-sm mb-4">
             {subtitle}
           </p>
         )}

@@ -241,8 +241,8 @@ export default function WeddingPackagePage() {
       <div className="bg-white min-h-screen">
         <OldFashionedNavigation />
         <div className="max-w-7xl mx-auto px-8 py-16 text-center">
-          <h2 className="font-serif text-2xl text-gray-900 mb-4">Package Not Found</h2>
-          <Link href="/weddings" className="text-gold-600 hover:text-gold-700">
+          <h2 className="font-heading text-2xl text-gray-900 mb-4">Package Not Found</h2>
+          <Link href="/weddings" className="text-brand-yellow hover:text-yellow-600">
             Return to Wedding Packages
           </Link>
         </div>
@@ -255,7 +255,7 @@ export default function WeddingPackagePage() {
       <div className="bg-white min-h-screen">
         <OldFashionedNavigation />
         <div className="max-w-7xl mx-auto px-8 py-16 text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gold-600"></div>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand-yellow"></div>
           <p className="mt-4 text-gray-600">Curating your perfect wedding package...</p>
         </div>
       </div>
@@ -278,7 +278,7 @@ export default function WeddingPackagePage() {
       <section className="pt-32 pb-16 px-8 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 hero-fade-in">
-            <h1 className="font-serif text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h1 className="font-heading text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               {config.name}
             </h1>
             <p className="text-xl text-gray-600 mb-8">{config.description}</p>
@@ -308,10 +308,10 @@ export default function WeddingPackagePage() {
           {/* Summary Bar */}
           <div className="bg-gray-50 p-6 mb-12 flex justify-between items-center">
             <div>
-              <h2 className="font-serif text-2xl text-gray-900 tracking-[0.1em]">
+              <h2 className="font-heading text-2xl text-gray-900 tracking-[0.1em]">
                 Package Total
               </h2>
-              <p className="text-3xl text-gold-600 mt-2">
+              <p className="text-3xl text-brand-yellow mt-2">
                 {formatPrice(totalPrice.toString(), 'USD')}
               </p>
               <p className="text-sm text-gray-600 mt-1">Plus delivery & service fees</p>
@@ -322,7 +322,7 @@ export default function WeddingPackagePage() {
             <button
               onClick={handleAddAllToCart}
               disabled={packageItems.length === 0 || addingAll || cartLoading}
-              className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm disabled:opacity-50"
+              className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm disabled:opacity-50"
             >
               {addingAll ? 'ADDING TO CART...' : 'ADD ALL TO CART'}
             </button>
@@ -331,7 +331,7 @@ export default function WeddingPackagePage() {
           {/* Items by Category */}
           {Object.entries(categoryGroups).map(([category, items]) => (
             <div key={category} className="mb-12">
-              <h3 className="font-serif text-2xl text-gray-900 mb-6 tracking-[0.1em] capitalize">
+              <h3 className="font-heading text-2xl text-gray-900 mb-6 tracking-[0.1em] capitalize">
                 {category}
               </h3>
               <div className="space-y-6">
@@ -361,7 +361,7 @@ export default function WeddingPackagePage() {
                         {/* Product Info */}
                         <div className="flex-1">
                           <Link href={`/products/${item.product.handle}`}>
-                            <h4 className="font-medium text-lg text-gray-900 hover:text-gold-600 transition-colors">
+                            <h4 className="font-medium text-lg text-gray-900 hover:text-brand-yellow transition-colors">
                               {item.product.title}
                             </h4>
                           </Link>
@@ -380,14 +380,14 @@ export default function WeddingPackagePage() {
                         <div className="flex items-center space-x-4">
                           <button
                             onClick={() => handleQuantityChange(globalIndex, item.quantity - 1)}
-                            className="w-10 h-10 border border-gray-300 hover:border-gold-600 transition-colors"
+                            className="w-10 h-10 border border-gray-300 hover:border-brand-yellow transition-colors"
                           >
                             -
                           </button>
                           <span className="w-12 text-center font-medium">{item.quantity}</span>
                           <button
                             onClick={() => handleQuantityChange(globalIndex, item.quantity + 1)}
-                            className="w-10 h-10 border border-gray-300 hover:border-gold-600 transition-colors"
+                            className="w-10 h-10 border border-gray-300 hover:border-brand-yellow transition-colors"
                           >
                             +
                           </button>
@@ -424,25 +424,25 @@ export default function WeddingPackagePage() {
 
           {/* Service Inclusions */}
           <div className="mt-16 bg-gray-50 p-8">
-            <h3 className="font-serif text-2xl text-gray-900 mb-6 tracking-[0.1em]">
+            <h3 className="font-heading text-2xl text-gray-900 mb-6 tracking-[0.1em]">
               Service Includes
             </h3>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-3">
                 <div className="flex items-start">
-                  <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   <p className="text-gray-700">{config.bartenders} TABC-certified bartenders</p>
                 </div>
                 <div className="flex items-start">
-                  <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   <p className="text-gray-700">{config.serviceHours} hours of professional service</p>
                 </div>
                 <div className="flex items-start">
-                  <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   <p className="text-gray-700">Premium glassware rental</p>
@@ -450,19 +450,19 @@ export default function WeddingPackagePage() {
               </div>
               <div className="space-y-3">
                 <div className="flex items-start">
-                  <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   <p className="text-gray-700">Bar setup and breakdown</p>
                 </div>
                 <div className="flex items-start">
-                  <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   <p className="text-gray-700">Ice, garnishes, and mixers</p>
                 </div>
                 <div className="flex items-start">
-                  <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                   <p className="text-gray-700">Full liability insurance</p>
@@ -476,12 +476,12 @@ export default function WeddingPackagePage() {
             <button
               onClick={handleAddAllToCart}
               disabled={packageItems.length === 0 || addingAll || cartLoading}
-              className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm disabled:opacity-50"
+              className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm disabled:opacity-50"
             >
               {addingAll ? 'ADDING TO CART...' : 'ADD PACKAGE TO CART'}
             </button>
             <Link href="/weddings">
-              <button className="px-8 py-4 border border-gray-300 text-gray-700 hover:border-gold-600 transition-colors tracking-[0.15em] text-sm">
+              <button className="px-8 py-4 border border-gray-300 text-gray-700 hover:border-brand-yellow transition-colors tracking-[0.15em] text-sm">
                 BACK TO PACKAGES
               </button>
             </Link>
@@ -506,17 +506,17 @@ export default function WeddingPackagePage() {
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SERVICES</h4>
               <ul className="space-y-2">
-                <li><Link href="/weddings" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Weddings</Link></li>
-                <li><Link href="/boat-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Boat Parties</Link></li>
-                <li><Link href="/bach-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Celebrations</Link></li>
-                <li><Link href="/corporate" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Corporate</Link></li>
+                <li><Link href="/weddings" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Weddings</Link></li>
+                <li><Link href="/boat-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Boat Parties</Link></li>
+                <li><Link href="/bach-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Celebrations</Link></li>
+                <li><Link href="/corporate" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Corporate</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SHOP</h4>
               <ul className="space-y-2">
-                <li><Link href="/products" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">All Products</Link></li>
-                <li><Link href="/collections" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Collections</Link></li>
+                <li><Link href="/products" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">All Products</Link></li>
+                <li><Link href="/collections" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Collections</Link></li>
               </ul>
             </div>
             <div>
@@ -531,8 +531,8 @@ export default function WeddingPackagePage() {
           <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">© 2024 PartyOn Delivery. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="/terms" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Terms</Link>
-              <Link href="/privacy" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Privacy</Link>
+              <Link href="/terms" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Terms</Link>
+              <Link href="/privacy" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Privacy</Link>
             </div>
           </div>
         </div>

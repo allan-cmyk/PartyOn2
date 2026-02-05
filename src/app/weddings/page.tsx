@@ -97,7 +97,7 @@ function TestimonialCarousel() {
             {/* Star Rating */}
             <div className="flex justify-center mb-6">
               {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
-                <svg key={i} className="w-5 h-5 text-gold-600" fill="currentColor" viewBox="0 0 20 20">
+                <svg key={i} className="w-5 h-5 text-brand-yellow" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
               ))}
@@ -113,10 +113,10 @@ function TestimonialCarousel() {
               <p className="text-gray-900 font-medium tracking-[0.1em] mb-1">
                 {testimonials[currentIndex].name}
                 {testimonials[currentIndex].badge && (
-                  <span className="ml-2 text-xs text-gold-600 font-normal">• {testimonials[currentIndex].badge}</span>
+                  <span className="ml-2 text-xs text-brand-yellow font-normal">• {testimonials[currentIndex].badge}</span>
                 )}
               </p>
-              <p className="text-gold-600 text-sm tracking-[0.05em]">
+              <p className="text-brand-yellow text-sm tracking-[0.05em]">
                 {testimonials[currentIndex].date}
               </p>
             </div>
@@ -151,7 +151,7 @@ function TestimonialCarousel() {
             key={index}
             onClick={() => setCurrentIndex(index)}
             className={`w-2 h-2 rounded-full transition-all ${
-              index === currentIndex ? 'bg-gold-600 w-8' : 'bg-gray-300'
+              index === currentIndex ? 'bg-brand-yellow w-8' : 'bg-gray-300'
             }`}
             aria-label={`Go to testimonial ${index + 1}`}
           />
@@ -293,17 +293,17 @@ export default function WeddingsPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 via-gray-900/30 to-gray-900/50" />
 
         <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8">
-          <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em] leading-tight md:leading-tight">
+          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.15em] leading-tight md:leading-tight">
             <span className="block text-white mb-2">Your Austin Wedding,</span>
-            <span className="block text-gold-400">PERFECTLY SERVED</span>
+            <span className="block text-brand-yellow">PERFECTLY SERVED</span>
           </h1>
-          <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
+          <div className="w-24 h-px bg-brand-yellow mx-auto mb-6" />
           <p className="text-lg md:text-xl font-light tracking-[0.1em] text-gray-200 mb-8">
             Curated bar service with venue coordination, cold delivery, and TABC-certified bartenders for Austin, Hill Country, and Lake Travis weddings.
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
             <Link href="/weddings/order">
-              <button className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
                 ORDER NOW
               </button>
             </Link>
@@ -325,7 +325,7 @@ export default function WeddingsPage() {
               key={index}
               onClick={() => setCurrentHeroIndex(index)}
               className={`w-2 h-2 rounded-full transition-all ${
-                index === currentHeroIndex ? 'bg-gold-400 w-8' : 'bg-white/50'
+                index === currentHeroIndex ? 'bg-brand-yellow w-8' : 'bg-white/50'
               }`}
             />
           ))}
@@ -336,75 +336,75 @@ export default function WeddingsPage() {
       <section className="py-24 bg-gray-50">
         <div className="max-w-6xl mx-auto px-8">
           <ScrollRevealCSS duration={800} y={20} className="text-center mb-16">
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
               Choose Your Path
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto mb-6" />
           </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {/* I'm Ready to Order Path */}
             <ScrollRevealCSS duration={800} y={20} className="bg-white p-8 rounded-lg shadow-lg">
-              <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
+              <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
                 I&apos;m Ready to Order
               </h3>
               <ul className="space-y-3 mb-8 text-gray-600">
                 <li className="flex items-start">
-                  <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-4 h-4 text-brand-yellow mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   Order online and schedule delivery
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-4 h-4 text-brand-yellow mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   Everything delivered directly to venue (cold if needed)
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-4 h-4 text-brand-yellow mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   You handle setup or use your own bartender
                 </li>
               </ul>
               <Link href="/weddings/order">
-                <button className="w-full py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="w-full py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
                   ORDER NOW
                 </button>
               </Link>
             </ScrollRevealCSS>
 
             {/* Get a Free Consultation Path */}
-            <ScrollRevealCSS duration={800} y={20} delay={100} className="bg-white p-8 rounded-lg shadow-lg border-2 border-gold-600">
+            <ScrollRevealCSS duration={800} y={20} delay={100} className="bg-white p-8 rounded-lg shadow-lg border-2 border-brand-yellow">
               <div className="text-center mb-4">
-                <span className="text-gold-600 text-sm tracking-[0.15em] font-medium">MOST POPULAR</span>
+                <span className="text-brand-yellow text-sm tracking-[0.15em] font-medium">MOST POPULAR</span>
               </div>
-              <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
+              <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
                 Get a Free Consultation
               </h3>
               <ul className="space-y-3 mb-8 text-gray-600">
                 <li className="flex items-start">
-                  <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-4 h-4 text-brand-yellow mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   Custom recommendations for how much and what to buy
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-4 h-4 text-brand-yellow mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   Receive a proposal and schedule delivery
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-4 h-4 text-brand-yellow mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   Ask about other options including bartenders, transportation, and rental items
                 </li>
               </ul>
               <Link href="/contact">
-                <button className="w-full py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="w-full py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
                   SCHEDULE A CONSULTATION
                 </button>
               </Link>
@@ -423,20 +423,20 @@ export default function WeddingsPage() {
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
           <ScrollRevealCSS duration={800} y={20} className="text-center mb-16">
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               Why Austin Couples Book Us
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto" />
           </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <ScrollRevealCSS duration={800} y={20} delay={100} className="text-center">
-              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Seamless Venue Coordination
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -448,12 +448,12 @@ export default function WeddingsPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={200} className="text-center">
-              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
                 </svg>
               </div>
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 TABC-Certified Professionals
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -462,12 +462,12 @@ export default function WeddingsPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={300} className="text-center">
-              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                 </svg>
               </div>
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Curated Local Selection
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -476,13 +476,13 @@ export default function WeddingsPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={400} className="text-center">
-              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </div>
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Austin Area Expertise
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -497,10 +497,10 @@ export default function WeddingsPage() {
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
           <ScrollRevealCSS duration={800} y={20} className="text-center mb-16">
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               Example Packages
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto mb-6" />
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
               Thoughtfully designed bar packages to match any style and budget
               <br />
@@ -519,13 +519,13 @@ export default function WeddingsPage() {
                 <div className="p-8">
                   {pkg.featured && (
                     <div className="text-center mb-4">
-                      <span className="text-gold-600 text-sm tracking-[0.15em]">MOST POPULAR</span>
+                      <span className="text-brand-yellow text-sm tracking-[0.15em]">MOST POPULAR</span>
                     </div>
                   )}
-                  <h3 className="font-serif text-2xl text-gray-900 mb-2 tracking-[0.1em] text-center">
+                  <h3 className="font-heading text-2xl text-gray-900 mb-2 tracking-[0.1em] text-center">
                     {pkg.name}
                   </h3>
-                  <p className="text-4xl text-gold-600 font-semibold text-center mb-4">
+                  <p className="text-4xl text-brand-yellow font-semibold text-center mb-4">
                     {pkg.price}
                   </p>
                   <p className="text-gray-600 text-center mb-8">
@@ -534,7 +534,7 @@ export default function WeddingsPage() {
                   <ul className="space-y-3 mb-8">
                     {pkg.features.map((feature, i) => (
                       <li key={i} className="flex items-start">
-                        <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-4 h-4 text-brand-yellow mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
                         <span className="text-gray-700 text-sm">{feature}</span>
@@ -544,8 +544,8 @@ export default function WeddingsPage() {
                   <Link href="/contact">
                     <button className={`w-full py-3 tracking-[0.15em] text-sm transition-all duration-300 ${
                       pkg.featured
-                        ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
-                        : 'border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900'
+                        ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
+                        : 'border border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900'
                     }`}>
                       PLAN THIS PACKAGE (CONSULTATION)
                     </button>
@@ -561,7 +561,7 @@ export default function WeddingsPage() {
               <strong>Just need delivery?</strong> Build your cart in minutes and we&apos;ll coordinate drop-off with your venue.
             </p>
             <Link href="/order">
-              <button className="px-8 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-3 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
                 ORDER DELIVERY-ONLY
               </button>
             </Link>
@@ -582,10 +582,10 @@ export default function WeddingsPage() {
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
           <ScrollRevealCSS duration={800} y={20} className="text-center mb-16">
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               Celebration Gallery
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto" />
           </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -618,10 +618,10 @@ export default function WeddingsPage() {
       <section className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-8">
           <ScrollRevealCSS duration={800} y={20} className="text-center mb-12">
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               What Our Clients Say
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto" />
           </ScrollRevealCSS>
 
           <TestimonialCarousel />
@@ -632,15 +632,15 @@ export default function WeddingsPage() {
       <section className="py-24 bg-gray-50">
         <div className="max-w-4xl mx-auto px-8">
           <ScrollRevealCSS duration={800} y={20} className="text-center mb-16">
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               Frequently Asked Questions
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto" />
           </ScrollRevealCSS>
 
           <div className="space-y-8">
             <ScrollRevealCSS duration={800} y={20} delay={100} className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Do you provide bartenders?
               </h3>
               <p className="text-gray-600 leading-relaxed">
@@ -649,7 +649,7 @@ export default function WeddingsPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={200} className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 How far in advance should we book?
               </h3>
               <p className="text-gray-600 leading-relaxed">
@@ -658,7 +658,7 @@ export default function WeddingsPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={300} className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Do you deliver to Lake Travis/Hill Country venues?
               </h3>
               <p className="text-gray-600 leading-relaxed">
@@ -667,7 +667,7 @@ export default function WeddingsPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={400} className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 What about glassware & equipment?
               </h3>
               <p className="text-gray-600 leading-relaxed">
@@ -676,7 +676,7 @@ export default function WeddingsPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={500} className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Are you licensed & insured?
               </h3>
               <p className="text-gray-600 leading-relaxed">
@@ -685,7 +685,7 @@ export default function WeddingsPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={600} className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Already have a bartender?
               </h3>
               <p className="text-gray-600 leading-relaxed">
@@ -713,19 +713,19 @@ export default function WeddingsPage() {
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SERVICES</h4>
               <ul className="space-y-2">
-                <li><Link href="/weddings" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Weddings</Link></li>
-                <li><Link href="/boat-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Boat Parties</Link></li>
-                <li><Link href="/bach-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Celebrations</Link></li>
-                <li><Link href="/corporate" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Corporate</Link></li>
+                <li><Link href="/weddings" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Weddings</Link></li>
+                <li><Link href="/boat-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Boat Parties</Link></li>
+                <li><Link href="/bach-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Celebrations</Link></li>
+                <li><Link href="/corporate" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Corporate</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">COMPANY</h4>
               <ul className="space-y-2">
-                <li><Link href="/about" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">About</Link></li>
-                <li><Link href="/delivery-areas" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Delivery Areas</Link></li>
-                <li><Link href="/faqs" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">FAQs</Link></li>
-                <li><Link href="/contact" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Contact</Link></li>
+                <li><Link href="/about" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">About</Link></li>
+                <li><Link href="/delivery-areas" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Delivery Areas</Link></li>
+                <li><Link href="/faqs" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">FAQs</Link></li>
+                <li><Link href="/contact" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Contact</Link></li>
               </ul>
             </div>
             <div>
@@ -740,8 +740,8 @@ export default function WeddingsPage() {
           <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">© 2024 PartyOn Delivery. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="/terms" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Terms</Link>
-              <Link href="/privacy" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Privacy</Link>
+              <Link href="/terms" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Terms</Link>
+              <Link href="/privacy" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Privacy</Link>
             </div>
           </div>
         </div>
@@ -769,12 +769,12 @@ export default function WeddingsPage() {
                 </div>
                 <div className="flex gap-2">
                   <Link href="/weddings/order">
-                    <button className="px-4 py-2 bg-gold-600 text-gray-900 text-xs tracking-[0.1em] font-medium">
+                    <button className="px-4 py-2 bg-brand-yellow text-gray-900 text-xs tracking-[0.1em] font-medium">
                       ORDER NOW
                     </button>
                   </Link>
                   <Link href="/contact">
-                    <button className="px-4 py-2 border border-gold-600 text-gold-600 text-xs tracking-[0.1em] font-medium">
+                    <button className="px-4 py-2 border border-brand-yellow text-brand-yellow text-xs tracking-[0.1em] font-medium">
                       SCHEDULE CALL
                     </button>
                   </Link>

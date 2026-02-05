@@ -170,10 +170,10 @@ export default function KegProductGrid() {
       <section className="py-12 md:py-24 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 md:px-8">
           <ScrollRevealCSS duration={800} y={20} className="text-center mb-8 md:mb-12">
-            <h2 className="font-serif font-light text-3xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-3xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               Available Kegs
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto mb-4 md:mb-6" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto mb-4 md:mb-6" />
             <p className="text-gray-600 text-sm md:text-lg max-w-2xl mx-auto">
               In-stock kegs available for delivery. Can&apos;t find your brand?
               Request a quote and we&apos;ll source it for you.
@@ -188,8 +188,8 @@ export default function KegProductGrid() {
                 onClick={() => setActiveCategory(category.id)}
                 className={`px-3 md:px-6 py-2 md:py-3 tracking-[0.05em] md:tracking-[0.1em] text-xs md:text-sm transition-all duration-300 rounded ${
                   activeCategory === category.id
-                    ? 'bg-gold-600 text-gray-900'
-                    : 'border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900'
+                    ? 'bg-brand-yellow text-gray-900'
+                    : 'border border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900'
                 }`}
               >
                 {category.name.toUpperCase()}
@@ -208,7 +208,7 @@ export default function KegProductGrid() {
             {filteredKegs.map((keg, index) => (
               <div
                 key={`${keg.name}-${keg.size}`}
-                className="bg-white rounded-lg p-4 md:p-6 shadow-lg border border-gray-200 hover:border-gold-300 transition-all duration-300 text-center"
+                className="bg-white rounded-lg p-4 md:p-6 shadow-lg border border-gray-200 hover:border-brand-yellow transition-all duration-300 text-center"
                 style={{
                   animation: `result-fade-in 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards`,
                   animationDelay: `${index * 30}ms`,
@@ -232,9 +232,9 @@ export default function KegProductGrid() {
                 <button
                   onClick={() => handleTitleClick(keg)}
                   disabled={!keg.handle || loadingHandle === keg.handle}
-                  className="w-full mb-1 hover:text-gold-600 transition-colors disabled:cursor-default"
+                  className="w-full mb-1 hover:text-brand-yellow transition-colors disabled:cursor-default"
                 >
-                  <h3 className="font-serif text-lg md:text-2xl text-gray-900 tracking-[0.05em] leading-tight">
+                  <h3 className="font-heading text-lg md:text-2xl text-gray-900 tracking-[0.05em] leading-tight">
                     {loadingHandle === keg.handle ? 'Loading...' : keg.name}
                   </h3>
                 </button>
@@ -244,7 +244,7 @@ export default function KegProductGrid() {
 
                 {/* Price */}
                 {keg.price ? (
-                  <p className="text-2xl md:text-3xl font-medium text-gold-600 mb-4">
+                  <p className="text-2xl md:text-3xl font-medium text-brand-yellow mb-4">
                     {keg.price}
                   </p>
                 ) : (
@@ -261,7 +261,7 @@ export default function KegProductGrid() {
                     className={`w-full py-2 md:py-3 transition-colors tracking-[0.05em] md:tracking-[0.1em] text-xs md:text-sm font-medium rounded ${
                       addingToCart === keg.handle || cartLoading
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-gold-600 text-gray-900 hover:bg-gold-700'
+                        : 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
                     }`}
                   >
                     {addingToCart === keg.handle ? 'ADDING...' : 'ADD TO CART'}
@@ -269,7 +269,7 @@ export default function KegProductGrid() {
                 ) : (
                   <Link
                     href="/contact"
-                    className="block w-full py-2 md:py-3 border border-gold-600 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.05em] md:tracking-[0.1em] text-xs md:text-sm font-medium text-center rounded"
+                    className="block w-full py-2 md:py-3 border border-brand-yellow text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.05em] md:tracking-[0.1em] text-xs md:text-sm font-medium text-center rounded"
                   >
                     REQUEST QUOTE
                   </Link>
@@ -292,7 +292,7 @@ export default function KegProductGrid() {
               <div className="absolute inset-0 bg-gray-900/70" />
 
               <div className="relative z-10">
-                <h3 className="font-serif text-2xl text-white mb-4 tracking-[0.1em]">
+                <h3 className="font-heading text-2xl text-white mb-4 tracking-[0.1em]">
                   Need Multiple Kegs or a Special Brand?
                 </h3>
                 <p className="text-gray-200 mb-6 max-w-xl mx-auto">
@@ -301,7 +301,7 @@ export default function KegProductGrid() {
                 </p>
                 <a
                   href="tel:7373719700"
-                  className="inline-block px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium rounded"
+                  className="inline-block px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm font-medium rounded"
                 >
                   CALL (737) 371-9700
                 </a>

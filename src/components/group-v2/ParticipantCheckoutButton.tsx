@@ -23,7 +23,7 @@ export default function ParticipantCheckoutButton({
 
   if (myItems.length === 0) {
     return (
-      <div className="py-3 px-4 bg-v2-bgSoft rounded-lg text-center text-sm text-v2-muted">
+      <div className="py-3 px-4 bg-whiteSoft rounded-lg text-center text-sm text-gray-500">
         Add items to checkout
       </div>
     );

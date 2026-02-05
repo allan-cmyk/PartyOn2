@@ -50,7 +50,7 @@ export default function JoinGroupOrderPage(): ReactElement {
             {/* Back link */}
             <Link
               href="/"
-              className="inline-flex items-center text-gray-600 hover:text-gold-600 mb-6 transition-colors"
+              className="inline-flex items-center text-gray-600 hover:text-brand-yellow mb-6 transition-colors"
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -61,8 +61,8 @@ export default function JoinGroupOrderPage(): ReactElement {
             <div className="bg-white rounded-lg shadow-sm p-8">
               {/* Header */}
               <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 </div>
@@ -98,7 +98,7 @@ export default function JoinGroupOrderPage(): ReactElement {
                     value={shareCode}
                     onChange={(e) => setShareCode(e.target.value)}
                     placeholder="e.g., BACH-SARAH-2026"
-                    className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-gold-500 focus:border-transparent text-gray-900 placeholder:text-gray-400"
+                    className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-gray-900 placeholder:text-gray-400"
                     autoComplete="off"
                     autoFocus
                   />
@@ -113,7 +113,7 @@ export default function JoinGroupOrderPage(): ReactElement {
                   className={`w-full py-4 tracking-[0.15em] transition-colors font-medium ${
                     isLoading
                       ? 'bg-gray-400 cursor-not-allowed text-gray-600'
-                      : 'bg-gold-600 hover:bg-gold-700 text-gray-900'
+                      : 'bg-brand-yellow hover:bg-yellow-600 text-gray-900'
                   }`}
                 >
                   {isLoading ? 'FINDING ORDER...' : 'JOIN ORDER'}
@@ -137,7 +137,7 @@ export default function JoinGroupOrderPage(): ReactElement {
                 </p>
                 <Link
                   href="/group-v2/create"
-                  className="inline-flex items-center gap-2 text-gold-600 hover:text-gold-700 font-medium transition-colors"
+                  className="inline-flex items-center gap-2 text-brand-yellow hover:text-yellow-600 font-medium transition-colors"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />

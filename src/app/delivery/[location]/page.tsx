@@ -100,10 +100,10 @@ export default async function LocationDeliveryPage({ params }: { params: Promise
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
         
         <div className="relative text-center text-white z-10 max-w-4xl mx-auto px-8">
-          <h1 className="font-serif font-light text-4xl md:text-6xl mb-6 tracking-[0.15em]">
+          <h1 className="font-heading font-light text-4xl md:text-6xl mb-6 tracking-[0.15em]">
             {locationData.title.toUpperCase()}
           </h1>
-          <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
+          <div className="w-24 h-px bg-brand-yellow mx-auto mb-6" />
           <p className="text-lg font-light tracking-[0.1em] text-gray-200 max-w-2xl mx-auto">
             {locationData.description}
           </p>
@@ -116,7 +116,7 @@ export default async function LocationDeliveryPage({ params }: { params: Promise
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {/* Delivery Info */}
             <div>
-              <h2 className="font-serif text-3xl text-gray-900 mb-6 tracking-[0.1em]">
+              <h2 className="font-heading text-3xl text-gray-900 mb-6 tracking-[0.1em]">
                 DELIVERY INFORMATION
               </h2>
               <div className="space-y-4">
@@ -141,13 +141,13 @@ export default async function LocationDeliveryPage({ params }: { params: Promise
 
             {/* Service Areas */}
             <div>
-              <h2 className="font-serif text-3xl text-gray-900 mb-6 tracking-[0.1em]">
+              <h2 className="font-heading text-3xl text-gray-900 mb-6 tracking-[0.1em]">
                 NEIGHBORHOODS WE SERVE
               </h2>
               <div className="grid grid-cols-2 gap-3">
                 {locationData.neighborhoods.map((neighborhood) => (
                   <div key={neighborhood} className="flex items-center">
-                    <svg className="w-4 h-4 text-gold-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-yellow-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                     </svg>
                     <span className="text-gray-700">{neighborhood}</span>
@@ -168,10 +168,10 @@ export default async function LocationDeliveryPage({ params }: { params: Promise
         <section className="py-16 px-8 bg-gray-50">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="font-serif text-3xl text-gray-900 mb-4 tracking-[0.1em]">
+              <h2 className="font-heading text-3xl text-gray-900 mb-4 tracking-[0.1em]">
                 POPULAR VENUES WE SERVE
               </h2>
-              <div className="w-16 h-px bg-gold-600 mx-auto" />
+              <div className="w-16 h-px bg-brand-yellow mx-auto" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {locationData.popularVenues.map((venue) => (
@@ -179,7 +179,7 @@ export default async function LocationDeliveryPage({ params }: { params: Promise
                   key={venue}
                   className="bg-white p-6 text-center border border-gray-200"
                 >
-                  <svg className="w-8 h-8 text-gold-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-8 h-8 text-yellow-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
                   <p className="text-gray-900 font-medium">{venue}</p>
@@ -194,10 +194,10 @@ export default async function LocationDeliveryPage({ params }: { params: Promise
       <section className="py-16 px-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading text-3xl text-gray-900 mb-4 tracking-[0.1em]">
               PERFECT FOR EVERY OCCASION
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto" />
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -228,10 +228,10 @@ export default async function LocationDeliveryPage({ params }: { params: Promise
                 key={service.title}
                 className="text-center"
               >
-                <svg className="w-12 h-12 text-gold-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-12 h-12 text-brand-yellow mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   {service.icon}
                 </svg>
-                <h3 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.1em]">
+                <h3 className="font-heading text-xl text-gray-900 mb-2 tracking-[0.1em]">
                   {service.title}
                 </h3>
                 <p className="text-gray-600">{service.description}</p>
@@ -245,7 +245,7 @@ export default async function LocationDeliveryPage({ params }: { params: Promise
       <section className="py-16 bg-gray-900 text-white">
         <div className="max-w-4xl mx-auto px-8 text-center">
           <div>
-            <h2 className="font-serif text-3xl mb-4 tracking-[0.1em]">
+            <h2 className="font-heading text-3xl mb-4 tracking-[0.1em]">
               READY TO ORDER?
             </h2>
             <p className="text-gray-300 mb-8 text-lg">
@@ -253,7 +253,7 @@ export default async function LocationDeliveryPage({ params }: { params: Promise
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/order">
-                <button className="px-8 py-3 bg-gold-500 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.15em]">
+                <button className="px-8 py-3 bg-yellow-500 text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.15em]">
                   ORDER NOW
                 </button>
               </Link>

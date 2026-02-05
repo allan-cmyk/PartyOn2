@@ -127,7 +127,7 @@ export default function ParticipantPaymentPage(): React.ReactElement {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-500 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
           <p className="text-gray-600 tracking-[0.1em]">Loading...</p>
         </div>
       </div>
@@ -146,7 +146,7 @@ export default function ParticipantPaymentPage(): React.ReactElement {
           <h1 className="text-2xl font-cormorant mb-4">Group Order Not Found</h1>
           <p className="text-gray-600 mb-6">This group order may have expired or been cancelled.</p>
           <Link href="/products">
-            <button className="bg-gray-900 text-white px-6 py-3 tracking-[0.1em] hover:bg-gold-500 transition-colors">
+            <button className="bg-gray-900 text-white px-6 py-3 tracking-[0.1em] hover:bg-yellow-500 transition-colors">
               BROWSE PRODUCTS
             </button>
           </Link>
@@ -167,7 +167,7 @@ export default function ParticipantPaymentPage(): React.ReactElement {
           <h1 className="text-2xl font-cormorant mb-4">Not in This Group Order</h1>
           <p className="text-gray-600 mb-6">You need to join this group order before you can pay.</p>
           <Link href={`/group/${shareCode}`}>
-            <button className="bg-gold-500 text-gray-900 px-6 py-3 tracking-[0.1em] hover:bg-gold-600 transition-colors">
+            <button className="bg-yellow-500 text-gray-900 px-6 py-3 tracking-[0.1em] hover:bg-brand-yellow transition-colors">
               JOIN GROUP ORDER
             </button>
           </Link>
@@ -188,7 +188,7 @@ export default function ParticipantPaymentPage(): React.ReactElement {
           <h1 className="text-2xl font-cormorant mb-4">Your Cart is Empty</h1>
           <p className="text-gray-600 mb-6">Add some items to your cart before checking out.</p>
           <Link href="/products">
-            <button className="bg-gold-500 text-gray-900 px-6 py-3 tracking-[0.1em] hover:bg-gold-600 transition-colors">
+            <button className="bg-yellow-500 text-gray-900 px-6 py-3 tracking-[0.1em] hover:bg-brand-yellow transition-colors">
               BROWSE PRODUCTS
             </button>
           </Link>
@@ -203,7 +203,7 @@ export default function ParticipantPaymentPage(): React.ReactElement {
         <div className="max-w-lg mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
-            <Link href={`/group/${shareCode}`} className="text-gold-500 hover:text-gold-600 text-sm tracking-[0.1em] mb-4 inline-block">
+            <Link href={`/group/${shareCode}`} className="text-yellow-500 hover:text-brand-yellow text-sm tracking-[0.1em] mb-4 inline-block">
               &larr; Back to Group Order
             </Link>
             <h1 className="text-3xl font-cormorant tracking-[0.1em] mb-2">
@@ -218,8 +218,8 @@ export default function ParticipantPaymentPage(): React.ReactElement {
           <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
             {/* Participant Info */}
             <div className="flex items-center gap-3 pb-4 border-b mb-4">
-              <div className="w-12 h-12 bg-gold-100 rounded-full flex items-center justify-center">
-                <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                <svg className="w-6 h-6 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
@@ -245,7 +245,7 @@ export default function ParticipantPaymentPage(): React.ReactElement {
               </div>
               <div className="flex justify-between font-semibold text-lg pt-3 border-t">
                 <span>Total</span>
-                <span className="text-gold-600">${breakdown.total.toFixed(2)}</span>
+                <span className="text-brand-yellow">${breakdown.total.toFixed(2)}</span>
               </div>
             </div>
 
@@ -256,7 +256,7 @@ export default function ParticipantPaymentPage(): React.ReactElement {
               <p className="text-gray-600">
                 {groupOrder.deliveryAddress?.city}, {groupOrder.deliveryAddress?.province} {groupOrder.deliveryAddress?.zip}
               </p>
-              <p className="text-sm text-gold-600 mt-2">
+              <p className="text-sm text-brand-yellow mt-2">
                 {new Date(groupOrder.deliveryDate).toLocaleDateString('en-US', {
                   weekday: 'long',
                   month: 'long',
@@ -276,7 +276,7 @@ export default function ParticipantPaymentPage(): React.ReactElement {
             <button
               onClick={handleCheckout}
               disabled={isProcessing}
-              className="w-full bg-gold-500 text-gray-900 py-4 tracking-[0.15em] font-medium hover:bg-gold-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-yellow-500 text-gray-900 py-4 tracking-[0.15em] font-medium hover:bg-brand-yellow transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isProcessing ? (
                 <span className="flex items-center justify-center">

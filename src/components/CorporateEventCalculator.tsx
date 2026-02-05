@@ -138,10 +138,10 @@ export default function CorporateEventCalculator() {
   return (
     <div className="bg-white rounded-lg shadow-lg p-8 md:p-12 my-12">
       <div className="text-center mb-12">
-        <h2 className="font-serif font-light text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+        <h2 className="font-heading font-light text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
           Corporate Event Drink Calculator
         </h2>
-        <div className="w-16 h-px bg-gold-600 mx-auto mb-4" />
+        <div className="w-16 h-px bg-brand-yellow mx-auto mb-4" />
         <p className="text-gray-600 tracking-[0.05em] max-w-2xl mx-auto">
           Get an accurate estimate of how much alcohol you&apos;ll need for your corporate event
         </p>
@@ -156,7 +156,7 @@ export default function CorporateEventCalculator() {
               <label className="text-sm font-medium text-gray-900 tracking-[0.05em]">
                 Number of Guests
               </label>
-              <span className="text-lg font-semibold text-gold-600">{guests}</span>
+              <span className="text-lg font-semibold text-brand-yellow">{guests}</span>
             </div>
             <input
               type="range"
@@ -165,7 +165,7 @@ export default function CorporateEventCalculator() {
               step="10"
               value={guests}
               onChange={(e) => setGuests(parseInt(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gold-600"
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-yellow-500"
             />
             <div className="flex justify-between text-xs text-gray-500 mt-1">
               <span>10</span>
@@ -184,7 +184,7 @@ export default function CorporateEventCalculator() {
               max="8"
               value={hours}
               onChange={(e) => setHours(parseInt(e.target.value) || 0)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-600 focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
             />
           </div>
 
@@ -209,7 +209,7 @@ export default function CorporateEventCalculator() {
                     value={option.value}
                     checked={drinkingLevel === option.value}
                     onChange={(e) => setDrinkingLevel(e.target.value as DrinkingLevel)}
-                    className="w-4 h-4 mt-0.5 text-gold-600 border-gray-300 focus:ring-gold-600"
+                    className="w-4 h-4 mt-0.5 text-brand-yellow border-gray-300 focus:ring-brand-yellow"
                   />
                   <div className="ml-3">
                     <span className="text-gray-900 font-medium block group-hover:text-gray-900 transition-colors">
@@ -232,7 +232,7 @@ export default function CorporateEventCalculator() {
                 onClick={() => setChampagneToast(true)}
                 className={`px-6 py-2 rounded-md transition-all ${
                   champagneToast
-                    ? 'bg-gold-600 text-gray-900'
+                    ? 'bg-brand-yellow text-gray-900'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
@@ -242,7 +242,7 @@ export default function CorporateEventCalculator() {
                 onClick={() => setChampagneToast(false)}
                 className={`px-6 py-2 rounded-md transition-all ${
                   !champagneToast
-                    ? 'bg-gold-600 text-gray-900'
+                    ? 'bg-brand-yellow text-gray-900'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
@@ -266,7 +266,7 @@ export default function CorporateEventCalculator() {
                   <button
                     onClick={() => setLiquorLocked(!liquorLocked)}
                     className={`p-1 rounded transition-colors ${
-                      liquorLocked ? 'bg-gold-600 text-gray-900' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                      liquorLocked ? 'bg-brand-yellow text-gray-900' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                     }`}
                     title={liquorLocked ? 'Unlock' : 'Lock'}
                   >
@@ -289,7 +289,7 @@ export default function CorporateEventCalculator() {
                 disabled={liquorLocked}
                 className={`w-full h-2 bg-gray-200 rounded-lg appearance-none ${
                   liquorLocked ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
-                } accent-gold-600`}
+                } accent-yellow-500`}
               />
             </div>
 
@@ -302,7 +302,7 @@ export default function CorporateEventCalculator() {
                   <button
                     onClick={() => setWineLocked(!wineLocked)}
                     className={`p-1 rounded transition-colors ${
-                      wineLocked ? 'bg-gold-600 text-gray-900' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                      wineLocked ? 'bg-brand-yellow text-gray-900' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                     }`}
                     title={wineLocked ? 'Unlock' : 'Lock'}
                   >
@@ -325,7 +325,7 @@ export default function CorporateEventCalculator() {
                 disabled={wineLocked}
                 className={`w-full h-2 bg-gray-200 rounded-lg appearance-none ${
                   wineLocked ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
-                } accent-gold-600`}
+                } accent-yellow-500`}
               />
             </div>
 
@@ -338,7 +338,7 @@ export default function CorporateEventCalculator() {
                   <button
                     onClick={() => setBeerLocked(!beerLocked)}
                     className={`p-1 rounded transition-colors ${
-                      beerLocked ? 'bg-gold-600 text-gray-900' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                      beerLocked ? 'bg-brand-yellow text-gray-900' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                     }`}
                     title={beerLocked ? 'Unlock' : 'Lock'}
                   >
@@ -361,7 +361,7 @@ export default function CorporateEventCalculator() {
                 disabled={beerLocked}
                 className={`w-full h-2 bg-gray-200 rounded-lg appearance-none ${
                   beerLocked ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
-                } accent-gold-600`}
+                } accent-yellow-500`}
               />
             </div>
 
@@ -375,15 +375,15 @@ export default function CorporateEventCalculator() {
         </div>
 
         {/* Results Section */}
-        <div className="bg-gradient-to-br from-gold-50 to-gray-50 rounded-lg p-4 md:p-8">
-          <h3 className="font-serif text-xl md:text-2xl text-gray-900 mb-4 md:mb-6 tracking-[0.1em] text-center">
+        <div className="bg-gradient-to-br from-yellow-50 to-gray-50 rounded-lg p-4 md:p-8">
+          <h3 className="font-heading text-xl md:text-2xl text-gray-900 mb-4 md:mb-6 tracking-[0.1em] text-center">
             Estimated Quantities
           </h3>
 
           {/* Total Drinks - Always show */}
           <div className="bg-white rounded-lg p-3 md:p-4 text-center border border-gray-200 mb-4">
             <p className="text-xs md:text-sm text-gray-600 mb-1">Total Drinks Needed</p>
-            <p className="text-2xl md:text-3xl font-semibold text-gold-600">{Math.ceil(totalDrinks)}</p>
+            <p className="text-2xl md:text-3xl font-semibold text-brand-yellow">{Math.ceil(totalDrinks)}</p>
           </div>
 
           {/* Compact Table View - Mobile */}
@@ -424,13 +424,13 @@ export default function CorporateEventCalculator() {
                   </td>
                 </tr>
                 {champagneToast && (
-                  <tr className="bg-gold-50">
+                  <tr className="bg-yellow-50">
                     <td className="py-2 px-3">
                       <div className="font-medium text-gray-900">Champagne Bottles</div>
                       <div className="text-xs text-gray-500">For toast (750ml, 5 glasses each)</div>
                     </td>
                     <td className="text-center py-2 px-3">
-                      <span className="text-xl font-semibold text-gold-600">{champagneBottles}</span>
+                      <span className="text-xl font-semibold text-brand-yellow">{champagneBottles}</span>
                     </td>
                   </tr>
                 )}
@@ -493,14 +493,14 @@ export default function CorporateEventCalculator() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-white rounded-lg p-6 shadow-sm border-2 border-gold-300"
+                className="bg-white rounded-lg p-6 shadow-sm border-2 border-brand-yellow"
               >
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-600 mb-1">Champagne Bottles</p>
                     <p className="text-xs text-gray-500">For toast (750ml, 5 glasses each)</p>
                   </div>
-                  <p className="text-4xl font-semibold text-gold-600">{champagneBottles}</p>
+                  <p className="text-4xl font-semibold text-brand-yellow">{champagneBottles}</p>
                 </div>
               </motion.div>
             )}
@@ -519,7 +519,7 @@ export default function CorporateEventCalculator() {
             </p>
             <Link
               href="/contact"
-              className="inline-block px-6 py-3 bg-gold-600 text-gray-900 rounded-md hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
+              className="inline-block px-6 py-3 bg-brand-yellow text-gray-900 rounded-md hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm font-medium"
             >
               Get a Custom Quote
             </Link>

@@ -107,10 +107,10 @@ export default function CareersPage() {
       <Section>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl text-dark mb-4">
+            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl text-gray-900 mb-4">
               Work Hard, Party Smart
             </h2>
-            <p className="text-lg text-dark/70 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-900/70 max-w-2xl mx-auto">
               We&apos;re building something special in Austin. If you love this city, understand hospitality, 
               and want to be part of the party revolution, we want to meet you.
             </p>
@@ -118,13 +118,13 @@ export default function CareersPage() {
 
           {/* Benefits */}
           <div className="mb-16">
-            <h3 className="font-display text-2xl text-dark text-center mb-8">Why Party On?</h3>
+            <h3 className="font-heading text-2xl text-gray-900 text-center mb-8">Why Party On?</h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {benefits.map((benefit) => (
                 <div key={benefit.title} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
                   <div className="text-3xl mb-3">{benefit.icon}</div>
-                  <h4 className="font-semibold text-dark mb-2">{benefit.title}</h4>
-                  <p className="text-sm text-dark/70">{benefit.description}</p>
+                  <h4 className="font-semibold text-gray-900 mb-2">{benefit.title}</h4>
+                  <p className="text-sm text-gray-900/70">{benefit.description}</p>
                 </div>
               ))}
             </div>
@@ -132,15 +132,15 @@ export default function CareersPage() {
 
           {/* Open Positions */}
           <div className="mb-16">
-            <h3 className="font-display text-2xl text-dark text-center mb-8">Open Positions</h3>
+            <h3 className="font-heading text-2xl text-gray-900 text-center mb-8">Open Positions</h3>
             <div className="space-y-6">
               {openPositions.map((position) => (
                 <div key={position.title} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
                   <div className="p-6">
                     <div className="flex flex-wrap items-start justify-between mb-4">
                       <div>
-                        <h4 className="font-display text-xl text-dark mb-1">{position.title}</h4>
-                        <div className="flex flex-wrap gap-2 text-sm text-dark/60">
+                        <h4 className="font-heading text-xl text-gray-900 mb-1">{position.title}</h4>
+                        <div className="flex flex-wrap gap-2 text-sm text-gray-900/60">
                           <span>{position.department}</span>
                           <span>•</span>
                           <span>{position.type}</span>
@@ -152,13 +152,13 @@ export default function CareersPage() {
                         Apply Now
                       </button>
                     </div>
-                    <p className="text-dark/70 mb-4">{position.description}</p>
+                    <p className="text-gray-900/70 mb-4">{position.description}</p>
                     <div>
-                      <p className="font-semibold text-sm text-dark mb-2">Requirements:</p>
+                      <p className="font-semibold text-sm text-gray-900 mb-2">Requirements:</p>
                       <ul className="space-y-1">
                         {position.requirements.map((req, index) => (
-                          <li key={index} className="flex items-start space-x-2 text-sm text-dark/60">
-                            <span className="text-primary-500 mt-1">•</span>
+                          <li key={index} className="flex items-start space-x-2 text-sm text-gray-900/60">
+                            <span className="text-brand-blue mt-1">•</span>
                             <span>{req}</span>
                           </li>
                         ))}
@@ -171,37 +171,37 @@ export default function CareersPage() {
           </div>
 
           {/* Culture Section */}
-          <div className="bg-gradient-to-r from-primary-50 to-secondary-50 rounded-2xl p-8 md:p-12 text-center">
-            <h3 className="font-display text-2xl text-dark mb-4">Our Culture</h3>
-            <p className="text-dark/70 max-w-2xl mx-auto mb-8">
+          <div className="bg-gradient-to-r from-blue-50 to-blue-50 rounded-2xl p-8 md:p-12 text-center">
+            <h3 className="font-heading text-2xl text-gray-900 mb-4">Our Culture</h3>
+            <p className="text-gray-900/70 max-w-2xl mx-auto mb-8">
               We&apos;re not your typical corporate environment. We&apos;re a startup with soul, built by Austin 
               locals who believe work should be fulfilling, fun, and meaningful. We celebrate wins, 
               learn from losses, and always keep the party going.
             </p>
             <div className="grid md:grid-cols-4 gap-6 text-center">
               <div>
-                <div className="text-4xl font-bold text-primary-500">500+</div>
-                <p className="text-sm text-dark/60">Events Monthly</p>
+                <div className="text-4xl font-bold text-brand-blue">500+</div>
+                <p className="text-sm text-gray-900/60">Events Monthly</p>
               </div>
               <div>
-                <div className="text-4xl font-bold text-primary-500">5.0★</div>
-                <p className="text-sm text-dark/60">Employee Rating</p>
+                <div className="text-4xl font-bold text-brand-blue">5.0★</div>
+                <p className="text-sm text-gray-900/60">Employee Rating</p>
               </div>
               <div>
-                <div className="text-4xl font-bold text-primary-500">25+</div>
-                <p className="text-sm text-dark/60">Team Members</p>
+                <div className="text-4xl font-bold text-brand-blue">25+</div>
+                <p className="text-sm text-gray-900/60">Team Members</p>
               </div>
               <div>
-                <div className="text-4xl font-bold text-primary-500">∞</div>
-                <p className="text-sm text-dark/60">Party Potential</p>
+                <div className="text-4xl font-bold text-brand-blue">∞</div>
+                <p className="text-sm text-gray-900/60">Party Potential</p>
               </div>
             </div>
           </div>
 
           {/* Application CTA */}
           <div className="text-center mt-12">
-            <h3 className="font-display text-2xl text-dark mb-4">Don&apos;t See Your Role?</h3>
-            <p className="text-dark/70 mb-6">
+            <h3 className="font-heading text-2xl text-gray-900 mb-4">Don&apos;t See Your Role?</h3>
+            <p className="text-gray-900/70 mb-6">
               We&apos;re always looking for talented people who share our vision. Send us your resume!
             </p>
             <a href="mailto:info@partyondelivery.com" className="btn-outline">

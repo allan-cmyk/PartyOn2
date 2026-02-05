@@ -6,7 +6,8 @@ export type PartnerCategory =
   | 'venues'
   | 'catering'
   | 'boats'
-  | 'transportation';
+  | 'transportation'
+  | 'experiences';
 
 export interface Partner {
   id: string;
@@ -66,6 +67,12 @@ export const PARTNER_CATEGORIES: CategoryInfo[] = [
     name: 'Transportation',
     description: 'Party buses, limos, and shuttles',
     icon: 'car',
+  },
+  {
+    id: 'experiences',
+    name: 'Experiences',
+    description: 'Unique party experiences and entertainment',
+    icon: 'sparkles',
   },
 ];
 

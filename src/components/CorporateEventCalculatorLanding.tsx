@@ -145,7 +145,7 @@ Total estimated drinks: ${results.totalDrinks}`;
   return (
     <div className="bg-white rounded-lg border border-gray-200 shadow-lg p-6 md:p-8">
       <div className="mb-6">
-        <h3 className="font-serif text-2xl md:text-3xl text-gray-900 mb-2 tracking-[0.1em]">
+        <h3 className="font-heading text-2xl md:text-3xl text-gray-900 mb-2 tracking-[0.1em]">
           Corporate Drink Calculator
         </h3>
         <p className="text-gray-600">
@@ -166,7 +166,7 @@ Total estimated drinks: ${results.totalDrinks}`;
             max="500"
             value={guests}
             onChange={(e) => setGuests(parseInt(e.target.value) || 0)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
           />
         </div>
 
@@ -181,7 +181,7 @@ Total estimated drinks: ${results.totalDrinks}`;
             max="8"
             value={hours}
             onChange={(e) => setHours(parseInt(e.target.value) || 0)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
           />
         </div>
       </div>
@@ -198,7 +198,7 @@ Total estimated drinks: ${results.totalDrinks}`;
               onClick={() => setDrinkingLevel(level)}
               className={`px-4 py-2 rounded-md font-medium transition-colors ${
                 drinkingLevel === level
-                  ? 'bg-gold-500 text-gray-900'
+                  ? 'bg-yellow-500 text-gray-900'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
@@ -217,7 +217,7 @@ Total estimated drinks: ${results.totalDrinks}`;
           <button
             type="button"
             onClick={() => setShowTooltip(!showTooltip)}
-            className="text-gold-600 hover:text-gold-700 text-sm"
+            className="text-brand-yellow hover:text-yellow-600 text-sm"
           >
             ℹ️ Info
           </button>
@@ -291,7 +291,7 @@ Total estimated drinks: ${results.totalDrinks}`;
             type="checkbox"
             checked={includeNA}
             onChange={(e) => setIncludeNA(e.target.checked)}
-            className="w-5 h-5 text-gold-500 border-gray-300 rounded focus:ring-gold-500"
+            className="w-5 h-5 text-yellow-500 border-gray-300 rounded focus:ring-yellow-500"
           />
           <span className="text-gray-700">Include non-alcoholic options (2 per guest)</span>
         </label>
@@ -301,7 +301,7 @@ Total estimated drinks: ${results.totalDrinks}`;
             type="checkbox"
             checked={includeIce}
             onChange={(e) => setIncludeIce(e.target.checked)}
-            className="w-5 h-5 text-gold-500 border-gray-300 rounded focus:ring-gold-500"
+            className="w-5 h-5 text-yellow-500 border-gray-300 rounded focus:ring-yellow-500"
           />
           <span className="text-gray-700">Include ice</span>
         </label>
@@ -313,49 +313,49 @@ Total estimated drinks: ${results.totalDrinks}`;
         animate={{ opacity: 1, y: 0 }}
         className="border-t border-gray-200 pt-6"
       >
-        <h4 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
+        <h4 className="font-heading text-xl text-gray-900 mb-4 tracking-[0.1em]">
           Estimated Quantities
         </h4>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
           <div className="p-4 bg-gray-50 rounded-lg">
-            <div className="text-2xl font-bold text-gold-600">{results.beerCans}</div>
+            <div className="text-2xl font-bold text-brand-yellow">{results.beerCans}</div>
             <div className="text-sm text-gray-600">Beer Cans</div>
           </div>
 
           <div className="p-4 bg-gray-50 rounded-lg">
-            <div className="text-2xl font-bold text-gold-600">{results.wineBottles}</div>
+            <div className="text-2xl font-bold text-brand-yellow">{results.wineBottles}</div>
             <div className="text-sm text-gray-600">Wine Bottles</div>
           </div>
 
           <div className="p-4 bg-gray-50 rounded-lg">
-            <div className="text-2xl font-bold text-gold-600">{results.spiritsBottles}</div>
+            <div className="text-2xl font-bold text-brand-yellow">{results.spiritsBottles}</div>
             <div className="text-sm text-gray-600">Spirit Bottles</div>
           </div>
 
           <div className="p-4 bg-gray-50 rounded-lg">
-            <div className="text-2xl font-bold text-gold-600">{results.mixers}</div>
+            <div className="text-2xl font-bold text-brand-yellow">{results.mixers}</div>
             <div className="text-sm text-gray-600">Mixers</div>
           </div>
 
           {includeIce && (
             <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="text-2xl font-bold text-gold-600">{results.iceLbs}</div>
+              <div className="text-2xl font-bold text-brand-yellow">{results.iceLbs}</div>
               <div className="text-sm text-gray-600">Lbs of Ice</div>
             </div>
           )}
 
           {includeNA && (
             <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="text-2xl font-bold text-gold-600">{results.naDrinks}</div>
+              <div className="text-2xl font-bold text-brand-yellow">{results.naDrinks}</div>
               <div className="text-sm text-gray-600">NA Drinks</div>
             </div>
           )}
         </div>
 
-        <div className="mb-6 p-4 bg-gold-50 border border-gold-200 rounded-lg">
+        <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
           <div className="flex items-start space-x-2">
-            <span className="text-gold-600">ℹ️</span>
+            <span className="text-brand-yellow">ℹ️</span>
             <p className="text-sm text-gray-700">
               <strong>Total estimated drinks: {results.totalDrinks}</strong>
               <br />
@@ -368,13 +368,13 @@ Total estimated drinks: ${results.totalDrinks}`;
         <div className="flex flex-col sm:flex-row gap-3">
           <button
             onClick={handleAddToQuote}
-            className="flex-1 bg-gold-500 text-gray-900 px-6 py-3 rounded-md hover:bg-gold-600 transition-colors font-medium tracking-[0.05em]"
+            className="flex-1 bg-yellow-500 text-gray-900 px-6 py-3 rounded-md hover:bg-brand-yellow transition-colors font-medium tracking-[0.05em]"
           >
             Add to Quote Request
           </button>
           <button
             onClick={onScheduleCall}
-            className="flex-1 bg-white text-gold-600 px-6 py-3 rounded-md border-2 border-gold-500 hover:bg-gold-50 transition-colors font-medium tracking-[0.05em]"
+            className="flex-1 bg-white text-brand-yellow px-6 py-3 rounded-md border-2 border-yellow-500 hover:bg-yellow-50 transition-colors font-medium tracking-[0.05em]"
           >
             Schedule a Call
           </button>

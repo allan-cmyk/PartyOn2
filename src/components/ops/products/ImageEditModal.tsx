@@ -106,7 +106,7 @@ export function ImageEditModal({
               onChange={(e) => setAltText(e.target.value)}
               placeholder="Describe this image for accessibility and SEO..."
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent resize-none"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent resize-none"
             />
             <p className="mt-1.5 text-xs text-gray-500">
               Good alt text describes the image content. This helps with accessibility and SEO.

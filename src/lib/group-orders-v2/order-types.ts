@@ -24,12 +24,12 @@ const COMMON_COLLECTIONS: OrderCollection[] = [
     handle: 'favorites-home-page',
     label: 'Favorites',
     colors: {
-      bg: 'bg-gold-50 hover:bg-gold-100',
-      bgActive: 'bg-gold-600',
+      bg: 'bg-yellow-50 hover:bg-yellow-100',
+      bgActive: 'bg-brand-yellow',
       text: 'text-gray-900',
       textActive: 'text-gray-900',
-      border: 'border-gold-400 hover:border-gold-500',
-      borderActive: 'border-gold-600',
+      border: 'border-brand-yellow hover:border-yellow-500',
+      borderActive: 'border-brand-yellow',
     },
   },
   {

@@ -64,7 +64,7 @@ export default function SneebergFAQ() {
 
       <section className="py-16 px-4 md:px-8 bg-gray-50">
         <div className="max-w-4xl mx-auto">
-          <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-8 tracking-[0.15em] text-center">
+          <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-8 tracking-[0.15em] text-center">
             FREQUENTLY ASKED QUESTIONS
           </h2>
 
@@ -72,7 +72,7 @@ export default function SneebergFAQ() {
             {faqs.map((faq, index) => (
               <LuxuryCard key={index} index={index}>
                 <div className="p-6">
-                  <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+                  <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.05em]">
                     {faq.question}
                   </h3>
                   <p className="text-gray-600 leading-relaxed">

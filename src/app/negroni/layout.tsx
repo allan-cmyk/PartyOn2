@@ -29,7 +29,7 @@ const montserrat = Montserrat({
 
 const playfair = Playfair_Display({ 
   subsets: ['latin'],
-  variable: '--font-playfair',
+  variable: '--font-heading',
 });
 
 export default function LuxuryJimmyLayout({

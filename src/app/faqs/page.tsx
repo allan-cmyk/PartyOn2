@@ -129,7 +129,7 @@ export default function FAQsPage() {
       {/* Header */}
       <section className="pt-32 pb-16 px-8 bg-gray-50">
         <div className="hero-fade-in max-w-4xl mx-auto text-center">
-          <h1 className="font-serif text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+          <h1 className="font-heading text-5xl text-gray-900 mb-4 tracking-[0.1em]">
             Frequently Asked Questions
           </h1>
           <p className="text-gray-600 text-lg">Everything you need to know about our services</p>
@@ -146,7 +146,7 @@ export default function FAQsPage() {
               duration={600}
               className="mb-12"
             >
-              <h2 className="font-serif text-2xl text-gray-900 mb-6 tracking-[0.1em]">
+              <h2 className="font-heading text-2xl text-gray-900 mb-6 tracking-[0.1em]">
                 {category.category}
               </h2>
               <div className="space-y-4">
@@ -157,7 +157,7 @@ export default function FAQsPage() {
                   return (
                     <div
                       key={index}
-                      className="border border-gray-200 hover:border-gold-600 transition-colors"
+                      className="border border-gray-200 hover:border-brand-yellow transition-colors"
                     >
                       <button
                         onClick={() => setOpenIndex(isOpen ? null : globalIndex)}
@@ -192,7 +192,7 @@ export default function FAQsPage() {
             duration={600}
             className="mt-16 p-8 bg-gray-50 text-center"
           >
-            <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">
               Still Have Questions?
             </h3>
             <p className="text-gray-600 mb-6">
@@ -200,12 +200,12 @@ export default function FAQsPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/contact">
-                <button className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
+                <button className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm">
                   CONTACT US
                 </button>
               </Link>
               <a href="tel:7373719700">
-                <button className="px-8 py-3 border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-colors tracking-[0.15em] text-sm">
+                <button className="px-8 py-3 border border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-colors tracking-[0.15em] text-sm">
                   CALL (737) 371-9700
                 </button>
               </a>
@@ -231,19 +231,19 @@ export default function FAQsPage() {
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SERVICES</h4>
               <ul className="space-y-2">
-                <li><Link href="/weddings" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Weddings</Link></li>
-                <li><Link href="/boat-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Boat Parties</Link></li>
-                <li><Link href="/bach-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Celebrations</Link></li>
-                <li><Link href="/corporate" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Corporate</Link></li>
+                <li><Link href="/weddings" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Weddings</Link></li>
+                <li><Link href="/boat-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Boat Parties</Link></li>
+                <li><Link href="/bach-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Celebrations</Link></li>
+                <li><Link href="/corporate" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Corporate</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">INFORMATION</h4>
               <ul className="space-y-2">
-                <li><Link href="/about" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">About Us</Link></li>
-                <li><Link href="/faqs" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">FAQs</Link></li>
-                <li><Link href="/terms" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Terms</Link></li>
-                <li><Link href="/privacy" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Privacy</Link></li>
+                <li><Link href="/about" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">About Us</Link></li>
+                <li><Link href="/faqs" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">FAQs</Link></li>
+                <li><Link href="/terms" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Terms</Link></li>
+                <li><Link href="/privacy" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Privacy</Link></li>
               </ul>
             </div>
             <div>
@@ -258,8 +258,8 @@ export default function FAQsPage() {
           <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">© 2024 PartyOn Delivery. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="/terms" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Terms</Link>
-              <Link href="/privacy" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Privacy</Link>
+              <Link href="/terms" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Terms</Link>
+              <Link href="/privacy" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Privacy</Link>
             </div>
           </div>
         </div>

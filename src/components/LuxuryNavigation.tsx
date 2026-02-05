@@ -44,7 +44,7 @@ export default function LuxuryNavigation({ variant = 'minimal' }: { variant?: 'm
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-royal-900 z-[100] flex items-center justify-center"
+              className="fixed inset-0 bg-gray-900 z-[100] flex items-center justify-center"
             >
               <button
                 onClick={() => setIsMenuOpen(false)}
@@ -58,7 +58,7 @@ export default function LuxuryNavigation({ variant = 'minimal' }: { variant?: 'm
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
                 >
-                  <Link href="/services" className="block text-5xl font-light text-white mb-8 hover:text-gold-400 transition-colors" onClick={() => setIsMenuOpen(false)}>
+                  <Link href="/services" className="block text-5xl font-light text-white mb-8 hover:text-brand-yellow transition-colors" onClick={() => setIsMenuOpen(false)}>
                     Services
                   </Link>
                 </motion.div>
@@ -67,7 +67,7 @@ export default function LuxuryNavigation({ variant = 'minimal' }: { variant?: 'm
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                 >
-                  <Link href="/portfolio" className="block text-5xl font-light text-white mb-8 hover:text-gold-400 transition-colors" onClick={() => setIsMenuOpen(false)}>
+                  <Link href="/portfolio" className="block text-5xl font-light text-white mb-8 hover:text-brand-yellow transition-colors" onClick={() => setIsMenuOpen(false)}>
                     Portfolio
                   </Link>
                 </motion.div>
@@ -76,7 +76,7 @@ export default function LuxuryNavigation({ variant = 'minimal' }: { variant?: 'm
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
                 >
-                  <Link href="/delivery" className="block text-5xl font-light text-white mb-8 hover:text-gold-400 transition-colors" onClick={() => setIsMenuOpen(false)}>
+                  <Link href="/delivery" className="block text-5xl font-light text-white mb-8 hover:text-brand-yellow transition-colors" onClick={() => setIsMenuOpen(false)}>
                     Delivery
                   </Link>
                 </motion.div>
@@ -85,7 +85,7 @@ export default function LuxuryNavigation({ variant = 'minimal' }: { variant?: 'm
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
                 >
-                  <Link href="/contact" className="block text-5xl font-light text-white hover:text-gold-400 transition-colors" onClick={() => setIsMenuOpen(false)}>
+                  <Link href="/contact" className="block text-5xl font-light text-white hover:text-brand-yellow transition-colors" onClick={() => setIsMenuOpen(false)}>
                     Contact
                   </Link>
                 </motion.div>

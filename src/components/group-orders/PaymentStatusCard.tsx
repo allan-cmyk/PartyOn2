@@ -123,14 +123,14 @@ export default function PaymentStatusCard({
         <div className="flex items-center gap-3 flex-1 min-w-0">
           {/* Avatar */}
           <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-            status === 'PAID' ? 'bg-green-200' : 'bg-gold-100'
+            status === 'PAID' ? 'bg-green-200' : 'bg-yellow-100'
           }`}>
             {status === 'PAID' ? (
               <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             ) : (
-              <svg className="w-5 h-5 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             )}
@@ -143,7 +143,7 @@ export default function PaymentStatusCard({
                 {participantName || 'Anonymous'}
               </p>
               {isCurrentUser && (
-                <span className="text-xs bg-gold-100 text-gold-700 px-2 py-0.5 rounded flex-shrink-0">
+                <span className="text-xs bg-yellow-100 text-yellow-600 px-2 py-0.5 rounded flex-shrink-0">
                   YOU
                 </span>
               )}

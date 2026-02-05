@@ -65,13 +65,13 @@ function BookNowContent() {
       <Section>
         <div className="max-w-4xl mx-auto">
           {/* Tab Switcher */}
-          <div className="flex border-b border-neutral-200 mb-8">
+          <div className="flex border-b border-gray-200 mb-8">
             <button
               onClick={() => setActiveTab('delivery')}
               className={`flex-1 py-4 text-center font-sans font-medium transition-all duration-300 ${
                 activeTab === 'delivery'
-                  ? 'text-primary-500 border-b-2 border-primary-500'
-                  : 'text-dark/60 hover:text-dark'
+                  ? 'text-brand-blue border-b-2 border-brand-blue'
+                  : 'text-gray-900/60 hover:text-gray-900'
               }`}
             >
               Fast Delivery
@@ -80,8 +80,8 @@ function BookNowContent() {
               onClick={() => setActiveTab('event')}
               className={`flex-1 py-4 text-center font-sans font-medium transition-all duration-300 ${
                 activeTab === 'event'
-                  ? 'text-primary-500 border-b-2 border-primary-500'
-                  : 'text-dark/60 hover:text-dark'
+                  ? 'text-brand-blue border-b-2 border-brand-blue'
+                  : 'text-gray-900/60 hover:text-gray-900'
               }`}
             >
               Event Service
@@ -92,14 +92,14 @@ function BookNowContent() {
             {activeTab === 'delivery' ? (
               <>
                 {/* Fast Delivery Form */}
-                <div className="bg-neutral-50 p-8 rounded-2xl">
-                  <h2 className="font-serif text-2xl text-navy-500 mb-6">
+                <div className="bg-gray-50 p-8 rounded-2xl">
+                  <h2 className="font-heading text-2xl text-gray-900 mb-6">
                     Quick Order Details
                   </h2>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-neutral-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
                         Delivery Address
                       </label>
                       <input
@@ -108,20 +108,20 @@ function BookNowContent() {
                         value={formData.location}
                         onChange={handleInputChange}
                         placeholder="123 Main St, Austin, TX"
-                        className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                         required
                       />
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-neutral-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
                         Delivery Time
                       </label>
                       <select
                         name="time"
                         value={formData.time}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                         required
                       >
                         <option value="">Select time</option>
@@ -133,12 +133,12 @@ function BookNowContent() {
                     </div>
                   </div>
 
-                  <div className="mt-6 p-6 bg-gold-50 rounded-lg">
-                    <p className="font-sans text-sm text-neutral-600 mb-4">
+                  <div className="mt-6 p-6 bg-yellow-50 rounded-lg">
+                    <p className="font-sans text-sm text-gray-700 mb-4">
                       <strong>Next Step:</strong> After confirming delivery details, you&apos;ll be redirected 
                       to browse our product catalog and complete your order.
                     </p>
-                    <p className="font-sans text-xs text-neutral-500">
+                    <p className="font-sans text-xs text-gray-500">
                       Powered by Shopify checkout for secure payment processing
                     </p>
                   </div>
@@ -147,21 +147,21 @@ function BookNowContent() {
             ) : (
               <>
                 {/* Event Service Form */}
-                <div className="bg-neutral-50 p-8 rounded-2xl">
-                  <h2 className="font-serif text-2xl text-navy-500 mb-6">
+                <div className="bg-gray-50 p-8 rounded-2xl">
+                  <h2 className="font-heading text-2xl text-gray-900 mb-6">
                     Event Details
                   </h2>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-neutral-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
                         Service Type
                       </label>
                       <select
                         name="service"
                         value={formData.service}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                         required
                       >
                         <option value="">Select service</option>
@@ -173,14 +173,14 @@ function BookNowContent() {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-neutral-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
                         Package
                       </label>
                       <select
                         name="package"
                         value={formData.package}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                         required
                       >
                         <option value="">Select package</option>
@@ -192,7 +192,7 @@ function BookNowContent() {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-neutral-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
                         Event Date
                       </label>
                       <input
@@ -200,13 +200,13 @@ function BookNowContent() {
                         name="date"
                         value={formData.date}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                         required
                       />
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-neutral-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
                         Start Time
                       </label>
                       <input
@@ -214,13 +214,13 @@ function BookNowContent() {
                         name="time"
                         value={formData.time}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                         required
                       />
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-neutral-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
                         Number of Guests
                       </label>
                       <input
@@ -230,13 +230,13 @@ function BookNowContent() {
                         onChange={handleInputChange}
                         placeholder="50"
                         min="1"
-                        className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                         required
                       />
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-neutral-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
                         Venue/Location
                       </label>
                       <input
@@ -245,7 +245,7 @@ function BookNowContent() {
                         value={formData.location}
                         onChange={handleInputChange}
                         placeholder="Venue name or address"
-                        className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                         required
                       />
                     </div>
@@ -255,14 +255,14 @@ function BookNowContent() {
             )}
 
             {/* Contact Information */}
-            <div className="bg-neutral-50 p-8 rounded-2xl">
-              <h2 className="font-serif text-2xl text-navy-500 mb-6">
+            <div className="bg-gray-50 p-8 rounded-2xl">
+              <h2 className="font-heading text-2xl text-gray-900 mb-6">
                 Contact Information
               </h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Full Name
                   </label>
                   <input
@@ -271,13 +271,13 @@ function BookNowContent() {
                     value={formData.name}
                     onChange={handleInputChange}
                     placeholder="John Doe"
-                    className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                     required
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Phone Number
                   </label>
                   <input
@@ -286,13 +286,13 @@ function BookNowContent() {
                     value={formData.phone}
                     onChange={handleInputChange}
                     placeholder="(512) 555-0123"
-                    className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                     required
                   />
                 </div>
                 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Email Address
                   </label>
                   <input
@@ -301,13 +301,13 @@ function BookNowContent() {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="john@example.com"
-                    className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                     required
                   />
                 </div>
                 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Special Requests (Optional)
                   </label>
                   <textarea
@@ -316,7 +316,7 @@ function BookNowContent() {
                     onChange={handleInputChange}
                     rows={4}
                     placeholder="Tell us about any special requirements..."
-                    className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -330,7 +330,7 @@ function BookNowContent() {
               >
                 {activeTab === 'delivery' ? 'Continue to Products' : 'Request Quote'}
               </button>
-              <p className="mt-4 text-sm text-neutral-600">
+              <p className="mt-4 text-sm text-gray-700">
                 {activeTab === 'delivery' 
                   ? "You'll be able to browse and add products on the next page"
                   : 'We\'ll contact you within 2 hours with a custom quote'
@@ -342,47 +342,47 @@ function BookNowContent() {
       </Section>
 
       {/* Trust Section */}
-      <section className="section-padding bg-gradient-to-br from-gold-50 to-austin-sunset/10">
+      <section className="section-padding bg-gradient-to-br from-yellow-50 to-austin-sunset/10">
         <div className="container-custom">
           <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl text-navy-500 mb-4">
+            <h2 className="font-heading text-3xl text-gray-900 mb-4">
               Why Austin Trusts Party On
             </h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div className="text-center">
-              <div className="w-20 h-20 mx-auto bg-gold-100 rounded-full flex items-center justify-center mb-4">
-                <svg className="w-10 h-10 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-20 h-20 mx-auto bg-yellow-100 rounded-full flex items-center justify-center mb-4">
+                <svg className="w-10 h-10 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
               </div>
-              <h3 className="font-sans font-bold text-lg text-navy-500 mb-2">Secure Checkout</h3>
-              <p className="font-sans text-sm text-neutral-600">
+              <h3 className="font-sans font-bold text-lg text-gray-900 mb-2">Secure Checkout</h3>
+              <p className="font-sans text-sm text-gray-700">
                 Powered by Shopify for safe, encrypted payments
               </p>
             </div>
             
             <div className="text-center">
-              <div className="w-20 h-20 mx-auto bg-gold-100 rounded-full flex items-center justify-center mb-4">
-                <svg className="w-10 h-10 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-20 h-20 mx-auto bg-yellow-100 rounded-full flex items-center justify-center mb-4">
+                <svg className="w-10 h-10 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
-              <h3 className="font-sans font-bold text-lg text-navy-500 mb-2">Licensed & Insured</h3>
-              <p className="font-sans text-sm text-neutral-600">
+              <h3 className="font-sans font-bold text-lg text-gray-900 mb-2">Licensed & Insured</h3>
+              <p className="font-sans text-sm text-gray-700">
                 TABC certified with $2M liability coverage
               </p>
             </div>
             
             <div className="text-center">
-              <div className="w-20 h-20 mx-auto bg-gold-100 rounded-full flex items-center justify-center mb-4">
-                <svg className="w-10 h-10 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-20 h-20 mx-auto bg-yellow-100 rounded-full flex items-center justify-center mb-4">
+                <svg className="w-10 h-10 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.685.049V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
               </div>
-              <h3 className="font-sans font-bold text-lg text-navy-500 mb-2">24/7 Support</h3>
-              <p className="font-sans text-sm text-neutral-600">
+              <h3 className="font-sans font-bold text-lg text-gray-900 mb-2">24/7 Support</h3>
+              <p className="font-sans text-sm text-gray-700">
                 Real humans ready to help with your order
               </p>
             </div>

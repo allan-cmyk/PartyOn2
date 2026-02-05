@@ -67,9 +67,9 @@ export default function WelcomePackageCard({
   const descriptionText = product.description?.replace(/<[^>]*>/g, '') || '';
 
   return (
-    <div className="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 hover:border-gold-500/50 transition-all group">
+    <div className="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 hover:border-yellow-500/50 transition-all group">
       {/* FREE Badge */}
-      <div className="bg-gradient-to-r from-gold-500 to-gold-600 px-3 py-1.5 text-center">
+      <div className="bg-gradient-to-r from-yellow-500 to-brand-yellow px-3 py-1.5 text-center">
         <span className="text-gray-900 font-bold text-sm tracking-wide">
           FREE WITH CODE
         </span>
@@ -109,13 +109,13 @@ export default function WelcomePackageCard({
           <span className="text-gray-400 line-through text-sm">
             {formatPrice(price.amount, price.currencyCode)}
           </span>
-          <span className="text-gold-400 font-bold text-sm ml-2">$0</span>
+          <span className="text-brand-yellow font-bold text-sm ml-2">$0</span>
         </div>
       </div>
 
       {/* Content */}
       <div className="p-4 space-y-3">
-        <h3 className="font-serif text-xl text-white tracking-wide">
+        <h3 className="font-heading text-xl text-white tracking-wide">
           {packageName}
         </h3>
 
@@ -131,7 +131,7 @@ export default function WelcomePackageCard({
             className={`w-full py-3 px-4 rounded-lg font-semibold text-sm tracking-wide transition-all ${
               isAdded
                 ? 'bg-green-600 text-white cursor-default'
-                : 'bg-gold-500 hover:bg-gold-400 text-gray-900'
+                : 'bg-yellow-500 hover:bg-brand-yellow text-gray-900'
             }`}
           >
             {isAdding ? (
@@ -161,7 +161,7 @@ export default function WelcomePackageCard({
         {/* Discount Code Reminder */}
         <p className="text-center text-xs text-gray-500">
           Use code{' '}
-          <span className="font-mono text-gold-400">{discountCode}</span>{' '}
+          <span className="font-mono text-brand-yellow">{discountCode}</span>{' '}
           at checkout
         </p>
       </div>

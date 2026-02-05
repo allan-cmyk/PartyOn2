@@ -214,7 +214,7 @@ export default function Cart() {
             <div className="flex flex-col h-full">
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                <h2 className="font-serif text-2xl text-gray-900 tracking-[0.1em]">
+                <h2 className="font-heading text-2xl text-gray-900 tracking-[0.1em]">
                   YOUR CART
                 </h2>
                 <div className="flex items-center gap-2">
@@ -255,7 +255,7 @@ export default function Cart() {
                     </svg>
                     <p className="text-gray-500 mb-6 text-center">Your cart is empty</p>
                     <Link href="/order" onClick={closeCart}>
-                      <button className="px-6 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm">
+                      <button className="px-6 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm">
                         START ORDERING
                       </button>
                     </Link>
@@ -355,7 +355,7 @@ export default function Cart() {
 
                   {/* Total - Show subtotal since delivery is calculated at checkout */}
                   <div className="flex justify-between font-medium text-lg pt-4 border-t border-gray-200">
-                    <span className="font-serif tracking-[0.1em]">SUBTOTAL</span>
+                    <span className="font-heading tracking-[0.1em]">SUBTOTAL</span>
                     <span>
                       {subtotal ? formatPrice(subtotal.amount, subtotal.currencyCode) : '$0.00'}
                     </span>
@@ -364,7 +364,7 @@ export default function Cart() {
                   {/* Notice */}
                   <div className="bg-gray-50 p-4 text-sm text-gray-600">
                     <p className="flex items-start">
-                      <svg className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
                       </svg>
                       ID verification required upon delivery
@@ -386,7 +386,7 @@ export default function Cart() {
                   <button 
                     onClick={handleProceedToCheckout}
                     disabled={loading}
-                    className="w-full py-4 bg-gold-500 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.15em] text-sm disabled:opacity-50"
+                    className="w-full py-4 bg-yellow-500 text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.15em] text-sm disabled:opacity-50"
                   >
                     PROCEED TO CHECKOUT
                   </button>
@@ -395,7 +395,7 @@ export default function Cart() {
                   <button
                     onClick={handleShareCart}
                     disabled={isSharing || !hasItems}
-                    className="w-full py-3 border border-gray-300 text-gray-700 hover:border-gold-600 hover:text-gold-700 transition-colors tracking-[0.1em] text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                    className="w-full py-3 border border-gray-300 text-gray-700 hover:border-brand-yellow hover:text-yellow-600 transition-colors tracking-[0.1em] text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                   >
                     {isSharing ? (
                       <>
@@ -421,7 +421,7 @@ export default function Cart() {
 
                   {/* Continue Shopping */}
                   <Link href="/order" onClick={closeCart}>
-                    <button className="w-full py-3 border border-gray-300 text-gray-700 hover:border-gold-600 transition-colors tracking-[0.1em] text-sm">
+                    <button className="w-full py-3 border border-gray-300 text-gray-700 hover:border-brand-yellow transition-colors tracking-[0.1em] text-sm">
                       CONTINUE SHOPPING
                     </button>
                   </Link>
@@ -439,7 +439,7 @@ export default function Cart() {
       {isRedirecting && (
         <div className="fixed inset-0 bg-black/70 z-[100] flex items-center justify-center pointer-events-auto">
           <div className="bg-white p-8 rounded-lg shadow-2xl">
-            <div className="animate-spin h-10 w-10 border-4 border-gold-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <div className="animate-spin h-10 w-10 border-4 border-yellow-500 border-t-transparent rounded-full mx-auto mb-4"></div>
             <p className="text-gray-700 text-center font-medium">Redirecting to checkout...</p>
             <p className="text-gray-500 text-sm text-center mt-2">Please wait</p>
           </div>

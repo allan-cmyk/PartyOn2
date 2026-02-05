@@ -21,13 +21,13 @@ const AUSTIN_AREAS = [
  */
 export default function DeliveryAreasPreview(): ReactElement {
   return (
-    <section className="bg-navy-900 py-12 md:py-16 text-white">
+    <section className="bg-gray-900 py-12 md:py-16 text-white">
       <div className="max-w-5xl mx-auto px-4">
         <div className="text-center mb-8">
-          <h2 className="font-serif text-2xl md:text-3xl tracking-[0.1em] mb-2">
+          <h2 className="font-heading text-2xl md:text-3xl tracking-[0.1em] mb-2">
             AUSTIN ALCOHOL DELIVERY
           </h2>
-          <div className="w-16 h-px bg-gold-400 mx-auto mb-4" />
+          <div className="w-16 h-px bg-brand-yellow mx-auto mb-4" />
           <p className="text-gray-300 text-sm md:text-base max-w-xl mx-auto">
             Premium spirits, beer, wine, and mixers delivered to your door across the Greater Austin area
           </p>

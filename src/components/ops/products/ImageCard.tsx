@@ -68,7 +68,7 @@ export function ImageCard({
 
         {/* Main Badge */}
         {isMain && (
-          <div className="absolute top-2 left-2 bg-gold-600 text-gray-900 text-xs font-semibold px-2 py-1 rounded">
+          <div className="absolute top-2 left-2 bg-brand-yellow text-gray-900 text-xs font-semibold px-2 py-1 rounded">
             Main
           </div>
         )}
@@ -141,7 +141,7 @@ export function ImageCard({
               <button
                 onClick={() => onSetMain(id)}
                 disabled={disabled}
-                className="p-1.5 text-gray-500 hover:text-gold-600 hover:bg-gold-50 rounded disabled:opacity-50"
+                className="p-1.5 text-gray-500 hover:text-brand-yellow hover:bg-yellow-50 rounded disabled:opacity-50"
                 title="Set as main image"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

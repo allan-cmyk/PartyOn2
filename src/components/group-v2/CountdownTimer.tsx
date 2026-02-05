@@ -39,14 +39,14 @@ const COLOR_SCHEMES = {
     card: 'bg-sky-50 border-sky-200',
     label: 'text-sky-700',
     pill: 'bg-sky-100',
-    number: 'text-v2-text',
+    number: 'text-gray-900',
     unit: 'text-sky-600',
   },
   yellow: {
     card: 'bg-amber-50 border-amber-200',
     label: 'text-amber-700',
     pill: 'bg-amber-100',
-    number: 'text-v2-text',
+    number: 'text-gray-900',
     unit: 'text-amber-600',
   },
 } as const;
@@ -121,7 +121,7 @@ export default function CountdownTimer({
   if (!targetDate) return null;
 
   return (
-    <div className={`border rounded-xl px-4 py-3 min-w-[160px] shadow-sm v2-card-hover text-center ${scheme.card}`}>
+    <div className={`border rounded-xl px-4 py-3 min-w-[160px] shadow-sm white-hover text-center ${scheme.card}`}>
       {label && (
         <p className={`text-xs uppercase tracking-wider font-semibold mb-1.5 ${scheme.label}`}>
           {label}
@@ -129,7 +129,7 @@ export default function CountdownTimer({
       )}
 
       {expired ? (
-        <p className="font-mono text-xl font-bold text-v2-danger">Expired</p>
+        <p className="font-mono text-xl font-bold text-error">Expired</p>
       ) : (
         <div className="flex items-baseline justify-center gap-2">
           {segments.map((seg) => (
@@ -146,7 +146,7 @@ export default function CountdownTimer({
       )}
 
       {helperText && (
-        <p className="text-xs text-v2-muted mt-1">{helperText}</p>
+        <p className="text-xs text-gray-500 mt-1">{helperText}</p>
       )}
     </div>
   );

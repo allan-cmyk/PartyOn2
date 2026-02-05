@@ -198,7 +198,7 @@ export default function CreateGroupOrderModal({ isOpen, onClose, onSuccess }: Cr
                 <button
                   type="submit"
                   className="flex-1 bg-gray-900 text-white py-3 tracking-[0.1em] 
-                    hover:bg-gold-500 transition-colors disabled:bg-gray-400"
+                    hover:bg-yellow-500 transition-colors disabled:bg-gray-400"
                   disabled={isLoading}
                 >
                   {isLoading ? 'CREATING...' : 'CREATE ORDER'}

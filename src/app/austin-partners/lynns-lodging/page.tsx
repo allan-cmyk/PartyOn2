@@ -73,7 +73,7 @@ export default function LynnsLodgingPartnerPage() {
           </div>
 
           <h1 className="mb-6">
-            <span className="block font-serif text-[#fff8ed] text-2xl mb-3 tracking-[0.15em] font-light">
+            <span className="block font-heading text-[#fff8ed] text-2xl mb-3 tracking-[0.15em] font-light">
               LYNN&apos;S LODGING
             </span>
             <span className="block text-[#fff8ed] text-5xl md:text-7xl tracking-[0.08em]" style={{ fontFamily: 'Georgia Pro Condensed, Georgia, serif' }}>
@@ -141,7 +141,7 @@ export default function LynnsLodgingPartnerPage() {
         <div className="max-w-7xl mx-auto px-8">
           <ScrollRevealCSS duration={800} delay={0} y={30}>
             <div className="text-center mb-12">
-              <h2 className="font-serif text-4xl text-[#1b4235] mb-4 tracking-[0.1em]">
+              <h2 className="font-heading text-4xl text-[#1b4235] mb-4 tracking-[0.1em]">
                 Curated Packages for Every Stay
               </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
@@ -160,7 +160,7 @@ export default function LynnsLodgingPartnerPage() {
                     d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-serif text-[#1b4235] mb-3">Welcome Arrival</h3>
+              <h3 className="text-2xl font-heading text-[#1b4235] mb-3">Welcome Arrival</h3>
               <p className="text-gray-600 mb-4">
                 Start your Austin adventure right with champagne, local craft beers, and artisan snacks waiting in your rental.
               </p>
@@ -192,7 +192,7 @@ export default function LynnsLodgingPartnerPage() {
             <ScrollRevealCSS duration={800} delay={100} y={30}>
               <div className="bg-white p-8 shadow-lg hover:shadow-xl transition-shadow relative">
 
-              <div className="absolute -top-3 -right-3 bg-gold-600 text-gray-900 px-4 py-1 text-xs tracking-wider">
+              <div className="absolute -top-3 -right-3 bg-brand-yellow text-gray-900 px-4 py-1 text-xs tracking-wider">
                 MOST POPULAR
               </div>
               <div className="w-16 h-16 bg-[#fff8ed] rounded-full flex items-center justify-center mb-6">
@@ -201,7 +201,7 @@ export default function LynnsLodgingPartnerPage() {
                     d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0A2.704 2.704 0 003 15.546V5h18v10.546zM15 7h2m-2 4h2m-6-4h2m-2 4h2m-6-4h2m-2 4h2" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-serif text-[#1b4235] mb-3">Bach Party Package</h3>
+              <h3 className="text-2xl font-heading text-[#1b4235] mb-3">Bach Party Package</h3>
               <p className="text-gray-600 mb-4">
                 Everything you need for an unforgettable celebration. Customizable for your group size and preferences.
               </p>
@@ -239,7 +239,7 @@ export default function LynnsLodgingPartnerPage() {
                     d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-serif text-[#1b4235] mb-3">Weekend Retreat</h3>
+              <h3 className="text-2xl font-heading text-[#1b4235] mb-3">Weekend Retreat</h3>
               <p className="text-gray-600 mb-4">
                 Stock your rental for the perfect Austin weekend. Local favorites and premium spirits for your group.
               </p>
@@ -301,7 +301,7 @@ export default function LynnsLodgingPartnerPage() {
       <section className="py-16">
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl text-[#1b4235] mb-4">
+            <h2 className="font-heading text-3xl text-[#1b4235] mb-4">
               Delivered to Your Lynn&apos;s Lodging Rental
             </h2>
             <p className="text-gray-600">
@@ -332,7 +332,7 @@ export default function LynnsLodgingPartnerPage() {
       {/* How It Works */}
       <section className="py-16 bg-[#fff8ed]">
         <div className="max-w-5xl mx-auto px-8">
-          <h2 className="font-serif text-3xl text-[#1b4235] text-center mb-12">
+          <h2 className="font-heading text-3xl text-[#1b4235] text-center mb-12">
             Seamless Delivery to Your Vacation Rental
           </h2>
           
@@ -395,7 +395,7 @@ export default function LynnsLodgingPartnerPage() {
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-[#1b4235] to-[#2a5444]">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <h2 className="font-serif text-4xl text-[#fff8ed] mb-6">
+          <h2 className="font-heading text-4xl text-[#fff8ed] mb-6">
             Ready to Elevate Your Austin Stay?
           </h2>
           <p className="text-xl text-[#fff8ed]/90 mb-8">

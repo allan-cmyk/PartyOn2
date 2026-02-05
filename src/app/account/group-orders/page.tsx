@@ -99,7 +99,7 @@ export default function GroupOrdersPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 pt-24">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gold-600"></div>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand-yellow"></div>
           <p className="mt-4 text-gray-600">Loading...</p>
         </div>
       </div>
@@ -119,7 +119,7 @@ export default function GroupOrdersPage() {
           <p className="text-gray-600 mb-8">Please sign in to view your group orders</p>
           <button
             onClick={() => setIsAuthOpen(true)}
-            className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em]"
+            className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em]"
           >
             SIGN IN TO CONTINUE
           </button>
@@ -132,7 +132,7 @@ export default function GroupOrdersPage() {
     <AccountLayout title="Group Orders">
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gold-600"></div>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand-yellow"></div>
         </div>
       ) : error ? (
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
@@ -154,7 +154,7 @@ export default function GroupOrdersPage() {
             <p className="text-gray-600 mb-6">Create a group order to share with friends and family</p>
             <Link
               href="/group-v2/create"
-              className="inline-block px-8 py-3 bg-gold-600 text-gray-900 text-sm tracking-[0.1em] hover:bg-gold-700 transition-colors rounded"
+              className="inline-block px-8 py-3 bg-brand-yellow text-gray-900 text-sm tracking-[0.1em] hover:bg-yellow-600 transition-colors rounded"
             >
               CREATE GROUP ORDER
             </Link>
@@ -165,7 +165,7 @@ export default function GroupOrdersPage() {
           {/* Stats Summary */}
           <div className="grid md:grid-cols-3 gap-4 mb-6">
             <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 text-center">
-              <p className="text-3xl font-bold text-gold-600">{orders.length}</p>
+              <p className="text-3xl font-bold text-brand-yellow">{orders.length}</p>
               <p className="text-xs text-gray-500 tracking-[0.1em]">TOTAL GROUPS</p>
             </div>
             <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 text-center">
@@ -239,13 +239,13 @@ export default function GroupOrdersPage() {
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => handleViewDashboard(order)}
-                    className="px-4 py-2 bg-gold-600 text-gray-900 text-xs tracking-[0.1em] hover:bg-gold-700 transition-colors"
+                    className="px-4 py-2 bg-brand-yellow text-gray-900 text-xs tracking-[0.1em] hover:bg-yellow-600 transition-colors"
                   >
                     DASHBOARD
                   </button>
                   <button
                     onClick={() => setShareModalOrder(order)}
-                    className="px-4 py-2 border border-gold-600 text-gray-900 text-xs tracking-[0.1em] hover:bg-gold-50 transition-colors"
+                    className="px-4 py-2 border border-brand-yellow text-gray-900 text-xs tracking-[0.1em] hover:bg-yellow-50 transition-colors"
                   >
                     SHARE
                   </button>
@@ -264,7 +264,7 @@ export default function GroupOrdersPage() {
           <div className="text-center pt-4">
             <Link
               href="/group-v2/create"
-              className="inline-flex items-center gap-2 px-6 py-3 border-2 border-dashed border-gray-300 text-gray-600 hover:border-gold-600 hover:text-gold-600 transition-colors rounded-lg"
+              className="inline-flex items-center gap-2 px-6 py-3 border-2 border-dashed border-gray-300 text-gray-600 hover:border-brand-yellow hover:text-brand-yellow transition-colors rounded-lg"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />

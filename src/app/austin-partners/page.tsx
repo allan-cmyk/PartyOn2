@@ -304,10 +304,10 @@ export default function PartnersPage() {
         <div
           className="relative text-center text-white z-10 max-w-4xl mx-auto px-8 hero-fade-in"
         >
-          <h1 className="font-serif font-light text-5xl md:text-6xl mb-6 tracking-[0.15em]">
+          <h1 className="font-heading font-light text-5xl md:text-6xl mb-6 tracking-[0.15em]">
             PARTNER WITH US
           </h1>
-          <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
+          <div className="w-24 h-px bg-brand-yellow mx-auto mb-6" />
           <p className="text-xl font-light tracking-[0.1em] mb-8 text-gray-200">
             Elevate Your Business with Austin&apos;s Premier Alcohol Delivery Service
           </p>
@@ -319,7 +319,7 @@ export default function PartnersPage() {
         <div className="max-w-7xl mx-auto px-8">
           <ScrollRevealCSS duration={800} y={30}>
             <div className="text-center mb-16">
-              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+              <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
                 Transform Your Hospitality Experience
               </h2>
               <p className="text-lg text-gray-600 max-w-3xl mx-auto">
@@ -338,8 +338,8 @@ export default function PartnersPage() {
                     <Link href={type.href}>
                       <LuxuryCard backgroundImage={type.image}>
                         <div className="p-8">
-                          <div className="text-gold-600 mb-4 group-hover:text-gold-700 transition-colors">{type.icon}</div>
-                          <h3 className="font-serif text-2xl mb-3 text-gray-900 tracking-wide group-hover:text-gold-600 transition-colors">{type.title}</h3>
+                          <div className="text-brand-yellow mb-4 group-hover:text-yellow-600 transition-colors">{type.icon}</div>
+                          <h3 className="font-heading text-2xl mb-3 text-gray-900 tracking-wide group-hover:text-brand-yellow transition-colors">{type.title}</h3>
                           <p className="text-gray-600">{type.description}</p>
                         </div>
                       </LuxuryCard>
@@ -348,10 +348,10 @@ export default function PartnersPage() {
                     <LuxuryCard backgroundImage={type.image}>
                       <div className="p-8">
                         <div className="text-gray-600 mb-4">{type.icon}</div>
-                        <h3 className="font-serif text-2xl mb-3 text-gray-700 tracking-wide">{type.title}</h3>
+                        <h3 className="font-heading text-2xl mb-3 text-gray-700 tracking-wide">{type.title}</h3>
                         <p className="text-gray-600">{type.description}</p>
                         {type.comingSoon && (
-                          <div className="absolute top-4 right-4 bg-gold-600 text-gray-900 text-xs px-3 py-1 tracking-[0.1em]">
+                          <div className="absolute top-4 right-4 bg-brand-yellow text-gray-900 text-xs px-3 py-1 tracking-[0.1em]">
                             COMING SOON
                           </div>
                         )}
@@ -370,10 +370,10 @@ export default function PartnersPage() {
         <div className="max-w-7xl mx-auto px-8">
           <ScrollRevealCSS duration={800} y={30}>
             <div className="text-center mb-16">
-              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+              <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
                 Partner Benefits
               </h2>
-              <div className="w-16 h-px bg-gold-600 mx-auto" />
+              <div className="w-16 h-px bg-brand-yellow mx-auto" />
             </div>
           </ScrollRevealCSS>
 
@@ -381,7 +381,7 @@ export default function PartnersPage() {
             {benefits.map((benefit, index) => (
               <ScrollRevealCSS key={benefit.title} duration={800} delay={index * 100} y={30}>
                 <div className="text-center">
-                  <div className="text-gold-600 mb-3 flex justify-center">{benefit.icon}</div>
+                  <div className="text-brand-yellow mb-3 flex justify-center">{benefit.icon}</div>
                   <h3 className="text-xl font-medium mb-2 text-gray-900 tracking-wide">{benefit.title}</h3>
                   <p className="text-gray-600">{benefit.description}</p>
                 </div>
@@ -396,7 +396,7 @@ export default function PartnersPage() {
         <div className="max-w-7xl mx-auto px-8">
           <ScrollRevealCSS duration={800} y={30}>
             <div className="text-center mb-16">
-              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+              <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
                 Partnership Tiers
               </h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -409,13 +409,13 @@ export default function PartnersPage() {
             {tiers.map((tier, index) => (
               <ScrollRevealCSS key={tier.name} duration={800} delay={index * 100} y={30}>
                 <div className="bg-white p-8 border-2 border-gray-200">
-                  <h3 className="font-serif text-2xl mb-2 text-gray-900">{tier.name}</h3>
+                  <h3 className="font-heading text-2xl mb-2 text-gray-900">{tier.name}</h3>
                   <p className="text-gray-600 mb-2">{tier.volume}</p>
-                  <p className="text-3xl font-light text-gold-600 mb-6">{tier.discount}</p>
+                  <p className="text-3xl font-light text-brand-yellow mb-6">{tier.discount}</p>
                   <ul className="space-y-3">
                     {tier.features.map((feature) => (
                       <li key={feature} className="flex items-start">
-                        <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-5 h-5 text-brand-yellow mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
                         <span className="text-gray-700">{feature}</span>
@@ -435,7 +435,7 @@ export default function PartnersPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <ScrollRevealCSS duration={800} y={30}>
               <div>
-                <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+                <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
                   Custom Branded Solutions
                 </h2>
                 <p className="text-lg text-gray-600 mb-8">
@@ -444,7 +444,7 @@ export default function PartnersPage() {
                 </p>
                 <ul className="space-y-4 mb-8">
                   <li className="flex items-start">
-                    <svg className="w-6 h-6 text-gold-600 mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <svg className="w-6 h-6 text-brand-yellow mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <div>
@@ -453,7 +453,7 @@ export default function PartnersPage() {
                     </div>
                   </li>
                   <li className="flex items-start">
-                    <svg className="w-6 h-6 text-gold-600 mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <svg className="w-6 h-6 text-brand-yellow mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <div>
@@ -462,7 +462,7 @@ export default function PartnersPage() {
                     </div>
                   </li>
                   <li className="flex items-start">
-                    <svg className="w-6 h-6 text-gold-600 mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <svg className="w-6 h-6 text-brand-yellow mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <div>
@@ -471,7 +471,7 @@ export default function PartnersPage() {
                     </div>
                   </li>
                   <li className="flex items-start">
-                    <svg className="w-6 h-6 text-gold-600 mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <svg className="w-6 h-6 text-brand-yellow mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <div>
@@ -502,7 +502,7 @@ export default function PartnersPage() {
         <div className="max-w-4xl mx-auto px-8">
           <ScrollRevealCSS duration={800} y={30}>
             <div className="text-center mb-12">
-              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+              <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
                 Become a Partner
               </h2>
               <p className="text-lg text-gray-600">
@@ -550,7 +550,7 @@ export default function PartnersPage() {
                   onChange={handleChange}
                   required
                   aria-required="true"
-                  className="w-full px-4 py-3 border border-gray-300 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition-colors"
                 />
               </div>
 
@@ -565,7 +565,7 @@ export default function PartnersPage() {
                   onChange={handleChange}
                   required
                   aria-required="true"
-                  className="w-full px-4 py-3 border border-gray-300 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition-colors"
                 />
               </div>
             </div>
@@ -581,7 +581,7 @@ export default function PartnersPage() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition-colors"
                 />
               </div>
 
@@ -595,7 +595,7 @@ export default function PartnersPage() {
                   value={formData.phone}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition-colors"
                 />
               </div>
             </div>
@@ -610,7 +610,7 @@ export default function PartnersPage() {
                   value={formData.businessType}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition-colors"
                 >
                   <option value="">Select Type</option>
                   <option value="hotel">Hotel / Resort</option>
@@ -632,7 +632,7 @@ export default function PartnersPage() {
                   value={formData.monthlyVolume}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition-colors"
                 >
                   <option value="">Select Volume</option>
                   <option value="under5k">Under $5,000</option>
@@ -652,7 +652,7 @@ export default function PartnersPage() {
                 value={formData.message}
                 onChange={handleChange}
                 rows={5}
-                className="w-full px-4 py-3 border border-gray-300 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors resize-none"
+                className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow outline-none transition-colors resize-none"
                 placeholder="Share your vision for partnership and any specific requirements..."
               />
             </div>
@@ -663,7 +663,7 @@ export default function PartnersPage() {
               className={`w-full px-8 py-4 transition-colors tracking-[0.15em] text-sm font-medium ${
                 isSubmitting
                   ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
-                  : 'bg-gold-600 text-gray-900 hover:bg-gold-700'
+                  : 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
               }`}
             >
               {isSubmitting ? 'SUBMITTING...' : 'SUBMIT PARTNERSHIP INQUIRY'}
@@ -682,10 +682,10 @@ export default function PartnersPage() {
         <div className="max-w-7xl mx-auto px-8">
           <ScrollRevealCSS duration={800} y={30}>
             <div className="text-center mb-16">
-              <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+              <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
                 Success Stories
               </h2>
-              <div className="w-16 h-px bg-gold-600 mx-auto" />
+              <div className="w-16 h-px bg-brand-yellow mx-auto" />
             </div>
           </ScrollRevealCSS>
 
@@ -694,7 +694,7 @@ export default function PartnersPage() {
               <div className="bg-gray-50 p-8">
                 <div className="flex items-center mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-gold-400 fill-current" viewBox="0 0 20 20">
+                    <svg key={i} className="w-5 h-5 text-brand-yellow fill-current" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   ))}
@@ -711,7 +711,7 @@ export default function PartnersPage() {
               <div className="bg-gray-50 p-8">
                 <div className="flex items-center mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-gold-400 fill-current" viewBox="0 0 20 20">
+                    <svg key={i} className="w-5 h-5 text-brand-yellow fill-current" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   ))}
@@ -728,7 +728,7 @@ export default function PartnersPage() {
               <div className="bg-gray-50 p-8">
                 <div className="flex items-center mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-gold-400 fill-current" viewBox="0 0 20 20">
+                    <svg key={i} className="w-5 h-5 text-brand-yellow fill-current" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   ))}

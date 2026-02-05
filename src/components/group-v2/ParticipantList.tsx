@@ -29,7 +29,7 @@ export default function ParticipantList({
             className="flex items-center justify-between py-3.5 px-4 bg-white rounded-xl border border-gray-200"
           >
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-gold-100 flex items-center justify-center text-lg font-bold text-gold-700">
+              <div className="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center text-lg font-bold text-yellow-600">
                 {(p.name || '?')[0].toUpperCase()}
               </div>
               <div>
@@ -37,7 +37,7 @@ export default function ParticipantList({
                   {p.name}
                 </span>
                 {p.isHost && (
-                  <span className="ml-2 text-base font-medium text-gold-600 bg-gold-50 px-2.5 py-0.5 rounded-full">
+                  <span className="ml-2 text-base font-medium text-brand-yellow bg-yellow-50 px-2.5 py-0.5 rounded-full">
                     Host
                   </span>
                 )}

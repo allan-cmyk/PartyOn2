@@ -55,7 +55,7 @@ export function Spinner({ size = 'md', color = 'gold' }: { size?: 'sm' | 'md' | 
   };
   
   const colorClasses = {
-    gold: 'border-gold-600',
+    gold: 'border-brand-yellow',
     white: 'border-white',
     gray: 'border-gray-600',
   };

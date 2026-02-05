@@ -131,7 +131,7 @@ export default async function BlogPostPage({ params }: Props) {
           <div className="container mx-auto px-4 py-4">
             <Link
               href="/blog"
-              className="text-sm text-gray-600 hover:text-gold-600 transition-colors inline-flex items-center"
+              className="text-sm text-gray-600 hover:text-brand-yellow transition-colors inline-flex items-center"
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
@@ -151,7 +151,7 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
 
           {/* Title */}
-          <h1 className="font-serif text-4xl md:text-5xl mb-6 text-gray-900 tracking-tight leading-tight">
+          <h1 className="font-heading text-4xl md:text-5xl mb-6 text-gray-900 tracking-tight leading-tight">
             {post.title}
           </h1>
 
@@ -161,7 +161,7 @@ export default async function BlogPostPage({ params }: Props) {
               {post.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="px-3 py-1 bg-gold-50 text-gold-700 rounded-full text-xs tracking-[0.1em] uppercase"
+                  className="px-3 py-1 bg-yellow-50 text-yellow-600 rounded-full text-xs tracking-[0.1em] uppercase"
                 >
                   {tag}
                 </span>
@@ -185,18 +185,18 @@ export default async function BlogPostPage({ params }: Props) {
 
           {/* Content */}
           <div
-            className="prose prose-lg max-w-none prose-headings:font-serif prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-gold-600 prose-a:no-underline hover:prose-a:underline prose-img:rounded-lg"
+            className="prose prose-lg max-w-none prose-headings:font-heading prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-brand-yellow prose-a:no-underline hover:prose-a:underline prose-img:rounded-lg"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
 
           {/* Questions This Post Answers (AI-Friendly) */}
           {post.schema.questionsAnswered.length > 0 && (
-            <div className="mt-12 p-6 bg-gold-50 rounded-lg border border-gold-100">
-              <h2 className="font-serif text-xl text-gray-900 mb-4">What This Article Covers</h2>
+            <div className="mt-12 p-6 bg-yellow-50 rounded-lg border border-yellow-100">
+              <h2 className="font-heading text-xl text-gray-900 mb-4">What This Article Covers</h2>
               <ul className="space-y-2">
                 {post.schema.questionsAnswered.map((question, idx) => (
                   <li key={idx} className="text-gray-700 flex items-start">
-                    <svg className="w-5 h-5 mr-2 mt-0.5 text-gold-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 mr-2 mt-0.5 text-brand-yellow flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     {question}
@@ -208,7 +208,7 @@ export default async function BlogPostPage({ params }: Props) {
 
           {/* Share Section */}
           <div className="mt-12 pt-8 border-t border-gray-200">
-            <h3 className="font-serif text-lg text-gray-900 mb-4">Share This Article</h3>
+            <h3 className="font-heading text-lg text-gray-900 mb-4">Share This Article</h3>
             <div className="flex gap-4">
               <a
                 href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://party-on-delivery.com/blogs/news/${post.slug}`)}`}
@@ -234,7 +234,7 @@ export default async function BlogPostPage({ params }: Props) {
         {relatedPosts.length > 0 && (
           <section className="bg-gray-50 py-16">
             <div className="container mx-auto px-4 max-w-6xl">
-              <h2 className="font-serif text-3xl text-gray-900 mb-8 tracking-tight">Related Articles</h2>
+              <h2 className="font-heading text-3xl text-gray-900 mb-8 tracking-tight">Related Articles</h2>
               <div className="grid md:grid-cols-3 gap-8">
                 {relatedPosts.map((relatedPost) => (
                   <Link
@@ -254,7 +254,7 @@ export default async function BlogPostPage({ params }: Props) {
                       </div>
                     )}
                     <div className="p-6">
-                      <h3 className="font-serif text-lg text-gray-900 mb-2 group-hover:text-gold-600 transition-colors">
+                      <h3 className="font-heading text-lg text-gray-900 mb-2 group-hover:text-brand-yellow transition-colors">
                         {relatedPost.title}
                       </h3>
                       <p className="text-sm text-gray-600 line-clamp-2">
@@ -269,15 +269,15 @@ export default async function BlogPostPage({ params }: Props) {
         )}
 
         {/* CTA Section */}
-        <section className="bg-gold-600 text-gray-900 py-16">
+        <section className="bg-brand-yellow text-gray-900 py-16">
           <div className="container mx-auto px-4 text-center max-w-3xl">
-            <h2 className="font-serif text-3xl mb-4 tracking-tight">Ready to Plan Your Event?</h2>
-            <p className="text-gold-100 mb-8 text-lg">
+            <h2 className="font-heading text-3xl mb-4 tracking-tight">Ready to Plan Your Event?</h2>
+            <p className="text-yellow-100 mb-8 text-lg">
               Let Party On Delivery handle your alcohol coordination for weddings, corporate events, and celebrations.
             </p>
             <Link
               href="/contact"
-              className="inline-block px-8 py-4 bg-white text-gold-600 rounded-lg font-medium tracking-[0.1em] text-sm hover:bg-gray-50 transition-colors"
+              className="inline-block px-8 py-4 bg-white text-brand-yellow rounded-lg font-medium tracking-[0.1em] text-sm hover:bg-gray-50 transition-colors"
             >
               GET IN TOUCH
             </Link>

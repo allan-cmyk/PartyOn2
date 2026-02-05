@@ -87,7 +87,7 @@ export default function ProductSearch({ isScrolled = true }: ProductSearchProps)
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search for spirits, wine, beer..."
-                className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
+                className="w-full px-4 py-2 border border-gray-300 focus:border-brand-yellow focus:outline-none transition-colors"
                 autoFocus
               />
             </div>
@@ -96,7 +96,7 @@ export default function ProductSearch({ isScrolled = true }: ProductSearchProps)
             <div className="max-h-96 overflow-y-auto">
               {loading ? (
                 <div className="p-8 text-center">
-                  <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-gold-600"></div>
+                  <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-brand-yellow"></div>
                 </div>
               ) : results.length > 0 ? (
                 <div className="py-2">
@@ -156,7 +156,7 @@ export default function ProductSearch({ isScrolled = true }: ProductSearchProps)
                     setIsOpen(false);
                     setSearchTerm('');
                   }}
-                  className="block text-center text-sm text-gold-600 hover:text-gold-700 tracking-[0.1em]"
+                  className="block text-center text-sm text-brand-yellow hover:text-yellow-600 tracking-[0.1em]"
                 >
                   VIEW ALL RESULTS
                 </Link>

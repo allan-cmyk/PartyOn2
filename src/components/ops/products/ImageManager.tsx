@@ -276,8 +276,8 @@ export function ImageManager({
         onDragOver={handleDragOver}
         onClick={() => !disabled && fileInputRef.current?.click()}
         className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer
-          ${disabled ? 'border-gray-200 bg-gray-50 cursor-not-allowed' : 'border-gray-300 hover:border-gold-500 hover:bg-gold-50'}
-          ${isUploading ? 'border-gold-500 bg-gold-50' : ''}`}
+          ${disabled ? 'border-gray-200 bg-gray-50 cursor-not-allowed' : 'border-gray-300 hover:border-yellow-500 hover:bg-yellow-50'}
+          ${isUploading ? 'border-yellow-500 bg-yellow-50' : ''}`}
       >
         <input
           ref={fileInputRef}
@@ -291,11 +291,11 @@ export function ImageManager({
 
         {isUploading ? (
           <div className="space-y-2">
-            <div className="w-8 h-8 mx-auto border-2 border-gold-500 border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 mx-auto border-2 border-yellow-500 border-t-transparent rounded-full animate-spin" />
             <p className="text-sm text-gray-600">Uploading... {uploadProgress}%</p>
             <div className="w-full max-w-xs mx-auto h-2 bg-gray-200 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gold-500 transition-all duration-300"
+                className="h-full bg-yellow-500 transition-all duration-300"
                 style={{ width: `${uploadProgress}%` }}
               />
             </div>
@@ -311,7 +311,7 @@ export function ImageManager({
               />
             </svg>
             <p className="text-sm text-gray-600">
-              <span className="font-medium text-gold-600">Click to upload</span> or drag and drop
+              <span className="font-medium text-brand-yellow">Click to upload</span> or drag and drop
             </p>
             <p className="text-xs text-gray-500 mt-1">JPEG, PNG, WebP, or GIF (max 5MB)</p>
           </>

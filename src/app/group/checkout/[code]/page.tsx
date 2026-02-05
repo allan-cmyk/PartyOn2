@@ -76,7 +76,7 @@ export default function GroupCheckoutPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-yellow mx-auto mb-4"></div>
           <p className="text-gray-600">Loading group order...</p>
         </div>
       </div>
@@ -91,7 +91,7 @@ export default function GroupCheckoutPage() {
           <p className="text-gray-600 mb-6">This group order is not ready for checkout.</p>
           <button 
             onClick={() => router.push('/group/dashboard')}
-            className="bg-gold-600 text-gray-900 px-6 py-3 hover:bg-gold-700 transition-colors tracking-[0.1em]"
+            className="bg-brand-yellow text-gray-900 px-6 py-3 hover:bg-yellow-600 transition-colors tracking-[0.1em]"
           >
             BACK TO DASHBOARD
           </button>
@@ -146,7 +146,7 @@ export default function GroupCheckoutPage() {
               
               <div className="flex justify-between py-2 border-t pt-4">
                 <span className="text-lg font-medium">Total Amount</span>
-                <span className="text-lg font-bold text-gold-600">
+                <span className="text-lg font-bold text-brand-yellow">
                   ${totalAmount.toFixed(2)}
                 </span>
               </div>
@@ -204,7 +204,7 @@ export default function GroupCheckoutPage() {
                   value={hostEmail}
                   onChange={(e) => setHostEmail(e.target.value)}
                   placeholder="your@email.com"
-                  className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-gold-600 focus:border-gold-600"
+                  className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-brand-yellow focus:border-brand-yellow"
                   required
                 />
               </div>
@@ -218,7 +218,7 @@ export default function GroupCheckoutPage() {
                   value={hostPhone}
                   onChange={(e) => setHostPhone(e.target.value)}
                   placeholder="(512) 555-0123"
-                  className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-gold-600 focus:border-gold-600"
+                  className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-brand-yellow focus:border-brand-yellow"
                 />
               </div>
             </div>
@@ -243,7 +243,7 @@ export default function GroupCheckoutPage() {
           <div className="flex gap-4 justify-center">
             <button
               onClick={() => router.push('/group/dashboard')}
-              className="px-6 py-3 border border-gray-300 hover:border-gold-600 transition-colors tracking-[0.1em]"
+              className="px-6 py-3 border border-gray-300 hover:border-brand-yellow transition-colors tracking-[0.1em]"
             >
               BACK TO DASHBOARD
             </button>
@@ -254,7 +254,7 @@ export default function GroupCheckoutPage() {
               className={`px-8 py-3 tracking-[0.1em] transition-colors ${
                 isCreatingCheckout || !hostEmail || !!checkoutUrl
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-gold-600 text-gray-900 hover:bg-gold-700'
+                  : 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
               }`}
             >
               {isCreatingCheckout ? 'CREATING CHECKOUT...' : 'PROCEED TO PAYMENT'}
@@ -266,25 +266,25 @@ export default function GroupCheckoutPage() {
             <h3 className="font-medium mb-2">What happens next?</h3>
             <ul className="text-sm text-gray-600 space-y-2">
               <li className="flex items-start">
-                <svg className="w-4 h-4 text-gold-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-brand-yellow mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 You&apos;ll receive an invoice via email with a secure payment link
               </li>
               <li className="flex items-start">
-                <svg className="w-4 h-4 text-gold-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-brand-yellow mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 Complete payment using any major credit card
               </li>
               <li className="flex items-start">
-                <svg className="w-4 h-4 text-gold-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-brand-yellow mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 Order confirmation will be sent to all participants
               </li>
               <li className="flex items-start">
-                <svg className="w-4 h-4 text-gold-600 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-brand-yellow mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 Delivery on {new Date(groupOrder.deliveryDate).toLocaleDateString()} at {groupOrder.deliveryTime}

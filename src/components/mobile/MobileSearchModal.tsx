@@ -99,7 +99,7 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Search for spirits, wine, beer..."
-                  className="w-full px-4 py-3 pl-12 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors text-base"
+                  className="w-full px-4 py-3 pl-12 border border-gray-300 focus:border-brand-yellow focus:outline-none transition-colors text-base"
                 />
                 <svg
                   className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -116,7 +116,7 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
             <div className="flex-1 overflow-y-auto">
               {loading ? (
                 <div className="p-8 text-center">
-                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gold-600"></div>
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand-yellow"></div>
                   <p className="mt-4 text-sm text-gray-600">Searching...</p>
                 </div>
               ) : results.length > 0 ? (
@@ -144,7 +144,7 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
                         )}
                         <div className="flex-1 min-w-0">
                           <h4 className="font-medium text-gray-900 text-sm mb-1 line-clamp-2">{product.title}</h4>
-                          <p className="text-sm text-gold-600 font-medium">
+                          <p className="text-sm text-brand-yellow font-medium">
                             {formatPrice(
                               product.priceRange.minVariantPrice.amount,
                               product.priceRange.minVariantPrice.currencyCode
@@ -183,7 +183,7 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
                 <Link
                   href={`/products?search=${encodeURIComponent(searchTerm)}`}
                   onClick={handleClose}
-                  className="block text-center py-3 px-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium"
+                  className="block text-center py-3 px-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm font-medium"
                 >
                   VIEW ALL {results.length} RESULTS
                 </Link>

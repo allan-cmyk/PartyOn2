@@ -105,19 +105,19 @@ export default function FeatureCards({ mode = 'normal' }: FeatureCardsProps) {
       id="feature-cards"
       className={`section-padding ${
         mode === 'party' 
-          ? 'bg-gradient-to-br from-primary-900/20 via-secondary-900/20 to-accent-900/20' 
+          ? 'bg-gradient-to-br from-gray-900/20 via-gray-900/20 to-gray-900/20' 
           : 'bg-gradient-to-b from-white to-light'
       }`}
     >
       <div className="container-custom">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className={`font-display text-3xl md:text-4xl lg:text-5xl mb-4 ${
-            mode === 'party' ? 'text-gradient-fun' : 'text-dark'
+          <h2 className={`font-heading text-3xl md:text-4xl lg:text-5xl mb-4 ${
+            mode === 'party' ? 'text-gradient-fun' : 'text-gray-900'
           }`}>
             {mode === 'party' ? 'Why Austin Goes ABSOLUTELY INSANE For Us' : 'Why Austin Chooses Party On'}
           </h2>
           <p className={`font-sans text-base md:text-lg ${
-            mode === 'party' ? 'text-primary-200' : 'text-dark/70'
+            mode === 'party' ? 'text-blue-100' : 'text-gray-900/70'
           }`}>
             {mode === 'party' 
               ? "We're not just delivery - we&apos;re PARTY WARFARE specialists armed with premium booze and legendary service!" 
@@ -128,26 +128,26 @@ export default function FeatureCards({ mode = 'normal' }: FeatureCardsProps) {
           {/* Trust Indicators */}
           <div className="flex flex-wrap justify-center gap-6 mt-8">
             <div className="flex items-center space-x-2">
-              <svg className="w-6 h-6 text-gold-600" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-brand-yellow" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
               </svg>
-              <span className={`font-semibold ${mode === 'party' ? 'text-primary-300' : 'text-dark'}`}>
+              <span className={`font-semibold ${mode === 'party' ? 'text-blue-300' : 'text-gray-900'}`}>
                 1000+ Deliveries, 5.0★
               </span>
             </div>
             <div className="flex items-center space-x-2">
-              <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
               </svg>
-              <span className={`font-semibold ${mode === 'party' ? 'text-primary-300' : 'text-dark'}`}>
+              <span className={`font-semibold ${mode === 'party' ? 'text-blue-300' : 'text-gray-900'}`}>
                 2,000+ Events Served
               </span>
             </div>
             <div className="flex items-center space-x-2">
-              <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
               </svg>
-              <span className={`font-semibold ${mode === 'party' ? 'text-primary-300' : 'text-dark'}`}>
+              <span className={`font-semibold ${mode === 'party' ? 'text-blue-300' : 'text-gray-900'}`}>
                 Austin&apos;s #1 Choice
               </span>
             </div>
@@ -181,9 +181,9 @@ export default function FeatureCards({ mode = 'normal' }: FeatureCardsProps) {
                   priority={index < 2}
                 />
                 <div className={`absolute inset-0 bg-gradient-to-t ${
-                  feature.color === 'primary' ? 'from-primary-900/90 via-primary-900/70 to-primary-900/40' :
-                  feature.color === 'secondary' ? 'from-secondary-900/90 via-secondary-900/70 to-secondary-900/40' :
-                  feature.color === 'accent' ? 'from-accent-900/90 via-accent-900/70 to-accent-900/40' :
+                  feature.color === 'primary' ? 'from-gray-900/90 via-gray-900/70 to-gray-900/40' :
+                  feature.color === 'secondary' ? 'from-gray-900/90 via-gray-900/70 to-gray-900/40' :
+                  feature.color === 'accent' ? 'from-gray-900/90 via-gray-900/70 to-gray-900/40' :
                   'from-dark/80 via-dark/60 to-dark/30'
                 }`} />
               </div>
@@ -209,7 +209,7 @@ export default function FeatureCards({ mode = 'normal' }: FeatureCardsProps) {
 
                 {/* Text Content */}
                 <div className="space-y-3">
-                  <h3 className={`font-display text-xl font-bold text-white transition-all duration-300
+                  <h3 className={`font-heading text-xl font-bold text-white transition-all duration-300
                     ${hoveredIndex === index ? 'translate-x-2' : ''}
                   `}>
                     {mode === 'party' ? feature.titleParty : feature.title}
@@ -234,7 +234,7 @@ export default function FeatureCards({ mode = 'normal' }: FeatureCardsProps) {
 
               {/* Decorative Elements */}
               {mode === 'party' && (
-                <div className="absolute -bottom-2 -right-2 w-24 h-24 bg-gradient-to-br from-primary-500/20 to-secondary-500/20 rounded-full blur-xl animate-pulse" />
+                <div className="absolute -bottom-2 -right-2 w-24 h-24 bg-gradient-to-br from-brand-blue/20 to-brand-blue/20 rounded-full blur-xl animate-pulse" />
               )}
             </div>
           ))}
@@ -244,11 +244,11 @@ export default function FeatureCards({ mode = 'normal' }: FeatureCardsProps) {
         <div className="mt-16 text-center">
           <div className={`inline-block p-6 rounded-2xl ${
             mode === 'party' 
-              ? 'bg-gradient-to-r from-primary-500/20 to-secondary-500/20 backdrop-blur-sm' 
+              ? 'bg-gradient-to-r from-brand-blue/20 to-brand-blue/20 backdrop-blur-sm' 
               : 'bg-white shadow-lg'
           }`}>
             <p className={`text-lg font-semibold mb-4 ${
-              mode === 'party' ? 'text-primary-300' : 'text-dark'
+              mode === 'party' ? 'text-blue-300' : 'text-gray-900'
             }`}>
               Ready to experience the difference?
             </p>

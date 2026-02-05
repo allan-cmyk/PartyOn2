@@ -38,7 +38,7 @@ export default function BlogPageClient() {
     <section className="py-12 bg-gray-900 text-white">
       <div className="max-w-4xl mx-auto px-8">
         <div className="text-center">
-          <h2 className="font-serif text-3xl mb-4 tracking-[0.1em]">
+          <h2 className="font-heading text-3xl mb-4 tracking-[0.1em]">
             JOIN OUR INNER CIRCLE
           </h2>
           <p className="text-gray-300 mb-8">
@@ -48,7 +48,7 @@ export default function BlogPageClient() {
             <input
               type="email"
               placeholder="Your email address"
-              className="flex-1 px-4 py-3 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gold-500"
+              className="flex-1 px-4 py-3 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-500"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -56,7 +56,7 @@ export default function BlogPageClient() {
             />
             <button
               type="submit"
-              className="px-8 py-3 bg-gold-500 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.1em] disabled:opacity-50"
+              className="px-8 py-3 bg-yellow-500 text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.1em] disabled:opacity-50"
               disabled={loading}
             >
               {loading ? 'SUBSCRIBING...' : 'SUBSCRIBE'}

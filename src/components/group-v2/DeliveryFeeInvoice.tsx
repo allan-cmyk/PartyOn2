@@ -56,10 +56,10 @@ export default function DeliveryFeeInvoice({
     <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-v2-text">
+          <p className="text-sm font-medium text-gray-900">
             Delivery Fee: ${Number(tab.deliveryFee ?? 0).toFixed(2)}
           </p>
-          <p className="text-xs text-v2-muted">
+          <p className="text-xs text-gray-500">
             Host is responsible for the delivery fee.
           </p>
         </div>

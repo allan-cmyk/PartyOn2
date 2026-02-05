@@ -21,7 +21,7 @@ export default function AccountPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 pt-24">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gold-600"></div>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand-yellow"></div>
           <p className="mt-4 text-gray-600">Loading your account...</p>
         </div>
       </div>
@@ -41,7 +41,7 @@ export default function AccountPage() {
           <p className="text-gray-600 mb-8">Sign in to access your orders, addresses, and preferences</p>
           <button
             onClick={() => setIsAuthOpen(true)}
-            className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em]"
+            className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em]"
           >
             SIGN IN TO CONTINUE
           </button>
@@ -75,7 +75,7 @@ export default function AccountPage() {
       min: 1000, 
       max: 2499, 
       benefits: ['15% off all orders', 'Free delivery on $100+', 'Priority support', 'Early access to sales'],
-      color: 'from-gold-400 to-gold-600'
+      color: 'from-brand-yellow to-brand-yellow'
     },
     { 
       name: 'Platinum', 
@@ -102,7 +102,7 @@ export default function AccountPage() {
   return (
     <AccountLayout>
       {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-gold-50 to-gold-100 rounded-lg p-8 mb-8">
+      <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg p-8 mb-8">
         <h2 className="text-3xl font-cormorant text-gray-900 mb-2">
           Welcome back, {customer?.firstName || 'Valued Customer'}!
         </h2>
@@ -114,9 +114,9 @@ export default function AccountPage() {
       {/* Quick Actions Grid */}
       <div className="grid md:grid-cols-4 gap-6 mb-8">
         <Link href="/products" className="group">
-          <div className="bg-white p-6 rounded-lg border border-gray-200 hover:border-gold-600 hover:shadow-lg transition-all">
-            <div className="w-12 h-12 bg-gold-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-gold-600 transition-colors">
-              <svg className="w-6 h-6 text-gold-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-white p-6 rounded-lg border border-gray-200 hover:border-brand-yellow hover:shadow-lg transition-all">
+            <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-brand-yellow transition-colors">
+              <svg className="w-6 h-6 text-brand-yellow group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
             </div>
@@ -126,9 +126,9 @@ export default function AccountPage() {
         </Link>
 
         <Link href="/order" className="group">
-          <div className="bg-white p-6 rounded-lg border border-gray-200 hover:border-gold-600 hover:shadow-lg transition-all">
-            <div className="w-12 h-12 bg-gold-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-gold-600 transition-colors">
-              <svg className="w-6 h-6 text-gold-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-white p-6 rounded-lg border border-gray-200 hover:border-brand-yellow hover:shadow-lg transition-all">
+            <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-brand-yellow transition-colors">
+              <svg className="w-6 h-6 text-brand-yellow group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
@@ -138,9 +138,9 @@ export default function AccountPage() {
         </Link>
 
         <Link href="/account/addresses" className="group">
-          <div className="bg-white p-6 rounded-lg border border-gray-200 hover:border-gold-600 hover:shadow-lg transition-all">
-            <div className="w-12 h-12 bg-gold-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-gold-600 transition-colors">
-              <svg className="w-6 h-6 text-gold-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-white p-6 rounded-lg border border-gray-200 hover:border-brand-yellow hover:shadow-lg transition-all">
+            <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-brand-yellow transition-colors">
+              <svg className="w-6 h-6 text-brand-yellow group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
@@ -151,9 +151,9 @@ export default function AccountPage() {
         </Link>
 
         <Link href="/corporate" className="group">
-          <div className="bg-white p-6 rounded-lg border border-gray-200 hover:border-gold-600 hover:shadow-lg transition-all">
-            <div className="w-12 h-12 bg-gold-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-gold-600 transition-colors">
-              <svg className="w-6 h-6 text-gold-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-white p-6 rounded-lg border border-gray-200 hover:border-brand-yellow hover:shadow-lg transition-all">
+            <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-brand-yellow transition-colors">
+              <svg className="w-6 h-6 text-brand-yellow group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
               </svg>
             </div>
@@ -169,7 +169,7 @@ export default function AccountPage() {
           <div className="p-6 border-b border-gray-100">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-cormorant tracking-[0.1em]">RECENT ORDERS</h2>
-              <Link href="/account/orders" className="text-sm text-gold-600 hover:text-gold-700">
+              <Link href="/account/orders" className="text-sm text-brand-yellow hover:text-yellow-600">
                 View All →
               </Link>
             </div>
@@ -200,7 +200,7 @@ export default function AccountPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
                 <p className="text-gray-500 mb-4">No orders yet</p>
-                <Link href="/products" className="text-gold-600 hover:text-gold-700 text-sm">
+                <Link href="/products" className="text-brand-yellow hover:text-yellow-600 text-sm">
                   Start Shopping →
                 </Link>
               </div>
@@ -216,7 +216,7 @@ export default function AccountPage() {
           <div className="p-6 space-y-6">
             {/* Lifetime Stats */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-gradient-to-br from-gold-50 to-gold-100 p-4 rounded-lg">
+              <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-4 rounded-lg">
                 <p className="text-2xl font-bold text-gray-900">
                   ${totalSpent.toFixed(2)}
                 </p>
@@ -248,7 +248,7 @@ export default function AccountPage() {
             {/* Contact Support */}
             <div className="pt-4 border-t border-gray-100">
               <p className="text-sm text-gray-600 mb-3">Need assistance?</p>
-              <Link href="/contact" className="inline-flex items-center space-x-2 text-gold-600 hover:text-gold-700">
+              <Link href="/contact" className="inline-flex items-center space-x-2 text-brand-yellow hover:text-yellow-600">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
@@ -260,27 +260,27 @@ export default function AccountPage() {
       </div>
 
       {/* Promotional Banner */}
-      <div className="mt-8 bg-gradient-to-r from-gold-600 to-gold-700 rounded-lg p-8 text-white">
+      <div className="mt-8 bg-gradient-to-r from-brand-yellow to-yellow-600 rounded-lg p-8 text-white">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-2xl font-cormorant mb-2">Planning an Event?</h3>
-            <p className="text-gold-100 mb-4">
+            <p className="text-yellow-100 mb-4">
               Explore our premium event services for weddings, corporate events, and parties
             </p>
             <div className="flex gap-3">
-              <Link href="/weddings" className="inline-block px-6 py-2 bg-white text-gold-600 hover:bg-gold-50 transition-colors rounded">
+              <Link href="/weddings" className="inline-block px-6 py-2 bg-white text-brand-yellow hover:bg-yellow-50 transition-colors rounded">
                 WEDDINGS
               </Link>
-              <Link href="/corporate" className="inline-block px-6 py-2 bg-white text-gold-600 hover:bg-gold-50 transition-colors rounded">
+              <Link href="/corporate" className="inline-block px-6 py-2 bg-white text-brand-yellow hover:bg-yellow-50 transition-colors rounded">
                 CORPORATE
               </Link>
-              <Link href="/bach-parties" className="inline-block px-6 py-2 bg-white text-gold-600 hover:bg-gold-50 transition-colors rounded">
+              <Link href="/bach-parties" className="inline-block px-6 py-2 bg-white text-brand-yellow hover:bg-yellow-50 transition-colors rounded">
                 BACH PARTIES
               </Link>
             </div>
           </div>
           <div className="hidden md:block">
-            <svg className="w-32 h-32 text-gold-500 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <svg className="w-32 h-32 text-yellow-500 opacity-50" fill="currentColor" viewBox="0 0 24 24">
               <path d="M5 5v14a1 1 0 0 0 1 1h3v-2H7V6h2V4H6a1 1 0 0 0-1 1zm14.242-.97-8-2A1 1 0 0 0 10 3v18a.998.998 0 0 0 1.242.97l8-2A1 1 0 0 0 20 19V5a1 1 0 0 0-.758-.97zM15 12.188a1.001 1.001 0 0 1-2 0v-.377a1 1 0 1 1 2 .001v.376z"/>
             </svg>
           </div>

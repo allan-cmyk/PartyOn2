@@ -76,21 +76,21 @@ export default function PressPage() {
         <div className="max-w-6xl mx-auto">
           {/* Recent Coverage */}
           <div className="mb-16">
-            <h2 className="font-display text-3xl text-dark text-center mb-8">Recent Coverage</h2>
+            <h2 className="font-heading text-3xl text-gray-900 text-center mb-8">Recent Coverage</h2>
             <div className="space-y-6">
               {pressReleases.map((release) => (
                 <div key={release.title} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
                   <div className="flex flex-wrap items-start justify-between mb-3">
                     <div>
-                      <p className="text-sm text-primary-500 font-semibold">{release.outlet}</p>
-                      <p className="text-xs text-dark/60">{release.date}</p>
+                      <p className="text-sm text-brand-blue font-semibold">{release.outlet}</p>
+                      <p className="text-xs text-gray-900/60">{release.date}</p>
                     </div>
-                    <Link href={release.link} className="text-sm text-primary-500 hover:text-primary-600 font-medium">
+                    <Link href={release.link} className="text-sm text-brand-blue hover:text-blue-700 font-medium">
                       Read Article →
                     </Link>
                   </div>
-                  <h3 className="font-display text-xl text-dark mb-2">{release.title}</h3>
-                  <p className="text-dark/70">{release.excerpt}</p>
+                  <h3 className="font-heading text-xl text-gray-900 mb-2">{release.title}</h3>
+                  <p className="text-gray-900/70">{release.excerpt}</p>
                 </div>
               ))}
             </div>
@@ -99,34 +99,34 @@ export default function PressPage() {
           {/* Media Kit */}
           <div className="grid lg:grid-cols-2 gap-12 mb-16">
             <div>
-              <h3 className="font-display text-2xl text-dark mb-6">Media Kit</h3>
+              <h3 className="font-heading text-2xl text-gray-900 mb-6">Media Kit</h3>
               
               <div className="space-y-6">
                 <div>
-                  <h4 className="font-semibold text-dark mb-3">Brand Assets</h4>
+                  <h4 className="font-semibold text-gray-900 mb-3">Brand Assets</h4>
                   <div className="space-y-2">
                     {mediaKit.logos.map((logo) => (
                       <div key={logo.name} className="flex justify-between items-center p-3 bg-light rounded">
                         <div>
-                          <p className="font-medium text-sm text-dark">{logo.name}</p>
-                          <p className="text-xs text-dark/60">{logo.description}</p>
+                          <p className="font-medium text-sm text-gray-900">{logo.name}</p>
+                          <p className="text-xs text-gray-900/60">{logo.description}</p>
                         </div>
-                        <span className="text-xs text-dark/40">{logo.format}</span>
+                        <span className="text-xs text-gray-900/40">{logo.format}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-dark mb-3">Photography</h4>
+                  <h4 className="font-semibold text-gray-900 mb-3">Photography</h4>
                   <div className="space-y-2">
                     {mediaKit.photos.map((photo) => (
                       <div key={photo.name} className="flex justify-between items-center p-3 bg-light rounded">
                         <div>
-                          <p className="font-medium text-sm text-dark">{photo.name}</p>
-                          <p className="text-xs text-dark/60">{photo.description}</p>
+                          <p className="font-medium text-sm text-gray-900">{photo.name}</p>
+                          <p className="text-xs text-gray-900/60">{photo.description}</p>
                         </div>
-                        <span className="text-xs text-dark/40">{photo.count}</span>
+                        <span className="text-xs text-gray-900/40">{photo.count}</span>
                       </div>
                     ))}
                   </div>
@@ -139,13 +139,13 @@ export default function PressPage() {
             </div>
 
             <div>
-              <h3 className="font-display text-2xl text-dark mb-6">Quick Facts</h3>
-              <div className="bg-gradient-to-br from-primary-50 to-secondary-50 rounded-lg p-6">
+              <h3 className="font-heading text-2xl text-gray-900 mb-6">Quick Facts</h3>
+              <div className="bg-gradient-to-br from-blue-50 to-blue-50 rounded-lg p-6">
                 <ul className="space-y-3">
                   {mediaKit.facts.map((fact, index) => (
                     <li key={index} className="flex items-start space-x-3">
-                      <span className="text-primary-500 mt-1">•</span>
-                      <span className="text-dark/80">{fact}</span>
+                      <span className="text-brand-blue mt-1">•</span>
+                      <span className="text-gray-900/80">{fact}</span>
                     </li>
                   ))}
                 </ul>
@@ -167,18 +167,18 @@ export default function PressPage() {
 
           {/* Press Contact */}
           <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-            <h3 className="font-display text-2xl text-dark mb-4">Press Inquiries</h3>
-            <p className="text-dark/70 mb-6">
+            <h3 className="font-heading text-2xl text-gray-900 mb-4">Press Inquiries</h3>
+            <p className="text-gray-900/70 mb-6">
               For media requests, interviews, or additional information, please contact our press team.
             </p>
             <div className="space-y-2 mb-6">
-              <p className="text-dark">
+              <p className="text-gray-900">
                 <span className="font-semibold">Email:</span> info@partyondelivery.com
               </p>
-              <p className="text-dark">
+              <p className="text-gray-900">
                 <span className="font-semibold">Phone:</span> (737) 371-9700 ext. 3
               </p>
-              <p className="text-dark">
+              <p className="text-gray-900">
                 <span className="font-semibold">Response Time:</span> Within 24 hours
               </p>
             </div>

@@ -95,7 +95,7 @@ export default function VenueDetailModal({ venue, isOpen, onClose }: VenueDetail
             {/* Partner Badge */}
             {isPartner && (
               <div className="absolute top-3 left-3">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold tracking-wide rounded-full shadow-lg bg-gold-500 text-gray-900">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold tracking-wide rounded-full shadow-lg bg-yellow-500 text-gray-900">
                   <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
@@ -115,7 +115,7 @@ export default function VenueDetailModal({ venue, isOpen, onClose }: VenueDetail
             />
             {isPartner && (
               <div className="absolute top-3 left-3">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold tracking-wide rounded-full shadow-lg bg-gold-500 text-gray-900">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold tracking-wide rounded-full shadow-lg bg-yellow-500 text-gray-900">
                   <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
@@ -130,7 +130,7 @@ export default function VenueDetailModal({ venue, isOpen, onClose }: VenueDetail
         <div className="p-5 overflow-y-auto max-h-[calc(90vh-224px)]">
           {/* Category Badge & Location */}
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-xs text-gold-700 bg-gold-50 px-2 py-0.5 rounded-full tracking-wide">
+            <span className="text-xs text-yellow-600 bg-yellow-50 px-2 py-0.5 rounded-full tracking-wide">
               {venue.subcategory}
             </span>
             <span className="text-xs text-gray-500">
@@ -139,7 +139,7 @@ export default function VenueDetailModal({ venue, isOpen, onClose }: VenueDetail
           </div>
 
           {/* Venue Name */}
-          <h2 className="font-serif text-2xl text-gray-900 mb-3 tracking-wide">
+          <h2 className="font-heading text-2xl text-gray-900 mb-3 tracking-wide">
             {venue.name}
           </h2>
 
@@ -152,7 +152,7 @@ export default function VenueDetailModal({ venue, isOpen, onClose }: VenueDetail
               <span>{settingLabels[venue.setting]}</span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="text-gold-600 font-medium">
+              <span className="text-brand-yellow font-medium">
                 {getPriceLabel(venue.priceRange)}
               </span>
             </div>
@@ -172,7 +172,7 @@ export default function VenueDetailModal({ venue, isOpen, onClose }: VenueDetail
                 href={venue.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 text-center px-4 py-2.5 text-sm font-medium text-gray-900 bg-gold-400 hover:bg-gold-500 rounded transition-colors"
+                className="flex-1 text-center px-4 py-2.5 text-sm font-medium text-gray-900 bg-brand-yellow hover:bg-yellow-500 rounded transition-colors"
               >
                 Visit Website
               </a>

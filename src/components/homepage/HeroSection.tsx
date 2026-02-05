@@ -134,7 +134,7 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
             onClick={() => setCurrentHeroIndex(index)}
             aria-label={`View hero image ${index + 1}`}
             className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              index === currentHeroIndex ? 'bg-gold-400 w-8' : 'bg-white/50 hover:bg-white/70'
+              index === currentHeroIndex ? 'bg-brand-yellow w-8' : 'bg-white/50 hover:bg-white/70'
             }`}
           />
         ))}
@@ -146,7 +146,7 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
           isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}
       >
-        <h1 className="font-serif font-light text-3xl sm:text-5xl md:text-7xl mb-4 sm:mb-6 tracking-[0.1em] sm:tracking-[0.15em]">
+        <h1 className="font-heading font-light text-3xl sm:text-5xl md:text-7xl mb-4 sm:mb-6 tracking-[0.1em] sm:tracking-[0.15em]">
           <span
             className={`block text-white transition-opacity duration-400 ${
               isWordFading ? 'opacity-0' : 'opacity-100'
@@ -154,9 +154,9 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
           >
             {rotatingWords[currentWordIndex]}
           </span>
-          <span className="block text-gold-400">{content.headline.line2}</span>
+          <span className="block text-brand-yellow">{content.headline.line2}</span>
         </h1>
-        <div className="w-16 sm:w-24 h-px bg-gold-400 mx-auto mb-4 sm:mb-6" />
+        <div className="w-16 sm:w-24 h-px bg-brand-yellow mx-auto mb-4 sm:mb-6" />
         <p className="text-base sm:text-lg md:text-xl font-light tracking-[0.05em] sm:tracking-[0.1em] mb-4 sm:mb-8 text-gray-200 max-w-lg mx-auto">
           {content.tagline}
         </p>
@@ -174,8 +174,8 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
               <button
                 className={`px-8 sm:px-10 py-3 sm:py-4 transition-all duration-300 tracking-[0.15em] text-sm ${
                   cta.style === 'primary'
-                    ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
-                    : 'border-2 border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-gray-900'
+                    ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
+                    : 'border-2 border-brand-yellow text-brand-yellow hover:bg-brand-yellow hover:text-gray-900'
                 }`}
               >
                 {cta.text}

@@ -193,7 +193,7 @@ export default function CreateGroupPage(): ReactElement {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g., Sarah's Birthday Party"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -206,7 +206,7 @@ export default function CreateGroupPage(): ReactElement {
                   required
                   value={hostName}
                   onChange={(e) => setHostName(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
                 />
               </div>
               <div>
@@ -218,7 +218,7 @@ export default function CreateGroupPage(): ReactElement {
                   required
                   value={hostEmail}
                   onChange={(e) => setHostEmail(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
                 />
               </div>
             </div>
@@ -231,7 +231,7 @@ export default function CreateGroupPage(): ReactElement {
                 required
                 value={hostPhone}
                 onChange={(e) => setHostPhone(e.target.value)}
-                className="w-full md:w-1/2 border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500"
+                className="w-full md:w-1/2 border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
               />
             </div>
           </div>
@@ -291,7 +291,7 @@ export default function CreateGroupPage(): ReactElement {
                     required
                     value={tab.name}
                     onChange={(e) => updateTab(tab.key, 'name', e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
                   />
                 </div>
                 <div>
@@ -306,7 +306,7 @@ export default function CreateGroupPage(): ReactElement {
                     onChange={(e) =>
                       updateTab(tab.key, 'deliveryDate', e.target.value)
                     }
-                    className={`w-full border rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500 ${
+                    className={`w-full border rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500 ${
                       dateErrors[tab.key] ? 'border-red-500' : 'border-gray-300'
                     }`}
                   />
@@ -329,7 +329,7 @@ export default function CreateGroupPage(): ReactElement {
                   onChange={(e) =>
                     updateTab(tab.key, 'deliveryTime', e.target.value)
                   }
-                  className="w-full md:w-1/2 border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500"
+                  className="w-full md:w-1/2 border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
                 >
                   <option value="">Select time</option>
                   <option value="10:00 AM">10:00 AM</option>
@@ -368,7 +368,7 @@ export default function CreateGroupPage(): ReactElement {
                     updateTab(tab.key, 'address.address1', e.target.value)
                   }
                   placeholder="Street address"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500 mb-2"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500 mb-2"
                 />
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                   <input
@@ -379,7 +379,7 @@ export default function CreateGroupPage(): ReactElement {
                       updateTab(tab.key, 'address.city', e.target.value)
                     }
                     placeholder="City"
-                    className="border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500"
+                    className="border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
                   />
                   <input
                     type="text"
@@ -395,7 +395,7 @@ export default function CreateGroupPage(): ReactElement {
                       updateTab(tab.key, 'address.zip', e.target.value)
                     }
                     placeholder="Zip code"
-                    className="border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500"
+                    className="border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
                   />
                 </div>
               </div>
@@ -410,7 +410,7 @@ export default function CreateGroupPage(): ReactElement {
                     updateTab(tab.key, 'deliveryNotes', e.target.value)
                   }
                   rows={2}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-gold-500"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
                   placeholder="Gate code, special instructions..."
                 />
               </div>

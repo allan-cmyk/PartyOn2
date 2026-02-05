@@ -67,7 +67,7 @@ export default function BoatBabesHero(): ReactElement {
             <div className="flex flex-col sm:flex-row gap-3 mb-8">
               <button
                 onClick={scrollToProducts}
-                className="flex-1 h-14 md:h-16 px-8 bg-gold-500 hover:bg-gold-400 text-gray-900 font-semibold tracking-wide transition-colors rounded-lg text-lg md:text-xl"
+                className="flex-1 h-14 md:h-16 px-8 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-semibold tracking-wide transition-colors rounded-lg text-lg md:text-xl"
               >
                 Shop Drinks
               </button>
@@ -86,7 +86,7 @@ export default function BoatBabesHero(): ReactElement {
                 className="text-white/70 hover:text-white transition-colors"
               >
                 Ordering with friends?{' '}
-                <span className="text-gold-400 font-medium">Start a group &rarr;</span>
+                <span className="text-brand-yellow font-medium">Start a group &rarr;</span>
               </Link>
 
               <span className="text-white/20 hidden sm:inline">|</span>
@@ -97,7 +97,7 @@ export default function BoatBabesHero(): ReactElement {
                   className="text-white/70 hover:text-white transition-colors"
                 >
                   Joining a group?{' '}
-                  <span className="text-gold-400 font-medium">Enter code</span>
+                  <span className="text-brand-yellow font-medium">Enter code</span>
                 </button>
               ) : (
                 <div className="flex items-center gap-2">
@@ -105,7 +105,7 @@ export default function BoatBabesHero(): ReactElement {
                     id="shareCode"
                     name="shareCode"
                     className="h-9 w-24 rounded bg-black/30 border border-white/20 px-2 text-white text-base text-center
-                               placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-gold-400/50"
+                               placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-brand-yellow/50"
                     placeholder="CODE"
                     value={joinCode}
                     onChange={(e) => setJoinCode(e.target.value)}
@@ -116,7 +116,7 @@ export default function BoatBabesHero(): ReactElement {
                     type="button"
                     onClick={handleJoin}
                     disabled={!joinCode.trim()}
-                    className="h-9 rounded px-3 text-base text-gold-400 font-medium hover:text-gold-300 transition
+                    className="h-9 rounded px-3 text-base text-brand-yellow font-medium hover:text-brand-yellow transition
                                disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     Join
@@ -128,7 +128,7 @@ export default function BoatBabesHero(): ReactElement {
             {/* Phone */}
             <p className="text-base text-white/50">
               Questions? Text{' '}
-              <a href="tel:7373719700" className="text-gold-400 hover:text-gold-300 font-medium">
+              <a href="tel:7373719700" className="text-brand-yellow hover:text-brand-yellow font-medium">
                 737-371-9700
               </a>
             </p>
@@ -174,20 +174,20 @@ export default function BoatBabesHero(): ReactElement {
             {/* Trust Signals Row */}
             <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-white/60">
               <span className="flex items-center gap-1.5">
-                <svg className="w-4 h-4 text-gold-400" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4 text-brand-yellow" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
                 Free Marina Delivery
               </span>
               <span className="flex items-center gap-1.5">
-                <svg className="w-4 h-4 text-gold-400" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4 text-brand-yellow" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
                 TABC Licensed
               </span>
               <span className="flex items-center gap-0.5">
                 {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-4 h-4 text-gold-500" fill="currentColor" viewBox="0 0 20 20">
+                  <svg key={i} className="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                 ))}

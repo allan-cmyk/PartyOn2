@@ -142,10 +142,10 @@ export default function WeddingProductsPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
 
         <div className="relative text-center text-white z-10 max-w-4xl mx-auto px-8 hero-fade-in">
-          <h1 className="font-serif font-light text-4xl md:text-6xl mb-4 tracking-[0.15em]">
+          <h1 className="font-heading font-light text-4xl md:text-6xl mb-4 tracking-[0.15em]">
             WEDDING COLLECTION
           </h1>
-          <div className="w-24 h-px bg-gold-400 mx-auto mb-4" />
+          <div className="w-24 h-px bg-brand-yellow mx-auto mb-4" />
           <p className="text-lg font-light tracking-[0.1em] text-gray-200">
             Curated selections for your perfect day
           </p>
@@ -157,18 +157,18 @@ export default function WeddingProductsPage() {
         <div className="max-w-7xl mx-auto px-8 py-4">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <Link href="/weddings" className="text-sm text-gray-600 hover:text-gold-600 transition-colors">
+              <Link href="/weddings" className="text-sm text-gray-600 hover:text-brand-yellow transition-colors">
                 ← Back to Weddings
               </Link>
               <span className="text-gray-400">|</span>
-              <Link href="/products" className="text-sm text-gray-600 hover:text-gold-600 transition-colors">
+              <Link href="/products" className="text-sm text-gray-600 hover:text-brand-yellow transition-colors">
                 Browse All Products
               </Link>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">Cart ({cart?.totalQuantity || 0})</span>
               <Link href="/checkout">
-                <button className="px-4 py-2 bg-gold-600 text-gray-900 text-sm hover:bg-gold-700 transition-colors">
+                <button className="px-4 py-2 bg-brand-yellow text-gray-900 text-sm hover:bg-yellow-600 transition-colors">
                   CHECKOUT
                 </button>
               </Link>
@@ -186,7 +186,7 @@ export default function WeddingProductsPage() {
               y={20}
               className="text-center mb-12"
             >
-              <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+              <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
                 {collection.title}
               </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
@@ -212,17 +212,17 @@ export default function WeddingProductsPage() {
                     />
                   </div>
                   <div className="p-6">
-                    <h3 className="font-serif text-xl text-gray-900 mb-2">{product.title}</h3>
+                    <h3 className="font-heading text-xl text-gray-900 mb-2">{product.title}</h3>
                     <p className="text-gray-600 text-sm mb-4">{product.description}</p>
                     <div className="flex items-center justify-between">
-                      <span className="font-serif text-2xl text-gold-600">{product.price}</span>
+                      <span className="font-heading text-2xl text-brand-yellow">{product.price}</span>
                       <button
                         onClick={() => handleAddToCart(product.id)}
                         disabled={addingToCart[product.id]}
                         className={`px-4 py-2 text-sm font-medium transition-all ${
                           addingToCart[product.id]
                             ? 'bg-green-600 text-white'
-                            : 'bg-gold-600 text-gray-900 hover:bg-gold-700'
+                            : 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
                         }`}
                       >
                         {addingToCart[product.id] ? 'ADDED!' : 'ADD TO CART'}
@@ -237,9 +237,9 @@ export default function WeddingProductsPage() {
       ))}
 
       {/* Call to Action */}
-      <section className="py-16 bg-gradient-to-br from-gold-50 to-gold-100">
+      <section className="py-16 bg-gradient-to-br from-yellow-50 to-yellow-100">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+          <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
             Need a Custom Quote?
           </h2>
           <p className="text-lg text-gray-600 mb-8">
@@ -247,12 +247,12 @@ export default function WeddingProductsPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/contact">
-              <button className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] font-medium">
+              <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] font-medium">
                 GET CUSTOM QUOTE
               </button>
             </Link>
             <Link href="/weddings/packages/classic">
-              <button className="px-8 py-4 bg-white text-gold-600 border-2 border-gold-600 hover:bg-gold-50 transition-colors tracking-[0.15em] font-medium">
+              <button className="px-8 py-4 bg-white text-brand-yellow border-2 border-brand-yellow hover:bg-yellow-50 transition-colors tracking-[0.15em] font-medium">
                 VIEW PACKAGES
               </button>
             </Link>

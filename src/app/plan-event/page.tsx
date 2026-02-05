@@ -116,11 +116,11 @@ export default function PlanEventPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
 
         <div className="relative text-center text-white z-10 max-w-4xl mx-auto px-6">
-          <h1 className="font-serif font-light text-4xl sm:text-5xl md:text-7xl mb-6 tracking-[0.15em]">
+          <h1 className="font-heading font-light text-4xl sm:text-5xl md:text-7xl mb-6 tracking-[0.15em]">
             <span className="block text-white mb-2">Let Us Help</span>
-            <span className="block text-gold-400">PLAN YOUR EVENT</span>
+            <span className="block text-brand-yellow">PLAN YOUR EVENT</span>
           </h1>
-          <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
+          <div className="w-24 h-px bg-brand-yellow mx-auto mb-6" />
           <p className="text-lg md:text-xl font-light tracking-[0.1em] text-gray-200 max-w-2xl mx-auto">
             Calculate what you need, chat with our AI concierge, or talk directly with our team
           </p>
@@ -131,28 +131,28 @@ export default function PlanEventPage() {
       <section className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
           <ScrollRevealCSS duration={600} y={20} className="text-center mb-12">
-            <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
               Choose Your Path
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto" />
           </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Calculator Path */}
             <ScrollRevealCSS duration={600} y={20} delay={100}>
               <a href="#calculator" className="block bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center">
-                <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                   Quick Estimate
                 </h3>
                 <p className="text-gray-600 text-sm mb-4">
                   Use our calculator to estimate how much alcohol you need for your event
                 </p>
-                <span className="text-gold-600 text-sm tracking-[0.1em] font-medium">
+                <span className="text-brand-yellow text-sm tracking-[0.1em] font-medium">
                   USE CALCULATOR
                 </span>
               </a>
@@ -162,20 +162,20 @@ export default function PlanEventPage() {
             <ScrollRevealCSS duration={600} y={20} delay={200}>
               <button
                 onClick={() => setIsConciergeOpen(true)}
-                className="w-full bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center border-2 border-gold-200"
+                className="w-full bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center border-2 border-yellow-200"
               >
-                <div className="w-16 h-16 bg-gold-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-brand-yellow rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                   AI Concierge
                 </h3>
                 <p className="text-gray-600 text-sm mb-4">
                   Chat with our AI to get personalized recommendations for your event
                 </p>
-                <span className="text-gold-600 text-sm tracking-[0.1em] font-medium">
+                <span className="text-brand-yellow text-sm tracking-[0.1em] font-medium">
                   START CHAT
                 </span>
               </button>
@@ -184,18 +184,18 @@ export default function PlanEventPage() {
             {/* Human Contact Path */}
             <ScrollRevealCSS duration={600} y={20} delay={300}>
               <a href="#contact-form" className="block bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center">
-                <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+                <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                   Talk to Us
                 </h3>
                 <p className="text-gray-600 text-sm mb-4">
                   Fill out a quick form and our team will reach out within 24 hours
                 </p>
-                <span className="text-gold-600 text-sm tracking-[0.1em] font-medium">
+                <span className="text-brand-yellow text-sm tracking-[0.1em] font-medium">
                   CONTACT FORM
                 </span>
               </a>
@@ -217,13 +217,13 @@ export default function PlanEventPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/products">
-                <button className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
                   START SHOPPING
                 </button>
               </Link>
               <button
                 onClick={() => setIsConciergeOpen(true)}
-                className="px-8 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.15em] text-sm font-medium"
+                className="px-8 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.15em] text-sm font-medium"
               >
                 GET AI RECOMMENDATIONS
               </button>
@@ -236,10 +236,10 @@ export default function PlanEventPage() {
       <section id="contact-form" className="py-20 bg-gray-50">
         <div className="max-w-3xl mx-auto px-6">
           <ScrollRevealCSS duration={600} y={20} className="text-center mb-12">
-            <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
               Talk to Our Team
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto mb-6" />
             <p className="text-gray-600">
               Fill out the form below and we&apos;ll get back to you within 24 hours with a custom quote.
             </p>
@@ -256,7 +256,7 @@ export default function PlanEventPage() {
                     value={formData.name}
                     onChange={handleFormChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-600 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
                     placeholder="Your name"
                   />
                 </div>
@@ -268,7 +268,7 @@ export default function PlanEventPage() {
                     value={formData.email}
                     onChange={handleFormChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-600 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
                     placeholder="your@email.com"
                   />
                 </div>
@@ -282,7 +282,7 @@ export default function PlanEventPage() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-600 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
                     placeholder="(512) 555-0123"
                   />
                 </div>
@@ -293,7 +293,7 @@ export default function PlanEventPage() {
                     value={formData.eventType}
                     onChange={handleFormChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-600 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
                   >
                     <option value="">Select event type</option>
                     <option value="Wedding">Wedding</option>
@@ -315,7 +315,7 @@ export default function PlanEventPage() {
                     name="eventDate"
                     value={formData.eventDate}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-600 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -325,7 +325,7 @@ export default function PlanEventPage() {
                     name="guestCount"
                     value={formData.guestCount}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-600 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
                     placeholder="100"
                   />
                 </div>
@@ -336,7 +336,7 @@ export default function PlanEventPage() {
                     name="venue"
                     value={formData.venue}
                     onChange={handleFormChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-600 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
                     placeholder="Venue name or address"
                   />
                 </div>
@@ -349,7 +349,7 @@ export default function PlanEventPage() {
                   value={formData.message}
                   onChange={handleFormChange}
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold-600 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
                   placeholder="Tell us about your event - any special requests, drink preferences, or questions?"
                 />
               </div>
@@ -358,7 +358,7 @@ export default function PlanEventPage() {
                 <button
                   type="submit"
                   disabled={formStatus === 'submitting'}
-                  className="px-12 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium disabled:opacity-50"
+                  className="px-12 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium disabled:opacity-50"
                 >
                   {formStatus === 'submitting' ? 'SENDING...' : 'SUBMIT REQUEST'}
                 </button>
@@ -383,10 +383,10 @@ export default function PlanEventPage() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <ScrollRevealCSS duration={600} y={20} className="text-center mb-12">
-            <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
               Explore Event Types
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto mb-6" />
             <p className="text-gray-600 max-w-2xl mx-auto">
               Browse our specialized services for different event types
             </p>
@@ -405,7 +405,7 @@ export default function PlanEventPage() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900/70 to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                      <h3 className="font-serif text-xl mb-1 tracking-[0.1em]">
+                      <h3 className="font-heading text-xl mb-1 tracking-[0.1em]">
                         {event.title}
                       </h3>
                       <p className="text-sm text-gray-300">
@@ -420,7 +420,7 @@ export default function PlanEventPage() {
 
           <div className="text-center mt-12">
             <Link href="/products">
-              <button className="px-8 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.15em] text-sm font-medium">
                 OR BROWSE ALL PRODUCTS
               </button>
             </Link>

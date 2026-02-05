@@ -82,9 +82,9 @@ export default function DashboardPage(): ReactElement {
 
   if (error || !groupOrder) {
     return (
-      <div className="pt-28 min-h-screen bg-v2-bgSoft flex items-center justify-center">
+      <div className="pt-28 min-h-screen bg-whiteSoft flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-xl font-bold text-v2-text mb-2">
+          <h1 className="text-xl font-bold text-gray-900 mb-2">
             Group Order Not Found
           </h1>
           <Link
@@ -121,7 +121,7 @@ export default function DashboardPage(): ReactElement {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Participants */}
             <div className="bg-gray-50 rounded-xl p-6">
-              <h3 className="font-candal text-xl text-gray-900 uppercase tracking-wide mb-4">
+              <h3 className="font-heading text-xl text-gray-900 uppercase tracking-wide mb-4">
                 Participants
               </h3>
               <ParticipantList
@@ -134,7 +134,7 @@ export default function DashboardPage(): ReactElement {
             {/* Tab Summary */}
             {activeTab && (
               <div className="bg-gray-50 rounded-xl p-6">
-                <h3 className="font-candal text-xl text-gray-900 uppercase tracking-wide mb-4">
+                <h3 className="font-heading text-xl text-gray-900 uppercase tracking-wide mb-4">
                   Order Summary
                 </h3>
                 <div className="space-y-3 text-lg">
@@ -172,7 +172,7 @@ export default function DashboardPage(): ReactElement {
             {/* Host Controls */}
             {isHost && participantId && (
               <div className="bg-gray-50 rounded-xl p-6">
-                <h3 className="font-candal text-xl text-gray-900 uppercase tracking-wide mb-4">
+                <h3 className="font-heading text-xl text-gray-900 uppercase tracking-wide mb-4">
                   Host Controls
                 </h3>
                 <HostControlBar
