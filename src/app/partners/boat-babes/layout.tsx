@@ -9,7 +9,14 @@ export const metadata: Metadata = {
     title: 'Boat Babes - Free Alcohol Delivery',
     description:
       "Lake Austin's hottest boat party experience. Get free delivery to the marina, easy group ordering, and your drinks iced and ready before the Babes arrive.",
-    images: ['/images/partners/boatbabes-hero.jpg'],
+    images: [
+      {
+        url: '/images/partners/boatbabes-hero-bg.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Boat Babes lake party on Lake Austin - Free alcohol delivery',
+      },
+    ],
   },
   keywords: [
     'Boat Babes alcohol delivery',
