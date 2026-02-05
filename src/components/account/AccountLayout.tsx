@@ -77,7 +77,7 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
     }
   ]
   
-  const getInitials = (firstName?: string, lastName?: string) => {
+  const getInitials = (firstName?: string | null, lastName?: string | null) => {
     const f = firstName?.charAt(0) || ''
     const l = lastName?.charAt(0) || ''
     return (f + l).toUpperCase() || 'U'
@@ -89,10 +89,8 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
     return `Member since ${date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`
   }
 
-  // Calculate total spent and membership tier
-  const totalSpent = customer?.orders?.edges?.reduce((total, { node }) => {
-    return total + parseFloat(node.currentTotalPrice.amount)
-  }, 0) || 0
+  // TODO: Fetch order totals from /api/v1/orders with customer ID
+  const totalSpent = 0
 
   const getCurrentTier = () => {
     return MEMBERSHIP_TIERS.find(tier => totalSpent >= tier.min && totalSpent <= tier.max) || MEMBERSHIP_TIERS[0]
@@ -235,7 +233,7 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
               {/* Quick Stats */}
               <div className="hidden md:flex items-center space-x-12">
                 <div className="text-center">
-                  <p className="text-3xl font-bold text-white">{customer?.orders?.edges?.length || 0}</p>
+                  <p className="text-3xl font-bold text-white">0</p>
                   <p className="text-xs text-gray-400 tracking-[0.15em] mt-1">ORDERS</p>
                 </div>
                 <div className="text-center">

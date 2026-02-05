@@ -62,17 +62,7 @@ export default function PreferencesPage() {
         acceptsMarketing: customer.acceptsMarketing,
         createdAt: customer.createdAt
       },
-      orders: customer.orders?.edges?.map(({ node }) => ({
-        orderNumber: node.name,
-        date: node.processedAt,
-        total: node.currentTotalPrice.amount,
-        items: node.lineItems.edges.map(({ node: item }) => ({
-          title: item.title,
-          variant: item.variant.title,
-          quantity: item.quantity,
-          price: item.variant.price.amount
-        }))
-      })),
+      orders: [],
       addresses: JSON.parse(localStorage.getItem(`addresses_${customer.id}`) || '[]'),
       preferences: preferences
     };
@@ -106,8 +96,8 @@ export default function PreferencesPage() {
         localStorage.setItem(`preferences_${customer.id}`, JSON.stringify(preferences));
         setUpdateMessage('Preferences updated successfully');
         setTimeout(() => setUpdateMessage(''), 3000);
-      } else if (result.errors) {
-        setUpdateMessage(result.errors[0].message);
+      } else if (result.error) {
+        setUpdateMessage(result.error);
       }
     } catch {
       setUpdateMessage('Failed to update preferences');
@@ -426,7 +416,7 @@ export default function PreferencesPage() {
                         setShowPasswordModal(false);
                         setTimeout(() => setUpdateMessage(''), 5000);
                       } else {
-                        setPasswordError(result.errors?.[0]?.message || 'Failed to send reset email');
+                        setPasswordError(result.error || 'Failed to send reset email');
                       }
                     }
                   }}

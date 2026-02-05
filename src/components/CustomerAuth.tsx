@@ -40,8 +40,8 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
           if (redirectTo) {
             window.location.href = redirectTo;
           }
-        } else if (result.errors) {
-          setErrors(result.errors.map(err => err.message));
+        } else if (result.error) {
+          setErrors([result.error]);
         }
       } else if (mode === 'register') {
         const result = await register({
@@ -57,16 +57,16 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
           if (redirectTo) {
             window.location.href = redirectTo;
           }
-        } else if (result.errors) {
-          setErrors(result.errors.map(err => err.message));
+        } else if (result.error) {
+          setErrors([result.error]);
         }
       } else if (mode === 'recover') {
         const result = await recoverPassword(formData.email);
         if (result.success) {
           setSuccessMessage('Password reset instructions have been sent to your email.');
           setTimeout(() => setMode('login'), 3000);
-        } else if (result.errors) {
-          setErrors(result.errors.map(err => err.message));
+        } else if (result.error) {
+          setErrors([result.error]);
         }
       }
     } catch {

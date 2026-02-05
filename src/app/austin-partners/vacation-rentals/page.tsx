@@ -5,11 +5,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import Footer from '@/components/Footer';
-import { useCart } from '@/lib/shopify/hooks/useCart';
+import { useCartContext } from '@/contexts/CartContext';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 export default function VacationRentalsPartnerPage() {
-  const { cart } = useCart();
+  const { cart } = useCartContext();
   const [showSuccess, setShowSuccess] = useState(false);
 
   const handleQuickAdd = async (productId: string, productTitle: string) => {

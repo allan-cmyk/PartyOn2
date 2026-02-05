@@ -50,10 +50,9 @@ export default function AccountPage() {
     );
   }
 
-  const recentOrders = customer?.orders?.edges?.slice(0, 3) || [];
-  const totalSpent = customer?.orders?.edges?.reduce((total, { node }) => {
-    return total + parseFloat(node.currentTotalPrice.amount);
-  }, 0) || 0;
+  // TODO: Fetch orders from /api/v1/orders with customer ID
+  const recentOrders: { id: string; name: string; processedAt: string; currentTotalPrice: { amount: string }; fulfillmentStatus: string }[] = [];
+  const totalSpent = 0;
 
   // Membership tiers configuration
   const MEMBERSHIP_TIERS = [
@@ -178,7 +177,7 @@ export default function AccountPage() {
           <div className="p-6">
             {recentOrders.length > 0 ? (
               <div className="space-y-4">
-                {recentOrders.map(({ node: order }) => (
+                {recentOrders.map((order) => (
                   <div key={order.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                     <div>
                       <p className="font-medium text-gray-900">{order.name}</p>
@@ -225,7 +224,7 @@ export default function AccountPage() {
               </div>
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg">
                 <p className="text-2xl font-bold text-gray-900">
-                  {customer?.orders?.edges?.length || 0}
+                  {recentOrders.length}
                 </p>
                 <p className="text-xs text-gray-600 tracking-[0.1em]">TOTAL ORDERS</p>
               </div>

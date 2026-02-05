@@ -6,10 +6,10 @@ import Link from 'next/link';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
-import { useCart } from '@/lib/shopify/hooks/useCart';
+import { useCartContext } from '@/contexts/CartContext';
 
 export default function CorporateProductsPage() {
-  const { cart } = useCart();
+  const { cart } = useCartContext();
   const [addingToCart, setAddingToCart] = useState<{ [key: string]: boolean }>({});
 
   const handleAddToCart = async (productId: string) => {

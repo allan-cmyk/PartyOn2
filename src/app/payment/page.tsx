@@ -2,13 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useCart } from '@/lib/shopify/hooks/useCart'
+import { useCartContext } from '@/contexts/CartContext'
 import OldFashionedNavigation from '@/components/OldFashionedNavigation'
-// import { formatPrice } from '@/lib/shopify/utils' // Removed - unused
 
 export default function PaymentPage() {
   const router = useRouter()
-  const { cart, clearCart } = useCart()
+  const { cart, clearCart } = useCartContext()
   
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')

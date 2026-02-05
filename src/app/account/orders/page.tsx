@@ -74,7 +74,9 @@ export default function OrderHistoryPage() {
     );
   }
 
-  const orders = customer?.orders?.edges || [];
+  // TODO: Fetch orders from /api/v1/orders with customer ID
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const orders: { node: any }[] = [];
 
   return (
     <AccountLayout title="Order History">
@@ -157,7 +159,8 @@ export default function OrderHistoryPage() {
 
                   {/* Order Items Preview */}
                   <div className="grid md:grid-cols-2 gap-4 mb-4">
-                    {order.lineItems.edges.slice(0, 2).map(({ node: item }) => (
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                    {order.lineItems.edges.slice(0, 2).map(({ node: item }: { node: any }) => (
                       <div key={item.variant.id} className="flex items-center space-x-4 bg-gray-50 p-3 rounded-lg">
                         {item.variant.image && (
                           <img 
