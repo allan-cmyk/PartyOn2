@@ -170,6 +170,32 @@
       "order": 2
     },
     {
+      "id": "16",
+      "name": "Boat Babes",
+      "slug": "boat-babes",
+      "description": "Premium private boat hospitality on Lake Austin. Beautiful, fun, and attentive hosts serving craft cocktails, setting the vibe, and making sure your crew has the time of their lives. Perfect for bachelor parties, birthdays, and any excuse to celebrate on the water.",
+      "website": "https://www.theboatbabes.com",
+      "logo": "/images/partners/boatbabes-logo.jpg",
+      "heroImage": "/images/partners/boatbabes-hero.jpg",
+      "category": "mobile-bartending",
+      "featured": true,
+      "order": 6,
+      "partnerPage": "/partners/boat-babes"
+    },
+    {
+      "id": "17",
+      "name": "Boat Babes",
+      "slug": "boat-babes-experiences",
+      "description": "Premium private boat hospitality on Lake Austin. Beautiful, fun, and attentive hosts serving craft cocktails, setting the vibe, and making sure your crew has the time of their lives. Perfect for bachelor parties, birthdays, and any excuse to celebrate on the water.",
+      "website": "https://www.theboatbabes.com",
+      "logo": "/images/partners/boatbabes-logo.jpg",
+      "heroImage": "/images/partners/boatbabes-hero.jpg",
+      "category": "experiences",
+      "featured": true,
+      "order": 1,
+      "partnerPage": "/partners/boat-babes"
+    },
+    {
       "id": "8",
       "name": "Elegant Ride",
       "slug": "elegant-ride",
