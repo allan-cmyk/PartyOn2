@@ -5,10 +5,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Explicit font-family overrides to ensure fonts load correctly */
+/* Design System Font Utilities */
 @layer utilities {
-  .font-serif {
-    font-family: var(--font-cormorant-garamond), 'Cormorant Garamond', Georgia, serif !important;
+  .font-heading {
+    font-family: var(--font-barlow-condensed), 'Barlow Condensed', sans-serif !important;
   }
 
   .font-sans {
@@ -19,84 +19,49 @@
 @layer base {
   :root {
     --background: #ffffff;
-    --foreground: #171717;
-    
-    /* Premium Party Color System */
-    --color-primary: #FF6B35; /* Sunset Orange - Main brand */
-    --color-primary-light: #FF8B5C;
-    --color-primary-dark: #E74C3C;
-    --color-secondary: #4ECDC4; /* Teal - Fresh accent */
-    --color-secondary-light: #6DD9D1;
-    --color-accent: #FFE66D; /* Champagne - Premium touch */
-    --color-dark: #2D3436; /* Soft charcoal */
-    --color-light: #F8F9FA; /* Warm white */
-    
-    /* Legacy colors for gradual migration */
-    --color-gold: #FFE66D;
-    --color-gold-light: #FFF3A3;
-    --color-navy: #2D3436;
-    --color-navy-light: #495057;
-    --color-austin-sunset: #FF6B35;
-    --color-austin-lake: #4ECDC4;
-    
-    /* Professional B2B Color Palette */
-    --color-navy-pro: #2C3E50; /* Deep Navy Blue */
-    --color-silver: #BDC3C7; /* Soft Silver */
-    --color-gold-pro: #D4AF37; /* Rich Gold */
-    --color-taupe: #A1887F; /* Warm Taupe */
-    --color-charcoal: #34495E; /* Charcoal Gray */
-    --color-amber: #F59E0B; /* Amber for CTAs */
-    
-    /* Spacing - More breathing room */
+    --foreground: #111827;
+
+    /* Design System Colors */
+    --color-brand-blue: #0B74B8;
+    --color-brand-yellow: #F2D34F;
+    --color-gold: #D4AF37;
+    --color-black: #191C1F;
+
+    /* Spacing */
     --spacing-unit: 8px;
     --section-spacing: clamp(3rem, 8vw, 6rem);
     --container-padding: clamp(1.5rem, 4vw, 3rem);
   }
 
-  * {
-    @apply border-neutral-200;
+  html, body {
+    overflow-x: hidden;
   }
-  
+
+  * {
+    @apply border-gray-200;
+  }
+
   body {
-    @apply bg-white text-neutral-900;
+    @apply bg-white text-gray-900;
     font-feature-settings: "kern" 1;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  
-  /* Custom cursor pages */
-  .cursor-none {
-    cursor: none;
-  }
-  
-  .cursor-none a,
-  .cursor-none button {
-    cursor: none;
-  }
 
-  /* Typography defaults */
+  /* Typography defaults - use font-heading for all headings */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif font-bold tracking-tight;
-  }
-  
-  /* Professional theme typography */
-  .font-montserrat {
-    font-family: var(--font-montserrat);
-  }
-  
-  .font-lato {
-    font-family: var(--font-lato);
+    @apply font-heading font-bold;
   }
 
-  /* Premium link styling - reduced transition duration */
+  /* Premium link styling */
   a {
     @apply transition-colors;
   }
 
-  /* Focus states for accessibility */
-  *:focus {
-    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+  /* Focus states for accessibility - use brand-blue */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-brand-blue ring-offset-2;
   }
 
   /* Custom scrollbar */
@@ -105,46 +70,55 @@
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-neutral-100;
+    @apply bg-gray-100;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-primary-500 rounded-full;
+    @apply bg-brand-blue rounded-full;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-primary-600;
+    @apply bg-blue-700;
   }
 }
 
 @layer components {
-  /* Fun Premium Button Base */
+  /* Design System Button Base - rounded-lg NOT rounded-full */
   .btn {
-    @apply inline-flex items-center justify-center px-8 py-3.5 font-sans font-semibold 
-           transition-all duration-200 rounded-full focus:outline-none focus:ring-2 
-           focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed
-           hover:scale-105 active:scale-95 shadow-md hover:shadow-xl;
+    @apply inline-flex items-center justify-center px-6 py-3 font-sans font-semibold
+           tracking-[0.08em] transition-colors duration-200 rounded-lg
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2
+           disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
+  /* Primary Button - brand-blue */
   .btn-primary {
-    @apply btn bg-primary-500 text-white hover:bg-primary-600 
-           focus:ring-primary-500 shadow-primary-500/25;
+    @apply btn bg-brand-blue text-white hover:bg-blue-700 active:bg-blue-800;
   }
 
+  /* Cart Button - brand-yellow with dark text */
+  .btn-cart {
+    @apply btn bg-brand-yellow text-gray-900 hover:bg-yellow-400 active:bg-yellow-500;
+  }
+
+  /* Secondary Button - outlined */
   .btn-secondary {
-    @apply btn bg-secondary-500 text-white hover:bg-secondary-600 
-           focus:ring-secondary-500 shadow-secondary-500/25;
+    @apply btn bg-white text-brand-blue border-2 border-brand-blue hover:bg-blue-50 active:bg-blue-100;
   }
 
-  .btn-outline {
-    @apply btn border-2 border-primary-500 text-primary-500 hover:bg-primary-500 
-           hover:text-white focus:ring-primary-500 bg-transparent shadow-none;
+  /* Ghost Button - minimal */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center px-4 py-2 font-sans font-medium
+           tracking-[0.05em] text-sm text-gray-700 rounded-lg
+           bg-transparent hover:bg-gray-100 active:bg-gray-200
+           transition-colors duration-200
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2;
   }
 
   /* Premium card styles */
   .card {
-    @apply bg-white rounded-2xl shadow-lg p-8 transition-shadow
-           hover:shadow-xl;
+    @apply bg-white rounded-xl border border-gray-200 shadow-sm p-6 transition-shadow
+           hover:shadow-md;
   }
 
   /* Hero overlay styles */
@@ -154,43 +128,34 @@
 
   /* Optimized Section Spacing */
   .section-padding {
-    @apply py-12 md:py-16 lg:py-20;
+    @apply py-8 md:py-12 lg:py-16;
   }
-  
+
   .section-padding-lg {
-    @apply py-16 md:py-20 lg:py-24;
+    @apply py-12 md:py-16 lg:py-20;
   }
 
   /* Container with max width */
   .container-custom {
-    @apply container mx-auto px-6 md:px-8 lg:px-12 max-w-7xl;
+    @apply container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl;
   }
 
-  /* Text gradient effects */
-  .text-gradient-primary {
-    @apply bg-gradient-to-r from-primary-500 to-primary-600 bg-clip-text text-transparent;
-  }
-  
-  .text-gradient-fun {
-    @apply bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 bg-clip-text text-transparent;
-  }
-
-  /* Premium input styles */
+  /* Premium input styles - using brand-blue for focus */
   .input-premium {
-    @apply w-full px-4 py-3 border-2 border-neutral-200 rounded-lg
-           focus:border-primary-500 focus:ring-0 transition-all duration-200
-           placeholder:text-neutral-400 hover:border-neutral-300;
+    @apply w-full px-4 py-3 border-2 border-gray-200 rounded-lg
+           focus:border-brand-blue focus:ring-0 transition-all duration-200
+           placeholder:text-gray-500 hover:border-gray-300;
   }
 
-  /* Loading animation - reduced for performance */
+  /* Loading animation */
   .loading-dots {
     @apply inline-flex space-x-1;
   }
 
   .loading-dots span {
-    @apply w-2 h-2 bg-primary-500 rounded-full;
+    @apply w-2 h-2 bg-brand-blue rounded-full;
   }
-  
+
   /* Prefers reduced motion support */
   @media (prefers-reduced-motion: reduce) {
     * {
@@ -202,7 +167,7 @@
 }
 
 @layer utilities {
-  /* Text shadows - softer for cleaner look */
+  /* Text shadows */
   .text-shadow {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
@@ -211,7 +176,7 @@
     text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
   }
 
-  /* Backdrop blur for glass effect - reduced blur */
+  /* Backdrop blur for glass effect */
   .glass {
     @apply backdrop-blur-sm bg-white/10 border border-white/20;
   }
@@ -225,27 +190,27 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
-  
+
   /* Mobile-first responsive utilities */
   @media (max-width: 640px) {
     .hero-mobile-compact {
       @apply text-3xl !important;
     }
-    
+
     .btn {
       @apply px-6 py-3 text-sm;
     }
-    
+
     .section-padding {
       @apply py-8 !important;
     }
-    
+
     .container-custom {
       @apply px-4 !important;
     }
   }
-  
-  /* Group V2 card hover lift */
+
+  /* Card hover lift */
   .v2-card-hover {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
@@ -254,7 +219,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
 
-  /* Group V2 button press */
+  /* Button press effect */
   .v2-btn-press:active {
     transform: scale(0.98);
   }
@@ -283,23 +248,23 @@
   }
 
   .prose h2 {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font-barlow-condensed), 'Barlow Condensed', sans-serif;
     font-size: 2rem;
-    font-weight: 300;
+    font-weight: 700;
     color: #111827;
     margin-top: 3rem;
     margin-bottom: 1.5rem;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
   }
 
   .prose h3 {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font-barlow-condensed), 'Barlow Condensed', sans-serif;
     font-size: 1.5rem;
-    font-weight: 400;
+    font-weight: 600;
     color: #1f2937;
     margin-top: 2rem;
     margin-bottom: 1rem;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.03em;
   }
 
   .prose p {
@@ -352,8 +317,8 @@
     font-size: 1.5rem;
     margin-top: 0;
     margin-bottom: 0.5rem;
-    font-family: var(--font-cormorant-garamond), 'Cormorant Garamond', Georgia, serif;
-    letter-spacing: 0.05em;
+    font-family: var(--font-barlow-condensed), 'Barlow Condensed', sans-serif;
+    letter-spacing: 0.03em;
   }
 
   .prose .recipe-card .recipe-intro {
@@ -405,12 +370,7 @@
     margin-bottom: 1rem;
   }
 
-  /* ============================================
-     Comparison Table Styles
-     SEO-optimized, mobile-responsive tables
-     with Schema.org microdata support
-     ============================================ */
-
+  /* Comparison Table Styles */
   .prose .comparison-table {
     width: 100%;
     border-collapse: collapse;
@@ -424,9 +384,9 @@
   }
 
   .prose .comparison-table caption {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font-barlow-condensed), 'Barlow Condensed', sans-serif;
     font-size: 1.25rem;
-    font-weight: 500;
+    font-weight: 600;
     color: #111827;
     text-align: left;
     padding: 1rem 1.25rem;
@@ -591,14 +551,8 @@
   }
 }
 
-/* ============================================
-   Scroll Reveal Animations
-   Performance-optimized CSS animations
-   ============================================ */
-
+/* Scroll Reveal Animations */
 .scroll-reveal {
-  /* Note: display:contents breaks transform/opacity animations */
-  /* Using display:block to maintain box model for animations */
   opacity: 0;
   transform: translateY(var(--scroll-reveal-distance, 30px));
   transition:
@@ -621,15 +575,7 @@
   }
 }
 
-/* ============================================
-   Product Card Stagger Animations
-   ============================================ */
-
-.product-grid {
-  /* Existing grid styles are maintained */
-}
-
-/* Stagger delay based on card index - optimized for 3-4 column grid */
+/* Product Card Stagger Animations */
 .product-card:nth-child(1) { --scroll-reveal-delay: 0ms; }
 .product-card:nth-child(2) { --scroll-reveal-delay: 100ms; }
 .product-card:nth-child(3) { --scroll-reveal-delay: 200ms; }
@@ -641,10 +587,7 @@
 .product-card:nth-child(9) { --scroll-reveal-delay: 800ms; }
 .product-card:nth-child(n+10) { --scroll-reveal-delay: 900ms; }
 
-/* ============================================
-   Page Hero Animations
-   ============================================ */
-
+/* Page Hero Animations */
 .hero-fade-in {
   opacity: 0;
   transform: translateY(30px);
@@ -662,10 +605,7 @@
   }
 }
 
-/* ============================================
-   Calculator Result Animations
-   ============================================ */
-
+/* Calculator Result Animations */
 .result-card {
   opacity: 0;
   transform: translateY(10px);
@@ -688,10 +628,7 @@
   }
 }
 
-/* ============================================
-   Shimmer Animation for Banners
-   ============================================ */
-
+/* Shimmer Animation for Banners */
 @keyframes shimmer {
   0% {
     transform: translateX(-100%);
@@ -713,7 +650,7 @@
     transform: none;
     animation: none;
   }
-  
+
   .product-card {
     --scroll-reveal-delay: 0ms !important;
   }
