@@ -66,16 +66,6 @@ function transformToShopifyCart(cart: CustomCart): ShopifyCart {
   const total = typeof cart.total === 'string' ? parseFloat(cart.total) : Number(cart.total) || 0;
   const tax = typeof cart.taxAmount === 'string' ? parseFloat(cart.taxAmount) : Number(cart.taxAmount) || 0;
 
-  // Debug logging for discount troubleshooting
-  if (cart.discountCode || cart.discountAmount) {
-    console.log('[CustomCart Transform] Discount data:', {
-      discountCode: cart.discountCode,
-      discountCodeType: typeof cart.discountCode,
-      discountAmount: cart.discountAmount,
-      discountAmountType: typeof cart.discountAmount,
-    });
-  }
-
   // Build attributes array from delivery info
   const attributes: Array<{ key: string; value: string }> = [];
   if (cart.deliveryDate) {
@@ -169,15 +159,6 @@ export function useCustomCart() {
       });
 
       const data: CartApiResponse = await response.json();
-
-      console.log('[useCustomCart] fetchCart API response:', {
-        success: data.success,
-        hasData: !!data.data,
-        discountCode: data.data?.cart?.discountCode,
-        discountAmount: data.data?.cart?.discountAmount,
-        discountAmountType: typeof data.data?.cart?.discountAmount,
-        rawCart: data.data?.cart,
-      });
 
       if (data.success && data.data) {
         setCustomCart(data.data.cart);
@@ -431,13 +412,6 @@ export function useCustomCart() {
    * This avoids the need for a separate refetch after mutations
    */
   const setCartFromApiResponse = useCallback((apiCart: CustomCart) => {
-    console.log('[useCustomCart] setCartFromApiResponse called with:', {
-      discountCode: apiCart.discountCode,
-      discountAmount: apiCart.discountAmount,
-      discountAmountType: typeof apiCart.discountAmount,
-      subtotal: apiCart.subtotal,
-      total: apiCart.total,
-    });
     setCustomCart(apiCart);
     setCart(transformToShopifyCart(apiCart));
   }, []);

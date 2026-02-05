@@ -81,16 +81,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       isFirstOrder,
     });
 
-    console.log('[Discount API] validateDiscountCode result:', {
-      success: result.success,
-      discountCode: result.discountCode,
-      discountType: result.discountType,
-      discountAmount: result.discountAmount,
-      error: result.error,
-      message: result.message,
-      subtotal,
-    });
-
     if (!result.success) {
       return NextResponse.json(
         { success: false, error: result.error },
@@ -104,14 +94,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       result.discountCode!,
       result.discountAmount
     );
-
-    console.log('[Discount API] applyDiscount result:', {
-      cartId: updatedCart.id,
-      discountCode: updatedCart.discountCode,
-      discountAmount: updatedCart.discountAmount?.toString(),
-      subtotal: updatedCart.subtotal?.toString(),
-      total: updatedCart.total?.toString(),
-    });
 
     // Serialize cart with proper decimal conversion for JSON
     const serializedCart = {

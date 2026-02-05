@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { shopifyFetch } from '@/lib/shopify/client';
-import { PRODUCT_BY_HANDLE_QUERY } from '@/lib/shopify/queries/products';
+import { prisma } from '@/lib/database/client';
+import { transformToShopifyProduct } from '@/lib/products/transform';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import ProductDetailClient from '@/components/products/ProductDetailClient';
 import SneebergFAQ from '@/components/products/SneebergFAQ';
@@ -19,14 +19,28 @@ interface Props {
   params: Promise<{ handle: string }>;
 }
 
-// Fetch product server-side
+const productInclude = {
+  images: { orderBy: { position: 'asc' as const } },
+  variants: {
+    include: { image: true },
+    orderBy: { createdAt: 'asc' as const },
+  },
+  categories: { include: { category: true } },
+};
+
+/** Fetch product from PostgreSQL by handle */
 async function getProduct(handle: string): Promise<ShopifyProduct | null> {
   try {
-    const response = await shopifyFetch<{ productByHandle: ShopifyProduct | null }>({
-      query: PRODUCT_BY_HANDLE_QUERY,
-      variables: { handle },
+    const dbProduct = await prisma.product.findFirst({
+      where: {
+        OR: [{ handle }, { id: handle }],
+      },
+      include: productInclude,
     });
-    return response.productByHandle;
+
+    if (!dbProduct) return null;
+
+    return transformToShopifyProduct(dbProduct) as ShopifyProduct;
   } catch (error) {
     console.error('Error fetching product:', error);
     return null;
@@ -38,15 +52,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle } = await params;
   const product = await getProduct(handle);
 
-  // Get robots meta for noindex products (tobacco, snuff, etc.)
-  // Products are still purchasable but hidden from Google search results
   const robots = getProductRobotsMeta(handle);
 
   if (!product) {
-    return {
-      title: 'Product Not Found',
-      robots,
-    };
+    return { title: 'Product Not Found', robots };
   }
 
   const price = formatPrice(
@@ -55,14 +64,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   );
 
   const image = product.images.edges[0]?.node.url || '/images/pod-logo-2025.svg';
-
-  // Strip HTML from description for meta tag
   const plainDescription = product.description?.replace(/<[^>]*>/g, '') || '';
   const truncatedDescription = plainDescription.length > 160
     ? plainDescription.substring(0, 157) + '...'
     : plainDescription;
 
-  // Check if this is Schneeberg product for custom SEO optimization
   const isSchneebergProduct = handle.toLowerCase().includes('schneeberg') ||
                                handle.toLowerCase().includes('poschl') ||
                                handle.toLowerCase().includes('weiss');
@@ -91,7 +97,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  // Pinthouse Electric Jellyfish - High-traffic product optimization
+  // Pinthouse Electric Jellyfish
   if (handle === 'pinthouse-electric-jellyfish-16oz-4-pack-can') {
     return {
       title: 'Pinthouse Electric Jellyfish IPA Austin | 16oz 4-Pack | Local Delivery',
@@ -115,7 +121,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  // Fat E's Spicy Mator Mix - High-traffic product optimization
+  // Fat E's Spicy Mator Mix
   if (handle === 'fat-es-spicy-mator-mix') {
     return {
       title: "Fat E's Spicy Mator Mix Austin | Bloody Mary Mix | Fast Delivery",
@@ -139,7 +145,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  // Borrasca Brut Cava - High-traffic product optimization
+  // Borrasca Brut Cava
   if (handle === 'borrasca-brut-cava') {
     return {
       title: 'Borrasca Brut Cava Austin | Spanish Sparkling Wine | Delivered',
@@ -163,7 +169,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  // Corona Extra Keg - High-traffic product optimization
+  // Corona Extra Keg
   if (handle === 'corona-extra-1-2-barrel') {
     return {
       title: 'Corona Extra Keg Austin | 1/2 Barrel | Perfect for Parties',
@@ -187,26 +193,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  // Schneeberg-specific optimized metadata (noindexed - tobacco/snuff product)
+  // Schneeberg-specific optimized metadata
   if (isSchneebergProduct) {
     return {
       title: 'Pöschl Schneeberg Snuff Austin | Tobacco-Free | Fast Delivery',
       description: 'Buy Pöschl Schneeberg Weiss tobacco-free herbal snuff in Austin. Refreshing peppermint nasal snuff, no tobacco or nicotine. Same-day delivery available. Order now!',
       keywords: 'schneeberg snuff, schneeberg powder, poschl schneeberg, schneeberg austin, tobacco free snuff, nicotine free snuff, herbal snuff austin, peppermint snuff, bavarian nasal mint powder, schneeberg snuff where to buy, schneeberg weiss',
-      robots, // Will be { index: false, follow: true } for Schneeberg products
+      robots,
       openGraph: {
         title: 'Pöschl Schneeberg Weiss - Tobacco-Free Herbal Snuff | Austin Delivery',
         description: 'Premium tobacco-free, nicotine-free peppermint snuff delivered in Austin. Authentic Pöschl Schneeberg Weiss with same-day delivery.',
         type: 'website',
         url: `https://partyondelivery.com/products/${handle}`,
-        images: [
-          {
-            url: image,
-            width: 1200,
-            height: 1200,
-            alt: 'Pöschl Schneeberg Weiss tobacco-free herbal snuff tin',
-          },
-        ],
+        images: [{ url: image, width: 1200, height: 1200, alt: 'Pöschl Schneeberg Weiss tobacco-free herbal snuff tin' }],
       },
       twitter: {
         card: 'summary_large_image',
@@ -214,9 +213,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         description: 'Refreshing peppermint herbal snuff. No tobacco, no nicotine. Fast Austin delivery.',
         images: [image],
       },
-      alternates: {
-        canonical: `/products/${handle}`,
-      },
+      alternates: { canonical: `/products/${handle}` },
     };
   }
 
@@ -231,14 +228,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: truncatedDescription || `Premium ${product.title} delivered in Austin`,
       type: 'website',
       url: `https://partyondelivery.com/products/${handle}`,
-      images: [
-        {
-          url: image,
-          width: 1200,
-          height: 1200,
-          alt: product.title,
-        },
-      ],
+      images: [{ url: image, width: 1200, height: 1200, alt: product.title }],
     },
     twitter: {
       card: 'summary_large_image',
@@ -246,41 +236,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: truncatedDescription,
       images: [image],
     },
-    alternates: {
-      canonical: `/products/${handle}`,
-    },
+    alternates: { canonical: `/products/${handle}` },
   };
 }
 
-// Generate static params for top products to pre-render at build time
+// Generate static params from PostgreSQL for pre-rendering
 export async function generateStaticParams() {
   try {
-    // Fetch top 50 most popular products to pre-render
-    // This significantly improves SEO as Google can crawl pre-rendered HTML
-    const response = await shopifyFetch<{
-      products: {
-        edges: Array<{ node: { handle: string } }>;
-      };
-    }>({
-      query: `
-        query getTopProducts {
-          products(first: 50, sortKey: BEST_SELLING) {
-            edges {
-              node {
-                handle
-              }
-            }
-          }
-        }
-      `,
+    const products = await prisma.product.findMany({
+      where: { status: 'ACTIVE' },
+      select: { handle: true },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
     });
 
-    return response.products.edges.map(({ node }) => ({
-      handle: node.handle,
-    }));
+    return products.map(({ handle }) => ({ handle }));
   } catch (error) {
     console.error('Error fetching products for static generation:', error);
-    // Return empty array if fetch fails - pages will render on-demand
     return [];
   }
 }
@@ -294,12 +266,11 @@ export default async function ProductDetailPage({ params }: Props) {
     notFound();
   }
 
-  // Check if this is a Schneeberg product
   const isSchneebergProduct = handle.toLowerCase().includes('schneeberg') ||
                                handle.toLowerCase().includes('poschl') ||
                                handle.toLowerCase().includes('weiss');
 
-  // Generate Product Schema.org structured data
+  // Schema.org structured data
   const baseStructuredData = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -331,68 +302,40 @@ export default async function ProductDetailPage({ params }: Props) {
     category: product.productType || 'Beverage',
   };
 
-  // Enhanced structured data for Schneeberg with additional properties
   const structuredData = isSchneebergProduct ? {
     ...baseStructuredData,
     name: 'Pöschl Schneeberg Weiss Tobacco-Free Herbal Snuff',
     additionalProperty: [
-      {
-        '@type': 'PropertyValue',
-        name: 'Tobacco Content',
-        value: 'Tobacco-Free'
-      },
-      {
-        '@type': 'PropertyValue',
-        name: 'Nicotine Content',
-        value: 'Nicotine-Free'
-      },
-      {
-        '@type': 'PropertyValue',
-        name: 'Flavor',
-        value: 'Peppermint'
-      },
-      {
-        '@type': 'PropertyValue',
-        name: 'Type',
-        value: 'Herbal Snuff'
-      },
-      {
-        '@type': 'PropertyValue',
-        name: 'Origin',
-        value: 'Germany'
-      }
+      { '@type': 'PropertyValue', name: 'Tobacco Content', value: 'Tobacco-Free' },
+      { '@type': 'PropertyValue', name: 'Nicotine Content', value: 'Nicotine-Free' },
+      { '@type': 'PropertyValue', name: 'Flavor', value: 'Peppermint' },
+      { '@type': 'PropertyValue', name: 'Type', value: 'Herbal Snuff' },
+      { '@type': 'PropertyValue', name: 'Origin', value: 'Germany' },
     ]
   } : baseStructuredData;
 
   return (
     <>
-      {/* JSON-LD Structured Data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
-      {/* Breadcrumb Navigation */}
       <ProductBreadcrumbs
         productName={product.title}
         productHandle={handle}
         category={product.productType}
       />
 
-      {/* Client Component for Interactive Features */}
       <ProductDetailClient product={product} />
 
-      {/* Product-specific FAQ sections for high-traffic products */}
       {handle === 'fat-es-spicy-mator-mix' && <FatEsMatorMixFAQ />}
       {handle === 'miller-lite-keg' && <MillerLiteKegFAQ />}
       {handle === 'pinthouse-electric-jellyfish-16oz-4-pack-can' && <PinthouseElectricJellyfishFAQ />}
       {handle === 'corona-extra-1-2-barrel' && <CoronaExtraKegFAQ />}
       {handle === 'borrasca-brut-cava' && <BorrascaBrutCavaFAQ />}
-
-      {/* Schneeberg-specific SEO content */}
       {isSchneebergProduct && <SneebergFAQ />}
 
-      {/* Footer */}
       <footer className="bg-white py-16 border-t border-gray-200 mt-24">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">

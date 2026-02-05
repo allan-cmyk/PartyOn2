@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
-import { useProducts } from '@/lib/shopify/hooks/useProducts';
+import { useCustomProducts } from '@/lib/cart/hooks/useCustomProducts';
 import MobileProductCard from '@/components/mobile/MobileProductCard';
 import CompactProductCard from '@/components/shopify/CompactProductCard';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -11,7 +11,7 @@ import { getProductCategory } from '@/lib/shopify/categories';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 export default function LynnsLodgingPartnerPage() {
-  const { products, loading } = useProducts(50, false);
+  const { products, loading } = useCustomProducts(50, false);
   const isMobile = useIsMobile();
   const [filter, setFilter] = useState('all');
   

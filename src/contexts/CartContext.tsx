@@ -111,55 +111,23 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
 
   // Override addToCart to check age verification and fire tracking events
   const addToCart = async (variantId: string, quantity: number = 1): Promise<ShopifyCart> => {
-    console.log('[CART CONTEXT] addToCart called with:', {
-      variantId,
-      quantity,
-      variantIdType: typeof variantId,
-      usingCustomCart: USE_CUSTOM_CART,
-      currentCartId: cartHook.cart?.id,
-      currentCartQuantity: cartHook.cart?.totalQuantity
-    });
-
     const isAgeVerified = checkAgeVerification();
-    console.log('[CART CONTEXT] Age verification check:', {
-      isAgeVerified,
-      localStorage_age_verified: typeof window !== 'undefined' ? localStorage.getItem('age_verified') : 'N/A',
-      localStorage_ageVerified: typeof window !== 'undefined' ? localStorage.getItem('ageVerified') : 'N/A'
-    });
 
     if (!isAgeVerified) {
-      console.log('[CART CONTEXT] Age verification failed, reloading page to show modal');
       localStorage.removeItem('age_verified');
       localStorage.removeItem('ageVerified');
       window.location.reload();
       throw new Error('Age verification required');
     }
 
-    // Check if this is creating a new cart (first item added)
     const isCreatingNewCart = !cartHook.cart;
-    console.log('[CART CONTEXT] isCreatingNewCart:', isCreatingNewCart);
 
-    let result;
-    try {
-      result = await cartHook.addToCart(variantId, quantity);
-      console.log('[CART CONTEXT] addToCart result:', {
-        success: !!result,
-        cartId: result?.id,
-        totalQuantity: result?.totalQuantity,
-        itemCount: result?.lines?.edges?.length
-      });
-    } catch (err) {
-      console.error('[CART CONTEXT] addToCart error:', err);
-      throw err;
-    }
+    const result = await cartHook.addToCart(variantId, quantity);
 
     // If we just created a new cart, check for pending group order join
     if (isCreatingNewCart && result?.id) {
       try {
-        const joined = await completePendingGroupOrderJoin(result.id);
-        if (joined) {
-          console.log('✅ User automatically joined group order with new cart');
-        }
+        await completePendingGroupOrderJoin(result.id);
       } catch (err) {
         console.error('Failed to complete pending group order join:', err);
       }
@@ -243,18 +211,6 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
         total: customCartHook.customCart.total,
       }
     : null;
-
-  // DEBUG: Log customCartData when it changes
-  if (customCartData) {
-    console.log('[CartContext] customCartData derived:', {
-      discountCode: customCartData.discountCode,
-      discountAmount: customCartData.discountAmount,
-      discountAmountType: typeof customCartData.discountAmount,
-      subtotal: customCartData.subtotal,
-      total: customCartData.total,
-      rawCustomCart: customCartHook.customCart,
-    });
-  }
 
   const value: CartContextType = {
     cart: cartHook.cart,

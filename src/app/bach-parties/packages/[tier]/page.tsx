@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
-import { useProducts } from '@/lib/shopify/hooks/useProducts';
+import { useCustomProducts } from '@/lib/cart/hooks/useCustomProducts';
 import { useCartContext } from '@/contexts/CartContext';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import { formatPrice } from '@/lib/shopify/utils';
@@ -93,7 +93,7 @@ export default function BachPartyPackagePage() {
   const params = useParams();
   const router = useRouter();
   const tier = params.tier as string;
-  const { products, loading } = useProducts(100);
+  const { products, loading } = useCustomProducts(100);
   const { addToCart, loading: cartLoading } = useCartContext();
   const [packageItems, setPackageItems] = useState<PackageItem[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);

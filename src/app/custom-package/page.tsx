@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import OldFashionedNavigation from '@/components/OldFashionedNavigation';
 import Footer from '@/components/Footer';
-import { useProducts } from '@/lib/shopify/hooks/useProducts';
+import { useCustomProducts } from '@/lib/cart/hooks/useCustomProducts';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import { formatPrice } from '@/lib/shopify/utils';
 import { useCartContext } from '@/contexts/CartContext';
@@ -26,7 +26,7 @@ export default function CustomPackagePage() {
   const router = useRouter();
   const [packageData, setPackageData] = useState<PackageData | null>(null);
   const [matchedProducts, setMatchedProducts] = useState<{ item: PackageItem; products: ShopifyProduct[] }[]>([]);
-  const { products, loading, loadMore, hasNextPage } = useProducts(50);
+  const { products, loading, loadMore, hasNextPage } = useCustomProducts(50);
   const { addToCart, loading: cartLoading } = useCartContext();
   const [addingToCart, setAddingToCart] = useState<string | null>(null);
 

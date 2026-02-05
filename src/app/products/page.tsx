@@ -10,7 +10,7 @@ import ProductCard from '@/components/shopify/ProductCard';
 import CompactProductCard from '@/components/shopify/CompactProductCard';
 import MobileProductCard from '@/components/mobile/MobileProductCard';
 import MobileFilterDrawer from '@/components/mobile/MobileFilterDrawer';
-import { useCollectionProducts } from '@/lib/shopify/hooks/useCollectionProducts';
+import { useCustomCollectionProducts } from '@/lib/cart/hooks/useCustomProducts';
 import { ShopifyProduct } from '@/lib/shopify/types';
 import AIConcierge from '@/components/AIConcierge';
 import AgeVerificationModal from '@/components/AgeVerificationModal';
@@ -29,7 +29,7 @@ function ProductsContent() {
   const [searchLoading, setSearchLoading] = useState(false);
   const [filter, setFilter] = useState('all');
   const [collectionFilter, setCollectionFilter] = useState<string | null>(null);
-  const { products, loading, error, hasNextPage, loadMore } = useCollectionProducts(collectionFilter, initialLoadCount);
+  const { products, loading, error, hasNextPage, loadMore } = useCustomCollectionProducts(collectionFilter, initialLoadCount);
   const [sortBy, setSortBy] = useState('featured');
   const [showAgeVerification, setShowAgeVerification] = useState(false);
   const [isAgeVerified, setIsAgeVerified] = useState(false);

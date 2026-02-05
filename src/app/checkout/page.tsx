@@ -149,13 +149,6 @@ export default function CheckoutPage() {
             message: data.error || 'Invalid or expired discount code'
           });
         } else {
-          console.log('[Checkout] Discount applied successfully:', data);
-          console.log('[Checkout] Cart from discount API:', {
-            discountCode: data.data?.cart?.discountCode,
-            discountAmount: data.data?.cart?.discountAmount,
-            subtotal: data.data?.cart?.subtotal,
-            total: data.data?.cart?.total,
-          });
           setDiscountFeedback({
             type: 'success',
             message: data.message || `Discount code "${discountCode.toUpperCase()}" applied!`
