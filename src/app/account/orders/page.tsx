@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { formatPrice } from '@/lib/utils';
 
 export default function OrderHistoryPage() {
-  const { customer, isAuthenticated, loading } = useCustomerContext();
+  const { isAuthenticated, loading } = useCustomerContext();
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   useEffect(() => {

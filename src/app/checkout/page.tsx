@@ -6,13 +6,11 @@ import Footer from '@/components/Footer';
 import DeliveryDateTimePicker from '@/components/checkout/DeliveryDateTimePicker';
 import { useCartContext } from '@/contexts/CartContext';
 import { useCustomerContext } from '@/contexts/CustomerContext';
-import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
 import CustomerAuth from '@/components/CustomerAuth';
 
 export default function CheckoutPage() {
   const { cart, customCartData, loading: cartLoading, refetchCart, updateCartFromApiResponse } = useCartContext();
   const { customer, isAuthenticated } = useCustomerContext();
-  const { isInGroupOrder, currentGroupOrder, isHost } = useGroupOrderContext();
   
   const [showAuthModal, setShowAuthModal] = useState(false);
 
@@ -119,9 +117,6 @@ export default function CheckoutPage() {
 
   const total = subtotal + deliveryFee + tax - Math.abs(discountAmount);
 
-  // Check if this is a group order checkout
-  const isGroupCheckout = isInGroupOrder && isHost;
-
   const handleApplyDiscount = async () => {
     if (!cart || !discountCode.trim()) return;
 
@@ -164,7 +159,7 @@ export default function CheckoutPage() {
     }
   };
 
-  const handleRemoveDiscount = async (code: string) => {
+  const handleRemoveDiscount = async () => {
     if (!cart) return;
 
     try {
