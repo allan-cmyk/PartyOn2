@@ -541,7 +541,7 @@ export default function CheckoutPage() {
                             {discount.code} {discount.applicable && '✓ Applied'}
                           </span>
                           <button
-                            onClick={() => handleRemoveDiscount(discount.code)}
+                            onClick={() => handleRemoveDiscount()}
                             className="text-red-600 hover:text-red-700 text-sm"
                           >
                             Remove
@@ -555,7 +555,7 @@ export default function CheckoutPage() {
                             {appliedDiscountCode} ✓ Applied
                           </span>
                           <button
-                            onClick={() => handleRemoveDiscount(appliedDiscountCode)}
+                            onClick={() => handleRemoveDiscount()}
                             className="text-red-600 hover:text-red-700 text-sm"
                           >
                             Remove
