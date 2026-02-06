@@ -1,4 +1,4 @@
-import SimplifiedNavigation from '@/components/SimplifiedNavigation';
+import Navigation from "@/components/Navigation";
 
 export default function SimplifiedLayout({
   children,
@@ -7,7 +7,7 @@ export default function SimplifiedLayout({
 }) {
   return (
     <>
-      <SimplifiedNavigation />
+      <Navigation />
       {children}
     </>
   );

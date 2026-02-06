@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 
 export default function ServicesPage() {
   const services = [
@@ -82,12 +82,12 @@ export default function ServicesPage() {
 
   return (
     <>
-      <OldFashionedNavigation />
+      <Navigation />
       
       {/* Hero Section */}
       <section className="relative min-h-[40vh] pt-32 md:pt-24 bg-gradient-to-br from-slate-900 to-slate-700 flex items-center justify-center">
         <div className="text-center text-white">
-          <h1 className="font-heading text-5xl md:text-7xl tracking-[0.15em] mb-4">SERVICES</h1>
+          <h1 className="font-heading text-5xl md:text-7xl tracking-[0.08em] mb-4">SERVICES</h1>
           <p className="text-xl tracking-[0.1em] text-brand-yellow">Premium Alcohol Delivery & Event Solutions</p>
         </div>
       </section>

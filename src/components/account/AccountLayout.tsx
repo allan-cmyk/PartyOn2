@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useCustomerContext } from '@/contexts/CustomerContext'
-import OldFashionedNavigation from '@/components/OldFashionedNavigation'
+import Navigation from "@/components/Navigation"
 import { useState, useRef, ChangeEvent } from 'react'
 
 interface AccountLayoutProps {
@@ -161,7 +161,7 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
   return (
     <>
       {/* Include main navigation */}
-      <OldFashionedNavigation />
+      <Navigation />
       
       <div className="min-h-screen bg-white">
         {/* Hero Section with Dark Background */}
@@ -234,15 +234,15 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
               <div className="hidden md:flex items-center space-x-12">
                 <div className="text-center">
                   <p className="text-3xl font-bold text-white">0</p>
-                  <p className="text-xs text-gray-400 tracking-[0.15em] mt-1">ORDERS</p>
+                  <p className="text-xs text-gray-400 tracking-[0.08em] mt-1">ORDERS</p>
                 </div>
                 <div className="text-center">
                   <p className="text-3xl font-bold text-brand-yellow">{currentTier.name}</p>
-                  <p className="text-xs text-gray-400 tracking-[0.15em] mt-1">TIER</p>
+                  <p className="text-xs text-gray-400 tracking-[0.08em] mt-1">TIER</p>
                 </div>
                 <div className="text-center">
                   <p className="text-3xl font-bold text-white">{savedAddressCount}</p>
-                  <p className="text-xs text-gray-400 tracking-[0.15em] mt-1">ADDRESSES</p>
+                  <p className="text-xs text-gray-400 tracking-[0.08em] mt-1">ADDRESSES</p>
                 </div>
               </div>
             </div>

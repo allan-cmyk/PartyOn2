@@ -1,4 +1,4 @@
-import ProfessionalNavigation from '@/components/ProfessionalNavigation';
+import Navigation from "@/components/Navigation";
 import { Montserrat, Lato } from 'next/font/google';
 
 const montserrat = Montserrat({ 
@@ -20,7 +20,7 @@ export default function ProfessionalV2Layout({
 }) {
   return (
     <div className={`${montserrat.variable} ${lato.variable}`}>
-      <ProfessionalNavigation />
+      <Navigation />
       <div className="font-lato">
         {children}
       </div>

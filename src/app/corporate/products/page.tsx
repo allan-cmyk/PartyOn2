@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
 import { useCartContext } from '@/contexts/CartContext';
 
@@ -128,7 +128,7 @@ export default function CorporateProductsPage() {
 
   return (
     <div className="bg-white">
-      <OldFashionedNavigation />
+      <Navigation />
 
       {/* Hero Section */}
       <section className="relative h-[40vh] flex items-center justify-center overflow-hidden">
@@ -142,7 +142,7 @@ export default function CorporateProductsPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
 
         <div className="relative text-center text-white z-10 max-w-4xl mx-auto px-8 hero-fade-in">
-          <h1 className="font-heading font-light text-4xl md:text-6xl mb-4 tracking-[0.15em]">
+          <h1 className="font-heading font-light text-4xl md:text-6xl mb-4 tracking-[0.08em]">
             CORPORATE COLLECTION
           </h1>
           <div className="w-24 h-px bg-brand-yellow mx-auto mb-4" />
@@ -247,12 +247,12 @@ export default function CorporateProductsPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/contact">
-              <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] font-medium">
+              <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] font-medium">
                 REQUEST PROPOSAL
               </button>
             </Link>
             <Link href="/partners">
-              <button className="px-8 py-4 bg-white text-brand-yellow border-2 border-brand-yellow hover:bg-yellow-50 transition-colors tracking-[0.15em] font-medium">
+              <button className="px-8 py-4 bg-white text-brand-yellow border-2 border-brand-yellow hover:bg-yellow-50 transition-colors tracking-[0.08em] font-medium">
                 PARTNER PROGRAM
               </button>
             </Link>

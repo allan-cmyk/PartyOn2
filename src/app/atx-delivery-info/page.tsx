@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Script from 'next/script';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import LuxuryCard from '@/components/LuxuryCard';
 import { generateFAQSchema, generateServiceSchema } from '@/lib/seo/schemas';
 
@@ -46,7 +46,7 @@ export default function AustinAlcoholDeliveryPage() {
 
   return (
     <>
-      <OldFashionedNavigation />
+      <Navigation />
 
       {/* Schema.org Structured Data */}
       <Script
@@ -74,7 +74,7 @@ export default function AustinAlcoholDeliveryPage() {
           />
 
           <div className="relative z-20 text-center px-4 md:px-8 max-w-5xl mx-auto">
-            <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl text-white mb-6 tracking-[0.15em] scroll-reveal">
+            <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl text-white mb-6 tracking-[0.08em] scroll-reveal">
               AUSTIN ALCOHOL DELIVERY
             </h1>
             <h2 className="font-heading text-2xl md:text-3xl text-brand-yellow mb-8 tracking-[0.1em] scroll-reveal">
@@ -115,7 +115,7 @@ export default function AustinAlcoholDeliveryPage() {
         {/* Delivery Areas Section */}
         <section className="py-16 md:py-24 px-4 md:px-8 bg-gray-50">
           <div className="max-w-7xl mx-auto">
-            <h2 className="font-heading text-3xl md:text-5xl text-center text-gray-900 mb-4 tracking-[0.15em] scroll-reveal">
+            <h2 className="font-heading text-3xl md:text-5xl text-center text-gray-900 mb-4 tracking-[0.08em] scroll-reveal">
               WE DELIVER THROUGHOUT AUSTIN
             </h2>
             <p className="text-center text-gray-600 mb-16 max-w-2xl mx-auto scroll-reveal">
@@ -198,7 +198,7 @@ export default function AustinAlcoholDeliveryPage() {
         {/* What We Deliver Section */}
         <section className="py-16 md:py-24 px-4 md:px-8">
           <div className="max-w-7xl mx-auto">
-            <h2 className="font-heading text-3xl md:text-5xl text-center text-gray-900 mb-16 tracking-[0.15em] scroll-reveal">
+            <h2 className="font-heading text-3xl md:text-5xl text-center text-gray-900 mb-16 tracking-[0.08em] scroll-reveal">
               WHAT WE DELIVER
             </h2>
 
@@ -271,7 +271,7 @@ export default function AustinAlcoholDeliveryPage() {
         {/* Event Types Section */}
         <section className="py-16 md:py-24 px-4 md:px-8 bg-gray-50">
           <div className="max-w-7xl mx-auto">
-            <h2 className="font-heading text-3xl md:text-5xl text-center text-gray-900 mb-4 tracking-[0.15em] scroll-reveal">
+            <h2 className="font-heading text-3xl md:text-5xl text-center text-gray-900 mb-4 tracking-[0.08em] scroll-reveal">
               PERFECT FOR YOUR AUSTIN EVENT
             </h2>
             <p className="text-center text-gray-600 mb-16 max-w-2xl mx-auto scroll-reveal">
@@ -332,7 +332,7 @@ export default function AustinAlcoholDeliveryPage() {
         {/* How It Works Section */}
         <section className="py-16 md:py-24 px-4 md:px-8">
           <div className="max-w-7xl mx-auto">
-            <h2 className="font-heading text-3xl md:text-5xl text-center text-gray-900 mb-16 tracking-[0.15em] scroll-reveal">
+            <h2 className="font-heading text-3xl md:text-5xl text-center text-gray-900 mb-16 tracking-[0.08em] scroll-reveal">
               HOW IT WORKS
             </h2>
 
@@ -373,7 +373,7 @@ export default function AustinAlcoholDeliveryPage() {
         {/* FAQ Section */}
         <section className="py-16 md:py-24 px-4 md:px-8 bg-gray-50">
           <div className="max-w-4xl mx-auto">
-            <h2 className="font-heading text-3xl md:text-5xl text-center text-gray-900 mb-16 tracking-[0.15em] scroll-reveal">
+            <h2 className="font-heading text-3xl md:text-5xl text-center text-gray-900 mb-16 tracking-[0.08em] scroll-reveal">
               FREQUENTLY ASKED QUESTIONS
             </h2>
 
@@ -397,7 +397,7 @@ export default function AustinAlcoholDeliveryPage() {
         {/* CTA Section */}
         <section className="py-16 md:py-24 px-4 md:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="font-heading text-3xl md:text-5xl text-gray-900 mb-6 tracking-[0.15em] scroll-reveal">
+            <h2 className="font-heading text-3xl md:text-5xl text-gray-900 mb-6 tracking-[0.08em] scroll-reveal">
               READY TO ORDER FOR YOUR AUSTIN EVENT?
             </h2>
             <p className="text-lg text-gray-600 mb-10 scroll-reveal">

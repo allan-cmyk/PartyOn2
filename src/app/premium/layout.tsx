@@ -1,4 +1,4 @@
-import PremiumNavigation from '@/components/PremiumNavigation';
+import Navigation from "@/components/Navigation";
 import { Inter, Playfair_Display } from 'next/font/google';
 
 const inter = Inter({ 
@@ -19,7 +19,7 @@ export default function PremiumLayout({
 }) {
   return (
     <div className={`${inter.variable} ${playfair.variable} font-sans`}>
-      <PremiumNavigation />
+      <Navigation />
       {children}
     </div>
   );

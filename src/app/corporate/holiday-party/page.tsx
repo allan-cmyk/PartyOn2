@@ -297,7 +297,7 @@ export default function CorporateHolidayPartyPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-black/50" />
 
         <div className="hero-fade-in relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-0 text-white">
-          <p className="text-brand-yellow text-sm sm:text-base tracking-[0.2em] mb-4 font-medium">
+          <p className="text-brand-yellow text-sm sm:text-base tracking-[0.1em] mb-4 font-medium">
             CORPORATE HOLIDAY PARTIES
           </p>
           <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-6 tracking-tight sm:tracking-[0.05em] max-w-4xl leading-snug sm:leading-tight">

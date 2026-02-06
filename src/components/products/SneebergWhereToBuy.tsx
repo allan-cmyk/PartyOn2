@@ -48,7 +48,7 @@ export default function SneebergWhereToBuy() {
   return (
     <section className="py-16 px-4 md:px-8 bg-white">
       <div className="max-w-6xl mx-auto">
-        <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.15em] text-center">
+        <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.08em] text-center">
           WHERE TO BUY SCHNEEBERG SNUFF IN AUSTIN
         </h2>
         <p className="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">

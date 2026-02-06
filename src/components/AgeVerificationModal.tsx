@@ -44,7 +44,7 @@ export default function AgeVerificationModal({ isOpen, onClose, onVerify }: AgeV
             {/* Elegant Header */}
             <div className="bg-gradient-to-b from-gray-50 to-white px-12 pt-12 pb-8">
               <div className="text-center">
-                <div className="font-heading text-5xl text-gray-900 tracking-[0.25em] mb-2" aria-label="Party On Delivery">
+                <div className="font-heading text-5xl text-gray-900 tracking-[0.1em] mb-2" aria-label="Party On Delivery">
                   PARTYON
                 </div>
                 <div className="w-20 h-px bg-brand-yellow mx-auto"></div>
@@ -83,7 +83,7 @@ export default function AgeVerificationModal({ isOpen, onClose, onVerify }: AgeV
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleYes}
-                  className="py-4 bg-brand-yellow text-gray-900 font-medium tracking-[0.15em] text-sm hover:bg-yellow-600 transition-colors"
+                  className="py-4 bg-brand-yellow text-gray-900 font-medium tracking-[0.08em] text-sm hover:bg-yellow-600 transition-colors"
                 >
                   YES, I AM 21+
                 </motion.button>
@@ -92,7 +92,7 @@ export default function AgeVerificationModal({ isOpen, onClose, onVerify }: AgeV
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleNo}
-                  className="py-4 border border-gray-300 text-gray-700 font-medium tracking-[0.15em] text-sm hover:bg-gray-50 transition-colors"
+                  className="py-4 border border-gray-300 text-gray-700 font-medium tracking-[0.08em] text-sm hover:bg-gray-50 transition-colors"
                 >
                   NO
                 </motion.button>

@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import OldFashionedNavigation from '@/components/OldFashionedNavigation'
+import Navigation from "@/components/Navigation"
 import ShareButtons from '@/components/blog/ShareButtons'
 import { notFound } from 'next/navigation'
 import { getMDXPost, getAllMDXPostSlugs } from '@/lib/blog-mdx'
@@ -34,7 +34,7 @@ export default async function BlogPostMDXPage({ params }: BlogPostPageProps) {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation />
+      <Navigation />
 
       {/* Hero Section with Image */}
       <section className="relative h-[60vh] min-h-[500px]">
@@ -156,12 +156,12 @@ export default async function BlogPostMDXPage({ params }: BlogPostPageProps) {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/order">
-                <button className="px-8 py-3 bg-yellow-500 text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.15em]">
+                <button className="px-8 py-3 bg-yellow-500 text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.08em]">
                   ORDER NOW
                 </button>
               </Link>
               <Link href="/contact">
-                <button className="px-8 py-3 border border-white text-white hover:bg-white hover:text-gray-900 transition-all tracking-[0.15em]">
+                <button className="px-8 py-3 border border-white text-white hover:bg-white hover:text-gray-900 transition-all tracking-[0.08em]">
                   GET IN TOUCH
                 </button>
               </Link>

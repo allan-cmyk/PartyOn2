@@ -376,7 +376,7 @@ export default function Cart() {
                     <button 
                       onClick={() => setShowCreateGroupOrder(true)}
                       disabled={loading}
-                      className="w-full py-3 border border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-all tracking-[0.15em] text-sm disabled:opacity-50"
+                      className="w-full py-3 border border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-all tracking-[0.08em] text-sm disabled:opacity-50"
                     >
                       START GROUP ORDER
                     </button>
@@ -386,7 +386,7 @@ export default function Cart() {
                   <button 
                     onClick={handleProceedToCheckout}
                     disabled={loading}
-                    className="w-full py-4 bg-yellow-500 text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.15em] text-sm disabled:opacity-50"
+                    className="w-full py-4 bg-yellow-500 text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.08em] text-sm disabled:opacity-50"
                   >
                     PROCEED TO CHECKOUT
                   </button>

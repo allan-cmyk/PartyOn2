@@ -307,7 +307,7 @@ export default function CheckoutPage() {
             </Link>
           </div>
 
-          <h1 className="font-cormorant text-4xl tracking-[0.15em] text-center mb-12">
+          <h1 className="font-cormorant text-4xl tracking-[0.08em] text-center mb-12">
             CHECKOUT
           </h1>
 
@@ -641,7 +641,7 @@ export default function CheckoutPage() {
                 <button
                   onClick={handleProceedToPayment}
                   disabled={!acceptTerms || !deliveryDate || !deliveryTime || isProcessingCheckout}
-                  className={`w-full mt-6 py-4 font-medium tracking-[0.15em] transition-colors ${
+                  className={`w-full mt-6 py-4 font-medium tracking-[0.08em] transition-colors ${
                     acceptTerms && deliveryDate && deliveryTime && !isProcessingCheckout
                       ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'

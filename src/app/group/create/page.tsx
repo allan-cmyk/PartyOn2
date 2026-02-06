@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import OldFashionedNavigation from '@/components/OldFashionedNavigation'
+import Navigation from "@/components/Navigation"
 import Footer from '@/components/Footer'
 import { useGroupOrderContext } from '@/contexts/GroupOrderContext'
 import { GroupOrderAPI } from '@/lib/group-orders/api'
@@ -165,7 +165,7 @@ export default function CreateGroupOrderPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <OldFashionedNavigation />
+      <Navigation />
 
       <div className="pt-32 pb-16">
         <div className="container mx-auto px-4">
@@ -374,7 +374,7 @@ export default function CreateGroupOrderPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full py-4 tracking-[0.15em] transition-colors ${
+                className={`w-full py-4 tracking-[0.08em] transition-colors ${
                   isLoading
                     ? 'bg-gray-400 cursor-not-allowed'
                     : 'bg-brand-yellow hover:bg-yellow-600'

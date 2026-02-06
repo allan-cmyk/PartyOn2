@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import { useCustomProducts } from '@/lib/cart/hooks/useCustomProducts';
 import { useCartContext } from '@/contexts/CartContext';
@@ -243,7 +243,7 @@ export default function BoatPartyPackagePage() {
   if (!config) {
     return (
       <div className="bg-white min-h-screen">
-        <OldFashionedNavigation />
+        <Navigation />
         <div className="max-w-7xl mx-auto px-8 py-16 text-center">
           <h2 className="font-heading text-2xl text-gray-900 mb-4">Package Not Found</h2>
           <Link href="/boat-parties" className="text-brand-yellow hover:text-yellow-600">
@@ -257,7 +257,7 @@ export default function BoatPartyPackagePage() {
   if (loading) {
     return (
       <div className="bg-white min-h-screen">
-        <OldFashionedNavigation />
+        <Navigation />
         <div className="max-w-7xl mx-auto px-8 py-16 text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand-yellow"></div>
           <p className="mt-4 text-gray-600">Curating your perfect lake day package...</p>
@@ -276,7 +276,7 @@ export default function BoatPartyPackagePage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation />
+      <Navigation />
       
       {/* Header */}
       <section className="pt-32 pb-16 px-8 bg-gradient-to-b from-blue-50 to-white">
@@ -326,7 +326,7 @@ export default function BoatPartyPackagePage() {
             <button
               onClick={handleAddAllToCart}
               disabled={packageItems.length === 0 || addingAll || cartLoading}
-              className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm disabled:opacity-50"
+              className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm disabled:opacity-50"
             >
               {addingAll ? 'ADDING TO CART...' : 'ADD ALL TO CART'}
             </button>
@@ -461,12 +461,12 @@ export default function BoatPartyPackagePage() {
             <button
               onClick={handleAddAllToCart}
               disabled={packageItems.length === 0 || addingAll || cartLoading}
-              className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm disabled:opacity-50"
+              className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm disabled:opacity-50"
             >
               {addingAll ? 'ADDING TO CART...' : 'ADD PACKAGE TO CART'}
             </button>
             <Link href="/boat-parties">
-              <button className="px-8 py-4 border border-gray-300 text-gray-700 hover:border-brand-yellow transition-colors tracking-[0.15em] text-sm">
+              <button className="px-8 py-4 border border-gray-300 text-gray-700 hover:border-brand-yellow transition-colors tracking-[0.08em] text-sm">
                 BACK TO PACKAGES
               </button>
             </Link>

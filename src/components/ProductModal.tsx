@@ -366,7 +366,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                 <button
                   onClick={handleAddToCart}
                   disabled={!variant?.availableForSale || isAdding || cartLoading}
-                  className={`w-full py-3 transition-colors duration-300 text-sm tracking-[0.15em] ${
+                  className={`w-full py-3 transition-colors duration-300 text-sm tracking-[0.08em] ${
                     variant?.availableForSale && !isAdding && !cartLoading
                       ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
                       : 'bg-gray-200 text-gray-400 cursor-not-allowed'

@@ -87,7 +87,7 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
             
             {!variant?.availableForSale && (
               <div className="absolute inset-0 bg-gray-900/60 flex items-center justify-center">
-                <span className="text-white font-light tracking-[0.15em] text-xs">OUT OF STOCK</span>
+                <span className="text-white font-light tracking-[0.08em] text-xs">OUT OF STOCK</span>
               </div>
             )}
 

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import { useCartContext } from '@/contexts/CartContext';
 import { formatPrice, getFirstAvailableVariant } from '@/lib/utils';
 import { Product } from '@/lib/types';
@@ -63,7 +63,7 @@ export default function ProductDetailClient({ product }: Props) {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation forceScrolled={true} />
+      <Navigation forceScrolled={true} />
 
       {/* Breadcrumb */}
       <div className="max-w-7xl mx-auto px-8 py-4 text-sm">
@@ -214,7 +214,7 @@ export default function ProductDetailClient({ product }: Props) {
                 <button
                   onClick={handleAddToCart}
                   disabled={!selectedVariant?.availableForSale || cartLoading}
-                  className={`w-full py-4 transition-all duration-300 tracking-[0.15em] text-sm ${
+                  className={`w-full py-4 transition-all duration-300 tracking-[0.08em] text-sm ${
                     selectedVariant?.availableForSale
                       ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'

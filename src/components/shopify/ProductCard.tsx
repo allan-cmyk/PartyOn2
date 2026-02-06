@@ -99,13 +99,13 @@ export default function ProductCard({ product, index = 0, onProductClick }: Prod
             {/* Out of Stock Overlay */}
             {!variant?.availableForSale && (
               <div className="absolute inset-0 bg-gray-900/60 flex items-center justify-center">
-                <span className="text-white font-light tracking-[0.2em] text-sm">OUT OF STOCK</span>
+                <span className="text-white font-light tracking-[0.1em] text-sm">OUT OF STOCK</span>
               </div>
             )}
 
             {/* Quick View on Hover */}
             <div className="absolute inset-0 bg-gray-900/0 group-hover:bg-gray-900/20 transition-colors duration-300 flex items-center justify-center">
-              <span className="text-white font-light tracking-[0.15em] text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <span className="text-white font-light tracking-[0.08em] text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 QUICK VIEW
               </span>
             </div>
@@ -167,7 +167,7 @@ export default function ProductCard({ product, index = 0, onProductClick }: Prod
             <button
               onClick={handleAddToCart}
               disabled={!variant?.availableForSale || isAdding || cartLoading}
-              className={`w-full py-2 transition-colors duration-300 text-xs tracking-[0.15em] ${
+              className={`w-full py-2 transition-colors duration-300 text-xs tracking-[0.08em] ${
                 variant?.availableForSale && !isAdding && !cartLoading
                   ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
                   : 'bg-gray-300 text-gray-700 cursor-not-allowed'
@@ -185,7 +185,7 @@ export default function ProductCard({ product, index = 0, onProductClick }: Prod
             {/* View Details Button */}
             <button
               onClick={() => onProductClick?.(product)}
-              className="w-full py-2 border border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-colors duration-300 text-xs tracking-[0.15em]">
+              className="w-full py-2 border border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-colors duration-300 text-xs tracking-[0.08em]">
               VIEW DETAILS
             </button>
           </div>

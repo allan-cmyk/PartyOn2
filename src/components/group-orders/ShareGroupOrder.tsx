@@ -74,7 +74,7 @@ export default function ShareGroupOrder({ isOpen, onClose, shareCode, eventName 
                     {copiedCode ? 'COPIED!' : 'COPY'}
                   </button>
                 </div>
-                <div className="text-2xl font-cormorant tracking-[0.2em]">{shareCode}</div>
+                <div className="text-2xl font-cormorant tracking-[0.1em]">{shareCode}</div>
               </div>
 
               <div className="bg-gray-50 p-4 rounded">

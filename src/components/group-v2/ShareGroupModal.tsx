@@ -67,7 +67,7 @@ export default function ShareGroupModal({
           </label>
           <div className="flex items-center gap-2">
             <div className="flex-1 bg-whiteSoft border border-gray-200 rounded-lg px-4 py-3 text-center">
-              <span className="text-2xl font-mono font-bold tracking-[0.3em] text-gray-900">
+              <span className="text-2xl font-mono font-bold tracking-[0.1em] text-gray-900">
                 {shareCode}
               </span>
             </div>

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCartContext } from '@/contexts/CartContext'
-import OldFashionedNavigation from '@/components/OldFashionedNavigation'
+import Navigation from "@/components/Navigation"
 
 export default function PaymentPage() {
   const router = useRouter()
@@ -141,7 +141,7 @@ export default function PaymentPage() {
   if (!checkoutInfo || !cart) {
     return (
       <>
-        <OldFashionedNavigation />
+        <Navigation />
         <div className="min-h-screen flex items-center justify-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-yellow"></div>
         </div>
@@ -151,7 +151,7 @@ export default function PaymentPage() {
   
   return (
     <>
-      <OldFashionedNavigation />
+      <Navigation />
       
       <div className="min-h-screen bg-gray-50 pt-32">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -283,7 +283,7 @@ export default function PaymentPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <span className="flex items-center justify-center">

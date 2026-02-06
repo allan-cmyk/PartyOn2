@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Script from 'next/script';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { generateFAQSchema } from '@/lib/seo/schemas';
 
@@ -124,7 +124,7 @@ export default function FAQsPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      <OldFashionedNavigation forceScrolled={true} />
+      <Navigation forceScrolled={true} />
       
       {/* Header */}
       <section className="pt-32 pb-16 px-8 bg-gray-50">
@@ -200,12 +200,12 @@ export default function FAQsPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/contact">
-                <button className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm">
+                <button className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm">
                   CONTACT US
                 </button>
               </Link>
               <a href="tel:7373719700">
-                <button className="px-8 py-3 border border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-colors tracking-[0.15em] text-sm">
+                <button className="px-8 py-3 border border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-colors tracking-[0.08em] text-sm">
                   CALL (737) 371-9700
                 </button>
               </a>

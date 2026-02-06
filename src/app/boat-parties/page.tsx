@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion'; // Kept for carousel and sticky bar
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import LuxuryCard from '@/components/LuxuryCard';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import BoatPartiesSchemas from '@/components/seo/BoatPartiesSchemas';
@@ -111,7 +111,7 @@ export default function BoatPartiesPage() {
       {/* SEO Schemas - Server-rendered for crawlers */}
       <BoatPartiesSchemas />
 
-      <OldFashionedNavigation />
+      <Navigation />
       
       {/* Hero Section with Image Slider */}
       <section className="relative h-[90vh] pt-32 pb-32 md:pt-24 md:pb-24 flex items-center justify-center overflow-hidden">
@@ -156,7 +156,7 @@ export default function BoatPartiesPage() {
         </div>
 
         <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8 mt-[120px] mb-[80px] md:mt-0 md:mb-0">
-          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
+          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.08em]">
             Cold Drinks to Your
             <span className="block text-brand-yellow mt-2">BOAT—ON TIME</span>
           </h1>
@@ -166,12 +166,12 @@ export default function BoatPartiesPage() {
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
             <Link href="/boat-parties/products">
-              <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                 ORDER NOW
               </button>
             </Link>
             <Link href="/contact">
-              <button className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium">
                 SCHEDULE 15-MIN PLANNING CALL
               </button>
             </Link>
@@ -218,7 +218,7 @@ export default function BoatPartiesPage() {
                 </li>
               </ul>
               <Link href="/boat-parties/products">
-                <button className="w-full py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="w-full py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                   ORDER NOW
                 </button>
               </Link>
@@ -227,7 +227,7 @@ export default function BoatPartiesPage() {
             {/* Full-Service Path */}
             <ScrollRevealCSS duration={800} y={20} delay={100} className="bg-white p-8 rounded-lg shadow-lg border-2 border-brand-yellow">
               <div className="text-center mb-4">
-                <span className="text-brand-yellow text-sm tracking-[0.15em] font-medium">MOST POPULAR</span>
+                <span className="text-brand-yellow text-sm tracking-[0.08em] font-medium">MOST POPULAR</span>
               </div>
               <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
                 Full-Service
@@ -247,7 +247,7 @@ export default function BoatPartiesPage() {
                 </li>
               </ul>
               <Link href="/contact">
-                <button className="w-full py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="w-full py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                   SCHEDULE A CONSULTATION
                 </button>
               </Link>
@@ -418,7 +418,7 @@ export default function BoatPartiesPage() {
                 <div className="p-8">
                   {pkg.featured && (
                     <div className="text-center mb-4">
-                      <span className="text-brand-yellow text-sm tracking-[0.15em]">MOST POPULAR</span>
+                      <span className="text-brand-yellow text-sm tracking-[0.08em]">MOST POPULAR</span>
                     </div>
                   )}
                   <h3 className="font-heading text-2xl text-gray-900 mb-2 tracking-[0.1em] text-center">
@@ -441,7 +441,7 @@ export default function BoatPartiesPage() {
                     ))}
                   </ul>
                   <Link href="/contact">
-                    <button className={`w-full py-3 tracking-[0.15em] text-sm transition-all duration-300 ${
+                    <button className={`w-full py-3 tracking-[0.08em] text-sm transition-all duration-300 ${
                       pkg.featured 
                         ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600' 
                         : 'border border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900'
@@ -460,7 +460,7 @@ export default function BoatPartiesPage() {
               <strong>Just need delivery?</strong> Build your boat-day cart in minutes.
             </p>
             <Link href="/boat-parties/products">
-              <button className="px-8 py-3 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-3 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium">
                 ORDER DELIVERY-ONLY
               </button>
             </Link>
@@ -603,12 +603,12 @@ export default function BoatPartiesPage() {
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link href="/book-now">
-                <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm">
                   BOOK LAKE DELIVERY
                 </button>
               </Link>
               <a href="tel:7373719700">
-                <button className="px-10 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm">
                   CALL CAPTAIN&apos;S LINE
                 </button>
               </a>

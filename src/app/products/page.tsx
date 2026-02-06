@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import ProductCard from '@/components/shopify/ProductCard';
 import CompactProductCard from '@/components/shopify/CompactProductCard';
@@ -206,7 +206,7 @@ function ProductsContent() {
   if (error) {
     return (
       <div className="bg-white min-h-screen">
-        <OldFashionedNavigation forceScrolled={true} />
+        <Navigation forceScrolled={true} />
         <div className="max-w-7xl mx-auto px-8 py-16">
           <div className="bg-red-50 border border-red-200 p-6 rounded">
             <h2 className="text-red-800 font-heading text-xl mb-2">Error Loading Products</h2>
@@ -219,7 +219,7 @@ function ProductsContent() {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation forceScrolled={true} />
+      <Navigation forceScrolled={true} />
       
       {/* Hero Section */}
       <section className="relative h-[40vh] mt-24 flex items-center justify-center overflow-hidden">
@@ -233,7 +233,7 @@ function ProductsContent() {
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
         
         <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8">
-          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
+          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.08em]">
             Premium Spirits & Party Essentials
           </h1>
           <div className="w-24 h-px bg-brand-yellow mx-auto mb-6" />
@@ -247,7 +247,7 @@ function ProductsContent() {
           {!isAgeVerified && (
             <button
               onClick={handleUnlock}
-              className="inline-flex items-center gap-3 px-8 py-4 bg-brand-yellow hover:bg-yellow-600 text-gray-900 font-medium tracking-[0.15em] transition-all duration-300 group"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-brand-yellow hover:bg-yellow-600 text-gray-900 font-medium tracking-[0.08em] transition-all duration-300 group"
               style={{ animationDelay: '500ms' }}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -633,7 +633,7 @@ function ProductsContent() {
                 <strong>Need help planning your bar?</strong> Our beverage experts provide complimentary consultations for all events.
               </p>
               <Link href="/contact">
-                <button className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                   SCHEDULE A CONSULTATION
                 </button>
               </Link>
@@ -748,7 +748,7 @@ export default function ProductsPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-white">
-        <OldFashionedNavigation forceScrolled={true} />
+        <Navigation forceScrolled={true} />
         <div className="pt-32 pb-16 text-center">
           <div className="animate-pulse">
             <div className="h-8 w-48 bg-gray-200 mx-auto rounded"></div>

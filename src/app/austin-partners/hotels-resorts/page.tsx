@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
-import OldFashionedNavigation from '@/components/OldFashionedNavigation'
+import Navigation from "@/components/Navigation"
 import Footer from '@/components/Footer'
 
 export default function HotelsResortsPartnerPage() {
@@ -94,7 +94,7 @@ export default function HotelsResortsPartnerPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation />
+      <Navigation />
       
       {/* Hero Section with Value Proposition */}
       <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
@@ -110,7 +110,7 @@ export default function HotelsResortsPartnerPage() {
           <div className="hero-fade-in">
 
             <div className="mb-6">
-              <span className="text-yellow-500 text-sm tracking-[0.2em]">HOSPITALITY PARTNERSHIP</span>
+              <span className="text-yellow-500 text-sm tracking-[0.1em]">HOSPITALITY PARTNERSHIP</span>
             </div>
             
             <h1 className="font-cormorant text-5xl md:text-6xl text-white mb-6 tracking-[0.05em]">
@@ -526,13 +526,13 @@ export default function HotelsResortsPartnerPage() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               <div className="absolute bottom-8 left-8 right-8 text-white">
-                <div className="text-sm tracking-[0.2em] mb-2">CASE STUDY</div>
+                <div className="text-sm tracking-[0.1em] mb-2">CASE STUDY</div>
                 <h3 className="font-cormorant text-2xl">Four Seasons Austin</h3>
               </div>
             </div>
             
             <div>
-              <span className="text-brand-yellow text-sm tracking-[0.2em]">SUCCESS STORY</span>
+              <span className="text-brand-yellow text-sm tracking-[0.1em]">SUCCESS STORY</span>
               <h2 className="font-cormorant text-4xl mt-2 mb-6 tracking-[0.1em]">
                 How Four Seasons Austin Increased F&B Revenue by 40%
               </h2>
@@ -740,7 +740,7 @@ export default function HotelsResortsPartnerPage() {
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8">
           <div className="text-center mb-12">
-            <p className="text-sm text-gray-600 tracking-[0.2em]">TRUSTED BY AUSTIN&apos;S FINEST HOTELS</p>
+            <p className="text-sm text-gray-600 tracking-[0.1em]">TRUSTED BY AUSTIN&apos;S FINEST HOTELS</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center opacity-60">
             {['Four Seasons', 'W Austin', 'Fairmont', 'JW Marriott', 'The LINE'].map((hotel) => (

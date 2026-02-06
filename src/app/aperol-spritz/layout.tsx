@@ -1,4 +1,4 @@
-import LuxuryNavigation from '@/components/LuxuryNavigation';
+import Navigation from "@/components/Navigation";
 import { Oswald, Inter } from 'next/font/google';
 import { Metadata } from 'next'
 
@@ -40,7 +40,7 @@ export default function LuxuryPrabalLayout({
 }) {
   return (
     <div className={`${oswald.variable} ${inter.variable} font-sans`}>
-      <LuxuryNavigation variant="hidden" />
+      <Navigation />
       {children}
     </div>
   );

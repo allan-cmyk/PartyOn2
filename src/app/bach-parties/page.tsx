@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion'; // Kept for carousel only
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import HeroOverlay from '@/components/HeroOverlay';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import BachPartiesSchemas from '@/components/seo/BachPartiesSchemas';
@@ -84,7 +84,7 @@ export default function BachPartiesPage() {
       {/* SEO Schemas - Server-rendered for crawlers */}
       <BachPartiesSchemas />
 
-      <OldFashionedNavigation />
+      <Navigation />
       
       {/* Hero Section */}
       <section className="relative h-[100vh] pt-32 pb-32 md:pt-24 md:pb-24 flex items-center justify-center overflow-hidden">
@@ -126,7 +126,7 @@ export default function BachPartiesPage() {
         </div>
         
         <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-6 md:px-8">
-          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
+          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.08em]">
             Zero Store Runs for
             <span className="block text-brand-yellow mt-2">AUSTIN BACH GROUPS</span>
           </h1>
@@ -136,12 +136,12 @@ export default function BachPartiesPage() {
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
             <Link href="/bach-parties/products">
-              <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                 ORDER NOW
               </button>
             </Link>
             <a href="tel:7373719700">
-              <button className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium">
                 SCHEDULE 15-MIN PLANNING CALL
               </button>
             </a>
@@ -708,12 +708,12 @@ export default function BachPartiesPage() {
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link href="/book-now">
-                <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm">
                   PLAN YOUR PARTY
                 </button>
               </Link>
               <Link href="/contact">
-                <button className="px-10 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-white transition-all duration-300 tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-white transition-all duration-300 tracking-[0.08em] text-sm">
                   CUSTOM PACKAGE
                 </button>
               </Link>

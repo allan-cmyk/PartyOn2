@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import { trackPageView, ANALYTICS_EVENTS } from '@/lib/analytics/track';
 
@@ -85,7 +85,7 @@ export default function DeliveryAreasPage() {
 
   return (
     <div className="bg-white">
-      <OldFashionedNavigation />
+      <Navigation />
       
       {/* Hero Section */}
       <section className="relative h-[50vh] mt-24 flex items-center justify-center overflow-hidden">
@@ -99,7 +99,7 @@ export default function DeliveryAreasPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
 
         <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8">
-          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
+          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.08em]">
             DELIVERY AREAS
           </h1>
           <div className="w-24 h-px bg-brand-yellow mx-auto" />
@@ -288,12 +288,12 @@ export default function DeliveryAreasPage() {
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link href="/contact">
-                <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm">
                   CHECK AVAILABILITY
                 </button>
               </Link>
               <a href="tel:7373719700">
-                <button className="px-10 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm">
                   CALL FOR DETAILS
                 </button>
               </a>

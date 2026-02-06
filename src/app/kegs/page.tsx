@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import KegsSchemas from '@/components/seo/KegsSchemas';
 import KegSizeEducation from '@/components/kegs/KegSizeEducation';
@@ -47,7 +47,7 @@ export default function KegsPage() {
       {/* SEO Schemas */}
       <KegsSchemas />
 
-      <OldFashionedNavigation />
+      <Navigation />
 
       {/* Hero Section */}
       <section className="relative min-h-[100vh] pt-32 md:pt-24 flex items-center justify-center overflow-hidden">
@@ -64,7 +64,7 @@ export default function KegsPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/90" />
 
         <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8 pt-24 pb-16">
-          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
+          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.08em]">
             Cold Beer Kegs
             <span className="block text-brand-yellow mt-2">DELIVERED TO YOUR DOOR</span>
           </h1>
@@ -74,12 +74,12 @@ export default function KegsPage() {
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
             <Link href="/contact">
-              <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                 REQUEST A QUOTE
               </button>
             </Link>
             <a href="tel:7373719700">
-              <button className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium">
                 CALL (737) 371-9700
               </button>
             </a>
@@ -325,12 +325,12 @@ export default function KegsPage() {
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link href="/contact">
-                <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm">
                   REQUEST A QUOTE
                 </button>
               </Link>
               <a href="tel:7373719700">
-                <button className="px-10 py-4 border-2 border-brand-yellow text-white hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 border-2 border-brand-yellow text-white hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm">
                   CALL (737) 371-9700
                 </button>
               </a>

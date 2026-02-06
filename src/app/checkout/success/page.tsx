@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
 import { useCustomerContext } from '@/contexts/CustomerContext';
 import { trackMetaEvent } from '@/components/MetaPixel';
@@ -91,7 +91,7 @@ function CheckoutSuccessContent() {
 
   return (
     <>
-      <OldFashionedNavigation />
+      <Navigation />
       
       <main className="min-h-screen">
         {/* Hero Image */}
@@ -102,7 +102,7 @@ function CheckoutSuccessContent() {
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-            <h1 className="font-cormorant text-5xl md:text-6xl text-white tracking-[0.15em] drop-shadow-lg">
+            <h1 className="font-cormorant text-5xl md:text-6xl text-white tracking-[0.08em] drop-shadow-lg">
               THANK YOU!
             </h1>
           </div>
@@ -149,7 +149,7 @@ function CheckoutSuccessContent() {
             {isAuthenticated ? (
               <Link 
                 href="/account/orders"
-                className="inline-block px-8 py-3 bg-gold text-gray-900 text-sm tracking-[0.15em] hover:bg-gold/90 transition-colors"
+                className="inline-block px-8 py-3 bg-gold text-gray-900 text-sm tracking-[0.08em] hover:bg-gold/90 transition-colors"
               >
                 VIEW ORDER DETAILS
               </Link>
@@ -160,7 +160,7 @@ function CheckoutSuccessContent() {
                 </p>
                 <Link
                   href="/account"
-                  className="inline-block px-8 py-4 bg-yellow-400 text-gray-900 text-sm font-semibold tracking-[0.15em] rounded-lg hover:bg-yellow-500 transition-colors shadow-md"
+                  className="inline-block px-8 py-4 bg-yellow-400 text-gray-900 text-sm font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-500 transition-colors shadow-md"
                 >
                   CREATE ACCOUNT
                 </Link>
@@ -170,7 +170,7 @@ function CheckoutSuccessContent() {
 
           <Link 
             href="/products"
-            className="inline-block px-8 py-3 border border-gray-300 text-gray-700 text-sm tracking-[0.15em] hover:border-gold transition-colors"
+            className="inline-block px-8 py-3 border border-gray-300 text-gray-700 text-sm tracking-[0.08em] hover:border-gold transition-colors"
           >
             CONTINUE SHOPPING
           </Link>
@@ -201,7 +201,7 @@ export default function CheckoutSuccessPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-white">
-        <OldFashionedNavigation forceScrolled={true} />
+        <Navigation forceScrolled={true} />
         <div className="pt-32 pb-16 text-center">
           <div className="animate-pulse">
             <div className="h-8 w-48 bg-gray-200 mx-auto rounded"></div>

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
 import { useCustomProducts } from '@/lib/cart/hooks/useCustomProducts';
 import { Product } from '@/lib/types';
@@ -125,7 +125,7 @@ export default function CustomPackagePage() {
   if (!packageData || loading) {
     return (
       <div className="min-h-screen bg-white">
-        <OldFashionedNavigation />
+        <Navigation />
         <div className="pt-32 pb-16 text-center">
           <div className="animate-pulse">
             <div className="h-8 w-48 bg-gray-200 mx-auto rounded"></div>
@@ -137,12 +137,12 @@ export default function CustomPackagePage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <OldFashionedNavigation />
+      <Navigation />
       
       {/* Header */}
       <section className="pt-32 pb-12 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-8 text-center">
-          <h1 className="font-heading text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.15em]">
+          <h1 className="font-heading text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.08em]">
             {packageData.name}
           </h1>
           <div className="w-24 h-px bg-brand-yellow mx-auto mb-6" />
@@ -254,12 +254,12 @@ export default function CustomPackagePage() {
           <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => router.back()}
-              className="px-8 py-3 border border-gray-300 text-gray-700 hover:border-brand-yellow transition-colors tracking-[0.15em]"
+              className="px-8 py-3 border border-gray-300 text-gray-700 hover:border-brand-yellow transition-colors tracking-[0.08em]"
             >
               BACK TO CHAT
             </button>
             <Link href="/products">
-              <button className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em]">
+              <button className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em]">
                 BROWSE ALL PRODUCTS
               </button>
             </Link>

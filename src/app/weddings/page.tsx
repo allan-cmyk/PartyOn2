@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion'; // Kept for carousel and sticky bar
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import LuxuryCard from '@/components/LuxuryCard';
 import WeddingDrinkCalculator from '@/components/WeddingDrinkCalculator';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
@@ -264,7 +264,7 @@ export default function WeddingsPage() {
       {/* SEO Schemas - Server-rendered for crawlers */}
       <WeddingsSchemas />
 
-      <OldFashionedNavigation />
+      <Navigation />
       
       {/* Hero Section */}
       <section className="relative h-[60vh] md:h-[70vh] mt-24 flex items-center justify-center overflow-hidden">
@@ -293,7 +293,7 @@ export default function WeddingsPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 via-gray-900/30 to-gray-900/50" />
 
         <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8">
-          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.15em] leading-tight md:leading-tight">
+          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.08em] leading-tight md:leading-tight">
             <span className="block text-white mb-2">Your Austin Wedding,</span>
             <span className="block text-brand-yellow">PERFECTLY SERVED</span>
           </h1>
@@ -303,12 +303,12 @@ export default function WeddingsPage() {
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
             <Link href="/weddings/order">
-              <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                 ORDER NOW
               </button>
             </Link>
             <Link href="/contact">
-              <button className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium">
                 SCHEDULE 15-MIN PLANNING CALL
               </button>
             </Link>
@@ -369,7 +369,7 @@ export default function WeddingsPage() {
                 </li>
               </ul>
               <Link href="/weddings/order">
-                <button className="w-full py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="w-full py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                   ORDER NOW
                 </button>
               </Link>
@@ -378,7 +378,7 @@ export default function WeddingsPage() {
             {/* Get a Free Consultation Path */}
             <ScrollRevealCSS duration={800} y={20} delay={100} className="bg-white p-8 rounded-lg shadow-lg border-2 border-brand-yellow">
               <div className="text-center mb-4">
-                <span className="text-brand-yellow text-sm tracking-[0.15em] font-medium">MOST POPULAR</span>
+                <span className="text-brand-yellow text-sm tracking-[0.08em] font-medium">MOST POPULAR</span>
               </div>
               <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
                 Get a Free Consultation
@@ -404,7 +404,7 @@ export default function WeddingsPage() {
                 </li>
               </ul>
               <Link href="/contact">
-                <button className="w-full py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="w-full py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                   SCHEDULE A CONSULTATION
                 </button>
               </Link>
@@ -519,7 +519,7 @@ export default function WeddingsPage() {
                 <div className="p-8">
                   {pkg.featured && (
                     <div className="text-center mb-4">
-                      <span className="text-brand-yellow text-sm tracking-[0.15em]">MOST POPULAR</span>
+                      <span className="text-brand-yellow text-sm tracking-[0.08em]">MOST POPULAR</span>
                     </div>
                   )}
                   <h3 className="font-heading text-2xl text-gray-900 mb-2 tracking-[0.1em] text-center">
@@ -542,7 +542,7 @@ export default function WeddingsPage() {
                     ))}
                   </ul>
                   <Link href="/contact">
-                    <button className={`w-full py-3 tracking-[0.15em] text-sm transition-all duration-300 ${
+                    <button className={`w-full py-3 tracking-[0.08em] text-sm transition-all duration-300 ${
                       pkg.featured
                         ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
                         : 'border border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900'
@@ -561,7 +561,7 @@ export default function WeddingsPage() {
               <strong>Just need delivery?</strong> Build your cart in minutes and we&apos;ll coordinate drop-off with your venue.
             </p>
             <Link href="/order">
-              <button className="px-8 py-3 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-3 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium">
                 ORDER DELIVERY-ONLY
               </button>
             </Link>

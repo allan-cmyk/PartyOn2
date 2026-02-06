@@ -58,7 +58,7 @@ export default function GroupHeader({ groupOrder, isHost }: Props): ReactElement
               <h1 className="font-heading text-4xl md:text-5xl text-gray-900 tracking-tight">
                 {groupOrder.name}
               </h1>
-              <p className="text-base font-semibold tracking-[0.2em] text-gray-500 mt-1">
+              <p className="text-base font-semibold tracking-[0.1em] text-gray-500 mt-1">
                 {getDateSubtitle(groupOrder)}
               </p>
             </div>

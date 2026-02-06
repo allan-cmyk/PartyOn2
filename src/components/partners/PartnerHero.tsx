@@ -86,7 +86,7 @@ export default function PartnerHero({ partner }: PartnerHeroProps): ReactElement
           <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold mb-2 tracking-wide">
             {partner.name}
           </h1>
-          <p className="text-brand-yellow uppercase tracking-[0.2em] text-sm md:text-base mb-6">
+          <p className="text-brand-yellow uppercase tracking-[0.1em] text-sm md:text-base mb-6">
             {partner.tagline}
           </p>
 

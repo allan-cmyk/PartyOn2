@@ -22,11 +22,11 @@ export default function LuxuryRitzPage() {
         <div className="relative z-10 h-full flex flex-col justify-between">
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center text-white hero-fade-in">
-              <h1 className="text-5xl md:text-7xl font-light tracking-[0.2em] mb-6">
+              <h1 className="text-5xl md:text-7xl font-light tracking-[0.1em] mb-6">
                 Old Fashioned Cocktail Recipe
               </h1>
               <div className="w-32 h-px bg-brand-yellow mx-auto mb-6" />
-              <p className="text-xl tracking-[0.15em] text-white/90">
+              <p className="text-xl tracking-[0.08em] text-white/90">
                 DISTINGUISHED ALCOHOL DELIVERY
               </p>
             </div>

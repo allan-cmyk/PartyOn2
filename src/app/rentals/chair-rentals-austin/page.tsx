@@ -109,7 +109,7 @@ export default function ChairRentalsAustinPage() {
         {/* Hero Section */}
         <section className="py-24 px-8">
           <div className="max-w-6xl mx-auto">
-            <h1 className="font-heading text-5xl md:text-6xl text-gray-900 mb-6 tracking-[0.15em]">
+            <h1 className="font-heading text-5xl md:text-6xl text-gray-900 mb-6 tracking-[0.08em]">
               CHAIR RENTALS AUSTIN
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl leading-relaxed">
@@ -118,12 +118,12 @@ export default function ChairRentalsAustinPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/contact">
-                <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                   REQUEST QUOTE
                 </button>
               </Link>
               <a href="tel:7373719700">
-                <button className="px-8 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-white transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+                <button className="px-8 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-white transition-all duration-300 tracking-[0.08em] text-sm font-medium">
                   CALL (737) 371-9700
                 </button>
               </a>
@@ -134,7 +134,7 @@ export default function ChairRentalsAustinPage() {
         {/* Pricing Table */}
         <section className="py-16 px-8 bg-gray-50">
           <div className="max-w-6xl mx-auto">
-            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
+            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.08em] text-center">
               CHAIR RENTAL PRICING
             </h2>
 
@@ -189,7 +189,7 @@ export default function ChairRentalsAustinPage() {
         {/* Why Choose Our Chairs */}
         <section className="py-24 px-8">
           <div className="max-w-6xl mx-auto">
-            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
+            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.08em] text-center">
               WHY AUSTIN CHOOSES OUR CHAIRS
             </h2>
 
@@ -245,7 +245,7 @@ export default function ChairRentalsAustinPage() {
         {/* Popular Venues */}
         <section className="py-16 px-8 bg-gray-50">
           <div className="max-w-6xl mx-auto">
-            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
+            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.08em] text-center">
               WE DELIVER TO AUSTIN VENUES
             </h2>
 
@@ -284,7 +284,7 @@ export default function ChairRentalsAustinPage() {
         {/* FAQ Section */}
         <section className="py-24 px-8">
           <div className="max-w-4xl mx-auto">
-            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
+            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.08em] text-center">
               FREQUENTLY ASKED QUESTIONS
             </h2>
 
@@ -306,7 +306,7 @@ export default function ChairRentalsAustinPage() {
         {/* CTA Section */}
         <section className="py-24 px-8 bg-gray-900 text-white">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="font-heading text-4xl md:text-5xl mb-6 tracking-[0.15em]">
+            <h2 className="font-heading text-4xl md:text-5xl mb-6 tracking-[0.08em]">
               BOOK CHAIR RENTALS TODAY
             </h2>
             <p className="text-xl text-gray-300 mb-12">
@@ -314,12 +314,12 @@ export default function ChairRentalsAustinPage() {
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link href="/contact">
-                <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                   REQUEST QUOTE
                 </button>
               </Link>
               <Link href="/rentals">
-                <button className="px-10 py-4 border-2 border-brand-yellow text-white hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+                <button className="px-10 py-4 border-2 border-brand-yellow text-white hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium">
                   VIEW ALL RENTALS
                 </button>
               </Link>

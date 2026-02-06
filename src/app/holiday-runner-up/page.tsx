@@ -237,7 +237,7 @@ export default function HolidayRunnerUpPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-black/50" />
 
         <div className="hero-fade-in relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-12 sm:py-0 text-white">
-          <p className="text-brand-yellow text-sm sm:text-base tracking-[0.2em] mb-4 font-medium">
+          <p className="text-brand-yellow text-sm sm:text-base tracking-[0.1em] mb-4 font-medium">
             INSTAGRAM GIVEAWAY RUNNER-UP EXCLUSIVE
           </p>
           <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-6 tracking-tight sm:tracking-[0.05em] max-w-4xl leading-snug sm:leading-tight">
@@ -298,13 +298,13 @@ export default function HolidayRunnerUpPage() {
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <Link
               href="/products"
-              className="inline-block bg-brand-yellow text-gray-900 px-10 py-4 text-lg tracking-[0.15em] hover:bg-yellow-600 transition-colors font-medium text-center"
+              className="inline-block bg-brand-yellow text-gray-900 px-10 py-4 text-lg tracking-[0.08em] hover:bg-yellow-600 transition-colors font-medium text-center"
             >
               SHOP NOW & CLAIM YOUR GIFT
             </Link>
             <a
               href="tel:+17373719700"
-              className="inline-block border-2 border-white text-white px-10 py-4 text-lg tracking-[0.15em] hover:bg-white hover:text-gray-900 transition-colors font-medium text-center"
+              className="inline-block border-2 border-white text-white px-10 py-4 text-lg tracking-[0.08em] hover:bg-white hover:text-gray-900 transition-colors font-medium text-center"
             >
               CALL US: (737) 371-9700
             </a>
@@ -561,7 +561,7 @@ export default function HolidayRunnerUpPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
               <Link
                 href="/products"
-                className="inline-block bg-brand-yellow text-gray-900 px-10 py-4 text-lg tracking-[0.15em] hover:bg-yellow-600 transition-colors font-medium"
+                className="inline-block bg-brand-yellow text-gray-900 px-10 py-4 text-lg tracking-[0.08em] hover:bg-yellow-600 transition-colors font-medium"
               >
                 SHOP NOW
               </Link>

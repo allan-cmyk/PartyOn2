@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
 import LuxuryCard from '@/components/LuxuryCard';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
@@ -288,7 +288,7 @@ export default function PartnersPage() {
 
   return (
     <div className="bg-white">
-      <OldFashionedNavigation />
+      <Navigation />
 
       {/* Hero Section */}
       <section className="relative min-h-[60vh] pt-32 md:pt-24 flex items-center justify-center overflow-hidden">
@@ -304,7 +304,7 @@ export default function PartnersPage() {
         <div
           className="relative text-center text-white z-10 max-w-4xl mx-auto px-8 hero-fade-in"
         >
-          <h1 className="font-heading font-light text-5xl md:text-6xl mb-6 tracking-[0.15em]">
+          <h1 className="font-heading font-light text-5xl md:text-6xl mb-6 tracking-[0.08em]">
             PARTNER WITH US
           </h1>
           <div className="w-24 h-px bg-brand-yellow mx-auto mb-6" />
@@ -660,7 +660,7 @@ export default function PartnersPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full px-8 py-4 transition-colors tracking-[0.15em] text-sm font-medium ${
+              className={`w-full px-8 py-4 transition-colors tracking-[0.08em] text-sm font-medium ${
                 isSubmitting
                   ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
                   : 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'

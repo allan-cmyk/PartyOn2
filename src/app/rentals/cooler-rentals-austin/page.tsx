@@ -109,7 +109,7 @@ export default function CoolerRentalsAustinPage() {
         {/* Hero Section */}
         <section className="py-24 px-8">
           <div className="max-w-6xl mx-auto">
-            <h1 className="font-heading text-5xl md:text-6xl text-gray-900 mb-6 tracking-[0.15em]">
+            <h1 className="font-heading text-5xl md:text-6xl text-gray-900 mb-6 tracking-[0.08em]">
               COOLER RENTALS AUSTIN
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl leading-relaxed">
@@ -118,12 +118,12 @@ export default function CoolerRentalsAustinPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/contact">
-                <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                   REQUEST QUOTE
                 </button>
               </Link>
               <a href="tel:7373719700">
-                <button className="px-8 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-white transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+                <button className="px-8 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-white transition-all duration-300 tracking-[0.08em] text-sm font-medium">
                   CALL (737) 371-9700
                 </button>
               </a>
@@ -134,7 +134,7 @@ export default function CoolerRentalsAustinPage() {
         {/* Cooler Options */}
         <section className="py-16 px-8 bg-gray-50">
           <div className="max-w-6xl mx-auto">
-            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
+            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.08em] text-center">
               COOLER & ICE TUB OPTIONS
             </h2>
 
@@ -204,7 +204,7 @@ export default function CoolerRentalsAustinPage() {
         {/* Lake Travis Focus */}
         <section className="py-24 px-8">
           <div className="max-w-6xl mx-auto">
-            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
+            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.08em] text-center">
               LAKE TRAVIS COOLER DELIVERY
             </h2>
 
@@ -268,7 +268,7 @@ export default function CoolerRentalsAustinPage() {
         {/* Why Choose Section */}
         <section className="py-16 px-8 bg-gray-50">
           <div className="max-w-6xl mx-auto">
-            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
+            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.08em] text-center">
               WHY RENT COOLERS FROM PARTY ON
             </h2>
 
@@ -324,7 +324,7 @@ export default function CoolerRentalsAustinPage() {
         {/* FAQ Section */}
         <section className="py-24 px-8">
           <div className="max-w-4xl mx-auto">
-            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
+            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.08em] text-center">
               FREQUENTLY ASKED QUESTIONS
             </h2>
 
@@ -346,7 +346,7 @@ export default function CoolerRentalsAustinPage() {
         {/* CTA Section */}
         <section className="py-24 px-8 bg-gray-900 text-white">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="font-heading text-4xl md:text-5xl mb-6 tracking-[0.15em]">
+            <h2 className="font-heading text-4xl md:text-5xl mb-6 tracking-[0.08em]">
               RENT COOLERS FOR LAKE TRAVIS
             </h2>
             <p className="text-xl text-gray-300 mb-12">
@@ -354,12 +354,12 @@ export default function CoolerRentalsAustinPage() {
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link href="/contact">
-                <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                   REQUEST QUOTE
                 </button>
               </Link>
               <Link href="/rentals">
-                <button className="px-10 py-4 border-2 border-brand-yellow text-white hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+                <button className="px-10 py-4 border-2 border-brand-yellow text-white hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium">
                   VIEW ALL RENTALS
                 </button>
               </Link>

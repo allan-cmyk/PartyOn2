@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import AIConcierge from '@/components/AIConcierge';
 import Footer from '@/components/Footer';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
@@ -102,7 +102,7 @@ export default function PlanEventPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation />
+      <Navigation />
 
       {/* Hero Section */}
       <section className="relative h-[50vh] md:h-[60vh] mt-24 flex items-center justify-center overflow-hidden">
@@ -116,7 +116,7 @@ export default function PlanEventPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
 
         <div className="relative text-center text-white z-10 max-w-4xl mx-auto px-6">
-          <h1 className="font-heading font-light text-4xl sm:text-5xl md:text-7xl mb-6 tracking-[0.15em]">
+          <h1 className="font-heading font-light text-4xl sm:text-5xl md:text-7xl mb-6 tracking-[0.08em]">
             <span className="block text-white mb-2">Let Us Help</span>
             <span className="block text-brand-yellow">PLAN YOUR EVENT</span>
           </h1>
@@ -217,13 +217,13 @@ export default function PlanEventPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/products">
-                <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                   START SHOPPING
                 </button>
               </Link>
               <button
                 onClick={() => setIsConciergeOpen(true)}
-                className="px-8 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.15em] text-sm font-medium"
+                className="px-8 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.08em] text-sm font-medium"
               >
                 GET AI RECOMMENDATIONS
               </button>
@@ -358,7 +358,7 @@ export default function PlanEventPage() {
                 <button
                   type="submit"
                   disabled={formStatus === 'submitting'}
-                  className="px-12 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm font-medium disabled:opacity-50"
+                  className="px-12 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium disabled:opacity-50"
                 >
                   {formStatus === 'submitting' ? 'SENDING...' : 'SUBMIT REQUEST'}
                 </button>
@@ -420,7 +420,7 @@ export default function PlanEventPage() {
 
           <div className="text-center mt-12">
             <Link href="/products">
-              <button className="px-8 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.08em] text-sm font-medium">
                 OR BROWSE ALL PRODUCTS
               </button>
             </Link>

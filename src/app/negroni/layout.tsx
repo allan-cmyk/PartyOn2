@@ -1,4 +1,4 @@
-import LuxuryNavigation from '@/components/LuxuryNavigation';
+import Navigation from "@/components/Navigation";
 import { Montserrat, Playfair_Display } from 'next/font/google';
 import { Metadata } from 'next'
 
@@ -39,7 +39,7 @@ export default function LuxuryJimmyLayout({
 }) {
   return (
     <div className={`${montserrat.variable} ${playfair.variable} font-sans`}>
-      <LuxuryNavigation variant="minimal" />
+      <Navigation />
       {children}
     </div>
   );

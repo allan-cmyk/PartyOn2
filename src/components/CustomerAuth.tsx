@@ -140,7 +140,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                 </svg>
               </button>
 
-              <h2 className="font-cormorant text-3xl tracking-[0.15em] text-center mb-8">
+              <h2 className="font-cormorant text-3xl tracking-[0.08em] text-center mb-8">
                 {mode === 'login' && 'Welcome Back'}
                 {mode === 'register' && 'Create Account'}
                 {mode === 'recover' && 'Reset Password'}

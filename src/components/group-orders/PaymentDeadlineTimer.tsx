@@ -94,7 +94,7 @@ export default function PaymentDeadlineTimer({
   return (
     <div className={`p-4 rounded-lg border ${getUrgencyClass()} ${className}`}>
       <div className="text-center">
-        <p className="text-xs tracking-[0.15em] mb-2 opacity-75">PAYMENT DEADLINE</p>
+        <p className="text-xs tracking-[0.08em] mb-2 opacity-75">PAYMENT DEADLINE</p>
         <div className="flex items-center justify-center gap-2">
           {timeRemaining.days > 0 && (
             <>

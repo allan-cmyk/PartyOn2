@@ -21,20 +21,20 @@ export default function LuxuryGoyardPage() {
 
         <div className="relative z-10 text-center max-w-4xl mx-auto px-8">
           <div className="hero-fade-in">
-            <p className="text-sm tracking-[0.3em] text-gray-700 mb-8">ESTABLISHED 2016</p>
+            <p className="text-sm tracking-[0.1em] text-gray-700 mb-8">ESTABLISHED 2016</p>
             <h1 className="text-6xl md:text-8xl font-heading text-gray-900 mb-6">Classic Gin Martini Recipe</h1>
             <p className="text-xl text-gray-700 tracking-[0.1em] mb-12 max-w-2xl mx-auto">
               Austin&apos;s Premier Alcohol Delivery Service
             </p>
             <div className="flex justify-center space-x-8">
               <Link href="/heritage">
-                <button className="text-sm tracking-[0.2em] text-gray-700 hover:text-gray-900 transition-colors">
+                <button className="text-sm tracking-[0.1em] text-gray-700 hover:text-gray-900 transition-colors">
                   OUR HERITAGE
                 </button>
               </Link>
               <span className="text-gray-400">|</span>
               <Link href="/services">
-                <button className="text-sm tracking-[0.2em] text-gray-700 hover:text-gray-900 transition-colors">
+                <button className="text-sm tracking-[0.1em] text-gray-700 hover:text-gray-900 transition-colors">
                   SERVICES
                 </button>
               </Link>
@@ -71,7 +71,7 @@ export default function LuxuryGoyardPage() {
               </div>
               <div className="mt-12">
                 <Link href="/about">
-                  <button className="text-sm tracking-[0.2em] border-b-2 border-gray-900 pb-2 hover:pb-3 transition-all">
+                  <button className="text-sm tracking-[0.1em] border-b-2 border-gray-900 pb-2 hover:pb-3 transition-all">
                     DISCOVER OUR STORY
                   </button>
                 </Link>

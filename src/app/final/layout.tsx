@@ -1,4 +1,4 @@
-import CleanNavigation from '@/components/CleanNavigation';
+import Navigation from "@/components/Navigation";
 import { Inter, Playfair_Display } from 'next/font/google';
 
 const inter = Inter({ 
@@ -19,7 +19,7 @@ export default function FinalLayout({
 }) {
   return (
     <div className={`${inter.variable} ${playfair.variable} font-sans`}>
-      <CleanNavigation />
+      <Navigation />
       {children}
     </div>
   );

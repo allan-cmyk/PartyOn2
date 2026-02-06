@@ -146,7 +146,7 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
           isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}
       >
-        <h1 className="font-heading font-light text-3xl sm:text-5xl md:text-7xl mb-4 sm:mb-6 tracking-[0.1em] sm:tracking-[0.15em]">
+        <h1 className="font-heading font-light text-3xl sm:text-5xl md:text-7xl mb-4 sm:mb-6 tracking-[0.1em] sm:tracking-[0.08em]">
           <span
             className={`block text-white transition-opacity duration-400 ${
               isWordFading ? 'opacity-0' : 'opacity-100'
@@ -172,7 +172,7 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
               onClick={() => handleCTAClick(cta.text, cta.url)}
             >
               <button
-                className={`px-8 sm:px-10 py-3 sm:py-4 transition-all duration-300 tracking-[0.15em] text-sm ${
+                className={`px-8 sm:px-10 py-3 sm:py-4 transition-all duration-300 tracking-[0.08em] text-sm ${
                   cta.style === 'primary'
                     ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
                     : 'border-2 border-brand-yellow text-brand-yellow hover:bg-brand-yellow hover:text-gray-900'

@@ -3,7 +3,7 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import OldFashionedNavigation from '@/components/OldFashionedNavigation'
+import Navigation from "@/components/Navigation"
 
 // Location data for Austin neighborhoods
 const locations: Record<string, {
@@ -86,7 +86,7 @@ export default async function LocationDeliveryPage({ params }: { params: Promise
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation forceScrolled={true} />
+      <Navigation forceScrolled={true} />
       
       {/* Hero Section */}
       <section className="relative h-[50vh] mt-24 flex items-center justify-center overflow-hidden">
@@ -100,7 +100,7 @@ export default async function LocationDeliveryPage({ params }: { params: Promise
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
         
         <div className="relative text-center text-white z-10 max-w-4xl mx-auto px-8">
-          <h1 className="font-heading font-light text-4xl md:text-6xl mb-6 tracking-[0.15em]">
+          <h1 className="font-heading font-light text-4xl md:text-6xl mb-6 tracking-[0.08em]">
             {locationData.title.toUpperCase()}
           </h1>
           <div className="w-24 h-px bg-brand-yellow mx-auto mb-6" />
@@ -253,12 +253,12 @@ export default async function LocationDeliveryPage({ params }: { params: Promise
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/order">
-                <button className="px-8 py-3 bg-yellow-500 text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.15em]">
+                <button className="px-8 py-3 bg-yellow-500 text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.08em]">
                   ORDER NOW
                 </button>
               </Link>
               <Link href="/contact">
-                <button className="px-8 py-3 border border-white text-white hover:bg-white hover:text-gray-900 transition-all tracking-[0.15em]">
+                <button className="px-8 py-3 border border-white text-white hover:bg-white hover:text-gray-900 transition-all tracking-[0.08em]">
                   GET A QUOTE
                 </button>
               </Link>

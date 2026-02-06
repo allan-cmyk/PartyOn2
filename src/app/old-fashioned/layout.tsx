@@ -1,4 +1,4 @@
-import LuxuryNavigation from '@/components/LuxuryNavigation';
+import Navigation from "@/components/Navigation";
 import { Cormorant_Garamond, Inter } from 'next/font/google';
 import { Metadata } from 'next'
 
@@ -40,7 +40,7 @@ export default function LuxuryRitzLayout({
 }) {
   return (
     <div className={`${cormorant.variable} ${inter.variable} font-sans`}>
-      <LuxuryNavigation variant="minimal" />
+      <Navigation />
       {children}
     </div>
   );

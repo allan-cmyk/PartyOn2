@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import CorporateEventCalculatorLanding from '@/components/CorporateEventCalculatorLanding';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import { trackMetaEvent } from '@/components/MetaPixel';
@@ -302,7 +302,7 @@ export default function CorporateLandingPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation />
+      <Navigation />
 
       {/* Hero Section */}
       <section className="relative min-h-[500px] sm:h-[70vh] sm:min-h-[600px] mt-24 flex items-center">

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, Suspense, type ReactElement } from 'react'
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
 import JoinOrderModal from '@/components/partners/JoinOrderModal';
 import DrinkCalculator from '@/components/partners/DrinkCalculator';
@@ -116,7 +116,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
   return (
     <div className="bg-white min-h-screen">
       {/* Navigation - Always hidden on this partner page */}
-      <OldFashionedNavigation hidden />
+      <Navigation hidden />
 
       {/* HERO SECTION - A/B variant via ?hero=center */}
       <PremierHero />
@@ -125,7 +125,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
       <section className="py-12 px-6 md:px-12 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-8">
-            <p className="text-gray-500 tracking-[0.2em] uppercase text-sm mb-2">
+            <p className="text-gray-500 tracking-[0.1em] uppercase text-sm mb-2">
               See the Experience
             </p>
             <h2 className="font-heading text-2xl md:text-3xl text-gray-900 tracking-wide">
@@ -149,7 +149,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
 
             {/* What's Included - Takes 2 columns on desktop */}
             <div className="lg:col-span-2 bg-white rounded-xl p-8 shadow-lg flex flex-col">
-              <p className="text-gray-500 tracking-[0.2em] uppercase text-base mb-2 text-center">
+              <p className="text-gray-500 tracking-[0.1em] uppercase text-base mb-2 text-center">
                 Boat Day = Handled
               </p>
               <h3 className="font-heading text-2xl md:text-3xl text-gray-900 tracking-wide mb-6 text-center">
@@ -451,7 +451,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
       <section className="relative py-16 px-6 md:px-12 bg-gray-100 overflow-hidden">
         <div className="relative z-10 max-w-6xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-gray-500 tracking-[0.2em] uppercase text-sm mb-3">
+            <p className="text-gray-500 tracking-[0.1em] uppercase text-sm mb-3">
               Real Reviews
             </p>
             <h2 className="font-heading text-3xl md:text-4xl text-gray-900 tracking-wide">

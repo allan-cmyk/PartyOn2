@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import { useCustomProducts } from '@/lib/cart/hooks/useCustomProducts';
 import MobileProductCard from '@/components/mobile/MobileProductCard';
 import CompactProductCard from '@/components/shopify/CompactProductCard';
@@ -49,7 +49,7 @@ export default function LynnsLodgingPartnerPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation />
+      <Navigation />
       
       {/* Hero Section with Lynn's Lodging Branding */}
       <section className="relative h-[60vh] mt-24 flex items-center justify-center overflow-hidden">
@@ -73,7 +73,7 @@ export default function LynnsLodgingPartnerPage() {
           </div>
 
           <h1 className="mb-6">
-            <span className="block font-heading text-[#fff8ed] text-2xl mb-3 tracking-[0.15em] font-light">
+            <span className="block font-heading text-[#fff8ed] text-2xl mb-3 tracking-[0.08em] font-light">
               LYNN&apos;S LODGING
             </span>
             <span className="block text-[#fff8ed] text-5xl md:text-7xl tracking-[0.08em]" style={{ fontFamily: 'Georgia Pro Condensed, Georgia, serif' }}>

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import YouTubeEmbed from '@/components/YouTubeEmbed';
@@ -437,7 +437,7 @@ Source: ${formData.source}`,
         }}
       />
 
-      <OldFashionedNavigation />
+      <Navigation />
 
       {/* Hero Section */}
       <section className="relative h-[70vh] min-h-[600px] flex items-center justify-center overflow-hidden">
@@ -455,16 +455,16 @@ Source: ${formData.source}`,
         <div className="hero-fade-in relative text-center text-white z-10 max-w-5xl mx-auto px-8">
 
           {/* Primary H1 */}
-          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
+          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.08em]">
             You Pour. We Deliver.
           </h1>
 
           {/* Alternative H1 options (commented out) */}
-          {/* <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
+          {/* <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.08em]">
             Austin Mobile Bartenders: Earn More, Haul Less
           </h1> */}
 
-          {/* <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
+          {/* <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.08em]">
             Get Paid for Every Drink Order
           </h1> */}
 
@@ -477,7 +477,7 @@ Source: ${formData.source}`,
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button
               onClick={scrollToForm}
-              className="bg-brand-yellow text-gray-900 px-10 py-4 text-lg tracking-[0.15em] hover:bg-yellow-600 transition-colors font-medium"
+              className="bg-brand-yellow text-gray-900 px-10 py-4 text-lg tracking-[0.08em] hover:bg-yellow-600 transition-colors font-medium"
             >
               APPLY TO PARTNER
             </button>
@@ -486,7 +486,7 @@ Source: ${formData.source}`,
                 const element = document.getElementById('how-it-works');
                 element?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="border-2 border-white text-white px-10 py-4 text-lg tracking-[0.15em] hover:bg-white hover:text-gray-900 transition-colors font-medium"
+              className="border-2 border-white text-white px-10 py-4 text-lg tracking-[0.08em] hover:bg-white hover:text-gray-900 transition-colors font-medium"
             >
               HOW IT WORKS
             </button>
@@ -520,7 +520,7 @@ Source: ${formData.source}`,
             <div className="mt-8 text-center">
               <button
                 onClick={scrollToForm}
-                className="bg-brand-yellow text-gray-900 px-10 py-4 text-lg tracking-[0.15em] hover:bg-yellow-600 transition-colors font-medium"
+                className="bg-brand-yellow text-gray-900 px-10 py-4 text-lg tracking-[0.08em] hover:bg-yellow-600 transition-colors font-medium"
               >
                 APPLY TO PARTNER
               </button>
@@ -776,7 +776,7 @@ Source: ${formData.source}`,
                 </p>
                 <button
                   onClick={scrollToForm}
-                  className="bg-brand-yellow text-gray-900 px-10 py-4 text-lg tracking-[0.15em] hover:bg-yellow-600 transition-colors font-medium"
+                  className="bg-brand-yellow text-gray-900 px-10 py-4 text-lg tracking-[0.08em] hover:bg-yellow-600 transition-colors font-medium"
                 >
                   BECOME A PARTNER
                 </button>
@@ -1004,7 +1004,7 @@ Source: ${formData.source}`,
               </p>
               <button
                 onClick={scrollToForm}
-                className="bg-brand-yellow text-gray-900 px-8 py-3 tracking-[0.15em] hover:bg-yellow-600 transition-colors font-medium text-sm"
+                className="bg-brand-yellow text-gray-900 px-8 py-3 tracking-[0.08em] hover:bg-yellow-600 transition-colors font-medium text-sm"
               >
                 APPLY TO PARTNER
               </button>
@@ -1273,7 +1273,7 @@ Source: ${formData.source}`,
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full px-8 py-4 transition-colors tracking-[0.15em] text-sm font-medium ${
+              className={`w-full px-8 py-4 transition-colors tracking-[0.08em] text-sm font-medium ${
                 isSubmitting
                   ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
                   : 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
@@ -1331,7 +1331,7 @@ Source: ${formData.source}`,
             </p>
             <button
               onClick={scrollToForm}
-              className="bg-brand-yellow text-gray-900 px-12 py-5 text-lg tracking-[0.15em] hover:bg-yellow-600 transition-colors font-medium"
+              className="bg-brand-yellow text-gray-900 px-12 py-5 text-lg tracking-[0.08em] hover:bg-yellow-600 transition-colors font-medium"
             >
               APPLY TO PARTNER NOW
             </button>

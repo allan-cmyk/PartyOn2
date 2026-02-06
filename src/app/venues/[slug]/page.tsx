@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import venuesData from '@/data/byob-venues.json';
@@ -25,7 +25,7 @@ export default function VenueLandingPage() {
   if (!venue) {
     return (
       <div className="bg-white min-h-screen">
-        <OldFashionedNavigation />
+        <Navigation />
         <div className="pt-32 pb-16 px-8 text-center">
           <h1 className="font-heading text-3xl text-gray-900 mb-4">Venue Not Found</h1>
           <p className="text-gray-600 mb-8">This venue page doesn&apos;t exist or is no longer a partner.</p>
@@ -45,7 +45,7 @@ export default function VenueLandingPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation />
+      <Navigation />
 
       {/* Hero Section */}
       <section className="relative h-[50vh] min-h-[400px] mt-24 flex items-center">

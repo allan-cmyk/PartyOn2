@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import CategoryFilter from '@/components/partners/CategoryFilter';
@@ -45,7 +45,7 @@ export default function AustinPartnersPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation hideMobileLogo />
+      <Navigation hideMobileLogo />
 
       {/* Hero Section */}
       <section className="relative h-[50vh] min-h-[400px] mt-24 flex items-center">
@@ -63,7 +63,7 @@ export default function AustinPartnersPage() {
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 text-white">
           <ScrollRevealCSS duration={800} y={30}>
-            <p className="text-brand-yellow tracking-[0.2em] uppercase text-sm mb-4">
+            <p className="text-brand-yellow tracking-[0.1em] uppercase text-sm mb-4">
               Austin Vendor Directory
             </p>
             <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl mb-6 tracking-[0.1em] max-w-4xl">
@@ -99,7 +99,7 @@ export default function AustinPartnersPage() {
         <div className="max-w-7xl mx-auto">
           <ScrollRevealCSS duration={600} y={20}>
             <div className="text-center mb-10">
-              <p className="text-brand-yellow tracking-[0.2em] uppercase text-sm mb-3">
+              <p className="text-brand-yellow tracking-[0.1em] uppercase text-sm mb-3">
                 Premier Partnership
               </p>
               <h2 className="font-heading text-3xl sm:text-4xl text-gray-900 tracking-[0.1em]">

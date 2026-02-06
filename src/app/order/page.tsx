@@ -7,7 +7,7 @@
 
 import { useState, useEffect, useRef, type ReactElement } from 'react';
 import Image from 'next/image';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
 import { useQuickOrderProducts } from '@/hooks/useQuickOrderProducts';
 import QuickOrderGrid from '@/components/quick-order/QuickOrderGrid';
@@ -101,7 +101,7 @@ export default function QuickOrderPage(): ReactElement {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation
+      <Navigation
         forceScrolled={!isMobile}
         hidden={hideNav}
         hideMobileLogo
@@ -120,7 +120,7 @@ export default function QuickOrderPage(): ReactElement {
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
 
         <div className="relative text-center text-white z-10 max-w-4xl mx-auto px-6">
-          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.15em] leading-tight md:leading-tight">
+          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.08em] leading-tight md:leading-tight">
             <span className="block text-white mb-2">Your Bar,</span>
             <span className="block text-brand-yellow italic">DELIVERED</span>
           </h1>

@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import VenueFilters from '@/components/byob-venues/VenueFilters';
@@ -94,7 +94,7 @@ export default function AustinBYOBVenuesPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation />
+      <Navigation />
 
       {/* Hero Section with Dynamic Mosaic Grid */}
       <section className="relative h-[50vh] min-h-[400px] mt-24 flex items-center">
@@ -103,7 +103,7 @@ export default function AustinBYOBVenuesPage() {
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 text-white">
           <ScrollRevealCSS duration={800} y={30}>
-            <p className="text-brand-yellow tracking-[0.2em] uppercase text-sm mb-4">
+            <p className="text-brand-yellow tracking-[0.1em] uppercase text-sm mb-4">
               Austin Venue Directory
             </p>
             <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl mb-6 tracking-[0.1em] max-w-4xl">

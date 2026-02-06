@@ -276,7 +276,7 @@ export default function ParticipantPaymentPage(): React.ReactElement {
             <button
               onClick={handleCheckout}
               disabled={isProcessing}
-              className="w-full bg-yellow-500 text-gray-900 py-4 tracking-[0.15em] font-medium hover:bg-brand-yellow transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-yellow-500 text-gray-900 py-4 tracking-[0.08em] font-medium hover:bg-brand-yellow transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isProcessing ? (
                 <span className="flex items-center justify-center">

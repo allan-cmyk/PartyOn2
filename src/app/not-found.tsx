@@ -1,11 +1,11 @@
 import Link from 'next/link';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
 
 export default function NotFound() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      <OldFashionedNavigation />
+      <Navigation />
 
       <main className="flex-grow flex items-center justify-center px-8 py-20">
         <div className="max-w-2xl mx-auto text-center">

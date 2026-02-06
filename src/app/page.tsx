@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import Script from 'next/script';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import HeroSectionExperimental from '@/components/homepage/HeroSectionExperimental';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import { generateFAQSchema } from '@/lib/seo/schemas';
@@ -51,7 +51,7 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      <OldFashionedNavigation />
+      <Navigation />
 
       {/* Hero Section - Client Component with A/B Testing */}
       <HeroSectionExperimental />
@@ -86,7 +86,7 @@ export default function HomePage() {
                   </li>
                 </ul>
                 <TrackedLink href="/order" section="choose_path" buttonText="START ORDERING">
-                  <button className="w-full px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm">
+                  <button className="w-full px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm">
                     START ORDERING
                   </button>
                 </TrackedLink>
@@ -110,7 +110,7 @@ export default function HomePage() {
                   </li>
                 </ul>
                 <TrackedLink href="/contact" section="choose_path" buttonText="GET HELP">
-                  <button className="w-full px-8 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
+                  <button className="w-full px-8 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm">
                     GET HELP
                   </button>
                 </TrackedLink>
@@ -630,12 +630,12 @@ export default function HomePage() {
               </p>
               <div className="flex flex-col md:flex-row gap-6 justify-center">
                 <TrackedLink href="/order" section="footer_cta" buttonText="ORDER NOW">
-                  <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.15em] text-sm">
+                  <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm">
                     ORDER NOW
                   </button>
                 </TrackedLink>
                 <TrackedLink href="/plan-event" section="footer_cta" buttonText="PLAN MY EVENT">
-                  <button className="px-10 py-4 border-2 border-brand-yellow text-white hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
+                  <button className="px-10 py-4 border-2 border-brand-yellow text-white hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm">
                     PLAN MY EVENT
                   </button>
                 </TrackedLink>

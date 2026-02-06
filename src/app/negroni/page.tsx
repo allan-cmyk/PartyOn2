@@ -45,12 +45,12 @@ export default function LuxuryJimmyPage() {
         <div className="relative z-10 h-full flex flex-col justify-between p-12">
           <div className="text-center pt-32">
             <h1
-              className="text-5xl md:text-7xl font-light text-white tracking-[0.2em] mb-4 hero-fade-in"
+              className="text-5xl md:text-7xl font-light text-white tracking-[0.1em] mb-4 hero-fade-in"
             >
               {slides[activeSlide].title}
             </h1>
             <ScrollRevealCSS duration={800} delay={0} y={30}>
-              <p className="text-lg text-white/80 tracking-[0.15em]">
+              <p className="text-lg text-white/80 tracking-[0.08em]">
                 {slides[activeSlide].subtitle}
               </p>
             </ScrollRevealCSS>
@@ -84,7 +84,7 @@ export default function LuxuryJimmyPage() {
                   with white-glove service for Austin&apos;s most discerning hosts.
                 </p>
                 <Link href="/services">
-                  <button className="text-sm tracking-[0.2em] border-b border-gray-900 pb-1 hover:pb-2 transition-all">
+                  <button className="text-sm tracking-[0.1em] border-b border-gray-900 pb-1 hover:pb-2 transition-all">
                     DISCOVER MORE
                   </button>
                 </Link>
@@ -123,7 +123,7 @@ export default function LuxuryJimmyPage() {
                   Professional mixologists available. Delivery 7 days a week.
                 </p>
                 <Link href="/portfolio">
-                  <button className="text-sm tracking-[0.2em] border-b border-gray-900 pb-1 hover:pb-2 transition-all">
+                  <button className="text-sm tracking-[0.1em] border-b border-gray-900 pb-1 hover:pb-2 transition-all">
                     VIEW COLLECTION
                   </button>
                 </Link>
@@ -144,7 +144,7 @@ export default function LuxuryJimmyPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         <div className="relative z-10 h-full flex items-end justify-center pb-24">
           <div className="text-center text-white">
-            <h2 className="text-5xl font-light mb-6 tracking-[0.15em]">DELIVERY IN 2 HOURS</h2>
+            <h2 className="text-5xl font-light mb-6 tracking-[0.08em]">DELIVERY IN 2 HOURS</h2>
             <p className="text-xl mb-8 max-w-2xl mx-auto leading-relaxed">
               Same-day alcohol delivery across Austin. Premium spirits, cocktail kits, and party packages.
             </p>
@@ -167,7 +167,7 @@ export default function LuxuryJimmyPage() {
         <div className="max-w-7xl mx-auto px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-8 md:mb-0">
-              <p className="text-2xl font-light tracking-[0.3em]">PARTYON</p>
+              <p className="text-2xl font-light tracking-[0.1em]">PARTYON</p>
               <p className="text-sm text-gray-600 mt-2">Premium Alcohol Delivery • Austin, Texas</p>
             </div>
             <div className="flex space-x-12">

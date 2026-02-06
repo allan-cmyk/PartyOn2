@@ -2,7 +2,7 @@
 
 import type { ReactElement } from 'react';
 import Link from 'next/link';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import { WeddingOrderCalculator } from '@/components/wedding-order';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
@@ -13,7 +13,7 @@ import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 export default function WeddingOrderPage(): ReactElement {
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation />
+      <Navigation />
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 min-h-[500px] relative overflow-hidden">
@@ -28,7 +28,7 @@ export default function WeddingOrderPage(): ReactElement {
 
         <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
           <ScrollRevealCSS>
-            <p className="text-brand-yellow tracking-[0.2em] text-sm uppercase mb-4">
+            <p className="text-brand-yellow tracking-[0.1em] text-sm uppercase mb-4">
               Wedding Bar Packages
             </p>
           </ScrollRevealCSS>
