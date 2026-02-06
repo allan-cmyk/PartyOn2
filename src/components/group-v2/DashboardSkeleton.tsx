@@ -4,7 +4,7 @@ import { ReactElement } from 'react';
 
 export default function DashboardSkeleton(): ReactElement {
   return (
-    <div className="pt-24 min-h-screen bg-whiteSoft animate-pulse">
+    <div className="min-h-screen bg-whiteSoft animate-pulse">
       {/* Header skeleton - light gradient hero */}
       <div className="bg-gradient-to-br from-blue-50 via-white to-yellow-50 border-b border-gray-200">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 py-5 px-4 md:py-6 md:px-6">
