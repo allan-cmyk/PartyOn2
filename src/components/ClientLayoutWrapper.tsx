@@ -19,8 +19,8 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
   // Sync cart totals with group order if in a group
   useGroupCartSync();
 
-  const hiddenByPrefix = HIDE_MOBILE_NAV_PREFIXES.some((p) => pathname.startsWith(p));
-  const showMobileNav = isMobile && !HIDE_MOBILE_NAV_PATHS.includes(pathname) && !hiddenByPrefix;
+  const hiddenByPrefix = pathname ? HIDE_MOBILE_NAV_PREFIXES.some((p) => pathname.startsWith(p)) : false;
+  const showMobileNav = isMobile && pathname && !HIDE_MOBILE_NAV_PATHS.includes(pathname) && !hiddenByPrefix;
   
   useEffect(() => {
     // Check if mobile on client side

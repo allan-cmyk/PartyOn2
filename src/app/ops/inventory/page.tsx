@@ -123,7 +123,7 @@ export default function InventoryPage(): ReactElement {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [meta, setMeta] = useState<PaginationMeta | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [filter, setFilter] = useState(searchParams.get('filter') || 'all');
+  const [filter, setFilter] = useState(searchParams?.get('filter') || 'all');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [editingItem, setEditingItem] = useState<string | null>(null);

@@ -22,7 +22,7 @@ import { MobileProductCardSkeletonGrid } from '@/components/skeletons/MobileProd
 
 function ProductsContent() {
   const searchParams = useSearchParams();
-  const searchQuery = searchParams.get('search');
+  const searchQuery = searchParams?.get('search');
   const isMobile = useIsMobile();
   const initialLoadCount = isMobile ? 12 : 20;
   const [searchResults, setSearchResults] = useState<Product[]>([]);

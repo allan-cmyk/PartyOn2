@@ -22,7 +22,7 @@ export default function InventoryPage(): ReactElement {
   const searchParams = useSearchParams();
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [filter, setFilter] = useState(searchParams.get('filter') || 'all');
+  const [filter, setFilter] = useState(searchParams?.get('filter') || 'all');
   const [search, setSearch] = useState('');
   const [editingItem, setEditingItem] = useState<string | null>(null);
   const [editQuantity, setEditQuantity] = useState<number>(0);

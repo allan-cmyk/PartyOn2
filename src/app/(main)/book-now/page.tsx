@@ -22,9 +22,10 @@ function BookNowContent() {
   })
 
   useEffect(() => {
-    const service = searchParams.get('service')
-    const packageType = searchParams.get('package')
-    
+    if (!searchParams) return
+    const service = searchParams?.get('service')
+    const packageType = searchParams?.get('package')
+
     if (service === 'wedding' || service === 'boat' || service === 'bach-party') {
       setActiveTab('event')
       setFormData(prev => ({ ...prev, service }))

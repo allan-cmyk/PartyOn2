@@ -13,7 +13,7 @@ export default function SharedCartPage() {
   const [error, setError] = useState<string | null>(null);
   const [sharedCart, setSharedCart] = useState<SharedCartData | null>(null);
 
-  const shareId = params.id as string;
+  const shareId = params?.id as string;
 
   useEffect(() => {
     async function loadSharedCart() {

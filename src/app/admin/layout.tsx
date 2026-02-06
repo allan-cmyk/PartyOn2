@@ -36,7 +36,7 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
   useEffect(() => {
     if (isAuthenticated && role === 'employee') {
       const adminOnlyPaths = ['/admin/dashboard', '/admin/experiments'];
-      if (adminOnlyPaths.some(path => pathname.startsWith(path))) {
+      if (pathname && adminOnlyPaths.some(path => pathname.startsWith(path))) {
         router.push('/admin/orders');
       }
     }
@@ -172,7 +172,7 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
                     key={item.href}
                     href={item.href}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                      pathname.startsWith(item.href)
+                      pathname?.startsWith(item.href)
                         ? 'bg-gray-800 text-white'
                         : 'text-gray-300 hover:bg-gray-800 hover:text-white'
                     }`}

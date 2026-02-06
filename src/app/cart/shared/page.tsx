@@ -19,8 +19,14 @@ function SharedCartContent() {
         setLoading(true);
         setError(null);
 
+        if (!searchParams) {
+          setError('Invalid share link');
+          setLoading(false);
+          return;
+        }
+
         // Parse cart data from URL parameters
-        const cartData = parseCartFromUrl(searchParams);
+        const cartData = parseCartFromUrl(searchParams as URLSearchParams);
 
         console.clear();
         console.log('🔍 ===== SHARED CART LOADING DEBUG =====');

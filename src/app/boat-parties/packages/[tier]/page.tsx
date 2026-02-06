@@ -83,7 +83,7 @@ const PACKAGE_CONFIGS = {
 export default function BoatPartyPackagePage() {
   const params = useParams();
   const router = useRouter();
-  const tier = params.tier as string;
+  const tier = params?.tier as string;
   const { products, loading } = useCustomProducts(100);
   const { addToCart, loading: cartLoading } = useCartContext();
   const [packageItems, setPackageItems] = useState<PackageItem[]>([]);

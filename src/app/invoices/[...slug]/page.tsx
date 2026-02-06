@@ -9,7 +9,7 @@ import { useParams } from 'next/navigation';
  */
 export default function InvoiceRedirect() {
   const params = useParams();
-  const slug = params.slug as string[];
+  const slug = params?.slug as string[];
 
   useEffect(() => {
     if (slug && slug.length > 0) {

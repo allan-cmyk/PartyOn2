@@ -13,7 +13,7 @@ import { getAreaName, getPriceLabel } from '@/lib/byob-venues/types';
 
 export default function VenueLandingPage() {
   const params = useParams();
-  const slug = params.slug as string;
+  const slug = params?.slug as string;
   const [venue, setVenue] = useState<BYOBVenue | null>(null);
 
   useEffect(() => {

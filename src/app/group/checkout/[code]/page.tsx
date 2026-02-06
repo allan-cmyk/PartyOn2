@@ -7,7 +7,7 @@ import { useGroupOrder } from '@/lib/group-orders/hooks'
 export default function GroupCheckoutPage() {
   const params = useParams()
   const router = useRouter()
-  const shareCode = params.code as string
+  const shareCode = params?.code as string
   
   const { groupOrder, isLoading } = useGroupOrder(shareCode)
   const [isCreatingCheckout, setIsCreatingCheckout] = useState(false)

@@ -16,14 +16,14 @@ export default function Navigation() {
   const cartItemCount = cart?.lines.edges.reduce((total, edge) => total + edge.node.quantity, 0) || 0
   
   // Check if we're on a page that needs solid navigation
-  const needsSolidNav = pathname.startsWith('/account') || 
-                        pathname.startsWith('/products') || 
-                        pathname.startsWith('/cart') ||
-                        pathname.startsWith('/checkout') ||
-                        pathname.startsWith('/order') ||
-                        pathname.startsWith('/partners') ||
-                        pathname.startsWith('/contact') ||
-                        pathname.startsWith('/about')
+  const needsSolidNav = pathname?.startsWith('/account') ||
+                        pathname?.startsWith('/products') ||
+                        pathname?.startsWith('/cart') ||
+                        pathname?.startsWith('/checkout') ||
+                        pathname?.startsWith('/order') ||
+                        pathname?.startsWith('/partners') ||
+                        pathname?.startsWith('/contact') ||
+                        pathname?.startsWith('/about')
 
   useEffect(() => {
     const handleScroll = () => {

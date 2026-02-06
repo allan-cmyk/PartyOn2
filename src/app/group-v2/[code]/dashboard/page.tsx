@@ -20,7 +20,7 @@ import GroupProductCatalog from '@/components/group-v2/GroupProductCatalog';
 export default function DashboardPage(): ReactElement {
   const params = useParams();
   const router = useRouter();
-  const code = params.code as string;
+  const code = params?.code as string;
 
   const { groupOrder, isLoading, error, refresh } = useGroupOrderV2(code);
   const [activeTabId, setActiveTabId] = useState<string | null>(null);

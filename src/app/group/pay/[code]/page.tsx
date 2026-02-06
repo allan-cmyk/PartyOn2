@@ -26,7 +26,7 @@ interface CartItem {
 export default function ParticipantPaymentPage(): React.ReactElement {
   const params = useParams()
   const searchParams = useSearchParams()
-  const shareCode = params.code as string
+  const shareCode = params?.code as string
 
   const { groupOrder, isLoading: groupLoading, error: groupError } = useGroupOrder(shareCode)
   const { cart } = useCartContext()
@@ -117,7 +117,7 @@ export default function ParticipantPaymentPage(): React.ReactElement {
 
   // Check for error from redirect
   useEffect(() => {
-    const errorParam = searchParams.get('error')
+    const errorParam = searchParams?.get('error')
     if (errorParam) {
       setError(decodeURIComponent(errorParam))
     }

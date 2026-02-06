@@ -21,8 +21,8 @@ interface PaymentDetails {
 
 function PaymentSuccessContent(): React.ReactElement {
   const searchParams = useSearchParams()
-  const sessionId = searchParams.get('session_id')
-  const groupCode = searchParams.get('group')
+  const sessionId = searchParams?.get('session_id')
+  const groupCode = searchParams?.get('group')
 
   const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(null)
   const [isLoading, setIsLoading] = useState(true)

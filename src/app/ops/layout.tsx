@@ -155,7 +155,7 @@ export default function OpsLayout({ children }: OpsLayoutProps): ReactElement {
                     className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                       pathname === item.href ||
                       (item.href === '/ops/inventory' && pathname === '/ops/inventory') ||
-                      (item.href !== '/ops/inventory' && pathname.startsWith(item.href))
+                      (item.href !== '/ops/inventory' && pathname?.startsWith(item.href))
                         ? 'bg-blue-800 text-white'
                         : 'text-blue-200 hover:bg-blue-800 hover:text-white'
                     }`}

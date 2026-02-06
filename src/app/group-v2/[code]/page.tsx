@@ -10,7 +10,7 @@ import JoinGroupForm from '@/components/group-v2/JoinGroupForm';
 export default function JoinGroupPage(): ReactElement {
   const params = useParams();
   const router = useRouter();
-  const code = params.code as string;
+  const code = params?.code as string;
 
   const [groupOrder, setGroupOrder] = useState<GroupOrderV2Full | null>(null);
   const [loading, setLoading] = useState(true);

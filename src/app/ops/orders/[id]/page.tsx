@@ -139,7 +139,7 @@ function SectionHeader({ icon, title }: { icon: ReactElement; title: string }): 
 
 export default function OrderDetailPage(): ReactElement {
   const params = useParams();
-  const orderId = params.id as string;
+  const orderId = params?.id as string;
 
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(true);

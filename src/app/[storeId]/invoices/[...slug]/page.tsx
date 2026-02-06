@@ -9,11 +9,12 @@ import { useParams } from 'next/navigation';
  */
 export default function StoreInvoiceRedirect() {
   const params = useParams();
-  const storeId = params.storeId as string;
-  const slug = params.slug as string[];
+  const storeId = params?.storeId as string;
+  const slug = params?.slug as string[];
 
   useEffect(() => {
-    if (slug && slug.length > 0) {
+    if (!params || !slug || slug.length === 0) return;
+    if (slug.length > 0) {
       // Construct the correct Shopify store domain URL
       // Note: Using hardcoded domain since this needs to work on client-side
       const storeDomain = 'premier-concierge.myshopify.com';
@@ -31,7 +32,7 @@ export default function StoreInvoiceRedirect() {
       // Redirect to the correct Shopify invoice URL
       window.location.replace(correctUrl);
     }
-  }, [storeId, slug]);
+  }, [params, storeId, slug]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">

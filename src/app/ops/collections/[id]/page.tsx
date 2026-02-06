@@ -37,7 +37,7 @@ interface AllProduct {
 
 export default function CollectionDetailPage(): ReactElement {
   const params = useParams();
-  const id = params.id as string;
+  const id = params?.id as string;
 
   const [collection, setCollection] = useState<CollectionDetail | null>(null);
   const [products, setProducts] = useState<CollectionProduct[]>([]);

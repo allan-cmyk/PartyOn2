@@ -51,7 +51,7 @@ interface OrderData {
 
 export default function OrderSheetPage() {
   const params = useParams();
-  const orderNumber = params.orderNumber as string;
+  const orderNumber = params?.orderNumber as string;
   const [order, setOrder] = useState<OrderData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);

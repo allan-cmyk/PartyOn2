@@ -114,7 +114,7 @@ function getParticipantStatusColor(status: string): string {
 
 export default function GroupOrderDetailPage(): ReactElement {
   const params = useParams();
-  const id = params.id as string;
+  const id = params?.id as string;
   const [data, setData] = useState<GroupOrderDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

@@ -13,7 +13,7 @@ import { trackEvent, ANALYTICS_EVENTS } from '@/lib/analytics/track'
 export default function GroupOrderLandingPage() {
   const params = useParams()
   const router = useRouter()
-  const shareCode = params.code as string
+  const shareCode = params?.code as string
 
   const { groupOrder, isLoading, error } = useGroupOrder(shareCode)
   const { setGroupOrderCode } = useGroupOrderContext()

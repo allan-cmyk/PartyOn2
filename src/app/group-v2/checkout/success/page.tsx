@@ -6,7 +6,7 @@ import { Suspense, ReactElement } from 'react';
 
 function CheckoutSuccessContent(): ReactElement {
   const searchParams = useSearchParams();
-  const code = searchParams.get('code');
+  const code = searchParams?.get('code');
 
   return (
     <div className="pt-32 pb-16 px-4 min-h-screen bg-gray-50">

@@ -13,7 +13,7 @@ interface InvoiceData extends DraftOrderWithTotal {
 export default function InvoicePage(): ReactElement {
   const params = useParams();
   const router = useRouter();
-  const token = params.token as string;
+  const token = params?.token as string;
 
   const [invoice, setInvoice] = useState<InvoiceData | null>(null);
   const [loading, setLoading] = useState(true);

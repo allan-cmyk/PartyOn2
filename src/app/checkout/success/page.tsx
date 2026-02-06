@@ -17,10 +17,10 @@ function CheckoutSuccessContent() {
 
   useEffect(() => {
     // Extract order info from URL params if available
-    const order = searchParams.get('order');
-    const orderName = searchParams.get('order_name');
-    const orderTotal = searchParams.get('total');
-    const sessionId = searchParams.get('session_id');
+    const order = searchParams?.get('order');
+    const orderName = searchParams?.get('order_name');
+    const orderTotal = searchParams?.get('total');
+    const sessionId = searchParams?.get('session_id');
 
     // If we have a Stripe session_id, fetch session details
     async function fetchStripeSession() {
