@@ -26,6 +26,7 @@ interface CreateDiscountBody {
   startsAt?: string;
   expiresAt?: string;
   isActive?: boolean;
+  combinable?: boolean;
 }
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
@@ -95,6 +96,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
           startsAt: d.startsAt.toISOString(),
           expiresAt: d.expiresAt?.toISOString() || null,
           isActive: d.isActive,
+          combinable: d.combinable,
           usageCount: d.usageCount,
           totalDiscountGiven: Number(d.totalDiscountGiven),
           usageHistoryCount: d._count.usageHistory,
@@ -174,6 +176,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         startsAt: body.startsAt ? new Date(body.startsAt) : new Date(),
         expiresAt: body.expiresAt ? new Date(body.expiresAt) : null,
         isActive: body.isActive ?? true,
+        combinable: body.combinable ?? false,
       },
     });
 
@@ -186,6 +189,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         type: discount.type,
         value: Number(discount.value),
         isActive: discount.isActive,
+        combinable: discount.combinable,
         createdAt: discount.createdAt.toISOString(),
       },
     });

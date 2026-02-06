@@ -2,7 +2,7 @@
  * Cart Discount API
  *
  * POST /api/v1/cart/discount - Apply discount code
- * DELETE /api/v1/cart/discount - Remove discount code
+ * DELETE /api/v1/cart/discount - Remove discount code(s)
  * PUT /api/v1/cart/discount - Get automatic discounts
  */
 
@@ -10,19 +10,43 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import {
   getCartById,
-  applyDiscount,
+  addDiscount,
   removeDiscount,
+  removeAllDiscounts,
 } from '@/lib/inventory/services/cart-service';
 import {
-  validateDiscountCode,
+  validateDiscountCombination,
   getAutomaticDiscounts,
 } from '@/lib/discounts/discount-engine';
+import type { AppliedDiscountEntry } from '@/lib/discounts/discount-engine';
 
 const CART_ID_COOKIE = 'cart_id';
 
+/** Serialize a cart for JSON responses (convert Prisma Decimals to strings) */
+function serializeCart(cart: Awaited<ReturnType<typeof getCartById>>) {
+  if (!cart) return null;
+  return {
+    ...cart,
+    subtotal: cart.subtotal.toString(),
+    taxAmount: cart.taxAmount.toString(),
+    deliveryFee: cart.deliveryFee.toString(),
+    discountAmount: cart.discountAmount.toString(),
+    total: cart.total.toString(),
+    appliedDiscounts: (cart.appliedDiscounts as unknown as AppliedDiscountEntry[]) || [],
+    items: cart.items.map(item => ({
+      ...item,
+      price: item.price.toString(),
+      variant: {
+        ...item.variant,
+        price: item.variant.price.toString(),
+      },
+    })),
+  };
+}
+
 /**
  * POST /api/v1/cart/discount
- * Apply discount code to cart
+ * Apply discount code to cart (supports multiple combinable codes)
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
@@ -55,14 +79,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Check if cart already has a discount
-    if (cart.discountCode) {
-      return NextResponse.json(
-        { success: false, error: 'A discount code is already applied. Remove it first.' },
-        { status: 400 }
-      );
-    }
-
     // Build cart context for discount validation
     const cartItems = cart.items.map((item) => ({
       productId: item.productId,
@@ -72,9 +88,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }));
 
     const subtotal = Number(cart.subtotal);
+    const existingDiscounts = (cart.appliedDiscounts as unknown as AppliedDiscountEntry[]) || [];
 
-    // Validate discount code using the discount engine
-    const result = await validateDiscountCode(code, {
+    // Validate discount code with combination logic
+    const result = await validateDiscountCombination(code, existingDiscounts, {
       items: cartItems,
       subtotal,
       customerId,
@@ -88,35 +105,18 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Apply discount to cart
-    const updatedCart = await applyDiscount(
+    // Add discount to cart
+    const updatedCart = await addDiscount(
       cartId,
       result.discountCode!,
-      result.discountAmount
+      result.discountAmount,
+      result.discountType!
     );
-
-    // Serialize cart with proper decimal conversion for JSON
-    const serializedCart = {
-      ...updatedCart,
-      subtotal: updatedCart.subtotal.toString(),
-      taxAmount: updatedCart.taxAmount.toString(),
-      deliveryFee: updatedCart.deliveryFee.toString(),
-      discountAmount: updatedCart.discountAmount.toString(),
-      total: updatedCart.total.toString(),
-      items: updatedCart.items.map(item => ({
-        ...item,
-        price: item.price.toString(),
-        variant: {
-          ...item.variant,
-          price: item.variant.price.toString(),
-        },
-      })),
-    };
 
     return NextResponse.json({
       success: true,
       data: {
-        cart: serializedCart,
+        cart: serializeCart(updatedCart),
         discount: {
           code: result.discountCode,
           type: result.discountType,
@@ -139,9 +139,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
 /**
  * DELETE /api/v1/cart/discount
- * Remove discount code from cart
+ * Remove discount code(s) from cart
+ * Query param ?code=CODE removes a specific code; omit to remove all
  */
-export async function DELETE(): Promise<NextResponse> {
+export async function DELETE(request: NextRequest): Promise<NextResponse> {
   try {
     const cookieStore = await cookies();
     const cartId = cookieStore.get(CART_ID_COOKIE)?.value;
@@ -161,37 +162,29 @@ export async function DELETE(): Promise<NextResponse> {
       );
     }
 
-    if (!cart.discountCode) {
+    const existingDiscounts = (cart.appliedDiscounts as unknown as AppliedDiscountEntry[]) || [];
+
+    // If no discounts applied at all (check both old field and new array)
+    if (!cart.discountCode && existingDiscounts.length === 0) {
       return NextResponse.json(
         { success: false, error: 'No discount code applied' },
         { status: 400 }
       );
     }
 
-    const updatedCart = await removeDiscount(cartId);
+    const codeToRemove = request.nextUrl.searchParams.get('code');
 
-    // Serialize cart with proper decimal conversion for JSON
-    const serializedCart = {
-      ...updatedCart,
-      subtotal: updatedCart.subtotal.toString(),
-      taxAmount: updatedCart.taxAmount.toString(),
-      deliveryFee: updatedCart.deliveryFee.toString(),
-      discountAmount: updatedCart.discountAmount.toString(),
-      total: updatedCart.total.toString(),
-      items: updatedCart.items.map(item => ({
-        ...item,
-        price: item.price.toString(),
-        variant: {
-          ...item.variant,
-          price: item.variant.price.toString(),
-        },
-      })),
-    };
+    let updatedCart;
+    if (codeToRemove) {
+      updatedCart = await removeDiscount(cartId, codeToRemove);
+    } else {
+      updatedCart = await removeAllDiscounts(cartId);
+    }
 
     return NextResponse.json({
       success: true,
-      data: { cart: serializedCart },
-      message: 'Discount removed',
+      data: { cart: serializeCart(updatedCart) },
+      message: codeToRemove ? `Discount "${codeToRemove}" removed` : 'All discounts removed',
     });
   } catch (error) {
     console.error('[Cart Discount API] DELETE error:', error);

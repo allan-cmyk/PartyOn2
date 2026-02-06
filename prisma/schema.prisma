@@ -653,8 +653,9 @@ model Cart {
   deliveryPhone        String?   @map("delivery_phone")
 
   // Discount
-  discountCode   String? @map("discount_code")
-  discountAmount Decimal @default(0) @map("discount_amount") @db.Decimal(10, 2)
+  discountCode     String?  @map("discount_code")
+  discountAmount   Decimal  @default(0) @map("discount_amount") @db.Decimal(10, 2)
+  appliedDiscounts Json     @default("[]") @map("applied_discounts")
 
   // Totals (computed, cached)
   subtotal    Decimal @default(0) @db.Decimal(10, 2)
@@ -1164,6 +1165,9 @@ model Discount {
   // Tracking
   usageCount         Int     @default(0) @map("usage_count")
   totalDiscountGiven Decimal @default(0) @map("total_discount_given") @db.Decimal(10, 2)
+
+  // Combination support
+  combinable Boolean @default(false) @map("combinable")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

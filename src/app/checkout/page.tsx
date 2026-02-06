@@ -112,8 +112,10 @@ export default function CheckoutPage() {
     return 0;
   })();
 
-  // Get applied discount code
+  // Get applied discount code(s)
   const appliedDiscountCode = customCartData?.discountCode ?? null;
+  const appliedDiscounts = customCartData?.appliedDiscounts ?? [];
+  const hasFreeShipping = appliedDiscounts.some(d => d.type === 'FREE_SHIPPING');
 
   const total = subtotal + deliveryFee + tax - Math.abs(discountAmount);
 
@@ -159,11 +161,14 @@ export default function CheckoutPage() {
     }
   };
 
-  const handleRemoveDiscount = async () => {
+  const handleRemoveDiscount = async (codeToRemove?: string) => {
     if (!cart) return;
 
     try {
-      const response = await fetch('/api/v1/cart/discount', {
+      const url = codeToRemove
+        ? `/api/v1/cart/discount?code=${encodeURIComponent(codeToRemove)}`
+        : '/api/v1/cart/discount';
+      const response = await fetch(url, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -176,7 +181,7 @@ export default function CheckoutPage() {
         }
         setDiscountFeedback({
           type: 'success',
-          message: 'Discount removed'
+          message: codeToRemove ? `Discount "${codeToRemove}" removed` : 'Discounts removed'
         });
       }
     } catch {
@@ -531,25 +536,32 @@ export default function CheckoutPage() {
                     </p>
                   )}
                   
-                  {/* Applied Discounts - Show from cart.discountCodes OR customCartData */}
-                  {((cart?.discountCodes && cart.discountCodes.length > 0) || appliedDiscountCode) && (
+                  {/* Applied Discounts - multi-code support */}
+                  {appliedDiscounts.length > 0 ? (
                     <div className="mt-2 space-y-1">
-                      {/* Show discount codes from transformed cart */}
-                      {cart?.discountCodes && cart.discountCodes.map((discount) => (
-                        <div key={discount.code} className="flex items-center justify-between bg-green-50 px-3 py-2 rounded">
-                          <span className="text-sm text-green-700">
-                            {discount.code} {discount.applicable && '✓ Applied'}
-                          </span>
+                      {appliedDiscounts.map((d) => (
+                        <div key={d.code} className="flex items-center justify-between bg-green-50 px-3 py-2 rounded">
+                          <div className="flex-1">
+                            <span className="text-sm font-medium text-green-700">{d.code}</span>
+                            <span className="text-xs text-green-600 ml-2">
+                              {d.type === 'FREE_SHIPPING' ? 'Free Delivery' :
+                               d.type === 'PERCENTAGE' ? `${d.amount > 0 ? `-$${d.amount.toFixed(2)}` : ''}` :
+                               d.amount > 0 ? `-$${d.amount.toFixed(2)}` : ''}
+                            </span>
+                          </div>
                           <button
-                            onClick={() => handleRemoveDiscount()}
-                            className="text-red-600 hover:text-red-700 text-sm"
+                            onClick={() => handleRemoveDiscount(d.code)}
+                            className="text-red-600 hover:text-red-700 text-sm ml-2"
                           >
                             Remove
                           </button>
                         </div>
                       ))}
-                      {/* Fallback: Show from customCartData if cart.discountCodes is empty */}
-                      {(!cart?.discountCodes || cart.discountCodes.length === 0) && appliedDiscountCode && (
+                    </div>
+                  ) : (
+                    /* Fallback for legacy single discount code */
+                    appliedDiscountCode && (
+                      <div className="mt-2 space-y-1">
                         <div className="flex items-center justify-between bg-green-50 px-3 py-2 rounded">
                           <span className="text-sm text-green-700">
                             {appliedDiscountCode} ✓ Applied
@@ -561,8 +573,8 @@ export default function CheckoutPage() {
                             Remove
                           </button>
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    )
                   )}
                 </div>
 
@@ -573,7 +585,14 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Delivery Fee</span>
-                    <span>${deliveryFee.toFixed(2)}</span>
+                    {hasFreeShipping ? (
+                      <span>
+                        <span className="line-through text-gray-400 mr-1">$25.00</span>
+                        <span className="text-green-600">$0.00</span>
+                      </span>
+                    ) : (
+                      <span>${deliveryFee.toFixed(2)}</span>
+                    )}
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Tax</span>

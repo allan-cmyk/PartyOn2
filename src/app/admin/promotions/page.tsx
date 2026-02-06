@@ -10,6 +10,7 @@ interface Discount {
   type: string;
   value: number;
   isActive: boolean;
+  combinable: boolean;
   usageCount: number;
   maxUsageCount: number | null;
   totalDiscountGiven: number;
@@ -186,6 +187,7 @@ export default function PromotionsPage() {
                   <th className="text-right py-3 px-4 font-semibold text-black">Value</th>
                   <th className="text-right py-3 px-4 font-semibold text-black">Usage</th>
                   <th className="text-right py-3 px-4 font-semibold text-black">Total Saved</th>
+                  <th className="text-center py-3 px-4 font-semibold text-black">Stackable</th>
                   <th className="text-center py-3 px-4 font-semibold text-black">Status</th>
                   <th className="text-right py-3 px-4 font-semibold text-black">Actions</th>
                 </tr>
@@ -211,6 +213,17 @@ export default function PromotionsPage() {
                     </td>
                     <td className="py-3 px-4 text-right text-black">
                       {formatCurrency(discount.totalDiscountGiven)}
+                    </td>
+                    <td className="py-3 px-4 text-center">
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-medium ${
+                          discount.combinable
+                            ? 'bg-blue-100 text-blue-700'
+                            : 'bg-gray-100 text-gray-500'
+                        }`}
+                      >
+                        {discount.combinable ? 'Yes' : 'No'}
+                      </span>
                     </td>
                     <td className="py-3 px-4 text-center">
                       <button

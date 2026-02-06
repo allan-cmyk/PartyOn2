@@ -39,6 +39,15 @@ interface AppliedDiscount {
   isAutomatic: boolean;
 }
 
+/** Shape of entries stored in Cart.appliedDiscounts JSON */
+export interface AppliedDiscountEntry {
+  code: string;
+  amount: number;
+  type: string;
+}
+
+const MAX_DISCOUNT_CODES = 3;
+
 /**
  * Validate a discount code for the given cart context
  */
@@ -117,6 +126,72 @@ export async function validateDiscountCode(
     discountType: discount.type,
     message: `Discount "${discount.name}" applied!`,
   };
+}
+
+/**
+ * Validate a new discount code for combination with existing applied discounts
+ */
+export async function validateDiscountCombination(
+  code: string,
+  existingDiscounts: AppliedDiscountEntry[],
+  context: CartContext
+): Promise<DiscountResult> {
+  // Duplicate check
+  if (existingDiscounts.some((d) => d.code.toUpperCase() === code.toUpperCase())) {
+    return { success: false, discountAmount: 0, error: 'This discount code is already applied' };
+  }
+
+  // Max limit check
+  if (existingDiscounts.length >= MAX_DISCOUNT_CODES) {
+    return { success: false, discountAmount: 0, error: `Maximum of ${MAX_DISCOUNT_CODES} discount codes per order` };
+  }
+
+  // Validate the new code itself (active, dates, usage, minimums)
+  const result = await validateDiscountCode(code, context);
+  if (!result.success) {
+    return result;
+  }
+
+  // If no existing codes, allow
+  if (existingDiscounts.length === 0) {
+    return result;
+  }
+
+  // Fetch the new discount to check combinable flag
+  const newDiscount = await prisma.discount.findUnique({
+    where: { code: code.toUpperCase() },
+  });
+
+  if (!newDiscount) {
+    return { success: false, discountAmount: 0, error: 'Invalid discount code' };
+  }
+
+  // If new code is NOT combinable, reject
+  if (!newDiscount.combinable) {
+    return {
+      success: false,
+      discountAmount: 0,
+      error: 'This discount cannot be combined with other codes',
+    };
+  }
+
+  // Check if all existing codes are combinable
+  const existingCodes = existingDiscounts.map((d) => d.code.toUpperCase());
+  const existingDbDiscounts = await prisma.discount.findMany({
+    where: { code: { in: existingCodes } },
+    select: { code: true, combinable: true },
+  });
+
+  const hasNonCombinable = existingDbDiscounts.some((d) => !d.combinable);
+  if (hasNonCombinable) {
+    return {
+      success: false,
+      discountAmount: 0,
+      error: 'An existing discount on your cart cannot be combined with other codes. Remove it first.',
+    };
+  }
+
+  return result;
 }
 
 /**
@@ -340,16 +415,22 @@ export async function recordDiscountUsage(
 }
 
 /**
- * Check if free shipping should be applied
+ * Check if free shipping should be applied.
+ * Accepts either a single code (backwards compat) or array of codes.
  */
 export async function shouldApplyFreeShipping(
-  discountCode: string | null,
+  discountCodes: string | string[] | null,
   context: CartContext
 ): Promise<boolean> {
-  // Check manual discount code
-  if (discountCode) {
+  // Normalise to array
+  const codes: string[] = discountCodes
+    ? (Array.isArray(discountCodes) ? discountCodes : [discountCodes])
+    : [];
+
+  // Check manual discount codes
+  for (const code of codes) {
     const discount = await prisma.discount.findUnique({
-      where: { code: discountCode.toUpperCase() },
+      where: { code: code.toUpperCase() },
     });
     if (discount?.type === 'FREE_SHIPPING' && discount.isActive) {
       const now = new Date();
@@ -357,7 +438,6 @@ export async function shouldApplyFreeShipping(
         discount.startsAt <= now &&
         (!discount.expiresAt || discount.expiresAt > now)
       ) {
-        // Check minimum order amount
         if (!discount.minOrderAmount || context.subtotal >= Number(discount.minOrderAmount)) {
           return true;
         }
@@ -381,4 +461,17 @@ export async function shouldApplyFreeShipping(
   }
 
   return false;
+}
+
+/**
+ * Record usage for multiple discount codes after order completion
+ */
+export async function recordMultipleDiscountUsage(
+  appliedDiscounts: AppliedDiscountEntry[],
+  orderId: string,
+  customerId: string | null
+): Promise<void> {
+  for (const entry of appliedDiscounts) {
+    await recordDiscountUsage(entry.code, orderId, customerId, entry.amount);
+  }
 }

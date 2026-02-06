@@ -7,9 +7,16 @@ import { trackMetaEvent } from '@/components/MetaPixel';
 import { trackCartAction, trackEvent, ANALYTICS_EVENTS } from '@/lib/analytics/track';
 import { completePendingGroupOrderJoin } from '@/lib/group-orders/hooks';
 
+interface AppliedDiscountEntry {
+  code: string;
+  amount: number;
+  type: string;
+}
+
 interface CustomCartData {
   discountCode?: string | null;
   discountAmount?: string | number;
+  appliedDiscounts?: AppliedDiscountEntry[];
   subtotal?: string | number;
   taxAmount?: string | number;
   deliveryFee?: string | number;
@@ -32,6 +39,7 @@ interface CustomCartApiData {
   deliveryFee: string;
   discountAmount: string;
   discountCode?: string;
+  appliedDiscounts?: AppliedDiscountEntry[];
   total: string;
 }
 
@@ -179,6 +187,7 @@ export function CartProvider({ children }: { children: React.ReactNode }): React
     ? {
         discountCode: cartHook.customCart.discountCode,
         discountAmount: cartHook.customCart.discountAmount,
+        appliedDiscounts: cartHook.customCart.appliedDiscounts || [],
         subtotal: cartHook.customCart.subtotal,
         taxAmount: cartHook.customCart.taxAmount,
         deliveryFee: cartHook.customCart.deliveryFee,

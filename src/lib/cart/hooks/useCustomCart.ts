@@ -26,6 +26,12 @@ interface CustomCartItem {
   };
 }
 
+interface AppliedDiscountEntry {
+  code: string;
+  amount: number;
+  type: string;
+}
+
 interface CustomCart {
   id: string;
   items: CustomCartItem[];
@@ -34,6 +40,7 @@ interface CustomCart {
   deliveryFee: string;
   discountAmount: string;
   discountCode?: string;
+  appliedDiscounts?: AppliedDiscountEntry[];
   total: string;
   deliveryDate?: string;
   deliveryTime?: string;
@@ -125,9 +132,11 @@ function transformToCart(cart: CustomCart): Cart {
         currencyCode: 'USD',
       },
     },
-    discountCodes: cart.discountCode
-      ? [{ code: cart.discountCode, applicable: true }]
-      : [],
+    discountCodes: cart.appliedDiscounts && cart.appliedDiscounts.length > 0
+      ? cart.appliedDiscounts.map(d => ({ code: d.code, applicable: true }))
+      : cart.discountCode
+        ? [{ code: cart.discountCode, applicable: true }]
+        : [],
     // Store raw discount amount in attributes for checkout page
     // IMPORTANT: Explicitly convert discountAmount to string - Prisma Decimal may serialize differently
     attributes: [

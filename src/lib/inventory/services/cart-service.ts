@@ -218,8 +218,15 @@ export async function setDeliveryInfo(
   return recalculateCart(cartId);
 }
 
+/** Shape of entries stored in Cart.appliedDiscounts JSON */
+interface AppliedDiscountEntry {
+  code: string;
+  amount: number;
+  type: string;
+}
+
 /**
- * Apply discount code
+ * Apply discount code (backwards compat - single code)
  */
 export async function applyDiscount(
   cartId: string,
@@ -238,12 +245,70 @@ export async function applyDiscount(
 }
 
 /**
- * Remove discount code
+ * Add a discount code to the cart (multi-discount support)
  */
-export async function removeDiscount(cartId: string): Promise<CartWithItems> {
+export async function addDiscount(
+  cartId: string,
+  code: string,
+  amount: number,
+  type: string
+): Promise<CartWithItems> {
+  const cart = await prisma.cart.findUnique({ where: { id: cartId } });
+  if (!cart) throw new Error('Cart not found');
+
+  const existing = (cart.appliedDiscounts as unknown as AppliedDiscountEntry[]) || [];
+  const updated = [...existing, { code, amount, type }];
+  const totalAmount = updated.reduce((sum, d) => sum + d.amount, 0);
+
   await prisma.cart.update({
     where: { id: cartId },
     data: {
+      appliedDiscounts: updated as unknown as Prisma.InputJsonValue,
+      discountCode: updated.length === 1 ? code : null,
+      discountAmount: new Prisma.Decimal(totalAmount.toFixed(2)),
+    },
+  });
+
+  return recalculateCart(cartId);
+}
+
+/**
+ * Remove a specific discount code from the cart
+ */
+export async function removeDiscount(cartId: string, code?: string): Promise<CartWithItems> {
+  const cart = await prisma.cart.findUnique({ where: { id: cartId } });
+  if (!cart) throw new Error('Cart not found');
+
+  const existing = (cart.appliedDiscounts as unknown as AppliedDiscountEntry[]) || [];
+
+  // If no code specified or no multi-discount entries, clear all
+  if (!code || existing.length === 0) {
+    return removeAllDiscounts(cartId);
+  }
+
+  const filtered = existing.filter((d) => d.code.toUpperCase() !== code.toUpperCase());
+  const totalAmount = filtered.reduce((sum, d) => sum + d.amount, 0);
+
+  await prisma.cart.update({
+    where: { id: cartId },
+    data: {
+      appliedDiscounts: filtered as unknown as Prisma.InputJsonValue,
+      discountCode: filtered.length === 1 ? filtered[0].code : null,
+      discountAmount: new Prisma.Decimal(totalAmount.toFixed(2)),
+    },
+  });
+
+  return recalculateCart(cartId);
+}
+
+/**
+ * Remove all discount codes from the cart
+ */
+export async function removeAllDiscounts(cartId: string): Promise<CartWithItems> {
+  await prisma.cart.update({
+    where: { id: cartId },
+    data: {
+      appliedDiscounts: [],
       discountCode: null,
       discountAmount: new Prisma.Decimal(0),
     },
@@ -400,9 +465,15 @@ async function recalculateCart(cartId: string): Promise<CartWithItems> {
   });
   const taxAmount = taxResult.taxAmount;
 
+  // Check if any applied discount is FREE_SHIPPING
+  const appliedDiscounts = (cart.appliedDiscounts as unknown as AppliedDiscountEntry[]) || [];
+  const hasFreeShipping = appliedDiscounts.some((d) => d.type === 'FREE_SHIPPING');
+
   // Calculate delivery fee based on zip code (if delivery address is set)
   let deliveryFee = parseFloat(cart.deliveryFee.toString());
-  if (zipCode && cart.deliveryAddress) {
+  if (hasFreeShipping) {
+    deliveryFee = 0;
+  } else if (zipCode && cart.deliveryAddress) {
     // Calculate delivery fee based on zone - use existing fee if manually set
     const existingFee = parseFloat(cart.deliveryFee.toString());
     // Only auto-calculate if fee is 0 or if we don't have a fee set
@@ -480,6 +551,7 @@ export function cartToCheckoutData(cart: CartWithItems) {
     subtotal: parseFloat(cart.subtotal.toString()),
     discountCode: cart.discountCode,
     discountAmount: parseFloat(cart.discountAmount.toString()),
+    appliedDiscounts: (cart.appliedDiscounts as unknown as AppliedDiscountEntry[]) || [],
     taxAmount: parseFloat(cart.taxAmount.toString()),
     deliveryFee: parseFloat(cart.deliveryFee.toString()),
     total: parseFloat(cart.total.toString()),
