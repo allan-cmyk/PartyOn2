@@ -40,15 +40,13 @@ export default function OpsLayout({ children }: OpsLayoutProps): ReactElement {
 
       const data = await response.json();
 
-      if (data.success && data.role === 'admin') {
+      if (data.success && (data.role === 'admin' || data.role === 'employee')) {
         sessionStorage.setItem('ops_authenticated', 'true');
+        sessionStorage.setItem('ops_role', data.role);
         setIsAuthenticated(true);
         if (pathname === '/ops') {
           router.push('/ops/inventory');
         }
-      } else if (data.success && data.role === 'employee') {
-        setError('Operations access requires admin privileges');
-        setPassword('');
       } else {
         setError(data.error || 'Invalid password');
         setPassword('');
@@ -92,7 +90,7 @@ export default function OpsLayout({ children }: OpsLayoutProps): ReactElement {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Admin Password
+                Password
               </label>
               <input
                 type="password"
@@ -100,7 +98,7 @@ export default function OpsLayout({ children }: OpsLayoutProps): ReactElement {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter admin password"
+                placeholder="Enter password"
                 required
                 autoFocus
               />
@@ -123,17 +121,15 @@ export default function OpsLayout({ children }: OpsLayoutProps): ReactElement {
     );
   }
 
-  // Navigation items for ops
+  // Navigation items for ops (day-to-day operational tasks)
   const navItems = [
     { href: '/ops/inventory', label: 'Inventory' },
     { href: '/ops/inventory/count', label: 'AI Count' },
     { href: '/ops/inventory/predictions', label: 'Predictions' },
     { href: '/ops/products', label: 'Products' },
     { href: '/ops/orders', label: 'Orders' },
-    { href: '/ops/customers', label: 'Customers' },
-    { href: '/ops/email-preview', label: 'Emails' },
-    { href: '/ops/sync', label: 'Sync' },
-    { href: '/ops/reports', label: 'Reports' },
+    { href: '/ops/group-orders', label: 'Group Orders' },
+    { href: '/ops/collections', label: 'Collections' },
   ];
 
   // Authenticated - render with navigation
