@@ -147,6 +147,7 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
   // Navigation items based on role
   const navItems = [
     { href: '/admin/orders', label: 'Orders', roles: ['admin', 'employee'] },
+    { href: '/admin/promotions', label: 'Promotions', roles: ['admin'] },
     { href: '/admin/dashboard', label: 'Analytics', roles: ['admin'] },
     { href: '/admin/experiments', label: 'Experiments', roles: ['admin'] },
   ];
