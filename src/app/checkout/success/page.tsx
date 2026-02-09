@@ -95,7 +95,7 @@ function CheckoutSuccessContent() {
     }
 
     // Fetch full order details
-    fetchOrderDetails(order, sessionId);
+    fetchOrderDetails(order ?? null, sessionId ?? null);
 
     // Fire tracking for Stripe checkout
     async function fetchStripeSession() {
