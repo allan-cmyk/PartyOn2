@@ -209,7 +209,7 @@ export default function DeliveryDateTimePicker({
     startOfMonth(currentMonth) > startOfMonth(new Date());
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+    <div className="bg-white border border-gray-200 rounded-lg">
       {/* Header */}
       <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
         <h3 className="font-heading text-xl text-gray-900 tracking-[0.1em]">
