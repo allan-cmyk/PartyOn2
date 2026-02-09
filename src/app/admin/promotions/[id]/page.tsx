@@ -33,6 +33,7 @@ interface DiscountData {
   startsAt: string;
   expiresAt: string | null;
   isActive: boolean;
+  combinable: boolean;
   usageCount: number;
   totalDiscountGiven: number;
   usageHistory: UsageRecord[];
@@ -116,6 +117,7 @@ export default function EditDiscountPage({ params }: PageProps) {
         startsAt: discount.startsAt,
         expiresAt: discount.expiresAt,
         isActive: discount.isActive,
+        combinable: discount.combinable,
       };
 
       const response = await fetch(`/api/v1/admin/discounts/${id}`, {
@@ -350,18 +352,40 @@ export default function EditDiscountPage({ params }: PageProps) {
 
               {/* Status */}
               <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    name="isActive"
-                    checked={discount.isActive}
-                    onChange={handleChange}
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  />
-                  <span className="text-sm font-medium text-gray-700">
-                    Active
-                  </span>
-                </label>
+                <h2 className="text-lg font-semibold text-black mb-4">Settings</h2>
+
+                <div className="space-y-3">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      name="isActive"
+                      checked={discount.isActive}
+                      onChange={handleChange}
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <span className="text-sm font-medium text-gray-700">
+                      Active
+                    </span>
+                  </label>
+
+                  <div>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        name="combinable"
+                        checked={discount.combinable}
+                        onChange={handleChange}
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      />
+                      <span className="text-sm font-medium text-gray-700">
+                        Can be combined with other discount codes
+                      </span>
+                    </label>
+                    <p className="text-xs text-gray-500 mt-1 ml-6">
+                      When enabled, customers can stack this code with other combinable codes (max 3 per order)
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {/* Actions */}
