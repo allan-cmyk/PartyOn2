@@ -217,6 +217,150 @@ Premium Alcohol Delivery
 }
 
 /**
+ * Normalized partner inquiry data
+ */
+export interface PartnerInquiryData {
+  contactName: string;
+  email: string;
+  phone?: string;
+  businessName?: string;
+  businessType?: string;
+  partnerType?: string;
+  website?: string;
+  message?: string;
+  notes?: string;
+  eventTypes?: string;
+  serviceArea?: string;
+  guestCount?: string;
+  timeframe?: string;
+  eventDate?: string;
+  venue?: string;
+  numberOfRooms?: string;
+  monthlyVolume?: string;
+  currentProvider?: string;
+  interests?: string;
+  source?: string;
+  submittedAt?: string;
+}
+
+/**
+ * Send partner inquiry notification to business owner
+ */
+export async function sendPartnerInquiryNotification(
+  data: PartnerInquiryData
+): Promise<string | null> {
+  const notifyEmail = process.env.RESEND_FROM_EMAIL || 'info@partyondelivery.com';
+
+  // Build rows only for fields that have values
+  const rows: Array<{ label: string; value: string }> = [
+    { label: 'Contact Name', value: data.contactName },
+    { label: 'Email', value: data.email },
+  ];
+
+  if (data.phone) rows.push({ label: 'Phone', value: data.phone });
+  if (data.businessName) rows.push({ label: 'Business Name', value: data.businessName });
+  if (data.businessType) rows.push({ label: 'Business Type', value: data.businessType });
+  if (data.partnerType) rows.push({ label: 'Partner Type', value: data.partnerType });
+  if (data.website) rows.push({ label: 'Website', value: data.website });
+  if (data.eventDate) rows.push({ label: 'Event Date', value: data.eventDate });
+  if (data.venue) rows.push({ label: 'Venue', value: data.venue });
+  if (data.eventTypes) rows.push({ label: 'Event Types', value: data.eventTypes });
+  if (data.guestCount) rows.push({ label: 'Guest Count', value: data.guestCount });
+  if (data.serviceArea) rows.push({ label: 'Service Area', value: data.serviceArea });
+  if (data.timeframe) rows.push({ label: 'Timeframe', value: data.timeframe });
+  if (data.numberOfRooms) rows.push({ label: 'Number of Rooms', value: data.numberOfRooms });
+  if (data.monthlyVolume) rows.push({ label: 'Monthly Volume', value: data.monthlyVolume });
+  if (data.currentProvider) rows.push({ label: 'Current Provider', value: data.currentProvider });
+  if (data.interests) rows.push({ label: 'Interests', value: data.interests });
+  if (data.message) rows.push({ label: 'Message', value: data.message });
+  if (data.notes) rows.push({ label: 'Notes', value: data.notes });
+  if (data.source) rows.push({ label: 'Source Page', value: data.source });
+
+  const tableRows = rows.map(r =>
+    `<tr>
+      <td style="padding: 10px 16px; font-weight: 600; color: #1a1a1a; border-bottom: 1px solid #e5e5e5; white-space: nowrap; vertical-align: top;">${r.label}</td>
+      <td style="padding: 10px 16px; color: #374151; border-bottom: 1px solid #e5e5e5;">${r.value}</td>
+    </tr>`
+  ).join('\n');
+
+  const textRows = rows.map(r => `${r.label}: ${r.value}`).join('\n');
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f9fafb;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          <tr>
+            <td style="background-color: #1a1a1a; padding: 32px; text-align: center;">
+              <h1 style="color: #D4AF37; margin: 0; font-size: 28px; font-weight: 600; letter-spacing: 0.1em;">PARTYON</h1>
+              <p style="color: #ffffff; margin: 8px 0 0; font-size: 14px; letter-spacing: 0.05em;">PREMIUM ALCOHOL DELIVERY</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color: #fef3c7; padding: 20px; text-align: center; border-bottom: 1px solid #e5e5e5;">
+              <h2 style="margin: 0; color: #92400e; font-size: 22px;">New Partnership Inquiry</h2>
+              <p style="margin: 6px 0 0; color: #a16207; font-size: 14px;">${data.partnerType || 'General'} &middot; ${new Date(data.submittedAt || Date.now()).toLocaleString('en-US', { timeZone: 'America/Chicago' })}</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 24px;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                ${tableRows}
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 0 24px 24px; text-align: center;">
+              <a href="mailto:${data.email}" style="display: inline-block; background-color: #D4AF37; color: #1a1a1a; text-decoration: none; padding: 12px 32px; border-radius: 6px; font-weight: 600; font-size: 16px;">
+                Reply to ${data.contactName.split(' ')[0]}
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color: #1a1a1a; padding: 16px; text-align: center;">
+              <p style="margin: 0; color: #666; font-size: 12px;">&copy; ${new Date().getFullYear()} PartyOn Delivery</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `.trim();
+
+  const text = `
+NEW PARTNERSHIP INQUIRY
+${data.partnerType || 'General'}
+
+${textRows}
+
+Submitted: ${data.submittedAt || new Date().toISOString()}
+  `.trim();
+
+  return sendEmail({
+    to: notifyEmail,
+    subject: `New Partner Inquiry: ${data.contactName} - ${data.partnerType || 'General'}`,
+    html,
+    text,
+    type: EmailType.PARTNER_INQUIRY,
+    metadata: {
+      contactName: data.contactName,
+      email: data.email,
+      partnerType: data.partnerType,
+      source: data.source,
+    },
+  });
+}
+
+/**
  * Send refund processed notification
  */
 export async function sendRefundProcessedEmail(

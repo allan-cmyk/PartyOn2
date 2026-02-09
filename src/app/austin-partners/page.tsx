@@ -52,20 +52,10 @@ export default function PartnersPage() {
       return;
     }
 
-    // Submit to Zapier webhook
     try {
-      const zapierWebhookUrl = process.env.NEXT_PUBLIC_ZAPIER_PARTNER_WEBHOOK_URL;
-
-      if (!zapierWebhookUrl) {
-        console.error('Zapier webhook URL not configured');
-        throw new Error('Form submission not configured');
-      }
-
-      const response = await fetch(zapierWebhookUrl, {
+      const response = await fetch('/api/partners/inquiry', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
           partnerType: 'General Partnership',
@@ -74,8 +64,9 @@ export default function PartnersPage() {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to submit form');
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Failed to submit form');
       }
 
       setSubmitStatus('success');

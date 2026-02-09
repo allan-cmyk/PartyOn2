@@ -77,20 +77,10 @@ export default function CorporateLandingPage() {
     setSubmitMessage('');
 
     try {
-      // Use environment variable with hardcoded fallback
-      const zapierWebhookUrl = process.env.NEXT_PUBLIC_ZAPIER_PARTNER_WEBHOOK_URL ||
-        'https://hooks.zapier.com/hooks/catch/19709726/urgzdc8/';
-
-      console.log('Environment variable:', process.env.NEXT_PUBLIC_ZAPIER_PARTNER_WEBHOOK_URL);
-      console.log('Using webhook URL:', zapierWebhookUrl);
-
-      if (!zapierWebhookUrl) {
-        console.error('Zapier webhook URL not configured');
-        throw new Error('Form submission not configured');
-      }
-
       const payload = {
         ...formData,
+        contactName: `${formData.firstName} ${formData.lastName}`.trim(),
+        businessName: formData.company,
         partnerType: 'Corporate Events',
         source: 'corporate-landing-page',
         submittedAt: new Date().toISOString(),
@@ -99,24 +89,15 @@ export default function CorporateLandingPage() {
         utm_campaign: sessionStorage.getItem('utm_campaign') || '',
       };
 
-      console.log('Submitting to Zapier:', zapierWebhookUrl);
-      console.log('Payload:', payload);
-
-      const response = await fetch(zapierWebhookUrl, {
+      const response = await fetch('/api/partners/inquiry', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
-      console.log('Response status:', response.status);
-      console.log('Response ok:', response.ok);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error response:', errorText);
-        throw new Error(`Failed to submit form: ${response.status} ${response.statusText}`);
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Failed to submit form');
       }
 
       // Fire Meta Pixel Lead event on successful submission

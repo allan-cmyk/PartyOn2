@@ -1118,6 +1118,7 @@ enum EmailType {
   PASSWORD_RESET
   INVOICE
   GROUP_ORDER_INVOICE
+  PARTNER_INQUIRY
 }
 
 enum EmailStatus {

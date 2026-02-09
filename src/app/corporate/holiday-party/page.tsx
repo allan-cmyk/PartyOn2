@@ -78,15 +78,10 @@ export default function CorporateHolidayPartyPage() {
     setSubmitMessage('');
 
     try {
-      const zapierWebhookUrl = process.env.NEXT_PUBLIC_ZAPIER_PARTNER_WEBHOOK_URL ||
-        'https://hooks.zapier.com/hooks/catch/19709726/urgzdc8/';
-
-      if (!zapierWebhookUrl) {
-        throw new Error('Form submission not configured');
-      }
-
       const payload = {
         ...formData,
+        contactName: `${formData.firstName} ${formData.lastName}`.trim(),
+        businessName: formData.company,
         partnerType: 'Corporate Holiday Party',
         source: 'corporate-holiday-party-landing-page',
         submittedAt: new Date().toISOString(),
@@ -96,16 +91,15 @@ export default function CorporateHolidayPartyPage() {
         utm_content: sessionStorage.getItem('utm_content') || '',
       };
 
-      const response = await fetch(zapierWebhookUrl, {
+      const response = await fetch('/api/partners/inquiry', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to submit form: ${response.status} ${response.statusText}`);
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Failed to submit form');
       }
 
       // Fire Meta Pixel Lead event on successful submission

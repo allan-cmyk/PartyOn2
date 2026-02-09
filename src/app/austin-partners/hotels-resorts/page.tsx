@@ -47,29 +47,21 @@ export default function HotelsResortsPartnerPage() {
     setSubmitMessage('')
 
     try {
-      const zapierWebhookUrl = process.env.NEXT_PUBLIC_ZAPIER_PARTNER_WEBHOOK_URL;
-
-      if (!zapierWebhookUrl) {
-        console.error('Zapier webhook URL not configured');
-        throw new Error('Form submission not configured');
-      }
-
-      const response = await fetch(zapierWebhookUrl, {
+      const response = await fetch('/api/partners/inquiry', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          interests: formData.interests.join(', '), // Convert array to comma-separated string
+          interests: formData.interests,
           partnerType: 'Hotels & Resorts',
           source: 'hotels-resorts-page',
           submittedAt: new Date().toISOString(),
         }),
       })
 
-      if (!response.ok) {
-        throw new Error('Failed to submit form');
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Failed to submit form');
       }
 
       setSubmitMessage('Thank you! Your partnership inquiry has been submitted successfully. We\'ll contact you within 24 hours.');
