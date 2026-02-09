@@ -7,7 +7,6 @@ import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import CartButton from '@/components/shopify/CartButton';
 import ProductSearch from '@/components/ProductSearch';
 import { useCustomerContext } from '@/contexts/CustomerContext';
-import CustomerAuth from '@/components/CustomerAuth';
 
 // Routes where navigation should be hidden
 const NAV_HIDDEN_ROUTES = [
@@ -62,7 +61,7 @@ export default function Navigation({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const [isRentalsOpen, setIsRentalsOpen] = useState(false);
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
+
   const [isMounted, setIsMounted] = useState(false);
   const { customer, isAuthenticated, logout } = useCustomerContext();
   const pathname = usePathname();
@@ -230,8 +229,8 @@ export default function Navigation({
               {/* Cart Button */}
               <CartButton isScrolled={isScrolled} />
 
-              {/* Account Section */}
-              {isAuthenticated && customer ? (
+              {/* Account Section - only show when logged in */}
+              {isAuthenticated && customer && (
                 <div className="relative group">
                   <button
                     className={`flex items-center text-sm font-medium tracking-[0.05em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 rounded ${
@@ -265,29 +264,7 @@ export default function Navigation({
                     </button>
                   </div>
                 </div>
-              ) : (
-                <button
-                  onClick={() => setIsAuthOpen(true)}
-                  className={`text-sm font-medium tracking-[0.05em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 rounded ${
-                    isScrolled
-                      ? 'text-gray-700 hover:text-brand-yellow'
-                      : 'text-white/90 hover:text-brand-yellow'
-                  }`}
-                >
-                  SIGN IN
-                </button>
               )}
-
-              {/* Order CTA Button */}
-              <Link href="/order">
-                <button className={`px-6 py-2.5 text-sm font-semibold tracking-[0.08em] rounded-lg transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 ${
-                  isScrolled
-                    ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-400 active:bg-yellow-500'
-                    : 'bg-brand-yellow text-gray-900 hover:bg-yellow-400 active:bg-yellow-500'
-                }`}>
-                  ORDER NOW
-                </button>
-              </Link>
             </div>
 
             {/* Mobile Menu Button */}
@@ -399,8 +376,8 @@ export default function Navigation({
               PARTNERS
             </Link>
 
-            {/* Account link for mobile */}
-            {isAuthenticated && customer ? (
+            {/* Account link for mobile - only show when logged in */}
+            {isAuthenticated && customer && (
               <div className="space-y-3">
                 <p className="text-xl font-heading font-semibold tracking-[0.04em] text-gray-900">
                   {customer.firstName || 'ACCOUNT'}
@@ -431,32 +408,11 @@ export default function Navigation({
                   </button>
                 </div>
               </div>
-            ) : (
-              <button
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  setIsAuthOpen(true);
-                }}
-                className="text-xl font-heading font-semibold tracking-[0.04em] text-gray-900 hover:text-brand-blue transition-colors text-left"
-              >
-                SIGN IN
-              </button>
             )}
-
-            <Link href="/order" onClick={() => setIsMenuOpen(false)}>
-              <button className="w-full mt-4 px-6 py-3 text-sm font-semibold tracking-[0.08em] bg-brand-yellow text-gray-900 rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-all duration-300">
-                ORDER NOW
-              </button>
-            </Link>
           </div>
         </div>
       </div>
 
-      {/* Customer Auth Modal */}
-      <CustomerAuth
-        isOpen={isAuthOpen}
-        onClose={() => setIsAuthOpen(false)}
-      />
     </>
   );
 }
