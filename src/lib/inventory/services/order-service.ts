@@ -235,6 +235,140 @@ export async function createOrderFromCheckout(
 }
 
 /**
+ * Create an order from a cart with $0 total (fully discounted)
+ * Used when discounts cover the entire order, skipping Stripe
+ */
+export async function createFreeOrder(
+  cart: CartWithItems,
+  customerEmail: string,
+  customerName: string,
+  customerPhone: string | null
+): Promise<OrderWithItems> {
+  // Get or create customer
+  let customerId = cart.customerId;
+
+  if (!customerId && customerEmail) {
+    const existingCustomer = await prisma.customer.findUnique({
+      where: { email: customerEmail },
+    });
+
+    if (existingCustomer) {
+      customerId = existingCustomer.id;
+    } else {
+      const nameParts = customerName.split(' ');
+      const newCustomer = await prisma.customer.create({
+        data: {
+          email: customerEmail,
+          phone: customerPhone,
+          firstName: nameParts[0] || 'Guest',
+          lastName: nameParts.slice(1).join(' ') || '',
+          ageVerified: true,
+          isActive: true,
+        },
+      });
+      customerId = newCustomer.id;
+    }
+  }
+
+  if (!customerId) {
+    throw new Error('Customer ID is required to create an order');
+  }
+  if (!cart.deliveryDate) {
+    throw new Error('Delivery date is required to create an order');
+  }
+  if (!cart.deliveryTime) {
+    throw new Error('Delivery time is required to create an order');
+  }
+
+  type TransactionClient = Omit<typeof prisma, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>;
+  const order = await prisma.$transaction(async (tx: TransactionClient) => {
+    const newOrder = await tx.order.create({
+      data: {
+        customerId: customerId!,
+        stripePaymentIntentId: null,
+        stripeCheckoutSessionId: null,
+        status: 'CONFIRMED',
+        fulfillmentStatus: 'UNFULFILLED',
+        financialStatus: 'PAID',
+        subtotal: cart.subtotal,
+        taxAmount: cart.taxAmount,
+        deliveryFee: cart.deliveryFee,
+        discountCode: cart.discountCode,
+        discountAmount: cart.discountAmount,
+        total: cart.total,
+        deliveryDate: cart.deliveryDate!,
+        deliveryTime: cart.deliveryTime!,
+        deliveryAddress: cart.deliveryAddress ?? Prisma.JsonNull,
+        deliveryPhone: cart.deliveryPhone || customerPhone || '',
+        deliveryInstructions: cart.deliveryInstructions,
+        customerEmail,
+        customerPhone,
+        customerName,
+      },
+      include: { items: true },
+    });
+
+    for (const item of cart.items) {
+      await tx.orderItem.create({
+        data: {
+          orderId: newOrder.id,
+          productId: item.productId,
+          variantId: item.variantId,
+          title: item.product.title,
+          variantTitle: item.variant.title,
+          sku: item.variant.sku,
+          quantity: item.quantity,
+          price: item.price,
+          totalPrice: new Prisma.Decimal(Number(item.price) * item.quantity),
+        },
+      });
+    }
+
+    // Decrement inventory
+    for (const item of cart.items) {
+      const inventoryItem = await tx.inventoryItem.findFirst({
+        where: { productId: item.productId, variantId: item.variantId },
+      });
+      if (inventoryItem) {
+        await tx.inventoryItem.update({
+          where: { id: inventoryItem.id },
+          data: { quantity: { decrement: item.quantity } },
+        });
+        await tx.inventoryMovement.create({
+          data: {
+            inventoryItemId: inventoryItem.id,
+            type: 'SOLD',
+            quantity: -item.quantity,
+            previousQuantity: inventoryItem.quantity,
+            newQuantity: inventoryItem.quantity - item.quantity,
+            reason: `Order #${newOrder.orderNumber} (free order)`,
+            referenceId: newOrder.id,
+            referenceType: 'Order',
+          },
+        });
+      }
+    }
+
+    return await tx.order.findUnique({
+      where: { id: newOrder.id },
+      include: { items: true },
+    });
+  });
+
+  if (!order) {
+    throw new Error('Failed to create free order');
+  }
+
+  // Mark cart as converted
+  await prisma.cart.update({
+    where: { id: cart.id },
+    data: { status: 'CONVERTED' },
+  });
+
+  return order as unknown as OrderWithItems;
+}
+
+/**
  * Get an order by ID
  */
 export async function getOrderById(orderId: string): Promise<OrderWithItems | null> {

@@ -132,14 +132,20 @@ export async function createCheckoutSession(
     sessionParams.customer_email = customerEmail;
   }
 
-  // Apply discounts if any
-  if (cart.discountCode && Number(cart.discountAmount) > 0) {
-    // Create a coupon for this discount
+  // Apply discounts if any (supports multiple discount codes)
+  const totalDiscountAmount = Number(cart.discountAmount);
+  if (totalDiscountAmount > 0) {
+    // Build coupon name from all applied discounts
+    const appliedDiscounts = (cart.appliedDiscounts as unknown as Array<{ code: string; type: string; amount: number }>) || [];
+    const couponName = appliedDiscounts.length > 0
+      ? appliedDiscounts.map(d => d.code).join(' + ')
+      : cart.discountCode || 'Discount';
+
     const coupon = await stripe.coupons.create({
-      amount_off: Math.round(Number(cart.discountAmount) * 100),
+      amount_off: Math.round(totalDiscountAmount * 100),
       currency: 'usd',
       duration: 'once',
-      name: cart.discountCode,
+      name: couponName,
     });
     sessionParams.discounts = [{ coupon: coupon.id }];
   }

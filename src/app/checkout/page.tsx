@@ -240,12 +240,14 @@ export default function CheckoutPage() {
         throw new Error(data.error || 'Failed to save delivery info');
       }
 
-      // Create Stripe checkout session
+      // Create checkout session (Stripe for paid orders, direct for $0 orders)
       const checkoutResponse = await fetch('/api/v1/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           customerEmail: billingAddress.email,
+          customerName: `${billingAddress.firstName} ${billingAddress.lastName}`.trim(),
+          customerPhone: billingAddress.phone,
         }),
       });
 

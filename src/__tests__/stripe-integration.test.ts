@@ -152,6 +152,7 @@ describe('Checkout Session Creation', () => {
     deliveryInstructions: null,
     discountCode: null,
     discountAmount: new Prisma.Decimal(0),
+    appliedDiscounts: [],
     groupOrderId: null,
     expiresAt: null,
     abandonedAt: null,

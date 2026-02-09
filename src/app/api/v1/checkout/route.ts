@@ -9,6 +9,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { createCheckoutSession, getCheckoutSession, getOrCreateStripeCustomer } from '@/lib/stripe';
 import { getCartById, validateCartMinimum, hasDeliveryInfo } from '@/lib/inventory/services/cart-service';
+import { createFreeOrder } from '@/lib/inventory/services/order-service';
 
 const CART_ID_COOKIE = 'cart_id';
 
@@ -115,12 +116,33 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Get request body for optional params
     const body = await request.json().catch(() => ({}));
-    const { customerEmail, returnUrl } = body;
+    const { customerEmail, customerName, customerPhone, returnUrl } = body;
 
     // Build success and cancel URLs
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     const successUrl = returnUrl || `${appUrl}/checkout/success`;
     const cancelUrl = `${appUrl}/checkout/cancel`;
+
+    // Handle $0 total (fully discounted orders) - Stripe can't process $0 payments
+    const cartTotal = Number(cart.total);
+    if (cartTotal <= 0) {
+      const order = await createFreeOrder(
+        cart,
+        customerEmail || '',
+        customerName || 'Guest',
+        customerPhone || null
+      );
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          freeOrder: true,
+          orderId: order.id,
+          orderNumber: order.orderNumber,
+          checkoutUrl: `${successUrl}?order=${order.id}&order_name=PO-${order.orderNumber}&total=0`,
+        },
+      });
+    }
 
     // Get or create Stripe customer if we have a customer ID
     let stripeCustomerId: string | undefined;
