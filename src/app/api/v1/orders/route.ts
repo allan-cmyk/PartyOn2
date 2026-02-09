@@ -5,7 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getOrders, getCustomerOrders } from '@/lib/inventory/services/order-service';
+import { getOrders, getCustomerOrders, getOrderByCheckoutSession } from '@/lib/inventory/services/order-service';
 import type { OrderStatus, FulfillmentStatus, FinancialStatus } from '@prisma/client';
 
 /**
@@ -15,6 +15,19 @@ import type { OrderStatus, FulfillmentStatus, FinancialStatus } from '@prisma/cl
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const { searchParams } = request.nextUrl;
+
+    // Lookup by Stripe checkout session ID
+    const sessionId = searchParams.get('session_id');
+    if (sessionId) {
+      const order = await getOrderByCheckoutSession(sessionId);
+      if (!order) {
+        return NextResponse.json(
+          { success: false, error: 'Order not found for this session' },
+          { status: 404 }
+        );
+      }
+      return NextResponse.json({ success: true, data: { order } });
+    }
 
     // Check for customer-specific request
     const customerId = request.headers.get('x-customer-id');
