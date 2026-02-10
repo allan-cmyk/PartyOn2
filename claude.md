@@ -263,6 +263,19 @@ OPENROUTER_API_KEY=[configured]
 
 ---
 
+## NAVBAR BACKGROUND RULES (MANDATORY)
+
+Navigation defaults to OPAQUE (white bg, dark text). Only routes in `NAV_TRANSPARENT_ROUTES`
+(in Navigation.tsx) get transparent nav — these MUST have a dark background that extends behind
+the fixed nav (no `mt-24` on hero).
+
+When adding a new page:
+- Page WITH dark bg behind nav area (no `mt-24`) → Add to `NAV_TRANSPARENT_ROUTES`
+- Page with `mt-24` hero or light bg → Do nothing, opaque nav is automatic
+- NEVER use white/light text on white/light nav background
+
+---
+
 ## 🚨🚨🚨 HERO SECTION STANDARDS - READ THIS FIRST 🚨🚨🚨
 
 **This section is CRITICAL. Hero section bugs are the #1 recurring issue in this codebase.**

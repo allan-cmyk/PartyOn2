@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createGroupOrderV2 } from '@/lib/group-orders-v2/api-client';
 import type { CreateTabInput } from '@/lib/group-orders-v2/types';
 import { ORDER_TYPES } from '@/lib/group-orders-v2/order-types';
-import OrderTypeIcon from '@/components/group/OrderTypeIcon';
+import OrderTypeIcon from '@/components/group-v2/OrderTypeIcon';
 
 interface TabFormData extends CreateTabInput {
   key: string;

@@ -18,6 +18,13 @@ const NAV_HIDDEN_ROUTES = [
   '/group/',
 ];
 
+// Routes where nav uses transparent bg (page has dark background behind nav area, NO mt-24).
+// All other routes default to OPAQUE (white bg, dark text) for readability.
+const NAV_TRANSPARENT_ROUTES = [
+  '/',          // Homepage - h-screen dark hero covers nav area
+  '/services',  // Dark gradient (from-slate-900) starts from top of page
+];
+
 interface NavLinkProps {
   href: string;
   children: React.ReactNode;
@@ -57,12 +64,6 @@ export default function Navigation({
   hideMobileLogo = false,
   forceWhiteHamburger = false,
 }: NavigationProps) {
-  const [isScrolled, setIsScrolled] = useState(forceScrolled);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isServicesOpen, setIsServicesOpen] = useState(false);
-  const [isRentalsOpen, setIsRentalsOpen] = useState(false);
-
-  const [isMounted, setIsMounted] = useState(false);
   const { customer, isAuthenticated, logout } = useCustomerContext();
   const pathname = usePathname();
 
@@ -71,11 +72,24 @@ export default function Navigation({
     pathname === route || pathname.startsWith(route)
   ) : false;
 
+  // Check if nav should be transparent (page has dark bg behind nav area)
+  const shouldBeTransparent = pathname
+    ? NAV_TRANSPARENT_ROUTES.some(route =>
+        route === '/' ? pathname === '/' : pathname === route || pathname.startsWith(route + '/')
+      )
+    : false;
+
+  const [isScrolled, setIsScrolled] = useState(forceScrolled || !shouldBeTransparent);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isRentalsOpen, setIsRentalsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
     setIsMounted(true);
 
     const handleScroll = () => {
-      setIsScrolled(forceScrolled || window.scrollY > 50);
+      setIsScrolled(forceScrolled || !shouldBeTransparent || window.scrollY > 50);
     };
 
     // Set initial scroll state
@@ -83,7 +97,7 @@ export default function Navigation({
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [forceScrolled]);
+  }, [forceScrolled, shouldBeTransparent]);
 
   // If navigation should be hidden on this route, return null
   if (shouldHideNav) {
@@ -91,10 +105,11 @@ export default function Navigation({
   }
 
   // Prevent hydration mismatch by using consistent initial state
+  const shouldStartOpaque = forceScrolled || !shouldBeTransparent;
   if (!isMounted) {
     return (
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        forceScrolled ? 'bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-200' : 'bg-transparent'
+        shouldStartOpaque ? 'bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-200' : 'bg-transparent'
       }`}>
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center h-16 md:h-20">

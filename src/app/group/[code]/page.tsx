@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { fetchGroupOrderV2 } from '@/lib/group-orders-v2/api-client';
 import type { GroupOrderV2Full } from '@/lib/group-orders-v2/types';
-import JoinGroupForm from '@/components/group/JoinGroupForm';
+import JoinGroupForm from '@/components/group-v2/JoinGroupForm';
 
 export default function JoinGroupPage(): ReactElement {
   const params = useParams();

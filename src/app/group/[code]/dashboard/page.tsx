@@ -5,17 +5,17 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useGroupOrderV2 } from '@/lib/group-orders-v2/hooks';
 import { removeParticipantV2 } from '@/lib/group-orders-v2/api-client';
-import GroupHeader from '@/components/group/GroupHeader';
-import TabBar from '@/components/group/TabBar';
-import TabContent from '@/components/group/TabContent';
-import ParticipantList from '@/components/group/ParticipantList';
-import HostControlBar from '@/components/group/HostControlBar';
-import MobileCheckoutBar from '@/components/group/MobileCheckoutBar';
-import CheckoutSummaryModal from '@/components/group/CheckoutSummaryModal';
-import DashboardSkeleton from '@/components/group/DashboardSkeleton';
-import CreateTabModal from '@/components/group/CreateTabModal';
-import ShareGroupModal from '@/components/group/ShareGroupModal';
-import GroupProductCatalog from '@/components/group/GroupProductCatalog';
+import GroupHeader from '@/components/group-v2/GroupHeader';
+import TabBar from '@/components/group-v2/TabBar';
+import TabContent from '@/components/group-v2/TabContent';
+import ParticipantList from '@/components/group-v2/ParticipantList';
+import HostControlBar from '@/components/group-v2/HostControlBar';
+import MobileCheckoutBar from '@/components/group-v2/MobileCheckoutBar';
+import CheckoutSummaryModal from '@/components/group-v2/CheckoutSummaryModal';
+import DashboardSkeleton from '@/components/group-v2/DashboardSkeleton';
+import CreateTabModal from '@/components/group-v2/CreateTabModal';
+import ShareGroupModal from '@/components/group-v2/ShareGroupModal';
+import GroupProductCatalog from '@/components/group-v2/GroupProductCatalog';
 
 export default function DashboardPage(): ReactElement {
   const params = useParams();
