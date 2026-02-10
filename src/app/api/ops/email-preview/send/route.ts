@@ -1,0 +1,238 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { sendEmail } from '@/lib/email/resend-client';
+import { generateOrderConfirmationEmail } from '@/lib/email/templates/order-confirmation';
+import {
+  generateDeliveryEnRouteEmail,
+  generateDeliveryCompletedEmail,
+} from '@/lib/email/templates/delivery-update';
+import { EmailType } from '@prisma/client';
+
+const SAMPLE_ORDER = {
+  orderNumber: 1234,
+  customerName: 'John Smith',
+  customerEmail: 'john@example.com',
+  items: [
+    { title: "Tito's Vodka 750ml", variantTitle: null, quantity: 2, price: 24.99, totalPrice: 49.98 },
+    { title: 'Corona Extra', variantTitle: '12 Pack', quantity: 1, price: 18.99, totalPrice: 18.99 },
+    { title: 'Lime Wedges', variantTitle: null, quantity: 1, price: 4.99, totalPrice: 4.99 },
+  ],
+  subtotal: 73.96,
+  deliveryFee: 15.0,
+  taxAmount: 6.1,
+  total: 95.06,
+  deliveryDate: new Date('2026-02-10'),
+  deliveryTime: '2-4 PM',
+  deliveryAddress: {
+    address1: '123 Lake Austin Blvd',
+    address2: 'Apt 4B',
+    city: 'Austin',
+    province: 'TX',
+    zip: '78703',
+  },
+  deliveryInstructions: 'Gate code is #1234. Leave at front door.',
+};
+
+const SAMPLE_DELIVERY = {
+  orderNumber: 1234,
+  customerName: 'John Smith',
+  driverName: 'Mike',
+  estimatedArrival: '15 minutes',
+  deliveryAddress: {
+    address1: '123 Lake Austin Blvd',
+    address2: 'Apt 4B',
+    city: 'Austin',
+    province: 'TX',
+    zip: '78703',
+  },
+  trackingUrl: 'https://partyondelivery.com/track/abc123',
+  deliveryDate: new Date('2026-02-10'),
+  deliveryTime: '2-4 PM',
+};
+
+const SUBJECT_MAP: Record<string, string> = {
+  'order-confirmation': '[TEST] Order Confirmed - #1234',
+  'delivery-en-route': '[TEST] Your Order #1234 is On Its Way!',
+  'delivery-completed': '[TEST] Delivery Complete - Order #1234',
+  'payment-failed': '[TEST] Payment Issue - PartyOn Delivery',
+  'refund-processed': '[TEST] Refund Processed - Order #1234',
+};
+
+export async function POST(request: NextRequest) {
+  try {
+    const { type, to } = await request.json();
+
+    if (!to || !type) {
+      return NextResponse.json({ error: 'Missing email address or type' }, { status: 400 });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(to)) {
+      return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
+    }
+
+    let html = '';
+    let emailType: EmailType = EmailType.ORDER_CONFIRMATION;
+
+    switch (type) {
+      case 'order-confirmation':
+        html = generateOrderConfirmationEmail(SAMPLE_ORDER);
+        emailType = EmailType.ORDER_CONFIRMATION;
+        break;
+      case 'delivery-en-route':
+        html = generateDeliveryEnRouteEmail(SAMPLE_DELIVERY);
+        emailType = EmailType.DELIVERY_EN_ROUTE;
+        break;
+      case 'delivery-completed':
+        html = generateDeliveryCompletedEmail(SAMPLE_DELIVERY);
+        emailType = EmailType.DELIVERY_COMPLETED;
+        break;
+      case 'payment-failed':
+        html = generatePaymentFailedHtml('John Smith', 'Card declined by issuing bank');
+        emailType = EmailType.PAYMENT_FAILED;
+        break;
+      case 'refund-processed':
+        html = generateRefundHtml('John Smith', 1234, 95.06, 'Order cancelled by customer');
+        emailType = EmailType.REFUND_PROCESSED;
+        break;
+      default:
+        return NextResponse.json({ error: 'Unknown email type' }, { status: 400 });
+    }
+
+    const subject = SUBJECT_MAP[type] || '[TEST] PartyOn Delivery';
+
+    const emailId = await sendEmail({
+      to,
+      subject,
+      html,
+      text: `This is a test email from PartyOn Delivery. Type: ${type}`,
+      type: emailType,
+      metadata: { test: true, type },
+    });
+
+    if (emailId) {
+      return NextResponse.json({ success: true, emailId });
+    } else {
+      return NextResponse.json({ error: 'Failed to send email. Check RESEND_API_KEY.' }, { status: 500 });
+    }
+  } catch (error) {
+    console.error('[Email Preview Send] Error:', error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Failed to send email' },
+      { status: 500 }
+    );
+  }
+}
+
+function generatePaymentFailedHtml(customerName: string, errorMessage: string): string {
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Failed - PartyOn Delivery</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f9fafb;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          <tr>
+            <td style="background-color: #1a1a1a; padding: 32px; text-align: center;">
+              <h1 style="color: #D4AF37; margin: 0; font-size: 28px; font-weight: 600; letter-spacing: 0.1em;">PARTYON</h1>
+              <p style="color: #ffffff; margin: 8px 0 0; font-size: 14px; letter-spacing: 0.05em;">PREMIUM ALCOHOL DELIVERY</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color: #fef2f2; padding: 24px; text-align: center; border-bottom: 1px solid #e5e5e5;">
+              <div style="font-size: 48px; margin-bottom: 8px;">&#9888;</div>
+              <h2 style="margin: 0; color: #991b1b; font-size: 24px;">Payment Issue</h2>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 24px;">
+              <p style="margin: 0 0 16px; font-size: 16px; color: #1a1a1a;">Hi ${customerName},</p>
+              <p style="margin: 0 0 16px; font-size: 16px; color: #666;">We were unable to process your payment.</p>
+              <div style="background-color: #fef2f2; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+                <p style="margin: 0; color: #991b1b; font-size: 14px;">Error Details</p>
+                <p style="margin: 4px 0 0; font-size: 14px; color: #666;">${errorMessage}</p>
+              </div>
+              <p style="margin: 16px 0; font-size: 16px; color: #666;">Please try again with a different payment method.</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 0 24px 24px; text-align: center;">
+              <a href="https://partyondelivery.com/products" style="display: inline-block; background-color: #D4AF37; color: #1a1a1a; text-decoration: none; padding: 12px 32px; border-radius: 6px; font-weight: 600; font-size: 16px;">Try Again</a>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color: #1a1a1a; padding: 24px; text-align: center;">
+              <p style="margin: 0; color: #D4AF37; font-size: 14px;">Need help?</p>
+              <p style="margin: 8px 0 0; color: #ffffff; font-size: 14px;">Reply to this email or contact support@partyondelivery.com</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `.trim();
+}
+
+function generateRefundHtml(customerName: string, orderNumber: number, amount: number, reason: string): string {
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Refund Processed - PartyOn Delivery</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f9fafb;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          <tr>
+            <td style="background-color: #1a1a1a; padding: 32px; text-align: center;">
+              <h1 style="color: #D4AF37; margin: 0; font-size: 28px; font-weight: 600; letter-spacing: 0.1em;">PARTYON</h1>
+              <p style="color: #ffffff; margin: 8px 0 0; font-size: 14px; letter-spacing: 0.05em;">PREMIUM ALCOHOL DELIVERY</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color: #dbeafe; padding: 24px; text-align: center; border-bottom: 1px solid #e5e5e5;">
+              <div style="font-size: 48px; margin-bottom: 8px;">&#128181;</div>
+              <h2 style="margin: 0; color: #1e40af; font-size: 24px;">Refund Processed</h2>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 24px;">
+              <p style="margin: 0 0 16px; font-size: 16px; color: #1a1a1a;">Hi ${customerName},</p>
+              <p style="margin: 0 0 16px; font-size: 16px; color: #666;">We've processed a refund for your order <strong>#${orderNumber}</strong>.</p>
+              <div style="background-color: #f0fdf4; border-radius: 8px; padding: 16px; margin-bottom: 16px; text-align: center;">
+                <p style="margin: 0; color: #166534; font-size: 14px;">Refund Amount</p>
+                <p style="margin: 4px 0 0; font-size: 24px; font-weight: 600; color: #1a1a1a;">$${amount.toFixed(2)}</p>
+              </div>
+              <div style="background-color: #f9fafb; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+                <p style="margin: 0; color: #666; font-size: 14px;">Reason</p>
+                <p style="margin: 4px 0 0; font-size: 14px; color: #1a1a1a;">${reason}</p>
+              </div>
+              <p style="margin: 16px 0; font-size: 14px; color: #666;">Please allow 5-10 business days for the refund to appear.</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color: #1a1a1a; padding: 24px; text-align: center;">
+              <p style="margin: 0; color: #D4AF37; font-size: 14px;">Questions about your refund?</p>
+              <p style="margin: 8px 0 0; color: #ffffff; font-size: 14px;">Reply to this email or contact support@partyondelivery.com</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `.trim();
+}

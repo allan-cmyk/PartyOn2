@@ -1,16 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShopifyProduct } from '@/lib/shopify/types';
-import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseAlcohol } from '@/lib/shopify/utils';
+import { Product } from '@/lib/types';
+import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseAlcohol } from '@/lib/utils';
 import { useCartContext } from '@/contexts/CartContext';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import AgeVerificationModal from './AgeVerificationModal';
 
 interface ProductModalProps {
-  product: ShopifyProduct | null;
+  product: Product | null;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -22,13 +22,44 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
   const [isAdding, setIsAdding] = useState(false);
   const [showAgeVerification, setShowAgeVerification] = useState(false);
 
+  // Full product details state (fetched when modal opens)
+  const [fullProduct, setFullProduct] = useState<Product | null>(null);
+  const [loadingDetails, setLoadingDetails] = useState(false);
+
+  // Touch swipe state
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
   // Lock body scroll when modal is open
   useBodyScrollLock(isOpen);
 
-  const variant = product ? getFirstAvailableVariant(product) : null;
-  const price = product?.priceRange.minVariantPrice;
-  const images = product?.images?.edges?.map(edge => edge.node) || [];
-  const mainImage = images[selectedImageIndex] || { url: (product ? getProductImageUrl(product) : '') || '', altText: product?.title || '' };
+  // Fetch full product details when modal opens
+  useEffect(() => {
+    if (isOpen && product?.handle && !fullProduct) {
+      const fetchFullProduct = async () => {
+        setLoadingDetails(true);
+        try {
+          const response = await fetch(`/api/products/${product.handle}`);
+          if (response.ok) {
+            const data = await response.json();
+            setFullProduct(data);
+          }
+        } catch (error) {
+          console.error('Error fetching full product details:', error);
+        } finally {
+          setLoadingDetails(false);
+        }
+      };
+      fetchFullProduct();
+    }
+  }, [isOpen, product?.handle, fullProduct]);
+
+  // Use full product data if available, otherwise fall back to basic product
+  const displayProduct = fullProduct || product;
+  const variant = displayProduct ? getFirstAvailableVariant(displayProduct) : null;
+  const price = displayProduct?.priceRange.minVariantPrice;
+  const images = displayProduct?.images?.edges?.map(edge => edge.node) || [];
+  const mainImage = images[selectedImageIndex] || { url: (displayProduct ? getProductImageUrl(displayProduct) : '') || '', altText: displayProduct?.title || '' };
 
   // Keyboard navigation for carousel
   React.useEffect(() => {
@@ -39,12 +70,49 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
         setSelectedImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
       } else if (e.key === 'ArrowRight') {
         setSelectedImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+      } else if (e.key === 'Escape') {
+        onClose();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, images.length]);
+  }, [isOpen, images.length, onClose]);
+
+  // Touch swipe handlers for image carousel
+  const minSwipeDistance = 50;
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe && images.length > 1) {
+      // Swipe left = next image
+      setSelectedImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+    } else if (isRightSwipe && images.length > 1) {
+      // Swipe right = previous image
+      setSelectedImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+    }
+  };
+
+  // Reset state when product changes
+  React.useEffect(() => {
+    setSelectedImageIndex(0);
+    setQuantity(1);
+    setFullProduct(null);
+  }, [product?.id]);
 
   if (!product) return null;
 
@@ -134,7 +202,12 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
               {/* Image Section */}
               <div className="w-full md:w-1/2 lg:w-3/5 bg-gray-50 p-8 flex flex-col overflow-hidden">
                 {/* Main Image with Carousel Controls */}
-                <div className="flex-1 flex items-center justify-center mb-4 overflow-hidden relative">
+                <div
+                  className="flex-1 flex items-center justify-center mb-4 overflow-hidden relative touch-pan-y"
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                >
                   {mainImage.url ? (
                     <>
                       <motion.img
@@ -143,7 +216,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3 }}
                         src={mainImage.url}
-                        alt={mainImage.altText || product.title}
+                        alt={mainImage.altText || displayProduct?.title || product.title}
                         className="max-w-full max-h-full object-contain"
                       />
 
@@ -172,9 +245,18 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                             </svg>
                           </button>
 
-                          {/* Image Counter */}
-                          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-black/60 text-white text-xs rounded-full">
-                            {selectedImageIndex + 1} / {images.length}
+                          {/* Image Counter with Swipe Hint on Mobile */}
+                          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1">
+                            <div className="px-3 py-1 bg-black/60 text-white text-xs rounded-full">
+                              {selectedImageIndex + 1} / {images.length}
+                            </div>
+                            {/* Swipe hint - only show on first image view on mobile */}
+                            <div className="md:hidden text-xs text-gray-500 flex items-center gap-1">
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                              </svg>
+                              <span>Swipe to browse</span>
+                            </div>
                           </div>
                         </>
                       )}
@@ -189,7 +271,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                 </div>
 
                 {/* Image Thumbnails */}
-                {images.length > 1 && (
+                {images.length > 1 ? (
                   <div className="flex gap-2 overflow-x-auto py-2 scrollbar-hide">
                     {images.map((image, index) => (
                       <button
@@ -197,27 +279,33 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                         onClick={() => setSelectedImageIndex(index)}
                         className={`flex-shrink-0 w-20 h-20 border-2 transition-all duration-200 ${
                           selectedImageIndex === index
-                            ? 'border-gold-600 ring-2 ring-gold-600 ring-offset-2'
+                            ? 'border-brand-yellow ring-2 ring-brand-yellow ring-offset-2'
                             : 'border-gray-200 hover:border-gray-400'
                         }`}
                       >
                         <img
                           src={image.url}
-                          alt={image.altText || `${product.title} ${index + 1}`}
+                          alt={image.altText || `${displayProduct?.title || product.title} ${index + 1}`}
                           className="w-full h-full object-cover"
                         />
                       </button>
                     ))}
                   </div>
-                )}
+                ) : loadingDetails ? (
+                  <div className="flex gap-2 py-2">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="flex-shrink-0 w-20 h-20 bg-gray-200 animate-pulse" />
+                    ))}
+                  </div>
+                ) : null}
               </div>
               
               {/* Details Section */}
               <div className="w-full md:w-1/2 lg:w-2/5 p-8 overflow-y-auto">
                 {/* Title - Clickable to product page */}
-                <Link href={`/products/${product.handle}`}>
-                  <h2 className="font-serif text-3xl text-gray-900 mb-4 tracking-[0.05em] hover:text-gold-600 transition-colors cursor-pointer">
-                    {product.title}
+                <Link href={`/products/${displayProduct?.handle || product.handle}`}>
+                  <h2 className="font-heading text-3xl text-gray-900 mb-4 tracking-[0.05em] hover:text-brand-yellow transition-colors cursor-pointer">
+                    {displayProduct?.title || product.title}
                   </h2>
                 </Link>
 
@@ -229,11 +317,22 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                 )}
 
                 {/* Description */}
-                {product.description && (
-                  <div className="prose prose-sm text-gray-600 mb-6 leading-relaxed">
-                    <p>{product.description}</p>
+                {loadingDetails ? (
+                  <div className="mb-6 space-y-2 animate-pulse">
+                    <div className="h-4 bg-gray-200 rounded w-full"></div>
+                    <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                    <div className="h-4 bg-gray-200 rounded w-4/6"></div>
                   </div>
-                )}
+                ) : displayProduct?.descriptionHtml ? (
+                  <div
+                    className="prose prose-sm text-gray-600 mb-6 leading-relaxed max-w-none prose-p:my-2 prose-ul:my-2 prose-li:my-0"
+                    dangerouslySetInnerHTML={{ __html: displayProduct.descriptionHtml }}
+                  />
+                ) : displayProduct?.description ? (
+                  <div className="prose prose-sm text-gray-600 mb-6 leading-relaxed">
+                    <p>{displayProduct.description}</p>
+                  </div>
+                ) : null}
 
                 {/* Quantity Selector */}
                 <div className="mb-6">
@@ -267,9 +366,9 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                 <button
                   onClick={handleAddToCart}
                   disabled={!variant?.availableForSale || isAdding || cartLoading}
-                  className={`w-full py-3 transition-colors duration-300 text-sm tracking-[0.15em] ${
+                  className={`w-full py-3 transition-colors duration-300 text-sm tracking-[0.08em] ${
                     variant?.availableForSale && !isAdding && !cartLoading
-                      ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
+                      ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
                       : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                   }`}
                 >

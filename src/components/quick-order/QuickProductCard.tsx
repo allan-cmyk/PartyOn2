@@ -5,21 +5,23 @@
 
 'use client';
 
-import { useState, useCallback, type ReactElement } from 'react';
+import { useState, useCallback, useEffect, type ReactElement } from 'react';
 import Image from 'next/image';
-import type { ShopifyProduct } from '@/lib/shopify/types';
-import { formatPrice, getProductImageUrl, getFirstAvailableVariant } from '@/lib/shopify/utils';
+import type { Product } from '@/lib/types';
+import { formatPrice, getProductImageUrl, getFirstAvailableVariant } from '@/lib/utils';
 import { useCartContext } from '@/contexts/CartContext';
 import QuantityStepper from './QuantityStepper';
 
 interface QuickProductCardProps {
-  product: ShopifyProduct;
+  product: Product;
+  /** Callback when product image is clicked to open detail modal */
+  onImageClick?: (product: Product) => void;
 }
 
 /**
  * Extract pack size from variant title
  */
-function getPackSize(product: ShopifyProduct): string {
+function getPackSize(product: Product): string {
   const variant = product.variants.edges[0]?.node;
   const title = variant?.title;
   if (title && title !== 'Default Title') {
@@ -36,6 +38,7 @@ function getPackSize(product: ShopifyProduct): string {
  */
 export default function QuickProductCard({
   product,
+  onImageClick,
 }: QuickProductCardProps): ReactElement {
   const { cart, addToCart, updateCartItem, removeFromCart } = useCartContext();
   const [isAdding, setIsAdding] = useState(false);
@@ -53,11 +56,20 @@ export default function QuickProductCard({
   const cartQuantity = cartLine?.quantity ?? 0;
   const lineId = cartLine?.id;
 
+
+  // Clear optimistic qty once cart state catches up
+  useEffect(() => {
+    if (optimisticQty !== null && cartQuantity === optimisticQty) {
+      setOptimisticQty(null);
+    }
+  }, [cartQuantity, optimisticQty]);
+
   // Display quantity (optimistic or actual)
   const displayQty = optimisticQty ?? cartQuantity;
 
   const handleAdd = useCallback(async () => {
     if (!variantId || isAdding) return;
+
     setIsAdding(true);
     setOptimisticQty(1);
     try {
@@ -67,7 +79,6 @@ export default function QuickProductCard({
       setOptimisticQty(null);
     } finally {
       setIsAdding(false);
-      setOptimisticQty(null);
     }
   }, [variantId, addToCart, isAdding]);
 
@@ -79,8 +90,6 @@ export default function QuickProductCard({
       await updateCartItem(lineId, newQty);
     } catch (error) {
       console.error('Failed to update cart:', error);
-      setOptimisticQty(null);
-    } finally {
       setOptimisticQty(null);
     }
   }, [lineId, displayQty, updateCartItem, isAdding]);
@@ -95,8 +104,6 @@ export default function QuickProductCard({
       } catch (error) {
         console.error('Failed to remove from cart:', error);
         setOptimisticQty(null);
-      } finally {
-        setOptimisticQty(null);
       }
     } else {
       setOptimisticQty(newQty);
@@ -104,8 +111,6 @@ export default function QuickProductCard({
         await updateCartItem(lineId, newQty);
       } catch (error) {
         console.error('Failed to update cart:', error);
-        setOptimisticQty(null);
-      } finally {
         setOptimisticQty(null);
       }
     }
@@ -116,16 +121,28 @@ export default function QuickProductCard({
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
-      {/* Image */}
-      <div className="relative aspect-square bg-gray-100">
+      {/* Image - Clickable to open modal */}
+      <button
+        type="button"
+        onClick={() => onImageClick?.(product)}
+        className="relative aspect-square bg-gray-100 w-full cursor-pointer group"
+        aria-label={`View details for ${product.title}`}
+      >
         <Image
           src={imageUrl}
           alt={product.title}
           fill
           sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 16vw"
-          className="object-cover"
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
           loading="lazy"
         />
+
+        {/* Hover overlay with "View" indicator */}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+          <span className="opacity-0 group-hover:opacity-100 transition-opacity text-white text-xs font-medium bg-black/60 px-2 py-1 rounded">
+            TAP TO VIEW
+          </span>
+        </div>
 
         {/* Out of Stock Overlay */}
         {!isAvailable && (
@@ -133,8 +150,7 @@ export default function QuickProductCard({
             <span className="text-white font-medium text-sm">Out of Stock</span>
           </div>
         )}
-
-      </div>
+      </button>
 
       {/* Product Info */}
       <div className="p-2 space-y-0.5 text-center">
@@ -144,7 +160,7 @@ export default function QuickProductCard({
         {packSize && (
           <p className="text-xs sm:text-sm text-gray-500">{packSize}</p>
         )}
-        <p className="font-bold text-base sm:text-lg text-green-700">
+        <p className="font-bold text-base sm:text-lg text-gray-900">
           {formatPrice(price.amount, price.currencyCode)}
         </p>
 
@@ -153,14 +169,14 @@ export default function QuickProductCard({
           <button
             onClick={handleAdd}
             disabled={isAdding}
-            className="mx-auto mt-1.5 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-green-600 hover:bg-green-700 text-white flex items-center justify-center shadow-md transition-all disabled:opacity-50"
+            className="mx-auto mt-1.5 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-yellow-500 hover:bg-brand-yellow text-gray-900 flex items-center justify-center shadow-md transition-all disabled:opacity-50"
             aria-label={`Add ${product.title} to cart`}
           >
             {isAdding ? (
-              <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
             ) : (
               <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
               </svg>
             )}
           </button>

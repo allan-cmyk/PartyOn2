@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion'; // Kept for carousel and sticky bar
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import LuxuryCard from '@/components/LuxuryCard';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import BoatPartiesSchemas from '@/components/seo/BoatPartiesSchemas';
@@ -111,7 +111,7 @@ export default function BoatPartiesPage() {
       {/* SEO Schemas - Server-rendered for crawlers */}
       <BoatPartiesSchemas />
 
-      <OldFashionedNavigation />
+      <Navigation />
       
       {/* Hero Section with Image Slider */}
       <section className="relative h-[90vh] pt-32 pb-32 md:pt-24 md:pb-24 flex items-center justify-center overflow-hidden">
@@ -147,7 +147,7 @@ export default function BoatPartiesPage() {
               onClick={() => setCurrentHeroImage(index)}
               className={`w-2 h-2 rounded-full transition-all duration-300 ${
                 index === currentHeroImage 
-                  ? 'bg-gold-400 w-8' 
+                  ? 'bg-brand-yellow w-8' 
                   : 'bg-white/50 hover:bg-white/75'
               }`}
               aria-label={`Go to slide ${index + 1}`}
@@ -156,22 +156,22 @@ export default function BoatPartiesPage() {
         </div>
 
         <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8 mt-[120px] mb-[80px] md:mt-0 md:mb-0">
-          <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
+          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.08em]">
             Cold Drinks to Your
-            <span className="block text-gold-400 mt-2">BOAT—ON TIME</span>
+            <span className="block text-brand-yellow mt-2">BOAT—ON TIME</span>
           </h1>
-          <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
+          <div className="w-24 h-px bg-brand-yellow mx-auto mb-6" />
           <p className="text-lg md:text-xl font-light tracking-[0.1em] text-gray-200 mb-8">
             Dock and boat delivery with captain coordination—everything cold, stocked, and ready to pour.
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
             <Link href="/boat-parties/products">
-              <button className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                 ORDER NOW
               </button>
             </Link>
             <Link href="/contact">
-              <button className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium">
                 SCHEDULE 15-MIN PLANNING CALL
               </button>
             </Link>
@@ -186,68 +186,68 @@ export default function BoatPartiesPage() {
       <section className="py-24 bg-gray-50">
         <div className="max-w-6xl mx-auto px-8">
           <ScrollRevealCSS duration={800} y={20} className="text-center mb-16">
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
               Choose Your Path
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto mb-6" />
           </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {/* Delivery-Only Path */}
             <ScrollRevealCSS duration={800} y={20} className="bg-white p-8 rounded-lg shadow-lg relative">
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <span className="bg-gold-600 text-gray-900 px-4 py-1 rounded-full text-xs font-medium tracking-[0.1em]">
+                <span className="bg-brand-yellow text-gray-900 px-4 py-1 rounded-full text-xs font-medium tracking-[0.1em]">
                   MOST POPULAR
                 </span>
               </div>
-              <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
+              <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
                 Delivery-Only
               </h3>
               <ul className="space-y-3 mb-8 text-gray-600">
                 <li className="flex items-start">
-                  <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-4 h-4 text-brand-yellow mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   Dock or boat handoff with ice, coolers, and mixers
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-4 h-4 text-brand-yellow mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   You handle setup or bring your own crew
                 </li>
               </ul>
               <Link href="/boat-parties/products">
-                <button className="w-full py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="w-full py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                   ORDER NOW
                 </button>
               </Link>
             </ScrollRevealCSS>
 
             {/* Full-Service Path */}
-            <ScrollRevealCSS duration={800} y={20} delay={100} className="bg-white p-8 rounded-lg shadow-lg border-2 border-gold-600">
+            <ScrollRevealCSS duration={800} y={20} delay={100} className="bg-white p-8 rounded-lg shadow-lg border-2 border-brand-yellow">
               <div className="text-center mb-4">
-                <span className="text-gold-600 text-sm tracking-[0.15em] font-medium">MOST POPULAR</span>
+                <span className="text-brand-yellow text-sm tracking-[0.08em] font-medium">MOST POPULAR</span>
               </div>
-              <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
+              <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
                 Full-Service
               </h3>
               <ul className="space-y-3 mb-8 text-gray-600">
                 <li className="flex items-start">
-                  <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-4 h-4 text-brand-yellow mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   Setup crew with optional TABC-certified bartender
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-4 h-4 text-brand-yellow mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   Perfect for yacht charters and premium events
                 </li>
               </ul>
               <Link href="/contact">
-                <button className="w-full py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="w-full py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                   SCHEDULE A CONSULTATION
                 </button>
               </Link>
@@ -266,20 +266,20 @@ export default function BoatPartiesPage() {
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
           <ScrollRevealCSS duration={800} y={20} className="text-center mb-16">
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               Boat Parties on Easy Mode
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto" />
           </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <ScrollRevealCSS duration={800} y={20} delay={100} className="text-center">
-              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v18m0-18a9 9 0 010 18M3 12h18" />
                 </svg>
               </div>
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Just Show Up
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -288,12 +288,12 @@ export default function BoatPartiesPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={200} className="text-center">
-              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                 </svg>
               </div>
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Cold from First Pour
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -302,13 +302,13 @@ export default function BoatPartiesPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={300} className="text-center">
-              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </div>
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Local Lake Pros
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -317,12 +317,12 @@ export default function BoatPartiesPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={400} className="text-center">
-              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
                 </svg>
               </div>
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Staffed When Needed
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -337,10 +337,10 @@ export default function BoatPartiesPage() {
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
           <ScrollRevealCSS duration={800} y={20} className="text-center mb-16">
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               Lake Travis & Austin Delivery Locations
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto" />
           </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
@@ -377,7 +377,7 @@ export default function BoatPartiesPage() {
                 delay={index * 100}
                 className="bg-white p-6 rounded-lg shadow-lg border border-gray-200"
               >
-                <h3 className="font-serif text-lg text-gray-900 mb-2 tracking-[0.1em]">
+                <h3 className="font-heading text-lg text-gray-900 mb-2 tracking-[0.1em]">
                   {location.name}
                 </h3>
                 <p className="text-gray-600 text-sm leading-relaxed">
@@ -393,10 +393,10 @@ export default function BoatPartiesPage() {
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
           <ScrollRevealCSS duration={800} y={20} className="text-center mb-16">
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               Boat Party Packages (Full-Service & Premium)
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto mb-6" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto mb-6" />
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
               Curated selections for every type of lake adventure
             </p>
@@ -418,13 +418,13 @@ export default function BoatPartiesPage() {
                 <div className="p-8">
                   {pkg.featured && (
                     <div className="text-center mb-4">
-                      <span className="text-gold-600 text-sm tracking-[0.15em]">MOST POPULAR</span>
+                      <span className="text-brand-yellow text-sm tracking-[0.08em]">MOST POPULAR</span>
                     </div>
                   )}
-                  <h3 className="font-serif text-2xl text-gray-900 mb-2 tracking-[0.1em] text-center">
+                  <h3 className="font-heading text-2xl text-gray-900 mb-2 tracking-[0.1em] text-center">
                     {pkg.name}
                   </h3>
-                  <p className="text-4xl text-gold-600 font-semibold text-center mb-4">
+                  <p className="text-4xl text-brand-yellow font-semibold text-center mb-4">
                     {pkg.price}
                   </p>
                   <p className="text-gray-600 text-center mb-8">
@@ -433,7 +433,7 @@ export default function BoatPartiesPage() {
                   <ul className="space-y-3 mb-8">
                     {pkg.features.map((feature, i) => (
                       <li key={i} className="flex items-start">
-                        <svg className="w-4 h-4 text-gold-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-4 h-4 text-brand-yellow mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
                         <span className="text-gray-700 text-sm">{feature}</span>
@@ -441,10 +441,10 @@ export default function BoatPartiesPage() {
                     ))}
                   </ul>
                   <Link href="/contact">
-                    <button className={`w-full py-3 tracking-[0.15em] text-sm transition-all duration-300 ${
+                    <button className={`w-full py-3 tracking-[0.08em] text-sm transition-all duration-300 ${
                       pkg.featured 
-                        ? 'bg-gold-600 text-gray-900 hover:bg-gold-700' 
-                        : 'border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900'
+                        ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600' 
+                        : 'border border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900'
                     }`}>
                       PLAN THIS PACKAGE (CONSULTATION)
                     </button>
@@ -460,7 +460,7 @@ export default function BoatPartiesPage() {
               <strong>Just need delivery?</strong> Build your boat-day cart in minutes.
             </p>
             <Link href="/boat-parties/products">
-              <button className="px-8 py-3 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+              <button className="px-8 py-3 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium">
                 ORDER DELIVERY-ONLY
               </button>
             </Link>
@@ -472,7 +472,7 @@ export default function BoatPartiesPage() {
       <section className="py-24 bg-gray-50">
         <div className="max-w-4xl mx-auto px-8">
           <ScrollRevealCSS duration={800} y={20} className="text-center">
-            <h2 className="font-serif font-light text-3xl text-gray-900 mb-6 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-3xl text-gray-900 mb-6 tracking-[0.1em]">
               Safety First on the Water
             </h2>
             <p className="text-gray-600 leading-relaxed mb-8">
@@ -482,19 +482,19 @@ export default function BoatPartiesPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-8 text-sm text-gray-700">
               <div className="flex items-center">
-                <svg className="w-4 h-4 text-gold-600 mr-2 inline-block" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4 text-brand-yellow mr-2 inline-block" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
                 TABC Certified
               </div>
               <div className="flex items-center">
-                <svg className="w-4 h-4 text-gold-600 mr-2 inline-block" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4 text-brand-yellow mr-2 inline-block" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
                 Marine Safety Trained
               </div>
               <div className="flex items-center">
-                <svg className="w-4 h-4 text-gold-600 mr-2 inline-block" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4 text-brand-yellow mr-2 inline-block" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
                 Insured & Licensed
@@ -508,15 +508,15 @@ export default function BoatPartiesPage() {
       <section className="py-24">
         <div className="max-w-4xl mx-auto px-8">
           <ScrollRevealCSS duration={800} y={20} className="text-center mb-16">
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.1em]">
               Frequently Asked Questions
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto" />
           </ScrollRevealCSS>
 
           <div className="space-y-8">
             <ScrollRevealCSS duration={800} y={20} delay={100} className="bg-gray-50 p-6 rounded-lg">
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Dock vs. boat delivery?
               </h3>
               <p className="text-gray-600 leading-relaxed">
@@ -525,7 +525,7 @@ export default function BoatPartiesPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={200} className="bg-gray-50 p-6 rounded-lg">
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 How far ahead to book?
               </h3>
               <p className="text-gray-600 leading-relaxed">
@@ -534,7 +534,7 @@ export default function BoatPartiesPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={300} className="bg-gray-50 p-6 rounded-lg">
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Can you provide a bartender?
               </h3>
               <p className="text-gray-600 leading-relaxed">
@@ -543,7 +543,7 @@ export default function BoatPartiesPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={400} className="bg-gray-50 p-6 rounded-lg">
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Glassware on the lake?
               </h3>
               <p className="text-gray-600 leading-relaxed">
@@ -552,7 +552,7 @@ export default function BoatPartiesPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={500} className="bg-gray-50 p-6 rounded-lg">
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Only need ice & cans?
               </h3>
               <p className="text-gray-600 leading-relaxed">
@@ -561,7 +561,7 @@ export default function BoatPartiesPage() {
             </ScrollRevealCSS>
 
             <ScrollRevealCSS duration={800} y={20} delay={600} className="bg-gray-50 p-6 rounded-lg">
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Are you insured/licensed?
               </h3>
               <p className="text-gray-600 leading-relaxed">
@@ -584,7 +584,7 @@ export default function BoatPartiesPage() {
             <p className="text-gray-900 font-light tracking-[0.1em]">
               James Richardson
             </p>
-            <p className="text-gold-600 text-sm tracking-[0.1em]">
+            <p className="text-brand-yellow text-sm tracking-[0.1em]">
               CEO, Austin Tech Ventures
             </p>
           </ScrollRevealCSS>
@@ -595,7 +595,7 @@ export default function BoatPartiesPage() {
       <section className="py-24 bg-gray-900">
         <div className="max-w-4xl mx-auto px-8 text-center">
           <ScrollRevealCSS duration={800} y={20}>
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-white mb-6 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-4xl md:text-5xl text-white mb-6 tracking-[0.1em]">
               Set Sail in Style
             </h2>
             <p className="text-gray-300 text-lg mb-12 tracking-[0.05em]">
@@ -603,12 +603,12 @@ export default function BoatPartiesPage() {
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link href="/book-now">
-                <button className="px-10 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm">
                   BOOK LAKE DELIVERY
                 </button>
               </Link>
               <a href="tel:7373719700">
-                <button className="px-10 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm">
                   CALL CAPTAIN&apos;S LINE
                 </button>
               </a>
@@ -634,19 +634,19 @@ export default function BoatPartiesPage() {
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SERVICES</h4>
               <ul className="space-y-2">
-                <li><Link href="/weddings" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Weddings</Link></li>
-                <li><Link href="/boat-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Boat Parties</Link></li>
-                <li><Link href="/bach-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Celebrations</Link></li>
-                <li><Link href="/corporate" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Corporate</Link></li>
+                <li><Link href="/weddings" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Weddings</Link></li>
+                <li><Link href="/boat-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Boat Parties</Link></li>
+                <li><Link href="/bach-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Celebrations</Link></li>
+                <li><Link href="/corporate" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Corporate</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">LAKE TRAVIS</h4>
               <ul className="space-y-2">
-                <li><Link href="/delivery-areas#lake-travis" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Marinas</Link></li>
-                <li><Link href="/faqs" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">FAQs</Link></li>
-                <li><Link href="/contact" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Contact Us</Link></li>
-                <li><Link href="/delivery-areas" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Delivery Areas</Link></li>
+                <li><Link href="/delivery-areas#lake-travis" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Marinas</Link></li>
+                <li><Link href="/faqs" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">FAQs</Link></li>
+                <li><Link href="/contact" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Contact Us</Link></li>
+                <li><Link href="/delivery-areas" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Delivery Areas</Link></li>
               </ul>
             </div>
             <div>
@@ -661,8 +661,8 @@ export default function BoatPartiesPage() {
           <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">© 2024 PartyOn Delivery. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="/terms" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Terms</Link>
-              <Link href="/privacy" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Privacy</Link>
+              <Link href="/terms" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Terms</Link>
+              <Link href="/privacy" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Privacy</Link>
             </div>
           </div>
         </div>
@@ -680,12 +680,12 @@ export default function BoatPartiesPage() {
           >
             <div className="flex gap-3">
               <Link href="/order" className="flex-1">
-                <button className="w-full py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors text-sm tracking-[0.1em]">
+                <button className="w-full py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors text-sm tracking-[0.1em]">
                   ORDER NOW
                 </button>
               </Link>
               <a href="tel:7373719700" className="flex-1">
-                <button className="w-full py-3 border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all text-sm tracking-[0.1em]">
+                <button className="w-full py-3 border border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all text-sm tracking-[0.1em]">
                   CALL
                 </button>
               </a>

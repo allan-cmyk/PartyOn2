@@ -1,252 +1,418 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useCartContext } from '@/contexts/CartContext'
-import { useCustomerContext } from '@/contexts/CustomerContext'
-import CustomerAuth from '@/components/CustomerAuth'
-import Cart from '@/components/shopify/Cart'
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import CartButton from '@/components/shopify/CartButton';
+import ProductSearch from '@/components/ProductSearch';
+import { useCustomerContext } from '@/contexts/CustomerContext';
 
-export default function Navigation() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isAuthOpen, setIsAuthOpen] = useState(false)
-  
-  const { cart, openCart } = useCartContext()
-  const { customer } = useCustomerContext()
-  const pathname = usePathname()
-  
-  const cartItemCount = cart?.lines.edges.reduce((total, edge) => total + edge.node.quantity, 0) || 0
-  
-  // Check if we're on a page that needs solid navigation
-  const needsSolidNav = pathname.startsWith('/account') || 
-                        pathname.startsWith('/products') || 
-                        pathname.startsWith('/cart') ||
-                        pathname.startsWith('/checkout') ||
-                        pathname.startsWith('/order') ||
-                        pathname.startsWith('/partners') ||
-                        pathname.startsWith('/contact') ||
-                        pathname.startsWith('/about')
+// Routes where navigation should be hidden
+const NAV_HIDDEN_ROUTES = [
+  '/partners/',
+  '/bach-parties',
+  '/weddings',
+  '/corporate',
+  '/checkout',
+  '/group-v2/',
+];
+
+interface NavLinkProps {
+  href: string;
+  children: React.ReactNode;
+  isScrolled: boolean;
+  onClick?: () => void;
+}
+
+function NavLink({ href, children, isScrolled, onClick }: NavLinkProps) {
+  return (
+    <Link
+      href={href}
+      className={`text-sm font-medium tracking-[0.05em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 ${
+        isScrolled
+          ? 'text-gray-700 hover:text-brand-yellow'
+          : 'text-white/90 hover:text-brand-yellow'
+      }`}
+      onClick={onClick}
+    >
+      {children}
+    </Link>
+  );
+}
+
+interface NavigationProps {
+  forceScrolled?: boolean;
+  /** Hide navigation (slides up out of view) */
+  hidden?: boolean;
+  /** Hide logo on mobile (only show hamburger menu) */
+  hideMobileLogo?: boolean;
+  /** Force hamburger icon to be white (for dark hero backgrounds) */
+  forceWhiteHamburger?: boolean;
+}
+
+export default function Navigation({
+  forceScrolled = false,
+  hidden = false,
+  hideMobileLogo = false,
+  forceWhiteHamburger = false,
+}: NavigationProps) {
+  const [isScrolled, setIsScrolled] = useState(forceScrolled);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isRentalsOpen, setIsRentalsOpen] = useState(false);
+
+  const [isMounted, setIsMounted] = useState(false);
+  const { customer, isAuthenticated, logout } = useCustomerContext();
+  const pathname = usePathname();
+
+  // Check if nav should be hidden on current route
+  const shouldHideNav = pathname ? NAV_HIDDEN_ROUTES.some(route =>
+    pathname === route || pathname.startsWith(route)
+  ) : false;
 
   useEffect(() => {
+    setIsMounted(true);
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20)
-    }
-    window.addEventListener('scroll', handleScroll)
-    
+      setIsScrolled(forceScrolled || window.scrollY > 50);
+    };
+
     // Set initial scroll state
-    handleScroll()
-    
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    handleScroll();
 
-  const navLinks = [
-    { href: '/about', label: 'ABOUT' },
-    { href: '/services', label: 'SERVICES' },
-    { href: '/products', label: 'PRODUCTS' },
-    { href: '/contact', label: 'CONTACT' },
-    { href: '/partners', label: 'PARTNERS' },
-  ]
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [forceScrolled]);
 
-  // Determine if navigation should be solid
-  const isSolid = needsSolidNav || isScrolled
+  // If navigation should be hidden on this route, return null
+  if (shouldHideNav) {
+    return null;
+  }
 
-  return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isSolid
-          ? 'bg-white shadow-sm py-4'
-          : 'bg-transparent py-6'
-      }`}
-    >
-      <div className="container-custom">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 group">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-accent-500 blur-lg opacity-0 group-hover:opacity-50 transition-opacity" />
-              <div className="relative flex flex-col items-center leading-none">
-                <span className="font-display text-2xl lg:text-3xl text-gradient-primary">
-                  PARTY ON
-                </span>
-                <span className={`font-sans font-bold text-xs lg:text-sm mt-1 ${
-                  isSolid ? 'text-gray-700' : 'text-white'
-                }`}>
-                  DELIVERY
-                </span>
-              </div>
-            </div>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-6 xl:space-x-8 flex-1 justify-center">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`font-sans font-medium text-xs xl:text-sm tracking-[0.15em] transition-all duration-300 relative group whitespace-nowrap ${
-                  isSolid
-                    ? 'text-gray-700 hover:text-gold-600'
-                    : 'text-white hover:text-gold-400'
-                }`}
-              >
-                {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gold-600 transition-all duration-300 group-hover:w-full" />
-              </Link>
-            ))}
-          </div>
-          
-          {/* Right Side Actions */}
-          <div className="hidden lg:flex items-center space-x-3">
-            {/* Cart Icon */}
-            <button
-              onClick={openCart}
-              className={`relative p-2 transition-all duration-300 ${
-                isSolid ? 'text-gray-700 hover:text-gold-600' : 'text-white hover:text-gold-400'
-              }`}
-              aria-label="Shopping Cart"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              {cartItemCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-gold-600 text-gray-900 text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {cartItemCount}
-                </span>
-              )}
-            </button>
-            
-            {/* Sign In / Account Button */}
-            {customer ? (
-              <Link
-                href="/account"
-                className={`px-4 py-2 text-xs tracking-[0.15em] font-medium transition-all duration-300 ${
-                  isSolid 
-                    ? 'text-gray-700 hover:text-gold-600' 
-                    : 'text-white hover:text-gold-400'
-                }`}
-              >
-                ACCOUNT
-              </Link>
-            ) : (
-              <button
-                onClick={() => setIsAuthOpen(true)}
-                className={`px-4 py-2 text-xs tracking-[0.15em] font-medium transition-all duration-300 ${
-                  isSolid 
-                    ? 'text-gray-700 hover:text-gold-600' 
-                    : 'text-white hover:text-gold-400'
-                }`}
-              >
-                SIGN IN
-              </button>
-            )}
-            
-            {/* Order Now Button */}
-            <Link
-              href="/order"
-              className={`px-5 py-2 text-xs tracking-[0.15em] font-medium transition-all duration-300 ${
-                isSolid
-                  ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
-                  : 'bg-white text-gray-900 hover:bg-gold-400'
-              }`}
-            >
-              ORDER NOW
+  // Prevent hydration mismatch by using consistent initial state
+  if (!isMounted) {
+    return (
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        forceScrolled ? 'bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-200' : 'bg-transparent'
+      }`}>
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex justify-between items-center h-16 md:h-20">
+            <Link href="/" className="flex items-center -ml-4">
+              <img
+                src="/images/pod-logo-2025.svg"
+                alt="Party On Delivery"
+                className="h-14 md:h-16 w-auto"
+              />
             </Link>
           </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={`lg:hidden relative w-10 h-10 flex flex-col items-center justify-center ${
-              isSolid ? 'text-gray-700' : 'text-white'
-            }`}
-            aria-label="Toggle menu"
-          >
-            <span
-              className={`absolute h-0.5 w-6 bg-current transform transition-all duration-300 ${
-                isMobileMenuOpen ? 'rotate-45' : '-translate-y-2'
-              }`}
-            />
-            <span
-              className={`absolute h-0.5 w-6 bg-current transition-all duration-300 ${
-                isMobileMenuOpen ? 'opacity-0' : 'opacity-100'
-              }`}
-            />
-            <span
-              className={`absolute h-0.5 w-6 bg-current transform transition-all duration-300 ${
-                isMobileMenuOpen ? '-rotate-45' : 'translate-y-2'
-              }`}
-            />
-          </button>
         </div>
+      </nav>
+    );
+  }
 
-        {/* Mobile Menu */}
-        <div
-          className={`lg:hidden fixed inset-0 top-[72px] bg-white transition-transform duration-300 ${
-            isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-          }`}
-        >
-          <div className="p-6 space-y-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block py-3 text-sm font-sans font-medium tracking-[0.15em] text-gray-700 hover:text-gold-600 transition-colors duration-300"
-              >
-                {link.label}
-              </Link>
-            ))}
-            <div className="pt-4 mt-4 border-t border-gray-200 space-y-3">
-              <button
-                onClick={() => {
-                  setIsMobileMenuOpen(false)
-                  openCart()
-                }}
-                className="flex items-center justify-between w-full py-3 text-sm font-medium tracking-[0.15em] text-gray-700 hover:text-gold-600"
-              >
-                <span>CART ({cartItemCount})</span>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </button>
-              {customer ? (
-                <Link
-                  href="/account"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-3 text-sm font-medium tracking-[0.15em] text-gray-700 hover:text-gold-600"
-                >
-                  MY ACCOUNT
-                </Link>
-              ) : (
+  const services = [
+    { href: '/weddings', label: 'WEDDINGS' },
+    { href: '/boat-parties', label: 'BOAT PARTIES' },
+    { href: '/bach-parties', label: 'CELEBRATIONS' },
+    { href: '/corporate', label: 'CORPORATE' },
+    { href: '/kegs', label: 'KEG DELIVERY' },
+  ];
+
+  const rentals = [
+    { href: '/rentals/chair-rentals-austin', label: 'CHAIR RENTALS' },
+    { href: '/rentals/cocktail-table-rentals-austin', label: 'TABLE RENTALS' },
+    { href: '/rentals/cooler-rentals-austin', label: 'COOLER RENTALS' },
+  ];
+
+  return (
+    <>
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? 'bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-200'
+          : 'bg-transparent'
+      } ${hidden ? '-translate-y-full' : 'translate-y-0'}`}>
+        <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16">
+          <div className="flex items-center justify-between h-14 md:h-16">
+            {/* Logo - hidden on mobile when hideMobileLogo is true */}
+            <Link
+              href="/"
+              className={`flex items-center -ml-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 rounded-lg ${hideMobileLogo ? 'hidden md:flex' : ''}`}
+            >
+              <img
+                src="/images/pod-logo-2025.svg"
+                alt="Party On Delivery"
+                className="h-14 md:h-16 w-auto"
+              />
+            </Link>
+
+            {/* Desktop Navigation - Centered Links */}
+            <div className="hidden md:flex flex-1 items-center justify-center space-x-8 lg:space-x-10">
+              <NavLink href="/order" isScrolled={isScrolled}>ORDER</NavLink>
+
+              {/* Services Dropdown */}
+              <div className="relative group">
                 <button
-                  onClick={() => {
-                    setIsMobileMenuOpen(false)
-                    setIsAuthOpen(true)
-                  }}
-                  className="block w-full text-left py-3 text-sm font-medium tracking-[0.15em] text-gray-700 hover:text-gold-600"
+                  className={`flex items-center text-sm font-medium tracking-[0.05em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 rounded ${
+                    isScrolled
+                      ? 'text-gray-700 hover:text-brand-yellow'
+                      : 'text-white/90 hover:text-brand-yellow'
+                  }`}
+                  onMouseEnter={() => setIsServicesOpen(true)}
+                  onMouseLeave={() => setIsServicesOpen(false)}
                 >
-                  SIGN IN
+                  SERVICES
+                  <ChevronDownIcon className="w-4 h-4 ml-1" />
                 </button>
-              )}
-              <Link
-                href="/order"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block w-full bg-gold-600 text-gray-900 text-center py-3 text-sm font-medium tracking-[0.15em] hover:bg-gold-700 transition-colors"
-              >
-                ORDER NOW
-              </Link>
+
+                {/* Dropdown Menu */}
+                <div
+                  className={`absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 transition-all duration-200 ${
+                    isServicesOpen ? 'opacity-100 translate-y-0 visible' : 'opacity-0 -translate-y-2 invisible'
+                  }`}
+                  onMouseEnter={() => setIsServicesOpen(true)}
+                  onMouseLeave={() => setIsServicesOpen(false)}
+                >
+                  {services.map((service) => (
+                    <Link
+                      key={service.href}
+                      href={service.href}
+                      className="block px-4 py-3 text-sm font-medium tracking-[0.05em] text-gray-700 hover:bg-gray-50 hover:text-brand-blue transition-colors first:rounded-t-lg last:rounded-b-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-blue"
+                    >
+                      {service.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Rentals Dropdown */}
+              <div className="relative group">
+                <button
+                  className={`flex items-center text-sm font-medium tracking-[0.05em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 rounded ${
+                    isScrolled
+                      ? 'text-gray-700 hover:text-brand-yellow'
+                      : 'text-white/90 hover:text-brand-yellow'
+                  }`}
+                  onMouseEnter={() => setIsRentalsOpen(true)}
+                  onMouseLeave={() => setIsRentalsOpen(false)}
+                >
+                  RENTALS
+                  <ChevronDownIcon className="w-4 h-4 ml-1" />
+                </button>
+
+                {/* Dropdown Menu */}
+                <div
+                  className={`absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 transition-all duration-200 ${
+                    isRentalsOpen ? 'opacity-100 translate-y-0 visible' : 'opacity-0 -translate-y-2 invisible'
+                  }`}
+                  onMouseEnter={() => setIsRentalsOpen(true)}
+                  onMouseLeave={() => setIsRentalsOpen(false)}
+                >
+                  {rentals.map((rental) => (
+                    <Link
+                      key={rental.href}
+                      href={rental.href}
+                      className="block px-4 py-3 text-sm font-medium tracking-[0.05em] text-gray-700 hover:bg-gray-50 hover:text-brand-blue transition-colors first:rounded-t-lg last:rounded-b-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-blue"
+                    >
+                      {rental.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <NavLink href="/contact" isScrolled={isScrolled}>CONTACT</NavLink>
+              <NavLink href="/partners" isScrolled={isScrolled}>PARTNERS</NavLink>
             </div>
+
+            {/* Desktop Utility Items - Right */}
+            <div className="hidden md:flex items-center space-x-4 flex-shrink-0">
+              <ProductSearch isScrolled={isScrolled} />
+              <CartButton isScrolled={isScrolled} />
+
+              {/* Account Section - only show when logged in */}
+              {isAuthenticated && customer && (
+                <div className="relative group">
+                  <button
+                    className={`flex items-center text-sm font-medium tracking-[0.05em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 rounded ${
+                      isScrolled
+                        ? 'text-gray-700 hover:text-brand-yellow'
+                        : 'text-white/90 hover:text-brand-yellow'
+                    }`}
+                  >
+                    {customer.firstName || 'ACCOUNT'}
+                    <ChevronDownIcon className="w-4 h-4 ml-1" />
+                  </button>
+
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                    <Link
+                      href="/account"
+                      className="block px-4 py-3 text-sm font-medium tracking-[0.05em] text-gray-700 hover:bg-gray-50 hover:text-brand-blue transition-colors rounded-t-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-blue"
+                    >
+                      MY ACCOUNT
+                    </Link>
+                    <Link
+                      href="/account/orders"
+                      className="block px-4 py-3 text-sm font-medium tracking-[0.05em] text-gray-700 hover:bg-gray-50 hover:text-brand-blue transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-blue"
+                    >
+                      ORDER HISTORY
+                    </Link>
+                    <button
+                      onClick={() => logout()}
+                      className="block w-full text-left px-4 py-3 text-sm font-medium tracking-[0.05em] text-gray-700 hover:bg-gray-50 hover:text-brand-blue transition-colors border-t border-gray-200 rounded-b-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-blue"
+                    >
+                      SIGN OUT
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              className={`md:hidden p-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 ${
+                forceWhiteHamburger
+                  ? 'text-white'
+                  : isScrolled
+                    ? 'text-gray-900'
+                    : 'text-white'
+              }`}
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+            >
+              <div className="space-y-1.5">
+                <span className={`block w-6 h-0.5 bg-current transition-transform ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+                <span className={`block w-6 h-0.5 bg-current transition-opacity ${isMenuOpen ? 'opacity-0' : ''}`} />
+                <span className={`block w-6 h-0.5 bg-current transition-transform ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+              </div>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Menu */}
+      <div
+        className={`fixed inset-0 bg-white z-[100] md:hidden transition-all duration-300 ${
+          isMenuOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className="flex flex-col h-full">
+          <div className="flex justify-between items-center p-6">
+            <Link href="/" className="flex items-center" onClick={() => setIsMenuOpen(false)}>
+              <img
+                src="/images/pod-logo-2025.svg"
+                alt="Party On Delivery"
+                className="h-12 w-auto"
+              />
+            </Link>
+            <button
+              onClick={() => setIsMenuOpen(false)}
+              className="p-2 text-gray-900 text-3xl font-light rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2"
+              aria-label="Close menu"
+            >
+              ×
+            </button>
+          </div>
+
+          <div className="flex-1 flex flex-col justify-center px-6 space-y-6 overflow-y-auto">
+            {/* Search Bar for Mobile */}
+            <div className="pt-4">
+              <ProductSearch isScrolled={true} />
+            </div>
+
+            <Link
+              href="/order"
+              className="text-xl font-heading font-semibold tracking-[0.04em] text-gray-900 hover:text-brand-blue transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              ORDER
+            </Link>
+
+            {/* Services Section */}
+            <div className="space-y-3">
+              <p className="text-xl font-heading font-semibold tracking-[0.04em] text-gray-900">SERVICES</p>
+              <div className="pl-4 space-y-2">
+                {services.map((service) => (
+                  <Link
+                    key={service.href}
+                    href={service.href}
+                    className="block text-base font-medium tracking-[0.05em] text-gray-600 hover:text-brand-blue transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {service.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Rentals Section */}
+            <div className="space-y-3">
+              <p className="text-xl font-heading font-semibold tracking-[0.04em] text-gray-900">RENTALS</p>
+              <div className="pl-4 space-y-2">
+                {rentals.map((rental) => (
+                  <Link
+                    key={rental.href}
+                    href={rental.href}
+                    className="block text-base font-medium tracking-[0.05em] text-gray-600 hover:text-brand-blue transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {rental.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <Link
+              href="/contact"
+              className="text-xl font-heading font-semibold tracking-[0.04em] text-gray-900 hover:text-brand-blue transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              CONTACT
+            </Link>
+            <Link
+              href="/partners"
+              className="text-xl font-heading font-semibold tracking-[0.04em] text-gray-900 hover:text-brand-blue transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              PARTNERS
+            </Link>
+
+            {/* Account link for mobile - only show when logged in */}
+            {isAuthenticated && customer && (
+              <div className="space-y-3">
+                <p className="text-xl font-heading font-semibold tracking-[0.04em] text-gray-900">
+                  {customer.firstName || 'ACCOUNT'}
+                </p>
+                <div className="pl-4 space-y-2">
+                  <Link
+                    href="/account"
+                    className="block text-base font-medium tracking-[0.05em] text-gray-600 hover:text-brand-blue transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    MY ACCOUNT
+                  </Link>
+                  <Link
+                    href="/account/orders"
+                    className="block text-base font-medium tracking-[0.05em] text-gray-600 hover:text-brand-blue transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    ORDER HISTORY
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout();
+                      setIsMenuOpen(false);
+                    }}
+                    className="block text-base font-medium tracking-[0.05em] text-gray-600 hover:text-brand-blue transition-colors"
+                  >
+                    SIGN OUT
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
-      
-      {/* Cart renders itself via context */}
-      <Cart />
-      
-      {/* Auth Modal */}
-      <CustomerAuth isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
-    </nav>
-  )
+
+    </>
+  );
 }

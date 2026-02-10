@@ -2,22 +2,21 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCartContext } from '@/contexts/CartContext';
 import CartItem from './CartItem';
-import { formatPrice } from '@/lib/shopify/utils';
-import SimpleDeliveryScheduler from '@/components/SimpleDeliveryScheduler';
+import { formatPrice } from '@/lib/utils';
 import AIConcierge from '@/components/AIConcierge';
 import { copyToClipboard, type SharedCartVariant } from '@/lib/cart/shareCart';
-import { parseAddress, formatPhone } from '@/lib/utils/addressParser';
 import { trackBeginCheckout, trackEvent, ANALYTICS_EVENTS } from '@/lib/analytics/track';
 // Group order imports
 import { useGroupOrderContext } from '@/contexts/GroupOrderContext';
 
 export default function Cart() {
-  const { cart, isCartOpen, closeCart, loading, updateCartAttributes, clearCart } = useCartContext();
+  const router = useRouter();
+  const { cart, isCartOpen, closeCart, loading, clearCart } = useCartContext();
   const { currentGroupOrder, isInGroupOrder, isHost } = useGroupOrderContext();
-  const [showDeliveryScheduler, setShowDeliveryScheduler] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
   const [shareSuccess, setShareSuccess] = useState(false);
@@ -34,12 +33,13 @@ export default function Cart() {
       );
     }
 
-    // If in a group order, use group delivery info directly (skip scheduler)
+    // If in a group order, use group delivery info directly
     if (isInGroupOrder && currentGroupOrder) {
       handleGroupOrderCheckout();
     } else {
-      // Show delivery scheduler to collect delivery information first
-      setShowDeliveryScheduler(true);
+      // Go directly to checkout page
+      closeCart();
+      router.push('/checkout');
     }
   };
 
@@ -105,140 +105,6 @@ export default function Cart() {
       console.error('Error during group checkout:', error);
       setIsRedirecting(false);
       alert('Unable to proceed to checkout. Please try again.');
-    }
-  };
-
-  const handleDeliveryConfirm = async (date: Date, time: string, instructions: string, address: string, zipCode: string, phone: string) => {
-    try {
-      // Set redirecting state to show loading
-      setIsRedirecting(true);
-
-      // Track delivery details set event
-      trackEvent(ANALYTICS_EVENTS.SET_DELIVERY_DETAILS, {
-        delivery_date: date.toISOString().split('T')[0],
-        delivery_time: time,
-        zip_code: zipCode
-      });
-
-      // Format date for better display in Shopify
-      const formattedDate = new Intl.DateTimeFormat('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      }).format(date);
-
-      // Parse address into components for Shop Pay
-      let parsedAddress;
-      try {
-        parsedAddress = parseAddress(address, zipCode);
-        console.log('Parsed address:', parsedAddress);
-      } catch (parseError) {
-        console.error('Error parsing address:', parseError);
-        throw new Error('Invalid address format. Please check your address and try again.');
-      }
-
-      // Format phone number
-      const formattedPhone = formatPhone(phone);
-
-      // Create formatted note for order (visible in confirmation emails)
-      const orderNote = `DELIVERY SCHEDULED:\nDate: ${formattedDate}\nTime: ${time}\nAddress: ${address}, ${parsedAddress.city}, ${parsedAddress.province} ${parsedAddress.zip}\nPhone: ${formattedPhone}${instructions ? `\nSpecial Instructions: ${instructions}` : ''}`;
-
-      // Store delivery info in cart attributes (for backup/internal use) and note (for customer visibility)
-      const attributes = [
-        { key: 'note', value: orderNote }, // This shows in confirmation emails
-        { key: 'delivery_date', value: formattedDate },
-        { key: 'delivery_time', value: time },
-        { key: 'delivery_address', value: address },
-        { key: 'delivery_zip', value: zipCode },
-        { key: 'delivery_phone', value: formattedPhone },
-        { key: 'delivery_instructions', value: instructions || 'None' },
-        { key: 'delivery_fee', value: '25.00' }
-      ];
-
-      console.log('Sending delivery attributes to Shopify:', attributes);
-
-      // Try to update cart attributes, but proceed even if it fails
-      let checkoutUrl = cart?.checkoutUrl;
-
-      if (updateCartAttributes) {
-        try {
-          const updatedCart = await updateCartAttributes(attributes);
-          console.log('Updated cart response:', updatedCart);
-          console.log('Cart attributes after update:', updatedCart?.attributes);
-
-          // Use the updated cart's checkout URL if available
-          if (updatedCart?.checkoutUrl) {
-            checkoutUrl = updatedCart.checkoutUrl;
-          }
-        } catch (attrError) {
-          console.error('Error updating cart attributes, proceeding anyway:', attrError);
-          // Continue with redirect even if attributes fail
-        }
-      }
-
-      if (checkoutUrl) {
-        // Build URL with Shop Pay parameters
-        console.log('Building checkout URL with address parameters');
-
-        try {
-          const url = new URL(checkoutUrl);
-
-          // Add Shop Pay address parameters (OFFICIAL Shopify method)
-          url.searchParams.append('checkout[shipping_address][address1]', parsedAddress.address1);
-          if (parsedAddress.address2) {
-            url.searchParams.append('checkout[shipping_address][address2]', parsedAddress.address2);
-          }
-          url.searchParams.append('checkout[shipping_address][city]', parsedAddress.city);
-          url.searchParams.append('checkout[shipping_address][province]', parsedAddress.province);
-          url.searchParams.append('checkout[shipping_address][country]', parsedAddress.country);
-          url.searchParams.append('checkout[shipping_address][zip]', parsedAddress.zip);
-          url.searchParams.append('checkout[shipping_address][phone]', formattedPhone);
-
-          checkoutUrl = url.toString();
-          console.log('Final checkout URL with Shop Pay parameters:', checkoutUrl);
-        } catch (urlError) {
-          console.error('Error building URL parameters:', urlError);
-        }
-
-        // Longer delay for mobile devices
-        const delay = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ? 500 : 200;
-        await new Promise(resolve => setTimeout(resolve, delay));
-
-        // Try multiple redirect methods for better compatibility
-        try {
-          // Method 1: Direct assignment (most compatible)
-          window.location.href = checkoutUrl;
-        } catch {
-          try {
-            // Method 2: Replace (prevents back button)
-            window.location.replace(checkoutUrl);
-          } catch {
-            // Method 3: Create a link and click it
-            const link = document.createElement('a');
-            link.href = checkoutUrl;
-            link.style.display = 'none';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          }
-        }
-
-        // Keep loading state active to prevent any further interactions
-        // Don't reset states here as the page is redirecting
-        return;
-      } else {
-        throw new Error('No checkout URL available');
-      }
-    } catch (error) {
-      console.error('Error during checkout:', error);
-      // If there's an error, reset states so user can try again
-      setIsRedirecting(false);
-      setShowDeliveryScheduler(false);
-
-      // More helpful error message
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      alert(`Unable to proceed to checkout: ${errorMessage}. Please try again or contact support if the issue persists.`);
     }
   };
 
@@ -348,7 +214,7 @@ export default function Cart() {
             <div className="flex flex-col h-full">
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                <h2 className="font-serif text-2xl text-gray-900 tracking-[0.1em]">
+                <h2 className="font-heading text-2xl text-gray-900 tracking-[0.1em]">
                   YOUR CART
                 </h2>
                 <div className="flex items-center gap-2">
@@ -389,7 +255,7 @@ export default function Cart() {
                     </svg>
                     <p className="text-gray-500 mb-6 text-center">Your cart is empty</p>
                     <Link href="/order" onClick={closeCart}>
-                      <button className="px-6 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm">
+                      <button className="px-6 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm">
                         START ORDERING
                       </button>
                     </Link>
@@ -428,7 +294,7 @@ export default function Cart() {
                         Delivery: {new Date(currentGroupOrder.deliveryDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} at {currentGroupOrder.deliveryTime}
                       </p>
                       {isHost && (
-                        <Link href="/group/dashboard" onClick={closeCart}>
+                        <Link href="/group-v2/create" onClick={closeCart}>
                           <button className="mt-2 text-xs text-green-700 hover:text-green-800 underline">
                             View Dashboard
                           </button>
@@ -444,7 +310,7 @@ export default function Cart() {
                         <svg className="inline-block w-4 h-4 mr-1.5 align-text-bottom" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                         </svg>
-                        Discount codes can be applied at Shopify checkout
+                        Discount codes can be applied at checkout
                       </p>
                     </div>
                   )}
@@ -489,7 +355,7 @@ export default function Cart() {
 
                   {/* Total - Show subtotal since delivery is calculated at checkout */}
                   <div className="flex justify-between font-medium text-lg pt-4 border-t border-gray-200">
-                    <span className="font-serif tracking-[0.1em]">SUBTOTAL</span>
+                    <span className="font-heading tracking-[0.1em]">SUBTOTAL</span>
                     <span>
                       {subtotal ? formatPrice(subtotal.amount, subtotal.currencyCode) : '$0.00'}
                     </span>
@@ -498,7 +364,7 @@ export default function Cart() {
                   {/* Notice */}
                   <div className="bg-gray-50 p-4 text-sm text-gray-600">
                     <p className="flex items-start">
-                      <svg className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
                       </svg>
                       ID verification required upon delivery
@@ -510,7 +376,7 @@ export default function Cart() {
                     <button 
                       onClick={() => setShowCreateGroupOrder(true)}
                       disabled={loading}
-                      className="w-full py-3 border border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-all tracking-[0.15em] text-sm disabled:opacity-50"
+                      className="w-full py-3 border border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-all tracking-[0.08em] text-sm disabled:opacity-50"
                     >
                       START GROUP ORDER
                     </button>
@@ -520,7 +386,7 @@ export default function Cart() {
                   <button 
                     onClick={handleProceedToCheckout}
                     disabled={loading}
-                    className="w-full py-4 bg-gold-500 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.15em] text-sm disabled:opacity-50"
+                    className="w-full py-4 bg-yellow-500 text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.08em] text-sm disabled:opacity-50"
                   >
                     PROCEED TO CHECKOUT
                   </button>
@@ -529,7 +395,7 @@ export default function Cart() {
                   <button
                     onClick={handleShareCart}
                     disabled={isSharing || !hasItems}
-                    className="w-full py-3 border border-gray-300 text-gray-700 hover:border-gold-600 hover:text-gold-700 transition-colors tracking-[0.1em] text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                    className="w-full py-3 border border-gray-300 text-gray-700 hover:border-brand-yellow hover:text-yellow-600 transition-colors tracking-[0.1em] text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                   >
                     {isSharing ? (
                       <>
@@ -555,7 +421,7 @@ export default function Cart() {
 
                   {/* Continue Shopping */}
                   <Link href="/order" onClick={closeCart}>
-                    <button className="w-full py-3 border border-gray-300 text-gray-700 hover:border-gold-600 transition-colors tracking-[0.1em] text-sm">
+                    <button className="w-full py-3 border border-gray-300 text-gray-700 hover:border-brand-yellow transition-colors tracking-[0.1em] text-sm">
                       CONTINUE SHOPPING
                     </button>
                   </Link>
@@ -566,18 +432,6 @@ export default function Cart() {
         )}
       </AnimatePresence>
 
-      {/* Simple Delivery Scheduler */}
-      <SimpleDeliveryScheduler
-        isOpen={showDeliveryScheduler}
-        onClose={() => {
-          // Don't allow closing during redirect
-          if (!isRedirecting) {
-            setShowDeliveryScheduler(false);
-          }
-        }}
-        onConfirm={handleDeliveryConfirm}
-      />
-      
       {/* AI Concierge - only show when cart is open */}
       {isCartOpen && <AIConcierge mode="party" />}
       
@@ -585,7 +439,7 @@ export default function Cart() {
       {isRedirecting && (
         <div className="fixed inset-0 bg-black/70 z-[100] flex items-center justify-center pointer-events-auto">
           <div className="bg-white p-8 rounded-lg shadow-2xl">
-            <div className="animate-spin h-10 w-10 border-4 border-gold-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <div className="animate-spin h-10 w-10 border-4 border-yellow-500 border-t-transparent rounded-full mx-auto mb-4"></div>
             <p className="text-gray-700 text-center font-medium">Redirecting to checkout...</p>
             <p className="text-gray-500 text-sm text-center mt-2">Please wait</p>
           </div>

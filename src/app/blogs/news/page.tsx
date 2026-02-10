@@ -34,7 +34,7 @@ export default function BlogListingPage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-gray-50 to-white py-16 border-b border-gray-100">
         <div className="container mx-auto px-4 max-w-4xl text-center">
-          <h1 className="font-serif text-5xl md:text-6xl text-gray-900 mb-6 tracking-tight">
+          <h1 className="font-heading text-5xl md:text-6xl text-gray-900 mb-6 tracking-tight">
             News & Articles
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -58,7 +58,7 @@ export default function BlogListingPage() {
                 <Link
                   key={post.slug}
                   href={`/blogs/news/${post.slug}`}
-                  className="group bg-white rounded-lg overflow-hidden border border-gray-200 hover:border-gold-300 hover:shadow-lg transition-all duration-300"
+                  className="group bg-white rounded-lg overflow-hidden border border-gray-200 hover:border-brand-yellow hover:shadow-lg transition-all duration-300"
                 >
                   {/* Featured Image */}
                   {post.image ? (
@@ -72,8 +72,8 @@ export default function BlogListingPage() {
                       />
                     </div>
                   ) : (
-                    <div className="relative aspect-[16/9] bg-gradient-to-br from-gold-50 to-gold-100 flex items-center justify-center">
-                      <svg className="w-16 h-16 text-gold-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="relative aspect-[16/9] bg-gradient-to-br from-yellow-50 to-yellow-100 flex items-center justify-center">
+                      <svg className="w-16 h-16 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
                       </svg>
                     </div>
@@ -93,7 +93,7 @@ export default function BlogListingPage() {
                     </div>
 
                     {/* Title */}
-                    <h2 className="font-serif text-xl text-gray-900 mb-3 group-hover:text-gold-600 transition-colors leading-tight">
+                    <h2 className="font-heading text-xl text-gray-900 mb-3 group-hover:text-brand-yellow transition-colors leading-tight">
                       {post.title}
                     </h2>
 
@@ -108,7 +108,7 @@ export default function BlogListingPage() {
                         {post.tags.slice(0, 3).map((tag) => (
                           <span
                             key={tag}
-                            className="px-2 py-1 bg-gold-50 text-gold-700 rounded text-xs tracking-[0.05em] uppercase"
+                            className="px-2 py-1 bg-yellow-50 text-yellow-600 rounded text-xs tracking-[0.05em] uppercase"
                           >
                             {tag}
                           </span>
@@ -126,14 +126,14 @@ export default function BlogListingPage() {
       {/* Popular Topics */}
       <section className="bg-gray-50 py-16 border-t border-gray-200">
         <div className="container mx-auto px-4 max-w-7xl">
-          <h2 className="font-serif text-3xl text-gray-900 mb-8 text-center tracking-tight">
+          <h2 className="font-heading text-3xl text-gray-900 mb-8 text-center tracking-tight">
             Popular Topics
           </h2>
           <div className="flex flex-wrap justify-center gap-3">
             {allTags.slice(0, 15).map((tag) => (
               <span
                 key={tag}
-                className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-full text-sm hover:border-gold-300 hover:text-gold-600 transition-colors cursor-pointer"
+                className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-full text-sm hover:border-brand-yellow hover:text-brand-yellow transition-colors cursor-pointer"
               >
                 {tag}
               </span>
@@ -143,15 +143,15 @@ export default function BlogListingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-gold-600 text-gray-900 py-16">
+      <section className="bg-brand-yellow text-gray-900 py-16">
         <div className="container mx-auto px-4 text-center max-w-3xl">
-          <h2 className="font-serif text-3xl mb-4 tracking-tight">Ready to Plan Your Event?</h2>
-          <p className="text-gold-100 mb-8 text-lg">
+          <h2 className="font-heading text-3xl mb-4 tracking-tight">Ready to Plan Your Event?</h2>
+          <p className="text-yellow-100 mb-8 text-lg">
             Let Party On Delivery handle your alcohol coordination for weddings, corporate events, and celebrations.
           </p>
           <Link
             href="/contact"
-            className="inline-block px-8 py-4 bg-white text-gold-600 rounded-lg font-medium tracking-[0.1em] text-sm hover:bg-gray-50 transition-colors"
+            className="inline-block px-8 py-4 bg-white text-brand-yellow rounded-lg font-medium tracking-[0.1em] text-sm hover:bg-gray-50 transition-colors"
           >
             GET IN TOUCH
           </Link>

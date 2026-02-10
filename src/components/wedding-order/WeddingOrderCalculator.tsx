@@ -127,12 +127,12 @@ export default function WeddingOrderCalculator(): ReactElement {
                   step={10}
                   value={guestCount}
                   onChange={(e) => setGuestCount(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gold-600"
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-yellow-500"
                 />
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-500">10</span>
                   <div className="text-center">
-                    <span className="text-3xl font-serif text-gray-900">{guestCount}</span>
+                    <span className="text-3xl font-heading text-gray-900">{guestCount}</span>
                     <span className="text-sm text-gray-500 ml-2">guests</span>
                   </div>
                   <span className="text-sm text-gray-500">500</span>
@@ -156,7 +156,7 @@ export default function WeddingOrderCalculator(): ReactElement {
                   </svg>
                 </button>
                 <div className="flex-1 text-center">
-                  <span className="text-3xl font-serif text-gray-900">{eventHours}</span>
+                  <span className="text-3xl font-heading text-gray-900">{eventHours}</span>
                   <span className="text-sm text-gray-500 ml-2">hours</span>
                 </div>
                 <button
@@ -193,7 +193,7 @@ export default function WeddingOrderCalculator(): ReactElement {
                 type="checkbox"
                 checked={includeChampagneToast}
                 onChange={(e) => setIncludeChampagneToast(e.target.checked)}
-                className="mt-1 w-5 h-5 rounded border-gray-300 text-gold-600 focus:ring-gold-500"
+                className="mt-1 w-5 h-5 rounded border-gray-300 text-brand-yellow focus:ring-yellow-500"
               />
               <div className="flex-1">
                 <div className="flex items-center gap-2">
@@ -225,7 +225,7 @@ export default function WeddingOrderCalculator(): ReactElement {
       <div className="p-6 bg-gray-50 rounded-lg border border-gray-200">
         <div className="flex items-start gap-4">
           <div className="flex-shrink-0">
-            <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

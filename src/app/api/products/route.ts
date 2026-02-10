@@ -1,38 +1,32 @@
+/**
+ * Products API - List products with filters, search, and pagination
+ * Data source: PostgreSQL via Prisma
+ *
+ * GET /api/products
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
-import { shopifyFetch } from '@/lib/shopify/client';
-import { PRODUCTS_GRID_QUERY, COLLECTION_GRID_QUERY } from '@/lib/shopify/queries/products';
-import { buildShopifyQuery, buildCategoryQuery, combineQueries, ProductFilters } from '@/lib/shopify/query-builder';
+import { prisma } from '@/lib/database/client';
+import { Prisma } from '@prisma/client';
+import { transformToProduct, type ProductWithRelations } from '@/lib/products/transform';
 
 // Cache products for 5 minutes
 export const revalidate = 300;
 
-import { ShopifyProduct } from '@/lib/shopify/types';
+const CACHE_HEADERS = {
+  'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+  'CDN-Cache-Control': 'public, s-maxage=300',
+  'Vercel-CDN-Cache-Control': 'public, s-maxage=300',
+};
 
-interface ProductsResponse {
-  products: {
-    edges: Array<{
-      node: ShopifyProduct;
-    }>;
-    pageInfo: {
-      hasNextPage: boolean;
-      endCursor: string;
-    };
-  };
-}
-
-interface CollectionResponse {
-  collectionByHandle: {
-    id: string;
-    handle: string;
-    title: string;
-    description: string;
-    products: {
-      edges: Array<{
-        node: ShopifyProduct;
-      }>;
-    };
-  };
-}
+const productInclude = {
+  images: { orderBy: { position: 'asc' as const } },
+  variants: {
+    include: { image: true },
+    orderBy: { createdAt: 'asc' as const },
+  },
+  categories: { include: { category: true } },
+};
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -45,86 +39,192 @@ export async function GET(request: NextRequest) {
   const priceMin = searchParams.get('priceMin') ? parseFloat(searchParams.get('priceMin')!) : undefined;
   const priceMax = searchParams.get('priceMax') ? parseFloat(searchParams.get('priceMax')!) : undefined;
 
-  try {
-    let data;
-
-    if (collection) {
-      // Fetch collection products
-      data = await shopifyFetch<CollectionResponse>({
-        query: COLLECTION_GRID_QUERY,
-        variables: { handle: collection, first: 100 },
+  // Local collection shortcut
+  const localCollection = searchParams.get('localCollection');
+  if (localCollection) {
+    try {
+      const collectionData = await prisma.category.findUnique({
+        where: { handle: localCollection },
       });
 
-      // Transform collection response to match products response structure
+      const products = await prisma.product.findMany({
+        where: {
+          status: 'ACTIVE',
+          categories: { some: { category: { handle: localCollection } } },
+        },
+        include: productInclude,
+        orderBy: { title: 'asc' },
+        take: first,
+      });
+
+      const edges = products.map((product) => ({
+        node: transformToProduct(product),
+      }));
+
       return NextResponse.json(
         {
-          products: data.collectionByHandle.products,
-          collection: {
-            id: data.collectionByHandle.id,
-            handle: data.collectionByHandle.handle,
-            title: data.collectionByHandle.title,
-            description: data.collectionByHandle.description,
-          },
+          products: { edges },
+          collection: collectionData
+            ? { id: collectionData.id, handle: collectionData.handle, title: collectionData.title, description: collectionData.description || '' }
+            : null,
         },
-        {
-          headers: {
-            'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
-            'CDN-Cache-Control': 'public, s-maxage=300',
-            'Vercel-CDN-Cache-Control': 'public, s-maxage=300',
-          },
-        }
+        { headers: CACHE_HEADERS }
       );
-    } else {
-      // Build Shopify query with server-side filtering
-      const filters: ProductFilters = {
-        searchTerm: searchTerm || undefined,
-        tags,
-        priceMin,
-        priceMax,
+    } catch (error) {
+      console.error('[Products API] Local collection query failed:', error);
+      return NextResponse.json(
+        { error: 'Failed to fetch local collection', details: error instanceof Error ? error.message : 'Unknown error' },
+        { status: 500 }
+      );
+    }
+  }
+
+  try {
+    // Build where clause
+    const where: Prisma.ProductWhereInput = {
+      status: 'ACTIVE',
+    };
+
+    // Collection/Category filter
+    if (collection) {
+      where.categories = {
+        some: { category: { handle: collection } },
       };
+    } else if (category && category !== 'all') {
+      where.categories = {
+        some: { category: { handle: category } },
+      };
+    }
 
-      const queries: string[] = [];
+    // Tags filter
+    if (tags && tags.length > 0) {
+      where.tags = { hasSome: tags };
+    }
 
-      // Add category filter
-      if (category && category !== 'all') {
-        const categoryQuery = buildCategoryQuery(category);
-        if (categoryQuery) queries.push(categoryQuery);
+    // Price filter
+    if (priceMin !== undefined || priceMax !== undefined) {
+      where.basePrice = {};
+      if (priceMin !== undefined) {
+        where.basePrice.gte = priceMin;
       }
-
-      // Add other filters
-      const filterQuery = buildShopifyQuery(filters);
-      if (filterQuery) queries.push(filterQuery);
-
-      // Combine all queries
-      const finalQuery = combineQueries(...queries);
-
-      // Fetch all products with server-side filtering
-      const variables: Record<string, string | number> = { first };
-
-      if (after) {
-        variables.after = after;
+      if (priceMax !== undefined) {
+        where.basePrice.lte = priceMax;
       }
+    }
 
-      if (finalQuery) {
-        variables.query = finalQuery;
-        console.log('Shopify Query:', finalQuery); // Debug log
+    // Handle pagination cursor
+    let skip = 0;
+    if (after) {
+      const cursorProduct = await prisma.product.findUnique({
+        where: { id: after },
+        select: { createdAt: true },
+      });
+      if (cursorProduct) {
+        const count = await prisma.product.count({
+          where: { ...where, createdAt: { lt: cursorProduct.createdAt } },
+        });
+        skip = count + 1;
       }
+    }
 
-      data = await shopifyFetch<ProductsResponse>({
-        query: PRODUCTS_GRID_QUERY,
-        variables,
+    const totalCount = await prisma.product.count({ where });
+
+    let products: ProductWithRelations[];
+
+    // Relevance-based search ordering
+    if (searchTerm) {
+      const searchLower = searchTerm.toLowerCase();
+      const baseWhere = { ...where, status: 'ACTIVE' as const };
+
+      // Query 1: productType matches (highest relevance)
+      const productTypeMatches = await prisma.product.findMany({
+        where: { ...baseWhere, productType: { contains: searchTerm, mode: 'insensitive' } },
+        include: productInclude,
+        orderBy: { title: 'asc' },
+        take: first,
       });
 
-      return NextResponse.json(data, {
-        headers: {
-          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
-          'CDN-Cache-Control': 'public, s-maxage=300',
-          'Vercel-CDN-Cache-Control': 'public, s-maxage=300',
+      const productTypeIds = new Set(productTypeMatches.map(p => p.id));
+
+      // Query 2: title matches
+      const titleMatches = await prisma.product.findMany({
+        where: {
+          ...baseWhere,
+          id: { notIn: Array.from(productTypeIds) },
+          title: { contains: searchTerm, mode: 'insensitive' },
         },
+        include: productInclude,
+        orderBy: { title: 'asc' },
+        take: first,
+      });
+
+      const usedIds = new Set([...productTypeIds, ...titleMatches.map(p => p.id)]);
+
+      // Query 3: other matches (description, vendor, tags)
+      const otherMatches = await prisma.product.findMany({
+        where: {
+          ...baseWhere,
+          id: { notIn: Array.from(usedIds) },
+          OR: [
+            { description: { contains: searchTerm, mode: 'insensitive' } },
+            { vendor: { contains: searchTerm, mode: 'insensitive' } },
+            { tags: { hasSome: [searchTerm, searchLower, searchTerm.toUpperCase()] } },
+          ],
+        },
+        include: productInclude,
+        orderBy: { title: 'asc' },
+        take: first,
+      });
+
+      products = [...productTypeMatches, ...titleMatches, ...otherMatches].slice(skip, skip + first);
+    } else {
+      products = await prisma.product.findMany({
+        where,
+        include: productInclude,
+        orderBy: { title: 'asc' },
+        take: first,
+        skip,
       });
     }
+
+    const edges = products.map(product => ({
+      node: transformToProduct(product),
+    }));
+
+    const hasNextPage = skip + products.length < totalCount;
+    const endCursor = products.length > 0 ? products[products.length - 1].id : null;
+
+    // If collection was requested, include collection info
+    if (collection) {
+      const collectionData = await prisma.category.findUnique({
+        where: { handle: collection },
+      });
+
+      return NextResponse.json(
+        {
+          products: { edges },
+          collection: collectionData ? {
+            id: collectionData.id,
+            handle: collectionData.handle,
+            title: collectionData.title,
+            description: collectionData.description || '',
+          } : null,
+        },
+        { headers: CACHE_HEADERS }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        products: {
+          edges,
+          pageInfo: { hasNextPage, endCursor },
+        },
+      },
+      { headers: CACHE_HEADERS }
+    );
   } catch (error) {
-    console.error('Products API Error:', error);
+    console.error('[Products API] Database error:', error);
     return NextResponse.json(
       { error: 'Failed to fetch products', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }

@@ -25,6 +25,15 @@
 
 ---
 
+## Claude for Chrome
+
+- Use `read_page` to get element refs from the accessibility tree
+- Use `find` to locate elements by description
+- Click/interact using `ref`, not coordinates
+- NEVER take screenshots unless explicitly requested by the user
+
+---
+
 ## Project Overview
 PartyOn Delivery is a premium alcohol delivery service in Austin, Texas, offering scheduled deliveries for events, parties, and special occasions. The platform features an elegant, luxury design aesthetic and is fully integrated with Shopify for e-commerce operations.
 
@@ -74,9 +83,9 @@ PartyOn Delivery is a premium alcohol delivery service in Austin, Texas, offerin
    - Created sophisticated navigation with dropdown menus
    - Redesigned all main pages with luxury aesthetic
    - Replaced all emojis with elegant SVG icons
-   - Added Cormorant Garamond serif font
-   - Gold accent color: #D4AF37
-   - Wide letter spacing for elegant typography
+   - Typography: Barlow Condensed (headings) + Inter (body)
+   - Gold accent color: #D4AF37 (dark bg), brand-yellow #F2D34F (light bg)
+   - Moderate letter spacing (tracking-[0.04em] to tracking-[0.08em])
 
 2. **Pages Redesigned**
    - Homepage - Distinguished hero with service showcases
@@ -196,9 +205,11 @@ OPENROUTER_API_KEY=[configured]
 ```
 
 ## Key Design Principles
-1. **Typography**: Cormorant Garamond for headings, Inter for body
-2. **Colors**: White backgrounds, gray text hierarchy, gold accents
-3. **Spacing**: Wide letter-spacing (tracking-[0.1em] to tracking-[0.15em])
+1. **Typography**: Barlow Condensed for headings (`font-heading`), Inter for body (`font-sans`)
+2. **Colors**: 12-color palette only (brand-blue, brand-yellow, gold, white, gray-*, black, success, error, warning)
+3. **Spacing**: Moderate letter-spacing (tracking-[0.04em] for headings, tracking-[0.05em] for nav, tracking-[0.08em] for buttons)
+4. **Buttons**: 4 variants only (primary, cart, secondary, ghost) - all use `rounded-lg`, NO `rounded-full`
+5. **Anti-regression**: Run `npm run lint:tokens` before committing to check for design system violations
 4. **Icons**: Only SVG icons, no emojis
 5. **Tone**: Professional, luxury, distinguished
 

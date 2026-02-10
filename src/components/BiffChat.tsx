@@ -46,35 +46,35 @@ export default function BiffChat({ apiKey, className = '' }: BiffChatProps) {
     <div className={`bg-white rounded-2xl shadow-lg p-6 ${className}`}>
       {/* Biff Header */}
       <div className="flex items-center space-x-4 mb-6">
-        <div className="w-16 h-16 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full flex items-center justify-center">
+        <div className="w-16 h-16 bg-gradient-to-r from-brand-blue to-brand-yellow rounded-full flex items-center justify-center">
           <span className="text-2xl">🤠🤖</span>
         </div>
         <div>
-          <h3 className="font-display text-2xl text-dark">Chat with Biff</h3>
-          <p className="text-sm text-dark/60">Your Post-Apocalyptic Party Planner</p>
+          <h3 className="font-heading text-2xl text-gray-900">Chat with Biff</h3>
+          <p className="text-sm text-gray-900/60">Your Post-Apocalyptic Party Planner</p>
         </div>
       </div>
 
       {/* Party Metrics */}
       {lastBiffResponse?.partyMetrics && (
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="text-center p-3 bg-primary-50 rounded-lg">
-            <div className="text-2xl font-bold text-primary-500">
+          <div className="text-center p-3 bg-blue-50 rounded-lg">
+            <div className="text-2xl font-bold text-brand-blue">
               {lastBiffResponse.partyMetrics.funLevel}/10
             </div>
-            <div className="text-xs text-dark/60">Fun Level</div>
+            <div className="text-xs text-gray-900/60">Fun Level</div>
           </div>
-          <div className="text-center p-3 bg-secondary-50 rounded-lg">
-            <div className="text-2xl font-bold text-secondary-500">
+          <div className="text-center p-3 bg-blue-50 rounded-lg">
+            <div className="text-2xl font-bold text-brand-blue">
               {lastBiffResponse.partyMetrics.yeehawFactor}/10
             </div>
-            <div className="text-xs text-dark/60">Yeehaw Factor</div>
+            <div className="text-xs text-gray-900/60">Yeehaw Factor</div>
           </div>
-          <div className="text-center p-3 bg-accent-50 rounded-lg">
-            <div className="text-2xl font-bold text-accent-600">
+          <div className="text-center p-3 bg-yellow-50 rounded-lg">
+            <div className="text-2xl font-bold text-brand-yellow">
               {lastBiffResponse.partyMetrics.survivalChance}%
             </div>
-            <div className="text-xs text-dark/60">Survival Rate</div>
+            <div className="text-xs text-gray-900/60">Survival Rate</div>
           </div>
         </div>
       )}
@@ -83,7 +83,7 @@ export default function BiffChat({ apiKey, className = '' }: BiffChatProps) {
       <div className="h-96 overflow-y-auto mb-4 space-y-4 p-4 bg-light rounded-lg">
         {messages.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-dark/40 mb-4">Start planning your apocalyptic party!</p>
+            <p className="text-gray-900/40 mb-4">Start planning your apocalyptic party!</p>
             <button
               onClick={getGreeting}
               className="btn-primary text-sm"
@@ -101,7 +101,7 @@ export default function BiffChat({ apiKey, className = '' }: BiffChatProps) {
               <div
                 className={`max-w-[80%] p-4 rounded-lg ${
                   msg.role === 'user'
-                    ? 'bg-primary-500 text-white'
+                    ? 'bg-brand-blue text-white'
                     : 'bg-white border border-dark/10'
                 }`}
               >
@@ -113,7 +113,7 @@ export default function BiffChat({ apiKey, className = '' }: BiffChatProps) {
                       {msg.response.suggestedItems.map((item, i) => (
                         <span
                           key={i}
-                          className="text-xs px-2 py-1 bg-accent-100 text-accent-700 rounded-full"
+                          className="text-xs px-2 py-1 bg-yellow-100 text-yellow-600 rounded-full"
                         >
                           {item}
                         </span>
@@ -130,9 +130,9 @@ export default function BiffChat({ apiKey, className = '' }: BiffChatProps) {
           <div className="flex justify-start">
             <div className="bg-white border border-dark/10 p-4 rounded-lg">
               <div className="flex space-x-2">
-                <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" />
-                <div className="w-2 h-2 bg-secondary-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-                <div className="w-2 h-2 bg-accent-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                <div className="w-2 h-2 bg-brand-blue rounded-full animate-bounce" />
+                <div className="w-2 h-2 bg-brand-blue rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
+                <div className="w-2 h-2 bg-brand-yellow rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
               </div>
             </div>
           </div>
@@ -178,7 +178,7 @@ export default function BiffChat({ apiKey, className = '' }: BiffChatProps) {
             placeholder="Guests"
             value={partySize || ''}
             onChange={(e) => setPartySize(e.target.value ? parseInt(e.target.value) : undefined)}
-            className="w-24 px-3 py-2 border border-dark/20 rounded-lg focus:outline-none focus:border-primary-500"
+            className="w-24 px-3 py-2 border border-dark/20 rounded-lg focus:outline-none focus:border-brand-blue"
             min="1"
             max="1000"
           />
@@ -187,7 +187,7 @@ export default function BiffChat({ apiKey, className = '' }: BiffChatProps) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask Biff about your party..."
-            className="flex-1 px-4 py-2 border border-dark/20 rounded-lg focus:outline-none focus:border-primary-500"
+            className="flex-1 px-4 py-2 border border-dark/20 rounded-lg focus:outline-none focus:border-brand-blue"
             disabled={isLoading}
           />
           <button
@@ -202,7 +202,7 @@ export default function BiffChat({ apiKey, className = '' }: BiffChatProps) {
 
       {/* Special Effect Display */}
       {lastBiffResponse?.specialEffect && (
-        <div className="mt-4 text-center text-sm text-primary-500 animate-pulse">
+        <div className="mt-4 text-center text-sm text-brand-blue animate-pulse">
           {lastBiffResponse.specialEffect}
         </div>
       )}
@@ -211,7 +211,7 @@ export default function BiffChat({ apiKey, className = '' }: BiffChatProps) {
       {messages.length > 0 && (
         <button
           onClick={clearHistory}
-          className="mt-4 text-xs text-dark/40 hover:text-dark/60 transition-colors"
+          className="mt-4 text-xs text-gray-900/40 hover:text-gray-900/60 transition-colors"
         >
           Clear Chat History
         </button>

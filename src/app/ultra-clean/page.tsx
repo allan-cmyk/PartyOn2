@@ -34,8 +34,8 @@ export default function UltraCleanHome() {
             }
           `}</style>
           <div className="text-center loading-spinner">
-            <h1 className="text-4xl font-display text-royal-800 mb-4">Ultra Clean Vodka Cocktails</h1>
-            <div className="w-20 h-1 bg-gold-500 mx-auto animate-pulse"></div>
+            <h1 className="text-4xl font-heading text-gray-900 mb-4">Ultra Clean Vodka Cocktails</h1>
+            <div className="w-20 h-1 bg-yellow-500 mx-auto animate-pulse"></div>
           </div>
         </div>
       )}
@@ -86,15 +86,15 @@ export default function UltraCleanHome() {
             priority
             quality={100}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-royal-900/80 via-royal-900/60 to-royal-900/80" />
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-900/80 via-gray-900/60 to-gray-900/80" />
         </div>
 
         {/* Hero Content */}
         <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-6">
           <div className="hero-content">
-            <h1 className="font-display text-6xl md:text-7xl lg:text-8xl mb-6 leading-tight">
+            <h1 className="font-heading text-6xl md:text-7xl lg:text-8xl mb-6 leading-tight">
               Elevate Your
-              <span className="block text-gold-400">Events</span>
+              <span className="block text-brand-yellow">Events</span>
             </h1>
             <p className="text-xl md:text-2xl text-white/90 mb-10 font-light max-w-2xl mx-auto">
               Premium bar services for Fortune 500 companies and luxury venues
@@ -102,12 +102,12 @@ export default function UltraCleanHome() {
 
             <div className="hero-buttons flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/consultation">
-                <button className="px-10 py-4 bg-gold-500 hover:bg-gold-600 text-royal-900 font-semibold rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                <button className="px-10 py-4 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-semibold rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
                   Schedule Consultation
                 </button>
               </Link>
               <Link href="/services">
-                <button className="px-10 py-4 border-2 border-white/80 text-white hover:bg-white hover:text-royal-900 font-semibold rounded-full transition-all duration-300">
+                <button className="px-10 py-4 border-2 border-white/80 text-white hover:bg-white hover:text-gray-900 font-semibold rounded-full transition-all duration-300">
                   Explore Services
                 </button>
               </Link>
@@ -153,7 +153,7 @@ export default function UltraCleanHome() {
                 key={stat.label}
                 className="stat-item text-center"
               >
-                <div className="text-4xl font-light text-royal-800 mb-2">{stat.value}</div>
+                <div className="text-4xl font-light text-gray-900 mb-2">{stat.value}</div>
                 <div className="text-sm uppercase tracking-wider text-gray-600">{stat.label}</div>
               </div>
             ))}
@@ -187,8 +187,8 @@ export default function UltraCleanHome() {
           <div
             className="services-heading text-center mb-16"
           >
-            <h2 className="font-display text-5xl text-royal-800 mb-4">Our Services</h2>
-            <div className="w-20 h-1 bg-gold-500 mx-auto"></div>
+            <h2 className="font-heading text-5xl text-gray-900 mb-4">Our Services</h2>
+            <div className="w-20 h-1 bg-yellow-500 mx-auto"></div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -224,9 +224,9 @@ export default function UltraCleanHome() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   </div>
                   <div className="p-8">
-                    <h3 className="font-display text-2xl text-royal-800 mb-3">{service.title}</h3>
+                    <h3 className="font-heading text-2xl text-gray-900 mb-3">{service.title}</h3>
                     <p className="text-gray-600 mb-4">{service.description}</p>
-                    <span className="text-royal-600 font-medium group-hover:text-royal-700">
+                    <span className="text-brand-blue font-medium group-hover:text-blue-700">
                       Learn More
                       <span className="inline-block ml-2 group-hover:translate-x-2 transition-transform duration-300">→</span>
                     </span>
@@ -257,14 +257,14 @@ export default function UltraCleanHome() {
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-royal-900/90" />
+          <div className="absolute inset-0 bg-gray-900/90" />
         </div>
 
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center text-white">
           <div className="testimonial-content">
             <div className="flex justify-center gap-1 mb-6">
               {[...Array(5)].map((_, i) => (
-                <svg key={i} className="w-6 h-6 text-gold-400 fill-current" viewBox="0 0 20 20">
+                <svg key={i} className="w-6 h-6 text-brand-yellow fill-current" viewBox="0 0 20 20">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                 </svg>
               ))}
@@ -278,7 +278,7 @@ export default function UltraCleanHome() {
               </div>
               <div className="text-left">
                 <p className="text-lg font-semibold">Jennifer Martinez</p>
-                <p className="text-gold-300">Director of Events, Oracle</p>
+                <p className="text-brand-yellow">Director of Events, Oracle</p>
               </div>
             </div>
           </div>
@@ -286,7 +286,7 @@ export default function UltraCleanHome() {
       </section>
 
       {/* Simple CTA */}
-      <section className="py-24 bg-gradient-to-br from-royal-800 to-royal-900">
+      <section className="py-24 bg-gradient-to-br from-gray-900 to-gray-900">
         <style>{`
           @keyframes cta-reveal {
             from { opacity: 0; transform: translateY(30px); }
@@ -299,14 +299,14 @@ export default function UltraCleanHome() {
         `}</style>
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="cta-content">
-            <h2 className="font-display text-5xl text-white mb-6">
+            <h2 className="font-heading text-5xl text-white mb-6">
               Ready to Get Started?
             </h2>
-            <p className="text-xl text-gold-200 mb-10">
+            <p className="text-xl text-yellow-200 mb-10">
               Let&apos;s discuss how we can elevate your next event
             </p>
             <Link href="/consultation">
-              <button className="px-12 py-5 bg-gold-500 hover:bg-gold-600 text-royal-900 font-bold text-lg rounded-full transition-all duration-300 transform hover:scale-105 shadow-xl">
+              <button className="px-12 py-5 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-bold text-lg rounded-full transition-all duration-300 transform hover:scale-105 shadow-xl">
                 Schedule Your Consultation
               </button>
             </Link>

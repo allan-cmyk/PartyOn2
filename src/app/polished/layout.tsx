@@ -1,4 +1,4 @@
-import PolishedNavigation from '@/components/PolishedNavigation';
+import Navigation from "@/components/Navigation";
 import { Inter, Playfair_Display } from 'next/font/google';
 
 const inter = Inter({ 
@@ -8,7 +8,7 @@ const inter = Inter({
 
 const playfair = Playfair_Display({ 
   subsets: ['latin'],
-  variable: '--font-playfair',
+  variable: '--font-heading',
   weight: ['400', '500', '600', '700', '800', '900']
 });
 
@@ -19,7 +19,7 @@ export default function PolishedLayout({
 }) {
   return (
     <div className={`${inter.variable} ${playfair.variable} font-sans`}>
-      <PolishedNavigation />
+      <Navigation />
       {children}
     </div>
   );

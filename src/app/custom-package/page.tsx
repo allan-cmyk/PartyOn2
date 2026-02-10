@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
-import { useProducts } from '@/lib/shopify/hooks/useProducts';
-import { ShopifyProduct } from '@/lib/shopify/types';
-import { formatPrice } from '@/lib/shopify/utils';
+import { useCustomProducts } from '@/lib/cart/hooks/useCustomProducts';
+import { Product } from '@/lib/types';
+import { formatPrice } from '@/lib/utils';
 import { useCartContext } from '@/contexts/CartContext';
 
 interface PackageItem {
@@ -25,8 +25,8 @@ interface PackageData {
 export default function CustomPackagePage() {
   const router = useRouter();
   const [packageData, setPackageData] = useState<PackageData | null>(null);
-  const [matchedProducts, setMatchedProducts] = useState<{ item: PackageItem; products: ShopifyProduct[] }[]>([]);
-  const { products, loading, loadMore, hasNextPage } = useProducts(50);
+  const [matchedProducts, setMatchedProducts] = useState<{ item: PackageItem; products: Product[] }[]>([]);
+  const { products, loading, loadMore, hasNextPage } = useCustomProducts(50);
   const { addToCart, loading: cartLoading } = useCartContext();
   const [addingToCart, setAddingToCart] = useState<string | null>(null);
 
@@ -106,7 +106,7 @@ export default function CustomPackagePage() {
     }
   }, [packageData, products]);
 
-  const handleAddToCart = async (product: ShopifyProduct, quantity: number) => {
+  const handleAddToCart = async (product: Product, quantity: number) => {
     if (!product.variants.edges[0]) return;
     
     const variantId = product.variants.edges[0].node.id;
@@ -125,7 +125,7 @@ export default function CustomPackagePage() {
   if (!packageData || loading) {
     return (
       <div className="min-h-screen bg-white">
-        <OldFashionedNavigation />
+        <Navigation />
         <div className="pt-32 pb-16 text-center">
           <div className="animate-pulse">
             <div className="h-8 w-48 bg-gray-200 mx-auto rounded"></div>
@@ -137,15 +137,15 @@ export default function CustomPackagePage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <OldFashionedNavigation />
+      <Navigation />
       
       {/* Header */}
       <section className="pt-32 pb-12 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-8 text-center">
-          <h1 className="font-serif text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.15em]">
+          <h1 className="font-heading text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.08em]">
             {packageData.name}
           </h1>
-          <div className="w-24 h-px bg-gold-600 mx-auto mb-6" />
+          <div className="w-24 h-px bg-brand-yellow mx-auto mb-6" />
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Curated by Wayne, your Texas Party Pro
           </p>
@@ -157,10 +157,10 @@ export default function CustomPackagePage() {
         <div className="max-w-4xl mx-auto px-8">
           <div className="bg-white p-6 rounded-lg border border-gray-200">
             <div className="flex justify-between items-start mb-4">
-              <h2 className="font-serif text-xl text-gray-900 tracking-[0.1em]">Package Contents</h2>
+              <h2 className="font-heading text-xl text-gray-900 tracking-[0.1em]">Package Contents</h2>
               <div className="text-right">
                 <p className="text-xs text-gray-500 uppercase tracking-wider">Estimated Total</p>
-                <p className="text-2xl font-serif text-gold-600">
+                <p className="text-2xl font-heading text-brand-yellow">
                   {matchedProducts.length > 0 ? (
                     formatPrice(
                       matchedProducts.reduce((total, match) => {
@@ -181,7 +181,7 @@ export default function CustomPackagePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {packageData.items.map((item, index) => (
                 <div key={index} className="flex items-center text-sm">
-                  <span className="font-medium text-gold-600 mr-2">{item.quantity}x</span>
+                  <span className="font-medium text-brand-yellow mr-2">{item.quantity}x</span>
                   <span className="text-gray-700">{item.product}</span>
                 </div>
               ))}
@@ -198,7 +198,7 @@ export default function CustomPackagePage() {
             {matchedProducts.map((match, index) => (
               <div key={index} className="border-b border-gray-200 pb-8">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-serif text-2xl text-gray-900 tracking-[0.1em]">
+                  <h3 className="font-heading text-2xl text-gray-900 tracking-[0.1em]">
                     {match.item.quantity}x {match.item.product}
                   </h3>
                   {match.products.length === 0 && (
@@ -221,13 +221,13 @@ export default function CustomPackagePage() {
                           )}
                         </div>
                         <h4 className="font-medium text-gray-900 mb-1">{product.title}</h4>
-                        <p className="text-gold-600 font-serif text-lg mb-3">
+                        <p className="text-brand-yellow font-heading text-lg mb-3">
                           {formatPrice(product.priceRange.minVariantPrice.amount, product.priceRange.minVariantPrice.currencyCode)}
                         </p>
                         <button
                           onClick={() => handleAddToCart(product, match.item.quantity)}
                           disabled={addingToCart === product.id || cartLoading}
-                          className="w-full py-2 bg-gold-600 text-gray-900 text-sm hover:bg-gold-700 transition-colors tracking-[0.1em] disabled:opacity-50"
+                          className="w-full py-2 bg-brand-yellow text-gray-900 text-sm hover:bg-yellow-600 transition-colors tracking-[0.1em] disabled:opacity-50"
                         >
                           {addingToCart === product.id ? 'ADDING...' : `ADD ${match.item.quantity} TO CART`}
                         </button>
@@ -240,7 +240,7 @@ export default function CustomPackagePage() {
                       We couldn&apos;t find an exact match for &quot;{match.item.product}&quot;
                     </p>
                     <Link href="/products">
-                      <button className="px-6 py-2 border border-gray-300 text-gray-700 hover:border-gold-600 transition-colors tracking-[0.1em] text-sm">
+                      <button className="px-6 py-2 border border-gray-300 text-gray-700 hover:border-brand-yellow transition-colors tracking-[0.1em] text-sm">
                         BROWSE ALL PRODUCTS
                       </button>
                     </Link>
@@ -254,12 +254,12 @@ export default function CustomPackagePage() {
           <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => router.back()}
-              className="px-8 py-3 border border-gray-300 text-gray-700 hover:border-gold-600 transition-colors tracking-[0.15em]"
+              className="px-8 py-3 border border-gray-300 text-gray-700 hover:border-brand-yellow transition-colors tracking-[0.08em]"
             >
               BACK TO CHAT
             </button>
             <Link href="/products">
-              <button className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em]">
+              <button className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em]">
                 BROWSE ALL PRODUCTS
               </button>
             </Link>

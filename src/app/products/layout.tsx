@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import OldFashionedNavigation from "@/components/OldFashionedNavigation";
+import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
@@ -32,7 +32,7 @@ export default function ProductsLayout({
 }) {
   return (
     <>
-      <OldFashionedNavigation />
+      <Navigation />
       {children}
       <Footer />
     </>

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import { trackPageView, ANALYTICS_EVENTS } from '@/lib/analytics/track';
 
@@ -85,7 +85,7 @@ export default function DeliveryAreasPage() {
 
   return (
     <div className="bg-white">
-      <OldFashionedNavigation />
+      <Navigation />
       
       {/* Hero Section */}
       <section className="relative h-[50vh] mt-24 flex items-center justify-center overflow-hidden">
@@ -99,10 +99,10 @@ export default function DeliveryAreasPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
 
         <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8">
-          <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
+          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.08em]">
             DELIVERY AREAS
           </h1>
-          <div className="w-24 h-px bg-gold-400 mx-auto" />
+          <div className="w-24 h-px bg-brand-yellow mx-auto" />
         </div>
       </section>
 
@@ -110,7 +110,7 @@ export default function DeliveryAreasPage() {
       <section className="py-24 bg-gray-50">
         <div className="max-w-4xl mx-auto px-8 text-center">
           <ScrollRevealCSS duration={800}>
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-4xl md:text-5xl text-gray-900 mb-6 tracking-[0.1em]">
               Serving Greater Austin
             </h2>
             <p className="text-lg text-gray-600 leading-relaxed">
@@ -127,10 +127,10 @@ export default function DeliveryAreasPage() {
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
           <ScrollRevealCSS duration={800} className="text-center mb-16">
-            <h2 className="font-serif font-light text-3xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-3xl text-gray-900 mb-4 tracking-[0.1em]">
               Select Your Area
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto" />
           </ScrollRevealCSS>
 
           {/* Area Buttons */}
@@ -141,8 +141,8 @@ export default function DeliveryAreasPage() {
                 onClick={() => setActiveArea(key)}
                 className={`px-6 py-3 tracking-[0.1em] text-sm transition-all duration-300 ${
                   activeArea === key
-                    ? 'bg-gold-600 text-gray-900'
-                    : 'border border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900'
+                    ? 'bg-brand-yellow text-gray-900'
+                    : 'border border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900'
                 }`}
               >
                 {area.name.toUpperCase()}
@@ -168,7 +168,7 @@ export default function DeliveryAreasPage() {
                   opacity: 0
                 }}
               >
-                <h3 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.1em]">
+                <h3 className="font-heading text-xl text-gray-900 mb-2 tracking-[0.1em]">
                   {neighborhood.name}
                 </h3>
                 <p className="text-gray-600 text-sm">
@@ -184,20 +184,20 @@ export default function DeliveryAreasPage() {
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
           <ScrollRevealCSS duration={800} className="text-center mb-16">
-            <h2 className="font-serif font-light text-3xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-3xl text-gray-900 mb-4 tracking-[0.1em]">
               Delivery Information
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto" />
           </ScrollRevealCSS>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <ScrollRevealCSS duration={800} className="text-center">
               <div className="mb-4">
-                <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-12 h-12 mx-auto text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 72-Hour Notice
               </h3>
               <p className="text-gray-600">
@@ -207,11 +207,11 @@ export default function DeliveryAreasPage() {
 
             <ScrollRevealCSS duration={800} delay={100} className="text-center">
               <div className="mb-4">
-                <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-12 h-12 mx-auto text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
                 </svg>
               </div>
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Professional Delivery
               </h3>
               <p className="text-gray-600">
@@ -221,11 +221,11 @@ export default function DeliveryAreasPage() {
 
             <ScrollRevealCSS duration={800} delay={200} className="text-center">
               <div className="mb-4">
-                <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-12 h-12 mx-auto text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
-              <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.1em]">
+              <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.1em]">
                 Licensed & Insured
               </h3>
               <p className="text-gray-600">
@@ -240,10 +240,10 @@ export default function DeliveryAreasPage() {
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
           <ScrollRevealCSS duration={800} className="text-center mb-16">
-            <h2 className="font-serif font-light text-3xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-3xl text-gray-900 mb-4 tracking-[0.1em]">
               Venue Partnerships
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto mb-8" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto mb-8" />
             <p className="text-gray-600 max-w-2xl mx-auto">
               We maintain partnerships with Austin&apos;s premier venues to ensure seamless service
               at your chosen location
@@ -280,7 +280,7 @@ export default function DeliveryAreasPage() {
       <section className="py-24 bg-gray-900">
         <div className="max-w-4xl mx-auto px-8 text-center">
           <ScrollRevealCSS duration={800}>
-            <h2 className="font-serif font-light text-4xl md:text-5xl text-white mb-6 tracking-[0.1em]">
+            <h2 className="font-heading font-light text-4xl md:text-5xl text-white mb-6 tracking-[0.1em]">
               Ready to Celebrate?
             </h2>
             <p className="text-gray-300 text-lg mb-12 tracking-[0.05em]">
@@ -288,12 +288,12 @@ export default function DeliveryAreasPage() {
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link href="/contact">
-                <button className="px-10 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm">
                   CHECK AVAILABILITY
                 </button>
               </Link>
               <a href="tel:7373719700">
-                <button className="px-10 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm">
+                <button className="px-10 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm">
                   CALL FOR DETAILS
                 </button>
               </a>
@@ -319,19 +319,19 @@ export default function DeliveryAreasPage() {
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SERVICES</h4>
               <ul className="space-y-2">
-                <li><Link href="/weddings" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Weddings</Link></li>
-                <li><Link href="/boat-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Boat Parties</Link></li>
-                <li><Link href="/bach-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Celebrations</Link></li>
-                <li><Link href="/corporate" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Corporate</Link></li>
+                <li><Link href="/weddings" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Weddings</Link></li>
+                <li><Link href="/boat-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Boat Parties</Link></li>
+                <li><Link href="/bach-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Celebrations</Link></li>
+                <li><Link href="/corporate" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Corporate</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">COMPANY</h4>
               <ul className="space-y-2">
-                <li><Link href="/about" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">About</Link></li>
-                <li><Link href="/delivery-areas" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Delivery Areas</Link></li>
-                <li><Link href="/faqs" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">FAQs</Link></li>
-                <li><Link href="/contact" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Contact</Link></li>
+                <li><Link href="/about" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">About</Link></li>
+                <li><Link href="/delivery-areas" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Delivery Areas</Link></li>
+                <li><Link href="/faqs" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">FAQs</Link></li>
+                <li><Link href="/contact" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Contact</Link></li>
               </ul>
             </div>
             <div>
@@ -346,8 +346,8 @@ export default function DeliveryAreasPage() {
           <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">© 2024 PartyOn Delivery. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="/terms" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Terms</Link>
-              <Link href="/privacy" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Privacy</Link>
+              <Link href="/terms" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Terms</Link>
+              <Link href="/privacy" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Privacy</Link>
             </div>
           </div>
         </div>

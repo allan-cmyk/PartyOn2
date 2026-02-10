@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #ffffff; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #ffffff;
+  font-family: Arial, sans-serif;
+  display: flex;
+}
+.content {
+  margin: 50pt;
+  flex: 1;
+}
+h1 {
+  font-size: 40pt;
+  margin: 0 0 40pt 0;
+  color: #1E3A5F;
+  font-weight: bold;
+  text-align: center;
+}
+.info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 25pt;
+}
+.info-row {
+  display: flex;
+  background: #F8F9FA;
+  padding: 20pt;
+  border-radius: 8pt;
+  border-left: 6pt solid #0B7285;
+}
+.label {
+  font-size: 18pt;
+  font-weight: bold;
+  color: #1E3A5F;
+  width: 150pt;
+}
+.value {
+  font-size: 18pt;
+  color: #2D3748;
+  flex: 1;
+}
+.highlight {
+  background: #0B7285;
+  color: white;
+  padding: 25pt;
+  border-radius: 8pt;
+  text-align: center;
+  margin-top: 25pt;
+}
+.highlight p {
+  font-size: 20pt;
+  margin: 0;
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+<div class="content">
+  <h1>LOGISTICS</h1>
+  <div class="info-grid">
+    <div class="info-row">
+      <p class="label">Date:</p>
+      <p class="value">TBD - Group Decision</p>
+    </div>
+    <div class="info-row" style="border-left-color: #FF6B6B;">
+      <p class="label">Location:</p>
+      <p class="value">Lake Travis, Austin TX</p>
+    </div>
+    <div class="info-row" style="border-left-color: #F59E0B;">
+      <p class="label">Delivery:</p>
+      <p class="value">72-hour advance booking required</p>
+    </div>
+  </div>
+  <div class="highlight">
+    <p>Delivery directly to boat dock or marina</p>
+  </div>
+</div>
+</body>
+</html>

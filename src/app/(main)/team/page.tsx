@@ -62,10 +62,10 @@ export default function TeamPage() {
       <Section>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl text-dark mb-4">
+            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl text-gray-900 mb-4">
               Powered by Austin Spirit
             </h2>
-            <p className="text-lg text-dark/70 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-900/70 max-w-2xl mx-auto">
               We&apos;re not just a team – we&apos;re Austin party enthusiasts on a mission to make every 
               celebration unforgettable.
             </p>
@@ -85,9 +85,9 @@ export default function TeamPage() {
                         className="object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-100 to-primary-200">
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-100">
                         <div className="text-center">
-                          <div className="w-32 h-32 bg-primary-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+                          <div className="w-32 h-32 bg-brand-blue rounded-full mx-auto mb-4 flex items-center justify-center">
                             <span className="text-4xl font-bold text-white">
                               {member.name.split(' ').map(n => n[0]).join('')}
                             </span>
@@ -97,12 +97,12 @@ export default function TeamPage() {
                     )}
                   </div>
                   <div className="p-6">
-                    <h3 className="font-display text-xl text-dark mb-1">{member.name}</h3>
-                    <p className="text-sm font-semibold text-primary-500 mb-3">{member.role}</p>
-                    <p className="text-dark/70 text-sm mb-4">{member.bio}</p>
+                    <h3 className="font-heading text-xl text-gray-900 mb-1">{member.name}</h3>
+                    <p className="text-sm font-semibold text-brand-blue mb-3">{member.role}</p>
+                    <p className="text-gray-900/70 text-sm mb-4">{member.bio}</p>
                     <div className="pt-4 border-t border-gray-100">
-                      <p className="text-xs text-dark/50">Fun Fact:</p>
-                      <p className="text-sm text-primary-500 font-medium">{member.funFact}</p>
+                      <p className="text-xs text-gray-900/50">Fun Fact:</p>
+                      <p className="text-sm text-brand-blue font-medium">{member.funFact}</p>
                     </div>
                   </div>
                 </div>
@@ -111,29 +111,29 @@ export default function TeamPage() {
           </div>
 
           {/* Culture Section */}
-          <div className="bg-gradient-to-r from-primary-50 to-secondary-50 rounded-2xl p-8 md:p-12">
-            <h3 className="font-display text-2xl text-dark text-center mb-8">Life at Party On</h3>
+          <div className="bg-gradient-to-r from-blue-50 to-blue-50 rounded-2xl p-8 md:p-12">
+            <h3 className="font-heading text-2xl text-gray-900 text-center mb-8">Life at Party On</h3>
             <div className="grid md:grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="text-4xl mb-4">🎉</div>
-                <h4 className="font-semibold text-dark mb-2">Work Hard, Party Smart</h4>
-                <p className="text-sm text-dark/70">
+                <h4 className="font-semibold text-gray-900 mb-2">Work Hard, Party Smart</h4>
+                <p className="text-sm text-gray-900/70">
                   We take our parties seriously, but never ourselves. Every day is an adventure.
                 </p>
               </div>
               
               <div className="text-center">
                 <div className="text-4xl mb-4">🤝</div>
-                <h4 className="font-semibold text-dark mb-2">Austin Family</h4>
-                <p className="text-sm text-dark/70">
+                <h4 className="font-semibold text-gray-900 mb-2">Austin Family</h4>
+                <p className="text-sm text-gray-900/70">
                   More than coworkers – we&apos;re a tight-knit crew that celebrates each other&apos;s wins.
                 </p>
               </div>
               
               <div className="text-center">
                 <div className="text-4xl mb-4">🚀</div>
-                <h4 className="font-semibold text-dark mb-2">Always Innovating</h4>
-                <p className="text-sm text-dark/70">
+                <h4 className="font-semibold text-gray-900 mb-2">Always Innovating</h4>
+                <p className="text-sm text-gray-900/70">
                   From AI party planning to drone delivery (coming soon), we&apos;re always pushing boundaries.
                 </p>
               </div>
@@ -142,8 +142,8 @@ export default function TeamPage() {
 
           {/* Join the Team CTA */}
           <div className="text-center mt-12">
-            <h3 className="font-display text-2xl text-dark mb-4">Want to Join the Party?</h3>
-            <p className="text-dark/70 mb-6">We&apos;re always looking for talented Austin locals who share our passion.</p>
+            <h3 className="font-heading text-2xl text-gray-900 mb-4">Want to Join the Party?</h3>
+            <p className="text-gray-900/70 mb-6">We&apos;re always looking for talented Austin locals who share our passion.</p>
             <Link href="/careers" className="btn-primary">
               View Open Positions
             </Link>

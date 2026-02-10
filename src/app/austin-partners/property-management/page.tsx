@@ -5,11 +5,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import Footer from '@/components/Footer';
-import { useCart } from '@/lib/shopify/hooks/useCart';
+import { useCartContext } from '@/contexts/CartContext';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 
 export default function PropertyManagementPartnerPage() {
-  const { cart } = useCart();
+  const { cart } = useCartContext();
   const [showSuccess, setShowSuccess] = useState(false);
 
   const handleQuickAdd = async (productId: string, productTitle: string) => {
@@ -66,14 +66,14 @@ export default function PropertyManagementPartnerPage() {
                   </svg>
                 </div>
                 <div>
-                  <h1 className="font-serif text-xl tracking-wide">Luxury Living Austin</h1>
+                  <h1 className="font-heading text-xl tracking-wide">Luxury Living Austin</h1>
                   <p className="text-xs text-gray-500">Premium Property Management</p>
                 </div>
               </div>
               <div className="h-8 w-px bg-gray-300" />
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-600">Powered by</span>
-                <Link href="/" className="font-serif text-lg text-gold-600 hover:text-gold-700 transition-colors">
+                <Link href="/" className="font-heading text-lg text-brand-yellow hover:text-yellow-600 transition-colors">
                   PartyOn Delivery
                 </Link>
               </div>
@@ -82,7 +82,7 @@ export default function PropertyManagementPartnerPage() {
             {/* Cart button */}
             <Link
               href="/checkout"
-              className="flex items-center gap-2 px-4 py-2 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors rounded-lg"
+              className="flex items-center gap-2 px-4 py-2 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors rounded-lg"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -106,7 +106,7 @@ export default function PropertyManagementPartnerPage() {
 
         <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8">
 
-          <h1 className="font-serif font-light text-4xl md:text-6xl mb-4 tracking-[0.1em]">
+          <h1 className="font-heading font-light text-4xl md:text-6xl mb-4 tracking-[0.1em]">
             Elevate Your Resident Experience
           </h1>
           <p className="text-lg font-light tracking-wide text-gray-200 mb-8">
@@ -115,7 +115,7 @@ export default function PropertyManagementPartnerPage() {
           <div className="flex gap-4 justify-center">
             <Link
               href="#amenities"
-              className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-all duration-300 tracking-wider"
+              className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-all duration-300 tracking-wider"
             >
               VIEW AMENITIES
             </Link>
@@ -134,8 +134,8 @@ export default function PropertyManagementPartnerPage() {
         <div className="max-w-7xl mx-auto px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="w-12 h-12 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
@@ -143,8 +143,8 @@ export default function PropertyManagementPartnerPage() {
               <p className="text-sm text-gray-600">Your brand, our infrastructure</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
@@ -152,8 +152,8 @@ export default function PropertyManagementPartnerPage() {
               <p className="text-sm text-gray-600">15% commission on resident orders</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
@@ -161,8 +161,8 @@ export default function PropertyManagementPartnerPage() {
               <p className="text-sm text-gray-600">TABC compliant delivery</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h5.015c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h5.014a1 1 0 00.951-.69l1.519-4.674z" />
                 </svg>
               </div>
@@ -177,7 +177,7 @@ export default function PropertyManagementPartnerPage() {
       <section id="amenities" className="py-16">
         <div className="max-w-7xl mx-auto px-8">
           <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-wide">
+            <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4 tracking-wide">
               Premium Amenities for Your Residents
             </h2>
             <p className="text-lg text-gray-600">
@@ -201,7 +201,7 @@ export default function PropertyManagementPartnerPage() {
 
                 {/* Content */}
                 <div className={`${index % 2 === 1 ? 'lg:order-1' : ''}`}>
-                  <h3 className="font-serif text-2xl md:text-3xl mb-3 text-gray-900">{amenity.title}</h3>
+                  <h3 className="font-heading text-2xl md:text-3xl mb-3 text-gray-900">{amenity.title}</h3>
                   <p className="text-gray-600 mb-6">{amenity.description}</p>
 
                   {/* Product Grid */}
@@ -213,10 +213,10 @@ export default function PropertyManagementPartnerPage() {
                           <p className="text-sm text-gray-600">{product.description}</p>
                         </div>
                         <div className="flex items-center gap-4">
-                          <span className="font-serif text-lg text-gray-900">{product.price}</span>
+                          <span className="font-heading text-lg text-gray-900">{product.price}</span>
                           <button
                             onClick={() => handleQuickAdd(product.id, product.title)}
-                            className="px-4 py-2 bg-gold-600 text-gray-900 text-sm hover:bg-gold-700 transition-colors rounded"
+                            className="px-4 py-2 bg-brand-yellow text-gray-900 text-sm hover:bg-yellow-600 transition-colors rounded"
                           >
                             INQUIRE
                           </button>
@@ -227,7 +227,7 @@ export default function PropertyManagementPartnerPage() {
 
                   <Link
                     href="/products"
-                    className="inline-flex items-center gap-2 text-gold-600 hover:text-gold-700 font-medium"
+                    className="inline-flex items-center gap-2 text-brand-yellow hover:text-yellow-600 font-medium"
                   >
                     View Full Catalog
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -247,12 +247,12 @@ export default function PropertyManagementPartnerPage() {
         <div className="max-w-7xl mx-auto px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-6">
+              <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-6">
                 Why Partner with PartyOn
               </h2>
               <ul className="space-y-4">
                 <li className="flex items-start">
-                  <svg className="w-6 h-6 text-gold-600 mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-brand-yellow mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <div>
@@ -261,7 +261,7 @@ export default function PropertyManagementPartnerPage() {
                   </div>
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-6 h-6 text-gold-600 mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-brand-yellow mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <div>
@@ -270,7 +270,7 @@ export default function PropertyManagementPartnerPage() {
                   </div>
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-6 h-6 text-gold-600 mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-brand-yellow mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <div>
@@ -279,7 +279,7 @@ export default function PropertyManagementPartnerPage() {
                   </div>
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-6 h-6 text-gold-600 mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-brand-yellow mt-0.5 mr-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <div>
@@ -290,21 +290,21 @@ export default function PropertyManagementPartnerPage() {
               </ul>
             </div>
             <div className="bg-white p-8 rounded-lg shadow-lg">
-              <h3 className="font-serif text-2xl text-gray-900 mb-6">Partner Success Metrics</h3>
+              <h3 className="font-heading text-2xl text-gray-900 mb-6">Partner Success Metrics</h3>
               <div className="space-y-4">
                 <div className="bg-gray-50 p-4 rounded">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-sm text-gray-600">Average Monthly Orders</span>
-                    <span className="font-serif text-2xl text-gray-900">127</span>
+                    <span className="font-heading text-2xl text-gray-900">127</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-gold-600 h-2 rounded-full" style={{ width: '85%' }}></div>
+                    <div className="bg-brand-yellow h-2 rounded-full" style={{ width: '85%' }}></div>
                   </div>
                 </div>
                 <div className="bg-gray-50 p-4 rounded">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Monthly Commission</span>
-                    <span className="font-serif text-2xl text-gold-600">$3,175</span>
+                    <span className="font-heading text-2xl text-brand-yellow">$3,175</span>
                   </div>
                 </div>
                 <div className="bg-gray-50 p-4 rounded">
@@ -312,7 +312,7 @@ export default function PropertyManagementPartnerPage() {
                     <span className="text-sm text-gray-600">Resident Satisfaction</span>
                     <div className="flex">
                       {[...Array(5)].map((_, i) => (
-                        <svg key={i} className="w-5 h-5 text-gold-400 fill-current" viewBox="0 0 20 20">
+                        <svg key={i} className="w-5 h-5 text-brand-yellow fill-current" viewBox="0 0 20 20">
                           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                         </svg>
                       ))}
@@ -327,9 +327,9 @@ export default function PropertyManagementPartnerPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-br from-gold-50 to-gold-100">
+      <section className="py-16 bg-gradient-to-br from-yellow-50 to-yellow-100">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4">
+          <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4">
             Ready to Elevate Your Properties?
           </h2>
           <p className="text-lg text-gray-600 mb-8">
@@ -338,13 +338,13 @@ export default function PropertyManagementPartnerPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/contact"
-              className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-wider font-medium"
+              className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-wider font-medium"
             >
               BECOME A PARTNER
             </Link>
             <Link
               href="/partners"
-              className="px-8 py-4 bg-white text-gold-600 border-2 border-gold-600 hover:bg-gold-50 transition-colors tracking-wider font-medium"
+              className="px-8 py-4 bg-white text-brand-yellow border-2 border-brand-yellow hover:bg-yellow-50 transition-colors tracking-wider font-medium"
             >
               VIEW ALL PARTNERSHIPS
             </Link>

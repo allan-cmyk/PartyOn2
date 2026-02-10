@@ -3,15 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import { useCartContext } from '@/contexts/CartContext';
-import { formatPrice, getFirstAvailableVariant } from '@/lib/shopify/utils';
-import { ShopifyProduct } from '@/lib/shopify/types';
+import { formatPrice, getFirstAvailableVariant } from '@/lib/utils';
+import { Product } from '@/lib/types';
 import { trackMetaEvent } from '@/components/MetaPixel';
 import { trackProductView } from '@/lib/analytics/track';
 
 interface Props {
-  product: ShopifyProduct;
+  product: Product;
 }
 
 export default function ProductDetailClient({ product }: Props) {
@@ -63,14 +63,14 @@ export default function ProductDetailClient({ product }: Props) {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation forceScrolled={true} />
+      <Navigation forceScrolled={true} />
 
       {/* Breadcrumb */}
       <div className="max-w-7xl mx-auto px-8 py-4 text-sm">
         <nav className="flex items-center space-x-2 text-gray-500">
-          <Link href="/" className="hover:text-gold-600 transition-colors">Home</Link>
+          <Link href="/" className="hover:text-brand-yellow transition-colors">Home</Link>
           <span>/</span>
-          <Link href="/products" className="hover:text-gold-600 transition-colors">Products</Link>
+          <Link href="/products" className="hover:text-brand-yellow transition-colors">Products</Link>
           <span>/</span>
           <span className="text-gray-900">{product.title}</span>
         </nav>
@@ -110,7 +110,7 @@ export default function ProductDetailClient({ product }: Props) {
                     key={index}
                     onClick={() => setSelectedImageIndex(index)}
                     className={`relative aspect-square border-2 transition-colors ${
-                      selectedImageIndex === index ? 'border-gold-600' : 'border-gray-200'
+                      selectedImageIndex === index ? 'border-brand-yellow' : 'border-gray-200'
                     }`}
                   >
                     <img
@@ -132,7 +132,7 @@ export default function ProductDetailClient({ product }: Props) {
               transition={{ duration: 0.5 }}
             >
               {/* Title */}
-              <h1 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.05em]">
+              <h1 className="font-heading text-4xl text-gray-900 mb-4 tracking-[0.05em]">
                 {product.title}
               </h1>
 
@@ -154,7 +154,7 @@ export default function ProductDetailClient({ product }: Props) {
               {/* Description */}
               {product.description && (
                 <div className="mb-8">
-                  <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">Description</h3>
+                  <h3 className="font-heading text-xl text-gray-900 mb-4 tracking-[0.1em]">Description</h3>
                   <div
                     className="text-gray-600 leading-relaxed prose prose-sm max-w-none"
                     dangerouslySetInnerHTML={{ __html: product.descriptionHtml || product.description }}
@@ -165,7 +165,7 @@ export default function ProductDetailClient({ product }: Props) {
               {/* Variant Selection */}
               {product.variants.edges.length > 1 && (
                 <div className="mb-8">
-                  <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">Options</h3>
+                  <h3 className="font-heading text-xl text-gray-900 mb-4 tracking-[0.1em]">Options</h3>
                   <div className="grid grid-cols-2 gap-3">
                     {product.variants.edges.map(({ node: variant }) => (
                       <button
@@ -174,8 +174,8 @@ export default function ProductDetailClient({ product }: Props) {
                         disabled={!variant.availableForSale}
                         className={`p-4 border-2 transition-all duration-300 ${
                           selectedVariantId === variant.id
-                            ? 'border-gold-600 bg-gold-50'
-                            : 'border-gray-200 hover:border-gold-400'
+                            ? 'border-brand-yellow bg-yellow-50'
+                            : 'border-gray-200 hover:border-brand-yellow'
                         } ${!variant.availableForSale ? 'opacity-50 cursor-not-allowed' : ''}`}
                       >
                         <p className="font-medium text-gray-900">{variant.title}</p>
@@ -197,14 +197,14 @@ export default function ProductDetailClient({ product }: Props) {
                   <div className="flex items-center space-x-4">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="w-12 h-12 border border-gray-300 hover:border-gold-600 transition-colors"
+                      className="w-12 h-12 border border-gray-300 hover:border-brand-yellow transition-colors"
                     >
                       -
                     </button>
                     <span className="w-16 text-center text-lg">{quantity}</span>
                     <button
                       onClick={() => setQuantity(quantity + 1)}
-                      className="w-12 h-12 border border-gray-300 hover:border-gold-600 transition-colors"
+                      className="w-12 h-12 border border-gray-300 hover:border-brand-yellow transition-colors"
                     >
                       +
                     </button>
@@ -214,9 +214,9 @@ export default function ProductDetailClient({ product }: Props) {
                 <button
                   onClick={handleAddToCart}
                   disabled={!selectedVariant?.availableForSale || cartLoading}
-                  className={`w-full py-4 transition-all duration-300 tracking-[0.15em] text-sm ${
+                  className={`w-full py-4 transition-all duration-300 tracking-[0.08em] text-sm ${
                     selectedVariant?.availableForSale
-                      ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
+                      ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
                 >
@@ -240,7 +240,7 @@ export default function ProductDetailClient({ product }: Props) {
               <div className="mt-12 pt-8 border-t border-gray-200">
                 <div className="space-y-4">
                   <div className="flex items-start">
-                    <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <div>
@@ -249,7 +249,7 @@ export default function ProductDetailClient({ product }: Props) {
                     </div>
                   </div>
                   <div className="flex items-start">
-                    <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
                     <div>
@@ -258,7 +258,7 @@ export default function ProductDetailClient({ product }: Props) {
                     </div>
                   </div>
                   <div className="flex items-start">
-                    <svg className="w-5 h-5 text-gold-600 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-brand-yellow mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                     <div>

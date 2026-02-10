@@ -16,8 +16,8 @@ export default function Loading({
   }
 
   const colors = {
-    gold: 'bg-gold-500',
-    navy: 'bg-navy-500',
+    gold: 'bg-yellow-500',
+    navy: 'bg-gray-900',
     white: 'bg-white'
   }
 
@@ -34,7 +34,7 @@ export default function Loading({
       <div className="fixed inset-0 bg-white/95 flex items-center justify-center z-50">
         <div className="text-center space-y-4">
           <LoadingDots />
-          <p className="font-sans text-navy-500 font-medium">Loading...</p>
+          <p className="font-sans text-gray-900 font-medium">Loading...</p>
         </div>
       </div>
     )

@@ -40,8 +40,8 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
           if (redirectTo) {
             window.location.href = redirectTo;
           }
-        } else if (result.errors) {
-          setErrors(result.errors.map(err => err.message));
+        } else if (result.error) {
+          setErrors([result.error]);
         }
       } else if (mode === 'register') {
         const result = await register({
@@ -57,16 +57,16 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
           if (redirectTo) {
             window.location.href = redirectTo;
           }
-        } else if (result.errors) {
-          setErrors(result.errors.map(err => err.message));
+        } else if (result.error) {
+          setErrors([result.error]);
         }
       } else if (mode === 'recover') {
         const result = await recoverPassword(formData.email);
         if (result.success) {
           setSuccessMessage('Password reset instructions have been sent to your email.');
           setTimeout(() => setMode('login'), 3000);
-        } else if (result.errors) {
-          setErrors(result.errors.map(err => err.message));
+        } else if (result.error) {
+          setErrors([result.error]);
         }
       }
     } catch {
@@ -140,7 +140,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                 </svg>
               </button>
 
-              <h2 className="font-cormorant text-3xl tracking-[0.15em] text-center mb-8">
+              <h2 className="font-cormorant text-3xl tracking-[0.08em] text-center mb-8">
                 {mode === 'login' && 'Welcome Back'}
                 {mode === 'register' && 'Create Account'}
                 {mode === 'recover' && 'Reset Password'}
@@ -171,7 +171,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                         onChange={handleInputChange}
                         placeholder="First Name"
                         required
-                        className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold-500"
+                        className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-500"
                       />
                       <input
                         type="text"
@@ -180,7 +180,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                         onChange={handleInputChange}
                         placeholder="Last Name"
                         required
-                        className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold-500"
+                        className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-500"
                       />
                     </div>
                     <input
@@ -191,7 +191,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                       placeholder="(XXX) XXX-XXXX"
                       pattern="\([0-9]{3}\) [0-9]{3}-[0-9]{4}"
                       title="Phone number format: (123) 456-7890"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-500"
                     />
                   </>
                 )}
@@ -203,7 +203,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                   onChange={handleInputChange}
                   placeholder="Email Address"
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-500"
                 />
 
                 {mode !== 'recover' && (
@@ -215,7 +215,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                     placeholder="Password (min. 5 characters)"
                     required
                     minLength={5}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-500"
                   />
                 )}
 
@@ -226,7 +226,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                       name="acceptsMarketing"
                       checked={formData.acceptsMarketing}
                       onChange={handleInputChange}
-                      className="rounded border-gray-300 text-gold-500 focus:ring-gold-500"
+                      className="rounded border-gray-300 text-yellow-500 focus:ring-yellow-500"
                     />
                     I want to receive exclusive offers and updates
                   </label>
@@ -235,7 +235,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gray-900 text-white py-3 rounded-lg hover:bg-gold-500 hover:text-gray-900 transition-all disabled:opacity-50 tracking-[0.1em] border border-gray-900"
+                  className="w-full bg-gray-900 text-white py-3 rounded-lg hover:bg-yellow-500 hover:text-gray-900 transition-all disabled:opacity-50 tracking-[0.1em] border border-gray-900"
                 >
                   {loading ? 'Processing...' : (
                     <>
@@ -252,7 +252,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                   <>
                     <button
                       onClick={() => setMode('recover')}
-                      className="text-gold-500 hover:underline"
+                      className="text-yellow-500 hover:underline"
                     >
                       Forgot password?
                     </button>
@@ -260,7 +260,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                       Don&apos;t have an account?{' '}
                       <button
                         onClick={() => setMode('register')}
-                        className="text-gold-500 hover:underline"
+                        className="text-yellow-500 hover:underline"
                       >
                         Sign up
                       </button>
@@ -272,7 +272,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                     Already have an account?{' '}
                     <button
                       onClick={() => setMode('login')}
-                      className="text-gold-500 hover:underline"
+                      className="text-yellow-500 hover:underline"
                     >
                       Sign in
                     </button>
@@ -281,7 +281,7 @@ export default function CustomerAuth({ isOpen, onClose, redirectTo }: CustomerAu
                 {mode === 'recover' && (
                   <button
                     onClick={() => setMode('login')}
-                    className="text-gold-500 hover:underline"
+                    className="text-yellow-500 hover:underline"
                   >
                     Back to sign in
                   </button>

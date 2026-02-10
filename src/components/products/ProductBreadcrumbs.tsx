@@ -90,7 +90,7 @@ export default function ProductBreadcrumbs({
                   // Previous pages - clickable links
                   <Link
                     href={item.url.replace('https://partyondelivery.com', '')}
-                    className="text-gray-700 hover:text-gold-600 transition-colors"
+                    className="text-gray-700 hover:text-brand-yellow transition-colors"
                   >
                     {item.name}
                   </Link>

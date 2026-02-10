@@ -27,39 +27,52 @@ export function GroupOrderProvider({ children }: GroupOrderProviderProps) {
 
   // Load saved group order code from localStorage on mount
   useEffect(() => {
-    const savedCode = localStorage.getItem('groupOrderCode')
-    
-    if (savedCode) {
-      setGroupOrderCode(savedCode)
+    try {
+      const savedCode = localStorage.getItem('groupOrderCode')
+      if (savedCode) {
+        setGroupOrderCode(savedCode)
+      }
+    } catch {
+      // localStorage may be unavailable (SSR, private browsing)
     }
   }, [])
 
-  // Clear invalid group order codes
+  // Clear invalid group order codes on any error (not just 'not found')
   useEffect(() => {
-    if (error?.message?.includes('not found') && groupOrderCode) {
-      console.warn('Group order not found, clearing code:', groupOrderCode)
+    if (error && groupOrderCode) {
       setGroupOrderCode(null)
-      localStorage.removeItem('groupOrderCode')
+      try { localStorage.removeItem('groupOrderCode') } catch { /* noop */ }
     }
   }, [error, groupOrderCode])
 
   // Save group order code to localStorage when it changes
   useEffect(() => {
-    if (groupOrderCode) {
-      localStorage.setItem('groupOrderCode', groupOrderCode)
-    } else {
-      localStorage.removeItem('groupOrderCode')
-    }
+    try {
+      if (groupOrderCode) {
+        localStorage.setItem('groupOrderCode', groupOrderCode)
+      } else {
+        localStorage.removeItem('groupOrderCode')
+      }
+    } catch { /* noop */ }
   }, [groupOrderCode])
 
   const clearGroupOrder = () => {
+    try {
+      if (groupOrderCode) {
+        localStorage.removeItem(`hostOf_${groupOrderCode}`)
+      }
+      localStorage.removeItem('groupOrderCode')
+    } catch { /* noop */ }
     setGroupOrderCode(null)
-    localStorage.removeItem('groupOrderCode')
   }
 
-  // Get customer ID from localStorage for host check
-  const customerId = typeof window !== 'undefined' ? localStorage.getItem('customerId') : null
-  const isHost = groupOrder?.hostCustomerId === customerId && !!customerId
+  // Check if current user is host of this group order
+  let isHost = false
+  try {
+    isHost = typeof window !== 'undefined' && groupOrderCode
+      ? localStorage.getItem(`hostOf_${groupOrderCode}`) === 'true'
+      : false
+  } catch { /* noop */ }
   const isInGroupOrder = !!groupOrder && groupOrder.status === 'active'
 
   const value: GroupOrderContextType = {

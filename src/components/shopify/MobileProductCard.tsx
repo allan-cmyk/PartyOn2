@@ -2,15 +2,15 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShopifyProduct } from '@/lib/shopify/types';
-import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseAlcohol } from '@/lib/shopify/utils';
+import { Product } from '@/lib/types';
+import { formatPrice, getProductImageUrl, getFirstAvailableVariant, canPurchaseAlcohol } from '@/lib/utils';
 import { useCartContext } from '@/contexts/CartContext';
 import AgeVerificationModal from '../AgeVerificationModal';
 
 interface MobileProductCardProps {
-  product: ShopifyProduct;
+  product: Product;
   index?: number;
-  onProductClick?: (product: ShopifyProduct) => void;
+  onProductClick?: (product: Product) => void;
 }
 
 export default function MobileProductCard({ product, index = 0, onProductClick }: MobileProductCardProps) {
@@ -127,7 +127,7 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
               disabled={!variant?.availableForSale || isAdding || cartLoading}
               className={`px-4 py-2 rounded-full text-xs font-medium transition-all active:scale-95 ${
                 variant?.availableForSale && !isAdding && !cartLoading
-                  ? 'bg-gold-600 text-gray-900 active:bg-gold-700 active:text-gray-900'
+                  ? 'bg-brand-yellow text-gray-900 active:bg-yellow-600 active:text-gray-900'
                   : 'bg-gray-200 text-gray-400'
               }`}
             >

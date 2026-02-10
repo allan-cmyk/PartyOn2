@@ -69,7 +69,7 @@ export default function BlogSearchFilter({ posts }: BlogSearchFilterProps) {
                 placeholder="Search articles..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-5 py-3 pl-12 border border-gray-300 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 focus:outline-none text-gray-900 placeholder-gray-400"
+                className="w-full px-5 py-3 pl-12 border border-gray-300 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 focus:outline-none text-gray-900 placeholder-gray-400"
               />
               <svg
                 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -104,7 +104,7 @@ export default function BlogSearchFilter({ posts }: BlogSearchFilterProps) {
               className={`px-5 py-2 text-sm tracking-[0.08em] transition-all border ${
                 activeCategory === null
                   ? 'bg-gray-900 text-white border-gray-900'
-                  : 'bg-white text-gray-700 border-gray-300 hover:border-gold-500 hover:text-gold-600'
+                  : 'bg-white text-gray-700 border-gray-300 hover:border-yellow-500 hover:text-brand-yellow'
               }`}
             >
               ALL POSTS
@@ -115,8 +115,8 @@ export default function BlogSearchFilter({ posts }: BlogSearchFilterProps) {
                 onClick={() => setActiveCategory(activeCategory === category.label ? null : category.label)}
                 className={`px-5 py-2 text-sm tracking-[0.08em] transition-all border ${
                   activeCategory === category.label
-                    ? 'bg-gold-500 text-gray-900 border-gold-500'
-                    : 'bg-white text-gray-700 border-gray-300 hover:border-gold-500 hover:text-gold-600'
+                    ? 'bg-yellow-500 text-gray-900 border-yellow-500'
+                    : 'bg-white text-gray-700 border-gray-300 hover:border-yellow-500 hover:text-brand-yellow'
                 }`}
               >
                 {category.label.toUpperCase()}
@@ -146,7 +146,7 @@ export default function BlogSearchFilter({ posts }: BlogSearchFilterProps) {
                   setSearchQuery('')
                   setActiveCategory(null)
                 }}
-                className="text-gold-600 hover:text-gold-700 underline"
+                className="text-brand-yellow hover:text-yellow-600 underline"
               >
                 Clear filters
               </button>
@@ -160,7 +160,7 @@ export default function BlogSearchFilter({ posts }: BlogSearchFilterProps) {
                 return (
                   <article
                     key={post.slug}
-                    className="bg-white border border-gray-200 hover:border-gold-500 transition-all duration-300 group"
+                    className="bg-white border border-gray-200 hover:border-yellow-500 transition-all duration-300 group"
                   >
                     <Link href={`/blog/${post.slug}`}>
                       <div className="relative h-64 overflow-hidden">
@@ -186,11 +186,11 @@ export default function BlogSearchFilter({ posts }: BlogSearchFilterProps) {
                             })}
                           </time>
                         </div>
-                        <h2 className="font-serif text-2xl text-gray-900 mb-3 group-hover:text-gold-500 transition-colors">
+                        <h2 className="font-heading text-2xl text-gray-900 mb-3 group-hover:text-yellow-500 transition-colors">
                           {post.title}
                         </h2>
                         <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
-                        <span className="inline-block mt-2 px-4 py-2 border border-gold-500 text-gold-600 group-hover:bg-gold-600 group-hover:text-gray-900 font-medium text-sm tracking-[0.1em] transition-all">
+                        <span className="inline-block mt-2 px-4 py-2 border border-yellow-500 text-brand-yellow group-hover:bg-brand-yellow group-hover:text-gray-900 font-medium text-sm tracking-[0.1em] transition-all">
                           READ MORE →
                         </span>
                       </div>

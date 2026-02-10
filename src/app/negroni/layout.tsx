@@ -1,4 +1,4 @@
-import LuxuryNavigation from '@/components/LuxuryNavigation';
+import Navigation from "@/components/Navigation";
 import { Montserrat, Playfair_Display } from 'next/font/google';
 import { Metadata } from 'next'
 
@@ -29,7 +29,7 @@ const montserrat = Montserrat({
 
 const playfair = Playfair_Display({ 
   subsets: ['latin'],
-  variable: '--font-playfair',
+  variable: '--font-heading',
 });
 
 export default function LuxuryJimmyLayout({
@@ -39,7 +39,7 @@ export default function LuxuryJimmyLayout({
 }) {
   return (
     <div className={`${montserrat.variable} ${playfair.variable} font-sans`}>
-      <LuxuryNavigation variant="minimal" />
+      <Navigation />
       {children}
     </div>
   );

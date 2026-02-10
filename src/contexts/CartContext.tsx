@@ -1,12 +1,61 @@
 'use client';
 
-import React, { createContext, useContext, useState } from 'react';
-import { useCart } from '@/lib/shopify/hooks/useCart';
-import { ShopifyCart } from '@/lib/shopify/types';
+import React, { createContext, useContext, useState, ReactElement } from 'react';
+import { useCustomCart } from '@/lib/cart/hooks/useCustomCart';
+import type { Cart } from '@/lib/types';
 import { trackMetaEvent } from '@/components/MetaPixel';
 import { trackCartAction, trackEvent, ANALYTICS_EVENTS } from '@/lib/analytics/track';
+import { completePendingGroupOrderJoin } from '@/lib/group-orders/hooks';
 
-interface CartContextType extends ReturnType<typeof useCart> {
+interface AppliedDiscountEntry {
+  code: string;
+  amount: number;
+  type: string;
+}
+
+interface CustomCartData {
+  discountCode?: string | null;
+  discountAmount?: string | number;
+  appliedDiscounts?: AppliedDiscountEntry[];
+  subtotal?: string | number;
+  taxAmount?: string | number;
+  deliveryFee?: string | number;
+  total?: string | number;
+}
+
+interface CustomCartApiData {
+  id: string;
+  items: Array<{
+    id: string;
+    productId: string;
+    variantId: string;
+    quantity: number;
+    price: string;
+    product: { id: string; title: string; handle: string };
+    variant: { id: string; title: string; sku: string | null; price: string };
+  }>;
+  subtotal: string;
+  taxAmount: string;
+  deliveryFee: string;
+  discountAmount: string;
+  discountCode?: string;
+  appliedDiscounts?: AppliedDiscountEntry[];
+  total: string;
+}
+
+interface CartContextType {
+  cart: Cart | null;
+  customCartData: CustomCartData | null;
+  loading: boolean;
+  error: Error | null;
+  addToCart: (variantId: string, quantity?: number) => Promise<Cart>;
+  createCartWithItems: (items: Array<{ merchandiseId: string; quantity: number }>) => Promise<Cart | null | undefined>;
+  updateCartItem: (lineId: string, quantity: number) => Promise<void>;
+  removeFromCart: (lineId: string) => Promise<void>;
+  clearCart: () => void | Promise<void>;
+  updateCartAttributes: (attributes: Array<{ key: string; value: string }>) => Promise<Cart | undefined>;
+  refetchCart: () => Promise<void>;
+  updateCartFromApiResponse: (cart: CustomCartApiData) => void;
   isCartOpen: boolean;
   openCart: () => void;
   closeCart: () => void;
@@ -15,19 +64,18 @@ interface CartContextType extends ReturnType<typeof useCart> {
 
 const CartContext = createContext<CartContextType | null>(null);
 
-export function CartProvider({ children }: { children: React.ReactNode }) {
-  const cartHook = useCart();
+export function CartProvider({ children }: { children: React.ReactNode }): ReactElement {
+  const cartHook = useCustomCart();
+
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const checkAgeVerification = () => {
-    // Check both possible keys for backwards compatibility
+  const checkAgeVerification = (): boolean => {
     const ageVerified = localStorage.getItem('age_verified') || localStorage.getItem('ageVerified');
     return ageVerified === 'true';
   };
 
-  const openCart = () => {
+  const openCart = (): void => {
     if (!checkAgeVerification()) {
-      // Reload the page to show age verification modal
       localStorage.removeItem('age_verified');
       localStorage.removeItem('ageVerified');
       window.location.reload();
@@ -35,7 +83,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
     setIsCartOpen(true);
 
-    // Track cart open event with cart info
     if (cartHook.cart) {
       trackEvent(ANALYTICS_EVENTS.OPEN_CART, {
         cart_total: parseFloat(cartHook.cart.cost?.totalAmount?.amount || '0'),
@@ -44,8 +91,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const closeCart = () => setIsCartOpen(false);
-  const toggleCart = () => {
+  const closeCart = (): void => setIsCartOpen(false);
+
+  const toggleCart = (): void => {
     if (!checkAgeVerification()) {
       localStorage.removeItem('age_verified');
       localStorage.removeItem('ageVerified');
@@ -55,25 +103,32 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setIsCartOpen(prev => !prev);
   };
 
-  // Override addToCart to check age verification and fire tracking events
-  const addToCart = async (variantId: string, quantity: number = 1): Promise<ShopifyCart> => {
-    console.log('CartContext addToCart called with:', { variantId, quantity, variantIdType: typeof variantId });
+  const addToCart = async (variantId: string, quantity: number = 1): Promise<Cart> => {
+    const isAgeVerified = checkAgeVerification();
 
-    if (!checkAgeVerification()) {
+    if (!isAgeVerified) {
       localStorage.removeItem('age_verified');
       localStorage.removeItem('ageVerified');
       window.location.reload();
       throw new Error('Age verification required');
     }
 
+    const isCreatingNewCart = !cartHook.cart;
+
     const result = await cartHook.addToCart(variantId, quantity);
 
-    // Find the added item to get product details for tracking
-    const addedLine = result.lines?.edges?.find(
+    if (isCreatingNewCart && result?.id) {
+      try {
+        await completePendingGroupOrderJoin(result.id);
+      } catch (err) {
+        console.error('Failed to complete pending group order join:', err);
+      }
+    }
+
+    const addedLine = result?.lines?.edges?.find(
       edge => edge.node.merchandise.id === variantId
     )?.node;
 
-    // Fire Vercel Analytics AddToCart event
     trackCartAction(
       'add',
       variantId,
@@ -82,7 +137,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       quantity
     );
 
-    // Fire Meta Pixel AddToCart event
     trackMetaEvent('AddToCart', {
       content_type: 'product',
       content_ids: variantId,
@@ -93,16 +147,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     return result;
   };
 
-  // Override removeFromCart to fire tracking events
   const removeFromCart = async (lineId: string): Promise<void> => {
-    // Get item details before removing for tracking
     const removedLine = cartHook.cart?.lines?.edges?.find(
       edge => edge.node.id === lineId
     )?.node;
 
     await cartHook.removeFromCart(lineId);
 
-    // Fire Vercel Analytics RemoveFromCart event
     if (removedLine) {
       trackCartAction(
         'remove',
@@ -114,16 +165,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Override updateCartItem to fire tracking events
   const updateCartItem = async (lineId: string, quantity: number): Promise<void> => {
-    // Get item details for tracking
     const updatedLine = cartHook.cart?.lines?.edges?.find(
       edge => edge.node.id === lineId
     )?.node;
 
     await cartHook.updateCartItem(lineId, quantity);
 
-    // Fire Vercel Analytics UpdateCartQuantity event
     if (updatedLine) {
       trackCartAction(
         'update',
@@ -135,11 +183,31 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const customCartData: CustomCartData | null = cartHook.customCart
+    ? {
+        discountCode: cartHook.customCart.discountCode,
+        discountAmount: cartHook.customCart.discountAmount,
+        appliedDiscounts: cartHook.customCart.appliedDiscounts || [],
+        subtotal: cartHook.customCart.subtotal,
+        taxAmount: cartHook.customCart.taxAmount,
+        deliveryFee: cartHook.customCart.deliveryFee,
+        total: cartHook.customCart.total,
+      }
+    : null;
+
   const value: CartContextType = {
-    ...cartHook,
+    cart: cartHook.cart,
+    customCartData,
+    loading: cartHook.loading,
+    error: cartHook.error,
     addToCart,
-    removeFromCart,
+    createCartWithItems: cartHook.createCartWithItems,
     updateCartItem,
+    removeFromCart,
+    clearCart: cartHook.clearCart,
+    updateCartAttributes: cartHook.updateCartAttributes,
+    refetchCart: cartHook.refetchCart,
+    updateCartFromApiResponse: cartHook.setCartFromApiResponse,
     isCartOpen,
     openCart,
     closeCart,
@@ -149,7 +217,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
-export const useCartContext = () => {
+export const useCartContext = (): CartContextType => {
   const context = useContext(CartContext);
   if (!context) {
     throw new Error('useCartContext must be used within CartProvider');

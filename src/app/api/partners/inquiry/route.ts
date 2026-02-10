@@ -1,8 +1,64 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/group-orders/database-vercel'
+import { sendPartnerInquiryNotification } from '@/lib/email/email-service'
+import type { PartnerInquiryData } from '@/lib/email/email-service'
+
+/**
+ * Normalize form data from all partner form types into a consistent shape.
+ * Different forms send different field names - this maps them all.
+ */
+function normalizeInquiry(body: Record<string, unknown>): PartnerInquiryData {
+  // Contact name: may come as contactName, or firstName+lastName
+  const firstName = String(body.firstName || '').trim();
+  const lastName = String(body.lastName || '').trim();
+  const contactName = String(body.contactName || '').trim()
+    || [firstName, lastName].filter(Boolean).join(' ')
+    || 'Unknown';
+
+  // Business name: may be businessName, hotelName, or company
+  const businessName = String(body.hotelName || body.businessName || body.company || '').trim();
+
+  // Event types / interests: may be array or comma-separated string
+  let eventTypes = '';
+  if (Array.isArray(body.eventTypes)) {
+    eventTypes = body.eventTypes.join(', ');
+  } else if (typeof body.eventTypes === 'string') {
+    eventTypes = body.eventTypes;
+  }
+
+  let interests = '';
+  if (Array.isArray(body.interests)) {
+    interests = body.interests.join(', ');
+  } else if (typeof body.interests === 'string') {
+    interests = body.interests;
+  }
+
+  return {
+    contactName,
+    email: String(body.email || '').trim(),
+    phone: String(body.phone || '').trim() || undefined,
+    businessName: businessName || undefined,
+    businessType: String(body.businessType || body.eventType || '').trim() || undefined,
+    partnerType: String(body.partnerType || '').trim() || undefined,
+    website: String(body.website || '').trim() || undefined,
+    message: String(body.message || '').trim() || undefined,
+    notes: String(body.notes || '').trim() || undefined,
+    eventTypes: eventTypes || undefined,
+    serviceArea: String(body.serviceArea || '').trim() || undefined,
+    guestCount: String(body.guestCount || '').trim() || undefined,
+    timeframe: String(body.timeframe || '').trim() || undefined,
+    eventDate: String(body.eventDate || '').trim() || undefined,
+    venue: String(body.venue || '').trim() || undefined,
+    numberOfRooms: String(body.numberOfRooms || '').trim() || undefined,
+    monthlyVolume: String(body.monthlyVolume || '').trim() || undefined,
+    currentProvider: String(body.currentProvider || '').trim() || undefined,
+    interests: interests || undefined,
+    source: String(body.source || '').trim() || undefined,
+    submittedAt: String(body.submittedAt || new Date().toISOString()),
+  };
+}
 
 export async function POST(request: NextRequest) {
-  // Log request details for debugging
   const userAgent = request.headers.get('user-agent') || 'Unknown'
   const origin = request.headers.get('origin') || 'Unknown'
   const referer = request.headers.get('referer') || 'Unknown'
@@ -11,180 +67,99 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
-    // Log incoming request
     console.log('[Partner Inquiry] Request received:', {
       timestamp: new Date().toISOString(),
       ip,
-      userAgent,
       origin,
       referer,
       hasData: !!body && Object.keys(body).length > 0
     })
 
-    // VALIDATION: Require at least email and contact name
-    if (!body.email || !body.email.trim()) {
+    // Normalize all form variants into consistent shape
+    const inquiry = normalizeInquiry(body);
+
+    // Validate required fields
+    if (!inquiry.email) {
       console.warn('[Partner Inquiry] REJECTED: Missing email', { ip, userAgent })
       return NextResponse.json(
-        {
-          success: false,
-          error: 'Email is required'
-        },
+        { success: false, error: 'Email is required' },
         { status: 400 }
       )
     }
 
-    if (!body.contactName || !body.contactName.trim()) {
+    if (!inquiry.contactName || inquiry.contactName === 'Unknown') {
       console.warn('[Partner Inquiry] REJECTED: Missing contact name', { ip, userAgent })
       return NextResponse.json(
-        {
-          success: false,
-          error: 'Contact name is required'
-        },
+        { success: false, error: 'Contact name is required' },
         { status: 400 }
       )
     }
 
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(body.email.trim())) {
-      console.warn('[Partner Inquiry] REJECTED: Invalid email format', {
-        email: body.email,
-        ip,
-        userAgent
-      })
+    if (!emailRegex.test(inquiry.email)) {
+      console.warn('[Partner Inquiry] REJECTED: Invalid email format', { email: inquiry.email, ip })
       return NextResponse.json(
-        {
-          success: false,
-          error: 'Invalid email format'
-        },
+        { success: false, error: 'Invalid email format' },
         { status: 400 }
       )
     }
 
     // Save to database
-    const inquiry = await db.savePartnerInquiry({
-      businessName: body.hotelName || body.businessName,
-      businessType: body.businessType || 'hotel',
-      contactName: body.contactName.trim(),
-      email: body.email.trim(),
-      phone: body.phone,
-      numberOfRooms: body.numberOfRooms,
-      monthlyVolume: body.monthlyVolume,
-      currentProvider: body.currentProvider,
-      interests: body.interests || [],
-      message: body.message,
+    const dbResult = await db.savePartnerInquiry({
+      businessName: inquiry.businessName || inquiry.contactName,
+      businessType: inquiry.businessType || inquiry.partnerType || 'general',
+      contactName: inquiry.contactName,
+      email: inquiry.email,
+      phone: inquiry.phone,
+      numberOfRooms: inquiry.numberOfRooms,
+      monthlyVolume: inquiry.monthlyVolume,
+      currentProvider: inquiry.currentProvider,
+      interests: inquiry.interests ? inquiry.interests.split(', ') : [],
+      message: inquiry.message || inquiry.notes,
     })
 
-    // Send to Zapier webhook (use specific URL or fallback to shared URL)
-    const zapierWebhookUrl = process.env.ZAPIER_PARTNER_INQUIRY_WEBHOOK_URL || process.env.ZAPIER_WEBHOOK_URL;
+    // Send email notification via Resend
+    try {
+      await sendPartnerInquiryNotification(inquiry);
+      console.log('[Partner Inquiry] Email notification sent for:', inquiry.email);
+    } catch (emailError) {
+      console.error('[Partner Inquiry] Email notification failed:', emailError);
+      // Don't fail the request if email fails
+    }
 
+    // Also send to Zapier webhook as backup
+    const zapierWebhookUrl = process.env.ZAPIER_PARTNER_INQUIRY_WEBHOOK_URL || process.env.ZAPIER_WEBHOOK_URL;
     if (zapierWebhookUrl) {
       try {
         const zapierPayload = {
-          // Contact Information
-          firstName: body.firstName || '',
-          lastName: body.lastName || '',
-          businessName: body.hotelName || body.businessName || '',
-          businessType: body.businessType || 'hotel',
-          contactName: body.contactName.trim(),
-          email: body.email.trim(),
-          phone: body.phone || '',
-          website: body.website || '',
-
-          // Hotel/Resort specific fields
-          numberOfRooms: body.numberOfRooms || '',
-          monthlyVolume: body.monthlyVolume || '',
-          currentProvider: body.currentProvider || '',
-
-          // Mobile Bartender specific fields
-          serviceArea: body.serviceArea || '',
-          eventTypes: body.eventTypes || body.interests || [],
-          guestCount: body.guestCount || '',
-          timeframe: body.timeframe || '',
-          notes: body.notes || '',
-
-          // Common fields
-          interests: body.interests || [],
-          message: body.message || '',
-          partnerType: body.partnerType || 'Partner',
-
-          // Tracking fields
-          utm_source: body.utm_source || '',
-          utm_medium: body.utm_medium || '',
-          utm_campaign: body.utm_campaign || '',
-          utm_content: body.utm_content || '',
-          source: body.source || '',
-
-          // System fields
-          submittedAt: body.submittedAt || new Date().toISOString(),
+          ...inquiry,
           formType: 'partner_inquiry',
-
-          // Add tracking metadata
-          submittedFrom: {
-            ip,
-            userAgent,
-            referer
-          }
+          submittedFrom: { ip, userAgent, referer },
         };
-
-        console.log('[Partner Inquiry] Sending to Zapier:', {
-          email: zapierPayload.email,
-          contactName: zapierPayload.contactName,
-          businessName: zapierPayload.businessName
-        })
 
         const zapierResponse = await fetch(zapierWebhookUrl, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(zapierPayload),
         });
 
         if (!zapierResponse.ok) {
-          const errorText = await zapierResponse.text();
-          console.error('[Partner Inquiry] Zapier webhook failed:', {
-            status: zapierResponse.status,
-            error: errorText,
-            email: zapierPayload.email
-          });
-        } else {
-          console.log('[Partner Inquiry] Successfully sent to Zapier:', {
-            email: zapierPayload.email,
-            contactName: zapierPayload.contactName
-          });
+          console.error('[Partner Inquiry] Zapier webhook failed:', zapierResponse.status);
         }
       } catch (zapierError) {
-        console.error('[Partner Inquiry] Error sending to Zapier:', {
-          error: zapierError,
-          email: body.email
-        });
-        // Don't fail the request if Zapier fails
+        console.error('[Partner Inquiry] Zapier error:', zapierError);
       }
-    } else {
-      console.warn('[Partner Inquiry] ZAPIER_PARTNER_INQUIRY_WEBHOOK_URL not configured');
     }
 
-    if (inquiry) {
-      return NextResponse.json({
-        success: true,
-        message: 'Thank you for your interest! Our partnership team will contact you within 24 hours.',
-        inquiryId: inquiry.id,
-      })
-    } else {
-      // Still return success even if DB save failed (could send email notification instead)
-      return NextResponse.json({
-        success: true,
-        message: 'Thank you for your interest! Our partnership team will contact you soon.',
-      })
-    }
+    return NextResponse.json({
+      success: true,
+      message: 'Thank you for your interest! Our partnership team will contact you within 24 hours.',
+      inquiryId: dbResult?.id,
+    })
   } catch (error) {
     console.error('Partner inquiry error:', error)
     return NextResponse.json(
-      {
-        success: false,
-        error: 'Failed to submit inquiry. Please try again.'
-      },
+      { success: false, error: 'Failed to submit inquiry. Please try again.' },
       { status: 500 }
     )
   }

@@ -1,11 +1,11 @@
 'use client';
 
-import { useProducts } from '@/lib/shopify/hooks/useProducts';
-import { formatPrice, getProductImageUrl } from '@/lib/shopify/utils';
+import { useCustomProducts } from '@/lib/cart/hooks/useCustomProducts';
+import { formatPrice, getProductImageUrl } from '@/lib/utils';
 import Link from 'next/link';
 
 export default function ProductsTestPage() {
-  const { products, loading, error } = useProducts();
+  const { products, loading, error } = useCustomProducts();
 
   if (loading) {
     return (

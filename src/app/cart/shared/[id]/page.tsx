@@ -13,7 +13,7 @@ export default function SharedCartPage() {
   const [error, setError] = useState<string | null>(null);
   const [sharedCart, setSharedCart] = useState<SharedCartData | null>(null);
 
-  const shareId = params.id as string;
+  const shareId = params?.id as string;
 
   useEffect(() => {
     async function loadSharedCart() {
@@ -92,7 +92,7 @@ export default function SharedCartPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center p-8">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-yellow mx-auto mb-4"></div>
           <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading shared cart...</h2>
           <p className="text-gray-600">Adding items to your cart</p>
         </div>
@@ -113,7 +113,7 @@ export default function SharedCartPage() {
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={() => router.push('/')}
-            className="px-6 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm"
+            className="px-6 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm"
           >
             GO TO HOMEPAGE
           </button>

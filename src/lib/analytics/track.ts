@@ -17,6 +17,7 @@ export const ANALYTICS_EVENTS = {
   VIEW_DELIVERY_AREAS: 'view_delivery_areas',
   VIEW_PARTNERS: 'view_partners',
   VIEW_CUSTOM_PACKAGE: 'view_custom_package',
+  VIEW_PLAN_EVENT: 'view_plan_event',
 
   // Product Engagement
   PRODUCT_PAGE_VIEW: 'product_page_view',

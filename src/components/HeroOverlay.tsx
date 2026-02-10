@@ -20,7 +20,7 @@ export default function HeroOverlay({ variant = 'classic', children }: HeroOverl
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/80 via-transparent to-gray-900/80" />
         <div className="absolute inset-0 bg-gradient-to-r from-gray-900/40 via-transparent to-gray-900/40" />
         {/* Gold accent overlay */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-gold-600/10 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-brand-yellow/10 via-transparent to-transparent" />
         {children}
       </>
     ),
@@ -36,10 +36,10 @@ export default function HeroOverlay({ variant = 'classic', children }: HeroOverl
       <>
         {/* Multi-layer luxury overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/70 via-gray-900/30 to-gray-900/60" />
-        <div className="absolute inset-0 bg-gradient-to-r from-gold-900/20 via-transparent to-gold-900/20" />
+        <div className="absolute inset-0 bg-gradient-to-r from-yellow-800/20 via-transparent to-yellow-800/20" />
         {/* Animated shimmer effect */}
         <div className="absolute inset-0 opacity-30">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold-400/20 to-transparent animate-shimmer" />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-brand-yellow/20 to-transparent animate-shimmer" />
         </div>
         {/* Noise texture for depth */}
         <div className="absolute inset-0 opacity-20 mix-blend-soft-light">

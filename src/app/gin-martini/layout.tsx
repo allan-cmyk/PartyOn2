@@ -1,4 +1,4 @@
-import LuxuryNavigation from '@/components/LuxuryNavigation';
+import Navigation from "@/components/Navigation";
 import { Crimson_Text, Inter } from 'next/font/google';
 import { Metadata } from 'next'
 
@@ -39,8 +39,8 @@ export default function LuxuryGoyardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className={`${crimson.variable} ${inter.variable} font-serif`}>
-      <LuxuryNavigation variant="centered" />
+    <div className={`${crimson.variable} ${inter.variable} font-heading`}>
+      <Navigation />
       {children}
     </div>
   );

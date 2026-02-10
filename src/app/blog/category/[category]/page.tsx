@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
-import OldFashionedNavigation from '@/components/OldFashionedNavigation'
+import Navigation from "@/components/Navigation"
 import migratedPosts from '@/data/blog-posts/posts.json'
 import { getAllMDXPosts, mdxPostToLegacyFormat } from '@/lib/blog-mdx'
 
@@ -77,16 +77,16 @@ export default async function BlogCategoryPage({ params }: { params: Promise<{ c
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation />
+      <Navigation />
       
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-4xl mx-auto px-8 text-center">
           <div>
-            <h1 className="font-serif text-5xl md:text-6xl text-gray-900 mb-6 tracking-[0.15em]">
+            <h1 className="font-heading text-5xl md:text-6xl text-gray-900 mb-6 tracking-[0.08em]">
               {categoryName.toUpperCase()}
             </h1>
-            <div className="w-24 h-px bg-gold-500 mx-auto mb-8" />
+            <div className="w-24 h-px bg-yellow-500 mx-auto mb-8" />
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               {categoryName === 'Event Planning' && 'Expert tips and strategies for planning unforgettable events in Austin'}
               {categoryName === 'Cocktail Recipes' && 'Craft cocktails and drink recipes for every occasion'}
@@ -110,7 +110,7 @@ export default async function BlogCategoryPage({ params }: { params: Promise<{ c
                 return (
                   <article
                     key={post.slug}
-                    className="bg-white border border-gray-200 hover:border-gold-500 transition-all duration-300 group"
+                    className="bg-white border border-gray-200 hover:border-yellow-500 transition-all duration-300 group"
                   >
                     <Link href={`/blog/${post.slug}`}>
                       <div className="relative h-64 overflow-hidden">
@@ -135,13 +135,13 @@ export default async function BlogCategoryPage({ params }: { params: Promise<{ c
                             day: 'numeric'
                           })}</time>
                         </div>
-                        <h2 className="font-serif text-2xl text-gray-900 mb-3 group-hover:text-gold-500 transition-colors">
+                        <h2 className="font-heading text-2xl text-gray-900 mb-3 group-hover:text-yellow-500 transition-colors">
                           {post.title}
                         </h2>
                         <p className="text-gray-600 mb-4 line-clamp-3">
                           {post.excerpt}
                         </p>
-                        <span className="inline-block mt-2 px-4 py-2 border border-gold-500 text-gold-600 group-hover:bg-gold-600 group-hover:text-gray-900 font-medium text-sm tracking-[0.1em] transition-all">
+                        <span className="inline-block mt-2 px-4 py-2 border border-yellow-500 text-brand-yellow group-hover:bg-brand-yellow group-hover:text-gray-900 font-medium text-sm tracking-[0.1em] transition-all">
                           READ MORE →
                         </span>
                       </div>
@@ -154,7 +154,7 @@ export default async function BlogCategoryPage({ params }: { params: Promise<{ c
             <div className="text-center py-12">
               <p className="text-gray-600 text-lg mb-8">No posts in this category yet. Check back soon!</p>
               <Link href="/blog">
-                <button className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em]">
+                <button className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em]">
                   BACK TO BLOG
                 </button>
               </Link>
@@ -166,7 +166,7 @@ export default async function BlogCategoryPage({ params }: { params: Promise<{ c
       {/* Other Categories */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-8">
-          <h2 className="font-serif text-3xl text-center mb-12 tracking-[0.1em]">
+          <h2 className="font-heading text-3xl text-center mb-12 tracking-[0.1em]">
             EXPLORE OTHER CATEGORIES
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -177,7 +177,7 @@ export default async function BlogCategoryPage({ params }: { params: Promise<{ c
                 <Link
                   key={slug}
                   href={`/blog/category/${slug}`}
-                  className="bg-white border border-gray-200 px-6 py-4 text-center hover:border-gold-500 hover:bg-gold-50 transition-all"
+                  className="bg-white border border-gray-200 px-6 py-4 text-center hover:border-yellow-500 hover:bg-yellow-50 transition-all"
                 >
                   <span className="text-sm tracking-[0.1em]">{name.toUpperCase()}</span>
                 </Link>
@@ -189,7 +189,7 @@ export default async function BlogCategoryPage({ params }: { params: Promise<{ c
       {/* Footer CTA */}
       <section className="py-16 bg-gray-900 text-white text-center">
         <div className="max-w-4xl mx-auto px-8">
-          <h2 className="font-serif text-3xl mb-4 tracking-[0.1em]">
+          <h2 className="font-heading text-3xl mb-4 tracking-[0.1em]">
             READY TO PLAN YOUR EVENT?
           </h2>
           <p className="text-gray-300 mb-8">
@@ -197,12 +197,12 @@ export default async function BlogCategoryPage({ params }: { params: Promise<{ c
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/order">
-              <button className="px-8 py-3 bg-gold-500 text-gray-900 hover:bg-gold-600 transition-colors tracking-[0.15em]">
+              <button className="px-8 py-3 bg-yellow-500 text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.08em]">
                 ORDER NOW
               </button>
             </Link>
             <Link href="/contact">
-              <button className="px-8 py-3 border border-white text-white hover:bg-white hover:text-gray-900 transition-all tracking-[0.15em]">
+              <button className="px-8 py-3 border border-white text-white hover:bg-white hover:text-gray-900 transition-all tracking-[0.08em]">
                 GET IN TOUCH
               </button>
             </Link>

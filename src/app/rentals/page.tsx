@@ -71,7 +71,7 @@ export default function RentalsHubPage() {
             <nav className="mb-8" aria-label="Breadcrumb">
               <ol className="flex items-center space-x-2 text-sm text-gray-300">
                 <li>
-                  <Link href="/" className="hover:text-gold-600 transition-colors">
+                  <Link href="/" className="hover:text-brand-yellow transition-colors">
                     Home
                   </Link>
                 </li>
@@ -80,7 +80,7 @@ export default function RentalsHubPage() {
               </ol>
             </nav>
 
-            <h1 className="font-serif text-5xl md:text-6xl mb-6 tracking-[0.15em]">
+            <h1 className="font-heading text-5xl md:text-6xl mb-6 tracking-[0.08em]">
               EVENT RENTALS AUSTIN
             </h1>
             <p className="text-xl text-gray-300 mb-8 max-w-2xl leading-relaxed">
@@ -89,12 +89,12 @@ export default function RentalsHubPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/contact">
-                <button className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                   REQUEST QUOTE
                 </button>
               </Link>
               <a href="tel:7373719700">
-                <button className="px-8 py-4 border-2 border-gold-600 text-white hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+                <button className="px-8 py-4 border-2 border-brand-yellow text-white hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium">
                   CALL (737) 371-9700
                 </button>
               </a>
@@ -106,10 +106,10 @@ export default function RentalsHubPage() {
         <section className="py-24">
           <div className="max-w-7xl mx-auto px-8">
             <div className="text-center mb-16">
-              <h2 className="font-serif text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.15em]">
+              <h2 className="font-heading text-4xl md:text-5xl text-gray-900 mb-4 tracking-[0.08em]">
                 RENTAL CATEGORIES
               </h2>
-              <div className="w-16 h-px bg-gold-600 mx-auto" />
+              <div className="w-16 h-px bg-brand-yellow mx-auto" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -119,17 +119,17 @@ export default function RentalsHubPage() {
                   <div className="relative h-80 mb-6 overflow-hidden rounded-lg bg-gray-100">
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent z-10" />
                     <div className="absolute bottom-6 left-6 z-20">
-                      <h3 className="font-serif text-3xl text-white tracking-[0.1em]">
+                      <h3 className="font-heading text-3xl text-white tracking-[0.1em]">
                         CHAIR RENTALS
                       </h3>
                     </div>
-                    <div className="absolute inset-0 bg-gold-600/0 group-hover:bg-gold-600/10 transition-all duration-300" />
+                    <div className="absolute inset-0 bg-brand-yellow/0 group-hover:bg-brand-yellow/10 transition-all duration-300" />
                   </div>
                   <p className="text-gray-600 mb-4">
                     White folding chairs perfect for weddings, corporate events, and outdoor parties.
                     Delivered and set up throughout Austin.
                   </p>
-                  <div className="flex items-center text-gold-600 font-medium">
+                  <div className="flex items-center text-brand-yellow font-medium">
                     <span className="tracking-[0.1em] text-sm">VIEW DETAILS</span>
                     <svg className="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -144,17 +144,17 @@ export default function RentalsHubPage() {
                   <div className="relative h-80 mb-6 overflow-hidden rounded-lg bg-gray-100">
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent z-10" />
                     <div className="absolute bottom-6 left-6 z-20">
-                      <h3 className="font-serif text-3xl text-white tracking-[0.1em]">
+                      <h3 className="font-heading text-3xl text-white tracking-[0.1em]">
                         TABLE RENTALS
                       </h3>
                     </div>
-                    <div className="absolute inset-0 bg-gold-600/0 group-hover:bg-gold-600/10 transition-all duration-300" />
+                    <div className="absolute inset-0 bg-brand-yellow/0 group-hover:bg-brand-yellow/10 transition-all duration-300" />
                   </div>
                   <p className="text-gray-600 mb-4">
                     Cocktail tables, banquet tables, and specialty tables for Austin events.
                     Perfect for weddings, corporate mixers, and receptions.
                   </p>
-                  <div className="flex items-center text-gold-600 font-medium">
+                  <div className="flex items-center text-brand-yellow font-medium">
                     <span className="tracking-[0.1em] text-sm">VIEW DETAILS</span>
                     <svg className="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -169,17 +169,17 @@ export default function RentalsHubPage() {
                   <div className="relative h-80 mb-6 overflow-hidden rounded-lg bg-gray-100">
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent z-10" />
                     <div className="absolute bottom-6 left-6 z-20">
-                      <h3 className="font-serif text-3xl text-white tracking-[0.1em]">
+                      <h3 className="font-heading text-3xl text-white tracking-[0.1em]">
                         COOLER RENTALS
                       </h3>
                     </div>
-                    <div className="absolute inset-0 bg-gold-600/0 group-hover:bg-gold-600/10 transition-all duration-300" />
+                    <div className="absolute inset-0 bg-brand-yellow/0 group-hover:bg-brand-yellow/10 transition-all duration-300" />
                   </div>
                   <p className="text-gray-600 mb-4">
                     Large coolers and ice tubs for Lake Travis boat parties, outdoor weddings,
                     and Austin summer events. Keep drinks ice cold.
                   </p>
-                  <div className="flex items-center text-gold-600 font-medium">
+                  <div className="flex items-center text-brand-yellow font-medium">
                     <span className="tracking-[0.1em] text-sm">VIEW DETAILS</span>
                     <svg className="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -195,21 +195,21 @@ export default function RentalsHubPage() {
         <section className="py-24 bg-gray-50">
           <div className="max-w-6xl mx-auto px-8">
             <div className="text-center mb-16">
-              <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.15em]">
+              <h2 className="font-heading text-4xl text-gray-900 mb-4 tracking-[0.08em]">
                 WHY CHOOSE PARTY ON DELIVERY
               </h2>
-              <div className="w-16 h-px bg-gold-600 mx-auto" />
+              <div className="w-16 h-px bg-brand-yellow mx-auto" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-gold-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 bg-brand-yellow rounded-full flex items-center justify-center flex-shrink-0">
                   <svg className="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.05em]">
+                  <h3 className="font-heading text-2xl text-gray-900 mb-3 tracking-[0.05em]">
                     Professional Setup Available
                   </h3>
                   <p className="text-gray-600 leading-relaxed">
@@ -220,13 +220,13 @@ export default function RentalsHubPage() {
               </div>
 
               <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-gold-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 bg-brand-yellow rounded-full flex items-center justify-center flex-shrink-0">
                   <svg className="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.05em]">
+                  <h3 className="font-heading text-2xl text-gray-900 mb-3 tracking-[0.05em]">
                     Same-Day Delivery
                   </h3>
                   <p className="text-gray-600 leading-relaxed">
@@ -237,13 +237,13 @@ export default function RentalsHubPage() {
               </div>
 
               <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-gold-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 bg-brand-yellow rounded-full flex items-center justify-center flex-shrink-0">
                   <svg className="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.05em]">
+                  <h3 className="font-heading text-2xl text-gray-900 mb-3 tracking-[0.05em]">
                     Clean & Well-Maintained
                   </h3>
                   <p className="text-gray-600 leading-relaxed">
@@ -254,13 +254,13 @@ export default function RentalsHubPage() {
               </div>
 
               <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-gold-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 bg-brand-yellow rounded-full flex items-center justify-center flex-shrink-0">
                   <svg className="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-serif text-2xl text-gray-900 mb-3 tracking-[0.05em]">
+                  <h3 className="font-heading text-2xl text-gray-900 mb-3 tracking-[0.05em]">
                     Competitive Pricing
                   </h3>
                   <p className="text-gray-600 leading-relaxed">
@@ -277,16 +277,16 @@ export default function RentalsHubPage() {
         <section className="py-24">
           <div className="max-w-4xl mx-auto px-8">
             <div className="text-center mb-12">
-              <h2 className="font-serif text-4xl text-gray-900 mb-4 tracking-[0.15em]">
+              <h2 className="font-heading text-4xl text-gray-900 mb-4 tracking-[0.08em]">
                 FREQUENTLY ASKED QUESTIONS
               </h2>
-              <div className="w-16 h-px bg-gold-600 mx-auto" />
+              <div className="w-16 h-px bg-brand-yellow mx-auto" />
             </div>
 
             <div className="space-y-6">
               {faqs.map((faq, index) => (
                 <div key={index} className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                  <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+                  <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.05em]">
                     {faq.question}
                   </h3>
                   <p className="text-gray-600 leading-relaxed">
@@ -301,7 +301,7 @@ export default function RentalsHubPage() {
         {/* CTA Section */}
         <section className="py-24 bg-gray-900 text-white">
           <div className="max-w-4xl mx-auto px-8 text-center">
-            <h2 className="font-serif text-4xl md:text-5xl mb-6 tracking-[0.15em]">
+            <h2 className="font-heading text-4xl md:text-5xl mb-6 tracking-[0.08em]">
               READY TO RENT EQUIPMENT?
             </h2>
             <p className="text-xl text-gray-300 mb-12">
@@ -309,12 +309,12 @@ export default function RentalsHubPage() {
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link href="/contact">
-                <button className="px-10 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                   REQUEST QUOTE
                 </button>
               </Link>
               <Link href="/products">
-                <button className="px-10 py-4 border-2 border-gold-600 text-white hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+                <button className="px-10 py-4 border-2 border-brand-yellow text-white hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium">
                   BROWSE PRODUCTS
                 </button>
               </Link>
@@ -341,19 +341,19 @@ export default function RentalsHubPage() {
               <div>
                 <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SERVICES</h4>
                 <ul className="space-y-2">
-                  <li><Link href="/weddings" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Weddings</Link></li>
-                  <li><Link href="/boat-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Boat Parties</Link></li>
-                  <li><Link href="/bach-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Celebrations</Link></li>
-                  <li><Link href="/corporate" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Corporate</Link></li>
+                  <li><Link href="/weddings" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Weddings</Link></li>
+                  <li><Link href="/boat-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Boat Parties</Link></li>
+                  <li><Link href="/bach-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Celebrations</Link></li>
+                  <li><Link href="/corporate" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Corporate</Link></li>
                 </ul>
               </div>
               <div>
                 <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">COMPANY</h4>
                 <ul className="space-y-2">
-                  <li><Link href="/about" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">About</Link></li>
-                  <li><Link href="/delivery-areas" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Delivery Areas</Link></li>
-                  <li><Link href="/faqs" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">FAQs</Link></li>
-                  <li><Link href="/contact" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Contact</Link></li>
+                  <li><Link href="/about" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">About</Link></li>
+                  <li><Link href="/delivery-areas" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Delivery Areas</Link></li>
+                  <li><Link href="/faqs" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">FAQs</Link></li>
+                  <li><Link href="/contact" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Contact</Link></li>
                 </ul>
               </div>
               <div>
@@ -368,8 +368,8 @@ export default function RentalsHubPage() {
             <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
               <p className="text-gray-500 text-sm">© 2025 PartyOn Delivery. All rights reserved.</p>
               <div className="flex space-x-6 mt-4 md:mt-0">
-                <Link href="/terms" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Terms</Link>
-                <Link href="/privacy" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Privacy</Link>
+                <Link href="/terms" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Terms</Link>
+                <Link href="/privacy" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Privacy</Link>
               </div>
             </div>
           </div>

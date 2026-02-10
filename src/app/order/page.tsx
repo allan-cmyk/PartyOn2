@@ -7,7 +7,7 @@
 
 import { useState, useEffect, useRef, type ReactElement } from 'react';
 import Image from 'next/image';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
 import { useQuickOrderProducts } from '@/hooks/useQuickOrderProducts';
 import QuickOrderGrid from '@/components/quick-order/QuickOrderGrid';
@@ -15,7 +15,7 @@ import CartSummaryBar from '@/components/quick-order/CartSummaryBar';
 import QuickOrderSearch from '@/components/quick-order/QuickOrderSearch';
 import QuickOrderFAQs from '@/components/quick-order/QuickOrderFAQs';
 import DeliveryAreasPreview from '@/components/quick-order/DeliveryAreasPreview';
-import { SHOPIFY_COLLECTIONS } from '@/lib/shopify/categories';
+import { SHOPIFY_COLLECTIONS } from '@/lib/products/categories';
 import { useIsMobile } from '@/hooks/useIsMobile';
 
 /**
@@ -101,10 +101,15 @@ export default function QuickOrderPage(): ReactElement {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation forceScrolled={true} hidden={hideNav} />
+      <Navigation
+        forceScrolled={!isMobile}
+        hidden={hideNav}
+        hideMobileLogo
+        forceWhiteHamburger
+      />
 
       {/* Hero Section */}
-      <section className="relative h-[35vh] md:h-[40vh] mt-24 pb-20 flex items-center justify-center overflow-hidden">
+      <section className="relative h-[35vh] md:h-[40vh] mt-28 md:mt-24 flex items-center justify-center overflow-hidden">
         <Image
           src="/images/order/order-hero.png"
           alt="Premium Bar Setup at Austin Pool Party"
@@ -115,11 +120,11 @@ export default function QuickOrderPage(): ReactElement {
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
 
         <div className="relative text-center text-white z-10 max-w-4xl mx-auto px-6">
-          <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em] leading-tight md:leading-tight">
+          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.08em] leading-tight md:leading-tight">
             <span className="block text-white mb-2">Your Bar,</span>
-            <span className="block text-gold-400 italic">DELIVERED</span>
+            <span className="block text-brand-yellow italic">DELIVERED</span>
           </h1>
-          <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
+          <div className="w-24 h-px bg-brand-yellow mx-auto mb-6" />
           <p className="text-lg md:text-xl font-light tracking-[0.1em] text-gray-200">
             Tap. Add. Party On.
           </p>
@@ -142,13 +147,13 @@ export default function QuickOrderPage(): ReactElement {
           {/* Header - hide when sticky */}
           {!isCollectionsSticky && (
             <div className="flex items-center justify-between mb-4">
-              <h3 className={`font-serif ${isMobile ? 'text-lg' : 'text-xl'} text-gray-900 tracking-[0.1em]`}>
+              <h3 className={`font-heading ${isMobile ? 'text-lg' : 'text-xl'} text-gray-900 tracking-[0.1em]`}>
                 FEATURED COLLECTIONS
               </h3>
               {activeCollection !== 'favorites-home-page' && (
                 <button
                   onClick={clearCollection}
-                  className="text-sm text-gold-600 hover:text-gold-700 tracking-[0.1em]"
+                  className="text-sm text-brand-yellow hover:text-yellow-600 tracking-[0.1em]"
                 >
                   CLEAR COLLECTION
                 </button>
@@ -187,6 +192,7 @@ export default function QuickOrderPage(): ReactElement {
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {SHOPIFY_COLLECTIONS.map((collection) => {
+                if (!collection?.colors) return null;
                 const isActive = activeCollection === collection.handle;
                 return (
                   <button

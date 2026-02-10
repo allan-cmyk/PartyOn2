@@ -55,7 +55,7 @@ export function Spinner({ size = 'md', color = 'gold' }: { size?: 'sm' | 'md' | 
   };
   
   const colorClasses = {
-    gold: 'border-gold-600',
+    gold: 'border-brand-yellow',
     white: 'border-white',
     gray: 'border-gray-600',
   };
@@ -83,7 +83,7 @@ export function FullPageLoader() {
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
         <Spinner size="lg" />
-        <p className="mt-4 text-gray-600 tracking-[0.15em] text-sm">LOADING...</p>
+        <p className="mt-4 text-gray-600 tracking-[0.08em] text-sm">LOADING...</p>
       </div>
     </div>
   );

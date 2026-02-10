@@ -26,7 +26,7 @@ function FAQItem({ faq, isOpen, onToggle }: FAQItemProps): ReactElement {
         className="w-full py-5 flex items-center justify-between text-left group"
         aria-expanded={isOpen}
       >
-        <span className="font-medium text-gray-900 group-hover:text-gold-700 transition-colors pr-4">
+        <span className="font-medium text-gray-900 group-hover:text-yellow-600 transition-colors pr-4">
           {faq.question}
         </span>
         <motion.span
@@ -55,7 +55,7 @@ function FAQItem({ faq, isOpen, onToggle }: FAQItemProps): ReactElement {
                   href={faq.link.url}
                   target={faq.link.external ? '_blank' : undefined}
                   rel={faq.link.external ? 'noopener noreferrer' : undefined}
-                  className="inline-flex items-center gap-1 mt-3 text-gold-600 hover:text-gold-700 font-medium transition-colors"
+                  className="inline-flex items-center gap-1 mt-3 text-brand-yellow hover:text-yellow-600 font-medium transition-colors"
                 >
                   {faq.link.text}
                   {faq.link.external && (
@@ -97,10 +97,10 @@ export default function PartnerFAQ({
       <div className="max-w-3xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-10">
-          <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-wide">
+          <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4 tracking-wide">
             {title}
           </h2>
-          <div className="w-20 h-px bg-gold-500 mx-auto" />
+          <div className="w-20 h-px bg-yellow-500 mx-auto" />
         </div>
 
         {/* FAQ List */}

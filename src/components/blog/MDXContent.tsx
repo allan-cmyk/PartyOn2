@@ -29,13 +29,13 @@ const components = {
 
   // Custom heading components with styling
   h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h1 className="font-serif text-4xl md:text-5xl text-gray-900 mb-6 mt-12 tracking-[0.1em]" {...props} />
+    <h1 className="font-heading text-4xl md:text-5xl text-gray-900 mb-6 mt-12 tracking-[0.1em]" {...props} />
   ),
   h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 mt-10 tracking-[0.1em]" {...props} />
+    <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4 mt-10 tracking-[0.1em]" {...props} />
   ),
   h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h3 className="font-serif text-2xl md:text-3xl text-gray-900 mb-3 mt-8 tracking-[0.1em]" {...props} />
+    <h3 className="font-heading text-2xl md:text-3xl text-gray-900 mb-3 mt-8 tracking-[0.1em]" {...props} />
   ),
 
   // Paragraph styling
@@ -59,7 +59,7 @@ const components = {
     const isExternal = props.href?.startsWith('http')
     return (
       <a
-        className="text-gold-600 hover:text-gold-700 underline"
+        className="text-brand-yellow hover:text-yellow-600 underline"
         {...props}
         {...(isExternal && {
           target: '_blank',
@@ -71,7 +71,7 @@ const components = {
 
   // Blockquote styling
   blockquote: (props: React.BlockquoteHTMLAttributes<HTMLQuoteElement>) => (
-    <blockquote className="border-l-4 border-gold-500 pl-6 py-2 my-6 italic text-gray-700" {...props} />
+    <blockquote className="border-l-4 border-yellow-500 pl-6 py-2 my-6 italic text-gray-700" {...props} />
   ),
 
   // Code styling

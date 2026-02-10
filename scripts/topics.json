@@ -1071,7 +1071,7 @@
         "video",
         "tips"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 90,
@@ -1083,7 +1083,7 @@
         "sustainable",
         "outdoor"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 91,
@@ -1191,7 +1191,7 @@
         "entertainment",
         "celebration"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 100,
@@ -1203,7 +1203,7 @@
         "transition",
         "timeline"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 101,
@@ -1229,7 +1229,7 @@
         "austin weddings",
         "summer drinks"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 103,
@@ -1242,7 +1242,7 @@
         "yacht party",
         "water party"
       ],
-      "published": false
+      "published": true
     },
     {
       "id": 104,

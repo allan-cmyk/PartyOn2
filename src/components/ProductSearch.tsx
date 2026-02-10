@@ -3,8 +3,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShopifyProduct } from '@/lib/shopify/types';
-import { formatPrice } from '@/lib/shopify/utils';
+import { Product } from '@/lib/types';
+import { formatPrice } from '@/lib/utils';
 
 interface ProductSearchProps {
   isScrolled?: boolean;
@@ -13,7 +13,7 @@ interface ProductSearchProps {
 export default function ProductSearch({ isScrolled = true }: ProductSearchProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [results, setResults] = useState<ShopifyProduct[]>([]);
+  const [results, setResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
@@ -45,7 +45,7 @@ export default function ProductSearch({ isScrolled = true }: ProductSearchProps)
         const response = await fetch(`/api/products?search=${encodeURIComponent(searchTerm)}&first=10`);
         const data = await response.json();
 
-        setResults(data.products.edges.map((edge: { node: ShopifyProduct }) => edge.node));
+        setResults(data.products.edges.map((edge: { node: Product }) => edge.node));
       } catch (error) {
         console.error('Search error:', error);
         setResults([]);
@@ -87,7 +87,7 @@ export default function ProductSearch({ isScrolled = true }: ProductSearchProps)
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search for spirits, wine, beer..."
-                className="w-full px-4 py-2 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
+                className="w-full px-4 py-2 border border-gray-300 focus:border-brand-yellow focus:outline-none transition-colors"
                 autoFocus
               />
             </div>
@@ -96,7 +96,7 @@ export default function ProductSearch({ isScrolled = true }: ProductSearchProps)
             <div className="max-h-96 overflow-y-auto">
               {loading ? (
                 <div className="p-8 text-center">
-                  <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-gold-600"></div>
+                  <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-brand-yellow"></div>
                 </div>
               ) : results.length > 0 ? (
                 <div className="py-2">
@@ -156,7 +156,7 @@ export default function ProductSearch({ isScrolled = true }: ProductSearchProps)
                     setIsOpen(false);
                     setSearchTerm('');
                   }}
-                  className="block text-center text-sm text-gold-600 hover:text-gold-700 tracking-[0.1em]"
+                  className="block text-center text-sm text-brand-yellow hover:text-yellow-600 tracking-[0.1em]"
                 >
                   VIEW ALL RESULTS
                 </Link>

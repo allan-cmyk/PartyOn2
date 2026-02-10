@@ -1,21 +1,14 @@
-// Client
+// Client (still needed for direct Shopify API calls)
 export { shopifyClient, shopifyFetch } from './client';
 
-// Types
+// Types (re-exported from @/lib/types for backward compatibility)
 export * from './types';
 
-// Queries
+// Queries (still needed for direct Shopify API calls)
 export * from './queries/products';
-export * from './queries/customer';
 
-// Mutations
+// Mutations (still needed for direct Shopify API calls)
 export * from './mutations/cart';
-export * from './mutations/customer';
 
-// Utils
+// Utils (re-exported from @/lib/utils for backward compatibility)
 export * from './utils';
-
-// Hooks
-export { useProducts, useProduct } from './hooks/useProducts';
-export { useCart } from './hooks/useCart';
-export { useCustomer } from './hooks/useCustomer';

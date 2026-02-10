@@ -4,17 +4,38 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format, addDays, isBefore, isAfter, startOfMonth, endOfMonth, eachDayOfInterval, getDay } from 'date-fns';
 
+// Austin area ZIP codes for delivery zone validation
+const AUSTIN_ZIP_CODES = [
+  // Central Austin
+  '78701', '78702', '78703', '78704', '78705', '78712', '78722', '78723', '78751', '78752', '78756', '78757', '78758',
+  // North Austin
+  '78727', '78728', '78729', '78750', '78753', '78754', '78759',
+  // South Austin
+  '78741', '78742', '78744', '78745', '78746', '78747', '78748', '78749',
+  // East Austin
+  '78617', '78719', '78721', '78724', '78725', '78660',
+  // West Austin / Lakeway
+  '78726', '78730', '78731', '78732', '78733', '78734', '78735', '78736', '78737', '78738', '78739',
+  // Round Rock / Pflugerville
+  '78664', '78665', '78681', '78717',
+  // Cedar Park / Leander
+  '78613', '78641',
+  // Georgetown
+  '78626', '78628', '78633',
+  // Other nearby
+  '78610', '78652', '78653', '78669',
+];
+
 interface SimpleDeliverySchedulerProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (date: Date, time: string, instructions: string, address: string, zipCode: string, phone: string) => void;
+  onConfirm: (date: Date, time: string, instructions: string, zipCode: string, phone: string) => void;
 }
 
 export default function SimpleDeliveryScheduler({ isOpen, onClose, onConfirm }: SimpleDeliverySchedulerProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState('');
   const [instructions, setInstructions] = useState('');
-  const [address, setAddress] = useState('');
   const [zipCode, setZipCode] = useState('');
   const [phone, setPhone] = useState('');
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -111,11 +132,10 @@ export default function SimpleDeliveryScheduler({ isOpen, onClose, onConfirm }: 
     if (!selectedTime) {
       newErrors.time = 'Please select a delivery time';
     }
-    if (!address.trim()) {
-      newErrors.address = 'Please enter a delivery address';
-    }
     if (!zipCode.trim() || !/^\d{5}$/.test(zipCode)) {
       newErrors.zipCode = 'Please enter a valid 5-digit ZIP code';
+    } else if (!AUSTIN_ZIP_CODES.includes(zipCode)) {
+      newErrors.zipCode = 'Sorry, we only deliver to the Austin area. Check our Delivery Areas page for coverage.';
     }
     if (!phone.trim() || !/^\d{10}$|^\d{3}-\d{3}-\d{4}$|^\(\d{3}\)\s?\d{3}-\d{4}$/.test(phone.replace(/\s/g, ''))) {
       newErrors.phone = 'Please enter a valid phone number';
@@ -127,7 +147,7 @@ export default function SimpleDeliveryScheduler({ isOpen, onClose, onConfirm }: 
 
   const handleConfirm = () => {
     if (validateForm() && selectedDate) {
-      onConfirm(selectedDate, selectedTime, instructions, address, zipCode, phone);
+      onConfirm(selectedDate, selectedTime, instructions, zipCode, phone);
     }
   };
 
@@ -171,7 +191,7 @@ export default function SimpleDeliveryScheduler({ isOpen, onClose, onConfirm }: 
               {/* Header */}
               <div className="p-6 border-b border-gray-200">
                 <div className="flex items-center justify-between">
-                  <h2 className="font-serif text-2xl text-gray-900 tracking-[0.1em]">
+                  <h2 className="font-heading text-2xl text-gray-900 tracking-[0.1em]">
                     Select Delivery Date and Time
                   </h2>
                   <button
@@ -200,7 +220,7 @@ export default function SimpleDeliveryScheduler({ isOpen, onClose, onConfirm }: 
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                       </svg>
                     </button>
-                    <h3 className="font-serif text-xl text-gray-900 tracking-[0.1em]">
+                    <h3 className="font-heading text-xl text-gray-900 tracking-[0.1em]">
                       {format(currentMonth, 'MMMM yyyy')}
                     </h3>
                     <button
@@ -242,9 +262,9 @@ export default function SimpleDeliveryScheduler({ isOpen, onClose, onConfirm }: 
                               disabled={!isAvailable}
                               className={`w-full h-full flex items-center justify-center rounded-lg transition-colors ${
                                 isSelected
-                                  ? 'bg-gold-600 text-gray-900'
+                                  ? 'bg-brand-yellow text-gray-900'
                                   : isAvailable
-                                  ? 'hover:bg-gold-50 hover:border-gold-400 border border-gray-200'
+                                  ? 'hover:bg-yellow-50 hover:border-brand-yellow border border-gray-200'
                                   : 'text-gray-300 cursor-not-allowed'
                               }`}
                             >
@@ -269,7 +289,7 @@ export default function SimpleDeliveryScheduler({ isOpen, onClose, onConfirm }: 
                     animate={{ opacity: 1, y: 0 }}
                     className="mb-6"
                   >
-                    <h3 className="font-serif text-lg text-gray-900 mb-3 tracking-[0.1em]">
+                    <h3 className="font-heading text-lg text-gray-900 mb-3 tracking-[0.1em]">
                       Select Delivery Time Frame:
                     </h3>
                     <p className="text-sm text-gray-600 mb-4">
@@ -288,8 +308,8 @@ export default function SimpleDeliveryScheduler({ isOpen, onClose, onConfirm }: 
                             onClick={() => setSelectedTime(slot)}
                             className={`p-3 text-center border rounded-lg transition-colors ${
                               selectedTime === slot
-                                ? 'border-gold-600 bg-gold-50 text-gold-900'
-                                : 'border-gray-300 hover:border-gold-400'
+                                ? 'border-brand-yellow bg-yellow-50 text-yellow-800'
+                                : 'border-gray-300 hover:border-brand-yellow'
                             }`}
                           >
                             <span className="text-sm">{slot}</span>
@@ -307,40 +327,28 @@ export default function SimpleDeliveryScheduler({ isOpen, onClose, onConfirm }: 
                   </motion.div>
                 )}
 
-                {/* Delivery Address */}
+                {/* Delivery Details (ZIP for zone validation, Phone for coordination) */}
                 {selectedDate && selectedTime && (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="mb-6 space-y-4"
                   >
-                    <div>
-                      <label className="block text-sm font-light text-gray-700 mb-2 tracking-[0.1em]">
-                        DELIVERY ADDRESS *
-                      </label>
-                      <input
-                        type="text"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gold-600 focus:outline-none transition-colors"
-                        placeholder="123 Main St, Apt 4B"
-                      />
-                      {errors.address && (
-                        <p className="text-red-600 text-sm mt-1">{errors.address}</p>
-                      )}
-                    </div>
+                    <p className="text-sm text-gray-600">
+                      Enter your ZIP code to confirm delivery availability. You&apos;ll provide the full address at checkout.
+                    </p>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-light text-gray-700 mb-2 tracking-[0.1em]">
-                          ZIP CODE *
+                          DELIVERY ZIP CODE *
                         </label>
                         <input
                           type="text"
                           value={zipCode}
                           onChange={(e) => setZipCode(e.target.value.replace(/\D/g, '').slice(0, 5))}
                           maxLength={5}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gold-600 focus:outline-none transition-colors"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-brand-yellow focus:outline-none transition-colors"
                           placeholder="78701"
                         />
                         {errors.zipCode && (
@@ -356,7 +364,7 @@ export default function SimpleDeliveryScheduler({ isOpen, onClose, onConfirm }: 
                           type="tel"
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gold-600 focus:outline-none transition-colors"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-brand-yellow focus:outline-none transition-colors"
                           placeholder="512-555-0123"
                         />
                         {errors.phone && (
@@ -381,7 +389,7 @@ export default function SimpleDeliveryScheduler({ isOpen, onClose, onConfirm }: 
                       value={instructions}
                       onChange={(e) => setInstructions(e.target.value)}
                       rows={3}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gold-600 focus:outline-none transition-colors"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-brand-yellow focus:outline-none transition-colors"
                       placeholder="Gate code, building entrance, special instructions..."
                     />
                   </motion.div>
@@ -392,7 +400,7 @@ export default function SimpleDeliveryScheduler({ isOpen, onClose, onConfirm }: 
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-gold-50 border border-gold-200 rounded-lg p-4"
+                    className="bg-yellow-50 border border-yellow-200 rounded-lg p-4"
                   >
                     <p className="text-sm text-gray-700">
                       <span className="font-medium text-gray-900">Delivery scheduled for:</span><br />
@@ -414,14 +422,14 @@ export default function SimpleDeliveryScheduler({ isOpen, onClose, onConfirm }: 
                   </button>
                   <button
                     onClick={handleConfirm}
-                    disabled={!selectedDate || !selectedTime || !address || !zipCode || !phone}
+                    disabled={!selectedDate || !selectedTime || !zipCode || !phone}
                     className={`px-8 py-3 rounded-lg tracking-[0.1em] text-sm font-medium transition-colors ${
-                      selectedDate && selectedTime && address && zipCode && phone
-                        ? 'bg-gold-600 text-gray-900 hover:bg-gold-700'
+                      selectedDate && selectedTime && zipCode && phone
+                        ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
                         : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                     }`}
                   >
-                    CHECKOUT
+                    PROCEED TO PAYMENT
                   </button>
                 </div>
               </div>

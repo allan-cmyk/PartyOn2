@@ -115,7 +115,7 @@ export default function OrderTypeSelector({
       <div className="max-w-4xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-10">
-          <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-wide">
+          <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4 tracking-wide">
             Start Your Order
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
@@ -131,13 +131,13 @@ export default function OrderTypeSelector({
               onClick={() => handleSelectType(type.id)}
               className={`p-6 rounded-xl border-2 transition-all text-left ${
                 selectedType === type.id
-                  ? 'border-gold-500 bg-gold-50 shadow-md'
-                  : 'border-gray-200 bg-white hover:border-gold-300 hover:shadow-sm'
+                  ? 'border-yellow-500 bg-yellow-50 shadow-md'
+                  : 'border-gray-200 bg-white hover:border-brand-yellow hover:shadow-sm'
               }`}
             >
               <div className="flex items-start gap-4">
                 <div className={`p-3 rounded-lg ${
-                  selectedType === type.id ? 'bg-gold-500 text-gray-900' : 'bg-gray-100 text-gray-600'
+                  selectedType === type.id ? 'bg-yellow-500 text-gray-900' : 'bg-gray-100 text-gray-600'
                 }`}>
                   <OrderTypeIcon icon={type.icon} />
                 </div>
@@ -150,7 +150,7 @@ export default function OrderTypeSelector({
                   </p>
                 </div>
                 {selectedType === type.id && (
-                  <svg className="w-6 h-6 text-gold-600" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-brand-yellow" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                   </svg>
                 )}
@@ -182,7 +182,7 @@ export default function OrderTypeSelector({
                       value={orderName}
                       onChange={(e) => setOrderName(e.target.value)}
                       placeholder="e.g., Sarah's Boat Party"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-colors text-gray-900 placeholder:text-gray-400"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors text-gray-900 placeholder:text-gray-400"
                     />
                     <p className="mt-2 text-sm text-gray-500">
                       This will be the name that you send to people for them to join
@@ -200,7 +200,7 @@ export default function OrderTypeSelector({
                       value={hostEmail}
                       onChange={(e) => setHostEmail(e.target.value)}
                       placeholder="your@email.com"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-colors text-gray-900 placeholder:text-gray-400"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors text-gray-900 placeholder:text-gray-400"
                     />
                     <p className="mt-2 text-sm text-gray-500">
                       We&apos;ll send you order updates and the checkout link
@@ -218,7 +218,7 @@ export default function OrderTypeSelector({
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-4 bg-gold-500 hover:bg-gold-600 disabled:bg-gold-300 text-gray-900 font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 text-lg"
+                    className="w-full py-4 bg-yellow-500 hover:bg-brand-yellow disabled:bg-brand-yellow text-gray-900 font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 text-lg"
                   >
                     {isSubmitting ? (
                       <>
@@ -273,7 +273,7 @@ export default function OrderTypeSelector({
               </div>
               <button
                 onClick={handleReset}
-                className="text-gold-600 hover:text-gold-700 font-medium"
+                className="text-brand-yellow hover:text-yellow-600 font-medium"
               >
                 Create Another Order
               </button>

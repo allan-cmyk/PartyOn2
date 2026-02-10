@@ -61,7 +61,7 @@ export default function HolidayRunnerUpPage() {
   const whatsIncluded = [
     {
       icon: (
-        <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-12 h-12 mx-auto text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
         </svg>
       ),
@@ -71,7 +71,7 @@ export default function HolidayRunnerUpPage() {
     },
     {
       icon: (
-        <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-12 h-12 mx-auto text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
         </svg>
       ),
@@ -81,7 +81,7 @@ export default function HolidayRunnerUpPage() {
     },
     {
       icon: (
-        <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-12 h-12 mx-auto text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
         </svg>
       ),
@@ -91,7 +91,7 @@ export default function HolidayRunnerUpPage() {
     },
     {
       icon: (
-        <svg className="w-12 h-12 mx-auto text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-12 h-12 mx-auto text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
         </svg>
       ),
@@ -170,12 +170,12 @@ export default function HolidayRunnerUpPage() {
 
       {/* Urgency Banner with Countdown */}
       <div className="bg-gray-100 py-5 px-4 text-center relative overflow-hidden border-b border-gray-200">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold-400/20 to-transparent -translate-x-full animate-[shimmer_3s_infinite]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-brand-yellow/20 to-transparent -translate-x-full animate-[shimmer_3s_infinite]" />
         <div className="relative z-10">
           <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 tracking-wide flex items-center justify-center gap-2 flex-wrap">
-            <span className="inline-block animate-pulse text-gold-600">&#9889;</span>
+            <span className="inline-block animate-pulse text-brand-yellow">&#9889;</span>
             EXCLUSIVE RUNNER-UP OFFER – FREE DELIVERY + FREE ICE
-            <span className="inline-block animate-pulse text-gold-600">&#9889;</span>
+            <span className="inline-block animate-pulse text-brand-yellow">&#9889;</span>
           </p>
           {!isExpired && (
             <div className="mt-3 flex items-center justify-center gap-2 sm:gap-3 text-gray-900 font-mono">
@@ -237,13 +237,13 @@ export default function HolidayRunnerUpPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-black/50" />
 
         <div className="hero-fade-in relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-12 sm:py-0 text-white">
-          <p className="text-gold-400 text-sm sm:text-base tracking-[0.2em] mb-4 font-medium">
+          <p className="text-brand-yellow text-sm sm:text-base tracking-[0.1em] mb-4 font-medium">
             INSTAGRAM GIVEAWAY RUNNER-UP EXCLUSIVE
           </p>
-          <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-6 tracking-tight sm:tracking-[0.05em] max-w-4xl leading-snug sm:leading-tight">
+          <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-6 tracking-tight sm:tracking-[0.05em] max-w-4xl leading-snug sm:leading-tight">
             Didn&apos;t Win the Giveaway?
             <br />
-            <span className="text-gold-400">You Still Get the Good Stuff</span>
+            <span className="text-brand-yellow">You Still Get the Good Stuff</span>
           </h1>
           <p className="text-lg sm:text-xl text-gray-200 max-w-2xl mb-8 leading-relaxed">
             As a runner-up in our Holiday Cocktail Kit Giveaway, you get a free mini Espresso Martini bottle, a bonus
@@ -298,13 +298,13 @@ export default function HolidayRunnerUpPage() {
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <Link
               href="/products"
-              className="inline-block bg-gold-600 text-gray-900 px-10 py-4 text-lg tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium text-center"
+              className="inline-block bg-brand-yellow text-gray-900 px-10 py-4 text-lg tracking-[0.08em] hover:bg-yellow-600 transition-colors font-medium text-center"
             >
               SHOP NOW & CLAIM YOUR GIFT
             </Link>
             <a
               href="tel:+17373719700"
-              className="inline-block border-2 border-white text-white px-10 py-4 text-lg tracking-[0.15em] hover:bg-white hover:text-gray-900 transition-colors font-medium text-center"
+              className="inline-block border-2 border-white text-white px-10 py-4 text-lg tracking-[0.08em] hover:bg-white hover:text-gray-900 transition-colors font-medium text-center"
             >
               CALL US: (737) 371-9700
             </a>
@@ -320,10 +320,10 @@ export default function HolidayRunnerUpPage() {
       <section className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-8">
           <ScrollRevealCSS duration={600} y={20} className="text-center mb-16">
-            <h2 className="font-serif text-3xl sm:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading text-3xl sm:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
               Here&apos;s What You Get as a Runner-Up
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto" />
           </ScrollRevealCSS>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -331,7 +331,7 @@ export default function HolidayRunnerUpPage() {
               <ScrollRevealCSS key={item.title} duration={600} delay={index * 100} y={20}>
                 <div className="bg-white p-6 rounded-lg shadow-sm text-center h-full">
                   <div className="mb-4">{item.icon}</div>
-                  <h3 className="font-serif text-lg text-gray-900 mb-3 tracking-[0.05em]">{item.title}</h3>
+                  <h3 className="font-heading text-lg text-gray-900 mb-3 tracking-[0.05em]">{item.title}</h3>
                   <p className="text-gray-600 leading-relaxed text-sm">{item.description}</p>
                 </div>
               </ScrollRevealCSS>
@@ -362,18 +362,18 @@ export default function HolidayRunnerUpPage() {
 
         <div className="max-w-6xl mx-auto px-8 relative z-10">
           <ScrollRevealCSS duration={600} y={20} className="text-center mb-16">
-            <h2 className="font-serif text-3xl sm:text-4xl text-white mb-4 tracking-[0.1em]">How It Works</h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
+            <h2 className="font-heading text-3xl sm:text-4xl text-white mb-4 tracking-[0.1em]">How It Works</h2>
+            <div className="w-16 h-px bg-brand-yellow mx-auto" />
           </ScrollRevealCSS>
 
           <div className="grid md:grid-cols-3 gap-8">
             {howItWorks.map((item, index) => (
               <ScrollRevealCSS key={item.step} duration={600} delay={index * 100} y={20}>
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-gold-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <span className="font-serif text-2xl text-gray-900 font-bold">{item.step}</span>
+                  <div className="w-16 h-16 bg-brand-yellow rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span className="font-heading text-2xl text-gray-900 font-bold">{item.step}</span>
                   </div>
-                  <h3 className="font-serif text-xl text-white mb-4 tracking-[0.05em]">{item.title}</h3>
+                  <h3 className="font-heading text-xl text-white mb-4 tracking-[0.05em]">{item.title}</h3>
                   <p className="text-gray-300 leading-relaxed">{item.description}</p>
                 </div>
               </ScrollRevealCSS>
@@ -384,7 +384,7 @@ export default function HolidayRunnerUpPage() {
           <ScrollRevealCSS duration={600} delay={300} y={20}>
             <div className="flex flex-wrap justify-center gap-8 mt-16 text-gray-300 text-sm">
               <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-gold-600" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 text-brand-yellow" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fillRule="evenodd"
                     d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -400,7 +400,7 @@ export default function HolidayRunnerUpPage() {
                 <span>5-Star Rated</span>
               </div>
               <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-gold-600" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 text-brand-yellow" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fillRule="evenodd"
                     d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
@@ -421,7 +421,7 @@ export default function HolidayRunnerUpPage() {
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-8">
           <ScrollRevealCSS duration={600} y={20} className="text-center mb-16">
-            <h2 className="font-serif text-3xl sm:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading text-3xl sm:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
               Why Austin Hosts Love Party On Delivery
             </h2>
             <div className="flex justify-center items-center gap-1 mb-2">
@@ -508,10 +508,10 @@ export default function HolidayRunnerUpPage() {
       <section className="py-20">
         <div className="max-w-3xl mx-auto px-8">
           <ScrollRevealCSS duration={600} y={20} className="text-center mb-16">
-            <h2 className="font-serif text-3xl sm:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+            <h2 className="font-heading text-3xl sm:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
               Holiday Runner-Up Gift FAQ
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto" />
           </ScrollRevealCSS>
 
           <div className="space-y-4">
@@ -524,7 +524,7 @@ export default function HolidayRunnerUpPage() {
                   >
                     <span className="font-medium text-gray-900">{faq.question}</span>
                     <svg
-                      className={`w-5 h-5 text-gold-600 transform transition-transform ${
+                      className={`w-5 h-5 text-brand-yellow transform transition-transform ${
                         openFAQ === index ? 'rotate-180' : ''
                       }`}
                       fill="none"
@@ -547,21 +547,21 @@ export default function HolidayRunnerUpPage() {
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-20 bg-navy-900 text-white">
+      <section className="py-20 bg-gray-900 text-white">
         <div className="max-w-4xl mx-auto px-8 text-center">
           <ScrollRevealCSS duration={600} y={20}>
-            <h2 className="font-serif text-3xl sm:text-4xl mb-6 tracking-[0.1em]">
+            <h2 className="font-heading text-3xl sm:text-4xl mb-6 tracking-[0.1em]">
               Ready to Make Your Holiday Party Easy?
             </h2>
             <p className="text-lg text-gray-300 mb-10 max-w-2xl mx-auto">
-              Shop our selection, use code <span className="text-gold-400 font-bold">RUNNERUP</span> at checkout, and
+              Shop our selection, use code <span className="text-brand-yellow font-bold">RUNNERUP</span> at checkout, and
               enjoy free delivery + free ice (up to 80 lbs) + your exclusive gifts. We handle the drinks so you can focus on celebrating.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
               <Link
                 href="/products"
-                className="inline-block bg-gold-600 text-gray-900 px-10 py-4 text-lg tracking-[0.15em] hover:bg-gold-700 transition-colors font-medium"
+                className="inline-block bg-brand-yellow text-gray-900 px-10 py-4 text-lg tracking-[0.08em] hover:bg-yellow-600 transition-colors font-medium"
               >
                 SHOP NOW
               </Link>
@@ -569,7 +569,7 @@ export default function HolidayRunnerUpPage() {
 
             {/* Contact Info */}
             <div className="flex flex-col sm:flex-row gap-6 items-center justify-center text-lg">
-              <a href="tel:+17373719700" className="text-gold-400 hover:text-gold-300 transition-colors flex items-center gap-2">
+              <a href="tel:+17373719700" className="text-brand-yellow hover:text-brand-yellow transition-colors flex items-center gap-2">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
@@ -582,7 +582,7 @@ export default function HolidayRunnerUpPage() {
               </a>
               <a
                 href="mailto:info@partyondelivery.com"
-                className="text-gold-400 hover:text-gold-300 transition-colors flex items-center gap-2"
+                className="text-brand-yellow hover:text-brand-yellow transition-colors flex items-center gap-2"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path

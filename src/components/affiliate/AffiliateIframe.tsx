@@ -31,8 +31,8 @@ export default function AffiliateIframe() {
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white z-10">
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gold-500 border-t-transparent mb-4"></div>
-            <p className="text-gray-600 font-serif text-lg">Loading affiliate signup form...</p>
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-yellow-500 border-t-transparent mb-4"></div>
+            <p className="text-gray-600 font-heading text-lg">Loading affiliate signup form...</p>
           </div>
         </div>
       )}

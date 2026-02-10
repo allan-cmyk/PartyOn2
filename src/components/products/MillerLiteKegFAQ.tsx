@@ -65,7 +65,7 @@ export default function MillerLiteKegFAQ() {
 
       <section className="py-16 px-4 md:px-8 bg-gray-50">
         <div className="max-w-4xl mx-auto">
-          <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-8 tracking-[0.15em] text-center">
+          <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-8 tracking-[0.08em] text-center">
             MILLER LITE KEG - FREQUENTLY ASKED QUESTIONS
           </h2>
 
@@ -73,7 +73,7 @@ export default function MillerLiteKegFAQ() {
             {faqs.map((faq, index) => (
               <LuxuryCard key={index} index={index}>
                 <div className="p-6">
-                  <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+                  <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.05em]">
                     {faq.question}
                   </h3>
                   <p className="text-gray-600 leading-relaxed">
@@ -86,7 +86,7 @@ export default function MillerLiteKegFAQ() {
 
           {/* Keg Calculator Helper */}
           <div className="mt-12 bg-white p-8 rounded-lg border border-gray-200">
-            <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
+            <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em] text-center">
               HOW MUCH BEER DO I NEED?
             </h3>
             <div className="grid md:grid-cols-3 gap-6 mb-6">
@@ -94,7 +94,7 @@ export default function MillerLiteKegFAQ() {
                 <h4 className="font-medium text-gray-900 mb-2">Small Party (20-30 people)</h4>
                 <p className="text-gray-600 text-sm">1/4 barrel or 1/6 barrel keg</p>
               </div>
-              <div className="text-center p-4 bg-gold-50 rounded border border-gold-200">
+              <div className="text-center p-4 bg-yellow-50 rounded border border-yellow-200">
                 <h4 className="font-medium text-gray-900 mb-2">Medium Party (40-60 people)</h4>
                 <p className="text-gray-600 text-sm">1/2 barrel keg (most popular)</p>
               </div>
@@ -109,7 +109,7 @@ export default function MillerLiteKegFAQ() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="#add-to-cart"
-                className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm font-medium rounded text-center"
+                className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm font-medium rounded text-center"
               >
                 ORDER MILLER LITE KEG
               </Link>

@@ -155,7 +155,8 @@
       "heroImage": "/images/partners/premierpartycruises-hero.webp",
       "category": "boats",
       "featured": true,
-      "order": 1
+      "order": 1,
+      "partnerPage": "/partners/premier-party-cruises"
     },
     {
       "id": "13",

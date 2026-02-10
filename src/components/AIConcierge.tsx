@@ -173,23 +173,23 @@ export default function AIConcierge({ mode = 'normal', isOpen: controlledIsOpen,
           <button
             onClick={handleOpen}
             className="bg-white rounded-full shadow-lg px-4 py-3 flex items-center gap-2 
-                     border border-neutral-200 hover:border-neutral-300 transition-colors 
+                     border border-gray-200 hover:border-gray-200 transition-colors 
                      hover:shadow-xl group"
           >
-            <div className="w-8 h-8 bg-neutral-100 rounded-full flex items-center justify-center">
-              <svg className="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+              <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <span className="text-sm font-medium text-neutral-700">Need help?</span>
+            <span className="text-sm font-medium text-gray-700">Need help?</span>
           </button>
         ) : (
           <button
             onClick={handleClose}
             className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center
-                     border border-neutral-200 hover:bg-neutral-50 transition-colors"
+                     border border-gray-200 hover:bg-gray-50 transition-colors"
           >
-            <svg className="w-5 h-5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -199,9 +199,9 @@ export default function AIConcierge({ mode = 'normal', isOpen: controlledIsOpen,
       {/* Chat Panel - Subtle Help Box */}
       {isOpen && (
         <div className="fixed bottom-20 right-6 w-[480px] h-[520px] bg-white rounded-2xl shadow-xl z-50 
-                      transform scale-100 border border-neutral-200">
+                      transform scale-100 border border-gray-200">
           {/* Header - Clean ElevenLabs Style */}
-          <div className="p-6 border-b border-neutral-100">
+          <div className="p-6 border-b border-gray-100">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl flex items-center justify-center relative overflow-hidden">
@@ -218,13 +218,13 @@ export default function AIConcierge({ mode = 'normal', isOpen: controlledIsOpen,
                     <path d="M9 11c.5.3 1.5.5 3 0c1.5.5 2.5.3 3 0" stroke="white" strokeWidth="0.5" fill="none" />
                   </svg>
                   {/* Animated monocle */}
-                  <div className="absolute right-2 top-2 w-3 h-3 border-2 border-gold-500 rounded-full animate-pulse" />
+                  <div className="absolute right-2 top-2 w-3 h-3 border-2 border-yellow-500 rounded-full animate-pulse" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-neutral-900">Wayne - Texas Party Pro</h3>
+                  <h3 className="font-medium text-gray-900">Wayne - Texas Party Pro</h3>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="w-2 h-2 bg-green-400 rounded-full"></span>
-                    <p className="text-xs text-neutral-500">
+                    <p className="text-xs text-gray-500">
                       {mode === 'bachelor' ? 'Bachelor Mode' :
                        mode === 'bachelorette' ? 'Bachelorette Mode' :
                        mode === 'party' ? 'Party Mode' :
@@ -240,9 +240,9 @@ export default function AIConcierge({ mode = 'normal', isOpen: controlledIsOpen,
               </div>
               <button
                 onClick={handleClose}
-                className="w-8 h-8 rounded-lg bg-neutral-100 hover:bg-neutral-200 transition-colors flex items-center justify-center"
+                className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors flex items-center justify-center"
               >
-                <svg className="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -275,7 +275,7 @@ export default function AIConcierge({ mode = 'normal', isOpen: controlledIsOpen,
                           </svg>
                         </div>
                         {/* Monocle animation */}
-                        <div className="absolute -right-1 top-0 w-2.5 h-2.5 border border-gold-600 rounded-full animate-bounce bg-white/50" />
+                        <div className="absolute -right-1 top-0 w-2.5 h-2.5 border border-brand-yellow rounded-full animate-bounce bg-white/50" />
                       </div>
                     )}
                     
@@ -283,8 +283,8 @@ export default function AIConcierge({ mode = 'normal', isOpen: controlledIsOpen,
                       className={`
                         max-w-[85%] px-4 py-3 rounded-2xl text-sm
                         ${message.role === 'user' 
-                          ? 'bg-neutral-900 text-white' 
-                          : 'bg-neutral-100 text-neutral-800'
+                          ? 'bg-gray-900 text-white' 
+                          : 'bg-gray-100 text-gray-900'
                         }
                       `}
                     >
@@ -295,12 +295,12 @@ export default function AIConcierge({ mode = 'normal', isOpen: controlledIsOpen,
                   {/* Custom Package */}
                   {pkg && pkg.items.length > 0 && (
                     <div className="flex justify-start pl-10">
-                      <div className="max-w-[85%] bg-gold-50 border border-gold-200 rounded-lg p-4">
-                        <h4 className="font-serif text-sm text-gray-900 mb-2 tracking-[0.1em]">{pkg.name}</h4>
+                      <div className="max-w-[85%] bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <h4 className="font-heading text-sm text-gray-900 mb-2 tracking-[0.1em]">{pkg.name}</h4>
                         <div className="space-y-1 mb-3">
                           {pkg.items.map((item, index) => (
                             <div key={index} className="flex items-center text-xs text-gray-700">
-                              <span className="font-medium text-gold-600 mr-2">{item.quantity}x</span>
+                              <span className="font-medium text-brand-yellow mr-2">{item.quantity}x</span>
                               <span>{item.product}</span>
                             </div>
                           ))}
@@ -318,7 +318,7 @@ export default function AIConcierge({ mode = 'normal', isOpen: controlledIsOpen,
                             // Navigate to custom package page
                             router.push('/custom-package');
                           }}
-                          className="w-full px-4 py-2 bg-gold-600 text-gray-900 text-xs rounded hover:bg-gold-700 transition-colors tracking-[0.1em]"
+                          className="w-full px-4 py-2 bg-brand-yellow text-gray-900 text-xs rounded hover:bg-yellow-600 transition-colors tracking-[0.1em]"
                         >
                           BUILD THIS PACKAGE
                         </button>
@@ -330,7 +330,7 @@ export default function AIConcierge({ mode = 'normal', isOpen: controlledIsOpen,
                   {products.length > 0 && (
                     <div className="flex justify-start pl-10">
                       <div className="max-w-[85%] space-y-2">
-                        <p className="text-xs text-neutral-500 mb-1">Recommended products:</p>
+                        <p className="text-xs text-gray-500 mb-1">Recommended products:</p>
                         <div className="flex flex-wrap gap-2">
                           {products.map((product, index) => (
                             <button
@@ -340,7 +340,7 @@ export default function AIConcierge({ mode = 'normal', isOpen: controlledIsOpen,
                                 const cleanProduct = product.replace(/\s*\([^)]*\)/g, '').trim();
                                 router.push(`/products?search=${encodeURIComponent(cleanProduct)}`);
                               }}
-                              className="px-3 py-1.5 bg-gold-50 text-gold-700 rounded-full text-xs hover:bg-gold-100 transition-colors border border-gold-200"
+                              className="px-3 py-1.5 bg-yellow-50 text-yellow-600 rounded-full text-xs hover:bg-yellow-100 transition-colors border border-yellow-200"
                             >
                               {product} →
                             </button>
@@ -354,11 +354,11 @@ export default function AIConcierge({ mode = 'normal', isOpen: controlledIsOpen,
             })}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-neutral-100 px-4 py-3 rounded-2xl">
+                <div className="bg-gray-100 px-4 py-3 rounded-2xl">
                   <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-neutral-400 rounded-full"></div>
-                    <div className="w-2 h-2 bg-neutral-400 rounded-full"></div>
-                    <div className="w-2 h-2 bg-neutral-400 rounded-full"></div>
+                    <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+                    <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+                    <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
                   </div>
                 </div>
               </div>
@@ -367,7 +367,7 @@ export default function AIConcierge({ mode = 'normal', isOpen: controlledIsOpen,
           </div>
 
           {/* Input - Clean ElevenLabs Style */}
-          <div className="p-6 border-t border-neutral-100">
+          <div className="p-6 border-t border-gray-100">
             <div className="flex gap-2">
               <input
                 type="text"
@@ -379,15 +379,15 @@ export default function AIConcierge({ mode = 'normal', isOpen: controlledIsOpen,
                   mode === 'bachelorette' ? "What's the dream, queen?" :
                   "Ask me anything about your party..."
                 }
-                className="flex-1 px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm 
-                         placeholder:text-neutral-400 focus:outline-none focus:border-neutral-300 
+                className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm 
+                         placeholder:text-gray-500 focus:outline-none focus:border-gray-200 
                          focus:bg-white transition-colors"
                 disabled={isLoading}
               />
               <button
                 onClick={sendMessage}
                 disabled={isLoading || !inputMessage.trim()}
-                className="px-4 py-3 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl 
+                className="px-4 py-3 bg-gray-900 hover:bg-gray-900 text-white rounded-xl 
                          font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed
                          flex items-center justify-center min-w-[80px]"
               >

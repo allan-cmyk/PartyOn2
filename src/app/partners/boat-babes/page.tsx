@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, Suspense, type ReactElement } from 'react'
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
 import JoinOrderModal from '@/components/partners/JoinOrderModal';
 import DrinkCalculator from '@/components/partners/DrinkCalculator';
@@ -98,7 +98,7 @@ function BoatBabesPageContent(): ReactElement {
   return (
     <div className="bg-white min-h-screen">
       {/* Navigation - Always hidden on this partner page */}
-      <OldFashionedNavigation hidden />
+      <Navigation hidden />
 
       {/* HERO SECTION */}
       <BoatBabesHero />
@@ -107,7 +107,7 @@ function BoatBabesPageContent(): ReactElement {
       <section className="py-12 px-6 md:px-12 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-8">
-            <p className="text-gray-500 tracking-[0.2em] uppercase text-sm mb-2">
+            <p className="text-gray-500 tracking-[0.1em] uppercase text-sm mb-2">
               See the Vibes
             </p>
             <h2 className="font-heading text-2xl md:text-3xl text-gray-900 tracking-wide">
@@ -132,7 +132,7 @@ function BoatBabesPageContent(): ReactElement {
 
             {/* What's Included - Takes 2 columns on desktop */}
             <div className="lg:col-span-2 bg-white rounded-xl p-8 shadow-lg flex flex-col">
-              <p className="text-gray-500 tracking-[0.2em] uppercase text-base mb-2 text-center">
+              <p className="text-gray-500 tracking-[0.1em] uppercase text-base mb-2 text-center">
                 Lake Day = Handled
               </p>
               <h3 className="font-heading text-2xl md:text-3xl text-gray-900 tracking-wide mb-6 text-center">
@@ -203,7 +203,7 @@ function BoatBabesPageContent(): ReactElement {
 
               <Link
                 href="/group-v2/create"
-                className="w-full md:flex-1 flex items-center justify-center gap-3 py-4 px-6 bg-gold-500 hover:bg-gold-400 text-gray-900 font-semibold tracking-wide transition-all rounded-xl shadow-sm hover:shadow-md"
+                className="w-full md:flex-1 flex items-center justify-center gap-3 py-4 px-6 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-semibold tracking-wide transition-all rounded-xl shadow-sm hover:shadow-md"
               >
                 <span>Start a Group Order</span>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -287,7 +287,7 @@ function BoatBabesPageContent(): ReactElement {
               <p className="text-red-500">Failed to load products. Please try again.</p>
               <button
                 onClick={() => window.location.reload()}
-                className="mt-4 px-4 py-2 bg-gold-600 text-gray-900 rounded-lg hover:bg-gold-700"
+                className="mt-4 px-4 py-2 bg-brand-yellow text-gray-900 rounded-lg hover:bg-yellow-600"
               >
                 Retry
               </button>
@@ -310,7 +310,7 @@ function BoatBabesPageContent(): ReactElement {
       <section className="relative py-16 px-6 md:px-12 bg-gray-100 overflow-hidden">
         <div className="relative z-10 max-w-6xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-gray-500 tracking-[0.2em] uppercase text-sm mb-3">
+            <p className="text-gray-500 tracking-[0.1em] uppercase text-sm mb-3">
               Real Reviews
             </p>
             <h2 className="font-heading text-3xl md:text-4xl text-gray-900 tracking-wide">
@@ -323,7 +323,7 @@ function BoatBabesPageContent(): ReactElement {
               <div key={idx} className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                 <div className="flex gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-gold-500" fill="currentColor" viewBox="0 0 20 20">
+                    <svg key={i} className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   ))}
@@ -374,7 +374,7 @@ function BoatBabesPageContent(): ReactElement {
               <p className="text-gray-300 text-lg md:text-xl leading-relaxed text-center">
                 Howdy! We&apos;re Allan and Brian, owners of Party On Delivery. Austin natives with 15+ years in events and hospitality, we built this business around one thing: taking care of people. We pride ourselves on clear communication, on-time delivery, and showing people the best of our great city. Our goal is simple - make your weekend easy, safe, and fun.
               </p>
-              <p className="text-gold-400 text-xl md:text-2xl font-heading mt-6 text-center tracking-wide">
+              <p className="text-brand-yellow text-xl md:text-2xl font-heading mt-6 text-center tracking-wide">
                 PARTY ON Y&apos;ALL
               </p>
             </div>
@@ -383,7 +383,7 @@ function BoatBabesPageContent(): ReactElement {
       </section>
 
       {/* FINAL CTA */}
-      <section className="py-16 px-6 md:px-12 bg-gradient-to-br from-gold-500 to-gold-600">
+      <section className="py-16 px-6 md:px-12 bg-gradient-to-br from-yellow-500 to-brand-yellow">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4 tracking-wide">
             Ready for the Lake?

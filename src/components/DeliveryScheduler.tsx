@@ -267,7 +267,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
             <div className="bg-white max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               {/* Header */}
               <div className="p-6 border-b border-gray-200">
-                <h2 className="font-serif text-3xl text-gray-900 tracking-[0.1em]">
+                <h2 className="font-heading text-3xl text-gray-900 tracking-[0.1em]">
                   Schedule Delivery
                 </h2>
               </div>
@@ -276,7 +276,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
               <div className="p-6 space-y-6">
                 {/* Customer Info Section */}
                 <div id="customer-section">
-                  <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
+                  <h3 className="font-heading text-xl text-gray-900 mb-4 tracking-[0.1em]">
                     Customer Information
                   </h3>
                   <div className="space-y-4">
@@ -289,7 +289,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
                           type="text"
                           value={firstName}
                           onChange={(e) => setFirstName(e.target.value)}
-                          className="w-full px-4 py-3 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
+                          className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:outline-none transition-colors"
                           placeholder="John"
                         />
                         {errors.firstName && (
@@ -304,7 +304,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
                           type="text"
                           value={lastName}
                           onChange={(e) => setLastName(e.target.value)}
-                          className="w-full px-4 py-3 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
+                          className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:outline-none transition-colors"
                           placeholder="Doe"
                         />
                         {errors.lastName && (
@@ -320,7 +320,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
+                        className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:outline-none transition-colors"
                         placeholder="john@example.com"
                       />
                       {errors.email && (
@@ -332,7 +332,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
 
                 {/* Address Section */}
                 <div id="address-section">
-                  <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
+                  <h3 className="font-heading text-xl text-gray-900 mb-4 tracking-[0.1em]">
                     Delivery Address
                   </h3>
                   <div className="space-y-4">
@@ -344,7 +344,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
                         type="text"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
+                        className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:outline-none transition-colors"
                         placeholder="123 Main Street"
                       />
                       {errors.address && (
@@ -360,7 +360,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
                         value={zipCode}
                         onChange={(e) => setZipCode(e.target.value)}
                         maxLength={5}
-                        className="w-full px-4 py-3 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
+                        className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:outline-none transition-colors"
                         placeholder="78701"
                       />
                       {errors.zipCode && (
@@ -380,7 +380,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
                         type="tel"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
+                        className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:outline-none transition-colors"
                         placeholder="(512) 555-0123"
                       />
                       {errors.phone && (
@@ -393,7 +393,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
 
                 {/* Date Selection */}
                 <div id="date-section">
-                  <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
+                  <h3 className="font-heading text-xl text-gray-900 mb-4 tracking-[0.1em]">
                     Delivery Date
                   </h3>
                   <div className="grid grid-cols-7 gap-2">
@@ -406,8 +406,8 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
                         }}
                         className={`p-3 text-center border transition-colors ${
                           selectedDate?.toDateString() === date.toDateString()
-                            ? 'border-gold-600 bg-gold-50'
-                            : 'border-gray-300 hover:border-gold-400'
+                            ? 'border-brand-yellow bg-yellow-50'
+                            : 'border-gray-300 hover:border-brand-yellow'
                         }`}
                       >
                         <div className="text-xs text-gray-600">
@@ -426,7 +426,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
 
                 {/* Time Selection */}
                 <div id="time-section">
-                  <h3 className="font-serif text-xl text-gray-900 mb-4 tracking-[0.1em]">
+                  <h3 className="font-heading text-xl text-gray-900 mb-4 tracking-[0.1em]">
                     Delivery Time
                   </h3>
                   <p className="text-sm text-gray-600 mb-4">
@@ -441,8 +441,8 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
                             onClick={() => setSelectedTime(slot)}
                             className={`p-2 text-center border transition-colors ${
                               selectedTime === slot
-                                ? 'border-gold-600 bg-gold-50'
-                                : 'border-gray-300 hover:border-gold-400'
+                                ? 'border-brand-yellow bg-yellow-50'
+                                : 'border-gray-300 hover:border-brand-yellow'
                             }`}
                           >
                             <span className="text-xs">{slot}</span>
@@ -473,7 +473,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
                     value={instructions}
                     onChange={(e) => setInstructions(e.target.value)}
                     rows={3}
-                    className="w-full px-4 py-3 border border-gray-300 focus:border-gold-600 focus:outline-none transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 focus:border-brand-yellow focus:outline-none transition-colors"
                     placeholder="Gate code, building entrance, special instructions..."
                   />
                 </div>
@@ -519,7 +519,7 @@ export default function DeliveryScheduler({ isOpen, onClose, onConfirm, defaultA
                 </button>
                 <button
                   onClick={handleConfirm}
-                  className="px-6 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.1em] text-sm"
+                  className="px-6 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm"
                 >
                   CONFIRM DELIVERY
                 </button>

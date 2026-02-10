@@ -50,7 +50,7 @@ export default function PackageBreakdown({
     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
       {/* Header */}
       <div className="bg-gray-900 text-white px-6 py-4">
-        <h3 className="font-serif text-xl tracking-[0.1em]">
+        <h3 className="font-heading text-xl tracking-[0.1em]">
           Your {calculation.tier.name}
         </h3>
         <p className="text-gray-300 text-sm mt-1">
@@ -116,7 +116,7 @@ export default function PackageBreakdown({
         <div className="border-t border-gray-200 pt-2 mt-2">
           <div className="flex justify-between items-center">
             <span className="text-lg font-medium text-gray-900">Estimated Total</span>
-            <span className="text-2xl font-serif text-gold-700">
+            <span className="text-2xl font-heading text-yellow-600">
               ${calculation.totalPrice.toFixed(2)}
             </span>
           </div>
@@ -151,7 +151,7 @@ export default function PackageBreakdown({
             transition-all duration-200 flex items-center justify-center gap-2
             ${isLoading || validationError
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-gold-600 text-white hover:bg-gold-700 shadow-md hover:shadow-lg'
+              : 'bg-brand-yellow text-white hover:bg-yellow-600 shadow-md hover:shadow-lg'
             }
           `}
         >

@@ -13,7 +13,7 @@ import { z } from 'zod';
 const UpdateExperimentSchema = z.object({
   name: z.string().min(1).max(100).optional(),
   description: z.string().max(500).optional(),
-  status: z.enum(['DRAFT', 'ACTIVE', 'PAUSED', 'COMPLETED']).optional(),
+  status: z.enum(['DRAFT', 'RUNNING', 'PAUSED', 'COMPLETED']).optional(),
   goalMetric: z.enum(['cta_click', 'scroll_depth', 'conversion', 'revenue']).optional(),
   goalValue: z.string().optional(),
   winningVariant: z.string().optional(),
@@ -142,7 +142,7 @@ export async function PATCH(
     // Handle status transitions
     const updateData: Record<string, unknown> = { ...validatedData };
 
-    if (validatedData.status === 'ACTIVE' && existing.status === 'DRAFT') {
+    if (validatedData.status === 'RUNNING' && existing.status === 'DRAFT') {
       updateData.startDate = new Date();
     }
 
@@ -198,7 +198,7 @@ export async function DELETE(
     }
 
     // Prevent deleting active experiments
-    if (existing.status === 'ACTIVE') {
+    if (existing.status === 'RUNNING') {
       return NextResponse.json(
         { error: 'Cannot delete an active experiment. Pause or complete it first.' },
         { status: 400 }

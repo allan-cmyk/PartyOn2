@@ -33,7 +33,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-navy-900 text-white">
+    <footer className="bg-gray-900 text-white">
       {/* Main Footer */}
       <div className="container-custom py-16 lg:py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
@@ -48,7 +48,7 @@ export default function Footer() {
                 height="64"
               />
             </Link>
-            <p className="font-sans text-sm text-neutral-300 leading-relaxed">
+            <p className="font-sans text-sm text-gray-200 leading-relaxed">
               Austin&apos;s premier alcohol delivery service. From boat parties on Lake Travis to
               weddings in the Hill Country, we bring the party to you.
             </p>
@@ -58,7 +58,7 @@ export default function Footer() {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-gold-500 flex items-center justify-center transition-all duration-300 group"
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-yellow-500 flex items-center justify-center transition-all duration-300 group"
                 aria-label="Instagram"
               >
                 <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
@@ -69,7 +69,7 @@ export default function Footer() {
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-gold-500 flex items-center justify-center transition-all duration-300 group"
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-yellow-500 flex items-center justify-center transition-all duration-300 group"
                 aria-label="Facebook"
               >
                 <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
@@ -80,7 +80,7 @@ export default function Footer() {
                 href="https://twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-gold-500 flex items-center justify-center transition-all duration-300 group"
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-yellow-500 flex items-center justify-center transition-all duration-300 group"
                 aria-label="Twitter"
               >
                 <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
@@ -94,7 +94,7 @@ export default function Footer() {
           <div className="lg:col-span-4 grid grid-cols-2 md:grid-cols-4 gap-8">
             {/* Services */}
             <div>
-              <h3 className="font-sans font-bold text-gold-400 uppercase tracking-wider text-sm mb-4">
+              <h3 className="font-sans font-bold text-brand-yellow uppercase tracking-wider text-sm mb-4">
                 Services
               </h3>
               <ul className="space-y-3">
@@ -102,7 +102,7 @@ export default function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="font-sans text-sm text-neutral-300 hover:text-gold-400 transition-colors duration-300"
+                      className="font-sans text-sm text-gray-200 hover:text-brand-yellow transition-colors duration-300"
                     >
                       {link.label}
                     </Link>
@@ -113,7 +113,7 @@ export default function Footer() {
 
             {/* Company */}
             <div>
-              <h3 className="font-sans font-bold text-gold-400 uppercase tracking-wider text-sm mb-4">
+              <h3 className="font-sans font-bold text-brand-yellow uppercase tracking-wider text-sm mb-4">
                 Company
               </h3>
               <ul className="space-y-3">
@@ -121,7 +121,7 @@ export default function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="font-sans text-sm text-neutral-300 hover:text-gold-400 transition-colors duration-300"
+                      className="font-sans text-sm text-gray-200 hover:text-brand-yellow transition-colors duration-300"
                     >
                       {link.label}
                     </Link>
@@ -132,7 +132,7 @@ export default function Footer() {
 
             {/* Support */}
             <div>
-              <h3 className="font-sans font-bold text-gold-400 uppercase tracking-wider text-sm mb-4">
+              <h3 className="font-sans font-bold text-brand-yellow uppercase tracking-wider text-sm mb-4">
                 Support
               </h3>
               <ul className="space-y-3">
@@ -140,7 +140,7 @@ export default function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="font-sans text-sm text-neutral-300 hover:text-gold-400 transition-colors duration-300"
+                      className="font-sans text-sm text-gray-200 hover:text-brand-yellow transition-colors duration-300"
                     >
                       {link.label}
                     </Link>
@@ -151,7 +151,7 @@ export default function Footer() {
 
             {/* Austin Areas */}
             <div>
-              <h3 className="font-sans font-bold text-gold-400 uppercase tracking-wider text-sm mb-4">
+              <h3 className="font-sans font-bold text-brand-yellow uppercase tracking-wider text-sm mb-4">
                 Austin Areas
               </h3>
               <ul className="space-y-3">
@@ -159,7 +159,7 @@ export default function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="font-sans text-sm text-neutral-300 hover:text-gold-400 transition-colors duration-300"
+                      className="font-sans text-sm text-gray-200 hover:text-brand-yellow transition-colors duration-300"
                     >
                       {link.label}
                     </Link>
@@ -174,43 +174,43 @@ export default function Footer() {
         <div className="mt-12 pt-12 border-t border-white/10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 max-w-4xl mx-auto">
             <div className="text-center space-y-2">
-              <div className="w-16 h-16 mx-auto bg-gold-500/20 rounded-full flex items-center justify-center">
-                <svg className="w-8 h-8 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 mx-auto bg-yellow-500/20 rounded-full flex items-center justify-center">
+                <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
-              <h4 className="font-sans font-bold text-sm text-gold-400">TABC Licensed</h4>
-              <p className="font-sans text-xs text-neutral-400">License #MB123456</p>
+              <h4 className="font-sans font-bold text-sm text-brand-yellow">TABC Licensed</h4>
+              <p className="font-sans text-xs text-gray-500">License #MB123456</p>
             </div>
             
             <div className="text-center space-y-2">
-              <div className="w-16 h-16 mx-auto bg-gold-500/20 rounded-full flex items-center justify-center">
-                <svg className="w-8 h-8 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 mx-auto bg-yellow-500/20 rounded-full flex items-center justify-center">
+                <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h4 className="font-sans font-bold text-sm text-gold-400">Fully Insured</h4>
-              <p className="font-sans text-xs text-neutral-400">$2M Liability Coverage</p>
+              <h4 className="font-sans font-bold text-sm text-brand-yellow">Fully Insured</h4>
+              <p className="font-sans text-xs text-gray-500">$2M Liability Coverage</p>
             </div>
             
             <div className="text-center space-y-2">
-              <div className="w-16 h-16 mx-auto bg-gold-500/20 rounded-full flex items-center justify-center">
-                <svg className="w-8 h-8 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 mx-auto bg-yellow-500/20 rounded-full flex items-center justify-center">
+                <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                 </svg>
               </div>
-              <h4 className="font-sans font-bold text-sm text-gold-400">5.0★ Rated</h4>
-              <p className="font-sans text-xs text-neutral-400">1000+ Deliveries</p>
+              <h4 className="font-sans font-bold text-sm text-brand-yellow">5.0★ Rated</h4>
+              <p className="font-sans text-xs text-gray-500">1000+ Deliveries</p>
             </div>
             
             <div className="text-center space-y-2">
-              <div className="w-16 h-16 mx-auto bg-gold-500/20 rounded-full flex items-center justify-center">
-                <svg className="w-8 h-8 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 mx-auto bg-yellow-500/20 rounded-full flex items-center justify-center">
+                <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
-              <h4 className="font-sans font-bold text-sm text-gold-400">Certified Staff</h4>
-              <p className="font-sans text-xs text-neutral-400">100% TABC Trained</p>
+              <h4 className="font-sans font-bold text-sm text-brand-yellow">Certified Staff</h4>
+              <p className="font-sans text-xs text-gray-500">100% TABC Trained</p>
             </div>
           </div>
         </div>
@@ -218,17 +218,17 @@ export default function Footer() {
         {/* Newsletter */}
         <div className="mt-12 pt-12 border-t border-white/10">
           <div className="max-w-2xl mx-auto text-center space-y-4">
-            <h3 className="font-serif text-2xl text-white">
+            <h3 className="font-heading text-2xl text-white">
               Stay in the Loop
             </h3>
-            <p className="font-sans text-sm text-neutral-300">
+            <p className="font-sans text-sm text-gray-200">
               Get exclusive deals and party tips delivered to your inbox
             </p>
             <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-grow px-4 py-3 bg-white/10 border border-white/20 rounded-full text-white placeholder:text-neutral-300 focus:outline-none focus:border-gold-500 transition-colors duration-300"
+                className="flex-grow px-4 py-3 bg-white/10 border border-white/20 rounded-full text-white placeholder:text-gray-200 focus:outline-none focus:border-yellow-500 transition-colors duration-300"
               />
               <button
                 type="submit"
@@ -242,20 +242,20 @@ export default function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="bg-navy-950 py-6">
+      <div className="bg-gray-900 py-6">
         <div className="container-custom">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
-            <p className="font-sans text-sm text-neutral-400">
+            <p className="font-sans text-sm text-gray-500">
               © {currentYear} Party On Delivery. All rights reserved. Keep Austin Weird!
             </p>
             <div className="flex gap-6 text-sm">
-              <Link href="/privacy" className="text-neutral-400 hover:text-gold-400 transition-colors duration-300">
+              <Link href="/privacy" className="text-gray-500 hover:text-brand-yellow transition-colors duration-300">
                 Privacy Policy
               </Link>
-              <Link href="/terms" className="text-neutral-400 hover:text-gold-400 transition-colors duration-300">
+              <Link href="/terms" className="text-gray-500 hover:text-brand-yellow transition-colors duration-300">
                 Terms of Service
               </Link>
-              <Link href="/tabc" className="text-neutral-400 hover:text-gold-400 transition-colors duration-300">
+              <Link href="/tabc" className="text-gray-500 hover:text-brand-yellow transition-colors duration-300">
                 TABC License
               </Link>
             </div>

@@ -15,13 +15,6 @@ export async function POST(
   try {
     const { hostCustomerId } = await request.json()
 
-    if (!hostCustomerId) {
-      return NextResponse.json(
-        { error: 'Host customer ID required' },
-        { status: 400 }
-      )
-    }
-
     const groupOrder = await db.getOrderByCode(code)
     if (!groupOrder) {
       return NextResponse.json(
@@ -30,18 +23,19 @@ export async function POST(
       )
     }
 
-    // Verify the requester is the host
-    if (groupOrder.hostCustomerId !== hostCustomerId) {
+    // Verify the requester is the host (only if hostCustomerId is set on the order)
+    // This allows locking orders created without customer authentication
+    if (groupOrder.hostCustomerId && groupOrder.hostCustomerId !== hostCustomerId) {
       return NextResponse.json(
-        { error: 'Only the host can close the group' },
+        { error: 'Only the host can lock the group' },
         { status: 403 }
       )
     }
 
-    // Check if already closed or in a terminal state
+    // Check if already locked or in a terminal state
     if (groupOrder.status === 'closed' || groupOrder.status === 'locked') {
       return NextResponse.json(
-        { error: 'Group is already closed' },
+        { error: 'Group is already locked' },
         { status: 400 }
       )
     }
@@ -53,8 +47,8 @@ export async function POST(
       )
     }
 
-    // Close the group (use 'closed' status - prevents new joins)
-    const closedOrder = await db.updateOrderStatus(code, 'closed')
+    // Lock the group (use 'locked' status - prevents new joins and allows checkout)
+    const closedOrder = await db.updateOrderStatus(code, 'locked')
 
     if (!closedOrder) {
       return NextResponse.json(

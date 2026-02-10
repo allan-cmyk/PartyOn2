@@ -20,22 +20,22 @@ export default function FinalHome() {
             priority
             quality={90}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-royal-900/90 to-royal-800/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-900/90 to-gray-900/70" />
         </div>
 
         {/* Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-6 pt-20">
           <div className="max-w-3xl hero-fade-in">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-8">
-              <div className="w-2 h-2 bg-gold-500 rounded-full" />
+              <div className="w-2 h-2 bg-yellow-500 rounded-full" />
               <span className="text-white/90 text-sm font-medium tracking-wide uppercase">
                 Austin&apos;s Premier Bar Service • Est. 2016
               </span>
             </div>
 
-            <h1 className="font-display text-5xl md:text-6xl lg:text-7xl text-white mb-6 leading-tight">
+            <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl text-white mb-6 leading-tight">
               Elevate Your
-              <span className="block text-gold-400">Corporate Events</span>
+              <span className="block text-brand-yellow">Corporate Events</span>
             </h1>
 
             <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed max-w-2xl">
@@ -46,7 +46,7 @@ export default function FinalHome() {
             <div className="flex flex-wrap gap-6 mb-10">
               {['Licensed & Insured', '24/7 Support', 'White Glove Service'].map((feature) => (
                 <div key={feature} className="flex items-center gap-2 text-white/80">
-                  <svg className="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <span>{feature}</span>
@@ -56,12 +56,12 @@ export default function FinalHome() {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/consultation">
-                <button className="px-10 py-4 bg-gold-500 hover:bg-gold-600 text-royal-900 font-semibold rounded-full transition-all duration-300 transform hover:scale-105">
+                <button className="px-10 py-4 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-semibold rounded-full transition-all duration-300 transform hover:scale-105">
                   Schedule Consultation
                 </button>
               </Link>
               <Link href="/services">
-                <button className="px-10 py-4 border-2 border-white text-white hover:bg-white hover:text-royal-900 font-semibold rounded-full transition-all duration-300">
+                <button className="px-10 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 font-semibold rounded-full transition-all duration-300">
                   View Services
                 </button>
               </Link>
@@ -88,7 +88,7 @@ export default function FinalHome() {
             ].map((stat, index) => (
               <ScrollRevealCSS key={stat.label} delay={index * 100}>
                 <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-light text-royal-800 mb-2">{stat.number}</div>
+                  <div className="text-3xl md:text-4xl font-light text-gray-900 mb-2">{stat.number}</div>
                   <div className="text-sm uppercase tracking-wider text-gray-600">{stat.label}</div>
                 </div>
               </ScrollRevealCSS>
@@ -102,7 +102,7 @@ export default function FinalHome() {
         <div className="max-w-7xl mx-auto px-6">
           <ScrollRevealCSS duration={800}>
             <div className="text-center mb-16">
-              <h2 className="font-display text-4xl md:text-5xl text-royal-800 mb-4">
+              <h2 className="font-heading text-4xl md:text-5xl text-gray-900 mb-4">
                 Tailored Bar Solutions
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -139,12 +139,12 @@ export default function FinalHome() {
                         fill
                         className="object-cover group-hover:scale-110 transition-transform duration-700"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-royal-900/60 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent" />
                     </div>
                     <div className="p-8">
-                      <h3 className="font-display text-2xl text-royal-800 mb-3">{service.title}</h3>
+                      <h3 className="font-heading text-2xl text-gray-900 mb-3">{service.title}</h3>
                       <p className="text-gray-600 mb-4">{service.description}</p>
-                      <span className="text-royal-600 font-medium group-hover:text-royal-700 transition-colors">
+                      <span className="text-brand-blue font-medium group-hover:text-blue-700 transition-colors">
                         Learn More
                       </span>
                     </div>
@@ -157,14 +157,14 @@ export default function FinalHome() {
       </section>
 
       {/* Trust Section */}
-      <section className="py-24 bg-royal-800 text-white">
+      <section className="py-24 bg-gray-900 text-white">
         <div className="max-w-7xl mx-auto px-6">
           <ScrollRevealCSS duration={800}>
             <div className="text-center mb-16">
-              <h2 className="font-display text-4xl md:text-5xl mb-4">
+              <h2 className="font-heading text-4xl md:text-5xl mb-4">
                 Why Industry Leaders Choose PartyOn
               </h2>
-              <p className="text-xl text-gold-300 max-w-2xl mx-auto">
+              <p className="text-xl text-brand-yellow max-w-2xl mx-auto">
                 Trusted by Austin&apos;s most prestigious organizations
               </p>
             </div>
@@ -195,8 +195,8 @@ export default function FinalHome() {
             ].map((item, index) => (
               <ScrollRevealCSS key={item.title} delay={index * 100} duration={800}>
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-gold-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-8 h-8 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-16 h-16 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
                     </svg>
                   </div>
@@ -216,7 +216,7 @@ export default function FinalHome() {
             <div className="bg-white rounded-2xl shadow-xl p-12 text-center">
               <div className="flex justify-center gap-1 mb-6">
                 {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-6 h-6 text-gold-500 fill-current" viewBox="0 0 20 20">
+                  <svg key={i} className="w-6 h-6 text-yellow-500 fill-current" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                   </svg>
                 ))}
@@ -226,11 +226,11 @@ export default function FinalHome() {
                 attention to detail, and flawless execution make them our exclusive partner.&rdquo;
               </blockquote>
               <div className="flex items-center justify-center gap-4">
-                <div className="w-16 h-16 bg-royal-100 rounded-full flex items-center justify-center">
-                  <span className="text-royal-600 font-semibold text-xl">SC</span>
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                  <span className="text-brand-blue font-semibold text-xl">SC</span>
                 </div>
                 <div className="text-left">
-                  <p className="text-lg font-semibold text-royal-800">Sarah Chen</p>
+                  <p className="text-lg font-semibold text-gray-900">Sarah Chen</p>
                   <p className="text-gray-600">VP of Corporate Events, Dell Technologies</p>
                 </div>
               </div>
@@ -240,31 +240,31 @@ export default function FinalHome() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 bg-gradient-to-br from-royal-800 to-royal-900 text-white">
+      <section className="py-24 bg-gradient-to-br from-gray-900 to-gray-900 text-white">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <ScrollRevealCSS duration={800}>
             <div>
-              <h2 className="font-display text-4xl md:text-5xl mb-6">
+              <h2 className="font-heading text-4xl md:text-5xl mb-6">
                 Ready to Elevate Your Next Event?
               </h2>
-              <p className="text-xl text-gold-200 mb-10 max-w-2xl mx-auto">
+              <p className="text-xl text-yellow-200 mb-10 max-w-2xl mx-auto">
                 Join Austin&apos;s premier venues in delivering exceptional experiences
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/consultation">
-                  <button className="px-12 py-5 bg-gold-500 hover:bg-gold-600 text-royal-900 font-semibold rounded-full text-xl transition-all duration-300 transform hover:scale-105">
+                  <button className="px-12 py-5 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-semibold rounded-full text-xl transition-all duration-300 transform hover:scale-105">
                     Schedule Consultation
                   </button>
                 </Link>
                 <Link href="/contact">
-                  <button className="px-12 py-5 border-2 border-gold-500 text-gold-400 hover:bg-gold-500 hover:text-royal-900 font-semibold rounded-full text-xl transition-all duration-300">
+                  <button className="px-12 py-5 border-2 border-yellow-500 text-brand-yellow hover:bg-yellow-500 hover:text-gray-900 font-semibold rounded-full text-xl transition-all duration-300">
                     Contact Us
                   </button>
                 </Link>
               </div>
-              <p className="mt-10 text-gold-300">
+              <p className="mt-10 text-brand-yellow">
                 Or call:
-                <a href="tel:5125550100" className="text-white font-semibold ml-2 hover:text-gold-400 transition-colors">
+                <a href="tel:5125550100" className="text-white font-semibold ml-2 hover:text-brand-yellow transition-colors">
                   (512) 555-0100
                 </a>
               </p>

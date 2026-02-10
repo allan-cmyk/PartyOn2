@@ -1,4 +1,4 @@
-import ProfessionalNavigation from '@/components/ProfessionalNavigation';
+import Navigation from "@/components/Navigation";
 import { Montserrat, Lato, Playfair_Display } from 'next/font/google';
 
 const montserrat = Montserrat({ 
@@ -15,7 +15,7 @@ const lato = Lato({
 
 const playfair = Playfair_Display({ 
   subsets: ['latin'],
-  variable: '--font-playfair',
+  variable: '--font-heading',
   weight: ['400', '700']
 });
 
@@ -26,7 +26,7 @@ export default function ProfessionalLayout({
 }) {
   return (
     <div className={`${montserrat.variable} ${lato.variable} ${playfair.variable}`}>
-      <ProfessionalNavigation />
+      <Navigation />
       {children}
     </div>
   );

@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lake Travis Bachelor Party - Premium Alcohol Delivery Experience">
+    <title>A Gentleman's Evening | Lake Travis Bachelor Party</title>
+
+    <!-- Reveal.js Core CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/theme/white.css">
+
+    <!-- Custom Aquatic Luxury Theme -->
+    <link rel="stylesheet" href="css/theme.css">
+
+    <!-- Chart.js for Data Visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <style>
+        /* Additional inline styles for special effects */
+        .reveal .slides section {
+            padding: 3rem;
+        }
+
+        /* Dark overlay for background images - Enhanced */
+        .dark-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(0, 0, 0, 0.65) 0%,
+                rgba(11, 114, 133, 0.45) 50%,
+                rgba(30, 58, 95, 0.55) 100%
+            );
+            z-index: 1;
+        }
+
+        .slide-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Image container for split layouts - Enhanced */
+        .image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow:
+                0 12px 32px rgba(0, 0, 0, 0.15),
+                0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 16px;
+            transition: transform 0.5s ease;
+        }
+
+        .image-container:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Cost comparison chart container */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 3rem 0;
+            padding: 2rem;
+            background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Highlighted info boxes */
+        .info-box {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2F7 100%);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-top: 2rem;
+            border: 2px solid rgba(11, 114, 133, 0.2);
+            box-shadow: 0 4px 16px rgba(11, 114, 133, 0.1);
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-top: 2rem;
+            border: 2px solid rgba(245, 158, 11, 0.3);
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.15);
+        }
+
+        /* Premium quote styling */
+        .premium-quote {
+            font-family: 'Crimson Pro', serif;
+            font-style: italic;
+            font-size: 1.6rem;
+            line-height: 1.7;
+            padding: 2rem 3rem;
+            background: linear-gradient(135deg, #F8F9FA 0%, #FFFFFF 100%);
+            border-left: 6px solid #F59E0B;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ==================== SLIDE 1: HERO TITLE ==================== -->
+            <section data-background="images/sunset-champagne-pontoon.png" data-background-size="cover">
+                <div class="dark-overlay"></div>
+                <div class="slide-content text-center">
+                    <h1 class="hero-title">A GENTLEMAN'S EVENING</h1>
+                    <h2 class="hero-subtitle">Lake Travis Bachelor Party Experience</h2>
+                    <p class="hero-tagline">Premium spirits. Open water. Unforgettable memories.</p>
+                    <div class="scroll-indicator">↓</div>
+                </div>
+            </section>
+
+            <!-- ==================== SLIDE 2: THE VISION ==================== -->
+            <section>
+                <div class="split-layout">
+                    <div class="image-container">
+                        <img src="images/lake-travis-boats.webp" alt="Lake Travis boats at sunset">
+                    </div>
+                    <div>
+                        <h2>The Vision</h2>
+                        <p>What separates a forgettable night from a legendary bachelor party? It's not the activities—it's the <strong>atmosphere</strong>. The right people, the right setting, and most importantly, the right approach to celebration.</p>
+
+                        <p>Picture this: Lake Travis at golden hour. Your closest friends aboard a premium boat. Top-shelf spirits clinking in crystal glasses. No stress about logistics, no frantic last-minute runs to the liquor store, no settling for whatever's left on the shelf.</p>
+
+                        <p class="premium-quote" style="margin-top: 2rem;">This is different. This is curated. This is legendary.</p>
+
+                        <div class="feature-grid" style="margin-top: 2rem;">
+                            <div class="feature-card">
+                                <div class="feature-icon">🥃</div>
+                                <h3>Premium Spirits</h3>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">⛵</div>
+                                <h3>Boat Venue</h3>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">✨</div>
+                                <h3>Pro Coordination</h3>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">📦</div>
+                                <h3>All-Inclusive</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== SLIDE 3: THE PROBLEM ==================== -->
+            <section data-background="#1E3A5F">
+                <div class="slide-content">
+                    <h2 class="text-white">The Problem</h2>
+                    <p class="text-white" style="font-size: 1.5rem; margin-bottom: 2rem;">Traditional bachelor parties are <span class="accent-coral">coordination nightmares</span>.</p>
+
+                    <div class="three-column">
+                        <div style="background: rgba(255,255,255,0.1); padding: 2rem; border-radius: 12px;">
+                            <h3 class="accent-coral">💸 Hidden Costs</h3>
+                            <ul class="text-white">
+                                <li>Last-minute liquor runs</li>
+                                <li>Delivery fees</li>
+                                <li>Ice, mixers, cups</li>
+                                <li>Emergency replacements</li>
+                            </ul>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 2rem; border-radius: 12px;">
+                            <h3 class="accent-coral">⏰ Time Drain</h3>
+                            <ul class="text-white">
+                                <li>Shopping for 10+ people</li>
+                                <li>Collecting money</li>
+                                <li>Managing RSVPs</li>
+                                <li>Coordinating transportation</li>
+                            </ul>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 2rem; border-radius: 12px;">
+                            <h3 class="accent-coral">🎲 Variable Quality</h3>
+                            <ul class="text-white">
+                                <li>Cheap beer, warm liquor</li>
+                                <li>Out-of-stock favorites</li>
+                                <li>Generic party supplies</li>
+                                <li>Compromised experience</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <p class="text-white text-center" style="font-size: 1.75rem; font-weight: 600; margin-top: 3rem; font-family: 'Crimson Pro', serif;">
+                        You have <span class="accent-gold">ONE</span> job: create memories.<br>
+                        Not manage logistics.
+                    </p>
+                </div>
+            </section>
+
+            <!-- ==================== SLIDE 4: THE SOLUTION ==================== -->
+            <section data-background="images/premium-spirits-wall.png" data-background-size="cover" data-background-opacity="0.3">
+                <div class="content-section">
+                    <h2>The Solution: Party On Delivery</h2>
+                    <p style="font-size: 1.4rem; margin-bottom: 2rem;">Austin's premier alcohol delivery service specializes in <strong>event-quality spirits delivery</strong> for bachelor parties, boat outings, and celebrations. We handle the logistics so you can focus on the memories.</p>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🥃</div>
+                            <h3>Curated Selection</h3>
+                            <p>Top-shelf liquor: Casamigos, Grey Goose, Crown Royal, and premium brands you actually want to drink.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📦</div>
+                            <h3>Direct Delivery</h3>
+                            <p>Delivered directly to your boat dock, marina, or event location. No heavy lifting, no hassle.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">⏰</div>
+                            <h3>72-Hour Booking</h3>
+                            <p>Simple advance booking eliminates last-minute stress. Plan ahead, relax on event day.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">💳</div>
+                            <h3>Transparent Pricing</h3>
+                            <p>No hidden fees, no surprise charges. What you see is what you pay.</p>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <a href="https://partyondelivery.com" class="cta-button" target="_blank">Visit PartyOnDelivery.com</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== SLIDE 5: THE EXPERIENCE ==================== -->
+            <section>
+                <div class="content-section">
+                    <h2>The Experience</h2>
+                    <p style="font-size: 1.3rem; margin-bottom: 2rem;">Here's exactly what your day looks like—a perfectly orchestrated bachelor party where everything flows smoothly and the only decision you make is what to toast to first.</p>
+
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker">2:00</div>
+                            <div class="timeline-content">
+                                <h4>Marina Arrival</h4>
+                                <p>Guests arrive at Lake Travis marina. Setup crew prepares the boat with coolers, ice, and essentials.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker">2:30</div>
+                            <div class="timeline-content">
+                                <h4>Party On Delivery Arrives</h4>
+                                <p>Premium spirits delivered dockside: Casamigos Tequila (2x 750ml), Grey Goose Vodka, Crown Royal Purple, Red Bull cases, White Claw variety pack, and Liquid IV recovery packs.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker">3:00</div>
+                            <div class="timeline-content">
+                                <h4>Set Sail</h4>
+                                <p>All aboard! Cast off from the dock and begin your Lake Travis adventure with a champagne toast.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker">3:30</div>
+                            <div class="timeline-content">
+                                <h4>First Sunset Toast</h4>
+                                <p>Captain finds the perfect cruising spot. Signature cocktails flow as the golden hour begins.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker">5:00</div>
+                            <div class="timeline-content">
+                                <h4>Anchor & Activities</h4>
+                                <p>Drop anchor at a scenic cove. Swimming, floating, games, and legendary photo opportunities.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker">6:30</div>
+                            <div class="timeline-content">
+                                <h4>Sunset Photography</h4>
+                                <p>Professional-quality sunset photos with drinks in hand. The moments that become wedding slideshows.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker">8:00</div>
+                            <div class="timeline-content">
+                                <h4>Return to Dock</h4>
+                                <p>Cruise back as the sun sets. Transition to dinner venue or continue the celebration on land.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <h3 style="color: #0B7285; margin-bottom: 1.5rem; font-size: 1.8rem;">What to Expect</h3>
+                        <ul class="checklist">
+                            <li><strong>Professional Service:</strong> Party On Delivery coordinates with marina for seamless dockside handoff</li>
+                            <li><strong>Premium Quality:</strong> Only top-shelf brands—no compromises on your special day</li>
+                            <li><strong>Safety First:</strong> Designated captain, life vests provided, emergency contacts established</li>
+                            <li><strong>Weather Backup:</strong> Alternative covered venue options if weather doesn't cooperate</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== SLIDE 6: THE PACKAGE ==================== -->
+            <section>
+                <div class="content-section">
+                    <h2>The Complete Package</h2>
+                    <div class="text-center">
+                        <p class="price-tag">$636.71</p>
+                        <p style="font-size: 1.2rem; color: #0B7285; margin-bottom: 2rem;">
+                            Equivalent to <strong>$53-64 per person</strong> for 10-12 guests
+                        </p>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Items</th>
+                                <th>Quantity</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="3"><strong>Spirits</strong></td>
+                                <td>Casamigos Tequila</td>
+                                <td>2x 750ml</td>
+                                <td>$180</td>
+                            </tr>
+                            <tr>
+                                <td>Grey Goose Vodka</td>
+                                <td>1x 750ml</td>
+                                <td>$45</td>
+                            </tr>
+                            <tr>
+                                <td>Crown Royal Purple</td>
+                                <td>1x 750ml</td>
+                                <td>$40</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Energy</strong></td>
+                                <td>Red Bull Cases</td>
+                                <td>2x 24-pack</td>
+                                <td>$90</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Refreshments</strong></td>
+                                <td>White Claw Variety Pack</td>
+                                <td>24-pack</td>
+                                <td>$32</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Recovery</strong></td>
+                                <td>Liquid IV Pack</td>
+                                <td>1x 16-count</td>
+                                <td>$28</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Delivery</strong></td>
+                                <td>Direct to Dock Service</td>
+                                <td>Included</td>
+                                <td>$50</td>
+                            </tr>
+                            <tr style="background: #0B7285; color: white; font-weight: 700;">
+                                <td colspan="3"><strong>TOTAL VALUE</strong></td>
+                                <td><strong>$636.71</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="info-box" style="text-align: center;">
+                        <p style="margin: 0; font-size: 1.2rem; font-weight: 600; color: #0B7285;">
+                            <strong>📝 Customization Note:</strong> All selections can be adjusted based on group preferences. Want more tequila? Prefer different mixers? We'll customize your package.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== SLIDE 7: THE INVESTMENT ==================== -->
+            <section>
+                <div class="content-section">
+                    <h2>The Investment</h2>
+                    <p style="font-size: 1.3rem; margin-bottom: 2rem;">Let's break down what you're actually paying per person—and compare it to the alternatives. Spoiler: this is the smartest investment you'll make.</p>
+
+                    <div class="stat-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">$63.67</div>
+                            <div class="stat-label">10 Guests</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">$53.06</div>
+                            <div class="stat-label">12 Guests</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">$42.45</div>
+                            <div class="stat-label">15 Guests</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">$35.37</div>
+                            <div class="stat-label">18 Guests</div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 3rem; color: #0B7285;">Approach Comparison</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Approach</th>
+                                <th>Alcohol Cost</th>
+                                <th>Your Time</th>
+                                <th>Quality</th>
+                                <th>Total Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>DIY Shopping</strong></td>
+                                <td>$400-500</td>
+                                <td>8-10 hours</td>
+                                <td>Variable</td>
+                                <td>$500-600</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bar Tab</strong></td>
+                                <td>$800-1200</td>
+                                <td>2 hours</td>
+                                <td>Good</td>
+                                <td>$900-1300</td>
+                            </tr>
+                            <tr style="background: #F0F9FF; font-weight: 600;">
+                                <td><strong>Party On Delivery</strong></td>
+                                <td>$636.71</td>
+                                <td>30 minutes</td>
+                                <td><span style="color: #F59E0B;">Premium ⭐</span></td>
+                                <td><strong>$636.71</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="three-column" style="margin-top: 3rem;">
+                        <div class="feature-card">
+                            <h3>⏰ Save 5-8 Hours</h3>
+                            <p>No shopping, no heavy lifting, no coordination headaches.</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3>✨ Premium Guaranteed</h3>
+                            <p>Top-shelf brands only. No substitutions, no compromises.</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3>💳 Transparent Pricing</h3>
+                            <p>No surprise fees, no hidden charges, no regrets.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== SLIDE 8: THE TIMELINE ==================== -->
+            <section data-background="#F8F9FA">
+                <div class="content-section">
+                    <h2>6-Month Planning Roadmap</h2>
+                    <p style="font-size: 1.2rem; margin-bottom: 2rem;">Follow this proven timeline to ensure a flawless bachelor party. Each milestone is designed to reduce stress and maximize success.</p>
+
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker">Month<br>1</div>
+                            <div class="timeline-content">
+                                <h4>NOW: Review & Gather Interest</h4>
+                                <p>Share this deck with the crew. Gauge interest, discuss dates, establish budget expectations. Create initial group chat.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker">Month<br>2</div>
+                            <div class="timeline-content">
+                                <h4>Lock in Date & Book Boat</h4>
+                                <p>Finalize bachelor party date. Reserve boat rental for Lake Travis. Confirm marina docking location.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker">Month<br>3</div>
+                            <div class="timeline-content">
+                                <h4>Collect Deposits & Finalize Guest List</h4>
+                                <p>Collect $30/person deposits to confirm attendance. Set RSVP deadline. Final headcount for planning.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker">Month<br>4</div>
+                            <div class="timeline-content">
+                                <h4>Order Party On Delivery Package</h4>
+                                <p>Place order with Party On Delivery (72-hour advance booking required). Confirm delivery time slot and marina address.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker">Month<br>5</div>
+                            <div class="timeline-content">
+                                <h4>Send Reminders & Finalize Itinerary</h4>
+                                <p>Share final schedule with group. Book dinner reservations. Confirm transportation plans.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker">Week<br>Before</div>
+                            <div class="timeline-content">
+                                <h4>Final Confirmations</h4>
+                                <p>Confirm final headcount. Verify Party On Delivery window. Share detailed itinerary with what to bring list.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker">Day<br>Before</div>
+                            <div class="timeline-content">
+                                <h4>Captain Briefing & Prep</h4>
+                                <p>Weather check. Boat captain briefing. Prepare playlist, cameras, and emergency contacts.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker" style="background: #F59E0B;">EVENT<br>DAY</div>
+                            <div class="timeline-content" style="border-left-color: #F59E0B; background: #FFF7ED;">
+                                <h4>Execute the Plan!</h4>
+                                <p>2:00 PM arrival → 2:30 PM delivery → 3:00 PM set sail → 8:00 PM legendary memories created ✨</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="warning-box" style="text-align: center; background: linear-gradient(135deg, #0B7285 0%, #0A5F6F 100%); border-color: #F59E0B;">
+                        <p style="margin: 0; font-size: 1.4rem; color: white; font-weight: 700;">
+                            <strong>⚠️ Critical Milestone:</strong> Party On Delivery requires 72-hour advance booking. Order by <span style="color: #F59E0B; font-weight: 800;">[specific date]</span> to guarantee your delivery slot.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== SLIDE 9: THE LOGISTICS ==================== -->
+            <section>
+                <div class="content-section">
+                    <h2>Event Logistics</h2>
+                    <p style="font-size: 1.3rem; margin-bottom: 2rem;">Everything you need to know about when, where, and what to bring for the perfect Lake Travis bachelor party.</p>
+
+                    <div class="split-layout">
+                        <div>
+                            <h3 style="color: #0B7285; margin-bottom: 1.5rem;">📍 Event Details</h3>
+                            <table style="font-size: 1rem;">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Date</strong></td>
+                                        <td>TBD - Group Decision<br><em style="color: #F59E0B;">Target: [Weekend 3-4 months out]</em></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Location</strong></td>
+                                        <td>Lake Travis, Austin TX</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Marina</strong></td>
+                                        <td>[Specific dock/marina name TBD]</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Delivery Window</strong></td>
+                                        <td>2:00-2:30 PM (dockside)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Departure</strong></td>
+                                        <td>3:00 PM sharp (all aboard)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Return</strong></td>
+                                        <td>8:00 PM (sunset cruise complete)</td>
+                                    </tr>
+                                    <tr style="background: #FFF7ED;">
+                                        <td><strong>RSVP Deadline</strong></td>
+                                        <td><strong>[Date 4 weeks before event]</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div>
+                            <!-- Map placeholder - would embed Google Maps in production -->
+                            <div style="background: #E0F2F7; border-radius: 12px; padding: 3rem; text-align: center; border: 3px dashed #0B7285;">
+                                <h3 style="color: #0B7285; margin-bottom: 1rem;">🗺️ Lake Travis Map</h3>
+                                <p style="margin: 0; color: #1E3A5F;">Interactive map will be added once marina is confirmed</p>
+                                <p style="margin-top: 1rem; font-size: 0.9rem; color: #0B7285;">
+                                    <em>Coordinates: 30.3894° N, 97.9094° W</em>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="split-layout" style="margin-top: 3rem;">
+                        <div>
+                            <h3 style="color: #FF6B6B; margin-bottom: 1rem;">❌ What You Need to Bring</h3>
+                            <ul class="checklist">
+                                <li>Valid ID (21+ age verification required)</li>
+                                <li>Sunscreen & sunglasses</li>
+                                <li>Swimsuit & towel</li>
+                                <li>Phone/camera (waterproof case recommended)</li>
+                                <li>Cash for tips (captain, delivery driver)</li>
+                                <li>Good vibes & adventure mindset</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 style="color: #0B7285; margin-bottom: 1rem;">✅ What We Provide</h3>
+                            <ul class="checklist">
+                                <li>Premium alcohol (Casamigos, Grey Goose, Crown Royal)</li>
+                                <li>Mixers & energy drinks (Red Bull, White Claw)</li>
+                                <li>Recovery supplies (Liquid IV for next-day relief)</li>
+                                <li>Ice & coolers (delivered with spirits)</li>
+                                <li>Professional delivery coordination</li>
+                                <li>Dockside handoff (no lugging heavy bags)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== SLIDE 10: SOCIAL PROOF ==================== -->
+            <section data-background="#F0F9FF">
+                <div class="content-section">
+                    <h2>What Others Are Saying</h2>
+                    <p style="font-size: 1.2rem; margin-bottom: 2rem;">Don't just take our word for it—here's what real customers say about their Party On Delivery experience.</p>
+
+                    <div class="stat-grid" style="margin-bottom: 3rem;">
+                        <div class="stat-card">
+                            <div class="stat-number">500+</div>
+                            <div class="stat-label">Events Delivered</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">4.9/5</div>
+                            <div class="stat-label">Average Rating</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">98%</div>
+                            <div class="stat-label">On-Time Delivery</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">$150</div>
+                            <div class="stat-label">Avg Order Value</div>
+                        </div>
+                    </div>
+
+                    <div class="three-column">
+                        <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                            <div style="color: #F59E0B; font-size: 1.5rem; margin-bottom: 1rem;">⭐⭐⭐⭐⭐</div>
+                            <p style="font-style: italic; margin-bottom: 1rem;">"Seamless delivery to our boat party at Lake Travis. Premium brands arrived exactly on time, and the driver coordinated perfectly with the marina. Professional service from start to finish."</p>
+                            <p style="font-weight: 600; color: #0B7285; margin: 0;">— Jason M., Austin</p>
+                        </div>
+
+                        <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                            <div style="color: #F59E0B; font-size: 1.5rem; margin-bottom: 1rem;">⭐⭐⭐⭐⭐</div>
+                            <p style="font-style: italic; margin-bottom: 1rem;">"Made our bachelor party legendary. Instead of spending hours at the liquor store, we focused on enjoying the day. No stress, just great times with premium spirits."</p>
+                            <p style="font-weight: 600; color: #0B7285; margin: 0;">— Marcus T., Round Rock</p>
+                        </div>
+
+                        <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                            <div style="color: #F59E0B; font-size: 1.5rem; margin-bottom: 1rem;">⭐⭐⭐⭐⭐</div>
+                            <p style="font-style: italic; margin-bottom: 1rem;">"Best decision we made for the party. Quality spirits, fair pricing, and zero hassle. The delivery driver even helped us load everything onto the boat. Can't recommend enough."</p>
+                            <p style="font-weight: 600; color: #0B7285; margin: 0;">— David K., Cedar Park</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== SLIDE 11: THE ROI ==================== -->
+            <section>
+                <div class="content-section">
+                    <h2>The ROI: What You're Really Buying</h2>
+                    <p style="font-size: 1.3rem; margin-bottom: 2rem;">This isn't just an alcohol order—it's an investment in creating once-in-a-lifetime memories. Here's the true return on your $636.71 investment.</p>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">✨</div>
+                            <h3>Memories</h3>
+                            <p>Stories you'll tell for decades. The sunset toast. The perfect photo. The legendary night.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🤝</div>
+                            <h3>Connection</h3>
+                            <p>Quality time with your closest friends. No distractions, no stress, just presence.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">😌</div>
+                            <h3>Peace of Mind</h3>
+                            <p>Zero stress. Everything handled. You show up, we deliver, you celebrate.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📸</div>
+                            <h3>Experiences</h3>
+                            <p>Sunset on Lake Travis. Premium toasts. Swimming in crystal water. Legendary vibes.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">⏰</div>
+                            <h3>Time Saved</h3>
+                            <p>8+ hours of shopping and coordination returned to you. Priceless.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🎯</div>
+                            <h3>Professional Execution</h3>
+                            <p>No forgotten items. No compromises. No regrets. Just perfect planning.</p>
+                        </div>
+                    </div>
+
+                    <div style="background: #F8F9FA; padding: 3rem; border-radius: 12px; margin-top: 3rem; text-align: center; border: 3px solid #0B7285;">
+                        <h3 style="color: #0B7285; font-size: 2rem; margin-bottom: 1.5rem;">Let's Do The Math</h3>
+                        <div class="stat-grid">
+                            <div>
+                                <div style="font-size: 2.5rem; font-weight: 700; color: #0B7285;">$636.71</div>
+                                <div style="font-size: 1rem; color: #1E3A5F;">Total Investment</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 2.5rem; font-weight: 700; color: #0B7285;">÷ 12</div>
+                                <div style="font-size: 1rem; color: #1E3A5F;">Guests</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 2.5rem; font-weight: 700; color: #0B7285;">= $53</div>
+                                <div style="font-size: 1rem; color: #1E3A5F;">Per Person</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 2.5rem; font-weight: 700; color: #0B7285;">÷ 6hrs</div>
+                                <div style="font-size: 1rem; color: #1E3A5F;">Experience</div>
+                            </div>
+                        </div>
+                        <p style="font-size: 1.4rem; margin-top: 2rem; color: #F59E0B; font-weight: 600;">
+                            = $8.83 per hour of premium entertainment
+                        </p>
+
+                        <p style="font-size: 1.1rem; margin-top: 2rem; color: #1E3A5F;">
+                            Compare to: Concert tickets ($80-150) • Sporting events ($100-200) • Fine dining ($75-150)
+                        </p>
+                    </div>
+
+                    <blockquote class="premium-quote" style="text-align: center; border-left: none; border-top: 4px solid #F59E0B; border-radius: 12px; margin-top: 3rem;">
+                        "You can't put a price on the groom's last ride as a single man.<br>
+                        But if you could, <span style="color: #F59E0B; font-weight: 700;">it'd be $53.</span>"
+                    </blockquote>
+                </div>
+            </section>
+
+            <!-- ==================== SLIDE 12: CALL TO ACTION ==================== -->
+            <section data-background="#0B7285">
+                <div class="slide-content text-center">
+                    <h1 class="text-white" style="font-size: 4rem; margin-bottom: 2rem;">Ready to Commit?</h1>
+
+                    <div style="background: rgba(255,255,255,0.95); padding: 3rem; border-radius: 12px; max-width: 800px; margin: 0 auto 3rem;">
+                        <h3 style="color: #0B7285; margin-bottom: 2rem;">Next Steps (It's Easy)</h3>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-marker">1</div>
+                                <div class="timeline-content">
+                                    <h4>Reply with Your Interest</h4>
+                                    <p>IN / MAYBE / OUT — that's all we need to know right now</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-marker">2</div>
+                                <div class="timeline-content">
+                                    <h4>Join the Group Chat</h4>
+                                    <p>[WhatsApp/GroupMe link will be shared]</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-marker">3</div>
+                                <div class="timeline-content">
+                                    <h4>Mark Your Calendar</h4>
+                                    <p>[Proposed date] — block it out now</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-marker">4</div>
+                                <div class="timeline-content">
+                                    <h4>Submit Deposit</h4>
+                                    <p>$30 to [organizer Venmo] by [deadline]</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-marker">5</div>
+                                <div class="timeline-content">
+                                    <h4>Browse Full Selection</h4>
+                                    <p>Visit PartyOnDelivery.com to customize your package</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: #FFF7ED; padding: 1.5rem; border-radius: 8px; margin-top: 2rem; border-left: 4px solid #F59E0B;">
+                            <p style="margin: 0; font-weight: 600; color: #1E3A5F;">
+                                ⏰ Decision Deadline: <span style="color: #F59E0B;">[Date 2 weeks from now]</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255,255,255,0.1); padding: 2rem; border-radius: 12px; max-width: 600px; margin: 0 auto 3rem;">
+                        <h3 class="text-white" style="margin-bottom: 1rem;">Questions? Contact [Organizer Name]</h3>
+                        <p class="text-white" style="font-size: 1.2rem; margin: 0.5rem 0;">
+                            📧 [email@example.com]<br>
+                            📱 [(512) 555-0123]<br>
+                            💬 [Group chat link]
+                        </p>
+                    </div>
+
+                    <a href="https://partyondelivery.com" class="cta-button" target="_blank" style="font-size: 1.5rem; padding: 1.5rem 3rem;">
+                        Visit PartyOnDelivery.com
+                    </a>
+
+                    <p class="text-white" style="font-size: 1.5rem; margin-top: 3rem; font-family: 'Crimson Pro', serif; font-style: italic;">
+                        Premium Spirits. Professional Delivery. Legendary Nights.
+                    </p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js Core JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.js"></script>
+
+    <!-- Initialize Reveal.js -->
+    <script>
+        Reveal.initialize({
+            // Display settings
+            width: 1920,
+            height: 1080,
+            margin: 0.04,
+            minScale: 0.2,
+            maxScale: 2.0,
+
+            // Behavior
+            controls: true,
+            progress: true,
+            center: false,
+            hash: true,
+            transition: 'slide',
+            transitionSpeed: 'default',
+
+            // Responsive
+            respondToHashChanges: true,
+
+            // Navigation
+            keyboard: true,
+            overview: true,
+            touch: true,
+            loop: false,
+            rtl: false,
+            shuffle: false,
+            fragments: true,
+            fragmentInURL: true,
+            embedded: false,
+            help: true,
+            pause: true,
+            showNotes: false,
+
+            // Auto-slide (disabled)
+            autoSlide: 0,
+            autoSlideStoppable: true,
+
+            // Mouse wheel navigation
+            mouseWheel: false,
+
+            // Background
+            backgroundTransition: 'fade',
+
+            // Parallax
+            parallaxBackgroundImage: '',
+            parallaxBackgroundSize: '',
+            parallaxBackgroundHorizontal: null,
+            parallaxBackgroundVertical: null
+        });
+
+        // Remove scroll indicator after first scroll
+        Reveal.on('slidechanged', (event) => {
+            if (event.indexh > 0) {
+                const scrollIndicators = document.querySelectorAll('.scroll-indicator');
+                scrollIndicators.forEach(indicator => {
+                    indicator.style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

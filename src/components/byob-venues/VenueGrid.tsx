@@ -87,7 +87,7 @@ export default function VenueGrid({
             d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
           />
         </svg>
-        <h3 className="text-xl font-serif text-gray-900 mb-2">No venues found</h3>
+        <h3 className="text-xl font-heading text-gray-900 mb-2">No venues found</h3>
         <p className="text-gray-600">
           Try adjusting your filters or search query.
         </p>

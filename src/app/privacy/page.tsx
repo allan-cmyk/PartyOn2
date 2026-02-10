@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import React from 'react';
 import Link from 'next/link';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 
 export const metadata: Metadata = {
   title: 'Privacy Policy | Party On Delivery',
@@ -21,12 +21,12 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation forceScrolled={true} />
+      <Navigation forceScrolled={true} />
       
       {/* Header */}
       <section className="pt-32 pb-16 px-8 bg-gray-50">
         <div className="hero-fade-in max-w-4xl mx-auto text-center">
-          <h1 className="font-serif text-5xl text-gray-900 mb-4 tracking-[0.1em]">
+          <h1 className="font-heading text-5xl text-gray-900 mb-4 tracking-[0.1em]">
             Privacy Policy
           </h1>
           <p className="text-gray-600">Last updated: January 2024</p>
@@ -44,8 +44,8 @@ export default function PrivacyPage() {
             </div>
 
             <div>
-              <h2 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">Information We Collect</h2>
-              <h3 className="font-serif text-xl text-gray-800 mb-3">Personal Information</h3>
+              <h2 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">Information We Collect</h2>
+              <h3 className="font-heading text-xl text-gray-800 mb-3">Personal Information</h3>
               <p className="text-gray-600 leading-relaxed mb-4">
                 We collect information you provide directly to us, including:
               </p>
@@ -58,7 +58,7 @@ export default function PrivacyPage() {
                 <li>Communications with us</li>
               </ul>
 
-              <h3 className="font-serif text-xl text-gray-800 mb-3">Automatically Collected Information</h3>
+              <h3 className="font-heading text-xl text-gray-800 mb-3">Automatically Collected Information</h3>
               <p className="text-gray-600 leading-relaxed mb-4">
                 When you use our website, we may automatically collect:
               </p>
@@ -71,7 +71,7 @@ export default function PrivacyPage() {
             </div>
 
             <div>
-              <h2 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">How We Use Your Information</h2>
+              <h2 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">How We Use Your Information</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
                 We use the information we collect to:
               </p>
@@ -87,7 +87,7 @@ export default function PrivacyPage() {
             </div>
 
             <div>
-              <h2 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">Information Sharing</h2>
+              <h2 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">Information Sharing</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
                 We do not sell, trade, or rent your personal information. We may share your information with:
               </p>
@@ -100,14 +100,14 @@ export default function PrivacyPage() {
             </div>
 
             <div>
-              <h2 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">Data Security</h2>
+              <h2 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">Data Security</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
                 We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the internet is 100% secure.
               </p>
             </div>
 
             <div>
-              <h2 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">Your Rights</h2>
+              <h2 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">Your Rights</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
                 You have the right to:
               </p>
@@ -121,28 +121,28 @@ export default function PrivacyPage() {
             </div>
 
             <div>
-              <h2 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">Cookies</h2>
+              <h2 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">Cookies</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
                 We use cookies and similar tracking technologies to enhance your experience on our website. You can control cookies through your browser settings, but disabling cookies may limit your ability to use certain features of our service.
               </p>
             </div>
 
             <div>
-              <h2 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">Children&apos;s Privacy</h2>
+              <h2 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">Children&apos;s Privacy</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
                 Our services are not intended for individuals under 21 years of age. We do not knowingly collect personal information from anyone under 21. If we learn we have collected information from someone under 21, we will delete that information.
               </p>
             </div>
 
             <div>
-              <h2 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">Changes to This Policy</h2>
+              <h2 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">Changes to This Policy</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
                 We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the &quot;Last updated&quot; date.
               </p>
             </div>
 
             <div>
-              <h2 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">Contact Us</h2>
+              <h2 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">Contact Us</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
                 If you have questions about this Privacy Policy or our privacy practices, please contact us at:
               </p>
@@ -174,19 +174,19 @@ export default function PrivacyPage() {
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SERVICES</h4>
               <ul className="space-y-2">
-                <li><Link href="/weddings" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Weddings</Link></li>
-                <li><Link href="/boat-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Boat Parties</Link></li>
-                <li><Link href="/bach-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Celebrations</Link></li>
-                <li><Link href="/corporate" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Corporate</Link></li>
+                <li><Link href="/weddings" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Weddings</Link></li>
+                <li><Link href="/boat-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Boat Parties</Link></li>
+                <li><Link href="/bach-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Celebrations</Link></li>
+                <li><Link href="/corporate" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Corporate</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">INFORMATION</h4>
               <ul className="space-y-2">
-                <li><Link href="/about" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">About Us</Link></li>
-                <li><Link href="/faqs" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">FAQs</Link></li>
-                <li><Link href="/terms" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Terms</Link></li>
-                <li><Link href="/privacy" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Privacy</Link></li>
+                <li><Link href="/about" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">About Us</Link></li>
+                <li><Link href="/faqs" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">FAQs</Link></li>
+                <li><Link href="/terms" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Terms</Link></li>
+                <li><Link href="/privacy" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Privacy</Link></li>
               </ul>
             </div>
             <div>
@@ -201,8 +201,8 @@ export default function PrivacyPage() {
           <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">© 2024 PartyOn Delivery. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="/terms" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Terms</Link>
-              <Link href="/privacy" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Privacy</Link>
+              <Link href="/terms" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Terms</Link>
+              <Link href="/privacy" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Privacy</Link>
             </div>
           </div>
         </div>

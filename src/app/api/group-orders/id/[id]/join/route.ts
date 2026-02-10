@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { JoinGroupOrderInput } from '@/lib/group-orders/types'
 import { db } from '@/lib/group-orders/database'
 import { setupGroupOrderCart } from '@/lib/group-orders/free-delivery'
+import { prisma } from '@/lib/prisma'
 
 export async function POST(
   request: NextRequest,
@@ -10,6 +11,18 @@ export async function POST(
   try {
     const { id } = await params
     const body: JoinGroupOrderInput = await request.json()
+
+    // Validate customerId exists in DB if provided, otherwise drop it
+    let validCustomerId: string | undefined = undefined
+    if (body.customerId) {
+      const customer = await prisma.customer.findUnique({
+        where: { id: body.customerId },
+        select: { id: true },
+      })
+      if (customer) {
+        validCustomerId = customer.id
+      }
+    }
 
     // Find group order by ID
     const groupOrder = await db.getOrderById(id)
@@ -33,7 +46,7 @@ export async function POST(
     const participant = {
       id: `participant_${Date.now()}`,
       groupOrderId: id,
-      customerId: body.customerId,
+      customerId: validCustomerId,
       guestName: body.guestName,
       guestEmail: body.guestEmail,
       cartId: body.cartId,

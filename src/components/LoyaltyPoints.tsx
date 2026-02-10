@@ -31,9 +31,9 @@ const TIER_BENEFITS = {
   },
   gold: {
     name: 'Gold Member',
-    color: 'text-gold-600',
-    bgColor: 'bg-gold-50',
-    borderColor: 'border-gold-200',
+    color: 'text-brand-yellow',
+    bgColor: 'bg-yellow-50',
+    borderColor: 'border-yellow-200',
     benefits: ['Earn 2 points per $1 spent', '10% discount on all orders', 'Free delivery on orders over $100', 'Priority customer service', 'Birthday surprise'],
     nextTier: 'Platinum',
     nextTierSpend: 5000
@@ -84,7 +84,7 @@ export default function LoyaltyPoints({ points, tier, lifetimeSpent }: LoyaltyPo
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <motion.div 
-                className="bg-gold-600 h-2 rounded-full"
+                className="bg-brand-yellow h-2 rounded-full"
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.min((lifetimeSpent / tierInfo.nextTierSpend) * 100, 100)}%` }}
                 transition={{ duration: 1, ease: "easeOut" }}
@@ -103,7 +103,7 @@ export default function LoyaltyPoints({ points, tier, lifetimeSpent }: LoyaltyPo
         <ul className="space-y-2">
           {tierInfo.benefits.map((benefit, index) => (
             <li key={index} className="flex items-start">
-              <svg className="w-5 h-5 text-gold-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-5 h-5 text-brand-yellow mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
               <span className="text-gray-700">{benefit}</span>

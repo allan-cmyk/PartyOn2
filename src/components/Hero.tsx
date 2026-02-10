@@ -45,20 +45,20 @@ export default function Hero({
 
       {/* Subtle animated accents */}
       <div className="absolute inset-0 z-10 opacity-50">
-        <div className="absolute top-1/4 -left-10 w-64 h-64 bg-primary-500/20 rounded-full blur-[100px]" />
-        <div className="absolute bottom-1/4 -right-10 w-64 h-64 bg-secondary-500/20 rounded-full blur-[100px]" />
+        <div className="absolute top-1/4 -left-10 w-64 h-64 bg-brand-blue/20 rounded-full blur-[100px]" />
+        <div className="absolute bottom-1/4 -right-10 w-64 h-64 bg-brand-blue/20 rounded-full blur-[100px]" />
       </div>
 
       {/* Content - More compact */}
       <div className="container-custom relative z-20 text-center text-white">
         <div className="max-w-3xl mx-auto space-y-4 animate-fade-up">
           {subtitle && (
-            <p className="font-sans font-medium text-accent-500 uppercase tracking-widest text-xs md:text-sm">
+            <p className="font-sans font-medium text-brand-yellow uppercase tracking-widest text-xs md:text-sm">
               {subtitle}
             </p>
           )}
           
-          <h1 className="font-display font-bold text-4xl md:text-5xl lg:text-6xl leading-tight text-shadow">
+          <h1 className="font-heading font-bold text-4xl md:text-5xl lg:text-6xl leading-tight text-shadow">
             {title}
           </h1>
           

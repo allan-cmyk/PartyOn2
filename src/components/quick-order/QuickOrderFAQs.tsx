@@ -52,10 +52,10 @@ export default function QuickOrderFAQs(): ReactElement {
   return (
     <section className="bg-white py-12 md:py-16">
       <div className="max-w-3xl mx-auto px-4">
-        <h2 className="font-serif text-2xl md:text-3xl text-center text-gray-900 tracking-[0.1em] mb-2">
+        <h2 className="font-heading text-2xl md:text-3xl text-center text-gray-900 tracking-[0.1em] mb-2">
           FREQUENTLY ASKED QUESTIONS
         </h2>
-        <div className="w-16 h-px bg-gold-400 mx-auto mb-10" />
+        <div className="w-16 h-px bg-brand-yellow mx-auto mb-10" />
 
         <div className="space-y-3">
           {FAQS.map((faq, index) => (
@@ -72,7 +72,7 @@ export default function QuickOrderFAQs(): ReactElement {
                   {faq.question}
                 </span>
                 <svg
-                  className={`w-5 h-5 text-gold-500 flex-shrink-0 transition-transform duration-200 ${
+                  className={`w-5 h-5 text-yellow-500 flex-shrink-0 transition-transform duration-200 ${
                     openIndex === index ? 'rotate-180' : ''
                   }`}
                   fill="none"

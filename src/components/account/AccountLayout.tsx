@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useCustomerContext } from '@/contexts/CustomerContext'
-import OldFashionedNavigation from '@/components/OldFashionedNavigation'
+import Navigation from "@/components/Navigation"
 import { useState, useRef, ChangeEvent } from 'react'
 
 interface AccountLayoutProps {
@@ -15,7 +15,7 @@ interface AccountLayoutProps {
 const MEMBERSHIP_TIERS = [
   { name: 'Bronze', min: 0, max: 499, color: 'from-orange-400 to-orange-600', textColor: 'text-orange-600', bgColor: 'bg-orange-100' },
   { name: 'Silver', min: 500, max: 999, color: 'from-gray-400 to-gray-600', textColor: 'text-gray-600', bgColor: 'bg-gray-100' },
-  { name: 'Gold', min: 1000, max: 2499, color: 'from-gold-400 to-gold-600', textColor: 'text-gold-600', bgColor: 'bg-gold-100' },
+  { name: 'Gold', min: 1000, max: 2499, color: 'from-brand-yellow to-brand-yellow', textColor: 'text-brand-yellow', bgColor: 'bg-yellow-100' },
   { name: 'Platinum', min: 2500, max: 4999, color: 'from-purple-400 to-purple-600', textColor: 'text-purple-600', bgColor: 'bg-purple-100' },
   { name: 'Diamond', min: 5000, max: Infinity, color: 'from-blue-400 to-blue-600', textColor: 'text-blue-600', bgColor: 'bg-blue-100' }
 ]
@@ -37,8 +37,8 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
         </svg>
       )
     },
-    { 
-      href: '/account/orders', 
+    {
+      href: '/account/orders',
       label: 'Order History',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -46,7 +46,16 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
         </svg>
       )
     },
-    { 
+    {
+      href: '/account/group-orders',
+      label: 'Group Orders',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      )
+    },
+    {
       href: '/account/addresses', 
       label: 'Addresses',
       icon: (
@@ -68,7 +77,7 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
     }
   ]
   
-  const getInitials = (firstName?: string, lastName?: string) => {
+  const getInitials = (firstName?: string | null, lastName?: string | null) => {
     const f = firstName?.charAt(0) || ''
     const l = lastName?.charAt(0) || ''
     return (f + l).toUpperCase() || 'U'
@@ -80,10 +89,8 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
     return `Member since ${date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`
   }
 
-  // Calculate total spent and membership tier
-  const totalSpent = customer?.orders?.edges?.reduce((total, { node }) => {
-    return total + parseFloat(node.currentTotalPrice.amount)
-  }, 0) || 0
+  // TODO: Fetch order totals from /api/v1/orders with customer ID
+  const totalSpent = 0
 
   const getCurrentTier = () => {
     return MEMBERSHIP_TIERS.find(tier => totalSpent >= tier.min && totalSpent <= tier.max) || MEMBERSHIP_TIERS[0]
@@ -154,7 +161,7 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
   return (
     <>
       {/* Include main navigation */}
-      <OldFashionedNavigation />
+      <Navigation />
       
       <div className="min-h-screen bg-white">
         {/* Hero Section with Dark Background */}
@@ -180,10 +187,10 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
                     <img 
                       src={profileImage} 
                       alt="Profile" 
-                      className="w-24 h-24 rounded-full object-cover border-4 border-gold-600/30 shadow-2xl"
+                      className="w-24 h-24 rounded-full object-cover border-4 border-brand-yellow/30 shadow-2xl"
                     />
                   ) : (
-                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-gold-500 to-gold-700 flex items-center justify-center text-white text-3xl font-serif shadow-2xl border-4 border-gold-600/30">
+                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center text-white text-3xl font-heading shadow-2xl border-4 border-brand-yellow/30">
                       {getInitials(customer?.firstName, customer?.lastName)}
                     </div>
                   )}
@@ -208,14 +215,14 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
                 
                 {/* User Info */}
                 <div>
-                  <h1 className="text-3xl font-serif text-white tracking-[0.1em]">
+                  <h1 className="text-3xl font-heading text-white tracking-[0.1em]">
                     {customer?.firstName || customer?.lastName 
                       ? `${customer.firstName || ''} ${customer.lastName || ''}`.trim()
                       : 'Welcome Back'}
                   </h1>
                   <p className="text-gray-300 mt-1">{customer?.email}</p>
                   <div className="flex items-center space-x-3 mt-3">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gold-600/20 text-gold-400 border border-gold-600/30 tracking-wider">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-brand-yellow/20 text-brand-yellow border border-brand-yellow/30 tracking-wider">
                       {currentTier.name.toUpperCase()} MEMBER
                     </span>
                     <span className="text-xs text-gray-400 tracking-wider">{getMemberSince()}</span>
@@ -226,16 +233,16 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
               {/* Quick Stats */}
               <div className="hidden md:flex items-center space-x-12">
                 <div className="text-center">
-                  <p className="text-3xl font-bold text-white">{customer?.orders?.edges?.length || 0}</p>
-                  <p className="text-xs text-gray-400 tracking-[0.15em] mt-1">ORDERS</p>
+                  <p className="text-3xl font-bold text-white">0</p>
+                  <p className="text-xs text-gray-400 tracking-[0.08em] mt-1">ORDERS</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-3xl font-bold text-gold-400">{currentTier.name}</p>
-                  <p className="text-xs text-gray-400 tracking-[0.15em] mt-1">TIER</p>
+                  <p className="text-3xl font-bold text-brand-yellow">{currentTier.name}</p>
+                  <p className="text-xs text-gray-400 tracking-[0.08em] mt-1">TIER</p>
                 </div>
                 <div className="text-center">
                   <p className="text-3xl font-bold text-white">{savedAddressCount}</p>
-                  <p className="text-xs text-gray-400 tracking-[0.15em] mt-1">ADDRESSES</p>
+                  <p className="text-xs text-gray-400 tracking-[0.08em] mt-1">ADDRESSES</p>
                 </div>
               </div>
             </div>
@@ -245,11 +252,11 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
               <div className="mt-8">
                 <div className="flex items-center justify-between text-xs text-gray-300 mb-2">
                   <span>{currentTier.name} Member</span>
-                  <span className="text-gold-400">${(nextTier.min - totalSpent).toFixed(0)} to {nextTier.name}</span>
+                  <span className="text-brand-yellow">${(nextTier.min - totalSpent).toFixed(0)} to {nextTier.name}</span>
                 </div>
                 <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
                   <div 
-                    className="h-full bg-gradient-to-r from-gold-400 to-gold-600 transition-all duration-500"
+                    className="h-full bg-gradient-to-r from-brand-yellow to-brand-yellow transition-all duration-500"
                     style={{ width: `${progressToNextTier}%` }}
                   />
                 </div>
@@ -275,7 +282,7 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
                     href={item.href}
                     className={`flex items-center space-x-2 py-4 px-1 border-b-2 text-sm font-medium transition-colors ${
                       isActive
-                        ? 'border-gold-600 text-gold-600'
+                        ? 'border-brand-yellow text-brand-yellow'
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }`}
                   >
@@ -292,7 +299,7 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
         <div className="bg-gray-50 min-h-[60vh]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             {title && (
-              <h2 className="text-3xl font-serif text-gray-900 mb-8 tracking-[0.1em]">
+              <h2 className="text-3xl font-heading text-gray-900 mb-8 tracking-[0.1em]">
                 {title}
               </h2>
             )}

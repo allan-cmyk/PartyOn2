@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 
 export default function ServicesPage() {
   const services = [
@@ -82,13 +82,13 @@ export default function ServicesPage() {
 
   return (
     <>
-      <OldFashionedNavigation />
+      <Navigation />
       
       {/* Hero Section */}
       <section className="relative min-h-[40vh] pt-32 md:pt-24 bg-gradient-to-br from-slate-900 to-slate-700 flex items-center justify-center">
         <div className="text-center text-white">
-          <h1 className="font-serif text-5xl md:text-7xl tracking-[0.15em] mb-4">SERVICES</h1>
-          <p className="text-xl tracking-[0.1em] text-gold-400">Premium Alcohol Delivery & Event Solutions</p>
+          <h1 className="font-heading text-5xl md:text-7xl tracking-[0.08em] mb-4">SERVICES</h1>
+          <p className="text-xl tracking-[0.1em] text-brand-yellow">Premium Alcohol Delivery & Event Solutions</p>
         </div>
       </section>
 
@@ -100,14 +100,14 @@ export default function ServicesPage() {
               <Link 
                 key={service.href}
                 href={service.href}
-                className="group bg-white border border-gray-200 rounded-lg p-6 hover:border-gold-600 hover:shadow-lg transition-all"
+                className="group bg-white border border-gray-200 rounded-lg p-6 hover:border-brand-yellow hover:shadow-lg transition-all"
               >
                 <div className="flex items-start space-x-4">
-                  <div className="text-gold-600 group-hover:text-gold-700 transition-colors">
+                  <div className="text-brand-yellow group-hover:text-yellow-600 transition-colors">
                     {service.icon}
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.05em] group-hover:text-gold-600 transition-colors">
+                    <h3 className="font-heading text-xl text-gray-900 mb-2 tracking-[0.05em] group-hover:text-brand-yellow transition-colors">
                       {service.title}
                     </h3>
                     <p className="text-gray-600 text-sm leading-relaxed">
@@ -122,9 +122,9 @@ export default function ServicesPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-gold-50 py-16 px-4">
+      <section className="bg-yellow-50 py-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+          <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
             Need Something Special?
           </h2>
           <p className="text-gray-600 mb-8 text-lg">
@@ -132,12 +132,12 @@ export default function ServicesPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/order">
-              <button className="px-8 py-3 bg-gold-600 text-gray-900 tracking-[0.1em] hover:bg-gold-700 transition-colors">
+              <button className="px-8 py-3 bg-brand-yellow text-gray-900 tracking-[0.1em] hover:bg-yellow-600 transition-colors">
                 BOOK NOW
               </button>
             </Link>
             <Link href="/contact">
-              <button className="px-8 py-3 border-2 border-gold-600 text-gold-600 tracking-[0.1em] hover:bg-gold-600 hover:text-gray-900 transition-colors">
+              <button className="px-8 py-3 border-2 border-brand-yellow text-brand-yellow tracking-[0.1em] hover:bg-brand-yellow hover:text-gray-900 transition-colors">
                 CONTACT US
               </button>
             </Link>

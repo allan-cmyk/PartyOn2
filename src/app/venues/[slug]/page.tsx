@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import venuesData from '@/data/byob-venues.json';
@@ -13,7 +13,7 @@ import { getAreaName, getPriceLabel } from '@/lib/byob-venues/types';
 
 export default function VenueLandingPage() {
   const params = useParams();
-  const slug = params.slug as string;
+  const slug = params?.slug as string;
   const [venue, setVenue] = useState<BYOBVenue | null>(null);
 
   useEffect(() => {
@@ -25,13 +25,13 @@ export default function VenueLandingPage() {
   if (!venue) {
     return (
       <div className="bg-white min-h-screen">
-        <OldFashionedNavigation />
+        <Navigation />
         <div className="pt-32 pb-16 px-8 text-center">
-          <h1 className="font-serif text-3xl text-gray-900 mb-4">Venue Not Found</h1>
+          <h1 className="font-heading text-3xl text-gray-900 mb-4">Venue Not Found</h1>
           <p className="text-gray-600 mb-8">This venue page doesn&apos;t exist or is no longer a partner.</p>
           <Link
             href="/austin-byob-venues"
-            className="inline-block px-6 py-3 bg-gold-500 text-gray-900 font-medium rounded hover:bg-gold-400 transition-colors"
+            className="inline-block px-6 py-3 bg-yellow-500 text-gray-900 font-medium rounded hover:bg-brand-yellow transition-colors"
           >
             Browse All Venues
           </Link>
@@ -45,7 +45,7 @@ export default function VenueLandingPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation />
+      <Navigation />
 
       {/* Hero Section */}
       <section className="relative h-[50vh] min-h-[400px] mt-24 flex items-center">
@@ -66,7 +66,7 @@ export default function VenueLandingPage() {
             {/* Partner Badge */}
             <div className="flex items-center gap-3 mb-4">
               <span className={`inline-flex items-center gap-1.5 px-4 py-2 text-sm font-bold tracking-wide rounded-full ${
-                isPremier ? 'bg-gold-500 text-gray-900' : 'bg-gold-400 text-gray-900'
+                isPremier ? 'bg-yellow-500 text-gray-900' : 'bg-brand-yellow text-gray-900'
               }`}>
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -74,13 +74,13 @@ export default function VenueLandingPage() {
                 FREE ALCOHOL DELIVERY
               </span>
               {isPremier && (
-                <span className="px-3 py-1 bg-gray-900 text-gold-400 text-xs font-bold tracking-wider rounded">
+                <span className="px-3 py-1 bg-gray-900 text-brand-yellow text-xs font-bold tracking-wider rounded">
                   PREMIER PARTNER
                 </span>
               )}
             </div>
 
-            <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl mb-4 tracking-[0.1em] max-w-4xl">
+            <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl mb-4 tracking-[0.1em] max-w-4xl">
               {venue.name}
             </h1>
             <p className="text-lg sm:text-xl max-w-2xl leading-relaxed text-gray-200 mb-6">
@@ -114,7 +114,7 @@ export default function VenueLandingPage() {
       </section>
 
       {/* Free Delivery Banner */}
-      <section className="bg-gold-500 py-4">
+      <section className="bg-yellow-500 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -147,7 +147,7 @@ export default function VenueLandingPage() {
               {/* BYOB Policy */}
               <ScrollRevealCSS duration={600} y={20}>
                 <div>
-                  <h2 className="font-serif text-2xl text-gray-900 tracking-[0.1em] mb-4">
+                  <h2 className="font-heading text-2xl text-gray-900 tracking-[0.1em] mb-4">
                     BYOB Policy
                   </h2>
                   <div className="bg-green-50 border border-green-200 rounded-lg p-6">
@@ -169,7 +169,7 @@ export default function VenueLandingPage() {
               {/* Event Types */}
               <ScrollRevealCSS duration={600} y={20} delay={100}>
                 <div>
-                  <h2 className="font-serif text-2xl text-gray-900 tracking-[0.1em] mb-4">
+                  <h2 className="font-heading text-2xl text-gray-900 tracking-[0.1em] mb-4">
                     Perfect For
                   </h2>
                   <div className="flex flex-wrap gap-3">
@@ -192,13 +192,13 @@ export default function VenueLandingPage() {
               {/* How It Works */}
               <ScrollRevealCSS duration={600} y={20} delay={200}>
                 <div>
-                  <h2 className="font-serif text-2xl text-gray-900 tracking-[0.1em] mb-6">
+                  <h2 className="font-heading text-2xl text-gray-900 tracking-[0.1em] mb-6">
                     How Free Delivery Works
                   </h2>
                   <div className="grid sm:grid-cols-3 gap-6">
                     <div className="text-center">
-                      <div className="w-12 h-12 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span className="text-xl font-bold text-gold-700">1</span>
+                      <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span className="text-xl font-bold text-yellow-600">1</span>
                       </div>
                       <h3 className="font-medium text-gray-900 mb-2">Browse & Order</h3>
                       <p className="text-sm text-gray-600">
@@ -206,8 +206,8 @@ export default function VenueLandingPage() {
                       </p>
                     </div>
                     <div className="text-center">
-                      <div className="w-12 h-12 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span className="text-xl font-bold text-gold-700">2</span>
+                      <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span className="text-xl font-bold text-yellow-600">2</span>
                       </div>
                       <h3 className="font-medium text-gray-900 mb-2">Schedule Delivery</h3>
                       <p className="text-sm text-gray-600">
@@ -215,8 +215,8 @@ export default function VenueLandingPage() {
                       </p>
                     </div>
                     <div className="text-center">
-                      <div className="w-12 h-12 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span className="text-xl font-bold text-gold-700">3</span>
+                      <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span className="text-xl font-bold text-yellow-600">3</span>
                       </div>
                       <h3 className="font-medium text-gray-900 mb-2">Enjoy Your Event</h3>
                       <p className="text-sm text-gray-600">
@@ -231,7 +231,7 @@ export default function VenueLandingPage() {
               {venue.website && (
                 <ScrollRevealCSS duration={600} y={20} delay={300}>
                   <div>
-                    <h2 className="font-serif text-2xl text-gray-900 tracking-[0.1em] mb-4">
+                    <h2 className="font-heading text-2xl text-gray-900 tracking-[0.1em] mb-4">
                       Book This Venue
                     </h2>
                     <p className="text-gray-600 mb-4">
@@ -258,7 +258,7 @@ export default function VenueLandingPage() {
               <div className="sticky top-32">
                 <ScrollRevealCSS duration={600} y={20}>
                   <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-                    <h3 className="font-serif text-xl text-gray-900 mb-4">
+                    <h3 className="font-heading text-xl text-gray-900 mb-4">
                       Order Alcohol for Your Event
                     </h3>
                     <ul className="space-y-3 mb-6">
@@ -290,21 +290,21 @@ export default function VenueLandingPage() {
 
                     <Link
                       href="/products"
-                      className="block w-full text-center px-6 py-4 bg-gold-500 text-gray-900 font-medium rounded-lg hover:bg-gold-400 transition-colors mb-4"
+                      className="block w-full text-center px-6 py-4 bg-yellow-500 text-gray-900 font-medium rounded-lg hover:bg-brand-yellow transition-colors mb-4"
                     >
                       Browse Our Selection
                     </Link>
 
                     <Link
                       href="/weddings/order"
-                      className="block w-full text-center px-6 py-3 border border-gold-400 text-gold-700 font-medium rounded-lg hover:bg-gold-50 transition-colors"
+                      className="block w-full text-center px-6 py-3 border border-brand-yellow text-yellow-600 font-medium rounded-lg hover:bg-yellow-50 transition-colors"
                     >
                       Use Drink Calculator
                     </Link>
 
                     <p className="text-xs text-gray-500 text-center mt-4">
                       Questions? Call us at{' '}
-                      <a href="tel:7373719700" className="text-gold-600 hover:underline">
+                      <a href="tel:7373719700" className="text-brand-yellow hover:underline">
                         737.371.9700
                       </a>
                     </p>
@@ -321,7 +321,7 @@ export default function VenueLandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
           <ScrollRevealCSS duration={600} y={20}>
             <div className="text-center mb-10">
-              <h2 className="font-serif text-3xl text-gray-900 tracking-[0.1em] mb-4">
+              <h2 className="font-heading text-3xl text-gray-900 tracking-[0.1em] mb-4">
                 More Partner Venues
               </h2>
               <p className="text-gray-600">
@@ -348,7 +348,7 @@ export default function VenueLandingPage() {
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-8">
           <ScrollRevealCSS duration={600} y={20}>
-            <h2 className="font-serif text-2xl text-gray-900 tracking-[0.1em] mb-6">
+            <h2 className="font-heading text-2xl text-gray-900 tracking-[0.1em] mb-6">
               About {venue.name}
             </h2>
             <div className="prose prose-lg text-gray-600 max-w-none">

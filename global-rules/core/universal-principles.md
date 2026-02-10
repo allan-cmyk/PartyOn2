@@ -50,6 +50,53 @@ Every piece of knowledge should have a single, unambiguous, authoritative repres
 - **Authentication**: Follow framework-specific security best practices
 - **Dependencies**: Regularly update and audit third-party packages
 
+## 🛡️ File Operation Safety
+
+### CRITICAL: Deletion Guardrails
+
+**NEVER delete files or folders outside the current working project directory without EXPLICIT user permission.**
+
+This is a non-negotiable safety rule. Before ANY deletion operation:
+
+1. **Scope Restriction**: Only delete files within the project's working directory
+2. **Explicit Confirmation Required**: For ANY deletion outside the project folder, MUST ask user for explicit permission first
+3. **List Before Delete**: Always show the user exactly what files/folders will be deleted before executing
+4. **No Silent Deletions**: Never delete files as a side effect of another operation without informing the user
+
+### Deletion Safety Checklist
+
+Before executing any delete operation:
+- [ ] Is the file/folder WITHIN the current project directory?
+- [ ] If outside project directory → **STOP and ask user for explicit permission**
+- [ ] Have you listed all files that will be affected?
+- [ ] Has the user confirmed they want this deletion?
+- [ ] Is there a backup or can the deletion be undone?
+
+### Safe File Operations
+
+```bash
+# ✅ SAFE: Deleting within project directory
+rm src/components/OldComponent.tsx
+rm -rf node_modules/  # Within project
+
+# ⚠️ REQUIRES EXPLICIT PERMISSION: Outside project directory
+# MUST ask user first before executing:
+# "I need to delete files outside the project directory at [path].
+#  Do you want me to proceed? (yes/no)"
+
+# ❌ FORBIDDEN: Silent deletion outside project
+rm -rf ~/some-other-folder  # NEVER do this without asking
+rm /usr/local/something     # NEVER do this without asking
+```
+
+### Bulk Operations
+
+For operations affecting multiple files:
+- **Always list** the files that will be affected first
+- **Ask for confirmation** before proceeding with bulk deletions
+- **Provide count**: "This will delete X files. Proceed?"
+- **Prefer selective deletion** over wildcard patterns when possible
+
 ## 🧪 Testing Standards
 
 ### Test Coverage

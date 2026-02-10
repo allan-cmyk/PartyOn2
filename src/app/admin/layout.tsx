@@ -32,15 +32,12 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
     }
   }, []);
 
-  // Redirect employees away from admin-only pages
+  // Redirect employees to ops portal (admin is admin-only)
   useEffect(() => {
     if (isAuthenticated && role === 'employee') {
-      const adminOnlyPaths = ['/admin/dashboard', '/admin/experiments'];
-      if (adminOnlyPaths.some(path => pathname.startsWith(path))) {
-        router.push('/admin/orders');
-      }
+      router.push('/ops/orders');
     }
-  }, [isAuthenticated, role, pathname, router]);
+  }, [isAuthenticated, role, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,7 +61,7 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
 
         // Redirect based on role
         if (data.role === 'employee') {
-          router.push('/admin/orders');
+          router.push('/ops/orders');
         } else if (pathname === '/admin') {
           router.push('/admin/dashboard');
         }
@@ -120,7 +117,7 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                 placeholder="Enter your password"
                 required
                 autoFocus
@@ -144,16 +141,17 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
     );
   }
 
-  // Navigation items based on role
+  // Navigation items (admin-only strategic/management features)
   const navItems = [
-    { href: '/admin/orders', label: 'Orders', roles: ['admin', 'employee'] },
-    { href: '/admin/dashboard', label: 'Analytics', roles: ['admin'] },
-    { href: '/admin/experiments', label: 'Experiments', roles: ['admin'] },
+    { href: '/admin/dashboard', label: 'Analytics' },
+    { href: '/admin/customers', label: 'Customers' },
+    { href: '/admin/emails', label: 'Emails' },
+    { href: '/admin/sync', label: 'Sync' },
+    { href: '/admin/reports', label: 'Reports' },
+    { href: '/admin/experiments', label: 'Experiments' },
+    { href: '/admin/promotions', label: 'Promotions' },
+    { href: '/admin/settings', label: 'Settings' },
   ];
-
-  const visibleNavItems = navItems.filter(item =>
-    role && item.roles.includes(role)
-  );
 
   // Authenticated - render with navigation
   return (
@@ -163,16 +161,16 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14">
             <div className="flex items-center gap-8">
-              <span className="font-semibold text-gold-400">
+              <span className="font-semibold text-brand-yellow">
                 Party On Staff
               </span>
               <div className="flex gap-1">
-                {visibleNavItems.map(item => (
+                {navItems.map(item => (
                   <Link
                     key={item.href}
                     href={item.href}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                      pathname.startsWith(item.href)
+                      pathname?.startsWith(item.href)
                         ? 'bg-gray-800 text-white'
                         : 'text-gray-300 hover:bg-gray-800 hover:text-white'
                     }`}
@@ -183,9 +181,12 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-xs text-gray-400 uppercase tracking-wider">
-                {role === 'admin' ? 'Admin' : 'Employee'}
-              </span>
+              <Link
+                href="/ops/inventory"
+                className="text-sm text-gray-400 hover:text-white transition-colors"
+              >
+                → Ops Portal
+              </Link>
               <button
                 onClick={handleLogout}
                 className="text-sm text-gray-400 hover:text-white transition-colors"

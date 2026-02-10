@@ -4,32 +4,32 @@ import React, { useState, useEffect, useRef, Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import OldFashionedNavigation from '@/components/OldFashionedNavigation';
+import Navigation from "@/components/Navigation";
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import ProductCard from '@/components/shopify/ProductCard';
 import CompactProductCard from '@/components/shopify/CompactProductCard';
 import MobileProductCard from '@/components/mobile/MobileProductCard';
 import MobileFilterDrawer from '@/components/mobile/MobileFilterDrawer';
-import { useCollectionProducts } from '@/lib/shopify/hooks/useCollectionProducts';
-import { ShopifyProduct } from '@/lib/shopify/types';
+import { useCustomCollectionProducts } from '@/lib/cart/hooks/useCustomProducts';
+import { Product } from '@/lib/types';
 import AIConcierge from '@/components/AIConcierge';
 import AgeVerificationModal from '@/components/AgeVerificationModal';
 import ProductModal from '@/components/ProductModal';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { getProductCategory, FILTER_OPTIONS, SHOPIFY_COLLECTIONS, getUniqueTags } from '@/lib/shopify/categories';
+import { getProductCategory, FILTER_OPTIONS, SHOPIFY_COLLECTIONS, getUniqueTags } from '@/lib/products/categories';
 import { ProductCardSkeletonGrid } from '@/components/skeletons/ProductCardSkeleton';
 import { MobileProductCardSkeletonGrid } from '@/components/skeletons/MobileProductCardSkeleton';
 
 function ProductsContent() {
   const searchParams = useSearchParams();
-  const searchQuery = searchParams.get('search');
+  const searchQuery = searchParams?.get('search');
   const isMobile = useIsMobile();
   const initialLoadCount = isMobile ? 12 : 20;
-  const [searchResults, setSearchResults] = useState<ShopifyProduct[]>([]);
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [filter, setFilter] = useState('all');
   const [collectionFilter, setCollectionFilter] = useState<string | null>(null);
-  const { products, loading, error, hasNextPage, loadMore } = useCollectionProducts(collectionFilter, initialLoadCount);
+  const { products, loading, error, hasNextPage, loadMore } = useCustomCollectionProducts(collectionFilter, initialLoadCount);
   const [sortBy, setSortBy] = useState('featured');
   const [showAgeVerification, setShowAgeVerification] = useState(false);
   const [isAgeVerified, setIsAgeVerified] = useState(false);
@@ -45,7 +45,7 @@ function ProductsContent() {
   const [isCompactView, setIsCompactView] = useState(true);
   
   // Product modal state
-  const [selectedProduct, setSelectedProduct] = useState<ShopifyProduct | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showProductModal, setShowProductModal] = useState(false);
 
   // Sticky collections disabled - was causing scroll conflicts on mobile
@@ -77,7 +77,7 @@ function ProductsContent() {
     }
   };
 
-  const handleProductClick = (product: ShopifyProduct) => {
+  const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
     setShowProductModal(true);
   };
@@ -110,7 +110,7 @@ function ProductsContent() {
       fetch(`/api/products?search=${encodeURIComponent(searchQuery)}&first=50`)
         .then(response => response.json())
         .then(data => {
-          setSearchResults(data.products.edges.map((edge: { node: ShopifyProduct }) => edge.node));
+          setSearchResults(data.products.edges.map((edge: { node: Product }) => edge.node));
         })
         .catch(console.error)
         .finally(() => setSearchLoading(false));
@@ -206,10 +206,10 @@ function ProductsContent() {
   if (error) {
     return (
       <div className="bg-white min-h-screen">
-        <OldFashionedNavigation forceScrolled={true} />
+        <Navigation forceScrolled={true} />
         <div className="max-w-7xl mx-auto px-8 py-16">
           <div className="bg-red-50 border border-red-200 p-6 rounded">
-            <h2 className="text-red-800 font-serif text-xl mb-2">Error Loading Products</h2>
+            <h2 className="text-red-800 font-heading text-xl mb-2">Error Loading Products</h2>
             <p className="text-red-600">{error.message}</p>
           </div>
         </div>
@@ -219,7 +219,7 @@ function ProductsContent() {
 
   return (
     <div className="bg-white min-h-screen">
-      <OldFashionedNavigation forceScrolled={true} />
+      <Navigation forceScrolled={true} />
       
       {/* Hero Section */}
       <section className="relative h-[40vh] mt-24 flex items-center justify-center overflow-hidden">
@@ -233,10 +233,10 @@ function ProductsContent() {
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
         
         <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-8">
-          <h1 className="font-serif font-light text-5xl md:text-7xl mb-6 tracking-[0.15em]">
+          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.08em]">
             Premium Spirits & Party Essentials
           </h1>
-          <div className="w-24 h-px bg-gold-400 mx-auto mb-6" />
+          <div className="w-24 h-px bg-brand-yellow mx-auto mb-6" />
           <p className="text-lg font-light tracking-[0.1em] text-gray-200 mb-8">
             For whatever you&apos;re planning
             <br />
@@ -247,7 +247,7 @@ function ProductsContent() {
           {!isAgeVerified && (
             <button
               onClick={handleUnlock}
-              className="inline-flex items-center gap-3 px-8 py-4 bg-gold-600 hover:bg-gold-700 text-gray-900 font-medium tracking-[0.15em] transition-all duration-300 group"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-brand-yellow hover:bg-yellow-600 text-gray-900 font-medium tracking-[0.08em] transition-all duration-300 group"
               style={{ animationDelay: '500ms' }}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -271,7 +271,7 @@ function ProductsContent() {
         >
           <div className={`${isMobile ? 'px-4' : 'max-w-7xl mx-auto px-8'}`}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className={`font-serif ${isMobile ? 'text-lg' : 'text-xl'} text-gray-900 tracking-[0.1em]`}>
+              <h3 className={`font-heading ${isMobile ? 'text-lg' : 'text-xl'} text-gray-900 tracking-[0.1em]`}>
                 FEATURED COLLECTIONS
               </h3>
               {collectionFilter && (
@@ -280,7 +280,7 @@ function ProductsContent() {
                     setCollectionFilter(null);
                     setFilter('all');
                   }}
-                  className="text-sm text-gold-600 hover:text-gold-700 tracking-[0.1em]"
+                  className="text-sm text-brand-yellow hover:text-yellow-600 tracking-[0.1em]"
                 >
                   CLEAR COLLECTION
                 </button>
@@ -290,6 +290,7 @@ function ProductsContent() {
             {/* Collections Grid */}
             <div className={`grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-7 gap-2'}`}>
               {SHOPIFY_COLLECTIONS.map((collection) => {
+                if (!collection?.colors) return null;
                 const isActive = collectionFilter === collection.handle;
                 return (
                   <button
@@ -344,7 +345,7 @@ function ProductsContent() {
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={() => setShowMobileFilters(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-gold-50 text-gold-700 rounded-lg text-sm font-medium"
+                    className="flex items-center gap-2 px-4 py-2 bg-yellow-50 text-yellow-600 rounded-lg text-sm font-medium"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
@@ -392,8 +393,8 @@ function ProductsContent() {
                 }}
                 className={`px-3 py-1.5 text-xs tracking-[0.05em] rounded-full border transition-all ${
                   selectedTags.includes(tag)
-                    ? 'bg-gold-600 text-gray-900 border-gold-600'
-                    : 'bg-white text-gray-700 border-gray-300 hover:border-gold-400'
+                    ? 'bg-brand-yellow text-gray-900 border-brand-yellow'
+                    : 'bg-white text-gray-700 border-gray-300 hover:border-brand-yellow'
                 }`}
               >
                 {tag.toUpperCase()}
@@ -404,7 +405,7 @@ function ProductsContent() {
             {selectedTags.length > 0 && (
               <button
                 onClick={() => setSelectedTags([])}
-                className="text-xs text-gold-600 hover:text-gold-700 tracking-[0.05em]"
+                className="text-xs text-brand-yellow hover:text-yellow-600 tracking-[0.05em]"
               >
                 CLEAR TAGS
               </button>
@@ -426,8 +427,8 @@ function ProductsContent() {
                   onClick={() => setIsCompactView(true)}
                   className={`p-2 border transition-colors ${
                     isCompactView 
-                      ? 'border-gold-600 bg-gold-50 text-gold-700' 
-                      : 'border-gray-300 text-gray-600 hover:border-gold-600'
+                      ? 'border-brand-yellow bg-yellow-50 text-yellow-600' 
+                      : 'border-gray-300 text-gray-600 hover:border-brand-yellow'
                   }`}
                   title="Compact view"
                 >
@@ -441,8 +442,8 @@ function ProductsContent() {
                   onClick={() => setIsCompactView(false)}
                   className={`p-2 border transition-colors ${
                     !isCompactView 
-                      ? 'border-gold-600 bg-gold-50 text-gold-700' 
-                      : 'border-gray-300 text-gray-600 hover:border-gold-600'
+                      ? 'border-brand-yellow bg-yellow-50 text-yellow-600' 
+                      : 'border-gray-300 text-gray-600 hover:border-brand-yellow'
                   }`}
                   title="Regular view"
                 >
@@ -458,7 +459,7 @@ function ProductsContent() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="border border-gray-300 px-4 py-2 text-sm tracking-[0.05em] focus:border-gold-600 focus:outline-none"
+                className="border border-gray-300 px-4 py-2 text-sm tracking-[0.05em] focus:border-brand-yellow focus:outline-none"
               >
                 <option value="bestsellers">Best Sellers</option>
                 <option value="featured">Featured</option>
@@ -536,7 +537,7 @@ function ProductsContent() {
               {hasNextPage && (
                 <div className="text-center mt-12">
                   <div className="inline-flex items-center gap-3">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gold-600"></div>
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-brand-yellow"></div>
                     <span className="text-sm text-gray-600 tracking-[0.1em]">LOADING MORE PRODUCTS...</span>
                   </div>
                 </div>
@@ -560,26 +561,26 @@ function ProductsContent() {
         <div className="max-w-5xl mx-auto px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <ScrollRevealCSS delay={0} duration={800}>
-              <svg className="w-12 h-12 mx-auto text-gold-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-12 h-12 mx-auto text-brand-yellow mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <h3 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.1em]">72-Hour Notice</h3>
+              <h3 className="font-heading text-xl text-gray-900 mb-2 tracking-[0.1em]">72-Hour Notice</h3>
               <p className="text-gray-600 text-sm">Advance booking ensures availability for your celebration</p>
             </ScrollRevealCSS>
 
             <ScrollRevealCSS delay={100} duration={800}>
-              <svg className="w-12 h-12 mx-auto text-gold-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-12 h-12 mx-auto text-brand-yellow mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
-              <h3 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.1em]">Age Verified</h3>
+              <h3 className="font-heading text-xl text-gray-900 mb-2 tracking-[0.1em]">Age Verified</h3>
               <p className="text-gray-600 text-sm">Secure ID verification for all alcohol deliveries</p>
             </ScrollRevealCSS>
 
             <ScrollRevealCSS delay={200} duration={800}>
-              <svg className="w-12 h-12 mx-auto text-gold-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-12 h-12 mx-auto text-brand-yellow mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
-              <h3 className="font-serif text-xl text-gray-900 mb-2 tracking-[0.1em]">Austin Coverage</h3>
+              <h3 className="font-heading text-xl text-gray-900 mb-2 tracking-[0.1em]">Austin Coverage</h3>
               <p className="text-gray-600 text-sm">Delivering excellence throughout greater Austin</p>
             </ScrollRevealCSS>
           </div>
@@ -590,49 +591,49 @@ function ProductsContent() {
       <section className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-8">
           <div className="prose prose-lg max-w-none">
-            <h2 className="font-serif text-3xl md:text-4xl text-gray-900 mb-6 tracking-[0.1em] text-center">
+            <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-6 tracking-[0.1em] text-center">
               Premium Beverage Selection for Every Austin Event
             </h2>
-            <div className="w-16 h-px bg-gold-600 mx-auto mb-8" />
+            <div className="w-16 h-px bg-brand-yellow mx-auto mb-8" />
 
             <p className="text-gray-700 leading-relaxed mb-6">
-              Our carefully curated product catalog brings together the best of Austin&apos;s local craft scene with premium domestic and imported selections. Whether you&apos;re stocking a <Link href="/weddings" className="text-gold-600 hover:text-gold-700 underline">wedding bar</Link>, planning a <Link href="/corporate" className="text-gold-600 hover:text-gold-700 underline">corporate happy hour</Link>, or hosting an intimate dinner party, we provide the quality and variety your event deserves.
+              Our carefully curated product catalog brings together the best of Austin&apos;s local craft scene with premium domestic and imported selections. Whether you&apos;re stocking a <Link href="/weddings" className="text-brand-yellow hover:text-yellow-600 underline">wedding bar</Link>, planning a <Link href="/corporate" className="text-brand-yellow hover:text-yellow-600 underline">corporate happy hour</Link>, or hosting an intimate dinner party, we provide the quality and variety your event deserves.
             </p>
 
-            <h3 className="font-serif text-2xl text-gray-900 mt-8 mb-4 tracking-[0.08em]">
+            <h3 className="font-heading text-2xl text-gray-900 mt-8 mb-4 tracking-[0.08em]">
               Local Austin Craft Beer & Spirits
             </h3>
             <p className="text-gray-700 leading-relaxed mb-6">
               We proudly feature selections from Austin&apos;s renowned craft breweries including Live Oak Brewing, Austin Beerworks, Zilker Brewing Company, and more. Our spirits collection showcases Texas distilleries like Tito&apos;s Handmade Vodka, Treaty Oak Distilling, Still Austin Whiskey Co., and Garrison Brothers. Supporting local isn&apos;t just good business—it&apos;s what makes Austin events truly special.
             </p>
 
-            <h3 className="font-serif text-2xl text-gray-900 mt-8 mb-4 tracking-[0.08em]">
+            <h3 className="font-heading text-2xl text-gray-900 mt-8 mb-4 tracking-[0.08em]">
               Complete Event Bar Supplies
             </h3>
             <p className="text-gray-700 leading-relaxed mb-6">
               Beyond beverages, we stock everything needed for a professional bar setup. Our inventory includes mixers (tonic, club soda, cola, ginger beer, fresh juices), garnishes, bagged ice, premium disposable cups and glassware, cocktail napkins, bar tools, and specialty items like custom koozies for weddings and corporate events. We can also arrange keg rentals with tap systems and ice tubs for beer-forward events.
             </p>
 
-            <h3 className="font-serif text-2xl text-gray-900 mt-8 mb-4 tracking-[0.08em]">
+            <h3 className="font-heading text-2xl text-gray-900 mt-8 mb-4 tracking-[0.08em]">
               Wine Selection for Every Palate
             </h3>
             <p className="text-gray-700 leading-relaxed mb-6">
               Our wine program features carefully selected bottles from Texas Hill Country wineries, California estates, and international vineyards. From crisp Sauvignon Blanc and elegant Pinot Noir to celebratory Champagne and Prosecco, we help you choose wines that complement your event&apos;s cuisine and atmosphere. Need guidance? Our team provides personalized recommendations based on your menu, guest preferences, and budget.
             </p>
 
-            <h3 className="font-serif text-2xl text-gray-900 mt-8 mb-4 tracking-[0.08em]">
+            <h3 className="font-heading text-2xl text-gray-900 mt-8 mb-4 tracking-[0.08em]">
               Flexible Ordering & Delivery
             </h3>
             <p className="text-gray-700 leading-relaxed mb-6">
-              Browse our online catalog, add items to your cart, and schedule delivery directly to your venue or event location. We offer flexible delivery windows throughout Austin, Lake Travis, and the Hill Country. All beverages are delivered cold and ready to serve. Have questions about quantities or selections? <Link href="/contact" className="text-gold-600 hover:text-gold-700 underline">Contact our team</Link> for expert guidance tailored to your specific event needs.
+              Browse our online catalog, add items to your cart, and schedule delivery directly to your venue or event location. We offer flexible delivery windows throughout Austin, Lake Travis, and the Hill Country. All beverages are delivered cold and ready to serve. Have questions about quantities or selections? <Link href="/contact" className="text-brand-yellow hover:text-yellow-600 underline">Contact our team</Link> for expert guidance tailored to your specific event needs.
             </p>
 
-            <div className="mt-8 p-6 bg-white border-2 border-gold-600 rounded-lg text-center">
+            <div className="mt-8 p-6 bg-white border-2 border-brand-yellow rounded-lg text-center">
               <p className="text-lg text-gray-800 mb-4">
                 <strong>Need help planning your bar?</strong> Our beverage experts provide complimentary consultations for all events.
               </p>
               <Link href="/contact">
-                <button className="px-8 py-3 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                   SCHEDULE A CONSULTATION
                 </button>
               </Link>
@@ -658,19 +659,19 @@ function ProductsContent() {
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SERVICES</h4>
               <ul className="space-y-2">
-                <li><Link href="/weddings" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Weddings</Link></li>
-                <li><Link href="/boat-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Boat Parties</Link></li>
-                <li><Link href="/bach-parties" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Celebrations</Link></li>
-                <li><Link href="/corporate" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Corporate</Link></li>
+                <li><Link href="/weddings" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Weddings</Link></li>
+                <li><Link href="/boat-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Boat Parties</Link></li>
+                <li><Link href="/bach-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Celebrations</Link></li>
+                <li><Link href="/corporate" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Corporate</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-light text-gray-900 mb-4 tracking-[0.1em]">SHOP</h4>
               <ul className="space-y-2">
-                <li><Link href="/products" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">All Products</Link></li>
-                <li><Link href="/products?filter=spirits" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Spirits</Link></li>
-                <li><Link href="/products?filter=wine" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Wine</Link></li>
-                <li><Link href="/products?filter=packages" className="text-gray-600 hover:text-gold-600 text-sm transition-colors">Packages</Link></li>
+                <li><Link href="/products" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">All Products</Link></li>
+                <li><Link href="/products?filter=spirits" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Spirits</Link></li>
+                <li><Link href="/products?filter=wine" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Wine</Link></li>
+                <li><Link href="/products?filter=packages" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">Packages</Link></li>
               </ul>
             </div>
             <div>
@@ -685,8 +686,8 @@ function ProductsContent() {
           <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">© 2024 PartyOn Delivery. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="/terms" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Terms</Link>
-              <Link href="/privacy" className="text-gray-500 hover:text-gold-600 text-sm transition-colors">Privacy</Link>
+              <Link href="/terms" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Terms</Link>
+              <Link href="/privacy" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Privacy</Link>
             </div>
           </div>
         </div>
@@ -747,7 +748,7 @@ export default function ProductsPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-white">
-        <OldFashionedNavigation forceScrolled={true} />
+        <Navigation forceScrolled={true} />
         <div className="pt-32 pb-16 text-center">
           <div className="animate-pulse">
             <div className="h-8 w-48 bg-gray-200 mx-auto rounded"></div>

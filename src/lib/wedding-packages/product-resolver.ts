@@ -1,17 +1,16 @@
 /**
  * Product Resolver
- * Resolves Shopify product handles to variant IDs for cart operations
+ * Resolves product handles to variant IDs for cart operations
+ * Uses custom PostgreSQL API instead of Shopify
  */
 
-import { shopifyFetch } from '@/lib/shopify/client';
-import { PRODUCTS_BY_HANDLES_QUERY } from '@/lib/shopify/queries/products';
 import type { CalculatedItem, CartLineItem } from './types';
 
 // ============================================================================
 // TYPES
 // ============================================================================
 
-interface ShopifyVariant {
+interface ResolvedVariant {
   id: string;
   availableForSale: boolean;
   price: {
@@ -20,7 +19,7 @@ interface ShopifyVariant {
   };
 }
 
-interface ShopifyProduct {
+interface ResolvedProduct {
   id: string;
   handle: string;
   title: string;
@@ -41,15 +40,7 @@ interface ShopifyProduct {
   };
   variants: {
     edges: Array<{
-      node: ShopifyVariant;
-    }>;
-  };
-}
-
-interface ProductsResponse {
-  products: {
-    edges: Array<{
-      node: ShopifyProduct;
+      node: ResolvedVariant;
     }>;
   };
 }
@@ -60,28 +51,21 @@ interface ProductsResponse {
 
 // Simple in-memory cache for resolved products
 // Cleared on page reload
-const productCache = new Map<string, ShopifyProduct>();
+const productCache = new Map<string, ResolvedProduct>();
 
 // ============================================================================
 // RESOLVER FUNCTIONS
 // ============================================================================
 
 /**
- * Build Shopify query string from handles
- * Format: "handle:product-1 OR handle:product-2 OR handle:product-3"
- */
-function buildHandleQuery(handles: string[]): string {
-  return handles.map((h) => `handle:${h}`).join(' OR ');
-}
-
-/**
- * Resolve multiple product handles to their Shopify data
+ * Resolve multiple product handles to their data
+ * Fetches from custom PostgreSQL API
  * Uses caching to avoid repeated API calls
  */
 export async function resolveProducts(
   handles: string[]
-): Promise<Map<string, ShopifyProduct>> {
-  const result = new Map<string, ShopifyProduct>();
+): Promise<Map<string, ResolvedProduct>> {
+  const result = new Map<string, ResolvedProduct>();
   const uncachedHandles: string[] = [];
 
   // Check cache first
@@ -94,28 +78,30 @@ export async function resolveProducts(
     }
   }
 
-  // Fetch uncached products from Shopify
+  // Fetch uncached products from custom API
   if (uncachedHandles.length > 0) {
     try {
-      const queryString = buildHandleQuery(uncachedHandles);
-
-      const response = await shopifyFetch<ProductsResponse>({
-        query: PRODUCTS_BY_HANDLES_QUERY,
-        variables: {
-          query: queryString,
-          first: uncachedHandles.length,
-        },
+      const fetchPromises = uncachedHandles.map(async (handle) => {
+        try {
+          const response = await fetch(`/api/products/${handle}`);
+          if (!response.ok) return null;
+          const product: ResolvedProduct = await response.json();
+          return product;
+        } catch {
+          return null;
+        }
       });
 
-      // Process response and update cache
-      for (const edge of response.products.edges) {
-        const product = edge.node;
-        productCache.set(product.handle, product);
-        result.set(product.handle, product);
+      const products = await Promise.all(fetchPromises);
+
+      for (const product of products) {
+        if (product) {
+          productCache.set(product.handle, product);
+          result.set(product.handle, product);
+        }
       }
     } catch (error) {
       console.error('Error resolving products:', error);
-      // Return what we have from cache even if API fails
     }
   }
 
@@ -157,13 +143,9 @@ export async function getVariantId(handle: string): Promise<string | null> {
 export async function resolveCartItems(
   items: CalculatedItem[]
 ): Promise<CartLineItem[]> {
-  // Get all unique handles
   const handles = [...new Set(items.map((item) => item.product.handle))];
-
-  // Resolve all products
   const products = await resolveProducts(handles);
 
-  // Build cart items
   const cartItems: CartLineItem[] = [];
 
   for (const item of items) {
@@ -192,7 +174,7 @@ export async function resolveCartItems(
 
 /**
  * Update calculated items with resolved data
- * Adds variant IDs and actual prices from Shopify
+ * Adds variant IDs and actual prices
  */
 export async function enrichCalculatedItems(
   items: CalculatedItem[]
@@ -225,7 +207,6 @@ export async function enrichCalculatedItems(
 
 /**
  * Clear the product cache
- * Useful for testing or forcing fresh data
  */
 export function clearProductCache(): void {
   productCache.clear();

@@ -84,7 +84,7 @@ export default function ChairRentalsAustinPage() {
           <div className="max-w-7xl mx-auto">
             <ol className="flex items-center space-x-2 text-sm">
               <li>
-                <Link href="/" className="text-gray-700 hover:text-gold-600 transition-colors">
+                <Link href="/" className="text-gray-700 hover:text-brand-yellow transition-colors">
                   Home
                 </Link>
               </li>
@@ -92,7 +92,7 @@ export default function ChairRentalsAustinPage() {
                 <span className="text-gray-400 mx-2">›</span>
               </li>
               <li>
-                <Link href="/rentals" className="text-gray-700 hover:text-gold-600 transition-colors">
+                <Link href="/rentals" className="text-gray-700 hover:text-brand-yellow transition-colors">
                   Rentals
                 </Link>
               </li>
@@ -109,7 +109,7 @@ export default function ChairRentalsAustinPage() {
         {/* Hero Section */}
         <section className="py-24 px-8">
           <div className="max-w-6xl mx-auto">
-            <h1 className="font-serif text-5xl md:text-6xl text-gray-900 mb-6 tracking-[0.15em]">
+            <h1 className="font-heading text-5xl md:text-6xl text-gray-900 mb-6 tracking-[0.08em]">
               CHAIR RENTALS AUSTIN
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl leading-relaxed">
@@ -118,12 +118,12 @@ export default function ChairRentalsAustinPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/contact">
-                <button className="px-8 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                   REQUEST QUOTE
                 </button>
               </Link>
               <a href="tel:7373719700">
-                <button className="px-8 py-4 border-2 border-gold-600 text-gray-900 hover:bg-gold-600 hover:text-white transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+                <button className="px-8 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-white transition-all duration-300 tracking-[0.08em] text-sm font-medium">
                   CALL (737) 371-9700
                 </button>
               </a>
@@ -134,7 +134,7 @@ export default function ChairRentalsAustinPage() {
         {/* Pricing Table */}
         <section className="py-16 px-8 bg-gray-50">
           <div className="max-w-6xl mx-auto">
-            <h2 className="font-serif text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
+            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.08em] text-center">
               CHAIR RENTAL PRICING
             </h2>
 
@@ -142,10 +142,10 @@ export default function ChairRentalsAustinPage() {
               <table className="w-full bg-white rounded-lg shadow-sm border border-gray-200">
                 <thead>
                   <tr className="bg-gray-900 text-white">
-                    <th className="py-4 px-6 text-left font-serif tracking-[0.1em]">QUANTITY</th>
-                    <th className="py-4 px-6 text-left font-serif tracking-[0.1em]">PRICE PER CHAIR</th>
-                    <th className="py-4 px-6 text-left font-serif tracking-[0.1em]">TOTAL</th>
-                    <th className="py-4 px-6 text-left font-serif tracking-[0.1em]">BEST FOR</th>
+                    <th className="py-4 px-6 text-left font-heading tracking-[0.1em]">QUANTITY</th>
+                    <th className="py-4 px-6 text-left font-heading tracking-[0.1em]">PRICE PER CHAIR</th>
+                    <th className="py-4 px-6 text-left font-heading tracking-[0.1em]">TOTAL</th>
+                    <th className="py-4 px-6 text-left font-heading tracking-[0.1em]">BEST FOR</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -163,13 +163,13 @@ export default function ChairRentalsAustinPage() {
                   </tr>
                   <tr className="hover:bg-gray-50 transition-colors">
                     <td className="py-4 px-6 font-medium">50-100 chairs</td>
-                    <td className="py-4 px-6 text-gold-600 font-bold">$3.00</td>
+                    <td className="py-4 px-6 text-brand-yellow font-bold">$3.00</td>
                     <td className="py-4 px-6 text-gray-700">$150 - $300</td>
                     <td className="py-4 px-6 text-gray-600">Weddings, corporate events</td>
                   </tr>
-                  <tr className="hover:bg-gray-50 transition-colors bg-gold-50 border-2 border-gold-600">
+                  <tr className="hover:bg-gray-50 transition-colors bg-yellow-50 border-2 border-brand-yellow">
                     <td className="py-4 px-6 font-bold">100+ chairs</td>
-                    <td className="py-4 px-6 text-gold-600 font-bold">$2.75</td>
+                    <td className="py-4 px-6 text-brand-yellow font-bold">$2.75</td>
                     <td className="py-4 px-6 text-gray-700">$275+</td>
                     <td className="py-4 px-6 text-gray-600">Large weddings, festivals, corporate</td>
                   </tr>
@@ -189,18 +189,18 @@ export default function ChairRentalsAustinPage() {
         {/* Why Choose Our Chairs */}
         <section className="py-24 px-8">
           <div className="max-w-6xl mx-auto">
-            <h2 className="font-serif text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
+            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.08em] text-center">
               WHY AUSTIN CHOOSES OUR CHAIRS
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
               <div className="text-center">
-                <div className="w-16 h-16 bg-gold-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-brand-yellow rounded-full flex items-center justify-center mx-auto mb-6">
                   <svg className="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
+                <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">
                   Clean & Professional
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
@@ -210,12 +210,12 @@ export default function ChairRentalsAustinPage() {
               </div>
 
               <div className="text-center">
-                <div className="w-16 h-16 bg-gold-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-brand-yellow rounded-full flex items-center justify-center mx-auto mb-6">
                   <svg className="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
+                <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">
                   Fast Austin Delivery
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
@@ -225,12 +225,12 @@ export default function ChairRentalsAustinPage() {
               </div>
 
               <div className="text-center">
-                <div className="w-16 h-16 bg-gold-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-brand-yellow rounded-full flex items-center justify-center mx-auto mb-6">
                   <svg className="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.1em]">
+                <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">
                   Sturdy & Reliable
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
@@ -245,13 +245,13 @@ export default function ChairRentalsAustinPage() {
         {/* Popular Venues */}
         <section className="py-16 px-8 bg-gray-50">
           <div className="max-w-6xl mx-auto">
-            <h2 className="font-serif text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
+            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.08em] text-center">
               WE DELIVER TO AUSTIN VENUES
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white p-6 rounded-lg border border-gray-200">
-                <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.05em]">
+                <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.05em]">
                   Downtown & Central Austin
                 </h3>
                 <ul className="space-y-2 text-gray-600">
@@ -265,7 +265,7 @@ export default function ChairRentalsAustinPage() {
               </div>
 
               <div className="bg-white p-6 rounded-lg border border-gray-200">
-                <h3 className="font-serif text-2xl text-gray-900 mb-4 tracking-[0.05em]">
+                <h3 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.05em]">
                   Lake Travis & Hill Country
                 </h3>
                 <ul className="space-y-2 text-gray-600">
@@ -284,14 +284,14 @@ export default function ChairRentalsAustinPage() {
         {/* FAQ Section */}
         <section className="py-24 px-8">
           <div className="max-w-4xl mx-auto">
-            <h2 className="font-serif text-4xl text-gray-900 mb-12 tracking-[0.15em] text-center">
+            <h2 className="font-heading text-4xl text-gray-900 mb-12 tracking-[0.08em] text-center">
               FREQUENTLY ASKED QUESTIONS
             </h2>
 
             <div className="space-y-6">
               {faqs.map((faq, index) => (
                 <div key={index} className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                  <h3 className="font-serif text-xl text-gray-900 mb-3 tracking-[0.05em]">
+                  <h3 className="font-heading text-xl text-gray-900 mb-3 tracking-[0.05em]">
                     {faq.question}
                   </h3>
                   <p className="text-gray-600 leading-relaxed">
@@ -306,7 +306,7 @@ export default function ChairRentalsAustinPage() {
         {/* CTA Section */}
         <section className="py-24 px-8 bg-gray-900 text-white">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="font-serif text-4xl md:text-5xl mb-6 tracking-[0.15em]">
+            <h2 className="font-heading text-4xl md:text-5xl mb-6 tracking-[0.08em]">
               BOOK CHAIR RENTALS TODAY
             </h2>
             <p className="text-xl text-gray-300 mb-12">
@@ -314,12 +314,12 @@ export default function ChairRentalsAustinPage() {
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link href="/contact">
-                <button className="px-10 py-4 bg-gold-600 text-gray-900 hover:bg-gold-700 transition-colors tracking-[0.15em] text-sm font-medium">
+                <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                   REQUEST QUOTE
                 </button>
               </Link>
               <Link href="/rentals">
-                <button className="px-10 py-4 border-2 border-gold-600 text-white hover:bg-gold-600 hover:text-gray-900 transition-all duration-300 tracking-[0.15em] text-sm font-medium">
+                <button className="px-10 py-4 border-2 border-brand-yellow text-white hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium">
                   VIEW ALL RENTALS
                 </button>
               </Link>

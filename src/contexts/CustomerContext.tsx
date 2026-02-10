@@ -1,19 +1,24 @@
 'use client';
 
-import React, { createContext, useContext } from 'react';
-import { useCustomer } from '@/lib/shopify/hooks/useCustomer';
-import { ShopifyCustomer, CustomerUserError } from '@/lib/shopify/types';
+import React, { createContext, useContext, useCallback } from 'react';
+import { useAuth, Customer } from '@/lib/auth/hooks/useAuth';
+import { mutate } from 'swr';
+
+interface AuthResult {
+  success: boolean;
+  error?: string;
+}
 
 interface CustomerContextValue {
-  customer: ShopifyCustomer | null;
+  customer: Customer | null;
   loading: boolean;
   error: string | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; errors?: CustomerUserError[] }>;
+  login: (email: string, password: string) => Promise<AuthResult>;
   logout: () => Promise<void>;
-  register: (input: RegisterInput) => Promise<{ success: boolean; errors?: CustomerUserError[] }>;
-  update: (input: UpdateInput) => Promise<{ success: boolean; errors?: CustomerUserError[] }>;
-  recoverPassword: (email: string) => Promise<{ success: boolean; errors?: CustomerUserError[] }>;
+  register: (input: RegisterInput) => Promise<AuthResult>;
+  update: (input: UpdateInput) => Promise<AuthResult>;
+  recoverPassword: (email: string) => Promise<AuthResult>;
   refreshCustomer: () => Promise<void>;
 }
 
@@ -36,10 +41,27 @@ interface UpdateInput {
 const CustomerContext = createContext<CustomerContextValue | undefined>(undefined);
 
 export function CustomerProvider({ children }: { children: React.ReactNode }) {
-  const customerData = useCustomer();
+  const auth = useAuth();
+
+  const refreshCustomer = useCallback(async () => {
+    await mutate('/api/v1/auth/me');
+  }, []);
+
+  const contextValue: CustomerContextValue = {
+    customer: auth.customer ?? null,
+    loading: auth.isLoading,
+    error: auth.error,
+    isAuthenticated: auth.isAuthenticated,
+    login: auth.login,
+    logout: auth.logout,
+    register: auth.register,
+    update: auth.updateProfile,
+    recoverPassword: auth.requestPasswordReset,
+    refreshCustomer,
+  };
 
   return (
-    <CustomerContext.Provider value={customerData}>
+    <CustomerContext.Provider value={contextValue}>
       {children}
     </CustomerContext.Provider>
   );
