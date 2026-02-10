@@ -101,7 +101,7 @@ export const SHOPIFY_COLLECTIONS = [
       bg: 'bg-yellow-50 hover:bg-yellow-100',
       bgActive: 'bg-brand-yellow',
       text: 'text-yellow-600',
-      textActive: 'text-white',
+      textActive: 'text-gray-900',
       border: 'border-brand-yellow hover:border-yellow-500',
       borderActive: 'border-brand-yellow'
     }
@@ -221,7 +221,7 @@ export const FILTER_OPTIONS = {
         bg: 'bg-gray-50 hover:bg-gray-100',
         bgActive: 'bg-brand-yellow',
         text: 'text-gray-700',
-        textActive: 'text-white',
+        textActive: 'text-gray-900',
         border: 'border-gray-300 hover:border-brand-yellow',
         borderActive: 'border-brand-yellow'
       }

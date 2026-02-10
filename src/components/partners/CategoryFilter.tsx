@@ -20,9 +20,9 @@ export default function CategoryFilter({
           {/* All Button */}
           <button
             onClick={() => onCategoryChange('all')}
-            className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium tracking-wide transition-all duration-200 ${
+            className={`flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium tracking-wide transition-all duration-200 ${
               activeCategory === 'all'
-                ? 'bg-brand-yellow text-white shadow-md'
+                ? 'bg-brand-yellow text-gray-900 shadow-md'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
@@ -37,9 +37,9 @@ export default function CategoryFilter({
             <button
               key={category.id}
               onClick={() => onCategoryChange(category.id)}
-              className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium tracking-wide transition-all duration-200 ${
+              className={`flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium tracking-wide transition-all duration-200 ${
                 activeCategory === category.id
-                  ? 'bg-brand-yellow text-white shadow-md'
+                  ? 'bg-brand-yellow text-gray-900 shadow-md'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >

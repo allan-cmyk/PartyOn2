@@ -57,7 +57,7 @@ export default function PartnerCard({ partner }: PartnerCardProps) {
         </div>
       </div>
       {partner.featured && (
-        <span className="absolute top-3 right-3 bg-brand-yellow text-white text-xs px-2 py-1 rounded-full font-medium tracking-wide z-10">
+        <span className="absolute top-3 right-3 bg-brand-yellow text-gray-900 text-xs px-2 py-1 rounded-lg font-medium tracking-wide z-10">
           Featured
         </span>
       )}
