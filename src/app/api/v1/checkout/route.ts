@@ -121,7 +121,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Build success and cancel URLs
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     const successUrl = returnUrl || `${appUrl}/checkout/success`;
-    const cancelUrl = `${appUrl}/checkout/cancel`;
+    const cancelUrl = `${appUrl}/checkout`;
 
     // Handle $0 total (fully discounted orders) - Stripe can't process $0 payments
     const cartTotal = Number(cart.total);
