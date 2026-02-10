@@ -13,6 +13,8 @@ import {
   changePassword,
   getSession,
 } from '@/lib/auth';
+import { sendEmail } from '@/lib/email/resend-client';
+import { EmailType } from '@prisma/client';
 
 /**
  * POST /api/v1/auth/password
@@ -39,7 +41,32 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // TODO: Send password reset email with result.resetToken
+    // Send password reset email (non-blocking)
+    if (result.resetToken) {
+      const resetUrl = `https://partyondelivery.com/account/reset-password?token=${result.resetToken}`;
+      sendEmail({
+        to: email,
+        subject: 'Reset Your PartyOn Delivery Password',
+        html: `
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background-color: #1a1a1a; padding: 32px; text-align: center;">
+              <h1 style="color: #D4AF37; margin: 0; font-size: 28px; letter-spacing: 0.1em;">PARTYON</h1>
+              <p style="color: #ffffff; margin: 8px 0 0; font-size: 14px;">PREMIUM ALCOHOL DELIVERY</p>
+            </div>
+            <div style="padding: 24px;">
+              <h2 style="color: #1a1a1a;">Password Reset Request</h2>
+              <p style="color: #666;">We received a request to reset your password. Click the button below to set a new password:</p>
+              <div style="text-align: center; margin: 24px 0;">
+                <a href="${resetUrl}" style="display: inline-block; background-color: #D4AF37; color: #1a1a1a; text-decoration: none; padding: 12px 32px; border-radius: 6px; font-weight: 600;">Reset Password</a>
+              </div>
+              <p style="color: #999; font-size: 14px;">This link expires in 1 hour. If you didn't request this, you can safely ignore this email.</p>
+            </div>
+          </div>
+        `,
+        text: `Reset your PartyOn Delivery password: ${resetUrl}\n\nThis link expires in 1 hour. If you didn't request this, ignore this email.`,
+        type: EmailType.PASSWORD_RESET,
+      }).catch((err: unknown) => console.error('[Auth] Password reset email failed:', err));
+    }
     // For security, we always return success even if email doesn't exist
 
     return NextResponse.json({

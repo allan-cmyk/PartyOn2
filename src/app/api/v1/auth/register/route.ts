@@ -6,6 +6,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { registerCustomer, setSessionCookie } from '@/lib/auth';
+import { sendEmail } from '@/lib/email/resend-client';
+import { EmailType } from '@prisma/client';
 
 /**
  * POST /api/v1/auth/register
@@ -55,7 +57,35 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       await setSessionCookie(result.customer);
     }
 
-    // TODO: Send verification email with result.verificationToken
+    // Send welcome email (non-blocking — don't fail registration if email fails)
+    if (result.customer?.email) {
+      const customer = result.customer;
+      sendEmail({
+        to: customer.email,
+        subject: 'Welcome to PartyOn Delivery!',
+        html: `
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background-color: #1a1a1a; padding: 32px; text-align: center;">
+              <h1 style="color: #D4AF37; margin: 0; font-size: 28px; letter-spacing: 0.1em;">PARTYON</h1>
+              <p style="color: #ffffff; margin: 8px 0 0; font-size: 14px;">PREMIUM ALCOHOL DELIVERY</p>
+            </div>
+            <div style="padding: 24px;">
+              <h2 style="color: #1a1a1a;">Welcome${customer.firstName ? `, ${customer.firstName}` : ''}!</h2>
+              <p style="color: #666;">Thanks for creating your PartyOn Delivery account. You can now:</p>
+              <ul style="color: #666;">
+                <li>Browse our premium selection</li>
+                <li>Track your orders</li>
+                <li>Create group orders for events</li>
+              </ul>
+              <a href="https://partyondelivery.com/products" style="display: inline-block; background-color: #D4AF37; color: #1a1a1a; text-decoration: none; padding: 12px 32px; border-radius: 6px; font-weight: 600;">Start Shopping</a>
+            </div>
+          </div>
+        `,
+        text: `Welcome to PartyOn Delivery${customer.firstName ? `, ${customer.firstName}` : ''}! Browse our premium selection at https://partyondelivery.com/products`,
+        type: EmailType.WELCOME,
+        customerId: customer.id,
+      }).catch((err: unknown) => console.error('[Auth] Welcome email failed:', err));
+    }
 
     return NextResponse.json({
       success: true,
