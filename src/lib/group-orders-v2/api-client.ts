@@ -205,6 +205,17 @@ export async function checkoutParticipantV2(
   });
 }
 
+/** Validate a discount code */
+export async function validateGroupDiscount(
+  code: string,
+  subtotal: number
+): Promise<{ code: string; name: string; type: string; value: number; discountAmount: number }> {
+  return apiFetch(`${API_BASE}/validate-discount`, {
+    method: 'POST',
+    body: JSON.stringify({ code, subtotal }),
+  });
+}
+
 /** Create delivery invoice session */
 export async function createDeliveryInvoice(
   code: string,
