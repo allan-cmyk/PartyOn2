@@ -94,7 +94,7 @@ export async function getAllCollections(
     prisma.category.count({ where }),
     prisma.category.findMany({
       where,
-      orderBy: { position: 'asc' },
+      orderBy: { title: 'asc' },
       include: { _count: { select: { products: true } } },
       take: limit,
       skip: offset,
