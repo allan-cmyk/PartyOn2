@@ -62,7 +62,34 @@ export async function createGroupV2CheckoutSession(input: CreateCheckoutInput) {
     (sum, item) => sum + Number(item.price) * item.quantity,
     0
   );
-  const taxAmount = Math.round(subtotal * DEFAULT_TAX_RATE * 100) / 100;
+
+  // Resolve discount BEFORE calculating tax (tax applies to post-discount amount)
+  let discountAmount = 0;
+  let stripeCouponId: string | undefined;
+
+  if (discountCode) {
+    const discount = await prisma.discount.findUnique({
+      where: { code: discountCode, isActive: true },
+    });
+    if (discount && discount.type === 'PERCENTAGE') {
+      discountAmount = Math.round(subtotal * (Number(discount.value) / 100) * 100) / 100;
+    } else if (discount && discount.type === 'FIXED_AMOUNT') {
+      discountAmount = Math.min(Number(discount.value), subtotal);
+    }
+    if (discountAmount > 0) {
+      const coupon = await stripe.coupons.create({
+        amount_off: Math.round(discountAmount * 100),
+        currency: 'usd',
+        duration: 'once',
+        name: discountCode,
+      });
+      stripeCouponId = coupon.id;
+    }
+  }
+
+  // Calculate tax on post-discount amount (Texas tax applies to actual selling price)
+  const taxableAmount = Math.max(0, subtotal - discountAmount);
+  const taxAmount = Math.round(taxableAmount * DEFAULT_TAX_RATE * 100) / 100;
 
   // Build line items
   const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = draftItems.map((item) => ({
@@ -81,7 +108,7 @@ export async function createGroupV2CheckoutSession(input: CreateCheckoutInput) {
     quantity: item.quantity,
   }));
 
-  // Add tax line item
+  // Add tax line item (calculated on post-discount amount)
   if (taxAmount > 0) {
     const taxRateDisplay = `${(DEFAULT_TAX_RATE * 100).toFixed(2)}%`;
     lineItems.push({
@@ -97,8 +124,6 @@ export async function createGroupV2CheckoutSession(input: CreateCheckoutInput) {
     });
   }
 
-  // Handle discount
-  let discountAmount = 0;
   const sessionParams: Stripe.Checkout.SessionCreateParams = {
     mode: 'payment',
     payment_method_types: ['card', 'link'],
@@ -124,29 +149,8 @@ export async function createGroupV2CheckoutSession(input: CreateCheckoutInput) {
     sessionParams.customer_email = participantEmail;
   }
 
-  if (discountCode) {
-    const discount = await prisma.discount.findUnique({
-      where: { code: discountCode, isActive: true },
-    });
-    if (discount && discount.type === 'PERCENTAGE') {
-      discountAmount = Math.round(subtotal * (Number(discount.value) / 100) * 100) / 100;
-      const coupon = await stripe.coupons.create({
-        amount_off: Math.round(discountAmount * 100),
-        currency: 'usd',
-        duration: 'once',
-        name: discountCode,
-      });
-      sessionParams.discounts = [{ coupon: coupon.id }];
-    } else if (discount && discount.type === 'FIXED_AMOUNT') {
-      discountAmount = Math.min(Number(discount.value), subtotal);
-      const coupon = await stripe.coupons.create({
-        amount_off: Math.round(discountAmount * 100),
-        currency: 'usd',
-        duration: 'once',
-        name: discountCode,
-      });
-      sessionParams.discounts = [{ coupon: coupon.id }];
-    }
+  if (stripeCouponId) {
+    sessionParams.discounts = [{ coupon: stripeCouponId }];
   }
 
   const total = subtotal + taxAmount - discountAmount;
