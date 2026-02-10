@@ -57,7 +57,7 @@ export default function DashboardPage(): ReactElement {
         (p) => p.id === participantId && p.status === 'ACTIVE'
       );
       if (!isParticipant) {
-        router.push(`/group-v2/${code}`);
+        router.push(`/group/${code}`);
       }
     }
   }, [groupOrder, participantId, code, router]);
@@ -88,7 +88,7 @@ export default function DashboardPage(): ReactElement {
             Group Order Not Found
           </h1>
           <Link
-            href="/group-v2/create"
+            href="/group/create"
             className="text-brand-blue hover:underline"
           >
             Create a new group order

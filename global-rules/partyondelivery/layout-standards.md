@@ -55,6 +55,33 @@ Behavior:
 
 ---
 
+## Navbar Background Rules (Safe Default: Opaque)
+
+Navigation defaults to **opaque** (white bg, dark text) on all routes. Only routes explicitly
+listed in `NAV_TRANSPARENT_ROUTES` (in `src/components/Navigation.tsx`) get transparent nav
+with white text.
+
+### How It Works
+- `NAV_TRANSPARENT_ROUTES` is an allow-list of routes where the nav starts transparent
+- All other routes immediately render with white background + dark text
+- On transparent routes, the nav transitions to opaque after scrolling 50px
+
+### When to Add a Route to `NAV_TRANSPARENT_ROUTES`
+- The page has a **dark background that extends behind the fixed nav area**
+- The page does **NOT** use `mt-24` on its hero section (hero starts at top of viewport)
+- Examples: Homepage (`h-screen` dark hero), `/services` (dark gradient from top)
+
+### When NOT to Add a Route
+- The page uses `mt-24` on its hero (leaves white gap behind nav) → opaque is correct
+- The page has a light/white background behind the nav area → opaque is correct
+- Do nothing — opaque nav is the safe automatic default
+
+### Rule
+**NEVER use white/light text on a white/light nav background.** If a page has a light background
+behind the nav area, it must NOT be in `NAV_TRANSPARENT_ROUTES`.
+
+---
+
 ## Hero Section Implementation Rules
 
 ### THE GOLDEN RULE
