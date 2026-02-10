@@ -47,18 +47,18 @@ export async function GET(request: NextRequest) {
         where: { handle: localCollection },
       });
 
-      const products = await prisma.product.findMany({
+      const rows = await prisma.productCategory.findMany({
         where: {
-          status: 'ACTIVE',
-          categories: { some: { category: { handle: localCollection } } },
+          category: { handle: localCollection },
+          product: { status: 'ACTIVE' },
         },
-        include: productInclude,
-        orderBy: { title: 'asc' },
+        orderBy: { position: 'asc' },
+        include: { product: { include: productInclude } },
         take: first,
       });
 
-      const edges = products.map((product) => ({
-        node: transformToProduct(product),
+      const edges = rows.map((row) => ({
+        node: transformToProduct(row.product),
       }));
 
       return NextResponse.json(
@@ -177,6 +177,19 @@ export async function GET(request: NextRequest) {
       });
 
       products = [...productTypeMatches, ...titleMatches, ...otherMatches].slice(skip, skip + first);
+    } else if (collection) {
+      // Order by manual position within collection
+      const rows = await prisma.productCategory.findMany({
+        where: {
+          category: { handle: collection },
+          product: { status: 'ACTIVE' },
+        },
+        orderBy: { position: 'asc' },
+        include: { product: { include: productInclude } },
+        take: first,
+        skip,
+      });
+      products = rows.map((r) => r.product);
     } else {
       products = await prisma.product.findMany({
         where,

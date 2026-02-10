@@ -3,6 +3,7 @@ import {
   getCollectionProducts,
   addProductsToCollection,
   removeProductsFromCollection,
+  reorderCollectionProducts,
 } from '@/lib/collections/service';
 
 interface RouteContext {
@@ -44,6 +45,29 @@ export async function POST(request: NextRequest, context: RouteContext) {
   } catch (error) {
     console.error('[Collections Products API] POST error:', error);
     const message = error instanceof Error ? error.message : 'Failed to add products';
+    const status = message.includes('not found') ? 404 : 500;
+    return NextResponse.json({ error: message }, { status });
+  }
+}
+
+export async function PUT(request: NextRequest, context: RouteContext) {
+  try {
+    const { id } = await context.params;
+    const body = await request.json();
+    const { productIds } = body;
+
+    if (!Array.isArray(productIds) || productIds.length === 0) {
+      return NextResponse.json(
+        { error: 'productIds must be a non-empty array' },
+        { status: 400 }
+      );
+    }
+
+    await reorderCollectionProducts(id, productIds);
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('[Collections Products API] PUT error:', error);
+    const message = error instanceof Error ? error.message : 'Failed to reorder products';
     const status = message.includes('not found') ? 404 : 500;
     return NextResponse.json({ error: message }, { status });
   }

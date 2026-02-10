@@ -4,10 +4,14 @@ import { getAllCollections, createCollection } from '@/lib/collections/service';
 export async function GET(request: NextRequest) {
   try {
     const parentId = request.nextUrl.searchParams.get('parentId');
-    const collections = await getAllCollections(
-      parentId === '' ? null : parentId ?? undefined
+    const limit = parseInt(request.nextUrl.searchParams.get('limit') || '100');
+    const offset = parseInt(request.nextUrl.searchParams.get('offset') || '0');
+
+    const { collections, total } = await getAllCollections(
+      parentId === '' ? null : parentId ?? undefined,
+      { limit, offset }
     );
-    return NextResponse.json({ collections });
+    return NextResponse.json({ collections, total });
   } catch (error) {
     console.error('[Collections API] GET error:', error);
     return NextResponse.json(

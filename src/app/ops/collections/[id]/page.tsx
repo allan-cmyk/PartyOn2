@@ -49,6 +49,7 @@ export default function CollectionDetailPage(): ReactElement {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [adding, setAdding] = useState(false);
   const [removingId, setRemovingId] = useState<string | null>(null);
+  const [reordering, setReordering] = useState(false);
 
   const fetchCollection = useCallback(async () => {
     setLoading(true);
@@ -137,6 +138,29 @@ export default function CollectionDetailPage(): ReactElement {
       alert('Failed to remove product');
     } finally {
       setRemovingId(null);
+    }
+  };
+
+  const handleMove = async (index: number, direction: 'up' | 'down') => {
+    const swapIndex = direction === 'up' ? index - 1 : index + 1;
+    if (swapIndex < 0 || swapIndex >= products.length) return;
+
+    const newProducts = [...products];
+    [newProducts[index], newProducts[swapIndex]] = [newProducts[swapIndex], newProducts[index]];
+    setProducts(newProducts);
+
+    setReordering(true);
+    try {
+      await fetch(`/api/v1/admin/collections/${id}/products`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productIds: newProducts.map((p) => p.id) }),
+      });
+    } catch {
+      // Revert on failure
+      setProducts(products);
+    } finally {
+      setReordering(false);
     }
   };
 
@@ -275,6 +299,17 @@ export default function CollectionDetailPage(): ReactElement {
         </div>
       )}
 
+      {/* Saving indicator */}
+      {reordering && (
+        <div className="mb-3 px-4 py-2 bg-purple-50 border border-purple-200 text-purple-700 text-sm rounded-lg flex items-center gap-2">
+          <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+          Saving order...
+        </div>
+      )}
+
       {/* Products in Collection */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         {products.length === 0 ? (
@@ -291,6 +326,8 @@ export default function CollectionDetailPage(): ReactElement {
           <table className="w-full">
             <thead className="bg-gradient-to-r from-gray-50 to-gray-100/50 border-b border-gray-200">
               <tr>
+                <th className="text-center px-4 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider w-16">#</th>
+                <th className="text-center px-2 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider w-20">Order</th>
                 <th className="text-left px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Product</th>
                 <th className="text-center px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Type</th>
                 <th className="text-right px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Price</th>
@@ -298,8 +335,35 @@ export default function CollectionDetailPage(): ReactElement {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {products.map((p) => (
+              {products.map((p, idx) => (
                 <tr key={p.id} className="hover:bg-purple-50/50 transition-colors group">
+                  <td className="px-4 py-4 text-center">
+                    <span className="text-sm font-mono text-gray-500">{idx + 1}</span>
+                  </td>
+                  <td className="px-2 py-4 text-center">
+                    <div className="flex items-center justify-center gap-1">
+                      <button
+                        onClick={() => handleMove(idx, 'up')}
+                        disabled={idx === 0 || reordering}
+                        className="p-1 rounded hover:bg-purple-100 text-gray-400 hover:text-purple-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                        title="Move up"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                        </svg>
+                      </button>
+                      <button
+                        onClick={() => handleMove(idx, 'down')}
+                        disabled={idx === products.length - 1 || reordering}
+                        className="p-1 rounded hover:bg-purple-100 text-gray-400 hover:text-purple-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                        title="Move down"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       {p.imageUrl ? (

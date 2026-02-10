@@ -83,16 +83,25 @@ export async function createCollection(input: CreateCollectionInput): Promise<Co
   return serializeCollectionFull(cat);
 }
 
-export async function getAllCollections(parentId?: string | null): Promise<CollectionListItem[]> {
+export async function getAllCollections(
+  parentId?: string | null,
+  opts: { limit?: number; offset?: number } = {}
+): Promise<{ collections: CollectionListItem[]; total: number }> {
   const where = parentId !== undefined ? { parentId } : {};
+  const { limit = 100, offset = 0 } = opts;
 
-  const cats = await prisma.category.findMany({
-    where,
-    orderBy: { position: 'asc' },
-    include: { _count: { select: { products: true } } },
-  });
+  const [total, cats] = await Promise.all([
+    prisma.category.count({ where }),
+    prisma.category.findMany({
+      where,
+      orderBy: { position: 'asc' },
+      include: { _count: { select: { products: true } } },
+      take: limit,
+      skip: offset,
+    }),
+  ]);
 
-  return cats.map(serializeCollectionList);
+  return { collections: cats.map(serializeCollectionList), total };
 }
 
 export async function getCollectionByHandle(handle: string): Promise<CollectionView | null> {

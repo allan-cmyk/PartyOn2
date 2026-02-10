@@ -23,21 +23,27 @@ export default function CollectionsPage(): ReactElement {
   const [newDescription, setNewDescription] = useState('');
   const [newParentId, setNewParentId] = useState('');
   const [error, setError] = useState('');
+  const [page, setPage] = useState(0);
+  const [total, setTotal] = useState(0);
+  const PAGE_SIZE = 100;
 
   const fetchCollections = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/v1/admin/collections');
+      const res = await fetch(`/api/v1/admin/collections?limit=${PAGE_SIZE}&offset=${page * PAGE_SIZE}`);
       const json = await res.json();
       if (json.collections) {
         setCollections(json.collections);
+      }
+      if (json.total !== undefined) {
+        setTotal(json.total);
       }
     } catch {
       console.error('Failed to fetch collections');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [page]);
 
   useEffect(() => {
     fetchCollections();
@@ -244,6 +250,31 @@ export default function CollectionsPage(): ReactElement {
           </table>
         )}
       </div>
+
+      {/* Pagination */}
+      {total > PAGE_SIZE && (
+        <div className="flex items-center justify-between mt-4 px-2">
+          <p className="text-sm text-gray-600">
+            Showing {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, total)} of {total} collections
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              disabled={page === 0}
+              className="px-4 py-2 text-sm font-medium bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => setPage((p) => p + 1)}
+              disabled={(page + 1) * PAGE_SIZE >= total}
+              className="px-4 py-2 text-sm font-medium bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
