@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, Suspense, type ReactElement } from 'react';
+import { useState, useMemo, useEffect, useRef, Suspense, type ReactElement } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -13,8 +13,10 @@ import QuickOrderSearch from '@/components/quick-order/QuickOrderSearch';
 import CartSummaryBar from '@/components/quick-order/CartSummaryBar';
 import PremierHero from '@/components/partners/PremierHero';
 import PremierHeroStickyCTA from '@/components/partners/PremierHeroStickyCTA';
+import DontForgetRow from '@/components/quick-order/DontForgetRow';
 import { useQuickOrderProducts } from '@/hooks/useQuickOrderProducts';
-import { SHOPIFY_COLLECTIONS } from '@/lib/products/categories';
+import { useCollectionCounts } from '@/hooks/useCollectionCounts';
+import { PREMIER_BOAT_COLLECTIONS } from '@/lib/products/premier-collections';
 
 /** Real Google reviews for boat parties */
 const TESTIMONIALS = [
@@ -54,8 +56,9 @@ function PremierPartyCruisesPageContent(): ReactElement {
   void searchParams;
 
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
-  const [activeCollection, setActiveCollection] = useState('favorites-home-page');
+  const [activeCollection, setActiveCollection] = useState('boat-best-sellers');
   const [showSearchOverlay, setShowSearchOverlay] = useState(false);
+  const [sortBy, setSortBy] = useState<'popular' | 'price-asc'>('popular');
 
   // Sticky collections state
   const [isCollectionsSticky, setIsCollectionsSticky] = useState(false);
@@ -66,6 +69,17 @@ function PremierPartyCruisesPageContent(): ReactElement {
 
   // Load products for active collection
   const { products, loading, error } = useQuickOrderProducts(activeCollection);
+  const { counts } = useCollectionCounts(PREMIER_BOAT_COLLECTIONS.map(c => c.handle));
+
+  // Client-side sort
+  const sortedProducts = useMemo(() => {
+    if (sortBy !== 'price-asc') return products;
+    return [...products].sort((a, b) => {
+      const priceA = parseFloat(a.variants.edges[0]?.node.price.amount ?? '0');
+      const priceB = parseFloat(b.variants.edges[0]?.node.price.amount ?? '0');
+      return priceA - priceB;
+    });
+  }, [products, sortBy]);
 
   // Intersection Observer for sticky detection (start and end of product section)
   useEffect(() => {
@@ -111,6 +125,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
   const handleCollectionChange = (handle: string) => {
     if (activeCollection === handle) return;
     setActiveCollection(handle);
+    setSortBy('popular');
   };
 
   return (
@@ -263,9 +278,9 @@ function PremierPartyCruisesPageContent(): ReactElement {
               }
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-              {SHOPIFY_COLLECTIONS.map((collection) => {
-                if (!collection?.colors) return null;
+              {PREMIER_BOAT_COLLECTIONS.map((collection) => {
                 const isActive = activeCollection === collection.handle;
+                const count = counts[collection.handle];
                 return (
                   <button
                     key={collection.handle}
@@ -284,6 +299,9 @@ function PremierPartyCruisesPageContent(): ReactElement {
                     disabled={loading && activeCollection !== collection.handle}
                   >
                     {collection.label.toUpperCase()}
+                    {count != null && count > 0 && (
+                      <span className="ml-1 opacity-70">({count})</span>
+                    )}
                   </button>
                 );
               })}
@@ -313,7 +331,36 @@ function PremierPartyCruisesPageContent(): ReactElement {
               </button>
             </div>
           ) : (
-            <QuickOrderGrid products={products} loading={loading} />
+            <>
+              <DontForgetRow />
+
+              {/* Sort Toggle */}
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-xs text-gray-500 uppercase tracking-wide mr-1">Sort:</span>
+                <button
+                  onClick={() => setSortBy('popular')}
+                  className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
+                    sortBy === 'popular'
+                      ? 'bg-gray-900 text-white border-gray-900'
+                      : 'bg-white text-gray-600 border-gray-300 hover:border-gray-400'
+                  }`}
+                >
+                  Popular
+                </button>
+                <button
+                  onClick={() => setSortBy('price-asc')}
+                  className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
+                    sortBy === 'price-asc'
+                      ? 'bg-gray-900 text-white border-gray-900'
+                      : 'bg-white text-gray-600 border-gray-300 hover:border-gray-400'
+                  }`}
+                >
+                  Price Low→High
+                </button>
+              </div>
+
+              <QuickOrderGrid products={sortedProducts} loading={loading} />
+            </>
           )}
         </div>
       </main>
