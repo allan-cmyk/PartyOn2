@@ -227,6 +227,7 @@ export default function DashboardPage(): ReactElement {
               tabId={activeTab.id}
               participantId={participantId}
               orderType={activeTab.orderType}
+              draftItems={activeTab.draftItems || []}
               onItemAdded={refresh}
             />
           </div>

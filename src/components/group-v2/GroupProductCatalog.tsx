@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect, ReactElement } from 'react';
-import { addDraftItemV2 } from '@/lib/group-orders-v2/api-client';
+import { addDraftItemV2, updateDraftItemV2, removeDraftItemV2 } from '@/lib/group-orders-v2/api-client';
 import { getCollectionsForOrderType, ORDER_TYPES } from '@/lib/group-orders-v2/order-types';
+import type { DraftCartItemView } from '@/lib/group-orders-v2/types';
 import CollectionTabs from './CollectionTabs';
+import QuantityStepper from '../quick-order/QuantityStepper';
 
 interface CatalogProduct {
   id: string;
@@ -27,6 +29,7 @@ interface Props {
   tabId: string;
   participantId: string;
   orderType?: string | null;
+  draftItems?: DraftCartItemView[];
   onItemAdded: () => void;
 }
 
@@ -35,12 +38,22 @@ export default function GroupProductCatalog({
   tabId,
   participantId,
   orderType,
+  draftItems = [],
   onItemAdded,
 }: Props): ReactElement {
   const [products, setProducts] = useState<CatalogProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [addingId, setAddingId] = useState<string | null>(null);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  // Build a map of productId → draft item for the current participant
+  const myDraftMap = new Map<string, DraftCartItemView>();
+  for (const item of draftItems) {
+    if (item.addedBy?.id === participantId) {
+      myDraftMap.set(item.productId, item);
+    }
+  }
 
   const collections = getCollectionsForOrderType(orderType);
   const orderTypeLabel = ORDER_TYPES.find((t) => t.value === orderType)?.label;
@@ -153,16 +166,18 @@ export default function GroupProductCatalog({
           {filtered.map((product) => {
             const variant = product.variants?.[0];
             const price = variant ? Number(variant.price) : Number(product.basePrice);
-            // Handle both image (singular from API) and images (array)
             const imgUrl = product.image?.url || product.images?.[0]?.url;
             const isAdding = addingId === product.id;
+            const isUpdating = updatingId === product.id;
+            const draftItem = myDraftMap.get(product.id);
+            const draftQty = draftItem?.quantity ?? 0;
 
             return (
               <div
                 key={product.id}
                 className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow"
               >
-                {/* Image - aspect square */}
+                {/* Image */}
                 <div className="relative aspect-square bg-gray-100 w-full group">
                   {imgUrl ? (
                     <img
@@ -180,7 +195,7 @@ export default function GroupProductCatalog({
                   )}
                 </div>
 
-                {/* Content - centered text */}
+                {/* Content */}
                 <div className="p-3 space-y-1 text-center">
                   <h3 className="font-semibold text-base sm:text-lg text-gray-900 line-clamp-2 leading-tight">
                     {product.title}
@@ -189,21 +204,56 @@ export default function GroupProductCatalog({
                     ${price.toFixed(2)}
                   </p>
 
-                  {/* Golden circular add button */}
-                  <button
-                    onClick={() => handleAdd(product)}
-                    disabled={isAdding}
-                    className="mx-auto mt-2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-yellow-500 hover:bg-brand-yellow text-gray-900 flex items-center justify-center shadow-md transition-all disabled:opacity-50"
-                    aria-label={`Add ${product.title} to group order`}
-                  >
-                    {isAdding ? (
-                      <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                      </svg>
-                    )}
-                  </button>
+                  {draftQty > 0 && draftItem ? (
+                    <div className="flex justify-center mt-2">
+                      <QuantityStepper
+                        quantity={draftQty}
+                        disabled={isUpdating}
+                        onIncrement={async () => {
+                          setUpdatingId(product.id);
+                          try {
+                            await updateDraftItemV2(shareCode, tabId, draftItem.id, participantId, draftQty + 1);
+                            onItemAdded();
+                          } catch (err) {
+                            console.error('Failed to update item:', err);
+                          } finally {
+                            setUpdatingId(null);
+                          }
+                        }}
+                        onDecrement={async () => {
+                          setUpdatingId(product.id);
+                          try {
+                            if (draftQty <= 1) {
+                              await removeDraftItemV2(shareCode, tabId, draftItem.id, participantId);
+                            } else {
+                              await updateDraftItemV2(shareCode, tabId, draftItem.id, participantId, draftQty - 1);
+                            }
+                            onItemAdded();
+                          } catch (err) {
+                            console.error('Failed to update item:', err);
+                          } finally {
+                            setUpdatingId(null);
+                          }
+                        }}
+                        size="sm"
+                      />
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => handleAdd(product)}
+                      disabled={isAdding}
+                      className="mx-auto mt-2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-yellow-500 hover:bg-brand-yellow text-gray-900 flex items-center justify-center shadow-md transition-all disabled:opacity-50"
+                      aria-label={`Add ${product.title} to group order`}
+                    >
+                      {isAdding ? (
+                        <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                      )}
+                    </button>
+                  )}
                 </div>
               </div>
             );
