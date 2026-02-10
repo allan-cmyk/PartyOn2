@@ -146,8 +146,8 @@ export default function Navigation({
               />
             </Link>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8 lg:space-x-10">
+            {/* Desktop Navigation - Centered Links */}
+            <div className="hidden md:flex flex-1 items-center justify-center space-x-8 lg:space-x-10">
               <NavLink href="/order" isScrolled={isScrolled}>ORDER</NavLink>
 
               {/* Services Dropdown */}
@@ -222,11 +222,11 @@ export default function Navigation({
 
               <NavLink href="/contact" isScrolled={isScrolled}>CONTACT</NavLink>
               <NavLink href="/partners" isScrolled={isScrolled}>PARTNERS</NavLink>
+            </div>
 
-              {/* Search */}
+            {/* Desktop Utility Items - Right */}
+            <div className="hidden md:flex items-center space-x-4 flex-shrink-0">
               <ProductSearch isScrolled={isScrolled} />
-
-              {/* Cart Button */}
               <CartButton isScrolled={isScrolled} />
 
               {/* Account Section - only show when logged in */}

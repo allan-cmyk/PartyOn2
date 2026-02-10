@@ -57,9 +57,9 @@ export function transformToProduct(product: ProductWithRelations): Product {
     },
     variants: {
       edges: product.variants.map(v => {
-        const variantId = v.shopifyId
-          ? (v.shopifyId.startsWith('gid://') ? v.shopifyId : `gid://shopify/ProductVariant/${v.shopifyId}`)
-          : v.id;
+        // Always use local database UUID for variant ID
+        // This must match the cart system which stores local UUIDs
+        const variantId = v.id;
         return {
           node: {
             id: variantId,

@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState, useCallback, type ReactElement } from 'react';
+import { useState, useCallback, useEffect, type ReactElement } from 'react';
 import Image from 'next/image';
 import type { Product } from '@/lib/types';
 import { formatPrice, getProductImageUrl, getFirstAvailableVariant } from '@/lib/utils';
@@ -56,65 +56,31 @@ export default function QuickProductCard({
   const cartQuantity = cartLine?.quantity ?? 0;
   const lineId = cartLine?.id;
 
-  // Debug logging for cart state
-  if (process.env.NODE_ENV === 'development' || true) {
-    const cartVariantIds = cart?.lines?.edges?.map(e => e.node.merchandise.id) || [];
-    if (cartVariantIds.length > 0 || variantId) {
-      console.log('[PRODUCT CARD]', product.title.substring(0, 20), {
-        productVariantId: variantId,
-        cartVariantIds,
-        cartQuantity,
-        totalCartQuantity: cart?.totalQuantity,
-        match: cartVariantIds.includes(variantId)
-      });
+
+  // Clear optimistic qty once cart state catches up
+  useEffect(() => {
+    if (optimisticQty !== null && cartQuantity === optimisticQty) {
+      setOptimisticQty(null);
     }
-  }
+  }, [cartQuantity, optimisticQty]);
 
   // Display quantity (optimistic or actual)
   const displayQty = optimisticQty ?? cartQuantity;
 
   const handleAdd = useCallback(async () => {
-    // Immediate visual feedback for debugging
-    console.log('[QUICK ADD] Button clicked', { variantId, isAdding, productTitle: product.title });
-
-    if (!variantId) {
-      console.error('[QUICK ADD] No variantId available!', { product: product.title, variants: product.variants });
-      alert('Error: No variant ID for this product');
-      return;
-    }
-    if (isAdding) {
-      console.log('[QUICK ADD] Already adding, skipping');
-      return;
-    }
-
-    // Check age verification before proceeding
-    const ageVerified = typeof window !== 'undefined' && (
-      localStorage.getItem('age_verified') === 'true' ||
-      localStorage.getItem('ageVerified') === 'true'
-    );
-    console.log('[QUICK ADD] Age verified:', ageVerified);
+    if (!variantId || isAdding) return;
 
     setIsAdding(true);
     setOptimisticQty(1);
     try {
-      console.log('[QUICK ADD] Calling addToCart with:', variantId);
-      const result = await addToCart(variantId, 1);
-      console.log('[QUICK ADD] addToCart completed successfully', {
-        cartId: result?.id,
-        totalQuantity: result?.totalQuantity
-      });
+      await addToCart(variantId, 1);
     } catch (error) {
-      console.error('[QUICK ADD] Failed to add to cart:', error);
-      // Show error to user
-      if (error instanceof Error && error.message !== 'Age verification required') {
-        alert('Error adding to cart: ' + error.message);
-      }
+      console.error('Failed to add to cart:', error);
       setOptimisticQty(null);
     } finally {
       setIsAdding(false);
-      setOptimisticQty(null);
     }
-  }, [variantId, addToCart, isAdding, product.title, product.variants]);
+  }, [variantId, addToCart, isAdding]);
 
   const handleIncrement = useCallback(async () => {
     if (!lineId || isAdding) return;
@@ -124,8 +90,6 @@ export default function QuickProductCard({
       await updateCartItem(lineId, newQty);
     } catch (error) {
       console.error('Failed to update cart:', error);
-      setOptimisticQty(null);
-    } finally {
       setOptimisticQty(null);
     }
   }, [lineId, displayQty, updateCartItem, isAdding]);
@@ -140,8 +104,6 @@ export default function QuickProductCard({
       } catch (error) {
         console.error('Failed to remove from cart:', error);
         setOptimisticQty(null);
-      } finally {
-        setOptimisticQty(null);
       }
     } else {
       setOptimisticQty(newQty);
@@ -149,8 +111,6 @@ export default function QuickProductCard({
         await updateCartItem(lineId, newQty);
       } catch (error) {
         console.error('Failed to update cart:', error);
-        setOptimisticQty(null);
-      } finally {
         setOptimisticQty(null);
       }
     }
