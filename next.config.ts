@@ -170,6 +170,13 @@ const nextConfig: NextConfig = {
   // 301 Redirects for SEO (from SEMrush audit - January 2025)
   async redirects() {
     return [
+      // Group order v2 slug rename
+      {
+        source: '/group-v2/:path*',
+        destination: '/group/:path*',
+        permanent: true,
+      },
+
       // Main ordering page redirects
       {
         source: '/products',

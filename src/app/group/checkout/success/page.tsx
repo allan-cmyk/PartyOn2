@@ -27,7 +27,7 @@ function CheckoutSuccessContent(): ReactElement {
 
         {code ? (
           <Link
-            href={`/group-v2/${code}/dashboard`}
+            href={`/group/${code}/dashboard`}
             className="inline-block px-6 py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800"
           >
             Return to Dashboard

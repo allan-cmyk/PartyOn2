@@ -294,7 +294,7 @@ export default function Cart() {
                         Delivery: {new Date(currentGroupOrder.deliveryDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} at {currentGroupOrder.deliveryTime}
                       </p>
                       {isHost && (
-                        <Link href="/group-v2/create" onClick={closeCart}>
+                        <Link href="/group/create" onClick={closeCart}>
                           <button className="mt-2 text-xs text-green-700 hover:text-green-800 underline">
                             View Dashboard
                           </button>

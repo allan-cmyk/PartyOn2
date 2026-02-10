@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ReactElement } from 'react';
 
 /**
- * Error boundary for /group-v2/* routes.
+ * Error boundary for /group/* routes.
  * Catches client-side errors within the group ordering pages
  * while keeping the root layout (nav, providers) intact.
  */
@@ -52,7 +52,7 @@ export default function GroupV2Error({
             Try Again
           </button>
           <Link
-            href="/group-v2/create"
+            href="/group/create"
             className="px-6 py-2.5 bg-white text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium text-sm"
           >
             Create New Group

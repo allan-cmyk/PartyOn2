@@ -19,7 +19,7 @@ export default function ShareGroupModal({
 
   if (!isOpen) return null;
 
-  const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/group-v2/${shareCode}`;
+  const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/group/${shareCode}`;
 
   const handleCopy = async (text: string) => {
     try {

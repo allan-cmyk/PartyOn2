@@ -66,8 +66,8 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       participantName: participant.guestName || 'Guest',
       draftItems,
       discountCode,
-      successUrl: `${appUrl}/group-v2/checkout/success?session_id={CHECKOUT_SESSION_ID}&code=${code}`,
-      cancelUrl: `${appUrl}/group-v2/${code}/dashboard`,
+      successUrl: `${appUrl}/group/checkout/success?session_id={CHECKOUT_SESSION_ID}&code=${code}`,
+      cancelUrl: `${appUrl}/group/${code}/dashboard`,
     });
 
     return NextResponse.json({

@@ -15,7 +15,7 @@ const NAV_HIDDEN_ROUTES = [
   '/weddings',
   '/corporate',
   '/checkout',
-  '/group-v2/',
+  '/group/',
 ];
 
 interface NavLinkProps {

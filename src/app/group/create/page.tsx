@@ -1,394 +1,447 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import Navigation from "@/components/Navigation"
-import Footer from '@/components/Footer'
-import { useGroupOrderContext } from '@/contexts/GroupOrderContext'
-import { GroupOrderAPI } from '@/lib/group-orders/api'
+import { useState, ReactElement } from 'react';
+import { useRouter } from 'next/navigation';
+import { createGroupOrderV2 } from '@/lib/group-orders-v2/api-client';
+import type { CreateTabInput } from '@/lib/group-orders-v2/types';
+import { ORDER_TYPES } from '@/lib/group-orders-v2/order-types';
+import OrderTypeIcon from '@/components/group/OrderTypeIcon';
 
-// Partner addresses for quick selection
-const PARTNER_ADDRESSES = [
-  {
-    label: 'Premier Party Cruises [Anderson Mill Marina]',
-    address1: '13993 FM 2769',
-    address2: '',
-    city: 'Leander',
-    province: 'TX',
-    zip: '78641',
-  },
-]
+interface TabFormData extends CreateTabInput {
+  key: string;
+}
 
-export default function CreateGroupOrderPage() {
-  const router = useRouter()
-  const { setGroupOrderCode } = useGroupOrderContext()
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+// Get tomorrow's date in YYYY-MM-DD format for min date attribute
+function getMinDate(): string {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return tomorrow.toISOString().split('T')[0];
+}
 
-  const [formData, setFormData] = useState({
-    name: '',
+// Check if a date string (YYYY-MM-DD) falls on a Sunday
+function isSunday(dateStr: string): boolean {
+  const date = new Date(dateStr + 'T12:00:00');
+  return date.getDay() === 0;
+}
+
+// Validate delivery date: must be in future and not Sunday
+function validateDeliveryDate(dateStr: string): string | null {
+  if (!dateStr) return null;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const selectedDate = new Date(dateStr + 'T12:00:00');
+
+  if (selectedDate <= today) {
+    return 'Delivery date must be in the future';
+  }
+  if (isSunday(dateStr)) {
+    return 'Delivery is not available on Sundays';
+  }
+  return null;
+}
+
+// Use stable index-based keys to avoid SSR/client hydration mismatch
+// Date.now() generates different values on server vs client, causing React errors
+function newTab(idx: number): TabFormData {
+  return {
+    key: `tab-${idx}`,
+    name: idx === 0 ? 'House Order' : `Order ${idx + 1}`,
+    orderType: 'house',
     deliveryDate: '',
-    deliveryTime: '12:00 PM - 1:00 PM',
-    address1: '',
-    address2: '',
-    city: 'Austin',
-    province: 'TX',
-    zip: '',
-    customerName: '',
-    customerId: '',
-  })
+    deliveryTime: '',
+    deliveryAddress: {
+      address1: '',
+      city: 'Austin',
+      province: 'TX',
+      zip: '',
+      country: 'US',
+    },
+    deliveryPhone: '',
+    deliveryNotes: '',
+  };
+}
 
-  // Generate a simple customer ID if not logged in
-  const getOrCreateCustomerId = () => {
-    let customerId = localStorage.getItem('customerId')
-    if (!customerId) {
-      customerId = `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-      localStorage.setItem('customerId', customerId)
+export default function CreateGroupPage(): ReactElement {
+  const router = useRouter();
+  const [name, setName] = useState('');
+  const [hostName, setHostName] = useState('');
+  const [hostEmail, setHostEmail] = useState('');
+  const [hostPhone, setHostPhone] = useState('');
+  const [tabs, setTabs] = useState<TabFormData[]>([newTab(0)]);
+  // Counter ensures unique keys even when tabs are removed and re-added
+  const [tabCounter, setTabCounter] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [dateErrors, setDateErrors] = useState<Record<string, string>>({});
+
+  const addTab = () => {
+    if (tabs.length >= 10) return;
+    setTabs([...tabs, newTab(tabCounter)]);
+    setTabCounter(tabCounter + 1);
+  };
+
+  const removeTab = (key: string) => {
+    if (tabs.length <= 1) return;
+    setTabs(tabs.filter((t) => t.key !== key));
+  };
+
+  const updateTab = (key: string, field: string, value: string) => {
+    // Validate delivery date
+    if (field === 'deliveryDate') {
+      const dateError = validateDeliveryDate(value);
+      setDateErrors((prev) => ({
+        ...prev,
+        [key]: dateError || '',
+      }));
     }
-    return customerId
-  }
 
-  // Check if a date is Sunday
-  const isSunday = (dateString: string) => {
-    const date = new Date(dateString + 'T12:00:00')
-    return date.getDay() === 0
-  }
+    setTabs(
+      tabs.map((t) => {
+        if (t.key !== key) return t;
+        if (field.startsWith('address.')) {
+          const addrField = field.split('.')[1];
+          return {
+            ...t,
+            deliveryAddress: { ...t.deliveryAddress, [addrField]: value },
+          };
+        }
+        return { ...t, [field]: value };
+      })
+    );
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
-    setIsLoading(true)
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    // Validate required fields
+    if (!hostEmail || !hostPhone) {
+      setError('Email and phone are required');
+      setLoading(false);
+      return;
+    }
+
+    // Validate all delivery dates
+    for (const tab of tabs) {
+      const dateError = validateDeliveryDate(tab.deliveryDate);
+      if (dateError) {
+        setError(`${tab.name}: ${dateError}`);
+        setLoading(false);
+        return;
+      }
+    }
 
     try {
-      const customerId = getOrCreateCustomerId()
+      const group = await createGroupOrderV2({
+        name,
+        hostName,
+        hostEmail,
+        hostPhone,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        tabs: tabs.map(({ key, ...rest }) => ({
+          ...rest,
+          orderType: rest.orderType || undefined,
+          // Convert date input (YYYY-MM-DD) to ISO string with noon time
+          deliveryDate: rest.deliveryDate.includes('T')
+            ? rest.deliveryDate
+            : `${rest.deliveryDate}T12:00:00Z`,
+        })),
+      });
 
-      // Get minimum date (72 hours from now)
-      const minDate = new Date()
-      minDate.setHours(minDate.getHours() + 72)
-
-      const selectedDate = new Date(formData.deliveryDate)
-      if (selectedDate < minDate) {
-        throw new Error('Delivery date must be at least 72 hours from now')
-      }
-
-      // No Sunday deliveries
-      if (isSunday(formData.deliveryDate)) {
-        throw new Error('Sorry, we do not deliver on Sundays. Please select another day.')
-      }
-
-      const result = await GroupOrderAPI.create({
-        name: formData.name,
-        deliveryDate: formData.deliveryDate,
-        deliveryTime: formData.deliveryTime,
-        deliveryAddress: {
-          address1: formData.address1,
-          address2: formData.address2,
-          city: formData.city,
-          province: formData.province,
-          zip: formData.zip,
-          country: 'US',
-        },
-        customerId,
-        customerName: formData.customerName || 'Host',
-      })
-
-      if (result && result.shareCode) {
-        // Save the share code to context (and localStorage)
-        setGroupOrderCode(result.shareCode)
-
-        // Mark this user as host of this group order
-        localStorage.setItem(`hostOf_${result.shareCode}`, 'true')
-
-        // Short delay to let context update
-        setTimeout(() => {
-          router.push('/group/dashboard')
-        }, 100)
-      }
-    } catch (err) {
-      // Extract detailed error message
-      let errorMessage = 'Failed to create group order'
-      if (err instanceof Error) {
-        errorMessage = err.message
-        // Check for common issues
-        if (err.message.includes('fetch') || err.message.includes('network')) {
-          errorMessage = 'Network error. Please check your internet connection and try again.'
-        } else if (err.message.includes('500') || err.message.includes('server')) {
-          errorMessage = 'Server error. Our team has been notified. Please try again in a few minutes.'
+      // Store host info
+      try {
+        localStorage.setItem('groupV2Code', group.shareCode);
+        const hostP = (group.participants || []).find((p) => p.isHost);
+        if (hostP) {
+          localStorage.setItem('groupV2ParticipantId', hostP.id);
         }
+      } catch {
+        // localStorage may be unavailable
       }
-      setError(errorMessage)
+
+      router.push(`/group/${group.shareCode}/dashboard`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create group order');
     } finally {
-      setIsLoading(false)
+      setLoading(false);
     }
-  }
-
-  // Calculate minimum date (72 hours from now), skip Sundays
-  const getMinDate = () => {
-    const date = new Date()
-    date.setHours(date.getHours() + 72)
-    // If minimum date lands on Sunday, push to Monday
-    if (date.getDay() === 0) {
-      date.setDate(date.getDate() + 1)
-    }
-    return date.toISOString().split('T')[0]
-  }
-
-  // 1-hour time slots
-  const timeSlots = [
-    '9:00 AM - 10:00 AM',
-    '10:00 AM - 11:00 AM',
-    '11:00 AM - 12:00 PM',
-    '12:00 PM - 1:00 PM',
-    '1:00 PM - 2:00 PM',
-    '2:00 PM - 3:00 PM',
-    '3:00 PM - 4:00 PM',
-    '4:00 PM - 5:00 PM',
-    '5:00 PM - 6:00 PM',
-    '6:00 PM - 7:00 PM',
-    '7:00 PM - 8:00 PM',
-  ]
-
-  // Handle partner address selection
-  const handlePartnerAddressSelect = (index: number) => {
-    if (index === -1) return // "Select..." option
-    const addr = PARTNER_ADDRESSES[index]
-    setFormData({
-      ...formData,
-      address1: addr.address1,
-      address2: addr.address2,
-      city: addr.city,
-      province: addr.province,
-      zip: addr.zip,
-    })
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navigation />
+    <div className="pt-32 pb-16 px-4 min-h-screen bg-gray-50">
+      <div className="max-w-2xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          Create Group Order
+        </h1>
+        <p className="text-gray-600 mb-8">
+          Set up a group order with one or more delivery tabs. Share the code so
+          others can add their items.
+        </p>
 
-      <div className="pt-32 pb-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto">
-            {/* Back link */}
-            <Link
-              href="/products"
-              className="inline-flex items-center text-gray-600 hover:text-brand-yellow mb-6 transition-colors"
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Group Info */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
+            <h2 className="text-lg font-semibold text-gray-900">Group Details</h2>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Event / Group Name
+              </label>
+              <input
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g., Sarah's Birthday Party"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Your Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={hostName}
+                  onChange={(e) => setHostName(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={hostEmail}
+                  onChange={(e) => setHostEmail(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Phone *
+              </label>
+              <input
+                type="tel"
+                required
+                value={hostPhone}
+                onChange={(e) => setHostPhone(e.target.value)}
+                className="w-full md:w-1/2 border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
+              />
+            </div>
+          </div>
+
+          {/* Tabs */}
+          {tabs.map((tab, idx) => (
+            <div
+              key={tab.key}
+              className="bg-white rounded-lg border border-gray-200 p-6 space-y-4"
             >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Back to Products
-            </Link>
+              <div className="flex justify-between items-center">
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Delivery Tab {idx + 1}
+                </h2>
+                {tabs.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeTab(tab.key)}
+                    className="text-red-500 hover:text-red-700 text-sm"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
 
-            <div className="bg-white rounded-lg shadow-sm p-8">
-              <h1 className="text-3xl font-cormorant text-gray-900 mb-2 text-center">
-                Create Group Order
-              </h1>
-              <p className="text-gray-600 text-center mb-8">
-                Start a group order and invite friends to add their items. Everyone checks out individually and gets FREE DELIVERY!
-              </p>
-
-              {error && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded">
-                  <div className="flex items-start gap-3">
-                    <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <div>
-                      <p className="font-medium text-red-800">Unable to create group order</p>
-                      <p className="text-red-700 text-sm mt-1">{error}</p>
-                      <p className="text-red-600 text-xs mt-2">
-                        Please check your information and try again. If the problem persists,
-                        <Link href="/contact" className="underline ml-1">contact us</Link>.
-                      </p>
-                    </div>
-                  </div>
+              {/* Order Type Selector */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Order Type
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  {ORDER_TYPES.map((ot) => (
+                    <button
+                      key={ot.value}
+                      type="button"
+                      onClick={() => updateTab(tab.key, 'orderType', ot.value)}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium border transition-colors ${
+                        tab.orderType === ot.value
+                          ? 'bg-gray-900 text-white border-gray-900'
+                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                      }`}
+                    >
+                      <OrderTypeIcon type={ot.icon} selected={tab.orderType === ot.value} />
+                      {ot.label}
+                    </button>
+                  ))}
                 </div>
-              )}
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Event Name */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Event Name *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g., BACH-SARAH-2026"
-                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-                />
-                <p className="mt-1 text-sm text-gray-500">
-                  (This will be the name you share with your group - make it good!)
-                </p>
               </div>
 
-              {/* Your Name */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Your Name *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.customerName}
-                  onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
-                  placeholder="Your name"
-                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-                />
-              </div>
-
-              {/* Delivery Date */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Delivery Date * <span className="text-gray-500 font-normal">(72+ hours advance, no Sundays)</span>
-                </label>
-                <input
-                  type="date"
-                  required
-                  min={getMinDate()}
-                  value={formData.deliveryDate}
-                  onChange={(e) => {
-                    const val = e.target.value
-                    if (isSunday(val)) {
-                      setError('Sorry, we do not deliver on Sundays. Please select another day.')
-                    } else {
-                      setError(null)
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Tab Name
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={tab.name}
+                    onChange={(e) => updateTab(tab.key, 'name', e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Delivery Date
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    min={getMinDate()}
+                    value={tab.deliveryDate}
+                    onChange={(e) =>
+                      updateTab(tab.key, 'deliveryDate', e.target.value)
                     }
-                    setFormData({ ...formData, deliveryDate: val })
-                  }}
-                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-                />
+                    className={`w-full border rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500 ${
+                      dateErrors[tab.key] ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                  />
+                  {dateErrors[tab.key] && (
+                    <p className="text-red-500 text-sm mt-1">{dateErrors[tab.key]}</p>
+                  )}
+                  <p className="text-gray-500 text-xs mt-1">
+                    Note: Deliveries are not available on Sundays
+                  </p>
+                </div>
               </div>
 
-              {/* Delivery Time */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Delivery Time Window *
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Delivery Time
                 </label>
                 <select
                   required
-                  value={formData.deliveryTime}
-                  onChange={(e) => setFormData({ ...formData, deliveryTime: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                  value={tab.deliveryTime}
+                  onChange={(e) =>
+                    updateTab(tab.key, 'deliveryTime', e.target.value)
+                  }
+                  className="w-full md:w-1/2 border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
                 >
-                  {timeSlots.map((slot) => (
-                    <option key={slot} value={slot}>{slot}</option>
-                  ))}
+                  <option value="">Select time</option>
+                  <option value="10:00 AM">10:00 AM</option>
+                  <option value="10:30 AM">10:30 AM</option>
+                  <option value="11:00 AM">11:00 AM</option>
+                  <option value="11:30 AM">11:30 AM</option>
+                  <option value="12:00 PM">12:00 PM</option>
+                  <option value="12:30 PM">12:30 PM</option>
+                  <option value="1:00 PM">1:00 PM</option>
+                  <option value="1:30 PM">1:30 PM</option>
+                  <option value="2:00 PM">2:00 PM</option>
+                  <option value="2:30 PM">2:30 PM</option>
+                  <option value="3:00 PM">3:00 PM</option>
+                  <option value="3:30 PM">3:30 PM</option>
+                  <option value="4:00 PM">4:00 PM</option>
+                  <option value="4:30 PM">4:30 PM</option>
+                  <option value="5:00 PM">5:00 PM</option>
+                  <option value="5:30 PM">5:30 PM</option>
+                  <option value="6:00 PM">6:00 PM</option>
+                  <option value="6:30 PM">6:30 PM</option>
+                  <option value="7:00 PM">7:00 PM</option>
+                  <option value="7:30 PM">7:30 PM</option>
+                  <option value="8:00 PM">8:00 PM</option>
                 </select>
               </div>
 
-              {/* Delivery Address */}
-              <div className="space-y-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  Delivery Address *
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Delivery Address
                 </label>
-
-                {/* Partner Addresses Dropdown */}
-                <div>
-                  <label className="block text-xs font-medium text-yellow-600 mb-1 tracking-wide">
-                    PARTNER ADDRESSES
-                  </label>
-                  <select
-                    onChange={(e) => handlePartnerAddressSelect(parseInt(e.target.value))}
-                    className="w-full px-4 py-3 border border-brand-yellow rounded bg-yellow-50 focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-gray-700"
-                    defaultValue="-1"
-                  >
-                    <option value="-1">Select a partner location...</option>
-                    {PARTNER_ADDRESSES.map((addr, i) => (
-                      <option key={i} value={i}>{addr.label}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-200"></div>
-                  </div>
-                  <div className="relative flex justify-center text-xs">
-                    <span className="px-2 bg-white text-gray-500">or enter address manually</span>
-                  </div>
-                </div>
-
                 <input
                   type="text"
                   required
-                  value={formData.address1}
-                  onChange={(e) => setFormData({ ...formData, address1: e.target.value })}
+                  value={tab.deliveryAddress.address1}
+                  onChange={(e) =>
+                    updateTab(tab.key, 'address.address1', e.target.value)
+                  }
                   placeholder="Street address"
-                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500 mb-2"
                 />
-                <input
-                  type="text"
-                  value={formData.address2}
-                  onChange={(e) => setFormData({ ...formData, address2: e.target.value })}
-                  placeholder="Apt, suite, unit (optional)"
-                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-                />
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                   <input
                     type="text"
                     required
-                    value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    value={tab.deliveryAddress.city}
+                    onChange={(e) =>
+                      updateTab(tab.key, 'address.city', e.target.value)
+                    }
                     placeholder="City"
-                    className="px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                    className="border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
+                  />
+                  <input
+                    type="text"
+                    value="TX"
+                    disabled
+                    className="border border-gray-200 bg-gray-50 rounded-lg px-3 py-2 text-gray-500"
                   />
                   <input
                     type="text"
                     required
-                    value={formData.province}
-                    onChange={(e) => setFormData({ ...formData, province: e.target.value })}
-                    placeholder="State"
-                    className="px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-                  />
-                  <input
-                    type="text"
-                    required
-                    value={formData.zip}
-                    onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
-                    placeholder="ZIP"
-                    className="px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                    value={tab.deliveryAddress.zip}
+                    onChange={(e) =>
+                      updateTab(tab.key, 'address.zip', e.target.value)
+                    }
+                    placeholder="Zip code"
+                    className="border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
                   />
                 </div>
               </div>
 
-              {/* FREE DELIVERY Notice */}
-              <div className="bg-green-50 border border-green-200 rounded p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span className="font-medium text-green-800">FREE DELIVERY for all participants!</span>
-                </div>
-                <p className="text-sm text-green-700">
-                  Share the link with your group. Everyone shops and checks out individually - no minimums, no waiting.
-                  All orders deliver together at your scheduled time.
-                </p>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Delivery Notes (optional)
+                </label>
+                <textarea
+                  value={tab.deliveryNotes || ''}
+                  onChange={(e) =>
+                    updateTab(tab.key, 'deliveryNotes', e.target.value)
+                  }
+                  rows={2}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-yellow-500"
+                  placeholder="Gate code, special instructions..."
+                />
               </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={isLoading}
-                className={`w-full py-4 tracking-[0.08em] transition-colors ${
-                  isLoading
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-brand-yellow hover:bg-yellow-600'
-                } text-gray-900 font-medium`}
-              >
-                {isLoading ? 'CREATING...' : 'CREATE GROUP ORDER'}
-              </button>
-            </form>
             </div>
-          </div>
-        </div>
-      </div>
+          ))}
 
-      <Footer />
+          {tabs.length < 10 && (
+            <button
+              type="button"
+              onClick={addTab}
+              className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-gray-400 hover:text-gray-600"
+            >
+              + Add Another Delivery Tab
+            </button>
+          )}
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4">
+              {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 disabled:opacity-50"
+          >
+            {loading ? 'Creating...' : 'Create Group Order'}
+          </button>
+        </form>
+      </div>
     </div>
-  )
+  );
 }
