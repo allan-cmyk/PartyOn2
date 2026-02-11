@@ -436,7 +436,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
               <p className="text-red-500">Failed to load products. Please try again.</p>
               <button
                 onClick={() => window.location.reload()}
-                className="mt-4 px-4 py-2 bg-brand-yellow text-gray-900 rounded-lg hover:bg-yellow-600"
+                className="mt-4 px-4 py-2 bg-brand-yellow text-gray-900 rounded-lg hover:bg-brand-yellow/80"
               >
                 Retry
               </button>
@@ -447,7 +447,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
 
               {/* Sort Toggle */}
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-xs text-gray-500 uppercase tracking-wide mr-1">Sort:</span>
+                <span className="text-xs text-gray-500 uppercase tracking-[0.08em] mr-1">Sort:</span>
                 <button
                   onClick={() => setSortBy('popular')}
                   className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
@@ -555,7 +555,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
                   </span>
                   <div className="flex gap-1 mb-3">
                     {[...Array(5)].map((_, i) => (
-                      <svg key={i} className="w-5 h-5 text-brand-yellow" fill="currentColor" viewBox="0 0 20 20">
+                      <svg key={i} className="w-5 h-5 text-brand-blue" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                       </svg>
                     ))}
@@ -582,10 +582,10 @@ function PremierPartyCruisesPageContent(): ReactElement {
         <div className="max-w-5xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-10">
-            <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4 tracking-wide">
+            <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4">
               FAQs
             </h2>
-            <div className="w-20 h-px bg-yellow-500 mx-auto" />
+            <div className="w-20 h-px bg-brand-yellow mx-auto" />
           </div>
 
           {/* Two-column grid */}
@@ -593,7 +593,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
             {/* Boat Delivery FAQs */}
             <div>
               <h3 className="font-heading text-xl text-gray-900 font-bold mb-4">Boat Delivery</h3>
-              <div className="bg-gray-50 rounded-xl p-6">
+              <div className="bg-gray-50 rounded-lg p-6">
                 {BOAT_FAQS.map((faq, index) => (
                   <div key={index} className="border-b border-gray-200 last:border-b-0">
                     <button
@@ -601,7 +601,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
                       className="w-full py-5 flex items-center justify-between text-left group"
                       aria-expanded={openBoatFaq === index}
                     >
-                      <span className="font-medium text-gray-900 group-hover:text-yellow-600 transition-colors pr-4">
+                      <span className="font-medium text-gray-900 group-hover:text-brand-blue transition-colors pr-4">
                         {faq.question}
                       </span>
                       <motion.span
@@ -635,7 +635,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
             {/* House Delivery FAQs */}
             <div>
               <h3 className="font-heading text-xl text-gray-900 font-bold mb-4">House Delivery</h3>
-              <div className="bg-gray-50 rounded-xl p-6">
+              <div className="bg-gray-50 rounded-lg p-6">
                 {HOUSE_FAQS.map((faq, index) => (
                   <div key={index} className="border-b border-gray-200 last:border-b-0">
                     <button
@@ -643,7 +643,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
                       className="w-full py-5 flex items-center justify-between text-left group"
                       aria-expanded={openHouseFaq === index}
                     >
-                      <span className="font-medium text-gray-900 group-hover:text-yellow-600 transition-colors pr-4">
+                      <span className="font-medium text-gray-900 group-hover:text-brand-blue transition-colors pr-4">
                         {faq.question}
                       </span>
                       <motion.span
@@ -722,7 +722,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
               </ul>
               <a
                 href="sms:7373719700"
-                className="text-brand-yellow hover:text-yellow-300 underline font-sans text-sm"
+                className="text-brand-yellow hover:text-brand-yellow/80 underline font-sans text-sm"
               >
                 Text us your details &rarr; we&apos;ll help you build the cart
               </a>

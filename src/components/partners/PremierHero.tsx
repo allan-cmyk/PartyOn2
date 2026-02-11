@@ -146,7 +146,7 @@ export default function PremierHero(): ReactElement {
                 type="button"
                 onClick={handleJoin}
                 disabled={!joinCode.trim()}
-                className="h-9 rounded-lg px-3 text-sm text-brand-yellow font-medium hover:text-yellow-300 transition
+                className="h-9 rounded-lg px-3 text-sm text-brand-yellow font-medium hover:text-brand-yellow/80 transition
                            disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Join
