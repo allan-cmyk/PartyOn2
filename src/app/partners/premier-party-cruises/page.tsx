@@ -253,7 +253,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
             ].map((s, idx) => (
               <ScrollRevealCSS key={s.step} delay={idx * 150}>
                 <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm text-center hover:-translate-y-1 transition-all duration-200 hover:shadow-lg">
-                  <div className="w-10 h-10 rounded-lg bg-brand-blue text-white font-heading font-bold flex items-center justify-center mx-auto mb-4 text-lg animate-badge-pulse">
+                  <div className="w-10 h-10 rounded-lg bg-brand-blue text-white font-heading font-bold flex items-center justify-center mx-auto mb-4 text-lg">
                     {s.step}
                   </div>
                   <div className="text-3xl mb-3">{s.icon}</div>
@@ -308,14 +308,6 @@ function PremierPartyCruisesPageContent(): ReactElement {
       {/* SECTION 4: DRINK CALCULATOR                  */}
       {/* ============================================ */}
       <section className="bg-gray-50 py-16 md:py-24">
-        <div className="max-w-4xl mx-auto px-6 md:px-8 text-center">
-          <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-2">
-            Drink Calculator + Personalized Recs
-          </h2>
-          <p className="font-sans text-gray-600 mb-8">
-            Answer 4 quick questions and we&apos;ll build your cart.
-          </p>
-        </div>
         <div id="drink-calculator" className="scroll-mt-24">
           <DrinkCalculator />
         </div>
@@ -434,12 +426,9 @@ function PremierPartyCruisesPageContent(): ReactElement {
           {error ? (
             <div className="text-center py-12">
               <p className="text-red-500">Failed to load products. Please try again.</p>
-              <button
-                onClick={() => window.location.reload()}
-                className="mt-4 px-4 py-2 bg-brand-yellow text-gray-900 rounded-lg hover:bg-brand-yellow/80"
-              >
+              <Button variant="cart" size="sm" onClick={() => window.location.reload()}>
                 Retry
-              </button>
+              </Button>
             </div>
           ) : (
             <>
@@ -555,7 +544,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
                   </span>
                   <div className="flex gap-1 mb-3">
                     {[...Array(5)].map((_, i) => (
-                      <svg key={i} className="w-5 h-5 text-brand-blue" fill="currentColor" viewBox="0 0 20 20">
+                      <svg key={i} className="w-5 h-5 text-brand-yellow" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                       </svg>
                     ))}
@@ -579,13 +568,12 @@ function PremierPartyCruisesPageContent(): ReactElement {
       {/* SECTION 9: FAQ (Two-Column)                  */}
       {/* ============================================ */}
       <section className="py-16 px-6 bg-white">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-10">
             <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4">
               FAQs
             </h2>
-            <div className="w-20 h-px bg-brand-yellow mx-auto" />
           </div>
 
           {/* Two-column grid */}
@@ -601,7 +589,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
                       className="w-full py-5 flex items-center justify-between text-left group"
                       aria-expanded={openBoatFaq === index}
                     >
-                      <span className="font-medium text-gray-900 group-hover:text-brand-blue transition-colors pr-4">
+                      <span className="font-sans font-medium text-gray-900 group-hover:text-brand-blue transition-colors pr-4">
                         {faq.question}
                       </span>
                       <motion.span
@@ -643,7 +631,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
                       className="w-full py-5 flex items-center justify-between text-left group"
                       aria-expanded={openHouseFaq === index}
                     >
-                      <span className="font-medium text-gray-900 group-hover:text-brand-blue transition-colors pr-4">
+                      <span className="font-sans font-medium text-gray-900 group-hover:text-brand-blue transition-colors pr-4">
                         {faq.question}
                       </span>
                       <motion.span

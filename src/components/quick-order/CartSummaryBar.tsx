@@ -27,11 +27,11 @@ export default function CartSummaryBar(): ReactElement | null {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-yellow-500 border-t border-brand-yellow shadow-lg pb-safe">
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-brand-yellow border-t border-brand-yellow shadow-lg pb-safe">
       <div className="max-w-7xl mx-auto px-4 py-3">
         <button
           onClick={openCart}
-          className="w-full flex items-center justify-between bg-yellow-500 hover:bg-brand-yellow text-gray-900 rounded-lg px-4 py-3 transition-colors"
+          className="w-full flex items-center justify-between bg-brand-yellow hover:bg-yellow-400 text-gray-900 rounded-lg px-4 py-3 transition-colors"
         >
           {/* Left: Cart icon and item count */}
           <div className="flex items-center gap-2">

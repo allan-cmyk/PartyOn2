@@ -78,7 +78,7 @@ export default function JoinOrderModal({
           >
             {/* Header */}
             <div className="bg-gray-900 px-6 py-4 flex items-center justify-between">
-              <h2 className="font-heading text-xl text-white tracking-wide">
+              <h2 className="font-heading text-xl text-white">
                 Join an Order
               </h2>
               <button
@@ -103,8 +103,8 @@ export default function JoinOrderModal({
                   id="shareCode"
                   value={shareCode}
                   onChange={(e) => setShareCode(e.target.value)}
-                  placeholder="e.g., Sarah's Boat Party"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors text-gray-900 placeholder:text-gray-400"
+                  placeholder="e.g., Sarah's Bach Weekend"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors text-gray-900 placeholder:text-gray-400"
                   autoComplete="off"
                   autoFocus
                 />
@@ -124,7 +124,7 @@ export default function JoinOrderModal({
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3 bg-yellow-500 hover:bg-brand-yellow disabled:bg-brand-yellow text-gray-900 font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+                className="w-full py-3 bg-brand-yellow hover:bg-yellow-400 disabled:bg-brand-yellow text-gray-900 font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   <>
@@ -170,9 +170,9 @@ export default function JoinOrderModal({
                     handleClose();
                     document.getElementById('start-order')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="text-brand-yellow hover:text-yellow-600 font-medium"
+                  className="text-brand-blue hover:text-blue-700 font-medium"
                 >
-                  Start an order
+                  Start a Group Order
                 </button>
               </p>
             </form>

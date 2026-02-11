@@ -30,7 +30,7 @@ export default function PremierHero(): ReactElement {
   };
 
   return (
-    <section className="relative h-[60vh] md:h-[70vh] mt-24 flex items-center justify-center overflow-hidden">
+    <section className="relative h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <Image
         src="/images/partners/premierpartycruises-hero-bg3.webp.png"
@@ -50,7 +50,7 @@ export default function PremierHero(): ReactElement {
           transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
           className="font-heading text-4xl md:text-6xl font-bold tracking-[0.02em] text-white mb-4"
         >
-          Drinks / Iced and Ready on Board!
+          Your boat drinks are iced & waiting when you board.
         </motion.h1>
         <motion.p
           {...heroFadeUp}
@@ -97,16 +97,14 @@ export default function PremierHero(): ReactElement {
           <Button variant="cart" size="lg" href="/group/create">
             Start a Group Order (split payments)
           </Button>
-          <Button
-            variant="secondary"
-            size="md"
-            className="border-white/40 text-white bg-transparent hover:bg-white/20 hover:text-white"
+          <button
             onClick={() => {
               document.getElementById('drink-calculator')?.scrollIntoView({ behavior: 'smooth' });
             }}
+            className="inline-flex items-center justify-center font-sans font-semibold tracking-[0.08em] rounded-lg px-6 py-3 text-sm md:text-base border-2 border-white/40 text-white hover:bg-white/10 transition-colors"
           >
             Build my cart (Drink Calculator)
-          </Button>
+          </button>
         </div>
 
         {/* Tertiary Links */}
