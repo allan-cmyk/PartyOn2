@@ -50,8 +50,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         html: `
           <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto;">
             <div style="background-color: #1a1a1a; padding: 32px; text-align: center;">
-              <h1 style="color: #D4AF37; margin: 0; font-size: 28px; letter-spacing: 0.1em;">PARTYON</h1>
-              <p style="color: #ffffff; margin: 8px 0 0; font-size: 14px;">PREMIUM ALCOHOL DELIVERY</p>
+              <img src="https://partyondelivery.com/images/pod-logo-2025.png" alt="PartyOn Delivery" width="180" style="width: 180px; max-width: 100%; height: auto; margin-bottom: 12px;" />
+              <p style="color: #ffffff; margin: 0; font-size: 14px;">PREMIUM ALCOHOL DELIVERY</p>
             </div>
             <div style="padding: 24px;">
               <h2 style="color: #1a1a1a;">Password Reset Request</h2>

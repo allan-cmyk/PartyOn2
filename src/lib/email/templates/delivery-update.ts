@@ -45,8 +45,8 @@ function wrapEmail(title: string, emoji: string, backgroundColor: string, conten
           <!-- Header -->
           <tr>
             <td style="background-color: #1a1a1a; padding: 32px; text-align: center;">
-              <h1 style="color: #D4AF37; margin: 0; font-size: 28px; font-weight: 600; letter-spacing: 0.1em;">PARTYON</h1>
-              <p style="color: #ffffff; margin: 8px 0 0; font-size: 14px; letter-spacing: 0.05em;">PREMIUM ALCOHOL DELIVERY</p>
+              <img src="https://partyondelivery.com/images/pod-logo-2025.png" alt="PartyOn Delivery" width="180" style="width: 180px; max-width: 100%; height: auto; margin-bottom: 12px;" />
+              <p style="color: #ffffff; margin: 0; font-size: 14px; letter-spacing: 0.05em;">PREMIUM ALCOHOL DELIVERY</p>
             </td>
           </tr>
 
