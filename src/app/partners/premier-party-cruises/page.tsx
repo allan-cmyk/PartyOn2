@@ -239,26 +239,26 @@ function PremierPartyCruisesPageContent(): ReactElement {
       {/* ============================================ */}
       {/* SECTION 3: HOW IT WORKS                      */}
       {/* ============================================ */}
-      <section className="bg-white py-16 md:py-24">
+      <section className="bg-white py-10 md:py-24">
         <div className="max-w-5xl mx-auto px-6 md:px-8">
-          <h2 className="font-heading text-3xl md:text-4xl text-gray-900 text-center mb-12">
+          <h2 className="font-heading text-3xl md:text-4xl text-gray-900 text-center mb-6 md:mb-12">
             How group ordering works
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-3 gap-3 md:gap-6">
             {[
               { step: 1, icon: '📱', title: 'Start the group', desc: 'Get a share link + code' },
               { step: 2, icon: '👥', title: 'Friends add what they want', desc: 'Each person checks out separately' },
               { step: 3, icon: '🧊', title: 'We deliver one combined order', desc: 'Iced and ready at the marina' },
             ].map((s, idx) => (
               <ScrollRevealCSS key={s.step} delay={idx * 150}>
-                <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm text-center hover:-translate-y-1 transition-all duration-200 hover:shadow-lg">
-                  <div className="w-10 h-10 rounded-lg bg-brand-blue text-white font-heading font-bold flex items-center justify-center mx-auto mb-4 text-lg">
+                <div className="bg-white border border-gray-200 rounded-lg p-3 md:p-6 shadow-sm text-center hover:-translate-y-1 transition-all duration-200 hover:shadow-lg">
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-brand-blue text-white font-heading font-bold flex items-center justify-center mx-auto mb-2 md:mb-4 text-sm md:text-lg">
                     {s.step}
                   </div>
-                  <div className="text-3xl mb-3">{s.icon}</div>
-                  <h3 className="font-heading text-lg text-gray-900 font-bold mb-2">{s.title}</h3>
-                  <p className="font-sans text-gray-600 text-sm">{s.desc}</p>
+                  <div className="text-2xl md:text-3xl mb-2 md:mb-3">{s.icon}</div>
+                  <h3 className="font-heading text-sm md:text-lg text-gray-900 font-bold mb-1 md:mb-2">{s.title}</h3>
+                  <p className="font-sans text-gray-600 text-xs md:text-sm">{s.desc}</p>
                 </div>
               </ScrollRevealCSS>
             ))}

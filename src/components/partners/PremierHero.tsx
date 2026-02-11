@@ -30,7 +30,7 @@ export default function PremierHero(): ReactElement {
   };
 
   return (
-    <section className="relative h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[50vh] md:min-h-[70vh] flex items-center justify-center overflow-hidden py-12 md:py-0">
       {/* Background Image */}
       <Image
         src="/images/partners/premierpartycruises-hero-bg3.webp.png"

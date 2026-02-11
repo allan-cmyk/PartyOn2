@@ -39,8 +39,13 @@ export default function WelcomePackageGrid({
 
         const data = await response.json();
 
+        // Unwrap edges/node structure from API response
+        const allProducts: Product[] = (data.products?.edges || data.products || [])
+          .map((e: { node: Product }) => e.node || e)
+          .filter(Boolean);
+
         // Filter to only Welcome Package product type
-        const welcomeProducts = (data.products || []).filter(
+        const welcomeProducts = allProducts.filter(
           (p: Product) =>
             p.productType === 'Welcome Package' ||
             p.title.startsWith('Welcome to Austin:')
