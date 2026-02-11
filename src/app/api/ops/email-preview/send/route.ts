@@ -5,6 +5,8 @@ import {
   generateDeliveryEnRouteEmail,
   generateDeliveryCompletedEmail,
 } from '@/lib/email/templates/delivery-update';
+import { generateInvoiceEmail } from '@/lib/email/templates/invoice';
+import { getInvoiceTextOverrides } from '@/lib/email/template-content';
 import { EmailType } from '@prisma/client';
 
 const SAMPLE_ORDER = {
@@ -32,6 +34,27 @@ const SAMPLE_ORDER = {
   deliveryInstructions: 'Gate code is #1234. Leave at front door.',
 };
 
+const SAMPLE_INVOICE = {
+  customerName: 'John Smith',
+  deliveryDate: new Date('2026-02-15'),
+  deliveryTime: '2-4 PM',
+  deliveryAddress: '123 Lake Austin Blvd',
+  deliveryCity: 'Austin',
+  deliveryState: 'TX',
+  deliveryZip: '78703',
+  items: [
+    { title: "Tito's Vodka 750ml", quantity: 2, price: 24.99 },
+    { title: 'Corona Extra 12 Pack', quantity: 1, price: 18.99 },
+    { title: 'Lime Wedges', quantity: 1, price: 4.99 },
+  ],
+  subtotal: 73.96,
+  taxAmount: 6.1,
+  deliveryFee: 15.0,
+  discountAmount: 0,
+  total: 95.06,
+  invoiceUrl: 'https://partyondelivery.com/invoice/sample-token-123',
+};
+
 const SAMPLE_DELIVERY = {
   orderNumber: 1234,
   customerName: 'John Smith',
@@ -55,6 +78,7 @@ const SUBJECT_MAP: Record<string, string> = {
   'delivery-completed': '[TEST] Delivery Complete - Order #1234',
   'payment-failed': '[TEST] Payment Issue - PartyOn Delivery',
   'refund-processed': '[TEST] Refund Processed - Order #1234',
+  'invoice': '[TEST] Your Invoice from PartyOn Delivery - $95.06',
 };
 
 export async function POST(request: NextRequest) {
@@ -95,6 +119,12 @@ export async function POST(request: NextRequest) {
         html = generateRefundHtml('John Smith', 1234, 95.06, 'Order cancelled by customer');
         emailType = EmailType.REFUND_PROCESSED;
         break;
+      case 'invoice': {
+        const overrides = await getInvoiceTextOverrides();
+        html = generateInvoiceEmail(SAMPLE_INVOICE, overrides);
+        emailType = EmailType.INVOICE;
+        break;
+      }
       default:
         return NextResponse.json({ error: 'Unknown email type' }, { status: 400 });
     }
