@@ -18,3 +18,7 @@ export {
 // Template types
 export type { OrderConfirmationData } from './templates/order-confirmation';
 export type { DeliveryUpdateData } from './templates/delivery-update';
+export type { InvoiceEmailData } from './templates/invoice';
+
+// Template generators
+export { generateInvoiceEmail, generateInvoiceSubject } from './templates/invoice';
