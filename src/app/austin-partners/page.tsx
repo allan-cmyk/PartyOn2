@@ -61,6 +61,8 @@ export default function PartnersPage() {
           partnerType: 'General Partnership',
           source: 'partners-main-page',
           submittedAt: new Date().toISOString(),
+          website_url: '',
+          fax_number: '',
         }),
       });
 

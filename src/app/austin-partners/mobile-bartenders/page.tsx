@@ -128,6 +128,8 @@ Source: ${formData.source}`,
 
           // System fields
           submittedAt: new Date().toISOString(),
+          website_url: '',
+          fax_number: '',
         }),
       });
 

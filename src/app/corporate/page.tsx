@@ -87,6 +87,8 @@ export default function CorporateLandingPage() {
         utm_source: sessionStorage.getItem('utm_source') || '',
         utm_medium: sessionStorage.getItem('utm_medium') || '',
         utm_campaign: sessionStorage.getItem('utm_campaign') || '',
+        website_url: '',
+        fax_number: '',
       };
 
       const response = await fetch('/api/partners/inquiry', {

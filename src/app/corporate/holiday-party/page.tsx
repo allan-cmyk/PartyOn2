@@ -89,6 +89,8 @@ export default function CorporateHolidayPartyPage() {
         utm_medium: sessionStorage.getItem('utm_medium') || '',
         utm_campaign: sessionStorage.getItem('utm_campaign') || '',
         utm_content: sessionStorage.getItem('utm_content') || '',
+        website_url: '',
+        fax_number: '',
       };
 
       const response = await fetch('/api/partners/inquiry', {

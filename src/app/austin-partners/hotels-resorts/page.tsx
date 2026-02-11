@@ -56,6 +56,8 @@ export default function HotelsResortsPartnerPage() {
           partnerType: 'Hotels & Resorts',
           source: 'hotels-resorts-page',
           submittedAt: new Date().toISOString(),
+          website_url: '',
+          fax_number: '',
         }),
       })
 

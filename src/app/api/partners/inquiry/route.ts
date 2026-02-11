@@ -2,6 +2,44 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/group-orders/database-vercel'
 import { sendPartnerInquiryNotification } from '@/lib/email/email-service'
 import type { PartnerInquiryData } from '@/lib/email/email-service'
+import { kv, isKVConfigured } from '@/lib/database/client'
+
+// In-memory rate limit fallback when KV is not configured
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
+const RATE_LIMIT_WINDOW_MS = 60 * 1000 // 1 minute
+const RATE_LIMIT_MAX = 3 // max 3 submissions per minute per IP
+
+async function checkRateLimit(ip: string): Promise<boolean> {
+  if (isKVConfigured()) {
+    try {
+      const key = `ratelimit:partner-inquiry:${ip}`
+      const current = (await kv.get(key)) as number | null
+      if (current !== null && current >= RATE_LIMIT_MAX) {
+        return false // rate limited
+      }
+      // Increment. If key is new, set with expiry; otherwise just increment.
+      if (current === null) {
+        await kv.set(key, 1, { ex: 60 }) // expires in 60 seconds
+      } else {
+        await kv.set(key, current + 1, { ex: 60 })
+      }
+      return true
+    } catch (error) {
+      console.error('[Rate Limit] KV error, falling back to in-memory:', error)
+    }
+  }
+
+  // In-memory fallback
+  const now = Date.now()
+  const entry = rateLimitMap.get(ip)
+  if (entry && now < entry.resetAt) {
+    if (entry.count >= RATE_LIMIT_MAX) return false
+    entry.count++
+  } else {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS })
+  }
+  return true
+}
 
 /**
  * Normalize form data from all partner form types into a consistent shape.
@@ -74,6 +112,26 @@ export async function POST(request: NextRequest) {
       referer,
       hasData: !!body && Object.keys(body).length > 0
     })
+
+    // Honeypot check — hidden field that should always be empty
+    if (body.website_url || body.fax_number) {
+      console.warn('[Partner Inquiry] REJECTED: Honeypot triggered', { ip, userAgent })
+      // Return success to not tip off bots
+      return NextResponse.json({
+        success: true,
+        message: 'Thank you for your interest! Our partnership team will contact you within 24 hours.',
+      })
+    }
+
+    // Rate limiting
+    const allowed = await checkRateLimit(ip)
+    if (!allowed) {
+      console.warn('[Partner Inquiry] REJECTED: Rate limited', { ip, userAgent })
+      return NextResponse.json(
+        { success: false, error: 'Too many submissions. Please try again in a minute.' },
+        { status: 429 }
+      )
+    }
 
     // Normalize all form variants into consistent shape
     const inquiry = normalizeInquiry(body);
