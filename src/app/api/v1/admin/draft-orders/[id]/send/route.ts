@@ -78,7 +78,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const { data, error: resendError } = await getResend().emails.send({
       from: fromEmail,
       to: draftOrder.customerEmail,
-      subject: generateInvoiceSubject(draftOrder.total),
+      subject: generateInvoiceSubject(Number(draftOrder.total)),
       html,
     });
 
