@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useMemo, useEffect, useRef, Suspense, type ReactElement } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
 import Button from '@/components/Button';
 import JoinOrderModal from '@/components/partners/JoinOrderModal';
 import DrinkCalculator from '@/components/partners/DrinkCalculator';
-import PartnerFAQ from '@/components/partners/PartnerFAQ';
+import HouseTabUpsell from '@/components/partners/HouseTabUpsell';
 import QuickOrderGrid from '@/components/quick-order/QuickOrderGrid';
 import QuickOrderSearch from '@/components/quick-order/QuickOrderSearch';
 import CartSummaryBar from '@/components/quick-order/CartSummaryBar';
@@ -70,6 +71,26 @@ const BOAT_FAQS = [
   },
 ];
 
+/** House delivery FAQ questions */
+const HOUSE_FAQS = [
+  {
+    question: 'How does the House Tab work?',
+    answer: 'Add a house delivery to your group order. Everyone uses the same group link to pick drinks for the house — we deliver separately to your rental before you arrive.',
+  },
+  {
+    question: 'Can people pay separately on the House Tab too?',
+    answer: 'Yes! Same split-payment system. Each person checks out their own items — boat drinks and house drinks stay on one group link.',
+  },
+  {
+    question: 'Can you fridge-stock our rental?',
+    answer: 'Absolutely. If someone at the rental can receive the delivery (21+ with valid ID), we\'ll stock the fridge, fill the cooler, and have everything ready when your group walks in.',
+  },
+  {
+    question: 'Can we schedule a specific delivery time?',
+    answer: 'Yes — just add your preferred delivery window during checkout. We\'ll confirm the time via text and deliver within that window.',
+  },
+];
+
 /**
  * Premier Party Cruises - Drink Delivery Service Landing Page
  * Optimized for customers who have already booked their boat
@@ -90,6 +111,8 @@ function PremierPartyCruisesPageContent(): ReactElement {
   const sentinelRef = useRef<HTMLDivElement>(null);
   const endSentinelRef = useRef<HTMLDivElement>(null);
   const [isPastProductSection, setIsPastProductSection] = useState(false);
+  const [openBoatFaq, setOpenBoatFaq] = useState<number | null>(0);
+  const [openHouseFaq, setOpenHouseFaq] = useState<number | null>(0);
 
   // Load products for active collection
   const { products, loading, error } = useQuickOrderProducts(activeCollection);
@@ -455,14 +478,14 @@ function PremierPartyCruisesPageContent(): ReactElement {
       <div ref={endSentinelRef} className="h-0" aria-hidden="true" />
 
       {/* ============================================ */}
-      {/* SECTION 6: HOUSE TAB UPSELL (Phase 2)        */}
+      {/* SECTION 6: HOUSE TAB UPSELL                  */}
       {/* ============================================ */}
-      {/* Phase 2 — HouseTabUpsell component will go here */}
+      <HouseTabUpsell />
 
       {/* ============================================ */}
       {/* SECTION 7: EXPERIENCE PROOF (Video)          */}
       {/* ============================================ */}
-      <section className="bg-white py-16 md:py-24">
+      <section id="experience-proof" className="bg-white py-16 md:py-24">
         <div className="max-w-6xl mx-auto px-6 md:px-8">
           <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-8">
             What a boat day looks like
@@ -549,9 +572,106 @@ function PremierPartyCruisesPageContent(): ReactElement {
       </section>
 
       {/* ============================================ */}
-      {/* SECTION 9: FAQ                               */}
+      {/* SECTION 9: FAQ (Two-Column)                  */}
       {/* ============================================ */}
-      <PartnerFAQ faqs={BOAT_FAQS} title="FAQs" />
+      <section className="py-16 px-6 bg-white">
+        <div className="max-w-5xl mx-auto">
+          {/* Section Header */}
+          <div className="text-center mb-10">
+            <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4 tracking-wide">
+              FAQs
+            </h2>
+            <div className="w-20 h-px bg-yellow-500 mx-auto" />
+          </div>
+
+          {/* Two-column grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Boat Delivery FAQs */}
+            <div>
+              <h3 className="font-heading text-xl text-gray-900 font-bold mb-4">Boat Delivery</h3>
+              <div className="bg-gray-50 rounded-xl p-6">
+                {BOAT_FAQS.map((faq, index) => (
+                  <div key={index} className="border-b border-gray-200 last:border-b-0">
+                    <button
+                      onClick={() => setOpenBoatFaq(openBoatFaq === index ? null : index)}
+                      className="w-full py-5 flex items-center justify-between text-left group"
+                      aria-expanded={openBoatFaq === index}
+                    >
+                      <span className="font-medium text-gray-900 group-hover:text-yellow-600 transition-colors pr-4">
+                        {faq.question}
+                      </span>
+                      <motion.span
+                        animate={{ rotate: openBoatFaq === index ? 180 : 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="flex-shrink-0 text-gray-400"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </motion.span>
+                    </button>
+                    <AnimatePresence initial={false}>
+                      {openBoatFaq === index && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <p className="pb-5 text-gray-600 leading-relaxed">{faq.answer}</p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* House Delivery FAQs */}
+            <div>
+              <h3 className="font-heading text-xl text-gray-900 font-bold mb-4">House Delivery</h3>
+              <div className="bg-gray-50 rounded-xl p-6">
+                {HOUSE_FAQS.map((faq, index) => (
+                  <div key={index} className="border-b border-gray-200 last:border-b-0">
+                    <button
+                      onClick={() => setOpenHouseFaq(openHouseFaq === index ? null : index)}
+                      className="w-full py-5 flex items-center justify-between text-left group"
+                      aria-expanded={openHouseFaq === index}
+                    >
+                      <span className="font-medium text-gray-900 group-hover:text-yellow-600 transition-colors pr-4">
+                        {faq.question}
+                      </span>
+                      <motion.span
+                        animate={{ rotate: openHouseFaq === index ? 180 : 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="flex-shrink-0 text-gray-400"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </motion.span>
+                    </button>
+                    <AnimatePresence initial={false}>
+                      {openHouseFaq === index && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <p className="pb-5 text-gray-600 leading-relaxed">{faq.answer}</p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* ============================================ */}
       {/* SECTION 10: ABOUT / TRUST                    */}
