@@ -6,8 +6,14 @@
 'use client';
 
 import { useState, type ReactElement } from 'react';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Button from '@/components/Button';
+
+const heroFadeUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+};
 
 /**
  * Premier Party Cruises hero section - full-width centered
@@ -39,15 +45,27 @@ export default function PremierHero(): ReactElement {
 
       {/* Content */}
       <div className="relative z-10 text-center max-w-3xl mx-auto px-6 md:px-8">
-        <h1 className="font-heading text-4xl md:text-6xl font-bold tracking-[0.02em] text-white mb-4">
+        <motion.h1
+          {...heroFadeUp}
+          transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+          className="font-heading text-4xl md:text-6xl font-bold tracking-[0.02em] text-white mb-4"
+        >
           Drinks / Iced and Ready on Board!
-        </h1>
-        <p className="font-sans text-lg md:text-xl text-white/90 mb-6 max-w-2xl mx-auto">
+        </motion.h1>
+        <motion.p
+          {...heroFadeUp}
+          transition={{ duration: 0.6, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
+          className="font-sans text-lg md:text-xl text-white/90 mb-6 max-w-2xl mx-auto"
+        >
           Delivered to the marina before you arrive — with ice, cups, and an easy way for the whole crew to pay separately.
-        </p>
+        </motion.p>
 
         {/* Trust Chips */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
+        <motion.div
+          {...heroFadeUp}
+          transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+          className="flex flex-wrap items-center justify-center gap-2 mb-8"
+        >
           <span className="bg-white/10 backdrop-blur text-white text-sm rounded-lg px-3 py-1 flex items-center gap-1.5">
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -68,9 +86,13 @@ export default function PremierHero(): ReactElement {
             ))}
             <span className="ml-1 text-white">5-star guests</span>
           </span>
-        </div>
+        </motion.div>
 
         {/* Stacked CTAs */}
+        <motion.div
+          {...heroFadeUp}
+          transition={{ duration: 0.6, delay: 0.45, ease: [0.25, 0.1, 0.25, 1] }}
+        >
         <div className="flex flex-col items-center gap-3 mb-6">
           <Button variant="cart" size="lg" href="/group/create">
             Start a Group Order (split payments)
@@ -137,6 +159,7 @@ export default function PremierHero(): ReactElement {
         <p className="text-white/60 text-sm">
           Everyone adds items and pays their portion at checkout. No Venmo chasing.
         </p>
+        </motion.div>
       </div>
     </section>
   );

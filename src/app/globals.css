@@ -642,6 +642,17 @@
   animation: shimmer 2.5s ease-in-out infinite;
 }
 
+/* Badge Pulse - triggers once when parent becomes visible via scroll-reveal */
+@keyframes badge-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.scroll-reveal-visible .animate-badge-pulse {
+  animation: badge-pulse 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) 0.2s 1;
+}
+
 /* Reduced motion fallback for all animations */
 @media (prefers-reduced-motion: reduce) {
   .hero-fade-in,
@@ -653,5 +664,9 @@
 
   .product-card {
     --scroll-reveal-delay: 0ms !important;
+  }
+
+  .scroll-reveal-visible .animate-badge-pulse {
+    animation: none;
   }
 }

@@ -15,6 +15,7 @@ import CartSummaryBar from '@/components/quick-order/CartSummaryBar';
 import PremierHero from '@/components/partners/PremierHero';
 import PremierHeroStickyCTA from '@/components/partners/PremierHeroStickyCTA';
 import DontForgetRow from '@/components/quick-order/DontForgetRow';
+import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import { useQuickOrderProducts } from '@/hooks/useQuickOrderProducts';
 import { useCollectionCounts } from '@/hooks/useCollectionCounts';
 import { PREMIER_BOAT_COLLECTIONS } from '@/lib/products/premier-collections';
@@ -204,21 +205,20 @@ function PremierPartyCruisesPageContent(): ReactElement {
               { item: 'Group ordering with split payments', struck: null, label: 'FREE' },
               { item: 'Private reserved cooler on Disco Cruise', struck: null, label: 'FREE' },
             ].map((row, idx) => (
-              <div
-                key={idx}
-                className="flex items-center gap-3 py-3 border-b border-gray-200 last:border-0"
-              >
-                <svg className="w-6 h-6 text-brand-blue flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-                <span className="text-gray-900 font-semibold flex-1">{row.item}</span>
-                <span className="flex items-center gap-2">
-                  {row.struck && (
-                    <span className="text-gray-500 line-through text-sm">{row.struck}</span>
-                  )}
-                  <span className="text-brand-blue font-bold">{row.label}</span>
-                </span>
-              </div>
+              <ScrollRevealCSS key={idx} delay={idx * 80}>
+                <div className="flex items-center gap-3 py-3 border-b border-gray-200 last:border-0">
+                  <svg className="w-6 h-6 text-brand-blue flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-gray-900 font-semibold flex-1">{row.item}</span>
+                  <span className="flex items-center gap-2">
+                    {row.struck && (
+                      <span className="text-gray-500 line-through text-sm">{row.struck}</span>
+                    )}
+                    <span className="text-brand-blue font-bold">{row.label}</span>
+                  </span>
+                </div>
+              </ScrollRevealCSS>
             ))}
           </div>
 
@@ -250,15 +250,17 @@ function PremierPartyCruisesPageContent(): ReactElement {
               { step: 1, icon: '📱', title: 'Start the group', desc: 'Get a share link + code' },
               { step: 2, icon: '👥', title: 'Friends add what they want', desc: 'Each person checks out separately' },
               { step: 3, icon: '🧊', title: 'We deliver one combined order', desc: 'Iced and ready at the marina' },
-            ].map((s) => (
-              <div key={s.step} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm text-center">
-                <div className="w-10 h-10 rounded-lg bg-brand-blue text-white font-heading font-bold flex items-center justify-center mx-auto mb-4 text-lg">
-                  {s.step}
+            ].map((s, idx) => (
+              <ScrollRevealCSS key={s.step} delay={idx * 150}>
+                <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm text-center hover:-translate-y-1 transition-all duration-200 hover:shadow-lg">
+                  <div className="w-10 h-10 rounded-lg bg-brand-blue text-white font-heading font-bold flex items-center justify-center mx-auto mb-4 text-lg animate-badge-pulse">
+                    {s.step}
+                  </div>
+                  <div className="text-3xl mb-3">{s.icon}</div>
+                  <h3 className="font-heading text-lg text-gray-900 font-bold mb-2">{s.title}</h3>
+                  <p className="font-sans text-gray-600 text-sm">{s.desc}</p>
                 </div>
-                <div className="text-3xl mb-3">{s.icon}</div>
-                <h3 className="font-heading text-lg text-gray-900 font-bold mb-2">{s.title}</h3>
-                <p className="font-sans text-gray-600 text-sm">{s.desc}</p>
-              </div>
+              </ScrollRevealCSS>
             ))}
           </div>
 
@@ -493,7 +495,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
 
           <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
             {/* Video - left column */}
-            <div className="md:col-span-3">
+            <ScrollRevealCSS className="md:col-span-3">
               <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-2xl bg-gray-900">
                 <iframe
                   src="https://www.youtube.com/embed/4-Yx24Y6oro?rel=0&modestbranding=1"
@@ -503,10 +505,10 @@ function PremierPartyCruisesPageContent(): ReactElement {
                   allowFullScreen
                 />
               </div>
-            </div>
+            </ScrollRevealCSS>
 
             {/* Right column - recap + CTA */}
-            <div className="md:col-span-2 flex flex-col justify-center">
+            <ScrollRevealCSS delay={200} className="md:col-span-2 flex flex-col justify-center">
               <h3 className="font-heading text-xl text-gray-900 font-bold mb-4">Every order includes:</h3>
               <ul className="space-y-3 mb-6">
                 {[
@@ -526,7 +528,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
               <Button variant="cart" size="lg" href="/group/create">
                 Start a Group Order
               </Button>
-            </div>
+            </ScrollRevealCSS>
           </div>
         </div>
       </section>
@@ -545,21 +547,23 @@ function PremierPartyCruisesPageContent(): ReactElement {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {TESTIMONIALS.map((review, idx) => (
-              <div key={idx} className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-                {/* Outcome tag */}
-                <span className="inline-block bg-brand-blue/10 text-brand-blue text-xs font-semibold rounded-lg px-2 py-1 mb-3">
-                  {review.tag}
-                </span>
-                <div className="flex gap-1 mb-3">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-brand-yellow" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
+              <ScrollRevealCSS key={idx} delay={idx * 100}>
+                <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm hover:-translate-y-1 transition-all duration-200 hover:shadow-lg">
+                  {/* Outcome tag */}
+                  <span className="inline-block bg-brand-blue/10 text-brand-blue text-xs font-semibold rounded-lg px-2 py-1 mb-3">
+                    {review.tag}
+                  </span>
+                  <div className="flex gap-1 mb-3">
+                    {[...Array(5)].map((_, i) => (
+                      <svg key={i} className="w-5 h-5 text-brand-yellow" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="font-sans text-gray-600 text-sm mb-4 leading-relaxed">&quot;{review.text}&quot;</p>
+                  <p className="font-heading text-gray-900 font-bold">&mdash; {review.reviewer}</p>
                 </div>
-                <p className="font-sans text-gray-600 text-sm mb-4 leading-relaxed">&quot;{review.text}&quot;</p>
-                <p className="font-heading text-gray-900 font-bold">&mdash; {review.reviewer}</p>
-              </div>
+              </ScrollRevealCSS>
             ))}
           </div>
 
@@ -680,7 +684,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
         <div className="max-w-6xl mx-auto px-6 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             {/* Left: Video */}
-            <div className="flex justify-center">
+            <ScrollRevealCSS className="flex justify-center">
               <div className="relative w-48 md:w-56 lg:w-full lg:max-w-xs rounded-lg overflow-hidden bg-gray-800 shadow-2xl aspect-[9/16] lg:aspect-auto lg:h-full">
                 <video
                   autoPlay
@@ -692,10 +696,10 @@ function PremierPartyCruisesPageContent(): ReactElement {
                   <source src="/videos/trust-section.mp4" type="video/mp4" />
                 </video>
               </div>
-            </div>
+            </ScrollRevealCSS>
 
             {/* Right: About */}
-            <div>
+            <ScrollRevealCSS delay={200}>
               <h2 className="font-heading text-3xl md:text-4xl text-white mb-6">
                 Austin-Born. Fully Licensed. Always On Time.
               </h2>
@@ -722,7 +726,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
               >
                 Text us your details &rarr; we&apos;ll help you build the cart
               </a>
-            </div>
+            </ScrollRevealCSS>
           </div>
         </div>
       </section>
@@ -731,41 +735,43 @@ function PremierPartyCruisesPageContent(): ReactElement {
       {/* SECTION 11: FINAL CTA (Strong Close)         */}
       {/* ============================================ */}
       <section className="bg-brand-yellow py-16 md:py-24">
-        <div className="max-w-3xl mx-auto px-6 md:px-8 text-center">
-          <h2 className="font-heading text-3xl md:text-5xl text-gray-900 mb-4">
-            Ready for the lake?
-          </h2>
-          <p className="font-sans text-gray-900/80 mb-8">
-            Free marina delivery. Easy group ordering. Zero hassle.
-          </p>
+        <ScrollRevealCSS>
+          <div className="max-w-3xl mx-auto px-6 md:px-8 text-center">
+            <h2 className="font-heading text-3xl md:text-5xl text-gray-900 mb-4">
+              Ready for the lake?
+            </h2>
+            <p className="font-sans text-gray-900/80 mb-8">
+              Free marina delivery. Easy group ordering. Zero hassle.
+            </p>
 
-          <div className="flex flex-col items-center gap-3 mb-6">
-            <Button variant="primary" size="lg" href="/group/create">
-              Start a Group Order
-            </Button>
+            <div className="flex flex-col items-center gap-3 mb-6">
+              <Button variant="primary" size="lg" href="/group/create">
+                Start a Group Order
+              </Button>
 
-            <button
-              onClick={scrollToCollections}
-              className="text-gray-900/70 hover:text-gray-900 text-sm underline font-sans"
-            >
-              Start an individual order
-            </button>
+              <button
+                onClick={scrollToCollections}
+                className="text-gray-900/70 hover:text-gray-900 text-sm underline font-sans"
+              >
+                Start an individual order
+              </button>
 
-            <button
-              onClick={() => setIsJoinModalOpen(true)}
-              className="text-gray-900/70 hover:text-gray-900 text-sm underline font-sans"
-            >
-              Join with code
-            </button>
+              <button
+                onClick={() => setIsJoinModalOpen(true)}
+                className="text-gray-900/70 hover:text-gray-900 text-sm underline font-sans"
+              >
+                Join with code
+              </button>
+            </div>
+
+            <p className="text-gray-900/60 text-sm font-sans">
+              Questions? Text us:{' '}
+              <a href="tel:7373719700" className="font-semibold underline">
+                737-371-9700
+              </a>
+            </p>
           </div>
-
-          <p className="text-gray-900/60 text-sm font-sans">
-            Questions? Text us:{' '}
-            <a href="tel:7373719700" className="font-semibold underline">
-              737-371-9700
-            </a>
-          </p>
-        </div>
+        </ScrollRevealCSS>
       </section>
 
       {/* ============================================ */}
