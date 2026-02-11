@@ -59,7 +59,7 @@ export function generateInvoiceEmail(data: InvoiceEmailData): string {
       ? `
                 <tr>
                   <td style="padding: 8px 0; color: #059669;">Discount${data.discountCode ? ` (${data.discountCode})` : ''}</td>
-                  <td style="padding: 8px 0; text-align: right; color: #059669;">-${formatCurrency(data.discountAmount)}</td>
+                  <td style="padding: 8px 0; text-align: right; color: #059669;">-${formatCurrency(Number(data.discountAmount))}</td>
                 </tr>
                 `
       : '';
@@ -141,20 +141,20 @@ export function generateInvoiceEmail(data: InvoiceEmailData): string {
               <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 32px;">
                 <tr>
                   <td style="padding: 8px 0; color: #4b5563;">Subtotal</td>
-                  <td style="padding: 8px 0; text-align: right; color: #4b5563;">${formatCurrency(data.subtotal)}</td>
+                  <td style="padding: 8px 0; text-align: right; color: #4b5563;">${formatCurrency(Number(data.subtotal))}</td>
                 </tr>
                 ${discountHtml}
                 <tr>
                   <td style="padding: 8px 0; color: #4b5563;">Sales Tax</td>
-                  <td style="padding: 8px 0; text-align: right; color: #4b5563;">${formatCurrency(data.taxAmount)}</td>
+                  <td style="padding: 8px 0; text-align: right; color: #4b5563;">${formatCurrency(Number(data.taxAmount))}</td>
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; color: #4b5563;">Delivery Fee</td>
-                  <td style="padding: 8px 0; text-align: right; color: #4b5563;">${formatCurrency(data.deliveryFee)}</td>
+                  <td style="padding: 8px 0; text-align: right; color: #4b5563;">${formatCurrency(Number(data.deliveryFee))}</td>
                 </tr>
                 <tr>
                   <td style="padding: 16px 0 0; color: #111827; font-size: 18px; font-weight: 600; border-top: 2px solid #e5e7eb;">Total</td>
-                  <td style="padding: 16px 0 0; text-align: right; color: #111827; font-size: 18px; font-weight: 600; border-top: 2px solid #e5e7eb;">${formatCurrency(data.total)}</td>
+                  <td style="padding: 16px 0 0; text-align: right; color: #111827; font-size: 18px; font-weight: 600; border-top: 2px solid #e5e7eb;">${formatCurrency(Number(data.total))}</td>
                 </tr>
               </table>
 
