@@ -48,14 +48,14 @@ export default function PremierHero(): ReactElement {
         <motion.h1
           {...heroFadeUp}
           transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-          className="font-heading text-4xl md:text-6xl font-bold tracking-[0.02em] text-white mb-4"
+          className="font-heading text-4xl md:text-6xl font-bold tracking-[0.02em] text-white mb-3 md:mb-4"
         >
           Your boat drinks are iced & waiting when you board.
         </motion.h1>
         <motion.p
           {...heroFadeUp}
           transition={{ duration: 0.6, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
-          className="font-sans text-lg md:text-xl text-white/90 mb-6 max-w-2xl mx-auto"
+          className="font-sans text-lg md:text-xl text-white/90 mb-4 md:mb-6 max-w-2xl mx-auto"
         >
           Delivered to the marina before you arrive — with ice, cups, and an easy way for the whole crew to pay separately.
         </motion.p>
@@ -64,7 +64,7 @@ export default function PremierHero(): ReactElement {
         <motion.div
           {...heroFadeUp}
           transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-          className="flex flex-wrap items-center justify-center gap-2 mb-8"
+          className="flex flex-wrap items-center justify-center gap-2 mb-5 md:mb-8"
         >
           <span className="bg-white/10 backdrop-blur text-white text-sm rounded-lg px-3 py-1 flex items-center gap-1.5">
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -93,7 +93,7 @@ export default function PremierHero(): ReactElement {
           {...heroFadeUp}
           transition={{ duration: 0.6, delay: 0.45, ease: [0.25, 0.1, 0.25, 1] }}
         >
-        <div className="flex flex-col items-center gap-3 mb-6">
+        <div className="flex flex-col items-center gap-2 md:gap-3 mb-4 md:mb-6">
           <Button variant="cart" size="lg" href="/group/create">
             Start a Group Order (split payments)
           </Button>

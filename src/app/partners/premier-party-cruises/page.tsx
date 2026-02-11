@@ -189,12 +189,12 @@ function PremierPartyCruisesPageContent(): ReactElement {
       {/* ============================================ */}
       {/* SECTION 2: EVERY ORDER INCLUDES (Value Stack)*/}
       {/* ============================================ */}
-      <section className="bg-gray-50 py-16 md:py-24">
+      <section className="bg-gray-50 py-10 md:py-24">
         <div className="max-w-4xl mx-auto px-6 md:px-8">
           <p className="text-sm font-heading uppercase tracking-[0.08em] text-brand-blue text-center mb-2">
             Boat Day = Handled
           </p>
-          <h2 className="font-heading text-3xl md:text-4xl text-gray-900 text-center mb-10">
+          <h2 className="font-heading text-3xl md:text-4xl text-gray-900 text-center mb-6 md:mb-10">
             Every Order Includes
           </h2>
 
