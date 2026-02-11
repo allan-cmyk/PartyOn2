@@ -30,11 +30,38 @@ export interface InvoiceEmailData {
   invoiceUrl: string;
 }
 
+export interface InvoiceTextOverrides {
+  greeting?: string;
+  bodyText?: string;
+  buttonText?: string;
+  linkText?: string;
+  footerText?: string;
+  copyrightText?: string;
+}
+
+export const INVOICE_TEXT_DEFAULTS: Required<InvoiceTextOverrides> = {
+  greeting: 'Hi {customerName},',
+  bodyText: "Here's your invoice for your upcoming delivery. Click the button below to complete your payment.",
+  buttonText: 'PAY NOW',
+  linkText: 'Or copy this link:',
+  footerText: 'Questions? Contact us at orders@partyondelivery.com',
+  copyrightText: '{year} PartyOn Delivery. Austin, Texas.',
+};
+
 /**
  * Generate invoice email HTML
  */
-export function generateInvoiceEmail(data: InvoiceEmailData): string {
+export function generateInvoiceEmail(data: InvoiceEmailData, textOverrides?: InvoiceTextOverrides): string {
   const deliveryDate = formatDate(data.deliveryDate);
+
+  // Merge defaults with overrides and replace placeholders
+  const text = { ...INVOICE_TEXT_DEFAULTS, ...textOverrides };
+  const greeting = text.greeting.replace('{customerName}', data.customerName);
+  const bodyText = text.bodyText;
+  const buttonText = text.buttonText;
+  const linkText = text.linkText;
+  const footerText = text.footerText;
+  const copyrightText = text.copyrightText.replace('{year}', String(new Date().getFullYear()));
 
   const itemsHtml = data.items
     .map(
@@ -92,10 +119,10 @@ export function generateInvoiceEmail(data: InvoiceEmailData): string {
           <tr>
             <td style="padding: 32px;">
               <h2 style="margin: 0 0 16px; color: #111827; font-size: 24px;">
-                Hi ${data.customerName},
+                ${greeting}
               </h2>
               <p style="margin: 0 0 24px; color: #4b5563; font-size: 16px; line-height: 1.6;">
-                Here's your invoice for your upcoming delivery. Click the button below to complete your payment.
+                ${bodyText}
               </p>
 
               <!-- Delivery Info -->
@@ -163,14 +190,14 @@ export function generateInvoiceEmail(data: InvoiceEmailData): string {
                 <tr>
                   <td align="center">
                     <a href="${data.invoiceUrl}" style="display: inline-block; background-color: #D4AF37; color: #111827; text-decoration: none; padding: 16px 48px; font-size: 16px; font-weight: 600; border-radius: 8px; letter-spacing: 0.05em;">
-                      PAY NOW
+                      ${buttonText}
                     </a>
                   </td>
                 </tr>
               </table>
 
               <p style="margin: 24px 0 0; color: #9ca3af; font-size: 12px; text-align: center;">
-                Or copy this link: <a href="${data.invoiceUrl}" style="color: #D4AF37;">${data.invoiceUrl}</a>
+                ${linkText} <a href="${data.invoiceUrl}" style="color: #D4AF37;">${data.invoiceUrl}</a>
               </p>
             </td>
           </tr>
@@ -179,10 +206,10 @@ export function generateInvoiceEmail(data: InvoiceEmailData): string {
           <tr>
             <td style="background-color: #f9fafb; padding: 24px 32px; border-radius: 0 0 8px 8px; text-align: center;">
               <p style="margin: 0 0 8px; color: #6b7280; font-size: 14px;">
-                Questions? Contact us at orders@partyondelivery.com
+                ${footerText}
               </p>
               <p style="margin: 0; color: #9ca3af; font-size: 12px;">
-                &copy; ${new Date().getFullYear()} PartyOn Delivery. Austin, Texas.
+                &copy; ${copyrightText}
               </p>
             </td>
           </tr>

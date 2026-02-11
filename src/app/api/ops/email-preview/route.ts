@@ -4,6 +4,8 @@ import {
   generateDeliveryEnRouteEmail,
   generateDeliveryCompletedEmail,
 } from '@/lib/email/templates/delivery-update';
+import { generateInvoiceEmail, type InvoiceTextOverrides } from '@/lib/email/templates/invoice';
+import { getInvoiceTextOverrides } from '@/lib/email/template-content';
 
 const SAMPLE_ORDER = {
   orderNumber: 1234,
@@ -28,6 +30,27 @@ const SAMPLE_ORDER = {
     zip: '78703',
   },
   deliveryInstructions: 'Gate code is #1234. Leave at front door.',
+};
+
+const SAMPLE_INVOICE = {
+  customerName: 'John Smith',
+  deliveryDate: new Date('2026-02-15'),
+  deliveryTime: '2-4 PM',
+  deliveryAddress: '123 Lake Austin Blvd',
+  deliveryCity: 'Austin',
+  deliveryState: 'TX',
+  deliveryZip: '78703',
+  items: [
+    { title: "Tito's Vodka 750ml", quantity: 2, price: 24.99 },
+    { title: 'Corona Extra 12 Pack', quantity: 1, price: 18.99 },
+    { title: 'Lime Wedges', quantity: 1, price: 4.99 },
+  ],
+  subtotal: 73.96,
+  taxAmount: 6.1,
+  deliveryFee: 15.0,
+  discountAmount: 0,
+  total: 95.06,
+  invoiceUrl: 'https://partyondelivery.com/invoice/sample-token-123',
 };
 
 const SAMPLE_DELIVERY = {
@@ -73,11 +96,33 @@ export async function GET(request: NextRequest) {
       html = generateRefundHtml('John Smith', 1234, 95.06, 'Order cancelled by customer');
       break;
 
+    case 'invoice': {
+      const overrides = await getInvoiceTextOverrides();
+      html = generateInvoiceEmail(SAMPLE_INVOICE, overrides);
+      break;
+    }
+
     default:
       html = '<p>Unknown email type</p>';
   }
 
   return NextResponse.json({ html });
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const { type, textOverrides } = await request.json();
+
+    if (type === 'invoice') {
+      const html = generateInvoiceEmail(SAMPLE_INVOICE, textOverrides as InvoiceTextOverrides);
+      return NextResponse.json({ html });
+    }
+
+    return NextResponse.json({ error: 'Only invoice type supports live preview' }, { status: 400 });
+  } catch (error) {
+    console.error('[Email Preview POST] Error:', error);
+    return NextResponse.json({ error: 'Failed to generate preview' }, { status: 500 });
+  }
 }
 
 function generatePaymentFailedHtml(customerName: string, errorMessage: string): string {

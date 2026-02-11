@@ -1,9 +1,28 @@
 'use client';
 
-import { useState, ReactElement } from 'react';
+import { useState, useEffect, useRef, useCallback, ReactElement } from 'react';
 
-type EmailType = 'order-confirmation' | 'delivery-en-route' | 'delivery-completed' | 'payment-failed' | 'refund-processed';
+type EmailType = 'order-confirmation' | 'delivery-en-route' | 'delivery-completed' | 'payment-failed' | 'refund-processed' | 'invoice';
 
+interface InvoiceTextOverrides {
+  greeting?: string;
+  bodyText?: string;
+  buttonText?: string;
+  linkText?: string;
+  footerText?: string;
+  copyrightText?: string;
+}
+
+type OverrideKey = keyof InvoiceTextOverrides;
+
+const FIELD_LABELS: Record<OverrideKey, { label: string; multiline: boolean }> = {
+  greeting: { label: 'Greeting', multiline: false },
+  bodyText: { label: 'Body Text', multiline: true },
+  buttonText: { label: 'Button Text', multiline: false },
+  linkText: { label: 'Link Text', multiline: false },
+  footerText: { label: 'Footer Text', multiline: false },
+  copyrightText: { label: 'Copyright Text', multiline: false },
+};
 
 const SAMPLE_DATA = {
   orderNumber: 1234,
@@ -40,10 +59,54 @@ export default function EmailPreviewPage(): ReactElement {
   const [sending, setSending] = useState(false);
   const [sendResult, setSendResult] = useState<{ success: boolean; message: string } | null>(null);
 
+  // Invoice editor state
+  const [editMode, setEditMode] = useState(false);
+  const [defaults, setDefaults] = useState<Required<InvoiceTextOverrides> | null>(null);
+  const [editFields, setEditFields] = useState<Required<InvoiceTextOverrides>>({
+    greeting: '', bodyText: '', buttonText: '', linkText: '', footerText: '', copyrightText: '',
+  });
+  const [saving, setSaving] = useState(false);
+  const [saveResult, setSaveResult] = useState<{ success: boolean; message: string } | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const isInvoice = selectedEmail === 'invoice';
+
+  // Load invoice template content (defaults + overrides) when entering edit mode
+  const loadTemplateContent = useCallback(async () => {
+    try {
+      const res = await fetch('/api/ops/email-template-content?type=invoice');
+      const data = await res.json();
+      if (data.defaults) {
+        setDefaults(data.defaults);
+        // Merge defaults with overrides for edit fields
+        setEditFields({ ...data.defaults, ...data.overrides });
+      }
+    } catch {
+      // silently fail - will use hardcoded defaults
+    }
+  }, []);
+
+  // Live preview: POST current field values to get updated HTML
+  const updateLivePreview = useCallback(async (fields: InvoiceTextOverrides) => {
+    try {
+      const res = await fetch('/api/ops/email-preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'invoice', textOverrides: fields }),
+      });
+      const data = await res.json();
+      if (data.html) setHtml(data.html);
+    } catch {
+      // silently fail
+    }
+  }, []);
+
   const loadPreview = async (type: EmailType) => {
     setSelectedEmail(type);
     setLoading(true);
     setSendResult(null);
+    setSaveResult(null);
+    setEditMode(false);
     try {
       const res = await fetch(`/api/ops/email-preview?type=${type}`);
       const data = await res.json();
@@ -78,6 +141,78 @@ export default function EmailPreviewPage(): ReactElement {
     }
   };
 
+  // Handle entering edit mode
+  const enterEditMode = async () => {
+    setEditMode(true);
+    await loadTemplateContent();
+  };
+
+  // Handle field change with debounced live preview
+  const handleFieldChange = (key: OverrideKey, value: string) => {
+    const updated = { ...editFields, [key]: value };
+    setEditFields(updated);
+
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      updateLivePreview(updated);
+    }, 500);
+  };
+
+  // Reset single field to default
+  const resetField = (key: OverrideKey) => {
+    if (!defaults) return;
+    const updated = { ...editFields, [key]: defaults[key] };
+    setEditFields(updated);
+    updateLivePreview(updated);
+  };
+
+  // Reset all fields to defaults
+  const resetAllFields = () => {
+    if (!defaults) return;
+    setEditFields({ ...defaults });
+    updateLivePreview({ ...defaults });
+  };
+
+  // Save overrides
+  const saveOverrides = async () => {
+    if (!defaults) return;
+    setSaving(true);
+    setSaveResult(null);
+
+    // Only save fields that differ from defaults
+    const changedOverrides: InvoiceTextOverrides = {};
+    for (const key of Object.keys(defaults) as OverrideKey[]) {
+      if (editFields[key] !== defaults[key]) {
+        changedOverrides[key] = editFields[key];
+      }
+    }
+
+    try {
+      const res = await fetch('/api/ops/email-template-content', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'invoice', content: changedOverrides }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setSaveResult({ success: true, message: 'Saved successfully' });
+      } else {
+        setSaveResult({ success: false, message: data.error || 'Failed to save' });
+      }
+    } catch {
+      setSaveResult({ success: false, message: 'Network error' });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Cleanup debounce timer
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
+
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
       <div className="flex items-center justify-between mb-8">
@@ -98,11 +233,12 @@ export default function EmailPreviewPage(): ReactElement {
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
         <div className="flex flex-wrap gap-2 mb-4">
           {[
-            { id: 'order-confirmation', label: 'Order Confirmation', color: 'green' },
-            { id: 'delivery-en-route', label: 'Delivery En Route', color: 'blue' },
-            { id: 'delivery-completed', label: 'Delivery Completed', color: 'purple' },
-            { id: 'payment-failed', label: 'Payment Failed', color: 'red' },
-            { id: 'refund-processed', label: 'Refund Processed', color: 'yellow' },
+            { id: 'order-confirmation', label: 'Order Confirmation' },
+            { id: 'delivery-en-route', label: 'Delivery En Route' },
+            { id: 'delivery-completed', label: 'Delivery Completed' },
+            { id: 'payment-failed', label: 'Payment Failed' },
+            { id: 'refund-processed', label: 'Refund Processed' },
+            { id: 'invoice', label: 'Invoice' },
           ].map((email) => (
             <button
               key={email.id}
@@ -118,7 +254,7 @@ export default function EmailPreviewPage(): ReactElement {
           ))}
         </div>
 
-        {/* Send Test Email */}
+        {/* Send Test Email + Invoice Edit Toggle */}
         <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
           <input
             type="email"
@@ -137,6 +273,21 @@ export default function EmailPreviewPage(): ReactElement {
             </svg>
             {sending ? 'Sending...' : 'Send Test Email'}
           </button>
+          {isInvoice && html && (
+            <button
+              onClick={() => editMode ? setEditMode(false) : enterEditMode()}
+              className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 ${
+                editMode
+                  ? 'bg-gray-800 text-white hover:bg-gray-900'
+                  : 'bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 shadow-md shadow-amber-200'
+              }`}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              {editMode ? 'Close Editor' : 'Edit Copy'}
+            </button>
+          )}
           {sendResult && (
             <span className={`text-sm font-medium ${sendResult.success ? 'text-green-600' : 'text-red-600'}`}>
               {sendResult.message}
@@ -145,42 +296,142 @@ export default function EmailPreviewPage(): ReactElement {
         </div>
       </div>
 
-      {/* Preview Frame */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="bg-gray-100 px-4 py-2 border-b border-gray-200 flex items-center gap-2">
-          <div className="flex gap-1.5">
-            <div className="w-3 h-3 rounded-full bg-red-400" />
-            <div className="w-3 h-3 rounded-full bg-yellow-400" />
-            <div className="w-3 h-3 rounded-full bg-green-400" />
+      {/* Invoice Editor + Preview split layout */}
+      {isInvoice && editMode && defaults ? (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Editor Panel */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-semibold text-gray-900">Edit Invoice Copy</h3>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={resetAllFields}
+                  className="px-3 py-1.5 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Reset All
+                </button>
+                <button
+                  onClick={saveOverrides}
+                  disabled={saving}
+                  className="px-4 py-1.5 text-sm bg-gradient-to-r from-pink-600 to-pink-700 text-white rounded-lg font-medium hover:from-pink-700 hover:to-pink-800 disabled:opacity-50 transition-all shadow-sm"
+                >
+                  {saving ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </div>
+
+            {saveResult && (
+              <div className={`mb-4 px-4 py-2 rounded-lg text-sm font-medium ${
+                saveResult.success ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+              }`}>
+                {saveResult.message}
+              </div>
+            )}
+
+            <p className="text-xs text-gray-400 mb-4">
+              Use <code className="bg-gray-100 px-1 rounded">{'{customerName}'}</code> in Greeting and <code className="bg-gray-100 px-1 rounded">{'{year}'}</code> in Copyright for dynamic values.
+            </p>
+
+            <div className="space-y-4">
+              {(Object.keys(FIELD_LABELS) as OverrideKey[]).map((key) => {
+                const { label, multiline } = FIELD_LABELS[key];
+                const isModified = defaults[key] !== editFields[key];
+                return (
+                  <div key={key}>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-sm font-medium text-gray-700">
+                        {label}
+                        {isModified && (
+                          <span className="ml-2 text-xs text-amber-600 font-normal">Modified</span>
+                        )}
+                      </label>
+                      {isModified && (
+                        <button
+                          onClick={() => resetField(key)}
+                          className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                        >
+                          Reset
+                        </button>
+                      )}
+                    </div>
+                    {multiline ? (
+                      <textarea
+                        value={editFields[key]}
+                        onChange={(e) => handleFieldChange(key, e.target.value)}
+                        rows={3}
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 resize-vertical"
+                      />
+                    ) : (
+                      <input
+                        type="text"
+                        value={editFields[key]}
+                        onChange={(e) => handleFieldChange(key, e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500"
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
-          <span className="text-sm text-gray-500 ml-2">Email Preview - {selectedEmail}</span>
+
+          {/* Preview Panel */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-gray-100 px-4 py-2 border-b border-gray-200 flex items-center gap-2">
+              <div className="flex gap-1.5">
+                <div className="w-3 h-3 rounded-full bg-red-400" />
+                <div className="w-3 h-3 rounded-full bg-yellow-400" />
+                <div className="w-3 h-3 rounded-full bg-green-400" />
+              </div>
+              <span className="text-sm text-gray-500 ml-2">Live Preview - Invoice</span>
+            </div>
+            <iframe
+              srcDoc={html}
+              className="w-full h-[700px] border-0"
+              title="Invoice Email Preview"
+            />
+          </div>
         </div>
+      ) : (
+        <>
+          {/* Preview Frame */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-gray-100 px-4 py-2 border-b border-gray-200 flex items-center gap-2">
+              <div className="flex gap-1.5">
+                <div className="w-3 h-3 rounded-full bg-red-400" />
+                <div className="w-3 h-3 rounded-full bg-yellow-400" />
+                <div className="w-3 h-3 rounded-full bg-green-400" />
+              </div>
+              <span className="text-sm text-gray-500 ml-2">Email Preview - {selectedEmail}</span>
+            </div>
 
-        {loading ? (
-          <div className="p-16 text-center">
-            <div className="animate-spin w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full mx-auto" />
-            <p className="mt-4 text-gray-500">Loading preview...</p>
+            {loading ? (
+              <div className="p-16 text-center">
+                <div className="animate-spin w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full mx-auto" />
+                <p className="mt-4 text-gray-500">Loading preview...</p>
+              </div>
+            ) : html ? (
+              <iframe
+                srcDoc={html}
+                className="w-full h-[800px] border-0"
+                title="Email Preview"
+              />
+            ) : (
+              <div className="p-16 text-center">
+                <p className="text-gray-500">Click an email type above to preview</p>
+              </div>
+            )}
           </div>
-        ) : html ? (
-          <iframe
-            srcDoc={html}
-            className="w-full h-[800px] border-0"
-            title="Email Preview"
-          />
-        ) : (
-          <div className="p-16 text-center">
-            <p className="text-gray-500">Click an email type above to preview</p>
-          </div>
-        )}
-      </div>
 
-      {/* Sample Data Reference */}
-      <div className="mt-6 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Sample Data Used</h3>
-        <pre className="text-xs bg-gray-50 p-4 rounded-lg overflow-auto max-h-64 text-gray-700">
-          {JSON.stringify(SAMPLE_DATA, null, 2)}
-        </pre>
-      </div>
+          {/* Sample Data Reference */}
+          <div className="mt-6 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Sample Data Used</h3>
+            <pre className="text-xs bg-gray-50 p-4 rounded-lg overflow-auto max-h-64 text-gray-700">
+              {JSON.stringify(SAMPLE_DATA, null, 2)}
+            </pre>
+          </div>
+        </>
+      )}
     </div>
   );
 }

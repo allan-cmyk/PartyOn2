@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { getDraftOrderById, updateDraftOrderStatus } from '@/lib/draft-orders';
 import { generateInvoiceEmail, generateInvoiceSubject } from '@/lib/email/templates/invoice';
+import { getInvoiceTextOverrides } from '@/lib/email/template-content';
 
 // Initialize Resend lazily to avoid build-time errors when env var is missing
 let resend: Resend | null = null;
@@ -53,6 +54,9 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';
     const invoiceUrl = `${baseUrl}/invoice/${draftOrder.token}`;
 
+    // Load saved text overrides
+    const textOverrides = await getInvoiceTextOverrides();
+
     // Generate email from template
     const html = generateInvoiceEmail({
       customerName: draftOrder.customerName,
@@ -70,7 +74,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       discountCode: draftOrder.discountCode,
       total: draftOrder.total,
       invoiceUrl,
-    });
+    }, textOverrides);
 
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'PartyOn Delivery <orders@partyondelivery.com>';
 
