@@ -21,12 +21,12 @@ export interface InvoiceEmailData {
   deliveryState: string;
   deliveryZip: string;
   items: InvoiceItem[];
-  subtotal: number | string;
-  taxAmount: number | string;
-  deliveryFee: number | string;
-  discountAmount: number | string;
+  subtotal: number | string | { toString(): string };
+  taxAmount: number | string | { toString(): string };
+  deliveryFee: number | string | { toString(): string };
+  discountAmount: number | string | { toString(): string };
   discountCode?: string | null;
-  total: number | string;
+  total: number | string | { toString(): string };
   invoiceUrl: string;
 }
 
