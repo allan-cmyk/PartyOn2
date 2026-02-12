@@ -57,9 +57,16 @@ export default function AndersonMillHero(): ReactElement {
 
       {/* Content */}
       <div className="relative z-10 text-center max-w-3xl mx-auto px-6 md:px-8">
-        <motion.h1
+        <motion.p
           {...heroFadeUp}
           transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+          className="font-heading text-lg md:text-2xl font-bold tracking-[0.04em] uppercase text-white/90 mb-2 md:mb-3"
+        >
+          Anderson Mill Marina Boat Club Concierge
+        </motion.p>
+        <motion.h1
+          {...heroFadeUp}
+          transition={{ duration: 0.6, delay: 0.08, ease: [0.25, 0.1, 0.25, 1] }}
           className="font-heading text-4xl md:text-6xl font-bold tracking-[0.02em] text-white mb-3 md:mb-4"
         >
           <span className="inline-block relative align-baseline">
