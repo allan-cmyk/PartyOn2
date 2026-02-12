@@ -2,14 +2,29 @@ import type { Metadata } from 'next';
 import type { ReactElement, ReactNode } from 'react';
 
 export const metadata: Metadata = {
-  title: 'Premier Party Cruises - Free Alcohol Delivery | PartyOn Delivery',
+  title: 'Free Drink Delivery to Your Cruise | Party On Delivery',
   description:
-    'Get free alcohol delivery to Premier Party Cruises on Lake Travis. We deliver beer, wine, spirits, and mixers directly to the marina. Easy group ordering for boat parties.',
+    'We deliver beer, wine, liquor, ice & coolers straight to the dock for your Premier Party Cruise on Lake Travis. Fully stocked and ready when you board.',
   openGraph: {
-    title: 'Premier Party Cruises - Free Alcohol Delivery',
+    title: 'Free Drink Delivery to Your Cruise | Party On Delivery',
     description:
-      "Austin's favorite party boat rentals on Lake Travis. Get free delivery to the marina, easy group ordering, and extra perks for your boat party.",
-    images: ['/images/partners/premierpartycruises-hero.webp'],
+      'We deliver beer, wine, liquor, ice & coolers straight to the dock for your Premier Party Cruise on Lake Travis. Fully stocked and ready when you board.',
+    images: [
+      {
+        url: 'https://partyondelivery.com/images/partners/premier-preview.jpg',
+        width: 1200,
+        height: 630,
+      },
+    ],
+    url: 'https://partyondelivery.com/partners/premier-party-cruises',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Free Drink Delivery to Your Cruise | Party On Delivery',
+    description:
+      'We deliver beer, wine, liquor, ice & coolers straight to the dock for your Premier Party Cruise on Lake Travis. Fully stocked and ready when you board.',
+    images: ['https://partyondelivery.com/images/partners/premier-preview.jpg'],
   },
   keywords: [
     'Premier Party Cruises alcohol delivery',
