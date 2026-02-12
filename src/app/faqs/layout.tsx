@@ -20,7 +20,7 @@ const faqData = [
   },
   {
     question: "Are you licensed and insured?",
-    answer: "Yes, PartyOn Delivery is fully licensed by TABC (Texas Alcoholic Beverage Commission) and carries comprehensive liability insurance."
+    answer: "Yes, Party On Delivery is fully licensed by TABC (Texas Alcoholic Beverage Commission) and carries comprehensive liability insurance."
   },
   {
     question: "Do you provide bartending services?",

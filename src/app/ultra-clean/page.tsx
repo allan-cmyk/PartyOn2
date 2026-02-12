@@ -270,7 +270,7 @@ export default function UltraCleanHome() {
               ))}
             </div>
             <blockquote className="text-3xl font-light mb-8 leading-relaxed">
-              &quot;PartyOn transformed our corporate events with their exceptional service and attention to detail.&quot;
+              &quot;Party On transformed our corporate events with their exceptional service and attention to detail.&quot;
             </blockquote>
             <div className="flex items-center justify-center gap-4">
               <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">

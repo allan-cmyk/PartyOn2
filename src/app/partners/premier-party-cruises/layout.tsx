@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactElement, ReactNode } from 'react';
 
 export const metadata: Metadata = {
-  title: 'Premier Party Cruises - Free Alcohol Delivery | PartyOn Delivery',
+  title: 'Premier Party Cruises - Free Alcohol Delivery | Party On Delivery',
   description:
     'Get free alcohol delivery to Premier Party Cruises on Lake Travis. We deliver beer, wine, spirits, and mixers directly to the marina. Easy group ordering for boat parties.',
   openGraph: {

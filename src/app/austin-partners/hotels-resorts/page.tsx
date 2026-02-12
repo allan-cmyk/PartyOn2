@@ -112,7 +112,7 @@ export default function HotelsResortsPartnerPage() {
             </h1>
             
             <p className="text-xl text-gray-200 mb-8 leading-relaxed">
-              Join 50+ luxury hotels in Austin using PartyOn to enhance guest satisfaction, 
+              Join 50+ luxury hotels in Austin using Party On to enhance guest satisfaction, 
               increase F&B revenue, and streamline operations.
             </p>
             
@@ -543,7 +543,7 @@ export default function HotelsResortsPartnerPage() {
                 <div>
                   <h4 className="font-medium text-gray-900 mb-2">THE SOLUTION</h4>
                   <p className="text-gray-600">
-                    PartyOn implemented a comprehensive beverage program including express in-room delivery, 
+                    Party On implemented a comprehensive beverage program including express in-room delivery, 
                     curated VIP packages, and integrated billing through their PMS system.
                   </p>
                 </div>
@@ -561,7 +561,7 @@ export default function HotelsResortsPartnerPage() {
               
               <div className="border-l-4 border-brand-yellow pl-6">
                 <p className="text-gray-700 italic mb-2">
-                  &ldquo;PartyOn has transformed our beverage service. The integration is seamless, 
+                  &ldquo;Party On has transformed our beverage service. The integration is seamless, 
                   guests love the selection, and our F&B revenue has never been stronger.&rdquo;
                 </p>
                 <p className="text-sm text-gray-500">

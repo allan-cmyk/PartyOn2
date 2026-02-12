@@ -1,6 +1,6 @@
 /**
  * Email Module
- * Centralized email functionality for PartyOn Delivery
+ * Centralized email functionality for Party On Delivery
  */
 
 // Client and utilities

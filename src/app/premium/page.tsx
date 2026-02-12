@@ -261,7 +261,7 @@ export default function PremiumHome() {
         <div className="relative z-10 max-w-7xl mx-auto px-6">
           <div className="text-center mb-16 hero-fade-in">
             <h2 className="font-heading text-5xl md:text-6xl mb-4">
-              The PartyOn Difference
+              The Party On Difference
             </h2>
             <p className="text-xl text-brand-yellow max-w-3xl mx-auto">
               Why industry leaders choose us for their most important events
@@ -346,7 +346,7 @@ export default function PremiumHome() {
               ))}
             </div>
             <blockquote className="text-2xl font-light text-slate-700 mb-8 leading-relaxed">
-              &quot;PartyOn has been our exclusive bar service partner for three years. Their attention to detail,
+              &quot;Party On has been our exclusive bar service partner for three years. Their attention to detail,
               professionalism, and ability to execute flawlessly at scale has made them indispensable to our
               corporate events program.&quot;
             </blockquote>

@@ -1,5 +1,5 @@
 /**
- * Sitemap generation for PartyOn Delivery
+ * Sitemap generation for Party On Delivery
  *
  * Generates dynamic sitemap including:
  * - Static pages (excluding /account blocked by robots.txt)

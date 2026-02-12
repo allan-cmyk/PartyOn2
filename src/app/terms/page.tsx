@@ -40,7 +40,7 @@ export default function TermsPage() {
             <div>
               <h2 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">1. Service Agreement</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
-                By placing an order with PartyOn Delivery (&quot;Company,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;), you agree to be bound by these Terms of Service. Our services are available only to individuals who are 21 years of age or older.
+                By placing an order with Party On Delivery (&quot;Company,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;), you agree to be bound by these Terms of Service. Our services are available only to individuals who are 21 years of age or older.
               </p>
             </div>
 
@@ -86,7 +86,7 @@ export default function TermsPage() {
             <div>
               <h2 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">7. Liability</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
-                PartyOn Delivery is fully licensed and insured. However, we are not responsible for any damages, injuries, or legal issues arising from the consumption of alcohol products after delivery. Customers assume all risks associated with alcohol consumption.
+                Party On Delivery is fully licensed and insured. However, we are not responsible for any damages, injuries, or legal issues arising from the consumption of alcohol products after delivery. Customers assume all risks associated with alcohol consumption.
               </p>
             </div>
 
@@ -110,7 +110,7 @@ export default function TermsPage() {
                 If you have questions about these Terms of Service, please contact us at:
               </p>
               <div className="text-gray-600 leading-relaxed">
-                <p>PartyOn Delivery</p>
+                <p>Party On Delivery</p>
                 <p>Austin, TX</p>
                 <p>Phone: (737) 371-9700</p>
                 <p>Email: info@partyondelivery.com</p>
@@ -162,7 +162,7 @@ export default function TermsPage() {
             </div>
           </div>
           <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-500 text-sm">© 2024 PartyOn Delivery. All rights reserved.</p>
+            <p className="text-gray-500 text-sm">© 2024 Party On Delivery. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link href="/terms" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Terms</Link>
               <Link href="/privacy" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Privacy</Link>

@@ -74,7 +74,7 @@ export default function PropertyManagementPartnerPage() {
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-600">Powered by</span>
                 <Link href="/" className="font-heading text-lg text-brand-yellow hover:text-yellow-600 transition-colors">
-                  PartyOn Delivery
+                  Party On Delivery
                 </Link>
               </div>
             </div>
@@ -248,7 +248,7 @@ export default function PropertyManagementPartnerPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-6">
-                Why Partner with PartyOn
+                Why Partner with Party On
               </h2>
               <ul className="space-y-4">
                 <li className="flex items-start">

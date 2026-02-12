@@ -1,6 +1,6 @@
 # AI Concierge Prompts
 
-This directory contains the personality and behavior definitions for PartyOn Delivery's AI assistants.
+This directory contains the personality and behavior definitions for Party On Delivery's AI assistants.
 
 ## Files
 

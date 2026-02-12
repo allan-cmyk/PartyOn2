@@ -34,7 +34,7 @@ function wrapEmail(title: string, emoji: string, backgroundColor: string, conten
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${title} - PartyOn Delivery</title>
+  <title>${title} - Party On Delivery</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f9fafb;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; padding: 40px 20px;">
@@ -45,7 +45,7 @@ function wrapEmail(title: string, emoji: string, backgroundColor: string, conten
           <!-- Header -->
           <tr>
             <td style="background-color: #1a1a1a; padding: 32px; text-align: center;">
-              <img src="https://partyondelivery.com/images/pod-logo-2025.png" alt="PartyOn Delivery" width="180" style="width: 180px; max-width: 100%; height: auto; margin-bottom: 12px;" />
+              <img src="https://partyondelivery.com/images/pod-logo-2025.png" alt="Party On Delivery" width="180" style="width: 180px; max-width: 100%; height: auto; margin-bottom: 12px;" />
               <p style="color: #ffffff; margin: 0; font-size: 14px; letter-spacing: 0.05em;">PREMIUM ALCOHOL DELIVERY</p>
             </td>
           </tr>
@@ -65,7 +65,7 @@ function wrapEmail(title: string, emoji: string, backgroundColor: string, conten
             <td style="background-color: #1a1a1a; padding: 24px; text-align: center;">
               <p style="margin: 0; color: #D4AF37; font-size: 14px;">Questions about your delivery?</p>
               <p style="margin: 8px 0 0; color: #ffffff; font-size: 14px;">Reply to this email or contact us at support@partyondelivery.com</p>
-              <p style="margin: 16px 0 0; color: #666; font-size: 12px;">&copy; ${new Date().getFullYear()} PartyOn Delivery. All rights reserved.</p>
+              <p style="margin: 16px 0 0; color: #666; font-size: 12px;">&copy; ${new Date().getFullYear()} Party On Delivery. All rights reserved.</p>
             </td>
           </tr>
 
@@ -192,7 +192,7 @@ export function generateDeliveryCompletedEmail(data: DeliveryUpdateData): string
         }
 
         <p style="margin: 16px 0; font-size: 16px; color: #666;">
-          Thank you for choosing PartyOn Delivery! We hope you enjoy your purchase.
+          Thank you for choosing Party On Delivery! We hope you enjoy your purchase.
         </p>
       </td>
     </tr>
@@ -237,7 +237,7 @@ export function generateDeliveryEnRouteText(data: DeliveryUpdateData): string {
     .join('\n  ');
 
   return `
-PARTYON DELIVERY
+PARTY ON DELIVERY
 Delivery Update
 
 Hi ${customerName},
@@ -254,7 +254,7 @@ IMPORTANT: Please have a valid photo ID ready. We are required to verify that al
 
 Questions? Reply to this email or contact support@partyondelivery.com
 
-PartyOn Delivery
+Party On Delivery
 Premium Alcohol Delivery
   `.trim();
 }
@@ -266,7 +266,7 @@ export function generateDeliveryCompletedText(data: DeliveryUpdateData): string 
   const { orderNumber, customerName, total } = data;
 
   return `
-PARTYON DELIVERY
+PARTY ON DELIVERY
 Delivery Complete!
 
 Hi ${customerName},
@@ -275,13 +275,13 @@ Your order #${orderNumber} has been delivered successfully!
 
 ${total ? `Order Total: ${formatCurrency(total)}` : ''}
 
-Thank you for choosing PartyOn Delivery! We hope you enjoy your purchase.
+Thank you for choosing Party On Delivery! We hope you enjoy your purchase.
 
 Order again at: https://partyondelivery.com/products
 
 How was your experience? Reply to this email with any feedback!
 
-PartyOn Delivery
+Party On Delivery
 Premium Alcohol Delivery
   `.trim();
 }

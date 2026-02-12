@@ -54,7 +54,7 @@ export default function LuxuryGoyardPage() {
               <h2 className="text-5xl font-heading text-gray-900 mb-8">The Craft of Excellence</h2>
               <div className="space-y-6 text-gray-700 leading-relaxed">
                 <p>
-                  Since 2016, PartyOn has revolutionized alcohol delivery in Austin, 
+                  Since 2016, Party On has revolutionized alcohol delivery in Austin, 
                   bringing premium spirits and craft cocktails directly to your door 
                   with unmatched speed and sophistication.
                 </p>
@@ -156,7 +156,7 @@ export default function LuxuryGoyardPage() {
             </svg>
           </div>
           <blockquote className="text-2xl font-heading text-gray-800 mb-8 leading-relaxed">
-            PartyOn has transformed how we entertain. Their 2-hour delivery of 
+            Party On has transformed how we entertain. Their 2-hour delivery of 
             premium spirits and cocktail kits means we&apos;re always prepared for 
             clients and celebrations. Simply exceptional service.
           </blockquote>
@@ -200,7 +200,7 @@ export default function LuxuryGoyardPage() {
         <div className="max-w-7xl mx-auto px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
             <div className="md:col-span-2">
-              <h3 className="text-3xl font-heading mb-4">PARTYON</h3>
+              <h3 className="text-3xl font-heading mb-4">PARTY ON</h3>
               <p className="text-gray-600 max-w-sm">
                 Austin&apos;s premier alcohol delivery service. Premium spirits, 
                 cocktail kits, and party packages delivered in 2 hours.
@@ -224,7 +224,7 @@ export default function LuxuryGoyardPage() {
             </div>
           </div>
           <div className="mt-12 pt-8 border-t text-center text-sm text-gray-500">
-            <p>&copy; 2024 PartyOn. A tradition of excellence since 2016.</p>
+            <p>&copy; 2024 Party On. A tradition of excellence since 2016.</p>
           </div>
         </div>
       </footer>

@@ -301,7 +301,7 @@ export default function InvoicePage(): ReactElement {
         {/* Footer */}
         <div className="text-center mt-8 text-gray-500 text-sm">
           <p>Questions? Contact us at orders@partyondelivery.com</p>
-          <p className="mt-2">© {new Date().getFullYear()} PartyOn Delivery. Austin, Texas.</p>
+          <p className="mt-2">© {new Date().getFullYear()} Party On Delivery. Austin, Texas.</p>
         </div>
       </div>
     </div>

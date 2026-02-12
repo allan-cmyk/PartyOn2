@@ -90,7 +90,7 @@ export default function VacationRentalsPartnerPage() {
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-600">Powered by</span>
                 <Link href="/" className="font-heading text-lg text-brand-yellow hover:text-yellow-600 transition-colors">
-                  PartyOn Delivery
+                  Party On Delivery
                 </Link>
               </div>
             </div>

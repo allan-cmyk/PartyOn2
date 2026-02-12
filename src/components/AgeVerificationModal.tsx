@@ -45,7 +45,7 @@ export default function AgeVerificationModal({ isOpen, onClose, onVerify }: AgeV
             <div className="bg-gradient-to-b from-gray-50 to-white px-12 pt-12 pb-8">
               <div className="text-center">
                 <div className="font-heading text-5xl text-gray-900 tracking-[0.1em] mb-2" aria-label="Party On Delivery">
-                  PARTYON
+                  PARTY ON
                 </div>
                 <div className="w-20 h-px bg-brand-yellow mx-auto"></div>
               </div>

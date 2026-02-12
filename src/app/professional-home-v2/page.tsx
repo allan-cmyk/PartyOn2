@@ -174,7 +174,7 @@ export default function ProfessionalHomeV2() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-light mb-6">
-              Why Industry Leaders Choose PartyOn
+              Why Industry Leaders Choose Party On
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
               Our commitment to excellence has earned us partnerships with Austin&apos;s most prestigious organizations
@@ -240,7 +240,7 @@ export default function ProfessionalHomeV2() {
                 </div>
               </div>
               <blockquote className="text-lg text-slate-600 italic mb-8 border-l-4 border-amber-500 pl-6">
-                &quot;PartyOn transformed our leadership summit into an unforgettable experience. 
+                &quot;Party On transformed our leadership summit into an unforgettable experience. 
                 Their attention to detail and professional service exceeded our highest expectations.&quot;
               </blockquote>
               <p className="text-slate-700 font-medium">Michael Chen, VP of Corporate Events</p>

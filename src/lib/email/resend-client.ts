@@ -1,6 +1,6 @@
 /**
  * Resend Email Client
- * Handles all transactional email sending for PartyOn Delivery
+ * Handles all transactional email sending for Party On Delivery
  */
 
 import { Resend } from 'resend';
@@ -10,7 +10,7 @@ import { EmailType, EmailStatus } from '@prisma/client';
 // Initialize Resend client
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'orders@partyondelivery.com';
-const FROM_NAME = 'PartyOn Delivery';
+const FROM_NAME = 'Party On Delivery';
 
 if (!RESEND_API_KEY) {
   console.warn('[Email] RESEND_API_KEY not configured - emails will be logged but not sent');

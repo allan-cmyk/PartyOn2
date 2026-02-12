@@ -190,7 +190,7 @@ export default function LuxuryPrabalPage() {
         <div className="max-w-7xl mx-auto px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-8 md:mb-0">
-              <h3 className="text-4xl font-bold mb-2">PARTYON</h3>
+              <h3 className="text-4xl font-bold mb-2">PARTY ON</h3>
               <p className="text-gray-600">Breaking Boundaries Since 2016</p>
             </div>
             <div className="flex space-x-8">

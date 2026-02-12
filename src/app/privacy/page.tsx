@@ -39,7 +39,7 @@ export default function PrivacyPage() {
           <div className="space-y-8">
             <div>
               <p className="text-gray-600 leading-relaxed mb-8">
-                PartyOn Delivery (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.
+                Party On Delivery (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.
               </p>
             </div>
 
@@ -147,7 +147,7 @@ export default function PrivacyPage() {
                 If you have questions about this Privacy Policy or our privacy practices, please contact us at:
               </p>
               <div className="text-gray-600 leading-relaxed">
-                <p>PartyOn Delivery</p>
+                <p>Party On Delivery</p>
                 <p>Austin, TX</p>
                 <p>Phone: (737) 371-9700</p>
                 <p>Email: info@partyondelivery.com</p>
@@ -199,7 +199,7 @@ export default function PrivacyPage() {
             </div>
           </div>
           <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-500 text-sm">© 2024 PartyOn Delivery. All rights reserved.</p>
+            <p className="text-gray-500 text-sm">© 2024 Party On Delivery. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link href="/terms" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Terms</Link>
               <Link href="/privacy" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Privacy</Link>

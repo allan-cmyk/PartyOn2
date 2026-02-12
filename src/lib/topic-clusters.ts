@@ -21,7 +21,7 @@ export interface TopicCluster {
 }
 
 /**
- * Topic cluster definitions for PartyOn blog
+ * Topic cluster definitions for Party On blog
  * Each cluster has one pillar page and multiple cluster (subtopic) pages
  */
 export const TOPIC_CLUSTERS: TopicCluster[] = [

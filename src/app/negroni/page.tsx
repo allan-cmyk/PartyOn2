@@ -167,7 +167,7 @@ export default function LuxuryJimmyPage() {
         <div className="max-w-7xl mx-auto px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-8 md:mb-0">
-              <p className="text-2xl font-light tracking-[0.1em]">PARTYON</p>
+              <p className="text-2xl font-light tracking-[0.1em]">PARTY ON</p>
               <p className="text-sm text-gray-600 mt-2">Premium Alcohol Delivery • Austin, Texas</p>
             </div>
             <div className="flex space-x-12">
