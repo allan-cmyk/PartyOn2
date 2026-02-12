@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { parseInventoryNote, type KnownProduct } from '@/lib/ai/note-parser';
 
@@ -54,7 +55,7 @@ export async function POST(
     // Store parsed result on the note
     await prisma.inventoryNote.update({
       where: { id },
-      data: { parsedResult: adjustments as unknown as Record<string, unknown>[] },
+      data: { parsedResult: adjustments as unknown as Prisma.InputJsonValue },
     });
 
     return NextResponse.json({
