@@ -26,6 +26,23 @@ interface PaginationMeta {
   totalPages: number;
 }
 
+interface InventoryNote {
+  id: string;
+  content: string;
+  status: string;
+  parsedResult: ParsedAdjustment[] | null;
+  createdAt: string;
+}
+
+interface ParsedAdjustment {
+  productName: string;
+  productId: string | null;
+  variantId: string | null;
+  quantity: number;
+  action: 'add' | 'remove' | 'set';
+  confidence: number;
+}
+
 // Stats card component for consistent styling
 function StatCard({
   title,
@@ -118,6 +135,263 @@ function StockStatus({ quantity, threshold }: { quantity: number; threshold: num
   );
 }
 
+// Pending Notes Panel component
+function NotesPanel({
+  notes,
+  onProcess,
+  onApply,
+  onDismiss,
+  onClose,
+  processingId,
+  applyingId,
+}: {
+  notes: InventoryNote[];
+  onProcess: (id: string) => void;
+  onApply: (id: string, adjustments: ParsedAdjustment[]) => void;
+  onDismiss: (id: string) => void;
+  onClose: () => void;
+  processingId: string | null;
+  applyingId: string | null;
+}): ReactElement {
+  // Track editable adjustments per note
+  const [editableAdjustments, setEditableAdjustments] = useState<Record<string, ParsedAdjustment[]>>({});
+
+  // When a note gets parsed results, initialize editable state
+  useEffect(() => {
+    const updated: Record<string, ParsedAdjustment[]> = {};
+    for (const note of notes) {
+      if (note.parsedResult && !editableAdjustments[note.id]) {
+        updated[note.id] = [...note.parsedResult];
+      }
+    }
+    if (Object.keys(updated).length > 0) {
+      setEditableAdjustments((prev) => ({ ...prev, ...updated }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notes]);
+
+  const updateAdjustment = (noteId: string, index: number, field: keyof ParsedAdjustment, value: string | number) => {
+    setEditableAdjustments((prev) => {
+      const list = [...(prev[noteId] || [])];
+      list[index] = { ...list[index], [field]: value };
+      return { ...prev, [noteId]: list };
+    });
+  };
+
+  const removeAdjustment = (noteId: string, index: number) => {
+    setEditableAdjustments((prev) => {
+      const list = [...(prev[noteId] || [])];
+      list.splice(index, 1);
+      return { ...prev, [noteId]: list };
+    });
+  };
+
+  const pendingNotes = notes.filter((n) => n.status === 'pending');
+
+  return (
+    <div className="fixed inset-0 z-50 flex justify-end">
+      <div className="absolute inset-0 bg-black/30" onClick={onClose} />
+      <div className="relative w-full max-w-2xl bg-white shadow-2xl flex flex-col h-full animate-slide-in-right">
+        {/* Header */}
+        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-amber-50 to-white">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
+              <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">Pending Notes</h2>
+              <p className="text-sm text-gray-500">{pendingNotes.length} note{pendingNotes.length !== 1 ? 's' : ''} to process</p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-lg"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Notes List */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          {pendingNotes.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-gray-400">
+              <svg className="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p className="text-lg font-medium">All caught up!</p>
+              <p className="text-sm">No pending notes to process.</p>
+            </div>
+          ) : (
+            pendingNotes.map((note) => {
+              const adjustments = editableAdjustments[note.id] || note.parsedResult;
+              const hasParsed = !!note.parsedResult;
+              const isProcessing = processingId === note.id;
+              const isApplying = applyingId === note.id;
+
+              return (
+                <div
+                  key={note.id}
+                  className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
+                >
+                  {/* Note content */}
+                  <div className="px-5 py-4 bg-gray-50 border-b border-gray-100">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <p className="text-sm text-gray-800 font-medium leading-relaxed">
+                          &ldquo;{note.content}&rdquo;
+                        </p>
+                        <p className="text-xs text-gray-400 mt-1">
+                          {new Date(note.createdAt).toLocaleString()}
+                        </p>
+                      </div>
+                      {!hasParsed && (
+                        <button
+                          onClick={() => onProcess(note.id)}
+                          disabled={isProcessing}
+                          className="shrink-0 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+                        >
+                          {isProcessing ? (
+                            <>
+                              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                              </svg>
+                              Parsing...
+                            </>
+                          ) : (
+                            <>
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                              </svg>
+                              Process with AI
+                            </>
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Parsed adjustments table */}
+                  {hasParsed && adjustments && adjustments.length > 0 && (
+                    <div className="px-5 py-4">
+                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                        Parsed Adjustments
+                      </p>
+                      <div className="space-y-2">
+                        {adjustments.map((adj, idx) => (
+                          <div
+                            key={idx}
+                            className={`flex items-center gap-3 p-3 rounded-lg border ${
+                              adj.productId
+                                ? adj.confidence >= 0.8
+                                  ? 'border-green-200 bg-green-50/50'
+                                  : 'border-yellow-200 bg-yellow-50/50'
+                                : 'border-red-200 bg-red-50/50'
+                            }`}
+                          >
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-gray-900 truncate">
+                                {adj.productName}
+                              </p>
+                              {!adj.productId && (
+                                <p className="text-xs text-red-600">No product match found</p>
+                              )}
+                              {adj.productId && adj.confidence < 0.8 && (
+                                <p className="text-xs text-yellow-600">Low confidence match ({Math.round(adj.confidence * 100)}%)</p>
+                              )}
+                            </div>
+                            <select
+                              value={adj.action}
+                              onChange={(e) => updateAdjustment(note.id, idx, 'action', e.target.value)}
+                              className="text-xs font-medium px-2 py-1.5 rounded border border-gray-200 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            >
+                              <option value="add">Add</option>
+                              <option value="remove">Remove</option>
+                              <option value="set">Set to</option>
+                            </select>
+                            <input
+                              type="number"
+                              value={adj.quantity}
+                              onChange={(e) => updateAdjustment(note.id, idx, 'quantity', parseInt(e.target.value) || 0)}
+                              min={0}
+                              className="w-16 text-center text-sm font-bold px-2 py-1.5 rounded border border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <button
+                              onClick={() => removeAdjustment(note.id, idx)}
+                              className="text-gray-400 hover:text-red-500 transition-colors p-1"
+                              title="Remove row"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Action buttons */}
+                      <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
+                        <button
+                          onClick={() => onDismiss(note.id)}
+                          className="px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                        >
+                          Dismiss
+                        </button>
+                        <button
+                          onClick={() => {
+                            const validAdj = (adjustments || []).filter((a) => a.productId);
+                            if (validAdj.length > 0) onApply(note.id, validAdj);
+                          }}
+                          disabled={isApplying || !adjustments?.some((a) => a.productId)}
+                          className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+                        >
+                          {isApplying ? (
+                            <>
+                              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                              </svg>
+                              Applying...
+                            </>
+                          ) : (
+                            <>
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                              Apply Adjustments
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Parsed but no results */}
+                  {hasParsed && (!adjustments || adjustments.length === 0) && (
+                    <div className="px-5 py-4">
+                      <p className="text-sm text-gray-500 italic">AI could not extract any adjustments from this note.</p>
+                      <button
+                        onClick={() => onDismiss(note.id)}
+                        className="mt-2 px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                      >
+                        Dismiss
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function InventoryPage(): ReactElement {
   const searchParams = useSearchParams();
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
@@ -133,8 +407,13 @@ export default function InventoryPage(): ReactElement {
   const [showNoteModal, setShowNoteModal] = useState(false);
   const [noteContent, setNoteContent] = useState('');
   const [noteSaving, setNoteSaving] = useState(false);
-  const [pendingNotesCount, setPendingNotesCount] = useState(0);
   const [noteSuccess, setNoteSuccess] = useState(false);
+
+  // Notes panel state
+  const [showNotesPanel, setShowNotesPanel] = useState(false);
+  const [pendingNotes, setPendingNotes] = useState<InventoryNote[]>([]);
+  const [processingNoteId, setProcessingNoteId] = useState<string | null>(null);
+  const [applyingNoteId, setApplyingNoteId] = useState<string | null>(null);
 
   // Stats derived from inventory data
   const [stats, setStats] = useState({
@@ -206,13 +485,13 @@ export default function InventoryPage(): ReactElement {
     }
   };
 
-  // Fetch pending notes count
-  const fetchPendingNotesCount = useCallback(async () => {
+  // Fetch pending notes
+  const fetchPendingNotes = useCallback(async () => {
     try {
       const res = await fetch('/api/v1/inventory/notes?status=pending');
       if (res.ok) {
         const data = await res.json();
-        setPendingNotesCount(data.data?.length || 0);
+        setPendingNotes(data.data || []);
       }
     } catch {
       // Silently fail - not critical
@@ -220,8 +499,8 @@ export default function InventoryPage(): ReactElement {
   }, []);
 
   useEffect(() => {
-    fetchPendingNotesCount();
-  }, [fetchPendingNotesCount]);
+    fetchPendingNotes();
+  }, [fetchPendingNotes]);
 
   const handleSubmitNote = async () => {
     if (!noteContent.trim()) return;
@@ -235,7 +514,7 @@ export default function InventoryPage(): ReactElement {
       if (res.ok) {
         setNoteContent('');
         setNoteSuccess(true);
-        fetchPendingNotesCount();
+        fetchPendingNotes();
         setTimeout(() => {
           setNoteSuccess(false);
           setShowNoteModal(false);
@@ -248,6 +527,79 @@ export default function InventoryPage(): ReactElement {
     }
   };
 
+  const handleProcessNote = async (noteId: string) => {
+    setProcessingNoteId(noteId);
+    try {
+      const res = await fetch(`/api/v1/inventory/notes/${noteId}/process`, {
+        method: 'POST',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        // Update the note in state with parsed result
+        setPendingNotes((prev) =>
+          prev.map((n) =>
+            n.id === noteId
+              ? { ...n, parsedResult: data.data.adjustments }
+              : n
+          )
+        );
+      } else {
+        const err = await res.json();
+        alert(`Failed to process note: ${err.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Failed to process note:', error);
+      alert('Failed to process note. Check console for details.');
+    } finally {
+      setProcessingNoteId(null);
+    }
+  };
+
+  const handleApplyNote = async (noteId: string, adjustments: ParsedAdjustment[]) => {
+    setApplyingNoteId(noteId);
+    try {
+      const res = await fetch(`/api/v1/inventory/notes/${noteId}/apply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          adjustments: adjustments.map((a) => ({
+            productId: a.productId,
+            variantId: a.variantId,
+            quantity: a.quantity,
+            action: a.action,
+          })),
+        }),
+      });
+      if (res.ok) {
+        // Remove from pending list
+        setPendingNotes((prev) => prev.filter((n) => n.id !== noteId));
+        // Refresh inventory to show updated quantities
+        fetchInventory();
+      } else {
+        const err = await res.json();
+        alert(`Failed to apply adjustments: ${err.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Failed to apply note:', error);
+      alert('Failed to apply adjustments. Check console for details.');
+    } finally {
+      setApplyingNoteId(null);
+    }
+  };
+
+  const handleDismissNote = async (noteId: string) => {
+    try {
+      const res = await fetch(`/api/v1/inventory/notes/${noteId}/apply`, {
+        method: 'PATCH',
+      });
+      if (res.ok) {
+        setPendingNotes((prev) => prev.filter((n) => n.id !== noteId));
+      }
+    } catch (error) {
+      console.error('Failed to dismiss note:', error);
+    }
+  };
+
   const filteredInventory = inventory.filter((item) => {
     if (filter === 'low_stock') {
       return item.quantity <= item.lowStockThreshold && item.quantity > 0;
@@ -257,6 +609,8 @@ export default function InventoryPage(): ReactElement {
     }
     return true;
   });
+
+  const pendingNotesCount = pendingNotes.length;
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
@@ -277,12 +631,18 @@ export default function InventoryPage(): ReactElement {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
             Add Note
-            {pendingNotesCount > 0 && (
-              <span className="bg-white/20 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
-                {pendingNotesCount}
-              </span>
-            )}
           </button>
+          {pendingNotesCount > 0 && (
+            <button
+              onClick={() => setShowNotesPanel(true)}
+              className="px-4 py-2 bg-amber-100 text-amber-800 rounded-lg font-medium hover:bg-amber-200 transition-colors shadow-sm flex items-center gap-2 border border-amber-200"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              {pendingNotesCount} Pending
+            </button>
+          )}
           <button
             onClick={() => fetchInventory()}
             className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors shadow-sm flex items-center gap-2"
@@ -509,7 +869,7 @@ export default function InventoryPage(): ReactElement {
                           {item.reservedQuantity}
                         </span>
                       ) : (
-                        <span className="text-gray-400">—</span>
+                        <span className="text-gray-400">&mdash;</span>
                       )}
                     </td>
                     <td className="px-6 py-4 text-center">
@@ -677,6 +1037,19 @@ export default function InventoryPage(): ReactElement {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Notes Management Panel (slide-out) */}
+      {showNotesPanel && (
+        <NotesPanel
+          notes={pendingNotes}
+          onProcess={handleProcessNote}
+          onApply={handleApplyNote}
+          onDismiss={handleDismissNote}
+          onClose={() => setShowNotesPanel(false)}
+          processingId={processingNoteId}
+          applyingId={applyingNoteId}
+        />
       )}
     </div>
   );
