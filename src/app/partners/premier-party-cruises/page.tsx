@@ -103,15 +103,12 @@ function PremierPartyCruisesPageContent(): ReactElement {
 
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [activeCollection, setActiveCollection] = useState('boat-best-sellers');
-  const [showSearchOverlay, setShowSearchOverlay] = useState(false);
   const [sortBy, setSortBy] = useState<'popular' | 'price-asc'>('popular');
 
   // Sticky collections state
   const [isCollectionsSticky, setIsCollectionsSticky] = useState(false);
   const collectionsRef = useRef<HTMLElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const endSentinelRef = useRef<HTMLDivElement>(null);
-  const [isPastProductSection, setIsPastProductSection] = useState(false);
   const [openBoatFaq, setOpenBoatFaq] = useState<number | null>(0);
   const [openHouseFaq, setOpenHouseFaq] = useState<number | null>(0);
 
@@ -147,24 +144,6 @@ function PremierPartyCruisesPageContent(): ReactElement {
     return () => startObserver.disconnect();
   }, []);
 
-  // Detect when user scrolls past the product section
-  useEffect(() => {
-    if (!endSentinelRef.current) return;
-
-    const endObserver = new IntersectionObserver(
-      ([entry]) => {
-        // When end sentinel enters viewport from above, we're past the product section
-        setIsPastProductSection(!entry.isIntersecting && entry.boundingClientRect.top < 0);
-      },
-      {
-        rootMargin: '0px 0px 0px 0px',
-        threshold: 0,
-      }
-    );
-
-    endObserver.observe(endSentinelRef.current);
-    return () => endObserver.disconnect();
-  }, []);
 
   const scrollToCollections = () => {
     document.getElementById('boat-collections')?.scrollIntoView({ behavior: 'smooth' });
@@ -239,7 +218,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
       {/* ============================================ */}
       {/* SECTION 3: HOW IT WORKS                      */}
       {/* ============================================ */}
-      <section className="bg-white py-6 md:py-24">
+      <section className="bg-white pt-6 pb-4 md:py-24">
         <div className="max-w-5xl mx-auto px-6 md:px-8">
           <h2 className="font-heading text-3xl md:text-4xl text-gray-900 text-center mb-6 md:mb-12">
             How group ordering works
@@ -265,14 +244,14 @@ function PremierPartyCruisesPageContent(): ReactElement {
           </div>
 
           {/* Callout box */}
-          <div className="mt-8 bg-brand-yellow/10 border-l-4 border-brand-yellow rounded-lg p-4">
+          <div className="mt-4 md:mt-8 bg-brand-yellow/10 border-l-4 border-brand-yellow rounded-lg p-4">
             <p className="text-gray-900 font-semibold">
               Hosts love this: everyone pays their portion. No collecting money.
             </p>
           </div>
 
           {/* Inline join module */}
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="mt-4 md:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <span className="text-gray-700 font-sans text-sm">Have a code?</span>
             <div className="flex items-center gap-2">
               <input
@@ -307,11 +286,11 @@ function PremierPartyCruisesPageContent(): ReactElement {
       {/* ============================================ */}
       {/* SECTION 4: DRINK CALCULATOR                  */}
       {/* ============================================ */}
-      <section className="bg-gray-50 py-4 md:py-24">
+      <section className="bg-gray-100 py-0 md:py-24">
         <div id="drink-calculator" className="scroll-mt-24">
           <DrinkCalculator />
         </div>
-        <div className="max-w-4xl mx-auto px-6 md:px-8 text-center mt-6">
+        <div className="max-w-4xl mx-auto px-6 md:px-8 text-center mt-2 pb-4 md:pb-0 md:mt-6">
           <p className="text-gray-500 text-sm">You can edit anything before checkout.</p>
         </div>
       </section>
@@ -320,153 +299,141 @@ function PremierPartyCruisesPageContent(): ReactElement {
       {/* SECTION 5: SHOP (Collections + Product Grid) */}
       {/* ============================================ */}
 
-      {/* Sentinel for sticky detection */}
-      <div ref={sentinelRef} id="boat-collections" className="h-0" aria-hidden="true" />
+      {/* Shop wrapper — sticky header naturally unsticks when this container scrolls out */}
+      <div id="boat-collections">
+        {/* Sentinel for compact mode detection */}
+        <div ref={sentinelRef} className="h-0" aria-hidden="true" />
 
-      {/* Featured Collections - Sticky only in product section */}
-      <section
-        ref={collectionsRef}
-        className={`bg-gray-50 border-b border-gray-200 transition-all duration-300 ${
-          isCollectionsSticky && !isPastProductSection
-            ? 'sticky z-40 py-2 shadow-md top-0'
-            : 'py-6'
-        }`}
-      >
-        <div className="px-4 md:max-w-7xl md:mx-auto md:px-8">
-          {/* CTA Buttons - hide when sticky */}
-          {!isCollectionsSticky && (
-            <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 mb-6">
-              <h2 className="font-heading text-2xl md:text-3xl text-gray-900">Shop drinks</h2>
-              <div className="flex-1" />
-              <Button variant="cart" size="sm" href="/group/create">
-                Start Group Order
-              </Button>
-            </div>
-          )}
-
-          {/* Collections Grid/Horizontal Scroll */}
-          <div
-            className={
-              isCollectionsSticky
-                ? 'flex items-center gap-2'
-                : 'grid grid-cols-2 md:grid-cols-5 gap-2'
-            }
+        {/* Sticky header: categories + search */}
+        <div className="sticky top-0 z-40">
+          <section
+            ref={collectionsRef}
+            className={`bg-gray-50 border-b border-gray-200 transition-all duration-200 ${
+              isCollectionsSticky ? 'py-2 shadow-md' : 'py-6'
+            }`}
           >
-            {/* Search button - only show when sticky */}
-            {isCollectionsSticky && (
-              <button
-                onClick={() => setShowSearchOverlay(true)}
-                className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
-                aria-label="Search products"
+            <div className="px-4 md:max-w-7xl md:mx-auto md:px-8">
+              {/* CTA Buttons - hide when compact */}
+              {!isCollectionsSticky && (
+                <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 mb-6">
+                  <h2 className="font-heading text-2xl md:text-3xl text-gray-900">Shop drinks</h2>
+                  <div className="flex-1" />
+                  <Button variant="cart" size="sm" href="/group/create">
+                    Start Group Order
+                  </Button>
+                </div>
+              )}
+
+              {/* Collections Grid/Horizontal Scroll */}
+              <div
+                className={
+                  isCollectionsSticky
+                    ? 'flex items-center gap-2'
+                    : 'grid grid-cols-2 md:grid-cols-5 gap-2'
+                }
               >
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
-            )}
+                {/* Compact: Group Order CTA */}
+                {isCollectionsSticky && (
+                  <Button variant="cart" size="sm" href="/group/create" className="flex-shrink-0">
+                    Start Group Order
+                  </Button>
+                )}
 
-            {/* Sticky: Group Order CTA */}
-            {isCollectionsSticky && (
-              <Button variant="cart" size="sm" href="/group/create" className="flex-shrink-0">
-                Start Group Order
-              </Button>
-            )}
+                {/* Categories */}
+                <div
+                  className={
+                    isCollectionsSticky
+                      ? 'flex overflow-x-auto gap-2 pb-2 -mr-4 pr-4 scrollbar-hide snap-x snap-mandatory flex-1'
+                      : 'contents'
+                  }
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                  {PREMIER_BOAT_COLLECTIONS.map((collection) => {
+                    const isActive = activeCollection === collection.handle;
+                    const count = counts[collection.handle];
+                    return (
+                      <button
+                        key={collection.handle}
+                        onClick={() => handleCollectionChange(collection.handle)}
+                        className={`
+                          text-center border transition-all rounded-lg relative
+                          ${isCollectionsSticky ? 'px-3 py-2' : 'px-4 py-3'}
+                          ${isActive
+                            ? `${collection.colors.bgActive} ${collection.colors.textActive} ${collection.colors.borderActive} shadow-lg ${isCollectionsSticky ? '' : 'scale-105'}`
+                            : `${collection.colors.bg} ${collection.colors.text} ${collection.colors.border} hover:scale-102`
+                          }
+                          text-xs md:text-sm
+                          ${isCollectionsSticky ? 'flex-shrink-0 snap-start whitespace-nowrap' : ''}
+                          tracking-[0.1em] font-medium
+                        `}
+                        disabled={loading && activeCollection !== collection.handle}
+                      >
+                        {collection.label.toUpperCase()}
+                        {count != null && count > 0 && (
+                          <span className="ml-1 opacity-70">({count})</span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </section>
 
-            {/* Categories */}
-            <div
-              className={
-                isCollectionsSticky
-                  ? 'flex overflow-x-auto gap-2 pb-2 -mr-4 pr-4 scrollbar-hide snap-x snap-mandatory flex-1'
-                  : 'contents'
-              }
-              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-            >
-              {PREMIER_BOAT_COLLECTIONS.map((collection) => {
-                const isActive = activeCollection === collection.handle;
-                const count = counts[collection.handle];
-                return (
-                  <button
-                    key={collection.handle}
-                    onClick={() => handleCollectionChange(collection.handle)}
-                    className={`
-                      text-center border transition-all rounded-lg relative
-                      ${isCollectionsSticky ? 'px-3 py-2' : 'px-4 py-3'}
-                      ${isActive
-                        ? `${collection.colors.bgActive} ${collection.colors.textActive} ${collection.colors.borderActive} shadow-lg ${isCollectionsSticky ? '' : 'scale-105'}`
-                        : `${collection.colors.bg} ${collection.colors.text} ${collection.colors.border} hover:scale-102`
-                      }
-                      text-xs md:text-sm
-                      ${isCollectionsSticky ? 'flex-shrink-0 snap-start whitespace-nowrap' : ''}
-                      tracking-[0.1em] font-medium
-                    `}
-                    disabled={loading && activeCollection !== collection.handle}
-                  >
-                    {collection.label.toUpperCase()}
-                    {count != null && count > 0 && (
-                      <span className="ml-1 opacity-70">({count})</span>
-                    )}
-                  </button>
-                );
-              })}
+          {/* Search Bar — part of sticky header */}
+          <div className="bg-white border-b border-gray-200 px-4 py-3">
+            <div className="max-w-xl mx-auto">
+              <QuickOrderSearch />
             </div>
           </div>
         </div>
-      </section>
 
-      {/* Search Bar */}
-      <div className="bg-white border-b border-gray-200 px-4 py-3">
-        <div className="max-w-xl mx-auto">
-          <QuickOrderSearch />
-        </div>
-      </div>
-
-      {/* Product Grid */}
-      <main className="px-4 py-8">
-        <div id="product-grid" className="scroll-mt-24 max-w-7xl mx-auto">
-          {error ? (
-            <div className="text-center py-12">
-              <p className="text-red-500">Failed to load products. Please try again.</p>
-              <Button variant="cart" size="sm" onClick={() => window.location.reload()}>
-                Retry
-              </Button>
-            </div>
-          ) : (
-            <>
-              <DontForgetRow />
-
-              {/* Sort Toggle */}
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-xs text-gray-500 uppercase tracking-[0.08em] mr-1">Sort:</span>
-                <button
-                  onClick={() => setSortBy('popular')}
-                  className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
-                    sortBy === 'popular'
-                      ? 'bg-gray-900 text-white border-gray-900'
-                      : 'bg-white text-gray-600 border-gray-300 hover:border-gray-400'
-                  }`}
-                >
-                  Popular
-                </button>
-                <button
-                  onClick={() => setSortBy('price-asc')}
-                  className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
-                    sortBy === 'price-asc'
-                      ? 'bg-gray-900 text-white border-gray-900'
-                      : 'bg-white text-gray-600 border-gray-300 hover:border-gray-400'
-                  }`}
-                >
-                  Price Low&rarr;High
-                </button>
+        {/* Product Grid */}
+        <main className="px-4 py-8">
+          <div id="product-grid" className="scroll-mt-24 max-w-7xl mx-auto">
+            {error ? (
+              <div className="text-center py-12">
+                <p className="text-red-500">Failed to load products. Please try again.</p>
+                <Button variant="cart" size="sm" onClick={() => window.location.reload()}>
+                  Retry
+                </Button>
               </div>
+            ) : (
+              <>
+                <DontForgetRow />
 
-              <QuickOrderGrid products={sortedProducts} loading={loading} />
-            </>
-          )}
-        </div>
-      </main>
+                {/* Sort Toggle */}
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-xs text-gray-500 uppercase tracking-[0.08em] mr-1">Sort:</span>
+                  <button
+                    onClick={() => setSortBy('popular')}
+                    className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
+                      sortBy === 'popular'
+                        ? 'bg-gray-900 text-white border-gray-900'
+                        : 'bg-white text-gray-600 border-gray-300 hover:border-gray-400'
+                    }`}
+                  >
+                    Popular
+                  </button>
+                  <button
+                    onClick={() => setSortBy('price-asc')}
+                    className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
+                      sortBy === 'price-asc'
+                        ? 'bg-gray-900 text-white border-gray-900'
+                        : 'bg-white text-gray-600 border-gray-300 hover:border-gray-400'
+                    }`}
+                  >
+                    Price Low&rarr;High
+                  </button>
+                </div>
 
-      {/* End sentinel for product section */}
-      <div ref={endSentinelRef} className="h-0" aria-hidden="true" />
+                <QuickOrderGrid products={sortedProducts} loading={loading} />
+              </>
+            )}
+          </div>
+        </main>
+
+      </div>
 
       {/* ============================================ */}
       {/* SECTION 6: HOUSE TAB UPSELL                  */}
@@ -781,33 +748,6 @@ function PremierPartyCruisesPageContent(): ReactElement {
         onClose={() => setIsJoinModalOpen(false)}
       />
 
-      {/* Search Overlay */}
-      {showSearchOverlay && (
-        <div
-          className="fixed inset-0 z-50 bg-black/50 px-4 pt-4"
-          onClick={() => setShowSearchOverlay(false)}
-        >
-          <div
-            className="bg-white w-full max-w-2xl mx-auto rounded-lg shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-4 flex items-start gap-3">
-              <div className="flex-1 relative">
-                <QuickOrderSearch autoFocus onResultClick={() => setShowSearchOverlay(false)} />
-              </div>
-              <button
-                onClick={() => setShowSearchOverlay(false)}
-                className="flex-shrink-0 p-2 text-gray-400 hover:text-gray-600 -mt-1"
-                aria-label="Close search"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
