@@ -1726,6 +1726,23 @@ model EmailTemplateContent {
   @@map("email_template_content")
 }
 
+// ==========================================
+// INVENTORY NOTES (Quick adjustment instructions)
+// ==========================================
+
+model InventoryNote {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  status    String   @default("pending") // pending, processed
+  createdBy String?  @map("created_by")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("inventory_notes")
+}
+
 model GroupDeliveryInvoice {
   id                      String               @id @default(uuid())
   subOrderId              String               @unique @map("sub_order_id")
