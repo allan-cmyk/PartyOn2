@@ -239,7 +239,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
       {/* ============================================ */}
       {/* SECTION 3: HOW IT WORKS                      */}
       {/* ============================================ */}
-      <section className="bg-white py-10 md:py-24">
+      <section className="bg-white py-6 md:py-24">
         <div className="max-w-5xl mx-auto px-6 md:px-8">
           <h2 className="font-heading text-3xl md:text-4xl text-gray-900 text-center mb-6 md:mb-12">
             How group ordering works
@@ -307,7 +307,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
       {/* ============================================ */}
       {/* SECTION 4: DRINK CALCULATOR                  */}
       {/* ============================================ */}
-      <section className="bg-gray-50 py-16 md:py-24">
+      <section className="bg-gray-50 py-4 md:py-24">
         <div id="drink-calculator" className="scroll-mt-24">
           <DrinkCalculator />
         </div>

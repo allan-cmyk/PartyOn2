@@ -5,10 +5,12 @@
 
 'use client';
 
-import { useState, type ReactElement } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect, useCallback, type ReactElement } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Button from '@/components/Button';
+
+const ROTATING_WORDS = ['Beer', 'Seltzers', 'Cocktails', 'Ice', 'Mixers', 'Cups', 'Everything'];
 
 const heroFadeUp = {
   initial: { opacity: 0, y: 20 },
@@ -22,6 +24,16 @@ const heroFadeUp = {
 export default function PremierHero(): ReactElement {
   const [joinCode, setJoinCode] = useState('');
   const [showJoinInput, setShowJoinInput] = useState(false);
+  const [wordIndex, setWordIndex] = useState(0);
+
+  const rotateWord = useCallback(() => {
+    setWordIndex((prev) => (prev + 1) % ROTATING_WORDS.length);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(rotateWord, 2400);
+    return () => clearInterval(interval);
+  }, [rotateWord]);
 
   const handleJoin = () => {
     if (joinCode.trim()) {
@@ -50,7 +62,24 @@ export default function PremierHero(): ReactElement {
           transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
           className="font-heading text-4xl md:text-6xl font-bold tracking-[0.02em] text-white mb-3 md:mb-4"
         >
-          Your boat drinks are iced & waiting when you board.
+          <span className="inline-block relative align-baseline">
+            {/* Ghost text — invisible, holds width of longest word */}
+            <span className="invisible" aria-hidden="true">Everything</span>
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={ROTATING_WORDS[wordIndex]}
+                initial={{ y: '100%', opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: '-100%', opacity: 0 }}
+                transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+                className="absolute inset-0 text-brand-yellow text-center"
+              >
+                {ROTATING_WORDS[wordIndex]}
+              </motion.span>
+            </AnimatePresence>
+          </span>
+          <br />
+          <span className="text-white">iced &amp; waiting on the boat!</span>
         </motion.h1>
         <motion.p
           {...heroFadeUp}

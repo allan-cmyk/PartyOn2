@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useMemo, type ReactElement } from 'react';
+import { useState, useMemo, useCallback, type ReactElement } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useCartContext } from '@/contexts/CartContext';
 
 // ============================================
 // Types
@@ -12,7 +13,7 @@ type PartyType = 'bachelor' | 'bachelorette' | 'other';
 type BachelorPreference = 'mostly_beer' | 'mostly_seltzers' | 'good_mix';
 type BachelorettePreference = 'seltzers_only' | 'seltzers_wine';
 type DrinkPreference = BachelorPreference | BachelorettePreference;
-type Stage = 'calculate' | 'preferences' | 'lead_capture' | 'results';
+type Stage = 'calculate' | 'preferences' | 'results';
 
 interface ProductRecommendation {
   name: string;
@@ -32,6 +33,15 @@ const DRINKS_PER_HOUR: Record<PartyType, Record<DrinkingLevel, number>> = {
 
 // Use bachelor rates as default for stage 1 (higher = safer to overestimate)
 const DEFAULT_DRINKS_PER_HOUR: Record<DrinkingLevel, number> = DRINKS_PER_HOUR.bachelor;
+
+// Search query overrides for products whose display name
+// doesn't match well with a simple search
+const SEARCH_OVERRIDES: Record<string, string> = {
+  'Ice Bags': 'ice',
+  'Cocktail Kit': 'cocktail kit',
+  'Wine (Rosé or White)': 'wine',
+  'Champagne': 'champagne',
+};
 
 // ============================================
 // Calculation Logic
@@ -290,14 +300,17 @@ export default function DrinkCalculator(): ReactElement {
   const [addWineChampagne, setAddWineChampagne] = useState(false);
   const [wineTypes, setWineTypes] = useState<string[]>([]);
 
-  // Lead capture state
-  const [firstName, setFirstName] = useState('');
-  const [email, setEmail] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState('');
+  // Cart state
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [cartSuccess, setCartSuccess] = useState(false);
+  const [cartError, setCartError] = useState('');
+  const [unresolvedItems, setUnresolvedItems] = useState<string[]>([]);
 
   // Flow state
   const [stage, setStage] = useState<Stage>('calculate');
+
+  // Cart integration
+  const { addToCart, openCart } = useCartContext();
 
   // Calculate total drinks
   const totalDrinks = useMemo(
@@ -335,51 +348,47 @@ export default function DrinkCalculator(): ReactElement {
     setPartyType(type);
   };
 
-  // Handle lead submission
-  const handleSubmit = async () => {
-    if (!firstName.trim() || !email.trim()) {
-      setSubmitError('Please fill in all fields');
-      return;
-    }
+  // Handle adding all recommendations to cart
+  const handleAddAllToCart = useCallback(async () => {
+    setIsAddingToCart(true);
+    setCartError('');
+    setCartSuccess(false);
+    setUnresolvedItems([]);
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setSubmitError('Please enter a valid email');
-      return;
-    }
-
-    setIsSubmitting(true);
-    setSubmitError('');
+    const unresolved: string[] = [];
 
     try {
-      const response = await fetch('/api/leads/drink-calculator', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          firstName: firstName.trim(),
-          email: email.trim(),
-          guestCount,
-          hours,
-          drinkingLevel,
-          partyType,
-          drinkPreference,
-          addWineChampagne,
-          addCocktailKits,
-          totalDrinks,
-        }),
-      });
+      for (const rec of recommendations) {
+        const searchQuery = SEARCH_OVERRIDES[rec.name] ?? rec.name;
+        const res = await fetch(
+          `/api/v1/products/search?q=${encodeURIComponent(searchQuery)}&limit=1`
+        );
 
-      if (!response.ok) {
-        throw new Error('Failed to submit');
+        if (!res.ok) {
+          unresolved.push(rec.name);
+          continue;
+        }
+
+        const { success, data } = await res.json();
+
+        if (!success || !data?.length || !data[0].variants?.length) {
+          unresolved.push(rec.name);
+          continue;
+        }
+
+        const variantId = data[0].variants[0].id;
+        await addToCart(variantId, rec.quantity);
       }
 
-      setStage('results');
+      setUnresolvedItems(unresolved);
+      setCartSuccess(true);
+      openCart();
     } catch {
-      setSubmitError('Something went wrong. Please try again.');
+      setCartError('Something went wrong adding items to cart. Please try again.');
     } finally {
-      setIsSubmitting(false);
+      setIsAddingToCart(false);
     }
-  };
+  }, [recommendations, addToCart, openCart]);
 
   return (
     <section id="drink-calculator" className="relative py-8 md:py-12 px-4 md:px-6 bg-gray-100 overflow-hidden">
@@ -631,7 +640,7 @@ export default function DrinkCalculator(): ReactElement {
                 <div className="mt-4 pt-4 border-t border-gray-200">
                   <button
                     type="button"
-                    onClick={() => setStage('lead_capture')}
+                    onClick={() => setStage('results')}
                     className="w-full px-6 py-4 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-semibold rounded-lg transition-colors text-lg"
                   >
                     Get my recommendation →
@@ -646,7 +655,7 @@ export default function DrinkCalculator(): ReactElement {
 
           {/* Mobile Stage 2: Preferences (animated reveal) */}
           <AnimatePresence>
-            {(stage === 'preferences' || stage === 'lead_capture' || stage === 'results') && (
+            {(stage === 'preferences' || stage === 'results') && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
@@ -803,7 +812,7 @@ export default function DrinkCalculator(): ReactElement {
                   <div className="mt-4">
                     <button
                       type="button"
-                      onClick={() => setStage('lead_capture')}
+                      onClick={() => setStage('results')}
                       className="w-full px-6 py-4 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-semibold rounded-lg transition-colors text-lg"
                     >
                       Get my recommendation →
@@ -817,68 +826,6 @@ export default function DrinkCalculator(): ReactElement {
             )}
           </AnimatePresence>
         </div>
-
-        {/* Lead Capture */}
-        <AnimatePresence>
-          {stage === 'lead_capture' && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="mt-4 bg-white rounded-xl p-4 md:p-6 overflow-hidden shadow-lg"
-            >
-              <div className="text-center mb-4">
-                <h3 className="text-xl md:text-2xl font-semibold text-gray-900 mb-1">
-                  Almost there!
-                </h3>
-                <p className="text-gray-600 text-base">
-                  Enter your info to see personalized recommendations.
-                </p>
-              </div>
-
-              <div className="max-w-md mx-auto space-y-3">
-                <div>
-                  <label className="block text-base font-medium text-gray-700 mb-1">
-                    First Name
-                  </label>
-                  <input
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="Your first name"
-                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-yellow-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-base font-medium text-gray-700 mb-1">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="your@email.com"
-                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-yellow-500"
-                  />
-                </div>
-
-                {submitError && (
-                  <p className="text-red-500 text-sm text-center">{submitError}</p>
-                )}
-
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={isSubmitting}
-                  className="w-full px-6 py-4 bg-yellow-500 hover:bg-brand-yellow disabled:bg-gray-300 text-gray-900 font-semibold rounded-lg transition-colors text-lg"
-                >
-                  {isSubmitting ? 'Loading...' : 'See My Recommendations'}
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Results */}
         <AnimatePresence>
@@ -904,19 +851,39 @@ export default function DrinkCalculator(): ReactElement {
                 </div>
               </div>
 
-              {/* Final CTA */}
+              {/* Add All to Cart CTA */}
               <div className="text-center">
                 <button
                   type="button"
-                  onClick={() =>
-                    document
-                      .getElementById('boat-collections')
-                      ?.scrollIntoView({ behavior: 'smooth' })
-                  }
-                  className="px-8 py-4 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-semibold rounded-lg transition-colors text-lg"
+                  onClick={handleAddAllToCart}
+                  disabled={isAddingToCart || cartSuccess}
+                  className={`px-8 py-4 font-semibold rounded-lg transition-colors text-lg ${
+                    cartSuccess
+                      ? 'bg-green-500 text-white'
+                      : 'bg-brand-yellow hover:bg-yellow-400 text-gray-900 disabled:opacity-60'
+                  }`}
                 >
-                  Start Shopping →
+                  {isAddingToCart
+                    ? `Adding ${recommendations.length} items...`
+                    : cartSuccess
+                      ? 'Items added to your cart!'
+                      : 'Add All to Cart'}
                 </button>
+
+                {cartError && (
+                  <p className="text-red-500 text-sm mt-2">{cartError}</p>
+                )}
+
+                {unresolvedItems.length > 0 && (
+                  <div className="mt-2 space-y-1">
+                    {unresolvedItems.map((item) => (
+                      <p key={item} className="text-amber-600 text-sm">
+                        {item} couldn&apos;t be added — browse the shop to find it
+                      </p>
+                    ))}
+                  </div>
+                )}
+
                 <p className="text-sm text-gray-600 mt-2">
                   Estimates are approximate. When in doubt, order extra!
                 </p>
