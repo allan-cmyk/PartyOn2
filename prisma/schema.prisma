@@ -1731,12 +1731,13 @@ model EmailTemplateContent {
 // ==========================================
 
 model InventoryNote {
-  id        String   @id @default(cuid())
-  content   String   @db.Text
-  status    String   @default("pending") // pending, processed
-  createdBy String?  @map("created_by")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id           String   @id @default(cuid())
+  content      String   @db.Text
+  status       String   @default("pending") // pending, processed, dismissed
+  parsedResult Json?    @map("parsed_result")
+  createdBy    String?  @map("created_by")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
   @@index([status])
   @@index([createdAt])
