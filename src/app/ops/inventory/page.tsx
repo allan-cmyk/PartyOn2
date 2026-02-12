@@ -129,6 +129,13 @@ export default function InventoryPage(): ReactElement {
   const [editingItem, setEditingItem] = useState<string | null>(null);
   const [editQuantity, setEditQuantity] = useState<number>(0);
 
+  // Inventory notes state
+  const [showNoteModal, setShowNoteModal] = useState(false);
+  const [noteContent, setNoteContent] = useState('');
+  const [noteSaving, setNoteSaving] = useState(false);
+  const [pendingNotesCount, setPendingNotesCount] = useState(0);
+  const [noteSuccess, setNoteSuccess] = useState(false);
+
   // Stats derived from inventory data
   const [stats, setStats] = useState({
     total: 0,
@@ -199,6 +206,48 @@ export default function InventoryPage(): ReactElement {
     }
   };
 
+  // Fetch pending notes count
+  const fetchPendingNotesCount = useCallback(async () => {
+    try {
+      const res = await fetch('/api/v1/inventory/notes?status=pending');
+      if (res.ok) {
+        const data = await res.json();
+        setPendingNotesCount(data.data?.length || 0);
+      }
+    } catch {
+      // Silently fail - not critical
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchPendingNotesCount();
+  }, [fetchPendingNotesCount]);
+
+  const handleSubmitNote = async () => {
+    if (!noteContent.trim()) return;
+    setNoteSaving(true);
+    try {
+      const res = await fetch('/api/v1/inventory/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: noteContent.trim() }),
+      });
+      if (res.ok) {
+        setNoteContent('');
+        setNoteSuccess(true);
+        fetchPendingNotesCount();
+        setTimeout(() => {
+          setNoteSuccess(false);
+          setShowNoteModal(false);
+        }, 1500);
+      }
+    } catch (error) {
+      console.error('Failed to save note:', error);
+    } finally {
+      setNoteSaving(false);
+    }
+  };
+
   const filteredInventory = inventory.filter((item) => {
     if (filter === 'low_stock') {
       return item.quantity <= item.lowStockThreshold && item.quantity > 0;
@@ -220,6 +269,20 @@ export default function InventoryPage(): ReactElement {
           </p>
         </div>
         <div className="flex gap-3">
+          <button
+            onClick={() => setShowNoteModal(true)}
+            className="px-4 py-2 bg-amber-500 text-white rounded-lg font-medium hover:bg-amber-600 transition-colors shadow-sm flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            Add Note
+            {pendingNotesCount > 0 && (
+              <span className="bg-white/20 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                {pendingNotesCount}
+              </span>
+            )}
+          </button>
           <button
             onClick={() => fetchInventory()}
             className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors shadow-sm flex items-center gap-2"
@@ -547,6 +610,74 @@ export default function InventoryPage(): ReactElement {
           </>
         )}
       </div>
+
+      {/* Inventory Note Modal */}
+      {showNoteModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full">
+            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-gray-900">Add Inventory Note</h2>
+              <button
+                onClick={() => { setShowNoteModal(false); setNoteContent(''); setNoteSuccess(false); }}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="p-6">
+              {noteSuccess ? (
+                <div className="flex flex-col items-center py-8">
+                  <svg className="w-12 h-12 text-green-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p className="text-green-700 font-medium">Note saved!</p>
+                </div>
+              ) : (
+                <>
+                  <p className="text-sm text-gray-500 mb-3">
+                    Describe the inventory adjustment needed (e.g., &quot;add 3 bottles of Tito&apos;s&quot;, &quot;add 3 cases of Modelo&quot;).
+                  </p>
+                  <textarea
+                    value={noteContent}
+                    onChange={(e) => setNoteContent(e.target.value)}
+                    placeholder="Type your inventory adjustment note..."
+                    rows={4}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-none"
+                    autoFocus
+                  />
+                  <div className="flex justify-end gap-3 mt-4">
+                    <button
+                      onClick={() => { setShowNoteModal(false); setNoteContent(''); }}
+                      className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleSubmitNote}
+                      disabled={!noteContent.trim() || noteSaving}
+                      className="px-4 py-2 text-sm font-medium text-white bg-amber-500 rounded-lg hover:bg-amber-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    >
+                      {noteSaving ? (
+                        <>
+                          <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                          </svg>
+                          Saving...
+                        </>
+                      ) : (
+                        'Submit Note'
+                      )}
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
