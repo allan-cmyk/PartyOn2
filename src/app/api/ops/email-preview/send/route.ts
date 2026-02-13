@@ -76,9 +76,9 @@ const SUBJECT_MAP: Record<string, string> = {
   'order-confirmation': '[TEST] Order Confirmed - #1234',
   'delivery-en-route': '[TEST] Your Order #1234 is On Its Way!',
   'delivery-completed': '[TEST] Delivery Complete - Order #1234',
-  'payment-failed': '[TEST] Payment Issue - PartyOn Delivery',
+  'payment-failed': '[TEST] Payment Issue - Party On Delivery',
   'refund-processed': '[TEST] Refund Processed - Order #1234',
-  'invoice': '[TEST] Your Invoice from PartyOn Delivery - $95.06',
+  'invoice': '[TEST] Your Invoice from Party On Delivery - $95.06',
 };
 
 export async function POST(request: NextRequest) {
@@ -129,13 +129,13 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Unknown email type' }, { status: 400 });
     }
 
-    const subject = SUBJECT_MAP[type] || '[TEST] PartyOn Delivery';
+    const subject = SUBJECT_MAP[type] || '[TEST] Party On Delivery';
 
     const emailId = await sendEmail({
       to,
       subject,
       html,
-      text: `This is a test email from PartyOn Delivery. Type: ${type}`,
+      text: `This is a test email from Party On Delivery. Type: ${type}`,
       type: emailType,
       metadata: { test: true, type },
     });
@@ -161,7 +161,7 @@ function generatePaymentFailedHtml(customerName: string, errorMessage: string): 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment Failed - PartyOn Delivery</title>
+  <title>Payment Failed - Party On Delivery</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f9fafb;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; padding: 40px 20px;">
@@ -170,7 +170,7 @@ function generatePaymentFailedHtml(customerName: string, errorMessage: string): 
         <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
           <tr>
             <td style="background-color: #1a1a1a; padding: 32px; text-align: center;">
-              <img src="https://partyondelivery.com/images/pod-logo-2025.png" alt="PartyOn Delivery" width="180" style="width: 180px; max-width: 100%; height: auto; margin-bottom: 12px;" />
+              <img src="https://partyondelivery.com/images/pod-logo-2025.png" alt="Party On Delivery" width="180" style="width: 180px; max-width: 100%; height: auto; margin-bottom: 12px;" />
               <p style="color: #ffffff; margin: 0; font-size: 14px; letter-spacing: 0.05em;">PREMIUM ALCOHOL DELIVERY</p>
             </td>
           </tr>
@@ -218,7 +218,7 @@ function generateRefundHtml(customerName: string, orderNumber: number, amount: n
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Refund Processed - PartyOn Delivery</title>
+  <title>Refund Processed - Party On Delivery</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f9fafb;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; padding: 40px 20px;">
@@ -227,7 +227,7 @@ function generateRefundHtml(customerName: string, orderNumber: number, amount: n
         <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
           <tr>
             <td style="background-color: #1a1a1a; padding: 32px; text-align: center;">
-              <img src="https://partyondelivery.com/images/pod-logo-2025.png" alt="PartyOn Delivery" width="180" style="width: 180px; max-width: 100%; height: auto; margin-bottom: 12px;" />
+              <img src="https://partyondelivery.com/images/pod-logo-2025.png" alt="Party On Delivery" width="180" style="width: 180px; max-width: 100%; height: auto; margin-bottom: 12px;" />
               <p style="color: #ffffff; margin: 0; font-size: 14px; letter-spacing: 0.05em;">PREMIUM ALCOHOL DELIVERY</p>
             </td>
           </tr>

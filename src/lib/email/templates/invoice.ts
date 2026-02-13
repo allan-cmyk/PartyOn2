@@ -45,7 +45,7 @@ export const INVOICE_TEXT_DEFAULTS: Required<InvoiceTextOverrides> = {
   buttonText: 'PAY NOW',
   linkText: 'Or copy this link:',
   footerText: 'Questions? Contact us at orders@partyondelivery.com',
-  copyrightText: '{year} PartyOn Delivery. Austin, Texas.',
+  copyrightText: '{year} Party On Delivery. Austin, Texas.',
 };
 
 /**
@@ -106,7 +106,7 @@ export function generateInvoiceEmail(data: InvoiceEmailData, textOverrides?: Inv
           <!-- Header -->
           <tr>
             <td style="background-color: #111827; padding: 32px; text-align: center; border-radius: 8px 8px 0 0;">
-              <img src="https://partyondelivery.com/images/pod-logo-2025.png" alt="PartyOn Delivery" width="180" style="width: 180px; max-width: 100%; height: auto; margin-bottom: 12px;" />
+              <img src="https://partyondelivery.com/images/pod-logo-2025.png" alt="Party On Delivery" width="180" style="width: 180px; max-width: 100%; height: auto; margin-bottom: 12px;" />
               <p style="margin: 0; color: #9ca3af; font-size: 14px;">
                 Premium Alcohol Delivery in Austin
               </p>
@@ -224,5 +224,5 @@ export function generateInvoiceEmail(data: InvoiceEmailData, textOverrides?: Inv
  * Generate invoice email subject line
  */
 export function generateInvoiceSubject(total: number | string): string {
-  return `Your Invoice from PartyOn Delivery - ${formatCurrency(total)}`;
+  return `Your Invoice from Party On Delivery - ${formatCurrency(total)}`;
 }

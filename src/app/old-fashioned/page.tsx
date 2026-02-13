@@ -45,11 +45,11 @@ export default function LuxuryRitzPage() {
         </div>
       </section>
 
-      {/* The PartyOn Experience */}
+      {/* The Party On Experience */}
       <section className="py-24">
         <div className="max-w-6xl mx-auto px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-light mb-4 text-gray-900">The PartyOn Experience</h2>
+            <h2 className="text-4xl font-light mb-4 text-gray-900">The Party On Experience</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Premium alcohol delivery service bringing the finest spirits, cocktails, 
               and party essentials to Austin&apos;s most distinguished addresses.
@@ -207,7 +207,7 @@ export default function LuxuryRitzPage() {
       {/* Contact CTA */}
       <section className="py-24 bg-gray-900 text-white">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <h2 className="text-4xl font-light mb-8">Begin Your Journey With PartyOn</h2>
+          <h2 className="text-4xl font-light mb-8">Begin Your Journey With Party On</h2>
           <p className="text-xl mb-12 text-gray-300 max-w-2xl mx-auto">
             Experience the gold standard in luxury bar service. 
             Let us elevate your next event to extraordinary.
@@ -237,7 +237,7 @@ export default function LuxuryRitzPage() {
         <div className="max-w-7xl mx-auto px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="md:col-span-2">
-              <h3 className="text-2xl font-light mb-4 text-gray-900">PARTYON</h3>
+              <h3 className="text-2xl font-light mb-4 text-gray-900">PARTY ON</h3>
               <p className="text-gray-600 max-w-sm">
                 Austin&apos;s premier luxury bar service, dedicated to creating 
                 exceptional experiences since 2016.
@@ -262,7 +262,7 @@ export default function LuxuryRitzPage() {
             </div>
           </div>
           <div className="pt-8 border-t text-center text-sm text-gray-500">
-            <p>&copy; 2024 PartyOn. All rights reserved. | <Link href="/privacy" className="hover:text-gray-700">Privacy Policy</Link></p>
+            <p>&copy; 2024 Party On. All rights reserved. | <Link href="/privacy" className="hover:text-gray-700">Privacy Policy</Link></p>
           </div>
         </div>
       </footer>

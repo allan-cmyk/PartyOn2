@@ -178,7 +178,7 @@ export default function PolishedHome() {
           <ScrollRevealCSS duration={800}>
             <div className="text-center mb-16">
               <h2 className="font-heading text-4xl md:text-5xl mb-4">
-                Why Industry Leaders Choose PartyOn
+                Why Industry Leaders Choose Party On
               </h2>
               <p className="text-xl text-brand-yellow max-w-2xl mx-auto">
                 Trusted by Austin&apos;s most prestigious organizations
@@ -238,7 +238,7 @@ export default function PolishedHome() {
                 ))}
               </div>
               <blockquote className="text-2xl font-light text-gray-700 mb-8 leading-relaxed">
-                &ldquo;PartyOn has transformed our corporate events. Their professionalism,
+                &ldquo;Party On has transformed our corporate events. Their professionalism,
                 attention to detail, and flawless execution make them our exclusive partner.&rdquo;
               </blockquote>
               <div className="flex items-center justify-center gap-4">

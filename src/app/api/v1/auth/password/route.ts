@@ -46,11 +46,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       const resetUrl = `https://partyondelivery.com/account/reset-password?token=${result.resetToken}`;
       sendEmail({
         to: email,
-        subject: 'Reset Your PartyOn Delivery Password',
+        subject: 'Reset Your Party On Delivery Password',
         html: `
           <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto;">
             <div style="background-color: #1a1a1a; padding: 32px; text-align: center;">
-              <img src="https://partyondelivery.com/images/pod-logo-2025.png" alt="PartyOn Delivery" width="180" style="width: 180px; max-width: 100%; height: auto; margin-bottom: 12px;" />
+              <img src="https://partyondelivery.com/images/pod-logo-2025.png" alt="Party On Delivery" width="180" style="width: 180px; max-width: 100%; height: auto; margin-bottom: 12px;" />
               <p style="color: #ffffff; margin: 0; font-size: 14px;">PREMIUM ALCOHOL DELIVERY</p>
             </div>
             <div style="padding: 24px;">
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             </div>
           </div>
         `,
-        text: `Reset your PartyOn Delivery password: ${resetUrl}\n\nThis link expires in 1 hour. If you didn't request this, ignore this email.`,
+        text: `Reset your Party On Delivery password: ${resetUrl}\n\nThis link expires in 1 hour. If you didn't request this, ignore this email.`,
         type: EmailType.PASSWORD_RESET,
       }).catch((err: unknown) => console.error('[Auth] Password reset email failed:', err));
     }

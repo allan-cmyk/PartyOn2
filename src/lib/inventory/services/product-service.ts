@@ -246,20 +246,24 @@ export async function getVendors(): Promise<string[]> {
 
 /**
  * Search products by text
+ * Prioritizes title matches over description matches
  */
 export async function searchProducts(
   query: string,
   limit = 10
 ): Promise<ProductWithRelations[]> {
-  return prisma.product.findMany({
+  const words = query.split(/\s+/).filter(w => w.length > 0);
+
+  // Build a condition requiring ALL words to appear in the title
+  const titleMatchAll = words.length > 1
+    ? { AND: words.map(word => ({ title: { contains: word, mode: 'insensitive' as const } })) }
+    : { title: { contains: query, mode: 'insensitive' as const } };
+
+  // Title matches first (best results)
+  const titleMatches = await prisma.product.findMany({
     where: {
       status: 'ACTIVE',
-      OR: [
-        { title: { contains: query, mode: 'insensitive' } },
-        { description: { contains: query, mode: 'insensitive' } },
-        { tags: { has: query } },
-        { variants: { some: { sku: { contains: query, mode: 'insensitive' } } } },
-      ],
+      ...titleMatchAll,
     },
     include: {
       variants: true,
@@ -268,4 +272,32 @@ export async function searchProducts(
     },
     take: limit,
   });
+
+  // If we have enough title matches, return them
+  if (titleMatches.length >= limit) {
+    return titleMatches;
+  }
+
+  // Otherwise, fill remaining slots with SKU/tag matches (not description)
+  const titleIds = titleMatches.map(p => p.id);
+  const remaining = limit - titleMatches.length;
+
+  const otherMatches = await prisma.product.findMany({
+    where: {
+      status: 'ACTIVE',
+      id: { notIn: titleIds },
+      OR: [
+        { tags: { hasSome: words } },
+        { variants: { some: { sku: { contains: query, mode: 'insensitive' } } } },
+      ],
+    },
+    include: {
+      variants: true,
+      images: { orderBy: { position: 'asc' }, take: 1 },
+      categories: { include: { category: true } },
+    },
+    take: remaining,
+  });
+
+  return [...titleMatches, ...otherMatches];
 }

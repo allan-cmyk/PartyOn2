@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useMemo, type ReactElement } from 'react';
+import { useState, useMemo, useCallback, useEffect, type ReactElement } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useCartContext } from '@/contexts/CartContext';
 
 // ============================================
 // Types
@@ -9,15 +10,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 type DrinkingLevel = 'light' | 'average' | 'heavy';
 type PartyType = 'bachelor' | 'bachelorette' | 'other';
-type BachelorPreference = 'mostly_beer' | 'mostly_seltzers' | 'good_mix';
-type BachelorettePreference = 'seltzers_only' | 'seltzers_wine';
-type DrinkPreference = BachelorPreference | BachelorettePreference;
-type Stage = 'calculate' | 'preferences' | 'lead_capture' | 'results';
+type DrinkPreference = 'mostly_beer' | 'mostly_seltzers' | 'good_mix';
+type Stage = 'calculate' | 'preferences' | 'results';
 
 interface ProductRecommendation {
   name: string;
   quantity: number;
   unit: string;
+  imageUrl?: string;
+  productTitle?: string;
 }
 
 // ============================================
@@ -32,6 +33,34 @@ const DRINKS_PER_HOUR: Record<PartyType, Record<DrinkingLevel, number>> = {
 
 // Use bachelor rates as default for stage 1 (higher = safer to overestimate)
 const DEFAULT_DRINKS_PER_HOUR: Record<DrinkingLevel, number> = DRINKS_PER_HOUR.bachelor;
+
+// Search query overrides for products whose display name
+// doesn't match well with a simple search
+const SEARCH_OVERRIDES: Record<string, string> = {
+  'Ice Bags': 'ice bag',
+  // Beer
+  'Miller Lite': 'Miller Lite 24',
+  'Modelo Especial': 'Modelo Especial 24',
+  'Austin Beerworks Variety': 'Austin Beerworks Variety Pack',
+  // Seltzers
+  'High Noon Variety': 'High Noon Variety 8',
+  'Surfside Variety': 'Surfside Lemonade Variety',
+  'White Claw Variety': 'White Claw Variety 24',
+  // Cocktail kits
+  'The Classic Austin Rita': 'Austin Rita',
+  "Tito's Lemonade Party Pitcher Kit": 'Tito Lemonade Party Pitcher',
+  'Rum Punch Gallon Dispenser Kit': 'Rum Punch Gallon',
+  'The Hill Country Old-Fashioned': 'Hill Country Old-Fashioned',
+  // Wine
+  'Dark Horse Pinot Grigio': 'Dark Horse Pinot Grigio',
+  'Jam Cellars Chardonnay': 'Jam Cellars Chardonnay',
+  // Sparkling
+  'Wycliff Brut Rose': 'Wycliff Brut Rose',
+  'La Marca Prosecco': 'La Marca Prosecco Extra Dry 750ml Bottle',
+  // Champagne
+  'Andre Brut Champagne': 'Andre Brut',
+  'Domaine Ste Michelle Brut': 'Domaine Ste Michelle',
+};
 
 // ============================================
 // Calculation Logic
@@ -53,117 +82,112 @@ function generateRecommendations(
   totalDrinks: number,
   partyType: PartyType,
   preference: DrinkPreference,
-  addWineChampagne: boolean,
-  addCocktailKits: boolean,
+  wineTypes: string[],
+  cocktailSpirits: string[],
   guestCount: number
 ): ProductRecommendation[] {
   const recommendations: ProductRecommendation[] = [];
 
-  // Reduce total drinks by 25% if cocktail kits are included
-  const adjustedDrinks = addCocktailKits
-    ? Math.ceil(totalDrinks * 0.75)
-    : totalDrinks;
+  // Reduce total drinks if cocktail kits or wine/champagne are selected
+  const hasCocktails = cocktailSpirits.length > 0;
+  const hasWine = wineTypes.length > 0;
+  let reductionFactor = 1;
+  if (hasCocktails && hasWine) reductionFactor = 0.65;
+  else if (hasCocktails) reductionFactor = 0.75;
+  else if (hasWine) reductionFactor = 0.85;
+  const adjustedDrinks = Math.ceil(totalDrinks * reductionFactor);
 
-  if (partyType === 'bachelor') {
-    if (preference === 'mostly_beer') {
-      // 40% Miller Lite, 40% Modelo, 20% Austin Beerworks
-      const millerLite = Math.ceil(adjustedDrinks * 0.4);
-      const modelo = Math.ceil(adjustedDrinks * 0.4);
-      const austinBeerworks = Math.ceil(adjustedDrinks * 0.2);
+  // ----------------------------------------
+  // MAIN DRINK RECOMMENDATIONS (beer/seltzers)
+  // Works the same for all party types
+  // ----------------------------------------
+  if (preference === 'mostly_beer') {
+    // 40% Miller Lite, 40% Modelo, 20% Austin Beerworks
+    const millerLite = Math.ceil(adjustedDrinks * 0.4);
+    const modelo = Math.ceil(adjustedDrinks * 0.4);
+    const austinBeerworks = Math.ceil(adjustedDrinks * 0.2);
 
-      const millerCases = Math.ceil(millerLite / 24);
-      const modeloCases = Math.ceil(modelo / 24);
-      const austinPacks = Math.ceil(austinBeerworks / 12);
+    recommendations.push({ name: 'Miller Lite', quantity: Math.ceil(millerLite / 24), unit: 'cases' });
+    recommendations.push({ name: 'Modelo Especial', quantity: Math.ceil(modelo / 24), unit: 'cases' });
+    recommendations.push({ name: 'Austin Beerworks Variety', quantity: Math.ceil(austinBeerworks / 12), unit: 'packs' });
 
-      recommendations.push({ name: 'Miller Lite 24-pack', quantity: millerCases, unit: 'cases' });
-      recommendations.push({ name: 'Modelo Especial 24-pack', quantity: modeloCases, unit: 'cases' });
-      recommendations.push({ name: 'Austin Beerworks Variety 12-pack', quantity: austinPacks, unit: 'packs' });
-
-      // Add seltzers
-      if (guestCount >= 8) {
-        recommendations.push({ name: 'High Noon Variety 12-pack', quantity: 1, unit: 'pack' });
-        recommendations.push({ name: 'Surfside Variety 8-pack', quantity: 1, unit: 'pack' });
-      } else {
-        recommendations.push({ name: 'High Noon Variety 12-pack', quantity: 1, unit: 'pack' });
-      }
-    } else if (preference === 'mostly_seltzers') {
-      // All seltzers distributed across brands
-      const perBrand = Math.ceil(adjustedDrinks / 3);
-      const highNoonPacks = Math.ceil(perBrand / 24);
-      const surfsidePacks = Math.ceil(perBrand / 24);
-      const whiteclawPacks = Math.ceil(perBrand / 24);
-
-      recommendations.push({ name: 'High Noon Variety 24-pack', quantity: highNoonPacks, unit: 'packs' });
-      recommendations.push({ name: 'Surfside Variety 24-pack', quantity: surfsidePacks, unit: 'packs' });
-      recommendations.push({ name: 'Whiteclaw Variety 24-pack', quantity: whiteclawPacks, unit: 'packs' });
-
-      // Add some beer
-      if (guestCount >= 8) {
-        recommendations.push({ name: 'Miller Lite 24-pack', quantity: 1, unit: 'case' });
-      } else {
-        recommendations.push({ name: 'Miller Lite 12-pack', quantity: 1, unit: 'pack' });
-      }
-    } else {
-      // Good mix: 50% beer, 50% seltzers
-      const beerDrinks = Math.ceil(adjustedDrinks * 0.5);
-      const seltzerDrinks = Math.ceil(adjustedDrinks * 0.5);
-
-      // Beer split
-      const millerLite = Math.ceil(beerDrinks * 0.4);
-      const modelo = Math.ceil(beerDrinks * 0.4);
-      const austinBeerworks = Math.ceil(beerDrinks * 0.2);
-
-      recommendations.push({ name: 'Miller Lite 24-pack', quantity: Math.ceil(millerLite / 24), unit: 'cases' });
-      recommendations.push({ name: 'Modelo Especial 24-pack', quantity: Math.ceil(modelo / 24), unit: 'cases' });
-      recommendations.push({ name: 'Austin Beerworks Variety 12-pack', quantity: Math.ceil(austinBeerworks / 12), unit: 'packs' });
-
-      // Seltzer split
-      const perBrand = Math.ceil(seltzerDrinks / 3);
-      recommendations.push({ name: 'High Noon Variety 24-pack', quantity: Math.ceil(perBrand / 24), unit: 'packs' });
-      recommendations.push({ name: 'Surfside Variety 24-pack', quantity: Math.ceil(perBrand / 24), unit: 'packs' });
-      recommendations.push({ name: 'Whiteclaw Variety 24-pack', quantity: Math.ceil(perBrand / 24), unit: 'packs' });
+    // Add seltzers for variety
+    recommendations.push({ name: 'High Noon Variety', quantity: 1, unit: 'pack' });
+    if (guestCount >= 8) {
+      recommendations.push({ name: 'Surfside Variety', quantity: 1, unit: 'pack' });
     }
+  } else if (preference === 'mostly_seltzers') {
+    // Seltzers distributed across brands
+    const perBrand = Math.ceil(adjustedDrinks / 3);
+    const packs = Math.ceil(perBrand / 8);
+
+    recommendations.push({ name: 'High Noon Variety', quantity: packs, unit: 'packs' });
+    recommendations.push({ name: 'Surfside Variety', quantity: packs, unit: 'packs' });
+    recommendations.push({ name: 'White Claw Variety', quantity: Math.ceil(perBrand / 24), unit: 'packs' });
+
+    // Add some beer for variety
+    recommendations.push({ name: 'Miller Lite', quantity: 1, unit: 'case' });
   } else {
-    // Bachelorette party
-    if (preference === 'seltzers_only' || preference === 'seltzers_wine') {
-      const seltzerDrinks = preference === 'seltzers_wine'
-        ? Math.ceil(adjustedDrinks * 0.7)
-        : adjustedDrinks;
+    // Good mix: 50% beer, 50% seltzers
+    const beerDrinks = Math.ceil(adjustedDrinks * 0.5);
+    const seltzerDrinks = Math.ceil(adjustedDrinks * 0.5);
 
-      const perBrand = Math.ceil(seltzerDrinks / 3);
-      const packs24 = Math.ceil(perBrand / 24);
+    // Beer split
+    const millerLite = Math.ceil(beerDrinks * 0.4);
+    const modelo = Math.ceil(beerDrinks * 0.4);
+    const austinBeerworks = Math.ceil(beerDrinks * 0.2);
 
-      recommendations.push({ name: 'High Noon Variety 24-pack', quantity: packs24, unit: 'packs' });
-      recommendations.push({ name: 'Surfside Variety 24-pack', quantity: packs24, unit: 'packs' });
-      recommendations.push({ name: 'Whiteclaw Variety 24-pack', quantity: packs24, unit: 'packs' });
+    recommendations.push({ name: 'Miller Lite', quantity: Math.ceil(millerLite / 24), unit: 'cases' });
+    recommendations.push({ name: 'Modelo Especial', quantity: Math.ceil(modelo / 24), unit: 'cases' });
+    recommendations.push({ name: 'Austin Beerworks Variety', quantity: Math.ceil(austinBeerworks / 12), unit: 'packs' });
 
-      if (preference === 'seltzers_wine') {
-        // 30% wine, 5 glasses per bottle
-        const wineDrinks = Math.ceil(adjustedDrinks * 0.3);
-        const wineBottles = Math.ceil(wineDrinks / 5);
-        recommendations.push({ name: 'Wine (Rosé or White)', quantity: wineBottles, unit: 'bottles' });
-      }
-    }
-
-    // Champagne for bachelorette
-    if (addWineChampagne) {
-      const champagneBottles = Math.ceil(guestCount / 4);
-      recommendations.push({ name: 'Champagne', quantity: champagneBottles, unit: 'bottles' });
-    }
+    // Seltzer split
+    const perBrand = Math.ceil(seltzerDrinks / 3);
+    recommendations.push({ name: 'High Noon Variety', quantity: Math.ceil(perBrand / 8), unit: 'packs' });
+    recommendations.push({ name: 'Surfside Variety', quantity: Math.ceil(perBrand / 8), unit: 'packs' });
+    recommendations.push({ name: 'White Claw Variety', quantity: Math.ceil(perBrand / 24), unit: 'packs' });
   }
 
-  // Cocktail kits
-  if (addCocktailKits) {
-    const cocktailKitDrinks = Math.ceil(totalDrinks * 0.25);
-    const kits = Math.ceil(cocktailKitDrinks / 16); // Assume 16 drinks per kit
-    recommendations.push({ name: 'Cocktail Kit', quantity: kits, unit: 'kits' });
+  // ----------------------------------------
+  // COCKTAIL KITS (1 kit per spirit selected)
+  // ----------------------------------------
+  if (cocktailSpirits.includes('tequila')) {
+    recommendations.push({ name: 'The Classic Austin Rita', quantity: 1, unit: 'kit' });
+  }
+  if (cocktailSpirits.includes('vodka')) {
+    recommendations.push({ name: "Tito's Lemonade Party Pitcher Kit", quantity: 1, unit: 'kit' });
+  }
+  if (cocktailSpirits.includes('rum')) {
+    recommendations.push({ name: 'Rum Punch Gallon Dispenser Kit', quantity: 1, unit: 'kit' });
+  }
+  if (cocktailSpirits.includes('whiskey')) {
+    recommendations.push({ name: 'The Hill Country Old-Fashioned', quantity: 1, unit: 'kit' });
+  }
+  // Gin: not yet mapped to a product
+
+  // ----------------------------------------
+  // WINE & CHAMPAGNE (2 bottles per type for variety)
+  // ----------------------------------------
+  if (wineTypes.includes('white')) {
+    recommendations.push({ name: 'Dark Horse Pinot Grigio', quantity: 1, unit: 'bottle' });
+    recommendations.push({ name: 'Jam Cellars Chardonnay', quantity: 1, unit: 'bottle' });
+  }
+  if (wineTypes.includes('sparkling')) {
+    recommendations.push({ name: 'Wycliff Brut Rose', quantity: 1, unit: 'bottle' });
+    recommendations.push({ name: 'La Marca Prosecco', quantity: 1, unit: 'bottle' });
+  }
+  if (wineTypes.includes('champagne')) {
+    recommendations.push({ name: 'Andre Brut Champagne', quantity: 1, unit: 'bottle' });
+    recommendations.push({ name: 'Domaine Ste Michelle Brut', quantity: 1, unit: 'bottle' });
   }
 
-  // Ice: 1 bag per 4-5 guests
+  // ----------------------------------------
+  // ICE: 1 bag per 4 guests
+  // ----------------------------------------
   const iceBags = Math.ceil(guestCount / 4);
   recommendations.push({ name: 'Ice Bags', quantity: iceBags, unit: 'bags' });
 
-  // Filter out zero quantities and dedupe
+  // Filter out zero quantities
   return recommendations.filter(r => r.quantity > 0);
 }
 
@@ -265,9 +289,18 @@ function PreferenceOption({
 
 function ProductCard({ product }: { product: ProductRecommendation }): ReactElement {
   return (
-    <div className="bg-white rounded-lg p-4 text-center border border-gray-100 shadow-sm">
-      <p className="text-2xl md:text-3xl font-bold text-gray-900">{product.quantity}</p>
-      <p className="text-sm text-gray-600 leading-tight">{product.name}</p>
+    <div className="bg-white rounded-lg p-3 text-center border border-gray-100 shadow-sm flex flex-col items-center gap-1">
+      {product.imageUrl && (
+        <div className="w-16 h-16 md:w-20 md:h-20 relative flex-shrink-0">
+          <img
+            src={product.imageUrl}
+            alt={product.productTitle ?? product.name}
+            className="w-full h-full object-contain"
+          />
+        </div>
+      )}
+      <p className="text-2xl font-bold text-gray-900">{product.quantity}</p>
+      <p className="text-xs text-gray-600 leading-tight">{product.productTitle ?? product.name}</p>
     </div>
   );
 }
@@ -290,14 +323,17 @@ export default function DrinkCalculator(): ReactElement {
   const [addWineChampagne, setAddWineChampagne] = useState(false);
   const [wineTypes, setWineTypes] = useState<string[]>([]);
 
-  // Lead capture state
-  const [firstName, setFirstName] = useState('');
-  const [email, setEmail] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState('');
+  // Cart state
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [cartSuccess, setCartSuccess] = useState(false);
+  const [cartError, setCartError] = useState('');
+  const [unresolvedItems, setUnresolvedItems] = useState<string[]>([]);
 
   // Flow state
   const [stage, setStage] = useState<Stage>('calculate');
+
+  // Cart integration
+  const { addToCart, openCart } = useCartContext();
 
   // Calculate total drinks
   const totalDrinks = useMemo(
@@ -316,12 +352,54 @@ export default function DrinkCalculator(): ReactElement {
       totalDrinks,
       partyType,
       drinkPreference,
-      addWineChampagne,
-      addCocktailKits,
+      wineTypes,
+      cocktailSpirits,
       guestCount
     ),
-    [totalDrinks, partyType, drinkPreference, addWineChampagne, addCocktailKits, guestCount]
+    [totalDrinks, partyType, drinkPreference, wineTypes, cocktailSpirits, guestCount]
   );
+
+  // Enriched recommendations with product images
+  const [enrichedRecs, setEnrichedRecs] = useState<ProductRecommendation[]>([]);
+
+  useEffect(() => {
+    if (stage !== 'results') return;
+
+    let cancelled = false;
+
+    async function enrichWithImages() {
+      const enriched = await Promise.all(
+        recommendations.map(async (rec) => {
+          const searchQuery = SEARCH_OVERRIDES[rec.name] ?? rec.name;
+          try {
+            const res = await fetch(
+              `/api/v1/products/search?q=${encodeURIComponent(searchQuery)}&limit=1`
+            );
+            if (!res.ok) return rec;
+            const { success, data } = await res.json();
+            if (!success || !data?.length) return rec;
+            const product = data[0];
+            return {
+              ...rec,
+              imageUrl: product.images?.[0]?.url ?? undefined,
+              productTitle: product.title,
+            };
+          } catch {
+            return rec;
+          }
+        })
+      );
+      if (!cancelled) setEnrichedRecs(enriched);
+    }
+
+    enrichWithImages();
+    return () => { cancelled = true; };
+  }, [stage, recommendations]);
+
+  // Use enriched recs for display, fall back to raw recs
+  const displayRecs = stage === 'results' && enrichedRecs.length > 0
+    ? enrichedRecs
+    : recommendations;
 
   // Drink preference options (same for all party types)
   const preferenceOptions = [
@@ -335,51 +413,47 @@ export default function DrinkCalculator(): ReactElement {
     setPartyType(type);
   };
 
-  // Handle lead submission
-  const handleSubmit = async () => {
-    if (!firstName.trim() || !email.trim()) {
-      setSubmitError('Please fill in all fields');
-      return;
-    }
+  // Handle adding all recommendations to cart
+  const handleAddAllToCart = useCallback(async () => {
+    setIsAddingToCart(true);
+    setCartError('');
+    setCartSuccess(false);
+    setUnresolvedItems([]);
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setSubmitError('Please enter a valid email');
-      return;
-    }
-
-    setIsSubmitting(true);
-    setSubmitError('');
+    const unresolved: string[] = [];
 
     try {
-      const response = await fetch('/api/leads/drink-calculator', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          firstName: firstName.trim(),
-          email: email.trim(),
-          guestCount,
-          hours,
-          drinkingLevel,
-          partyType,
-          drinkPreference,
-          addWineChampagne,
-          addCocktailKits,
-          totalDrinks,
-        }),
-      });
+      for (const rec of recommendations) {
+        const searchQuery = SEARCH_OVERRIDES[rec.name] ?? rec.name;
+        const res = await fetch(
+          `/api/v1/products/search?q=${encodeURIComponent(searchQuery)}&limit=1`
+        );
 
-      if (!response.ok) {
-        throw new Error('Failed to submit');
+        if (!res.ok) {
+          unresolved.push(rec.name);
+          continue;
+        }
+
+        const { success, data } = await res.json();
+
+        if (!success || !data?.length || !data[0].variants?.length) {
+          unresolved.push(rec.name);
+          continue;
+        }
+
+        const variantId = data[0].variants[0].id;
+        await addToCart(variantId, rec.quantity);
       }
 
-      setStage('results');
+      setUnresolvedItems(unresolved);
+      setCartSuccess(true);
+      openCart();
     } catch {
-      setSubmitError('Something went wrong. Please try again.');
+      setCartError('Something went wrong adding items to cart. Please try again.');
     } finally {
-      setIsSubmitting(false);
+      setIsAddingToCart(false);
     }
-  };
+  }, [recommendations, addToCart, openCart]);
 
   return (
     <section id="drink-calculator" className="relative py-8 md:py-12 px-4 md:px-6 bg-gray-100 overflow-hidden">
@@ -631,7 +705,7 @@ export default function DrinkCalculator(): ReactElement {
                 <div className="mt-4 pt-4 border-t border-gray-200">
                   <button
                     type="button"
-                    onClick={() => setStage('lead_capture')}
+                    onClick={() => setStage('results')}
                     className="w-full px-6 py-4 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-semibold rounded-lg transition-colors text-lg"
                   >
                     Get my recommendation →
@@ -646,7 +720,7 @@ export default function DrinkCalculator(): ReactElement {
 
           {/* Mobile Stage 2: Preferences (animated reveal) */}
           <AnimatePresence>
-            {(stage === 'preferences' || stage === 'lead_capture' || stage === 'results') && (
+            {(stage === 'preferences' || stage === 'results') && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
@@ -803,7 +877,7 @@ export default function DrinkCalculator(): ReactElement {
                   <div className="mt-4">
                     <button
                       type="button"
-                      onClick={() => setStage('lead_capture')}
+                      onClick={() => setStage('results')}
                       className="w-full px-6 py-4 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-semibold rounded-lg transition-colors text-lg"
                     >
                       Get my recommendation →
@@ -817,68 +891,6 @@ export default function DrinkCalculator(): ReactElement {
             )}
           </AnimatePresence>
         </div>
-
-        {/* Lead Capture */}
-        <AnimatePresence>
-          {stage === 'lead_capture' && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="mt-4 bg-white rounded-xl p-4 md:p-6 overflow-hidden shadow-lg"
-            >
-              <div className="text-center mb-4">
-                <h3 className="text-xl md:text-2xl font-semibold text-gray-900 mb-1">
-                  Almost there!
-                </h3>
-                <p className="text-gray-600 text-base">
-                  Enter your info to see personalized recommendations.
-                </p>
-              </div>
-
-              <div className="max-w-md mx-auto space-y-3">
-                <div>
-                  <label className="block text-base font-medium text-gray-700 mb-1">
-                    First Name
-                  </label>
-                  <input
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="Your first name"
-                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-yellow-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-base font-medium text-gray-700 mb-1">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="your@email.com"
-                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-yellow-500"
-                  />
-                </div>
-
-                {submitError && (
-                  <p className="text-red-500 text-sm text-center">{submitError}</p>
-                )}
-
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={isSubmitting}
-                  className="w-full px-6 py-4 bg-yellow-500 hover:bg-brand-yellow disabled:bg-gray-300 text-gray-900 font-semibold rounded-lg transition-colors text-lg"
-                >
-                  {isSubmitting ? 'Loading...' : 'See My Recommendations'}
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Results */}
         <AnimatePresence>
@@ -898,25 +910,45 @@ export default function DrinkCalculator(): ReactElement {
                 </p>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {recommendations.map((product, index) => (
+                  {displayRecs.map((product, index) => (
                     <ProductCard key={`${product.name}-${index}`} product={product} />
                   ))}
                 </div>
               </div>
 
-              {/* Final CTA */}
+              {/* Add All to Cart CTA */}
               <div className="text-center">
                 <button
                   type="button"
-                  onClick={() =>
-                    document
-                      .getElementById('boat-collections')
-                      ?.scrollIntoView({ behavior: 'smooth' })
-                  }
-                  className="px-8 py-4 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-semibold rounded-lg transition-colors text-lg"
+                  onClick={handleAddAllToCart}
+                  disabled={isAddingToCart || cartSuccess}
+                  className={`px-8 py-4 font-semibold rounded-lg transition-colors text-lg ${
+                    cartSuccess
+                      ? 'bg-green-500 text-white'
+                      : 'bg-brand-yellow hover:bg-yellow-400 text-gray-900 disabled:opacity-60'
+                  }`}
                 >
-                  Start Shopping →
+                  {isAddingToCart
+                    ? `Adding ${recommendations.length} items...`
+                    : cartSuccess
+                      ? 'Items added to your cart!'
+                      : 'Add All to Cart'}
                 </button>
+
+                {cartError && (
+                  <p className="text-red-500 text-sm mt-2">{cartError}</p>
+                )}
+
+                {unresolvedItems.length > 0 && (
+                  <div className="mt-2 space-y-1">
+                    {unresolvedItems.map((item) => (
+                      <p key={item} className="text-amber-600 text-sm">
+                        {item} couldn&apos;t be added — browse the shop to find it
+                      </p>
+                    ))}
+                  </div>
+                )}
+
                 <p className="text-sm text-gray-600 mt-2">
                   Estimates are approximate. When in doubt, order extra!
                 </p>

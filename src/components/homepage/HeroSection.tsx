@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { trackCTAClick, trackHeroVariant } from '@/lib/analytics/ga4-events';
 import { HeroVariantContent, heroControl } from '@/lib/experiments/hero-variants';
+import AnimatedHeroText from '@/components/hero/AnimatedHeroText';
 
 interface HeroSectionProps {
   /**
@@ -23,13 +24,9 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasTrackedImpression, setHasTrackedImpression] = useState(false);
-  const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [isWordFading, setIsWordFading] = useState(false);
-
   // Use variant content or fall back to control
   const content = variant || heroControl;
   const variantId = content.id;
-  const rotatingWords = content.headline.rotatingWords || [content.headline.line1];
 
   useEffect(() => {
     // Trigger fade-in animation after mount
@@ -40,19 +37,6 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
     }, 5000);
     return () => clearInterval(interval);
   }, [content.images.length]);
-
-  // Rotate headline words every 2 seconds with fade
-  useEffect(() => {
-    if (rotatingWords.length <= 1) return;
-    const interval = setInterval(() => {
-      setIsWordFading(true);
-      setTimeout(() => {
-        setCurrentWordIndex((prev) => (prev + 1) % rotatingWords.length);
-        setIsWordFading(false);
-      }, 400);
-    }, 2000);
-    return () => clearInterval(interval);
-  }, [rotatingWords.length]);
 
   // Track impression when component mounts with experiment
   useEffect(() => {
@@ -146,16 +130,14 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
           isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}
       >
-        <h1 className="font-heading font-light text-3xl sm:text-5xl md:text-7xl mb-4 sm:mb-6 tracking-[0.1em] sm:tracking-[0.08em]">
-          <span
-            className={`block text-white transition-opacity duration-400 ${
-              isWordFading ? 'opacity-0' : 'opacity-100'
-            }`}
-          >
-            {rotatingWords[currentWordIndex]}
-          </span>
-          <span className="block text-brand-yellow">{content.headline.line2}</span>
-        </h1>
+        <div className="mb-4 sm:mb-6">
+          <AnimatedHeroText
+            drinks={["Beer", "Cocktails", "Seltzers", "Wine", "Champagne"]}
+            destinations={["boat", "wedding", "corporate event", "house", "Airbnb", "venue", "ranch"]}
+            drinkIntervalMs={2500}
+            transitionMs={500}
+          />
+        </div>
         <div className="w-16 sm:w-24 h-px bg-brand-yellow mx-auto mb-4 sm:mb-6" />
         <p className="text-base sm:text-lg md:text-xl font-light tracking-[0.05em] sm:tracking-[0.1em] mb-4 sm:mb-8 text-gray-200 max-w-lg mx-auto">
           {content.tagline}

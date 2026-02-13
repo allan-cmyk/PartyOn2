@@ -76,7 +76,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       invoiceUrl,
     }, textOverrides);
 
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'PartyOn Delivery <orders@partyondelivery.com>';
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'Party On Delivery <orders@partyondelivery.com>';
 
     // Send email via Resend
     const { data, error: resendError } = await getResend().emails.send({

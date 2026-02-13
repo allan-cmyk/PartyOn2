@@ -68,4 +68,17 @@ export const PREMIER_BOAT_COLLECTIONS = [
       borderActive: 'border-purple-600',
     },
   },
+  {
+    handle: 'welcome-to-austin-packages',
+    label: 'Welcome Packages',
+    category: 'partySupplies',
+    colors: {
+      bg: 'bg-emerald-50 hover:bg-emerald-100',
+      bgActive: 'bg-emerald-600',
+      text: 'text-emerald-700',
+      textActive: 'text-white',
+      border: 'border-emerald-400 hover:border-emerald-500',
+      borderActive: 'border-emerald-600',
+    },
+  },
 ];

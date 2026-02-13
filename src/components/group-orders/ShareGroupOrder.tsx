@@ -16,7 +16,7 @@ export default function ShareGroupOrder({ isOpen, onClose, shareCode, eventName 
   
   const shareUrl = `${window.location.origin}/group/${shareCode}`
   
-  const shareMessage = `Join our ${eventName} order on PartyOn Delivery!\n\nClick here to add your items: ${shareUrl}\n\nOr use code: ${shareCode}`
+  const shareMessage = `Join our ${eventName} order on Party On Delivery!\n\nClick here to add your items: ${shareUrl}\n\nOr use code: ${shareCode}`
 
   const copyToClipboard = async (text: string, type: 'link' | 'code') => {
     try {

@@ -413,7 +413,7 @@ const _legacyBlogPosts = [
         <li>Next-day recovery packages</li>
       </ul>
 
-      <p>Ready to plan an epic Austin bachelor party? Contact PartyOn Delivery today, and let's create a celebration worthy of the groom-to-be.</p>
+      <p>Ready to plan an epic Austin bachelor party? Contact Party On Delivery today, and let's create a celebration worthy of the groom-to-be.</p>
     `
   },
   {
@@ -1284,7 +1284,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <div className="flex-1">
                 <h3 className="font-heading text-2xl text-gray-900 mb-2">{post.author}</h3>
                 <p className="text-gray-600 mb-4">
-                  Senior Event Specialist at PartyOn Delivery with over 10 years of experience in the hospitality industry. 
+                  Senior Event Specialist at Party On Delivery with over 10 years of experience in the hospitality industry. 
                   Passionate about creating unforgettable experiences through expertly crafted beverage programs.
                 </p>
                 <div className="flex gap-4">

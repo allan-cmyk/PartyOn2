@@ -174,7 +174,7 @@ export default function ProfessionalHome() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
               <h2 className="text-4xl font-light text-slate-800 mb-8">
-                Why Leading Venues Choose PartyOn
+                Why Leading Venues Choose Party On
               </h2>
               <div className="space-y-6">
                 <div className="flex items-start">
@@ -228,7 +228,7 @@ export default function ProfessionalHome() {
               ))}
             </div>
             <blockquote className="text-2xl font-light text-slate-700 mb-8 leading-relaxed">
-              &quot;PartyOn has been our exclusive bar service partner for three years. Their professionalism, 
+              &quot;Party On has been our exclusive bar service partner for three years. Their professionalism, 
               attention to detail, and ability to execute flawlessly under pressure has made them 
               indispensable to our venue&apos;s success.&quot;
             </blockquote>

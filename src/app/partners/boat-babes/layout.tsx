@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactElement, ReactNode } from 'react';
 
 export const metadata: Metadata = {
-  title: 'Boat Babes - Free Alcohol Delivery | PartyOn Delivery',
+  title: 'Boat Babes - Free Alcohol Delivery | Party On Delivery',
   description:
     'Get free alcohol delivery for your Boat Babes lake party on Lake Austin. We deliver beer, wine, spirits, and mixers directly to the marina. Easy group ordering for boat parties.',
   openGraph: {

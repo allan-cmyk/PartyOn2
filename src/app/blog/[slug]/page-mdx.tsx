@@ -86,7 +86,7 @@ export default async function BlogPostMDXPage({ params }: BlogPostPageProps) {
               <div className="flex-1">
                 <h3 className="font-heading text-2xl text-gray-900 mb-2">{post.author}</h3>
                 <p className="text-gray-600 mb-4">
-                  Senior Event Specialist at PartyOn Delivery with over 10 years of experience in the hospitality industry.
+                  Senior Event Specialist at Party On Delivery with over 10 years of experience in the hospitality industry.
                   Passionate about creating unforgettable experiences through expertly crafted beverage programs.
                 </p>
                 <div className="flex gap-4">

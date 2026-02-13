@@ -97,7 +97,7 @@ export function generateOrderConfirmationEmail(data: OrderConfirmationData): str
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Order Confirmation - PartyOn Delivery</title>
+  <title>Order Confirmation - Party On Delivery</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f9fafb;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; padding: 40px 20px;">
@@ -108,7 +108,7 @@ export function generateOrderConfirmationEmail(data: OrderConfirmationData): str
           <!-- Header -->
           <tr>
             <td style="background-color: #1a1a1a; padding: 32px; text-align: center;">
-              <img src="https://partyondelivery.com/images/pod-logo-2025.png" alt="PartyOn Delivery" width="180" style="width: 180px; max-width: 100%; height: auto; margin-bottom: 12px;" />
+              <img src="https://partyondelivery.com/images/pod-logo-2025.png" alt="Party On Delivery" width="180" style="width: 180px; max-width: 100%; height: auto; margin-bottom: 12px;" />
               <p style="color: #ffffff; margin: 0; font-size: 14px; letter-spacing: 0.05em;">PREMIUM ALCOHOL DELIVERY</p>
             </td>
           </tr>
@@ -225,7 +225,7 @@ export function generateOrderConfirmationEmail(data: OrderConfirmationData): str
             <td style="background-color: #1a1a1a; padding: 24px; text-align: center;">
               <p style="margin: 0; color: #D4AF37; font-size: 14px;">Questions about your order?</p>
               <p style="margin: 8px 0 0; color: #ffffff; font-size: 14px;">Reply to this email or contact us at support@partyondelivery.com</p>
-              <p style="margin: 16px 0 0; color: #666; font-size: 12px;">&copy; ${new Date().getFullYear()} PartyOn Delivery. All rights reserved.</p>
+              <p style="margin: 16px 0 0; color: #666; font-size: 12px;">&copy; ${new Date().getFullYear()} Party On Delivery. All rights reserved.</p>
             </td>
           </tr>
 
@@ -272,7 +272,7 @@ export function generateOrderConfirmationText(data: OrderConfirmationData): stri
     .join('\n  ');
 
   return `
-PARTYON DELIVERY
+PARTY ON DELIVERY
 Order Confirmation
 
 Hi ${customerName},
@@ -305,7 +305,7 @@ WHAT'S NEXT?
 
 Questions? Reply to this email or contact support@partyondelivery.com
 
-PartyOn Delivery
+Party On Delivery
 Premium Alcohol Delivery
   `.trim();
 }

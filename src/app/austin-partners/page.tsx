@@ -287,7 +287,7 @@ export default function PartnersPage() {
       <section className="relative min-h-[60vh] pt-32 md:pt-24 flex items-center justify-center overflow-hidden">
         <Image
           src="/images/gallery/headquarters-entrance.webp"
-          alt="Partner with PartyOn"
+          alt="Partner with Party On"
           fill
           className="object-cover"
           priority

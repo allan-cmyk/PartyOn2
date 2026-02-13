@@ -9,17 +9,10 @@ import { useState, useEffect, type ReactElement } from 'react';
 import type { Product } from '@/lib/types';
 import WelcomePackageCard from './WelcomePackageCard';
 
-interface WelcomePackageGridProps {
-  /** Discount code to show on cards */
-  discountCode?: string;
-}
-
 /**
  * Fetches and displays Welcome to Austin packages in a responsive grid
  */
-export default function WelcomePackageGrid({
-  discountCode = 'PREMIERPARTYCRUISES',
-}: WelcomePackageGridProps): ReactElement {
+export default function WelcomePackageGrid(): ReactElement {
   const [packages, setPackages] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,8 +32,13 @@ export default function WelcomePackageGrid({
 
         const data = await response.json();
 
+        // Unwrap edges/node structure from API response
+        const allProducts: Product[] = (data.products?.edges || data.products || [])
+          .map((e: { node: Product }) => e.node || e)
+          .filter(Boolean);
+
         // Filter to only Welcome Package product type
-        const welcomeProducts = (data.products || []).filter(
+        const welcomeProducts = allProducts.filter(
           (p: Product) =>
             p.productType === 'Welcome Package' ||
             p.title.startsWith('Welcome to Austin:')
@@ -96,7 +94,6 @@ export default function WelcomePackageGrid({
         <WelcomePackageCard
           key={pkg.id}
           product={pkg}
-          discountCode={discountCode}
         />
       ))}
     </div>

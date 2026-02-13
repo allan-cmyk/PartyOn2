@@ -10,7 +10,7 @@ import { trackPageView, ANALYTICS_EVENTS } from '@/lib/analytics/track';
 export default function AboutPage() {
   // Track page view on mount
   useEffect(() => {
-    trackPageView(ANALYTICS_EVENTS.VIEW_ABOUT, '/about', 'About PartyOn Delivery');
+    trackPageView(ANALYTICS_EVENTS.VIEW_ABOUT, '/about', 'About Party On Delivery');
   }, []);
   const values = [
     {
@@ -74,7 +74,7 @@ export default function AboutPage() {
               Elevating Austin Since 2020
             </h2>
             <p className="text-lg text-gray-600 leading-relaxed mb-8">
-              PartyOn Delivery was born from a simple vision: to bring premium spirits and
+              Party On Delivery was born from a simple vision: to bring premium spirits and
               exceptional service directly to Austin&apos;s most memorable moments. What started
               as a response to changing times has evolved into the city&apos;s most trusted
               name in luxury alcohol delivery and event services.
@@ -152,7 +152,7 @@ export default function AboutPage() {
           >
             <Image
               src="/images/about/professional-bartender-team.webp"
-              alt="PartyOn Delivery Professional Team"
+              alt="Party On Delivery Professional Team"
               fill
               className="object-cover"
               onError={(e) => {
@@ -491,7 +491,7 @@ export default function AboutPage() {
               Experience the Difference
             </h2>
             <p className="text-gray-300 text-lg mb-12 tracking-[0.05em]">
-              Join thousands of satisfied customers who trust PartyOn for their celebrations
+              Join thousands of satisfied customers who trust Party On for their celebrations
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link href="/order">
@@ -551,7 +551,7 @@ export default function AboutPage() {
             </div>
           </div>
           <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-500 text-sm">© 2024 PartyOn Delivery. All rights reserved.</p>
+            <p className="text-gray-500 text-sm">© 2024 Party On Delivery. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link href="/terms" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Terms</Link>
               <Link href="/privacy" className="text-gray-500 hover:text-brand-yellow text-sm transition-colors">Privacy</Link>
