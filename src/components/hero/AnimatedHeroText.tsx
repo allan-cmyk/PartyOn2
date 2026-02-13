@@ -44,7 +44,7 @@ export default function AnimatedHeroText({
   const ease = [0.25, 0.1, 0.25, 1] as const;
 
   return (
-    <h1 className="font-heading text-4xl sm:text-5xl md:text-7xl font-bold tracking-[0.02em] text-left">
+    <h1 className="font-heading text-4xl sm:text-5xl md:text-7xl font-bold tracking-[0.02em] text-left leading-[1.15]">
       {/* Line 1: "{DRINK}" rotating word */}
       <span className="block text-left"><span className="inline-block relative align-baseline">
         {/* Ghost text — invisible, holds width of longest word */}
@@ -63,10 +63,10 @@ export default function AnimatedHeroText({
         </AnimatePresence>
       </span></span>
 
-      {/* Line 2: static text */}
+      {/* Line 2: "delivered cold & on time" */}
       <span className="block text-left text-white">delivered cold &amp; on time</span>
 
-      {/* Line 3: "to your {DESTINATION}" — left-justified */}
+      {/* Line 3: "to your {DESTINATION}" */}
       <span className="block text-left">
         <span className="text-white">to your </span>
         <span className="inline-block relative align-baseline">

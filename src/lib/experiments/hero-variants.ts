@@ -11,7 +11,7 @@ export interface HeroImage {
 export interface CTAButton {
   text: string;
   url: string;
-  style: 'primary' | 'secondary';
+  style: 'primary' | 'secondary' | 'text-link';
 }
 
 export interface HeroVariantContent {
@@ -24,7 +24,7 @@ export interface HeroVariantContent {
   };
   tagline: string;
   trustBadges: string;
-  images: HeroImage[];
+  images?: HeroImage[];
   ctaButtons: CTAButton[];
 }
 
@@ -40,18 +40,12 @@ export const heroControl: HeroVariantContent = {
     line2: 'Delivered on Time',
     rotatingWords: ['Drinks', 'Ice', 'Cocktails', 'Bar Supplies', 'Party Rentals', 'Beer', 'Seltzers'],
   },
-  tagline: 'From house parties to Lake Travis weddings—everything arrives cold with ice, cups, and mixers handled.',
+  tagline: 'Concierge planning for Airbnbs, weddings, and corporate events\u2014plus a split-pay Group Order so everyone can add what they want and pay their portion.',
   trustBadges: 'Licensed • Insured • TABC-certified • 5.0★ on Google',
-  images: [
-    { src: '/images/hero/austin-skyline-hero.webp', alt: 'Austin Skyline' },
-    { src: '/images/hero/homepage-hero-sunset.webp', alt: 'Austin sunset from Lady Bird Lake' },
-    { src: '/images/hero/homepage-hero-rooftop.webp', alt: 'Rooftop bar in downtown Austin' },
-    { src: '/images/hero/homepage-hero-luxury.webp', alt: 'Luxury penthouse bar setup' },
-  ],
   ctaButtons: [
-    { text: 'START AN ORDER', url: '/products', style: 'primary' },
-    { text: 'JOIN AN ORDER', url: '/group/join', style: 'secondary' },
-    { text: 'HELP ME PLAN MY EVENT', url: '/plan-event', style: 'secondary' },
+    { text: 'GET A QUOTE', url: '/plan-event', style: 'primary' },
+    { text: 'START A GROUP ORDER', url: '/group/create', style: 'secondary' },
+    { text: 'Boat day? We deliver to the dock \u2192', url: '/partners/premier-party-cruises', style: 'text-link' },
   ],
 };
 
