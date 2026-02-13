@@ -35,10 +35,18 @@ const DEFAULT_DRINKS_PER_HOUR: Record<DrinkingLevel, number> = DRINKS_PER_HOUR.b
 // Search query overrides for products whose display name
 // doesn't match well with a simple search
 const SEARCH_OVERRIDES: Record<string, string> = {
-  'Ice Bags': 'ice',
+  'Ice Bags': 'ice bag',
+  // Beer
+  'Miller Lite': 'Miller Lite 24',
+  'Modelo Especial': 'Modelo Especial 24',
+  'Austin Beerworks Variety': 'Austin Beerworks Variety Pack',
+  // Seltzers
+  'High Noon Variety': 'High Noon Variety 8',
+  'Surfside Variety': 'Surfside Lemonade Variety',
+  'White Claw Variety': 'White Claw Variety 24',
   // Cocktail kits
   'The Classic Austin Rita': 'Austin Rita',
-  "Tito's Lemonade Party Pitcher Kit": 'Titos Lemonade',
+  "Tito's Lemonade Party Pitcher Kit": 'Tito Lemonade Party Pitcher',
   'Rum Punch Gallon Dispenser Kit': 'Rum Punch Gallon',
   'The Hill Country Old-Fashioned': 'Hill Country Old-Fashioned',
   // Wine
@@ -46,7 +54,7 @@ const SEARCH_OVERRIDES: Record<string, string> = {
   'Jam Cellars Chardonnay': 'Jam Cellars Chardonnay',
   // Sparkling
   'Wycliff Brut Rose': 'Wycliff Brut Rose',
-  'La Marca Prosecco': 'La Marca Prosecco',
+  'La Marca Prosecco': 'La Marca Prosecco Extra Dry 750ml Bottle',
   // Champagne
   'Andre Brut Champagne': 'Andre Brut',
   'Domaine Ste Michelle Brut': 'Domaine Ste Michelle',
@@ -97,32 +105,26 @@ function generateRecommendations(
     const modelo = Math.ceil(adjustedDrinks * 0.4);
     const austinBeerworks = Math.ceil(adjustedDrinks * 0.2);
 
-    recommendations.push({ name: 'Miller Lite 24-pack', quantity: Math.ceil(millerLite / 24), unit: 'cases' });
-    recommendations.push({ name: 'Modelo Especial 24-pack', quantity: Math.ceil(modelo / 24), unit: 'cases' });
-    recommendations.push({ name: 'Austin Beerworks Variety 12-pack', quantity: Math.ceil(austinBeerworks / 12), unit: 'packs' });
+    recommendations.push({ name: 'Miller Lite', quantity: Math.ceil(millerLite / 24), unit: 'cases' });
+    recommendations.push({ name: 'Modelo Especial', quantity: Math.ceil(modelo / 24), unit: 'cases' });
+    recommendations.push({ name: 'Austin Beerworks Variety', quantity: Math.ceil(austinBeerworks / 12), unit: 'packs' });
 
     // Add seltzers for variety
+    recommendations.push({ name: 'High Noon Variety', quantity: 1, unit: 'pack' });
     if (guestCount >= 8) {
-      recommendations.push({ name: 'High Noon Variety 12-pack', quantity: 1, unit: 'pack' });
-      recommendations.push({ name: 'Surfside Variety 8-pack', quantity: 1, unit: 'pack' });
-    } else {
-      recommendations.push({ name: 'High Noon Variety 12-pack', quantity: 1, unit: 'pack' });
+      recommendations.push({ name: 'Surfside Variety', quantity: 1, unit: 'pack' });
     }
   } else if (preference === 'mostly_seltzers') {
     // Seltzers distributed across brands
     const perBrand = Math.ceil(adjustedDrinks / 3);
-    const packs = Math.ceil(perBrand / 24);
+    const packs = Math.ceil(perBrand / 8);
 
-    recommendations.push({ name: 'High Noon Variety 24-pack', quantity: packs, unit: 'packs' });
-    recommendations.push({ name: 'Surfside Variety 24-pack', quantity: packs, unit: 'packs' });
-    recommendations.push({ name: 'Whiteclaw Variety 24-pack', quantity: packs, unit: 'packs' });
+    recommendations.push({ name: 'High Noon Variety', quantity: packs, unit: 'packs' });
+    recommendations.push({ name: 'Surfside Variety', quantity: packs, unit: 'packs' });
+    recommendations.push({ name: 'White Claw Variety', quantity: Math.ceil(perBrand / 24), unit: 'packs' });
 
     // Add some beer for variety
-    if (guestCount >= 8) {
-      recommendations.push({ name: 'Miller Lite 24-pack', quantity: 1, unit: 'case' });
-    } else {
-      recommendations.push({ name: 'Miller Lite 12-pack', quantity: 1, unit: 'pack' });
-    }
+    recommendations.push({ name: 'Miller Lite', quantity: 1, unit: 'case' });
   } else {
     // Good mix: 50% beer, 50% seltzers
     const beerDrinks = Math.ceil(adjustedDrinks * 0.5);
@@ -133,15 +135,15 @@ function generateRecommendations(
     const modelo = Math.ceil(beerDrinks * 0.4);
     const austinBeerworks = Math.ceil(beerDrinks * 0.2);
 
-    recommendations.push({ name: 'Miller Lite 24-pack', quantity: Math.ceil(millerLite / 24), unit: 'cases' });
-    recommendations.push({ name: 'Modelo Especial 24-pack', quantity: Math.ceil(modelo / 24), unit: 'cases' });
-    recommendations.push({ name: 'Austin Beerworks Variety 12-pack', quantity: Math.ceil(austinBeerworks / 12), unit: 'packs' });
+    recommendations.push({ name: 'Miller Lite', quantity: Math.ceil(millerLite / 24), unit: 'cases' });
+    recommendations.push({ name: 'Modelo Especial', quantity: Math.ceil(modelo / 24), unit: 'cases' });
+    recommendations.push({ name: 'Austin Beerworks Variety', quantity: Math.ceil(austinBeerworks / 12), unit: 'packs' });
 
     // Seltzer split
     const perBrand = Math.ceil(seltzerDrinks / 3);
-    recommendations.push({ name: 'High Noon Variety 24-pack', quantity: Math.ceil(perBrand / 24), unit: 'packs' });
-    recommendations.push({ name: 'Surfside Variety 24-pack', quantity: Math.ceil(perBrand / 24), unit: 'packs' });
-    recommendations.push({ name: 'Whiteclaw Variety 24-pack', quantity: Math.ceil(perBrand / 24), unit: 'packs' });
+    recommendations.push({ name: 'High Noon Variety', quantity: Math.ceil(perBrand / 8), unit: 'packs' });
+    recommendations.push({ name: 'Surfside Variety', quantity: Math.ceil(perBrand / 8), unit: 'packs' });
+    recommendations.push({ name: 'White Claw Variety', quantity: Math.ceil(perBrand / 24), unit: 'packs' });
   }
 
   // ----------------------------------------
