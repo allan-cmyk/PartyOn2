@@ -13,8 +13,6 @@ import { useCartContext } from '@/contexts/CartContext';
 
 interface WelcomePackageCardProps {
   product: Product;
-  /** Discount code to display */
-  discountCode?: string;
 }
 
 /**
@@ -36,7 +34,6 @@ function getPackageName(title: string): string {
  */
 export default function WelcomePackageCard({
   product,
-  discountCode = 'PREMIERPARTYCRUISES',
 }: WelcomePackageCardProps): ReactElement {
   const { addToCart } = useCartContext();
   const [isAdding, setIsAdding] = useState(false);
@@ -68,15 +65,12 @@ export default function WelcomePackageCard({
 
   return (
     <div className="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 hover:border-yellow-500/50 transition-all group">
-      {/* FREE Badge */}
-      <div className="bg-gradient-to-r from-yellow-500 to-brand-yellow px-3 py-1.5 text-center">
-        <span className="text-gray-900 font-bold text-sm tracking-wide">
-          FREE WITH CODE
-        </span>
-      </div>
-
       {/* Image */}
       <div className="relative aspect-[4/3] bg-gray-700 overflow-hidden">
+        {/* FREE Badge — top-left corner */}
+        <div className="absolute top-3 left-3 z-10 bg-gradient-to-r from-yellow-500 to-brand-yellow px-2.5 py-1 rounded-md shadow-lg">
+          <span className="text-gray-900 font-bold text-xs tracking-wide">FREE</span>
+        </div>
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -115,7 +109,7 @@ export default function WelcomePackageCard({
 
       {/* Content */}
       <div className="p-4 space-y-3">
-        <h3 className="font-heading text-xl text-white tracking-wide">
+        <h3 className="font-heading text-lg text-white tracking-wide leading-tight">
           {packageName}
         </h3>
 
@@ -157,13 +151,6 @@ export default function WelcomePackageCard({
             Currently Unavailable
           </div>
         )}
-
-        {/* Discount Code Reminder */}
-        <p className="text-center text-xs text-gray-500">
-          Use code{' '}
-          <span className="font-mono text-brand-yellow">{discountCode}</span>{' '}
-          at checkout
-        </p>
       </div>
     </div>
   );

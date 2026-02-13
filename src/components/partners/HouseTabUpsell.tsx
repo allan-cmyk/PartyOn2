@@ -25,8 +25,8 @@ export default function HouseTabUpsell(): ReactElement {
         </p>
 
         {/* Headline */}
-        <h2 className="font-heading text-3xl md:text-4xl text-white text-center mb-10">
-          Stock the Airbnb too
+        <h2 className="font-heading text-4xl md:text-5xl text-white text-center mb-10">
+          Stock the Airbnb and Get Free Stuff!
         </h2>
 
         {/* Value bullets */}
@@ -47,9 +47,10 @@ export default function HouseTabUpsell(): ReactElement {
         <ScrollRevealCSS delay={300}>
           <div className="max-w-2xl mx-auto mb-10 border border-brand-yellow/30 rounded-lg p-5 bg-brand-yellow/5">
             <p className="text-white text-center font-sans">
-              Spend <strong className="text-brand-yellow">$250+</strong> on House Tab{' '}
+              Spend <strong className="text-brand-yellow">$300+</strong> on House Tab{' '}
               &rarr; choose a <strong className="text-brand-yellow">FREE Welcome Package</strong>{' '}
-              <span className="text-white/60">($50 value)</span>
+              AND get <strong className="text-brand-yellow">free delivery &amp; fridge stocking</strong>{' '}
+              <span className="text-white/60">(total value = $100)</span>
             </p>
           </div>
         </ScrollRevealCSS>

@@ -10,9 +10,7 @@ import { useCartContext } from '@/contexts/CartContext';
 
 type DrinkingLevel = 'light' | 'average' | 'heavy';
 type PartyType = 'bachelor' | 'bachelorette' | 'other';
-type BachelorPreference = 'mostly_beer' | 'mostly_seltzers' | 'good_mix';
-type BachelorettePreference = 'seltzers_only' | 'seltzers_wine';
-type DrinkPreference = BachelorPreference | BachelorettePreference;
+type DrinkPreference = 'mostly_beer' | 'mostly_seltzers' | 'good_mix';
 type Stage = 'calculate' | 'preferences' | 'results';
 
 interface ProductRecommendation {
@@ -38,9 +36,20 @@ const DEFAULT_DRINKS_PER_HOUR: Record<DrinkingLevel, number> = DRINKS_PER_HOUR.b
 // doesn't match well with a simple search
 const SEARCH_OVERRIDES: Record<string, string> = {
   'Ice Bags': 'ice',
-  'Cocktail Kit': 'cocktail kit',
-  'Wine (Rosé or White)': 'wine',
-  'Champagne': 'champagne',
+  // Cocktail kits
+  'The Classic Austin Rita': 'Austin Rita',
+  "Tito's Lemonade Party Pitcher Kit": 'Titos Lemonade',
+  'Rum Punch Gallon Dispenser Kit': 'Rum Punch Gallon',
+  'The Hill Country Old-Fashioned': 'Hill Country Old-Fashioned',
+  // Wine
+  'Dark Horse Pinot Grigio': 'Dark Horse Pinot Grigio',
+  'Jam Cellars Chardonnay': 'Jam Cellars Chardonnay',
+  // Sparkling
+  'Wycliff Brut Rose': 'Wycliff Brut Rose',
+  'La Marca Prosecco': 'La Marca Prosecco',
+  // Champagne
+  'Andre Brut Champagne': 'Andre Brut',
+  'Domaine Ste Michelle Brut': 'Domaine Ste Michelle',
 };
 
 // ============================================
@@ -63,117 +72,118 @@ function generateRecommendations(
   totalDrinks: number,
   partyType: PartyType,
   preference: DrinkPreference,
-  addWineChampagne: boolean,
-  addCocktailKits: boolean,
+  wineTypes: string[],
+  cocktailSpirits: string[],
   guestCount: number
 ): ProductRecommendation[] {
   const recommendations: ProductRecommendation[] = [];
 
-  // Reduce total drinks by 25% if cocktail kits are included
-  const adjustedDrinks = addCocktailKits
-    ? Math.ceil(totalDrinks * 0.75)
-    : totalDrinks;
+  // Reduce total drinks if cocktail kits or wine/champagne are selected
+  const hasCocktails = cocktailSpirits.length > 0;
+  const hasWine = wineTypes.length > 0;
+  let reductionFactor = 1;
+  if (hasCocktails && hasWine) reductionFactor = 0.65;
+  else if (hasCocktails) reductionFactor = 0.75;
+  else if (hasWine) reductionFactor = 0.85;
+  const adjustedDrinks = Math.ceil(totalDrinks * reductionFactor);
 
-  if (partyType === 'bachelor') {
-    if (preference === 'mostly_beer') {
-      // 40% Miller Lite, 40% Modelo, 20% Austin Beerworks
-      const millerLite = Math.ceil(adjustedDrinks * 0.4);
-      const modelo = Math.ceil(adjustedDrinks * 0.4);
-      const austinBeerworks = Math.ceil(adjustedDrinks * 0.2);
+  // ----------------------------------------
+  // MAIN DRINK RECOMMENDATIONS (beer/seltzers)
+  // Works the same for all party types
+  // ----------------------------------------
+  if (preference === 'mostly_beer') {
+    // 40% Miller Lite, 40% Modelo, 20% Austin Beerworks
+    const millerLite = Math.ceil(adjustedDrinks * 0.4);
+    const modelo = Math.ceil(adjustedDrinks * 0.4);
+    const austinBeerworks = Math.ceil(adjustedDrinks * 0.2);
 
-      const millerCases = Math.ceil(millerLite / 24);
-      const modeloCases = Math.ceil(modelo / 24);
-      const austinPacks = Math.ceil(austinBeerworks / 12);
+    recommendations.push({ name: 'Miller Lite 24-pack', quantity: Math.ceil(millerLite / 24), unit: 'cases' });
+    recommendations.push({ name: 'Modelo Especial 24-pack', quantity: Math.ceil(modelo / 24), unit: 'cases' });
+    recommendations.push({ name: 'Austin Beerworks Variety 12-pack', quantity: Math.ceil(austinBeerworks / 12), unit: 'packs' });
 
-      recommendations.push({ name: 'Miller Lite 24-pack', quantity: millerCases, unit: 'cases' });
-      recommendations.push({ name: 'Modelo Especial 24-pack', quantity: modeloCases, unit: 'cases' });
-      recommendations.push({ name: 'Austin Beerworks Variety 12-pack', quantity: austinPacks, unit: 'packs' });
-
-      // Add seltzers
-      if (guestCount >= 8) {
-        recommendations.push({ name: 'High Noon Variety 12-pack', quantity: 1, unit: 'pack' });
-        recommendations.push({ name: 'Surfside Variety 8-pack', quantity: 1, unit: 'pack' });
-      } else {
-        recommendations.push({ name: 'High Noon Variety 12-pack', quantity: 1, unit: 'pack' });
-      }
-    } else if (preference === 'mostly_seltzers') {
-      // All seltzers distributed across brands
-      const perBrand = Math.ceil(adjustedDrinks / 3);
-      const highNoonPacks = Math.ceil(perBrand / 24);
-      const surfsidePacks = Math.ceil(perBrand / 24);
-      const whiteclawPacks = Math.ceil(perBrand / 24);
-
-      recommendations.push({ name: 'High Noon Variety 24-pack', quantity: highNoonPacks, unit: 'packs' });
-      recommendations.push({ name: 'Surfside Variety 24-pack', quantity: surfsidePacks, unit: 'packs' });
-      recommendations.push({ name: 'Whiteclaw Variety 24-pack', quantity: whiteclawPacks, unit: 'packs' });
-
-      // Add some beer
-      if (guestCount >= 8) {
-        recommendations.push({ name: 'Miller Lite 24-pack', quantity: 1, unit: 'case' });
-      } else {
-        recommendations.push({ name: 'Miller Lite 12-pack', quantity: 1, unit: 'pack' });
-      }
+    // Add seltzers for variety
+    if (guestCount >= 8) {
+      recommendations.push({ name: 'High Noon Variety 12-pack', quantity: 1, unit: 'pack' });
+      recommendations.push({ name: 'Surfside Variety 8-pack', quantity: 1, unit: 'pack' });
     } else {
-      // Good mix: 50% beer, 50% seltzers
-      const beerDrinks = Math.ceil(adjustedDrinks * 0.5);
-      const seltzerDrinks = Math.ceil(adjustedDrinks * 0.5);
+      recommendations.push({ name: 'High Noon Variety 12-pack', quantity: 1, unit: 'pack' });
+    }
+  } else if (preference === 'mostly_seltzers') {
+    // Seltzers distributed across brands
+    const perBrand = Math.ceil(adjustedDrinks / 3);
+    const packs = Math.ceil(perBrand / 24);
 
-      // Beer split
-      const millerLite = Math.ceil(beerDrinks * 0.4);
-      const modelo = Math.ceil(beerDrinks * 0.4);
-      const austinBeerworks = Math.ceil(beerDrinks * 0.2);
+    recommendations.push({ name: 'High Noon Variety 24-pack', quantity: packs, unit: 'packs' });
+    recommendations.push({ name: 'Surfside Variety 24-pack', quantity: packs, unit: 'packs' });
+    recommendations.push({ name: 'Whiteclaw Variety 24-pack', quantity: packs, unit: 'packs' });
 
-      recommendations.push({ name: 'Miller Lite 24-pack', quantity: Math.ceil(millerLite / 24), unit: 'cases' });
-      recommendations.push({ name: 'Modelo Especial 24-pack', quantity: Math.ceil(modelo / 24), unit: 'cases' });
-      recommendations.push({ name: 'Austin Beerworks Variety 12-pack', quantity: Math.ceil(austinBeerworks / 12), unit: 'packs' });
-
-      // Seltzer split
-      const perBrand = Math.ceil(seltzerDrinks / 3);
-      recommendations.push({ name: 'High Noon Variety 24-pack', quantity: Math.ceil(perBrand / 24), unit: 'packs' });
-      recommendations.push({ name: 'Surfside Variety 24-pack', quantity: Math.ceil(perBrand / 24), unit: 'packs' });
-      recommendations.push({ name: 'Whiteclaw Variety 24-pack', quantity: Math.ceil(perBrand / 24), unit: 'packs' });
+    // Add some beer for variety
+    if (guestCount >= 8) {
+      recommendations.push({ name: 'Miller Lite 24-pack', quantity: 1, unit: 'case' });
+    } else {
+      recommendations.push({ name: 'Miller Lite 12-pack', quantity: 1, unit: 'pack' });
     }
   } else {
-    // Bachelorette party
-    if (preference === 'seltzers_only' || preference === 'seltzers_wine') {
-      const seltzerDrinks = preference === 'seltzers_wine'
-        ? Math.ceil(adjustedDrinks * 0.7)
-        : adjustedDrinks;
+    // Good mix: 50% beer, 50% seltzers
+    const beerDrinks = Math.ceil(adjustedDrinks * 0.5);
+    const seltzerDrinks = Math.ceil(adjustedDrinks * 0.5);
 
-      const perBrand = Math.ceil(seltzerDrinks / 3);
-      const packs24 = Math.ceil(perBrand / 24);
+    // Beer split
+    const millerLite = Math.ceil(beerDrinks * 0.4);
+    const modelo = Math.ceil(beerDrinks * 0.4);
+    const austinBeerworks = Math.ceil(beerDrinks * 0.2);
 
-      recommendations.push({ name: 'High Noon Variety 24-pack', quantity: packs24, unit: 'packs' });
-      recommendations.push({ name: 'Surfside Variety 24-pack', quantity: packs24, unit: 'packs' });
-      recommendations.push({ name: 'Whiteclaw Variety 24-pack', quantity: packs24, unit: 'packs' });
+    recommendations.push({ name: 'Miller Lite 24-pack', quantity: Math.ceil(millerLite / 24), unit: 'cases' });
+    recommendations.push({ name: 'Modelo Especial 24-pack', quantity: Math.ceil(modelo / 24), unit: 'cases' });
+    recommendations.push({ name: 'Austin Beerworks Variety 12-pack', quantity: Math.ceil(austinBeerworks / 12), unit: 'packs' });
 
-      if (preference === 'seltzers_wine') {
-        // 30% wine, 5 glasses per bottle
-        const wineDrinks = Math.ceil(adjustedDrinks * 0.3);
-        const wineBottles = Math.ceil(wineDrinks / 5);
-        recommendations.push({ name: 'Wine (Rosé or White)', quantity: wineBottles, unit: 'bottles' });
-      }
-    }
-
-    // Champagne for bachelorette
-    if (addWineChampagne) {
-      const champagneBottles = Math.ceil(guestCount / 4);
-      recommendations.push({ name: 'Champagne', quantity: champagneBottles, unit: 'bottles' });
-    }
+    // Seltzer split
+    const perBrand = Math.ceil(seltzerDrinks / 3);
+    recommendations.push({ name: 'High Noon Variety 24-pack', quantity: Math.ceil(perBrand / 24), unit: 'packs' });
+    recommendations.push({ name: 'Surfside Variety 24-pack', quantity: Math.ceil(perBrand / 24), unit: 'packs' });
+    recommendations.push({ name: 'Whiteclaw Variety 24-pack', quantity: Math.ceil(perBrand / 24), unit: 'packs' });
   }
 
-  // Cocktail kits
-  if (addCocktailKits) {
-    const cocktailKitDrinks = Math.ceil(totalDrinks * 0.25);
-    const kits = Math.ceil(cocktailKitDrinks / 16); // Assume 16 drinks per kit
-    recommendations.push({ name: 'Cocktail Kit', quantity: kits, unit: 'kits' });
+  // ----------------------------------------
+  // COCKTAIL KITS (1 kit per spirit selected)
+  // ----------------------------------------
+  if (cocktailSpirits.includes('tequila')) {
+    recommendations.push({ name: 'The Classic Austin Rita', quantity: 1, unit: 'kit' });
+  }
+  if (cocktailSpirits.includes('vodka')) {
+    recommendations.push({ name: "Tito's Lemonade Party Pitcher Kit", quantity: 1, unit: 'kit' });
+  }
+  if (cocktailSpirits.includes('rum')) {
+    recommendations.push({ name: 'Rum Punch Gallon Dispenser Kit', quantity: 1, unit: 'kit' });
+  }
+  if (cocktailSpirits.includes('whiskey')) {
+    recommendations.push({ name: 'The Hill Country Old-Fashioned', quantity: 1, unit: 'kit' });
+  }
+  // Gin: not yet mapped to a product
+
+  // ----------------------------------------
+  // WINE & CHAMPAGNE (2 bottles per type for variety)
+  // ----------------------------------------
+  if (wineTypes.includes('white')) {
+    recommendations.push({ name: 'Dark Horse Pinot Grigio', quantity: 1, unit: 'bottle' });
+    recommendations.push({ name: 'Jam Cellars Chardonnay', quantity: 1, unit: 'bottle' });
+  }
+  if (wineTypes.includes('sparkling')) {
+    recommendations.push({ name: 'Wycliff Brut Rose', quantity: 1, unit: 'bottle' });
+    recommendations.push({ name: 'La Marca Prosecco', quantity: 1, unit: 'bottle' });
+  }
+  if (wineTypes.includes('champagne')) {
+    recommendations.push({ name: 'Andre Brut Champagne', quantity: 1, unit: 'bottle' });
+    recommendations.push({ name: 'Domaine Ste Michelle Brut', quantity: 1, unit: 'bottle' });
   }
 
-  // Ice: 1 bag per 4-5 guests
+  // ----------------------------------------
+  // ICE: 1 bag per 4 guests
+  // ----------------------------------------
   const iceBags = Math.ceil(guestCount / 4);
   recommendations.push({ name: 'Ice Bags', quantity: iceBags, unit: 'bags' });
 
-  // Filter out zero quantities and dedupe
+  // Filter out zero quantities
   return recommendations.filter(r => r.quantity > 0);
 }
 
@@ -329,11 +339,11 @@ export default function DrinkCalculator(): ReactElement {
       totalDrinks,
       partyType,
       drinkPreference,
-      addWineChampagne,
-      addCocktailKits,
+      wineTypes,
+      cocktailSpirits,
       guestCount
     ),
-    [totalDrinks, partyType, drinkPreference, addWineChampagne, addCocktailKits, guestCount]
+    [totalDrinks, partyType, drinkPreference, wineTypes, cocktailSpirits, guestCount]
   );
 
   // Drink preference options (same for all party types)

@@ -166,119 +166,124 @@ function PremierPartyCruisesPageContent(): ReactElement {
       <PremierHero />
 
       {/* ============================================ */}
-      {/* SECTION 2: EVERY ORDER INCLUDES (Value Stack)*/}
+      {/* SECTIONS 2+3: VALUE STACK + HOW IT WORKS     */}
+      {/* Combined two-column on desktop               */}
       {/* ============================================ */}
-      <section className="bg-gray-50 py-10 md:py-24">
-        <div className="max-w-4xl mx-auto px-6 md:px-8">
-          <p className="text-sm font-heading uppercase tracking-[0.08em] text-brand-blue text-center mb-2">
-            Boat Day = Handled
-          </p>
-          <h2 className="font-heading text-3xl md:text-4xl text-gray-900 text-center mb-6 md:mb-10">
-            Every Order Includes
-          </h2>
+      <section className="bg-gray-50 py-10 md:py-16">
+        <div className="max-w-6xl mx-auto px-6 md:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+            {/* LEFT: Every Order Includes */}
+            <div>
+              <p className="text-sm font-heading uppercase tracking-[0.08em] text-brand-blue mb-2">
+                Boat Day = Handled
+              </p>
+              <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-6">
+                Every Order Includes
+              </h2>
 
-          <div className="space-y-4">
-            {[
-              { item: 'FREE delivery to Premier Party Cruises marina', struck: '$50', label: 'FREE' },
-              { item: 'Cooler stocked with ice', struck: '$25', label: 'FREE' },
-              { item: 'Group ordering with split payments', struck: null, label: 'FREE' },
-              { item: 'Private reserved cooler on Disco Cruise', struck: null, label: 'FREE' },
-            ].map((row, idx) => (
-              <ScrollRevealCSS key={idx} delay={idx * 80}>
-                <div className="flex items-center gap-3 py-3 border-b border-gray-200 last:border-0">
-                  <svg className="w-6 h-6 text-brand-blue flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-900 font-semibold flex-1">{row.item}</span>
-                  <span className="flex items-center gap-2">
-                    {row.struck && (
-                      <span className="text-gray-500 line-through text-sm">{row.struck}</span>
-                    )}
-                    <span className="text-brand-blue font-bold">{row.label}</span>
-                  </span>
+              <div className="space-y-1">
+                {[
+                  { item: 'FREE delivery to Premier Party Cruises marina', struck: '$50', label: 'FREE' },
+                  { item: 'Cooler stocked with ice', struck: '$25', label: 'FREE' },
+                  { item: 'Group ordering with split payments', struck: null, label: 'FREE' },
+                  { item: 'Private reserved cooler on Disco Cruise', struck: null, label: 'FREE' },
+                ].map((row, idx) => (
+                  <ScrollRevealCSS key={idx} delay={idx * 80}>
+                    <div className="flex items-center gap-3 py-3 border-b border-gray-200 last:border-0">
+                      <svg className="w-6 h-6 text-brand-blue flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-gray-900 font-semibold flex-1">{row.item}</span>
+                      <span className="flex items-center gap-2">
+                        {row.struck && (
+                          <span className="text-gray-500 line-through text-sm">{row.struck}</span>
+                        )}
+                        <span className="text-brand-blue font-bold">{row.label}</span>
+                      </span>
+                    </div>
+                  </ScrollRevealCSS>
+                ))}
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-gray-300">
+                <span className="text-gray-700 font-sans">
+                  Premier guest perks: <strong className="text-gray-900">$75+ value included</strong>
+                </span>
+              </div>
+            </div>
+
+            {/* RIGHT: How It Works */}
+            <div>
+              <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-6">
+                How group ordering works
+              </h2>
+
+              <div className="space-y-4">
+                {[
+                  { step: 1, icon: '📱', title: 'Start the group', desc: 'Get a share link + code' },
+                  { step: 2, icon: '👥', title: 'Friends add what they want', desc: 'Each person checks out separately' },
+                  { step: 3, icon: '🧊', title: 'We deliver one combined order', desc: 'Iced and ready at the marina' },
+                ].map((s, idx) => (
+                  <ScrollRevealCSS key={s.step} delay={idx * 100}>
+                    <div className="flex items-start gap-4 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                      <div className="w-10 h-10 rounded-lg bg-brand-blue text-white font-heading font-bold flex items-center justify-center flex-shrink-0 text-lg">
+                        {s.step}
+                      </div>
+                      <div>
+                        <span className="text-xl mr-2">{s.icon}</span>
+                        <h3 className="font-heading text-base text-gray-900 font-bold inline">{s.title}</h3>
+                        <p className="font-sans text-gray-600 text-sm mt-1">{s.desc}</p>
+                      </div>
+                    </div>
+                  </ScrollRevealCSS>
+                ))}
+              </div>
+
+              {/* Callout box */}
+              <div className="mt-4 bg-brand-yellow/10 border-l-4 border-brand-yellow rounded-lg p-4">
+                <p className="text-gray-900 font-semibold text-sm">
+                  Hosts love this: everyone pays their portion. No collecting money.
+                </p>
+              </div>
+
+              {/* Inline join module */}
+              <div className="mt-4 flex flex-col sm:flex-row items-center gap-3">
+                <span className="text-gray-700 font-sans text-sm">Have a code?</span>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    placeholder="Enter code"
+                    className="border border-gray-300 rounded-lg px-4 py-2 font-sans text-sm w-36 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        const val = (e.target as HTMLInputElement).value.trim().toUpperCase();
+                        if (val) window.location.href = `/group/${val}`;
+                      }
+                    }}
+                    id="how-it-works-join-code"
+                    name="joinCode"
+                  />
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => {
+                      const input = document.getElementById('how-it-works-join-code') as HTMLInputElement;
+                      const val = input?.value.trim().toUpperCase();
+                      if (val) window.location.href = `/group/${val}`;
+                    }}
+                  >
+                    Join
+                  </Button>
                 </div>
-              </ScrollRevealCSS>
-            ))}
+              </div>
+            </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-gray-300 flex items-center justify-between">
-            <span className="text-gray-700 font-sans">
-              Premier guest perks: <strong className="text-gray-900">$75+ value included</strong>
-            </span>
-          </div>
-
+          {/* Shared CTA below both columns */}
           <div className="mt-8 text-center">
             <Button variant="cart" size="md" href="/group/create">
               Start a Group Order &rarr;
             </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================ */}
-      {/* SECTION 3: HOW IT WORKS                      */}
-      {/* ============================================ */}
-      <section className="bg-white pt-6 pb-4 md:py-24">
-        <div className="max-w-5xl mx-auto px-6 md:px-8">
-          <h2 className="font-heading text-3xl md:text-4xl text-gray-900 text-center mb-6 md:mb-12">
-            How group ordering works
-          </h2>
-
-          <div className="grid grid-cols-3 gap-3 md:gap-6">
-            {[
-              { step: 1, icon: '📱', title: 'Start the group', desc: 'Get a share link + code' },
-              { step: 2, icon: '👥', title: 'Friends add what they want', desc: 'Each person checks out separately' },
-              { step: 3, icon: '🧊', title: 'We deliver one combined order', desc: 'Iced and ready at the marina' },
-            ].map((s, idx) => (
-              <ScrollRevealCSS key={s.step} delay={idx * 150}>
-                <div className="bg-white border border-gray-200 rounded-lg p-3 md:p-6 shadow-sm text-center hover:-translate-y-1 transition-all duration-200 hover:shadow-lg">
-                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-brand-blue text-white font-heading font-bold flex items-center justify-center mx-auto mb-2 md:mb-4 text-sm md:text-lg">
-                    {s.step}
-                  </div>
-                  <div className="text-2xl md:text-3xl mb-2 md:mb-3">{s.icon}</div>
-                  <h3 className="font-heading text-sm md:text-lg text-gray-900 font-bold mb-1 md:mb-2">{s.title}</h3>
-                  <p className="font-sans text-gray-600 text-xs md:text-sm">{s.desc}</p>
-                </div>
-              </ScrollRevealCSS>
-            ))}
-          </div>
-
-          {/* Callout box */}
-          <div className="mt-4 md:mt-8 bg-brand-yellow/10 border-l-4 border-brand-yellow rounded-lg p-4">
-            <p className="text-gray-900 font-semibold">
-              Hosts love this: everyone pays their portion. No collecting money.
-            </p>
-          </div>
-
-          {/* Inline join module */}
-          <div className="mt-4 md:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <span className="text-gray-700 font-sans text-sm">Have a code?</span>
-            <div className="flex items-center gap-2">
-              <input
-                type="text"
-                placeholder="Enter code"
-                className="border border-gray-300 rounded-lg px-4 py-2 font-sans text-sm w-36 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    const val = (e.target as HTMLInputElement).value.trim().toUpperCase();
-                    if (val) window.location.href = `/group/${val}`;
-                  }
-                }}
-                id="how-it-works-join-code"
-                name="joinCode"
-              />
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => {
-                  const input = document.getElementById('how-it-works-join-code') as HTMLInputElement;
-                  const val = input?.value.trim().toUpperCase();
-                  if (val) window.location.href = `/group/${val}`;
-                }}
-              >
-                Join
-              </Button>
-            </div>
           </div>
         </div>
       </section>

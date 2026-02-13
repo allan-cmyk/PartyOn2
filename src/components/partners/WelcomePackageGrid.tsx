@@ -9,17 +9,10 @@ import { useState, useEffect, type ReactElement } from 'react';
 import type { Product } from '@/lib/types';
 import WelcomePackageCard from './WelcomePackageCard';
 
-interface WelcomePackageGridProps {
-  /** Discount code to show on cards */
-  discountCode?: string;
-}
-
 /**
  * Fetches and displays Welcome to Austin packages in a responsive grid
  */
-export default function WelcomePackageGrid({
-  discountCode = 'PREMIERPARTYCRUISES',
-}: WelcomePackageGridProps): ReactElement {
+export default function WelcomePackageGrid(): ReactElement {
   const [packages, setPackages] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -101,7 +94,6 @@ export default function WelcomePackageGrid({
         <WelcomePackageCard
           key={pkg.id}
           product={pkg}
-          discountCode={discountCode}
         />
       ))}
     </div>
