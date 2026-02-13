@@ -332,13 +332,6 @@ function PremierPartyCruisesPageContent(): ReactElement {
                     : 'grid grid-cols-2 md:grid-cols-5 gap-2'
                 }
               >
-                {/* Compact: Group Order CTA */}
-                {isCollectionsSticky && (
-                  <Button variant="cart" size="sm" href="/group/create" className="flex-shrink-0">
-                    Start Group Order
-                  </Button>
-                )}
-
                 {/* Categories */}
                 <div
                   className={
