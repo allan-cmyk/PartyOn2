@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback, type ReactElement } from 'react';
+import { useState, useMemo, useCallback, useEffect, type ReactElement } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCartContext } from '@/contexts/CartContext';
 
@@ -17,6 +17,8 @@ interface ProductRecommendation {
   name: string;
   quantity: number;
   unit: string;
+  imageUrl?: string;
+  productTitle?: string;
 }
 
 // ============================================
@@ -287,9 +289,18 @@ function PreferenceOption({
 
 function ProductCard({ product }: { product: ProductRecommendation }): ReactElement {
   return (
-    <div className="bg-white rounded-lg p-4 text-center border border-gray-100 shadow-sm">
-      <p className="text-2xl md:text-3xl font-bold text-gray-900">{product.quantity}</p>
-      <p className="text-sm text-gray-600 leading-tight">{product.name}</p>
+    <div className="bg-white rounded-lg p-3 text-center border border-gray-100 shadow-sm flex flex-col items-center gap-1">
+      {product.imageUrl && (
+        <div className="w-16 h-16 md:w-20 md:h-20 relative flex-shrink-0">
+          <img
+            src={product.imageUrl}
+            alt={product.productTitle ?? product.name}
+            className="w-full h-full object-contain"
+          />
+        </div>
+      )}
+      <p className="text-2xl font-bold text-gray-900">{product.quantity}</p>
+      <p className="text-xs text-gray-600 leading-tight">{product.productTitle ?? product.name}</p>
     </div>
   );
 }
@@ -347,6 +358,48 @@ export default function DrinkCalculator(): ReactElement {
     ),
     [totalDrinks, partyType, drinkPreference, wineTypes, cocktailSpirits, guestCount]
   );
+
+  // Enriched recommendations with product images
+  const [enrichedRecs, setEnrichedRecs] = useState<ProductRecommendation[]>([]);
+
+  useEffect(() => {
+    if (stage !== 'results') return;
+
+    let cancelled = false;
+
+    async function enrichWithImages() {
+      const enriched = await Promise.all(
+        recommendations.map(async (rec) => {
+          const searchQuery = SEARCH_OVERRIDES[rec.name] ?? rec.name;
+          try {
+            const res = await fetch(
+              `/api/v1/products/search?q=${encodeURIComponent(searchQuery)}&limit=1`
+            );
+            if (!res.ok) return rec;
+            const { success, data } = await res.json();
+            if (!success || !data?.length) return rec;
+            const product = data[0];
+            return {
+              ...rec,
+              imageUrl: product.images?.[0]?.url ?? undefined,
+              productTitle: product.title,
+            };
+          } catch {
+            return rec;
+          }
+        })
+      );
+      if (!cancelled) setEnrichedRecs(enriched);
+    }
+
+    enrichWithImages();
+    return () => { cancelled = true; };
+  }, [stage, recommendations]);
+
+  // Use enriched recs for display, fall back to raw recs
+  const displayRecs = stage === 'results' && enrichedRecs.length > 0
+    ? enrichedRecs
+    : recommendations;
 
   // Drink preference options (same for all party types)
   const preferenceOptions = [
@@ -857,7 +910,7 @@ export default function DrinkCalculator(): ReactElement {
                 </p>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {recommendations.map((product, index) => (
+                  {displayRecs.map((product, index) => (
                     <ProductCard key={`${product.name}-${index}`} product={product} />
                   ))}
                 </div>
