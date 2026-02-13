@@ -210,6 +210,12 @@ function PremierPartyCruisesPageContent(): ReactElement {
                   Premier guest perks: <strong className="text-gray-900">$75+ value included</strong>
                 </span>
               </div>
+
+              <div className="mt-6">
+                <Button variant="cart" size="md" href="/group/create">
+                  Start a Group Order &rarr;
+                </Button>
+              </div>
             </div>
 
             {/* RIGHT: How It Works */}
@@ -279,12 +285,6 @@ function PremierPartyCruisesPageContent(): ReactElement {
             </div>
           </div>
 
-          {/* Shared CTA below both columns */}
-          <div className="mt-8 text-center">
-            <Button variant="cart" size="md" href="/group/create">
-              Start a Group Order &rarr;
-            </Button>
-          </div>
         </div>
       </section>
 
