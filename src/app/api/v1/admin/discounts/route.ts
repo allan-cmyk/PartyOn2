@@ -27,6 +27,7 @@ interface CreateDiscountBody {
   expiresAt?: string;
   isActive?: boolean;
   combinable?: boolean;
+  freeShipping?: boolean;
 }
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
@@ -97,6 +98,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
           expiresAt: d.expiresAt?.toISOString() || null,
           isActive: d.isActive,
           combinable: d.combinable,
+          freeShipping: d.freeShipping,
           usageCount: d.usageCount,
           totalDiscountGiven: Number(d.totalDiscountGiven),
           usageHistoryCount: d._count.usageHistory,
@@ -177,6 +179,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         expiresAt: body.expiresAt ? new Date(body.expiresAt) : null,
         isActive: body.isActive ?? true,
         combinable: body.combinable ?? false,
+        freeShipping: body.freeShipping ?? false,
       },
     });
 
@@ -190,6 +193,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         value: Number(discount.value),
         isActive: discount.isActive,
         combinable: discount.combinable,
+        freeShipping: discount.freeShipping,
         createdAt: discount.createdAt.toISOString(),
       },
     });

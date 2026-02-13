@@ -110,7 +110,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       cartId,
       result.discountCode!,
       result.discountAmount,
-      result.discountType!
+      result.discountType!,
+      result.freeShipping
     );
 
     return NextResponse.json({

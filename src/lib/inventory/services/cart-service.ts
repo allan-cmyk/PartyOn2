@@ -223,6 +223,7 @@ interface AppliedDiscountEntry {
   code: string;
   amount: number;
   type: string;
+  freeShipping?: boolean;
 }
 
 /**
@@ -251,13 +252,14 @@ export async function addDiscount(
   cartId: string,
   code: string,
   amount: number,
-  type: string
+  type: string,
+  freeShipping?: boolean
 ): Promise<CartWithItems> {
   const cart = await prisma.cart.findUnique({ where: { id: cartId } });
   if (!cart) throw new Error('Cart not found');
 
   const existing = (cart.appliedDiscounts as unknown as AppliedDiscountEntry[]) || [];
-  const updated = [...existing, { code, amount, type }];
+  const updated = [...existing, { code, amount, type, freeShipping: freeShipping || false }];
   const totalAmount = updated.reduce((sum, d) => sum + d.amount, 0);
 
   await prisma.cart.update({
@@ -467,7 +469,7 @@ async function recalculateCart(cartId: string): Promise<CartWithItems> {
 
   // Check if any applied discount is FREE_SHIPPING
   const appliedDiscounts = (cart.appliedDiscounts as unknown as AppliedDiscountEntry[]) || [];
-  const hasFreeShipping = appliedDiscounts.some((d) => d.type === 'FREE_SHIPPING');
+  const hasFreeShipping = appliedDiscounts.some((d) => d.type === 'FREE_SHIPPING' || d.freeShipping);
 
   // Calculate delivery fee based on zip code (if delivery address is set)
   let deliveryFee = parseFloat(cart.deliveryFee.toString());

@@ -26,6 +26,7 @@ interface DiscountResult {
   discountAmount: number;
   discountCode?: string;
   discountType?: DiscountType;
+  freeShipping?: boolean;
   message?: string;
   error?: string;
 }
@@ -44,6 +45,7 @@ export interface AppliedDiscountEntry {
   code: string;
   amount: number;
   type: string;
+  freeShipping?: boolean;
 }
 
 const MAX_DISCOUNT_CODES = 3;
@@ -124,6 +126,7 @@ export async function validateDiscountCode(
     discountAmount,
     discountCode: discount.code,
     discountType: discount.type,
+    freeShipping: discount.freeShipping || discount.type === 'FREE_SHIPPING',
     message: `Discount "${discount.name}" applied!`,
   };
 }
@@ -432,7 +435,7 @@ export async function shouldApplyFreeShipping(
     const discount = await prisma.discount.findUnique({
       where: { code: code.toUpperCase() },
     });
-    if (discount?.type === 'FREE_SHIPPING' && discount.isActive) {
+    if ((discount?.type === 'FREE_SHIPPING' || discount?.freeShipping) && discount.isActive) {
       const now = new Date();
       if (
         discount.startsAt <= now &&

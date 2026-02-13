@@ -28,6 +28,7 @@ interface UpdateDiscountBody {
   expiresAt?: string | null;
   isActive?: boolean;
   combinable?: boolean;
+  freeShipping?: boolean;
 }
 
 interface RouteContext {
@@ -80,6 +81,7 @@ export async function GET(
         expiresAt: discount.expiresAt?.toISOString() || null,
         isActive: discount.isActive,
         combinable: discount.combinable,
+        freeShipping: discount.freeShipping,
         usageCount: discount.usageCount,
         totalDiscountGiven: Number(discount.totalDiscountGiven),
         createdAt: discount.createdAt.toISOString(),
@@ -173,6 +175,7 @@ export async function PUT(
         ...(body.expiresAt !== undefined && { expiresAt: body.expiresAt ? new Date(body.expiresAt) : null }),
         ...(body.isActive !== undefined && { isActive: body.isActive }),
         ...(body.combinable !== undefined && { combinable: body.combinable }),
+        ...(body.freeShipping !== undefined && { freeShipping: body.freeShipping }),
       },
     });
 
@@ -186,6 +189,7 @@ export async function PUT(
         value: Number(discount.value),
         isActive: discount.isActive,
         combinable: discount.combinable,
+        freeShipping: discount.freeShipping,
         updatedAt: discount.updatedAt.toISOString(),
       },
     });

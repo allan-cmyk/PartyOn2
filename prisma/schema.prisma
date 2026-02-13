@@ -1171,6 +1171,9 @@ model Discount {
   // Combination support
   combinable Boolean @default(false) @map("combinable")
 
+  // Free shipping flag - allows any discount type to also waive delivery
+  freeShipping Boolean @default(false) @map("free_shipping")
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

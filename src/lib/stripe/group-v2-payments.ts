@@ -198,7 +198,7 @@ export async function createDeliveryInvoiceSession(input: CreateDeliveryInvoiceI
     const discount = await prisma.discount.findUnique({
       where: { code: discountCode, isActive: true },
     });
-    if (discount && discount.type === 'FREE_SHIPPING') {
+    if (discount && (discount.type === 'FREE_SHIPPING' || discount.freeShipping)) {
       feeWaived = true;
       discountAmount = deliveryFee;
     } else if (discount && discount.type === 'PERCENTAGE') {

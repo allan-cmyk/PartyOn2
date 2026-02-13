@@ -115,7 +115,7 @@ export default function CheckoutPage() {
   // Get applied discount code(s)
   const appliedDiscountCode = customCartData?.discountCode ?? null;
   const appliedDiscounts = customCartData?.appliedDiscounts ?? [];
-  const hasFreeShipping = appliedDiscounts.some(d => d.type === 'FREE_SHIPPING');
+  const hasFreeShipping = appliedDiscounts.some(d => d.type === 'FREE_SHIPPING' || d.freeShipping);
 
   const total = subtotal + deliveryFee + tax - Math.abs(discountAmount);
 
@@ -547,8 +547,8 @@ export default function CheckoutPage() {
                             <span className="text-sm font-medium text-green-700">{d.code}</span>
                             <span className="text-xs text-green-600 ml-2">
                               {d.type === 'FREE_SHIPPING' ? 'Free Delivery' :
-                               d.type === 'PERCENTAGE' ? `${d.amount > 0 ? `-$${d.amount.toFixed(2)}` : ''}` :
-                               d.amount > 0 ? `-$${d.amount.toFixed(2)}` : ''}
+                               d.type === 'PERCENTAGE' ? `${d.amount > 0 ? `-$${d.amount.toFixed(2)}` : ''}${d.freeShipping ? ' + Free Delivery' : ''}` :
+                               d.amount > 0 ? `-$${d.amount.toFixed(2)}${d.freeShipping ? ' + Free Delivery' : ''}` : d.freeShipping ? 'Free Delivery' : ''}
                             </span>
                           </div>
                           <button

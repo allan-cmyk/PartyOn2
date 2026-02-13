@@ -34,6 +34,7 @@ interface DiscountData {
   expiresAt: string | null;
   isActive: boolean;
   combinable: boolean;
+  freeShipping: boolean;
   usageCount: number;
   totalDiscountGiven: number;
   usageHistory: UsageRecord[];
@@ -118,6 +119,7 @@ export default function EditDiscountPage({ params }: PageProps) {
         expiresAt: discount.expiresAt,
         isActive: discount.isActive,
         combinable: discount.combinable,
+        freeShipping: discount.freeShipping,
       };
 
       const response = await fetch(`/api/v1/admin/discounts/${id}`, {
@@ -385,6 +387,26 @@ export default function EditDiscountPage({ params }: PageProps) {
                       When enabled, customers can stack this code with other combinable codes (max 3 per order)
                     </p>
                   </div>
+
+                  {discount.type !== 'FREE_SHIPPING' && (
+                    <div>
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          name="freeShipping"
+                          checked={discount.freeShipping}
+                          onChange={handleChange}
+                          className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                        />
+                        <span className="text-sm font-medium text-gray-700">
+                          Also includes free delivery
+                        </span>
+                      </label>
+                      <p className="text-xs text-gray-500 mt-1 ml-6">
+                        When enabled, this discount will also waive the delivery fee
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
 

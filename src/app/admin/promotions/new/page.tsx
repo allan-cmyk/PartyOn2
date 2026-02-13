@@ -22,6 +22,7 @@ interface FormData {
   expiresAt: string;
   isActive: boolean;
   combinable: boolean;
+  freeShipping: boolean;
 }
 
 /**
@@ -48,6 +49,7 @@ export default function NewDiscountPage() {
     expiresAt: '',
     isActive: true,
     combinable: false,
+    freeShipping: false,
   });
 
   const handleChange = (
@@ -83,6 +85,7 @@ export default function NewDiscountPage() {
         expiresAt: formData.expiresAt ? new Date(formData.expiresAt).toISOString() : undefined,
         isActive: formData.isActive,
         combinable: formData.combinable,
+        freeShipping: formData.freeShipping,
       };
 
       const response = await fetch('/api/v1/admin/discounts', {
@@ -414,6 +417,26 @@ export default function NewDiscountPage() {
                 When enabled, customers can stack this code with other combinable codes (max 3 per order)
               </p>
             </div>
+
+            {formData.type !== 'FREE_SHIPPING' && (
+              <div>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    name="freeShipping"
+                    checked={formData.freeShipping}
+                    onChange={handleChange}
+                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                  />
+                  <span className="text-sm font-medium text-gray-700">
+                    Also includes free delivery
+                  </span>
+                </label>
+                <p className="text-xs text-gray-500 mt-1 ml-6">
+                  When enabled, this discount will also waive the delivery fee
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
