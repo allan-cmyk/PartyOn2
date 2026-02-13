@@ -1,0 +1,89 @@
+/* ── Drink slide animation ── */
+
+.drinkSlider {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.drinkSizer {
+  visibility: hidden;
+  height: 0;
+  display: block;
+}
+
+.drinkWord {
+  display: block;
+}
+
+.drinkWordEnter {
+  animation: drinkSlideIn var(--drink-transition-ms) ease-out forwards;
+}
+
+.drinkWordExit {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  animation: drinkSlideOut var(--drink-transition-ms) ease-in forwards;
+}
+
+@keyframes drinkSlideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes drinkSlideOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* ── Marquee (destinations) ── */
+
+.marqueeContainer {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.marqueeTrack {
+  display: inline-flex;
+  animation: marqueeScroll var(--marquee-duration) linear infinite;
+}
+
+@keyframes marqueeScroll {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0%);
+  }
+}
+
+/* ── Reduced motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+  .drinkWordEnter,
+  .drinkWordExit {
+    animation: none;
+    transform: none;
+    opacity: 1;
+  }
+
+  .drinkWordExit {
+    display: none;
+  }
+
+  .marqueeTrack {
+    animation: none;
+    transform: none;
+  }
+}

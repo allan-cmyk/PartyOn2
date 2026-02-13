@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, ReactElement } from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { createGroupOrderV2 } from '@/lib/group-orders-v2/api-client';
-import type { CreateTabInput } from '@/lib/group-orders-v2/types';
+import type { CreateTabInput, GroupOrderV2Full } from '@/lib/group-orders-v2/types';
 import { ORDER_TYPES } from '@/lib/group-orders-v2/order-types';
 import OrderTypeIcon from '@/components/group-v2/OrderTypeIcon';
 
@@ -62,7 +62,6 @@ function newTab(idx: number): TabFormData {
 }
 
 export default function CreateGroupPage(): ReactElement {
-  const router = useRouter();
   const [name, setName] = useState('');
   const [hostName, setHostName] = useState('');
   const [hostEmail, setHostEmail] = useState('');
@@ -73,6 +72,31 @@ export default function CreateGroupPage(): ReactElement {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [dateErrors, setDateErrors] = useState<Record<string, string>>({});
+  const [createdGroup, setCreatedGroup] = useState<GroupOrderV2Full | null>(null);
+  const [copiedCode, setCopiedCode] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
+
+  const handleCopy = async (text: string, type: 'code' | 'link') => {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+    }
+    if (type === 'code') {
+      setCopiedCode(true);
+      setTimeout(() => setCopiedCode(false), 2000);
+    } else {
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
+    }
+  };
 
   const addTab = () => {
     if (tabs.length >= 10) return;
@@ -160,13 +184,114 @@ export default function CreateGroupPage(): ReactElement {
         // localStorage may be unavailable
       }
 
-      router.push(`/group/${group.shareCode}/dashboard`);
+      setCreatedGroup(group);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create group order');
     } finally {
       setLoading(false);
     }
   };
+
+  // Check if created group has a house tab
+  const hasHouseTab = createdGroup?.tabs?.some((t) => t.orderType === 'house') ?? false;
+
+  if (createdGroup) {
+    const shareCode = createdGroup.shareCode;
+    const shareLink = `partyondelivery.com/group/${shareCode}`;
+
+    return (
+      <div className="pt-32 pb-16 px-4 min-h-screen bg-gray-50">
+        <div className="max-w-lg mx-auto">
+          {/* Success Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
+              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900">Your group is live!</h1>
+          </div>
+
+          {/* Share Code */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6 mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Share Code</label>
+            <div className="flex items-center gap-3">
+              <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
+                <span className="text-2xl font-mono font-bold text-gray-900 tracking-wider">{shareCode}</span>
+              </div>
+              <button
+                onClick={() => handleCopy(shareCode, 'code')}
+                className="px-4 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 text-sm font-medium whitespace-nowrap"
+              >
+                {copiedCode ? 'Copied!' : 'Copy'}
+              </button>
+            </div>
+          </div>
+
+          {/* Share Link */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6 mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Share Link</label>
+            <div className="flex items-center gap-3">
+              <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 overflow-hidden">
+                <span className="text-sm text-gray-900 break-all">{shareLink}</span>
+              </div>
+              <button
+                onClick={() => handleCopy(`https://${shareLink}`, 'link')}
+                className="px-4 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 text-sm font-medium whitespace-nowrap"
+              >
+                {copiedLink ? 'Copied!' : 'Copy'}
+              </button>
+            </div>
+          </div>
+
+          {/* Microcopy */}
+          <p className="text-center text-gray-500 text-sm mb-6">
+            Send this to your group &mdash; everyone pays separately.
+          </p>
+
+          {/* House Tab Upsell — only if no house tab */}
+          {!hasHouseTab && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 mb-6">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl" role="img" aria-label="house">🏠</span>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-gray-900 mb-1">Add a House Tab</h3>
+                  <p className="text-sm text-gray-700 mb-3">
+                    Most groups stock the Airbnb too. Spend $250+ and get a <strong>FREE Welcome Package</strong> ($50 value).
+                  </p>
+                  <Link
+                    href={`/group/${shareCode}/dashboard`}
+                    className="inline-flex items-center text-sm font-semibold text-amber-700 hover:text-amber-800"
+                  >
+                    Add House Tab
+                    <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Primary CTA */}
+          <Link
+            href={`/group/${shareCode}/dashboard`}
+            className="block w-full py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 text-center"
+          >
+            Go to Dashboard
+          </Link>
+
+          {/* Secondary link */}
+          <Link
+            href="/premier-partners"
+            className="block text-center text-sm text-gray-500 hover:text-gray-700 mt-4"
+          >
+            &larr; Back to Premier Page
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-32 pb-16 px-4 min-h-screen bg-gray-50">
