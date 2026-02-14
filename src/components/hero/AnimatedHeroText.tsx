@@ -63,29 +63,29 @@ export default function AnimatedHeroText({
         </AnimatePresence>
       </span></span>
 
-      {/* Line 2: "delivered cold & on time" */}
-      <span className="block text-left text-white">delivered cold &amp; on time</span>
+      {/* Line 2: "delivered cold" */}
+      <span className="block text-left text-white">delivered cold</span>
 
-      {/* Line 3: "to your {DESTINATION}" */}
-      <span className="block text-left">
-        <span className="text-white">to your </span>
-        <span className="inline-block relative align-baseline">
-          {/* Ghost text for destination width */}
-          <span className="invisible" aria-hidden="true">{longestDest}</span>
-          <AnimatePresence mode="wait">
-            <motion.span
-              key={destinations[destIndex]}
-              initial={{ x: '-100%', opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: '100%', opacity: 0 }}
-              transition={{ duration: transitionMs / 1000, ease }}
-              className="absolute inset-0 text-brand-yellow text-left"
-            >
-              {destinations[destIndex]}
-            </motion.span>
-          </AnimatePresence>
-        </span>
-      </span>
+      {/* Line 3: "& on time to your" */}
+      <span className="block text-left text-white">&amp; on time to your</span>
+
+      {/* Line 4: "{DESTINATION}" rotating word */}
+      <span className="block text-left"><span className="inline-block relative align-baseline">
+        {/* Ghost text for destination width */}
+        <span className="invisible" aria-hidden="true">{longestDest}</span>
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={destinations[destIndex]}
+            initial={{ x: '-100%', opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: '100%', opacity: 0 }}
+            transition={{ duration: transitionMs / 1000, ease }}
+            className="absolute inset-0 text-brand-yellow text-left"
+          >
+            {destinations[destIndex]}
+          </motion.span>
+        </AnimatePresence>
+      </span></span>
     </h1>
   );
 }

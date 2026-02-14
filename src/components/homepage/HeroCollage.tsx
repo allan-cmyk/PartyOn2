@@ -186,7 +186,7 @@ export default function HeroCollage() {
   if (orderedCells.length === 0) return null;
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 auto-rows-[1fr] gap-3 h-[400px] md:h-[500px] lg:h-[560px]">
+    <div className="grid grid-cols-2 md:grid-cols-3 auto-rows-[1fr] gap-3 h-[400px] md:h-[500px] lg:h-full">
       {orderedCells.map((cell, i) => (
         <CollageCell
           key={cell.name}
