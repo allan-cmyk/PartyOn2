@@ -170,38 +170,6 @@ function CollageCell({ media, interval, className, priority = false }: CollageCe
   );
 }
 
-/** Renders either a Next.js Image or a video element */
-function MediaItem({
-  media,
-  sizes,
-  preloadVideo = 'none',
-}: {
-  media: CollageMedia;
-  sizes: string;
-  preloadVideo?: 'none' | 'metadata' | 'auto';
-}) {
-  if (media.type === 'video') {
-    return (
-      <video
-        src={media.src}
-        muted
-        playsInline
-        preload={preloadVideo}
-        className="absolute inset-0 w-full h-full object-cover"
-      />
-    );
-  }
-  return (
-    <Image
-      src={media.src}
-      alt={media.alt}
-      fill
-      sizes={sizes}
-      className="object-cover"
-    />
-  );
-}
-
 /**
  * 3-cell media collage for the homepage hero.
  * Layout: 2 cells on top (side by side) + 1 full-width cell on bottom.
