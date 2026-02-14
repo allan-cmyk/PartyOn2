@@ -88,7 +88,7 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
       <div className="max-w-7xl mx-auto px-6 md:px-8 py-16 md:py-24 lg:py-28">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-stretch">
           {/* Left Column: Text Content */}
-          <div className="order-1">
+          <div className="order-1 text-center lg:text-left">
             {/* Animated Headline */}
             <motion.div
               {...heroFadeUp}
@@ -97,9 +97,9 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
             >
               <AnimatedHeroText
                 drinks={["Beer", "Cocktails", "Seltzers", "Wine", "Champagne"]}
-                destinations={["boat", "wedding", "corporate event", "house", "Airbnb", "venue", "ranch"]}
-                drinkIntervalMs={2400}
-                transitionMs={400}
+                destinations={["boat party", "wedding", "corporate event", "house party", "Airbnb", "Austin venue"]}
+                drinkIntervalMs={4800}
+                transitionMs={800}
               />
             </motion.div>
 
@@ -107,7 +107,7 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
             <motion.p
               {...heroFadeUp}
               transition={{ duration: 0.6, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
-              className="font-sans text-lg md:text-xl text-white/80 mb-6 md:mb-8 max-w-lg text-left"
+              className="font-sans text-lg md:text-xl text-white/80 mb-6 md:mb-8 max-w-lg mx-auto lg:mx-0"
             >
               {content.tagline}
             </motion.p>
@@ -116,7 +116,7 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
             <motion.div
               {...heroFadeUp}
               transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-              className="flex flex-wrap items-center gap-2 mb-6 md:mb-8"
+              className="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-6 md:mb-8"
             >
               {trustChips.map((chip) => (
                 <span
@@ -133,7 +133,7 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
             <motion.div
               {...heroFadeUp}
               transition={{ duration: 0.6, delay: 0.45, ease: [0.25, 0.1, 0.25, 1] }}
-              className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start flex-wrap"
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center lg:items-start flex-wrap"
             >
               {content.ctaButtons.map((cta, index) => {
                 if (cta.style === 'text-link') {

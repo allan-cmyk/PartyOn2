@@ -44,9 +44,9 @@ export default function AnimatedHeroText({
   const ease = [0.25, 0.1, 0.25, 1] as const;
 
   return (
-    <h1 className="font-heading text-4xl sm:text-5xl md:text-7xl font-bold tracking-[0.02em] text-left leading-[1.15]">
+    <h1 className="font-heading text-4xl sm:text-5xl md:text-7xl font-bold tracking-[0.02em] text-center lg:text-left leading-[1.15]">
       {/* Line 1: "{DRINK}" rotating word */}
-      <span className="block text-left"><span className="inline-block relative align-baseline">
+      <span className="block"><span className="inline-block relative align-baseline">
         {/* Ghost text — invisible, holds width of longest word */}
         <span className="invisible" aria-hidden="true">{longestDrink}</span>
         <AnimatePresence mode="wait">
@@ -56,7 +56,7 @@ export default function AnimatedHeroText({
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: '-100%', opacity: 0 }}
             transition={{ duration: transitionMs / 1000, ease }}
-            className="absolute inset-0 text-brand-yellow text-left"
+            className="absolute inset-0 text-brand-yellow"
           >
             {drinks[drinkIndex]}
           </motion.span>
@@ -64,13 +64,13 @@ export default function AnimatedHeroText({
       </span></span>
 
       {/* Line 2: "delivered cold" */}
-      <span className="block text-left text-white">delivered cold</span>
+      <span className="block text-white">delivered cold</span>
 
       {/* Line 3: "& on time to your" */}
-      <span className="block text-left text-white">&amp; on time to your</span>
+      <span className="block text-white">&amp; on time to your</span>
 
       {/* Line 4: "{DESTINATION}" rotating word */}
-      <span className="block text-left"><span className="inline-block relative align-baseline">
+      <span className="block"><span className="inline-block relative align-baseline">
         {/* Ghost text for destination width */}
         <span className="invisible" aria-hidden="true">{longestDest}</span>
         <AnimatePresence mode="wait">
@@ -80,7 +80,7 @@ export default function AnimatedHeroText({
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: '100%', opacity: 0 }}
             transition={{ duration: transitionMs / 1000, ease }}
-            className="absolute inset-0 text-brand-yellow text-left"
+            className="absolute inset-0 text-brand-yellow"
           >
             {destinations[destIndex]}
           </motion.span>
