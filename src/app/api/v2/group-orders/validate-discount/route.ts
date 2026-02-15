@@ -74,6 +74,7 @@ export async function POST(request: NextRequest) {
         type: discount.type,
         value: Number(discount.value),
         discountAmount,
+        freeShipping: discount.freeShipping || discount.type === 'FREE_SHIPPING',
       },
     });
   } catch (error) {

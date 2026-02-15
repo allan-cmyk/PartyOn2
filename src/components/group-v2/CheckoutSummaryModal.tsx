@@ -24,7 +24,7 @@ export default function CheckoutSummaryModal({
   const [discountCode, setDiscountCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [discountApplied, setDiscountApplied] = useState<{ code: string; type: string; value: number; discountAmount: number } | null>(null);
+  const [discountApplied, setDiscountApplied] = useState<{ code: string; type: string; value: number; discountAmount: number; freeShipping?: boolean } | null>(null);
   const [discountError, setDiscountError] = useState('');
   const [applyingDiscount, setApplyingDiscount] = useState(false);
 
@@ -147,9 +147,9 @@ export default function CheckoutSummaryModal({
                 <span className="font-semibold text-green-800">{discountApplied.code}</span>
                 <span className="text-green-700 ml-2">
                   {discountApplied.type === 'PERCENTAGE'
-                    ? `${discountApplied.value}% off`
-                    : discountApplied.type === 'FREE_SHIPPING'
-                    ? 'Free shipping'
+                    ? `${discountApplied.value}% off${discountApplied.freeShipping ? ' + Free delivery' : ''}`
+                    : discountApplied.type === 'FREE_SHIPPING' || discountApplied.freeShipping
+                    ? 'Free delivery'
                     : `-$${discountApplied.discountAmount.toFixed(2)}`}
                 </span>
               </div>

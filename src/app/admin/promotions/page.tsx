@@ -11,6 +11,7 @@ interface Discount {
   value: number;
   isActive: boolean;
   combinable: boolean;
+  freeShipping: boolean;
   usageCount: number;
   maxUsageCount: number | null;
   totalDiscountGiven: number;
@@ -203,6 +204,11 @@ export default function PromotionsPage() {
                     <td className="py-3 px-4 font-medium text-black">{discount.name}</td>
                     <td className="py-3 px-4 text-gray-600">
                       {getDiscountTypeLabel(discount.type)}
+                      {discount.freeShipping && discount.type !== 'FREE_SHIPPING' && (
+                        <span className="ml-1 inline-block px-1.5 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded">
+                          + Free Delivery
+                        </span>
+                      )}
                     </td>
                     <td className="py-3 px-4 text-right text-black">
                       {getDiscountValueDisplay(discount.type, discount.value)}

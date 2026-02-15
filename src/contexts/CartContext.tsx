@@ -11,6 +11,7 @@ interface AppliedDiscountEntry {
   code: string;
   amount: number;
   type: string;
+  freeShipping?: boolean;
 }
 
 interface CustomCartData {
