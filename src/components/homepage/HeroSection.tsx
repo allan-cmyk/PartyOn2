@@ -105,7 +105,7 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
             src={image.src}
             alt={image.alt}
             fill
-            className="object-cover"
+            className="object-cover blur-[2px] sm:blur-0 scale-[1.02] sm:scale-100"
             priority={index === 0}
             loading={index === 0 ? 'eager' : 'lazy'}
             quality={index === 0 ? 60 : 50}
@@ -115,7 +115,7 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
         </div>
       ))}
 
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-900/70 via-gray-900/50 to-gray-900/70 sm:from-gray-900/60 sm:via-gray-900/40 sm:to-gray-900/60" />
 
       {/* Hero Dots Navigation */}
       <div className="absolute bottom-14 sm:bottom-20 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
