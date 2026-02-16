@@ -43,10 +43,11 @@ export const heroControl: HeroVariantContent = {
   tagline: 'Concierge planning for Airbnbs, weddings, and corporate events\u2014plus a split-pay Group Order so everyone can add what they want and pay their portion.',
   trustBadges: 'Licensed • Insured • TABC-certified • 5.0★ on Google',
   images: [
-    { src: '/images/hero/austin-skyline-hero.webp', alt: 'Austin Skyline' },
-    { src: '/images/hero/homepage-hero-sunset.webp', alt: 'Austin sunset from Lady Bird Lake' },
-    { src: '/images/hero/homepage-hero-rooftop.webp', alt: 'Rooftop bar in downtown Austin' },
-    { src: '/images/hero/homepage-hero-luxury.webp', alt: 'Luxury penthouse bar setup' },
+    { src: '/images/hero/hero-drink-skyline.webp', alt: 'Cocktail with Austin skyline at golden hour' },
+    { src: '/images/hero/hero-roof-pool.webp', alt: 'Rooftop pool party with Austin skyline' },
+    { src: '/images/hero/hero-house-pool.webp', alt: 'Backyard pool party at Texas hill country home' },
+    { src: '/images/hero/hero-boat-party.webp', alt: 'Boat party on Lake Travis' },
+    { src: '/images/hero/hero-tequilas.webp', alt: 'Premium tequila bottles lined up' },
   ],
   ctaButtons: [
     { text: 'GET A QUOTE', url: '/plan-event', style: 'primary' },
@@ -70,10 +71,11 @@ export const heroVariantA: HeroVariantContent = {
   tagline: 'From house parties to Lake Travis weddings—everything arrives cold with ice, cups, and mixers handled.',
   trustBadges: 'Licensed • Insured • TABC-certified • 5.0★ on Google',
   images: [
-    { src: '/images/hero/austin-skyline-hero.webp', alt: 'Austin Skyline' },
-    { src: '/images/hero/homepage-hero-sunset.webp', alt: 'Austin sunset from Lady Bird Lake' },
-    { src: '/images/hero/homepage-hero-rooftop.webp', alt: 'Rooftop bar in downtown Austin' },
-    { src: '/images/hero/homepage-hero-luxury.webp', alt: 'Luxury penthouse bar setup' },
+    { src: '/images/hero/hero-drink-skyline.webp', alt: 'Cocktail with Austin skyline at golden hour' },
+    { src: '/images/hero/hero-roof-pool.webp', alt: 'Rooftop pool party with Austin skyline' },
+    { src: '/images/hero/hero-house-pool.webp', alt: 'Backyard pool party at Texas hill country home' },
+    { src: '/images/hero/hero-boat-party.webp', alt: 'Boat party on Lake Travis' },
+    { src: '/images/hero/hero-tequilas.webp', alt: 'Premium tequila bottles lined up' },
   ],
   ctaButtons: [
     { text: 'ORDER NOW', url: '/products', style: 'primary' },
@@ -97,10 +99,11 @@ export const heroVariantB: HeroVariantContent = {
   tagline: 'Beer, spirits, ice, cups & more—Austin same-day delivery for any event.',
   trustBadges: 'Licensed • Insured • TABC-certified • 5.0★ on Google',
   images: [
-    { src: '/images/hero/austin-skyline-hero.webp', alt: 'Austin Skyline' },
-    { src: '/images/hero/homepage-hero-sunset.webp', alt: 'Austin sunset from Lady Bird Lake' },
-    { src: '/images/hero/homepage-hero-rooftop.webp', alt: 'Rooftop bar in downtown Austin' },
-    { src: '/images/hero/homepage-hero-luxury.webp', alt: 'Luxury penthouse bar setup' },
+    { src: '/images/hero/hero-drink-skyline.webp', alt: 'Cocktail with Austin skyline at golden hour' },
+    { src: '/images/hero/hero-roof-pool.webp', alt: 'Rooftop pool party with Austin skyline' },
+    { src: '/images/hero/hero-house-pool.webp', alt: 'Backyard pool party at Texas hill country home' },
+    { src: '/images/hero/hero-boat-party.webp', alt: 'Boat party on Lake Travis' },
+    { src: '/images/hero/hero-tequilas.webp', alt: 'Premium tequila bottles lined up' },
   ],
   ctaButtons: [
     { text: 'SHOP NOW', url: '/products', style: 'primary' },
@@ -124,10 +127,11 @@ export const heroVariantC: HeroVariantContent = {
   tagline: 'Full bar setups delivered—spirits, beer, wine, ice, and all the essentials for your event.',
   trustBadges: 'Licensed • Insured • TABC-certified • 5.0★ on Google',
   images: [
-    { src: '/images/hero/homepage-hero-luxury.webp', alt: 'Luxury penthouse bar setup' },
-    { src: '/images/hero/austin-skyline-hero.webp', alt: 'Austin Skyline' },
-    { src: '/images/hero/homepage-hero-rooftop.webp', alt: 'Rooftop bar in downtown Austin' },
-    { src: '/images/hero/homepage-hero-sunset.webp', alt: 'Austin sunset from Lady Bird Lake' },
+    { src: '/images/hero/hero-tequilas.webp', alt: 'Premium tequila bottles lined up' },
+    { src: '/images/hero/hero-drink-skyline.webp', alt: 'Cocktail with Austin skyline at golden hour' },
+    { src: '/images/hero/hero-roof-pool.webp', alt: 'Rooftop pool party with Austin skyline' },
+    { src: '/images/hero/hero-house-pool.webp', alt: 'Backyard pool party at Texas hill country home' },
+    { src: '/images/hero/hero-boat-party.webp', alt: 'Boat party on Lake Travis' },
   ],
   ctaButtons: [
     { text: 'START YOUR ORDER', url: '/products', style: 'primary' },

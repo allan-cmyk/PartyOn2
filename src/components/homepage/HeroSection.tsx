@@ -92,7 +92,7 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
   };
 
   return (
-    <section className="relative h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Hero background images — carousel preserved from main */}
       {content.images.map((image, index) => (
         <div
@@ -118,7 +118,7 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
       <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
 
       {/* Hero Dots Navigation */}
-      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+      <div className="absolute bottom-14 sm:bottom-20 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
         {content.images.map((_, index) => (
           <button
             key={index}
@@ -132,7 +132,7 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
       </div>
 
       {/* Hero content */}
-      <div className="relative text-center text-white z-10 max-w-4xl mx-auto px-6 sm:px-8 pt-24 pb-32 sm:pt-28 sm:pb-36 md:pt-32 md:pb-40">
+      <div className="relative text-center text-white z-10 max-w-4xl mx-auto px-6 sm:px-8 pt-20 pb-24 sm:pt-28 sm:pb-36 md:pt-32 md:pb-40">
         {/* Animated Headline */}
         <motion.div
           {...heroFadeUp}
@@ -151,7 +151,7 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
         <motion.p
           {...heroFadeUp}
           transition={{ duration: 0.6, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
-          className="font-sans text-lg md:text-xl text-white/80 mb-6 md:mb-8 max-w-lg mx-auto"
+          className="font-sans text-lg md:text-xl text-white font-semibold mb-6 md:mb-8 max-w-lg mx-auto drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
         >
           {content.tagline}
         </motion.p>
@@ -212,7 +212,7 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
 
       {/* Scroll indicator */}
       <div
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer"
+        className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer"
         onClick={() => {
           if (typeof window !== 'undefined') {
             document.getElementById('experience')?.scrollIntoView({ behavior: 'smooth' });
