@@ -8,6 +8,7 @@ import { stripe } from './client';
 import { prisma } from '@/lib/database/client';
 import { DEFAULT_TAX_RATE } from '@/lib/tax';
 import { moveDraftToPurchased } from '@/lib/group-orders-v2/service';
+import { notifyNewOrder, type GhlOrderPayload } from '@/lib/webhooks/ghl';
 
 // ==========================================
 // Types
@@ -426,6 +427,41 @@ export async function handleGroupV2PaymentCompleted(
       });
 
       console.log('[Group V2 Payment] Order created:', order.orderNumber);
+
+      // Notify GHL webhook
+      const itemsSummary = purchasedItems
+        .map((item) => {
+          const name =
+            item.variantTitle && item.variantTitle !== 'Default Title'
+              ? `${item.title} - ${item.variantTitle}`
+              : item.title;
+          return `${item.quantity}x ${name} ($${Number(item.price).toFixed(2)})`;
+        })
+        .join(', ');
+      const addr = (subOrder.deliveryAddress ?? {}) as Record<string, string>;
+      const addrParts = [addr.address1, addr.address2, addr.city,
+        [addr.province, addr.zip].filter(Boolean).join(' ')].filter(Boolean);
+      const ghlPayload: GhlOrderPayload = {
+        event: 'order.created',
+        orderNumber: order.orderNumber,
+        orderType: 'group_v2',
+        customerName: participant.guestName || 'Guest',
+        customerEmail: participant.guestEmail || '',
+        customerPhone: '',
+        itemsSummary,
+        subtotal: Number(payment.subtotal),
+        tax: Number(payment.taxAmount),
+        deliveryFee: 0,
+        discount: Number(payment.discountAmount),
+        total: Number(payment.total),
+        deliveryDate: subOrder.deliveryDate.toISOString().split('T')[0],
+        deliveryTime: subOrder.deliveryTime,
+        deliveryAddress: addrParts.join(', '),
+        deliveryType: 'HOUSE',
+        deliveryInstructions: '',
+        createdAt: order.createdAt.toISOString(),
+      };
+      await notifyNewOrder(ghlPayload);
     }
   } catch (orderError) {
     console.error('[Group V2 Payment] Failed to create order:', orderError);

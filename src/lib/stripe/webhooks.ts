@@ -15,6 +15,7 @@ import {
   sendPaymentFailedEmail,
   sendRefundProcessedEmail,
 } from '@/lib/email';
+import { notifyNewOrder, buildGhlPayload } from '@/lib/webhooks/ghl';
 import {
   handleGroupV2PaymentCompleted,
   handleGroupV2DeliveryPayment,
@@ -99,6 +100,9 @@ async function handleCheckoutSessionCompleted(
   try {
     const order = await createOrderFromCheckout(fullSession, cart);
     console.log('[Stripe Webhook] Order created:', order.orderNumber);
+
+    // Notify GHL webhook
+    await notifyNewOrder(buildGhlPayload(order, 'standard'));
 
     // Create delivery task
     try {
@@ -197,6 +201,9 @@ async function handleDraftOrderPayment(
     // Create order from draft order
     const order = await createOrderFromDraftOrder(draftOrder, session);
     console.log('[Stripe Webhook] Order created from draft order:', order.orderNumber);
+
+    // Notify GHL webhook
+    await notifyNewOrder(buildGhlPayload(order, 'draft'));
 
     // Update draft order status
     await updateDraftOrderStatus(draftOrderId, 'CONVERTED', {
