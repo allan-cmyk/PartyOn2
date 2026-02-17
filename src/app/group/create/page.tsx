@@ -11,11 +11,10 @@ interface TabFormData extends CreateTabInput {
   key: string;
 }
 
-// Get tomorrow's date in YYYY-MM-DD format for min date attribute
+// Get today's date in YYYY-MM-DD format for min date attribute
 function getMinDate(): string {
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  return tomorrow.toISOString().split('T')[0];
+  const today = new Date();
+  return today.toISOString().split('T')[0];
 }
 
 // Check if a date string (YYYY-MM-DD) falls on a Sunday
@@ -24,18 +23,30 @@ function isSunday(dateStr: string): boolean {
   return date.getDay() === 0;
 }
 
-// Validate delivery date: must be in future and not Sunday
+// Validate delivery date: must be today or later and not Sunday
 function validateDeliveryDate(dateStr: string): string | null {
   if (!dateStr) return null;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const selectedDate = new Date(dateStr + 'T12:00:00');
 
-  if (selectedDate <= today) {
-    return 'Delivery date must be in the future';
+  if (selectedDate < today) {
+    return 'Delivery date cannot be in the past';
   }
   if (isSunday(dateStr)) {
     return 'Delivery is not available on Sundays';
+  }
+  return null;
+}
+
+// Warn (but don't block) if delivery date is less than 72 hours away
+function getDateWarning(dateStr: string): string | null {
+  if (!dateStr) return null;
+  const selectedDate = new Date(dateStr + 'T12:00:00');
+  const now = new Date();
+  const hoursUntil = (selectedDate.getTime() - now.getTime()) / (1000 * 60 * 60);
+  if (hoursUntil < 72) {
+    return 'Orders with less than 72 hours notice may be subject to limited availability. We\'ll do our best!';
   }
   return null;
 }
@@ -72,6 +83,7 @@ export default function CreateGroupPage(): ReactElement {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [dateErrors, setDateErrors] = useState<Record<string, string>>({});
+  const [dateWarnings, setDateWarnings] = useState<Record<string, string>>({});
   const [createdGroup, setCreatedGroup] = useState<GroupOrderV2Full | null>(null);
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
@@ -116,6 +128,12 @@ export default function CreateGroupPage(): ReactElement {
       setDateErrors((prev) => ({
         ...prev,
         [key]: dateError || '',
+      }));
+      // Set soft warning for short lead time (doesn't block submission)
+      const dateWarning = !dateError ? getDateWarning(value) : null;
+      setDateWarnings((prev) => ({
+        ...prev,
+        [key]: dateWarning || '',
       }));
     }
 
@@ -437,6 +455,9 @@ export default function CreateGroupPage(): ReactElement {
                   />
                   {dateErrors[tab.key] && (
                     <p className="text-red-500 text-sm mt-1">{dateErrors[tab.key]}</p>
+                  )}
+                  {!dateErrors[tab.key] && dateWarnings[tab.key] && (
+                    <p className="text-amber-600 text-sm mt-1">{dateWarnings[tab.key]}</p>
                   )}
                   <p className="text-gray-500 text-xs mt-1">
                     Note: Deliveries are not available on Sundays

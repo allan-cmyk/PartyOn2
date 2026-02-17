@@ -40,18 +40,7 @@ async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
   }
   const json: ApiResponse<T> = await res.json();
   if (!json.success) {
-    // Extract field-level validation errors if available
-    let message = json.error || 'API request failed';
-    if (json.details && typeof json.details === 'object') {
-      const details = json.details as { fieldErrors?: Record<string, string[]> };
-      if (details.fieldErrors) {
-        const fieldMessages = Object.entries(details.fieldErrors)
-          .map(([field, errors]) => `${field}: ${(errors as string[]).join(', ')}`)
-          .join('. ');
-        if (fieldMessages) message = fieldMessages;
-      }
-    }
-    throw new Error(message);
+    throw new Error(json.error || 'API request failed');
   }
   return json.data as T;
 }
