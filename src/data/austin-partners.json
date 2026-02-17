@@ -197,6 +197,19 @@
       "partnerPage": "/partners/boat-babes"
     },
     {
+      "id": "18",
+      "name": "Connected Austin",
+      "slug": "connected-austin",
+      "description": "Austin's premier bachelor party planning company. They handle housing, activities, food, and nightlife so you can focus on celebrating. 389+ five-star Google reviews.",
+      "website": "https://www.connectedaustin.com",
+      "logo": "/images/partners/connectedaustin-logo.png",
+      "heroImage": "/images/partners/connectedaustin-hero.jpg",
+      "category": "event-planning",
+      "featured": true,
+      "order": 4,
+      "partnerPage": "/partners/connected-austin"
+    },
+    {
       "id": "8",
       "name": "Elegant Ride",
       "slug": "elegant-ride",
