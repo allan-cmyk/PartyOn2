@@ -112,7 +112,7 @@ export default function CorporateLandingPage() {
         currency: 'USD',
       });
 
-      setSubmitMessage('Thank you! Your inquiry has been submitted. We&apos;ll contact you within 24 hours to finalize your event details.');
+      setSubmitMessage("Thank you! Your inquiry has been submitted. We'll contact you within 24 hours to finalize your event details.");
 
       // Reset form
       setFormData({
