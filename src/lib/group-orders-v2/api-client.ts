@@ -205,6 +205,14 @@ export async function validateGroupDiscount(
   });
 }
 
+/** Check if any participant used a freeShipping discount code on this tab */
+export async function checkFreeShippingEligibility(
+  code: string,
+  tabId: string
+): Promise<{ freeShippingCode: string | null }> {
+  return apiFetch(`${API_BASE}/${code}/tabs/${tabId}/free-shipping-check`);
+}
+
 /** Create delivery invoice session */
 export async function createDeliveryInvoice(
   code: string,
