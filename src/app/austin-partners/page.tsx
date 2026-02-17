@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navigation from "@/components/Navigation";
@@ -19,6 +19,7 @@ export default function PartnersPage() {
     message: ''
   });
 
+  const formLoadedAt = useRef(Date.now());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
@@ -61,6 +62,7 @@ export default function PartnersPage() {
           partnerType: 'General Partnership',
           source: 'partners-main-page',
           submittedAt: new Date().toISOString(),
+          _formLoadedAt: formLoadedAt.current,
           website_url: '',
           fax_number: '',
         }),

@@ -8,6 +8,40 @@ import { kv, isKVConfigured } from '@/lib/database/client'
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
 const RATE_LIMIT_WINDOW_MS = 60 * 1000 // 1 minute
 const RATE_LIMIT_MAX = 3 // max 3 submissions per minute per IP
+const MIN_FORM_TIME_MS = 3000 // minimum 3 seconds to fill out a form
+
+/**
+ * Detect gibberish text — long strings with no spaces, high consonant density,
+ * or random mixed-case patterns typical of bot-generated content.
+ */
+function isGibberish(text: string): boolean {
+  if (!text || text.length < 6) return false
+
+  // Long single word with no spaces is suspicious (real names/businesses have spaces or are short)
+  const words = text.trim().split(/\s+/)
+  if (words.length === 1 && text.length > 12) return true
+
+  // Check consonant-to-vowel ratio (gibberish tends to be consonant-heavy)
+  const letters = text.replace(/[^a-zA-Z]/g, '')
+  if (letters.length >= 8) {
+    const vowels = letters.replace(/[^aeiouAEIOU]/g, '').length
+    const ratio = vowels / letters.length
+    if (ratio < 0.15) return true // less than 15% vowels = likely gibberish
+  }
+
+  // Random mixed-case mid-word (e.g. "GtZpMzGZOBAwUCuMQtdiJ")
+  if (letters.length >= 8) {
+    let caseChanges = 0
+    for (let i = 1; i < letters.length; i++) {
+      const prevUpper = letters[i - 1] === letters[i - 1].toUpperCase()
+      const currUpper = letters[i] === letters[i].toUpperCase()
+      if (prevUpper !== currUpper) caseChanges++
+    }
+    if (caseChanges / letters.length > 0.4) return true // 40%+ case changes = suspicious
+  }
+
+  return false
+}
 
 async function checkRateLimit(ip: string): Promise<boolean> {
   if (isKVConfigured()) {
@@ -121,6 +155,35 @@ export async function POST(request: NextRequest) {
         success: true,
         message: 'Thank you for your interest! Our partnership team will contact you within 24 hours.',
       })
+    }
+
+    // Time-based check — reject submissions that happen too fast (bots fill forms instantly)
+    if (body._formLoadedAt) {
+      const elapsed = Date.now() - Number(body._formLoadedAt)
+      if (elapsed < MIN_FORM_TIME_MS) {
+        console.warn('[Partner Inquiry] REJECTED: Too fast', { elapsed, ip, userAgent })
+        return NextResponse.json({
+          success: true,
+          message: 'Thank you for your interest! Our partnership team will contact you within 24 hours.',
+        })
+      }
+    }
+
+    // Gibberish detection — check free-text fields for bot-generated content
+    const fieldsToCheck = [
+      { name: 'businessName', value: body.businessName || body.hotelName || body.company },
+      { name: 'notes', value: body.notes },
+      { name: 'message', value: body.message },
+      { name: 'contactName', value: body.contactName },
+    ]
+    for (const field of fieldsToCheck) {
+      if (field.value && isGibberish(String(field.value))) {
+        console.warn('[Partner Inquiry] REJECTED: Gibberish detected', { field: field.name, value: field.value, ip, userAgent })
+        return NextResponse.json({
+          success: true,
+          message: 'Thank you for your interest! Our partnership team will contact you within 24 hours.',
+        })
+      }
     }
 
     // Rate limiting

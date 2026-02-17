@@ -1,12 +1,13 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Navigation from "@/components/Navigation"
 import Footer from '@/components/Footer'
 
 export default function HotelsResortsPartnerPage() {
   const [activeTab, setActiveTab] = useState('overview')
+  const formLoadedAt = useRef(Date.now())
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitMessage, setSubmitMessage] = useState('')
   const [formData, setFormData] = useState({
@@ -56,6 +57,7 @@ export default function HotelsResortsPartnerPage() {
           partnerType: 'Hotels & Resorts',
           source: 'hotels-resorts-page',
           submittedAt: new Date().toISOString(),
+          _formLoadedAt: formLoadedAt.current,
           website_url: '',
           fax_number: '',
         }),

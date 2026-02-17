@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navigation from "@/components/Navigation";
@@ -33,6 +33,7 @@ export default function MobileBartenderPartnerPage() {
     source: 'bartender-landing'
   });
 
+  const formLoadedAt = useRef(Date.now());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
@@ -128,6 +129,7 @@ Source: ${formData.source}`,
 
           // System fields
           submittedAt: new Date().toISOString(),
+          _formLoadedAt: formLoadedAt.current,
           website_url: '',
           fax_number: '',
         }),
