@@ -1,5 +1,4 @@
 import { Metadata } from 'next'
-import Link from 'next/link'
 import Image from 'next/image'
 import CocktailKitsProductSection from '@/components/CocktailKitsProductSection'
 import LuxuryCard from '@/components/LuxuryCard'
