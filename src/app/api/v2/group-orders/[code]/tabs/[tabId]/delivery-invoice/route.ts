@@ -9,6 +9,7 @@ import {
   isParticipantHost,
 } from '@/lib/group-orders-v2/service';
 import { createDeliveryInvoiceSession } from '@/lib/stripe/group-v2-payments';
+import { prisma } from '@/lib/database/client';
 
 interface RouteParams {
   params: Promise<{ code: string; tabId: string }>;
@@ -59,6 +60,37 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       );
     }
 
+    // Auto-detect freeShipping code from participant payments if none provided
+    let effectiveDiscountCode = discountCode;
+    if (!effectiveDiscountCode) {
+      const paidPayments = await prisma.participantPayment.findMany({
+        where: {
+          subOrderId: tabId,
+          status: 'PAID',
+          discountCode: { not: null },
+        },
+        select: { discountCode: true },
+      });
+
+      const usedCodes = paidPayments
+        .map((p) => p.discountCode)
+        .filter((c): c is string => c !== null);
+
+      if (usedCodes.length > 0) {
+        const freeShippingDiscount = await prisma.discount.findFirst({
+          where: {
+            code: { in: usedCodes },
+            freeShipping: true,
+            isActive: true,
+          },
+          select: { code: true },
+        });
+        if (freeShippingDiscount) {
+          effectiveDiscountCode = freeShippingDiscount.code;
+        }
+      }
+    }
+
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     const result = await createDeliveryInvoiceSession({
       groupOrderId: group.id,
@@ -66,7 +98,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       hostParticipantId,
       hostEmail: group.hostEmail || undefined,
       deliveryFee: tab.deliveryFee,
-      discountCode,
+      discountCode: effectiveDiscountCode,
       successUrl: `${appUrl}/group/${code}/dashboard?tab=${tabId}&delivery_paid=true`,
       cancelUrl: `${appUrl}/group/${code}/dashboard?tab=${tabId}`,
     });

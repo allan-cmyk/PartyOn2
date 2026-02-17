@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { trackCTAClick, trackHeroVariant } from '@/lib/analytics/ga4-events';
 import { HeroVariantContent, heroControl } from '@/lib/experiments/hero-variants';
 import AnimatedHeroText from '@/components/hero/AnimatedHeroText';
+import HeroCollage from '@/components/homepage/HeroCollage';
 
 interface HeroSectionProps {
   variant?: HeroVariantContent;
@@ -47,17 +47,9 @@ function StarIcon() {
 }
 
 export default function HeroSection({ variant, experimentId }: HeroSectionProps) {
-  const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [hasTrackedImpression, setHasTrackedImpression] = useState(false);
   const content = variant || heroControl;
   const variantId = content.id;
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentHeroIndex((prev) => (prev + 1) % content.images.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [content.images.length]);
 
   useEffect(() => {
     if (experimentId && variantId && !hasTrackedImpression) {
@@ -92,135 +84,97 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Hero background images — carousel preserved from main */}
-      {content.images.map((image, index) => (
-        <div
-          key={image.src}
-          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-            index === currentHeroIndex ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <Image
-            src={image.src}
-            alt={image.alt}
-            fill
-            className="object-cover blur-[2px] sm:blur-0 scale-[1.02] sm:scale-100"
-            priority={index === 0}
-            loading={index === 0 ? 'eager' : 'lazy'}
-            quality={index === 0 ? 60 : 50}
-            sizes="(max-width: 768px) 100vw, 100vw"
-            fetchPriority={index === 0 ? 'high' : 'low'}
-          />
-        </div>
-      ))}
-
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-900/70 via-gray-900/50 to-gray-900/70 sm:from-gray-900/60 sm:via-gray-900/40 sm:to-gray-900/60" />
-
-      {/* Hero Dots Navigation */}
-      <div className="absolute bottom-14 sm:bottom-20 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
-        {content.images.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentHeroIndex(index)}
-            aria-label={`View hero image ${index + 1}`}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              index === currentHeroIndex ? 'bg-brand-yellow w-8' : 'bg-white/50 hover:bg-white/70'
-            }`}
-          />
-        ))}
-      </div>
-
-      {/* Hero content */}
-      <div className="relative text-center text-white z-10 max-w-4xl mx-auto px-6 sm:px-8 pt-20 pb-24 sm:pt-28 sm:pb-36 md:pt-32 md:pb-40">
-        {/* Animated Headline */}
-        <motion.div
-          {...heroFadeUp}
-          transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-          className="mb-4 md:mb-5"
-        >
-          <AnimatedHeroText
-            drinks={["Beer", "Cocktails", "Seltzers", "Wine", "Champagne"]}
-            destinations={["boat party", "wedding", "corporate event", "house party", "Airbnb", "Austin venue"]}
-            drinkIntervalMs={4800}
-            transitionMs={800}
-          />
-        </motion.div>
-
-        {/* Tagline */}
-        <motion.p
-          {...heroFadeUp}
-          transition={{ duration: 0.6, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
-          className="font-sans text-lg md:text-xl text-white font-semibold mb-6 md:mb-8 max-w-lg mx-auto drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
-        >
-          {content.tagline}
-        </motion.p>
-
-        {/* Trust Chips */}
-        <motion.div
-          {...heroFadeUp}
-          transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-          className="flex flex-wrap items-center justify-center gap-2 mb-6 md:mb-8"
-        >
-          {trustChips.map((chip) => (
-            <span
-              key={chip.label}
-              className="bg-white/10 backdrop-blur text-white text-sm rounded-lg px-3 py-1.5 flex items-center gap-1.5"
+    <section className="relative bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 md:px-8 py-16 md:py-24 lg:py-28">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-stretch">
+          {/* Left Column: Text Content */}
+          <div className="order-1 text-center lg:text-left">
+            {/* Animated Headline */}
+            <motion.div
+              {...heroFadeUp}
+              transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+              className="mb-4 md:mb-5"
             >
-              {chip.icon === 'star' ? <StarIcon /> : <CheckIcon />}
-              {chip.label}
-            </span>
-          ))}
-        </motion.div>
+              <AnimatedHeroText
+                drinks={["Beer", "Cocktails", "Seltzers", "Wine", "Champagne"]}
+                destinations={["boat party", "wedding", "corporate event", "house party", "Airbnb", "Austin venue"]}
+                drinkIntervalMs={4800}
+                transitionMs={800}
+              />
+            </motion.div>
 
-        {/* CTAs */}
-        <motion.div
-          {...heroFadeUp}
-          transition={{ duration: 0.6, delay: 0.45, ease: [0.25, 0.1, 0.25, 1] }}
-          className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center justify-center flex-wrap"
-        >
-          {content.ctaButtons.map((cta, index) => {
-            if (cta.style === 'text-link') {
-              return (
-                <Link
-                  key={`${cta.text}-${index}`}
-                  href={cta.url}
-                  onClick={() => handleCTAClick(cta.text, cta.url)}
-                  className="text-white/70 hover:text-white text-sm font-medium transition-colors duration-200 flex items-center gap-1 mt-1"
+            {/* Tagline */}
+            <motion.p
+              {...heroFadeUp}
+              transition={{ duration: 0.6, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
+              className="font-sans text-lg md:text-xl text-white/80 mb-6 md:mb-8 max-w-lg mx-auto lg:mx-0"
+            >
+              {content.tagline}
+            </motion.p>
+
+            {/* Trust Chips */}
+            <motion.div
+              {...heroFadeUp}
+              transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+              className="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-6 md:mb-8"
+            >
+              {trustChips.map((chip) => (
+                <span
+                  key={chip.label}
+                  className="bg-white/10 backdrop-blur text-white text-sm rounded-lg px-3 py-1.5 flex items-center gap-1.5"
                 >
-                  {cta.text}
-                </Link>
-              );
-            }
-            return (
-              <Link
-                key={`${cta.text}-${index}`}
-                href={cta.url}
-                onClick={() => handleCTAClick(cta.text, cta.url)}
-                className={`px-8 sm:px-10 py-3 sm:py-4 rounded-lg transition-all duration-300 tracking-[0.08em] text-sm font-semibold text-center ${
-                  cta.style === 'primary'
-                    ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
-                    : 'border-2 border-white/40 text-white hover:bg-white/10'
-                }`}
-              >
-                {cta.text}
-              </Link>
-            );
-          })}
-        </motion.div>
-      </div>
+                  {chip.icon === 'star' ? <StarIcon /> : <CheckIcon />}
+                  {chip.label}
+                </span>
+              ))}
+            </motion.div>
 
-      {/* Scroll indicator */}
-      <div
-        className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer"
-        onClick={() => {
-          if (typeof window !== 'undefined') {
-            document.getElementById('experience')?.scrollIntoView({ behavior: 'smooth' });
-          }
-        }}
-      >
-        <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-white/50 rounded-full mt-2 animate-bounce" />
+            {/* CTAs */}
+            <motion.div
+              {...heroFadeUp}
+              transition={{ duration: 0.6, delay: 0.45, ease: [0.25, 0.1, 0.25, 1] }}
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center lg:items-start flex-wrap"
+            >
+              {content.ctaButtons.map((cta, index) => {
+                if (cta.style === 'text-link') {
+                  return (
+                    <Link
+                      key={`${cta.text}-${index}`}
+                      href={cta.url}
+                      onClick={() => handleCTAClick(cta.text, cta.url)}
+                      className="text-white/70 hover:text-white text-sm font-medium transition-colors duration-200 flex items-center gap-1 mt-1"
+                    >
+                      {cta.text}
+                    </Link>
+                  );
+                }
+                return (
+                  <Link
+                    key={`${cta.text}-${index}`}
+                    href={cta.url}
+                    onClick={() => handleCTAClick(cta.text, cta.url)}
+                    className={`px-8 sm:px-10 py-3 sm:py-4 rounded-lg transition-all duration-300 tracking-[0.08em] text-sm font-semibold text-center ${
+                      cta.style === 'primary'
+                        ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
+                        : 'border-2 border-white/40 text-white hover:bg-white/10'
+                    }`}
+                  >
+                    {cta.text}
+                  </Link>
+                );
+              })}
+            </motion.div>
+          </div>
+
+          {/* Right Column: Image Collage */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+            className="order-2 h-full"
+          >
+            <HeroCollage />
+          </motion.div>
         </div>
       </div>
     </section>

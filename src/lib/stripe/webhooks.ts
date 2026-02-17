@@ -15,6 +15,7 @@ import {
   sendPaymentFailedEmail,
   sendRefundProcessedEmail,
 } from '@/lib/email';
+import { notifyNewOrder, buildGhlPayload } from '@/lib/webhooks/ghl';
 import {
   handleGroupV2PaymentCompleted,
   handleGroupV2DeliveryPayment,
@@ -77,28 +78,28 @@ async function handleCheckoutSessionCompleted(
   // Get cart ID from metadata
   const cartId = session.metadata?.cartId;
   if (!cartId) {
-    console.error('[Stripe Webhook] No cartId in session metadata');
-    return;
+    throw new Error(`[Stripe Webhook] No cartId in session metadata for session ${session.id}`);
   }
 
   // Retrieve the cart
   const cart = await getCartById(cartId);
   if (!cart) {
-    console.error('[Stripe Webhook] Cart not found:', cartId);
-    return;
+    throw new Error(`[Stripe Webhook] Cart not found: ${cartId} for session ${session.id}`);
   }
 
   // Retrieve full session with expanded data
   const fullSession = await getCheckoutSession(session.id);
   if (!fullSession) {
-    console.error('[Stripe Webhook] Failed to retrieve full session');
-    return;
+    throw new Error(`[Stripe Webhook] Failed to retrieve full session: ${session.id}`);
   }
 
   // Create the order
   try {
     const order = await createOrderFromCheckout(fullSession, cart);
     console.log('[Stripe Webhook] Order created:', order.orderNumber);
+
+    // Notify GHL webhook
+    await notifyNewOrder(buildGhlPayload(order, 'standard'));
 
     // Create delivery task
     try {
@@ -174,8 +175,7 @@ async function handleDraftOrderPayment(
 ): Promise<void> {
   const draftOrderId = session.metadata?.draftOrderId;
   if (!draftOrderId) {
-    console.error('[Stripe Webhook] No draftOrderId in session metadata');
-    return;
+    throw new Error(`[Stripe Webhook] No draftOrderId in session metadata for session ${session.id}`);
   }
 
   console.log('[Stripe Webhook] Processing draft order payment:', draftOrderId);
@@ -183,8 +183,7 @@ async function handleDraftOrderPayment(
   // Get the draft order
   const draftOrder = await getDraftOrderById(draftOrderId);
   if (!draftOrder) {
-    console.error('[Stripe Webhook] Draft order not found:', draftOrderId);
-    return;
+    throw new Error(`[Stripe Webhook] Draft order not found: ${draftOrderId} for session ${session.id}`);
   }
 
   // Check if already processed
@@ -197,6 +196,9 @@ async function handleDraftOrderPayment(
     // Create order from draft order
     const order = await createOrderFromDraftOrder(draftOrder, session);
     console.log('[Stripe Webhook] Order created from draft order:', order.orderNumber);
+
+    // Notify GHL webhook
+    await notifyNewOrder(buildGhlPayload(order, 'draft'));
 
     // Update draft order status
     await updateDraftOrderStatus(draftOrderId, 'CONVERTED', {

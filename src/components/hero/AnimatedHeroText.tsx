@@ -13,8 +13,8 @@ interface AnimatedHeroTextProps {
 export default function AnimatedHeroText({
   drinks,
   destinations,
-  drinkIntervalMs = 4800,
-  transitionMs = 800,
+  drinkIntervalMs = 2400,
+  transitionMs = 400,
 }: AnimatedHeroTextProps) {
   const [drinkIndex, setDrinkIndex] = useState(0);
   const [destIndex, setDestIndex] = useState(0);
@@ -44,7 +44,7 @@ export default function AnimatedHeroText({
   const ease = [0.25, 0.1, 0.25, 1] as const;
 
   return (
-    <h1 className="font-heading text-4xl sm:text-5xl md:text-7xl font-bold tracking-[0.02em] text-center leading-[1.15]">
+    <h1 className="font-heading text-4xl sm:text-5xl md:text-7xl font-bold tracking-[0.02em] text-center lg:text-left leading-[1.15]">
       {/* Line 1: "{DRINK}" rotating word */}
       <span className="block"><span className="inline-block relative align-baseline">
         {/* Ghost text — invisible, holds width of longest word */}

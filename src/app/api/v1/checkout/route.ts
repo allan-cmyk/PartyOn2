@@ -10,6 +10,7 @@ import { cookies } from 'next/headers';
 import { createCheckoutSession, getCheckoutSession, getOrCreateStripeCustomer } from '@/lib/stripe';
 import { getCartById, validateCartMinimum, hasDeliveryInfo } from '@/lib/inventory/services/cart-service';
 import { createFreeOrder } from '@/lib/inventory/services/order-service';
+import { notifyNewOrder, buildGhlPayload } from '@/lib/webhooks/ghl';
 
 const CART_ID_COOKIE = 'cart_id';
 
@@ -132,6 +133,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         customerName || 'Guest',
         customerPhone || null
       );
+
+      // Notify GHL webhook
+      await notifyNewOrder(buildGhlPayload(order, 'free'));
 
       return NextResponse.json({
         success: true,
