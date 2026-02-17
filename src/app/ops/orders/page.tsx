@@ -231,11 +231,29 @@ function GroupOrderRow({
   group,
   isExpanded,
   onToggle,
+  selectedOrders,
+  onToggleOrder,
 }: {
   group: GroupedOrder;
   isExpanded: boolean;
   onToggle: () => void;
+  selectedOrders: Set<string>;
+  onToggleOrder: (id: string) => void;
 }): ReactElement {
+  const allGroupSelected = group.orders.every((o) => selectedOrders.has(o.id));
+  const someGroupSelected = group.orders.some((o) => selectedOrders.has(o.id));
+
+  const toggleAllInGroup = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    for (const o of group.orders) {
+      if (allGroupSelected) {
+        if (selectedOrders.has(o.id)) onToggleOrder(o.id);
+      } else {
+        if (!selectedOrders.has(o.id)) onToggleOrder(o.id);
+      }
+    }
+  };
+
   return (
     <>
       {/* Main Group Row */}
@@ -243,6 +261,16 @@ function GroupOrderRow({
         className="bg-purple-50/50 hover:bg-purple-100/50 transition-colors cursor-pointer border-l-4 border-l-purple-500"
         onClick={onToggle}
       >
+        <td className="w-12 px-4 py-4">
+          <input
+            type="checkbox"
+            checked={allGroupSelected}
+            ref={(el) => { if (el) el.indeterminate = someGroupSelected && !allGroupSelected; }}
+            onClick={toggleAllInGroup}
+            onChange={() => {}}
+            className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500 cursor-pointer"
+          />
+        </td>
         <td className="px-6 py-4">
           <div className="flex items-center gap-2">
             <button
@@ -317,7 +345,15 @@ function GroupOrderRow({
 
       {/* Expanded Sub-Orders */}
       {isExpanded && group.orders.map((order) => (
-        <tr key={order.id} className="bg-gray-50/80 hover:bg-gray-100/80 transition-colors border-l-4 border-l-purple-300">
+        <tr key={order.id} className={`bg-gray-50/80 hover:bg-gray-100/80 transition-colors border-l-4 border-l-purple-300 ${selectedOrders.has(order.id) ? 'bg-blue-50/30' : ''}`}>
+          <td className="w-12 px-4 py-3">
+            <input
+              type="checkbox"
+              checked={selectedOrders.has(order.id)}
+              onChange={() => onToggleOrder(order.id)}
+              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
+            />
+          </td>
           <td className="px-6 py-3 pl-16">
             <Link href={`/ops/orders/${order.id}`} className="block">
               <span className="font-mono font-semibold text-blue-600 hover:text-blue-700">
@@ -364,9 +400,17 @@ function GroupOrderRow({
 }
 
 // Regular Order Row Component
-function OrderRow({ order }: { order: Order }): ReactElement {
+function OrderRow({ order, selected, onToggle }: { order: Order; selected: boolean; onToggle: () => void }): ReactElement {
   return (
-    <tr className="hover:bg-blue-50/50 transition-colors group">
+    <tr className={`hover:bg-blue-50/50 transition-colors group ${selected ? 'bg-blue-50/30' : ''}`}>
+      <td className="w-12 px-4 py-4">
+        <input
+          type="checkbox"
+          checked={selected}
+          onChange={onToggle}
+          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
+        />
+      </td>
       <td className="px-6 py-4">
         <Link href={`/ops/orders/${order.id}`} className="block">
           <span className="font-mono font-bold text-blue-600 group-hover:text-blue-700 text-lg">
@@ -492,6 +536,60 @@ export default function OrdersPage(): ReactElement {
   const [sortBy, setSortBy] = useState<string>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+  const [selectedOrders, setSelectedOrders] = useState<Set<string>>(new Set());
+  const [fulfilling, setFulfilling] = useState(false);
+
+  // Selection helpers
+  const toggleOrderSelection = (orderId: string) => {
+    setSelectedOrders((prev) => {
+      const next = new Set(prev);
+      if (next.has(orderId)) {
+        next.delete(orderId);
+      } else {
+        next.add(orderId);
+      }
+      return next;
+    });
+  };
+
+  const allOrderIds = (data?.orders || []).map((o) => o.id);
+  const allSelected = allOrderIds.length > 0 && allOrderIds.every((id) => selectedOrders.has(id));
+  const someSelected = selectedOrders.size > 0;
+
+  const toggleSelectAll = () => {
+    if (allSelected) {
+      setSelectedOrders(new Set());
+    } else {
+      setSelectedOrders(new Set(allOrderIds));
+    }
+  };
+
+  const handleBulkFulfill = async () => {
+    if (selectedOrders.size === 0) return;
+    const count = selectedOrders.size;
+    if (!confirm(`Mark ${count} order${count !== 1 ? 's' : ''} as fulfilled?`)) return;
+
+    setFulfilling(true);
+    try {
+      const response = await fetch('/api/v1/admin/orders/bulk-fulfill', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderIds: Array.from(selectedOrders) }),
+      });
+      const result = await response.json();
+      if (result.success) {
+        setSelectedOrders(new Set());
+        fetchOrders();
+      } else {
+        alert('Failed to fulfill orders: ' + (result.error || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Bulk fulfill failed:', error);
+      alert('Failed to fulfill orders');
+    } finally {
+      setFulfilling(false);
+    }
+  };
 
   // Toggle group expansion
   const toggleGroupExpansion = (groupId: string) => {
@@ -524,6 +622,7 @@ export default function OrdersPage(): ReactElement {
       const result = await response.json();
       if (result.success) {
         setData(result.data);
+        setSelectedOrders(new Set());
       }
     } catch (error) {
       console.error('Failed to fetch orders:', error);
@@ -797,6 +896,43 @@ export default function OrdersPage(): ReactElement {
         </div>
       </div>
 
+      {/* Bulk Action Bar */}
+      {someSelected && (
+        <div className="mb-4 flex items-center gap-4 bg-blue-50 border border-blue-200 rounded-xl px-6 py-3 shadow-sm">
+          <span className="text-sm font-semibold text-blue-800">
+            {selectedOrders.size} order{selectedOrders.size !== 1 ? 's' : ''} selected
+          </span>
+          <button
+            onClick={handleBulkFulfill}
+            disabled={fulfilling}
+            className="px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white text-sm font-semibold rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-md shadow-green-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            {fulfilling ? (
+              <>
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                Fulfilling...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Mark as Fulfilled
+              </>
+            )}
+          </button>
+          <button
+            onClick={() => setSelectedOrders(new Set())}
+            className="px-3 py-2 text-sm font-medium text-blue-700 hover:text-blue-900 hover:bg-blue-100 rounded-lg transition-colors"
+          >
+            Clear selection
+          </button>
+        </div>
+      )}
+
       {/* Orders Table */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         {loading ? (
@@ -843,6 +979,15 @@ export default function OrdersPage(): ReactElement {
           <table className="w-full">
             <thead className="bg-gradient-to-r from-gray-50 to-gray-100/50 border-b border-gray-200">
               <tr>
+                <th className="w-12 px-4 py-4">
+                  <input
+                    type="checkbox"
+                    checked={allSelected}
+                    ref={(el) => { if (el) el.indeterminate = someSelected && !allSelected; }}
+                    onChange={toggleSelectAll}
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
+                  />
+                </th>
                 <th className="text-left px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Order</th>
                 <th className="text-left px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Customer</th>
                 <th className="text-center px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Items</th>
@@ -861,9 +1006,16 @@ export default function OrdersPage(): ReactElement {
                     group={item.group}
                     isExpanded={expandedGroups.has(item.group.groupId)}
                     onToggle={() => toggleGroupExpansion(item.group.groupId)}
+                    selectedOrders={selectedOrders}
+                    onToggleOrder={toggleOrderSelection}
                   />
                 ) : (
-                  <OrderRow key={item.order.id} order={item.order} />
+                  <OrderRow
+                    key={item.order.id}
+                    order={item.order}
+                    selected={selectedOrders.has(item.order.id)}
+                    onToggle={() => toggleOrderSelection(item.order.id)}
+                  />
                 )
               )}
             </tbody>
