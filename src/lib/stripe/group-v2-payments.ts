@@ -441,11 +441,15 @@ export async function handleGroupV2PaymentCompleted(
       const addr = (subOrder.deliveryAddress ?? {}) as Record<string, string>;
       const addrParts = [addr.address1, addr.address2, addr.city,
         [addr.province, addr.zip].filter(Boolean).join(' ')].filter(Boolean);
+      const fullName = participant.guestName || 'Guest';
+      const guestNameParts = fullName.trim().split(/\s+/);
       const ghlPayload: GhlOrderPayload = {
         event: 'order.created',
         orderNumber: order.orderNumber,
         orderType: 'group_v2',
-        customerName: participant.guestName || 'Guest',
+        customerName: fullName,
+        customerFirstName: guestNameParts[0] || '',
+        customerLastName: guestNameParts.slice(1).join(' ') || '',
         customerEmail: participant.guestEmail || '',
         customerPhone: '',
         itemsSummary,

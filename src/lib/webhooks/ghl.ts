@@ -16,6 +16,8 @@ export interface GhlOrderPayload {
   orderNumber: number;
   orderType: string;
   customerName: string;
+  customerFirstName: string;
+  customerLastName: string;
   customerEmail: string;
   customerPhone: string;
   itemsSummary: string;
@@ -95,12 +97,17 @@ function buildItemsSummary(
  */
 export function buildGhlPayload(order: OrderLike, orderType: string): GhlOrderPayload {
   const addr = (order.deliveryAddress ?? {}) as Record<string, string>;
+  const nameParts = order.customerName.trim().split(/\s+/);
+  const firstName = nameParts[0] || '';
+  const lastName = nameParts.slice(1).join(' ') || '';
 
   return {
     event: 'order.created',
     orderNumber: order.orderNumber,
     orderType,
     customerName: order.customerName,
+    customerFirstName: firstName,
+    customerLastName: lastName,
     customerEmail: order.customerEmail,
     customerPhone: order.customerPhone || '',
     itemsSummary: buildItemsSummary(order.items),
