@@ -132,6 +132,7 @@ export default function Navigation({
     { href: '/bach-parties', label: 'CELEBRATIONS' },
     { href: '/corporate', label: 'CORPORATE' },
     { href: '/kegs', label: 'KEG DELIVERY' },
+    { href: '/cocktail-kits', label: 'COCKTAIL KITS' },
   ];
 
   const rentals = [
