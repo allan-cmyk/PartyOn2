@@ -30,10 +30,10 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
     const result = await prisma.order.updateMany({
       where: {
         id: { in: orderIds },
-        fulfillmentStatus: { not: FulfillmentStatus.FULFILLED },
+        fulfillmentStatus: { not: FulfillmentStatus.DELIVERED },
       },
       data: {
-        fulfillmentStatus: FulfillmentStatus.FULFILLED,
+        fulfillmentStatus: FulfillmentStatus.DELIVERED,
         status: OrderStatus.COMPLETED,
       },
     });
