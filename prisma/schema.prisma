@@ -1768,3 +1768,15 @@ model GroupDeliveryInvoice {
   @@index([status])
   @@map("group_delivery_invoices")
 }
+
+model WebhookEvent {
+  id            String   @id @default(cuid())
+  stripeEventId String   @unique @map("stripe_event_id")
+  eventType     String   @map("event_type")
+  status        String   // RECEIVED, PROCESSED, FAILED
+  errorMessage  String?  @map("error_message") @db.Text
+  processingMs  Int?     @map("processing_ms")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@map("webhook_events")
+}
