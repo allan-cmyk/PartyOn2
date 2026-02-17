@@ -34,7 +34,7 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
       },
       data: {
         fulfillmentStatus: FulfillmentStatus.DELIVERED,
-        status: OrderStatus.COMPLETED,
+        status: OrderStatus.DELIVERED,
       },
     });
 
