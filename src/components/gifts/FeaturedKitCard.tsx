@@ -55,13 +55,15 @@ interface FeaturedKitCardProps {
   imagePosition?: 'left' | 'right';
   description?: string;
   showIngredients?: boolean;
+  onClickProduct?: (product: Product) => void;
 }
 
 export default function FeaturedKitCard({
   product,
   imagePosition = 'left',
   description,
-  showIngredients = true
+  showIngredients = true,
+  onClickProduct
 }: FeaturedKitCardProps) {
   const { addToCart, loading: cartLoading } = useCartContext();
   const [isAdding, setIsAdding] = useState(false);
@@ -125,6 +127,29 @@ export default function FeaturedKitCard({
       imagePosition === 'right' ? 'md:[direction:rtl]' : ''
     }`}>
       {/* Product Image */}
+      {onClickProduct ? (
+      <button
+        onClick={() => onClickProduct(product)}
+        className="relative aspect-square overflow-hidden rounded-lg shadow-xl group md:[direction:ltr] w-full cursor-pointer"
+      >
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={product.title}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+            <svg className="w-24 h-24 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+            </svg>
+          </div>
+        )}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+      </button>
+      ) : (
       <Link
         href={`/products/${productHandle}`}
         className="relative aspect-square overflow-hidden rounded-lg shadow-xl group md:[direction:ltr]"
@@ -148,14 +173,23 @@ export default function FeaturedKitCard({
         {/* Hover Overlay */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
       </Link>
+      )}
 
       {/* Product Details */}
       <div className="md:[direction:ltr] space-y-6">
-        <Link href={`/products/${productHandle}`}>
-          <h3 className="font-heading text-2xl sm:text-3xl lg:text-4xl text-gray-900 hover:text-brand-yellow transition-colors">
-            {product.title}
-          </h3>
-        </Link>
+        {onClickProduct ? (
+          <button onClick={() => onClickProduct(product)} className="text-left">
+            <h3 className="font-heading text-2xl sm:text-3xl lg:text-4xl text-gray-900 hover:text-brand-yellow transition-colors">
+              {product.title}
+            </h3>
+          </button>
+        ) : (
+          <Link href={`/products/${productHandle}`}>
+            <h3 className="font-heading text-2xl sm:text-3xl lg:text-4xl text-gray-900 hover:text-brand-yellow transition-colors">
+              {product.title}
+            </h3>
+          </Link>
+        )}
 
         <p className="text-lg text-gray-700 leading-relaxed">
           {description || defaultDescription}
@@ -214,12 +248,21 @@ export default function FeaturedKitCard({
                 : 'ADD TO CART'}
           </button>
 
-          <Link
-            href={`/products/${productHandle}`}
-            className="px-10 py-5 border-2 border-gray-900 text-gray-900 hover:bg-gray-100 text-lg tracking-[0.1em] font-bold transition-colors duration-300 text-center"
-          >
-            VIEW DETAILS
-          </Link>
+          {onClickProduct ? (
+            <button
+              onClick={() => onClickProduct(product)}
+              className="px-10 py-5 border-2 border-gray-900 text-gray-900 hover:bg-gray-100 text-lg tracking-[0.1em] font-bold transition-colors duration-300 text-center"
+            >
+              VIEW DETAILS
+            </button>
+          ) : (
+            <Link
+              href={`/products/${productHandle}`}
+              className="px-10 py-5 border-2 border-gray-900 text-gray-900 hover:bg-gray-100 text-lg tracking-[0.1em] font-bold transition-colors duration-300 text-center"
+            >
+              VIEW DETAILS
+            </Link>
+          )}
         </div>
       </div>
 
