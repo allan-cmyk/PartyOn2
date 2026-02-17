@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navigation from "@/components/Navigation";
@@ -22,6 +22,7 @@ export default function CorporateLandingPage() {
     eventType: '',
     notes: '',
   });
+  const formLoadedAt = useRef(Date.now());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
   const [showFAQ, setShowFAQ] = useState<number | null>(null);
@@ -87,6 +88,7 @@ export default function CorporateLandingPage() {
         utm_source: sessionStorage.getItem('utm_source') || '',
         utm_medium: sessionStorage.getItem('utm_medium') || '',
         utm_campaign: sessionStorage.getItem('utm_campaign') || '',
+        _formLoadedAt: formLoadedAt.current,
         website_url: '',
         fax_number: '',
       };
