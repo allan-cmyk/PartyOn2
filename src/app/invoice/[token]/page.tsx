@@ -121,15 +121,19 @@ export default function InvoicePage(): ReactElement {
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 tracking-wide">
-            PARTYÓN DELIVERY
-          </h1>
-          <p className="text-gray-500 mt-1">Premium Alcohol Delivery in Austin</p>
+        <div className="bg-[#1a1a1a] rounded-t-xl text-center py-8 px-6">
+          <Image
+            src="/images/pod-logo-2025.png"
+            alt="Party On Delivery"
+            width={180}
+            height={60}
+            className="mx-auto mb-3"
+          />
+          <p className="text-white text-sm tracking-widest">PREMIUM ALCOHOL DELIVERY</p>
         </div>
 
         {/* Invoice Card */}
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="bg-white rounded-b-xl shadow-lg overflow-hidden">
           {/* Status Banner */}
           {isPaid && (
             <div className="bg-green-500 text-white px-6 py-3 flex items-center justify-center gap-2">
@@ -191,43 +195,37 @@ export default function InvoicePage(): ReactElement {
             <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">
               Order Items
             </h3>
-            <div className="space-y-4">
-              {invoice.items.map((item: DraftOrderItem, index: number) => (
-                <div key={index} className="flex items-center gap-4">
-                  {item.imageUrl ? (
-                    <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                      <Image
-                        src={item.imageUrl}
-                        alt={item.title}
-                        width={64}
-                        height={64}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <svg className="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                      </svg>
-                    </div>
-                  )}
-                  <div className="flex-grow">
-                    <h4 className="font-medium text-gray-900">{item.title}</h4>
-                    {item.variantTitle && (
-                      <p className="text-sm text-gray-500">{item.variantTitle}</p>
-                    )}
-                    <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-medium text-gray-900">
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      ${item.price.toFixed(2)} each
-                    </p>
-                  </div>
-                </div>
-              ))}
+            <div className="border border-gray-200 rounded-lg overflow-hidden">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gray-50 text-sm text-gray-500">
+                    <th className="text-left py-3 px-4 font-medium">Item</th>
+                    <th className="text-center py-3 px-4 font-medium">Qty</th>
+                    <th className="text-right py-3 px-4 font-medium">Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {invoice.items.map((item: DraftOrderItem, index: number) => (
+                    <tr key={index} className="border-t border-gray-100">
+                      <td className="py-3 px-4">
+                        <p className="font-medium text-gray-900">{item.title}</p>
+                        {item.variantTitle && (
+                          <p className="text-sm text-gray-500">{item.variantTitle}</p>
+                        )}
+                      </td>
+                      <td className="py-3 px-4 text-center text-gray-700">{item.quantity}</td>
+                      <td className="py-3 px-4 text-right">
+                        <p className="font-medium text-gray-900">
+                          ${(item.price * item.quantity).toFixed(2)}
+                        </p>
+                        {item.quantity > 1 && (
+                          <p className="text-xs text-gray-400">${item.price.toFixed(2)} each</p>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
 
@@ -299,9 +297,9 @@ export default function InvoicePage(): ReactElement {
         </div>
 
         {/* Footer */}
-        <div className="text-center mt-8 text-gray-500 text-sm">
-          <p>Questions? Contact us at orders@partyondelivery.com</p>
-          <p className="mt-2">© {new Date().getFullYear()} Party On Delivery. Austin, Texas.</p>
+        <div className="text-center mt-8 text-sm">
+          <p className="text-[#D4AF37]">Questions? Contact us at orders@partyondelivery.com</p>
+          <p className="mt-2 text-gray-400">&copy; {new Date().getFullYear()} Party On Delivery. Austin, Texas.</p>
         </div>
       </div>
     </div>
