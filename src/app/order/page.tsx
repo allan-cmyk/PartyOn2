@@ -55,7 +55,7 @@ export default function QuickOrderPage(): ReactElement {
         setIsCollectionsSticky(!entry.isIntersecting);
       },
       {
-        rootMargin: '-96px 0px 0px 0px', // Account for nav height (h-24 = 96px)
+        rootMargin: '-56px 0px 0px 0px', // Account for nav height (h-14 = 56px)
         threshold: 0,
       }
     );
@@ -129,7 +129,7 @@ export default function QuickOrderPage(): ReactElement {
         ref={collectionsRef}
         className={`bg-gray-50 border-b border-gray-200 transition-all duration-300 ${
           isCollectionsSticky
-            ? `sticky z-40 py-3 shadow-md ${hideNav ? 'top-0' : 'top-24'}`
+            ? `sticky z-40 py-3 shadow-md ${hideNav ? 'top-0' : 'top-14 md:top-16'}`
             : 'py-6'
         }`}
       >
