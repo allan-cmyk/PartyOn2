@@ -1,6 +1,7 @@
 'use client';
 
 import { useReducer, useEffect, useRef, useCallback, useState } from 'react';
+import Link from 'next/link';
 import { AnimatePresence } from 'framer-motion';
 import { useCartContext } from '@/contexts/CartContext';
 import type { QuizState, ProductRecommendation, DrinkCategory, Extra, StepId, Duration } from '@/lib/drinkPlannerTypes';
@@ -64,9 +65,10 @@ function saveState(state: QuizState) {
 
 interface DrinkPlannerQuizProps {
   onSkip: () => void;
+  onActiveChange?: (active: boolean) => void;
 }
 
-export default function DrinkPlannerQuiz({ onSkip }: DrinkPlannerQuizProps) {
+export default function DrinkPlannerQuiz({ onSkip, onActiveChange }: DrinkPlannerQuizProps) {
   const [state, dispatch] = useReducer(quizReducer, initialQuizState, (init) => {
     const saved = loadState();
     return saved && !saved.completed ? saved : init;
@@ -84,6 +86,12 @@ export default function DrinkPlannerQuiz({ onSkip }: DrinkPlannerQuizProps) {
   useEffect(() => {
     if (mounted) saveState(state);
   }, [state, mounted]);
+
+  // Notify parent when quiz becomes active (past welcome)
+  useEffect(() => {
+    const isActive = state.currentStep !== 'welcome' && !state.skipped;
+    onActiveChange?.(isActive);
+  }, [state.currentStep, state.skipped, onActiveChange]);
 
   // Scroll to top on step change
   useEffect(() => {
@@ -166,12 +174,19 @@ export default function DrinkPlannerQuiz({ onSkip }: DrinkPlannerQuizProps) {
       {state.currentStep === 'welcome' ? (
         <WelcomeStep onStart={goNext} onSkip={handleSkip} />
       ) : (
-        <section className="relative min-h-screen bg-gray-900 pt-[4.5rem] md:pt-24 pb-6 md:pb-8 flex flex-col">
+        <section className="relative min-h-screen bg-gray-900 pt-4 md:pt-6 pb-6 md:pb-8 flex flex-col">
           <div className="max-w-7xl mx-auto px-4 flex-1 flex flex-col w-full">
-            {/* Top bar: progress only */}
-            <div className="flex items-center justify-center gap-4 mb-6 md:mb-8">
+            {/* Top bar: logo + progress */}
+            <div className="flex items-center gap-4 mb-6 md:mb-8">
+              <Link href="/" className="flex-shrink-0 -ml-2">
+                <img
+                  src="/images/pod-logo-2025.svg"
+                  alt="Party On Delivery"
+                  className="h-10 md:h-12 w-auto brightness-0 invert"
+                />
+              </Link>
               {showProgress && (
-                <div className="flex-1 max-w-md">
+                <div className="flex-1">
                   <QuizProgressBar
                     current={progressIndex + 1}
                     total={progressSteps.length}

@@ -35,6 +35,9 @@ export default function QuickOrderPage(): ReactElement {
   const [hideNav, setHideNav] = useState(false);
   const lastScrollY = useRef(0);
 
+  // Hide nav when quiz is active (past welcome step)
+  const [quizActive, setQuizActive] = useState(false);
+
   // Search overlay state
   const [showSearchOverlay, setShowSearchOverlay] = useState(false);
 
@@ -110,13 +113,13 @@ export default function QuickOrderPage(): ReactElement {
     <div className="bg-white min-h-screen">
       <Navigation
         forceScrolled={!isMobile}
-        hidden={hideNav}
+        hidden={hideNav || quizActive}
         hideMobileLogo
         forceWhiteHamburger
       />
 
       {/* Drink Planner Quiz (replaces hero) */}
-      <DrinkPlannerQuiz onSkip={handleQuizSkip} />
+      <DrinkPlannerQuiz onSkip={handleQuizSkip} onActiveChange={setQuizActive} />
 
       {/* Sentinel for sticky detection - IntersectionObserver watches this */}
       <div ref={sentinelRef} className="h-0" aria-hidden="true" />
