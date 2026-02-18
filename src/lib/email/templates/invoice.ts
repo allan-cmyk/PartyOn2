@@ -10,6 +10,7 @@ interface InvoiceItem {
   variantTitle?: string;
   quantity: number;
   price: number;
+  imageUrl?: string;
 }
 
 export interface InvoiceEmailData {
@@ -67,6 +68,9 @@ export function generateInvoiceEmail(data: InvoiceEmailData, textOverrides?: Inv
     .map(
       (item) => `
       <tr>
+        <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; width: 48px;">
+          ${item.imageUrl ? `<img src="${item.imageUrl}" alt="" width="48" height="48" style="width: 48px; height: 48px; object-fit: cover; border-radius: 6px; display: block;" />` : ''}
+        </td>
         <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">
           ${item.title}${item.variantTitle ? ` - ${item.variantTitle}` : ''}
         </td>
@@ -146,6 +150,7 @@ export function generateInvoiceEmail(data: InvoiceEmailData, textOverrides?: Inv
               <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 24px;">
                 <thead>
                   <tr style="background-color: #f9fafb;">
+                    <th style="padding: 12px; width: 48px;"></th>
                     <th style="padding: 12px; text-align: left; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;">
                       Item
                     </th>

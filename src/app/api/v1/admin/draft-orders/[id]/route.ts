@@ -10,10 +10,12 @@ import { z } from 'zod';
 import {
   getDraftOrderById,
   updateDraftOrder,
+  updateDraftOrderStatus,
   deleteDraftOrder,
   calculateDraftOrderAmounts,
 } from '@/lib/draft-orders';
 import type { UpdateDraftOrderInput } from '@/lib/draft-orders/types';
+import { DraftOrderStatus } from '@prisma/client';
 
 const DraftOrderItemSchema = z.object({
   productId: z.string(),
@@ -26,6 +28,7 @@ const DraftOrderItemSchema = z.object({
 });
 
 const UpdateDraftOrderSchema = z.object({
+  status: z.enum(['CANCELLED']).optional(),
   customerEmail: z.string().email().optional(),
   customerName: z.string().min(1).optional(),
   customerPhone: z.string().optional().nullable(),
@@ -109,6 +112,17 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         { success: false, error: `Cannot modify a ${existing.status.toLowerCase()} draft order` },
         { status: 400 }
       );
+    }
+
+    // Handle status change (currently only CANCELLED is allowed)
+    if (validated.status) {
+      const draftOrder = await updateDraftOrderStatus(id, validated.status as DraftOrderStatus);
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';
+      const invoiceUrl = `${baseUrl}/invoice/${draftOrder.token}`;
+      return NextResponse.json({
+        success: true,
+        data: { ...draftOrder, invoiceUrl },
+      });
     }
 
     // If items or amounts changed, recalculate
