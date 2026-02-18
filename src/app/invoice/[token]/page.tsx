@@ -199,6 +199,7 @@ export default function InvoicePage(): ReactElement {
               <table className="w-full">
                 <thead>
                   <tr className="bg-gray-50 text-sm text-gray-500">
+                    <th className="py-3 px-4 w-14"></th>
                     <th className="text-left py-3 px-4 font-medium">Item</th>
                     <th className="text-center py-3 px-4 font-medium">Qty</th>
                     <th className="text-right py-3 px-4 font-medium">Price</th>
@@ -207,6 +208,20 @@ export default function InvoicePage(): ReactElement {
                 <tbody>
                   {invoice.items.map((item: DraftOrderItem, index: number) => (
                     <tr key={index} className="border-t border-gray-100">
+                      <td className="py-3 px-4 w-14">
+                        {item.imageUrl ? (
+                          <Image
+                            src={item.imageUrl}
+                            alt=""
+                            width={40}
+                            height={40}
+                            className="w-10 h-10 object-cover rounded-md"
+                            unoptimized
+                          />
+                        ) : (
+                          <div className="w-10 h-10 bg-gray-100 rounded-md" />
+                        )}
+                      </td>
                       <td className="py-3 px-4">
                         <p className="font-medium text-gray-900">{item.title}</p>
                         {item.variantTitle && (

@@ -78,6 +78,11 @@ export function generateInvoiceEmail(data: InvoiceEmailData, textOverrides?: Inv
     .map(
       (item) => `
       <tr>
+        <td style="padding: 12px; border-bottom: 1px solid #e5e5e5; width: 48px; vertical-align: middle;">
+          ${item.imageUrl
+            ? `<img src="${item.imageUrl}" alt="" width="40" height="40" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; display: block;" />`
+            : `<div style="width: 40px; height: 40px; background-color: #f3f4f6; border-radius: 6px;"></div>`}
+        </td>
         <td style="padding: 12px; border-bottom: 1px solid #e5e5e5;">
           <strong>${item.title}</strong>
           ${item.variantTitle ? `<br><span style="color: #666; font-size: 14px;">${item.variantTitle}</span>` : ''}
@@ -159,6 +164,7 @@ export function generateInvoiceEmail(data: InvoiceEmailData, textOverrides?: Inv
               <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden; margin-bottom: 24px;">
                 <thead>
                   <tr style="background-color: #f9fafb;">
+                    <th style="padding: 12px; border-bottom: 1px solid #e5e5e5; width: 48px;"></th>
                     <th style="padding: 12px; text-align: left; font-size: 14px; color: #666; border-bottom: 1px solid #e5e5e5;">
                       Item
                     </th>
