@@ -5,9 +5,9 @@
 
 'use client';
 
-import { useState, useEffect, useRef, type ReactElement } from 'react';
-import Image from 'next/image';
+import { useState, useEffect, useRef, useCallback, type ReactElement } from 'react';
 import Navigation from "@/components/Navigation";
+import DrinkPlannerQuiz from '@/components/drink-planner/DrinkPlannerQuiz';
 import Footer from '@/components/Footer';
 import { useQuickOrderProducts } from '@/hooks/useQuickOrderProducts';
 import QuickOrderGrid from '@/components/quick-order/QuickOrderGrid';
@@ -37,6 +37,13 @@ export default function QuickOrderPage(): ReactElement {
 
   // Search overlay state
   const [showSearchOverlay, setShowSearchOverlay] = useState(false);
+
+  // Product grid ref for quiz skip scroll
+  const productGridRef = useRef<HTMLDivElement>(null);
+
+  const handleQuizSkip = useCallback(() => {
+    productGridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
 
   // Intersection Observer for sticky detection - more robust than scroll events
   useEffect(() => {
@@ -108,31 +115,16 @@ export default function QuickOrderPage(): ReactElement {
         forceWhiteHamburger
       />
 
-      {/* Hero Section */}
-      <section className="relative h-[35vh] md:h-[40vh] mt-28 md:mt-24 flex items-center justify-center overflow-hidden">
-        <Image
-          src="/images/order/order-hero.png"
-          alt="Premium Bar Setup at Austin Pool Party"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/40 to-gray-900/60" />
-
-        <div className="relative text-center text-white z-10 max-w-4xl mx-auto px-6">
-          <h1 className="font-heading font-light text-5xl md:text-7xl mb-6 tracking-[0.08em] leading-tight md:leading-tight">
-            <span className="block text-white mb-2">Your Bar,</span>
-            <span className="block text-brand-yellow italic">DELIVERED</span>
-          </h1>
-          <div className="w-24 h-px bg-brand-yellow mx-auto mb-6" />
-          <p className="text-lg md:text-xl font-light tracking-[0.1em] text-gray-200">
-            Tap. Add. Party On.
-          </p>
-        </div>
-      </section>
+      {/* Drink Planner Quiz (replaces hero) */}
+      <div className="mt-28 md:mt-24">
+        <DrinkPlannerQuiz onSkip={handleQuizSkip} />
+      </div>
 
       {/* Sentinel for sticky detection - IntersectionObserver watches this */}
       <div ref={sentinelRef} className="h-0" aria-hidden="true" />
+
+      {/* Scroll target for quiz skip */}
+      <div ref={productGridRef} />
 
       {/* Featured Collections - Sticky */}
       <section
