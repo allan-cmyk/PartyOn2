@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, ReactElement } from 'react';
+import InvoiceSendModal from './InvoiceSendModal';
 
 interface DraftOrderItem {
   title: string;
@@ -98,6 +99,7 @@ export default function DraftOrdersTable(): ReactElement {
   const [offset, setOffset] = useState(0);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [sendModalOrder, setSendModalOrder] = useState<DraftOrder | null>(null);
   const limit = 20;
 
   const showToast = (message: string) => {
@@ -132,25 +134,14 @@ export default function DraftOrdersTable(): ReactElement {
     fetchDraftOrders();
   }, [fetchDraftOrders]);
 
-  const handleSend = async (id: string) => {
-    if (!confirm('Send this invoice email to the customer?')) return;
-    setActionLoading(id);
-    try {
-      const response = await fetch(`/api/v1/admin/draft-orders/${id}/send`, {
-        method: 'POST',
-      });
-      const result = await response.json();
-      if (result.success) {
-        showToast('Invoice sent');
-        fetchDraftOrders();
-      } else {
-        alert('Failed to send: ' + (result.error || 'Unknown error'));
-      }
-    } catch {
-      alert('Failed to send invoice');
-    } finally {
-      setActionLoading(null);
-    }
+  const handleOpenSendModal = (order: DraftOrder) => {
+    setSendModalOrder(order);
+  };
+
+  const handleSendModalSuccess = () => {
+    setSendModalOrder(null);
+    showToast('Invoice sent');
+    fetchDraftOrders();
   };
 
   const handleCancel = async (id: string) => {
@@ -226,6 +217,15 @@ export default function DraftOrdersTable(): ReactElement {
 
   return (
     <div>
+      {/* Send Modal */}
+      {sendModalOrder && (
+        <InvoiceSendModal
+          draftOrder={sendModalOrder}
+          onClose={() => setSendModalOrder(null)}
+          onSent={handleSendModalSuccess}
+        />
+      )}
+
       {/* Toast */}
       {toast && (
         <div className="fixed top-6 right-6 z-50 px-4 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-lg shadow-lg animate-fade-in">
@@ -335,12 +335,12 @@ export default function DraftOrdersTable(): ReactElement {
                     <div className="flex items-center justify-end gap-1">
                       {canSend(order.status) && (
                         <button
-                          onClick={() => handleSend(order.id)}
+                          onClick={() => handleOpenSendModal(order)}
                           disabled={actionLoading === order.id}
                           className="px-2.5 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors disabled:opacity-50"
-                          title="Send invoice email"
+                          title="Edit and send invoice email"
                         >
-                          Send
+                          Edit & Send
                         </button>
                       )}
                       <button

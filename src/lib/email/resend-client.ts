@@ -23,6 +23,7 @@ export const resend = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null;
  */
 export interface SendEmailOptions {
   to: string;
+  cc?: string[];
   subject: string;
   html: string;
   text?: string;
@@ -36,7 +37,7 @@ export interface SendEmailOptions {
  * Send an email and log it
  */
 export async function sendEmail(options: SendEmailOptions): Promise<string | null> {
-  const { to, subject, html, text, type, orderId, customerId, metadata } = options;
+  const { to, cc, subject, html, text, type, orderId, customerId, metadata } = options;
 
   // Create email log entry
   const emailLog = await prisma.emailLog.create({
@@ -68,6 +69,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<string | nul
     const result = await resend.emails.send({
       from: `${FROM_NAME} <${FROM_EMAIL}>`,
       to,
+      ...(cc && cc.length > 0 ? { cc } : {}),
       subject,
       html,
       text,

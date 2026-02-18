@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { getDraftOrderById, updateDraftOrderStatus } from '@/lib/draft-orders';
-import { generateInvoiceEmail, generateInvoiceSubject } from '@/lib/email/templates/invoice';
+import { generateInvoiceEmail, generateInvoiceSubject, InvoiceTextOverrides } from '@/lib/email/templates/invoice';
 import { getInvoiceTextOverrides } from '@/lib/email/template-content';
 
 // Initialize Resend lazily to avoid build-time errors when env var is missing
@@ -33,6 +33,20 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
 
+    // Parse optional body params for customization
+    let bodyParams: {
+      cc?: string[];
+      subject?: string;
+      textOverrides?: InvoiceTextOverrides;
+      personalNote?: string;
+    } = {};
+    try {
+      const body = await request.json();
+      bodyParams = body || {};
+    } catch {
+      // No body or invalid JSON — use defaults
+    }
+
     // Get draft order
     const draftOrder = await getDraftOrderById(id);
     if (!draftOrder) {
@@ -54,8 +68,9 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';
     const invoiceUrl = `${baseUrl}/invoice/${draftOrder.token}`;
 
-    // Load saved text overrides
-    const textOverrides = await getInvoiceTextOverrides();
+    // Load saved text overrides, then layer on any per-send overrides
+    const savedOverrides = await getInvoiceTextOverrides();
+    const textOverrides = { ...savedOverrides, ...bodyParams.textOverrides };
 
     // Generate email from template
     const html = generateInvoiceEmail({
@@ -74,15 +89,18 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       discountCode: draftOrder.discountCode,
       total: draftOrder.total,
       invoiceUrl,
+      personalNote: bodyParams.personalNote,
     }, textOverrides);
 
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'Party On Delivery <orders@partyondelivery.com>';
 
     // Send email via Resend
+    const emailSubject = bodyParams.subject || generateInvoiceSubject(Number(draftOrder.total));
     const { data, error: resendError } = await getResend().emails.send({
       from: fromEmail,
       to: draftOrder.customerEmail,
-      subject: generateInvoiceSubject(Number(draftOrder.total)),
+      ...(bodyParams.cc && bodyParams.cc.length > 0 ? { cc: bodyParams.cc } : {}),
+      subject: emailSubject,
       html,
     });
 

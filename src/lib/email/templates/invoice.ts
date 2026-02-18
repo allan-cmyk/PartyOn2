@@ -29,6 +29,7 @@ export interface InvoiceEmailData {
   discountCode?: string | null;
   total: number | string | { toString(): string };
   invoiceUrl: string;
+  personalNote?: string;
 }
 
 export interface InvoiceTextOverrides {
@@ -63,6 +64,15 @@ export function generateInvoiceEmail(data: InvoiceEmailData, textOverrides?: Inv
   const linkText = text.linkText;
   const footerText = text.footerText;
   const copyrightText = text.copyrightText.replace('{year}', String(new Date().getFullYear()));
+
+  const personalNoteHtml = data.personalNote
+    ? `
+              <div style="background-color: #fef9e7; border-left: 4px solid #D4AF37; border-radius: 4px; padding: 16px 20px; margin-bottom: 24px;">
+                <p style="margin: 0; color: #4b5563; font-size: 15px; line-height: 1.6; font-style: italic;">
+                  ${data.personalNote.replace(/\n/g, '<br>')}
+                </p>
+              </div>`
+    : '';
 
   const itemsHtml = data.items
     .map(
@@ -123,6 +133,8 @@ export function generateInvoiceEmail(data: InvoiceEmailData, textOverrides?: Inv
               <p style="margin: 0 0 24px; color: #4b5563; font-size: 16px; line-height: 1.6;">
                 ${bodyText}
               </p>
+
+              ${personalNoteHtml}
 
               <!-- Delivery Info -->
               <div style="background-color: #f9fafb; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
