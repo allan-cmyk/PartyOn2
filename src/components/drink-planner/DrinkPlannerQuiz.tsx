@@ -8,7 +8,6 @@ import {
   quizReducer,
   initialQuizState,
   getSteps,
-  getStepIndex,
 } from '@/lib/drinkPlannerLogic';
 import QuizProgressBar from './QuizProgressBar';
 import QuizStep from './QuizStep';
@@ -133,7 +132,6 @@ export default function DrinkPlannerQuiz({ onSkip }: DrinkPlannerQuizProps) {
   }
 
   const steps = getSteps(state);
-  const stepIndex = getStepIndex(state);
   const showProgress = state.currentStep !== 'welcome' && state.currentStep !== 'results';
   const showBack = state.currentStep !== 'welcome';
   // Exclude welcome and results from progress count
