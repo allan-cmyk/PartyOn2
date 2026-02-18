@@ -9,7 +9,7 @@ interface WelcomeStepProps {
 
 export default function WelcomeStep({ onStart, onSkip }: WelcomeStepProps) {
   return (
-    <section className="relative min-h-[calc(100vh-3.5rem)] md:min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen pt-14 md:pt-16 flex items-center justify-center overflow-hidden">
       <Image
         src="/images/order/order-hero.png"
         alt="Premium Bar Setup at Austin Pool Party"

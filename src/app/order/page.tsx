@@ -116,9 +116,7 @@ export default function QuickOrderPage(): ReactElement {
       />
 
       {/* Drink Planner Quiz (replaces hero) */}
-      <div className="mt-14 md:mt-16">
-        <DrinkPlannerQuiz onSkip={handleQuizSkip} />
-      </div>
+      <DrinkPlannerQuiz onSkip={handleQuizSkip} />
 
       {/* Sentinel for sticky detection - IntersectionObserver watches this */}
       <div ref={sentinelRef} className="h-0" aria-hidden="true" />

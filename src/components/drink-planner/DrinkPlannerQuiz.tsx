@@ -166,7 +166,7 @@ export default function DrinkPlannerQuiz({ onSkip }: DrinkPlannerQuizProps) {
       {state.currentStep === 'welcome' ? (
         <WelcomeStep onStart={goNext} onSkip={handleSkip} />
       ) : (
-        <section className="relative min-h-[calc(100vh-3.5rem)] md:min-h-[calc(100vh-4rem)] bg-gray-900 pt-4 pb-6 md:py-8 flex flex-col">
+        <section className="relative min-h-screen bg-gray-900 pt-[4.5rem] md:pt-24 pb-6 md:pb-8 flex flex-col">
           <div className="max-w-7xl mx-auto px-4 flex-1 flex flex-col w-full">
             {/* Top bar: progress only */}
             <div className="flex items-center justify-center gap-4 mb-6 md:mb-8">
