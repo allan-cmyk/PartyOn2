@@ -26,6 +26,17 @@ const productInclude = {
     orderBy: { createdAt: 'asc' as const },
   },
   categories: { include: { category: true } },
+  bundleComponents: {
+    select: {
+      quantity: true,
+      componentProduct: {
+        select: { variants: { select: { inventoryQuantity: true } } },
+      },
+      componentVariant: {
+        select: { inventoryQuantity: true },
+      },
+    },
+  },
 };
 
 export async function GET(request: NextRequest) {

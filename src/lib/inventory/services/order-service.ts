@@ -53,6 +53,96 @@ export interface OrderItemWithProduct {
 }
 
 /**
+ * Shared helper: decrement inventory for a single order item.
+ * If the product is a bundle, decrements each component's inventory instead.
+ */
+type TransactionClient = Omit<typeof prisma, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>;
+
+async function decrementInventoryForOrderItem(
+  tx: TransactionClient,
+  productId: string,
+  variantId: string,
+  orderQuantity: number,
+  orderNumber: number,
+  orderId: string,
+): Promise<void> {
+  // Check if this product is a bundle
+  const product = await tx.product.findUnique({
+    where: { id: productId },
+    select: {
+      isBundle: true,
+      bundleComponents: {
+        select: {
+          componentProductId: true,
+          componentVariantId: true,
+          quantity: true,
+        },
+      },
+    },
+  });
+
+  if (product?.isBundle && product.bundleComponents.length > 0) {
+    // Bundle: decrement each component's inventory
+    for (const component of product.bundleComponents) {
+      const componentVariantId = component.componentVariantId;
+      const decrementQty = component.quantity * orderQuantity;
+
+      const inventoryItem = await tx.inventoryItem.findFirst({
+        where: {
+          productId: component.componentProductId,
+          ...(componentVariantId ? { variantId: componentVariantId } : {}),
+        },
+      });
+
+      if (inventoryItem) {
+        await tx.inventoryItem.update({
+          where: { id: inventoryItem.id },
+          data: { quantity: { decrement: decrementQty } },
+        });
+
+        await tx.inventoryMovement.create({
+          data: {
+            inventoryItemId: inventoryItem.id,
+            type: 'SOLD',
+            quantity: -decrementQty,
+            previousQuantity: inventoryItem.quantity,
+            newQuantity: inventoryItem.quantity - decrementQty,
+            reason: `Order #${orderNumber} (bundle component)`,
+            referenceId: orderId,
+            referenceType: 'Order',
+          },
+        });
+      }
+    }
+  } else {
+    // Regular product: decrement directly
+    const inventoryItem = await tx.inventoryItem.findFirst({
+      where: { productId, variantId },
+    });
+
+    if (inventoryItem) {
+      await tx.inventoryItem.update({
+        where: { id: inventoryItem.id },
+        data: { quantity: { decrement: orderQuantity } },
+      });
+
+      await tx.inventoryMovement.create({
+        data: {
+          inventoryItemId: inventoryItem.id,
+          type: 'SOLD',
+          quantity: -orderQuantity,
+          previousQuantity: inventoryItem.quantity,
+          newQuantity: inventoryItem.quantity - orderQuantity,
+          reason: `Order #${orderNumber}`,
+          referenceId: orderId,
+          referenceType: 'Order',
+        },
+      });
+    }
+  }
+}
+
+/**
  * Create an order from a completed Stripe checkout session
  */
 export async function createOrderFromCheckout(
@@ -131,7 +221,6 @@ export async function createOrderFromCheckout(
     : session.payment_intent?.id || null;
 
   // Create order with items in a transaction
-  type TransactionClient = Omit<typeof prisma, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>;
   const order = await prisma.$transaction(async (tx: TransactionClient) => {
     // Create the order
     const newOrder = await tx.order.create({
@@ -177,37 +266,9 @@ export async function createOrderFromCheckout(
       });
     }
 
-    // Decrement inventory for each item
+    // Decrement inventory for each item (handles bundles automatically)
     for (const item of cart.items) {
-      const inventoryItem = await tx.inventoryItem.findFirst({
-        where: {
-          productId: item.productId,
-          variantId: item.variantId,
-        },
-      });
-
-      if (inventoryItem) {
-        await tx.inventoryItem.update({
-          where: { id: inventoryItem.id },
-          data: {
-            quantity: { decrement: item.quantity },
-          },
-        });
-
-        // Record inventory movement
-        await tx.inventoryMovement.create({
-          data: {
-            inventoryItemId: inventoryItem.id,
-            type: 'SOLD',
-            quantity: -item.quantity,
-            previousQuantity: inventoryItem.quantity,
-            newQuantity: inventoryItem.quantity - item.quantity,
-            reason: `Order #${newOrder.orderNumber}`,
-            referenceId: newOrder.id,
-            referenceType: 'Order',
-          },
-        });
-      }
+      await decrementInventoryForOrderItem(tx, item.productId, item.variantId, item.quantity, newOrder.orderNumber, newOrder.id);
     }
 
     // Get the order with items
@@ -280,7 +341,6 @@ export async function createFreeOrder(
     throw new Error('Delivery time is required to create an order');
   }
 
-  type TransactionClient = Omit<typeof prisma, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>;
   const order = await prisma.$transaction(async (tx: TransactionClient) => {
     const newOrder = await tx.order.create({
       data: {
@@ -324,29 +384,9 @@ export async function createFreeOrder(
       });
     }
 
-    // Decrement inventory
+    // Decrement inventory (handles bundles automatically)
     for (const item of cart.items) {
-      const inventoryItem = await tx.inventoryItem.findFirst({
-        where: { productId: item.productId, variantId: item.variantId },
-      });
-      if (inventoryItem) {
-        await tx.inventoryItem.update({
-          where: { id: inventoryItem.id },
-          data: { quantity: { decrement: item.quantity } },
-        });
-        await tx.inventoryMovement.create({
-          data: {
-            inventoryItemId: inventoryItem.id,
-            type: 'SOLD',
-            quantity: -item.quantity,
-            previousQuantity: inventoryItem.quantity,
-            newQuantity: inventoryItem.quantity - item.quantity,
-            reason: `Order #${newOrder.orderNumber} (free order)`,
-            referenceId: newOrder.id,
-            referenceType: 'Order',
-          },
-        });
-      }
+      await decrementInventoryForOrderItem(tx, item.productId, item.variantId, item.quantity, newOrder.orderNumber, newOrder.id);
     }
 
     return await tx.order.findUnique({
@@ -619,7 +659,6 @@ export async function createOrderFromDraftOrder(
     : session.payment_intent?.id || null;
 
   // Create order with items in a transaction
-  type TransactionClient = Omit<typeof prisma, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>;
   const order = await prisma.$transaction(async (tx: TransactionClient) => {
     // Create the order
     const newOrder = await tx.order.create({
@@ -667,37 +706,9 @@ export async function createOrderFromDraftOrder(
       });
     }
 
-    // Decrement inventory for each item
+    // Decrement inventory for each item (handles bundles automatically)
     for (const item of items) {
-      const inventoryItem = await tx.inventoryItem.findFirst({
-        where: {
-          productId: item.productId,
-          variantId: item.variantId,
-        },
-      });
-
-      if (inventoryItem) {
-        await tx.inventoryItem.update({
-          where: { id: inventoryItem.id },
-          data: {
-            quantity: { decrement: item.quantity },
-          },
-        });
-
-        // Record inventory movement
-        await tx.inventoryMovement.create({
-          data: {
-            inventoryItemId: inventoryItem.id,
-            type: 'SOLD',
-            quantity: -item.quantity,
-            previousQuantity: inventoryItem.quantity,
-            newQuantity: inventoryItem.quantity - item.quantity,
-            reason: `Order #${newOrder.orderNumber}`,
-            referenceId: newOrder.id,
-            referenceType: 'Order',
-          },
-        });
-      }
+      await decrementInventoryForOrderItem(tx, item.productId, item.variantId, item.quantity, newOrder.orderNumber, newOrder.id);
     }
 
     // Get the order with items

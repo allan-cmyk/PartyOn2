@@ -133,6 +133,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       vendor: product.vendor,
       productType: product.productType,
       status: product.status,
+      isBundle: product.isBundle,
       price: Number(product.basePrice),
       compareAtPrice: product.compareAtPrice ? Number(product.compareAtPrice) : null,
       image: product.images[0] || null,
@@ -204,6 +205,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       metaTitle,
       metaDescription,
       images,
+      isBundle,
+      bundleComponents,
     } = body;
 
     if (!title || !handle || basePrice === undefined) {
@@ -241,6 +244,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           abv: abv || null,
           metaTitle: metaTitle || null,
           metaDescription: metaDescription || null,
+          isBundle: isBundle || false,
         },
       });
 
@@ -272,28 +276,45 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         },
       });
 
-      // Get default inventory location (or create one if none exists)
-      let defaultLocation = await tx.inventoryLocation.findFirst({
-        where: { isDefault: true },
-      });
-
-      if (!defaultLocation) {
-        defaultLocation = await tx.inventoryLocation.findFirst({
-          where: { isActive: true },
+      // Skip inventory item creation for bundles (stock is virtual)
+      if (!isBundle) {
+        // Get default inventory location (or create one if none exists)
+        let defaultLocation = await tx.inventoryLocation.findFirst({
+          where: { isDefault: true },
         });
+
+        if (!defaultLocation) {
+          defaultLocation = await tx.inventoryLocation.findFirst({
+            where: { isActive: true },
+          });
+        }
+
+        // Create inventory item if we have a location
+        if (defaultLocation) {
+          await tx.inventoryItem.create({
+            data: {
+              productId: newProduct.id,
+              variantId: defaultVariant.id,
+              locationId: defaultLocation.id,
+              quantity: 0,
+              costPerUnit: costPerUnit || null,
+            },
+          });
+        }
       }
 
-      // Create inventory item if we have a location
-      if (defaultLocation) {
-        await tx.inventoryItem.create({
-          data: {
-            productId: newProduct.id,
-            variantId: defaultVariant.id,
-            locationId: defaultLocation.id,
-            quantity: 0,
-            costPerUnit: costPerUnit || null,
-          },
-        });
+      // Create bundle components if this is a bundle
+      if (isBundle && Array.isArray(bundleComponents) && bundleComponents.length > 0) {
+        for (const comp of bundleComponents) {
+          await tx.bundleComponent.create({
+            data: {
+              bundleProductId: newProduct.id,
+              componentProductId: comp.componentProductId,
+              componentVariantId: comp.componentVariantId || null,
+              quantity: comp.quantity || 1,
+            },
+          });
+        }
       }
 
       return newProduct;

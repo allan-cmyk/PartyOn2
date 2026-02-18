@@ -13,7 +13,19 @@ export type ProductWithRelations = Prisma.ProductGetPayload<{
     variants: { include: { image: true } };
     categories: { include: { category: true } };
   };
-}>;
+}> & {
+  bundleComponents?: Array<{
+    quantity: number;
+    componentProduct: {
+      variants: Array<{
+        inventoryQuantity: number;
+      }>;
+    };
+    componentVariant: {
+      inventoryQuantity: number;
+    } | null;
+  }>;
+};
 
 /**
  * Transform a Prisma product with relations to Product format.
@@ -29,6 +41,28 @@ export function transformToProduct(product: ProductWithRelations): Product {
     ? (product.shopifyId.startsWith('gid://') ? product.shopifyId : `gid://shopify/Product/${product.shopifyId}`)
     : product.id;
 
+  // Compute bundle availability
+  let bundleAvailable = true;
+  let bundleMaxQuantity: number | null = null;
+  if (product.isBundle && product.bundleComponents && product.bundleComponents.length > 0) {
+    for (const comp of product.bundleComponents) {
+      const stock = comp.componentVariant
+        ? comp.componentVariant.inventoryQuantity
+        : comp.componentProduct.variants.reduce((sum, v) => sum + v.inventoryQuantity, 0);
+      const possibleQty = Math.floor(stock / comp.quantity);
+      if (bundleMaxQuantity === null || possibleQty < bundleMaxQuantity) {
+        bundleMaxQuantity = possibleQty;
+      }
+      if (possibleQty <= 0) {
+        bundleAvailable = false;
+      }
+    }
+  }
+
+  const isAvailable = product.isBundle
+    ? product.status === 'ACTIVE' && bundleAvailable
+    : product.status === 'ACTIVE' && product.variants.some(v => v.availableForSale);
+
   return {
     id: productId,
     handle: product.handle,
@@ -38,7 +72,7 @@ export function transformToProduct(product: ProductWithRelations): Product {
     vendor: product.vendor || '',
     productType: product.productType || '',
     tags: product.tags,
-    availableForSale: product.status === 'ACTIVE' && product.variants.some(v => v.availableForSale),
+    availableForSale: isAvailable,
     priceRange: {
       minVariantPrice: {
         amount: minPrice.toFixed(2),
@@ -64,8 +98,8 @@ export function transformToProduct(product: ProductWithRelations): Product {
           node: {
             id: variantId,
             title: v.title,
-            availableForSale: v.availableForSale,
-            quantityAvailable: v.inventoryQuantity,
+            availableForSale: product.isBundle ? isAvailable : v.availableForSale,
+            quantityAvailable: product.isBundle ? (bundleMaxQuantity ?? 0) : v.inventoryQuantity,
             price: {
               amount: Number(v.price).toFixed(2),
               currencyCode: product.currencyCode,

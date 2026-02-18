@@ -41,6 +41,21 @@ export async function GET(
         inventoryItems: {
           include: { location: true },
         },
+        bundleComponents: {
+          include: {
+            componentProduct: {
+              select: {
+                id: true,
+                title: true,
+                handle: true,
+                images: { take: 1, orderBy: { position: 'asc' }, select: { url: true } },
+              },
+            },
+            componentVariant: {
+              select: { id: true, title: true, sku: true },
+            },
+          },
+        },
       },
     });
 
@@ -76,6 +91,18 @@ export async function GET(
         metaTitle: product.metaTitle,
         metaDescription: product.metaDescription,
         abv: product.abv ? Number(product.abv) : null,
+        isBundle: product.isBundle,
+        bundleComponents: product.bundleComponents.map((bc) => ({
+          id: bc.id,
+          componentProductId: bc.componentProduct.id,
+          componentProductTitle: bc.componentProduct.title,
+          componentProductHandle: bc.componentProduct.handle,
+          componentProductImage: bc.componentProduct.images[0]?.url || null,
+          componentVariantId: bc.componentVariant?.id || null,
+          componentVariantTitle: bc.componentVariant?.title || null,
+          componentVariantSku: bc.componentVariant?.sku || null,
+          quantity: bc.quantity,
+        })),
         shopifyId: product.shopifyId,
         shopifySyncedAt: product.shopifySyncedAt?.toISOString() || null,
         images: product.images.map((img) => ({
@@ -180,6 +207,7 @@ export async function PUT(
       'metaTitle',
       'metaDescription',
       'abv',
+      'isBundle',
     ];
 
     for (const field of allowedFields) {
@@ -223,6 +251,26 @@ export async function PUT(
         where: { productId: id },
         data: { costPerUnit: costValue },
       });
+    }
+
+    // Handle bundleComponents update (delete-all + re-create)
+    if (body.bundleComponents !== undefined) {
+      await prisma.bundleComponent.deleteMany({
+        where: { bundleProductId: id },
+      });
+
+      if (Array.isArray(body.bundleComponents) && body.bundleComponents.length > 0) {
+        for (const comp of body.bundleComponents) {
+          await prisma.bundleComponent.create({
+            data: {
+              bundleProductId: id,
+              componentProductId: comp.componentProductId,
+              componentVariantId: comp.componentVariantId || null,
+              quantity: comp.quantity || 1,
+            },
+          });
+        }
+      }
     }
 
     return NextResponse.json({

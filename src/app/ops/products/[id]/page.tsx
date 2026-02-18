@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { ProfitDisplay } from '@/components/ops/products/ProfitDisplay';
 import { ImageManager } from '@/components/ops/products/ImageManager';
 import { InventoryTable } from '@/components/ops/products/InventoryTable';
+import { BundleComponentPicker, type BundleComponentData } from '@/components/ops/products/BundleComponentPicker';
 
 interface ProductImage {
   id: string;
@@ -52,6 +53,18 @@ interface ProductCategory {
   title: string;
 }
 
+interface ProductBundleComponent {
+  id: string;
+  componentProductId: string;
+  componentProductTitle: string;
+  componentProductHandle: string;
+  componentProductImage: string | null;
+  componentVariantId: string | null;
+  componentVariantTitle: string | null;
+  componentVariantSku: string | null;
+  quantity: number;
+}
+
 interface ProductData {
   id: string;
   handle: string;
@@ -62,6 +75,8 @@ interface ProductData {
   productType: string | null;
   tags: string[];
   status: 'ACTIVE' | 'DRAFT' | 'ARCHIVED';
+  isBundle: boolean;
+  bundleComponents: ProductBundleComponent[];
   basePrice: number;
   compareAtPrice: number | null;
   currencyCode: string;
@@ -113,6 +128,8 @@ export default function ProductDetailPage({ params }: PageProps) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const [editIsBundle, setEditIsBundle] = useState(false);
+  const [editBundleComponents, setEditBundleComponents] = useState<BundleComponentData[]>([]);
   const [formData, setFormData] = useState<EditFormData>({
     title: '', handle: '', description: '', vendor: '', productType: '',
     tags: '', basePrice: '', compareAtPrice: '', costPerUnit: '', abv: '', metaTitle: '', metaDescription: ''
@@ -161,6 +178,18 @@ export default function ProductDetailPage({ params }: PageProps) {
       metaTitle: p.metaTitle || '',
       metaDescription: p.metaDescription || '',
     });
+    setEditIsBundle(p.isBundle);
+    setEditBundleComponents(
+      (p.bundleComponents || []).map((bc) => ({
+        componentProductId: bc.componentProductId,
+        componentProductTitle: bc.componentProductTitle,
+        componentProductHandle: bc.componentProductHandle,
+        componentProductImage: bc.componentProductImage,
+        componentVariantId: bc.componentVariantId,
+        componentVariantTitle: bc.componentVariantTitle,
+        quantity: bc.quantity,
+      }))
+    );
   }
 
   const handleSave = async () => {
@@ -183,6 +212,12 @@ export default function ProductDetailPage({ params }: PageProps) {
           abv: formData.abv ? parseFloat(formData.abv) : null,
           metaTitle: formData.metaTitle || null,
           metaDescription: formData.metaDescription || null,
+          isBundle: editIsBundle,
+          bundleComponents: editIsBundle ? editBundleComponents.map((c) => ({
+            componentProductId: c.componentProductId,
+            componentVariantId: c.componentVariantId,
+            quantity: c.quantity,
+          })) : [],
         }),
       });
       const result = await response.json();
@@ -390,6 +425,11 @@ export default function ProductDetailPage({ params }: PageProps) {
             <span className={`inline-flex px-3 py-1 text-sm font-medium rounded-full border ${getStatusColor(product.status)}`}>
               {product.status}
             </span>
+            {product.isBundle && (
+              <span className="inline-flex px-3 py-1 text-sm font-medium rounded-full border bg-purple-100 text-purple-800 border-purple-300">
+                Bundle
+              </span>
+            )}
             {!editMode && product.vendor && <span className="text-gray-500">by {product.vendor}</span>}
             {!editMode && product.productType && <span className="text-gray-400">| {product.productType}</span>}
           </div>
@@ -624,6 +664,46 @@ export default function ProductDetailPage({ params }: PageProps) {
           )}
         </div>
       </div>
+
+      {/* Bundle Components */}
+      {editMode ? (
+        <div className="mb-8">
+          <BundleComponentPicker
+            isBundle={editIsBundle}
+            onIsBundleChange={setEditIsBundle}
+            components={editBundleComponents}
+            onComponentsChange={setEditBundleComponents}
+            currentProductId={product.id}
+            disabled={saving}
+          />
+        </div>
+      ) : product.isBundle && product.bundleComponents.length > 0 ? (
+        <div className="bg-white border-2 border-purple-200 rounded-lg p-6 mb-8">
+          <h2 className="font-semibold text-black mb-4">Bundle Components ({product.bundleComponents.length})</h2>
+          <div className="space-y-2">
+            {product.bundleComponents.map((bc) => (
+              <div key={bc.id} className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg">
+                <div className="w-10 h-10 bg-gray-100 rounded overflow-hidden flex-shrink-0">
+                  {bc.componentProductImage ? (
+                    <Image src={bc.componentProductImage} alt={bc.componentProductTitle} width={40} height={40} className="object-cover w-full h-full" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">N/A</div>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <Link href={`/ops/products/${bc.componentProductId}`} className="text-sm font-medium text-blue-600 hover:underline truncate block">
+                    {bc.componentProductTitle}
+                  </Link>
+                  {bc.componentVariantTitle && bc.componentVariantTitle !== 'Default' && (
+                    <p className="text-xs text-gray-500">{bc.componentVariantTitle}</p>
+                  )}
+                </div>
+                <span className="text-sm text-gray-600 font-medium">x{bc.quantity}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
 
       {/* Description */}
       <div className="bg-white border-2 border-gray-200 rounded-lg p-6 mb-8">

@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { BundleComponentPicker, type BundleComponentData } from '@/components/ops/products/BundleComponentPicker';
 
 interface FormData {
   title: string;
@@ -34,6 +35,8 @@ export default function CreateProductPage() {
   const [error, setError] = useState<string | null>(null);
   const [images, setImages] = useState<UploadedImage[]>([]);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [isBundle, setIsBundle] = useState(false);
+  const [bundleComponents, setBundleComponents] = useState<BundleComponentData[]>([]);
   const [formData, setFormData] = useState<FormData>({
     title: '',
     handle: '',
@@ -162,6 +165,12 @@ export default function CreateProductPage() {
           metaTitle: formData.metaTitle || null,
           metaDescription: formData.metaDescription || null,
           status: formData.status,
+          isBundle,
+          bundleComponents: isBundle ? bundleComponents.map((c) => ({
+            componentProductId: c.componentProductId,
+            componentVariantId: c.componentVariantId,
+            quantity: c.quantity,
+          })) : undefined,
           images: images.filter((img) => !img.uploading).map((img, idx) => ({
             url: img.url,
             position: idx,
@@ -461,6 +470,15 @@ export default function CreateProductPage() {
             </label>
           </div>
         </div>
+
+        {/* Bundle */}
+        <BundleComponentPicker
+          isBundle={isBundle}
+          onIsBundleChange={setIsBundle}
+          components={bundleComponents}
+          onComponentsChange={setBundleComponents}
+          disabled={saving}
+        />
 
         {/* SEO */}
         <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
