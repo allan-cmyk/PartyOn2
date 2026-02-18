@@ -20,6 +20,55 @@ export default function InvoicePage(): ReactElement {
   const [error, setError] = useState<string | null>(null);
   const [paymentLoading, setPaymentLoading] = useState(false);
 
+  // Discount code state
+  const [discountInput, setDiscountInput] = useState('');
+  const [discountLoading, setDiscountLoading] = useState(false);
+  const [discountError, setDiscountError] = useState<string | null>(null);
+  const [appliedDiscount, setAppliedDiscount] = useState<{
+    code: string;
+    amount: number;
+    freeShipping: boolean;
+  } | null>(null);
+
+  // Apply discount code
+  const handleApplyDiscount = async () => {
+    if (!discountInput.trim() || !invoice) return;
+
+    setDiscountLoading(true);
+    setDiscountError(null);
+    try {
+      const response = await fetch(`/api/v1/invoice/${token}/discount`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: discountInput.trim() }),
+      });
+      const data = await response.json();
+
+      if (!data.success) {
+        setDiscountError(data.error || 'Invalid discount code');
+        return;
+      }
+
+      setAppliedDiscount({
+        code: data.discountCode,
+        amount: data.discountAmount,
+        freeShipping: data.freeShipping,
+      });
+      setDiscountError(null);
+    } catch {
+      setDiscountError('Failed to validate discount code');
+    } finally {
+      setDiscountLoading(false);
+    }
+  };
+
+  // Remove applied discount
+  const handleRemoveDiscount = () => {
+    setAppliedDiscount(null);
+    setDiscountInput('');
+    setDiscountError(null);
+  };
+
   // Fetch invoice data
   useEffect(() => {
     async function fetchInvoice() {
@@ -53,6 +102,10 @@ export default function InvoicePage(): ReactElement {
     try {
       const response = await fetch(`/api/v1/invoice/${token}/checkout`, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          discountCode: appliedDiscount?.code || undefined,
+        }),
       });
       const data = await response.json();
 
@@ -116,6 +169,11 @@ export default function InvoicePage(): ReactElement {
   const isPaid = invoice.status === 'PAID' || invoice.status === 'CONVERTED';
   const isCancelled = invoice.status === 'CANCELLED';
   const isExpired = invoice.status === 'EXPIRED' || (invoice.expiresAt && new Date(invoice.expiresAt) < new Date());
+
+  // Discount calculations
+  const hasBakedDiscount = Number(invoice.discountAmount) > 0;
+  const customerDiscountAmount = appliedDiscount && !hasBakedDiscount ? appliedDiscount.amount : 0;
+  const displayTotal = Number(invoice.total) - customerDiscountAmount;
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
@@ -244,16 +302,71 @@ export default function InvoicePage(): ReactElement {
             </div>
           </div>
 
+          {/* Discount Code Input */}
+          {!isPaid && !isCancelled && !isExpired && !hasBakedDiscount && (
+            <div className="px-6 pt-6 pb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Discount Code
+              </label>
+              {appliedDiscount ? (
+                <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg px-4 py-3">
+                  <div>
+                    <span className="font-medium text-green-800">{appliedDiscount.code}</span>
+                    <span className="text-green-600 ml-2">-${appliedDiscount.amount.toFixed(2)} off</span>
+                  </div>
+                  <button
+                    onClick={handleRemoveDiscount}
+                    className="text-sm text-red-600 hover:text-red-800 font-medium"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={discountInput}
+                    onChange={(e) => {
+                      setDiscountInput(e.target.value.toUpperCase());
+                      setDiscountError(null);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleApplyDiscount();
+                    }}
+                    placeholder="Enter code"
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
+                  />
+                  <button
+                    onClick={handleApplyDiscount}
+                    disabled={discountLoading || !discountInput.trim()}
+                    className="px-5 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                  >
+                    {discountLoading ? 'Checking...' : 'Apply'}
+                  </button>
+                </div>
+              )}
+              {discountError && (
+                <p className="mt-2 text-sm text-red-600">{discountError}</p>
+              )}
+            </div>
+          )}
+
           {/* Order Total */}
           <div className="p-6 border-b border-gray-100 space-y-2">
             <div className="flex justify-between text-gray-600">
               <span>Subtotal</span>
               <span>${Number(invoice.subtotal).toFixed(2)}</span>
             </div>
-            {Number(invoice.discountAmount) > 0 && (
+            {hasBakedDiscount && (
               <div className="flex justify-between text-green-600">
                 <span>Discount{invoice.discountCode ? ` (${invoice.discountCode})` : ''}</span>
                 <span>-${Number(invoice.discountAmount).toFixed(2)}</span>
+              </div>
+            )}
+            {appliedDiscount && !hasBakedDiscount && (
+              <div className="flex justify-between text-green-600">
+                <span>Discount ({appliedDiscount.code})</span>
+                <span>-${appliedDiscount.amount.toFixed(2)}</span>
               </div>
             )}
             <div className="flex justify-between text-gray-600">
@@ -266,7 +379,7 @@ export default function InvoicePage(): ReactElement {
             </div>
             <div className="flex justify-between text-xl font-semibold text-gray-900 pt-4 border-t border-gray-200">
               <span>Total</span>
-              <span>${Number(invoice.total).toFixed(2)}</span>
+              <span>${displayTotal.toFixed(2)}</span>
             </div>
           </div>
 
@@ -288,7 +401,7 @@ export default function InvoicePage(): ReactElement {
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                     </svg>
-                    <span>Pay ${Number(invoice.total).toFixed(2)}</span>
+                    <span>Pay ${displayTotal.toFixed(2)}</span>
                   </>
                 )}
               </button>

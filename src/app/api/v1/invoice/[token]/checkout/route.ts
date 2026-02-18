@@ -10,6 +10,7 @@ import { getDraftOrderByToken, updateDraftOrderStatus, canDraftOrderBePaid } fro
 import { DraftOrderItem } from '@/lib/draft-orders/types';
 import { getTaxRateForZip, DEFAULT_TAX_RATE } from '@/lib/tax';
 import { DraftOrderStatus } from '@prisma/client';
+import { validateDiscountCode } from '@/lib/discounts/discount-engine';
 
 interface RouteParams {
   params: Promise<{ token: string }>;
@@ -22,6 +23,15 @@ interface RouteParams {
 export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
     const { token } = await params;
+
+    // Parse optional discountCode from request body
+    let discountCode: string | undefined;
+    try {
+      const body = await request.json();
+      discountCode = body.discountCode;
+    } catch {
+      // No body or invalid JSON is fine -- no customer discount
+    }
 
     // Get draft order
     const draftOrder = await getDraftOrderByToken(token);
@@ -128,14 +138,40 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       billing_address_collection: 'required',
     };
 
-    // Apply discount if any
-    const discountAmount = Number(draftOrder.discountAmount);
-    if (discountAmount > 0) {
+    // Determine which discount to apply:
+    // 1. Admin baked-in discount on the draft order
+    // 2. Customer-entered discount code from the request body
+    // If both exist, use the larger one
+    const bakedDiscount = Number(draftOrder.discountAmount);
+    let finalDiscountAmount = bakedDiscount;
+    let finalDiscountLabel = draftOrder.discountCode || 'Discount';
+
+    if (discountCode && typeof discountCode === 'string') {
+      // Validate the customer-entered code
+      const items = (draftOrder.items as DraftOrderItem[]).map((item) => ({
+        productId: item.productId,
+        variantId: item.variantId,
+        quantity: item.quantity,
+        price: item.price,
+      }));
+      const subtotal = Number(draftOrder.subtotal);
+      const result = await validateDiscountCode(discountCode, { items, subtotal });
+
+      if (result.success && result.discountAmount > 0) {
+        // Use whichever discount is larger
+        if (result.discountAmount > bakedDiscount) {
+          finalDiscountAmount = result.discountAmount;
+          finalDiscountLabel = result.discountCode || discountCode;
+        }
+      }
+    }
+
+    if (finalDiscountAmount > 0) {
       const coupon = await stripe.coupons.create({
-        amount_off: Math.round(discountAmount * 100),
+        amount_off: Math.round(finalDiscountAmount * 100),
         currency: 'usd',
         duration: 'once',
-        name: draftOrder.discountCode || 'Discount',
+        name: finalDiscountLabel,
       });
       sessionParams.discounts = [{ coupon: coupon.id }];
     }
