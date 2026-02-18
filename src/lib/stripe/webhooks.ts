@@ -16,6 +16,7 @@ import {
   sendRefundProcessedEmail,
 } from '@/lib/email';
 import { notifyNewOrder, buildGhlPayload } from '@/lib/webhooks/ghl';
+import { recordDiscountUsage } from '@/lib/discounts/discount-engine';
 import {
   handleGroupV2PaymentCompleted,
   handleGroupV2DeliveryPayment,
@@ -199,6 +200,35 @@ async function handleDraftOrderPayment(
 
     // Notify GHL webhook
     await notifyNewOrder(buildGhlPayload(order, 'draft'));
+
+    // Record discount usage if a discount code was applied at checkout
+    const appliedDiscountCode = session.metadata?.appliedDiscountCode;
+    const appliedDiscountAmount = session.metadata?.appliedDiscountAmount;
+    if (appliedDiscountCode && appliedDiscountAmount) {
+      try {
+        const discountAmt = parseFloat(appliedDiscountAmount);
+        // If customer applied a code that differs from baked-in, update the order
+        if (appliedDiscountCode !== draftOrder.discountCode || discountAmt !== Number(draftOrder.discountAmount)) {
+          await prisma.order.update({
+            where: { id: order.id },
+            data: {
+              discountCode: appliedDiscountCode,
+              discountAmount: discountAmt,
+              total: Number(order.total) - discountAmt + Number(order.discountAmount),
+            },
+          });
+        }
+        await recordDiscountUsage(
+          appliedDiscountCode,
+          order.id,
+          order.customerId,
+          discountAmt
+        );
+        console.log('[Stripe Webhook] Discount usage recorded:', appliedDiscountCode, discountAmt);
+      } catch (discountError) {
+        console.error('[Stripe Webhook] Failed to record discount usage:', discountError);
+      }
+    }
 
     // Update draft order status
     await updateDraftOrderStatus(draftOrderId, 'CONVERTED', {

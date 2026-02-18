@@ -174,6 +174,10 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         name: finalDiscountLabel,
       });
       sessionParams.discounts = [{ coupon: coupon.id }];
+
+      // Store applied discount in metadata so webhook can record usage
+      sessionParams.metadata!.appliedDiscountCode = finalDiscountLabel;
+      sessionParams.metadata!.appliedDiscountAmount = String(finalDiscountAmount);
     }
 
     const session = await stripe.checkout.sessions.create(sessionParams);
