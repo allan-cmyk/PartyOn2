@@ -94,7 +94,7 @@ export default function ResultsStep({ state, onAddAllToCart, onReset, onSetPacka
             </div>
             <div className="text-right flex-shrink-0 ml-4">
               <span className="text-brand-yellow font-semibold text-sm">
-                {rec.quantity} {rec.unit}{rec.quantity > 1 ? 's' : ''}
+                {rec.quantity} x {rec.unit}{rec.quantity > 1 ? 's' : ''}
               </span>
             </div>
           </div>

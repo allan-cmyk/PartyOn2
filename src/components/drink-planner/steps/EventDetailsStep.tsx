@@ -20,7 +20,6 @@ const TIMING_OPTIONS: { id: EventTiming; label: string }[] = [
 const AREA_OPTIONS: { id: DeliveryArea; label: string }[] = [
   { id: 'austin', label: 'Austin' },
   { id: 'lake-travis', label: 'Lake Travis' },
-  { id: 'round-rock', label: 'Round Rock' },
   { id: 'other', label: 'Other' },
 ];
 

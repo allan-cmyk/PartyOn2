@@ -28,7 +28,7 @@ export type Extra =
 export type BartenderChoice = 'yes' | 'no' | 'tell-me-more';
 
 export type EventTiming = 'this-weekend' | 'next-weekend' | '2-weeks-out' | 'just-browsing';
-export type DeliveryArea = 'austin' | 'lake-travis' | 'round-rock' | 'other';
+export type DeliveryArea = 'austin' | 'lake-travis' | 'other';
 
 export type StepId =
   | 'welcome'

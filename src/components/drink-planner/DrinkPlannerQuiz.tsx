@@ -46,6 +46,11 @@ function loadState(): QuizState | null {
       parsed.extras = parsed.extras.filter((e: string) => VALID_EXTRAS.includes(e as Extra)) as Extra[];
     }
 
+    // Migrate delivery area: reset if round-rock (removed)
+    if ((parsed.deliveryArea as string) === 'round-rock') {
+      parsed.deliveryArea = null;
+    }
+
     return parsed;
   } catch { /* ignore */ }
   return null;
@@ -161,10 +166,10 @@ export default function DrinkPlannerQuiz({ onSkip }: DrinkPlannerQuizProps) {
       {state.currentStep === 'welcome' ? (
         <WelcomeStep onStart={goNext} onSkip={handleSkip} />
       ) : (
-        <section className="relative min-h-[calc(100vh-3.5rem)] md:min-h-[calc(100vh-4rem)] bg-gray-900 py-8 flex flex-col">
-          <div className="max-w-7xl mx-auto px-4 flex-1 flex flex-col">
+        <section className="relative min-h-[calc(100vh-3.5rem)] md:min-h-[calc(100vh-4rem)] bg-gray-900 pt-4 pb-6 md:py-8 flex flex-col">
+          <div className="max-w-7xl mx-auto px-4 flex-1 flex flex-col w-full">
             {/* Top bar: progress only */}
-            <div className="flex items-center gap-4 mb-8">
+            <div className="flex items-center justify-center gap-4 mb-6 md:mb-8">
               {showProgress && (
                 <div className="flex-1 max-w-md">
                   <QuizProgressBar
@@ -176,9 +181,9 @@ export default function DrinkPlannerQuiz({ onSkip }: DrinkPlannerQuizProps) {
             </div>
 
             {/* Content area with optional sidebar */}
-            <div className="flex gap-8 flex-1">
+            <div className="flex gap-8 flex-1 items-start justify-center">
               {/* Main quiz content */}
-              <div className="flex-1">
+              <div className="flex-1 max-w-3xl">
                 <AnimatePresence mode="wait" custom={direction}>
                   <QuizStep key={state.currentStep} direction={direction}>
                     {renderStep()}
