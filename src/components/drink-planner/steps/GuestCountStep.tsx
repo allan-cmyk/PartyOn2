@@ -1,7 +1,8 @@
 'use client';
 
+import { useMemo } from 'react';
 import type { EventType } from '@/lib/drinkPlannerTypes';
-import { getGuestRange, getQuickPickValues, getGuestStep } from '@/lib/drinkPlannerLogic';
+import { getGuestValues, getQuickPickValues } from '@/lib/drinkPlannerLogic';
 
 interface GuestCountStepProps {
   eventType: EventType | null;
@@ -11,9 +12,27 @@ interface GuestCountStepProps {
 }
 
 export default function GuestCountStep({ eventType, value, onChange, onNext }: GuestCountStepProps) {
-  const range = getGuestRange(eventType);
+  const guestValues = useMemo(() => getGuestValues(eventType), [eventType]);
   const quickPicks = getQuickPickValues(eventType);
-  const step = getGuestStep(value);
+
+  // Find the closest index for the current value
+  const currentIndex = useMemo(() => {
+    let closest = 0;
+    let closestDiff = Math.abs(guestValues[0] - value);
+    for (let i = 1; i < guestValues.length; i++) {
+      const diff = Math.abs(guestValues[i] - value);
+      if (diff < closestDiff) {
+        closest = i;
+        closestDiff = diff;
+      }
+    }
+    return closest;
+  }, [guestValues, value]);
+
+  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const idx = Number(e.target.value);
+    onChange(guestValues[idx]);
+  };
 
   return (
     <div className="max-w-xl mx-auto px-4">
@@ -38,11 +57,11 @@ export default function GuestCountStep({ eventType, value, onChange, onNext }: G
       <div className="px-4 mb-8">
         <input
           type="range"
-          min={range.min}
-          max={range.max}
-          step={step}
-          value={value}
-          onChange={(e) => onChange(Number(e.target.value))}
+          min={0}
+          max={guestValues.length - 1}
+          step={1}
+          value={currentIndex}
+          onChange={handleSliderChange}
           className="w-full h-2 bg-gray-700 rounded-full appearance-none cursor-pointer
             [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6
             [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-brand-yellow
@@ -51,8 +70,8 @@ export default function GuestCountStep({ eventType, value, onChange, onNext }: G
             [&::-moz-range-thumb]:bg-brand-yellow [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
         />
         <div className="flex justify-between text-xs text-gray-500 mt-1">
-          <span>{range.min}</span>
-          <span>{range.max}</span>
+          <span>{guestValues[0]}</span>
+          <span>{guestValues[guestValues.length - 1]}</span>
         </div>
       </div>
 

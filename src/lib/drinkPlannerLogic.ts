@@ -24,12 +24,37 @@ const DRINKS_PER_HOUR: Record<EventType, Record<DrinkingVibe, number>> = {
 };
 
 const DURATION_HOURS: Record<Duration, number> = {
-  '2-3': 2.5,
-  '4-5': 4.5,
-  '6-8': 7,
-  'all-day': 10,
-  '2-days': 16,
-  '3-days': 24,
+  '2h': 2,
+  '3h': 3,
+  '4h': 4,
+  '5h': 5,
+  '6h': 6,
+  'multi-day': 16,
+};
+
+// Hardcoded estimated prices from the store (used for cost estimation only)
+const ESTIMATED_PRICES: Record<string, number> = {
+  'Miller Lite 24pk': 29.99,
+  'Modelo 24pk': 34.99,
+  'Austin Beerworks': 12.99,
+  'High Noon Variety': 24.99,
+  'Ranch Water': 19.99,
+  'White Claw Variety': 19.99,
+  'Dark Horse Pinot Grigio': 12.99,
+  'Jam Cellars Chardonnay': 14.99,
+  'La Marca Prosecco': 16.99,
+  'Wycliff Brut Rose': 9.99,
+  'Andre Brut': 8.99,
+  'The Classic Austin Rita': 49.99,
+  "Tito's Lemonade Kit": 44.99,
+  'Rum Punch Kit': 44.99,
+  'The Hill Country Old-Fashioned': 54.99,
+  'Aperol Spritz Kit': 49.99,
+  'Espresso Martini Kit': 54.99,
+  'Margarita Kit': 44.99,
+  'Ice Bags': 4.99,
+  'Topo Chico Mineral Water': 14.99,
+  'Liquid Death': 14.99,
 };
 
 // Product search queries for the product search API
@@ -94,16 +119,30 @@ export function getPrevStep(state: QuizState): StepId | null {
   return idx > 0 ? steps[idx - 1] : null;
 }
 
+export function getGuestValues(eventType: EventType | null): number[] {
+  const values: number[] = [];
+  // 5-20 by 1s
+  for (let i = 5; i <= 20; i++) values.push(i);
+  const max = (eventType === 'boat-day' || eventType === 'weekend-trip') ? 50 : 200;
+  // 25-100 by 5s (or up to max)
+  for (let i = 25; i <= Math.min(100, max); i += 5) values.push(i);
+  // 110-200 by 10s (if max allows)
+  if (max > 100) {
+    for (let i = 110; i <= max; i += 10) values.push(i);
+  }
+  return values;
+}
+
 export function getGuestRange(eventType: EventType | null): { min: number; max: number } {
   if (eventType === 'boat-day' || eventType === 'weekend-trip') {
     return { min: 5, max: 50 };
   }
-  return { min: 10, max: 200 };
+  return { min: 5, max: 200 };
 }
 
 export function getQuickPickValues(eventType: EventType | null): number[] {
   if (eventType === 'boat-day' || eventType === 'weekend-trip') {
-    return [5, 10, 15, 20, 30, 40, 50];
+    return [10, 20, 30, 50];
   }
   return [10, 20, 30, 50, 75, 100, 150, 200];
 }
@@ -112,10 +151,19 @@ export function getGuestStep(value: number): number {
   return value >= 100 ? 10 : 5;
 }
 
+function calculateEstimatedCost(recommendations: ProductRecommendation[]): number {
+  let total = 0;
+  for (const rec of recommendations) {
+    const price = ESTIMATED_PRICES[rec.name] || 0;
+    total += price * rec.quantity;
+  }
+  return Math.round(total * 100) / 100;
+}
+
 export function calculateQuizResults(state: QuizState): QuizResults {
   const eventType = state.eventType || 'other';
   const vibe = state.drinkingVibe || 'social';
-  const duration = state.duration || '4-5';
+  const duration = state.duration || '4h';
   const guests = state.guestCount || 20;
   const isPremium = state.packageTier === 'premium';
 
@@ -266,9 +314,12 @@ export function calculateQuizResults(state: QuizState): QuizResults {
     });
   }
 
+  const filtered = recommendations.filter(r => r.quantity > 0);
+
   return {
-    recommendations: recommendations.filter(r => r.quantity > 0),
+    recommendations: filtered,
     totalDrinks,
+    estimatedCost: calculateEstimatedCost(filtered),
     summary: {
       eventType: EVENT_TYPE_LABELS[eventType],
       guestCount: guests,
@@ -437,4 +488,3 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
       return state;
   }
 }
-

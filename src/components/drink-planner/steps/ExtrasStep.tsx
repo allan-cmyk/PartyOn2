@@ -10,8 +10,6 @@ interface ExtrasStepProps {
 
 const EXTRAS: { id: Extra; label: string; description: string }[] = [
   { id: 'na-water', label: 'NA / Water Options', description: 'Topo Chico, Liquid Death' },
-  { id: 'budget-friendly', label: 'Budget-Friendly Picks', description: 'Best value selections' },
-  { id: 'premium', label: 'Premium Vibes', description: 'Top-shelf upgrades' },
   { id: 'no-glass', label: 'No Glass (boat-friendly)', description: 'Cans and plastic only' },
   { id: 'ice-cups', label: 'Ice & Cups', description: 'We bring the essentials' },
 ];

@@ -116,7 +116,7 @@ export default function QuickOrderPage(): ReactElement {
       />
 
       {/* Drink Planner Quiz (replaces hero) */}
-      <div className="mt-28 md:mt-24">
+      <div className="mt-14 md:mt-16">
         <DrinkPlannerQuiz onSkip={handleQuizSkip} />
       </div>
 

@@ -38,6 +38,8 @@ export default function ResultsStep({ state, onAddAllToCart, onReset, onSetPacka
 
   if (!results) return null;
 
+  const totalItems = results.recommendations.reduce((sum, r) => sum + r.quantity, 0);
+
   return (
     <div className="max-w-3xl mx-auto px-4 relative">
       {/* CSS Confetti */}
@@ -80,7 +82,7 @@ export default function ResultsStep({ state, onAddAllToCart, onReset, onSetPacka
       </div>
 
       {/* Recommendations */}
-      <div className="space-y-3 mb-8">
+      <div className="space-y-3 mb-4">
         {results.recommendations.map((rec, i) => (
           <div
             key={`${rec.searchQuery}-${i}`}
@@ -97,6 +99,16 @@ export default function ResultsStep({ state, onAddAllToCart, onReset, onSetPacka
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Total row */}
+      <div className="flex items-center justify-between p-4 bg-gray-800 border border-gray-600 rounded-xl mb-8">
+        <span className="text-white font-medium text-sm tracking-[0.05em]">
+          Total: {totalItems} item{totalItems !== 1 ? 's' : ''}
+        </span>
+        <span className="text-brand-yellow font-semibold text-base tracking-[0.03em]">
+          Est. ${results.estimatedCost.toFixed(2)}
+        </span>
       </div>
 
       {/* Bartender note */}
@@ -143,6 +155,9 @@ export default function ResultsStep({ state, onAddAllToCart, onReset, onSetPacka
         >
           {addingToCart ? 'Adding...' : 'ADD ALL TO CART'}
         </button>
+        <p className="text-gray-500 text-xs tracking-[0.05em]">
+          You can edit this once it&apos;s in your cart
+        </p>
         <button
           onClick={() => setShowQuoteModal(true)}
           className="border-2 border-gray-600 text-gray-200 font-medium text-sm px-8 py-3 rounded-full tracking-[0.08em] hover:border-gray-400 transition-colors w-full max-w-sm"

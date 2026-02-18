@@ -3,7 +3,7 @@
 import { useReducer, useEffect, useRef, useCallback, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useCartContext } from '@/contexts/CartContext';
-import type { QuizState, ProductRecommendation, DrinkCategory, Extra, StepId } from '@/lib/drinkPlannerTypes';
+import type { QuizState, ProductRecommendation, DrinkCategory, Extra, StepId, Duration } from '@/lib/drinkPlannerTypes';
 import {
   quizReducer,
   initialQuizState,
@@ -26,11 +26,27 @@ import ResultsStep from './steps/ResultsStep';
 
 const STORAGE_KEY = 'partyOn_drinkPlannerQuiz';
 
+const VALID_DURATIONS: Duration[] = ['2h', '3h', '4h', '5h', '6h', 'multi-day'];
+const VALID_EXTRAS: Extra[] = ['na-water', 'no-glass', 'ice-cups'];
+
 function loadState(): QuizState | null {
   if (typeof window === 'undefined') return null;
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) return JSON.parse(saved);
+    if (!saved) return null;
+    const parsed = JSON.parse(saved) as QuizState;
+
+    // Migrate duration: reset if old value
+    if (parsed.duration && !VALID_DURATIONS.includes(parsed.duration)) {
+      parsed.duration = null;
+    }
+
+    // Migrate extras: filter to only valid values
+    if (parsed.extras) {
+      parsed.extras = parsed.extras.filter((e: string) => VALID_EXTRAS.includes(e as Extra)) as Extra[];
+    }
+
+    return parsed;
   } catch { /* ignore */ }
   return null;
 }
@@ -133,7 +149,7 @@ export default function DrinkPlannerQuiz({ onSkip }: DrinkPlannerQuizProps) {
 
   const steps = getSteps(state);
   const showProgress = state.currentStep !== 'welcome' && state.currentStep !== 'results';
-  const showBack = state.currentStep !== 'welcome';
+  const showBack = state.currentStep !== 'welcome' && state.currentStep !== 'results';
   // Exclude welcome and results from progress count
   const progressSteps = steps.filter((s): s is StepId => s !== 'welcome' && s !== 'results');
   const progressIndex = progressSteps.indexOf(state.currentStep);
@@ -145,21 +161,10 @@ export default function DrinkPlannerQuiz({ onSkip }: DrinkPlannerQuizProps) {
       {state.currentStep === 'welcome' ? (
         <WelcomeStep onStart={goNext} onSkip={handleSkip} />
       ) : (
-        <section className="relative min-h-[80vh] md:min-h-[70vh] bg-gray-900 py-8">
-          <div className="max-w-7xl mx-auto px-4">
-            {/* Top bar: back + progress */}
+        <section className="relative min-h-[calc(100vh-3.5rem)] md:min-h-[calc(100vh-4rem)] bg-gray-900 py-8 flex flex-col">
+          <div className="max-w-7xl mx-auto px-4 flex-1 flex flex-col">
+            {/* Top bar: progress only */}
             <div className="flex items-center gap-4 mb-8">
-              {showBack && (
-                <button
-                  onClick={goBack}
-                  className="text-gray-400 hover:text-white transition-colors p-2 -ml-2"
-                  aria-label="Go back"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-              )}
               {showProgress && (
                 <div className="flex-1 max-w-md">
                   <QuizProgressBar
@@ -171,7 +176,7 @@ export default function DrinkPlannerQuiz({ onSkip }: DrinkPlannerQuizProps) {
             </div>
 
             {/* Content area with optional sidebar */}
-            <div className="flex gap-8">
+            <div className="flex gap-8 flex-1">
               {/* Main quiz content */}
               <div className="flex-1">
                 <AnimatePresence mode="wait" custom={direction}>
@@ -188,6 +193,21 @@ export default function DrinkPlannerQuiz({ onSkip }: DrinkPlannerQuizProps) {
                 </div>
               )}
             </div>
+
+            {/* Bottom-left back button */}
+            {showBack && (
+              <div className="mt-auto pt-6">
+                <button
+                  onClick={goBack}
+                  className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm tracking-[0.08em]"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  BACK
+                </button>
+              </div>
+            )}
           </div>
         </section>
       )}

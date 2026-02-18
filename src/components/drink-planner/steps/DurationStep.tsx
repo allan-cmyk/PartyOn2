@@ -1,22 +1,19 @@
 'use client';
 
 import { useState } from 'react';
-import type { Duration, EventType } from '@/lib/drinkPlannerTypes';
+import type { Duration } from '@/lib/drinkPlannerTypes';
 import { DURATION_LABELS } from '@/lib/drinkPlannerTypes';
 
 interface DurationStepProps {
-  eventType: EventType | null;
+  eventType: string | null;
   selected: Duration | null;
   onSelect: (duration: Duration) => void;
 }
 
-export default function DurationStep({ eventType, selected, onSelect }: DurationStepProps) {
-  const [animating, setAnimating] = useState<Duration | null>(null);
+const durations: Duration[] = ['2h', '3h', '4h', '5h', '6h', 'multi-day'];
 
-  const durations: Duration[] = ['2-3', '4-5', '6-8', 'all-day'];
-  if (eventType === 'weekend-trip') {
-    durations.push('2-days', '3-days');
-  }
+export default function DurationStep({ selected, onSelect }: DurationStepProps) {
+  const [animating, setAnimating] = useState<Duration | null>(null);
 
   const handleSelect = (d: Duration) => {
     setAnimating(d);

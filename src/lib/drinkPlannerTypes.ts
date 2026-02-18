@@ -10,7 +10,7 @@ export type EventType =
 
 export type DrinkingVibe = 'light' | 'social' | 'party';
 
-export type Duration = '2-3' | '4-5' | '6-8' | 'all-day' | '2-days' | '3-days';
+export type Duration = '2h' | '3h' | '4h' | '5h' | '6h' | 'multi-day';
 
 export type DrinkCategory =
   | 'beer'
@@ -22,8 +22,6 @@ export type DrinkCategory =
 
 export type Extra =
   | 'na-water'
-  | 'budget-friendly'
-  | 'premium'
   | 'no-glass'
   | 'ice-cups';
 
@@ -77,6 +75,7 @@ export interface ProductRecommendation {
 export interface QuizResults {
   recommendations: ProductRecommendation[];
   totalDrinks: number;
+  estimatedCost: number;
   summary: {
     eventType: string;
     guestCount: number;
@@ -117,18 +116,18 @@ export const EVENT_TYPE_LABELS: Record<EventType, string> = {
 };
 
 export const VIBE_LABELS: Record<DrinkingVibe, { label: string; description: string }> = {
-  'light': { label: 'Light Sippers', description: 'A drink or two' },
-  'social': { label: 'Social Drinkers', description: 'Keeping it going' },
-  'party': { label: 'Here to Party', description: "Let's go!" },
+  'light': { label: 'Light Drinkers', description: 'Keeping it chill' },
+  'social': { label: 'Average Drinkers', description: 'Keeping it fun' },
+  'party': { label: 'Heavy Drinkers', description: 'Keeping it crazy' },
 };
 
 export const DURATION_LABELS: Record<Duration, string> = {
-  '2-3': '2-3 hours',
-  '4-5': '4-5 hours',
-  '6-8': '6-8 hours',
-  'all-day': 'All day/night',
-  '2-days': '2 days',
-  '3-days': '3 days',
+  '2h': '2 Hours',
+  '3h': '3 Hours',
+  '4h': '4 Hours',
+  '5h': '5 Hours',
+  '6h': '6 Hours',
+  'multi-day': 'Multiple Days',
 };
 
 export const DRINK_CATEGORY_LABELS: Record<DrinkCategory, string> = {
