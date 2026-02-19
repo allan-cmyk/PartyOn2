@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import type { ReactElement } from 'react';
@@ -19,6 +19,7 @@ export default function InvoicePage(): ReactElement {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [paymentLoading, setPaymentLoading] = useState(false);
+  const [updatingItems, setUpdatingItems] = useState(false);
 
   // Discount code state
   const [discountInput, setDiscountInput] = useState('');
@@ -68,6 +69,50 @@ export default function InvoicePage(): ReactElement {
     setDiscountInput('');
     setDiscountError(null);
   };
+
+  // Update item quantity
+  const handleUpdateQuantity = useCallback(async (productId: string, variantId: string, newQuantity: number) => {
+    if (!invoice) return;
+
+    const updatedItems = invoice.items
+      .map((item: DraftOrderItem) => ({
+        productId: item.productId,
+        variantId: item.variantId,
+        quantity: item.productId === productId && item.variantId === variantId
+          ? newQuantity
+          : item.quantity,
+      }))
+      .filter(item => item.quantity > 0);
+
+    if (updatedItems.length === 0) return;
+
+    setUpdatingItems(true);
+    try {
+      const response = await fetch(`/api/v1/invoice/${token}/items`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: updatedItems }),
+      });
+      const data = await response.json();
+
+      if (!data.success) {
+        setError(data.error || 'Failed to update items');
+        return;
+      }
+
+      setInvoice(data.data);
+      // Clear customer-applied discount since totals changed
+      if (appliedDiscount) {
+        setAppliedDiscount(null);
+        setDiscountInput('');
+        setDiscountError(null);
+      }
+    } catch {
+      setError('Failed to update items');
+    } finally {
+      setUpdatingItems(false);
+    }
+  }, [invoice, token, appliedDiscount]);
 
   // Fetch invoice data
   useEffect(() => {
@@ -169,6 +214,7 @@ export default function InvoicePage(): ReactElement {
   const isPaid = invoice.status === 'PAID' || invoice.status === 'CONVERTED';
   const isCancelled = invoice.status === 'CANCELLED';
   const isExpired = invoice.status === 'EXPIRED' || (invoice.expiresAt && new Date(invoice.expiresAt) < new Date());
+  const isPayable = !isPaid && !isCancelled && !isExpired;
 
   // Discount calculations
   const hasBakedDiscount = Number(invoice.discountAmount) > 0;
@@ -250,9 +296,17 @@ export default function InvoicePage(): ReactElement {
 
           {/* Order Items */}
           <div className="p-6 border-b border-gray-100">
-            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">
-              Order Items
-            </h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
+                Order Items
+              </h3>
+              {updatingItems && (
+                <span className="text-xs text-gray-400 flex items-center gap-1">
+                  <span className="animate-spin inline-block w-3 h-3 border border-gray-400 border-t-transparent rounded-full"></span>
+                  Updating...
+                </span>
+              )}
+            </div>
             <div className="border border-gray-200 rounded-lg overflow-hidden">
               <table className="w-full">
                 <thead>
@@ -286,7 +340,41 @@ export default function InvoicePage(): ReactElement {
                           <p className="text-sm text-gray-500">{item.variantTitle}</p>
                         )}
                       </td>
-                      <td className="py-3 px-4 text-center text-gray-700">{item.quantity}</td>
+                      <td className="py-3 px-4 text-center text-gray-700">
+                        {isPayable ? (
+                          <div className="flex items-center justify-center gap-1">
+                            <button
+                              onClick={() => handleUpdateQuantity(item.productId, item.variantId, item.quantity - 1)}
+                              disabled={updatingItems}
+                              className="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                              title={item.quantity === 1 ? 'Remove item' : 'Decrease quantity'}
+                            >
+                              {item.quantity === 1 ? (
+                                <svg className="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              ) : (
+                                <svg className="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                                </svg>
+                              )}
+                            </button>
+                            <span className="w-8 text-center font-medium">{item.quantity}</span>
+                            <button
+                              onClick={() => handleUpdateQuantity(item.productId, item.variantId, item.quantity + 1)}
+                              disabled={updatingItems}
+                              className="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                              title="Increase quantity"
+                            >
+                              <svg className="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                              </svg>
+                            </button>
+                          </div>
+                        ) : (
+                          item.quantity
+                        )}
+                      </td>
                       <td className="py-3 px-4 text-right">
                         <p className="font-medium text-gray-900">
                           ${(item.price * item.quantity).toFixed(2)}
@@ -303,7 +391,7 @@ export default function InvoicePage(): ReactElement {
           </div>
 
           {/* Discount Code Input */}
-          {!isPaid && !isCancelled && !isExpired && !hasBakedDiscount && (
+          {isPayable && !hasBakedDiscount && (
             <div className="px-6 pt-6 pb-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Discount Code
@@ -384,11 +472,11 @@ export default function InvoicePage(): ReactElement {
           </div>
 
           {/* Pay Button */}
-          {!isPaid && !isCancelled && !isExpired && (
+          {isPayable && (
             <div className="p-6">
               <button
                 onClick={handlePayNow}
-                disabled={paymentLoading}
+                disabled={paymentLoading || updatingItems}
                 className="w-full py-4 bg-brand-yellow hover:bg-yellow-600 text-gray-900 font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {paymentLoading ? (
