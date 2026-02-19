@@ -9,8 +9,8 @@ import type { OrderWithItems } from '@/lib/inventory/services/order-service';
 const SCOPES = ['https://www.googleapis.com/auth/calendar.events'];
 
 function getCalendarClient() {
-  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  const privateKey = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
+  const email = process.env.GOOGLE_CALENDAR_SERVICE_ACCOUNT_EMAIL;
+  const privateKey = process.env.GOOGLE_CALENDAR_SERVICE_ACCOUNT_KEY;
   const calendarId = process.env.GOOGLE_CALENDAR_ID;
 
   if (!email || !privateKey || !calendarId) {
