@@ -2,7 +2,7 @@
 
 import { useState, useEffect, ReactElement } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
+
 
 interface Commission {
   id: string;

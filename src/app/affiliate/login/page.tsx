@@ -42,7 +42,7 @@ export default function AffiliateLoginPage(): ReactElement {
             If an active partner account exists for <strong>{email}</strong>, we sent a login link.
           </p>
           <p className="text-gray-500 text-sm mb-6">
-            The link expires in 15 minutes. Check your spam folder if you don't see it.
+            The link expires in 15 minutes. Check your spam folder if you don&apos;t see it.
           </p>
           <button
             onClick={() => { setSent(false); setEmail(''); }}
