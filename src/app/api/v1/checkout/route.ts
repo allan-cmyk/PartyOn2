@@ -80,7 +80,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // Get the cart
-    let cart = await getCartById(cartId);
+    const cart = await getCartById(cartId);
 
     if (!cart) {
       return NextResponse.json(
