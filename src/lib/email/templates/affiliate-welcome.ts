@@ -59,16 +59,19 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
 
               ${personalNoteHtml}
 
-              <!-- Referral Code -->
+              <!-- Referral Link -->
               <div style="background-color: #f9fafb; border-radius: 8px; padding: 20px; margin-bottom: 24px; text-align: center;">
                 <h3 style="margin: 0 0 12px; color: #1a1a1a; font-size: 18px;">
-                  Your Referral Code
+                  Your Partner Page
                 </h3>
-                <div style="background-color: #1a1a1a; color: #D4AF37; font-family: 'Courier New', Courier, monospace; font-size: 28px; font-weight: 700; letter-spacing: 0.1em; padding: 16px 24px; border-radius: 8px; display: inline-block; margin-bottom: 12px;">
-                  ${data.code}
+                <p style="margin: 0 0 12px; color: #4b5563; font-size: 15px; line-height: 1.6;">
+                  Send your customers to your dedicated partner page -- not the homepage:
+                </p>
+                <div style="background-color: #1a1a1a; color: #D4AF37; font-family: 'Courier New', Courier, monospace; font-size: 18px; font-weight: 700; padding: 16px 24px; border-radius: 8px; display: inline-block; margin-bottom: 12px;">
+                  <a href="${data.referralLink}" style="color: #D4AF37; text-decoration: none;">${data.referralLink}</a>
                 </div>
-                <p style="margin: 0; color: #6b7280; font-size: 14px;">
-                  Your referral link: <a href="${data.referralLink}" style="color: #D4AF37; text-decoration: underline;">${data.referralLink}</a>
+                <p style="margin: 0; color: #6b7280; font-size: 13px;">
+                  Referral code: <strong>${data.code}</strong>
                 </p>
               </div>
 
@@ -79,7 +82,7 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
               <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 24px;">
                 <tr>
                   <td style="padding: 6px 0; color: #4b5563; font-size: 15px; line-height: 1.6; vertical-align: top; width: 24px;">&#8226;</td>
-                  <td style="padding: 6px 0; color: #4b5563; font-size: 15px; line-height: 1.6;">Your customers get <strong>free delivery</strong> when they use your referral code or link</td>
+                  <td style="padding: 6px 0; color: #4b5563; font-size: 15px; line-height: 1.6;">Your customers get <strong>free delivery</strong> when they order through your partner page</td>
                 </tr>
                 <tr>
                   <td style="padding: 6px 0; color: #4b5563; font-size: 15px; line-height: 1.6; vertical-align: top;">&#8226;</td>
@@ -157,7 +160,7 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
                 <table cellpadding="0" cellspacing="0" border="0" width="100%">
                   <tr>
                     <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6; vertical-align: top; width: 24px;">&#8226;</td>
-                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">Share your referral link on social media and in your bio</td>
+                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">Share your partner page link on social media and in your bio</td>
                   </tr>
                   <tr>
                     <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6; vertical-align: top;">&#8226;</td>
@@ -208,12 +211,12 @@ export function generateAffiliateWelcomeText(data: AffiliateWelcomeEmailData): s
   }
 
   lines.push(
-    'YOUR REFERRAL CODE',
-    data.code,
-    `Referral link: ${data.referralLink}`,
+    'YOUR PARTNER PAGE',
+    `Send your customers here (not the homepage): ${data.referralLink}`,
+    `Referral code: ${data.code}`,
     '',
     'HOW IT WORKS',
-    '- Your customers get free delivery when they use your referral code or link',
+    '- Your customers get free delivery when they order through your partner page',
     '- You earn a commission on every order placed through your referral',
     '- The more revenue you refer, the higher your commission rate grows',
     '',
@@ -230,7 +233,7 @@ export function generateAffiliateWelcomeText(data: AffiliateWelcomeEmailData): s
     'Enter your email and we\'ll send you a magic link -- no password needed.',
     '',
     'MARKETING TIPS',
-    '- Share your referral link on social media and in your bio',
+    '- Share your partner page link on social media and in your bio',
     '- Add it to your website, booking confirmations, or invoices',
     '- Mention the free delivery perk -- it\'s a great selling point for your clients',
     '',
