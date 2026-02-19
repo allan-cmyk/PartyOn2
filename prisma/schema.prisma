@@ -785,6 +785,9 @@ model Order {
   // Group order
   groupOrderId String? @map("group_order_id")
 
+  // Affiliate attribution
+  affiliateId String? @map("affiliate_id")
+
   // Notes
   customerNote String? @map("customer_note") @db.Text
   internalNote String? @map("internal_note") @db.Text
@@ -798,16 +801,19 @@ model Order {
 
   customer     Customer      @relation(fields: [customerId], references: [id])
   groupOrder   GroupOrder?   @relation(fields: [groupOrderId], references: [id])
+  affiliate    Affiliate?    @relation("AffiliateOrders", fields: [affiliateId], references: [id])
   items        OrderItem[]
   fulfillments Fulfillment[]
   refunds      Refund[]
   deliveryTask DeliveryTask?
+  affiliateCommissions AffiliateCommission[]
 
   @@index([customerId])
   @@index([orderNumber])
   @@index([status])
   @@index([deliveryDate])
   @@index([shopifyOrderId])
+  @@index([affiliateId])
   @@map("orders")
 }
 
@@ -1145,6 +1151,9 @@ enum EmailType {
   INVOICE
   GROUP_ORDER_INVOICE
   PARTNER_INQUIRY
+  AFFILIATE_MAGIC_LINK
+  AFFILIATE_WELCOME
+  AFFILIATE_PAYOUT
 }
 
 enum EmailStatus {
@@ -1804,4 +1813,176 @@ model WebhookEvent {
   createdAt     DateTime @default(now()) @map("created_at")
 
   @@map("webhook_events")
+}
+
+// ==========================================
+// AFFILIATE / PARTNER PROGRAM
+// ==========================================
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum AffiliateStatus {
+  ACTIVE
+  PAUSED
+  INACTIVE
+}
+
+enum AffiliateCategory {
+  BARTENDER
+  BOAT
+  VENUE
+  PLANNER
+  OTHER
+}
+
+enum CommissionStatus {
+  HELD
+  HELD_REVIEW
+  APPROVED
+  VOID
+  PAID
+}
+
+enum PayoutStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+model PartnerApplication {
+  id              String            @id @default(uuid())
+  contactName     String            @map("contact_name")
+  businessName    String            @map("business_name")
+  email           String
+  phone           String?
+  category        AffiliateCategory
+  websiteOrSocial String?           @map("website_or_social")
+  serviceArea     String?           @map("service_area")
+  notes           String?           @db.Text
+  consent         Boolean
+  status          ApplicationStatus @default(PENDING)
+  reviewedAt      DateTime?         @map("reviewed_at")
+  reviewedBy      String?           @map("reviewed_by")
+  affiliateId     String?           @map("affiliate_id")
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+
+  affiliate Affiliate? @relation(fields: [affiliateId], references: [id])
+
+  @@index([email])
+  @@index([status])
+  @@map("partner_applications")
+}
+
+model Affiliate {
+  id            String            @id @default(uuid())
+  code          String            @unique
+  status        AffiliateStatus   @default(ACTIVE)
+  category      AffiliateCategory
+  contactName   String            @map("contact_name")
+  businessName  String            @map("business_name")
+  email         String            @unique
+  phone         String?
+
+  commissionRateOverride Decimal? @map("commission_rate_override") @db.Decimal(5, 4)
+  categoryRateOverride   Decimal? @map("category_rate_override") @db.Decimal(5, 4)
+
+  payoutMethod  String? @map("payout_method")
+  payoutDetails Json?   @map("payout_details")
+
+  internalNotes String? @map("internal_notes") @db.Text
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  applications PartnerApplication[]
+  commissions  AffiliateCommission[]
+  payouts      AffiliatePayout[]
+  orders       Order[]              @relation("AffiliateOrders")
+  magicLinks   MagicLinkToken[]
+
+  @@index([code])
+  @@map("affiliates")
+}
+
+model AffiliateCommission {
+  id                   String           @id @default(uuid())
+  affiliateId          String           @map("affiliate_id")
+  orderId              String           @map("order_id")
+  commissionBaseCents  Int              @map("commission_base_cents")
+  commissionRate       Decimal          @map("commission_rate") @db.Decimal(5, 4)
+  commissionAmountCents Int             @map("commission_amount_cents")
+  tierAtTime           String           @map("tier_at_time")
+  status               CommissionStatus @default(HELD)
+  isSelfReferral       Boolean          @default(false) @map("is_self_referral")
+  deliveredAt          DateTime?        @map("delivered_at")
+  holdUntil            DateTime?        @map("hold_until")
+  voidedAt             DateTime?        @map("voided_at")
+  voidedReason         String?          @map("voided_reason")
+  payoutId             String?          @map("payout_id")
+  createdAt            DateTime         @default(now()) @map("created_at")
+  updatedAt            DateTime         @updatedAt @map("updated_at")
+
+  affiliate Affiliate       @relation(fields: [affiliateId], references: [id])
+  order     Order           @relation(fields: [orderId], references: [id])
+  payout    AffiliatePayout? @relation(fields: [payoutId], references: [id])
+
+  @@index([affiliateId])
+  @@index([orderId])
+  @@index([status])
+  @@index([payoutId])
+  @@map("affiliate_commissions")
+}
+
+model AffiliatePayout {
+  id              String       @id @default(uuid())
+  affiliateId     String       @map("affiliate_id")
+  payoutPeriod    String       @map("payout_period")
+  totalAmountCents Int         @map("total_amount_cents")
+  status          PayoutStatus @default(PENDING)
+  processedAt     DateTime?    @map("processed_at")
+  notes           String?      @db.Text
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  affiliate  Affiliate           @relation(fields: [affiliateId], references: [id])
+  commissions AffiliateCommission[]
+  lineItems  PayoutLineItem[]
+
+  @@index([affiliateId])
+  @@index([payoutPeriod])
+  @@index([status])
+  @@map("affiliate_payouts")
+}
+
+model PayoutLineItem {
+  id           String @id @default(uuid())
+  payoutId     String @map("payout_id")
+  commissionId String @map("commission_id")
+  amountCents  Int    @map("amount_cents")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  payout AffiliatePayout @relation(fields: [payoutId], references: [id], onDelete: Cascade)
+
+  @@index([payoutId])
+  @@map("payout_line_items")
+}
+
+model MagicLinkToken {
+  id          String    @id @default(uuid())
+  affiliateId String    @map("affiliate_id")
+  token       String    @unique
+  expiresAt   DateTime  @map("expires_at")
+  usedAt      DateTime? @map("used_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  affiliate Affiliate @relation(fields: [affiliateId], references: [id])
+
+  @@index([token])
+  @@index([affiliateId])
+  @@map("magic_link_tokens")
 }

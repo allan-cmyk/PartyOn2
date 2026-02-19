@@ -11,6 +11,9 @@ import { createCheckoutSession, getCheckoutSession, getOrCreateStripeCustomer } 
 import { getCartById, validateCartMinimum, hasDeliveryInfo } from '@/lib/inventory/services/cart-service';
 import { createFreeOrder } from '@/lib/inventory/services/order-service';
 import { notifyNewOrder, buildGhlPayload } from '@/lib/webhooks/ghl';
+import { getAffiliateByCode } from '@/lib/affiliates/affiliate-service';
+import { linkOrderToAffiliate } from '@/lib/affiliates/commission-engine';
+import { prisma } from '@/lib/database/client';
 
 const CART_ID_COOKIE = 'cart_id';
 
@@ -78,7 +81,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // Get the cart
-    const cart = await getCartById(cartId);
+    let cart = await getCartById(cartId);
 
     if (!cart) {
       return NextResponse.json(
@@ -115,6 +118,38 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
+    // Check for affiliate attribution cookie
+    let affiliateCode: string | undefined;
+    const refCode = cookieStore.get('ref_code')?.value;
+    if (refCode) {
+      try {
+        const affiliate = await getAffiliateByCode(refCode);
+        if (affiliate && affiliate.status === 'ACTIVE') {
+          affiliateCode = affiliate.code;
+          // Zero the delivery fee for affiliate-referred customers
+          await prisma.cart.update({
+            where: { id: cartId },
+            data: { deliveryFee: 0 },
+          });
+          // Re-fetch cart with updated delivery fee
+          const updatedCart = await getCartById(cartId);
+          if (updatedCart) {
+            // Recalculate total with $0 delivery
+            const newTotal = Number(updatedCart.subtotal) - Number(updatedCart.discountAmount) + Number(updatedCart.taxAmount);
+            await prisma.cart.update({
+              where: { id: cartId },
+              data: { total: Math.max(newTotal, 0) },
+            });
+            cart = (await getCartById(cartId))!;
+          }
+          console.log('[Checkout] Affiliate attribution applied:', affiliateCode, '- delivery fee zeroed');
+        }
+      } catch (err) {
+        console.error('[Checkout] Error checking affiliate code:', err);
+        // Non-fatal: proceed without affiliate attribution
+      }
+    }
+
     // Get request body for optional params
     const body = await request.json().catch(() => ({}));
     const { customerEmail, customerName, customerPhone, returnUrl } = body;
@@ -131,8 +166,18 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         cart,
         customerEmail || '',
         customerName || 'Guest',
-        customerPhone || null
+        customerPhone || null,
+        affiliateCode
       );
+
+      // Link order to affiliate and create commission if attributed
+      if (affiliateCode) {
+        try {
+          await linkOrderToAffiliate(order, affiliateCode);
+        } catch (err) {
+          console.error('[Checkout] Error linking free order to affiliate:', err);
+        }
+      }
 
       // Notify GHL webhook
       await notifyNewOrder(buildGhlPayload(order, 'free'));
@@ -164,6 +209,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       cancelUrl,
       customerEmail,
       stripeCustomerId,
+      affiliateCode,
     });
 
     return NextResponse.json({

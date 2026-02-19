@@ -22,6 +22,7 @@ export interface CheckoutMetadata {
   deliveryInstructions?: string;
   isExpress?: string;
   discountCode?: string;
+  affiliateCode?: string;
 }
 
 /**
@@ -46,6 +47,7 @@ export interface CreateCheckoutOptions {
   cancelUrl: string;
   customerEmail?: string;
   stripeCustomerId?: string;
+  affiliateCode?: string;
 }
 
 /**
@@ -54,7 +56,7 @@ export interface CreateCheckoutOptions {
 export async function createCheckoutSession(
   options: CreateCheckoutOptions
 ): Promise<Stripe.Checkout.Session> {
-  const { cart, successUrl, cancelUrl, customerEmail, stripeCustomerId } = options;
+  const { cart, successUrl, cancelUrl, customerEmail, stripeCustomerId, affiliateCode } = options;
 
   // Build line items from cart
   const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = cart.items.map((item) => ({
@@ -102,6 +104,7 @@ export async function createCheckoutSession(
     deliveryPhone: cart.deliveryPhone || undefined,
     deliveryInstructions: cart.deliveryInstructions || undefined,
     discountCode: cart.discountCode || undefined,
+    affiliateCode: affiliateCode || undefined,
   };
 
   // Filter out undefined values for Stripe metadata

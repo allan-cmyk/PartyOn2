@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 /**
- * Middleware to enforce canonical non-www domain
- * Redirects www.partyondelivery.com -> partyondelivery.com
+ * Middleware:
+ * 1. Enforce canonical non-www domain
+ * 2. Set affiliate attribution cookie from ?ref= param
  */
 export function middleware(request: NextRequest) {
   const { hostname } = request.nextUrl;
@@ -11,12 +12,26 @@ export function middleware(request: NextRequest) {
   if (hostname.startsWith('www.')) {
     const url = request.nextUrl.clone();
     url.hostname = hostname.replace('www.', '');
-
     // 301 Permanent Redirect for SEO
+    // The redirected request will re-enter middleware with the same ?ref= param
     return NextResponse.redirect(url, { status: 301 });
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+
+  // Set affiliate attribution cookie from ?ref= query param (last-touch, 30 days)
+  const refCode = request.nextUrl.searchParams.get('ref');
+  if (refCode) {
+    response.cookies.set('ref_code', refCode.toUpperCase(), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+      path: '/',
+    });
+  }
+
+  return response;
 }
 
 /**

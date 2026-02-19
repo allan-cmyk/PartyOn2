@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/database/client';
 import { FulfillmentStatus, OrderStatus } from '@prisma/client';
+import { markCommissionsDelivered } from '@/lib/affiliates/commission-engine';
 
 export async function PATCH(request: NextRequest): Promise<NextResponse> {
   try {
@@ -37,6 +38,14 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
         status: OrderStatus.DELIVERED,
       },
     });
+
+    // Update affiliate commissions for delivered orders
+    try {
+      await markCommissionsDelivered(orderIds);
+    } catch (err) {
+      console.error('[Bulk Fulfill API] Failed to update affiliate commissions:', err);
+      // Non-fatal: orders were fulfilled successfully
+    }
 
     return NextResponse.json({
       success: true,

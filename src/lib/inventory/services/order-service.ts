@@ -303,7 +303,8 @@ export async function createFreeOrder(
   cart: CartWithItems,
   customerEmail: string,
   customerName: string,
-  customerPhone: string | null
+  customerPhone: string | null,
+  affiliateCode?: string
 ): Promise<OrderWithItems> {
   // Get or create customer
   let customerId = cart.customerId;
@@ -341,6 +342,17 @@ export async function createFreeOrder(
     throw new Error('Delivery time is required to create an order');
   }
 
+  // Look up affiliate ID if code provided
+  let affiliateId: string | undefined;
+  if (affiliateCode) {
+    const affiliate = await prisma.affiliate.findUnique({
+      where: { code: affiliateCode.toUpperCase() },
+    });
+    if (affiliate && affiliate.status === 'ACTIVE') {
+      affiliateId = affiliate.id;
+    }
+  }
+
   const order = await prisma.$transaction(async (tx: TransactionClient) => {
     const newOrder = await tx.order.create({
       data: {
@@ -364,6 +376,7 @@ export async function createFreeOrder(
         customerEmail,
         customerPhone,
         customerName,
+        affiliateId: affiliateId || undefined,
       },
       include: { items: true },
     });

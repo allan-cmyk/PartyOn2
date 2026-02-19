@@ -21,6 +21,7 @@ import {
   handleGroupV2PaymentCompleted,
   handleGroupV2DeliveryPayment,
 } from './group-v2-payments';
+import { linkOrderToAffiliate, voidCommissionForOrder } from '@/lib/affiliates/commission-engine';
 
 /**
  * Verify webhook signature and construct event
@@ -98,6 +99,17 @@ async function handleCheckoutSessionCompleted(
   try {
     const order = await createOrderFromCheckout(fullSession, cart);
     console.log('[Stripe Webhook] Order created:', order.orderNumber);
+
+    // Link order to affiliate if attributed
+    const affiliateCode = session.metadata?.affiliateCode;
+    if (affiliateCode) {
+      try {
+        await linkOrderToAffiliate(order, affiliateCode);
+      } catch (affiliateError) {
+        console.error('[Stripe Webhook] Failed to link affiliate:', affiliateError);
+        // Non-fatal: order was created successfully
+      }
+    }
 
     // Notify GHL webhook
     await notifyNewOrder(buildGhlPayload(order, 'standard'));
@@ -378,6 +390,13 @@ async function handleChargeRefunded(charge: Stripe.Charge): Promise<void> {
   try {
     await createRefund(order.id, refundedAmount, 'Stripe refund');
     console.log('[Stripe Webhook] Refund processed for order:', order.orderNumber);
+
+    // Void any affiliate commission for this order
+    try {
+      await voidCommissionForOrder(order.id, 'refund');
+    } catch (voidError) {
+      console.error('[Stripe Webhook] Failed to void affiliate commission:', voidError);
+    }
 
     // Send refund notification email
     try {

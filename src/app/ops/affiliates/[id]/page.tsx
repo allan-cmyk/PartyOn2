@@ -1,0 +1,301 @@
+'use client';
+
+import { useState, useEffect, ReactElement } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+
+interface Commission {
+  id: string;
+  orderId: string;
+  commissionBaseCents: number;
+  commissionAmountCents: number;
+  commissionRate: string;
+  tierAtTime: string;
+  status: string;
+  isSelfReferral: boolean;
+  deliveredAt: string | null;
+  holdUntil: string | null;
+  voidedReason: string | null;
+  createdAt: string;
+}
+
+interface Payout {
+  id: string;
+  payoutPeriod: string;
+  totalAmountCents: number;
+  status: string;
+  processedAt: string | null;
+  createdAt: string;
+}
+
+interface AffiliateDetail {
+  id: string;
+  code: string;
+  status: string;
+  category: string;
+  contactName: string;
+  businessName: string;
+  email: string;
+  phone: string | null;
+  commissionRateOverride: string | null;
+  internalNotes: string | null;
+  createdAt: string;
+  commissions: Commission[];
+  payouts: Payout[];
+}
+
+export default function AffiliateDetailPage(): ReactElement {
+  const params = useParams<{ id: string }>();
+  const id = params?.id;
+  const router = useRouter();
+  const [affiliate, setAffiliate] = useState<AffiliateDetail | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [editCode, setEditCode] = useState('');
+  const [editNotes, setEditNotes] = useState('');
+
+  useEffect(() => {
+    fetch(`/api/ops/affiliates/${id}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) {
+          setAffiliate(data.data);
+          setEditCode(data.data.code);
+          setEditNotes(data.data.internalNotes || '');
+        }
+      })
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/ops/affiliates/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: editCode !== affiliate?.code ? editCode : undefined,
+          internalNotes: editNotes,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAffiliate(data.data);
+        setEditCode(data.data.code);
+      } else {
+        alert(data.error || 'Failed to save');
+      }
+    } catch {
+      alert('Network error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleStatusToggle = async () => {
+    if (!affiliate) return;
+    const newStatus = affiliate.status === 'ACTIVE' ? 'PAUSED' : 'ACTIVE';
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/ops/affiliates/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      const data = await res.json();
+      if (data.success) setAffiliate(data.data);
+    } catch {
+      alert('Network error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) return <div className="p-8 text-gray-500">Loading...</div>;
+  if (!affiliate) return <div className="p-8 text-red-600">Affiliate not found</div>;
+
+  const totalCommissionCents = affiliate.commissions
+    .filter((c) => c.status !== 'VOID')
+    .reduce((sum, c) => sum + c.commissionAmountCents, 0);
+  const totalRevenueCents = affiliate.commissions
+    .filter((c) => c.status !== 'VOID')
+    .reduce((sum, c) => sum + c.commissionBaseCents, 0);
+  const appUrl = typeof window !== 'undefined' ? window.location.origin : 'https://partyondelivery.com';
+  const referralLink = `${appUrl}?ref=${affiliate.code}`;
+
+  const statusColor = (s: string) => {
+    const map: Record<string, string> = {
+      HELD: 'bg-yellow-100 text-yellow-700',
+      HELD_REVIEW: 'bg-orange-100 text-orange-700',
+      APPROVED: 'bg-blue-100 text-blue-700',
+      PAID: 'bg-green-100 text-green-700',
+      VOID: 'bg-red-100 text-red-700',
+      PENDING: 'bg-gray-100 text-gray-700',
+      COMPLETED: 'bg-green-100 text-green-700',
+      FAILED: 'bg-red-100 text-red-700',
+    };
+    return map[s] || 'bg-gray-100 text-gray-700';
+  };
+
+  return (
+    <div className="max-w-5xl mx-auto px-4 py-6">
+      <div className="flex items-center gap-4 mb-6">
+        <button onClick={() => router.push('/ops/affiliates')} className="text-blue-600 hover:text-blue-800 text-sm">
+          &larr; Back
+        </button>
+        <h1 className="text-2xl font-bold text-gray-900">{affiliate.businessName}</h1>
+        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusColor(affiliate.status)}`}>
+          {affiliate.status}
+        </span>
+      </div>
+
+      {/* Info + Edit */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="bg-white rounded-lg shadow p-5 space-y-4">
+          <h2 className="font-semibold text-gray-800">Details</h2>
+          <div className="text-sm space-y-2">
+            <div><span className="text-gray-500">Contact:</span> {affiliate.contactName}</div>
+            <div><span className="text-gray-500">Email:</span> {affiliate.email}</div>
+            <div><span className="text-gray-500">Phone:</span> {affiliate.phone || '-'}</div>
+            <div><span className="text-gray-500">Category:</span> {affiliate.category}</div>
+            <div><span className="text-gray-500">Joined:</span> {new Date(affiliate.createdAt).toLocaleDateString()}</div>
+          </div>
+          <div>
+            <label className="block text-sm text-gray-500 mb-1">Referral Code</label>
+            <input
+              value={editCode}
+              onChange={(e) => setEditCode(e.target.value.toUpperCase())}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-mono"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-500 mb-1">Referral Link</label>
+            <div className="text-xs text-gray-600 bg-gray-50 px-3 py-2 rounded break-all">{referralLink}</div>
+          </div>
+          <div>
+            <label className="block text-sm text-gray-500 mb-1">Internal Notes</label>
+            <textarea
+              value={editNotes}
+              onChange={(e) => setEditNotes(e.target.value)}
+              rows={3}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+            />
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="px-4 py-2 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
+            >
+              Save
+            </button>
+            <button
+              onClick={handleStatusToggle}
+              disabled={saving}
+              className={`px-4 py-2 rounded text-sm font-medium disabled:opacity-50 ${
+                affiliate.status === 'ACTIVE'
+                  ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
+                  : 'bg-green-100 text-green-700 hover:bg-green-200'
+              }`}
+            >
+              {affiliate.status === 'ACTIVE' ? 'Pause' : 'Activate'}
+            </button>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-5 space-y-4">
+          <h2 className="font-semibold text-gray-800">Stats</h2>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gray-50 rounded p-3 text-center">
+              <div className="text-2xl font-bold text-gray-900">{affiliate.commissions.length}</div>
+              <div className="text-xs text-gray-500">Total Orders</div>
+            </div>
+            <div className="bg-gray-50 rounded p-3 text-center">
+              <div className="text-2xl font-bold text-gray-900">${(totalRevenueCents / 100).toLocaleString()}</div>
+              <div className="text-xs text-gray-500">Referred Revenue</div>
+            </div>
+            <div className="bg-gray-50 rounded p-3 text-center">
+              <div className="text-2xl font-bold text-green-700">${(totalCommissionCents / 100).toLocaleString()}</div>
+              <div className="text-xs text-gray-500">Total Commission</div>
+            </div>
+            <div className="bg-gray-50 rounded p-3 text-center">
+              <div className="text-2xl font-bold text-gray-900">{affiliate.payouts.length}</div>
+              <div className="text-xs text-gray-500">Payouts</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Commissions */}
+      <div className="mb-8">
+        <h2 className="text-lg font-semibold text-gray-800 mb-3">Commissions</h2>
+        {affiliate.commissions.length === 0 ? (
+          <div className="text-gray-500 text-sm">No commissions yet.</div>
+        ) : (
+          <div className="bg-white rounded-lg shadow overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600">Date</th>
+                  <th className="px-4 py-3 text-right font-medium text-gray-600">Order Base</th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600">Tier</th>
+                  <th className="px-4 py-3 text-right font-medium text-gray-600">Commission</th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {affiliate.commissions.map((c) => (
+                  <tr key={c.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-gray-700">{new Date(c.createdAt).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 text-right text-gray-700">${(c.commissionBaseCents / 100).toFixed(2)}</td>
+                    <td className="px-4 py-3 text-gray-500 text-xs">{c.tierAtTime}</td>
+                    <td className="px-4 py-3 text-right font-medium text-gray-900">${(c.commissionAmountCents / 100).toFixed(2)}</td>
+                    <td className="px-4 py-3">
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusColor(c.status)}`}>
+                        {c.status}{c.isSelfReferral ? ' (SELF)' : ''}
+                      </span>
+                      {c.voidedReason && <span className="text-xs text-red-500 ml-1">{c.voidedReason}</span>}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* Payouts */}
+      <div>
+        <h2 className="text-lg font-semibold text-gray-800 mb-3">Payouts</h2>
+        {affiliate.payouts.length === 0 ? (
+          <div className="text-gray-500 text-sm">No payouts yet.</div>
+        ) : (
+          <div className="bg-white rounded-lg shadow overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600">Period</th>
+                  <th className="px-4 py-3 text-right font-medium text-gray-600">Amount</th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600">Status</th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-600">Processed</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {affiliate.payouts.map((p) => (
+                  <tr key={p.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-gray-700">{p.payoutPeriod}</td>
+                    <td className="px-4 py-3 text-right font-medium text-gray-900">${(p.totalAmountCents / 100).toFixed(2)}</td>
+                    <td className="px-4 py-3">
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusColor(p.status)}`}>{p.status}</span>
+                    </td>
+                    <td className="px-4 py-3 text-gray-500">{p.processedAt ? new Date(p.processedAt).toLocaleDateString() : '-'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

@@ -130,6 +130,7 @@ export default function OpsLayout({ children }: OpsLayoutProps): ReactElement {
     { href: '/ops/orders', label: 'Orders' },
     { href: '/ops/group-orders', label: 'Group Orders' },
     { href: '/ops/collections', label: 'Collections' },
+    { href: '/ops/affiliates', label: 'Affiliates' },
   ];
 
   // Authenticated - render with navigation
