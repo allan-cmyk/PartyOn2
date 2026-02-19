@@ -135,15 +135,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       }
     }
 
-    // Compute effective totals (affiliate free delivery applied in-memory only)
-    const effectiveDeliveryFee = affiliateFreeDelivery ? 0 : Number(cart.deliveryFee);
-    const effectiveTotal = Number(cart.subtotal) - Number(cart.discountAmount)
-      + Number(cart.taxAmount) + effectiveDeliveryFee + tipAmount;
-
     // Get request body for optional params
     const body = await request.json().catch(() => ({}));
     const { customerEmail, customerName, customerPhone, returnUrl, tipAmount: rawTip } = body;
     const tipAmount = typeof rawTip === 'number' && rawTip > 0 ? Math.round(rawTip * 100) / 100 : 0;
+
+    // Compute effective totals (affiliate free delivery applied in-memory only)
+    const effectiveDeliveryFee = affiliateFreeDelivery ? 0 : Number(cart.deliveryFee);
+    const effectiveTotal = Number(cart.subtotal) - Number(cart.discountAmount)
+      + Number(cart.taxAmount) + effectiveDeliveryFee + tipAmount;
 
     // Build success and cancel URLs
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';

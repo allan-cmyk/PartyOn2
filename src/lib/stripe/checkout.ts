@@ -23,6 +23,7 @@ export interface CheckoutMetadata {
   isExpress?: string;
   discountCode?: string;
   affiliateCode?: string;
+  tipAmount?: string;
 }
 
 /**
@@ -49,6 +50,7 @@ export interface CreateCheckoutOptions {
   stripeCustomerId?: string;
   affiliateCode?: string;
   overrideDeliveryFee?: number;
+  tipAmount?: number;
 }
 
 /**
@@ -57,7 +59,7 @@ export interface CreateCheckoutOptions {
 export async function createCheckoutSession(
   options: CreateCheckoutOptions
 ): Promise<Stripe.Checkout.Session> {
-  const { cart, successUrl, cancelUrl, customerEmail, stripeCustomerId, affiliateCode, overrideDeliveryFee } = options;
+  const { cart, successUrl, cancelUrl, customerEmail, stripeCustomerId, affiliateCode, overrideDeliveryFee, tipAmount } = options;
 
   // Build line items from cart
   const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = cart.items.map((item) => ({
@@ -95,6 +97,20 @@ export async function createCheckoutSession(
     });
   }
 
+  // Add tip as a line item if provided
+  if (tipAmount && tipAmount > 0) {
+    lineItems.push({
+      price_data: {
+        currency: 'usd',
+        product_data: {
+          name: 'Tip for the Party On Team',
+        },
+        unit_amount: Math.round(tipAmount * 100),
+      },
+      quantity: 1,
+    });
+  }
+
   // Build metadata for the session (filter out undefined values)
   const rawMetadata: CheckoutMetadata = {
     cartId: cart.id,
@@ -106,6 +122,7 @@ export async function createCheckoutSession(
     deliveryInstructions: cart.deliveryInstructions || undefined,
     discountCode: cart.discountCode || undefined,
     affiliateCode: affiliateCode || undefined,
+    tipAmount: tipAmount && tipAmount > 0 ? tipAmount.toFixed(2) : undefined,
   };
 
   // Filter out undefined values for Stripe metadata

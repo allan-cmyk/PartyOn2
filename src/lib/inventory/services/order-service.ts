@@ -236,6 +236,7 @@ export async function createOrderFromCheckout(
         deliveryFee: cart.deliveryFee,
         discountCode: cart.discountCode,
         discountAmount: cart.discountAmount,
+        tipAmount: session.metadata?.tipAmount ? parseFloat(session.metadata.tipAmount) : 0,
         total: cart.total,
         deliveryDate: cart.deliveryDate!,
         deliveryTime: cart.deliveryTime!,
