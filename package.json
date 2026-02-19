@@ -52,7 +52,7 @@
     "bcryptjs": "^3.0.3",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.12",
-    "googleapis": "^170.0.0",
+    "googleapis": "^170.1.0",
     "graphql": "^16.11.0",
     "graphql-request": "^7.2.0",
     "gray-matter": "^4.0.3",

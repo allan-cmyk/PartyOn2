@@ -13,6 +13,7 @@ import { createFreeOrder } from '@/lib/inventory/services/order-service';
 import { notifyNewOrder, buildGhlPayload } from '@/lib/webhooks/ghl';
 import { getAffiliateByCode } from '@/lib/affiliates/affiliate-service';
 import { linkOrderToAffiliate } from '@/lib/affiliates/commission-engine';
+import { createOrderCalendarEvent } from '@/lib/calendar/google-calendar';
 
 const CART_ID_COOKIE = 'cart_id';
 
@@ -171,6 +172,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
       // Notify GHL webhook
       await notifyNewOrder(buildGhlPayload(order, 'free'));
+
+      // Create Google Calendar event
+      createOrderCalendarEvent(order).catch((err) =>
+        console.error('[Checkout] Calendar event failed:', err)
+      );
 
       return NextResponse.json({
         success: true,

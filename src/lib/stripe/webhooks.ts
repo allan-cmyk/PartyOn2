@@ -23,6 +23,7 @@ import {
 } from './group-v2-payments';
 import { linkOrderToAffiliate, voidCommissionForOrder } from '@/lib/affiliates/commission-engine';
 import { getAffiliateByCode } from '@/lib/affiliates/affiliate-service';
+import { createOrderCalendarEvent } from '@/lib/calendar/google-calendar';
 
 /**
  * Verify webhook signature and construct event
@@ -119,6 +120,11 @@ async function handleCheckoutSessionCompleted(
 
     // Notify GHL webhook
     await notifyNewOrder(buildGhlPayload(order, 'standard'));
+
+    // Create Google Calendar event
+    createOrderCalendarEvent(order).catch((err) =>
+      console.error('[Stripe Webhook] Calendar event failed:', err)
+    );
 
     // Create delivery task
     try {
@@ -218,6 +224,11 @@ async function handleDraftOrderPayment(
 
     // Notify GHL webhook
     await notifyNewOrder(buildGhlPayload(order, 'draft'));
+
+    // Create Google Calendar event
+    createOrderCalendarEvent(order).catch((err) =>
+      console.error('[Stripe Webhook] Calendar event failed:', err)
+    );
 
     // Record discount usage if a discount code was applied at checkout
     const appliedDiscountCode = session.metadata?.appliedDiscountCode;
