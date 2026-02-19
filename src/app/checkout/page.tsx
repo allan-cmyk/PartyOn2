@@ -39,6 +39,7 @@ export default function CheckoutPage() {
   const [discountFeedback, setDiscountFeedback] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
   const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [affiliatePartner, setAffiliatePartner] = useState<string | null>(null);
 
   // Initialize form with customer data
   useEffect(() => {
@@ -83,6 +84,18 @@ export default function CheckoutPage() {
     }
   }, [cart?.attributes, billingAddress.zip]);
 
+  // Check for affiliate attribution (free delivery via partner)
+  useEffect(() => {
+    fetch('/api/v1/affiliate/attribution', { credentials: 'include' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data?.active) {
+          setAffiliatePartner(data.data.partnerName);
+        }
+      })
+      .catch(() => { /* ignore */ });
+  }, []);
+
   // Calculate totals - with proper null checks to prevent subtotalAmount error
   const subtotal = cart?.cost?.subtotalAmount ? parseFloat(cart.cost.subtotalAmount.amount) :
     (cart?.lines?.edges?.reduce((total, { node }) => {
@@ -115,9 +128,10 @@ export default function CheckoutPage() {
   // Get applied discount code(s)
   const appliedDiscountCode = customCartData?.discountCode ?? null;
   const appliedDiscounts = customCartData?.appliedDiscounts ?? [];
-  const hasFreeShipping = appliedDiscounts.some(d => d.type === 'FREE_SHIPPING' || d.freeShipping);
+  const hasFreeShipping = affiliatePartner !== null || appliedDiscounts.some(d => d.type === 'FREE_SHIPPING' || d.freeShipping);
 
-  const total = subtotal + deliveryFee + tax - Math.abs(discountAmount);
+  const effectiveDeliveryFee = hasFreeShipping ? 0 : deliveryFee;
+  const total = subtotal + effectiveDeliveryFee + tax - Math.abs(discountAmount);
 
   const handleApplyDiscount = async () => {
     if (!cart || !discountCode.trim()) return;
@@ -508,6 +522,18 @@ export default function CheckoutPage() {
                   ))}
                 </div>
 
+                {/* Affiliate Attribution Banner */}
+                {affiliatePartner && (
+                  <div className="mb-4 flex items-center gap-2 bg-green-50 border border-green-200 px-4 py-3 rounded">
+                    <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-sm font-medium text-green-800">
+                      Free delivery included via {affiliatePartner}
+                    </span>
+                  </div>
+                )}
+
                 {/* Discount Code Section */}
                 <div className="mb-4">
                   <div className="flex gap-2">
@@ -589,7 +615,7 @@ export default function CheckoutPage() {
                     <span>Delivery Fee</span>
                     {hasFreeShipping ? (
                       <span>
-                        <span className="line-through text-gray-400 mr-1">$25.00</span>
+                        <span className="line-through text-gray-400 mr-1">${deliveryFee.toFixed(2)}</span>
                         <span className="text-green-600">$0.00</span>
                       </span>
                     ) : (

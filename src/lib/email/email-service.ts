@@ -22,13 +22,15 @@ import {
  * Send order confirmation email
  */
 export async function sendOrderConfirmationEmail(
-  data: OrderConfirmationData
+  data: OrderConfirmationData,
+  options?: { cc?: string[] }
 ): Promise<string | null> {
   const html = generateOrderConfirmationEmail(data);
   const text = generateOrderConfirmationText(data);
 
   return sendEmail({
     to: data.customerEmail,
+    ...(options?.cc && options.cc.length > 0 ? { cc: options.cc } : {}),
     subject: `Order Confirmed - #${data.orderNumber}`,
     html,
     text,

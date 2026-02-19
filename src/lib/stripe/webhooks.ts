@@ -22,6 +22,7 @@ import {
   handleGroupV2DeliveryPayment,
 } from './group-v2-payments';
 import { linkOrderToAffiliate, voidCommissionForOrder } from '@/lib/affiliates/commission-engine';
+import { getAffiliateByCode } from '@/lib/affiliates/affiliate-service';
 
 /**
  * Verify webhook signature and construct event
@@ -102,9 +103,14 @@ async function handleCheckoutSessionCompleted(
 
     // Link order to affiliate if attributed
     const affiliateCode = session.metadata?.affiliateCode;
+    let affiliateEmail: string | null = null;
     if (affiliateCode) {
       try {
         await linkOrderToAffiliate(order, affiliateCode);
+        const affiliate = await getAffiliateByCode(affiliateCode);
+        if (affiliate?.email) {
+          affiliateEmail = affiliate.email;
+        }
       } catch (affiliateError) {
         console.error('[Stripe Webhook] Failed to link affiliate:', affiliateError);
         // Non-fatal: order was created successfully
@@ -167,7 +173,7 @@ async function handleCheckoutSessionCompleted(
           zip: deliveryAddress.zip || '',
         },
         deliveryInstructions: order.deliveryInstructions || undefined,
-      });
+      }, affiliateEmail ? { cc: [affiliateEmail] } : undefined);
       console.log('[Stripe Webhook] Confirmation email sent for order:', order.orderNumber);
     } catch (emailError) {
       console.error('[Stripe Webhook] Failed to send confirmation email:', emailError);
