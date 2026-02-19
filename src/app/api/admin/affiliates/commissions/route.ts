@@ -1,5 +1,5 @@
 /**
- * GET /api/ops/affiliates/commissions -- list commissions with status filter
+ * GET /api/admin/affiliates/commissions -- list commissions with status filter
  */
 
 import { NextRequest, NextResponse } from 'next/server';

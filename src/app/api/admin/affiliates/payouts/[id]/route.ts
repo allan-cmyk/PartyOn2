@@ -1,6 +1,6 @@
 /**
- * GET /api/ops/affiliates/payouts/[id] -- payout detail
- * PUT /api/ops/affiliates/payouts/[id] -- mark completed or failed
+ * GET /api/admin/affiliates/payouts/[id] -- payout detail
+ * PUT /api/admin/affiliates/payouts/[id] -- mark completed or failed
  */
 
 import { NextRequest, NextResponse } from 'next/server';

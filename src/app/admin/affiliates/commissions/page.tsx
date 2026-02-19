@@ -28,8 +28,8 @@ export default function CommissionsPage(): ReactElement {
 
   const fetchCommissions = useCallback(async () => {
     const url = filter === 'all'
-      ? '/api/ops/affiliates/commissions'
-      : `/api/ops/affiliates/commissions?status=${filter}`;
+      ? '/api/admin/affiliates/commissions'
+      : `/api/admin/affiliates/commissions?status=${filter}`;
     const res = await fetch(url);
     const data = await res.json();
     if (data.success) setCommissions(data.data);
@@ -46,7 +46,7 @@ export default function CommissionsPage(): ReactElement {
 
     setActionLoading(id);
     try {
-      const res = await fetch(`/api/ops/affiliates/commissions/${id}`, {
+      const res = await fetch(`/api/admin/affiliates/commissions/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action, reason }),

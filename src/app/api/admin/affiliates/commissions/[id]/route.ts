@@ -1,5 +1,5 @@
 /**
- * PUT /api/ops/affiliates/commissions/[id] -- approve or void a commission
+ * PUT /api/admin/affiliates/commissions/[id] -- approve or void a commission
  */
 
 import { NextRequest, NextResponse } from 'next/server';

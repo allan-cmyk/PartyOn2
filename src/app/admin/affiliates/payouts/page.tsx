@@ -23,7 +23,7 @@ export default function PayoutsPage(): ReactElement {
   const [generating, setGenerating] = useState(false);
 
   const fetchPayouts = useCallback(async () => {
-    const res = await fetch('/api/ops/affiliates/payouts');
+    const res = await fetch('/api/admin/affiliates/payouts');
     const data = await res.json();
     if (data.success) setPayouts(data.data);
   }, []);
@@ -37,7 +37,7 @@ export default function PayoutsPage(): ReactElement {
     if (!confirm(`Generate payouts for ${generateYear}-${String(generateMonth).padStart(2, '0')}?`)) return;
     setGenerating(true);
     try {
-      const res = await fetch('/api/ops/affiliates/payouts/generate', {
+      const res = await fetch('/api/admin/affiliates/payouts/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ year: generateYear, month: generateMonth }),
@@ -59,7 +59,7 @@ export default function PayoutsPage(): ReactElement {
   const handleMarkCompleted = async (id: string) => {
     setActionLoading(id);
     try {
-      const res = await fetch(`/api/ops/affiliates/payouts/${id}`, {
+      const res = await fetch(`/api/admin/affiliates/payouts/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'COMPLETED' }),

@@ -1,6 +1,6 @@
 /**
- * GET /api/ops/affiliates/[id] -- single affiliate detail
- * PUT /api/ops/affiliates/[id] -- update affiliate
+ * GET /api/admin/affiliates/[id] -- single affiliate detail
+ * PUT /api/admin/affiliates/[id] -- update affiliate
  */
 
 import { NextRequest, NextResponse } from 'next/server';

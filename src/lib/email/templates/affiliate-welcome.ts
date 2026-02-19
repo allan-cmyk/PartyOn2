@@ -99,7 +99,7 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
                 <thead>
                   <tr style="background-color: #1a1a1a;">
                     <th style="padding: 12px 16px; text-align: left; font-size: 13px; color: #D4AF37; font-weight: 600; letter-spacing: 0.05em;">TIER</th>
-                    <th style="padding: 12px 16px; text-align: center; font-size: 13px; color: #D4AF37; font-weight: 600; letter-spacing: 0.05em;">MONTHLY REVENUE</th>
+                    <th style="padding: 12px 16px; text-align: center; font-size: 13px; color: #D4AF37; font-weight: 600; letter-spacing: 0.05em;">YEARLY REVENUE</th>
                     <th style="padding: 12px 16px; text-align: right; font-size: 13px; color: #D4AF37; font-weight: 600; letter-spacing: 0.05em;">COMMISSION</th>
                   </tr>
                 </thead>
@@ -127,7 +127,7 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
                 Payout Schedule
               </h3>
               <p style="margin: 0 0 24px; color: #4b5563; font-size: 15px; line-height: 1.6;">
-                Commissions are calculated monthly and paid out by the <strong>15th of the following month</strong>. You can track your earnings in real time from your partner dashboard.
+                Tiers are based on yearly referred revenue. Commissions are paid out monthly by the <strong>15th of the following month</strong>. You can track your earnings in real time from your partner dashboard.
               </p>
 
               <!-- Partner Dashboard -->
@@ -218,12 +218,12 @@ export function generateAffiliateWelcomeText(data: AffiliateWelcomeEmailData): s
     '- The more revenue you refer, the higher your commission rate grows',
     '',
     'COMMISSION TIERS',
-    'Starter ($0-$10k/mo): 5%',
-    'Growth ($10k-$20k/mo): 8%',
-    'Pro ($20k+/mo): 10%',
+    'Starter ($0-$10k/yr): 5%',
+    'Growth ($10k-$20k/yr): 8%',
+    'Pro ($20k+/yr): 10%',
     '',
     'PAYOUT SCHEDULE',
-    'Commissions are calculated monthly and paid out by the 15th of the following month.',
+    'Tiers are based on yearly referred revenue. Commissions are paid out monthly by the 15th of the following month.',
     '',
     'YOUR PARTNER DASHBOARD',
     `Access your dashboard: ${data.dashboardLink}`,

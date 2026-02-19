@@ -12,7 +12,7 @@ interface AffiliateData {
     contactName: string;
     email: string;
   };
-  monthToDate: {
+  yearToDate: {
     revenueCents: number;
     commissionCents: number;
     orderCount: number;
@@ -82,7 +82,7 @@ export default function AffiliateDashboardPage(): ReactElement {
 
   const handleCopy = () => {
     if (!data) return;
-    const link = `${window.location.origin}?ref=${data.affiliate.code}`;
+    const link = `${window.location.origin}/partners/${data.affiliate.code.toLowerCase()}`;
     navigator.clipboard.writeText(link);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -108,7 +108,7 @@ export default function AffiliateDashboardPage(): ReactElement {
 
   if (!data) return <div />;
 
-  const referralLink = `${typeof window !== 'undefined' ? window.location.origin : 'https://partyondelivery.com'}?ref=${data.affiliate.code}`;
+  const referralLink = `${typeof window !== 'undefined' ? window.location.origin : 'https://partyondelivery.com'}/partners/${data.affiliate.code.toLowerCase()}`;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -147,22 +147,22 @@ export default function AffiliateDashboardPage(): ReactElement {
 
         {/* Month-to-Date Stats */}
         <div className="bg-white rounded-lg shadow p-5">
-          <h2 className="font-semibold text-gray-800 mb-4">This Month</h2>
+          <h2 className="font-semibold text-gray-800 mb-4">This Year</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
             <div className="bg-gray-50 rounded p-3 text-center">
-              <div className="text-2xl font-bold text-gray-900">{data.monthToDate.orderCount}</div>
+              <div className="text-2xl font-bold text-gray-900">{data.yearToDate.orderCount}</div>
               <div className="text-xs text-gray-500">Orders</div>
             </div>
             <div className="bg-gray-50 rounded p-3 text-center">
-              <div className="text-2xl font-bold text-gray-900">{cents(data.monthToDate.revenueCents)}</div>
+              <div className="text-2xl font-bold text-gray-900">{cents(data.yearToDate.revenueCents)}</div>
               <div className="text-xs text-gray-500">Referred Revenue</div>
             </div>
             <div className="bg-gray-50 rounded p-3 text-center">
-              <div className="text-2xl font-bold text-green-700">{cents(data.monthToDate.commissionCents)}</div>
+              <div className="text-2xl font-bold text-green-700">{cents(data.yearToDate.commissionCents)}</div>
               <div className="text-xs text-gray-500">Commission Earned</div>
             </div>
             <div className="bg-gray-50 rounded p-3 text-center">
-              <div className="text-lg font-bold text-gray-900">{data.monthToDate.currentTier}</div>
+              <div className="text-lg font-bold text-gray-900">{data.yearToDate.currentTier}</div>
               <div className="text-xs text-gray-500">Current Tier</div>
             </div>
           </div>
@@ -172,10 +172,10 @@ export default function AffiliateDashboardPage(): ReactElement {
             <div className="flex-1 bg-gray-200 rounded-full h-2">
               <div
                 className="bg-blue-600 rounded-full h-2 transition-all"
-                style={{ width: `${data.monthToDate.tierProgressPercent}%` }}
+                style={{ width: `${data.yearToDate.tierProgressPercent}%` }}
               />
             </div>
-            <span className="text-xs text-gray-500 w-10">{data.monthToDate.tierProgressPercent}%</span>
+            <span className="text-xs text-gray-500 w-10">{data.yearToDate.tierProgressPercent}%</span>
           </div>
         </div>
 

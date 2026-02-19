@@ -1,6 +1,7 @@
 /**
  * Commission Engine
  * Progressive tier calculation and commission lifecycle management
+ * Tiers are based on year-to-date referred revenue (calendar year).
  */
 
 import { prisma } from '@/lib/database/client';
@@ -34,9 +35,9 @@ export function progressiveCommission(totalRevenueCents: number): number {
  * Get the current tier label for a revenue amount (in cents)
  */
 export function getTierLabel(revenueCents: number): string {
-  if (revenueCents <= TIER_1_CEILING) return '5%/$0-10k';
-  if (revenueCents <= TIER_2_CEILING) return '8%/$10k-20k';
-  return '10%/$20k+';
+  if (revenueCents <= TIER_1_CEILING) return '5% / $0-10k';
+  if (revenueCents <= TIER_2_CEILING) return '8% / $10k-20k';
+  return '10% / $20k+';
 }
 
 /**
@@ -62,17 +63,17 @@ export function getTierProgress(revenueCents: number): number {
 }
 
 /**
- * Get month-to-date commission base revenue for an affiliate (in cents).
- * Only counts commissions that are not VOID.
+ * Get year-to-date commission base revenue for an affiliate (in cents).
+ * Only counts commissions that are not VOID. Uses calendar year (Jan 1).
  */
-export async function getMonthToDateRevenue(affiliateId: string): Promise<number> {
+export async function getYearToDateRevenue(affiliateId: string): Promise<number> {
   const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const startOfYear = new Date(now.getFullYear(), 0, 1);
 
   const result = await prisma.affiliateCommission.aggregate({
     where: {
       affiliateId,
-      createdAt: { gte: startOfMonth },
+      createdAt: { gte: startOfYear },
       status: { not: CommissionStatus.VOID },
     },
     _sum: {
@@ -101,7 +102,7 @@ export async function calculateCommission(
   tierAtTime: string;
   priorRevenueCents: number;
 }> {
-  const priorRevenueCents = await getMonthToDateRevenue(affiliateId);
+  const priorRevenueCents = await getYearToDateRevenue(affiliateId);
 
   // Use flat override rate if provided
   if (overrideRate && overrideRate > 0) {

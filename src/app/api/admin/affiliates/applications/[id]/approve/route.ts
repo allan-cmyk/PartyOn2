@@ -1,5 +1,5 @@
 /**
- * POST /api/ops/affiliates/applications/[id]/approve
+ * POST /api/admin/affiliates/applications/[id]/approve
  */
 
 import { NextRequest, NextResponse } from 'next/server';

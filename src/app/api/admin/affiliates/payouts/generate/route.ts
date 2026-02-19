@@ -1,5 +1,5 @@
 /**
- * POST /api/ops/affiliates/payouts/generate
+ * POST /api/admin/affiliates/payouts/generate
  * Manually trigger payout generation for a given month
  */
 

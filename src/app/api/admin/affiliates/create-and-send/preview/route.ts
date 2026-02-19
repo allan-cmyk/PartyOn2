@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     }
 
     const previewCode = code || 'YOURCODE';
-    const referralLink = `${BASE_URL}?ref=${previewCode}`;
+    const referralLink = `${BASE_URL}/partners/${previewCode.toLowerCase()}`;
     const dashboardLink = `${BASE_URL}/affiliate/login`;
 
     const html = generateAffiliateWelcomeEmail({

@@ -43,13 +43,13 @@ export default function AffiliatesPage(): ReactElement {
   const [showAddModal, setShowAddModal] = useState(false);
 
   const fetchApplications = useCallback(async () => {
-    const res = await fetch('/api/ops/affiliates/applications');
+    const res = await fetch('/api/admin/affiliates/applications');
     const data = await res.json();
     if (data.success) setApplications(data.data);
   }, []);
 
   const fetchAffiliates = useCallback(async () => {
-    const res = await fetch('/api/ops/affiliates');
+    const res = await fetch('/api/admin/affiliates');
     const data = await res.json();
     if (data.success) setAffiliates(data.data);
   }, []);
@@ -62,7 +62,7 @@ export default function AffiliatesPage(): ReactElement {
   const handleApprove = async (id: string) => {
     setActionLoading(id);
     try {
-      const res = await fetch(`/api/ops/affiliates/applications/${id}/approve`, { method: 'POST' });
+      const res = await fetch(`/api/admin/affiliates/applications/${id}/approve`, { method: 'POST' });
       const data = await res.json();
       if (data.success) {
         await Promise.all([fetchApplications(), fetchAffiliates()]);
@@ -80,7 +80,7 @@ export default function AffiliatesPage(): ReactElement {
     if (!confirm('Reject this application?')) return;
     setActionLoading(id);
     try {
-      const res = await fetch(`/api/ops/affiliates/applications/${id}/reject`, { method: 'POST' });
+      const res = await fetch(`/api/admin/affiliates/applications/${id}/reject`, { method: 'POST' });
       const data = await res.json();
       if (data.success) {
         await fetchApplications();
@@ -96,7 +96,7 @@ export default function AffiliatesPage(): ReactElement {
     const newStatus = affiliate.status === 'ACTIVE' ? 'PAUSED' : 'ACTIVE';
     setActionLoading(affiliate.id);
     try {
-      const res = await fetch(`/api/ops/affiliates/${affiliate.id}`, {
+      const res = await fetch(`/api/admin/affiliates/${affiliate.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
@@ -299,7 +299,7 @@ export default function AffiliatesPage(): ReactElement {
                       <td className="px-4 py-3 text-right">
                         <div className="flex gap-2 justify-end">
                           <Link
-                            href={`/ops/affiliates/${aff.id}`}
+                            href={`/admin/affiliates/${aff.id}`}
                             className="px-3 py-1 bg-blue-600 text-white rounded text-xs font-medium hover:bg-blue-700"
                           >
                             Detail

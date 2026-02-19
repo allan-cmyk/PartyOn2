@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Send welcome email
-    const referralLink = `${BASE_URL}?ref=${affiliate.code}`;
+    const referralLink = `${BASE_URL}/partners/${affiliate.code.toLowerCase()}`;
     const dashboardLink = `${BASE_URL}/affiliate/login`;
 
     const html = generateAffiliateWelcomeEmail({

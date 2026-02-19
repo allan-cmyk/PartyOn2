@@ -1,5 +1,5 @@
 /**
- * GET /api/ops/affiliates/payouts -- list payouts
+ * GET /api/admin/affiliates/payouts -- list payouts
  */
 
 import { NextRequest, NextResponse } from 'next/server';

@@ -56,7 +56,7 @@ export default function AddAffiliateModal({ onClose, onCreated }: AddAffiliateMo
   const loadPreview = useCallback(async () => {
     setPreviewLoading(true);
     try {
-      const res = await fetch('/api/ops/affiliates/create-and-send/preview', {
+      const res = await fetch('/api/admin/affiliates/create-and-send/preview', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -112,7 +112,7 @@ export default function AddAffiliateModal({ onClose, onCreated }: AddAffiliateMo
     setSubmitting(true);
     setError(null);
     try {
-      const res = await fetch('/api/ops/affiliates/create-and-send', {
+      const res = await fetch('/api/admin/affiliates/create-and-send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

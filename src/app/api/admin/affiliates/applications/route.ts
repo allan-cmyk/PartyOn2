@@ -1,5 +1,5 @@
 /**
- * GET /api/ops/affiliates/applications -- list partner applications
+ * GET /api/admin/affiliates/applications -- list partner applications
  */
 
 import { NextRequest, NextResponse } from 'next/server';

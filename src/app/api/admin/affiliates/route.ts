@@ -1,6 +1,6 @@
 /**
- * GET /api/ops/affiliates -- list affiliates
- * PUT /api/ops/affiliates/[id] handled by dynamic route
+ * GET /api/admin/affiliates -- list affiliates
+ * PUT /api/admin/affiliates/[id] handled by dynamic route
  */
 
 import { NextRequest, NextResponse } from 'next/server';

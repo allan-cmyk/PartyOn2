@@ -24,20 +24,20 @@ export async function GET(): Promise<NextResponse> {
       return NextResponse.json({ success: false, error: 'Affiliate not found' }, { status: 404 });
     }
 
-    // Month-to-date stats
+    // Year-to-date stats (calendar year)
     const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
 
-    const monthCommissions = await prisma.affiliateCommission.findMany({
+    const yearCommissions = await prisma.affiliateCommission.findMany({
       where: {
         affiliateId: affiliate.id,
-        createdAt: { gte: startOfMonth },
+        createdAt: { gte: startOfYear },
         status: { not: CommissionStatus.VOID },
       },
     });
 
-    const monthRevenueCents = monthCommissions.reduce((sum, c) => sum + c.commissionBaseCents, 0);
-    const monthCommissionCents = monthCommissions.reduce((sum, c) => sum + c.commissionAmountCents, 0);
+    const yearRevenueCents = yearCommissions.reduce((sum, c) => sum + c.commissionBaseCents, 0);
+    const yearCommissionCents = yearCommissions.reduce((sum, c) => sum + c.commissionAmountCents, 0);
 
     // Lifetime stats
     const lifetimeCommissions = await prisma.affiliateCommission.aggregate({
@@ -53,8 +53,8 @@ export async function GET(): Promise<NextResponse> {
     });
 
     // Current tier using shared helpers
-    const tierLabel = getTierLabel(monthRevenueCents);
-    const tierProgressPercent = Math.round(getTierProgress(monthRevenueCents));
+    const tierLabel = getTierLabel(yearRevenueCents);
+    const tierProgressPercent = Math.round(getTierProgress(yearRevenueCents));
 
     return NextResponse.json({
       success: true,
@@ -66,10 +66,10 @@ export async function GET(): Promise<NextResponse> {
           contactName: affiliate.contactName,
           email: affiliate.email,
         },
-        monthToDate: {
-          revenueCents: monthRevenueCents,
-          commissionCents: monthCommissionCents,
-          orderCount: monthCommissions.length,
+        yearToDate: {
+          revenueCents: yearRevenueCents,
+          commissionCents: yearCommissionCents,
+          orderCount: yearCommissions.length,
           currentTier: tierLabel,
           tierProgressPercent,
         },

@@ -55,7 +55,7 @@ export default function AffiliateDetailPage(): ReactElement {
   const [editNotes, setEditNotes] = useState('');
 
   useEffect(() => {
-    fetch(`/api/ops/affiliates/${id}`)
+    fetch(`/api/admin/affiliates/${id}`)
       .then((r) => r.json())
       .then((data) => {
         if (data.success) {
@@ -70,7 +70,7 @@ export default function AffiliateDetailPage(): ReactElement {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await fetch(`/api/ops/affiliates/${id}`, {
+      const res = await fetch(`/api/admin/affiliates/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -97,7 +97,7 @@ export default function AffiliateDetailPage(): ReactElement {
     const newStatus = affiliate.status === 'ACTIVE' ? 'PAUSED' : 'ACTIVE';
     setSaving(true);
     try {
-      const res = await fetch(`/api/ops/affiliates/${id}`, {
+      const res = await fetch(`/api/admin/affiliates/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
@@ -121,7 +121,7 @@ export default function AffiliateDetailPage(): ReactElement {
     .filter((c) => c.status !== 'VOID')
     .reduce((sum, c) => sum + c.commissionBaseCents, 0);
   const appUrl = typeof window !== 'undefined' ? window.location.origin : 'https://partyondelivery.com';
-  const referralLink = `${appUrl}?ref=${affiliate.code}`;
+  const referralLink = `${appUrl}/partners/${affiliate.code.toLowerCase()}`;
 
   const statusColor = (s: string) => {
     const map: Record<string, string> = {
@@ -140,7 +140,7 @@ export default function AffiliateDetailPage(): ReactElement {
   return (
     <div className="max-w-5xl mx-auto px-4 py-6">
       <div className="flex items-center gap-4 mb-6">
-        <button onClick={() => router.push('/ops/affiliates')} className="text-blue-600 hover:text-blue-800 text-sm">
+        <button onClick={() => router.push('/admin/affiliates')} className="text-blue-600 hover:text-blue-800 text-sm">
           &larr; Back
         </button>
         <h1 className="text-2xl font-bold text-gray-900">{affiliate.businessName}</h1>
