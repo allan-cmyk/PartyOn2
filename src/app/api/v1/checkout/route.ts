@@ -127,8 +127,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         const affiliate = await getAffiliateByCode(refCode);
         if (affiliate && affiliate.status === 'ACTIVE') {
           affiliateCode = affiliate.code;
-          affiliateFreeDelivery = true;
-          console.log('[Checkout] Affiliate attribution applied:', affiliateCode, '- free delivery (in-memory)');
+          affiliateFreeDelivery = affiliate.customerPerk === 'Free Delivery';
+          console.log('[Checkout] Affiliate attribution applied:', affiliateCode, '- perk:', affiliate.customerPerk, affiliateFreeDelivery ? '(free delivery)' : '(no free delivery)');
         }
       } catch (err) {
         console.error('[Checkout] Error checking affiliate code:', err);
@@ -138,11 +138,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Compute effective totals (affiliate free delivery applied in-memory only)
     const effectiveDeliveryFee = affiliateFreeDelivery ? 0 : Number(cart.deliveryFee);
     const effectiveTotal = Number(cart.subtotal) - Number(cart.discountAmount)
-      + Number(cart.taxAmount) + effectiveDeliveryFee;
+      + Number(cart.taxAmount) + effectiveDeliveryFee + tipAmount;
 
     // Get request body for optional params
     const body = await request.json().catch(() => ({}));
-    const { customerEmail, customerName, customerPhone, returnUrl } = body;
+    const { customerEmail, customerName, customerPhone, returnUrl, tipAmount: rawTip } = body;
+    const tipAmount = typeof rawTip === 'number' && rawTip > 0 ? Math.round(rawTip * 100) / 100 : 0;
 
     // Build success and cancel URLs
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
@@ -207,6 +208,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       stripeCustomerId,
       affiliateCode,
       overrideDeliveryFee: affiliateFreeDelivery ? 0 : undefined,
+      tipAmount: tipAmount > 0 ? tipAmount : undefined,
     });
 
     return NextResponse.json({

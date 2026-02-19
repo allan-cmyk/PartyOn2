@@ -38,6 +38,7 @@ interface AffiliateDetail {
   email: string;
   phone: string | null;
   commissionRateOverride: string | null;
+  customerPerk: string;
   internalNotes: string | null;
   createdAt: string;
   commissions: Commission[];
@@ -53,6 +54,8 @@ export default function AffiliateDetailPage(): ReactElement {
   const [saving, setSaving] = useState(false);
   const [editCode, setEditCode] = useState('');
   const [editNotes, setEditNotes] = useState('');
+  const [editPerk, setEditPerk] = useState('Free Delivery');
+  const [editCommissionRate, setEditCommissionRate] = useState('');
 
   useEffect(() => {
     fetch(`/api/admin/affiliates/${id}`)
@@ -62,6 +65,8 @@ export default function AffiliateDetailPage(): ReactElement {
           setAffiliate(data.data);
           setEditCode(data.data.code);
           setEditNotes(data.data.internalNotes || '');
+          setEditPerk(data.data.customerPerk || 'Free Delivery');
+          setEditCommissionRate(data.data.commissionRateOverride ? String(Number(data.data.commissionRateOverride) * 100) : '');
         }
       })
       .finally(() => setLoading(false));
@@ -76,6 +81,8 @@ export default function AffiliateDetailPage(): ReactElement {
         body: JSON.stringify({
           code: editCode !== affiliate?.code ? editCode : undefined,
           internalNotes: editNotes,
+          customerPerk: editPerk,
+          commissionRateOverride: editCommissionRate ? Number(editCommissionRate) / 100 : null,
         }),
       });
       const data = await res.json();
@@ -171,6 +178,30 @@ export default function AffiliateDetailPage(): ReactElement {
           <div>
             <label className="block text-sm text-gray-500 mb-1">Referral Link</label>
             <div className="text-xs text-gray-600 bg-gray-50 px-3 py-2 rounded break-all">{referralLink}</div>
+          </div>
+          <div>
+            <label className="block text-sm text-gray-500 mb-1">Customer Perk</label>
+            <input
+              value={editPerk}
+              onChange={(e) => setEditPerk(e.target.value)}
+              placeholder="Free Delivery"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+            />
+            <p className="text-xs text-gray-400 mt-1">What the customer gets (e.g. &quot;Free Delivery&quot;, &quot;10% Off&quot;)</p>
+          </div>
+          <div>
+            <label className="block text-sm text-gray-500 mb-1">Commission Rate Override (%)</label>
+            <input
+              type="number"
+              value={editCommissionRate}
+              onChange={(e) => setEditCommissionRate(e.target.value)}
+              placeholder="Progressive tiers"
+              min="0"
+              max="100"
+              step="0.5"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+            />
+            <p className="text-xs text-gray-400 mt-1">Leave blank for default progressive tiers (5%/8%/10%)</p>
           </div>
           <div>
             <label className="block text-sm text-gray-500 mb-1">Internal Notes</label>

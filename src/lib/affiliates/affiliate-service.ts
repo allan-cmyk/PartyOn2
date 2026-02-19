@@ -142,7 +142,7 @@ export async function updateAffiliateCode(id: string, newCode: string) {
 export async function updateAffiliate(id: string, data: Record<string, unknown>) {
   // Filter to only allowed fields
   const allowed = ['contactName', 'businessName', 'phone', 'commissionRateOverride',
-    'categoryRateOverride', 'payoutMethod', 'payoutDetails', 'internalNotes'];
+    'categoryRateOverride', 'payoutMethod', 'payoutDetails', 'internalNotes', 'customerPerk'];
   const filtered: Record<string, unknown> = {};
   for (const key of allowed) {
     if (key in data) filtered[key] = data[key];

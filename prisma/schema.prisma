@@ -767,6 +767,7 @@ model Order {
   discountAmount Decimal @default(0) @map("discount_amount") @db.Decimal(10, 2)
   taxAmount      Decimal @map("tax_amount") @db.Decimal(10, 2)
   deliveryFee    Decimal @map("delivery_fee") @db.Decimal(10, 2)
+  tipAmount      Decimal @default(0) @map("tip_amount") @db.Decimal(10, 2)
   total          Decimal @db.Decimal(10, 2)
 
   // Delivery
@@ -1897,6 +1898,7 @@ model Affiliate {
 
   commissionRateOverride Decimal? @map("commission_rate_override") @db.Decimal(5, 4)
   categoryRateOverride   Decimal? @map("category_rate_override") @db.Decimal(5, 4)
+  customerPerk           String   @default("Free Delivery") @map("customer_perk")
 
   payoutMethod  String? @map("payout_method")
   payoutDetails Json?   @map("payout_details")

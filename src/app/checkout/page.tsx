@@ -40,6 +40,9 @@ export default function CheckoutPage() {
   const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [affiliatePartner, setAffiliatePartner] = useState<string | null>(null);
+  const [affiliatePerk, setAffiliatePerk] = useState<string>('Free Delivery');
+  const [tipPercent, setTipPercent] = useState<number | null>(null);
+  const [customTip, setCustomTip] = useState<string>('');
 
   // Initialize form with customer data
   useEffect(() => {
@@ -91,6 +94,7 @@ export default function CheckoutPage() {
       .then(data => {
         if (data.success && data.data?.active) {
           setAffiliatePartner(data.data.partnerName);
+          setAffiliatePerk(data.data.customerPerk || 'Free Delivery');
         }
       })
       .catch(() => { /* ignore */ });
@@ -128,10 +132,18 @@ export default function CheckoutPage() {
   // Get applied discount code(s)
   const appliedDiscountCode = customCartData?.discountCode ?? null;
   const appliedDiscounts = customCartData?.appliedDiscounts ?? [];
-  const hasFreeShipping = affiliatePartner !== null || appliedDiscounts.some(d => d.type === 'FREE_SHIPPING' || d.freeShipping);
+  const hasFreeShipping = (affiliatePartner !== null && affiliatePerk === 'Free Delivery') || appliedDiscounts.some(d => d.type === 'FREE_SHIPPING' || d.freeShipping);
 
   const effectiveDeliveryFee = hasFreeShipping ? 0 : deliveryFee;
-  const total = subtotal + effectiveDeliveryFee + tax - Math.abs(discountAmount);
+
+  // Tip calculation
+  const tipAmount = tipPercent !== null
+    ? Math.round(subtotal * tipPercent) / 100
+    : customTip
+      ? parseFloat(customTip) || 0
+      : 0;
+
+  const total = subtotal + effectiveDeliveryFee + tax - Math.abs(discountAmount) + tipAmount;
 
   const handleApplyDiscount = async () => {
     if (!cart || !discountCode.trim()) return;
@@ -262,6 +274,7 @@ export default function CheckoutPage() {
           customerEmail: billingAddress.email,
           customerName: `${billingAddress.firstName} ${billingAddress.lastName}`.trim(),
           customerPhone: billingAddress.phone,
+          tipAmount: tipAmount > 0 ? tipAmount : undefined,
         }),
       });
 
@@ -529,7 +542,7 @@ export default function CheckoutPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     <span className="text-sm font-medium text-green-800">
-                      Free delivery included via {affiliatePartner}
+                      {affiliatePerk} included via {affiliatePartner}
                     </span>
                   </div>
                 )}
@@ -606,6 +619,54 @@ export default function CheckoutPage() {
                   )}
                 </div>
 
+                {/* Tip Section */}
+                <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded">
+                  <p className="text-sm font-medium text-gray-800 mb-3">
+                    Show your support for the Party On crew!
+                  </p>
+                  <div className="flex gap-2 mb-3">
+                    {[5, 10, 20].map((pct) => (
+                      <button
+                        key={pct}
+                        onClick={() => {
+                          setTipPercent(tipPercent === pct ? null : pct);
+                          setCustomTip('');
+                        }}
+                        className={`flex-1 py-2 text-sm font-medium border rounded transition-colors ${
+                          tipPercent === pct
+                            ? 'bg-brand-yellow text-gray-900 border-brand-yellow'
+                            : 'bg-white text-gray-700 border-gray-300 hover:border-brand-yellow'
+                        }`}
+                      >
+                        {pct}%
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-600">Custom:</span>
+                    <div className="relative flex-1">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">$</span>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={customTip}
+                        onChange={(e) => {
+                          setCustomTip(e.target.value);
+                          setTipPercent(null);
+                        }}
+                        placeholder="0.00"
+                        className="w-full pl-7 pr-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-brand-yellow"
+                      />
+                    </div>
+                  </div>
+                  {tipAmount > 0 && (
+                    <p className="text-xs text-amber-700 mt-2">
+                      +${tipAmount.toFixed(2)} tip added
+                    </p>
+                  )}
+                </div>
+
                 <div className="border-t pt-4 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span>Subtotal</span>
@@ -635,6 +696,14 @@ export default function CheckoutPage() {
                     </div>
                   )}
                   
+                  {/* Tip amount */}
+                  {tipAmount > 0 && (
+                    <div className="flex justify-between text-sm text-amber-700">
+                      <span>Tip</span>
+                      <span>${tipAmount.toFixed(2)}</span>
+                    </div>
+                  )}
+
                   {/* Loyalty Points - Disabled for now */}
                   {/* {isAuthenticated && customer?.metafields && (
                     <div className="pt-2 border-t">

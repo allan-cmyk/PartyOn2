@@ -59,6 +59,7 @@ export async function PUT(
     if (body.payoutMethod !== undefined) updateData.payoutMethod = body.payoutMethod;
     if (body.payoutDetails !== undefined) updateData.payoutDetails = body.payoutDetails;
     if (body.internalNotes !== undefined) updateData.internalNotes = body.internalNotes;
+    if (body.customerPerk !== undefined) updateData.customerPerk = body.customerPerk;
 
     if (Object.keys(updateData).length > 0) {
       await updateAffiliate(id, updateData);

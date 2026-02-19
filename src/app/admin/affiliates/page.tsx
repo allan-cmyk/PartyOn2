@@ -28,6 +28,8 @@ interface Affiliate {
   businessName: string;
   email: string;
   phone: string | null;
+  commissionRateOverride: string | null;
+  customerPerk: string;
   createdAt: string;
   _count: { commissions: number; orders: number };
 }
@@ -269,6 +271,8 @@ export default function AffiliatesPage(): ReactElement {
                     <th className="px-4 py-3 text-left font-medium text-gray-600">Business</th>
                     <th className="px-4 py-3 text-left font-medium text-gray-600">Contact</th>
                     <th className="px-4 py-3 text-left font-medium text-gray-600">Category</th>
+                    <th className="px-4 py-3 text-left font-medium text-gray-600">Perk</th>
+                    <th className="px-4 py-3 text-left font-medium text-gray-600">Rate</th>
                     <th className="px-4 py-3 text-center font-medium text-gray-600">Orders</th>
                     <th className="px-4 py-3 text-left font-medium text-gray-600">Status</th>
                     <th className="px-4 py-3 text-right font-medium text-gray-600">Actions</th>
@@ -286,6 +290,10 @@ export default function AffiliatesPage(): ReactElement {
                         <div className="text-gray-500 text-xs">{aff.email}</div>
                       </td>
                       <td className="px-4 py-3 text-gray-700">{categoryLabel(aff.category)}</td>
+                      <td className="px-4 py-3 text-gray-700 text-xs">{aff.customerPerk || 'Free Delivery'}</td>
+                      <td className="px-4 py-3 text-gray-700 text-xs">
+                        {aff.commissionRateOverride ? `${Number(aff.commissionRateOverride) * 100}%` : 'Progressive'}
+                      </td>
                       <td className="px-4 py-3 text-center text-gray-700">{aff._count.orders}</td>
                       <td className="px-4 py-3">
                         <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${

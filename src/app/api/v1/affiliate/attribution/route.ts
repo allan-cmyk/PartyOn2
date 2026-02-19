@@ -28,6 +28,7 @@ export async function GET(): Promise<NextResponse> {
       data: {
         active: true,
         partnerName: affiliate.businessName,
+        customerPerk: affiliate.customerPerk,
       },
     });
   } catch (error) {

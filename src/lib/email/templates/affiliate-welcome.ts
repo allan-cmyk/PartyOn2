@@ -65,7 +65,7 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
                   Your Partner Page
                 </h3>
                 <p style="margin: 0 0 12px; color: #4b5563; font-size: 15px; line-height: 1.6;">
-                  Send your customers to your dedicated partner page -- not the homepage:
+                  Share this link with your customers:
                 </p>
                 <div style="background-color: #1a1a1a; color: #D4AF37; font-family: 'Courier New', Courier, monospace; font-size: 18px; font-weight: 700; padding: 16px 24px; border-radius: 8px; display: inline-block; margin-bottom: 12px;">
                   <a href="${data.referralLink}" style="color: #D4AF37; text-decoration: none;">${data.referralLink}</a>
@@ -212,7 +212,7 @@ export function generateAffiliateWelcomeText(data: AffiliateWelcomeEmailData): s
 
   lines.push(
     'YOUR PARTNER PAGE',
-    `Send your customers here (not the homepage): ${data.referralLink}`,
+    `Share this link with your customers: ${data.referralLink}`,
     `Referral code: ${data.code}`,
     '',
     'HOW IT WORKS',

@@ -28,8 +28,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${affiliate.businessName} x Party On Delivery | Free Delivery`,
-    description: `Order through ${affiliate.businessName} and get free delivery on your alcohol order from Party On Delivery in Austin, TX.`,
+    title: `${affiliate.businessName} x Party On Delivery | ${affiliate.customerPerk}`,
+    description: `Order through ${affiliate.businessName} and get ${affiliate.customerPerk.toLowerCase()} on your alcohol order from Party On Delivery in Austin, TX.`,
   };
 }
 
@@ -74,7 +74,7 @@ export default async function DynamicPartnerPage({ params }: Props) {
             )}
 
             <h1 className="font-heading font-bold text-4xl md:text-6xl tracking-[0.08em] mb-4">
-              FREE DELIVERY FOR ALL
+              {affiliate.customerPerk.toUpperCase()} FOR ALL
             </h1>
             <p className="text-xl md:text-2xl font-heading font-light tracking-[0.08em] text-gray-200 mb-2">
               {affiliate.businessName} Customers
@@ -139,7 +139,7 @@ export default async function DynamicPartnerPage({ params }: Props) {
               READY TO ORDER?
             </h2>
             <p className="text-gray-600 text-sm mb-6">
-              Free delivery is applied automatically at checkout.
+              {affiliate.customerPerk} is applied automatically at checkout.
             </p>
             <Link
               href={referralLink}
