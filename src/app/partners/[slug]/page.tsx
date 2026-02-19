@@ -1,12 +1,22 @@
 import { notFound } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import { getAffiliateByCode } from '@/lib/affiliates/affiliate-service';
+import partnersData from '@/data/austin-partners.json';
 
 interface Props {
   params: Promise<{ slug: string }>;
+}
+
+function findPartnerLogo(businessName: string): string | null {
+  const lower = businessName.toLowerCase();
+  const match = partnersData.partners.find(
+    (p) => p.name.toLowerCase() === lower
+  );
+  return match?.logo ?? null;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -32,62 +42,90 @@ export default async function DynamicPartnerPage({ params }: Props) {
   }
 
   const referralLink = `/order?ref=${affiliate.code}`;
+  const partnerLogo = findPartnerLogo(affiliate.businessName);
 
   return (
     <>
       <Navigation />
       <main className="min-h-screen">
         {/* Hero */}
-        <section className="relative bg-gray-900 text-white py-24 md:py-32">
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-gray-900" />
-          <div className="relative max-w-4xl mx-auto px-6 text-center">
-            <p className="text-brand-yellow text-sm tracking-[0.2em] uppercase mb-4">
-              Partner Exclusive
-            </p>
-            <h1 className="font-cormorant text-4xl md:text-6xl tracking-[0.06em] mb-6">
-              {affiliate.businessName}
+        <section className="relative h-[70vh] min-h-[500px] flex items-center justify-center overflow-hidden">
+          <Image
+            src="/images/hero/mobile-bartender-outdoor-event.webp"
+            alt={`${affiliate.businessName} x Party On Delivery`}
+            fill
+            className="object-cover"
+            priority
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-900/80 via-gray-900/60 to-gray-900/80" />
+
+          <div className="hero-fade-in relative text-center text-white z-10 max-w-4xl mx-auto px-6">
+            {partnerLogo && (
+              <div className="mb-8">
+                <Image
+                  src={partnerLogo}
+                  alt={`${affiliate.businessName} logo`}
+                  width={160}
+                  height={80}
+                  className="mx-auto object-contain brightness-0 invert"
+                />
+              </div>
+            )}
+
+            <h1 className="font-heading font-bold text-4xl md:text-6xl tracking-[0.08em] mb-4">
+              FREE DELIVERY FOR ALL
             </h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-4">
-              x Party On Delivery
+            <p className="text-xl md:text-2xl font-heading font-light tracking-[0.08em] text-gray-200 mb-2">
+              {affiliate.businessName} Customers
             </p>
-            <p className="text-lg text-brand-yellow font-medium">
-              Free delivery on your order
+            <p className="text-lg text-gray-300 mb-8">
+              Provided by Party On Delivery
             </p>
+
+            <div className="w-20 h-px bg-brand-yellow mx-auto mb-8" />
+
+            <Link
+              href={referralLink}
+              className="btn-cart text-lg px-10 py-4"
+            >
+              START SHOPPING
+            </Link>
           </div>
         </section>
 
-        {/* Value Prop */}
-        <section className="py-16 md:py-20 bg-white">
-          <div className="max-w-5xl mx-auto px-6">
-            <h2 className="font-cormorant text-3xl md:text-4xl text-center mb-12">
-              How It Works
+        {/* How It Works */}
+        <section className="section-padding bg-white">
+          <div className="container-custom max-w-3xl">
+            <h2 className="font-heading font-bold text-2xl md:text-3xl text-center tracking-[0.08em] mb-8">
+              HOW IT WORKS
             </h2>
-            <div className="grid md:grid-cols-3 gap-8 text-center">
-              <div>
-                <div className="w-14 h-14 rounded-full bg-brand-yellow/10 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-brand-yellow text-2xl font-bold">1</span>
+            <div className="grid grid-cols-3 gap-4 md:gap-6">
+              <div className="text-center">
+                <div className="w-10 h-10 rounded-lg bg-brand-blue/10 flex items-center justify-center mx-auto mb-3">
+                  <span className="text-brand-blue text-lg font-bold font-heading">1</span>
                 </div>
-                <h3 className="font-medium text-lg mb-2">Browse Our Selection</h3>
-                <p className="text-gray-600 text-sm">
-                  Beer, wine, spirits, mixers, and party supplies -- everything you need delivered to your door.
+                <h3 className="font-heading font-semibold text-sm md:text-base mb-1">Browse</h3>
+                <p className="text-gray-500 text-xs md:text-sm leading-snug">
+                  Beer, wine, spirits, mixers, and party supplies.
                 </p>
               </div>
-              <div>
-                <div className="w-14 h-14 rounded-full bg-brand-yellow/10 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-brand-yellow text-2xl font-bold">2</span>
+              <div className="text-center">
+                <div className="w-10 h-10 rounded-lg bg-brand-blue/10 flex items-center justify-center mx-auto mb-3">
+                  <span className="text-brand-blue text-lg font-bold font-heading">2</span>
                 </div>
-                <h3 className="font-medium text-lg mb-2">Pick Your Delivery Window</h3>
-                <p className="text-gray-600 text-sm">
-                  Choose the date and time that works for you. Same-day and next-day delivery available across Austin.
+                <h3 className="font-heading font-semibold text-sm md:text-base mb-1">Schedule</h3>
+                <p className="text-gray-500 text-xs md:text-sm leading-snug">
+                  Pick a date and time. Same-day available across Austin.
                 </p>
               </div>
-              <div>
-                <div className="w-14 h-14 rounded-full bg-brand-yellow/10 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-brand-yellow text-2xl font-bold">3</span>
+              <div className="text-center">
+                <div className="w-10 h-10 rounded-lg bg-brand-blue/10 flex items-center justify-center mx-auto mb-3">
+                  <span className="text-brand-blue text-lg font-bold font-heading">3</span>
                 </div>
-                <h3 className="font-medium text-lg mb-2">Free Delivery</h3>
-                <p className="text-gray-600 text-sm">
-                  As a {affiliate.businessName} customer, your delivery fee is on us. No minimum order required.
+                <h3 className="font-heading font-semibold text-sm md:text-base mb-1">Enjoy</h3>
+                <p className="text-gray-500 text-xs md:text-sm leading-snug">
+                  Free delivery to your door. No minimum order.
                 </p>
               </div>
             </div>
@@ -95,17 +133,17 @@ export default async function DynamicPartnerPage({ params }: Props) {
         </section>
 
         {/* CTA */}
-        <section className="py-16 md:py-20 bg-gray-50">
-          <div className="max-w-2xl mx-auto px-6 text-center">
-            <h2 className="font-cormorant text-3xl md:text-4xl mb-4">
-              Ready to Order?
+        <section className="section-padding bg-gray-50">
+          <div className="max-w-xl mx-auto px-6 text-center">
+            <h2 className="font-heading font-bold text-2xl md:text-3xl tracking-[0.08em] mb-3">
+              READY TO ORDER?
             </h2>
-            <p className="text-gray-600 mb-8">
-              Your free delivery will be applied automatically at checkout.
+            <p className="text-gray-600 text-sm mb-6">
+              Free delivery is applied automatically at checkout.
             </p>
             <Link
               href={referralLink}
-              className="inline-block bg-brand-yellow text-gray-900 px-10 py-4 text-lg font-medium tracking-[0.06em] hover:bg-yellow-600 transition-colors"
+              className="btn-cart text-lg px-10 py-4"
             >
               START SHOPPING
             </Link>
