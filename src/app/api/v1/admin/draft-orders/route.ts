@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createDraftOrder, listDraftOrders, calculateDraftOrderAmounts } from '@/lib/draft-orders';
 import { DraftOrderStatus } from '@prisma/client';
+import { prisma } from '@/lib/database/client';
 
 const DraftOrderItemSchema = z.object({
   productId: z.string(),
@@ -66,9 +67,33 @@ export async function GET(request: NextRequest) {
       order,
     });
 
+    // Fetch latest email status for each draft order
+    const draftOrderIds = result.draftOrders.map((d) => d.id);
+    let emailStatusMap: Record<string, string> = {};
+
+    if (draftOrderIds.length > 0) {
+      const latestEmails = await prisma.$queryRaw<
+        { draft_order_id: string; status: string }[]
+      >`
+        SELECT DISTINCT ON (draft_order_id) draft_order_id, status
+        FROM email_logs
+        WHERE draft_order_id = ANY(${draftOrderIds}::text[])
+        ORDER BY draft_order_id, created_at DESC
+      `;
+
+      emailStatusMap = Object.fromEntries(
+        latestEmails.map((e) => [e.draft_order_id, e.status])
+      );
+    }
+
+    const dataWithEmailStatus = result.draftOrders.map((d) => ({
+      ...d,
+      emailStatus: emailStatusMap[d.id] || null,
+    }));
+
     return NextResponse.json({
       success: true,
-      data: result.draftOrders,
+      data: dataWithEmailStatus,
       pagination: {
         total: result.total,
         limit,

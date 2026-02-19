@@ -1109,14 +1109,17 @@ model EmailLog {
   status    EmailStatus @default(PENDING)
 
   // Reference to related entity
-  orderId    String? @map("order_id")
-  customerId String? @map("customer_id")
+  orderId      String? @map("order_id")
+  customerId   String? @map("customer_id")
+  draftOrderId String? @map("draft_order_id")
 
   // Resend tracking
   resendId      String?   @map("resend_id")
   sentAt        DateTime? @map("sent_at")
   deliveredAt   DateTime? @map("delivered_at")
   openedAt      DateTime? @map("opened_at")
+  bouncedAt     DateTime? @map("bounced_at")
+  complainedAt  DateTime? @map("complained_at")
   errorMessage  String?   @map("error_message")
 
   // Metadata
@@ -1126,6 +1129,8 @@ model EmailLog {
 
   @@index([type])
   @@index([orderId])
+  @@index([draftOrderId])
+  @@index([resendId])
   @@index([status])
   @@map("email_logs")
 }
@@ -1161,6 +1166,8 @@ enum EmailStatus {
   SENT
   DELIVERED
   OPENED
+  BOUNCED
+  COMPLAINED
   FAILED
 }
 

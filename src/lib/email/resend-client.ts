@@ -30,6 +30,7 @@ export interface SendEmailOptions {
   type: EmailType;
   orderId?: string;
   customerId?: string;
+  draftOrderId?: string;
   metadata?: Record<string, unknown>;
 }
 
@@ -37,7 +38,7 @@ export interface SendEmailOptions {
  * Send an email and log it
  */
 export async function sendEmail(options: SendEmailOptions): Promise<string | null> {
-  const { to, cc, subject, html, text, type, orderId, customerId, metadata } = options;
+  const { to, cc, subject, html, text, type, orderId, customerId, draftOrderId, metadata } = options;
 
   // Create email log entry
   const emailLog = await prisma.emailLog.create({
@@ -48,6 +49,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<string | nul
       status: EmailStatus.PENDING,
       orderId,
       customerId,
+      draftOrderId,
       metadata: metadata ? JSON.parse(JSON.stringify(metadata)) : undefined,
     },
   });

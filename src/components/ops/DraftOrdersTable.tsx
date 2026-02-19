@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, useCallback, ReactElement } from 'react';
+import React, { useState, useEffect, useCallback, ReactElement } from 'react';
 import Link from 'next/link';
 import InvoiceSendModal from './InvoiceSendModal';
+import EmailEventTimeline from './EmailEventTimeline';
 
 interface DraftOrderItem {
   title: string;
@@ -27,6 +28,7 @@ interface DraftOrder {
   viewedAt: string | null;
   createdAt: string;
   invoiceUrl?: string;
+  emailStatus: string | null;
 }
 
 interface PaginationInfo {
@@ -92,6 +94,27 @@ function formatDateTime(dateStr: string): string {
   });
 }
 
+function getEmailStatusIndicator(emailStatus: string | null): { dot: string; label: string } {
+  switch (emailStatus) {
+    case 'OPENED':
+      return { dot: 'bg-green-500', label: 'Opened' };
+    case 'DELIVERED':
+      return { dot: 'bg-green-400', label: 'Delivered' };
+    case 'SENT':
+      return { dot: 'bg-blue-500', label: 'Sent' };
+    case 'BOUNCED':
+      return { dot: 'bg-red-500', label: 'Bounced' };
+    case 'COMPLAINED':
+      return { dot: 'bg-red-500', label: 'Spam' };
+    case 'FAILED':
+      return { dot: 'bg-red-500', label: 'Failed' };
+    case 'PENDING':
+      return { dot: 'bg-yellow-400', label: 'Pending' };
+    default:
+      return { dot: 'bg-gray-300', label: 'No email' };
+  }
+}
+
 export default function DraftOrdersTable(): ReactElement {
   const [draftOrders, setDraftOrders] = useState<DraftOrder[]>([]);
   const [pagination, setPagination] = useState<PaginationInfo | null>(null);
@@ -101,6 +124,7 @@ export default function DraftOrdersTable(): ReactElement {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [sendModalOrder, setSendModalOrder] = useState<DraftOrder | null>(null);
+  const [expandedRow, setExpandedRow] = useState<string | null>(null);
   const limit = 20;
 
   const showToast = (message: string) => {
@@ -294,14 +318,19 @@ export default function DraftOrdersTable(): ReactElement {
                 <th className="text-right px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Total</th>
                 <th className="text-left px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Delivery</th>
                 <th className="text-center px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Status</th>
-                <th className="text-left px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Sent</th>
+                <th className="text-center px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Email</th>
                 <th className="text-left px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Created</th>
                 <th className="text-right px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {draftOrders.map((order) => (
-                <tr key={order.id} className="hover:bg-blue-50/50 transition-colors group">
+              {draftOrders.map((order) => {
+                const emailIndicator = getEmailStatusIndicator(order.emailStatus);
+                const isExpanded = expandedRow === order.id;
+
+                return (
+                <React.Fragment key={order.id}>
+                  <tr className={`hover:bg-blue-50/50 transition-colors group ${isExpanded ? 'bg-blue-50/30' : ''}`}>
                   <td className="px-6 py-4">
                     <div>
                       <p className="font-medium text-gray-900">{order.customerName}</p>
@@ -322,12 +351,23 @@ export default function DraftOrdersTable(): ReactElement {
                       {order.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
-                    {order.sentAt ? (
-                      <span className="text-sm text-gray-700">{formatDateTime(order.sentAt)}</span>
-                    ) : (
-                      <span className="text-sm text-gray-400">Not sent</span>
-                    )}
+                  <td className="px-6 py-4 text-center">
+                    <button
+                      onClick={() => setExpandedRow(isExpanded ? null : order.id)}
+                      className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                      title="View email delivery timeline"
+                    >
+                      <span className={`w-2.5 h-2.5 rounded-full ${emailIndicator.dot}`} />
+                      <span className="text-gray-700">{emailIndicator.label}</span>
+                      <svg
+                        className={`w-3.5 h-3.5 text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
                   </td>
                   <td className="px-6 py-4">
                     <span className="text-sm text-gray-500">{formatDateTime(order.createdAt)}</span>
@@ -388,7 +428,16 @@ export default function DraftOrdersTable(): ReactElement {
                     </div>
                   </td>
                 </tr>
-              ))}
+                {isExpanded && (
+                  <tr>
+                    <td colSpan={7} className="p-0 border-b border-gray-200">
+                      <EmailEventTimeline draftOrderId={order.id} />
+                    </td>
+                  </tr>
+                )}
+                </React.Fragment>
+              );
+              })}
             </tbody>
           </table>
         )}

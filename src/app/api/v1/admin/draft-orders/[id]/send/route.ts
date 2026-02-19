@@ -4,22 +4,11 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { Resend } from 'resend';
 import { getDraftOrderById, updateDraftOrderStatus } from '@/lib/draft-orders';
 import { generateInvoiceEmail, generateInvoiceSubject, InvoiceTextOverrides } from '@/lib/email/templates/invoice';
 import { getInvoiceTextOverrides } from '@/lib/email/template-content';
-
-// Initialize Resend lazily to avoid build-time errors when env var is missing
-let resend: Resend | null = null;
-function getResend(): Resend {
-  if (!resend) {
-    if (!process.env.RESEND_API_KEY) {
-      throw new Error('RESEND_API_KEY environment variable is required');
-    }
-    resend = new Resend(process.env.RESEND_API_KEY);
-  }
-  return resend;
-}
+import { sendEmail } from '@/lib/email/resend-client';
+import { EmailType } from '@prisma/client';
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -92,22 +81,21 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       personalNote: bodyParams.personalNote,
     }, textOverrides);
 
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'Party On Delivery <orders@partyondelivery.com>';
-
-    // Send email via Resend
     const emailSubject = bodyParams.subject || generateInvoiceSubject(Number(draftOrder.total));
-    const { data, error: resendError } = await getResend().emails.send({
-      from: fromEmail,
+
+    // Send email via centralized sendEmail (logs to EmailLog automatically)
+    const resendId = await sendEmail({
       to: draftOrder.customerEmail,
-      ...(bodyParams.cc && bodyParams.cc.length > 0 ? { cc: bodyParams.cc } : {}),
+      cc: bodyParams.cc,
       subject: emailSubject,
       html,
+      type: EmailType.INVOICE,
+      draftOrderId: id,
     });
 
-    if (resendError) {
-      console.error('[Draft Order Send] Email error:', resendError);
+    if (!resendId) {
       return NextResponse.json(
-        { success: false, error: 'Failed to send email', details: resendError.message },
+        { success: false, error: 'Failed to send email' },
         { status: 500 }
       );
     }
@@ -119,7 +107,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       success: true,
       message: 'Invoice sent successfully',
       data: {
-        emailId: data?.id,
+        emailId: resendId,
         invoiceUrl,
         sentTo: draftOrder.customerEmail,
       },
