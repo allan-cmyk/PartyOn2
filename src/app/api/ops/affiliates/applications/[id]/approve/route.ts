@@ -3,6 +3,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAdminRole } from '@/lib/auth/ops-session';
 import { approveApplication } from '@/lib/affiliates/affiliate-service';
 
 export async function POST(
@@ -10,6 +11,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
   try {
+    const auth = await requireAdminRole();
+    if (auth instanceof NextResponse) return auth;
+
     const { id } = await params;
     const affiliate = await approveApplication(id);
     return NextResponse.json({ success: true, data: affiliate });

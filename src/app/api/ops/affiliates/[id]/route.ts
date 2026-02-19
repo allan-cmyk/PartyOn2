@@ -4,6 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { requireOpsAuth } from '@/lib/auth/ops-session';
 import { getAffiliateById, updateAffiliate, updateAffiliateCode, updateAffiliateStatus } from '@/lib/affiliates/affiliate-service';
 import { AffiliateStatus } from '@prisma/client';
 
@@ -12,6 +13,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
   try {
+    const auth = await requireOpsAuth();
+    if (auth instanceof NextResponse) return auth;
+
     const { id } = await params;
     const affiliate = await getAffiliateById(id);
     if (!affiliate) {
@@ -29,6 +33,9 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
   try {
+    const auth = await requireOpsAuth();
+    if (auth instanceof NextResponse) return auth;
+
     const { id } = await params;
     const body = await request.json();
 

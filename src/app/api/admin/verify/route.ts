@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { setOpsSessionCookie } from '@/lib/auth/ops-session';
 
 export type AdminRole = 'admin' | 'employee';
 
@@ -17,6 +18,7 @@ export async function POST(request: NextRequest) {
 
     // Check admin password first
     if (adminPassword && password === adminPassword) {
+      await setOpsSessionCookie('admin');
       return NextResponse.json({
         success: true,
         role: 'admin' as AdminRole
@@ -25,6 +27,7 @@ export async function POST(request: NextRequest) {
 
     // Check employee password
     if (employeePassword && password === employeePassword) {
+      await setOpsSessionCookie('employee');
       return NextResponse.json({
         success: true,
         role: 'employee' as AdminRole

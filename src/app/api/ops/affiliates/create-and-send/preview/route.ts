@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireOpsAuth } from '@/lib/auth/ops-session';
 import { generateAffiliateWelcomeEmail } from '@/lib/email/templates/affiliate-welcome';
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';
 
 export async function POST(request: NextRequest) {
   try {
+    const auth = await requireOpsAuth();
+    if (auth instanceof NextResponse) return auth;
+
     const body = await request.json();
     const { contactName, businessName, code, personalNote } = body;
 

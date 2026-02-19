@@ -48,6 +48,7 @@ export interface CreateCheckoutOptions {
   customerEmail?: string;
   stripeCustomerId?: string;
   affiliateCode?: string;
+  overrideDeliveryFee?: number;
 }
 
 /**
@@ -56,7 +57,7 @@ export interface CreateCheckoutOptions {
 export async function createCheckoutSession(
   options: CreateCheckoutOptions
 ): Promise<Stripe.Checkout.Session> {
-  const { cart, successUrl, cancelUrl, customerEmail, stripeCustomerId, affiliateCode } = options;
+  const { cart, successUrl, cancelUrl, customerEmail, stripeCustomerId, affiliateCode, overrideDeliveryFee } = options;
 
   // Build line items from cart
   const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = cart.items.map((item) => ({
@@ -76,8 +77,8 @@ export async function createCheckoutSession(
     quantity: item.quantity,
   }));
 
-  // Add delivery fee as a line item
-  const deliveryFee = Number(cart.deliveryFee);
+  // Add delivery fee as a line item (use override if provided, e.g. $0 for affiliate referrals)
+  const deliveryFee = overrideDeliveryFee !== undefined ? overrideDeliveryFee : Number(cart.deliveryFee);
   if (deliveryFee > 0) {
     lineItems.push({
       price_data: {

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireOpsAuth } from '@/lib/auth/ops-session';
 import { generateOrderConfirmationEmail } from '@/lib/email/templates/order-confirmation';
 import {
   generateDeliveryEnRouteEmail,
@@ -71,6 +72,9 @@ const SAMPLE_DELIVERY = {
 };
 
 export async function GET(request: NextRequest) {
+  const auth = await requireOpsAuth();
+  if (auth instanceof NextResponse) return auth;
+
   const type = request.nextUrl.searchParams.get('type') || 'order-confirmation';
 
   let html = '';
@@ -111,6 +115,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const auth = await requireOpsAuth();
+    if (auth instanceof NextResponse) return auth;
+
     const { type, textOverrides } = await request.json();
 
     if (type === 'invoice') {

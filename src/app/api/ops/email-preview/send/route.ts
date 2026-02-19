@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireOpsAuth } from '@/lib/auth/ops-session';
 import { sendEmail } from '@/lib/email/resend-client';
 import { generateOrderConfirmationEmail } from '@/lib/email/templates/order-confirmation';
 import {
@@ -83,6 +84,9 @@ const SUBJECT_MAP: Record<string, string> = {
 
 export async function POST(request: NextRequest) {
   try {
+    const auth = await requireOpsAuth();
+    if (auth instanceof NextResponse) return auth;
+
     const { type, to } = await request.json();
 
     if (!to || !type) {

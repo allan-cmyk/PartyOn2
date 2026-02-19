@@ -3,10 +3,14 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { requireOpsAuth } from '@/lib/auth/ops-session';
 import { listPayouts } from '@/lib/affiliates/payout-service';
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
+    const auth = await requireOpsAuth();
+    if (auth instanceof NextResponse) return auth;
+
     const affiliateId = request.nextUrl.searchParams.get('affiliateId') || undefined;
     const status = request.nextUrl.searchParams.get('status') || undefined;
     const payoutPeriod = request.nextUrl.searchParams.get('period') || undefined;

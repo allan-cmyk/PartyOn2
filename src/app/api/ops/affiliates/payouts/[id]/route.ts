@@ -4,6 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { requireOpsAuth } from '@/lib/auth/ops-session';
 import { getPayoutById, markPayoutCompleted, markPayoutFailed } from '@/lib/affiliates/payout-service';
 
 export async function GET(
@@ -11,6 +12,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
   try {
+    const auth = await requireOpsAuth();
+    if (auth instanceof NextResponse) return auth;
+
     const { id } = await params;
     const payout = await getPayoutById(id);
     if (!payout) {
@@ -28,6 +32,9 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
   try {
+    const auth = await requireOpsAuth();
+    if (auth instanceof NextResponse) return auth;
+
     const { id } = await params;
     const body = await request.json();
     const { status, notes } = body;

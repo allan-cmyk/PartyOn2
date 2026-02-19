@@ -3,11 +3,15 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { requireOpsAuth } from '@/lib/auth/ops-session';
 import { prisma } from '@/lib/database/client';
 import { CommissionStatus } from '@prisma/client';
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
+    const auth = await requireOpsAuth();
+    if (auth instanceof NextResponse) return auth;
+
     const statusParam = request.nextUrl.searchParams.get('status') as CommissionStatus | null;
 
     const commissions = await prisma.affiliateCommission.findMany({

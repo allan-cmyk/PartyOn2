@@ -49,6 +49,19 @@ export function getTierRate(revenueCents: number): number {
 }
 
 /**
+ * Get tier progress percentage towards next tier
+ */
+export function getTierProgress(revenueCents: number): number {
+  if (revenueCents <= TIER_1_CEILING) {
+    return Math.min((revenueCents / TIER_1_CEILING) * 100, 100);
+  }
+  if (revenueCents <= TIER_2_CEILING) {
+    return Math.min(((revenueCents - TIER_1_CEILING) / (TIER_2_CEILING - TIER_1_CEILING)) * 100, 100);
+  }
+  return 100;
+}
+
+/**
  * Get month-to-date commission base revenue for an affiliate (in cents).
  * Only counts commissions that are not VOID.
  */
@@ -80,7 +93,8 @@ export async function getMonthToDateRevenue(affiliateId: string): Promise<number
  */
 export async function calculateCommission(
   affiliateId: string,
-  orderBaseCents: number
+  orderBaseCents: number,
+  overrideRate?: number
 ): Promise<{
   commissionAmountCents: number;
   commissionRate: number;
@@ -88,6 +102,18 @@ export async function calculateCommission(
   priorRevenueCents: number;
 }> {
   const priorRevenueCents = await getMonthToDateRevenue(affiliateId);
+
+  // Use flat override rate if provided
+  if (overrideRate && overrideRate > 0) {
+    const commissionAmountCents = Math.round(orderBaseCents * overrideRate);
+    return {
+      commissionAmountCents,
+      commissionRate: overrideRate,
+      tierAtTime: `Custom ${(overrideRate * 100)}%`,
+      priorRevenueCents,
+    };
+  }
+
   const totalAfter = priorRevenueCents + orderBaseCents;
 
   const commissionAmountCents = progressiveCommission(totalAfter) - progressiveCommission(priorRevenueCents);
@@ -109,11 +135,13 @@ export async function createCommissionForOrder(
   affiliateId: string,
   orderId: string,
   orderBaseCents: number,
-  isSelfReferral: boolean
+  isSelfReferral: boolean,
+  overrideRate?: number
 ) {
   const { commissionAmountCents, commissionRate, tierAtTime } = await calculateCommission(
     affiliateId,
-    orderBaseCents
+    orderBaseCents,
+    overrideRate
   );
 
   return prisma.affiliateCommission.create({
@@ -167,12 +195,16 @@ export async function linkOrderToAffiliate(
   // Check self-referral
   const isSelfReferral = order.customerEmail.toLowerCase() === affiliate.email.toLowerCase();
 
+  // Use override rate if set on the affiliate
+  const overrideRate = affiliate.commissionRateOverride ? Number(affiliate.commissionRateOverride) : undefined;
+
   // Create commission
   const commission = await createCommissionForOrder(
     affiliate.id,
     order.id,
     orderBaseCents,
-    isSelfReferral
+    isSelfReferral,
+    overrideRate
   );
 
   console.log(

@@ -3,6 +3,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAdminRole } from '@/lib/auth/ops-session';
 import { prisma } from '@/lib/database/client';
 import { CommissionStatus } from '@prisma/client';
 
@@ -11,6 +12,9 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
   try {
+    const auth = await requireAdminRole();
+    if (auth instanceof NextResponse) return auth;
+
     const { id } = await params;
     const body = await request.json();
     const { action, reason } = body; // action: 'approve' | 'void'

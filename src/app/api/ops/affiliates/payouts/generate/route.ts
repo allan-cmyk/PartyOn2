@@ -4,10 +4,14 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAdminRole } from '@/lib/auth/ops-session';
 import { generateMonthlyPayouts } from '@/lib/affiliates/payout-service';
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
+    const auth = await requireAdminRole();
+    if (auth instanceof NextResponse) return auth;
+
     const body = await request.json();
     const { year, month } = body;
 

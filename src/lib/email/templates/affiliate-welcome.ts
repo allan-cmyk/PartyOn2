@@ -87,7 +87,7 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
                 </tr>
                 <tr>
                   <td style="padding: 6px 0; color: #4b5563; font-size: 15px; line-height: 1.6; vertical-align: top;">&#8226;</td>
-                  <td style="padding: 6px 0; color: #4b5563; font-size: 15px; line-height: 1.6;">The more orders you refer, the <strong>higher your commission rate</strong> grows</td>
+                  <td style="padding: 6px 0; color: #4b5563; font-size: 15px; line-height: 1.6;">The more revenue you refer, the <strong>higher your commission rate</strong> grows</td>
                 </tr>
               </table>
 
@@ -99,24 +99,24 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
                 <thead>
                   <tr style="background-color: #1a1a1a;">
                     <th style="padding: 12px 16px; text-align: left; font-size: 13px; color: #D4AF37; font-weight: 600; letter-spacing: 0.05em;">TIER</th>
-                    <th style="padding: 12px 16px; text-align: center; font-size: 13px; color: #D4AF37; font-weight: 600; letter-spacing: 0.05em;">ORDERS / MONTH</th>
+                    <th style="padding: 12px 16px; text-align: center; font-size: 13px; color: #D4AF37; font-weight: 600; letter-spacing: 0.05em;">MONTHLY REVENUE</th>
                     <th style="padding: 12px 16px; text-align: right; font-size: 13px; color: #D4AF37; font-weight: 600; letter-spacing: 0.05em;">COMMISSION</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td style="padding: 12px 16px; border-bottom: 1px solid #e5e5e5; color: #4b5563; font-size: 14px;">Starter</td>
-                    <td style="padding: 12px 16px; border-bottom: 1px solid #e5e5e5; text-align: center; color: #4b5563; font-size: 14px;">0 - 10</td>
+                    <td style="padding: 12px 16px; border-bottom: 1px solid #e5e5e5; text-align: center; color: #4b5563; font-size: 14px;">$0 - $10k</td>
                     <td style="padding: 12px 16px; border-bottom: 1px solid #e5e5e5; text-align: right; color: #1a1a1a; font-size: 14px; font-weight: 600;">5%</td>
                   </tr>
                   <tr>
                     <td style="padding: 12px 16px; border-bottom: 1px solid #e5e5e5; color: #4b5563; font-size: 14px;">Growth</td>
-                    <td style="padding: 12px 16px; border-bottom: 1px solid #e5e5e5; text-align: center; color: #4b5563; font-size: 14px;">11 - 25</td>
+                    <td style="padding: 12px 16px; border-bottom: 1px solid #e5e5e5; text-align: center; color: #4b5563; font-size: 14px;">$10k - $20k</td>
                     <td style="padding: 12px 16px; border-bottom: 1px solid #e5e5e5; text-align: right; color: #1a1a1a; font-size: 14px; font-weight: 600;">8%</td>
                   </tr>
                   <tr>
                     <td style="padding: 12px 16px; color: #4b5563; font-size: 14px;">Pro</td>
-                    <td style="padding: 12px 16px; text-align: center; color: #4b5563; font-size: 14px;">26+</td>
+                    <td style="padding: 12px 16px; text-align: center; color: #4b5563; font-size: 14px;">$20k+</td>
                     <td style="padding: 12px 16px; text-align: right; color: #1a1a1a; font-size: 14px; font-weight: 600;">10%</td>
                   </tr>
                 </tbody>
@@ -215,12 +215,12 @@ export function generateAffiliateWelcomeText(data: AffiliateWelcomeEmailData): s
     'HOW IT WORKS',
     '- Your customers get free delivery when they use your referral code or link',
     '- You earn a commission on every order placed through your referral',
-    '- The more orders you refer, the higher your commission rate grows',
+    '- The more revenue you refer, the higher your commission rate grows',
     '',
     'COMMISSION TIERS',
-    'Starter (0-10 orders/mo): 5%',
-    'Growth (11-25 orders/mo): 8%',
-    'Pro (26+ orders/mo): 10%',
+    'Starter ($0-$10k/mo): 5%',
+    'Growth ($10k-$20k/mo): 8%',
+    'Pro ($20k+/mo): 10%',
     '',
     'PAYOUT SCHEDULE',
     'Commissions are calculated monthly and paid out by the 15th of the following month.',

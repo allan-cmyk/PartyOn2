@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireOpsAuth } from '@/lib/auth/ops-session';
 import { getInvoiceTextOverrides, saveInvoiceTextOverrides } from '@/lib/email/template-content';
 import { INVOICE_TEXT_DEFAULTS, type InvoiceTextOverrides } from '@/lib/email/templates/invoice';
 
 export async function GET(request: NextRequest) {
+  const auth = await requireOpsAuth();
+  if (auth instanceof NextResponse) return auth;
+
   const type = request.nextUrl.searchParams.get('type');
 
   if (type !== 'invoice') {
@@ -20,6 +24,9 @@ export async function GET(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
+    const auth = await requireOpsAuth();
+    if (auth instanceof NextResponse) return auth;
+
     const { type, content } = await request.json();
 
     if (type !== 'invoice') {

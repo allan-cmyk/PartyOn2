@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAdminRole } from '@/lib/auth/ops-session';
 import { createAffiliate, getAffiliateByEmail } from '@/lib/affiliates/affiliate-service';
 import { sendEmail } from '@/lib/email/resend-client';
 import { generateAffiliateWelcomeEmail, generateAffiliateWelcomeText } from '@/lib/email/templates/affiliate-welcome';
@@ -9,6 +10,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com
 
 export async function POST(request: NextRequest) {
   try {
+    const auth = await requireAdminRole();
+    if (auth instanceof NextResponse) return auth;
+
     const body = await request.json();
     const { contactName, businessName, email, phone, category, code, personalNote } = body;
 

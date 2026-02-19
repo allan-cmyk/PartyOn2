@@ -58,8 +58,14 @@ export default function OpsLayout({ children }: OpsLayoutProps): ReactElement {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/ops/logout', { method: 'POST' });
+    } catch {
+      // Best-effort cookie clear
+    }
     sessionStorage.removeItem('ops_authenticated');
+    sessionStorage.removeItem('ops_role');
     setIsAuthenticated(false);
     setPassword('');
   };

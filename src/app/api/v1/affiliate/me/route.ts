@@ -7,6 +7,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/database/client';
 import { getAffiliateSession } from '@/lib/affiliates/affiliate-session';
 import { CommissionStatus } from '@prisma/client';
+import { getTierLabel, getTierProgress } from '@/lib/affiliates/commission-engine';
 
 export async function GET(): Promise<NextResponse> {
   try {
@@ -51,20 +52,9 @@ export async function GET(): Promise<NextResponse> {
       _count: true,
     });
 
-    // Current tier
-    const tierLabel = monthRevenueCents <= 1_000_000 ? '5% ($0-$10k)'
-      : monthRevenueCents <= 2_000_000 ? '8% ($10k-$20k)'
-      : '10% ($20k+)';
-
-    // Tier progress (percent towards next tier)
-    let tierProgressPercent = 0;
-    if (monthRevenueCents <= 1_000_000) {
-      tierProgressPercent = Math.min((monthRevenueCents / 1_000_000) * 100, 100);
-    } else if (monthRevenueCents <= 2_000_000) {
-      tierProgressPercent = Math.min(((monthRevenueCents - 1_000_000) / 1_000_000) * 100, 100);
-    } else {
-      tierProgressPercent = 100;
-    }
+    // Current tier using shared helpers
+    const tierLabel = getTierLabel(monthRevenueCents);
+    const tierProgressPercent = Math.round(getTierProgress(monthRevenueCents));
 
     return NextResponse.json({
       success: true,
@@ -81,7 +71,7 @@ export async function GET(): Promise<NextResponse> {
           commissionCents: monthCommissionCents,
           orderCount: monthCommissions.length,
           currentTier: tierLabel,
-          tierProgressPercent: Math.round(tierProgressPercent),
+          tierProgressPercent,
         },
         lifetime: {
           revenueCents: lifetimeCommissions._sum.commissionBaseCents || 0,

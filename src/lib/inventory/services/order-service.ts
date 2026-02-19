@@ -304,7 +304,9 @@ export async function createFreeOrder(
   customerEmail: string,
   customerName: string,
   customerPhone: string | null,
-  affiliateCode?: string
+  affiliateCode?: string,
+  overrideDeliveryFee?: number,
+  overrideTotal?: number
 ): Promise<OrderWithItems> {
   // Get or create customer
   let customerId = cart.customerId;
@@ -364,10 +366,10 @@ export async function createFreeOrder(
         financialStatus: 'PAID',
         subtotal: cart.subtotal,
         taxAmount: cart.taxAmount,
-        deliveryFee: cart.deliveryFee,
+        deliveryFee: overrideDeliveryFee !== undefined ? overrideDeliveryFee : cart.deliveryFee,
         discountCode: cart.discountCode,
         discountAmount: cart.discountAmount,
-        total: cart.total,
+        total: overrideTotal !== undefined ? Math.max(overrideTotal, 0) : cart.total,
         deliveryDate: cart.deliveryDate!,
         deliveryTime: cart.deliveryTime!,
         deliveryAddress: cart.deliveryAddress ?? Prisma.JsonNull,
