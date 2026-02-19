@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, ReactElement } from 'react';
 import Link from 'next/link';
+import AddAffiliateModal from '@/components/ops/AddAffiliateModal';
 
 interface Application {
   id: string;
@@ -39,6 +40,7 @@ export default function AffiliatesPage(): ReactElement {
   const [affiliates, setAffiliates] = useState<Affiliate[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [showAddModal, setShowAddModal] = useState(false);
 
   const fetchApplications = useCallback(async () => {
     const res = await fetch('/api/ops/affiliates/applications');
@@ -120,7 +122,15 @@ export default function AffiliatesPage(): ReactElement {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
-      <h1 className="text-2xl font-bold text-gray-900 mb-4">Affiliates</h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold text-gray-900">Affiliates</h1>
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="px-4 py-2 text-sm font-semibold text-gray-900 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-lg hover:from-amber-500 hover:to-yellow-600 transition-all shadow-sm"
+        >
+          + Add Affiliate
+        </button>
+      </div>
 
       {/* Tabs */}
       <div className="flex gap-1 mb-6 border-b border-gray-200">
@@ -314,6 +324,17 @@ export default function AffiliatesPage(): ReactElement {
             </div>
           )}
         </div>
+      )}
+
+      {showAddModal && (
+        <AddAffiliateModal
+          onClose={() => setShowAddModal(false)}
+          onCreated={() => {
+            setShowAddModal(false);
+            setTab('affiliates');
+            fetchAffiliates();
+          }}
+        />
       )}
     </div>
   );
