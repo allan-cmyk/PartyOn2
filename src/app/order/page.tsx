@@ -19,6 +19,8 @@ const PARTY_TYPE_MAP: Record<string, PartyType> = {
   corporate: 'CORPORATE',
   'house-party': 'HOUSE_PARTY',
   house_party: 'HOUSE_PARTY',
+  boat: 'BOAT',
+  bach: 'BACH',
 };
 
 const DELIVERY_CONTEXT_MAP: Record<string, DeliveryContextType> = {
@@ -124,7 +126,7 @@ function OrderRedirectInner(): ReactElement {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
         <div className="text-center">
           <Image
-            src="/images/partyon-logo.png"
+            src="/images/pod-logo-2025.svg"
             alt="Party On"
             width={120}
             height={38}
@@ -150,7 +152,7 @@ function OrderRedirectInner(): ReactElement {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="text-center">
         <Image
-          src="/images/partyon-logo.png"
+          src="/images/pod-logo-2025.svg"
           alt="Party On"
           width={120}
           height={38}

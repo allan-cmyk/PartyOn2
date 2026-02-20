@@ -66,10 +66,10 @@ export default function JoinOverlay({
       <div className="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 p-6">
         <div className="flex justify-center mb-4">
           <Image
-            src="/images/partyon-logo.png"
+            src="/images/pod-logo-2025.svg"
             alt="Party On"
-            width={120}
-            height={38}
+            width={130}
+            height={40}
             className="h-9 w-auto"
           />
         </div>

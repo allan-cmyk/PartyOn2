@@ -91,13 +91,13 @@ export default function DashboardCart({
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-900 truncate">
+          <p className="text-base font-medium text-gray-900 truncate">
             {item.title}
           </p>
           {item.variantTitle && (
-            <p className="text-xs text-gray-500">{item.variantTitle}</p>
+            <p className="text-sm text-gray-500">{item.variantTitle}</p>
           )}
-          <p className="text-xs text-gray-600">
+          <p className="text-sm text-gray-600">
             ${item.price.toFixed(2)} each
           </p>
         </div>
@@ -168,7 +168,7 @@ export default function DashboardCart({
           <p className="text-sm font-medium text-gray-600 truncate line-through">
             {item.title}
           </p>
-          <p className="text-xs text-green-600">Paid</p>
+          <p className="text-sm text-green-600">Paid</p>
         </div>
         <span className="text-sm text-gray-500">x{item.quantity}</span>
         <span className="text-sm text-gray-500 w-16 text-right">
@@ -185,7 +185,7 @@ export default function DashboardCart({
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v4m0 0a2 2 0 11-4 0m4 0a2 2 0 10-4 0m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
         </svg>
         <p className="text-sm">Your cart is empty</p>
-        <p className="text-xs mt-1">Browse products and add items to get started</p>
+        <p className="text-sm mt-1">Browse products and add items to get started</p>
       </div>
     );
   }
@@ -203,7 +203,7 @@ export default function DashboardCart({
             {/* Your items */}
             {(myItems.length > 0 || myPurchased.length > 0) && (
               <div className="pb-3">
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                <p className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">
                   Your Items
                 </p>
                 {myItems.map((item) => renderItemRow(item, true))}
@@ -214,7 +214,7 @@ export default function DashboardCart({
             {/* Others' items */}
             {(othersItems.length > 0 || othersPurchased.length > 0) && (
               <div className="pt-3">
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                <p className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">
                   Others&apos; Items
                 </p>
                 {othersItems.map((item) => renderItemRow(item, false))}

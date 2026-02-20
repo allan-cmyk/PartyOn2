@@ -1579,6 +1579,8 @@ enum PartyType {
   CORPORATE
   HOUSE_PARTY
   OTHER
+  BOAT
+  BACH
 }
 
 enum DashboardSource {

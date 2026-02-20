@@ -87,10 +87,10 @@ export default function DashboardHeader({
         <div className="flex items-center gap-3">
           <Link href="/" className="flex-shrink-0">
             <Image
-              src="/images/partyon-logo.png"
+              src="/images/pod-logo-2025.svg"
               alt="Party On"
-              width={100}
-              height={32}
+              width={130}
+              height={40}
               className="h-8 w-auto"
             />
           </Link>
@@ -102,7 +102,7 @@ export default function DashboardHeader({
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="text-sm font-semibold border-2 border-gray-200 rounded-lg px-2 py-1 focus:border-brand-blue focus:ring-0 transition-all"
+                  className="text-base font-semibold border-2 border-gray-200 rounded-lg px-2 py-1 focus:border-brand-blue focus:ring-0 transition-all"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') handleSaveName();
                     if (e.key === 'Escape') {
@@ -116,7 +116,7 @@ export default function DashboardHeader({
                 <button
                   onClick={handleSaveName}
                   disabled={saving}
-                  className="text-xs text-blue-600 hover:text-blue-800"
+                  className="text-sm text-blue-600 hover:text-blue-800"
                 >
                   Save
                 </button>
@@ -125,18 +125,18 @@ export default function DashboardHeader({
               <div>
                 <button
                   onClick={() => isHost && setEditing(true)}
-                  className={`text-sm font-heading font-bold tracking-[0.08em] text-gray-900 ${isHost ? 'hover:text-brand-blue cursor-pointer' : ''}`}
+                  className={`text-base font-heading font-bold tracking-[0.08em] text-gray-900 ${isHost ? 'hover:text-brand-blue cursor-pointer' : ''}`}
                   disabled={!isHost}
                 >
                   {groupOrder.name}
                 </button>
                 {contextLabel && (
-                  <p className="text-xs text-gray-500">{contextLabel}</p>
+                  <p className="text-sm text-gray-500">{contextLabel}</p>
                 )}
               </div>
             )}
             {isLocked && (
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-red-600 bg-red-50 px-1.5 py-0.5 rounded">
+              <span className="text-sm font-semibold uppercase tracking-wider text-red-600 bg-red-50 px-1.5 py-0.5 rounded">
                 Locked
               </span>
             )}
@@ -148,7 +148,7 @@ export default function DashboardHeader({
           <div className="relative" ref={panelRef}>
             <button
               onClick={() => setShowParticipants(!showParticipants)}
-              className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors"
+              className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />

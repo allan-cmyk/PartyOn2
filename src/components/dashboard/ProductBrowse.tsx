@@ -104,7 +104,7 @@ export default function ProductBrowse({
 
       {isSearching ? (
         <div>
-          <h2 className="text-lg font-heading font-bold tracking-[0.08em] text-gray-900 mb-3">
+          <h2 className="text-xl font-heading font-bold tracking-[0.08em] text-gray-900 mb-3">
             {searching
               ? 'Searching...'
               : `Results for "${searchQuery}" (${searchResults.length})`}

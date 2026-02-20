@@ -64,7 +64,7 @@ export default function CategorySection({
   if (loading) {
     return (
       <section className="mb-8">
-        <h2 className="text-lg font-heading font-bold tracking-[0.08em] text-gray-900 mb-3">{label}</h2>
+        <h2 className="text-xl md:text-2xl font-heading font-bold tracking-[0.08em] text-gray-900 mb-3 text-center md:text-left">{label}</h2>
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
           {Array.from({ length: INITIAL_COUNT }).map((_, i) => (
             <div key={i} className="bg-gray-100 rounded-lg animate-pulse aspect-square" />
@@ -93,7 +93,7 @@ export default function CategorySection({
 
   return (
     <section className="mb-8">
-      <h2 className="text-lg font-heading font-bold tracking-[0.08em] text-gray-900 mb-3">{label}</h2>
+      <h2 className="text-xl md:text-2xl font-heading font-bold tracking-[0.08em] text-gray-900 mb-3 text-center md:text-left">{label}</h2>
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
         {visible.map((product) => {
           const variant = product.variants.edges[0]?.node;

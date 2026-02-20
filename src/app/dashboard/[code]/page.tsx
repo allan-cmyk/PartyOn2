@@ -1,14 +1,17 @@
 'use client';
 
-import { useState, useEffect, useCallback, type ReactElement } from 'react';
+import { useState, useEffect, useCallback, useRef, type ReactElement } from 'react';
 import { useParams } from 'next/navigation';
 import { useGroupOrderV2 } from '@/lib/group-orders-v2/hooks';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
+import DeliveryHeroSection from '@/components/dashboard/DeliveryHeroSection';
 import OnboardingPopup from '@/components/dashboard/OnboardingPopup';
+import InlineCart from '@/components/dashboard/InlineCart';
 import ProductBrowse from '@/components/dashboard/ProductBrowse';
 import DashboardBottomBar from '@/components/dashboard/DashboardBottomBar';
-import CartDrawer from '@/components/dashboard/CartDrawer';
 import DashboardCheckoutModal from '@/components/dashboard/DashboardCheckoutModal';
+import DeliveryDetailsModal from '@/components/dashboard/DeliveryDetailsModal';
+import NewDeliveryModal from '@/components/dashboard/NewDeliveryModal';
 import GetRecsModal from '@/components/dashboard/GetRecsModal';
 import RecommendationsSection from '@/components/dashboard/RecommendationsSection';
 import ShareModal from '@/components/dashboard/ShareModal';
@@ -25,12 +28,16 @@ export default function DashboardPage(): ReactElement {
 
   const [participantId, setParticipantId] = useState<string | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [showCart, setShowCart] = useState(false);
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [checkoutMode, setCheckoutMode] = useState<'mine' | 'all' | null>(null);
   const [showGetRecs, setShowGetRecs] = useState(false);
   const [recommendations, setRecommendations] = useState<RecommendationResult[] | null>(null);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showDeliveryDetails, setShowDeliveryDetails] = useState(false);
+  const [showNewDelivery, setShowNewDelivery] = useState(false);
   const [needsJoin, setNeedsJoin] = useState(false);
+
+  const cartRef = useRef<HTMLDivElement>(null);
 
   // Restore participant ID from localStorage
   useEffect(() => {
@@ -45,11 +52,9 @@ export default function DashboardPage(): ReactElement {
   useEffect(() => {
     if (!groupOrder || participantId) return;
 
-    // Check if the stored ID was cleared or never existed
     const stored = localStorage.getItem(`${PARTICIPANT_KEY_PREFIX}${code}`);
 
     if (stored) {
-      // Stored ID exists but didn't match state yet (race condition guard)
       const match = groupOrder.participants.find((p) => p.id === stored && p.status === 'ACTIVE');
       if (match) {
         setParticipantId(match.id);
@@ -57,8 +62,6 @@ export default function DashboardPage(): ReactElement {
       }
     }
 
-    // No stored participant -- the /order page sets localStorage before redirecting,
-    // so if we have no entry, this is a guest visiting a shared link
     setNeedsJoin(true);
   }, [groupOrder, participantId, code]);
 
@@ -87,7 +90,7 @@ export default function DashboardPage(): ReactElement {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-3 border-gray-900 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-sm text-gray-500">Loading your order...</p>
+          <p className="text-base text-gray-500">Loading your order...</p>
         </div>
       </div>
     );
@@ -118,13 +121,15 @@ export default function DashboardPage(): ReactElement {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-3 border-gray-900 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-sm text-gray-500">Setting up...</p>
+          <p className="text-base text-gray-500">Setting up...</p>
         </div>
       </div>
     );
   }
 
-  const tab = groupOrder.tabs[0];
+  // Ensure activeTabIndex is within bounds
+  const safeTabIndex = Math.min(activeTabIndex, groupOrder.tabs.length - 1);
+  const tab = groupOrder.tabs[safeTabIndex];
   if (!tab) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -133,6 +138,9 @@ export default function DashboardPage(): ReactElement {
     );
   }
 
+  const isHost = !!groupOrder.participants.find(
+    (p) => p.id === participantId && p.isHost
+  );
   const isLocked = tab.status === 'LOCKED';
 
   const myDraftItems = tab.draftItems.filter(
@@ -151,30 +159,40 @@ export default function DashboardPage(): ReactElement {
         onShareClick={() => setShowShareModal(true)}
       />
 
-      {showOnboarding && (
-        <OnboardingPopup
+      <DeliveryHeroSection
+        groupOrder={groupOrder}
+        activeTabIndex={safeTabIndex}
+        activeTab={tab}
+        isHost={isHost}
+        onTabChange={setActiveTabIndex}
+        onAddDelivery={() => setShowNewDelivery(true)}
+        onEditDelivery={() => setShowDeliveryDetails(true)}
+        onRefresh={refresh}
+      />
+
+      <main className="max-w-7xl mx-auto px-4 py-6">
+        <InlineCart
+          ref={cartRef}
           shareCode={groupOrder.shareCode}
           tabId={tab.id}
           participantId={participantId}
-          initialPartyType={groupOrder.partyType}
-          initialName={groupOrder.name}
-          initialDeliveryContext={tab.deliveryContextType}
-          onComplete={() => {
-            handleOnboardingDismiss();
-          }}
-          onDismiss={handleOnboardingDismiss}
+          participants={groupOrder.participants}
+          draftItems={tab.draftItems}
+          purchasedItems={tab.purchasedItems}
+          isLocked={isLocked}
+          onItemChanged={refresh}
+          onCheckoutMine={() => setCheckoutMode('mine')}
+          onCheckoutAll={() => setCheckoutMode('all')}
         />
-      )}
 
-      <main className="max-w-7xl mx-auto px-4 py-6">
         {/* Get Recs button */}
         {!recommendations && (
           <div className="mb-6 text-center">
             <button
               onClick={() => setShowGetRecs(true)}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-brand-yellow text-gray-900 font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors text-sm"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-brand-yellow text-gray-900 font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors text-lg"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
               Get Drink Recommendations
@@ -208,27 +226,8 @@ export default function DashboardPage(): ReactElement {
         participantId={participantId}
         draftItems={tab.draftItems}
         isLocked={isLocked}
-        onCartToggle={() => setShowCart(!showCart)}
-      />
-
-      <CartDrawer
-        open={showCart}
-        onClose={() => setShowCart(false)}
-        shareCode={groupOrder.shareCode}
-        tabId={tab.id}
-        participantId={participantId}
-        participants={groupOrder.participants}
-        draftItems={tab.draftItems}
-        purchasedItems={tab.purchasedItems}
-        onItemChanged={refresh}
-        onCheckoutMine={() => {
-          setShowCart(false);
-          setCheckoutMode('mine');
-        }}
-        onCheckoutAll={() => {
-          setShowCart(false);
-          setCheckoutMode('all');
-        }}
+        cartRef={cartRef}
+        onCheckout={() => setCheckoutMode('mine')}
       />
 
       {checkoutMode && (
@@ -258,6 +257,43 @@ export default function DashboardPage(): ReactElement {
         <ShareModal
           shareCode={groupOrder.shareCode}
           onClose={() => setShowShareModal(false)}
+        />
+      )}
+
+      {showDeliveryDetails && (
+        <DeliveryDetailsModal
+          shareCode={groupOrder.shareCode}
+          tab={tab}
+          participantId={participantId}
+          onClose={() => setShowDeliveryDetails(false)}
+          onSaved={() => {
+            setShowDeliveryDetails(false);
+            refresh();
+          }}
+        />
+      )}
+
+      {showNewDelivery && (
+        <NewDeliveryModal
+          shareCode={groupOrder.shareCode}
+          participantId={participantId}
+          nextPosition={groupOrder.tabs.length + 1}
+          onClose={() => setShowNewDelivery(false)}
+          onCreated={() => {
+            setShowNewDelivery(false);
+            refresh();
+            setActiveTabIndex(groupOrder.tabs.length);
+          }}
+        />
+      )}
+
+      {showOnboarding && (
+        <OnboardingPopup
+          shareCode={groupOrder.shareCode}
+          onComplete={() => {
+            handleOnboardingDismiss();
+          }}
+          onDismiss={handleOnboardingDismiss}
         />
       )}
     </div>

@@ -13,7 +13,7 @@ export type GroupOrderV2Status = 'ACTIVE' | 'CLOSED' | 'COMPLETED' | 'CANCELLED'
 export type SubOrderStatus = 'OPEN' | 'LOCKED' | 'FULFILLED' | 'CANCELLED';
 export type GroupV2ParticipantStatus = 'ACTIVE' | 'REMOVED';
 export type GroupV2PaymentStatus = 'PENDING' | 'PAID' | 'FAILED' | 'EXPIRED';
-export type PartyType = 'BACHELOR' | 'BACHELORETTE' | 'WEDDING' | 'CORPORATE' | 'HOUSE_PARTY' | 'OTHER';
+export type PartyType = 'BACHELOR' | 'BACHELORETTE' | 'WEDDING' | 'CORPORATE' | 'HOUSE_PARTY' | 'OTHER' | 'BOAT' | 'BACH';
 export type DashboardSource = 'DIRECT' | 'PARTNER_PAGE' | 'INTERNAL';
 export type DeliveryContextType = 'HOUSE' | 'BOAT' | 'VENUE' | 'HOTEL' | 'OTHER';
 

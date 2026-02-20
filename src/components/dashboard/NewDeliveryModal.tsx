@@ -1,16 +1,17 @@
 'use client';
 
 import { useState, type ReactElement } from 'react';
-import { updateGroupOrderV2 } from '@/lib/group-orders-v2/api-client';
-import type { PartyType } from '@/lib/group-orders-v2/types';
+import { createTabV2 } from '@/lib/group-orders-v2/api-client';
 
 interface Props {
   shareCode: string;
-  onComplete: () => void;
-  onDismiss: () => void;
+  participantId: string;
+  nextPosition: number;
+  onClose: () => void;
+  onCreated: () => void;
 }
 
-const PARTY_TYPES: { value: PartyType; label: string }[] = [
+const PARTY_LABELS: { value: string; label: string }[] = [
   { value: 'BOAT', label: 'Boat' },
   { value: 'BACH', label: 'Bach' },
   { value: 'WEDDING', label: 'Wedding' },
@@ -19,36 +20,53 @@ const PARTY_TYPES: { value: PartyType; label: string }[] = [
   { value: 'OTHER', label: 'Other' },
 ];
 
-export default function OnboardingPopup({
+export default function NewDeliveryModal({
   shareCode,
-  onComplete,
-  onDismiss,
+  participantId,
+  nextPosition,
+  onClose,
+  onCreated,
 }: Props): ReactElement {
-  const [selected, setSelected] = useState<PartyType | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
 
-  async function handleSubmit() {
+  async function handleCreate() {
     if (!selected) return;
     setSaving(true);
+    setError('');
     try {
-      await updateGroupOrderV2(shareCode, { partyType: selected });
-    } catch {
-      // Non-blocking
+      await createTabV2(shareCode, {
+        hostParticipantId: participantId,
+        name: `Delivery ${nextPosition}`,
+        deliveryDate: 'TBD',
+        deliveryTime: 'TBD',
+        deliveryAddress: {
+          address1: '',
+          city: '',
+          province: 'TX',
+          zip: '',
+          country: 'US',
+        },
+      });
+      onCreated();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create delivery.');
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
-    onComplete();
   }
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
       onClick={(e) => {
-        if (e.target === e.currentTarget) onDismiss();
+        if (e.target === e.currentTarget) onClose();
       }}
     >
       <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full mx-4 p-8 relative">
         <button
-          onClick={onDismiss}
+          onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
           aria-label="Close"
         >
@@ -57,12 +75,12 @@ export default function OnboardingPopup({
           </svg>
         </button>
 
-        <h2 className="text-xl md:text-2xl font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-6">
-          What type of party is this for?
+        <h2 className="text-xl font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-6">
+          Add Another Delivery
         </h2>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {PARTY_TYPES.map((pt) => (
+          {PARTY_LABELS.map((pt) => (
             <button
               key={pt.value}
               onClick={() => setSelected(pt.value)}
@@ -78,12 +96,16 @@ export default function OnboardingPopup({
           ))}
         </div>
 
+        {error && (
+          <p className="text-sm text-red-600 mt-4">{error}</p>
+        )}
+
         <button
-          onClick={handleSubmit}
+          onClick={handleCreate}
           disabled={!selected || saving}
           className="mt-6 w-full py-4 bg-brand-blue text-white text-lg font-semibold tracking-[0.08em] rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {saving ? 'Setting up...' : 'START ORDER'}
+          {saving ? 'Creating...' : 'ADD DELIVERY'}
         </button>
       </div>
     </div>

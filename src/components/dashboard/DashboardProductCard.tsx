@@ -127,24 +127,24 @@ export default function DashboardProductCard({
         )}
         {!available && (
           <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
-            <span className="text-xs font-medium text-gray-500">Out of stock</span>
+            <span className="text-sm font-medium text-gray-500">Out of stock</span>
           </div>
         )}
       </div>
 
       <div className="p-2 flex-1 flex flex-col">
-        <h3 className="text-sm font-medium text-gray-900 line-clamp-2 leading-tight">
+        <h3 className="text-base font-medium text-gray-900 line-clamp-2 leading-tight">
           {product.title}
         </h3>
         {variantTitle && (
-          <p className="text-xs text-gray-500 mt-0.5">{variantTitle}</p>
+          <p className="text-sm text-gray-500 mt-0.5">{variantTitle}</p>
         )}
         <p className="text-sm font-semibold text-gray-900 mt-1">${price.toFixed(2)}</p>
 
         <div className="mt-auto pt-2">
           {isLocked ? (
             qty > 0 ? (
-              <div className="text-center text-xs font-medium text-gray-500 py-1.5">
+              <div className="text-center text-sm font-medium text-gray-500 py-1.5">
                 {qty} in cart
               </div>
             ) : null
@@ -182,7 +182,7 @@ export default function DashboardProductCard({
             <button
               onClick={handleAdd}
               disabled={busy || !available}
-              className="w-full py-2 bg-brand-yellow text-gray-900 text-xs font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-2 bg-brand-yellow text-gray-900 text-sm font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {busy ? (
                 <span className="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />

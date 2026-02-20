@@ -14,10 +14,10 @@ export default function DashboardSuccessPage(): ReactElement {
       <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-8 text-center">
         <Link href="/" className="inline-block mb-6">
           <Image
-            src="/images/partyon-logo.png"
+            src="/images/pod-logo-2025.svg"
             alt="Party On"
-            width={120}
-            height={38}
+            width={130}
+            height={40}
             className="h-10 w-auto mx-auto"
           />
         </Link>
