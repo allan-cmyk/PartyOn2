@@ -11,6 +11,8 @@ import CartDrawer from '@/components/dashboard/CartDrawer';
 import DashboardCheckoutModal from '@/components/dashboard/DashboardCheckoutModal';
 import GetRecsModal from '@/components/dashboard/GetRecsModal';
 import RecommendationsSection from '@/components/dashboard/RecommendationsSection';
+import ShareModal from '@/components/dashboard/ShareModal';
+import JoinOverlay from '@/components/dashboard/JoinOverlay';
 import type { RecommendationResult } from '@/components/dashboard/GetRecsModal';
 
 const PARTICIPANT_KEY_PREFIX = 'dashboard_participant_';
@@ -27,6 +29,8 @@ export default function DashboardPage(): ReactElement {
   const [checkoutMode, setCheckoutMode] = useState<'mine' | 'all' | null>(null);
   const [showGetRecs, setShowGetRecs] = useState(false);
   const [recommendations, setRecommendations] = useState<RecommendationResult[] | null>(null);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [needsJoin, setNeedsJoin] = useState(false);
 
   // Restore participant ID from localStorage
   useEffect(() => {
@@ -37,16 +41,33 @@ export default function DashboardPage(): ReactElement {
     }
   }, [code]);
 
-  // Auto-detect participant ID from group order data
+  // Detect whether user is a known participant or needs to join
   useEffect(() => {
     if (!groupOrder || participantId) return;
 
-    // If we have no stored participant, assume the host (solo mode)
+    // Check if the stored ID was cleared or never existed
+    const stored = localStorage.getItem(`${PARTICIPANT_KEY_PREFIX}${code}`);
+
+    if (stored) {
+      // Stored ID exists but didn't match state yet (race condition guard)
+      const match = groupOrder.participants.find((p) => p.id === stored && p.status === 'ACTIVE');
+      if (match) {
+        setParticipantId(match.id);
+        return;
+      }
+    }
+
+    // No stored participant -- check if this is the host's first visit
+    // (solo order with exactly 1 participant = the host created it and is visiting for the first time)
     const host = groupOrder.participants.find((p) => p.isHost);
-    if (host) {
+    if (host && groupOrder.participants.length === 1) {
       setParticipantId(host.id);
       localStorage.setItem(`${PARTICIPANT_KEY_PREFIX}${code}`, host.id);
+      return;
     }
+
+    // Otherwise this is a guest who needs to join
+    setNeedsJoin(true);
   }, [groupOrder, participantId, code]);
 
   // Show onboarding for new orders (no party type set yet)
@@ -77,6 +98,23 @@ export default function DashboardPage(): ReactElement {
           <p className="text-sm text-gray-500">Loading your order...</p>
         </div>
       </div>
+    );
+  }
+
+  if (!participantId && needsJoin && groupOrder) {
+    const host = groupOrder.participants.find((p) => p.isHost);
+    return (
+      <JoinOverlay
+        shareCode={code}
+        orderName={groupOrder.name}
+        hostName={host?.name || groupOrder.hostName}
+        onJoined={(newPid) => {
+          setParticipantId(newPid);
+          localStorage.setItem(`${PARTICIPANT_KEY_PREFIX}${code}`, newPid);
+          setNeedsJoin(false);
+          refresh();
+        }}
+      />
     );
   }
 
@@ -112,11 +150,7 @@ export default function DashboardPage(): ReactElement {
         groupOrder={groupOrder}
         participantId={participantId}
         onRefresh={refresh}
-        onShareClick={() => {
-          // Phase 2: ShareModal
-          const url = `${window.location.origin}/dashboard/${code}`;
-          navigator.clipboard?.writeText(url);
-        }}
+        onShareClick={() => setShowShareModal(true)}
       />
 
       {showOnboarding && (
@@ -217,6 +251,13 @@ export default function DashboardPage(): ReactElement {
             setShowGetRecs(false);
           }}
           onClose={() => setShowGetRecs(false)}
+        />
+      )}
+
+      {showShareModal && (
+        <ShareModal
+          shareCode={groupOrder.shareCode}
+          onClose={() => setShowShareModal(false)}
         />
       )}
     </div>
