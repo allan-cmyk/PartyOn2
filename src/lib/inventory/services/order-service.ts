@@ -704,14 +704,55 @@ export async function createOrderFromDraftOrder(
       include: { items: true },
     });
 
-    // Create order items
+    // Create order items (handle custom items that may not have real product/variant IDs)
     const items = draftOrder.items as DraftOrderItem[];
     for (const item of items) {
+      let productId = item.productId;
+      let variantId = item.variantId;
+
+      // Check if product exists; create placeholder if not (for custom draft order items)
+      const productExists = await tx.product.findUnique({ where: { id: productId }, select: { id: true } });
+      if (!productExists) {
+        await tx.product.create({
+          data: {
+            id: productId,
+            title: item.title,
+            handle: productId,
+            description: 'Custom item (added via draft order)',
+            status: 'DRAFT',
+            productType: 'Custom',
+            vendor: 'Custom',
+            basePrice: new Prisma.Decimal(item.price),
+          },
+        });
+        console.log(`[Order Service] Created placeholder product for custom item: ${item.title}`);
+      }
+
+      // Check if variant exists; create or find one if not
+      const variantExists = await tx.productVariant.findUnique({ where: { id: variantId }, select: { id: true } });
+      if (!variantExists) {
+        const existingVariant = await tx.productVariant.findFirst({ where: { productId }, select: { id: true } });
+        if (existingVariant) {
+          variantId = existingVariant.id;
+        } else {
+          const newVariant = await tx.productVariant.create({
+            data: {
+              productId,
+              title: item.variantTitle || 'Default Title',
+              price: new Prisma.Decimal(item.price),
+              inventoryQuantity: 0,
+              availableForSale: false,
+            },
+          });
+          variantId = newVariant.id;
+        }
+      }
+
       await tx.orderItem.create({
         data: {
           orderId: newOrder.id,
-          productId: item.productId,
-          variantId: item.variantId,
+          productId,
+          variantId,
           title: item.title,
           variantTitle: item.variantTitle || null,
           sku: null,
@@ -722,9 +763,14 @@ export async function createOrderFromDraftOrder(
       });
     }
 
-    // Decrement inventory for each item (handles bundles automatically)
+    // Decrement inventory for each item (handles bundles automatically, skips missing products)
     for (const item of items) {
-      await decrementInventoryForOrderItem(tx, item.productId, item.variantId, item.quantity, newOrder.orderNumber, newOrder.id);
+      try {
+        await decrementInventoryForOrderItem(tx, item.productId, item.variantId, item.quantity, newOrder.orderNumber, newOrder.id);
+      } catch (inventoryError) {
+        // Custom items may not have inventory tracking - log and continue
+        console.warn(`[Order Service] Could not decrement inventory for ${item.title}:`, inventoryError);
+      }
     }
 
     // Get the order with items
