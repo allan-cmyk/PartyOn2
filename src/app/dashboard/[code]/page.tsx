@@ -57,16 +57,8 @@ export default function DashboardPage(): ReactElement {
       }
     }
 
-    // No stored participant -- check if this is the host's first visit
-    // (solo order with exactly 1 participant = the host created it and is visiting for the first time)
-    const host = groupOrder.participants.find((p) => p.isHost);
-    if (host && groupOrder.participants.length === 1) {
-      setParticipantId(host.id);
-      localStorage.setItem(`${PARTICIPANT_KEY_PREFIX}${code}`, host.id);
-      return;
-    }
-
-    // Otherwise this is a guest who needs to join
+    // No stored participant -- the /order page sets localStorage before redirecting,
+    // so if we have no entry, this is a guest visiting a shared link
     setNeedsJoin(true);
   }, [groupOrder, participantId, code]);
 
