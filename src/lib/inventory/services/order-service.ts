@@ -707,7 +707,7 @@ export async function createOrderFromDraftOrder(
     // Create order items (handle custom items that may not have real product/variant IDs)
     const items = draftOrder.items as DraftOrderItem[];
     for (const item of items) {
-      let productId = item.productId;
+      const productId = item.productId;
       let variantId = item.variantId;
 
       // Check if product exists; create placeholder if not (for custom draft order items)
