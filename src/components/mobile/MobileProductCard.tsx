@@ -87,7 +87,7 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
             
             {!variant?.availableForSale && (
               <div className="absolute inset-0 bg-gray-900/60 flex items-center justify-center">
-                <span className="text-white font-light tracking-[0.08em] text-xs">OUT OF STOCK</span>
+                <span className="text-white font-light tracking-[0.08em] text-sm">OUT OF STOCK</span>
               </div>
             )}
 
@@ -154,10 +154,10 @@ export default function MobileProductCard({ product, index = 0, onProductClick }
                 <button
                   onClick={handleAddToCart}
                   disabled={isAdding || cartLoading}
-                  className={`w-full py-3 rounded-lg text-sm font-medium tracking-[0.1em] transition-colors ${
+                  className={`w-full py-3 rounded-lg text-sm font-semibold tracking-[0.08em] transition-colors ${
                     isAdding || cartLoading
                       ? 'bg-gray-300 text-gray-500'
-                      : 'bg-brand-yellow text-gray-900 active:bg-yellow-600 active:text-gray-900'
+                      : 'bg-brand-yellow text-gray-900 hover:bg-yellow-400 active:bg-yellow-500'
                   }`}
                 >
                   {isAdding || cartLoading ? 'ADDING...' : 'ADD TO CART'}

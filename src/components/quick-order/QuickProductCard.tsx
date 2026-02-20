@@ -139,7 +139,7 @@ export default function QuickProductCard({
 
         {/* Hover overlay with "View" indicator */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-          <span className="opacity-0 group-hover:opacity-100 transition-opacity text-white text-xs font-medium bg-black/60 px-2 py-1 rounded">
+          <span className="opacity-0 group-hover:opacity-100 transition-opacity text-white text-sm font-medium bg-black/60 px-2 py-1 rounded">
             TAP TO VIEW
           </span>
         </div>
@@ -158,7 +158,7 @@ export default function QuickProductCard({
           {product.title}
         </h3>
         {packSize && (
-          <p className="text-xs sm:text-sm text-gray-500">{packSize}</p>
+          <p className="text-sm text-gray-500">{packSize}</p>
         )}
         <p className="font-bold text-base sm:text-lg text-gray-900">
           {formatPrice(price.amount, price.currencyCode)}
@@ -194,7 +194,7 @@ export default function QuickProductCard({
         )}
 
         {!isAvailable && (
-          <p className="text-xs sm:text-sm text-gray-400 mt-1.5">Unavailable</p>
+          <p className="text-sm text-gray-400 mt-1.5">Unavailable</p>
         )}
       </div>
     </div>

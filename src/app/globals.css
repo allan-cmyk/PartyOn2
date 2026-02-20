@@ -142,7 +142,7 @@
 
   /* Premium input styles - using brand-blue for focus */
   .input-premium {
-    @apply w-full px-4 py-3 border-2 border-gray-200 rounded-lg
+    @apply w-full px-4 py-3 text-base border-2 border-gray-200 rounded-lg
            focus:border-brand-blue focus:ring-0 transition-all duration-200
            placeholder:text-gray-500 hover:border-gray-300;
   }

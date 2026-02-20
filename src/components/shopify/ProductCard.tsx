@@ -129,7 +129,7 @@ export default function ProductCard({ product, index = 0, onProductClick }: Prod
 
           {/* Quantity Selector */}
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs text-gray-600 tracking-[0.1em]">QUANTITY</span>
+            <span className="text-sm text-gray-600 tracking-[0.1em]">QUANTITY</span>
             <div className="flex items-center border border-gray-300">
               <button
                 onClick={(e) => {
@@ -167,9 +167,9 @@ export default function ProductCard({ product, index = 0, onProductClick }: Prod
             <button
               onClick={handleAddToCart}
               disabled={!variant?.availableForSale || isAdding || cartLoading}
-              className={`w-full py-2 transition-colors duration-300 text-xs tracking-[0.08em] ${
+              className={`w-full py-2 rounded-lg transition-colors duration-300 text-sm font-semibold tracking-[0.08em] ${
                 variant?.availableForSale && !isAdding && !cartLoading
-                  ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
+                  ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-400 active:bg-yellow-500'
                   : 'bg-gray-300 text-gray-700 cursor-not-allowed'
               }`}
             >
@@ -185,7 +185,7 @@ export default function ProductCard({ product, index = 0, onProductClick }: Prod
             {/* View Details Button */}
             <button
               onClick={() => onProductClick?.(product)}
-              className="w-full py-2 border border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-colors duration-300 text-xs tracking-[0.08em]">
+              className="w-full py-2 rounded-lg border border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-colors duration-300 text-sm font-semibold tracking-[0.08em]">
               VIEW DETAILS
             </button>
           </div>

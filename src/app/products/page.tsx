@@ -247,7 +247,7 @@ function ProductsContent() {
           {!isAgeVerified && (
             <button
               onClick={handleUnlock}
-              className="inline-flex items-center gap-3 px-8 py-4 bg-brand-yellow hover:bg-yellow-600 text-gray-900 font-medium tracking-[0.08em] transition-all duration-300 group"
+              className="inline-flex items-center gap-3 px-8 py-4 rounded-lg bg-brand-yellow hover:bg-yellow-400 active:bg-yellow-500 text-gray-900 font-semibold tracking-[0.08em] transition-all duration-300 group"
               style={{ animationDelay: '500ms' }}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -310,7 +310,7 @@ function ProductsContent() {
                         ? `${collection.colors.bgActive} ${collection.colors.textActive} ${collection.colors.borderActive} shadow-lg scale-105`
                         : `${collection.colors.bg} ${collection.colors.text} ${collection.colors.border} hover:scale-102`
                       }
-                      ${isMobile ? 'text-xs' : 'text-sm'}
+                      text-sm
                       tracking-[0.1em] font-medium
                     `}
                     disabled={loading && collectionFilter !== collection.handle}
@@ -354,7 +354,7 @@ function ProductsContent() {
                     </svg>
                     FILTERS
                   </button>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-sm text-gray-500">
                     {sortedProducts.length} items
                   </span>
                 </div>
@@ -391,7 +391,7 @@ function ProductsContent() {
                       : [...prev, tag]
                   );
                 }}
-                className={`px-3 py-1.5 text-xs tracking-[0.05em] rounded-full border transition-all ${
+                className={`px-3 py-1.5 text-sm tracking-[0.05em] rounded-full border transition-all ${
                   selectedTags.includes(tag)
                     ? 'bg-brand-yellow text-gray-900 border-brand-yellow'
                     : 'bg-white text-gray-700 border-gray-300 hover:border-brand-yellow'
@@ -405,7 +405,7 @@ function ProductsContent() {
             {selectedTags.length > 0 && (
               <button
                 onClick={() => setSelectedTags([])}
-                className="text-xs text-brand-yellow hover:text-yellow-600 tracking-[0.05em]"
+                className="text-sm text-brand-yellow hover:text-yellow-600 tracking-[0.05em]"
               >
                 CLEAR TAGS
               </button>
@@ -633,7 +633,7 @@ function ProductsContent() {
                 <strong>Need help planning your bar?</strong> Our beverage experts provide complimentary consultations for all events.
               </p>
               <Link href="/contact">
-                <button className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
+                <button className="px-8 py-3 rounded-lg bg-brand-yellow text-gray-900 hover:bg-yellow-400 active:bg-yellow-500 transition-colors tracking-[0.08em] text-sm font-semibold">
                   SCHEDULE A CONSULTATION
                 </button>
               </Link>

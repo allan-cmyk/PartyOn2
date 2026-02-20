@@ -107,7 +107,7 @@ export default function CompactProductCard({ product, index = 0, onProductClick 
             {/* Out of Stock Overlay */}
             {!variant?.availableForSale && (
               <div className="absolute inset-0 bg-gray-900/60 flex items-center justify-center">
-                <span className="text-white font-light tracking-[0.1em] text-xs">SOLD OUT</span>
+                <span className="text-white font-light tracking-[0.1em] text-sm">SOLD OUT</span>
               </div>
             )}
 
@@ -116,7 +116,7 @@ export default function CompactProductCard({ product, index = 0, onProductClick 
               <button
                 onClick={handleAddToCart}
                 disabled={!variant?.availableForSale || isAdding || cartLoading}
-                className="absolute bottom-3 left-3 right-3 py-2 bg-white/90 backdrop-blur-sm text-gray-900 hover:bg-white text-xs font-medium tracking-[0.1em] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="absolute bottom-3 left-3 right-3 py-2 rounded-lg bg-white/90 backdrop-blur-sm text-gray-900 hover:bg-white text-sm font-semibold tracking-[0.08em] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isAdding || cartLoading ? 'ADDING...' : 'QUICK ADD'}
               </button>
@@ -170,9 +170,9 @@ export default function CompactProductCard({ product, index = 0, onProductClick 
               <button
                 onClick={handleAddToCart}
                 disabled={!variant?.availableForSale || isAdding || cartLoading}
-                className={`flex-1 py-1.5 px-3 text-xs font-medium tracking-wider transition-colors ${
+                className={`flex-1 py-1.5 px-3 rounded-lg text-sm font-semibold tracking-[0.08em] transition-colors ${
                   variant?.availableForSale && !isAdding && !cartLoading
-                    ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
+                    ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-400 active:bg-yellow-500'
                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                 }`}
               >
@@ -183,9 +183,9 @@ export default function CompactProductCard({ product, index = 0, onProductClick 
             <button
               onClick={handleAddToCart}
               disabled={!variant?.availableForSale || isAdding || cartLoading}
-              className={`w-full py-1.5 text-xs font-medium tracking-wider transition-colors ${
+              className={`w-full py-1.5 rounded-lg text-sm font-semibold tracking-[0.08em] transition-colors ${
                 variant?.availableForSale && !isAdding && !cartLoading
-                  ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
+                  ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-400 active:bg-yellow-500'
                   : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
             >

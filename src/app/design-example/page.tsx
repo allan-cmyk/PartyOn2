@@ -22,10 +22,10 @@ function ColorSwatch({ name, hex, className, textClass = 'text-white' }: { name:
   return (
     <div className="flex flex-col">
       <div className={`${className} ${textClass} rounded-xl h-24 flex items-end p-4 shadow-sm`}>
-        <span className="text-xs font-mono opacity-80">{hex}</span>
+        <span className="text-sm font-mono opacity-80">{hex}</span>
       </div>
       <p className="text-sm font-medium text-gray-900 mt-2">{name}</p>
-      <p className="text-xs text-gray-500 font-mono">{className.replace('bg-', '')}</p>
+      <p className="text-sm text-gray-500 font-mono">{className.replace('bg-', '')}</p>
     </div>
   );
 }
@@ -84,13 +84,13 @@ export default function DesignExamplePage() {
         <Section title="Typography">
           <div className="space-y-8">
             <div>
-              <p className="text-xs font-mono text-gray-400 mb-1">
+              <p className="text-sm font-mono text-gray-400 mb-1">
                 font-heading (Barlow Condensed) -- all headings
               </p>
               <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl tracking-[0.1em] text-gray-900">
                 H1 Heading
               </h1>
-              <p className="text-xs font-mono text-gray-400 mt-1">
+              <p className="text-sm font-mono text-gray-400 mt-1">
                 text-4xl md:text-5xl lg:text-6xl tracking-[0.1em]
               </p>
             </div>
@@ -99,7 +99,7 @@ export default function DesignExamplePage() {
               <h2 className="font-heading text-3xl md:text-4xl tracking-[0.1em] text-gray-900">
                 H2 Heading
               </h2>
-              <p className="text-xs font-mono text-gray-400 mt-1">
+              <p className="text-sm font-mono text-gray-400 mt-1">
                 text-3xl md:text-4xl tracking-[0.1em]
               </p>
             </div>
@@ -108,7 +108,7 @@ export default function DesignExamplePage() {
               <h3 className="font-heading text-2xl tracking-[0.1em] text-gray-900">
                 H3 Heading
               </h3>
-              <p className="text-xs font-mono text-gray-400 mt-1">
+              <p className="text-sm font-mono text-gray-400 mt-1">
                 text-2xl tracking-[0.1em]
               </p>
             </div>
@@ -117,43 +117,50 @@ export default function DesignExamplePage() {
               <h4 className="font-heading text-lg font-bold tracking-[0.08em] text-gray-900">
                 H4 Heading -- Used for Section Titles, Card Headers, Dashboard Categories
               </h4>
-              <p className="text-xs font-mono text-gray-400 mt-1">
+              <p className="text-sm font-mono text-gray-400 mt-1">
                 text-lg font-bold tracking-[0.08em]
               </p>
             </div>
 
             <div className="border-t border-gray-200 pt-6">
-              <p className="text-xs font-mono text-gray-400 mb-1">
+              <p className="text-sm font-mono text-gray-400 mb-1">
                 font-sans (Inter) -- all body text
               </p>
               <p className="font-sans text-base text-gray-900 mb-2">
-                Body text (text-base). This is what regular paragraph content looks like across the site.
+                Body text (text-base / 16px). This is what regular paragraph content looks like across the site.
                 Inter is used for all non-heading text.
               </p>
               <p className="font-sans text-sm text-gray-700 mb-2">
-                Small body text (text-sm text-gray-700). Used for descriptions, secondary info.
+                Small body text (text-sm / 14px). Used for descriptions, secondary info, helper text, captions, timestamps.
+                This is the minimum size for user-readable content.
               </p>
-              <p className="font-sans text-xs text-gray-500">
-                Extra small text (text-xs text-gray-500). Used for captions, timestamps, labels.
+              <p className="font-sans text-sm text-gray-500 mb-2">
+                Extra small text (text-xs / 12px). Reserved for badges and tags ONLY. Do not use for body copy, labels, or helper text.
               </p>
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-2">
+                <p className="text-sm text-red-800 font-medium">
+                  Minimum text size: text-sm (14px) for all user-readable content. Only badges/tags may use text-xs (12px).
+                  Never use text-[10px] or text-[11px].
+                </p>
+              </div>
             </div>
 
             <div className="border-t border-gray-200 pt-6">
-              <p className="text-xs font-mono text-gray-400 mb-2">Eyebrow / Label</p>
+              <p className="text-sm font-mono text-gray-400 mb-2">Eyebrow / Label</p>
               <p className="text-sm font-heading uppercase tracking-[0.08em] text-gray-500">
                 Eyebrow Label Text
               </p>
-              <p className="text-xs font-mono text-gray-400 mt-1">
+              <p className="text-sm font-mono text-gray-400 mt-1">
                 text-sm font-heading uppercase tracking-[0.08em]
               </p>
             </div>
 
             <div className="border-t border-gray-200 pt-6">
-              <p className="text-xs font-mono text-gray-400 mb-2">Button text style (applied by Button component)</p>
+              <p className="text-sm font-mono text-gray-400 mb-2">Button text style (applied by Button component)</p>
               <p className="font-sans font-semibold tracking-[0.08em] text-sm text-gray-900">
                 Button Text Sample
               </p>
-              <p className="text-xs font-mono text-gray-400 mt-1">
+              <p className="text-sm font-mono text-gray-400 mt-1">
                 font-sans font-semibold tracking-[0.08em]
               </p>
             </div>
@@ -176,23 +183,23 @@ export default function DesignExamplePage() {
               <div className="flex flex-wrap gap-4 items-start">
                 <div className="space-y-2">
                   <Button variant="primary">Primary</Button>
-                  <p className="text-xs font-mono text-gray-400">variant=&quot;primary&quot;</p>
-                  <p className="text-xs text-gray-500">Default actions, secondary CTAs</p>
+                  <p className="text-sm font-mono text-gray-400">variant=&quot;primary&quot;</p>
+                  <p className="text-sm text-gray-500">Default actions, secondary CTAs</p>
                 </div>
                 <div className="space-y-2">
                   <Button variant="cart">Cart / Add</Button>
-                  <p className="text-xs font-mono text-gray-400">variant=&quot;cart&quot;</p>
-                  <p className="text-xs text-gray-500">Primary CTAs, add to cart, checkout</p>
+                  <p className="text-sm font-mono text-gray-400">variant=&quot;cart&quot;</p>
+                  <p className="text-sm text-gray-500">Primary CTAs, add to cart, checkout</p>
                 </div>
                 <div className="space-y-2">
                   <Button variant="secondary">Secondary</Button>
-                  <p className="text-xs font-mono text-gray-400">variant=&quot;secondary&quot;</p>
-                  <p className="text-xs text-gray-500">Outline/alternative actions</p>
+                  <p className="text-sm font-mono text-gray-400">variant=&quot;secondary&quot;</p>
+                  <p className="text-sm text-gray-500">Outline/alternative actions</p>
                 </div>
                 <div className="space-y-2">
                   <Button variant="ghost">Ghost</Button>
-                  <p className="text-xs font-mono text-gray-400">variant=&quot;ghost&quot;</p>
-                  <p className="text-xs text-gray-500">Tertiary, skip, back</p>
+                  <p className="text-sm font-mono text-gray-400">variant=&quot;ghost&quot;</p>
+                  <p className="text-sm text-gray-500">Tertiary, skip, back</p>
                 </div>
               </div>
             </div>
@@ -205,15 +212,15 @@ export default function DesignExamplePage() {
               <div className="flex flex-wrap gap-4 items-end">
                 <div className="space-y-2">
                   <Button variant="primary" size="sm">Small (sm)</Button>
-                  <p className="text-xs font-mono text-gray-400">px-4 py-2 text-sm</p>
+                  <p className="text-sm font-mono text-gray-400">px-4 py-2 text-sm</p>
                 </div>
                 <div className="space-y-2">
                   <Button variant="primary" size="md">Medium (md)</Button>
-                  <p className="text-xs font-mono text-gray-400">px-6 py-3 text-sm md:text-base</p>
+                  <p className="text-sm font-mono text-gray-400">px-6 py-3 text-sm md:text-base</p>
                 </div>
                 <div className="space-y-2">
                   <Button variant="primary" size="lg">Large (lg)</Button>
-                  <p className="text-xs font-mono text-gray-400">px-8 py-4 text-base md:text-lg</p>
+                  <p className="text-sm font-mono text-gray-400">px-8 py-4 text-base md:text-lg</p>
                 </div>
               </div>
             </div>
@@ -247,25 +254,25 @@ export default function DesignExamplePage() {
               <h4 className="font-heading text-lg font-bold tracking-[0.08em] text-gray-900 mb-4">
                 CSS Class Equivalents
               </h4>
-              <p className="text-xs text-gray-500 mb-4">
+              <p className="text-sm text-gray-500 mb-4">
                 When you cannot use the Button component (e.g. inside forms), use these CSS classes:
               </p>
               <div className="flex flex-wrap gap-4">
                 <div className="space-y-2">
                   <button className="btn-primary">btn-primary</button>
-                  <p className="text-xs font-mono text-gray-400">.btn-primary</p>
+                  <p className="text-sm font-mono text-gray-400">.btn-primary</p>
                 </div>
                 <div className="space-y-2">
                   <button className="btn-cart">btn-cart</button>
-                  <p className="text-xs font-mono text-gray-400">.btn-cart</p>
+                  <p className="text-sm font-mono text-gray-400">.btn-cart</p>
                 </div>
                 <div className="space-y-2">
                   <button className="btn-secondary">btn-secondary</button>
-                  <p className="text-xs font-mono text-gray-400">.btn-secondary</p>
+                  <p className="text-sm font-mono text-gray-400">.btn-secondary</p>
                 </div>
                 <div className="space-y-2">
                   <button className="btn-ghost">btn-ghost</button>
-                  <p className="text-xs font-mono text-gray-400">.btn-ghost</p>
+                  <p className="text-sm font-mono text-gray-400">.btn-ghost</p>
                 </div>
               </div>
             </div>
@@ -276,7 +283,7 @@ export default function DesignExamplePage() {
         <Section title="Form Inputs">
           <div className="max-w-md space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-base font-medium text-gray-700 mb-2">
                 Standard Input (.input-premium)
               </label>
               <input
@@ -284,13 +291,16 @@ export default function DesignExamplePage() {
                 placeholder="Enter something..."
                 className="input-premium"
               />
-              <p className="text-xs font-mono text-gray-400 mt-2">
-                border-2 border-gray-200 focus:border-brand-blue focus:ring-0 rounded-lg px-4 py-3
+              <p className="text-sm text-gray-500 mt-1">
+                Helper text goes here -- text-sm text-gray-500
+              </p>
+              <p className="text-sm font-mono text-gray-400 mt-2">
+                text-base, border-2 border-gray-200 focus:border-brand-blue focus:ring-0 rounded-lg px-4 py-3
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-base font-medium text-gray-700 mb-2">
                 Select Input
               </label>
               <select className="input-premium">
@@ -301,7 +311,7 @@ export default function DesignExamplePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-base font-medium text-gray-700 mb-2">
                 Textarea
               </label>
               <textarea
@@ -312,25 +322,33 @@ export default function DesignExamplePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-base font-medium text-gray-700 mb-2">
                 Checkbox
               </label>
               <label className="flex items-start gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   defaultChecked
-                  className="mt-0.5 rounded border-gray-300 text-brand-blue focus:ring-brand-blue"
+                  className="mt-1 rounded border-gray-300 text-brand-blue focus:ring-brand-blue"
                 />
-                <span className="text-sm text-gray-700">
+                <span className="text-base text-gray-700">
                   Checkbox label with brand-blue color
                 </span>
               </label>
             </div>
 
-            <div className="bg-gray-50 rounded-xl p-4">
-              <p className="text-xs font-mono text-gray-400 mb-1">Label pattern:</p>
-              <p className="text-xs font-mono text-gray-600">
-                text-sm font-medium text-gray-700 mb-2
+            <div className="bg-gray-50 rounded-xl p-4 space-y-2">
+              <p className="text-sm font-mono text-gray-400">Label pattern:</p>
+              <p className="text-sm font-mono text-gray-600">
+                text-base font-medium text-gray-700 mb-2
+              </p>
+              <p className="text-sm font-mono text-gray-400">Helper text pattern:</p>
+              <p className="text-sm font-mono text-gray-600">
+                text-sm text-gray-500 mt-1
+              </p>
+              <p className="text-sm font-mono text-gray-400">Checkbox/radio label:</p>
+              <p className="text-sm font-mono text-gray-600">
+                text-base text-gray-700
               </p>
             </div>
           </div>
@@ -369,7 +387,7 @@ export default function DesignExamplePage() {
               <Button variant="secondary" size="sm">Details</Button>
             </div>
           </div>
-          <p className="text-xs font-mono text-gray-400">
+          <p className="text-sm font-mono text-gray-400">
             .card = bg-white rounded-xl border border-gray-200 shadow-sm p-6 hover:shadow-md
           </p>
         </Section>
@@ -394,7 +412,7 @@ export default function DesignExamplePage() {
                 </h3>
                 <p className="text-sm font-semibold text-gray-900 mt-1">$12.99</p>
                 <div className="mt-auto pt-2">
-                  <button className="w-full py-2 bg-brand-yellow text-gray-900 text-xs font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors">
+                  <button className="w-full py-2 bg-brand-yellow text-gray-900 text-sm font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors">
                     ADD TO CART
                   </button>
                 </div>
@@ -434,7 +452,7 @@ export default function DesignExamplePage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
-                  <span className="text-xs font-medium text-gray-500">Out of stock</span>
+                  <span className="text-sm font-medium text-gray-500">Out of stock</span>
                 </div>
               </div>
               <div className="p-2 flex-1 flex flex-col">
@@ -443,7 +461,7 @@ export default function DesignExamplePage() {
                 </h3>
                 <p className="text-sm font-semibold text-gray-900 mt-1">$15.99</p>
                 <div className="mt-auto pt-2">
-                  <button disabled className="w-full py-2 bg-brand-yellow text-gray-900 text-xs font-semibold tracking-[0.08em] rounded-lg opacity-50 cursor-not-allowed">
+                  <button disabled className="w-full py-2 bg-brand-yellow text-gray-900 text-sm font-semibold tracking-[0.08em] rounded-lg opacity-50 cursor-not-allowed">
                     ADD TO CART
                   </button>
                 </div>
@@ -477,7 +495,7 @@ export default function DesignExamplePage() {
             </div>
           </div>
           <div className="mt-4 bg-gray-50 rounded-xl p-4">
-            <p className="text-xs font-mono text-gray-400">
+            <p className="text-sm font-mono text-gray-400">
               Overlay: fixed inset-0 bg-black/50 backdrop-blur-sm<br />
               Modal: bg-white rounded-2xl shadow-xl max-w-lg p-6<br />
               Title: text-lg font-heading font-bold tracking-[0.08em]
@@ -502,7 +520,7 @@ export default function DesignExamplePage() {
             </button>
           </div>
           <div className="mt-4 bg-gray-50 rounded-xl p-4">
-            <p className="text-xs font-mono text-gray-400">
+            <p className="text-sm font-mono text-gray-400">
               Active: border-yellow-500 bg-yellow-50 text-gray-900<br />
               Inactive: border-gray-200 hover:border-gray-300 text-gray-700
             </p>
@@ -534,27 +552,27 @@ export default function DesignExamplePage() {
         {/* ========== BADGES & TAGS ========== */}
         <Section title="Badges and Tags">
           <div className="flex flex-wrap gap-3 items-center">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-brand-blue bg-blue-50 px-1.5 py-0.5 rounded">
+            <span className="text-xs font-semibold uppercase tracking-wider text-brand-blue bg-blue-50 px-2 py-0.5 rounded">
               Host
             </span>
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
+            <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
               You
             </span>
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-red-600 bg-red-50 px-1.5 py-0.5 rounded">
+            <span className="text-xs font-semibold uppercase tracking-wider text-red-600 bg-red-50 px-2 py-0.5 rounded">
               Locked
             </span>
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-green-700 bg-green-50 px-1.5 py-0.5 rounded">
+            <span className="text-xs font-semibold uppercase tracking-wider text-green-700 bg-green-50 px-2 py-0.5 rounded">
               Paid
             </span>
             <span className="inline-block bg-brand-blue/10 text-brand-blue text-xs font-semibold rounded-lg px-2 py-1">
               Outcome Tag
             </span>
-            <span className="bg-brand-yellow text-gray-900 text-xs font-bold px-1.5 py-0.5 rounded">
+            <span className="bg-brand-yellow text-gray-900 text-xs font-bold px-2 py-0.5 rounded">
               2x
             </span>
           </div>
-          <p className="text-xs font-mono text-gray-400 mt-3">
-            Small badges: text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded<br />
+          <p className="text-sm font-mono text-gray-400 mt-3">
+            Small badges: text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded<br />
             Outcome tags: bg-brand-blue/10 text-brand-blue text-xs font-semibold rounded-lg px-2 py-1
           </p>
         </Section>
@@ -566,7 +584,7 @@ export default function DesignExamplePage() {
               <h4 className="font-heading text-lg font-bold tracking-[0.08em] text-gray-900 mb-3">
                 Container
               </h4>
-              <p className="text-xs font-mono text-gray-600 mb-2">
+              <p className="text-sm font-mono text-gray-600 mb-2">
                 .container-custom = max-w-7xl mx-auto px-4 md:px-6 lg:px-8
               </p>
               <div className="bg-brand-blue/10 border-2 border-dashed border-brand-blue/30 rounded-lg p-4 text-center text-sm text-brand-blue">
@@ -578,7 +596,7 @@ export default function DesignExamplePage() {
               <h4 className="font-heading text-lg font-bold tracking-[0.08em] text-gray-900 mb-3">
                 Section Spacing
               </h4>
-              <div className="space-y-2 text-xs font-mono text-gray-600">
+              <div className="space-y-2 text-sm font-mono text-gray-600">
                 <p>.section-padding = py-8 md:py-12 lg:py-16</p>
                 <p>.section-padding-lg = py-12 md:py-16 lg:py-20</p>
               </div>
@@ -588,7 +606,7 @@ export default function DesignExamplePage() {
               <h4 className="font-heading text-lg font-bold tracking-[0.08em] text-gray-900 mb-3">
                 Navigation Height
               </h4>
-              <div className="space-y-2 text-xs font-mono text-gray-600">
+              <div className="space-y-2 text-sm font-mono text-gray-600">
                 <p>Mobile: h-14 (56px)</p>
                 <p>Desktop: h-16 (64px)</p>
                 <p>Sticky elements: top-14 md:top-16 (NOT top-24)</p>
@@ -600,16 +618,16 @@ export default function DesignExamplePage() {
                 Shadows
               </h4>
               <div className="flex flex-wrap gap-6 mt-4">
-                <div className="bg-white rounded-xl w-24 h-24 shadow-sm flex items-center justify-center text-xs text-gray-500">
+                <div className="bg-white rounded-xl w-24 h-24 shadow-sm flex items-center justify-center text-sm text-gray-500">
                   shadow-sm
                 </div>
-                <div className="bg-white rounded-xl w-24 h-24 shadow-md flex items-center justify-center text-xs text-gray-500">
+                <div className="bg-white rounded-xl w-24 h-24 shadow-md flex items-center justify-center text-sm text-gray-500">
                   shadow-md
                 </div>
-                <div className="bg-white rounded-xl w-24 h-24 shadow-lg flex items-center justify-center text-xs text-gray-500">
+                <div className="bg-white rounded-xl w-24 h-24 shadow-lg flex items-center justify-center text-sm text-gray-500">
                   shadow-lg
                 </div>
-                <div className="bg-white rounded-xl w-24 h-24 shadow-xl flex items-center justify-center text-xs text-gray-500">
+                <div className="bg-white rounded-xl w-24 h-24 shadow-xl flex items-center justify-center text-sm text-gray-500">
                   shadow-xl
                 </div>
               </div>
@@ -635,6 +653,8 @@ export default function DesignExamplePage() {
                 <li>Use brand-yellow for cart/add-to-cart actions</li>
                 <li>Add active: states to all buttons</li>
                 <li>Max letter spacing: tracking-[0.1em]</li>
+                <li>Minimum text-sm (14px) for all user-readable content</li>
+                <li>Use text-base (16px) for form labels and input text</li>
               </ul>
             </div>
             <div className="bg-red-50 border border-red-200 rounded-xl p-6">
@@ -650,6 +670,9 @@ export default function DesignExamplePage() {
                 <li>Never use tracking wider than [0.1em]</li>
                 <li>Never use font-medium on CTA buttons (always font-semibold)</li>
                 <li>Never hardcode hex colors (use Tailwind tokens)</li>
+                <li>Never use text-xs for body copy, labels, or helper text (minimum text-sm)</li>
+                <li>Never use text-[10px] or text-[11px] anywhere</li>
+                <li>Never use text-sm for form labels (use text-base)</li>
               </ul>
             </div>
           </div>
