@@ -107,7 +107,7 @@ export default function GetRecsModal({
           </svg>
         </button>
 
-        <h2 className="text-xl font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-1">
+        <h2 className="text-lg font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-1">
           Get Recommendations
         </h2>
         <p className="text-xs text-gray-400 text-center mb-4">
@@ -148,7 +148,7 @@ export default function GetRecsModal({
             />
             <button
               onClick={() => setStep(2)}
-              className="mt-4 w-full py-3 bg-brand-blue text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+              className="mt-4 w-full py-3 bg-brand-blue text-white font-semibold tracking-[0.08em] rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors"
             >
               Next
             </button>
@@ -178,13 +178,13 @@ export default function GetRecsModal({
             <div className="flex gap-2 mt-4">
               <button
                 onClick={() => setStep(1)}
-                className="flex-1 py-3 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-colors"
+                className="flex-1 py-3 bg-gray-100 text-gray-700 font-semibold tracking-[0.08em] rounded-lg hover:bg-gray-200 active:bg-gray-300 transition-colors"
               >
                 Back
               </button>
               <button
                 onClick={() => setStep(3)}
-                className="flex-1 py-3 bg-brand-blue text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+                className="flex-1 py-3 bg-brand-blue text-white font-semibold tracking-[0.08em] rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors"
               >
                 Next
               </button>
@@ -218,14 +218,14 @@ export default function GetRecsModal({
             <div className="flex gap-2 mt-4">
               <button
                 onClick={() => setStep(2)}
-                className="flex-1 py-3 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-colors"
+                className="flex-1 py-3 bg-gray-100 text-gray-700 font-semibold tracking-[0.08em] rounded-lg hover:bg-gray-200 active:bg-gray-300 transition-colors"
               >
                 Back
               </button>
               <button
                 onClick={handleGetRecs}
                 disabled={loading}
-                className="flex-1 py-3 bg-brand-yellow text-gray-900 font-semibold rounded-lg hover:bg-yellow-400 transition-colors disabled:opacity-50"
+                className="flex-1 py-3 bg-brand-yellow text-gray-900 font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors disabled:opacity-50"
               >
                 {loading ? 'Loading...' : 'Get My Recs'}
               </button>

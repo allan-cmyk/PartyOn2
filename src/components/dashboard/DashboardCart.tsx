@@ -238,7 +238,7 @@ export default function DashboardCart({
             <button
               onClick={onCheckoutMine}
               disabled={myItems.length === 0}
-              className="w-full py-3 bg-brand-blue text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 bg-brand-blue text-white font-semibold tracking-[0.08em] rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Checkout - ${myTotal.toFixed(2)}
             </button>
@@ -248,7 +248,7 @@ export default function DashboardCart({
             {myItems.length > 0 && (
               <button
                 onClick={onCheckoutMine}
-                className="w-full py-2.5 mb-2 bg-brand-blue text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                className="w-full py-2.5 mb-2 bg-brand-blue text-white font-semibold tracking-[0.08em] rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors text-sm"
               >
                 Checkout My Items - ${myTotal.toFixed(2)}
               </button>
@@ -256,7 +256,7 @@ export default function DashboardCart({
             {draftItems.length > 0 && (
               <button
                 onClick={onCheckoutAll}
-                className="w-full py-2.5 bg-brand-yellow text-gray-900 font-semibold rounded-lg hover:bg-yellow-400 transition-colors text-sm"
+                className="w-full py-2.5 bg-brand-yellow text-gray-900 font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors text-sm"
               >
                 {purchasedItems.length > 0
                   ? `Pay for Remaining - $${remainingTotal.toFixed(2)}`

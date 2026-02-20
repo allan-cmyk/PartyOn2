@@ -74,7 +74,7 @@ export default function JoinOverlay({
           />
         </div>
 
-        <h1 className="text-xl font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-1">
+        <h1 className="text-lg font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-1">
           You&apos;ve been invited to
         </h1>
         <p className="text-lg font-semibold text-yellow-600 text-center mb-1">
@@ -148,7 +148,7 @@ export default function JoinOverlay({
         <button
           onClick={handleJoin}
           disabled={loading}
-          className="mt-5 w-full py-3 bg-brand-yellow text-gray-900 font-semibold rounded-lg hover:bg-yellow-400 transition-colors disabled:opacity-50"
+          className="mt-5 w-full py-3 bg-brand-yellow text-gray-900 font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors disabled:opacity-50"
         >
           {loading ? 'Joining...' : 'Join Order'}
         </button>

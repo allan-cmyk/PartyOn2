@@ -172,7 +172,7 @@ export default function DashboardPage(): ReactElement {
           <div className="mb-6 text-center">
             <button
               onClick={() => setShowGetRecs(true)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-yellow text-gray-900 font-semibold rounded-lg hover:bg-yellow-400 transition-colors text-sm"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-brand-yellow text-gray-900 font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors text-sm"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />

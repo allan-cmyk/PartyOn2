@@ -182,12 +182,12 @@ export default function DashboardProductCard({
             <button
               onClick={handleAdd}
               disabled={busy || !available}
-              className="w-full py-1.5 bg-brand-yellow text-gray-900 text-sm font-medium rounded-lg hover:bg-yellow-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-2 bg-brand-yellow text-gray-900 text-xs font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {busy ? (
                 <span className="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
-                'Add'
+                'ADD TO CART'
               )}
             </button>
           )}

@@ -78,14 +78,14 @@ export default function RecommendationsSection({
   return (
     <section className="mb-8 bg-yellow-50 border border-yellow-200 rounded-xl p-4">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-xl font-heading font-bold tracking-[0.08em] text-gray-900">
+        <h2 className="text-lg font-heading font-bold tracking-[0.08em] text-gray-900">
           Recommended for You
         </h2>
         <div className="flex items-center gap-2">
           <button
             onClick={handleAddAll}
             disabled={addingAll || matchedRecs.length === 0}
-            className="px-3 py-1.5 bg-brand-yellow text-gray-900 text-xs font-semibold rounded-lg hover:bg-yellow-400 transition-colors disabled:opacity-50"
+            className="px-4 py-2 bg-brand-yellow text-gray-900 text-xs font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors disabled:opacity-50"
           >
             {addingAll ? 'Adding...' : 'Add All'}
           </button>
@@ -145,7 +145,7 @@ export default function RecommendationsSection({
                     <button
                       onClick={() => handleAddOne(rec)}
                       disabled={isAdding}
-                      className="w-full py-1 bg-brand-yellow text-gray-900 text-xs font-medium rounded hover:bg-yellow-400 transition-colors disabled:opacity-50"
+                      className="w-full py-1.5 bg-brand-yellow text-gray-900 text-xs font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors disabled:opacity-50"
                     >
                       {isAdding ? '...' : 'Add'}
                     </button>

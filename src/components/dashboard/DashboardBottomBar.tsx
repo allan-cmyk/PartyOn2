@@ -59,7 +59,7 @@ export default function DashboardBottomBar({
         </button>
         <button
           onClick={onCartToggle}
-          className="px-6 py-2.5 bg-brand-yellow text-gray-900 font-semibold rounded-lg hover:bg-yellow-400 transition-colors text-sm"
+          className="px-6 py-3 bg-brand-yellow text-gray-900 font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors text-sm"
         >
           Checkout - ${totalPrice.toFixed(2)}
         </button>

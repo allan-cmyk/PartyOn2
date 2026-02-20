@@ -111,7 +111,7 @@ export default function OnboardingPopup({
 
         {step === 1 && (
           <div>
-            <h2 className="text-xl font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-4">
+            <h2 className="text-lg font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-4">
               What are you celebrating?
             </h2>
             <div className="grid grid-cols-2 gap-3">
@@ -141,7 +141,7 @@ export default function OnboardingPopup({
 
         {step === 2 && (
           <div>
-            <h2 className="text-xl font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-4">
+            <h2 className="text-lg font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-4">
               Name your order
             </h2>
             <input
@@ -166,7 +166,7 @@ export default function OnboardingPopup({
             <button
               onClick={handleNameSave}
               disabled={saving}
-              className="mt-4 w-full py-3 bg-brand-blue text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+              className="mt-4 w-full py-3 bg-brand-blue text-white font-semibold tracking-[0.08em] rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors disabled:opacity-50"
             >
               {saving ? 'Saving...' : 'Continue'}
             </button>
@@ -181,7 +181,7 @@ export default function OnboardingPopup({
 
         {step === 3 && (
           <div>
-            <h2 className="text-xl font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-4">
+            <h2 className="text-lg font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-4">
               Where should we deliver?
             </h2>
             <div className="grid grid-cols-2 gap-3">

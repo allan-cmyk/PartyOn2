@@ -47,7 +47,7 @@ export default function ShareModal({ shareCode, onClose }: Props): ReactElement 
           </svg>
         </button>
 
-        <h2 className="text-xl font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-1">
+        <h2 className="text-lg font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-1">
           Share This Order
         </h2>
         <p className="text-sm text-gray-500 text-center mb-5">
@@ -67,7 +67,7 @@ export default function ShareModal({ shareCode, onClose }: Props): ReactElement 
             className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap ${
               copied
                 ? 'bg-green-100 text-green-700'
-                : 'bg-brand-blue text-white hover:bg-blue-700'
+                : 'bg-brand-blue text-white hover:bg-blue-700 active:bg-blue-800'
             }`}
           >
             {copied ? 'Copied!' : 'Copy'}
