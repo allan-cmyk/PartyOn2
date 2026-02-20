@@ -58,7 +58,8 @@ export function generateInvoiceEmail(data: InvoiceEmailData, textOverrides?: Inv
 
   // Merge defaults with overrides and replace placeholders
   const text = { ...INVOICE_TEXT_DEFAULTS, ...textOverrides };
-  const greeting = text.greeting.replace('{customerName}', data.customerName);
+  const firstName = data.customerName.trim().split(/\s+/)[0];
+  const greeting = text.greeting.replace('{customerName}', firstName);
   const bodyText = text.bodyText;
   const buttonText = text.buttonText;
   const linkText = text.linkText;

@@ -103,12 +103,14 @@ export function generateDeliveryEnRouteEmail(data: DeliveryUpdateData): string {
     estimatedArrival,
   } = data;
 
+  const firstName = customerName.trim().split(/\s+/)[0];
+
   const content = `
     <!-- Main Content -->
     <tr>
       <td style="padding: 24px;">
         <p style="margin: 0 0 16px; font-size: 16px; color: #1a1a1a;">
-          Hi ${customerName},
+          Hi ${firstName},
         </p>
         <p style="margin: 0 0 16px; font-size: 16px; color: #666;">
           Great news! Your order <strong>#${orderNumber}</strong> is on its way to you.
@@ -169,12 +171,14 @@ export function generateDeliveryCompletedEmail(data: DeliveryUpdateData): string
     total,
   } = data;
 
+  const firstName = customerName.trim().split(/\s+/)[0];
+
   const content = `
     <!-- Main Content -->
     <tr>
       <td style="padding: 24px;">
         <p style="margin: 0 0 16px; font-size: 16px; color: #1a1a1a;">
-          Hi ${customerName},
+          Hi ${firstName},
         </p>
         <p style="margin: 0 0 16px; font-size: 16px; color: #666;">
           Your order <strong>#${orderNumber}</strong> has been delivered successfully!
@@ -227,6 +231,7 @@ export function generateDeliveryCompletedEmail(data: DeliveryUpdateData): string
  */
 export function generateDeliveryEnRouteText(data: DeliveryUpdateData): string {
   const { orderNumber, customerName, deliveryAddress, driverName, estimatedArrival } = data;
+  const firstName = customerName.trim().split(/\s+/)[0];
 
   const addressLines = [
     deliveryAddress.address1,
@@ -240,7 +245,7 @@ export function generateDeliveryEnRouteText(data: DeliveryUpdateData): string {
 PARTY ON DELIVERY
 Delivery Update
 
-Hi ${customerName},
+Hi ${firstName},
 
 Great news! Your order #${orderNumber} is on its way!
 
@@ -264,12 +269,13 @@ Premium Alcohol Delivery
  */
 export function generateDeliveryCompletedText(data: DeliveryUpdateData): string {
   const { orderNumber, customerName, total } = data;
+  const firstName = customerName.trim().split(/\s+/)[0];
 
   return `
 PARTY ON DELIVERY
 Delivery Complete!
 
-Hi ${customerName},
+Hi ${firstName},
 
 Your order #${orderNumber} has been delivered successfully!
 

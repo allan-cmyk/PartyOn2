@@ -58,6 +58,8 @@ export function generateOrderConfirmationEmail(data: OrderConfirmationData): str
     deliveryInstructions,
   } = data;
 
+  const firstName = customerName.trim().split(/\s+/)[0];
+
   const itemsHtml = items
     .map(
       (item) => `
@@ -118,7 +120,7 @@ export function generateOrderConfirmationEmail(data: OrderConfirmationData): str
             <td style="background-color: #f0fdf4; padding: 24px; text-align: center; border-bottom: 1px solid #e5e5e5;">
               <div style="font-size: 48px; margin-bottom: 8px;">&#10003;</div>
               <h2 style="margin: 0; color: #166534; font-size: 24px;">Order Confirmed!</h2>
-              <p style="margin: 8px 0 0; color: #666;">Thank you for your order, ${customerName}</p>
+              <p style="margin: 8px 0 0; color: #666;">Thank you for your order, ${firstName}</p>
             </td>
           </tr>
 
@@ -256,6 +258,8 @@ export function generateOrderConfirmationText(data: OrderConfirmationData): stri
     deliveryInstructions,
   } = data;
 
+  const firstName = customerName.trim().split(/\s+/)[0];
+
   const itemsList = items
     .map(
       (item) =>
@@ -275,7 +279,7 @@ export function generateOrderConfirmationText(data: OrderConfirmationData): stri
 PARTY ON DELIVERY
 Order Confirmation
 
-Hi ${customerName},
+Hi ${firstName},
 
 Thank you for your order! Here are the details:
 
