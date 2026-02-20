@@ -7,7 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {
   getGroupOrderByCode,
-  updateGroupOrderStatus,
+  updateGroupOrderFields,
   cancelGroupOrder,
 } from '@/lib/group-orders-v2/service';
 import { UpdateGroupOrderSchema } from '@/lib/group-orders-v2/validation';
@@ -48,7 +48,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    await updateGroupOrderStatus(code, parsed.data.status || 'ACTIVE', parsed.data.name);
+    await updateGroupOrderFields(code, parsed.data);
     const updated = await getGroupOrderByCode(code);
 
     return NextResponse.json({ success: true, data: updated });

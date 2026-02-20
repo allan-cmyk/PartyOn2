@@ -7,7 +7,7 @@ import Stripe from 'stripe';
 import { stripe } from './client';
 import { prisma } from '@/lib/database/client';
 import { DEFAULT_TAX_RATE } from '@/lib/tax';
-import { moveDraftToPurchased } from '@/lib/group-orders-v2/service';
+import { moveDraftToPurchased, moveAllDraftsToPurchased } from '@/lib/group-orders-v2/service';
 import { notifyNewOrder, type GhlOrderPayload } from '@/lib/webhooks/ghl';
 
 // ==========================================
@@ -35,6 +35,7 @@ interface CreateCheckoutInput {
   discountCode?: string;
   successUrl: string;
   cancelUrl: string;
+  checkoutType?: 'participant' | 'all';
 }
 
 interface CreateDeliveryInvoiceInput {
@@ -136,6 +137,7 @@ export async function createGroupV2CheckoutSession(input: CreateCheckoutInput) {
       groupOrderId,
       subOrderId,
       participantId,
+      checkoutType: input.checkoutType || 'participant',
     },
     billing_address_collection: 'required',
     phone_number_collection: { enabled: true },
@@ -339,7 +341,12 @@ export async function handleGroupV2PaymentCompleted(
   });
 
   // Move draft items to purchased
-  await moveDraftToPurchased(subOrderId, participantId, payment.id);
+  const checkoutType = session.metadata?.checkoutType;
+  if (checkoutType === 'all') {
+    await moveAllDraftsToPurchased(subOrderId, participantId, payment.id);
+  } else {
+    await moveDraftToPurchased(subOrderId, participantId, payment.id);
+  }
 
   // Create Order record for this participant
   try {

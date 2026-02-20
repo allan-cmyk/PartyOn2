@@ -93,6 +93,7 @@ export const UpdateTabSchema = z.object({
   deliveryAddress: DeliveryAddressSchema.optional(),
   deliveryPhone: z.string().optional(),
   deliveryNotes: z.string().max(500).optional(),
+  deliveryContextType: z.enum(['HOUSE', 'BOAT', 'VENUE', 'HOTEL', 'OTHER']).optional(),
 });
 
 /** Join group order */
@@ -126,6 +127,20 @@ export const UpdateDraftItemSchema = z.object({
 export const UpdateGroupOrderSchema = z.object({
   name: z.string().min(1).max(200).optional(),
   status: z.enum(['ACTIVE', 'CLOSED', 'COMPLETED', 'CANCELLED']).optional(),
+  partyType: z.enum(['BACHELOR', 'BACHELORETTE', 'WEDDING', 'CORPORATE', 'HOUSE_PARTY', 'OTHER']).optional().nullable(),
+});
+
+/** Create dashboard order (relaxed - no delivery details required) */
+export const CreateDashboardSchema = z.object({
+  hostName: z.string().min(1, 'Name is required').max(100),
+  hostEmail: z.string().email('Invalid email').optional().or(z.literal('')),
+  hostPhone: z.string().optional(),
+  hostCustomerId: z.string().optional(),
+  name: z.string().max(200).optional(),
+  partyType: z.enum(['BACHELOR', 'BACHELORETTE', 'WEDDING', 'CORPORATE', 'HOUSE_PARTY', 'OTHER']).optional(),
+  source: z.enum(['DIRECT', 'PARTNER_PAGE', 'INTERNAL']).optional(),
+  affiliateId: z.string().optional(),
+  deliveryContextType: z.enum(['HOUSE', 'BOAT', 'VENUE', 'HOTEL', 'OTHER']).optional(),
 });
 
 export {

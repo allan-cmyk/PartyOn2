@@ -1,0 +1,190 @@
+'use client';
+
+import { useState, type ReactElement } from 'react';
+import Image from 'next/image';
+import type { Product } from '@/lib/types/product';
+import type { DraftCartItemView } from '@/lib/group-orders-v2/types';
+import {
+  addDraftItemV2,
+  updateDraftItemV2,
+  removeDraftItemV2,
+} from '@/lib/group-orders-v2/api-client';
+
+interface Props {
+  product: Product;
+  shareCode: string;
+  tabId: string;
+  participantId: string;
+  existingItem?: DraftCartItemView;
+  onItemChanged: () => void;
+}
+
+export default function DashboardProductCard({
+  product,
+  shareCode,
+  tabId,
+  participantId,
+  existingItem,
+  onItemChanged,
+}: Props): ReactElement {
+  const [busy, setBusy] = useState(false);
+
+  const variant = product.variants.edges[0]?.node;
+  if (!variant) return <div />;
+
+  const price = parseFloat(variant.price.amount);
+  const imageUrl = product.images.edges[0]?.node.url;
+  const variantTitle =
+    variant.title !== 'Default Title' && variant.title !== 'Default'
+      ? variant.title
+      : null;
+  const available = variant.availableForSale && product.availableForSale !== false;
+  const qty = existingItem?.quantity || 0;
+
+  async function handleAdd() {
+    if (busy || !available) return;
+    setBusy(true);
+    try {
+      await addDraftItemV2(shareCode, tabId, {
+        participantId,
+        productId: product.id,
+        variantId: variant.id,
+        title: product.title,
+        variantTitle: variantTitle || undefined,
+        price,
+        imageUrl,
+        quantity: 1,
+      });
+      onItemChanged();
+    } catch (err) {
+      console.error('Failed to add item:', err);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleIncrement() {
+    if (busy || !existingItem) return;
+    setBusy(true);
+    try {
+      await updateDraftItemV2(
+        shareCode,
+        tabId,
+        existingItem.id,
+        participantId,
+        existingItem.quantity + 1
+      );
+      onItemChanged();
+    } catch (err) {
+      console.error('Failed to update item:', err);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleDecrement() {
+    if (busy || !existingItem) return;
+    setBusy(true);
+    try {
+      if (existingItem.quantity <= 1) {
+        await removeDraftItemV2(shareCode, tabId, existingItem.id, participantId);
+      } else {
+        await updateDraftItemV2(
+          shareCode,
+          tabId,
+          existingItem.id,
+          participantId,
+          existingItem.quantity - 1
+        );
+      }
+      onItemChanged();
+    } catch (err) {
+      console.error('Failed to update item:', err);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden flex flex-col">
+      <div className="relative aspect-square bg-gray-100">
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={product.title}
+            fill
+            className="object-cover"
+            sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 16vw"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-gray-400">
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+        )}
+        {!available && (
+          <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
+            <span className="text-xs font-medium text-gray-500">Out of stock</span>
+          </div>
+        )}
+      </div>
+
+      <div className="p-2 flex-1 flex flex-col">
+        <h3 className="text-xs sm:text-sm font-medium text-gray-900 line-clamp-2 leading-tight">
+          {product.title}
+        </h3>
+        {variantTitle && (
+          <p className="text-xs text-gray-500 mt-0.5">{variantTitle}</p>
+        )}
+        <p className="text-sm font-semibold text-gray-900 mt-1">${price.toFixed(2)}</p>
+
+        <div className="mt-auto pt-2">
+          {qty > 0 ? (
+            <div className="flex items-center justify-between bg-gray-100 rounded-lg">
+              <button
+                onClick={handleDecrement}
+                disabled={busy}
+                className="w-8 h-8 flex items-center justify-center text-gray-700 hover:bg-gray-200 rounded-l-lg transition-colors disabled:opacity-50"
+              >
+                {qty === 1 ? (
+                  <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                ) : (
+                  <span className="text-lg font-medium">-</span>
+                )}
+              </button>
+              <span className="text-sm font-semibold text-gray-900 min-w-[24px] text-center">
+                {busy ? (
+                  <span className="inline-block w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  qty
+                )}
+              </span>
+              <button
+                onClick={handleIncrement}
+                disabled={busy}
+                className="w-8 h-8 flex items-center justify-center text-gray-700 hover:bg-gray-200 rounded-r-lg transition-colors disabled:opacity-50"
+              >
+                <span className="text-lg font-medium">+</span>
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={handleAdd}
+              disabled={busy || !available}
+              className="w-full py-1.5 bg-gray-900 text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {busy ? (
+                <span className="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                'Add'
+              )}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

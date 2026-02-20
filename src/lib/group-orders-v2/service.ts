@@ -23,6 +23,7 @@ import type {
   TabTotals,
   TimerInfo,
   CreateGroupOrderV2Input,
+  CreateDashboardInput,
   CreateTabInput,
   UpdateTabInput,
   JoinGroupOrderInput,
@@ -69,6 +70,7 @@ function serializeParticipant(p: {
   id: string;
   guestName: string | null;
   guestEmail: string | null;
+  guestPhone?: string | null;
   isHost: boolean;
   ageVerified: boolean;
   status: string;
@@ -78,6 +80,7 @@ function serializeParticipant(p: {
     id: p.id,
     name: p.guestName || 'Unknown',
     email: p.guestEmail,
+    phone: p.guestPhone ?? null,
     isHost: p.isHost,
     ageVerified: p.ageVerified,
     status: p.status as 'ACTIVE' | 'REMOVED',
@@ -148,6 +151,7 @@ function serializeTab(tab: any): SubOrderFull {
     position: tab.position,
     status: tab.status,
     orderType: tab.orderType ?? null,
+    deliveryContextType: tab.deliveryContextType ?? 'HOUSE',
     deliveryDate: tab.deliveryDate.toISOString(),
     deliveryTime: tab.deliveryTime,
     deliveryAddress: tab.deliveryAddress as any,
@@ -194,6 +198,9 @@ function serializeGroup(group: Record<string, any>): GroupOrderV2Full {
     hostName: group.hostName,
     hostEmail: group.hostEmail,
     hostPhone: group.hostPhone,
+    partyType: group.partyType ?? null,
+    affiliateId: group.affiliateId ?? null,
+    source: group.source ?? 'DIRECT',
     expiresAt: group.expiresAt.toISOString(),
     createdAt: group.createdAt.toISOString(),
     tabs,
@@ -399,6 +406,7 @@ export async function updateTab(
   }
   if (input.deliveryPhone !== undefined) data.deliveryPhone = input.deliveryPhone || null;
   if (input.deliveryNotes !== undefined) data.deliveryNotes = input.deliveryNotes || null;
+  if (input.deliveryContextType) data.deliveryContextType = input.deliveryContextType;
   if (input.deliveryDate) {
     const deliveryDate = new Date(input.deliveryDate);
     data.deliveryDate = deliveryDate;
@@ -686,5 +694,134 @@ export async function isParticipantHost(
 export async function getParticipantById(participantId: string) {
   return prisma.groupParticipantV2.findUnique({
     where: { id: participantId },
+  });
+}
+
+// ==========================================
+// Dashboard Order Creation
+// ==========================================
+
+/**
+ * Create a dashboard order (simplified flow for universal ordering).
+ * Creates a GroupOrderV2 with a single SubOrder with placeholder delivery
+ * and a single host participant.
+ */
+export async function createDashboardOrder(
+  input: CreateDashboardInput
+): Promise<GroupOrderV2Full> {
+  let shareCode = generateShareCode();
+  let attempts = 0;
+  while (attempts < 5) {
+    const existing = await prisma.groupOrderV2.findUnique({
+      where: { shareCode },
+    });
+    if (!existing) break;
+    shareCode = generateShareCode();
+    attempts++;
+  }
+
+  // Placeholder delivery date: 7 days from now
+  const placeholderDate = new Date();
+  placeholderDate.setDate(placeholderDate.getDate() + 7);
+  // Skip Sunday
+  if (placeholderDate.getDay() === 0) {
+    placeholderDate.setDate(placeholderDate.getDate() + 1);
+  }
+
+  const group = await prisma.groupOrderV2.create({
+    data: {
+      name: input.name || `${input.hostName}'s Order`,
+      hostName: input.hostName,
+      hostEmail: input.hostEmail || null,
+      hostPhone: input.hostPhone || null,
+      hostCustomerId: input.hostCustomerId || null,
+      shareCode,
+      partyType: input.partyType || null,
+      affiliateId: input.affiliateId || null,
+      source: input.source || 'DIRECT',
+      expiresAt: defaultExpiresAt(),
+      tabs: {
+        create: {
+          name: 'Delivery 1',
+          position: 0,
+          deliveryDate: placeholderDate,
+          deliveryTime: '12:00 PM - 2:00 PM',
+          deliveryAddress: { address1: '', city: '', province: 'TX', zip: '', country: 'US' },
+          orderDeadline: computeOrderDeadline(placeholderDate),
+          deliveryFee: 0,
+          deliveryContextType: input.deliveryContextType || 'HOUSE',
+        },
+      },
+      participants: {
+        create: {
+          guestName: input.hostName,
+          guestEmail: input.hostEmail || null,
+          guestPhone: input.hostPhone || null,
+          isHost: true,
+          ageVerified: true,
+          status: 'ACTIVE',
+        },
+      },
+    },
+    include: fullGroupIncludes,
+  });
+
+  return serializeGroup(group);
+}
+
+/**
+ * Move ALL remaining draft items on a sub-order to purchased.
+ * Used by "Pay for Everything / Pay for Remaining" checkout.
+ */
+export async function moveAllDraftsToPurchased(
+  subOrderId: string,
+  payerParticipantId: string,
+  paymentId: string
+): Promise<void> {
+  await prisma.$transaction(async (tx) => {
+    const draftItems = await tx.draftCartItem.findMany({
+      where: { subOrderId },
+    });
+
+    if (draftItems.length === 0) return;
+
+    // Create purchased items -- all owned by the payer
+    await tx.purchasedItem.createMany({
+      data: draftItems.map((item) => ({
+        subOrderId,
+        participantId: payerParticipantId,
+        paymentId,
+        productId: item.productId,
+        variantId: item.variantId,
+        title: item.title,
+        variantTitle: item.variantTitle,
+        price: item.price,
+        imageUrl: item.imageUrl,
+        quantity: item.quantity,
+      })),
+    });
+
+    // Delete all draft items
+    await tx.draftCartItem.deleteMany({
+      where: { subOrderId },
+    });
+  });
+}
+
+/**
+ * Update group order fields (partyType, name, etc.)
+ */
+export async function updateGroupOrderFields(
+  shareCode: string,
+  data: { name?: string; status?: string; partyType?: string | null }
+): Promise<void> {
+  const updateData: Record<string, unknown> = {};
+  if (data.name) updateData.name = data.name;
+  if (data.status) updateData.status = data.status;
+  if (data.partyType !== undefined) updateData.partyType = data.partyType || null;
+
+  await prisma.groupOrderV2.update({
+    where: { shareCode },
+    data: updateData,
   });
 }

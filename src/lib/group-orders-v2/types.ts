@@ -13,6 +13,9 @@ export type GroupOrderV2Status = 'ACTIVE' | 'CLOSED' | 'COMPLETED' | 'CANCELLED'
 export type SubOrderStatus = 'OPEN' | 'LOCKED' | 'FULFILLED' | 'CANCELLED';
 export type GroupV2ParticipantStatus = 'ACTIVE' | 'REMOVED';
 export type GroupV2PaymentStatus = 'PENDING' | 'PAID' | 'FAILED' | 'EXPIRED';
+export type PartyType = 'BACHELOR' | 'BACHELORETTE' | 'WEDDING' | 'CORPORATE' | 'HOUSE_PARTY' | 'OTHER';
+export type DashboardSource = 'DIRECT' | 'PARTNER_PAGE' | 'INTERNAL';
+export type DeliveryContextType = 'HOUSE' | 'BOAT' | 'VENUE' | 'HOTEL' | 'OTHER';
 
 // ==========================================
 // Base Types
@@ -46,6 +49,9 @@ export interface GroupOrderV2Full {
   hostName: string;
   hostEmail: string | null;
   hostPhone: string | null;
+  partyType: PartyType | null;
+  affiliateId: string | null;
+  source: DashboardSource;
   expiresAt: string;
   createdAt: string;
   tabs: SubOrderFull[];
@@ -59,6 +65,7 @@ export interface SubOrderFull {
   position: number;
   status: SubOrderStatus;
   orderType: string | null;
+  deliveryContextType: DeliveryContextType;
   deliveryDate: string;
   deliveryTime: string;
   deliveryAddress: DeliveryAddressV2;
@@ -118,6 +125,7 @@ export interface ParticipantSummary {
   id: string;
   name: string;
   email: string | null;
+  phone: string | null;
   isHost: boolean;
   ageVerified: boolean;
   status: GroupV2ParticipantStatus;
@@ -162,6 +170,7 @@ export interface UpdateTabInput {
   deliveryAddress?: DeliveryAddressV2;
   deliveryPhone?: string;
   deliveryNotes?: string;
+  deliveryContextType?: DeliveryContextType;
 }
 
 export interface JoinGroupOrderInput {
@@ -184,6 +193,18 @@ export interface AddDraftItemInput {
 
 export interface UpdateDraftItemInput {
   quantity: number;
+}
+
+export interface CreateDashboardInput {
+  hostName: string;
+  hostEmail?: string;
+  hostPhone?: string;
+  hostCustomerId?: string;
+  partyType?: PartyType;
+  source?: DashboardSource;
+  affiliateId?: string;
+  deliveryContextType?: DeliveryContextType;
+  name?: string;
 }
 
 // ==========================================

@@ -1,12 +1,13 @@
 /**
- * POST /api/v2/group-orders/[code]/tabs/[tabId]/checkout
- * Create Stripe checkout session for participant's items in this tab
+ * POST /api/v2/group-orders/[code]/tabs/[tabId]/checkout-all
+ * Create Stripe checkout session for ALL remaining draft items in this tab.
+ * Used by "Pay for Everything" / "Pay for Remaining" flow.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/database/client';
 import {
   getGroupOrderByCode,
-  getParticipantDraftItems,
   getParticipantById,
 } from '@/lib/group-orders-v2/service';
 import { createGroupV2CheckoutSession } from '@/lib/stripe/group-v2-payments';
@@ -47,8 +48,10 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    // Get their draft items for this tab
-    const draftItems = await getParticipantDraftItems(tabId, participantId);
+    // Get ALL remaining draft items for this tab (from all participants)
+    const draftItems = await prisma.draftCartItem.findMany({
+      where: { subOrderId: tabId },
+    });
     if (draftItems.length === 0) {
       return NextResponse.json(
         { success: false, error: 'No items to checkout' },
@@ -56,7 +59,6 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    // Create Stripe checkout session
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     const result = await createGroupV2CheckoutSession({
       groupOrderId: group.id,
@@ -66,6 +68,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       participantName: participant.guestName || 'Guest',
       draftItems,
       discountCode,
+      checkoutType: 'all',
       successUrl: `${appUrl}/dashboard/${code}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${appUrl}/dashboard/${code}`,
     });
@@ -79,7 +82,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       },
     });
   } catch (error) {
-    console.error('[Group V2] Checkout error:', error);
+    console.error('[Group V2] Checkout-all error:', error);
     const msg = error instanceof Error ? error.message : 'Failed to create checkout';
     return NextResponse.json({ success: false, error: msg }, { status: 500 });
   }

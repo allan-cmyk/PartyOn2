@@ -8,6 +8,7 @@ import type {
   SubOrderFull,
   DraftCartItemView,
   CreateGroupOrderV2Input,
+  CreateDashboardInput,
   CreateTabInput,
   UpdateTabInput,
   JoinGroupOrderInput,
@@ -55,6 +56,16 @@ export async function createGroupOrderV2(
   });
 }
 
+/** Create a new dashboard order (simplified flow) */
+export async function createDashboardOrderV2(
+  input: CreateDashboardInput
+): Promise<GroupOrderV2Full> {
+  return apiFetch<GroupOrderV2Full>(`${API_BASE}/dashboard`, {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+
 /** Fetch group order by share code */
 export async function fetchGroupOrderV2(code: string): Promise<GroupOrderV2Full> {
   return apiFetch<GroupOrderV2Full>(`${API_BASE}/${code}`);
@@ -63,7 +74,7 @@ export async function fetchGroupOrderV2(code: string): Promise<GroupOrderV2Full>
 /** Update group order */
 export async function updateGroupOrderV2(
   code: string,
-  data: { name?: string; status?: string }
+  data: { name?: string; status?: string; partyType?: string | null }
 ): Promise<GroupOrderV2Full> {
   return apiFetch<GroupOrderV2Full>(`${API_BASE}/${code}`, {
     method: 'PATCH',

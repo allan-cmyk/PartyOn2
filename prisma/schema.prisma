@@ -1572,6 +1572,29 @@ model TaxRate {
 // GROUP ORDERS V2 (Tab-Based Architecture)
 // ==========================================
 
+enum PartyType {
+  BACHELOR
+  BACHELORETTE
+  WEDDING
+  CORPORATE
+  HOUSE_PARTY
+  OTHER
+}
+
+enum DashboardSource {
+  DIRECT
+  PARTNER_PAGE
+  INTERNAL
+}
+
+enum DeliveryContextType {
+  HOUSE
+  BOAT
+  VENUE
+  HOTEL
+  OTHER
+}
+
 enum GroupOrderV2Status {
   ACTIVE
   CLOSED
@@ -1607,6 +1630,9 @@ model GroupOrderV2 {
   hostPhone       String?            @map("host_phone")
   shareCode       String             @unique @map("share_code")
   status          GroupOrderV2Status @default(ACTIVE)
+  partyType       PartyType?         @map("party_type")
+  affiliateId     String?            @map("affiliate_id")
+  source          DashboardSource    @default(DIRECT)
   expiresAt       DateTime           @map("expires_at")
   createdAt       DateTime           @default(now()) @map("created_at")
   updatedAt       DateTime           @updatedAt @map("updated_at")
@@ -1614,11 +1640,13 @@ model GroupOrderV2 {
   tabs         SubOrder[]
   participants GroupParticipantV2[]
 
-  hostCustomer Customer? @relation("GroupOrderV2Host", fields: [hostCustomerId], references: [id], onDelete: SetNull)
+  hostCustomer Customer?  @relation("GroupOrderV2Host", fields: [hostCustomerId], references: [id], onDelete: SetNull)
+  affiliate    Affiliate? @relation(fields: [affiliateId], references: [id])
 
   @@index([shareCode])
   @@index([hostCustomerId])
   @@index([status])
+  @@index([affiliateId])
   @@map("group_orders_v2")
 }
 
@@ -1635,8 +1663,9 @@ model SubOrder {
   orderDeadline  DateTime       @map("order_deadline")
   deliveryFee    Decimal        @default(0) @map("delivery_fee") @db.Decimal(10, 2)
   deliveryFeeWaived Boolean     @default(false) @map("delivery_fee_waived")
-  orderType      String?        @map("order_type")
-  status         SubOrderStatus @default(OPEN)
+  orderType           String?             @map("order_type")
+  deliveryContextType DeliveryContextType @default(HOUSE) @map("delivery_context_type")
+  status              SubOrderStatus      @default(OPEN)
   createdAt      DateTime       @default(now()) @map("created_at")
   updatedAt      DateTime       @updatedAt @map("updated_at")
 
@@ -1658,6 +1687,7 @@ model GroupParticipantV2 {
   customerId     String?                 @map("customer_id")
   guestName      String?                 @map("guest_name")
   guestEmail     String?                 @map("guest_email")
+  guestPhone     String?                 @map("guest_phone")
   ageVerified    Boolean                 @default(false) @map("age_verified")
   isHost         Boolean                 @default(false) @map("is_host")
   status         GroupV2ParticipantStatus @default(ACTIVE)
@@ -1908,11 +1938,12 @@ model Affiliate {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  applications PartnerApplication[]
-  commissions  AffiliateCommission[]
-  payouts      AffiliatePayout[]
-  orders       Order[]              @relation("AffiliateOrders")
-  magicLinks   MagicLinkToken[]
+  applications  PartnerApplication[]
+  commissions   AffiliateCommission[]
+  payouts       AffiliatePayout[]
+  orders        Order[]              @relation("AffiliateOrders")
+  magicLinks    MagicLinkToken[]
+  groupOrdersV2 GroupOrderV2[]
 
   @@index([code])
   @@map("affiliates")
