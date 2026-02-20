@@ -6,7 +6,7 @@
 
 'use client';
 
-import { useEffect, useState, useRef, type ReactElement } from 'react';
+import { Suspense, useEffect, useState, useRef, type ReactElement } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { createDashboardOrderV2 } from '@/lib/group-orders-v2/api-client';
@@ -29,6 +29,21 @@ const DELIVERY_CONTEXT_MAP: Record<string, DeliveryContextType> = {
 };
 
 export default function OrderRedirectPage(): ReactElement {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-amber-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-600 mx-auto mb-4" />
+          <p className="text-gray-600">Setting up your order...</p>
+        </div>
+      </div>
+    }>
+      <OrderRedirectInner />
+    </Suspense>
+  );
+}
+
+function OrderRedirectInner(): ReactElement {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [error, setError] = useState('');
