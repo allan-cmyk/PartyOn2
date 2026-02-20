@@ -6,12 +6,14 @@ import type { DraftCartItemView } from '@/lib/group-orders-v2/types';
 interface Props {
   participantId: string;
   draftItems: DraftCartItemView[];
+  isLocked?: boolean;
   onCartToggle: () => void;
 }
 
 export default function DashboardBottomBar({
   participantId,
   draftItems,
+  isLocked,
   onCartToggle,
 }: Props): ReactElement | null {
   const myItems = draftItems.filter((i) => i.addedBy.id === participantId);
@@ -21,7 +23,27 @@ export default function DashboardBottomBar({
     0
   );
 
-  if (totalQty === 0) return null;
+  if (totalQty === 0 && !isLocked) return null;
+
+  if (isLocked) {
+    return (
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-center">
+          <div className="flex items-center gap-2 text-sm font-semibold text-red-600">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            Order Locked
+            {totalQty > 0 && (
+              <span className="text-gray-500 font-normal ml-2">
+                {totalQty} item{totalQty !== 1 ? 's' : ''} - ${totalPrice.toFixed(2)}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 shadow-lg">
@@ -37,7 +59,7 @@ export default function DashboardBottomBar({
         </button>
         <button
           onClick={onCartToggle}
-          className="px-6 py-2.5 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors text-sm"
+          className="px-6 py-2.5 bg-brand-yellow text-gray-900 font-semibold rounded-lg hover:bg-yellow-400 transition-colors text-sm"
         >
           Checkout - ${totalPrice.toFixed(2)}
         </button>

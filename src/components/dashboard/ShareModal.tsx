@@ -32,12 +32,12 @@ export default function ShareModal({ shareCode, onClose }: Props): ReactElement 
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 p-6 relative">
+      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 p-6 relative">
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
@@ -47,7 +47,7 @@ export default function ShareModal({ shareCode, onClose }: Props): ReactElement 
           </svg>
         </button>
 
-        <h2 className="text-lg font-bold text-gray-900 text-center mb-1">
+        <h2 className="text-xl font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-1">
           Share This Order
         </h2>
         <p className="text-sm text-gray-500 text-center mb-5">
@@ -67,7 +67,7 @@ export default function ShareModal({ shareCode, onClose }: Props): ReactElement 
             className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap ${
               copied
                 ? 'bg-green-100 text-green-700'
-                : 'bg-gray-900 text-white hover:bg-gray-800'
+                : 'bg-brand-blue text-white hover:bg-blue-700'
             }`}
           >
             {copied ? 'Copied!' : 'Copy'}

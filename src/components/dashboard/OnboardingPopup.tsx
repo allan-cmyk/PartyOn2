@@ -89,12 +89,12 @@ export default function OnboardingPopup({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
       onClick={(e) => {
         if (e.target === e.currentTarget) onDismiss();
       }}
     >
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 p-6 relative">
+      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 p-6 relative">
         <button
           onClick={onDismiss}
           className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
@@ -111,7 +111,7 @@ export default function OnboardingPopup({
 
         {step === 1 && (
           <div>
-            <h2 className="text-lg font-bold text-gray-900 text-center mb-4">
+            <h2 className="text-xl font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-4">
               What are you celebrating?
             </h2>
             <div className="grid grid-cols-2 gap-3">
@@ -132,7 +132,7 @@ export default function OnboardingPopup({
             </div>
             <button
               onClick={() => setStep(2)}
-              className="mt-4 text-sm text-gray-400 hover:text-gray-600 block mx-auto"
+              className="mt-4 text-sm text-gray-500 hover:text-gray-700 block mx-auto"
             >
               Skip
             </button>
@@ -141,7 +141,7 @@ export default function OnboardingPopup({
 
         {step === 2 && (
           <div>
-            <h2 className="text-lg font-bold text-gray-900 text-center mb-4">
+            <h2 className="text-xl font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-4">
               Name your order
             </h2>
             <input
@@ -157,7 +157,7 @@ export default function OnboardingPopup({
                   ? 'Q1 Team Offsite'
                   : 'My Party Order'
               }
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-center text-lg font-medium focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-center text-lg font-medium focus:border-brand-blue focus:ring-0 transition-all hover:border-gray-300"
               onKeyDown={(e) => {
                 if (e.key === 'Enter') handleNameSave();
               }}
@@ -166,13 +166,13 @@ export default function OnboardingPopup({
             <button
               onClick={handleNameSave}
               disabled={saving}
-              className="mt-4 w-full py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50"
+              className="mt-4 w-full py-3 bg-brand-blue text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
             >
               {saving ? 'Saving...' : 'Continue'}
             </button>
             <button
               onClick={() => setStep(3)}
-              className="mt-2 text-sm text-gray-400 hover:text-gray-600 block mx-auto"
+              className="mt-2 text-sm text-gray-500 hover:text-gray-700 block mx-auto"
             >
               Skip
             </button>
@@ -181,7 +181,7 @@ export default function OnboardingPopup({
 
         {step === 3 && (
           <div>
-            <h2 className="text-lg font-bold text-gray-900 text-center mb-4">
+            <h2 className="text-xl font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-4">
               Where should we deliver?
             </h2>
             <div className="grid grid-cols-2 gap-3">
@@ -202,7 +202,7 @@ export default function OnboardingPopup({
             </div>
             <button
               onClick={onDismiss}
-              className="mt-4 text-sm text-gray-400 hover:text-gray-600 block mx-auto"
+              className="mt-4 text-sm text-gray-500 hover:text-gray-700 block mx-auto"
             >
               Skip
             </button>

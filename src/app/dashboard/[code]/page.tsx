@@ -95,11 +95,14 @@ export default function DashboardPage(): ReactElement {
 
   if (!participantId && needsJoin && groupOrder) {
     const host = groupOrder.participants.find((p) => p.isHost);
+    const firstTab = groupOrder.tabs[0];
+    const joinLocked = firstTab?.status === 'LOCKED';
     return (
       <JoinOverlay
         shareCode={code}
         orderName={groupOrder.name}
         hostName={host?.name || groupOrder.hostName}
+        isLocked={joinLocked}
         onJoined={(newPid) => {
           setParticipantId(newPid);
           localStorage.setItem(`${PARTICIPANT_KEY_PREFIX}${code}`, newPid);
@@ -130,6 +133,8 @@ export default function DashboardPage(): ReactElement {
     );
   }
 
+  const isLocked = tab.status === 'LOCKED';
+
   const myDraftItems = tab.draftItems.filter(
     (i) => i.addedBy.id === participantId
   );
@@ -141,6 +146,7 @@ export default function DashboardPage(): ReactElement {
       <DashboardHeader
         groupOrder={groupOrder}
         participantId={participantId}
+        isLocked={isLocked}
         onRefresh={refresh}
         onShareClick={() => setShowShareModal(true)}
       />
@@ -166,7 +172,7 @@ export default function DashboardPage(): ReactElement {
           <div className="mb-6 text-center">
             <button
               onClick={() => setShowGetRecs(true)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-yellow-500 text-gray-900 font-semibold rounded-lg hover:bg-yellow-400 transition-colors text-sm"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-yellow text-gray-900 font-semibold rounded-lg hover:bg-yellow-400 transition-colors text-sm"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
@@ -181,6 +187,7 @@ export default function DashboardPage(): ReactElement {
           tabId={tab.id}
           participantId={participantId}
           draftItems={tab.draftItems}
+          isLocked={isLocked}
           onItemChanged={refresh}
           recsSection={
             recommendations ? (
@@ -200,6 +207,7 @@ export default function DashboardPage(): ReactElement {
       <DashboardBottomBar
         participantId={participantId}
         draftItems={tab.draftItems}
+        isLocked={isLocked}
         onCartToggle={() => setShowCart(!showCart)}
       />
 

@@ -96,8 +96,8 @@ export default function GetRecsModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 p-6 relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 p-6 relative">
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
@@ -107,7 +107,7 @@ export default function GetRecsModal({
           </svg>
         </button>
 
-        <h2 className="text-lg font-bold text-gray-900 text-center mb-1">
+        <h2 className="text-xl font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-1">
           Get Recommendations
         </h2>
         <p className="text-xs text-gray-400 text-center mb-4">
@@ -144,11 +144,11 @@ export default function GetRecsModal({
               placeholder="Custom number..."
               min={1}
               max={500}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+              className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all hover:border-gray-300"
             />
             <button
               onClick={() => setStep(2)}
-              className="mt-4 w-full py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors"
+              className="mt-4 w-full py-3 bg-brand-blue text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
             >
               Next
             </button>
@@ -184,7 +184,7 @@ export default function GetRecsModal({
               </button>
               <button
                 onClick={() => setStep(3)}
-                className="flex-1 py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors"
+                className="flex-1 py-3 bg-brand-blue text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Next
               </button>
@@ -225,7 +225,7 @@ export default function GetRecsModal({
               <button
                 onClick={handleGetRecs}
                 disabled={loading}
-                className="flex-1 py-3 bg-yellow-500 text-gray-900 font-semibold rounded-lg hover:bg-yellow-400 transition-colors disabled:opacity-50"
+                className="flex-1 py-3 bg-brand-yellow text-gray-900 font-semibold rounded-lg hover:bg-yellow-400 transition-colors disabled:opacity-50"
               >
                 {loading ? 'Loading...' : 'Get My Recs'}
               </button>

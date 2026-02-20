@@ -1,0 +1,154 @@
+'use client';
+
+import { useState, type ReactElement } from 'react';
+import type { ParticipantSummary } from '@/lib/group-orders-v2/types';
+import { removeParticipantV2, updateTabV2 } from '@/lib/group-orders-v2/api-client';
+
+interface Props {
+  shareCode: string;
+  tabId: string;
+  participantId: string;
+  participants: ParticipantSummary[];
+  isLocked: boolean;
+  onRefresh: () => void;
+  onClose: () => void;
+}
+
+export default function ParticipantPanel({
+  shareCode,
+  tabId,
+  participantId,
+  participants,
+  isLocked,
+  onRefresh,
+  onClose,
+}: Props): ReactElement {
+  const [removingId, setRemovingId] = useState<string | null>(null);
+  const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
+  const [locking, setLocking] = useState(false);
+
+  const isHost = participants.find((p) => p.id === participantId)?.isHost ?? false;
+  const activeParticipants = participants.filter((p) => p.status === 'ACTIVE');
+
+  async function handleRemove(pid: string) {
+    setRemovingId(pid);
+    try {
+      await removeParticipantV2(shareCode, pid, participantId);
+      setConfirmRemoveId(null);
+      onRefresh();
+    } catch (err) {
+      console.error('Failed to remove participant:', err);
+    } finally {
+      setRemovingId(null);
+    }
+  }
+
+  async function handleToggleLock() {
+    setLocking(true);
+    try {
+      await updateTabV2(shareCode, tabId, {
+        hostParticipantId: participantId,
+        status: isLocked ? 'OPEN' : 'LOCKED',
+      });
+      onRefresh();
+    } catch (err) {
+      console.error('Failed to toggle lock:', err);
+    } finally {
+      setLocking(false);
+    }
+  }
+
+  return (
+    <div className="absolute right-0 top-full mt-1 w-72 bg-white shadow-xl rounded-xl border border-gray-200 z-50 overflow-hidden">
+      <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+        <h3 className="text-sm font-heading font-bold tracking-[0.08em] text-gray-900">
+          Participants ({activeParticipants.length})
+        </h3>
+        <button
+          onClick={onClose}
+          className="text-gray-400 hover:text-gray-600"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div className="max-h-64 overflow-y-auto divide-y divide-gray-50">
+        {activeParticipants.map((p) => (
+          <div key={p.id} className="px-4 py-2.5 flex items-center justify-between">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-900 truncate">
+                  {p.name}
+                </span>
+                {p.isHost && (
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-brand-blue bg-blue-50 px-1.5 py-0.5 rounded">
+                    Host
+                  </span>
+                )}
+                {p.id === participantId && !p.isHost && (
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
+                    You
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-gray-400">
+                Joined {new Date(p.joinedAt).toLocaleDateString()}
+              </p>
+            </div>
+
+            {isHost && !p.isHost && p.id !== participantId && (
+              <div>
+                {confirmRemoveId === p.id ? (
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => handleRemove(p.id)}
+                      disabled={removingId === p.id}
+                      className="text-xs text-red-600 hover:text-red-800 font-medium disabled:opacity-50"
+                    >
+                      {removingId === p.id ? '...' : 'Confirm'}
+                    </button>
+                    <button
+                      onClick={() => setConfirmRemoveId(null)}
+                      className="text-xs text-gray-400 hover:text-gray-600"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setConfirmRemoveId(p.id)}
+                    className="text-xs text-red-500 hover:text-red-700 font-medium"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {isHost && (
+        <div className="px-4 py-3 border-t border-gray-100">
+          <button
+            onClick={handleToggleLock}
+            disabled={locking}
+            className={`w-full py-2 text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 ${
+              isLocked
+                ? 'bg-brand-blue text-white hover:bg-blue-700'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            {locking
+              ? 'Updating...'
+              : isLocked
+              ? 'Unlock Order'
+              : 'Lock Order'}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}

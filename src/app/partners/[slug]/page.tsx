@@ -89,7 +89,7 @@ export default async function DynamicPartnerPage({ params }: Props) {
               href={referralLink}
               className="btn-cart text-lg px-10 py-4"
             >
-              START SHOPPING
+              START YOUR ORDER
             </Link>
           </div>
         </section>
@@ -145,7 +145,7 @@ export default async function DynamicPartnerPage({ params }: Props) {
               href={referralLink}
               className="btn-cart text-lg px-10 py-4"
             >
-              START SHOPPING
+              START YOUR ORDER
             </Link>
           </div>
         </section>

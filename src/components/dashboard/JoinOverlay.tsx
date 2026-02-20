@@ -8,6 +8,7 @@ interface Props {
   shareCode: string;
   orderName: string;
   hostName: string;
+  isLocked?: boolean;
   onJoined: (participantId: string) => void;
 }
 
@@ -15,6 +16,7 @@ export default function JoinOverlay({
   shareCode,
   orderName,
   hostName,
+  isLocked,
   onJoined,
 }: Props): ReactElement {
   const [name, setName] = useState('');
@@ -60,8 +62,8 @@ export default function JoinOverlay({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/80">
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 p-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/80 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 p-6">
         <div className="flex justify-center mb-4">
           <Image
             src="/images/partyon-logo.png"
@@ -72,7 +74,7 @@ export default function JoinOverlay({
           />
         </div>
 
-        <h1 className="text-xl font-bold text-gray-900 text-center mb-1">
+        <h1 className="text-xl font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-1">
           You&apos;ve been invited to
         </h1>
         <p className="text-lg font-semibold text-yellow-600 text-center mb-1">
@@ -82,6 +84,18 @@ export default function JoinOverlay({
           Hosted by {hostName}
         </p>
 
+        {isLocked ? (
+          <div className="text-center py-4">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-50 mb-3">
+              <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <p className="text-sm font-medium text-gray-900 mb-1">This order is closed</p>
+            <p className="text-xs text-gray-500">The host has locked this order. No new participants can join.</p>
+          </div>
+        ) : (
+        <>
         <div className="space-y-3">
           <div>
             <label htmlFor="join-name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -93,7 +107,7 @@ export default function JoinOverlay({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="First name"
-              className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+              className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all hover:border-gray-300"
               disabled={loading}
             />
           </div>
@@ -108,7 +122,7 @@ export default function JoinOverlay({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+              className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all hover:border-gray-300"
               disabled={loading}
             />
           </div>
@@ -118,7 +132,7 @@ export default function JoinOverlay({
               type="checkbox"
               checked={ageVerified}
               onChange={(e) => setAgeVerified(e.target.checked)}
-              className="mt-0.5 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500"
+              className="mt-0.5 rounded border-gray-300 text-brand-blue focus:ring-brand-blue"
               disabled={loading}
             />
             <span className="text-sm text-gray-700">
@@ -134,10 +148,12 @@ export default function JoinOverlay({
         <button
           onClick={handleJoin}
           disabled={loading}
-          className="mt-5 w-full py-3 bg-yellow-500 text-gray-900 font-semibold rounded-lg hover:bg-yellow-400 transition-colors disabled:opacity-50"
+          className="mt-5 w-full py-3 bg-brand-yellow text-gray-900 font-semibold rounded-lg hover:bg-yellow-400 transition-colors disabled:opacity-50"
         >
           {loading ? 'Joining...' : 'Join Order'}
         </button>
+        </>
+        )}
       </div>
     </div>
   );

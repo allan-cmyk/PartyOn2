@@ -16,6 +16,7 @@ interface Props {
   tabId: string;
   participantId: string;
   existingItem?: DraftCartItemView;
+  isLocked?: boolean;
   onItemChanged: () => void;
 }
 
@@ -25,6 +26,7 @@ export default function DashboardProductCard({
   tabId,
   participantId,
   existingItem,
+  isLocked,
   onItemChanged,
 }: Props): ReactElement {
   const [busy, setBusy] = useState(false);
@@ -106,7 +108,7 @@ export default function DashboardProductCard({
   }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden flex flex-col">
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col">
       <div className="relative aspect-square bg-gray-100">
         {imageUrl ? (
           <Image
@@ -131,7 +133,7 @@ export default function DashboardProductCard({
       </div>
 
       <div className="p-2 flex-1 flex flex-col">
-        <h3 className="text-xs sm:text-sm font-medium text-gray-900 line-clamp-2 leading-tight">
+        <h3 className="text-sm font-medium text-gray-900 line-clamp-2 leading-tight">
           {product.title}
         </h3>
         {variantTitle && (
@@ -140,7 +142,13 @@ export default function DashboardProductCard({
         <p className="text-sm font-semibold text-gray-900 mt-1">${price.toFixed(2)}</p>
 
         <div className="mt-auto pt-2">
-          {qty > 0 ? (
+          {isLocked ? (
+            qty > 0 ? (
+              <div className="text-center text-xs font-medium text-gray-500 py-1.5">
+                {qty} in cart
+              </div>
+            ) : null
+          ) : qty > 0 ? (
             <div className="flex items-center justify-between bg-gray-100 rounded-lg">
               <button
                 onClick={handleDecrement}
@@ -174,7 +182,7 @@ export default function DashboardProductCard({
             <button
               onClick={handleAdd}
               disabled={busy || !available}
-              className="w-full py-1.5 bg-gray-900 text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-1.5 bg-brand-yellow text-gray-900 text-sm font-medium rounded-lg hover:bg-yellow-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {busy ? (
                 <span className="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />

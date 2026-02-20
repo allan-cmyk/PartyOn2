@@ -149,8 +149,8 @@ export default function DashboardCheckoutModal({
     CONTEXT_PLACEHOLDERS[tab.deliveryContextType] || CONTEXT_PLACEHOLDERS.OTHER;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-xl shadow-xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
           <h2 className="text-lg font-bold text-gray-900">
             {mode === 'mine' ? 'Checkout' : 'Pay for Everything'}
@@ -208,7 +208,7 @@ export default function DashboardCheckoutModal({
                   value={discountCode}
                   onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
                   placeholder="Discount code"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all"
                 />
                 <button
                   type="button"
@@ -236,14 +236,14 @@ export default function DashboardCheckoutModal({
                 onChange={(e) => setAddress1(e.target.value)}
                 placeholder="Street address *"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all"
               />
               <input
                 type="text"
                 value={address2}
                 onChange={(e) => setAddress2(e.target.value)}
                 placeholder="Apt, suite, etc."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all"
               />
               <div className="flex gap-2">
                 <input
@@ -252,7 +252,7 @@ export default function DashboardCheckoutModal({
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="City *"
                   required
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all"
                 />
                 <input
                   type="text"
@@ -260,7 +260,7 @@ export default function DashboardCheckoutModal({
                   onChange={(e) => setZip(e.target.value)}
                   placeholder="Zip *"
                   required
-                  className="w-28 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+                  className="w-28 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all"
                 />
               </div>
               <input
@@ -269,7 +269,7 @@ export default function DashboardCheckoutModal({
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Phone number *"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all"
               />
               <div className="flex gap-2">
                 <input
@@ -277,13 +277,13 @@ export default function DashboardCheckoutModal({
                   value={deliveryDate}
                   onChange={(e) => setDeliveryDate(e.target.value)}
                   required
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all"
                 />
                 <select
                   value={deliveryTime}
                   onChange={(e) => setDeliveryTime(e.target.value)}
                   required
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all"
                 >
                   <option value="">Select time</option>
                   <option value="8:00 AM - 10:00 AM">8:00 AM - 10:00 AM</option>
@@ -298,7 +298,7 @@ export default function DashboardCheckoutModal({
                 onChange={(e) => setDeliveryNotes(e.target.value)}
                 placeholder={notesPlaceholder}
                 rows={2}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all"
               />
             </div>
           )}
@@ -334,7 +334,7 @@ export default function DashboardCheckoutModal({
           <button
             type="submit"
             disabled={loading || items.length === 0}
-            className="w-full py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 bg-brand-blue text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">

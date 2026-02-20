@@ -12,6 +12,7 @@ interface Props {
   tabId: string;
   participantId: string;
   draftItems: DraftCartItemView[];
+  isLocked?: boolean;
   onItemChanged: () => void;
   recsSection?: ReactElement | null;
 }
@@ -21,6 +22,7 @@ export default function ProductBrowse({
   tabId,
   participantId,
   draftItems,
+  isLocked,
   onItemChanged,
   recsSection,
 }: Props): ReactElement {
@@ -85,7 +87,7 @@ export default function ProductBrowse({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search products..."
-            className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+            className="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all hover:border-gray-300"
           />
           {searchQuery && (
             <button
@@ -102,7 +104,7 @@ export default function ProductBrowse({
 
       {isSearching ? (
         <div>
-          <h2 className="text-lg font-bold text-gray-900 mb-3">
+          <h2 className="text-xl font-heading font-bold tracking-[0.08em] text-gray-900 mb-3">
             {searching
               ? 'Searching...'
               : `Results for "${searchQuery}" (${searchResults.length})`}
@@ -124,6 +126,7 @@ export default function ProductBrowse({
                   tabId={tabId}
                   participantId={participantId}
                   existingItem={existingItem}
+                  isLocked={isLocked}
                   onItemChanged={onItemChanged}
                 />
               );
@@ -142,6 +145,7 @@ export default function ProductBrowse({
               tabId={tabId}
               participantId={participantId}
               draftItems={draftItems}
+              isLocked={isLocked}
               onItemChanged={onItemChanged}
             />
           ))}
