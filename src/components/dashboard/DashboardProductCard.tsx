@@ -152,32 +152,32 @@ export default function DashboardProductCard({
           </div>
         </button>
 
-        {/* Cart controls -- separate from clickable area */}
-        <div className="px-2 pb-2 mt-auto">
+        {/* Cart controls -- overlaid on bottom-right of card */}
+        <div className="px-2 pb-2 mt-auto flex justify-end">
           {isLocked ? (
             qty > 0 ? (
-              <div className="text-center text-sm font-medium text-gray-500 py-1.5">
+              <div className="text-center text-sm font-medium text-gray-500 py-1.5 w-full">
                 {qty} in cart
               </div>
             ) : null
           ) : qty > 0 ? (
-            <div className="flex items-center justify-between bg-gray-100 rounded-lg">
+            <div className="flex items-center bg-brand-yellow rounded-full shadow-sm">
               <button
                 onClick={handleDecrement}
                 disabled={busy}
-                className="w-8 h-8 flex items-center justify-center text-gray-700 hover:bg-gray-200 rounded-l-lg transition-colors disabled:opacity-50"
+                className="w-8 h-8 flex items-center justify-center text-gray-900 hover:bg-yellow-400 rounded-l-full transition-colors disabled:opacity-50"
               >
                 {qty === 1 ? (
                   <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
                 ) : (
-                  <span className="text-lg font-medium">-</span>
+                  <span className="text-base font-bold leading-none">−</span>
                 )}
               </button>
-              <span className="text-sm font-semibold text-gray-900 min-w-[24px] text-center">
+              <span className="text-sm font-bold text-gray-900 min-w-[20px] text-center">
                 {busy ? (
-                  <span className="inline-block w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                  <span className="inline-block w-3 h-3 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
                 ) : (
                   qty
                 )}
@@ -185,24 +185,24 @@ export default function DashboardProductCard({
               <button
                 onClick={handleIncrement}
                 disabled={busy}
-                className="w-8 h-8 flex items-center justify-center text-gray-700 hover:bg-gray-200 rounded-r-lg transition-colors disabled:opacity-50"
+                className="w-8 h-8 flex items-center justify-center text-gray-900 hover:bg-yellow-400 rounded-r-full transition-colors disabled:opacity-50"
               >
-                <span className="text-lg font-medium">+</span>
+                <span className="text-base font-bold leading-none">+</span>
               </button>
             </div>
-          ) : (
+          ) : available ? (
             <button
               onClick={handleAdd}
-              disabled={busy || !available}
-              className="w-full py-2 bg-brand-yellow text-gray-900 text-sm font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={busy}
+              className="w-8 h-8 flex items-center justify-center bg-brand-yellow text-gray-900 rounded-full shadow-sm hover:bg-yellow-400 active:bg-yellow-500 transition-colors disabled:opacity-50"
             >
               {busy ? (
-                <span className="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <span className="inline-block w-3 h-3 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
               ) : (
-                'ADD TO CART'
+                <span className="text-xl font-bold leading-none">+</span>
               )}
             </button>
-          )}
+          ) : null}
         </div>
       </div>
 

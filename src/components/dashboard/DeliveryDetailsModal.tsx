@@ -33,9 +33,7 @@ function generateTimeSlots(): string[] {
 const TIME_SLOTS = generateTimeSlots();
 
 function getMinDate(): string {
-  const d = new Date();
-  d.setDate(d.getDate() + 3);
-  return d.toISOString().split('T')[0];
+  return new Date().toISOString().split('T')[0];
 }
 
 function isSunday(dateStr: string): boolean {
@@ -78,6 +76,22 @@ export default function DeliveryDetailsModal({
     if (!time) {
       setError('Please select a delivery time.');
       return;
+    }
+
+    // Ensure delivery is at least 4 hours from now
+    const timeMatch = time.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+    if (timeMatch) {
+      let hour = parseInt(timeMatch[1], 10);
+      const min = parseInt(timeMatch[2], 10);
+      const ampm = timeMatch[3].toUpperCase();
+      if (ampm === 'PM' && hour !== 12) hour += 12;
+      if (ampm === 'AM' && hour === 12) hour = 0;
+      const delivery = new Date(`${date}T${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}:00`);
+      const fourHoursFromNow = new Date(Date.now() + 4 * 60 * 60 * 1000);
+      if (delivery < fourHoursFromNow) {
+        setError('Delivery must be at least 4 hours from now.');
+        return;
+      }
     }
     if (!address1.trim()) {
       setError('Please enter a delivery address.');

@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, type ReactElement } from 'react';
+import { useState, useMemo, type ReactElement } from 'react';
 import type { DrinkCategory } from '@/lib/drinkPlannerTypes';
+import { getGuestValues } from '@/lib/drinkPlannerLogic';
 
 interface Props {
   shareCode: string;
@@ -23,8 +24,6 @@ export interface RecommendationResult {
     imageUrl: string | null;
   };
 }
-
-const GUEST_PRESETS = [10, 20, 30, 50, 75, 100];
 
 const DURATION_OPTIONS = [
   { value: '2h', label: '2h' },
@@ -49,8 +48,10 @@ export default function GetRecsModal({
   onClose,
 }: Props): ReactElement {
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [guestCount, setGuestCount] = useState(20);
-  const [customGuests, setCustomGuests] = useState('');
+  const guestValues = useMemo(() => getGuestValues(null), []);
+  const defaultIdx = guestValues.indexOf(20);
+  const [sliderIdx, setSliderIdx] = useState(defaultIdx >= 0 ? defaultIdx : 15);
+  const guestCount = guestValues[sliderIdx] ?? 20;
   const [duration, setDuration] = useState('4h');
   const [drinkTypes, setDrinkTypes] = useState<DrinkCategory[]>(['beer', 'seltzers']);
   const [loading, setLoading] = useState(false);
@@ -63,11 +64,11 @@ export default function GetRecsModal({
   }
 
   async function handleGetRecs() {
-    const guests = customGuests ? parseInt(customGuests) : guestCount;
-    if (!guests || guests < 1) {
+    if (!guestCount || guestCount < 1) {
       setError('Please select a guest count');
       return;
     }
+    const guests = guestCount;
     if (drinkTypes.length === 0) {
       setError('Please select at least one drink type');
       return;
@@ -119,36 +120,25 @@ export default function GetRecsModal({
             <p className="text-sm font-medium text-gray-700 mb-3">
               How many guests?
             </p>
-            <div className="grid grid-cols-3 gap-2 mb-3">
-              {GUEST_PRESETS.map((n) => (
-                <button
-                  key={n}
-                  onClick={() => {
-                    setGuestCount(n);
-                    setCustomGuests('');
-                  }}
-                  className={`py-2 rounded-lg text-sm font-medium border-2 transition-all ${
-                    guestCount === n && !customGuests
-                      ? 'border-yellow-500 bg-yellow-50 text-gray-900'
-                      : 'border-gray-200 hover:border-gray-300 text-gray-700'
-                  }`}
-                >
-                  {n}
-                </button>
-              ))}
+            <div className="text-center mb-4">
+              <span className="text-5xl font-bold text-gray-900">{guestCount}</span>
+              <span className="text-sm text-gray-500 ml-1">guests</span>
             </div>
             <input
-              type="number"
-              value={customGuests}
-              onChange={(e) => setCustomGuests(e.target.value)}
-              placeholder="Custom number..."
-              min={1}
-              max={500}
-              className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all hover:border-gray-300"
+              type="range"
+              min={0}
+              max={guestValues.length - 1}
+              value={sliderIdx}
+              onChange={(e) => setSliderIdx(Number(e.target.value))}
+              className="w-full accent-brand-yellow"
             />
+            <div className="flex justify-between text-xs text-gray-400 mt-1 mb-4">
+              <span>{guestValues[0]}</span>
+              <span>{guestValues[guestValues.length - 1]}</span>
+            </div>
             <button
               onClick={() => setStep(2)}
-              className="mt-4 w-full py-3 bg-brand-blue text-white font-semibold tracking-[0.08em] rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors"
+              className="w-full py-3 bg-brand-blue text-white font-semibold tracking-[0.08em] rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors"
             >
               Next
             </button>

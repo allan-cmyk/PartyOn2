@@ -27,11 +27,9 @@ const deliveryDateSchema = z.string().refine(
   'Invalid delivery date'
 ).refine(
   (val) => {
-    const raw = val.includes('T') ? val : `${val}T12:00:00`;
+    const raw = val.includes('T') ? val : `${val}T23:59:59`;
     const date = new Date(raw);
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
-    return date >= now;
+    return date >= new Date();
   },
   'Delivery date cannot be in the past'
 ).refine(
