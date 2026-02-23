@@ -99,8 +99,8 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       hostEmail: group.hostEmail || undefined,
       deliveryFee: tab.deliveryFee,
       discountCode: effectiveDiscountCode,
-      successUrl: `${appUrl}/group/${code}/dashboard?tab=${tabId}&delivery_paid=true`,
-      cancelUrl: `${appUrl}/group/${code}/dashboard?tab=${tabId}`,
+      successUrl: `${appUrl}/dashboard/${code}?tab=${tabId}&delivery_paid=true`,
+      cancelUrl: `${appUrl}/dashboard/${code}?tab=${tabId}`,
     });
 
     return NextResponse.json({

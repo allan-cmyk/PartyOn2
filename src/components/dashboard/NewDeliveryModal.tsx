@@ -38,7 +38,7 @@ export default function NewDeliveryModal({
     try {
       await createTabV2(shareCode, {
         hostParticipantId: participantId,
-        name: `Delivery ${nextPosition}`,
+        name: `Location ${nextPosition}`,
         deliveryDate: 'TBD',
         deliveryTime: 'TBD',
         deliveryAddress: {
@@ -51,7 +51,7 @@ export default function NewDeliveryModal({
       });
       onCreated();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create delivery.');
+      setError(err instanceof Error ? err.message : 'Failed to create location.');
     } finally {
       setSaving(false);
     }
@@ -76,7 +76,7 @@ export default function NewDeliveryModal({
         </button>
 
         <h2 className="text-xl font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-6">
-          Add Another Delivery
+          Add Another Location
         </h2>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -105,7 +105,7 @@ export default function NewDeliveryModal({
           disabled={!selected || saving}
           className="mt-6 w-full py-4 bg-brand-blue text-white text-lg font-semibold tracking-[0.08em] rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {saving ? 'Creating...' : 'ADD DELIVERY'}
+          {saving ? 'Creating...' : 'ADD LOCATION'}
         </button>
       </div>
     </div>

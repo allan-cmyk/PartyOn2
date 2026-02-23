@@ -742,7 +742,7 @@ export async function createDashboardOrder(
       expiresAt: defaultExpiresAt(),
       tabs: {
         create: {
-          name: 'Delivery 1',
+          name: 'Location 1',
           position: 0,
           deliveryDate: placeholderDate,
           deliveryTime: '12:00 PM - 2:00 PM',
@@ -813,12 +813,14 @@ export async function moveAllDraftsToPurchased(
  */
 export async function updateGroupOrderFields(
   shareCode: string,
-  data: { name?: string; status?: string; partyType?: string | null }
+  data: { name?: string; status?: string; partyType?: string | null; hostEmail?: string; hostPhone?: string }
 ): Promise<void> {
   const updateData: Record<string, unknown> = {};
   if (data.name) updateData.name = data.name;
   if (data.status) updateData.status = data.status;
   if (data.partyType !== undefined) updateData.partyType = data.partyType || null;
+  if (data.hostEmail !== undefined) updateData.hostEmail = data.hostEmail || null;
+  if (data.hostPhone !== undefined) updateData.hostPhone = data.hostPhone || null;
 
   await prisma.groupOrderV2.update({
     where: { shareCode },

@@ -171,7 +171,7 @@ export default function DeliveryHeroSection({
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
-              Add delivery details
+              Add location details
             </button>
           ) : (
             <p className="text-base text-gray-400">Delivery details not set yet</p>
@@ -190,14 +190,14 @@ export default function DeliveryHeroSection({
                       : 'bg-white/80 text-gray-600 hover:bg-white hover:text-gray-900 border border-gray-200'
                   }`}
                 >
-                  {tab.name || `Delivery ${i + 1}`}
+                  {tab.name || `Location ${i + 1}`}
                 </button>
               ))}
               {isHost && (
                 <button
                   onClick={onAddDelivery}
                   className="w-9 h-9 flex items-center justify-center rounded-full border-2 border-dashed border-gray-300 text-gray-400 hover:border-brand-blue hover:text-brand-blue transition-colors"
-                  title="Add another delivery"
+                  title="Add another location"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />

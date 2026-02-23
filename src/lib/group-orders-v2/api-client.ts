@@ -74,7 +74,7 @@ export async function fetchGroupOrderV2(code: string): Promise<GroupOrderV2Full>
 /** Update group order */
 export async function updateGroupOrderV2(
   code: string,
-  data: { name?: string; status?: string; partyType?: string | null }
+  data: { name?: string; status?: string; partyType?: string | null; hostEmail?: string; hostPhone?: string }
 ): Promise<GroupOrderV2Full> {
   return apiFetch<GroupOrderV2Full>(`${API_BASE}/${code}`, {
     method: 'PATCH',
@@ -190,6 +190,19 @@ export async function removeDraftItemV2(
     `${API_BASE}/${code}/tabs/${tabId}/items/${itemId}?participantId=${participantId}`,
     { method: 'DELETE' }
   );
+}
+
+/** Create checkout session for all draft items on a tab */
+export async function checkoutAllV2(
+  code: string,
+  tabId: string,
+  participantId: string,
+  discountCode?: string
+): Promise<{ checkoutUrl: string; sessionId: string }> {
+  return apiFetch(`${API_BASE}/${code}/tabs/${tabId}/checkout-all`, {
+    method: 'POST',
+    body: JSON.stringify({ participantId, discountCode }),
+  });
 }
 
 /** Create checkout session for participant's items */

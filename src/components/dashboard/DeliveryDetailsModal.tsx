@@ -126,7 +126,7 @@ export default function DeliveryDetailsModal({
       <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
           <h2 className="text-lg font-heading font-bold tracking-[0.08em] text-gray-900">
-            Delivery Details
+            Location Details
           </h2>
           <button
             onClick={onClose}

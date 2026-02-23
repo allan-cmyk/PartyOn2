@@ -128,6 +128,8 @@ export const UpdateGroupOrderSchema = z.object({
   name: z.string().min(1).max(200).optional(),
   status: z.enum(['ACTIVE', 'CLOSED', 'COMPLETED', 'CANCELLED']).optional(),
   partyType: z.enum(['BACHELOR', 'BACHELORETTE', 'WEDDING', 'CORPORATE', 'HOUSE_PARTY', 'OTHER', 'BOAT', 'BACH']).optional().nullable(),
+  hostEmail: z.string().email('Invalid email').optional().or(z.literal('')),
+  hostPhone: z.string().max(20).optional().or(z.literal('')),
 });
 
 /** Create dashboard order (relaxed - no delivery details required) */

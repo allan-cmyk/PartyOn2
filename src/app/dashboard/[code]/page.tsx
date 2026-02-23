@@ -6,7 +6,7 @@ import { useGroupOrderV2 } from '@/lib/group-orders-v2/hooks';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import DeliveryHeroSection from '@/components/dashboard/DeliveryHeroSection';
 import OnboardingPopup from '@/components/dashboard/OnboardingPopup';
-import InlineCart from '@/components/dashboard/InlineCart';
+import OrderSidebar from '@/components/dashboard/OrderSidebar';
 import ProductBrowse from '@/components/dashboard/ProductBrowse';
 import DashboardBottomBar from '@/components/dashboard/DashboardBottomBar';
 import DashboardCheckoutModal from '@/components/dashboard/DashboardCheckoutModal';
@@ -33,8 +33,8 @@ export default function DashboardPage(): ReactElement {
   const [showGetRecs, setShowGetRecs] = useState(false);
   const [recommendations, setRecommendations] = useState<RecommendationResult[] | null>(null);
   const [showShareModal, setShowShareModal] = useState(false);
-  const [showDeliveryDetails, setShowDeliveryDetails] = useState(false);
-  const [showNewDelivery, setShowNewDelivery] = useState(false);
+  const [showLocationDetails, setShowLocationDetails] = useState(false);
+  const [showNewLocation, setShowNewLocation] = useState(false);
   const [needsJoin, setNeedsJoin] = useState(false);
 
   const cartRef = useRef<HTMLDivElement>(null);
@@ -133,7 +133,7 @@ export default function DashboardPage(): ReactElement {
   if (!tab) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-500">No delivery tab found.</p>
+        <p className="text-gray-500">No location tab found.</p>
       </div>
     );
   }
@@ -150,7 +150,7 @@ export default function DashboardPage(): ReactElement {
     checkoutMode === 'all' ? tab.draftItems : myDraftItems;
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bg-gray-50 pb-20 lg:pb-6">
       <DashboardHeader
         groupOrder={groupOrder}
         participantId={participantId}
@@ -165,61 +165,87 @@ export default function DashboardPage(): ReactElement {
         activeTab={tab}
         isHost={isHost}
         onTabChange={setActiveTabIndex}
-        onAddDelivery={() => setShowNewDelivery(true)}
-        onEditDelivery={() => setShowDeliveryDetails(true)}
+        onAddDelivery={() => setShowNewLocation(true)}
+        onEditDelivery={() => setShowLocationDetails(true)}
         onRefresh={refresh}
       />
 
-      <main className="max-w-7xl mx-auto px-4 py-6">
-        <InlineCart
-          ref={cartRef}
-          shareCode={groupOrder.shareCode}
-          tabId={tab.id}
-          participantId={participantId}
-          participants={groupOrder.participants}
-          draftItems={tab.draftItems}
-          purchasedItems={tab.purchasedItems}
-          isLocked={isLocked}
-          onItemChanged={refresh}
-          onCheckoutMine={() => setCheckoutMode('mine')}
-          onCheckoutAll={() => setCheckoutMode('all')}
-        />
-
-        {/* Get Recs button */}
-        {!recommendations && (
-          <div className="mb-6 text-center">
-            <button
-              onClick={() => setShowGetRecs(true)}
-              className="inline-flex items-center gap-2 px-8 py-4 bg-brand-yellow text-gray-900 font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors text-lg"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-              </svg>
-              Get Drink Recommendations
-            </button>
+      <main className="max-w-7xl mx-auto px-4 py-6 lg:grid lg:grid-cols-[1fr_380px] lg:gap-8">
+        {/* Left column: recs + products */}
+        <div>
+          {/* Mobile cart (hidden on desktop) */}
+          <div className="lg:hidden">
+            <OrderSidebar
+              ref={cartRef}
+              shareCode={groupOrder.shareCode}
+              tabId={tab.id}
+              participantId={participantId}
+              participants={groupOrder.participants}
+              draftItems={tab.draftItems}
+              purchasedItems={tab.purchasedItems}
+              isLocked={isLocked}
+              onItemChanged={refresh}
+              onCheckoutMine={() => setCheckoutMode('mine')}
+              onCheckoutAll={() => setCheckoutMode('all')}
+              onShareClick={() => setShowShareModal(true)}
+              onAddLocation={() => setShowNewLocation(true)}
+            />
           </div>
-        )}
 
-        <ProductBrowse
-          shareCode={groupOrder.shareCode}
-          tabId={tab.id}
-          participantId={participantId}
-          draftItems={tab.draftItems}
-          isLocked={isLocked}
-          onItemChanged={refresh}
-          recsSection={
-            recommendations ? (
-              <RecommendationsSection
-                recommendations={recommendations}
-                shareCode={groupOrder.shareCode}
-                tabId={tab.id}
-                participantId={participantId}
-                onItemChanged={refresh}
-                onDismiss={() => setRecommendations(null)}
-              />
-            ) : null
-          }
-        />
+          {/* Get Recs button */}
+          {!recommendations && (
+            <div className="mb-6 text-center">
+              <button
+                onClick={() => setShowGetRecs(true)}
+                className="inline-flex items-center gap-2 px-8 py-4 bg-brand-yellow text-gray-900 font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors text-lg"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+                Get Drink Recommendations
+              </button>
+            </div>
+          )}
+
+          <ProductBrowse
+            shareCode={groupOrder.shareCode}
+            tabId={tab.id}
+            participantId={participantId}
+            draftItems={tab.draftItems}
+            isLocked={isLocked}
+            onItemChanged={refresh}
+            recsSection={
+              recommendations ? (
+                <RecommendationsSection
+                  recommendations={recommendations}
+                  shareCode={groupOrder.shareCode}
+                  tabId={tab.id}
+                  participantId={participantId}
+                  onItemChanged={refresh}
+                  onDismiss={() => setRecommendations(null)}
+                />
+              ) : null
+            }
+          />
+        </div>
+
+        {/* Right column: desktop sidebar (hidden on mobile) */}
+        <div className="hidden lg:block">
+          <OrderSidebar
+            shareCode={groupOrder.shareCode}
+            tabId={tab.id}
+            participantId={participantId}
+            participants={groupOrder.participants}
+            draftItems={tab.draftItems}
+            purchasedItems={tab.purchasedItems}
+            isLocked={isLocked}
+            onItemChanged={refresh}
+            onCheckoutMine={() => setCheckoutMode('mine')}
+            onCheckoutAll={() => setCheckoutMode('all')}
+            onShareClick={() => setShowShareModal(true)}
+            onAddLocation={() => setShowNewLocation(true)}
+          />
+        </div>
       </main>
 
       <DashboardBottomBar
@@ -256,31 +282,33 @@ export default function DashboardPage(): ReactElement {
       {showShareModal && (
         <ShareModal
           shareCode={groupOrder.shareCode}
+          hostEmail={groupOrder.hostEmail}
+          hostPhone={groupOrder.hostPhone}
           onClose={() => setShowShareModal(false)}
         />
       )}
 
-      {showDeliveryDetails && (
+      {showLocationDetails && (
         <DeliveryDetailsModal
           shareCode={groupOrder.shareCode}
           tab={tab}
           participantId={participantId}
-          onClose={() => setShowDeliveryDetails(false)}
+          onClose={() => setShowLocationDetails(false)}
           onSaved={() => {
-            setShowDeliveryDetails(false);
+            setShowLocationDetails(false);
             refresh();
           }}
         />
       )}
 
-      {showNewDelivery && (
+      {showNewLocation && (
         <NewDeliveryModal
           shareCode={groupOrder.shareCode}
           participantId={participantId}
           nextPosition={groupOrder.tabs.length + 1}
-          onClose={() => setShowNewDelivery(false)}
+          onClose={() => setShowNewLocation(false)}
           onCreated={() => {
-            setShowNewDelivery(false);
+            setShowNewLocation(false);
             refresh();
             setActiveTabIndex(groupOrder.tabs.length);
           }}

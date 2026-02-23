@@ -4,6 +4,7 @@ import { useState, type ReactElement, type FormEvent } from 'react';
 import type { DraftCartItemView, SubOrderFull } from '@/lib/group-orders-v2/types';
 import {
   checkoutParticipantV2,
+  checkoutAllV2,
   validateGroupDiscount,
   updateTabV2,
 } from '@/lib/group-orders-v2/api-client';
@@ -123,21 +124,13 @@ export default function DashboardCheckoutModal({
         );
         window.location.href = result.checkoutUrl;
       } else {
-        // checkout-all
-        const res = await fetch(
-          `/api/v2/group-orders/${shareCode}/tabs/${tab.id}/checkout-all`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              participantId,
-              discountCode: discountApplied?.code,
-            }),
-          }
+        const result = await checkoutAllV2(
+          shareCode,
+          tab.id,
+          participantId,
+          discountApplied?.code
         );
-        const json = await res.json();
-        if (!json.success) throw new Error(json.error || 'Checkout failed');
-        window.location.href = json.data.checkoutUrl;
+        window.location.href = result.checkoutUrl;
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Checkout failed');
@@ -153,7 +146,11 @@ export default function DashboardCheckoutModal({
       <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
           <h2 className="text-lg font-heading font-bold tracking-[0.08em] text-gray-900">
-            {mode === 'mine' ? 'Checkout' : 'Pay for Everything'}
+            {mode === 'mine'
+              ? 'Checkout'
+              : tab.purchasedItems.length > 0
+                ? 'Pay for Remaining'
+                : 'Pay for Everything'}
           </h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
