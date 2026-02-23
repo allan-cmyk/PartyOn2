@@ -144,11 +144,11 @@ export default function CreateGroupPage(): ReactElement {
           const addrField = field.split('.')[1];
           return {
             ...t,
-            deliveryAddress: { ...t.deliveryAddress, [addrField]: value },
+            deliveryAddress: { ...t.deliveryAddress, [addrField]: value } as TabFormData['deliveryAddress'],
           };
         }
         return { ...t, [field]: value };
-      })
+      }) as TabFormData[]
     );
   };
 
