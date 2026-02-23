@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, ReactElement } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import InvoiceSendModal from '@/components/ops/InvoiceSendModal';
 
 interface SearchProduct {
   id: string;
@@ -117,6 +118,8 @@ export default function EditInvoicePage(): ReactElement {
   const [error, setError] = useState('');
   const [successData, setSuccessData] = useState<{ id: string; invoiceUrl: string; token: string } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [showSendModal, setShowSendModal] = useState(false);
+  const [savingAndSending, setSavingAndSending] = useState(false);
 
   // Calculated amounts
   const subtotal = lineItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -416,6 +419,73 @@ export default function EditInvoicePage(): ReactElement {
       navigator.clipboard.writeText(successData.invoiceUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const handleSaveAndSend = async () => {
+    setError('');
+
+    if (!customerName.trim() || !customerEmail.trim()) {
+      setError('Customer name and email are required.');
+      return;
+    }
+    if (lineItems.length === 0) {
+      setError('Add at least one item to the invoice.');
+      return;
+    }
+    if (!deliveryAddress.trim() || !deliveryCity.trim() || !deliveryZip.trim()) {
+      setError('Delivery address, city, and ZIP are required.');
+      return;
+    }
+    if (!deliveryDate || !deliveryTime) {
+      setError('Delivery date and time are required.');
+      return;
+    }
+
+    setSavingAndSending(true);
+    try {
+      const payload = {
+        customerEmail: customerEmail.trim(),
+        customerName: customerName.trim(),
+        customerPhone: customerPhone.trim() || null,
+        deliveryAddress: deliveryAddress.trim(),
+        deliveryCity: deliveryCity.trim(),
+        deliveryState: deliveryState.trim(),
+        deliveryZip: deliveryZip.trim(),
+        deliveryDate,
+        deliveryTime,
+        deliveryNotes: deliveryNotes.trim() || null,
+        items: lineItems.map((item) => ({
+          productId: item.productId,
+          variantId: item.variantId,
+          title: item.title,
+          variantTitle: item.variantTitle,
+          quantity: item.quantity,
+          price: item.price,
+          imageUrl: item.imageUrl || undefined,
+        })),
+        deliveryFee: deliveryFeeNum,
+        discountAmount,
+        discountCode: discountInfo?.valid ? discountInfo.discountCode || null : null,
+        adminNotes: adminNotes.trim() || null,
+      };
+
+      const res = await fetch(`/api/v1/admin/draft-orders/${orderId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setShowSendModal(true);
+      } else {
+        setError(data.error || 'Failed to update invoice.');
+      }
+    } catch {
+      setError('Network error. Please try again.');
+    } finally {
+      setSavingAndSending(false);
     }
   };
 
@@ -1168,7 +1238,7 @@ export default function EditInvoicePage(): ReactElement {
             </Link>
             <button
               onClick={handleSubmit}
-              disabled={submitting || lineItems.length === 0}
+              disabled={submitting || savingAndSending || lineItems.length === 0}
               className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-medium hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-md shadow-blue-200 hover:shadow-lg hover:shadow-blue-300 flex items-center gap-2"
             >
               {submitting ? (
@@ -1185,6 +1255,25 @@ export default function EditInvoicePage(): ReactElement {
                 </>
               )}
             </button>
+            <button
+              onClick={handleSaveAndSend}
+              disabled={submitting || savingAndSending || lineItems.length === 0}
+              className="px-6 py-2.5 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-medium hover:from-green-700 hover:to-green-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-md shadow-green-200 hover:shadow-lg hover:shadow-green-300 flex items-center gap-2"
+            >
+              {savingAndSending ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  Save &amp; Send
+                </>
+              )}
+            </button>
           </div>
         </div>
       </div>
@@ -1192,6 +1281,25 @@ export default function EditInvoicePage(): ReactElement {
       {/* Click outside to close search results */}
       {showSearchResults && (
         <div className="fixed inset-0 z-10" onClick={() => setShowSearchResults(false)} />
+      )}
+
+      {/* Send Invoice Modal */}
+      {showSendModal && (
+        <InvoiceSendModal
+          draftOrder={{
+            id: orderId,
+            customerEmail,
+            customerName,
+            total,
+            deliveryDate,
+            deliveryTime,
+          }}
+          onClose={() => setShowSendModal(false)}
+          onSent={() => {
+            setShowSendModal(false);
+            window.location.href = '/ops/orders';
+          }}
+        />
       )}
     </div>
   );
