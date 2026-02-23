@@ -166,7 +166,7 @@ export default function CreateGroupPage(): ReactElement {
 
     // Validate all delivery dates
     for (const tab of tabs) {
-      const dateError = validateDeliveryDate(tab.deliveryDate);
+      const dateError = validateDeliveryDate(tab.deliveryDate ?? '');
       if (dateError) {
         setError(`${tab.name}: ${dateError}`);
         setLoading(false);
