@@ -185,9 +185,11 @@ export default function CreateGroupPage(): ReactElement {
           ...rest,
           orderType: rest.orderType || undefined,
           // Convert date input (YYYY-MM-DD) to ISO string with noon time
-          deliveryDate: rest.deliveryDate.includes('T')
-            ? rest.deliveryDate
-            : `${rest.deliveryDate}T12:00:00Z`,
+          deliveryDate: rest.deliveryDate
+            ? (rest.deliveryDate.includes('T')
+              ? rest.deliveryDate
+              : `${rest.deliveryDate}T12:00:00Z`)
+            : undefined,
         })),
       });
 
