@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, ReactElement } from 'react';
-import Link from 'next/link';
 import InvoiceSendModal from './InvoiceSendModal';
 import EmailEventTimeline from './EmailEventTimeline';
 
@@ -375,22 +374,13 @@ export default function DraftOrdersTable(): ReactElement {
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-1">
                       {canSend(order.status) && (
-                        <Link
-                          href={`/ops/orders/${order.id}/edit`}
-                          className="px-2.5 py-1.5 text-xs font-semibold text-amber-700 bg-amber-50 border border-amber-200 rounded-lg hover:bg-amber-100 transition-colors"
-                          title="Edit invoice details"
-                        >
-                          Edit
-                        </Link>
-                      )}
-                      {canSend(order.status) && (
                         <button
                           onClick={() => handleOpenSendModal(order)}
                           disabled={actionLoading === order.id}
                           className="px-2.5 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors disabled:opacity-50"
-                          title="Edit and send invoice email"
+                          title="Send invoice email"
                         >
-                          Edit & Send
+                          Send Email
                         </button>
                       )}
                       <button
