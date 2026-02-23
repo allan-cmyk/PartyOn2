@@ -511,7 +511,7 @@ export default function CreateGroupPage(): ReactElement {
                 <input
                   type="text"
                   required
-                  value={tab.deliveryAddress.address1}
+                  value={tab.deliveryAddress?.address1 ?? ''}
                   onChange={(e) =>
                     updateTab(tab.key, 'address.address1', e.target.value)
                   }
@@ -522,7 +522,7 @@ export default function CreateGroupPage(): ReactElement {
                   <input
                     type="text"
                     required
-                    value={tab.deliveryAddress.city}
+                    value={tab.deliveryAddress?.city ?? ''}
                     onChange={(e) =>
                       updateTab(tab.key, 'address.city', e.target.value)
                     }
@@ -538,7 +538,7 @@ export default function CreateGroupPage(): ReactElement {
                   <input
                     type="text"
                     required
-                    value={tab.deliveryAddress.zip}
+                    value={tab.deliveryAddress?.zip ?? ''}
                     onChange={(e) =>
                       updateTab(tab.key, 'address.zip', e.target.value)
                     }
