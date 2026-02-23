@@ -20,6 +20,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
+        hostname: 'partyondelivery.com',
+        pathname: '/images/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'cdn.shopify.com',
         pathname: '/**',
       },
