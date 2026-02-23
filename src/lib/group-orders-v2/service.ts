@@ -240,14 +240,14 @@ export async function createGroupOrder(
       tabs: {
         create: input.tabs.map((tab, idx) => {
           const deliveryDate = new Date(tab.deliveryDate);
-          const zip = tab.deliveryAddress.zip;
+          const zip = tab.deliveryAddress?.zip ?? '';
           const feeResult = calculateDeliveryFee(zip, 0, false);
           return {
             name: tab.name,
             position: idx,
             orderType: tab.orderType ?? null,
             deliveryDate,
-            deliveryTime: tab.deliveryTime,
+            deliveryTime: tab.deliveryTime ?? '',
             deliveryAddress: tab.deliveryAddress as unknown as Record<string, string>,
             deliveryPhone: tab.deliveryPhone || null,
             deliveryNotes: tab.deliveryNotes || null,
