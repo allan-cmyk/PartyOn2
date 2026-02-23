@@ -239,7 +239,7 @@ export async function createGroupOrder(
       expiresAt: defaultExpiresAt(),
       tabs: {
         create: input.tabs.map((tab, idx) => {
-          const deliveryDate = new Date(tab.deliveryDate);
+          const deliveryDate = new Date(tab.deliveryDate ?? '');
           const zip = tab.deliveryAddress?.zip ?? '';
           const feeResult = calculateDeliveryFee(zip, 0, false);
           return {
