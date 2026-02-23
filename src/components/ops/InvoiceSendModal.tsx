@@ -29,7 +29,7 @@ export default function InvoiceSendModal({ draftOrder, onClose, onSent }: Invoic
   const [subject, setSubject] = useState(
     `Your Invoice from Party On Delivery - ${formatCurrency(draftOrder.total)}`
   );
-  const [greeting, setGreeting] = useState(`Hi ${draftOrder.customerName},`);
+  const [greeting, setGreeting] = useState(`Hi ${draftOrder.customerName.split(' ')[0]},`);
   const [bodyText, setBodyText] = useState(
     "Here's your invoice for your upcoming delivery. Click the button below to complete your payment."
   );
