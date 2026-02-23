@@ -358,8 +358,18 @@ export async function createTab(
     _max: { position: true },
   });
   const nextPos = (maxPos._max.position ?? -1) + 1;
-  const deliveryDate = new Date(input.deliveryDate);
-  const zip = input.deliveryAddress.zip;
+
+  // Default delivery date: 7 days from now (skip Sunday)
+  let deliveryDate: Date;
+  if (input.deliveryDate) {
+    deliveryDate = new Date(input.deliveryDate);
+  } else {
+    deliveryDate = new Date();
+    deliveryDate.setDate(deliveryDate.getDate() + 7);
+    if (deliveryDate.getDay() === 0) deliveryDate.setDate(deliveryDate.getDate() + 1);
+  }
+
+  const zip = input.deliveryAddress?.zip || '';
   const feeResult = calculateDeliveryFee(zip, 0, false);
 
   const tab = await prisma.subOrder.create({
@@ -369,8 +379,8 @@ export async function createTab(
       position: nextPos,
       orderType: input.orderType ?? null,
       deliveryDate,
-      deliveryTime: input.deliveryTime,
-      deliveryAddress: input.deliveryAddress as unknown as Record<string, string>,
+      deliveryTime: input.deliveryTime || 'TBD',
+      deliveryAddress: (input.deliveryAddress || { address1: '', city: '', province: 'TX', zip: '', country: 'US' }) as unknown as Record<string, string>,
       deliveryPhone: input.deliveryPhone || null,
       deliveryNotes: input.deliveryNotes || null,
       orderDeadline: computeOrderDeadline(deliveryDate),

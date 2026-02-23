@@ -18,35 +18,38 @@ const DeliveryAddressSchema = z.object({
   country: z.string().default('US'),
 });
 
-/** Single tab input */
+/** Date validation refinements (reusable) */
+const deliveryDateSchema = z.string().refine(
+  (val) => {
+    const date = new Date(val);
+    return !isNaN(date.getTime());
+  },
+  'Invalid delivery date'
+).refine(
+  (val) => {
+    const raw = val.includes('T') ? val : `${val}T12:00:00`;
+    const date = new Date(raw);
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    return date >= now;
+  },
+  'Delivery date cannot be in the past'
+).refine(
+  (val) => {
+    const raw = val.includes('T') ? val : `${val}T12:00:00`;
+    const date = new Date(raw);
+    return date.getDay() !== 0;
+  },
+  'Sunday deliveries are not available'
+);
+
+/** Single tab input (delivery fields optional -- filled in later via DeliveryDetailsModal) */
 const CreateTabSchema = z.object({
   name: z.string().min(1, 'Tab name is required').max(100),
   orderType: z.enum(['boat', 'house', 'bus', 'other']).optional(),
-  deliveryDate: z.string().refine(
-    (val) => {
-      const date = new Date(val);
-      return !isNaN(date.getTime());
-    },
-    'Invalid delivery date'
-  ).refine(
-    (val) => {
-      const raw = val.includes('T') ? val : `${val}T12:00:00`;
-      const date = new Date(raw);
-      const now = new Date();
-      now.setHours(0, 0, 0, 0);
-      return date >= now;
-    },
-    'Delivery date cannot be in the past'
-  ).refine(
-    (val) => {
-      const raw = val.includes('T') ? val : `${val}T12:00:00`;
-      const date = new Date(raw);
-      return date.getDay() !== 0;
-    },
-    'Sunday deliveries are not available'
-  ),
-  deliveryTime: z.string().min(1, 'Delivery time is required'),
-  deliveryAddress: DeliveryAddressSchema,
+  deliveryDate: deliveryDateSchema.optional(),
+  deliveryTime: z.string().min(1, 'Delivery time is required').optional(),
+  deliveryAddress: DeliveryAddressSchema.optional(),
   deliveryPhone: z.string().optional(),
   deliveryNotes: z.string().max(500).optional(),
 });
@@ -66,29 +69,7 @@ export const UpdateTabSchema = z.object({
   name: z.string().min(1).max(100).optional(),
   orderType: z.enum(['boat', 'house', 'bus', 'other']).optional(),
   status: z.enum(['OPEN', 'LOCKED']).optional(),
-  deliveryDate: z.string().refine(
-    (val) => {
-      const date = new Date(val);
-      return !isNaN(date.getTime());
-    },
-    'Invalid delivery date'
-  ).refine(
-    (val) => {
-      const raw = val.includes('T') ? val : `${val}T12:00:00`;
-      const date = new Date(raw);
-      const now = new Date();
-      now.setHours(0, 0, 0, 0);
-      return date >= now;
-    },
-    'Delivery date cannot be in the past'
-  ).refine(
-    (val) => {
-      const raw = val.includes('T') ? val : `${val}T12:00:00`;
-      const date = new Date(raw);
-      return date.getDay() !== 0;
-    },
-    'Sunday deliveries are not available'
-  ).optional(),
+  deliveryDate: deliveryDateSchema.optional(),
   deliveryTime: z.string().optional(),
   deliveryAddress: DeliveryAddressSchema.optional(),
   deliveryPhone: z.string().optional(),

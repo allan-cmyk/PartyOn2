@@ -154,9 +154,9 @@ export interface CreateGroupOrderV2Input {
 export interface CreateTabInput {
   name: string;
   orderType?: string;
-  deliveryDate: string;
-  deliveryTime: string;
-  deliveryAddress: DeliveryAddressV2;
+  deliveryDate?: string;
+  deliveryTime?: string;
+  deliveryAddress?: DeliveryAddressV2;
   deliveryPhone?: string;
   deliveryNotes?: string;
 }

@@ -9,6 +9,7 @@ import {
   updateDraftItemV2,
   removeDraftItemV2,
 } from '@/lib/group-orders-v2/api-client';
+import ProductDetailModal from './ProductDetailModal';
 
 interface Props {
   product: Product;
@@ -30,6 +31,7 @@ export default function DashboardProductCard({
   onItemChanged,
 }: Props): ReactElement {
   const [busy, setBusy] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
 
   const variant = product.variants.edges[0]?.node;
   if (!variant) return <div />;
@@ -108,40 +110,50 @@ export default function DashboardProductCard({
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col">
-      <div className="relative aspect-square bg-gray-100">
-        {imageUrl ? (
-          <Image
-            src={imageUrl}
-            alt={product.title}
-            fill
-            className="object-cover"
-            sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 16vw"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-400">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
+    <>
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col">
+        {/* Clickable area: image + title/price -> opens detail modal */}
+        <button
+          type="button"
+          onClick={() => setShowDetail(true)}
+          className="text-left cursor-pointer"
+        >
+          <div className="relative aspect-square bg-gray-100">
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt={product.title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 16vw"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-400">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+            )}
+            {!available && (
+              <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
+                <span className="text-sm font-medium text-gray-500">Out of stock</span>
+              </div>
+            )}
           </div>
-        )}
-        {!available && (
-          <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
-            <span className="text-sm font-medium text-gray-500">Out of stock</span>
+
+          <div className="p-2 text-center">
+            <h3 className="text-base font-medium text-gray-900 line-clamp-2 leading-tight">
+              {product.title}
+            </h3>
+            {variantTitle && (
+              <p className="text-sm text-gray-500 mt-0.5">{variantTitle}</p>
+            )}
+            <p className="text-sm font-semibold text-gray-900 mt-1">${price.toFixed(2)}</p>
           </div>
-        )}
-      </div>
+        </button>
 
-      <div className="p-2 flex-1 flex flex-col">
-        <h3 className="text-base font-medium text-gray-900 line-clamp-2 leading-tight">
-          {product.title}
-        </h3>
-        {variantTitle && (
-          <p className="text-sm text-gray-500 mt-0.5">{variantTitle}</p>
-        )}
-        <p className="text-sm font-semibold text-gray-900 mt-1">${price.toFixed(2)}</p>
-
-        <div className="mt-auto pt-2">
+        {/* Cart controls -- separate from clickable area */}
+        <div className="px-2 pb-2 mt-auto">
           {isLocked ? (
             qty > 0 ? (
               <div className="text-center text-sm font-medium text-gray-500 py-1.5">
@@ -193,6 +205,20 @@ export default function DashboardProductCard({
           )}
         </div>
       </div>
-    </div>
+
+      {showDetail && (
+        <ProductDetailModal
+          product={product}
+          onClose={() => setShowDetail(false)}
+          onAddToCart={handleAdd}
+          qty={qty}
+          busy={busy}
+          available={available}
+          isLocked={isLocked}
+          onIncrement={handleIncrement}
+          onDecrement={handleDecrement}
+        />
+      )}
+    </>
   );
 }

@@ -39,15 +39,6 @@ export default function NewDeliveryModal({
       await createTabV2(shareCode, {
         hostParticipantId: participantId,
         name: `Location ${nextPosition}`,
-        deliveryDate: 'TBD',
-        deliveryTime: 'TBD',
-        deliveryAddress: {
-          address1: '',
-          city: '',
-          province: 'TX',
-          zip: '',
-          country: 'US',
-        },
       });
       onCreated();
     } catch (err) {
@@ -75,9 +66,12 @@ export default function NewDeliveryModal({
           </svg>
         </button>
 
-        <h2 className="text-xl font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-6">
+        <h2 className="text-xl font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-2">
           Add Another Location
         </h2>
+        <p className="text-base text-gray-500 text-center mb-6">
+          What are we celebrating at this location?
+        </p>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {PARTY_LABELS.map((pt) => (
