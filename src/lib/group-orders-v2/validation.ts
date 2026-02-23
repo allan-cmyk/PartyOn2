@@ -21,21 +21,21 @@ const DeliveryAddressSchema = z.object({
 /** Date validation refinements (reusable) */
 const deliveryDateSchema = z.string().refine(
   (val) => {
-    const date = new Date(val);
+    const date = new Date(val.includes('T') ? val : `${val}T12:00:00`);
     return !isNaN(date.getTime());
   },
   'Invalid delivery date'
 ).refine(
   (val) => {
-    const raw = val.includes('T') ? val : `${val}T23:59:59`;
-    const date = new Date(raw);
-    return date >= new Date();
+    // Simple string comparison of YYYY-MM-DD to avoid timezone issues
+    const dateStr = val.split('T')[0];
+    const today = new Date().toISOString().split('T')[0];
+    return dateStr >= today;
   },
   'Delivery date cannot be in the past'
 ).refine(
   (val) => {
-    const raw = val.includes('T') ? val : `${val}T12:00:00`;
-    const date = new Date(raw);
+    const date = new Date(val.includes('T') ? val : `${val}T12:00:00`);
     return date.getDay() !== 0;
   },
   'Sunday deliveries are not available'
