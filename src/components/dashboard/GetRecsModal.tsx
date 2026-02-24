@@ -31,7 +31,7 @@ const DURATION_OPTIONS = [
   { value: '4h', label: '4h' },
   { value: '5h', label: '5h' },
   { value: '6h', label: '6h' },
-  { value: 'multi-day', label: 'All Day' },
+  { value: 'multi-day', label: 'Not Sure' },
 ];
 
 const DRINK_TYPES: { value: DrinkCategory; label: string }[] = [
@@ -117,7 +117,7 @@ export default function GetRecsModal({
 
         {step === 1 && (
           <div>
-            <p className="text-sm font-medium text-gray-700 mb-3">
+            <p className="text-sm font-medium text-gray-700 mb-3 text-center">
               How many guests?
             </p>
             <div className="text-center mb-4">
@@ -147,7 +147,7 @@ export default function GetRecsModal({
 
         {step === 2 && (
           <div>
-            <p className="text-sm font-medium text-gray-700 mb-3">
+            <p className="text-sm font-medium text-gray-700 mb-3 text-center">
               How long is the event?
             </p>
             <div className="grid grid-cols-3 gap-2">
@@ -184,7 +184,7 @@ export default function GetRecsModal({
 
         {step === 3 && (
           <div>
-            <p className="text-sm font-medium text-gray-700 mb-3">
+            <p className="text-sm font-medium text-gray-700 mb-3 text-center">
               What do your guests drink?
             </p>
             <div className="grid grid-cols-2 gap-2">
