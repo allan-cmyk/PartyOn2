@@ -93,11 +93,8 @@ export default function EditInvoicePage(): ReactElement {
   // Line items
   const [lineItems, setLineItems] = useState<LineItem[]>([]);
 
-  // Affiliate
-  const [affiliateCodeInput, setAffiliateCodeInput] = useState('');
+  // Affiliate (populated when discount code matches an affiliate)
   const [affiliateInfo, setAffiliateInfo] = useState<{ id: string; code: string; businessName: string; contactName: string; customerPerk: string; status: string } | null>(null);
-  const [affiliateLoading, setAffiliateLoading] = useState(false);
-  const [affiliateError, setAffiliateError] = useState('');
 
   // Discount
   const [discountCode, setDiscountCode] = useState('');
@@ -193,9 +190,12 @@ export default function EditInvoicePage(): ReactElement {
           );
         }
 
-        // Affiliate — load if code exists
+        // Affiliate — load if code exists on the draft order
         if (order.affiliateCode) {
-          setAffiliateCodeInput(order.affiliateCode);
+          // If discount code matches affiliate code, they share the same input
+          if (!order.discountCode) {
+            setDiscountCode(order.affiliateCode);
+          }
           try {
             const affRes = await fetch(`/api/admin/affiliates/lookup?code=${encodeURIComponent(order.affiliateCode)}`);
             const affData = await affRes.json();
@@ -328,17 +328,21 @@ export default function EditInvoicePage(): ReactElement {
     setLineItems(lineItems.filter((item) => item.id !== id));
   };
 
-  // Validate discount code
+  // Validate discount code — also checks affiliate lookup in parallel
   const validateDiscount = async () => {
     if (!discountCode.trim()) return;
     setDiscountLoading(true);
     setDiscountInfo(null);
-    try {
-      const res = await fetch('/api/v1/admin/discounts/validate', {
+    setAffiliateInfo(null);
+
+    const code = discountCode.trim();
+
+    const [discountRes, affiliateRes] = await Promise.all([
+      fetch('/api/v1/admin/discounts/validate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          code: discountCode.trim(),
+          code,
           subtotal,
           items: lineItems.map((item) => ({
             productId: item.productId,
@@ -347,49 +351,43 @@ export default function EditInvoicePage(): ReactElement {
             price: item.price,
           })),
         }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setDiscountInfo(data.data);
-        if (data.data.valid) {
-          setUseManualDiscount(false);
+      }).catch(() => null),
+      fetch(`/api/admin/affiliates/lookup?code=${encodeURIComponent(code)}`).catch(() => null),
+    ]);
+
+    try {
+      if (affiliateRes?.ok) {
+        const affData = await affiliateRes.json();
+        if (affData.success && affData.data.status === 'ACTIVE') {
+          setAffiliateInfo(affData.data);
+          if (affData.data.customerPerk === 'Free Delivery') {
+            setDeliveryFee('0');
+          }
+        }
+      }
+    } catch { /* ignore */ }
+
+    try {
+      if (discountRes) {
+        const data = await discountRes.json();
+        if (data.success) {
+          setDiscountInfo(data.data);
+          if (data.data.valid) {
+            setUseManualDiscount(false);
+          }
         }
       }
     } catch {
       setDiscountInfo({ valid: false, discountAmount: 0, discountType: null, discountCode: null, message: 'Failed to validate' });
-    } finally {
-      setDiscountLoading(false);
     }
+
+    setDiscountLoading(false);
   };
 
-  // Validate affiliate code
-  const validateAffiliate = async () => {
-    if (!affiliateCodeInput.trim()) return;
-    setAffiliateLoading(true);
-    setAffiliateError('');
+  const clearCode = () => {
+    setDiscountCode('');
+    setDiscountInfo(null);
     setAffiliateInfo(null);
-    try {
-      const res = await fetch(`/api/admin/affiliates/lookup?code=${encodeURIComponent(affiliateCodeInput.trim())}`);
-      const data = await res.json();
-      if (data.success) {
-        setAffiliateInfo(data.data);
-        if (data.data.customerPerk === 'Free Delivery') {
-          setDeliveryFee('0');
-        }
-      } else {
-        setAffiliateError(data.error || 'Affiliate not found');
-      }
-    } catch {
-      setAffiliateError('Failed to validate affiliate code');
-    } finally {
-      setAffiliateLoading(false);
-    }
-  };
-
-  const removeAffiliate = () => {
-    setAffiliateInfo(null);
-    setAffiliateCodeInput('');
-    setAffiliateError('');
     setDeliveryFee('25');
   };
 
@@ -1010,19 +1008,19 @@ export default function EditInvoicePage(): ReactElement {
           )}
         </div>
 
-        {/* Section 3: Discount */}
+        {/* Section 3: Discount / Affiliate Code */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
             <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
             </svg>
-            Discount
+            Discount / Affiliate Code
           </h2>
 
           <div className="space-y-4">
-            {/* Discount Code */}
+            {/* Code Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Discount Code</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Code</label>
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -1030,8 +1028,9 @@ export default function EditInvoicePage(): ReactElement {
                   onChange={(e) => {
                     setDiscountCode(e.target.value.toUpperCase());
                     setDiscountInfo(null);
+                    setAffiliateInfo(null);
                   }}
-                  placeholder="Enter discount code"
+                  placeholder="Enter discount or affiliate code"
                   className="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all uppercase"
                 />
                 <button
@@ -1045,12 +1044,22 @@ export default function EditInvoicePage(): ReactElement {
                     'Apply'
                   )}
                 </button>
+                {(discountInfo || affiliateInfo) && (
+                  <button
+                    onClick={clearCode}
+                    className="px-3 py-2.5 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                  >
+                    Clear
+                  </button>
+                )}
               </div>
+
+              {/* Discount result */}
               {discountInfo && (
                 <div className={`mt-2 px-3 py-2 rounded-lg text-sm ${
                   discountInfo.valid
                     ? 'bg-green-50 text-green-700 border border-green-200'
-                    : 'bg-red-50 text-red-700 border border-red-200'
+                    : !affiliateInfo ? 'bg-red-50 text-red-700 border border-red-200' : 'hidden'
                 }`}>
                   {discountInfo.valid ? (
                     <span className="flex items-center gap-1">
@@ -1060,15 +1069,39 @@ export default function EditInvoicePage(): ReactElement {
                       {discountInfo.message} — saves {formatCurrency(discountInfo.discountAmount)}
                       {discountInfo.discountType && ` (${discountInfo.discountType})`}
                     </span>
-                  ) : (
+                  ) : !affiliateInfo ? (
                     <span className="flex items-center gap-1">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                       </svg>
                       {discountInfo.message}
                     </span>
-                  )}
+                  ) : null}
                 </div>
+              )}
+
+              {/* Affiliate result */}
+              {affiliateInfo && (
+                <div className="mt-2 flex items-center gap-3 px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg">
+                  <svg className="w-5 h-5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-blue-800">
+                      Affiliate: {affiliateInfo.businessName || affiliateInfo.contactName}
+                      <span className="ml-2 text-xs font-mono text-blue-600">({affiliateInfo.code})</span>
+                    </p>
+                    <p className="text-xs text-blue-600">
+                      Perk: {affiliateInfo.customerPerk}
+                      {affiliateInfo.customerPerk === 'Free Delivery' && ' — delivery fee set to $0'}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* No match at all */}
+              {discountInfo && !discountInfo.valid && !affiliateInfo && !discountLoading && (
+                <p className="mt-1 text-xs text-gray-500">Code not recognized as a discount or affiliate code.</p>
               )}
             </div>
 
@@ -1081,8 +1114,7 @@ export default function EditInvoicePage(): ReactElement {
                   onChange={(e) => {
                     setUseManualDiscount(e.target.checked);
                     if (e.target.checked) {
-                      setDiscountInfo(null);
-                      setDiscountCode('');
+                      clearCode();
                     }
                   }}
                   className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
@@ -1107,75 +1139,6 @@ export default function EditInvoicePage(): ReactElement {
               )}
             </div>
           </div>
-        </div>
-
-        {/* Section 3b: Affiliate */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            Affiliate Attribution
-          </h2>
-
-          {affiliateInfo ? (
-            <div className="flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-              <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-green-800">
-                  {affiliateInfo.businessName || affiliateInfo.contactName}
-                  <span className="ml-2 text-xs font-mono text-green-600">({affiliateInfo.code})</span>
-                </p>
-                <p className="text-xs text-green-600">
-                  Perk: {affiliateInfo.customerPerk}
-                  {affiliateInfo.customerPerk === 'Free Delivery' && ' — delivery fee set to $0'}
-                </p>
-              </div>
-              <button
-                onClick={removeAffiliate}
-                className="px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
-              >
-                Remove
-              </button>
-            </div>
-          ) : (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Affiliate Code</label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={affiliateCodeInput}
-                  onChange={(e) => {
-                    setAffiliateCodeInput(e.target.value.toUpperCase());
-                    setAffiliateError('');
-                  }}
-                  placeholder="e.g. PARTNER123"
-                  className="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all uppercase"
-                />
-                <button
-                  onClick={validateAffiliate}
-                  disabled={!affiliateCodeInput.trim() || affiliateLoading}
-                  className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg font-medium hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm flex items-center gap-2"
-                >
-                  {affiliateLoading ? (
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  ) : (
-                    'Validate'
-                  )}
-                </button>
-              </div>
-              {affiliateError && (
-                <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                  {affiliateError}
-                </p>
-              )}
-            </div>
-          )}
         </div>
 
         {/* Section 4: Delivery Info */}
