@@ -15,14 +15,6 @@ interface Props {
   onShareClick: () => void;
 }
 
-const DELIVERY_CONTEXT_LABELS: Record<string, string> = {
-  HOUSE: 'House / BnB',
-  BOAT: 'Boat / Marina',
-  VENUE: 'Business / Venue',
-  HOTEL: 'Hotel',
-  OTHER: 'Other',
-};
-
 export default function DashboardHeader({
   groupOrder,
   participantId,
@@ -48,9 +40,6 @@ export default function DashboardHeader({
     .map((p) => p.name);
 
   const tab = groupOrder.tabs[0];
-  const contextLabel = tab
-    ? DELIVERY_CONTEXT_LABELS[tab.deliveryContextType] || ''
-    : '';
 
   // Close panel on outside click
   useEffect(() => {
@@ -122,18 +111,13 @@ export default function DashboardHeader({
                 </button>
               </div>
             ) : (
-              <div>
-                <button
-                  onClick={() => isHost && setEditing(true)}
-                  className={`text-base font-heading font-bold tracking-[0.08em] text-gray-900 ${isHost ? 'hover:text-brand-blue cursor-pointer' : ''}`}
-                  disabled={!isHost}
-                >
-                  {groupOrder.name}
-                </button>
-                {contextLabel && (
-                  <p className="text-sm text-gray-500">{contextLabel}</p>
-                )}
-              </div>
+              <button
+                onClick={() => isHost && setEditing(true)}
+                className={`text-base font-heading font-bold tracking-[0.08em] text-gray-900 ${isHost ? 'hover:text-brand-blue cursor-pointer' : ''}`}
+                disabled={!isHost}
+              >
+                {groupOrder.name}
+              </button>
             )}
             {isLocked && (
               <span className="text-sm font-semibold uppercase tracking-wider text-red-600 bg-red-50 px-1.5 py-0.5 rounded">

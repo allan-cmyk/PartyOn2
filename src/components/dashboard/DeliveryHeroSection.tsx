@@ -34,11 +34,6 @@ function hasDeliveryDetails(tab: SubOrderFull): boolean {
   );
 }
 
-function getDisplayName(name: string): string {
-  if (/party/i.test(name)) return name;
-  return `${name}'s Party`;
-}
-
 const PARTY_TYPE_LABELS: Record<string, string> = {
   BOAT: 'Boat Order',
   BACH: 'Bach Order',
@@ -47,6 +42,7 @@ const PARTY_TYPE_LABELS: Record<string, string> = {
   CORPORATE: 'Corporate Order',
   TAILGATE: 'Tailgate Order',
   HOLIDAY: 'Holiday Order',
+  HOUSE_PARTY: 'House Order',
   OTHER: 'Order',
 };
 
@@ -114,11 +110,12 @@ export default function DeliveryHeroSection({
     : '';
 
   function getTabLabel(tab: SubOrderFull, index: number): string {
-    if (tab.name) return tab.name;
-    if (index === 0 && groupOrder.partyType) {
-      return PARTY_TYPE_LABELS[groupOrder.partyType] || `Location ${index + 1}`;
+    // Treat "Location N" as a default -- override with party type label for first tab
+    const isDefaultName = !tab.name || /^Location \d+$/.test(tab.name);
+    if (index === 0 && isDefaultName && groupOrder.partyType) {
+      return PARTY_TYPE_LABELS[groupOrder.partyType] || tab.name || `Location ${index + 1}`;
     }
-    return `Location ${index + 1}`;
+    return tab.name || `Location ${index + 1}`;
   }
 
   return (
@@ -152,7 +149,7 @@ export default function DeliveryHeroSection({
                 disabled={!isHost}
               >
                 <h1 className="text-2xl md:text-4xl font-heading font-bold tracking-[0.04em] text-gray-900 inline">
-                  {getDisplayName(groupOrder.name)}
+                  {groupOrder.name}
                 </h1>
                 {isHost && (
                   <svg className="w-5 h-5 inline-block ml-2 text-gray-400 group-hover:text-brand-blue transition-colors align-baseline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
