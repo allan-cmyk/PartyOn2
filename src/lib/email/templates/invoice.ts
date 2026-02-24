@@ -137,7 +137,7 @@ export function generateInvoiceEmail(data: InvoiceEmailData, textOverrides?: Inv
                 ${greeting}
               </h2>
               <p style="margin: 0 0 24px; color: #4b5563; font-size: 16px; line-height: 1.6;">
-                ${bodyText}
+                ${bodyText.replace(/\n/g, '<br>')}
               </p>
 
               ${personalNoteHtml}
