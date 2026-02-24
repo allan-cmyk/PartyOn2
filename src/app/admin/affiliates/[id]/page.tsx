@@ -56,6 +56,8 @@ export default function AffiliateDetailPage(): ReactElement {
   const [editNotes, setEditNotes] = useState('');
   const [editPerk, setEditPerk] = useState('Free Delivery');
   const [editCommissionRate, setEditCommissionRate] = useState('');
+  const [sendingWelcome, setSendingWelcome] = useState(false);
+  const [welcomeResult, setWelcomeResult] = useState<{ success: boolean; message: string } | null>(null);
 
   useEffect(() => {
     fetch(`/api/admin/affiliates/${id}`)
@@ -212,7 +214,7 @@ export default function AffiliateDetailPage(): ReactElement {
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
             />
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button
               onClick={handleSave}
               disabled={saving}
@@ -231,7 +233,35 @@ export default function AffiliateDetailPage(): ReactElement {
             >
               {affiliate.status === 'ACTIVE' ? 'Pause' : 'Activate'}
             </button>
+            <button
+              onClick={async () => {
+                setSendingWelcome(true);
+                setWelcomeResult(null);
+                try {
+                  const res = await fetch(`/api/admin/affiliates/${id}/send-welcome`, { method: 'POST' });
+                  const data = await res.json();
+                  if (res.ok && data.success) {
+                    setWelcomeResult({ success: true, message: `Welcome email sent to ${affiliate.email}` });
+                  } else {
+                    setWelcomeResult({ success: false, message: data.error || 'Failed to send' });
+                  }
+                } catch {
+                  setWelcomeResult({ success: false, message: 'Network error' });
+                } finally {
+                  setSendingWelcome(false);
+                }
+              }}
+              disabled={sendingWelcome}
+              className="px-4 py-2 bg-pink-600 text-white rounded text-sm font-medium hover:bg-pink-700 disabled:opacity-50"
+            >
+              {sendingWelcome ? 'Sending...' : 'Send Welcome Email'}
+            </button>
           </div>
+          {welcomeResult && (
+            <div className={`mt-2 text-sm font-medium ${welcomeResult.success ? 'text-green-600' : 'text-red-600'}`}>
+              {welcomeResult.message}
+            </div>
+          )}
         </div>
 
         <div className="bg-white rounded-lg shadow p-5 space-y-4">
