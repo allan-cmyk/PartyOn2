@@ -202,12 +202,14 @@ export default function InvoicePage(): ReactElement {
     );
   }
 
-  // Format date
+  // Format date — use timeZone: 'UTC' to prevent timezone shift
+  // (deliveryDate is stored as midnight UTC, local TZ conversion rolls it back a day)
   const deliveryDate = new Date(invoice.deliveryDate).toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    timeZone: 'UTC',
   });
 
   // Check if paid
