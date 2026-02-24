@@ -126,7 +126,7 @@ export default function ShareModal({ shareCode, hostEmail: existingEmail, hostPh
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="Phone number (optional)"
+                  placeholder="Phone number"
                   className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg text-base focus:border-brand-blue focus:ring-0 transition-colors"
                 />
 

@@ -103,14 +103,14 @@ export default function RecommendationsSection({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2">
         {recommendations.map((rec, idx) => {
           const mp = rec.matchedProduct;
           const isAdding = addingId === mp?.id;
           return (
             <div
               key={idx}
-              className="bg-white rounded-lg border border-yellow-200 overflow-hidden flex flex-col"
+              className="bg-white rounded-md border border-yellow-200 overflow-hidden flex flex-col"
             >
               <div className="relative aspect-square bg-gray-100">
                 {mp?.imageUrl ? (
@@ -119,39 +119,39 @@ export default function RecommendationsSection({
                     alt={mp.title}
                     fill
                     className="object-cover"
-                    sizes="(max-width: 640px) 50vw, 20vw"
+                    sizes="(max-width: 640px) 33vw, 16vw"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs text-center p-2">
+                  <div className="w-full h-full flex items-center justify-center text-gray-400 text-[10px] text-center p-1">
                     {rec.name}
                   </div>
                 )}
                 {/* Quantity badge */}
-                <span className="absolute top-1 right-1 bg-yellow-500 text-gray-900 text-xs font-bold px-1.5 py-0.5 rounded">
+                <span className="absolute top-0.5 right-0.5 bg-yellow-500 text-gray-900 text-[10px] font-bold px-1 py-0.5 rounded">
                   {rec.quantity}x
                 </span>
               </div>
-              <div className="p-2 flex-1 flex flex-col">
-                <p className="text-xs font-medium text-gray-900 line-clamp-2 leading-tight">
+              <div className="p-1.5 flex-1 flex flex-col">
+                <p className="text-[11px] font-medium text-gray-900 line-clamp-1 leading-tight">
                   {mp?.title || rec.name}
                 </p>
                 {mp && (
-                  <p className="text-xs text-gray-600 mt-0.5">
-                    ${mp.price.toFixed(2)} each
+                  <p className="text-[10px] text-gray-600 mt-0.5">
+                    ${mp.price.toFixed(2)}
                   </p>
                 )}
-                <div className="mt-auto pt-1">
+                <div className="mt-auto pt-0.5">
                   {mp ? (
                     <button
                       onClick={() => handleAddOne(rec)}
                       disabled={isAdding}
-                      className="w-full py-1.5 bg-brand-yellow text-gray-900 text-xs font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors disabled:opacity-50"
+                      className="w-full py-1 bg-brand-yellow text-gray-900 text-[11px] font-semibold tracking-[0.08em] rounded hover:bg-yellow-400 active:bg-yellow-500 transition-colors disabled:opacity-50"
                     >
                       {isAdding ? '...' : 'Add'}
                     </button>
                   ) : (
-                    <p className="text-xs text-gray-400 text-center">
-                      Not available
+                    <p className="text-[10px] text-gray-400 text-center">
+                      N/A
                     </p>
                   )}
                 </div>

@@ -152,8 +152,8 @@ export default function DashboardProductCard({
           </div>
         </button>
 
-        {/* Cart controls -- overlaid on bottom-right of card */}
-        <div className="px-2 pb-2 mt-auto flex justify-end">
+        {/* Cart controls -- centered at bottom of card */}
+        <div className="px-2 pb-2 mt-auto flex justify-center">
           {isLocked ? (
             qty > 0 ? (
               <div className="text-center text-sm font-medium text-gray-500 py-1.5 w-full">
