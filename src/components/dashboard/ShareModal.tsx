@@ -11,12 +11,12 @@ interface Props {
 
 export default function ShareModal({ shareCode, hostEmail: existingEmail, hostPhone: existingPhone, onClose }: Props): ReactElement {
   const hasContactInfo = !!(existingEmail || existingPhone);
-  const [step, setStep] = useState<'capture' | 'share'>(hasContactInfo ? 'share' : 'capture');
   const [email, setEmail] = useState(existingEmail || '');
   const [phone, setPhone] = useState(existingPhone || '');
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState('');
   const [copied, setCopied] = useState(false);
+  const [linkSent, setLinkSent] = useState(false);
 
   const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/dashboard/${shareCode}`;
 
@@ -37,7 +37,7 @@ export default function ShareModal({ shareCode, hostEmail: existingEmail, hostPh
       });
       const json = await res.json();
       if (!json.success) throw new Error(json.error || 'Failed to send');
-      setStep('share');
+      setLinkSent(true);
     } catch (err) {
       setSendError(err instanceof Error ? err.message : 'Failed to send link');
     } finally {
@@ -79,83 +79,79 @@ export default function ShareModal({ shareCode, hostEmail: existingEmail, hostPh
           </svg>
         </button>
 
-        {step === 'capture' && (
+        <h2 className="text-lg font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-1">
+          Share This Order
+        </h2>
+        <p className="text-sm text-gray-500 text-center mb-4">
+          Send this link to friends so they can add their own items.
+        </p>
+
+        {/* Share link + copy */}
+        <div className="flex items-center gap-2 mb-6">
+          <input
+            type="text"
+            readOnly
+            value={shareUrl}
+            className="flex-1 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 select-all"
+            onFocus={(e) => e.target.select()}
+          />
+          <button
+            onClick={handleCopy}
+            className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap ${
+              copied
+                ? 'bg-green-100 text-green-700'
+                : 'bg-brand-blue text-white hover:bg-blue-700 active:bg-blue-800'
+            }`}
+          >
+            {copied ? 'Copied!' : 'Copy'}
+          </button>
+        </div>
+
+        {/* Email/phone capture */}
+        {!hasContactInfo && !linkSent && (
           <>
-            <h2 className="text-lg font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-1">
-              Send Yourself the Link
-            </h2>
-            <p className="text-sm text-gray-500 text-center mb-5">
-              We will send your dashboard link so you can easily come back later.
-            </p>
+            <div className="border-t border-gray-200 pt-4">
+              <p className="text-sm text-gray-500 text-center mb-3">
+                Send yourself this link so you can come back later.
+              </p>
+              <form onSubmit={handleSendLink} className="space-y-3">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email address"
+                  className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg text-base focus:border-brand-blue focus:ring-0 transition-colors"
+                />
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="Phone number (optional)"
+                  className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg text-base focus:border-brand-blue focus:ring-0 transition-colors"
+                />
 
-            <form onSubmit={handleSendLink} className="space-y-3">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email address"
-                className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg text-base focus:border-brand-blue focus:ring-0 transition-colors"
-              />
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="Phone number (optional)"
-                className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg text-base focus:border-brand-blue focus:ring-0 transition-colors"
-              />
+                {sendError && (
+                  <p className="text-sm text-red-600">{sendError}</p>
+                )}
 
-              {sendError && (
-                <p className="text-sm text-red-600">{sendError}</p>
-              )}
-
-              <button
-                type="submit"
-                disabled={sending || (!email.trim() && !phone.trim())}
-                className="w-full py-3 bg-brand-blue text-white text-base font-semibold tracking-[0.08em] rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {sending ? 'Sending...' : 'Send Link'}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setStep('share')}
-                className="w-full py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
-              >
-                Skip, just show me the link
-              </button>
-            </form>
+                <button
+                  type="submit"
+                  disabled={sending || (!email.trim() && !phone.trim())}
+                  className="w-full py-3 bg-brand-yellow text-gray-900 text-base font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {sending ? 'Sending...' : 'Send Me the Link'}
+                </button>
+              </form>
+            </div>
           </>
         )}
 
-        {step === 'share' && (
-          <>
-            <h2 className="text-lg font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-1">
-              Share This Order
-            </h2>
-            <p className="text-sm text-gray-500 text-center mb-5">
-              Send this link to friends so they can add their own items.
+        {linkSent && (
+          <div className="border-t border-gray-200 pt-4">
+            <p className="text-sm text-green-600 text-center font-medium">
+              Link sent! Check your {email ? 'email' : 'phone'}.
             </p>
-
-            <div className="flex items-center gap-2">
-              <input
-                type="text"
-                readOnly
-                value={shareUrl}
-                className="flex-1 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 select-all"
-                onFocus={(e) => e.target.select()}
-              />
-              <button
-                onClick={handleCopy}
-                className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap ${
-                  copied
-                    ? 'bg-green-100 text-green-700'
-                    : 'bg-brand-blue text-white hover:bg-blue-700 active:bg-blue-800'
-                }`}
-              >
-                {copied ? 'Copied!' : 'Copy'}
-              </button>
-            </div>
-          </>
+          </div>
         )}
       </div>
     </div>
