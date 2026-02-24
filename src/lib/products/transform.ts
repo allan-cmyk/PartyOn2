@@ -37,9 +37,9 @@ export function transformToProduct(product: ProductWithRelations): Product {
     ? Math.min(...product.variants.map(v => Number(v.price)))
     : Number(product.basePrice);
 
-  const productId = product.shopifyId
-    ? (product.shopifyId.startsWith('gid://') ? product.shopifyId : `gid://shopify/Product/${product.shopifyId}`)
-    : product.id;
+  // Always use local database UUID for product ID
+  // This must match the cart system which stores local UUIDs
+  const productId = product.id;
 
   // Compute bundle availability
   let bundleAvailable = true;
