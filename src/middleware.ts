@@ -17,18 +17,37 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url, { status: 301 });
   }
 
+  // Redirect unauthenticated users away from affiliate dashboard
+  if (request.nextUrl.pathname.startsWith('/affiliate/dashboard')) {
+    const session = request.cookies.get('affiliate_session');
+    if (!session) {
+      const loginUrl = request.nextUrl.clone();
+      loginUrl.pathname = '/affiliate/login';
+      loginUrl.search = '';
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
   const response = NextResponse.next();
+
+  const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax' as const,
+    maxAge: 60 * 60 * 24 * 30, // 30 days
+    path: '/',
+  };
 
   // Set affiliate attribution cookie from ?ref= query param (last-touch, 30 days)
   const refCode = request.nextUrl.searchParams.get('ref');
   if (refCode) {
-    response.cookies.set('ref_code', refCode.toUpperCase(), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-      path: '/',
-    });
+    response.cookies.set('ref_code', refCode.toUpperCase(), cookieOptions);
+  }
+
+  // Set attribution cookie when visiting partner landing pages directly
+  const partnersMatch = request.nextUrl.pathname.match(/^\/partners\/([^/]+)$/);
+  if (partnersMatch) {
+    response.cookies.set('ref_code', partnersMatch[1].toUpperCase(), cookieOptions);
   }
 
   return response;
