@@ -22,7 +22,10 @@ export default function DashboardBottomBar({
 
   useEffect(() => {
     const target = cartRef.current;
-    if (!target) return;
+    if (!target) {
+      setCartVisible(false);
+      return;
+    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -39,8 +42,9 @@ export default function DashboardBottomBar({
   const totalQty = myItems.reduce((sum, i) => sum + i.quantity, 0);
   const totalPrice = myItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
-  // Hide when cart is visible in viewport, or no items
-  if (cartVisible || (totalQty === 0 && !isLocked)) return null;
+  // Hide when no items (unless locked with items), or when cart is visible on screen
+  if (totalQty === 0 && !isLocked) return null;
+  if (cartVisible && totalQty > 0) return null;
 
   function scrollToCart() {
     cartRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -68,19 +72,19 @@ export default function DashboardBottomBar({
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 shadow-lg lg:hidden">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
         <button
           onClick={scrollToCart}
-          className="flex items-center gap-2 text-base font-medium text-gray-700"
+          className="flex items-center gap-2 text-sm font-semibold text-gray-700 bg-gray-100 rounded-lg px-3 py-2.5 hover:bg-gray-200 transition-colors"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v4m0 0a2 2 0 11-4 0m4 0a2 2 0 10-4 0m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
           </svg>
-          Back to Cart ({totalQty})
+          {totalQty} item{totalQty !== 1 ? 's' : ''}
         </button>
         <button
           onClick={onCheckout}
-          className="px-6 py-3 bg-brand-yellow text-gray-900 font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors text-base"
+          className="flex-1 py-2.5 bg-brand-blue text-white font-semibold tracking-[0.08em] rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors text-sm text-center"
         >
           Checkout - ${totalPrice.toFixed(2)}
         </button>

@@ -18,7 +18,8 @@ interface Props {
 function formatDeliveryDate(dateStr: string): string {
   if (!dateStr || dateStr === 'TBD') return '';
   try {
-    const d = new Date(dateStr + 'T00:00:00');
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   } catch {
     return dateStr;
@@ -33,6 +34,22 @@ function hasDeliveryDetails(tab: SubOrderFull): boolean {
   );
 }
 
+function getDisplayName(name: string): string {
+  if (/party/i.test(name)) return name;
+  return `${name}'s Party`;
+}
+
+const PARTY_TYPE_LABELS: Record<string, string> = {
+  BOAT: 'Boat Order',
+  BACH: 'Bach Order',
+  WEDDING: 'Wedding Order',
+  BIRTHDAY: 'Birthday Order',
+  CORPORATE: 'Corporate Order',
+  TAILGATE: 'Tailgate Order',
+  HOLIDAY: 'Holiday Order',
+  OTHER: 'Order',
+};
+
 export default function DeliveryHeroSection({
   groupOrder,
   activeTabIndex,
@@ -46,6 +63,7 @@ export default function DeliveryHeroSection({
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState(groupOrder.name);
   const [saving, setSaving] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Detect if name is a default placeholder
@@ -95,6 +113,14 @@ export default function DeliveryHeroSection({
     ? `${addr.address1}${addr.city ? ', ' + addr.city : ''}`
     : '';
 
+  function getTabLabel(tab: SubOrderFull, index: number): string {
+    if (tab.name) return tab.name;
+    if (index === 0 && groupOrder.partyType) {
+      return PARTY_TYPE_LABELS[groupOrder.partyType] || `Location ${index + 1}`;
+    }
+    return `Location ${index + 1}`;
+  }
+
   return (
     <div className="bg-gradient-to-br from-blue-50 to-yellow-50 px-4 py-6">
       <div className="max-w-7xl mx-auto">
@@ -122,47 +148,61 @@ export default function DeliveryHeroSection({
             ) : (
               <button
                 onClick={() => isHost && setEditing(true)}
-                className={`text-left w-full ${isHost ? 'cursor-pointer hover:opacity-80' : ''}`}
+                className={`text-left w-full group ${isHost ? 'cursor-pointer hover:opacity-80' : ''}`}
                 disabled={!isHost}
               >
-                <h1 className="text-2xl md:text-4xl font-heading font-bold tracking-[0.04em] text-gray-900">
-                  {groupOrder.name}
+                <h1 className="text-2xl md:text-4xl font-heading font-bold tracking-[0.04em] text-gray-900 inline">
+                  {getDisplayName(groupOrder.name)}
                 </h1>
+                {isHost && (
+                  <svg className="w-5 h-5 inline-block ml-2 text-gray-400 group-hover:text-brand-blue transition-colors align-baseline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                )}
               </button>
             )}
           </div>
 
-          {/* Delivery summary or Add button */}
+          {/* Delivery details -- collapsible */}
           {hasDetails ? (
-            <button
-              onClick={isHost ? onEditDelivery : undefined}
-              className={`flex items-center gap-3 text-base text-gray-600 ${isHost ? 'hover:text-brand-blue cursor-pointer' : ''}`}
-              disabled={!isHost}
-            >
-              <span className="flex items-center gap-1.5">
+            <div>
+              <button
+                onClick={() => setDetailsOpen(!detailsOpen)}
+                className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+              >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                {deliveryDate}
-              </span>
-              {deliveryTime && (
-                <>
-                  <span className="text-gray-300">|</span>
-                  <span>{deliveryTime}</span>
-                </>
-              )}
-              {addressLine && (
-                <>
-                  <span className="text-gray-300">|</span>
-                  <span className="truncate max-w-[200px]">{addressLine}</span>
-                </>
-              )}
-              {isHost && (
-                <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                <span>{deliveryDate}{deliveryTime ? ` at ${deliveryTime}` : ''}</span>
+                <span className="text-gray-300">|</span>
+                <span className="truncate max-w-[180px]">{addressLine}</span>
+                <svg
+                  className={`w-4 h-4 text-gray-400 transition-transform flex-shrink-0 ${detailsOpen ? 'rotate-180' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
+              </button>
+              {detailsOpen && (
+                <div className="mt-3 pl-6 text-sm text-gray-600 space-y-1">
+                  {deliveryDate && <p>Date: {deliveryDate}</p>}
+                  {deliveryTime && <p>Time: {deliveryTime}</p>}
+                  {addr?.address1 && (
+                    <p>Address: {addr.address1}{addr.address2 ? `, ${addr.address2}` : ''}{addr.city ? `, ${addr.city}` : ''}{addr.province ? `, ${addr.province}` : ''} {addr.zip || ''}</p>
+                  )}
+                  {isHost && (
+                    <button
+                      onClick={onEditDelivery}
+                      className="text-brand-blue hover:text-blue-700 font-medium mt-1"
+                    >
+                      Edit details
+                    </button>
+                  )}
+                </div>
               )}
-            </button>
+            </div>
           ) : isHost ? (
             <button
               onClick={onEditDelivery}
@@ -190,7 +230,7 @@ export default function DeliveryHeroSection({
                       : 'bg-white/80 text-gray-600 hover:bg-white hover:text-gray-900 border border-gray-200'
                   }`}
                 >
-                  {tab.name || `Location ${i + 1}`}
+                  {getTabLabel(tab, i)}
                 </button>
               ))}
               {isHost && (

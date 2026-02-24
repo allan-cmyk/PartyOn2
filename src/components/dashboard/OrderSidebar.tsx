@@ -342,52 +342,45 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
         </div>
       </div>
 
-      {/* Mobile collapsible cart */}
-      <div ref={ref} className="lg:hidden mb-6">
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          {/* Header */}
-          <button
-            onClick={() => setExpanded(!expanded)}
-            className="w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v4m0 0a2 2 0 11-4 0m4 0a2 2 0 10-4 0m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              <span className="text-base font-semibold text-gray-900">
-                Cart ({totalQty} item{totalQty !== 1 ? 's' : ''})
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-base font-bold text-gray-900">${myTotal.toFixed(2)}</span>
-              <svg
-                className={`w-5 h-5 text-gray-400 transition-transform ${expanded ? 'rotate-180' : ''}`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </div>
-          </button>
+      {/* Mobile collapsible cart -- hidden when empty */}
+      {!isEmpty && (
+        <div ref={ref} className="lg:hidden mb-6">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            {/* Header */}
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v4m0 0a2 2 0 11-4 0m4 0a2 2 0 10-4 0m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span className="text-base font-semibold text-gray-900">
+                  Cart ({totalQty} item{totalQty !== 1 ? 's' : ''})
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-base font-bold text-gray-900">${myTotal.toFixed(2)}</span>
+                <svg
+                  className={`w-5 h-5 text-gray-400 transition-transform ${expanded ? 'rotate-180' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </button>
 
-          {expanded && (
-            <div className="border-t border-gray-100">
-              {isEmpty ? (
-                <div className="px-5 py-6 text-center">
-                  <p className="text-base text-gray-500">Your cart is empty</p>
-                  <p className="text-sm text-gray-400 mt-1">Browse products below to get started</p>
-                </div>
-              ) : (
-                <>
-                  {renderCartContent()}
-                  {renderSecondaryActions()}
-                </>
-              )}
-            </div>
-          )}
+            {expanded && (
+              <div className="border-t border-gray-100">
+                {renderCartContent()}
+                {renderSecondaryActions()}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 });
