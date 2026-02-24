@@ -7,6 +7,7 @@ import {
 } from '@/lib/email/templates/delivery-update';
 import { generateInvoiceEmail, type InvoiceTextOverrides } from '@/lib/email/templates/invoice';
 import { getInvoiceTextOverrides } from '@/lib/email/template-content';
+import { generateAffiliateWelcomeEmail } from '@/lib/email/templates/affiliate-welcome';
 
 const SAMPLE_ORDER = {
   orderNumber: 1234,
@@ -105,6 +106,16 @@ export async function GET(request: NextRequest) {
       html = generateInvoiceEmail(SAMPLE_INVOICE, overrides);
       break;
     }
+
+    case 'affiliate-welcome':
+      html = generateAffiliateWelcomeEmail({
+        contactName: 'Jane Doe',
+        businessName: 'Sunset Bar & Grill',
+        code: 'SUNSET',
+        referralLink: 'https://partyondelivery.com/partners/sunset',
+        dashboardLink: 'https://partyondelivery.com/affiliate/login',
+      });
+      break;
 
     default:
       html = '<p>Unknown email type</p>';

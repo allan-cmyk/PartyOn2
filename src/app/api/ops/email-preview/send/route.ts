@@ -8,6 +8,7 @@ import {
 } from '@/lib/email/templates/delivery-update';
 import { generateInvoiceEmail } from '@/lib/email/templates/invoice';
 import { getInvoiceTextOverrides } from '@/lib/email/template-content';
+import { generateAffiliateWelcomeEmail } from '@/lib/email/templates/affiliate-welcome';
 import { EmailType } from '@prisma/client';
 
 const SAMPLE_ORDER = {
@@ -80,6 +81,7 @@ const SUBJECT_MAP: Record<string, string> = {
   'payment-failed': '[TEST] Payment Issue - Party On Delivery',
   'refund-processed': '[TEST] Refund Processed - Order #1234',
   'invoice': '[TEST] Your Invoice from Party On Delivery - $95.06',
+  'affiliate-welcome': '[TEST] Welcome to the Party On Delivery Partner Program!',
 };
 
 export async function POST(request: NextRequest) {
@@ -129,6 +131,16 @@ export async function POST(request: NextRequest) {
         emailType = EmailType.INVOICE;
         break;
       }
+      case 'affiliate-welcome':
+        html = generateAffiliateWelcomeEmail({
+          contactName: 'Jane Doe',
+          businessName: 'Sunset Bar & Grill',
+          code: 'SUNSET',
+          referralLink: 'https://partyondelivery.com/partners/sunset',
+          dashboardLink: 'https://partyondelivery.com/affiliate/login',
+        });
+        emailType = EmailType.AFFILIATE_WELCOME;
+        break;
       default:
         return NextResponse.json({ error: 'Unknown email type' }, { status: 400 });
     }
