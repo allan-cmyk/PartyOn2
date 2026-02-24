@@ -120,10 +120,45 @@ export default function DeliveryHeroSection({
     return tab.name || `Location ${index + 1}`;
   }
 
+  const showTabs = groupOrder.tabs.length > 1 || isHost;
+
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-yellow-50 px-4 py-6">
+    <div className="bg-gradient-to-br from-blue-50 to-yellow-50 px-4 py-6 pb-0">
       <div className="max-w-7xl mx-auto">
-        <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-sm border border-white/50 p-6">
+        {/* Tabs row -- sits above content card */}
+        {showTabs && (
+          <div className="flex items-end gap-0 px-2">
+            {groupOrder.tabs.map((tab, i) => (
+              <button
+                key={tab.id}
+                onClick={() => onTabChange(i)}
+                className={`px-5 py-2.5 text-sm font-semibold transition-all rounded-t-xl border border-b-0 ${
+                  i === activeTabIndex
+                    ? 'bg-white/70 backdrop-blur-md text-gray-900 border-white/50 relative z-10 -mb-px'
+                    : 'bg-white/30 text-gray-500 hover:text-gray-700 hover:bg-white/40 border-transparent'
+                }`}
+              >
+                {getTabLabel(tab, i)}
+              </button>
+            ))}
+            {isHost && (
+              <button
+                onClick={onAddDelivery}
+                className="w-9 h-9 flex items-center justify-center rounded-t-xl text-gray-400 hover:text-brand-blue hover:bg-white/30 transition-colors ml-1 mb-0.5"
+                title="Add another location"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Content card */}
+        <div className={`bg-white/70 backdrop-blur-md shadow-sm border border-white/50 p-6 pb-6 ${
+          showTabs ? 'rounded-2xl rounded-tl-none' : 'rounded-2xl'
+        }`}>
           {/* Party type title */}
           <div className="mb-4 relative" ref={selectorRef}>
             <button
@@ -212,36 +247,6 @@ export default function DeliveryHeroSection({
             </button>
           ) : (
             <p className="text-base text-gray-400">Delivery details not set yet</p>
-          )}
-
-          {/* Tab pills + Add delivery button */}
-          {(groupOrder.tabs.length > 1 || isHost) && (
-            <div className="flex items-center gap-2 mt-5 pt-4 border-t border-gray-200/60">
-              {groupOrder.tabs.map((tab, i) => (
-                <button
-                  key={tab.id}
-                  onClick={() => onTabChange(i)}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
-                    i === activeTabIndex
-                      ? 'bg-brand-blue text-white shadow-sm'
-                      : 'bg-white/80 text-gray-600 hover:bg-white hover:text-gray-900 border border-gray-200'
-                  }`}
-                >
-                  {getTabLabel(tab, i)}
-                </button>
-              ))}
-              {isHost && (
-                <button
-                  onClick={onAddDelivery}
-                  className="w-9 h-9 flex items-center justify-center rounded-full border-2 border-dashed border-gray-300 text-gray-400 hover:border-brand-blue hover:text-brand-blue transition-colors"
-                  title="Add another location"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                </button>
-              )}
-            </div>
           )}
         </div>
       </div>
