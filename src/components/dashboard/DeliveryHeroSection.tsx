@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, type ReactElement } from 'react';
-import type { GroupOrderV2Full, SubOrderFull } from '@/lib/group-orders-v2/types';
+import type { GroupOrderV2Full, SubOrderFull, PartyType } from '@/lib/group-orders-v2/types';
 import { updateGroupOrderV2 } from '@/lib/group-orders-v2/api-client';
 
 interface Props {
@@ -46,6 +46,15 @@ const PARTY_TYPE_LABELS: Record<string, string> = {
   OTHER: 'Order',
 };
 
+const PARTY_TYPE_OPTIONS: { value: PartyType; label: string }[] = [
+  { value: 'BOAT', label: 'Boat' },
+  { value: 'BACH', label: 'Bach' },
+  { value: 'WEDDING', label: 'Wedding' },
+  { value: 'CORPORATE', label: 'Corporate' },
+  { value: 'HOUSE_PARTY', label: 'Private' },
+  { value: 'OTHER', label: 'Other' },
+];
+
 export default function DeliveryHeroSection({
   groupOrder,
   activeTabIndex,
@@ -56,50 +65,43 @@ export default function DeliveryHeroSection({
   onEditDelivery,
   onRefresh,
 }: Props): ReactElement {
-  const [editing, setEditing] = useState(false);
-  const [editName, setEditName] = useState(groupOrder.name);
+  const [showTypeSelector, setShowTypeSelector] = useState(false);
   const [saving, setSaving] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const selectorRef = useRef<HTMLDivElement>(null);
 
-  // Detect if name is a default placeholder
-  const isDefaultName =
-    groupOrder.name === 'New Order' ||
-    groupOrder.name === "Party Host's Order" ||
-    groupOrder.name.endsWith("'s Order");
-
-  // Auto-focus the name input if it's a default name and user is host
+  // Close selector when clicking outside
   useEffect(() => {
-    if (isHost && isDefaultName && !editing) {
-      setEditing(true);
+    if (!showTypeSelector) return;
+    function handleClick(e: MouseEvent) {
+      if (selectorRef.current && !selectorRef.current.contains(e.target as Node)) {
+        setShowTypeSelector(false);
+      }
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [showTypeSelector]);
 
-  useEffect(() => {
-    if (editing && inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
-    }
-  }, [editing]);
-
-  async function handleSaveName() {
-    const trimmed = editName.trim();
-    if (!trimmed || trimmed === groupOrder.name) {
-      setEditing(false);
-      setEditName(groupOrder.name);
+  async function handleSelectPartyType(type: PartyType) {
+    if (type === groupOrder.partyType) {
+      setShowTypeSelector(false);
       return;
     }
     setSaving(true);
     try {
-      await updateGroupOrderV2(groupOrder.shareCode, { name: trimmed });
+      await updateGroupOrderV2(groupOrder.shareCode, { partyType: type });
       onRefresh();
     } catch {
       // Silently fail
     } finally {
       setSaving(false);
-      setEditing(false);
+      setShowTypeSelector(false);
     }
   }
+
+  const heroTitle = groupOrder.partyType
+    ? PARTY_TYPE_LABELS[groupOrder.partyType] || 'Your Order'
+    : 'Your Order';
 
   const hasDetails = hasDeliveryDetails(activeTab);
   const deliveryDate = formatDeliveryDate(activeTab.deliveryDate);
@@ -122,41 +124,39 @@ export default function DeliveryHeroSection({
     <div className="bg-gradient-to-br from-blue-50 to-yellow-50 px-4 py-6">
       <div className="max-w-7xl mx-auto">
         <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-sm border border-white/50 p-6">
-          {/* Order name */}
-          <div className="mb-4">
-            {editing ? (
-              <input
-                ref={inputRef}
-                type="text"
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                onBlur={handleSaveName}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleSaveName();
-                  if (e.key === 'Escape') {
-                    setEditing(false);
-                    setEditName(groupOrder.name);
-                  }
-                }}
-                placeholder="Type your order name here..."
-                disabled={saving}
-                className="w-full text-2xl md:text-4xl font-heading font-bold tracking-[0.04em] text-gray-900 bg-transparent border-b-2 border-dashed border-gray-300 focus:border-brand-blue outline-none pb-1 placeholder-gray-300 transition-colors"
-              />
-            ) : (
-              <button
-                onClick={() => isHost && setEditing(true)}
-                className={`text-left w-full group ${isHost ? 'cursor-pointer hover:opacity-80' : ''}`}
-                disabled={!isHost}
-              >
-                <h1 className="text-2xl md:text-4xl font-heading font-bold tracking-[0.04em] text-gray-900 inline">
-                  {groupOrder.name}
-                </h1>
-                {isHost && (
-                  <svg className="w-5 h-5 inline-block ml-2 text-gray-400 group-hover:text-brand-blue transition-colors align-baseline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                  </svg>
-                )}
-              </button>
+          {/* Party type title */}
+          <div className="mb-4 relative" ref={selectorRef}>
+            <button
+              onClick={() => isHost && setShowTypeSelector(!showTypeSelector)}
+              className={`text-left w-full group ${isHost ? 'cursor-pointer hover:opacity-80' : ''}`}
+              disabled={!isHost}
+            >
+              <h1 className="text-2xl md:text-4xl font-heading font-bold tracking-[0.04em] text-gray-900 inline">
+                {heroTitle}
+              </h1>
+              {isHost && (
+                <svg className="w-5 h-5 inline-block ml-2 text-gray-400 group-hover:text-brand-blue transition-colors align-baseline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+              )}
+            </button>
+            {showTypeSelector && (
+              <div className="absolute top-full left-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-200 p-2 z-20 min-w-[200px]">
+                {PARTY_TYPE_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => handleSelectPartyType(opt.value)}
+                    disabled={saving}
+                    className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
+                      groupOrder.partyType === opt.value
+                        ? 'bg-brand-blue text-white'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
             )}
           </div>
 
