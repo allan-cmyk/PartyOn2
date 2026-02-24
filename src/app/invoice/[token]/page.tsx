@@ -463,7 +463,14 @@ export default function InvoicePage(): ReactElement {
             </div>
             <div className="flex justify-between text-gray-600">
               <span>Delivery Fee</span>
-              <span>${Number(invoice.deliveryFee).toFixed(2)}</span>
+              {invoice.originalDeliveryFee != null && Number(invoice.originalDeliveryFee) > 0 && Number(invoice.deliveryFee) === 0 ? (
+                <span>
+                  <span className="line-through text-gray-400 mr-2">${Number(invoice.originalDeliveryFee).toFixed(2)}</span>
+                  <span className="text-green-600 font-semibold">$0.00</span>
+                </span>
+              ) : (
+                <span>${Number(invoice.deliveryFee).toFixed(2)}</span>
+              )}
             </div>
             <div className="flex justify-between text-xl font-semibold text-gray-900 pt-4 border-t border-gray-200">
               <span>Total</span>

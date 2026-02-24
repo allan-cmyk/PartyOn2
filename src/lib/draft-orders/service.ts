@@ -34,6 +34,7 @@ export async function createDraftOrder(input: CreateDraftOrderInput): Promise<Dr
     groupOrderId,
     affiliateId,
     affiliateCode,
+    originalDeliveryFee,
     expiresAt,
   } = input;
 
@@ -56,6 +57,7 @@ export async function createDraftOrder(input: CreateDraftOrderInput): Promise<Dr
       subtotal: new Prisma.Decimal(subtotal),
       taxAmount: new Prisma.Decimal(taxAmount),
       deliveryFee: new Prisma.Decimal(deliveryFee),
+      originalDeliveryFee: originalDeliveryFee != null ? new Prisma.Decimal(originalDeliveryFee) : null,
       discountAmount: new Prisma.Decimal(discountAmount),
       discountCode,
       total: new Prisma.Decimal(total),
@@ -134,6 +136,11 @@ export async function updateDraftOrder(
   if (input.adminNotes !== undefined) updateData.adminNotes = input.adminNotes;
   if (input.affiliateId !== undefined) updateData.affiliateId = input.affiliateId;
   if (input.affiliateCode !== undefined) updateData.affiliateCode = input.affiliateCode;
+  if (input.originalDeliveryFee !== undefined) {
+    updateData.originalDeliveryFee = input.originalDeliveryFee != null
+      ? new Prisma.Decimal(input.originalDeliveryFee)
+      : null;
+  }
   if (input.expiresAt !== undefined) updateData.expiresAt = input.expiresAt;
   if (input.items) updateData.items = input.items as unknown as Prisma.InputJsonValue;
   if (input.discountCode !== undefined) updateData.discountCode = input.discountCode;

@@ -108,6 +108,7 @@ export default function CreateInvoicePage(): ReactElement {
   const [deliveryTime, setDeliveryTime] = useState('');
   const [deliveryNotes, setDeliveryNotes] = useState('');
   const [deliveryFee, setDeliveryFee] = useState('25');
+  const [originalDeliveryFee, setOriginalDeliveryFee] = useState<number | null>(null);
 
   // Admin
   const [adminNotes, setAdminNotes] = useState('');
@@ -269,6 +270,8 @@ export default function CreateInvoicePage(): ReactElement {
         if (affData.success && affData.data.status === 'ACTIVE') {
           setAffiliateInfo(affData.data);
           if (affData.data.customerPerk === 'Free Delivery') {
+            const currentFee = parseFloat(deliveryFee) || 25;
+            setOriginalDeliveryFee(currentFee);
             setDeliveryFee('0');
           }
         }
@@ -297,7 +300,8 @@ export default function CreateInvoicePage(): ReactElement {
     setDiscountCode('');
     setDiscountInfo(null);
     setAffiliateInfo(null);
-    setDeliveryFee('25');
+    setDeliveryFee(originalDeliveryFee != null ? String(originalDeliveryFee) : '25');
+    setOriginalDeliveryFee(null);
   };
 
   // Submit invoice
@@ -344,6 +348,7 @@ export default function CreateInvoicePage(): ReactElement {
           imageUrl: item.imageUrl || undefined,
         })),
         deliveryFee: deliveryFeeNum,
+        originalDeliveryFee: originalDeliveryFee,
         discountAmount,
         discountCode: discountInfo?.valid ? discountInfo.discountCode || undefined : undefined,
         adminNotes: adminNotes.trim() || undefined,

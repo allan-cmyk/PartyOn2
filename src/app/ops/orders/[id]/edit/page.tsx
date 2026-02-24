@@ -112,6 +112,7 @@ export default function EditInvoicePage(): ReactElement {
   const [deliveryTime, setDeliveryTime] = useState('');
   const [deliveryNotes, setDeliveryNotes] = useState('');
   const [deliveryFee, setDeliveryFee] = useState('25');
+  const [originalDeliveryFee, setOriginalDeliveryFee] = useState<number | null>(null);
 
   // Admin
   const [adminNotes, setAdminNotes] = useState('');
@@ -171,6 +172,9 @@ export default function EditInvoicePage(): ReactElement {
         setDeliveryTime(order.deliveryTime || '');
         setDeliveryNotes(order.deliveryNotes || '');
         setDeliveryFee(String(Number(order.deliveryFee)));
+        if (order.originalDeliveryFee != null) {
+          setOriginalDeliveryFee(Number(order.originalDeliveryFee));
+        }
 
         setAdminNotes(order.adminNotes || '');
 
@@ -361,6 +365,8 @@ export default function EditInvoicePage(): ReactElement {
         if (affData.success && affData.data.status === 'ACTIVE') {
           setAffiliateInfo(affData.data);
           if (affData.data.customerPerk === 'Free Delivery') {
+            const currentFee = parseFloat(deliveryFee) || 25;
+            setOriginalDeliveryFee(currentFee);
             setDeliveryFee('0');
           }
         }
@@ -388,7 +394,8 @@ export default function EditInvoicePage(): ReactElement {
     setDiscountCode('');
     setDiscountInfo(null);
     setAffiliateInfo(null);
-    setDeliveryFee('25');
+    setDeliveryFee(originalDeliveryFee != null ? String(originalDeliveryFee) : '25');
+    setOriginalDeliveryFee(null);
   };
 
   // Submit updated invoice
@@ -435,6 +442,7 @@ export default function EditInvoicePage(): ReactElement {
           imageUrl: item.imageUrl || undefined,
         })),
         deliveryFee: deliveryFeeNum,
+        originalDeliveryFee: originalDeliveryFee,
         discountAmount,
         discountCode: discountInfo?.valid ? discountInfo.discountCode || null : null,
         adminNotes: adminNotes.trim() || null,
@@ -516,6 +524,7 @@ export default function EditInvoicePage(): ReactElement {
           imageUrl: item.imageUrl || undefined,
         })),
         deliveryFee: deliveryFeeNum,
+        originalDeliveryFee: originalDeliveryFee,
         discountAmount,
         discountCode: discountInfo?.valid ? discountInfo.discountCode || null : null,
         adminNotes: adminNotes.trim() || null,

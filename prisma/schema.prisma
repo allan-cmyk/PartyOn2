@@ -1483,10 +1483,11 @@ model DraftOrder {
   // Amounts
   subtotal       Decimal @db.Decimal(10, 2)
   taxAmount      Decimal @map("tax_amount") @db.Decimal(10, 2)
-  deliveryFee    Decimal @map("delivery_fee") @db.Decimal(10, 2)
-  discountAmount Decimal @default(0) @map("discount_amount") @db.Decimal(10, 2)
-  discountCode   String? @map("discount_code")
-  total          Decimal @db.Decimal(10, 2)
+  deliveryFee         Decimal  @map("delivery_fee") @db.Decimal(10, 2)
+  originalDeliveryFee Decimal? @map("original_delivery_fee") @db.Decimal(10, 2)
+  discountAmount      Decimal  @default(0) @map("discount_amount") @db.Decimal(10, 2)
+  discountCode        String?  @map("discount_code")
+  total               Decimal  @db.Decimal(10, 2)
 
   // Payment tracking
   stripeCheckoutSessionId String?   @unique @map("stripe_checkout_session_id")

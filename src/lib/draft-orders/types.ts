@@ -37,6 +37,7 @@ export interface CreateDraftOrderInput {
   subtotal: number;
   taxAmount: number;
   deliveryFee: number;
+  originalDeliveryFee?: number | null;
   discountAmount?: number;
   discountCode?: string;
 
@@ -70,6 +71,7 @@ export interface UpdateDraftOrderInput {
   subtotal?: number;
   taxAmount?: number;
   deliveryFee?: number;
+  originalDeliveryFee?: number | null;
   discountAmount?: number;
   discountCode?: string | null;
   adminNotes?: string | null;
@@ -96,6 +98,7 @@ export interface DraftOrderWithTotal {
   subtotal: Prisma.Decimal;
   taxAmount: Prisma.Decimal;
   deliveryFee: Prisma.Decimal;
+  originalDeliveryFee: Prisma.Decimal | null;
   discountAmount: Prisma.Decimal;
   discountCode: string | null;
   total: Prisma.Decimal;

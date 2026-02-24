@@ -41,6 +41,7 @@ const UpdateDraftOrderSchema = z.object({
   deliveryNotes: z.string().optional().nullable(),
   items: z.array(DraftOrderItemSchema).min(1).optional(),
   deliveryFee: z.number().min(0).optional(),
+  originalDeliveryFee: z.number().min(0).optional().nullable(),
   discountAmount: z.number().min(0).optional(),
   discountCode: z.string().optional().nullable(),
   adminNotes: z.string().optional().nullable(),
