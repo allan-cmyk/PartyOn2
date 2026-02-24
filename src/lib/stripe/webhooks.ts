@@ -267,6 +267,17 @@ async function handleDraftOrderPayment(
     });
     console.log('[Stripe Webhook] Draft order marked as converted:', draftOrderId);
 
+    // Link order to affiliate if attributed
+    const affiliateCode = session.metadata?.affiliateCode || draftOrder.affiliateCode;
+    if (affiliateCode) {
+      try {
+        await linkOrderToAffiliate(order, affiliateCode);
+        console.log('[Stripe Webhook] Draft order linked to affiliate:', affiliateCode);
+      } catch (affiliateError) {
+        console.error('[Stripe Webhook] Failed to link draft order affiliate:', affiliateError);
+      }
+    }
+
     // Create delivery task
     try {
       await prisma.deliveryTask.create({

@@ -1506,6 +1506,10 @@ model DraftOrder {
   // Group order association (optional)
   groupOrderId String? @map("group_order_id")
 
+  // Affiliate attribution (optional)
+  affiliateId   String? @map("affiliate_id")
+  affiliateCode String? @map("affiliate_code")
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

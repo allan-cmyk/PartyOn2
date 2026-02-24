@@ -38,6 +38,8 @@ const CreateDraftOrderSchema = z.object({
   createdBy: z.string().optional(),
   adminNotes: z.string().optional(),
   groupOrderId: z.string().optional(),
+  affiliateId: z.string().optional(),
+  affiliateCode: z.string().optional(),
   expiresInDays: z.number().int().positive().optional(),
 });
 

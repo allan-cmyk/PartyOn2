@@ -32,6 +32,8 @@ export async function createDraftOrder(input: CreateDraftOrderInput): Promise<Dr
     createdBy,
     adminNotes,
     groupOrderId,
+    affiliateId,
+    affiliateCode,
     expiresAt,
   } = input;
 
@@ -60,6 +62,8 @@ export async function createDraftOrder(input: CreateDraftOrderInput): Promise<Dr
       createdBy,
       adminNotes,
       groupOrderId,
+      affiliateId,
+      affiliateCode,
       expiresAt,
       status: 'PENDING',
     },
@@ -128,6 +132,8 @@ export async function updateDraftOrder(
   if (input.deliveryTime) updateData.deliveryTime = input.deliveryTime;
   if (input.deliveryNotes !== undefined) updateData.deliveryNotes = input.deliveryNotes;
   if (input.adminNotes !== undefined) updateData.adminNotes = input.adminNotes;
+  if (input.affiliateId !== undefined) updateData.affiliateId = input.affiliateId;
+  if (input.affiliateCode !== undefined) updateData.affiliateCode = input.affiliateCode;
   if (input.expiresAt !== undefined) updateData.expiresAt = input.expiresAt;
   if (input.items) updateData.items = input.items as unknown as Prisma.InputJsonValue;
   if (input.discountCode !== undefined) updateData.discountCode = input.discountCode;

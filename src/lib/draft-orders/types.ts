@@ -47,6 +47,10 @@ export interface CreateDraftOrderInput {
   // Group order (optional)
   groupOrderId?: string;
 
+  // Affiliate attribution (optional)
+  affiliateId?: string;
+  affiliateCode?: string;
+
   // Expiration (optional)
   expiresAt?: Date;
 }
@@ -69,6 +73,8 @@ export interface UpdateDraftOrderInput {
   discountAmount?: number;
   discountCode?: string | null;
   adminNotes?: string | null;
+  affiliateId?: string | null;
+  affiliateCode?: string | null;
   expiresAt?: Date | null;
 }
 
@@ -103,6 +109,8 @@ export interface DraftOrderWithTotal {
   createdBy: string | null;
   adminNotes: string | null;
   groupOrderId: string | null;
+  affiliateId: string | null;
+  affiliateCode: string | null;
   createdAt: Date;
   updatedAt: Date;
 }

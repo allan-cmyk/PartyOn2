@@ -44,6 +44,8 @@ const UpdateDraftOrderSchema = z.object({
   discountAmount: z.number().min(0).optional(),
   discountCode: z.string().optional().nullable(),
   adminNotes: z.string().optional().nullable(),
+  affiliateId: z.string().optional().nullable(),
+  affiliateCode: z.string().optional().nullable(),
   expiresAt: z.string().transform((str) => new Date(str)).optional().nullable(),
 });
 

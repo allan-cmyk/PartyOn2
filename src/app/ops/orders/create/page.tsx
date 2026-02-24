@@ -89,6 +89,12 @@ export default function CreateInvoicePage(): ReactElement {
   // Line items
   const [lineItems, setLineItems] = useState<LineItem[]>([]);
 
+  // Affiliate
+  const [affiliateCodeInput, setAffiliateCodeInput] = useState('');
+  const [affiliateInfo, setAffiliateInfo] = useState<{ id: string; code: string; businessName: string; contactName: string; customerPerk: string; status: string } | null>(null);
+  const [affiliateLoading, setAffiliateLoading] = useState(false);
+  const [affiliateError, setAffiliateError] = useState('');
+
   // Discount
   const [discountCode, setDiscountCode] = useState('');
   const [discountInfo, setDiscountInfo] = useState<DiscountInfo | null>(null);
@@ -265,6 +271,37 @@ export default function CreateInvoicePage(): ReactElement {
     }
   };
 
+  // Validate affiliate code
+  const validateAffiliate = async () => {
+    if (!affiliateCodeInput.trim()) return;
+    setAffiliateLoading(true);
+    setAffiliateError('');
+    setAffiliateInfo(null);
+    try {
+      const res = await fetch(`/api/admin/affiliates/lookup?code=${encodeURIComponent(affiliateCodeInput.trim())}`);
+      const data = await res.json();
+      if (data.success) {
+        setAffiliateInfo(data.data);
+        if (data.data.customerPerk === 'Free Delivery') {
+          setDeliveryFee('0');
+        }
+      } else {
+        setAffiliateError(data.error || 'Affiliate not found');
+      }
+    } catch {
+      setAffiliateError('Failed to validate affiliate code');
+    } finally {
+      setAffiliateLoading(false);
+    }
+  };
+
+  const removeAffiliate = () => {
+    setAffiliateInfo(null);
+    setAffiliateCodeInput('');
+    setAffiliateError('');
+    setDeliveryFee('25');
+  };
+
   // Submit invoice
   const handleSubmit = async () => {
     setError('');
@@ -312,6 +349,8 @@ export default function CreateInvoicePage(): ReactElement {
         discountAmount,
         discountCode: discountInfo?.valid ? discountInfo.discountCode || undefined : undefined,
         adminNotes: adminNotes.trim() || undefined,
+        affiliateId: affiliateInfo?.id || undefined,
+        affiliateCode: affiliateInfo?.code || undefined,
         expiresInDays: expiresInDays ? parseInt(expiresInDays) : undefined,
       };
 
@@ -885,6 +924,75 @@ export default function CreateInvoicePage(): ReactElement {
               )}
             </div>
           </div>
+        </div>
+
+        {/* Section 3b: Affiliate */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Affiliate Attribution
+          </h2>
+
+          {affiliateInfo ? (
+            <div className="flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+              <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-green-800">
+                  {affiliateInfo.businessName || affiliateInfo.contactName}
+                  <span className="ml-2 text-xs font-mono text-green-600">({affiliateInfo.code})</span>
+                </p>
+                <p className="text-xs text-green-600">
+                  Perk: {affiliateInfo.customerPerk}
+                  {affiliateInfo.customerPerk === 'Free Delivery' && ' — delivery fee set to $0'}
+                </p>
+              </div>
+              <button
+                onClick={removeAffiliate}
+                className="px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+              >
+                Remove
+              </button>
+            </div>
+          ) : (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Affiliate Code</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={affiliateCodeInput}
+                  onChange={(e) => {
+                    setAffiliateCodeInput(e.target.value.toUpperCase());
+                    setAffiliateError('');
+                  }}
+                  placeholder="e.g. PARTNER123"
+                  className="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all uppercase"
+                />
+                <button
+                  onClick={validateAffiliate}
+                  disabled={!affiliateCodeInput.trim() || affiliateLoading}
+                  className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg font-medium hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm flex items-center gap-2"
+                >
+                  {affiliateLoading ? (
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    'Validate'
+                  )}
+                </button>
+              </div>
+              {affiliateError && (
+                <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  {affiliateError}
+                </p>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Section 4: Delivery Info */}

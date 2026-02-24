@@ -130,6 +130,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         type: 'draft_order_invoice',
         deliveryDate: draftOrder.deliveryDate.toISOString(),
         deliveryTime: draftOrder.deliveryTime,
+        ...(draftOrder.affiliateCode ? { affiliateCode: draftOrder.affiliateCode } : {}),
       },
       automatic_tax: { enabled: false }, // We handle tax ourselves
       phone_number_collection: {
