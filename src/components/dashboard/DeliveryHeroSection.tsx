@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, type ReactElement } from 'react';
-import type { GroupOrderV2Full, SubOrderFull, PartyType } from '@/lib/group-orders-v2/types';
+import type { GroupOrderV2Full, SubOrderFull } from '@/lib/group-orders-v2/types';
 import { updateGroupOrderV2, updateTabV2 } from '@/lib/group-orders-v2/api-client';
 
 interface Props {
@@ -47,14 +47,6 @@ const PARTY_TYPE_LABELS: Record<string, string> = {
   OTHER: 'Order',
 };
 
-const PARTY_TYPE_OPTIONS: { value: PartyType; label: string }[] = [
-  { value: 'BOAT', label: 'Boat' },
-  { value: 'BACH', label: 'Bach' },
-  { value: 'WEDDING', label: 'Wedding' },
-  { value: 'CORPORATE', label: 'Corporate' },
-  { value: 'HOUSE_PARTY', label: 'Private' },
-  { value: 'OTHER', label: 'Other' },
-];
 
 export default function DeliveryHeroSection({
   groupOrder,
@@ -67,25 +59,14 @@ export default function DeliveryHeroSection({
   onEditDelivery,
   onRefresh,
 }: Props): ReactElement {
-  const [showTypeSelector, setShowTypeSelector] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [titleValue, setTitleValue] = useState('');
+  const [, setSaving] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [editingTabId, setEditingTabId] = useState<string | null>(null);
   const [editTabName, setEditTabName] = useState('');
   const tabInputRef = useRef<HTMLInputElement>(null);
-  const selectorRef = useRef<HTMLDivElement>(null);
-
-  // Close selector when clicking outside
-  useEffect(() => {
-    if (!showTypeSelector) return;
-    function handleClick(e: MouseEvent) {
-      if (selectorRef.current && !selectorRef.current.contains(e.target as Node)) {
-        setShowTypeSelector(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, [showTypeSelector]);
+  const titleInputRef = useRef<HTMLInputElement>(null);
 
   // Focus tab input when entering edit mode
   useEffect(() => {
@@ -122,34 +103,45 @@ export default function DeliveryHeroSection({
     }
   }
 
-  async function handleSelectPartyType(type: PartyType) {
-    if (type === groupOrder.partyType) {
-      setShowTypeSelector(false);
+  // Focus title input when entering edit mode
+  useEffect(() => {
+    if (editingTitle && titleInputRef.current) {
+      titleInputRef.current.focus();
+      titleInputRef.current.select();
+    }
+  }, [editingTitle]);
+
+  function startEditingTitle() {
+    if (!isHost) return;
+    setTitleValue(heroTitle);
+    setEditingTitle(true);
+  }
+
+  async function saveTitleName() {
+    const trimmed = titleValue.trim();
+    if (!trimmed || trimmed === heroTitle) {
+      setEditingTitle(false);
       return;
     }
     setSaving(true);
     try {
-      await updateGroupOrderV2(groupOrder.shareCode, { partyType: type });
+      await updateGroupOrderV2(groupOrder.shareCode, { name: trimmed });
       onRefresh();
     } catch {
       // Silently fail
     } finally {
       setSaving(false);
-      setShowTypeSelector(false);
+      setEditingTitle(false);
     }
   }
 
-  const heroTitle = groupOrder.partyType
-    ? PARTY_TYPE_LABELS[groupOrder.partyType] || 'Your Order'
-    : 'Your Order';
+  const heroTitle = groupOrder.name
+    || (groupOrder.partyType ? PARTY_TYPE_LABELS[groupOrder.partyType] || 'Your Order' : 'Your Order');
 
   const hasDetails = hasDeliveryDetails(activeTab);
   const deliveryDate = formatDeliveryDate(activeTab.deliveryDate);
   const deliveryTime = activeTab.deliveryTime && activeTab.deliveryTime !== 'TBD' ? activeTab.deliveryTime : '';
   const addr = activeTab.deliveryAddress;
-  const addressLine = addr?.address1
-    ? `${addr.address1}${addr.city ? ', ' + addr.city : ''}`
-    : '';
 
   function getTabLabel(tab: SubOrderFull, index: number): string {
     // Treat "Location N" as a default -- override with party type label for first tab
@@ -165,9 +157,9 @@ export default function DeliveryHeroSection({
   return (
     <div className="mb-4">
       <div>
-        {/* Tabs row -- sits above content card */}
+        {/* Tabs row -- bigger, brighter active state */}
         {showTabs && (
-          <div className="flex items-end gap-0 px-2">
+          <div className="flex items-end gap-1 px-1">
             {groupOrder.tabs.map((tab, i) => (
               editingTabId === tab.id ? (
                 <input
@@ -181,17 +173,17 @@ export default function DeliveryHeroSection({
                     if (e.key === 'Escape') setEditingTabId(null);
                   }}
                   maxLength={100}
-                  className="px-3 py-2 text-sm font-semibold rounded-t-xl border border-b-0 border-brand-blue bg-white text-gray-900 outline-none min-w-[80px] max-w-[200px]"
+                  className="px-5 py-3 text-base font-bold rounded-t-2xl border-2 border-b-0 border-brand-blue bg-white text-gray-900 outline-none min-w-[100px] max-w-[220px]"
                 />
               ) : (
                 <button
                   key={tab.id}
                   onClick={() => onTabChange(i)}
                   onDoubleClick={() => startEditingTab(tab, i)}
-                  className={`px-5 py-2.5 text-sm font-semibold transition-all rounded-t-xl border border-b-0 ${
+                  className={`px-6 py-3.5 text-base font-bold transition-all rounded-t-2xl border-2 border-b-0 ${
                     i === activeTabIndex
-                      ? 'bg-white/70 backdrop-blur-md text-gray-900 border-white/50 relative z-10 -mb-px'
-                      : 'bg-white/30 text-gray-500 hover:text-gray-700 hover:bg-white/40 border-transparent'
+                      ? 'bg-brand-blue text-white border-brand-blue relative z-10 -mb-px shadow-md'
+                      : 'bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 border-transparent'
                   }`}
                   title={isHost ? 'Double-click to rename' : ''}
                 >
@@ -202,10 +194,10 @@ export default function DeliveryHeroSection({
             {isHost && (
               <button
                 onClick={onAddDelivery}
-                className="w-9 h-9 flex items-center justify-center rounded-t-xl text-gray-400 hover:text-brand-blue hover:bg-white/30 transition-colors ml-1 mb-0.5"
+                className="w-11 h-11 flex items-center justify-center rounded-t-2xl text-gray-400 hover:text-brand-blue hover:bg-gray-100 transition-colors ml-1 mb-0.5"
                 title="Add another location"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
               </button>
@@ -214,97 +206,107 @@ export default function DeliveryHeroSection({
         )}
 
         {/* Content card */}
-        <div className={`bg-white/70 backdrop-blur-md shadow-sm border border-white/50 p-6 pb-6 ${
+        <div className={`bg-white/70 backdrop-blur-md shadow-sm border border-white/50 p-5 ${
           showTabs ? 'rounded-2xl rounded-tl-none' : 'rounded-2xl'
         }`}>
-          {/* Party type title */}
-          <div className="mb-4 relative" ref={selectorRef}>
-            <button
-              onClick={() => isHost && setShowTypeSelector(!showTypeSelector)}
-              className={`text-left w-full group ${isHost ? 'cursor-pointer hover:opacity-80' : ''}`}
-              disabled={!isHost}
-            >
-              <h1 className="text-2xl md:text-4xl font-heading font-bold tracking-[0.04em] text-gray-900 inline">
-                {heroTitle}
-              </h1>
-              {isHost && (
-                <svg className="w-5 h-5 inline-block ml-2 text-gray-400 group-hover:text-brand-blue transition-colors align-baseline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                </svg>
+          {/* Title row with chevron toggle */}
+          <div className="flex items-center gap-3">
+            {/* Order title -- click to edit */}
+            <div className="flex-1 min-w-0">
+              {editingTitle ? (
+                <input
+                  ref={titleInputRef}
+                  value={titleValue}
+                  onChange={(e) => setTitleValue(e.target.value)}
+                  onBlur={() => saveTitleName()}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') saveTitleName();
+                    if (e.key === 'Escape') setEditingTitle(false);
+                  }}
+                  maxLength={100}
+                  placeholder="Name your order..."
+                  className="text-xl md:text-2xl font-heading font-bold tracking-[0.04em] text-gray-900 bg-transparent border-b-2 border-brand-blue outline-none w-full"
+                />
+              ) : (
+                <button
+                  onClick={startEditingTitle}
+                  className={`text-left w-full group ${isHost ? 'cursor-pointer hover:opacity-80' : ''}`}
+                  disabled={!isHost}
+                >
+                  <h1 className="text-xl md:text-2xl font-heading font-bold tracking-[0.04em] text-gray-900 inline">
+                    {heroTitle}
+                  </h1>
+                  {isHost && (
+                    <svg className="w-4 h-4 inline-block ml-2 text-gray-400 group-hover:text-brand-blue transition-colors align-baseline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                  )}
+                </button>
               )}
+            </div>
+
+            {/* Chevron to expand/collapse details */}
+            <button
+              onClick={() => setDetailsOpen(!detailsOpen)}
+              className="flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all"
+              aria-label={detailsOpen ? 'Collapse details' : 'Expand details'}
+            >
+              <svg
+                className={`w-5 h-5 transition-transform duration-200 ${detailsOpen ? 'rotate-180' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
             </button>
-            {showTypeSelector && (
-              <div className="absolute top-full left-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-200 p-2 z-20 min-w-[200px]">
-                {PARTY_TYPE_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.value}
-                    onClick={() => handleSelectPartyType(opt.value)}
-                    disabled={saving}
-                    className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
-                      groupOrder.partyType === opt.value
-                        ? 'bg-brand-blue text-white'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
-          {/* Delivery details -- collapsible */}
-          {hasDetails ? (
-            <div>
-              <button
-                onClick={() => setDetailsOpen(!detailsOpen)}
-                className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span>{deliveryDate}{deliveryTime ? ` at ${deliveryTime}` : ''}</span>
-                <span className="text-gray-300">|</span>
-                <span className="truncate max-w-[180px]">{addressLine}</span>
-                <svg
-                  className={`w-4 h-4 text-gray-400 transition-transform flex-shrink-0 ${detailsOpen ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {detailsOpen && (
-                <div className="mt-3 pl-6 text-sm text-gray-600 space-y-1">
-                  {deliveryDate && <p>Date: {deliveryDate}</p>}
-                  {deliveryTime && <p>Time: {deliveryTime}</p>}
+          {/* Expandable delivery details */}
+          {detailsOpen && (
+            <div className="mt-4 pt-3 border-t border-gray-200">
+              {hasDetails ? (
+                <div className="text-sm text-gray-600 space-y-1.5">
+                  {deliveryDate && (
+                    <div className="flex items-center gap-2">
+                      <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span>{deliveryDate}{deliveryTime ? ` at ${deliveryTime}` : ''}</span>
+                    </div>
+                  )}
                   {addr?.address1 && (
-                    <p>Address: {addr.address1}{addr.address2 ? `, ${addr.address2}` : ''}{addr.city ? `, ${addr.city}` : ''}{addr.province ? `, ${addr.province}` : ''} {addr.zip || ''}</p>
+                    <div className="flex items-center gap-2">
+                      <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <span>{addr.address1}{addr.address2 ? `, ${addr.address2}` : ''}{addr.city ? `, ${addr.city}` : ''}{addr.province ? `, ${addr.province}` : ''} {addr.zip || ''}</span>
+                    </div>
                   )}
                   {isHost && (
                     <button
                       onClick={onEditDelivery}
-                      className="text-brand-blue hover:text-blue-700 font-medium mt-1"
+                      className="text-brand-blue hover:text-blue-700 font-medium mt-1 text-sm"
                     >
                       Edit details
                     </button>
                   )}
                 </div>
+              ) : isHost ? (
+                <button
+                  onClick={onEditDelivery}
+                  className="flex items-center gap-2 text-sm font-medium text-brand-blue hover:text-blue-700 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Add location details
+                </button>
+              ) : (
+                <p className="text-sm text-gray-400">Delivery details not set yet</p>
               )}
             </div>
-          ) : isHost ? (
-            <button
-              onClick={onEditDelivery}
-              className="flex items-center gap-2 text-base font-medium text-brand-blue hover:text-blue-700 transition-colors"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              Add location details
-            </button>
-          ) : (
-            <p className="text-base text-gray-400">Delivery details not set yet</p>
           )}
         </div>
       </div>
