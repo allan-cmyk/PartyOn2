@@ -311,10 +311,12 @@ export default function DashboardPage(): ReactElement {
           participantId={participantId}
           tabCount={groupOrder.tabs.length}
           onClose={() => setShowNewLocation(false)}
-          onCreated={() => {
+          onCreated={async () => {
             setShowNewLocation(false);
-            refresh();
-            setActiveTabIndex(groupOrder.tabs.length);
+            const updated = await refresh();
+            if (updated) {
+              setActiveTabIndex(updated.tabs.length - 1);
+            }
           }}
         />
       )}
