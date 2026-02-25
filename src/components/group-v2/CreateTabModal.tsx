@@ -7,7 +7,7 @@ import OrderTypeIcon from './OrderTypeIcon';
 
 interface Props {
   shareCode: string;
-  hostParticipantId: string;
+  participantId: string;
   isOpen: boolean;
   onClose: () => void;
   onCreated: () => void;
@@ -15,7 +15,7 @@ interface Props {
 
 export default function CreateTabModal({
   shareCode,
-  hostParticipantId,
+  participantId,
   isOpen,
   onClose,
   onCreated,
@@ -40,7 +40,7 @@ export default function CreateTabModal({
 
     try {
       await createTabV2(shareCode, {
-        hostParticipantId,
+        participantId,
         name,
         orderType: orderType || undefined,
         deliveryDate: deliveryDate.includes('T')

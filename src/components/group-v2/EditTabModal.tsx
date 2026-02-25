@@ -6,7 +6,7 @@ import type { SubOrderFull } from '@/lib/group-orders-v2/types';
 
 interface Props {
   shareCode: string;
-  hostParticipantId: string;
+  participantId: string;
   tab: SubOrderFull;
   isOpen: boolean;
   onClose: () => void;
@@ -15,7 +15,7 @@ interface Props {
 
 export default function EditTabModal({
   shareCode,
-  hostParticipantId,
+  participantId,
   tab,
   isOpen,
   onClose,
@@ -59,7 +59,7 @@ export default function EditTabModal({
 
     try {
       await updateTabV2(shareCode, tab.id, {
-        hostParticipantId,
+        participantId,
         name,
         deliveryDate: deliveryDate.includes('T') ? deliveryDate : `${deliveryDate}T12:00:00Z`,
         deliveryTime,

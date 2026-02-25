@@ -118,7 +118,7 @@ export async function removeParticipantV2(
 /** Create tab */
 export async function createTabV2(
   code: string,
-  input: CreateTabInput & { hostParticipantId: string }
+  input: CreateTabInput & { participantId: string }
 ): Promise<SubOrderFull> {
   return apiFetch<SubOrderFull>(`${API_BASE}/${code}/tabs`, {
     method: 'POST',
@@ -130,7 +130,7 @@ export async function createTabV2(
 export async function updateTabV2(
   code: string,
   tabId: string,
-  input: UpdateTabInput & { hostParticipantId: string }
+  input: UpdateTabInput & { participantId: string }
 ): Promise<SubOrderFull> {
   return apiFetch<SubOrderFull>(`${API_BASE}/${code}/tabs/${tabId}`, {
     method: 'PATCH',
@@ -247,5 +247,40 @@ export async function createDeliveryInvoice(
   return apiFetch(`${API_BASE}/${code}/tabs/${tabId}/delivery-invoice`, {
     method: 'POST',
     body: JSON.stringify({ hostParticipantId, discountCode }),
+  });
+}
+
+/** Transfer host role to another participant */
+export async function transferHostV2(
+  code: string,
+  hostParticipantId: string,
+  newHostParticipantId: string
+): Promise<void> {
+  await apiFetch(`${API_BASE}/${code}/transfer-host`, {
+    method: 'POST',
+    body: JSON.stringify({ hostParticipantId, newHostParticipantId }),
+  });
+}
+
+/** Generate a host claim token (returns sharable link token) */
+export async function generateHostClaimTokenV2(
+  code: string,
+  hostParticipantId: string
+): Promise<{ token: string }> {
+  return apiFetch(`${API_BASE}/${code}/host-claim-token`, {
+    method: 'POST',
+    body: JSON.stringify({ hostParticipantId }),
+  });
+}
+
+/** Claim host role using a claim token */
+export async function claimHostV2(
+  code: string,
+  claimToken: string,
+  participantId: string
+): Promise<void> {
+  await apiFetch(`${API_BASE}/${code}/claim-host`, {
+    method: 'POST',
+    body: JSON.stringify({ claimToken, participantId }),
   });
 }

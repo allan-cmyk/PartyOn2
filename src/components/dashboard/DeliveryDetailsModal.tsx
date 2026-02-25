@@ -109,7 +109,7 @@ export default function DeliveryDetailsModal({
     setSaving(true);
     try {
       await updateTabV2(shareCode, tab.id, {
-        hostParticipantId: participantId,
+        participantId,
         deliveryDate: date,
         deliveryTime: time,
         deliveryAddress: {

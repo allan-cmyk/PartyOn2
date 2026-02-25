@@ -238,7 +238,7 @@ export default function DashboardPage(): ReactElement {
       {participantId && (
         <CreateTabModal
           shareCode={code}
-          hostParticipantId={participantId}
+          participantId={participantId}
           isOpen={showCreateTab}
           onClose={() => setShowCreateTab(false)}
           onCreated={refresh}

@@ -1640,6 +1640,7 @@ model GroupOrderV2 {
   partyType       PartyType?         @map("party_type")
   affiliateId     String?            @map("affiliate_id")
   source          DashboardSource    @default(DIRECT)
+  hostClaimToken  String?            @unique @map("host_claim_token")
   expiresAt       DateTime           @map("expires_at")
   createdAt       DateTime           @default(now()) @map("created_at")
   updatedAt       DateTime           @updatedAt @map("updated_at")

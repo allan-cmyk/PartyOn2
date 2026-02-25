@@ -2,7 +2,12 @@
 
 import { useState, type ReactElement } from 'react';
 import type { ParticipantSummary } from '@/lib/group-orders-v2/types';
-import { removeParticipantV2, updateTabV2 } from '@/lib/group-orders-v2/api-client';
+import {
+  removeParticipantV2,
+  updateTabV2,
+  transferHostV2,
+  generateHostClaimTokenV2,
+} from '@/lib/group-orders-v2/api-client';
 
 interface Props {
   shareCode: string;
@@ -25,7 +30,11 @@ export default function ParticipantPanel({
 }: Props): ReactElement {
   const [removingId, setRemovingId] = useState<string | null>(null);
   const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
+  const [confirmMakeHostId, setConfirmMakeHostId] = useState<string | null>(null);
+  const [transferring, setTransferring] = useState(false);
   const [locking, setLocking] = useState(false);
+  const [copyingLink, setCopyingLink] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
 
   const isHost = participants.find((p) => p.id === participantId)?.isHost ?? false;
   const activeParticipants = participants.filter((p) => p.status === 'ACTIVE');
@@ -43,11 +52,39 @@ export default function ParticipantPanel({
     }
   }
 
+  async function handleMakeHost(newHostId: string) {
+    setTransferring(true);
+    try {
+      await transferHostV2(shareCode, participantId, newHostId);
+      setConfirmMakeHostId(null);
+      onRefresh();
+    } catch (err) {
+      console.error('Failed to transfer host:', err);
+    } finally {
+      setTransferring(false);
+    }
+  }
+
+  async function handleCopyHostLink() {
+    setCopyingLink(true);
+    try {
+      const { token } = await generateHostClaimTokenV2(shareCode, participantId);
+      const url = `${window.location.origin}/dashboard/${shareCode}?claim=${token}`;
+      await navigator.clipboard.writeText(url);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
+    } catch (err) {
+      console.error('Failed to generate host link:', err);
+    } finally {
+      setCopyingLink(false);
+    }
+  }
+
   async function handleToggleLock() {
     setLocking(true);
     try {
       await updateTabV2(shareCode, tabId, {
-        hostParticipantId: participantId,
+        participantId,
         status: isLocked ? 'OPEN' : 'LOCKED',
       });
       onRefresh();
@@ -99,8 +136,24 @@ export default function ParticipantPanel({
             </div>
 
             {isHost && !p.isHost && p.id !== participantId && (
-              <div>
-                {confirmRemoveId === p.id ? (
+              <div className="flex items-center gap-2">
+                {confirmMakeHostId === p.id ? (
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => handleMakeHost(p.id)}
+                      disabled={transferring}
+                      className="text-xs text-brand-blue hover:text-blue-700 font-medium disabled:opacity-50"
+                    >
+                      {transferring ? '...' : 'Confirm'}
+                    </button>
+                    <button
+                      onClick={() => setConfirmMakeHostId(null)}
+                      className="text-xs text-gray-400 hover:text-gray-600"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : confirmRemoveId === p.id ? (
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => handleRemove(p.id)}
@@ -117,12 +170,20 @@ export default function ParticipantPanel({
                     </button>
                   </div>
                 ) : (
-                  <button
-                    onClick={() => setConfirmRemoveId(p.id)}
-                    className="text-xs text-red-500 hover:text-red-700 font-medium"
-                  >
-                    Remove
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setConfirmMakeHostId(p.id)}
+                      className="text-xs text-brand-blue hover:text-blue-700 font-medium"
+                    >
+                      Make Host
+                    </button>
+                    <button
+                      onClick={() => setConfirmRemoveId(p.id)}
+                      className="text-xs text-red-500 hover:text-red-700 font-medium"
+                    >
+                      Remove
+                    </button>
+                  </div>
                 )}
               </div>
             )}
@@ -131,7 +192,7 @@ export default function ParticipantPanel({
       </div>
 
       {isHost && (
-        <div className="px-4 py-3 border-t border-gray-100">
+        <div className="px-4 py-3 border-t border-gray-100 space-y-2">
           <button
             onClick={handleToggleLock}
             disabled={locking}
@@ -146,6 +207,13 @@ export default function ParticipantPanel({
               : isLocked
               ? 'Unlock Order'
               : 'Lock Order'}
+          </button>
+          <button
+            onClick={handleCopyHostLink}
+            disabled={copyingLink}
+            className="w-full py-2 text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 bg-gray-100 text-gray-700 hover:bg-gray-200"
+          >
+            {copiedLink ? 'Copied!' : copyingLink ? 'Generating...' : 'Copy Host Link'}
           </button>
         </div>
       )}

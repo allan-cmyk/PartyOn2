@@ -14,7 +14,6 @@ interface Props {
   participantId: string;
   mode: 'mine' | 'all';
   items: DraftCartItemView[];
-  isHost: boolean;
   onClose: () => void;
   onOpenDeliveryDetails: () => void;
 }
@@ -25,7 +24,6 @@ export default function DashboardCheckoutModal({
   participantId,
   mode,
   items,
-  isHost,
   onClose,
   onOpenDeliveryDetails,
 }: Props): ReactElement {
@@ -198,7 +196,7 @@ export default function DashboardCheckoutModal({
                 </p>
               )}
             </div>
-          ) : isHost ? (
+          ) : (
             <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
               <p className="text-sm text-amber-800 mb-2">
                 Please fill out delivery details before checking out.
@@ -213,12 +211,6 @@ export default function DashboardCheckoutModal({
               >
                 Fill out delivery details
               </button>
-            </div>
-          ) : (
-            <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
-              <p className="text-sm text-amber-800">
-                The host needs to fill out delivery details before you can check out.
-              </p>
             </div>
           )}
 
