@@ -8,7 +8,12 @@ import { stripe } from './client';
 import { prisma } from '@/lib/database/client';
 import { DEFAULT_TAX_RATE } from '@/lib/tax';
 import { moveDraftToPurchased, moveAllDraftsToPurchased } from '@/lib/group-orders-v2/service';
-import { notifyNewOrder, type GhlOrderPayload } from '@/lib/webhooks/ghl';
+import { notifyNewOrder, buildGhlPayload } from '@/lib/webhooks/ghl';
+import { sendOrderConfirmationEmail } from '@/lib/email';
+import { recordDiscountUsage } from '@/lib/discounts/discount-engine';
+import { linkOrderToAffiliate } from '@/lib/affiliates/commission-engine';
+import { getAffiliateByCode } from '@/lib/affiliates/affiliate-service';
+import { createOrderCalendarEvent } from '@/lib/calendar/google-calendar';
 
 // ==========================================
 // Types
@@ -301,6 +306,10 @@ export async function createDeliveryInvoiceSession(input: CreateDeliveryInvoiceI
 /**
  * Handle successful participant checkout
  * Moves draft items to purchased, creates Order record
+ *
+ * CRITICAL: If order creation fails, this function THROWS so Stripe
+ * retries the webhook. Non-fatal side effects (email, GHL, calendar)
+ * are wrapped in individual try/catch blocks.
  */
 export async function handleGroupV2PaymentCompleted(
   session: Stripe.Checkout.Session
@@ -320,9 +329,9 @@ export async function handleGroupV2PaymentCompleted(
     return;
   }
 
-  // Idempotency: skip if already processed
-  if (payment.status === 'PAID') {
-    console.log('[Group V2 Payment] Already processed:', session.id);
+  // Idempotency: skip if order already created (orderId set)
+  if (payment.orderId) {
+    console.log('[Group V2 Payment] Already processed (orderId set):', session.id);
     return;
   }
 
@@ -330,15 +339,17 @@ export async function handleGroupV2PaymentCompleted(
     ? session.payment_intent
     : session.payment_intent?.id;
 
-  // Update payment status
-  await prisma.participantPayment.update({
-    where: { id: payment.id },
-    data: {
-      stripePaymentIntentId: paymentIntentId || null,
-      status: 'PAID',
-      paidAt: new Date(),
-    },
-  });
+  // Update payment status to PAID (if not already)
+  if (payment.status !== 'PAID') {
+    await prisma.participantPayment.update({
+      where: { id: payment.id },
+      data: {
+        stripePaymentIntentId: paymentIntentId || null,
+        status: 'PAID',
+        paidAt: new Date(),
+      },
+    });
+  }
 
   // Move draft items to purchased
   const checkoutType = session.metadata?.checkoutType;
@@ -348,135 +359,196 @@ export async function handleGroupV2PaymentCompleted(
     await moveDraftToPurchased(subOrderId, participantId, payment.id);
   }
 
-  // Create Order record for this participant
-  try {
-    const participant = await prisma.groupParticipantV2.findUnique({
-      where: { id: participantId },
+  // --- CRITICAL: Create Order record (throws on failure so Stripe retries) ---
+  const participant = await prisma.groupParticipantV2.findUnique({
+    where: { id: participantId },
+  });
+  const subOrder = await prisma.subOrder.findUnique({
+    where: { id: subOrderId },
+  });
+
+  if (!participant || !subOrder) {
+    throw new Error(`[Group V2 Payment] Participant or SubOrder not found: participant=${participantId} subOrder=${subOrderId}`);
+  }
+
+  const purchasedItems = await prisma.purchasedItem.findMany({
+    where: { paymentId: payment.id },
+  });
+
+  // Resolve or create Customer for guest participants
+  let customerId = participant.customerId;
+  if (!customerId && participant.guestEmail) {
+    const existing = await prisma.customer.findFirst({
+      where: { email: participant.guestEmail },
     });
-    const subOrder = await prisma.subOrder.findUnique({
-      where: { id: subOrderId },
-    });
-
-    if (participant && subOrder) {
-      const purchasedItems = await prisma.purchasedItem.findMany({
-        where: { paymentId: payment.id },
-      });
-
-      // Resolve or create Customer for guest participants
-      let customerId = participant.customerId;
-      if (!customerId && participant.guestEmail) {
-        const existing = await prisma.customer.findFirst({
-          where: { email: participant.guestEmail },
-        });
-        if (existing) {
-          customerId = existing.id;
-        } else {
-          const newCustomer = await prisma.customer.create({
-            data: {
-              email: participant.guestEmail,
-              firstName: participant.guestName || 'Guest',
-              lastName: '',
-            },
-          });
-          customerId = newCustomer.id;
-        }
-        // Link participant to customer for future lookups
-        await prisma.groupParticipantV2.update({
-          where: { id: participantId },
-          data: { customerId },
-        });
-      }
-
-      if (!customerId) {
-        console.error('[Group V2 Payment] No customer ID or email for participant:', participantId);
-        return;
-      }
-
-      const order = await prisma.order.create({
+    if (existing) {
+      customerId = existing.id;
+    } else {
+      const newCustomer = await prisma.customer.create({
         data: {
-          customerId,
-          status: 'CONFIRMED',
-          financialStatus: 'PAID',
-          fulfillmentStatus: 'UNFULFILLED',
-          stripeCheckoutSessionId: session.id,
-          stripePaymentIntentId: paymentIntentId || null,
-          subtotal: payment.subtotal,
-          taxAmount: payment.taxAmount,
-          deliveryFee: 0, // Host pays delivery separately
-          discountCode: payment.discountCode,
-          discountAmount: payment.discountAmount,
-          total: payment.total,
-          deliveryDate: subOrder.deliveryDate,
-          deliveryTime: subOrder.deliveryTime,
-          deliveryAddress: subOrder.deliveryAddress || {},
-          deliveryPhone: subOrder.deliveryPhone || '',
-          customerEmail: participant.guestEmail || '',
-          customerName: participant.guestName || 'Guest',
-          groupOrderId: null, // V2 doesn't use v1 group order FK
-          items: {
-            create: purchasedItems.map((item) => ({
-              productId: item.productId,
-              variantId: item.variantId,
-              title: item.title,
-              variantTitle: item.variantTitle,
-              price: item.price,
-              quantity: item.quantity,
-              totalPrice: Number(item.price) * item.quantity,
-            })),
-          },
+          email: participant.guestEmail,
+          firstName: participant.guestName || 'Guest',
+          lastName: '',
         },
       });
-
-      // Link order to payment
-      await prisma.participantPayment.update({
-        where: { id: payment.id },
-        data: { orderId: order.id },
-      });
-
-      console.log('[Group V2 Payment] Order created:', order.orderNumber);
-
-      // Notify GHL webhook
-      const itemsSummary = purchasedItems
-        .map((item) => {
-          const name =
-            item.variantTitle && item.variantTitle !== 'Default Title'
-              ? `${item.title} - ${item.variantTitle}`
-              : item.title;
-          return `${item.quantity}x ${name} ($${Number(item.price).toFixed(2)})`;
-        })
-        .join(', ');
-      const addr = (subOrder.deliveryAddress ?? {}) as Record<string, string>;
-      const addrParts = [addr.address1, addr.address2, addr.city,
-        [addr.province, addr.zip].filter(Boolean).join(' ')].filter(Boolean);
-      const fullName = participant.guestName || 'Guest';
-      const guestNameParts = fullName.trim().split(/\s+/);
-      const ghlPayload: GhlOrderPayload = {
-        event: 'order.created',
-        orderNumber: order.orderNumber,
-        orderType: 'group_v2',
-        customerName: fullName,
-        customerFirstName: guestNameParts[0] || '',
-        customerLastName: guestNameParts.slice(1).join(' ') || '',
-        customerEmail: participant.guestEmail || '',
-        customerPhone: '',
-        itemsSummary,
-        subtotal: Number(payment.subtotal),
-        tax: Number(payment.taxAmount),
-        deliveryFee: 0,
-        discount: Number(payment.discountAmount),
-        total: Number(payment.total),
-        deliveryDate: subOrder.deliveryDate.toISOString().split('T')[0],
-        deliveryTime: subOrder.deliveryTime,
-        deliveryAddress: addrParts.join(', '),
-        deliveryType: 'HOUSE',
-        deliveryInstructions: '',
-        createdAt: order.createdAt.toISOString(),
-      };
-      await notifyNewOrder(ghlPayload);
+      customerId = newCustomer.id;
     }
-  } catch (orderError) {
-    console.error('[Group V2 Payment] Failed to create order:', orderError);
-    // Payment was successful, order creation is non-blocking
+    // Link participant to customer for future lookups
+    await prisma.groupParticipantV2.update({
+      where: { id: participantId },
+      data: { customerId },
+    });
+  }
+
+  if (!customerId) {
+    throw new Error(`[Group V2 Payment] No customer ID or email for participant: ${participantId}`);
+  }
+
+  const order = await prisma.order.create({
+    data: {
+      customerId,
+      status: 'CONFIRMED',
+      financialStatus: 'PAID',
+      fulfillmentStatus: 'UNFULFILLED',
+      stripeCheckoutSessionId: session.id,
+      stripePaymentIntentId: paymentIntentId || null,
+      subtotal: payment.subtotal,
+      taxAmount: payment.taxAmount,
+      deliveryFee: 0, // Host pays delivery separately
+      discountCode: payment.discountCode,
+      discountAmount: payment.discountAmount,
+      total: payment.total,
+      deliveryDate: subOrder.deliveryDate,
+      deliveryTime: subOrder.deliveryTime,
+      deliveryAddress: subOrder.deliveryAddress || {},
+      deliveryPhone: subOrder.deliveryPhone || '',
+      customerEmail: participant.guestEmail || '',
+      customerName: participant.guestName || 'Guest',
+      groupOrderId: null, // V2 doesn't use v1 group order FK
+      items: {
+        create: purchasedItems.map((item) => ({
+          productId: item.productId,
+          variantId: item.variantId,
+          title: item.title,
+          variantTitle: item.variantTitle,
+          price: item.price,
+          quantity: item.quantity,
+          totalPrice: Number(item.price) * item.quantity,
+        })),
+      },
+    },
+    include: { items: true },
+  });
+
+  // Link order to payment (acts as idempotency marker for retries)
+  await prisma.participantPayment.update({
+    where: { id: payment.id },
+    data: { orderId: order.id },
+  });
+
+  console.log('[Group V2 Payment] Order created:', order.orderNumber);
+
+  // --- NON-FATAL side effects below (each in its own try/catch) ---
+
+  // Record discount usage
+  if (payment.discountCode && Number(payment.discountAmount) > 0) {
+    try {
+      await recordDiscountUsage(
+        payment.discountCode,
+        order.id,
+        customerId,
+        Number(payment.discountAmount)
+      );
+      console.log('[Group V2 Payment] Discount usage recorded:', payment.discountCode);
+    } catch (discountErr) {
+      console.error('[Group V2 Payment] Failed to record discount usage:', discountErr);
+    }
+  }
+
+  // Link order to affiliate if attributed
+  const affiliateCode = session.metadata?.affiliateCode;
+  let affiliateEmail: string | null = null;
+  if (affiliateCode) {
+    try {
+      await linkOrderToAffiliate(order, affiliateCode);
+      const affiliate = await getAffiliateByCode(affiliateCode);
+      if (affiliate?.email) {
+        affiliateEmail = affiliate.email;
+      }
+      console.log('[Group V2 Payment] Linked to affiliate:', affiliateCode);
+    } catch (affiliateErr) {
+      console.error('[Group V2 Payment] Failed to link affiliate:', affiliateErr);
+    }
+  }
+
+  // Notify GHL webhook
+  try {
+    await notifyNewOrder(buildGhlPayload(order, 'group_v2'));
+  } catch (ghlErr) {
+    console.error('[Group V2 Payment] GHL notify failed:', ghlErr);
+  }
+
+  // Create delivery task
+  try {
+    await prisma.deliveryTask.create({
+      data: {
+        orderId: order.id,
+        scheduledDate: subOrder.deliveryDate,
+        scheduledTime: subOrder.deliveryTime,
+        status: 'PENDING',
+      },
+    });
+    console.log('[Group V2 Payment] Delivery task created for order:', order.orderNumber);
+  } catch (deliveryErr) {
+    console.error('[Group V2 Payment] Failed to create delivery task:', deliveryErr);
+  }
+
+  // Create Google Calendar event
+  createOrderCalendarEvent(order).catch((calErr) =>
+    console.error('[Group V2 Payment] Calendar event failed:', calErr)
+  );
+
+  // Send confirmation email
+  try {
+    const deliveryAddress = subOrder.deliveryAddress as {
+      address1?: string;
+      address2?: string;
+      city?: string;
+      province?: string;
+      zip?: string;
+    } || {};
+
+    await sendOrderConfirmationEmail({
+      orderNumber: order.orderNumber,
+      customerName: order.customerName,
+      customerEmail: order.customerEmail,
+      items: order.items.map((item) => ({
+        title: item.title,
+        variantTitle: item.variantTitle,
+        quantity: item.quantity,
+        price: Number(item.price),
+        totalPrice: Number(item.totalPrice),
+      })),
+      subtotal: Number(order.subtotal),
+      deliveryFee: Number(order.deliveryFee),
+      taxAmount: Number(order.taxAmount),
+      discountAmount: Number(order.discountAmount),
+      discountCode: order.discountCode || undefined,
+      total: Number(order.total),
+      deliveryDate: order.deliveryDate,
+      deliveryTime: order.deliveryTime,
+      deliveryAddress: {
+        address1: deliveryAddress.address1 || '',
+        address2: deliveryAddress.address2,
+        city: deliveryAddress.city || 'Austin',
+        province: deliveryAddress.province || 'TX',
+        zip: deliveryAddress.zip || '',
+      },
+      deliveryInstructions: order.deliveryInstructions || undefined,
+    }, affiliateEmail ? { cc: [affiliateEmail] } : undefined);
+    console.log('[Group V2 Payment] Confirmation email sent for order:', order.orderNumber);
+  } catch (emailErr) {
+    console.error('[Group V2 Payment] Failed to send confirmation email:', emailErr);
   }
 
   console.log('[Group V2 Payment] Completed for participant:', participantId);

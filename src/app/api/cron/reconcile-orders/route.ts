@@ -6,6 +6,9 @@
  *
  * This is a safety net for when the checkout.session.completed webhook
  * fails or times out.
+ *
+ * Also handles Group V2 participant payments that were marked PAID but
+ * never got an Order record created (payment.orderId is null).
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -21,6 +24,9 @@ import { notifyNewOrder, buildGhlPayload } from '@/lib/webhooks/ghl';
 import {
   sendOrderConfirmationEmail,
 } from '@/lib/email';
+import { recordDiscountUsage } from '@/lib/discounts/discount-engine';
+import { linkOrderToAffiliate } from '@/lib/affiliates/commission-engine';
+import { createOrderCalendarEvent } from '@/lib/calendar/google-calendar';
 
 export const maxDuration = 60;
 
@@ -36,6 +42,10 @@ export async function GET(request: NextRequest) {
   const errors: string[] = [];
 
   try {
+    // ==========================================
+    // Pass 1: Standard checkout reconciliation
+    // ==========================================
+
     // List completed checkout sessions from the last 2 hours
     const twoHoursAgo = Math.floor((Date.now() - 2 * 60 * 60 * 1000) / 1000);
 
@@ -64,7 +74,7 @@ export async function GET(request: NextRequest) {
         const existingOrder = await getOrderByCheckoutSession(session.id);
         if (existingOrder) continue;
 
-        // No order exists — this is a missed webhook. Recover it.
+        // No order exists -- this is a missed webhook. Recover it.
         console.log(`[Reconcile] Missing order for session ${session.id}, cart ${cartId}`);
 
         const cart = await getCartById(cartId);
@@ -154,8 +164,225 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    // ==========================================
+    // Pass 2: Group V2 reconciliation
+    // ==========================================
+
+    const twoHoursAgoDate = new Date(Date.now() - 2 * 60 * 60 * 1000);
+
+    // Find ParticipantPayments that are PAID but have no orderId (missed order creation)
+    const orphanedPayments = await prisma.participantPayment.findMany({
+      where: {
+        status: 'PAID',
+        orderId: null,
+        paidAt: { lte: twoHoursAgoDate },
+      },
+      include: {
+        participant: true,
+        subOrder: true,
+      },
+    });
+
+    console.log(`[Reconcile] Found ${orphanedPayments.length} orphaned Group V2 payments`);
+
+    for (const payment of orphanedPayments) {
+      try {
+        const participant = payment.participant;
+        const subOrder = payment.subOrder;
+
+        if (!participant || !subOrder) {
+          errors.push(`Group V2 payment ${payment.id}: missing participant or subOrder`);
+          continue;
+        }
+
+        const purchasedItems = await prisma.purchasedItem.findMany({
+          where: { paymentId: payment.id },
+        });
+
+        if (purchasedItems.length === 0) {
+          errors.push(`Group V2 payment ${payment.id}: no purchased items`);
+          continue;
+        }
+
+        // Resolve or create Customer
+        let customerId = participant.customerId;
+        if (!customerId && participant.guestEmail) {
+          const existing = await prisma.customer.findFirst({
+            where: { email: participant.guestEmail },
+          });
+          if (existing) {
+            customerId = existing.id;
+          } else {
+            const newCustomer = await prisma.customer.create({
+              data: {
+                email: participant.guestEmail,
+                firstName: participant.guestName || 'Guest',
+                lastName: '',
+              },
+            });
+            customerId = newCustomer.id;
+          }
+          await prisma.groupParticipantV2.update({
+            where: { id: participant.id },
+            data: { customerId },
+          });
+        }
+
+        if (!customerId) {
+          errors.push(`Group V2 payment ${payment.id}: no customer ID or email`);
+          continue;
+        }
+
+        // Create Order record
+        const order = await prisma.order.create({
+          data: {
+            customerId,
+            status: 'CONFIRMED',
+            financialStatus: 'PAID',
+            fulfillmentStatus: 'UNFULFILLED',
+            stripeCheckoutSessionId: payment.stripeCheckoutSessionId,
+            stripePaymentIntentId: payment.stripePaymentIntentId,
+            subtotal: payment.subtotal,
+            taxAmount: payment.taxAmount,
+            deliveryFee: 0,
+            discountCode: payment.discountCode,
+            discountAmount: payment.discountAmount,
+            total: payment.total,
+            deliveryDate: subOrder.deliveryDate,
+            deliveryTime: subOrder.deliveryTime,
+            deliveryAddress: subOrder.deliveryAddress || {},
+            deliveryPhone: subOrder.deliveryPhone || '',
+            customerEmail: participant.guestEmail || '',
+            customerName: participant.guestName || 'Guest',
+            groupOrderId: null,
+            items: {
+              create: purchasedItems.map((item) => ({
+                productId: item.productId,
+                variantId: item.variantId,
+                title: item.title,
+                variantTitle: item.variantTitle,
+                price: item.price,
+                quantity: item.quantity,
+                totalPrice: Number(item.price) * item.quantity,
+              })),
+            },
+          },
+          include: { items: true },
+        });
+
+        // Link order to payment
+        await prisma.participantPayment.update({
+          where: { id: payment.id },
+          data: { orderId: order.id },
+        });
+
+        console.log(`[Reconcile] Recovered Group V2 order ${order.orderNumber} for payment ${payment.id}`);
+        recovered.push(`GV2-${order.orderNumber}`);
+
+        // Record discount usage
+        if (payment.discountCode && Number(payment.discountAmount) > 0) {
+          try {
+            await recordDiscountUsage(
+              payment.discountCode,
+              order.id,
+              customerId,
+              Number(payment.discountAmount)
+            );
+          } catch (discountErr) {
+            console.error(`[Reconcile] Discount usage failed for GV2 ${order.orderNumber}:`, discountErr);
+          }
+        }
+
+        // Link affiliate if session metadata has affiliateCode
+        if (payment.stripeCheckoutSessionId) {
+          try {
+            const stripeSession = await stripe.checkout.sessions.retrieve(payment.stripeCheckoutSessionId);
+            const affiliateCode = stripeSession.metadata?.affiliateCode;
+            if (affiliateCode) {
+              await linkOrderToAffiliate(order, affiliateCode);
+            }
+          } catch (affiliateErr) {
+            console.error(`[Reconcile] Affiliate link failed for GV2 ${order.orderNumber}:`, affiliateErr);
+          }
+        }
+
+        // Notify GHL
+        try {
+          await notifyNewOrder(buildGhlPayload(order, 'group_v2'));
+        } catch (ghlErr) {
+          console.error(`[Reconcile] GHL notify failed for GV2 ${order.orderNumber}:`, ghlErr);
+        }
+
+        // Create delivery task
+        try {
+          await prisma.deliveryTask.create({
+            data: {
+              orderId: order.id,
+              scheduledDate: subOrder.deliveryDate,
+              scheduledTime: subOrder.deliveryTime,
+              status: 'PENDING',
+            },
+          });
+        } catch (deliveryErr) {
+          console.error(`[Reconcile] Delivery task failed for GV2 ${order.orderNumber}:`, deliveryErr);
+        }
+
+        // Create calendar event
+        createOrderCalendarEvent(order).catch((calErr) =>
+          console.error(`[Reconcile] Calendar event failed for GV2 ${order.orderNumber}:`, calErr)
+        );
+
+        // Send confirmation email
+        try {
+          const deliveryAddress = subOrder.deliveryAddress as {
+            address1?: string;
+            address2?: string;
+            city?: string;
+            province?: string;
+            zip?: string;
+          } || {};
+
+          await sendOrderConfirmationEmail({
+            orderNumber: order.orderNumber,
+            customerName: order.customerName,
+            customerEmail: order.customerEmail,
+            items: order.items.map((item) => ({
+              title: item.title,
+              variantTitle: item.variantTitle,
+              quantity: item.quantity,
+              price: Number(item.price),
+              totalPrice: Number(item.totalPrice),
+            })),
+            subtotal: Number(order.subtotal),
+            deliveryFee: Number(order.deliveryFee),
+            taxAmount: Number(order.taxAmount),
+            discountAmount: Number(order.discountAmount),
+            discountCode: order.discountCode || undefined,
+            total: Number(order.total),
+            deliveryDate: order.deliveryDate,
+            deliveryTime: order.deliveryTime,
+            deliveryAddress: {
+              address1: deliveryAddress.address1 || '',
+              address2: deliveryAddress.address2,
+              city: deliveryAddress.city || 'Austin',
+              province: deliveryAddress.province || 'TX',
+              zip: deliveryAddress.zip || '',
+            },
+            deliveryInstructions: order.deliveryInstructions || undefined,
+          });
+        } catch (emailErr) {
+          console.error(`[Reconcile] Email failed for GV2 ${order.orderNumber}:`, emailErr);
+        }
+      } catch (paymentErr) {
+        const msg = paymentErr instanceof Error ? paymentErr.message : String(paymentErr);
+        errors.push(`Group V2 payment ${payment.id}: ${msg}`);
+        console.error(`[Reconcile] Error processing Group V2 payment ${payment.id}:`, paymentErr);
+      }
+    }
+
     const summary = {
       checked: sessions.data.length,
+      groupV2Orphaned: orphanedPayments.length,
       recovered: recovered.length,
       recoveredOrders: recovered,
       errors: errors.length,
