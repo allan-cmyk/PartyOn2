@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, type ReactElement } from 'react';
 import type { GroupOrderV2Full, SubOrderFull } from '@/lib/group-orders-v2/types';
-import { updateGroupOrderV2, updateTabV2 } from '@/lib/group-orders-v2/api-client';
+import { updateTabV2 } from '@/lib/group-orders-v2/api-client';
 
 interface Props {
   groupOrder: GroupOrderV2Full;
@@ -125,7 +125,10 @@ export default function DeliveryHeroSection({
     }
     setSaving(true);
     try {
-      await updateGroupOrderV2(groupOrder.shareCode, { name: trimmed });
+      await updateTabV2(groupOrder.shareCode, activeTab.id, {
+        name: trimmed,
+        hostParticipantId: participantId,
+      });
       onRefresh();
     } catch {
       // Silently fail
@@ -135,8 +138,8 @@ export default function DeliveryHeroSection({
     }
   }
 
-  const heroTitle = groupOrder.name
-    || (groupOrder.partyType ? PARTY_TYPE_LABELS[groupOrder.partyType] || 'Your Order' : 'Your Order');
+  const heroTitle = activeTab.name
+    || getTabLabel(activeTab, activeTabIndex);
 
   const hasDetails = hasDeliveryDetails(activeTab);
   const deliveryDate = formatDeliveryDate(activeTab.deliveryDate);
@@ -234,7 +237,7 @@ export default function DeliveryHeroSection({
             <div className="px-5 pb-4 pt-1 border-t border-gray-200 space-y-3">
               {/* Order title -- editable */}
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1 block">Order Name</label>
+                <label className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1 block">Tab Name</label>
                 {editingTitle ? (
                   <input
                     ref={titleInputRef}

@@ -63,7 +63,7 @@ export default function DashboardHeader({
           {/* Centered title */}
           <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
             <h1 className="text-2xl md:text-3xl font-heading font-bold tracking-[0.06em] text-gray-900">
-              {groupOrder.name}
+              {groupOrder.name || `${groupOrder.hostName}'s Order`}
             </h1>
             {isLocked && (
               <span className="text-xs font-semibold uppercase tracking-wider text-red-600 bg-red-50 px-1.5 py-0.5 rounded">
