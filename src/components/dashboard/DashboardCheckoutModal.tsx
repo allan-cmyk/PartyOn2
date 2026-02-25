@@ -6,7 +6,6 @@ import {
   checkoutParticipantV2,
   checkoutAllV2,
   validateGroupDiscount,
-  updateTabV2,
 } from '@/lib/group-orders-v2/api-client';
 
 interface Props {
@@ -15,17 +14,11 @@ interface Props {
   participantId: string;
   mode: 'mine' | 'all';
   items: DraftCartItemView[];
+  isHost: boolean;
   onClose: () => void;
   onRefresh: () => void;
+  onOpenDeliveryDetails: () => void;
 }
-
-const CONTEXT_PLACEHOLDERS: Record<string, string> = {
-  HOUSE: 'Gate code, ring doorbell, etc.',
-  BOAT: 'Slip number, marina name, dock instructions...',
-  VENUE: 'Suite number, loading dock instructions...',
-  HOTEL: 'Room number, front desk instructions...',
-  OTHER: 'Any special delivery instructions...',
-};
 
 export default function DashboardCheckoutModal({
   shareCode,
@@ -33,8 +26,10 @@ export default function DashboardCheckoutModal({
   participantId,
   mode,
   items,
+  isHost,
   onClose,
   onRefresh,
+  onOpenDeliveryDetails,
 }: Props): ReactElement {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -47,18 +42,7 @@ export default function DashboardCheckoutModal({
   } | null>(null);
   const [discountError, setDiscountError] = useState('');
 
-  // Delivery form (if not yet filled)
-  const hasAddress = tab.deliveryAddress?.address1?.trim();
-  const [address1, setAddress1] = useState(tab.deliveryAddress?.address1 || '');
-  const [address2, setAddress2] = useState(tab.deliveryAddress?.address2 || '');
-  const [city, setCity] = useState(tab.deliveryAddress?.city || '');
-  const [zip, setZip] = useState(tab.deliveryAddress?.zip || '');
-  const [phone, setPhone] = useState(tab.deliveryPhone || '');
-  const [deliveryDate, setDeliveryDate] = useState(
-    tab.deliveryDate ? tab.deliveryDate.split('T')[0] : ''
-  );
-  const [deliveryTime, setDeliveryTime] = useState(tab.deliveryTime || '');
-  const [deliveryNotes, setDeliveryNotes] = useState(tab.deliveryNotes || '');
+  const hasAddress = !!tab.deliveryAddress?.address1?.trim();
 
   const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const discountAmount = discountApplied?.amount || 0;
@@ -83,38 +67,15 @@ export default function DashboardCheckoutModal({
   async function handleCheckout(e: FormEvent) {
     e.preventDefault();
     setError('');
+
+    if (!hasAddress) {
+      setError('Delivery address is required');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      // Save delivery details if not already filled
-      if (!hasAddress && address1.trim()) {
-        await updateTabV2(shareCode, tab.id, {
-          hostParticipantId: participantId,
-          deliveryAddress: {
-            address1: address1.trim(),
-            address2: address2.trim() || undefined,
-            city: city.trim(),
-            province: 'TX',
-            zip: zip.trim(),
-            country: 'US',
-          },
-          deliveryPhone: phone.trim() || undefined,
-          deliveryDate: deliveryDate || undefined,
-          deliveryTime: deliveryTime || undefined,
-          deliveryNotes: deliveryNotes.trim() || undefined,
-        });
-        onRefresh();
-      }
-
-      // Validate required fields
-      const finalAddress = hasAddress ? tab.deliveryAddress.address1 : address1.trim();
-      const finalZip = hasAddress ? tab.deliveryAddress.zip : zip.trim();
-      if (!finalAddress || !finalZip) {
-        setError('Delivery address is required');
-        setLoading(false);
-        return;
-      }
-
       if (mode === 'mine') {
         const result = await checkoutParticipantV2(
           shareCode,
@@ -138,8 +99,11 @@ export default function DashboardCheckoutModal({
     }
   }
 
-  const notesPlaceholder =
-    CONTEXT_PLACEHOLDERS[tab.deliveryContextType] || CONTEXT_PLACEHOLDERS.OTHER;
+  const deliveryDate = tab.deliveryDate && tab.deliveryDate !== 'TBD'
+    ? new Date(tab.deliveryDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })
+    : '';
+  const deliveryTime = tab.deliveryTime && tab.deliveryTime !== 'TBD' ? tab.deliveryTime : '';
+  const addr = tab.deliveryAddress;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
@@ -221,82 +185,42 @@ export default function DashboardCheckoutModal({
             )}
           </div>
 
-          {/* Delivery details (if not yet filled) */}
-          {!hasAddress && (
-            <div className="space-y-3 border-t border-gray-200 pt-4">
-              <p className="text-sm font-medium text-gray-900">
-                Delivery Details
+          {/* Delivery details section */}
+          {hasAddress ? (
+            <div className="bg-gray-50 rounded-lg px-4 py-3 space-y-1.5">
+              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Delivery</p>
+              {(deliveryDate || deliveryTime) && (
+                <p className="text-sm text-gray-700">
+                  {deliveryDate}{deliveryTime ? ` at ${deliveryTime}` : ''}
+                </p>
+              )}
+              {addr?.address1 && (
+                <p className="text-sm text-gray-700">
+                  {addr.address1}{addr.address2 ? `, ${addr.address2}` : ''}{addr.city ? `, ${addr.city}` : ''}{addr.province ? `, ${addr.province}` : ''} {addr.zip || ''}
+                </p>
+              )}
+            </div>
+          ) : isHost ? (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
+              <p className="text-sm text-amber-800 mb-2">
+                Please fill out delivery details before checking out.
               </p>
-              <input
-                type="text"
-                value={address1}
-                onChange={(e) => setAddress1(e.target.value)}
-                placeholder="Street address *"
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all"
-              />
-              <input
-                type="text"
-                value={address2}
-                onChange={(e) => setAddress2(e.target.value)}
-                placeholder="Apt, suite, etc."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all"
-              />
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  placeholder="City *"
-                  required
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all"
-                />
-                <input
-                  type="text"
-                  value={zip}
-                  onChange={(e) => setZip(e.target.value)}
-                  placeholder="Zip *"
-                  required
-                  className="w-28 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all"
-                />
-              </div>
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="Phone number *"
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all"
-              />
-              <div className="flex gap-2">
-                <input
-                  type="date"
-                  value={deliveryDate}
-                  onChange={(e) => setDeliveryDate(e.target.value)}
-                  required
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all"
-                />
-                <select
-                  value={deliveryTime}
-                  onChange={(e) => setDeliveryTime(e.target.value)}
-                  required
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all"
-                >
-                  <option value="">Select time</option>
-                  <option value="8:00 AM - 10:00 AM">8:00 AM - 10:00 AM</option>
-                  <option value="10:00 AM - 12:00 PM">10:00 AM - 12:00 PM</option>
-                  <option value="12:00 PM - 2:00 PM">12:00 PM - 2:00 PM</option>
-                  <option value="2:00 PM - 4:00 PM">2:00 PM - 4:00 PM</option>
-                  <option value="4:00 PM - 6:00 PM">4:00 PM - 6:00 PM</option>
-                </select>
-              </div>
-              <textarea
-                value={deliveryNotes}
-                onChange={(e) => setDeliveryNotes(e.target.value)}
-                placeholder={notesPlaceholder}
-                rows={2}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all"
-              />
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenDeliveryDetails();
+                }}
+                className="text-sm font-semibold text-brand-blue hover:text-blue-700 transition-colors"
+              >
+                Fill out delivery details
+              </button>
+            </div>
+          ) : (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
+              <p className="text-sm text-amber-800">
+                The host needs to fill out delivery details before you can check out.
+              </p>
             </div>
           )}
 
@@ -330,7 +254,7 @@ export default function DashboardCheckoutModal({
 
           <button
             type="submit"
-            disabled={loading || items.length === 0}
+            disabled={loading || items.length === 0 || !hasAddress}
             className="w-full py-3 bg-brand-blue text-white font-semibold tracking-[0.08em] rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (

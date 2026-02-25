@@ -155,6 +155,7 @@ export default function DeliveryHeroSection({
     return tab.name || `Location ${index + 1}`;
   }
 
+  const tabsAtLimit = groupOrder.tabs.length >= 4;
   const showTabs = groupOrder.tabs.length > 1 || isHost;
 
   return (
@@ -194,7 +195,7 @@ export default function DeliveryHeroSection({
                 </button>
               )
             ))}
-            {isHost && (
+            {isHost && !tabsAtLimit && (
               <button
                 onClick={onAddDelivery}
                 className="w-11 h-11 flex items-center justify-center rounded-t-2xl text-gray-400 hover:text-brand-blue hover:bg-gray-100 transition-colors ml-1 mb-0.5"

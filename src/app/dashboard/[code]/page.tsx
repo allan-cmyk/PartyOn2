@@ -263,8 +263,13 @@ export default function DashboardPage(): ReactElement {
           participantId={participantId}
           mode={checkoutMode}
           items={checkoutItems}
+          isHost={isHost}
           onClose={() => setCheckoutMode(null)}
           onRefresh={refresh}
+          onOpenDeliveryDetails={() => {
+            setCheckoutMode(null);
+            setShowLocationDetails(true);
+          }}
         />
       )}
 
@@ -305,6 +310,7 @@ export default function DashboardPage(): ReactElement {
         <NewDeliveryModal
           shareCode={groupOrder.shareCode}
           participantId={participantId}
+          tabCount={groupOrder.tabs.length}
           onClose={() => setShowNewLocation(false)}
           onCreated={() => {
             setShowNewLocation(false);
