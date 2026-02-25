@@ -40,14 +40,32 @@ export const PRODUCT_CATEGORIES = {
   partySupplies: {
     label: 'Party Supplies',
     handle: 'party-supplies',
-    productTypes: ['Weekend Supply', 'Formal Supply'],
-    collections: ['weekend-party-supplies', 'formal-event-supplies']
+    productTypes: ['Weekend Supply'],
+    collections: ['weekend-party-supplies']
   },
   kegs: {
     label: 'Kegs',
     handle: 'kegs',
     productTypes: ['Keg'],
     collections: ['kegs']
+  },
+  chillSupplies: {
+    label: 'Chill Supplies',
+    handle: 'chill-supplies',
+    productTypes: ['Chill Supply'],
+    collections: ['chill-supplies']
+  },
+  food: {
+    label: 'Food',
+    handle: 'food',
+    productTypes: ['Food'],
+    collections: ['food']
+  },
+  rentals: {
+    label: 'Rentals',
+    handle: 'rentals',
+    productTypes: ['Rental'],
+    collections: ['rentals']
   }
 };
 
@@ -274,6 +292,45 @@ export const SHOPIFY_COLLECTIONS = [
       textActive: 'text-white',
       border: 'border-stone-400 hover:border-stone-500',
       borderActive: 'border-stone-600'
+    }
+  },
+  {
+    handle: 'chill-supplies',
+    label: 'Chill Supplies',
+    category: 'chillSupplies',
+    colors: {
+      bg: 'bg-emerald-50 hover:bg-emerald-100',
+      bgActive: 'bg-emerald-600',
+      text: 'text-emerald-700',
+      textActive: 'text-white',
+      border: 'border-emerald-400 hover:border-emerald-500',
+      borderActive: 'border-emerald-600'
+    }
+  },
+  {
+    handle: 'food',
+    label: 'Food',
+    category: 'food',
+    colors: {
+      bg: 'bg-yellow-50 hover:bg-yellow-100',
+      bgActive: 'bg-yellow-600',
+      text: 'text-yellow-700',
+      textActive: 'text-white',
+      border: 'border-yellow-400 hover:border-yellow-500',
+      borderActive: 'border-yellow-600'
+    }
+  },
+  {
+    handle: 'rentals',
+    label: 'Rentals',
+    category: 'rentals',
+    colors: {
+      bg: 'bg-indigo-50 hover:bg-indigo-100',
+      bgActive: 'bg-indigo-600',
+      text: 'text-indigo-700',
+      textActive: 'text-white',
+      border: 'border-indigo-400 hover:border-indigo-500',
+      borderActive: 'border-indigo-600'
     }
   },
 ];

@@ -88,9 +88,8 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
     icon: 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z',
     subcategories: [
       { label: 'Weekend Party', productTypes: ['Weekend Supply'] },
-      { label: 'Formal Event', productTypes: ['Formal Supply'] },
     ],
-    allProductTypes: ['Weekend Supply', 'Formal Supply'],
+    allProductTypes: ['Weekend Supply'],
   },
   {
     id: 'kegs',
@@ -100,6 +99,33 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
       { label: 'Kegs', productTypes: ['Keg'] },
     ],
     allProductTypes: ['Keg'],
+  },
+  {
+    id: 'chill-supplies',
+    label: 'Chill Supplies',
+    icon: 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707',
+    subcategories: [
+      { label: 'Chill Supplies', productTypes: ['Chill Supply'] },
+    ],
+    allProductTypes: ['Chill Supply'],
+  },
+  {
+    id: 'food',
+    label: 'Food',
+    icon: 'M3 3h18v18H3V3zm3 6h12M3 15h18',
+    subcategories: [
+      { label: 'Food', productTypes: ['Food'] },
+    ],
+    allProductTypes: ['Food'],
+  },
+  {
+    id: 'rentals',
+    label: 'Rentals',
+    icon: 'M4 4h16v12H4V4zm0 12l4-4h8l4 4',
+    subcategories: [
+      { label: 'Rentals', productTypes: ['Rental'] },
+    ],
+    allProductTypes: ['Rental'],
   },
 ];
 
@@ -132,6 +158,9 @@ export function getCategoryColor(categoryId: string): string {
     'mixers': 'bg-green-100 text-green-800 border-green-200',
     'party-supplies': 'bg-rose-100 text-rose-800 border-rose-200',
     'kegs': 'bg-stone-100 text-stone-800 border-stone-200',
+    'chill-supplies': 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    'food': 'bg-yellow-100 text-yellow-800 border-yellow-200',
+    'rentals': 'bg-indigo-100 text-indigo-800 border-indigo-200',
   };
   return colors[categoryId] || 'bg-gray-100 text-gray-800 border-gray-200';
 }

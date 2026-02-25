@@ -4,14 +4,14 @@
 
 ## Canonical `productType` Values
 
-Every product in the database has a `productType` field set to one of these 18 canonical values:
+Every product in the database has a `productType` field set to one of these 20 canonical values:
 
 | productType | Description | Example Products |
 |---|---|---|
 | Light Beer | Domestic/mass-market beer (Bud, Miller, Coors, Michelob, Corona, Modelo, etc.) | Bud Light 12pk, Michelob Ultra, Corona Extra |
 | Craft Beer | Independent/craft/import beer (IPAs, stouts, ales, lagers from small breweries) | Austin Beerworks, Shiner Bock, Blue Moon |
 | Seltzer | Hard seltzers | White Claw, Truly, High Noon |
-| RTD Cocktail | Ready-to-drink canned cocktails and flavored malt beverages | Ranch Water, Cutwater, NÜTRL |
+| RTD Cocktail | Ready-to-drink canned cocktails and flavored malt beverages | Ranch Water, Cutwater, NUTRL |
 | Red Wine | Red wines (Cabernet, Merlot, Pinot Noir, Malbec, etc.) | Josh Cabernet, Apothic Red |
 | White Wine | White wines (Chardonnay, Sauvignon Blanc, Pinot Grigio, Moscato, etc.) | Kendall-Jackson Chardonnay, Kim Crawford |
 | Sparkling Wine | Champagne, Prosecco, sparkling wine, cava, rose | Veuve Clicquot, La Marca Prosecco |
@@ -24,35 +24,41 @@ Every product in the database has a `productType` field set to one of these 18 c
 | Cocktail Kit | Pre-assembled cocktail kits with spirits + mixers + garnishes | Austin Rita Kit, Espresso Martini Kit |
 | Mixer | Non-alcoholic mixers, sodas, juices, water, ice, bitters, syrups, garnishes | Topo Chico, OJ, Simple Syrup, Angostura |
 | Weekend Supply | Casual party supplies: pool toys, games, cups, drinkware, decorations, hats, sunglasses, electronics, cocktail bars | Solo cups, pool floats, LED projectors |
-| Formal Supply | Elegant/formal event supplies: candles, linens, glassware, wedding items | Candles, tablecloths, champagne flutes |
 | Keg | Kegs and keg equipment | Bud Light Keg, Keg Tap Rental |
+| Chill Supply | THC drinks, edibles, nicotine, vapes, CBD products | DANKK THC Shots, Zyn, Cantrip Seltzer |
+| Food | Prepared food, wraps, subs, salads, snacks, dips | Grilled Chicken Wrap, Chips and Salsa |
+| Rental | Equipment rentals: chairs, tables, coolers, glassware, games | Outdoor Chair Rental, 120qt Cooler Rental |
 
 ## Collection Taxonomy (Category Table)
 
 Collections group products for browsing on the dashboard and storefront.
+Products within each collection are sorted by sales rank (position = 1 is best seller).
+Dashboard displays up to 48 products per category; products ranked 49+ remain in DB but are hidden.
 
-### Primary Collections
+### Primary Collections (ordered by sales priority)
 
-| Handle | Title | Parent | Maps to productType(s) |
-|---|---|---|---|
-| `light-beer` | Light Beer | -- | Light Beer |
-| `craft-beer` | Craft Beer | -- | Craft Beer |
-| `seltzers-rtds` | Seltzers & RTDs | -- | Seltzer, RTD Cocktail |
-| `red-wine` | Red Wine | -- | Red Wine |
-| `white-wine` | White Wine | -- | White Wine |
-| `sparkling-wine` | Sparkling & Rose | -- | Sparkling Wine |
-| `spirits` | Spirits | -- | (parent for spirit sub-collections) |
-| `spirits-tequila` | Tequila | spirits | Tequila |
-| `spirits-whiskey` | Whiskey & Bourbon | spirits | Whiskey |
-| `spirits-vodka` | Vodka | spirits | Vodka |
-| `spirits-rum` | Rum | spirits | Rum |
-| `spirits-gin` | Gin | spirits | Gin |
-| `spirits-liqueurs` | Liqueurs | spirits | Liqueur |
-| `cocktail-kits` | Cocktail Kits | -- | Cocktail Kit |
-| `mixers` | Mixers | -- | Mixer |
-| `weekend-party-supplies` | Weekend Party Supplies | -- | Weekend Supply |
-| `formal-event-supplies` | Formal Event Supplies | -- | Formal Supply |
-| `kegs` | Kegs & Equipment | -- | Keg |
+| # | Handle | Title | Parent | Maps to productType(s) |
+|---|---|---|---|---|
+| 1 | `seltzers-rtds` | Seltzers & RTDs | -- | Seltzer, RTD Cocktail |
+| 2 | `light-beer` | Light Beer | -- | Light Beer |
+| 3 | `craft-beer` | Craft Beer | -- | Craft Beer |
+| 4 | `spirits-tequila` | Tequila | spirits | Tequila |
+| 5 | `spirits-vodka` | Vodka | spirits | Vodka |
+| 6 | `spirits-whiskey` | Whiskey & Bourbon | spirits | Whiskey |
+| 7 | `spirits-rum` | Rum | spirits | Rum |
+| 8 | `spirits-gin` | Gin | spirits | Gin |
+| 9 | `spirits-liqueurs` | Liqueurs | spirits | Liqueur |
+| 10 | `sparkling-wine` | Sparkling & Rose | -- | Sparkling Wine |
+| 11 | `white-wine` | White Wine | -- | White Wine |
+| 12 | `red-wine` | Red Wine | -- | Red Wine |
+| 13 | `mixers` | Mixers | -- | Mixer |
+| 14 | `cocktail-kits` | Cocktail Kits | -- | Cocktail Kit |
+| 15 | `kegs` | Kegs & Equipment | -- | Keg |
+| 16 | `weekend-party-supplies` | Weekend Party Supplies | -- | Weekend Supply |
+| 17 | `chill-supplies` | Chill Supplies | -- | Chill Supply |
+| 18 | `food` | Food | -- | Food |
+| 19 | `rentals` | Rentals | -- | Rental |
+| -- | `spirits` | Spirits | -- | (parent for spirit sub-collections) |
 
 ### Occasion/Curated Collections (Secondary)
 
@@ -71,12 +77,13 @@ Collections group products for browsing on the dashboard and storefront.
 3. Spirit products (Tequila, Whiskey, Vodka, Rum, Gin, Liqueur) belong to BOTH `spirits` parent AND their specific sub-collection.
 4. Products may additionally belong to secondary/occasion collections.
 5. The `productType` field is the source of truth for classification. Collections are derived from it.
+6. Products are sorted within each collection by `position` (sales rank). Position 1 = best seller.
 
 ## Adding New Products
 
 When adding a new product:
 
-1. Set `productType` to one of the 18 canonical values above.
+1. Set `productType` to one of the 20 canonical values above.
 2. The product will automatically appear in the matching collection via the productType-to-collection mapping.
 3. If the product should appear in a curated collection (favorites, bachelor, etc.), manually add it to that collection in the admin.
 
@@ -92,7 +99,7 @@ When adding a new product:
 
 **White Wine** keywords (in title): Chardonnay, Sauvignon Blanc, Pinot Grigio, Riesling, Moscato, Muscat, White Blend, Albarino, Viognier, Gewurztraminer, White.
 
-**Sparkling Wine** keywords (in title): Champagne, Prosecco, Sparkling, Cava, Brut, Rose, Rosé, Mimosa, Bellini.
+**Sparkling Wine** keywords (in title): Champagne, Prosecco, Sparkling, Cava, Brut, Rose, Rose, Mimosa, Bellini.
 
 Wines not matching any keyword list default to White Wine (most common for ambiguous titles).
 
@@ -100,8 +107,23 @@ Wines not matching any keyword list default to White Wine (most common for ambig
 
 | File | Purpose | What it controls |
 |---|---|---|
-| `src/lib/dashboard/categories.ts` | Dashboard browsing tabs | Tab labels + collection handles |
+| `src/lib/dashboard/categories.ts` | Dashboard browsing tabs | Tab labels + collection handles (sales priority order) |
 | `src/lib/products/categories.ts` | Storefront collection buttons + filters | SHOPIFY_COLLECTIONS, PRODUCT_CATEGORIES, FILTER_OPTIONS |
 | `src/lib/product-categories.ts` | Admin /ops/products filter | Hierarchical filter sidebar |
 | `src/lib/products/premier-collections.ts` | Boat/partner page tabs | Collection tabs on partner pages |
 | `src/app/cocktail-kits/page.tsx` | Cocktail kits landing page | Prisma query uses productType |
+
+## Migration History
+
+**25 Feb 2026 (session 23) -- Sales data reorganization:**
+- Reorganized all 19 categories based on Shopify sales data (693 products, sorted by units sold)
+- Created 3 new categories: Chill Supplies, Food, Rentals (3 new productType values)
+- Products sorted within categories by sales rank (position = 1 is best seller)
+- Dashboard display capped at 48 products per category (was 60)
+- 543 products matched from sales data, 131 unmatched (discontinued/renamed)
+- Removed `formal-event-supplies` (0 products) and `Formal Supply` productType
+
+**25 Feb 2026 (session 20) -- Initial normalization:**
+- 93 messy productType values normalized to 17 canonical types (0 nulls)
+- 16 new primary collections created and populated (1,064 products, all assigned)
+- 9 retired categories deleted

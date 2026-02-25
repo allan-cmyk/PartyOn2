@@ -40,7 +40,7 @@ export default function CategorySection({
     async function fetchProducts() {
       try {
         const res = await fetch(
-          `/api/products?localCollection=${collectionHandle}&first=60`
+          `/api/products?localCollection=${collectionHandle}&first=48`
         );
         if (!res.ok) return;
         const json = await res.json();
