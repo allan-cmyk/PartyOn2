@@ -16,7 +16,6 @@ interface Props {
   items: DraftCartItemView[];
   isHost: boolean;
   onClose: () => void;
-  onRefresh: () => void;
   onOpenDeliveryDetails: () => void;
 }
 
@@ -28,7 +27,6 @@ export default function DashboardCheckoutModal({
   items,
   isHost,
   onClose,
-  onRefresh,
   onOpenDeliveryDetails,
 }: Props): ReactElement {
   const [loading, setLoading] = useState(false);

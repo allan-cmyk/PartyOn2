@@ -265,7 +265,6 @@ export default function DashboardPage(): ReactElement {
           items={checkoutItems}
           isHost={isHost}
           onClose={() => setCheckoutMode(null)}
-          onRefresh={refresh}
           onOpenDeliveryDetails={() => {
             setCheckoutMode(null);
             setShowLocationDetails(true);
