@@ -23,7 +23,7 @@ const PARTY_LABELS: { value: string; label: string }[] = [
 export default function NewDeliveryModal({
   shareCode,
   participantId,
-  nextPosition,
+  nextPosition: _nextPosition,
   onClose,
   onCreated,
 }: Props): ReactElement {
