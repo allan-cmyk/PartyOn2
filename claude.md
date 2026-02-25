@@ -1,310 +1,96 @@
-# PartyOn Delivery - Premium Alcohol Delivery Platform
-
----
-## ⚠️ CRITICAL: Session Initialization Rules
-
-**Claude Code: At the start of EVERY new session, you MUST read these global rule files:**
-1. `global-rules/core/universal-principles.md` - Universal standards (KISS, YAGNI, DRY, file limits, security)
-2. `global-rules/workflows/prp-methodology.md` - PRP workflow and development methodology
-3. `global-rules/archon/CLAUDE.md` - **ARCHON-FIRST task management rule** (check Archon before TodoWrite)
-4. `global-rules/nextjs/rasmus--nextjs-rules.md` - Next.js 15 patterns and requirements
-5. `global-rules/react/rasmus--react-rules.md` - React 19 component standards and documentation
-6. `global-rules/partyondelivery/layout-standards.md` - **HERO SECTION RULES** (CRITICAL - prevents recurring layout bugs)
-
-**DO NOT proceed with any coding tasks until these files are read and understood.**
-
-**Key Requirements from Global Rules:**
-- 500 line max per file, 200 lines per component, 50 lines per function
-- NEVER use `any` type, MUST use `ReactElement` not `JSX.Element`
-- Zod validation for ALL external data
-- 80% minimum test coverage - NO EXCEPTIONS
-- Complete JSDoc documentation for ALL exports
-- Archon-first for task management (TodoWrite is secondary only)
-- **HERO SECTIONS**: Use `mt-24 h-[Xvh]` pattern - NEVER `h-[100vh] pt-32` (see layout-standards.md)
-- **COLOR CONTRAST**: White/gold backgrounds = black text. Dark backgrounds = white/gold text. NEVER gold text on white.
-
----
-
-## Claude for Chrome
-
-- Use `read_page` to get element refs from the accessibility tree
-- Use `find` to locate elements by description
-- Click/interact using `ref`, not coordinates
-- NEVER take screenshots unless explicitly requested by the user
-
----
+# PartyOn Delivery - Claude Code Rules
 
 ## Project Overview
-PartyOn Delivery is a premium alcohol delivery service in Austin, Texas, offering scheduled deliveries for events, parties, and special occasions. The platform features an elegant, luxury design aesthetic and is fully integrated with Shopify for e-commerce operations.
+Premium alcohol delivery service in Austin, TX. Next.js 15.4 + TypeScript + Tailwind CSS 3 + Prisma 6 (Neon Postgres). Deployed on Vercel.
 
-## Core Features
+- **Domain**: partyondelivery.com
+- **Database**: Neon Postgres via Prisma (`prisma/schema.prisma`)
+- **Payments**: Stripe (live keys — do NOT test with real cards)
+- **Email**: Resend (`info@partyondelivery.com`)
+- **SMS**: GoHighLevel webhook (`src/lib/webhooks/ghl.ts`)
+- **Path alias**: `@/*` maps to `./src/*`
+- **Shopify**: Admin API only — used for product sync and webhooks, NOT for storefront/checkout
 
-### 🛒 E-Commerce Platform
-- **Shopify Integration**: Full Storefront API integration for products, cart, and checkout
-- **Product Management**: Dynamic product display with categories and filtering
-- **Cart System**: Persistent shopping cart with add/remove/update functionality
-- **Checkout Flow**: Complete checkout with delivery scheduling and address validation
-
-### 👥 Customer System
-- **Authentication**: Shopify Customer Accounts API for login/signup
-- **Account Dashboard**: View orders, manage addresses, track history
-- **Age Verification**: Required modal for alcohol purchases
-- **Loyalty Points**: (Built but temporarily disabled)
-
-### 📦 Delivery System
-- **Scheduled Delivery**: 72-hour advance booking requirement
-- **Express Delivery**: 3-hour express option for premium fee
-- **Zone Coverage**: Austin area with zip code validation
-- **Time Slots**: Available delivery windows with capacity management
-- **Minimum Orders**: $100-150 depending on delivery zone
-
-### 🔔 Order Processing
-- **Webhook System**: Real-time order updates from Shopify
-- **Order Tracking**: Customer order history and status updates
-- **Delivery Notes**: Special instructions for drivers
-- **HMAC Verification**: Secure webhook signature validation
-
-### 👥 Group Orders ✅ PRODUCTION READY
-- **Share System**: Create group orders with unique share codes and QR codes
-- **Participant Management**: Join orders, track contributions, remove participants
-- **Host Dashboard**: Real-time view of all participants and their carts (`/group/dashboard`)
-- **Cart Sync**: Automatic sync of cart totals across all participants
-- **Lock & Checkout**: Host locks order when minimum is met
-- **Progress Tracking**: Visual progress bar for minimum order amount
-- **Draft Orders**: All carts merged into single Shopify Draft Order
-- **Invoice System**: Host receives invoice via email for payment
-- **Shop Pay Integration**: Secure checkout via Shopify's payment system
-- **Production Tested**: Draft Order API verified working (Dec 26, 2024)
-
-## Current Status (as of latest session)
-
-### ✅ Completed
-1. **Old-Fashioned Theme Implementation**
-   - Created sophisticated navigation with dropdown menus
-   - Redesigned all main pages with luxury aesthetic
-   - Replaced all emojis with elegant SVG icons
-   - Typography: Barlow Condensed (headings) + Inter (body)
-   - Gold accent color: #D4AF37 (dark bg), brand-yellow #F2D34F (light bg)
-   - Moderate letter spacing (tracking-[0.04em] to tracking-[0.08em])
-
-2. **Pages Redesigned**
-   - Homepage - Distinguished hero with service showcases
-   - Services (Weddings, Boat Parties, Bach Parties)
-   - About - Company story with timeline
-   - Contact - Elegant contact form
-   - Delivery Areas - Interactive neighborhood selector
-   - Order - Multi-step booking form
-
-3. **Shopify Integration**
-   - Connected to Shopify store: premier-concierge.myshopify.com
-   - Created GraphQL client and queries
-   - Product listing page with filters
-   - Individual product detail pages
-   - Cart functionality (hooks ready)
-   - TypeScript types for all Shopify data
-
-### ✅ Recently Completed
-1. **Shopping Cart UI** - Elegant slide-out cart drawer with animations
-2. **Age Verification** - Modal blocks cart access for unverified users
-3. **Delivery Scheduling** - Pre-checkout delivery date/time selection
-4. **Search Functionality** - Product search in navigation and results page
-5. **Collection Pages** - Dynamic collection pages and landing page
-6. **Corporate Events Page** - Professional service offerings
-7. **Footer Pages** - Terms, Privacy, and FAQs pages
-8. **Minimum Order Validation** - Enforced in delivery scheduler
-9. **Customer Authentication** - Login/signup with Shopify customer accounts
-10. **Account Dashboard** - Customer profile, order history, addresses
-11. **Order Tracking** - View past orders and order details
-12. **Checkout Success Page** - Post-purchase confirmation with order details
-13. **Webhook Infrastructure** - Ready to receive Shopify order/customer events
-
-### ✅ Group Ordering (NEW)
-1. **Group Order Creation** - Hosts can create shareable group orders
-2. **Share System** - Unique codes and links for easy sharing
-3. **Participant Management** - Join orders, track contributions
-4. **Database Integration** - Supabase support with fallback to in-memory
-5. **Age Verification** - Required for all participants
-
-### ✅ Latest Updates (Session: Dec 26, 2024)
-1. **Partner Program Page** - B2B partnerships with tiered benefits
-2. **Product Filtering Fixed** - Now uses actual Shopify collections and productTypes
-3. **Customer API Integration** - Full read/modify access tested and working
-4. **Loyalty Points System** - 4-tier system (Bronze/Silver/Gold/Platinum) with benefits
-5. **Complete Checkout Flow** - Full checkout page with forms, delivery scheduling, loyalty redemption
-6. **Product Categorization** - Proper mapping of Shopify data to UI categories
-
-### ✅ Completed (Dec 26, 2024 - Latest Session)
-1. **Shopify Admin API** - Configured and working
-2. **Webhook Registration** - All 6 webhooks registered and verified
-3. **Customer Accounts API** - Enabled and tested successfully
-4. **Webhook Verification** - HMAC signature validation implemented
-5. **Loyalty Points** - Temporarily disabled (commented out)
-6. **Group Orders** - PRODUCTION READY with dashboard, cart sync, and checkout
-7. **Draft Order API** - Integrated and tested for merged group checkouts
-8. **Invoice System** - Email invoices sent to group hosts
-9. **Shop Pay Checkout** - Verified working with test orders
-
-### ✅ Completed (Latest Session - Performance Optimization)
-1. **Products Page Performance Overhaul** - 85-90% faster load times
-2. **Image Optimization** - Shopify CDN transformations with device-specific sizes
-3. **API Route with CDN Caching** - 5-minute edge caching, instant repeat visits
-4. **SWR Implementation** - Client-side caching and smart revalidation
-5. **Server-Side Filtering** - Shopify Query Language for efficient filtering
-6. **Loading Skeletons** - Improved perceived performance
-7. **Mobile Optimizations** - Lazy loading, priority hints, reduced animations
-
-### ✅ Completed (Latest Session - Meta Pixel Integration)
-1. **Meta Pixel Component** - Facebook/Instagram tracking with env variable support (`src/components/MetaPixel.tsx`)
-2. **PageView Tracking** - Automatic on all page loads
-3. **AddToCart Events** - Fires when items added to cart (`CartContext.tsx`)
-4. **ViewContent Events** - Fires on product detail page views (`ProductDetailClient.tsx`)
-5. **Purchase Events** - Fires on checkout success with order value (`checkout/success/page.tsx`)
-6. **Environment Config** - `NEXT_PUBLIC_META_PIXEL_ID` with fallback to default
-
-### 📋 Todo
-1. Production testing with real group orders
-2. Split payment options for group orders (researching feasibility)
-3. Email/SMS notifications (optional - not required per client)
-
-## Technical Architecture
-
-### Frontend Stack
-- **Framework**: Next.js 15.3.5 with TypeScript
-- **Styling**: Tailwind CSS with custom luxury theme
-- **Animations**: Framer Motion for smooth transitions
-- **State Management**: React Context API for cart, customer, and group orders
-- **Data Fetching**: SWR for caching and revalidation
-
-### Backend Integration
-- **E-Commerce**: Shopify Storefront API (GraphQL)
-- **Admin Operations**: Shopify Admin API for webhooks
-- **Authentication**: Shopify Customer Accounts API
-- **Database**: Supabase (optional) with in-memory fallback
-- **Webhooks**: HMAC-verified POST endpoints
-
-### Key Integrations
-1. **Shopify Storefront API**: Product catalog, cart, checkout
-2. **Shopify Admin API**: Webhook registration, order management
-3. **Customer API**: Authentication, account management
-4. **Webhook System**: Order and customer event processing
-5. **Group Orders**: Custom API with share codes
-
-## Environment Variables
-```env
-# Shopify Configuration
-NEXT_PUBLIC_SHOPIFY_DOMAIN=premier-concierge.myshopify.com
-NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN=[configured]
-SHOPIFY_API_KEY=[configured]
-SHOPIFY_API_SECRET_KEY=[configured]
-SHOPIFY_ADMIN_ACCESS_TOKEN=[configured]
-SHOPIFY_WEBHOOK_SECRET=[configured]
-NEXT_PUBLIC_APP_URL=https://party-on-delivery.vercel.app
-
-# AI Configuration
-OPENROUTER_API_KEY=[configured]
-```
-
-## Key Design Principles
-1. **Typography**: Barlow Condensed for headings (`font-heading`), Inter for body (`font-sans`)
-2. **Colors**: 12-color palette only (brand-blue, brand-yellow, gold, white, gray-*, black, success, error, warning)
-3. **Spacing**: Moderate letter-spacing (tracking-[0.04em] for headings, tracking-[0.05em] for nav, tracking-[0.08em] for buttons)
-4. **Buttons**: 4 variants only (primary, cart, secondary, ghost) - all use `rounded-lg`, NO `rounded-full`
-5. **Anti-regression**: Run `npm run lint:tokens` before committing to check for design system violations
-4. **Icons**: Only SVG icons, no emojis
-5. **Tone**: Professional, luxury, distinguished
+### Commands
+| Command | Purpose |
+|---------|---------|
+| `npm run dev` | Dev server (Turbopack, port 3000) |
+| `npm run build` | Production build (runs `prisma generate` first) |
+| `npm run lint` | ESLint |
+| `npm run test` / `test:run` | Vitest |
+| `npm run db:push` | Push schema to Neon (needs `.env.local` sourced) |
+| `npm run db:studio` | Prisma Studio |
+| `npm run generate-blog` | AI blog generation (Claude via OpenRouter) |
+| `npm run deploy` | Deploy to Vercel + ping sitemaps |
 
 ---
 
-## 🎨 COLOR CONTRAST RULES (MANDATORY)
+## DESIGN SYSTEM — MANDATORY
 
-**Poor color contrast causes readability issues. Follow these rules strictly.**
+**Before creating or modifying ANY page/component, read these files:**
+1. `memory/design-system.md` — Full token reference (colors, typography, buttons, inputs, cards, modals, spacing)
+2. `src/app/globals.css` — All CSS utility classes
+3. `src/app/design-example/page.tsx` — Live interactive showcase at `/design-example`
+
+**Use existing design system classes. Do NOT create ad-hoc styles that duplicate what already exists.**
+
+### Colors (3 brand colors only)
+| Token | Hex | Usage |
+|-------|-----|-------|
+| `brand-blue` | #0B74B8 | Primary CTAs, focus rings, links |
+| `brand-yellow` | #F2D34F | Cart/add buttons, highlights, accents |
+| `gold` | #D4AF37 | Premium accent — **dark backgrounds ONLY** |
+
+### Typography
+- **Headings**: `font-heading` (Barlow Condensed) with `tracking-[0.1em]`
+- **Body**: Inter (default `font-sans`)
+- **Buttons**: `font-semibold tracking-[0.08em]`
+- H1: `text-4xl md:text-5xl lg:text-6xl`, H2: `text-3xl md:text-4xl`, H3: `text-2xl`, H4: `text-lg font-bold tracking-[0.08em]`
+
+### Minimum Text Sizes — NEVER violate
+| Context | Minimum | Forbidden |
+|---------|---------|-----------|
+| All user-readable content | `text-sm` (14px) | `text-xs` for body text |
+| Form labels, input text | `text-base` (16px) | anything smaller |
+| Badges/tags (only exception) | `text-xs` (12px) | `text-[10px]` or smaller |
+
+### Button Classes (use these, don't reinvent)
+- `.btn-primary` — `bg-brand-blue text-white` (main CTAs)
+- `.btn-cart` — `bg-brand-yellow text-gray-900` (add to cart, purchase actions)
+- `.btn-secondary` — outlined `bg-white text-brand-blue border-2 border-brand-blue`
+- `.btn-ghost` — minimal `text-gray-700 text-sm`
+- **ALL buttons**: `rounded-lg` — NEVER `rounded-full`
+
+### Other Design System Classes (use these)
+- `.input-premium` — form inputs (includes focus states, hover, placeholder styling)
+- `.card` — `bg-white rounded-xl border border-gray-200 shadow-sm p-6 hover:shadow-md`
+- `.container-custom` — `container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl`
+- `.section-padding` — `py-8 md:py-12 lg:py-16`
+- `.hero-overlay` — gradient overlay for hero images
+
+### Color Contrast Rules — MANDATORY
+
+| Background | Allowed Text | FORBIDDEN Text |
+|------------|-------------|----------------|
+| White / light (`bg-white`, `bg-gray-50`) | `text-gray-900`, `text-gray-700` | yellow, gold, white |
+| Yellow / gold (`bg-gold-*`, `bg-yellow-*`) | `text-gray-900` (black) | white, light colors |
+| Black / dark (`bg-gray-900`, `bg-black`) | `text-white`, `text-gold-400` | black, dark gray |
+
+**Quick rule**: Gold/yellow accent text is ONLY allowed on dark backgrounds. Gold buttons always get black text.
+
+---
+
+## HERO SECTIONS — #1 RECURRING BUG SOURCE
 
 ### The Rule
+Nav is fixed, `h-24` (96px), `z-50`. ALL hero sections must account for it.
 
-| Background Color | Allowed Text Colors | Forbidden Text Colors |
-|------------------|--------------------|-----------------------|
-| **White** (`bg-white`, `bg-gray-50`) | Black, dark gray (`text-gray-900`, `text-gray-700`) | ❌ Yellow, gold, white |
-| **Yellow/Gold** (`bg-gold-*`, `bg-yellow-*`) | Black, dark gray (`text-gray-900`) | ❌ White, light colors |
-| **Black/Dark** (`bg-gray-900`, `bg-black`) | White, yellow/gold (`text-white`, `text-gold-400`) | ❌ Black, dark gray |
+**Use `mt-24` to push below nav. NEVER combine `h-[100vh]` with `pt-32`.**
 
-### ✅ CORRECT Examples
+### Correct Patterns
+
+**Standard full-bleed hero** (most pages):
 ```tsx
-{/* Dark background = light text */}
-<div className="bg-gray-900 text-white">Dark bg, white text</div>
-<div className="bg-gray-900 text-gold-400">Dark bg, gold text</div>
-
-{/* Light background = dark text */}
-<div className="bg-white text-gray-900">White bg, black text</div>
-<div className="bg-gray-50 text-gray-700">Light bg, dark gray text</div>
-
-{/* Gold background = dark text */}
-<button className="bg-gold-600 text-gray-900">Gold button, black text</button>
-```
-
-### ❌ FORBIDDEN Examples
-```tsx
-{/* NEVER: Yellow/gold text on white/light backgrounds */}
-<div className="bg-white text-gold-400">UNREADABLE</div>
-<div className="bg-gray-50 text-yellow-500">UNREADABLE</div>
-
-{/* NEVER: White text on yellow/gold backgrounds */}
-<button className="bg-gold-600 text-white">UNREADABLE</button>
-<div className="bg-yellow-400 text-white">UNREADABLE</div>
-
-{/* NEVER: Light text on light backgrounds */}
-<div className="bg-white text-gray-200">UNREADABLE</div>
-```
-
-### Quick Reference
-- **Hero overlays** (dark gradient): Use `text-white` or `text-gold-400`
-- **Gold/yellow buttons**: Always use `text-gray-900` (black text)
-- **White sections**: Use `text-gray-900`, `text-gray-700`, or `text-gray-600`
-- **Gold accent text**: ONLY on dark backgrounds (`bg-gray-900`, dark overlays)
-
----
-
-## NAVBAR BACKGROUND RULES (MANDATORY)
-
-Navigation defaults to OPAQUE (white bg, dark text). Only routes in `NAV_TRANSPARENT_ROUTES`
-(in Navigation.tsx) get transparent nav — these MUST have a dark background that extends behind
-the fixed nav (no `mt-24` on hero).
-
-When adding a new page:
-- Page WITH dark bg behind nav area (no `mt-24`) → Add to `NAV_TRANSPARENT_ROUTES`
-- Page with `mt-24` hero or light bg → Do nothing, opaque nav is automatic
-- NEVER use white/light text on white/light nav background
-
----
-
-## 🚨🚨🚨 HERO SECTION STANDARDS - READ THIS FIRST 🚨🚨🚨
-
-**This section is CRITICAL. Hero section bugs are the #1 recurring issue in this codebase.**
-
-### The Navigation Specification
-
-```
-Navigation: fixed position, z-50, height = h-24 (96px / 6rem)
-- At top of page: py-6 (taller, transparent)
-- When scrolled: py-4 (shorter, white background)
-```
-
-**ALL hero sections MUST account for the 96px fixed navigation.**
-
----
-
-### THE GOLDEN RULE
-
-**For full-bleed hero images: Use `mt-24` (margin-top) to push the section below the nav.**
-
-**NEVER combine `h-[100vh]` or `h-screen` with `pt-32` or other top padding. This is the root cause of most hero bugs.**
-
----
-
-### ✅ CORRECT PATTERNS (Copy-Paste These)
-
-#### Pattern A: Standard Full-Bleed Hero (RECOMMENDED)
-```tsx
-{/* Use for: About, Contact, Weddings, Boat Parties, Bach Parties, etc. */}
 <section className="relative h-[50vh] md:h-[60vh] mt-24 flex items-center justify-center overflow-hidden">
   <Image src="..." alt="..." fill className="object-cover" priority />
   <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 via-gray-900/30 to-gray-900/50" />
@@ -313,552 +99,136 @@ Navigation: fixed position, z-50, height = h-24 (96px / 6rem)
   </div>
 </section>
 ```
-**Key points:**
-- `mt-24` = 96px margin pushes entire section below nav
-- `h-[50vh] md:h-[60vh]` = viewport-relative height (NOT 100vh)
-- NO padding-top on the section itself
-- Content is centered with flexbox
 
-#### Pattern B: Tall Full-Bleed Hero (for dramatic effect)
-```tsx
-{/* Use for: Homepage, special landing pages that need more impact */}
-<section className="relative h-[70vh] md:h-[80vh] mt-24 flex items-center justify-center overflow-hidden">
-  <Image src="..." alt="..." fill className="object-cover" priority />
-  {/* ... same structure as Pattern A */}
-</section>
-```
-**Note:** Even for tall heroes, use `mt-24` and vh units - NOT `h-screen` or `h-[100vh]`
+**Tall hero** (homepage, landing pages): Same pattern but `h-[70vh] md:h-[80vh] mt-24`
 
-#### Pattern C: True Full-Screen Hero (edge case only)
-```tsx
-{/* ONLY use when hero MUST fill entire viewport minus nav */}
-<section className="relative h-[calc(100vh-96px)] mt-24 flex items-center justify-center overflow-hidden">
-  {/* ... */}
-</section>
-```
-**Use sparingly** - this is harder to maintain across devices.
+**Content page** (no hero image — terms, privacy, FAQs): `pt-32 pb-16 px-8` (128px = 96px nav + 32px breathing room)
 
-#### Pattern D: Content Page (no full-bleed image)
-```tsx
-{/* Use for: Terms, Privacy, FAQs, Blog posts, forms without hero images */}
-<section className="pt-32 pb-16 px-8 bg-gray-50">
-  {/* pt-32 = 128px = 96px nav + 32px breathing room */}
-  <div className="max-w-4xl mx-auto">
-    {/* Content */}
-  </div>
-</section>
-```
+### Page Height Reference
+| Page | Height |
+|------|--------|
+| Homepage | `h-[70vh] md:h-[80vh] mt-24` |
+| Service pages (weddings, boat, bach) | `h-[60vh] md:h-[70vh] mt-24` |
+| About, Contact | `h-[50vh] md:h-[60vh] mt-24` |
+| Products | `h-[40vh] md:h-[50vh] mt-24` |
+| Order | `h-[35vh] md:h-[40vh] mt-24` |
+| Terms, Privacy, Blog | `pt-32` (no hero) |
+
+### FORBIDDEN — never do these
+- `h-[100vh] pt-32` — double-spacing bug, content overflows
+- `h-screen` without adjustment — goes behind fixed nav
+- Mobile-specific margin hacks (`mt-[120px] md:mt-0`) — fix the parent section instead
+- `pt-24` alone — no breathing room below nav
 
 ---
 
-### ❌ FORBIDDEN PATTERNS (Never Use These)
+## Navbar Background Rules
 
-#### FORBIDDEN #1: Height + Padding Double-Spacing
-```tsx
-{/* ❌ WRONG - This is the most common bug! */}
-<section className="relative h-[100vh] pt-32 pb-32 md:pt-24 md:pb-24 flex items-center justify-center">
-```
-**Why it's wrong:** `h-[100vh]` takes full viewport, then `pt-32` adds 128px padding INSIDE that space, pushing content down and creating overflow/cutoff issues.
+Nav defaults to OPAQUE (white bg, dark text). Only routes in `NAV_TRANSPARENT_ROUTES` (in Navigation.tsx) get transparent nav.
 
-#### FORBIDDEN #2: Using h-screen Without Adjustment
-```tsx
-{/* ❌ WRONG - h-screen ignores the fixed nav */}
-<section className="relative h-screen flex items-center justify-center">
-```
-**Why it's wrong:** `h-screen` = 100vh, which goes behind the fixed nav. Content at the top will be hidden.
-
-#### FORBIDDEN #3: Mobile-Specific Margin Hacks
-```tsx
-{/* ❌ WRONG - Adding hacky margins to fix underlying spacing issues */}
-<div className="mt-[120px] mb-[80px] md:mt-0 md:mb-0">
-```
-**Why it's wrong:** This indicates the parent section's spacing is broken. Fix the section, not the content.
-
-#### FORBIDDEN #4: Inconsistent Mobile/Desktop Padding
-```tsx
-{/* ❌ WRONG - Different padding strategies per breakpoint */}
-<section className="pt-32 pb-32 md:pt-24 md:pb-24">
-```
-**Why it's wrong:** Creates unpredictable behavior. Use consistent `mt-24` for all breakpoints.
-
-#### FORBIDDEN #5: Using pt-24 Alone
-```tsx
-{/* ❌ WRONG - pt-24 = exactly nav height, no breathing room */}
-<section className="pt-24">
-```
-**Why it's wrong:** Content starts immediately at nav edge with no visual separation.
+- Page WITH dark bg extending behind nav (no `mt-24`) → Add route to `NAV_TRANSPARENT_ROUTES`
+- Page with `mt-24` hero or light bg → Do nothing, opaque nav is automatic
 
 ---
 
-### Page-Specific Implementations (REFERENCE)
+## Technical Architecture
 
-| Page | Correct Implementation | Notes |
-|------|----------------------|-------|
-| **Homepage** | `h-[70vh] md:h-[80vh] mt-24` | Tall hero for impact |
-| **About** | `h-[50vh] md:h-[60vh] mt-24` | Standard full-bleed |
-| **Contact** | `h-[50vh] mt-24` | Standard full-bleed |
-| **Weddings** | `h-[60vh] md:h-[70vh] mt-24` | Tall for dramatic photos |
-| **Boat Parties** | `h-[60vh] md:h-[70vh] mt-24` | Tall for dramatic photos |
-| **Bach Parties** | `h-[60vh] md:h-[70vh] mt-24` | Tall for dramatic photos |
-| **Order** | `h-[35vh] md:h-[40vh] mt-24` | Shorter, form follows |
-| **Products** | `h-[40vh] md:h-[50vh] mt-24` | Moderate height |
-| **Terms/Privacy** | `pt-32` (no hero image) | Content page pattern |
-| **Blog Posts** | `pt-32` (no hero image) | Content page pattern |
+### Key Directories
+```
+src/
+├── app/                       # Next.js App Router pages + API routes
+│   ├── api/v1/                # Primary API (auth, products, orders, cart, inventory, admin)
+│   ├── api/v2/group-orders/   # GroupOrderV2 API (universal dashboard)
+│   ├── api/webhooks/          # Stripe, Shopify, Resend webhooks
+│   ├── dashboard/[code]/      # Universal Order Dashboard (main order flow)
+│   ├── ops/                   # Internal operations panel
+│   ├── admin/                 # Admin panel (affiliates, reports, experiments)
+│   └── affiliate/             # Affiliate program pages
+├── components/
+│   ├── dashboard/             # Order Dashboard components (19 files)
+│   ├── ops/                   # Operations admin components
+│   ├── ui/                    # Reusable UI primitives
+│   ├── drink-planner/         # Drink recommendation quiz
+│   └── products/              # Product display components
+├── lib/
+│   ├── stripe/                # Stripe checkout, webhooks, payments
+│   ├── inventory/services/    # Order creation, inventory, product services
+│   ├── group-orders-v2/       # GroupOrderV2 service, validation, API client
+│   ├── draft-orders/          # Draft order (invoice) service
+│   ├── affiliates/            # Affiliate service, commission engine, payouts
+│   ├── email/templates/       # Resend email templates (invoice, confirmation, etc.)
+│   ├── products/              # Product transform, categories
+│   ├── shopify/               # Shopify Admin API (sync only — NOT storefront)
+│   ├── auth/                  # JWT auth, ops session
+│   ├── delivery/              # Delivery fee rates
+│   ├── tax/                   # Sales tax calculator
+│   └── database/client.ts     # Prisma client singleton
+├── contexts/                  # CartContext, CustomerContext, GroupOrderContext
+└── styles/                    # animations.css, mobile.css
+```
+
+### Data Flow
+- **Products**: Synced from Shopify Admin API → Neon Postgres (via `src/lib/sync/`). Served from DB.
+- **Orders**: Created via Stripe checkout webhook → `order-service.ts` → Postgres
+- **Draft Orders / Invoices**: Created in admin (`/ops/orders/create`) → customer pays via `/invoice/[token]` → Stripe
+- **Cart**: React Context + localStorage persistence
+- **Auth**: JWT tokens (`jose`) for customer + ops sessions; affiliate uses magic links
+
+### Middleware (`src/middleware.ts`)
+- Canonical domain enforcement (www → non-www 301)
+- Affiliate attribution via `?ref=` query param (sets 30-day `ref_code` cookie)
+- Partner page attribution (`/partners/[code]`)
+- Affiliate dashboard auth check (redirects to `/affiliate/login`)
+
+### Key Database Models (Prisma)
+| Model | Purpose |
+|-------|---------|
+| `Product` / `ProductVariant` | Product catalog with variants, pricing, inventory |
+| `Order` / `OrderItem` | Completed orders |
+| `DraftOrder` / `DraftOrderItem` | Invoices before payment |
+| `GroupOrderV2` / `SubOrder` / `DraftCartItem` | Universal dashboard orders |
+| `Affiliate` / `AffiliateCommission` / `AffiliatePayout` | Affiliate program |
+| `Customer` | Customer accounts |
+| `Discount` | Promo codes and discounts |
+| `InventoryLevel` / `InventoryNote` | Stock tracking |
+| `BlogPost` | Blog content |
 
 ---
 
-### Hero Section Audit Checklist
+## Blog System
 
-**Before submitting ANY page with a hero section, verify:**
+MDX-based blog stored in `content/blog/posts/` (134 posts). NOT database-backed.
 
-- [ ] **Section uses `mt-24`** for full-bleed heroes (NOT pt-24, NOT pt-32)
-- [ ] **Height uses vh units** like `h-[50vh]` (NOT h-screen, NOT h-[100vh])
-- [ ] **NO padding-top on the section** when using mt-24 + vh height
-- [ ] **Content uses flexbox centering** (`flex items-center justify-center`)
-- [ ] **Test mobile**: Hero visible below nav, content not cut off
-- [ ] **Test desktop**: Proper spacing, no awkward gaps
-- [ ] **No mobile-specific margin hacks** inside hero content
-- [ ] **Consistent breakpoint behavior** (same spacing logic mobile/desktop)
-
----
-
-### When Modifying Existing Hero Sections
-
-**STOP and check before editing ANY hero section:**
-
-1. Read this documentation first
-2. Identify which pattern the page should use
-3. If current implementation uses forbidden patterns, FIX IT using correct patterns
-4. Never add padding/margin hacks to "fix" layout issues
-5. Test on both mobile and desktop before considering it complete
+- **Generation**: `npm run generate-blog` — Claude 3 Haiku via OpenRouter API
+- **Cron route**: `GET /api/cron/generate-blog` — Claude 3.5 Sonnet via OpenRouter (requires `CRON_SECRET`)
+- **Topics**: `scripts/topics.json` — all 107 topics currently published
+- **Legacy posts**: Shopify-migrated posts in `src/data/blog-posts/posts.json` (merged at serve time)
+- **Rendering**: `MDXContentRSC` component, gray-matter for frontmatter parsing
+- **Images**: Optional AI generation via local `image-generator-tool` (saved as WebP to `/public/images/blog/`)
+- **SEO**: Schema.org JSON-LD (Article + FAQPage + LocalBusiness), topical clustering via `pillarSlug`
+- **Automation**: GitHub Actions daily at 9 AM EST, commits to `dev`, creates PR to `main`
 
 ---
 
-### Quick Troubleshooting
+## Code Standards
 
-| Symptom | Likely Cause | Fix |
-|---------|--------------|-----|
-| Hero hidden behind nav | Missing `mt-24` | Add `mt-24` to section |
-| Content cut off at bottom | Using `h-[100vh]` + padding | Use `h-[60vh] mt-24` instead |
-| Awkward gap above hero | Using `pt-32` on full-bleed | Change to `mt-24` |
-| Mobile looks different than desktop | Inconsistent padding per breakpoint | Use same `mt-24` for all |
-| Hero too short/tall | Wrong vh value | Adjust to `h-[50vh]` or `h-[60vh]` |
-
----
-
-## Shopify Integration Architecture
-```
-/lib/shopify/
-  ├── client.ts           # GraphQL client
-  ├── types.ts            # TypeScript interfaces
-  ├── queries/            # Product queries (optimized + legacy)
-  ├── mutations/          # Cart mutations
-  ├── utils.ts            # Helper functions + image optimization
-  ├── image-utils.ts      # Shopify CDN image transformations
-  ├── query-builder.ts    # Shopify Query Language builder
-  └── hooks/              # React hooks with SWR caching
-
-/app/api/products/
-  └── route.ts            # API route with CDN edge caching
-
-/components/skeletons/
-  ├── ProductCardSkeleton.tsx
-  └── MobileProductCardSkeleton.tsx
-```
-
-## Performance Architecture (New)
-```
-Browser Request
-    ↓
-Next.js API Route (/api/products)
-    ↓
-Vercel Edge Network Cache (5min)
-    ↓
-SWR Client Cache (5min)
-    ↓
-Shopify Storefront API (optimized queries)
-    ↓
-Optimized Response (~80KB vs 400KB before)
-```
-
-**Key Optimizations:**
-- **CDN Edge Caching**: 5-minute cache at CDN edge (instant for most users)
-- **SWR Caching**: Client-side cache with smart revalidation
-- **Optimized Queries**: Minimal fields, 1 image instead of 5, 1 variant instead of 10
-- **Server-Side Filtering**: Shopify Query Language reduces data transfer by 50%
-- **Image Optimization**: Device-specific sizes via Shopify CDN
-- **Lazy Loading**: Native browser lazy loading + priority hints
-
-**Results:**
-- Initial load: 85-90% faster (8-12s → 0.5-1s desktop, 15-25s → 2-3s mobile)
-- Repeat visits: 97-99% faster (instant from cache)
-- Payload: 80% smaller (400KB → 80KB)
-
-## Special Requirements
-1. **Age Verification**: Required for alcohol sales
-2. **72-Hour Notice**: All orders require advance booking
-3. **Delivery Zones**: Austin area only (zip code validation)
-4. **Order Minimums**: $100-150 depending on area
-
-## Next Steps
-1. Build shopping cart UI component
-2. Implement age verification flow
-3. Create checkout process
-4. Add delivery scheduling
-5. Test full purchase flow
-
-## Group Ordering Architecture
-```
-/lib/group-orders/
-  ├── types.ts          # TypeScript interfaces
-  ├── api.ts            # API client
-  ├── hooks.ts          # React hooks (useGroupOrder, etc)
-  ├── database.ts       # Database abstraction layer
-  └── store.ts          # In-memory fallback store
-
-/app/api/group-orders/
-  ├── create/           # Create new group order
-  ├── [code]/           # Get by share code
-  └── id/[id]/join/     # Join group order
-
-/components/group-orders/
-  ├── CreateGroupOrderModal.tsx
-  ├── ShareGroupOrder.tsx
-  └── (more to come: Dashboard, Checkout)
-```
-
-## Blog Generation System
-
-### **SEO-Optimized Content Generation**
-
-The automated blog system uses **Claude 3.5 Sonnet via OpenRouter** to generate SEO-optimized, 2,000+ word blog posts with comprehensive structured data.
-
-**Key Features:**
-- **HTML Tables with Schema.org Markup** - All comparisons use semantic tables with microdata
-- **Comprehensive Structured Data** - Article, FAQPage, and LocalBusiness schemas
-- **AI Search Optimized** - Direct answers, FAQ sections, factual data presentation
-- **Mobile-First Design** - Max 4 columns per table for readability
-- **Austin Local SEO** - Geo-coordinates, local business markup, neighborhood references
-
-**Automatic Table Generation for:**
-- Pricing comparisons (packages, tiers, service options)
-- Venue comparisons (capacity, location, amenities, costs)
-- Timeline planning (booking windows, deadlines)
-- Package inclusions (what's in each tier)
-- Budget breakdowns (itemized cost estimates)
-- Service area coverage (zip codes, delivery fees)
-
-**Required Sections:**
-1. Engaging introduction with Austin personality
-2. 5-7 main content sections with descriptive H2 headings
-3. At least ONE HTML comparison table
-4. FAQ section with 3-5 Q&A pairs
-5. Conclusion with clear CTA
-6. Schema.org JSON-LD block with Article, FAQPage, LocalBusiness schemas
-
-**Schema.org Implementation:**
-```json
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    { "@type": "Article", ... },
-    { "@type": "FAQPage", ... },
-    { "@type": "LocalBusiness", ... }
-  ]
-}
-```
-
-**Run Blog Generation:**
-```bash
-npm run generate-blog
-```
-
-**Documentation:**
-- Full setup guide: `BLOG_AUTOMATION_SETUP.md`
-- Topics list: `scripts/topics.json`
-- Script: `scripts/automated-daily-blog.ts`
-
-## Commands
-- Development: `npm run dev` (runs on port 3000)
-- Build: `npm run build`
-- Lint: `npm run lint`
-- Generate Blog: `npm run generate-blog`
-
-## Important Notes
-- All images reference existing assets in `/public/images/`
-- Removed conflicting (main) route group pages
-- Using Shopify Storefront API version 2024-01
+- Files < 500 lines, components < 200 lines, functions < 50 lines
+- No `any` type — use proper TypeScript types
+- Use `ReactElement` not `JSX.Element`
+- Zod validation for all external data
+- JSDoc on all exports
+- Images from `/public/images/` (existing assets)
 - Cart persists in localStorage
-
-## 🚨 Address Handling for Shop Pay Integration (Critical Fix)
-
-### The Problem
-Shop Pay doesn't read cart attributes for shipping address. Cart attributes are for custom data (delivery instructions), NOT the actual shipping address that Shop Pay uses. Customers' addresses aren't passing through to Shop Pay checkout.
-
-### The Solution
-Use checkout URL parameters to pre-fill Shop Pay address fields while keeping cart attributes as backup for internal use.
-
-### Implementation Plan
-
-#### Phase 1: Address Parser Utility
-Create `/lib/utils/addressParser.ts` to parse single address field into components:
-```typescript
-// Expected formats:
-// "123 Main St, Austin, TX 78701"
-// "123 Main St, Apt 4B, Austin, TX 78701"
-// Parser should extract:
-// - address1: street address
-// - address2: apartment/suite (optional)
-// - city: default to "Austin" for local delivery
-// - province: "TX"
-// - country: "US"
-// - zip: extract from end of string
-```
-
-#### Phase 2: Update Checkout Redirect
-Modify both `Cart.tsx` and `MobileCart.tsx` to:
-1. Parse address into components using addressParser
-2. Save to cart attributes (for backup/internal use)
-3. Build checkout URL with parameters:
-```javascript
-const checkoutUrl = new URL(updatedCart.checkoutUrl);
-checkoutUrl.searchParams.append('payment', 'shop_pay');
-checkoutUrl.searchParams.append('checkout[shipping_address][address1]', parsedAddress.address1);
-checkoutUrl.searchParams.append('checkout[shipping_address][city]', parsedAddress.city);
-checkoutUrl.searchParams.append('checkout[shipping_address][province]', 'TX');
-checkoutUrl.searchParams.append('checkout[shipping_address][country]', 'US');
-checkoutUrl.searchParams.append('checkout[shipping_address][zip]', zipCode);
-checkoutUrl.searchParams.append('checkout[shipping_address][phone]', phone);
-window.location.replace(checkoutUrl.toString());
-```
-
-#### Phase 3: Future Improvements (Optional)
-- Consider Google Places Autocomplete for better address parsing
-- Split address input into separate fields (street, apt/suite)
-- Validate zip codes are within Texas (not just Austin)
-
-### Key URL Parameters for Shop Pay
-Full example of checkout URL with all parameters:
-```
-https://store.myshopify.com/checkouts/abc123
-?payment=shop_pay
-&checkout[shipping_address][address1]=123 Main St
-&checkout[shipping_address][address2]=Apt 4B
-&checkout[shipping_address][city]=Austin
-&checkout[shipping_address][province]=TX
-&checkout[shipping_address][country]=US
-&checkout[shipping_address][zip]=78701
-&checkout[shipping_address][phone]=512-555-0123
-&checkout[email]=customer@example.com
-```
-
-### Testing Checklist
-- [ ] Test in incognito to ensure parameters work for all customers
-- [ ] Verify Shop Pay respects the address parameters
-- [ ] Confirm cart attributes still save as backup
-- [ ] Test with various address formats
-- [ ] Verify phone number formatting works
-
-### Research Findings
-- This is the OFFICIAL Shopify method for pre-filling checkout
-- Used by DoorDash, Uber Eats, and major Shopify merchants
-- Shop Pay confirmed to respect these parameters
-- Must parse address into separate fields - Shop Pay won't parse a single string
-
-
-### Global Rules
-This file contains universal development principles and workflows that apply to **ALL projects**, regardless of technology stack. Project-specific rules are loaded conditionally based on the technologies you're using. Additional resources can be found in the /.claude folder
+- All icons are SVG — no emojis in UI
 
 ---
 
-## 🎯 Core Development Principles
-
-![[global-rules/core/universal-principles.md]]
-
----
-
-## 🔄 PRP Development Workflow
-
-![[global-rules/workflows/prp-methodology.md]]
-
----
-
-## 🏛️ Archon Integration
-
-![[global-rules/archon/CLAUDE.md]]
-
----
-
-## 📚 Language & Framework-Specific Rules
-
-The following rules are loaded based on your project's technology stack. Claude Code will use these when working with the respective technologies.
-
-### Python Development
-
-![[global-rules/python/rasmus--python-rules.md]]
-
-### Pydantic AI Agents
-
-**Use when building AI agents with Pydantic AI:**
-
-![[global-rules/pydantic-ai/pydantic-ai-rules.md]]
-
-### Next.js Development
-
-**Use when building Next.js applications:**
-
-![[global-rules/nextjs/rasmus--nextjs-rules.md]]
-
-### React Development
-
-**Use when working with React components:**
-
-![[global-rules/react/rasmus--react-rules.md]]
-
-### Node.js Backend Development
-
-**Use when building Node.js APIs or backend services:**
-
-![[global-rules/node/rasmus--node-rules.md]]
-
-### Astro Static Sites
-
-**Use when building Astro websites:**
-
-![[global-rules/astro/rasmus--astro-rules.md]]
-
----
-
-## 🎯 Project Type Detection
-
-Claude Code automatically adapts based on project context:
-
-- **Detects Python projects** → Applies Python rules + relevant framework rules
-- **Detects Next.js/React** → Applies JavaScript/TypeScript + framework rules
-- **Detects AI agent development** → Applies Pydantic AI specialized rules
-- **Detects Node.js APIs** → Applies Node.js backend patterns
-- **Detects Astro projects** → Applies static site generation rules
-
-You can also explicitly tell Claude what you're building:
-- "I'm building a Next.js app with..."
-- "This is a Pydantic AI agent for..."
-- "Working on a Node.js API that..."
-
----
-
-## 🚀 Quick Start Guide
-
-### For New Projects
-
-1. **Define Requirements**: Create `PRPs/INITIAL.md`
-2. **Generate PRP**: Run `/generate-prp PRPs/INITIAL.md`
-3. **Review PRP**: Validate completeness
-4. **Execute**: Run `/execute-prp PRPs/generated-prp.md`
-5. **Validate**: Run validation gates
-
-### For Existing Codebases
-
-1. **Explore**: Run `/primer` or ask Claude to investigate
-2. **Plan**: Collaborate on approach and architecture
-3. **Create PRP**: Generate focused PRP for feature
-4. **Execute**: Implement following PRP blueprint
-5. **Validate**: Ensure all tests pass
-
----
-
-## 📂 Project Organization
-
-```
-your-project/
-├── .claude/
-│   ├── commands/          # Custom slash commands
-│   └── settings.local.json # Permissions
-├── PRPs/
-│   ├── INITIAL.md        # Requirements (new projects)
-│   ├── templates/        # PRP templates by project type
-│   └── *.md             # Generated PRPs
-├── global-rules/         # Imported global rules (optional)
-├── CLAUDE.md            # This file
-├── .env.example         # Environment variable template
-└── README.md            # Project documentation
-```
-
----
-
-## ✅ Universal Quality Standards
-
-Every project, regardless of type, should meet these standards:
-
-- **Code Quality**
-  - Files < 500 lines
-  - Functions < 50 lines
-  - Clear naming conventions
-  - Comprehensive error handling
-
-- **Security**
-  - No hardcoded secrets
-  - Environment variables in .env
-  - Input validation
-  - Secure dependencies
-
-- **Testing**
-  - Minimum 80% coverage
-  - Unit + integration tests
-  - Edge case handling
-  - Validation gates in PRPs
-
-- **Documentation**
-  - Clear README
-  - Inline comments for complex logic
-  - API documentation
-  - Setup instructions
-
----
-
-## 🔧 Available Tools & Workflows
-
-### Slash Commands
-
-- `/generate-prp` - Create comprehensive PRP from INITIAL.md
-- `/execute-prp` - Implement feature from PRP
-- `/primer` - Explore and understand codebase
-- `/generate-pydantic-ai-prp` - Specialized AI agent PRP
-- `/execute-pydantic-ai-prp` - Implement AI agent from PRP
-- `/hackathon-prp-parallel` - Rapid parallel development
-
-### MCP Servers
-
-- **Archon** - Knowledge management, task tracking, RAG
-- (Add other MCP servers as you integrate them)
-
-### Development Tools
-
-- **TodoWrite** - Track multi-step tasks within sessions
-- **WebSearch** - Research documentation and examples
-- **Glob/Grep** - Explore codebase patterns
-
----
-
-## 🎓 Philosophy
-
-This universal framework is built on these principles:
-
-1. **PRP-Driven Development** - Structured planning enables one-pass implementation
-2. **Context Engineering** - Comprehensive context yields quality results
-3. **Progressive Validation** - Test early, test often, catch issues fast
-4. **Technology Agnostic** - Core principles apply across all stacks
-5. **Modular Loading** - Use only the rules relevant to your project
-6. **Continuous Learning** - Refine PRPs and patterns based on experience
-
----
-
-## 💡 Best Practices
-
-- **Start with universal principles** - They apply to every project
-- **Load framework rules as needed** - Don't overwhelm context with irrelevant rules
-- **Create focused PRPs** - Target specific features, not entire systems
-- **Validate progressively** - Syntax → Types → Tests → Integration
-- **Document decisions** - Capture rationale in PRPs and commit messages
-- **Iterate and improve** - Refine your PRP templates over time
-
----
+## Special Business Rules
+
+- **Age verification**: Required modal for alcohol purchases
+- **Delivery zones**: Austin area only (zip code validation)
+- **Order minimums**: $100-150 depending on zone
+- **Meta Pixel**: Tracks PageView, AddToCart, ViewContent, Purchase events (`NEXT_PUBLIC_META_PIXEL_ID`)
+- **Google Analytics**: GA4 event tracking (`src/lib/analytics/`)
+- **Affiliate program**: Intake, approval, attribution, commission tracking, payout generation
+- **Draft orders**: Admin creates invoice → customer receives link → pays via Stripe → order created via webhook
