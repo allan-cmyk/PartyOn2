@@ -163,8 +163,8 @@ export default function DeliveryHeroSection({
   const showTabs = groupOrder.tabs.length > 1 || isHost;
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-yellow-50 px-4 py-6 pb-0">
-      <div className="max-w-7xl mx-auto">
+    <div className="mb-4">
+      <div>
         {/* Tabs row -- sits above content card */}
         {showTabs && (
           <div className="flex items-end gap-0 px-2">

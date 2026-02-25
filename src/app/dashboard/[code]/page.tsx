@@ -159,21 +159,20 @@ export default function DashboardPage(): ReactElement {
         onShareClick={() => setShowShareModal(true)}
       />
 
-      <DeliveryHeroSection
-        groupOrder={groupOrder}
-        activeTabIndex={safeTabIndex}
-        activeTab={tab}
-        isHost={isHost}
-        participantId={participantId}
-        onTabChange={setActiveTabIndex}
-        onAddDelivery={() => setShowNewLocation(true)}
-        onEditDelivery={() => setShowLocationDetails(true)}
-        onRefresh={refresh}
-      />
-
       <main className="max-w-7xl mx-auto px-4 py-6 lg:grid lg:grid-cols-[1fr_380px] lg:gap-8">
-        {/* Left column: recs + products */}
+        {/* Left column: hero + recs + products */}
         <div>
+          <DeliveryHeroSection
+            groupOrder={groupOrder}
+            activeTabIndex={safeTabIndex}
+            activeTab={tab}
+            isHost={isHost}
+            participantId={participantId}
+            onTabChange={setActiveTabIndex}
+            onAddDelivery={() => setShowNewLocation(true)}
+            onEditDelivery={() => setShowLocationDetails(true)}
+            onRefresh={refresh}
+          />
           {/* Mobile cart (hidden on desktop) */}
           <div className="lg:hidden">
             <OrderSidebar
