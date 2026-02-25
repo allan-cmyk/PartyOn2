@@ -205,66 +205,67 @@ export default function DeliveryHeroSection({
           </div>
         )}
 
-        {/* Content card */}
-        <div className={`bg-white/70 backdrop-blur-md shadow-sm border border-white/50 p-5 ${
+        {/* Content card -- collapsible order details */}
+        <div className={`bg-white/70 backdrop-blur-md shadow-sm border border-white/50 ${
           showTabs ? 'rounded-2xl rounded-tl-none' : 'rounded-2xl'
         }`}>
-          {/* Title row with chevron toggle */}
-          <div className="flex items-center gap-3">
-            {/* Order title -- click to edit */}
-            <div className="flex-1 min-w-0">
-              {editingTitle ? (
-                <input
-                  ref={titleInputRef}
-                  value={titleValue}
-                  onChange={(e) => setTitleValue(e.target.value)}
-                  onBlur={() => saveTitleName()}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') saveTitleName();
-                    if (e.key === 'Escape') setEditingTitle(false);
-                  }}
-                  maxLength={100}
-                  placeholder="Name your order..."
-                  className="text-xl md:text-2xl font-heading font-bold tracking-[0.04em] text-gray-900 bg-transparent border-b-2 border-brand-blue outline-none w-full"
-                />
-              ) : (
-                <button
-                  onClick={startEditingTitle}
-                  className={`text-left w-full group ${isHost ? 'cursor-pointer hover:opacity-80' : ''}`}
-                  disabled={!isHost}
-                >
-                  <h1 className="text-xl md:text-2xl font-heading font-bold tracking-[0.04em] text-gray-900 inline">
-                    {heroTitle}
-                  </h1>
-                  {isHost && (
-                    <svg className="w-4 h-4 inline-block ml-2 text-gray-400 group-hover:text-brand-blue transition-colors align-baseline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                    </svg>
-                  )}
-                </button>
-              )}
-            </div>
-
-            {/* Chevron to expand/collapse details */}
-            <button
-              onClick={() => setDetailsOpen(!detailsOpen)}
-              className="flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all"
-              aria-label={detailsOpen ? 'Collapse details' : 'Expand details'}
+          {/* Collapsed bar -- just a chevron toggle */}
+          <button
+            onClick={() => setDetailsOpen(!detailsOpen)}
+            className="w-full flex items-center justify-between px-5 py-3 hover:bg-white/50 transition-colors rounded-2xl"
+          >
+            <span className="text-sm text-gray-500">
+              {hasDetails
+                ? `${deliveryDate}${deliveryTime ? ` at ${deliveryTime}` : ''}${addr?.address1 ? ` \u00B7 ${addr.address1}${addr.city ? ', ' + addr.city : ''}` : ''}`
+                : 'Order details'}
+            </span>
+            <svg
+              className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${detailsOpen ? 'rotate-180' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              <svg
-                className={`w-5 h-5 transition-transform duration-200 ${detailsOpen ? 'rotate-180' : ''}`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-          </div>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
 
-          {/* Expandable delivery details */}
+          {/* Expandable details panel */}
           {detailsOpen && (
-            <div className="mt-4 pt-3 border-t border-gray-200">
+            <div className="px-5 pb-4 pt-1 border-t border-gray-200 space-y-3">
+              {/* Order title -- editable */}
+              <div>
+                <label className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1 block">Order Name</label>
+                {editingTitle ? (
+                  <input
+                    ref={titleInputRef}
+                    value={titleValue}
+                    onChange={(e) => setTitleValue(e.target.value)}
+                    onBlur={() => saveTitleName()}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') saveTitleName();
+                      if (e.key === 'Escape') setEditingTitle(false);
+                    }}
+                    maxLength={100}
+                    placeholder="Name your order..."
+                    className="text-base font-semibold text-gray-900 bg-transparent border-b-2 border-brand-blue outline-none w-full py-1"
+                  />
+                ) : (
+                  <button
+                    onClick={startEditingTitle}
+                    className={`text-left group flex items-center gap-2 ${isHost ? 'cursor-pointer hover:opacity-80' : ''}`}
+                    disabled={!isHost}
+                  >
+                    <span className="text-base font-semibold text-gray-900">{heroTitle}</span>
+                    {isHost && (
+                      <svg className="w-3.5 h-3.5 text-gray-400 group-hover:text-brand-blue transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                      </svg>
+                    )}
+                  </button>
+                )}
+              </div>
+
+              {/* Delivery details */}
               {hasDetails ? (
                 <div className="text-sm text-gray-600 space-y-1.5">
                   {deliveryDate && (
@@ -287,7 +288,7 @@ export default function DeliveryHeroSection({
                   {isHost && (
                     <button
                       onClick={onEditDelivery}
-                      className="text-brand-blue hover:text-blue-700 font-medium mt-1 text-sm"
+                      className="text-brand-blue hover:text-blue-700 font-medium text-sm"
                     >
                       Edit details
                     </button>
