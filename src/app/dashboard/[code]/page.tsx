@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef, type ReactElement } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { useGroupOrderV2 } from '@/lib/group-orders-v2/hooks';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import DeliveryHeroSection from '@/components/dashboard/DeliveryHeroSection';
@@ -17,12 +17,15 @@ import RecommendationsSection from '@/components/dashboard/RecommendationsSectio
 import ShareModal from '@/components/dashboard/ShareModal';
 import JoinOverlay from '@/components/dashboard/JoinOverlay';
 import type { RecommendationResult } from '@/components/dashboard/GetRecsModal';
+import { claimHostV2 } from '@/lib/group-orders-v2/api-client';
 
 const PARTICIPANT_KEY_PREFIX = 'dashboard_participant_';
 
 export default function DashboardPage(): ReactElement {
   const params = useParams() ?? {};
   const code = (params.code as string) || '';
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   const { groupOrder, isLoading, refresh } = useGroupOrderV2(code);
 
@@ -78,6 +81,33 @@ export default function DashboardPage(): ReactElement {
       }
     }
   }, [groupOrder, participantId, code]);
+
+  // Handle host claim token from URL
+  useEffect(() => {
+    if (!groupOrder || !participantId) return;
+    const claimToken = searchParams?.get('claim');
+    if (!claimToken) return;
+
+    const alreadyHost = groupOrder.participants.find(
+      (p) => p.id === participantId && p.isHost
+    );
+    if (alreadyHost) {
+      // Already host, just strip the param
+      router.replace(`/dashboard/${code}`);
+      return;
+    }
+
+    claimHostV2(code, claimToken, participantId)
+      .then(() => {
+        refresh();
+        router.replace(`/dashboard/${code}`);
+      })
+      .catch((err) => {
+        console.error('Failed to claim host:', err);
+        router.replace(`/dashboard/${code}`);
+      });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [groupOrder?.id, participantId]);
 
   const handleOnboardingDismiss = useCallback(() => {
     setShowOnboarding(false);
@@ -166,7 +196,6 @@ export default function DashboardPage(): ReactElement {
             groupOrder={groupOrder}
             activeTabIndex={safeTabIndex}
             activeTab={tab}
-            isHost={isHost}
             participantId={participantId}
             onTabChange={setActiveTabIndex}
             onAddDelivery={() => setShowNewLocation(true)}
@@ -263,7 +292,6 @@ export default function DashboardPage(): ReactElement {
           participantId={participantId}
           mode={checkoutMode}
           items={checkoutItems}
-          isHost={isHost}
           onClose={() => setCheckoutMode(null)}
           onOpenDeliveryDetails={() => {
             setCheckoutMode(null);

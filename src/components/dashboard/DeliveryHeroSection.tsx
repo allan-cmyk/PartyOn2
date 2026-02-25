@@ -8,7 +8,6 @@ interface Props {
   groupOrder: GroupOrderV2Full;
   activeTabIndex: number;
   activeTab: SubOrderFull;
-  isHost: boolean;
   participantId: string;
   onTabChange: (index: number) => void;
   onAddDelivery: () => void;
@@ -52,7 +51,6 @@ export default function DeliveryHeroSection({
   groupOrder,
   activeTabIndex,
   activeTab,
-  isHost,
   participantId,
   onTabChange,
   onAddDelivery,
@@ -77,7 +75,6 @@ export default function DeliveryHeroSection({
   }, [editingTabId]);
 
   function startEditingTab(tab: SubOrderFull, index: number) {
-    if (!isHost) return;
     setEditingTabId(tab.id);
     setEditTabName(getTabLabel(tab, index));
   }
@@ -92,7 +89,7 @@ export default function DeliveryHeroSection({
     try {
       await updateTabV2(groupOrder.shareCode, tabId, {
         name: trimmed,
-        hostParticipantId: participantId,
+        participantId,
       });
       onRefresh();
     } catch {
@@ -112,7 +109,6 @@ export default function DeliveryHeroSection({
   }, [editingTitle]);
 
   function startEditingTitle() {
-    if (!isHost) return;
     setTitleValue(heroTitle);
     setEditingTitle(true);
   }
@@ -127,7 +123,7 @@ export default function DeliveryHeroSection({
     try {
       await updateTabV2(groupOrder.shareCode, activeTab.id, {
         name: trimmed,
-        hostParticipantId: participantId,
+        participantId,
       });
       onRefresh();
     } catch {
@@ -156,7 +152,7 @@ export default function DeliveryHeroSection({
   }
 
   const tabsAtLimit = groupOrder.tabs.length >= 4;
-  const showTabs = groupOrder.tabs.length > 1 || isHost;
+  const showTabs = true;
 
   return (
     <div className="mb-4">
@@ -189,13 +185,13 @@ export default function DeliveryHeroSection({
                       ? 'bg-brand-blue text-white border-brand-blue relative z-10 -mb-px shadow-md'
                       : 'bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 border-transparent'
                   }`}
-                  title={isHost ? 'Double-click to rename' : ''}
+                  title="Double-click to rename"
                 >
                   {getTabLabel(tab, i)}
                 </button>
               )
             ))}
-            {isHost && !tabsAtLimit && (
+            {!tabsAtLimit && (
               <button
                 onClick={onAddDelivery}
                 className="w-11 h-11 flex items-center justify-center rounded-t-2xl text-gray-400 hover:text-brand-blue hover:bg-gray-100 transition-colors ml-1 mb-0.5"
@@ -256,15 +252,12 @@ export default function DeliveryHeroSection({
                 ) : (
                   <button
                     onClick={startEditingTitle}
-                    className={`text-left group flex items-center gap-2 ${isHost ? 'cursor-pointer hover:opacity-80' : ''}`}
-                    disabled={!isHost}
+                    className="text-left group flex items-center gap-2 cursor-pointer hover:opacity-80"
                   >
                     <span className="text-base font-semibold text-gray-900">{heroTitle}</span>
-                    {isHost && (
-                      <svg className="w-3.5 h-3.5 text-gray-400 group-hover:text-brand-blue transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                      </svg>
-                    )}
+                    <svg className="w-3.5 h-3.5 text-gray-400 group-hover:text-brand-blue transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
                   </button>
                 )}
               </div>
@@ -289,16 +282,14 @@ export default function DeliveryHeroSection({
                       <span>{addr.address1}{addr.address2 ? `, ${addr.address2}` : ''}{addr.city ? `, ${addr.city}` : ''}{addr.province ? `, ${addr.province}` : ''} {addr.zip || ''}</span>
                     </div>
                   )}
-                  {isHost && (
-                    <button
-                      onClick={onEditDelivery}
-                      className="text-brand-blue hover:text-blue-700 font-medium text-sm"
-                    >
-                      Edit details
-                    </button>
-                  )}
+                  <button
+                    onClick={onEditDelivery}
+                    className="text-brand-blue hover:text-blue-700 font-medium text-sm"
+                  >
+                    Edit details
+                  </button>
                 </div>
-              ) : isHost ? (
+              ) : (
                 <button
                   onClick={onEditDelivery}
                   className="flex items-center gap-2 text-sm font-medium text-brand-blue hover:text-blue-700 transition-colors"
@@ -308,8 +299,6 @@ export default function DeliveryHeroSection({
                   </svg>
                   Add location details
                 </button>
-              ) : (
-                <p className="text-sm text-gray-400">Delivery details not set yet</p>
               )}
             </div>
           )}

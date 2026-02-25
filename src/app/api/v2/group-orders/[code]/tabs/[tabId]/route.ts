@@ -1,5 +1,7 @@
 /**
- * PATCH /api/v2/group-orders/[code]/tabs/[tabId] - Update tab (host only)
+ * PATCH /api/v2/group-orders/[code]/tabs/[tabId] - Update tab
+ *   - status changes (lock/unlock): host only
+ *   - all other fields: any active participant
  * DELETE /api/v2/group-orders/[code]/tabs/[tabId] - Delete tab (host only)
  */
 
@@ -10,6 +12,7 @@ import {
   updateTab,
   deleteTab,
   isParticipantHost,
+  isActiveParticipant,
 } from '@/lib/group-orders-v2/service';
 
 interface RouteParams {
@@ -21,10 +24,11 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     const { code, tabId } = await params;
     const body = await request.json();
 
-    const hostParticipantId = body.hostParticipantId;
-    if (!hostParticipantId) {
+    // Accept participantId (preferred) or hostParticipantId (backward compat)
+    const participantId = body.participantId || body.hostParticipantId;
+    if (!participantId) {
       return NextResponse.json(
-        { success: false, error: 'hostParticipantId is required' },
+        { success: false, error: 'participantId is required' },
         { status: 400 }
       );
     }
@@ -34,12 +38,24 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ success: false, error: 'Group not found' }, { status: 404 });
     }
 
-    const isHost = await isParticipantHost(hostParticipantId, group.id);
-    if (!isHost) {
-      return NextResponse.json(
-        { success: false, error: 'Only the host can update tabs' },
-        { status: 403 }
-      );
+    // Status changes (lock/unlock) are host-only
+    if (body.status) {
+      const isHost = await isParticipantHost(participantId, group.id);
+      if (!isHost) {
+        return NextResponse.json(
+          { success: false, error: 'Only the host can lock/unlock tabs' },
+          { status: 403 }
+        );
+      }
+    } else {
+      // All other updates: any active participant
+      const isActive = await isActiveParticipant(participantId, group.id);
+      if (!isActive) {
+        return NextResponse.json(
+          { success: false, error: 'You must be an active participant to update tabs' },
+          { status: 403 }
+        );
+      }
     }
 
     const parsed = UpdateTabSchema.safeParse(body);

@@ -162,7 +162,7 @@ export default function TabContent({
       {isHost && currentParticipantId && (
         <EditTabModal
           shareCode={shareCode}
-          hostParticipantId={currentParticipantId}
+          participantId={currentParticipantId}
           tab={tab}
           isOpen={showEditTab}
           onClose={() => setShowEditTab(false)}

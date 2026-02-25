@@ -1,5 +1,5 @@
 /**
- * POST /api/v2/group-orders/[code]/tabs - Create a new tab (host only)
+ * POST /api/v2/group-orders/[code]/tabs - Create a new tab (any active participant)
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -7,7 +7,7 @@ import { CreateTabSchema } from '@/lib/group-orders-v2/validation';
 import {
   getGroupOrderByCode,
   createTab,
-  isParticipantHost,
+  isActiveParticipant,
 } from '@/lib/group-orders-v2/service';
 
 interface RouteParams {
@@ -19,10 +19,11 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const { code } = await params;
     const body = await request.json();
 
-    const hostParticipantId = body.hostParticipantId;
-    if (!hostParticipantId) {
+    // Accept participantId (preferred) or hostParticipantId (backward compat)
+    const participantId = body.participantId || body.hostParticipantId;
+    if (!participantId) {
       return NextResponse.json(
-        { success: false, error: 'hostParticipantId is required' },
+        { success: false, error: 'participantId is required' },
         { status: 400 }
       );
     }
@@ -35,10 +36,10 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const isHost = await isParticipantHost(hostParticipantId, group.id);
-    if (!isHost) {
+    const isActive = await isActiveParticipant(participantId, group.id);
+    if (!isActive) {
       return NextResponse.json(
-        { success: false, error: 'Only the host can create tabs' },
+        { success: false, error: 'You must be an active participant to create tabs' },
         { status: 403 }
       );
     }

@@ -40,7 +40,7 @@ export default function NewDeliveryModal({
       const label = PARTY_LABELS.find((p) => p.value === selected)?.label || '';
       const name = customName.trim() || `${label} Order`;
       await createTabV2(shareCode, {
-        hostParticipantId: participantId,
+        participantId,
         name,
       });
       onCreated();

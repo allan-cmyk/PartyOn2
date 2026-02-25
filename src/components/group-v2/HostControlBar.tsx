@@ -76,7 +76,7 @@ export default function HostControlBar({
     setLoading('lockTab');
     try {
       await updateTabV2(code, activeTab.id, {
-        hostParticipantId,
+        participantId: hostParticipantId,
         status: newStatus,
       });
       onRefresh();

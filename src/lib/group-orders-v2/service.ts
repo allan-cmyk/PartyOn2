@@ -707,6 +707,145 @@ export async function getParticipantById(participantId: string) {
   });
 }
 
+/**
+ * Check if a participant is an active member of the group order
+ */
+export async function isActiveParticipant(
+  participantId: string,
+  groupOrderId: string
+): Promise<boolean> {
+  const p = await prisma.groupParticipantV2.findFirst({
+    where: { id: participantId, groupOrderId, status: 'ACTIVE' },
+  });
+  return !!p;
+}
+
+/**
+ * Transfer host role from one participant to another
+ */
+export async function transferHost(
+  shareCode: string,
+  currentHostParticipantId: string,
+  newHostParticipantId: string
+): Promise<void> {
+  const group = await prisma.groupOrderV2.findUnique({
+    where: { shareCode },
+    include: { participants: true },
+  });
+  if (!group) throw new Error('Group order not found');
+
+  const currentHost = group.participants.find(
+    (p) => p.id === currentHostParticipantId && p.isHost
+  );
+  if (!currentHost) throw new Error('Only the current host can transfer host');
+
+  const newHost = group.participants.find(
+    (p) => p.id === newHostParticipantId && p.status === 'ACTIVE'
+  );
+  if (!newHost) throw new Error('New host must be an active participant');
+
+  await prisma.$transaction([
+    prisma.groupParticipantV2.update({
+      where: { id: currentHostParticipantId },
+      data: { isHost: false },
+    }),
+    prisma.groupParticipantV2.update({
+      where: { id: newHostParticipantId },
+      data: { isHost: true },
+    }),
+    prisma.groupOrderV2.update({
+      where: { shareCode },
+      data: {
+        hostName: newHost.guestName || 'Unknown',
+        hostEmail: newHost.guestEmail,
+        hostPhone: newHost.guestPhone,
+      },
+    }),
+  ]);
+}
+
+/**
+ * Generate a one-time host claim token
+ */
+export async function generateHostClaimToken(
+  shareCode: string,
+  hostParticipantId: string
+): Promise<string> {
+  const group = await prisma.groupOrderV2.findUnique({
+    where: { shareCode },
+    include: { participants: { where: { id: hostParticipantId, isHost: true } } },
+  });
+  if (!group || group.participants.length === 0) {
+    throw new Error('Only the host can generate a claim token');
+  }
+
+  const { randomBytes } = await import('crypto');
+  const token = randomBytes(24).toString('hex'); // 48 chars
+
+  await prisma.groupOrderV2.update({
+    where: { shareCode },
+    data: { hostClaimToken: token },
+  });
+
+  return token;
+}
+
+/**
+ * Claim host role using a claim token
+ */
+export async function claimHost(
+  shareCode: string,
+  claimToken: string,
+  participantId: string
+): Promise<void> {
+  const group = await prisma.groupOrderV2.findUnique({
+    where: { shareCode },
+    include: { participants: true },
+  });
+  if (!group) throw new Error('Group order not found');
+  if (!group.hostClaimToken || group.hostClaimToken !== claimToken) {
+    throw new Error('Invalid or expired claim token');
+  }
+
+  const newHost = group.participants.find(
+    (p) => p.id === participantId && p.status === 'ACTIVE'
+  );
+  if (!newHost) throw new Error('Participant not found or inactive');
+
+  // Already host? Just clear the token
+  if (newHost.isHost) {
+    await prisma.groupOrderV2.update({
+      where: { shareCode },
+      data: { hostClaimToken: null },
+    });
+    return;
+  }
+
+  const currentHost = group.participants.find((p) => p.isHost);
+
+  await prisma.$transaction([
+    ...(currentHost
+      ? [prisma.groupParticipantV2.update({
+          where: { id: currentHost.id },
+          data: { isHost: false },
+        })]
+      : []),
+    prisma.groupParticipantV2.update({
+      where: { id: participantId },
+      data: { isHost: true },
+    }),
+    prisma.groupOrderV2.update({
+      where: { shareCode },
+      data: {
+        hostClaimToken: null,
+        hostName: newHost.guestName || 'Unknown',
+        hostEmail: newHost.guestEmail,
+        hostPhone: newHost.guestPhone,
+      },
+    }),
+  ]);
+}
+
 // ==========================================
 // Dashboard Order Creation
 // ==========================================
