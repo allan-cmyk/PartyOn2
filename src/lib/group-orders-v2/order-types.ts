@@ -33,8 +33,8 @@ const COMMON_COLLECTIONS: OrderCollection[] = [
     },
   },
   {
-    handle: 'tailgate-beer',
-    label: 'Beers',
+    handle: 'light-beer',
+    label: 'Light Beer',
     colors: {
       bg: 'bg-amber-50 hover:bg-amber-100',
       bgActive: 'bg-amber-600',
@@ -42,6 +42,30 @@ const COMMON_COLLECTIONS: OrderCollection[] = [
       textActive: 'text-gray-900',
       border: 'border-amber-400 hover:border-amber-500',
       borderActive: 'border-amber-600',
+    },
+  },
+  {
+    handle: 'craft-beer',
+    label: 'Craft Beer',
+    colors: {
+      bg: 'bg-orange-50 hover:bg-orange-100',
+      bgActive: 'bg-orange-600',
+      text: 'text-gray-900',
+      textActive: 'text-gray-900',
+      border: 'border-orange-400 hover:border-orange-500',
+      borderActive: 'border-orange-600',
+    },
+  },
+  {
+    handle: 'seltzers-rtds',
+    label: 'Seltzers & RTDs',
+    colors: {
+      bg: 'bg-cyan-50 hover:bg-cyan-100',
+      bgActive: 'bg-cyan-600',
+      text: 'text-gray-900',
+      textActive: 'text-white',
+      border: 'border-cyan-400 hover:border-cyan-500',
+      borderActive: 'border-cyan-600',
     },
   },
   {
@@ -57,7 +81,7 @@ const COMMON_COLLECTIONS: OrderCollection[] = [
     },
   },
   {
-    handle: 'champagne',
+    handle: 'sparkling-wine',
     label: 'Wine',
     colors: {
       bg: 'bg-purple-50 hover:bg-purple-100',
@@ -66,18 +90,6 @@ const COMMON_COLLECTIONS: OrderCollection[] = [
       textActive: 'text-white',
       border: 'border-purple-400 hover:border-purple-500',
       borderActive: 'border-purple-600',
-    },
-  },
-  {
-    handle: 'seltzer-collection',
-    label: 'Seltzers',
-    colors: {
-      bg: 'bg-cyan-50 hover:bg-cyan-100',
-      bgActive: 'bg-cyan-600',
-      text: 'text-gray-900',
-      textActive: 'text-white',
-      border: 'border-cyan-400 hover:border-cyan-500',
-      borderActive: 'border-cyan-600',
     },
   },
   {

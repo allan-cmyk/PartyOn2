@@ -26,7 +26,7 @@ export default async function CocktailKitsPage() {
   const products = await prisma.product.findMany({
     where: {
       status: 'ACTIVE',
-      productType: { equals: 'Cocktail Kits', mode: 'insensitive' },
+      productType: 'Cocktail Kit',
     },
     include: {
       images: { orderBy: { position: 'asc' } },

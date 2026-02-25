@@ -68,12 +68,14 @@ export function buildShopifyQuery(filters: ProductFilters): string {
  */
 export function getCategoryProductTypes(category: string): string[] {
   const categoryMap: Record<string, string[]> = {
-    'seltzers-champs': ['Seltzer', 'champagne', 'Prosecco', 'Sparkling Wine'],
-    'beer': ['beer and seltzers', 'Beer', 'Lager', 'IPA', 'Ale', 'Stout'],
-    'cocktails': ['Cocktail', 'Cocktail Kits', 'Ready to Drink', 'RTD', 'Canned Cocktails'],
-    'liquor': ['Vodka', 'Tequila', 'Whiskey', 'Bourbon', 'Gin', 'Rum', 'Liquor & Spirits', 'Cognac', 'Brandy', 'Scotch', 'Rye'],
-    'mixers-na': ['Cocktail Mixes', 'non alcoholic', 'sparkling water', 'water', 'Juice', 'ice', 'Mixer', 'Tonic', 'Soda'],
-    'party-supplies': ['Cup', 'Cup with Straw', 'drinkware', 'Drinking Straws & Stirrers', 'Party Decoration'],
+    'beer': ['Light Beer', 'Craft Beer'],
+    'seltzers-rtds': ['Seltzer', 'RTD Cocktail'],
+    'wine': ['Red Wine', 'White Wine', 'Sparkling Wine'],
+    'spirits': ['Tequila', 'Whiskey', 'Vodka', 'Rum', 'Gin', 'Liqueur'],
+    'cocktail-kits': ['Cocktail Kit'],
+    'mixers': ['Mixer'],
+    'party-supplies': ['Weekend Supply', 'Formal Supply'],
+    'kegs': ['Keg'],
   };
 
   return categoryMap[category] || [];

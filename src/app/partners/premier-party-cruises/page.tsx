@@ -102,7 +102,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
   void searchParams;
 
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
-  const [activeCollection, setActiveCollection] = useState('boat-best-sellers');
+  const [activeCollection, setActiveCollection] = useState('boat-essentials');
   const [sortBy, setSortBy] = useState<'popular' | 'price-asc'>('popular');
 
   // Sticky collections state

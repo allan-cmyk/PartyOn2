@@ -130,8 +130,7 @@ export default function BoatPartyPackagePage() {
       const type = p.productType?.toLowerCase() || '';
       return (
         type.includes('beer') ||
-        type.includes('seltzer') ||
-        type === 'beer and seltzers'
+        type.includes('seltzer')
       );
     });
     

@@ -4,8 +4,8 @@ export const BOAT_ESSENTIALS_HANDLE = 'boat-essentials';
 
 export const PREMIER_BOAT_COLLECTIONS = [
   {
-    handle: 'boat-best-sellers',
-    label: 'Boat Best Sellers',
+    handle: 'boat-essentials',
+    label: 'Boat Essentials',
     category: 'featured',
     colors: {
       bg: 'bg-yellow-50 hover:bg-yellow-100',
@@ -17,9 +17,9 @@ export const PREMIER_BOAT_COLLECTIONS = [
     },
   },
   {
-    handle: 'boat-seltzers-rtds',
+    handle: 'seltzers-rtds',
     label: 'Seltzers & RTDs',
-    category: 'seltzersChamps',
+    category: 'seltzersRtds',
     colors: {
       bg: 'bg-cyan-50 hover:bg-cyan-100',
       bgActive: 'bg-cyan-600',
@@ -30,8 +30,8 @@ export const PREMIER_BOAT_COLLECTIONS = [
     },
   },
   {
-    handle: 'boat-beer',
-    label: 'Beer & Variety Packs',
+    handle: 'light-beer',
+    label: 'Light Beer',
     category: 'beer',
     colors: {
       bg: 'bg-amber-50 hover:bg-amber-100',
@@ -43,22 +43,22 @@ export const PREMIER_BOAT_COLLECTIONS = [
     },
   },
   {
-    handle: 'boat-cocktails-spirits',
-    label: 'Cocktails & Spirits',
-    category: 'cocktails',
+    handle: 'spirits',
+    label: 'Spirits',
+    category: 'spirits',
     colors: {
-      bg: 'bg-rose-50 hover:bg-rose-100',
-      bgActive: 'bg-rose-600',
-      text: 'text-rose-700',
+      bg: 'bg-slate-50 hover:bg-slate-100',
+      bgActive: 'bg-slate-700',
+      text: 'text-slate-700',
       textActive: 'text-white',
-      border: 'border-rose-400 hover:border-rose-500',
-      borderActive: 'border-rose-600',
+      border: 'border-slate-400 hover:border-slate-500',
+      borderActive: 'border-slate-700',
     },
   },
   {
-    handle: 'boat-bubbles-wine',
-    label: 'Bubbles & Wine',
-    category: 'seltzersChamps',
+    handle: 'sparkling-wine',
+    label: 'Sparkling & Rose',
+    category: 'wine',
     colors: {
       bg: 'bg-purple-50 hover:bg-purple-100',
       bgActive: 'bg-purple-600',
