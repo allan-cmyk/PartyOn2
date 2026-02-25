@@ -112,11 +112,29 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
               {content.tagline}
             </motion.p>
 
-            {/* Trust Chips */}
+            {/* CTA */}
             <motion.div
               {...heroFadeUp}
               transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-              className="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-6 md:mb-8"
+              className="flex justify-center lg:justify-start mb-6 md:mb-8"
+            >
+              {content.ctaButtons.map((cta, index) => (
+                <Link
+                  key={`${cta.text}-${index}`}
+                  href={cta.url}
+                  onClick={() => handleCTAClick(cta.text, cta.url)}
+                  className="px-12 sm:px-16 py-4 sm:py-5 rounded-lg transition-all duration-300 tracking-[0.1em] text-base sm:text-lg font-semibold text-center bg-brand-yellow text-gray-900 hover:bg-yellow-600"
+                >
+                  {cta.text}
+                </Link>
+              ))}
+            </motion.div>
+
+            {/* Trust Chips */}
+            <motion.div
+              {...heroFadeUp}
+              transition={{ duration: 0.6, delay: 0.45, ease: [0.25, 0.1, 0.25, 1] }}
+              className="flex flex-wrap items-center justify-center lg:justify-start gap-2"
             >
               {trustChips.map((chip) => (
                 <span
@@ -127,42 +145,6 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
                   {chip.label}
                 </span>
               ))}
-            </motion.div>
-
-            {/* CTAs */}
-            <motion.div
-              {...heroFadeUp}
-              transition={{ duration: 0.6, delay: 0.45, ease: [0.25, 0.1, 0.25, 1] }}
-              className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center lg:items-start flex-wrap"
-            >
-              {content.ctaButtons.map((cta, index) => {
-                if (cta.style === 'text-link') {
-                  return (
-                    <Link
-                      key={`${cta.text}-${index}`}
-                      href={cta.url}
-                      onClick={() => handleCTAClick(cta.text, cta.url)}
-                      className="text-white/70 hover:text-white text-sm font-medium transition-colors duration-200 flex items-center gap-1 mt-1"
-                    >
-                      {cta.text}
-                    </Link>
-                  );
-                }
-                return (
-                  <Link
-                    key={`${cta.text}-${index}`}
-                    href={cta.url}
-                    onClick={() => handleCTAClick(cta.text, cta.url)}
-                    className={`px-8 sm:px-10 py-3 sm:py-4 rounded-lg transition-all duration-300 tracking-[0.08em] text-sm font-semibold text-center ${
-                      cta.style === 'primary'
-                        ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
-                        : 'border-2 border-white/40 text-white hover:bg-white/10'
-                    }`}
-                  >
-                    {cta.text}
-                  </Link>
-                );
-              })}
             </motion.div>
           </div>
 

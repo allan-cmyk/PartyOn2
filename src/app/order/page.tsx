@@ -33,10 +33,11 @@ const DELIVERY_CONTEXT_MAP: Record<string, DeliveryContextType> = {
 export default function OrderRedirectPage(): ReactElement {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-amber-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-600 mx-auto mb-4" />
-          <p className="text-gray-600">Setting up your order...</p>
+          <img src="/images/pod-logo-2025.svg" alt="Party On" className="h-40 w-auto mx-auto mb-8" />
+          <div className="w-8 h-8 border-3 border-gray-900 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-sm text-gray-500">Setting up your order...</p>
         </div>
       </div>
     }>
@@ -128,9 +129,9 @@ function OrderRedirectInner(): ReactElement {
           <Image
             src="/images/pod-logo-2025.svg"
             alt="Party On"
-            width={120}
-            height={38}
-            className="h-10 w-auto mx-auto mb-6"
+            width={480}
+            height={152}
+            className="h-40 w-auto mx-auto mb-8"
           />
           <p className="text-red-600 mb-4">{error}</p>
           <button
@@ -154,9 +155,9 @@ function OrderRedirectInner(): ReactElement {
         <Image
           src="/images/pod-logo-2025.svg"
           alt="Party On"
-          width={120}
-          height={38}
-          className="h-10 w-auto mx-auto mb-6"
+          width={480}
+          height={152}
+          className="h-40 w-auto mx-auto mb-8"
         />
         <div className="w-8 h-8 border-3 border-gray-900 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
         <p className="text-sm text-gray-500">Setting up your order...</p>
