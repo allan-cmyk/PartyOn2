@@ -239,7 +239,7 @@ export default function CustomPackagePage() {
                     <p className="text-gray-600 mb-4">
                       We couldn&apos;t find an exact match for &quot;{match.item.product}&quot;
                     </p>
-                    <Link href="/products">
+                    <Link href="/order">
                       <button className="px-6 py-2 border border-gray-300 text-gray-700 hover:border-brand-yellow transition-colors tracking-[0.1em] text-sm">
                         BROWSE ALL PRODUCTS
                       </button>
@@ -258,7 +258,7 @@ export default function CustomPackagePage() {
             >
               BACK TO CHAT
             </button>
-            <Link href="/products">
+            <Link href="/order">
               <button className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em]">
                 BROWSE ALL PRODUCTS
               </button>

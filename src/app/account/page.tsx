@@ -113,7 +113,7 @@ export default function AccountPage() {
 
       {/* Quick Actions Grid */}
       <div className="grid md:grid-cols-4 gap-6 mb-8">
-        <Link href="/products" className="group">
+        <Link href="/order" className="group">
           <div className="bg-white p-6 rounded-lg border border-gray-200 hover:border-brand-yellow hover:shadow-lg transition-all">
             <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-brand-yellow transition-colors">
               <svg className="w-6 h-6 text-brand-yellow group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -200,7 +200,7 @@ export default function AccountPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
                 <p className="text-gray-500 mb-4">No orders yet</p>
-                <Link href="/products" className="text-brand-yellow hover:text-yellow-600 text-sm">
+                <Link href="/order" className="text-brand-yellow hover:text-yellow-600 text-sm">
                   Start Shopping →
                 </Link>
               </div>

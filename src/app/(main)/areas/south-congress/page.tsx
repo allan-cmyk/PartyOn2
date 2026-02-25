@@ -163,7 +163,7 @@ export default function SouthCongressPage() {
               trailers to boutique hotels, we deliver the party supplies that keep SoCo celebrations 
               authentically Austin.
             </p>
-            <Link href="/book-now" className="btn-primary bg-white text-gray-900 hover:bg-gray-100">
+            <Link href="/order" className="btn-primary bg-white text-gray-900 hover:bg-gray-100">
               Order SoCo Delivery
             </Link>
           </div>

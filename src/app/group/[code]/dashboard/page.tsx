@@ -88,7 +88,7 @@ export default function DashboardPage(): ReactElement {
             Group Order Not Found
           </h1>
           <Link
-            href="/group/create"
+            href="/order"
             className="text-brand-blue hover:underline"
           >
             Create a new group order

@@ -56,73 +56,26 @@ export default function HomePage() {
       {/* Hero Section - Client Component with A/B Testing */}
       <HeroSectionExperimental />
 
-      {/* Choose Your Path Fork */}
+      {/* Start Order CTA */}
       <section className="py-16 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-8">
+        <div className="max-w-4xl mx-auto px-8 text-center">
           <ScrollRevealCSS duration={800} y={30}>
-            <div className="text-center mb-12">
-              <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
-                Choose Your Path
-              </h2>
-              <div className="w-16 h-px bg-brand-yellow mx-auto" />
-            </div>
-          </ScrollRevealCSS>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            {/* Delivery Now */}
-            <ScrollRevealCSS duration={800} delay={100} y={30}>
-              <div className="bg-white rounded-lg p-8 border border-gray-200 hover:shadow-lg transition-shadow">
-                <h3 className="font-heading text-2xl text-gray-900 mb-6 tracking-[0.1em]">
-                  Delivery Now <span className="text-brand-yellow">(fastest)</span>
-                </h3>
-                <ul className="space-y-3 mb-8">
-                  <li className="flex items-start">
-                    <span className="text-brand-yellow mr-3 mt-1">•</span>
-                    <span className="text-gray-700">Build your cart in minutes—beer, spirits, cocktail kits, ice & disposables</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-brand-yellow mr-3 mt-1">•</span>
-                    <span className="text-gray-700">Everything arrives cold with coordinated handoff</span>
-                  </li>
-                </ul>
-                <TrackedLink href="/order" section="choose_path" buttonText="START ORDERING">
-                  <button className="w-full px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm">
-                    START ORDERING
-                  </button>
-                </TrackedLink>
-              </div>
-            </ScrollRevealCSS>
-
-            {/* Plan an Event */}
-            <ScrollRevealCSS duration={800} delay={200} y={30}>
-              <div className="bg-white rounded-lg p-8 border border-gray-200 hover:shadow-lg transition-shadow">
-                <h3 className="font-heading text-2xl text-gray-900 mb-6 tracking-[0.1em]">
-                  Plan an Event <span className="text-brand-yellow">(concierge)</span>
-                </h3>
-                <ul className="space-y-3 mb-8">
-                  <li className="flex items-start">
-                    <span className="text-brand-yellow mr-3 mt-1">•</span>
-                    <span className="text-gray-700">Full wedding, boat party, and corporate bar coordination</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-brand-yellow mr-3 mt-1">•</span>
-                    <span className="text-gray-700">Optional TABC-certified bartender staffing via vetted partners</span>
-                  </li>
-                </ul>
-                <TrackedLink href="/contact" section="choose_path" buttonText="GET HELP">
-                  <button className="w-full px-8 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm">
-                    GET HELP
-                  </button>
-                </TrackedLink>
-              </div>
-            </ScrollRevealCSS>
-          </div>
-
-          <div className="text-center mt-8">
-            <p className="text-gray-600 text-sm tracking-[0.05em]">
+            <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-4 tracking-[0.1em]">
+              Build your cart in minutes
+            </h2>
+            <div className="w-16 h-px bg-brand-yellow mx-auto mb-4" />
+            <p className="text-gray-600 mb-8 tracking-[0.05em]">
+              Beer, spirits, cocktail kits, ice & disposables — everything arrives cold with coordinated handoff
+            </p>
+            <TrackedLink href="/order" section="start_order" buttonText="START ORDER">
+              <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm">
+                START ORDER
+              </button>
+            </TrackedLink>
+            <p className="text-gray-500 text-sm mt-6 tracking-[0.05em]">
               Austin locals serving Downtown to Lake Travis since 2023
             </p>
-          </div>
+          </ScrollRevealCSS>
         </div>
       </section>
 
@@ -628,18 +581,11 @@ export default function HomePage() {
               <p className="text-gray-300 text-lg mb-12 tracking-[0.05em]">
                 2-minute order • Fast availability check • (737) 371-9700
               </p>
-              <div className="flex flex-col md:flex-row gap-6 justify-center">
-                <TrackedLink href="/order" section="footer_cta" buttonText="ORDER NOW">
-                  <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm">
-                    ORDER NOW
-                  </button>
-                </TrackedLink>
-                <TrackedLink href="/plan-event" section="footer_cta" buttonText="PLAN MY EVENT">
-                  <button className="px-10 py-4 border-2 border-brand-yellow text-white hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm">
-                    PLAN MY EVENT
-                  </button>
-                </TrackedLink>
-              </div>
+              <TrackedLink href="/order" section="footer_cta" buttonText="START ORDER">
+                <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm">
+                  START ORDER
+                </button>
+              </TrackedLink>
             </div>
           </ScrollRevealCSS>
         </div>

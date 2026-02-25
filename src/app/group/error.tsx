@@ -52,7 +52,7 @@ export default function GroupV2Error({
             Try Again
           </button>
           <Link
-            href="/group/create"
+            href="/order"
             className="px-6 py-2.5 bg-white text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium text-sm"
           >
             Create New Group

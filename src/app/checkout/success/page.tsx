@@ -364,7 +364,7 @@ function CheckoutSuccessContent() {
           </div>
 
           <Link
-            href="/products"
+            href="/order"
             className="inline-block px-8 py-3 border border-gray-300 text-gray-700 text-sm tracking-[0.08em] hover:border-gold transition-colors"
           >
             CONTINUE SHOPPING

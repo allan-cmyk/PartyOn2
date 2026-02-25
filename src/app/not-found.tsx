@@ -36,7 +36,7 @@ export default function NotFound() {
               RETURN HOME
             </Link>
             <Link
-              href="/products"
+              href="/order"
               className="inline-block px-8 py-3 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-colors tracking-[0.1em] text-sm font-medium"
             >
               BROWSE PRODUCTS

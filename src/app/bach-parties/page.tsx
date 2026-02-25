@@ -707,7 +707,7 @@ export default function BachPartiesPage() {
               Start planning your unforgettable celebration today
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
-              <Link href="/book-now">
+              <Link href="/order">
                 <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm">
                   PLAN YOUR PARTY
                 </button>

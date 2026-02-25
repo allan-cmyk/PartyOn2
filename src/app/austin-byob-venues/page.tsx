@@ -296,7 +296,7 @@ export default function AustinBYOBVenuesPage() {
               <p>
                 Partner venues marked with the &quot;Free Delivery&quot; badge offer complimentary alcohol
                 delivery from Party On Delivery. Simply{' '}
-                <Link href="/products" className="text-brand-yellow hover:text-yellow-600">
+                <Link href="/order" className="text-brand-yellow hover:text-yellow-600">
                   browse our selection
                 </Link>
                 , place your order, and we&apos;ll deliver everything cold and on time to your venue.
@@ -310,7 +310,7 @@ export default function AustinBYOBVenuesPage() {
               </ul>
               <p>
                 Need help calculating how much alcohol you need? Use our{' '}
-                <Link href="/weddings/order" className="text-brand-yellow hover:text-yellow-600">
+                <Link href="/order" className="text-brand-yellow hover:text-yellow-600">
                   wedding drink calculator
                 </Link>{' '}
                 to get personalized recommendations based on your guest count and event duration.

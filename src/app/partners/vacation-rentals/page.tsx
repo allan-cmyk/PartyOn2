@@ -136,7 +136,7 @@ export default function VacationRentalsPartnerPage() {
               BROWSE PACKAGES
             </Link>
             <Link
-              href="/products"
+              href="/order"
               className="px-8 py-3 bg-white/10 backdrop-blur-sm text-white border border-white/30 hover:bg-white/20 transition-all duration-300 tracking-wider"
             >
               SHOP ALL PRODUCTS
@@ -269,7 +269,7 @@ export default function VacationRentalsPartnerPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/products"
+              href="/order"
               className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-wider font-medium"
             >
               SHOP ALL PRODUCTS

@@ -89,7 +89,7 @@ export default function OrderHistoryPage() {
             <h3 className="text-xl font-cormorant text-gray-900 mb-2">No Orders Yet</h3>
             <p className="text-gray-600 mb-6">Start shopping to see your orders appear here</p>
             <Link 
-              href="/products"
+              href="/order"
               className="inline-block px-8 py-3 bg-brand-yellow text-gray-900 text-sm tracking-[0.1em] hover:bg-yellow-600 transition-colors rounded"
             >
               BROWSE PRODUCTS

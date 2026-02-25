@@ -322,7 +322,7 @@ function InnCahootsPageContent(): ReactElement {
               <span className="text-gray-400 font-medium text-sm uppercase tracking-wider">or</span>
 
               <Link
-                href="/group/create"
+                href="/order"
                 className="w-full md:flex-1 flex items-center justify-center gap-3 py-4 px-6 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-semibold tracking-wide transition-all rounded-xl shadow-sm hover:shadow-md"
               >
                 <span>Start a Group Order</span>
@@ -554,7 +554,7 @@ function InnCahootsPageContent(): ReactElement {
 
           <div className="flex flex-col items-center gap-3 mb-6">
             <Link
-              href="/group/create"
+              href="/order"
               className="px-10 py-4 bg-gray-900 text-white hover:bg-gray-800 font-semibold tracking-wider transition-colors rounded-lg"
             >
               Start a Group Order

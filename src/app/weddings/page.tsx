@@ -302,7 +302,7 @@ export default function WeddingsPage() {
             Curated bar service with venue coordination, cold delivery, and TABC-certified bartenders for Austin, Hill Country, and Lake Travis weddings.
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
-            <Link href="/weddings/order">
+            <Link href="/order">
               <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                 ORDER NOW
               </button>
@@ -368,7 +368,7 @@ export default function WeddingsPage() {
                   You handle setup or use your own bartender
                 </li>
               </ul>
-              <Link href="/weddings/order">
+              <Link href="/order">
                 <button className="w-full py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                   ORDER NOW
                 </button>
@@ -768,7 +768,7 @@ export default function WeddingsPage() {
                   </p>
                 </div>
                 <div className="flex gap-2">
-                  <Link href="/weddings/order">
+                  <Link href="/order">
                     <button className="px-4 py-2 bg-brand-yellow text-gray-900 text-xs tracking-[0.1em] font-medium">
                       ORDER NOW
                     </button>

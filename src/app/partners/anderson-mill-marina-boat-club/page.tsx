@@ -278,7 +278,7 @@ function AndersonMillMarinaPageContent(): ReactElement {
           </div>
 
           <div className="mt-8 text-center">
-            <Button variant="cart" size="md" href="/group/create">
+            <Button variant="cart" size="md" href="/order">
               Start a Group Order &rarr;
             </Button>
           </div>
@@ -320,7 +320,7 @@ function AndersonMillMarinaPageContent(): ReactElement {
                 <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 mb-6">
                   <h2 className="font-heading text-2xl md:text-3xl text-gray-900">Shop drinks</h2>
                   <div className="flex-1" />
-                  <Button variant="cart" size="sm" href="/group/create">
+                  <Button variant="cart" size="sm" href="/order">
                     Start Group Order
                   </Button>
                 </div>
@@ -533,7 +533,7 @@ function AndersonMillMarinaPageContent(): ReactElement {
           </div>
 
           <div className="mt-10 text-center">
-            <Button variant="cart" size="lg" href="/group/create">
+            <Button variant="cart" size="lg" href="/order">
               Start a Group Order (split payments)
             </Button>
           </div>
@@ -661,7 +661,7 @@ function AndersonMillMarinaPageContent(): ReactElement {
             </p>
 
             <div className="flex flex-col items-center gap-3 mb-6">
-              <Button variant="primary" size="lg" href="/group/create">
+              <Button variant="primary" size="lg" href="/order">
                 Start a Group Order
               </Button>
 

@@ -43,9 +43,7 @@ export const heroControl: HeroVariantContent = {
   tagline: 'Concierge planning for Airbnbs, weddings, and corporate events\u2014plus a split-pay Group Order so everyone can add what they want and pay their portion.',
   trustBadges: 'Licensed • Insured • TABC-certified • 5.0★ on Google',
   ctaButtons: [
-    { text: 'GET A QUOTE', url: '/plan-event', style: 'primary' },
-    { text: 'START A GROUP ORDER', url: '/group/create', style: 'secondary' },
-    { text: 'Boat day? We deliver to the dock \u2192', url: '/partners/premier-party-cruises', style: 'text-link' },
+    { text: 'START ORDER', url: '/order', style: 'primary' },
   ],
 };
 
@@ -70,9 +68,7 @@ export const heroVariantA: HeroVariantContent = {
     { src: '/images/hero/homepage-hero-luxury.webp', alt: 'Luxury penthouse bar setup' },
   ],
   ctaButtons: [
-    { text: 'ORDER NOW', url: '/products', style: 'primary' },
-    { text: 'BROWSE PRODUCTS', url: '/quick-order', style: 'secondary' },
-    { text: 'PLAN MY EVENT', url: '/plan-event', style: 'secondary' },
+    { text: 'START ORDER', url: '/order', style: 'primary' },
   ],
 };
 
@@ -97,9 +93,7 @@ export const heroVariantB: HeroVariantContent = {
     { src: '/images/hero/homepage-hero-luxury.webp', alt: 'Luxury penthouse bar setup' },
   ],
   ctaButtons: [
-    { text: 'SHOP NOW', url: '/products', style: 'primary' },
-    { text: 'VIEW MENU', url: '/quick-order', style: 'secondary' },
-    { text: 'GET HELP PLANNING', url: '/plan-event', style: 'secondary' },
+    { text: 'START ORDER', url: '/order', style: 'primary' },
   ],
 };
 
@@ -124,9 +118,7 @@ export const heroVariantC: HeroVariantContent = {
     { src: '/images/hero/homepage-hero-sunset.webp', alt: 'Austin sunset from Lady Bird Lake' },
   ],
   ctaButtons: [
-    { text: 'START YOUR ORDER', url: '/products', style: 'primary' },
-    { text: 'EXPLORE PRODUCTS', url: '/quick-order', style: 'secondary' },
-    { text: 'CONCIERGE SERVICE', url: '/plan-event', style: 'secondary' },
+    { text: 'START ORDER', url: '/order', style: 'primary' },
   ],
 };
 

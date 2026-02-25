@@ -108,7 +108,7 @@ export default function DowntownAustinPage() {
               During major events like SXSW or Formula 1, order early! We increase staff but 
               demand is always high.
             </p>
-            <Link href="/book-now" className="btn-primary bg-white text-gray-900 hover:bg-gray-100">
+            <Link href="/order" className="btn-primary bg-white text-gray-900 hover:bg-gray-100">
               Book Downtown Delivery
             </Link>
           </div>

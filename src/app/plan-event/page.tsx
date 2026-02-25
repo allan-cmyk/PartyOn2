@@ -216,7 +216,7 @@ export default function PlanEventPage() {
               Ready to order? Start shopping or let us build a custom quote for you.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/products">
+              <Link href="/order">
                 <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                   START SHOPPING
                 </button>
@@ -419,7 +419,7 @@ export default function PlanEventPage() {
           </div>
 
           <div className="text-center mt-12">
-            <Link href="/products">
+            <Link href="/order">
               <button className="px-8 py-4 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow transition-colors tracking-[0.08em] text-sm font-medium">
                 OR BROWSE ALL PRODUCTS
               </button>

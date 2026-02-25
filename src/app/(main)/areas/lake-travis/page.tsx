@@ -169,7 +169,7 @@ export default function LakeTravisPage() {
               who appear intoxicated. Designate a sober captain and party on!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/book-now" className="btn-primary bg-white text-gray-900 hover:bg-gray-100 text-center">
+              <Link href="/order" className="btn-primary bg-white text-gray-900 hover:bg-gray-100 text-center">
                 Book Lake Delivery
               </Link>
               <a href="tel:7373719700" className="btn-outline border-white text-white hover:bg-white hover:text-gray-900 text-center">

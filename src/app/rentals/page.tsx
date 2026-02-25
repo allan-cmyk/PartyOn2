@@ -313,7 +313,7 @@ export default function RentalsHubPage() {
                   REQUEST QUOTE
                 </button>
               </Link>
-              <Link href="/products">
+              <Link href="/order">
                 <button className="px-10 py-4 border-2 border-brand-yellow text-white hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium">
                   BROWSE PRODUCTS
                 </button>

@@ -253,7 +253,7 @@ export default function FeatureCards({ mode = 'normal' }: FeatureCardsProps) {
               Ready to experience the difference?
             </p>
             <Link
-              href="/book-now"
+              href="/order"
               className={`btn-primary inline-flex items-center space-x-2 ${
                 mode === 'party' ? 'animate-pulse-slow' : ''
               }`}

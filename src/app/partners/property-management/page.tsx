@@ -120,7 +120,7 @@ export default function PropertyManagementPartnerPage() {
               VIEW AMENITIES
             </Link>
             <Link
-              href="/products"
+              href="/order"
               className="px-8 py-3 bg-white/10 backdrop-blur-sm text-white border border-white/30 hover:bg-white/20 transition-all duration-300 tracking-wider"
             >
               SHOP ALL PRODUCTS
@@ -226,7 +226,7 @@ export default function PropertyManagementPartnerPage() {
                   </div>
 
                   <Link
-                    href="/products"
+                    href="/order"
                     className="inline-flex items-center gap-2 text-brand-yellow hover:text-yellow-600 font-medium"
                   >
                     View Full Catalog

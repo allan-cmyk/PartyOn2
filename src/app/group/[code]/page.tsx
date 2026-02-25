@@ -81,7 +81,7 @@ export default function JoinGroupPage(): ReactElement {
           </h1>
           <p className="text-gray-600 mb-6">{error}</p>
           <Link
-            href="/group/create"
+            href="/order"
             className="inline-block px-6 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800"
           >
             Create Your Own

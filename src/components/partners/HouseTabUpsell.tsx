@@ -62,7 +62,7 @@ export default function HouseTabUpsell(): ReactElement {
 
         {/* CTAs */}
         <div className="flex flex-col items-center gap-3">
-          <Button variant="cart" size="md" href="/group/create">
+          <Button variant="cart" size="md" href="/order">
             Start a Group Order &rarr;
           </Button>
           <a

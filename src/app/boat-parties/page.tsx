@@ -165,7 +165,7 @@ export default function BoatPartiesPage() {
             Dock and boat delivery with captain coordination—everything cold, stocked, and ready to pour.
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
-            <Link href="/boat-parties/products">
+            <Link href="/order">
               <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                 ORDER NOW
               </button>
@@ -217,7 +217,7 @@ export default function BoatPartiesPage() {
                   You handle setup or bring your own crew
                 </li>
               </ul>
-              <Link href="/boat-parties/products">
+              <Link href="/order">
                 <button className="w-full py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                   ORDER NOW
                 </button>
@@ -459,7 +459,7 @@ export default function BoatPartiesPage() {
             <p className="text-lg text-gray-700 mb-6 tracking-[0.05em]">
               <strong>Just need delivery?</strong> Build your boat-day cart in minutes.
             </p>
-            <Link href="/boat-parties/products">
+            <Link href="/order">
               <button className="px-8 py-3 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium">
                 ORDER DELIVERY-ONLY
               </button>
@@ -602,7 +602,7 @@ export default function BoatPartiesPage() {
               Book your Lake Travis delivery 72 hours in advance
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
-              <Link href="/book-now">
+              <Link href="/order">
                 <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm">
                   BOOK LAKE DELIVERY
                 </button>

@@ -312,7 +312,7 @@ export default function CheckoutPage() {
           <div className="max-w-4xl mx-auto px-8 text-center">
             <h1 className="font-cormorant text-4xl mb-4">Your Cart is Empty</h1>
             <p className="text-gray-600 mb-8">Add some products to your cart to proceed with checkout.</p>
-            <Link href="/products">
+            <Link href="/order">
               <button className="px-8 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors">
                 SHOP PRODUCTS
               </button>

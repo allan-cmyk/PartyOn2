@@ -86,7 +86,7 @@ export default function AustinAlcoholDeliveryPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center scroll-reveal">
               <Link
-                href="/products"
+                href="/order"
                 className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm font-medium rounded"
               >
                 SHOP NOW
@@ -405,7 +405,7 @@ export default function AustinAlcoholDeliveryPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center scroll-reveal">
               <Link
-                href="/products"
+                href="/order"
                 className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm font-medium rounded"
               >
                 SHOP NOW

@@ -297,7 +297,7 @@ export default function HolidayRunnerUpPage() {
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <Link
-              href="/products"
+              href="/order"
               className="inline-block bg-brand-yellow text-gray-900 px-10 py-4 text-lg tracking-[0.08em] hover:bg-yellow-600 transition-colors font-medium text-center"
             >
               SHOP NOW & CLAIM YOUR GIFT
@@ -560,7 +560,7 @@ export default function HolidayRunnerUpPage() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
               <Link
-                href="/products"
+                href="/order"
                 className="inline-block bg-brand-yellow text-gray-900 px-10 py-4 text-lg tracking-[0.08em] hover:bg-yellow-600 transition-colors font-medium"
               >
                 SHOP NOW

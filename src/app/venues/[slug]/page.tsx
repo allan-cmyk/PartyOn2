@@ -126,7 +126,7 @@ export default function VenueLandingPage() {
               </span>
             </div>
             <Link
-              href="/products"
+              href="/order"
               className="inline-flex items-center gap-2 px-6 py-2 bg-gray-900 text-white font-medium rounded hover:bg-gray-800 transition-colors"
             >
               Order Now
@@ -289,14 +289,14 @@ export default function VenueLandingPage() {
                     </ul>
 
                     <Link
-                      href="/products"
+                      href="/order"
                       className="block w-full text-center px-6 py-4 bg-yellow-500 text-gray-900 font-medium rounded-lg hover:bg-brand-yellow transition-colors mb-4"
                     >
                       Browse Our Selection
                     </Link>
 
                     <Link
-                      href="/weddings/order"
+                      href="/order"
                       className="block w-full text-center px-6 py-3 border border-brand-yellow text-yellow-600 font-medium rounded-lg hover:bg-yellow-50 transition-colors"
                     >
                       Use Drink Calculator

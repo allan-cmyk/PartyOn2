@@ -211,7 +211,7 @@ export default function HolidayProductsCarousel(): React.ReactElement {
         {/* View All CTA */}
         <div className="text-center mt-10">
           <Link
-            href="/products"
+            href="/order"
             className="inline-block border-2 border-brand-yellow text-brand-yellow px-8 py-3 tracking-[0.1em] hover:bg-brand-yellow hover:text-white transition-colors font-medium"
           >
             VIEW ALL PRODUCTS
