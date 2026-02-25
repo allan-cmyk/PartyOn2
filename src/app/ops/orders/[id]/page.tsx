@@ -682,118 +682,127 @@ export default function OrderDetailPage(): ReactElement {
         </div>
       </div>
 
-      {/* Print View - Order Sheet */}
-      <div ref={printRef} className="hidden print:block p-8">
-        <div className="text-center mb-6 border-b-2 border-black pb-4">
-          <div className="bg-blue-900 text-white py-3 px-4 text-2xl font-bold mb-2 inline-block rounded">
-            ORDER #{order.orderNumber}
+      {/* Print View - Compact Order Sheet (fits one letter page) */}
+      <div ref={printRef} className="hidden print:block order-sheet">
+        {/* Header row: order number + business name on one line */}
+        <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
+          <div className="flex items-center gap-3">
+            <span className="bg-black text-white text-lg font-bold px-3 py-1 rounded">
+              #{order.orderNumber}
+            </span>
+            <span className="text-lg font-bold">Party On Delivery</span>
           </div>
-          <h1 className="text-3xl font-bold mt-2">Party On Delivery</h1>
-          <p className="text-gray-600 text-lg">Order Fulfillment Sheet</p>
+          <span className="text-xs text-gray-500">
+            Printed {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+          </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-8 mb-6">
-          {/* Delivery Info */}
-          <div className="border-2 border-gray-300 rounded-lg p-4">
-            <h2 className="font-bold text-lg border-b-2 border-gray-300 pb-2 mb-3">DELIVERY INFORMATION</h2>
-            <p className="font-bold text-xl mb-1">{formatDate(order.delivery.date)}</p>
-            <p className="text-lg mb-3">{order.delivery.time}</p>
-            <div className="bg-gray-100 p-3 rounded">
-              <p className="font-medium">{order.delivery.address.address1}</p>
-              {order.delivery.address.address2 && (
-                <p>{order.delivery.address.address2}</p>
-              )}
-              <p>{order.delivery.address.city}, {order.delivery.address.state} {order.delivery.address.zip}</p>
+        {/* Delivery + Customer side by side, compact */}
+        <div className="flex gap-4 mb-3">
+          <div className="flex-1 border border-gray-400 rounded p-2">
+            <div className="font-bold text-xs uppercase tracking-wide border-b border-gray-300 pb-1 mb-1">Delivery</div>
+            <div className="font-bold text-sm">
+              {new Date(order.delivery.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' })}
+              {' '}&middot;{' '}{order.delivery.time}
+            </div>
+            <div className="text-sm mt-1">
+              {order.delivery.address.address1}
+              {order.delivery.address.address2 ? `, ${order.delivery.address.address2}` : ''}
+              <br />
+              {order.delivery.address.city}, {order.delivery.address.state} {order.delivery.address.zip}
             </div>
             {order.delivery.phone && (
-              <p className="mt-3 font-medium">Phone: {order.delivery.phone}</p>
+              <div className="text-sm mt-1">Tel: {order.delivery.phone}</div>
             )}
           </div>
-
-          {/* Customer Info */}
-          <div className="border-2 border-gray-300 rounded-lg p-4">
-            <h2 className="font-bold text-lg border-b-2 border-gray-300 pb-2 mb-3">CUSTOMER INFORMATION</h2>
-            <p className="font-bold text-xl mb-1">{order.customer.name || order.customerSnapshot.name}</p>
-            <p className="text-gray-600">{order.customer.email}</p>
+          <div className="w-52 border border-gray-400 rounded p-2">
+            <div className="font-bold text-xs uppercase tracking-wide border-b border-gray-300 pb-1 mb-1">Customer</div>
+            <div className="font-bold text-sm">{order.customer.name || order.customerSnapshot.name || 'Guest'}</div>
+            <div className="text-sm">{order.customer.email}</div>
             {(order.customer.phone || order.customerSnapshot.phone) && (
-              <p className="mt-2">Phone: {order.customer.phone || order.customerSnapshot.phone}</p>
+              <div className="text-sm">Tel: {order.customer.phone || order.customerSnapshot.phone}</div>
             )}
           </div>
         </div>
 
+        {/* Delivery instructions - compact */}
         {order.delivery.instructions && (
-          <div className="mb-6 p-4 border-2 border-yellow-500 bg-yellow-50 rounded-lg">
-            <h2 className="font-bold text-lg mb-2">DELIVERY INSTRUCTIONS:</h2>
-            <p className="text-lg">{order.delivery.instructions}</p>
+          <div className="mb-3 px-2 py-1.5 border-2 border-yellow-500 bg-yellow-50 rounded text-sm">
+            <span className="font-bold">Instructions: </span>{order.delivery.instructions}
           </div>
         )}
 
-        {/* Items Table */}
-        <table className="w-full mb-6 border-collapse">
+        {/* Items Table - tight rows */}
+        <table className="w-full mb-3 border-collapse text-sm">
           <thead>
-            <tr className="border-b-2 border-black bg-gray-100">
-              <th className="text-left py-3 px-4 font-bold">Item</th>
-              <th className="text-center py-3 px-4 w-24 font-bold">Qty</th>
-              <th className="text-right py-3 px-4 w-28 font-bold">Price</th>
-              <th className="text-center py-3 px-4 w-20 font-bold">Check</th>
+            <tr className="border-b-2 border-black">
+              <th className="text-left py-1 px-2 font-bold">Item</th>
+              <th className="text-center py-1 px-2 w-12 font-bold">Qty</th>
+              <th className="text-right py-1 px-2 w-20 font-bold">Price</th>
+              <th className="text-center py-1 w-10 font-bold">OK</th>
             </tr>
           </thead>
           <tbody>
             {order.items.map((item) => (
               <tr key={item.id} className="border-b border-gray-300">
-                <td className="py-3 px-4">
-                  <p className="font-medium text-lg">{item.title}</p>
+                <td className="py-1 px-2">
+                  <span className="font-medium">{item.title}</span>
                   {item.variantTitle && item.variantTitle !== 'Default Title' && (
-                    <p className="text-gray-600">{item.variantTitle}</p>
+                    <span className="text-gray-500 ml-1">({item.variantTitle})</span>
                   )}
                 </td>
-                <td className="text-center py-3 px-4 font-bold text-2xl">{item.quantity}</td>
-                <td className="text-right py-3 px-4 font-medium">${item.total.toFixed(2)}</td>
-                <td className="text-center py-3 px-4">
-                  <span className="inline-block w-8 h-8 border-2 border-black rounded"></span>
+                <td className="text-center py-1 px-2 font-bold text-base">{item.quantity}</td>
+                <td className="text-right py-1 px-2">${item.total.toFixed(2)}</td>
+                <td className="text-center py-1">
+                  <span className="inline-block w-4 h-4 border-2 border-black rounded-sm"></span>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        {/* Totals */}
-        <div className="flex justify-end">
-          <div className="w-72 border-2 border-gray-300 rounded-lg overflow-hidden">
-            <div className="flex justify-between py-2 px-4 border-b border-gray-200">
-              <span>Subtotal:</span>
-              <span className="font-medium">${order.pricing.subtotal.toFixed(2)}</span>
+        {/* Bottom row: notes on left, totals on right */}
+        <div className="flex gap-4">
+          <div className="flex-1">
+            {order.notes.customer && (
+              <div className="border border-gray-400 rounded p-2 text-sm">
+                <span className="font-bold">Customer Note: </span>{order.notes.customer}
+              </div>
+            )}
+            {order.pricing.discountCode && (
+              <div className="mt-1 text-sm">
+                <span className="font-bold">Discount: </span>
+                <span className="font-mono">{order.pricing.discountCode}</span>
+                {order.pricing.discountAmount > 0 && (
+                  <span> (-${order.pricing.discountAmount.toFixed(2)})</span>
+                )}
+              </div>
+            )}
+          </div>
+          <div className="w-48 border border-gray-400 rounded overflow-hidden text-sm">
+            <div className="flex justify-between py-0.5 px-2 border-b border-gray-200">
+              <span>Subtotal</span>
+              <span>${order.pricing.subtotal.toFixed(2)}</span>
             </div>
             {order.pricing.discountAmount > 0 && (
-              <div className="flex justify-between py-2 px-4 border-b border-gray-200 text-green-600">
-                <span>Discount:</span>
+              <div className="flex justify-between py-0.5 px-2 border-b border-gray-200">
+                <span>Discount</span>
                 <span>-${order.pricing.discountAmount.toFixed(2)}</span>
               </div>
             )}
-            <div className="flex justify-between py-2 px-4 border-b border-gray-200">
-              <span>Delivery:</span>
-              <span className="font-medium">${order.pricing.deliveryFee.toFixed(2)}</span>
+            <div className="flex justify-between py-0.5 px-2 border-b border-gray-200">
+              <span>Delivery</span>
+              <span>${order.pricing.deliveryFee.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between py-2 px-4 border-b border-gray-200">
-              <span>Tax:</span>
-              <span className="font-medium">${order.pricing.taxAmount.toFixed(2)}</span>
+            <div className="flex justify-between py-0.5 px-2 border-b border-gray-200">
+              <span>Tax</span>
+              <span>${order.pricing.taxAmount.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between py-3 px-4 bg-gray-100 font-bold text-xl">
-              <span>TOTAL:</span>
+            <div className="flex justify-between py-1 px-2 bg-gray-100 font-bold text-base">
+              <span>TOTAL</span>
               <span>${order.pricing.total.toFixed(2)}</span>
             </div>
           </div>
-        </div>
-
-        {order.notes.customer && (
-          <div className="mt-6 p-4 border-2 border-gray-300 rounded-lg">
-            <h2 className="font-bold mb-2">Customer Note:</h2>
-            <p>{order.notes.customer}</p>
-          </div>
-        )}
-
-        <div className="mt-8 text-center text-sm text-gray-500 border-t pt-4">
-          <p>Printed on {new Date().toLocaleString()}</p>
         </div>
       </div>
     </>
