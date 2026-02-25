@@ -28,6 +28,7 @@ export default function NewDeliveryModal({
   onCreated,
 }: Props): ReactElement {
   const [selected, setSelected] = useState<string | null>(null);
+  const [customName, setCustomName] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
@@ -36,9 +37,11 @@ export default function NewDeliveryModal({
     setSaving(true);
     setError('');
     try {
+      const label = PARTY_LABELS.find((p) => p.value === selected)?.label || '';
+      const name = customName.trim() || `${label} Order`;
       await createTabV2(shareCode, {
         hostParticipantId: participantId,
-        name: `Location ${nextPosition}`,
+        name,
       });
       onCreated();
     } catch (err) {
@@ -89,6 +92,24 @@ export default function NewDeliveryModal({
             </button>
           ))}
         </div>
+
+        {selected && (
+          <div className="mt-5">
+            <label htmlFor="location-name" className="block text-base font-semibold text-gray-700 mb-1.5">
+              Name this order
+            </label>
+            <input
+              id="location-name"
+              type="text"
+              value={customName}
+              onChange={(e) => setCustomName(e.target.value)}
+              placeholder={`${PARTY_LABELS.find((p) => p.value === selected)?.label || ''} Order`}
+              className="input-premium w-full"
+              maxLength={100}
+              autoFocus
+            />
+          </div>
+        )}
 
         {error && (
           <p className="text-sm text-red-600 mt-4">{error}</p>

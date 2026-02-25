@@ -2,13 +2,14 @@
 
 import { useState, useRef, useEffect, type ReactElement } from 'react';
 import type { GroupOrderV2Full, SubOrderFull, PartyType } from '@/lib/group-orders-v2/types';
-import { updateGroupOrderV2 } from '@/lib/group-orders-v2/api-client';
+import { updateGroupOrderV2, updateTabV2 } from '@/lib/group-orders-v2/api-client';
 
 interface Props {
   groupOrder: GroupOrderV2Full;
   activeTabIndex: number;
   activeTab: SubOrderFull;
   isHost: boolean;
+  participantId: string;
   onTabChange: (index: number) => void;
   onAddDelivery: () => void;
   onEditDelivery: () => void;
@@ -60,6 +61,7 @@ export default function DeliveryHeroSection({
   activeTabIndex,
   activeTab,
   isHost,
+  participantId,
   onTabChange,
   onAddDelivery,
   onEditDelivery,
@@ -68,6 +70,9 @@ export default function DeliveryHeroSection({
   const [showTypeSelector, setShowTypeSelector] = useState(false);
   const [saving, setSaving] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [editingTabId, setEditingTabId] = useState<string | null>(null);
+  const [editTabName, setEditTabName] = useState('');
+  const tabInputRef = useRef<HTMLInputElement>(null);
   const selectorRef = useRef<HTMLDivElement>(null);
 
   // Close selector when clicking outside
@@ -81,6 +86,41 @@ export default function DeliveryHeroSection({
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, [showTypeSelector]);
+
+  // Focus tab input when entering edit mode
+  useEffect(() => {
+    if (editingTabId && tabInputRef.current) {
+      tabInputRef.current.focus();
+      tabInputRef.current.select();
+    }
+  }, [editingTabId]);
+
+  function startEditingTab(tab: SubOrderFull, index: number) {
+    if (!isHost) return;
+    setEditingTabId(tab.id);
+    setEditTabName(getTabLabel(tab, index));
+  }
+
+  async function saveTabName(tabId: string) {
+    const trimmed = editTabName.trim();
+    if (!trimmed) {
+      setEditingTabId(null);
+      return;
+    }
+    setSaving(true);
+    try {
+      await updateTabV2(groupOrder.shareCode, tabId, {
+        name: trimmed,
+        hostParticipantId: participantId,
+      });
+      onRefresh();
+    } catch {
+      // Silently fail
+    } finally {
+      setSaving(false);
+      setEditingTabId(null);
+    }
+  }
 
   async function handleSelectPartyType(type: PartyType) {
     if (type === groupOrder.partyType) {
@@ -129,17 +169,35 @@ export default function DeliveryHeroSection({
         {showTabs && (
           <div className="flex items-end gap-0 px-2">
             {groupOrder.tabs.map((tab, i) => (
-              <button
-                key={tab.id}
-                onClick={() => onTabChange(i)}
-                className={`px-5 py-2.5 text-sm font-semibold transition-all rounded-t-xl border border-b-0 ${
-                  i === activeTabIndex
-                    ? 'bg-white/70 backdrop-blur-md text-gray-900 border-white/50 relative z-10 -mb-px'
-                    : 'bg-white/30 text-gray-500 hover:text-gray-700 hover:bg-white/40 border-transparent'
-                }`}
-              >
-                {getTabLabel(tab, i)}
-              </button>
+              editingTabId === tab.id ? (
+                <input
+                  key={tab.id}
+                  ref={tabInputRef}
+                  value={editTabName}
+                  onChange={(e) => setEditTabName(e.target.value)}
+                  onBlur={() => saveTabName(tab.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') saveTabName(tab.id);
+                    if (e.key === 'Escape') setEditingTabId(null);
+                  }}
+                  maxLength={100}
+                  className="px-3 py-2 text-sm font-semibold rounded-t-xl border border-b-0 border-brand-blue bg-white text-gray-900 outline-none min-w-[80px] max-w-[200px]"
+                />
+              ) : (
+                <button
+                  key={tab.id}
+                  onClick={() => onTabChange(i)}
+                  onDoubleClick={() => startEditingTab(tab, i)}
+                  className={`px-5 py-2.5 text-sm font-semibold transition-all rounded-t-xl border border-b-0 ${
+                    i === activeTabIndex
+                      ? 'bg-white/70 backdrop-blur-md text-gray-900 border-white/50 relative z-10 -mb-px'
+                      : 'bg-white/30 text-gray-500 hover:text-gray-700 hover:bg-white/40 border-transparent'
+                  }`}
+                  title={isHost ? 'Double-click to rename' : ''}
+                >
+                  {getTabLabel(tab, i)}
+                </button>
+              )
             ))}
             {isHost && (
               <button

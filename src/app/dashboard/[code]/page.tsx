@@ -164,6 +164,7 @@ export default function DashboardPage(): ReactElement {
         activeTabIndex={safeTabIndex}
         activeTab={tab}
         isHost={isHost}
+        participantId={participantId}
         onTabChange={setActiveTabIndex}
         onAddDelivery={() => setShowNewLocation(true)}
         onEditDelivery={() => setShowLocationDetails(true)}
