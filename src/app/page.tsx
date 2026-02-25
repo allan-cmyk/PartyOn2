@@ -67,7 +67,7 @@ export default function HomePage() {
             <p className="text-gray-600 mb-8 tracking-[0.05em]">
               Beer, spirits, cocktail kits, ice & disposables — everything arrives cold with coordinated handoff
             </p>
-            <TrackedLink href="/order" section="start_order" buttonText="START ORDER">
+            <TrackedLink href="/order" section="choose_path" buttonText="START ORDER">
               <button className="px-10 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm">
                 START ORDER
               </button>
