@@ -6,7 +6,6 @@ import { createTabV2 } from '@/lib/group-orders-v2/api-client';
 interface Props {
   shareCode: string;
   participantId: string;
-  nextPosition: number;
   onClose: () => void;
   onCreated: () => void;
 }
@@ -23,7 +22,6 @@ const PARTY_LABELS: { value: string; label: string }[] = [
 export default function NewDeliveryModal({
   shareCode,
   participantId,
-  nextPosition: _nextPosition,
   onClose,
   onCreated,
 }: Props): ReactElement {

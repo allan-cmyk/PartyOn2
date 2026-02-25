@@ -305,7 +305,6 @@ export default function DashboardPage(): ReactElement {
         <NewDeliveryModal
           shareCode={groupOrder.shareCode}
           participantId={participantId}
-          nextPosition={groupOrder.tabs.length + 1}
           onClose={() => setShowNewLocation(false)}
           onCreated={() => {
             setShowNewLocation(false);
