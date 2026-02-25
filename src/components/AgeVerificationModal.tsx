@@ -1,6 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock'
 
@@ -39,39 +40,31 @@ export default function AgeVerificationModal({ isOpen, onClose, onVerify }: AgeV
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ type: "spring", duration: 0.5 }}
-            className="bg-white max-w-md w-full mx-4 border border-brand-yellow/20 shadow-2xl"
+            className="bg-white max-w-sm w-full mx-4 border border-brand-yellow/20 shadow-2xl"
           >
-            {/* Elegant Header */}
-            <div className="bg-gradient-to-b from-gray-50 to-white px-12 pt-12 pb-8">
-              <div className="text-center">
-                <div className="font-heading text-5xl text-gray-900 tracking-[0.1em] mb-2" aria-label="Party On Delivery">
-                  PARTY ON
-                </div>
-                <div className="w-20 h-px bg-brand-yellow mx-auto"></div>
+            {/* Logo Header */}
+            <div className="bg-gradient-to-b from-gray-50 to-white px-8 pt-8 pb-4">
+              <div className="flex justify-center">
+                <Image
+                  src="/images/pod-logo-2025.svg"
+                  alt="Party On Delivery"
+                  width={180}
+                  height={60}
+                  priority
+                />
               </div>
             </div>
 
             {/* Content */}
-            <div className="px-12 pb-12">
-              <div className="text-center mb-10">
-                <div className="w-20 h-20 mx-auto mb-6 bg-yellow-50 rounded-full flex items-center justify-center">
-                  <svg className="w-10 h-10 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" 
-                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                </div>
-                
-                <h2 className="font-heading text-2xl text-gray-900 tracking-[0.1em] mb-4">
+            <div className="px-8 pb-8">
+              <div className="text-center mb-6">
+                <h2 className="font-heading text-xl text-gray-900 tracking-[0.1em]">
                   Age Verification
                 </h2>
-                
-                <p className="text-gray-600 leading-relaxed">
-                  Premium spirits and fine wines require verification
-                </p>
               </div>
 
               {/* Question */}
-              <div className="bg-gray-50 py-8 px-6 mb-8 text-center">
+              <div className="bg-gray-50 py-6 px-6 mb-6 text-center">
                 <p className="text-lg text-gray-800 font-light tracking-wide">
                   Are you 21 years of age or older?
                 </p>
@@ -99,7 +92,7 @@ export default function AgeVerificationModal({ isOpen, onClose, onVerify }: AgeV
               </div>
 
               {/* Legal Text */}
-              <p className="mt-8 text-xs text-gray-500 text-center leading-relaxed px-4">
+              <p className="mt-6 text-xs text-gray-500 text-center leading-relaxed px-2">
                 By entering this site, you agree to our{' '}
                 <Link href="/terms" className="underline hover:text-brand-yellow">Terms of Service</Link>
                 {' '}and{' '}
