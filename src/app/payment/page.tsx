@@ -45,7 +45,7 @@ export default function PaymentPage() {
     return sum + (price * node.quantity)
   }, 0) || 0
   
-  const deliveryFee = checkoutInfo?.delivery?.isExpress ? 0 : 25
+  const deliveryFee = checkoutInfo?.delivery?.isExpress ? 0 : 30
   const tax = subtotal * 0.0825
   const total = subtotal + deliveryFee + tax
   

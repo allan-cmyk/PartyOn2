@@ -32,7 +32,7 @@ const CreateDraftOrderSchema = z.object({
   deliveryTime: z.string().min(1),
   deliveryNotes: z.string().optional(),
   items: z.array(DraftOrderItemSchema).min(1),
-  deliveryFee: z.number().min(0).default(25),
+  deliveryFee: z.number().min(0).default(30),
   originalDeliveryFee: z.number().min(0).optional().nullable(),
   discountAmount: z.number().min(0).default(0),
   discountCode: z.string().optional(),

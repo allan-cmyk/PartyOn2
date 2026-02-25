@@ -102,7 +102,7 @@ export async function POST(
     }, 0);
 
     // Total delivery fee (from group order or default)
-    const totalDeliveryFee = 25; // Default delivery fee
+    const totalDeliveryFee = 30; // Default delivery fee
 
     // Calculate this participant's share of delivery fee
     const deliveryContribution = calculateDeliveryContribution(

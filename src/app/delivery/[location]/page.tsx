@@ -42,7 +42,7 @@ const locations: Record<string, {
     description: 'Luxury alcohol delivery to West Austin and Westlake Hills. Serving upscale neighborhoods with premium spirits and wines.',
     neighborhoods: ['Westlake Hills', 'Tarrytown', 'West Lake Hills', 'Rollingwood'],
     zipCodes: ['78746', '78733', '78703', '78731'],
-    deliveryFee: 25,
+    deliveryFee: 30,
     minimum: 150,
     popularVenues: ['Austin Country Club', 'Westwood Country Club', 'The Hills Country Club']
   },
@@ -70,7 +70,7 @@ const locations: Record<string, {
     description: 'Reliable alcohol delivery to North Austin and The Domain area. Perfect for corporate events and apartment celebrations.',
     neighborhoods: ['The Domain', 'Great Hills', 'Arboretum', 'North Loop'],
     zipCodes: ['78758', '78759', '78750', '78757'],
-    deliveryFee: 25,
+    deliveryFee: 30,
     minimum: 100,
     popularVenues: ['The Domain', 'Arboretum', 'Top Golf']
   }

@@ -111,7 +111,7 @@ export default function EditInvoicePage(): ReactElement {
   const [deliveryDate, setDeliveryDate] = useState('');
   const [deliveryTime, setDeliveryTime] = useState('');
   const [deliveryNotes, setDeliveryNotes] = useState('');
-  const [deliveryFee, setDeliveryFee] = useState('25');
+  const [deliveryFee, setDeliveryFee] = useState('30');
   const [originalDeliveryFee, setOriginalDeliveryFee] = useState<number | null>(null);
 
   // Admin
@@ -365,7 +365,7 @@ export default function EditInvoicePage(): ReactElement {
         if (affData.success && affData.data.status === 'ACTIVE') {
           setAffiliateInfo(affData.data);
           if (affData.data.customerPerk === 'Free Delivery') {
-            const currentFee = parseFloat(deliveryFee) || 25;
+            const currentFee = parseFloat(deliveryFee) || 30;
             setOriginalDeliveryFee(currentFee);
             setDeliveryFee('0');
           }
@@ -394,7 +394,7 @@ export default function EditInvoicePage(): ReactElement {
     setDiscountCode('');
     setDiscountInfo(null);
     setAffiliateInfo(null);
-    setDeliveryFee(originalDeliveryFee != null ? String(originalDeliveryFee) : '25');
+    setDeliveryFee(originalDeliveryFee != null ? String(originalDeliveryFee) : '30');
     setOriginalDeliveryFee(null);
   };
 

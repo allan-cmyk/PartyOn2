@@ -47,7 +47,7 @@ export interface DeliveryInfo {
 }
 
 // Default delivery fee (configurable rates in delivery module)
-const _DEFAULT_DELIVERY_FEE = 25; // eslint-disable-line @typescript-eslint/no-unused-vars
+const _DEFAULT_DELIVERY_FEE = 30; // eslint-disable-line @typescript-eslint/no-unused-vars
 
 // ==========================================
 // Cart Operations
