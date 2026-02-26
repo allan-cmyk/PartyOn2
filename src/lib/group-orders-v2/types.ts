@@ -51,6 +51,7 @@ export interface GroupOrderV2Full {
   hostPhone: string | null;
   partyType: PartyType | null;
   affiliateId: string | null;
+  affiliate?: { id: string; code: string; businessName: string } | null;
   source: DashboardSource;
   expiresAt: string;
   createdAt: string;
@@ -205,6 +206,9 @@ export interface CreateDashboardInput {
   affiliateId?: string;
   deliveryContextType?: DeliveryContextType;
   name?: string;
+  tabName?: string;
+  deliveryDate?: string;
+  deliveryAddress?: string;
 }
 
 // ==========================================

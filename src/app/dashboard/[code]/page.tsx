@@ -99,6 +99,29 @@ export default function DashboardPage(): ReactElement {
       });
   }, [code, participantId]);
 
+  // Fallback: auto-apply affiliate promo from groupOrder data (no cookie needed)
+  useEffect(() => {
+    if (!code || !participantId || !groupOrder) return;
+    // Skip if promo already applied
+    const stored = localStorage.getItem(`${PROMO_KEY_PREFIX}${code}`);
+    if (stored) return;
+    // Skip if already set in state (e.g. by cookie effect above)
+    if (appliedPromo) return;
+
+    if (groupOrder.affiliate) {
+      const promo: AppliedPromo = {
+        type: 'affiliate',
+        code: groupOrder.affiliate.code,
+        label: `Free Delivery (via ${groupOrder.affiliate.businessName})`,
+        discountAmount: 0,
+        freeDelivery: true,
+        affiliateId: groupOrder.affiliate.id,
+      };
+      setAppliedPromo(promo);
+      localStorage.setItem(`${PROMO_KEY_PREFIX}${code}`, JSON.stringify(promo));
+    }
+  }, [code, participantId, groupOrder, appliedPromo]);
+
   // Detect whether user is a known participant or needs to join
   useEffect(() => {
     if (!groupOrder || participantId) return;

@@ -11,6 +11,9 @@ import { createDashboardOrder } from '@/lib/group-orders-v2/service';
 
 const CreateOrderSchema = z.object({
   clientName: z.string().min(1, 'Client name is required').max(200),
+  tabName: z.string().max(100).optional(),
+  deliveryAddress: z.string().max(500).optional(),
+  deliveryDate: z.string().optional(),
   partyType: z.enum(['BACHELOR', 'BACHELORETTE', 'WEDDING', 'CORPORATE', 'HOUSE_PARTY', 'OTHER', 'BOAT', 'BACH']).optional(),
   deliveryContextType: z.enum(['HOUSE', 'BOAT', 'VENUE', 'HOTEL', 'OTHER']).optional(),
 });
@@ -34,7 +37,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const { clientName, partyType, deliveryContextType } = parsed.data;
+    const { clientName, tabName, deliveryAddress, deliveryDate, partyType, deliveryContextType } = parsed.data;
 
     const groupOrder = await createDashboardOrder({
       hostName: clientName,
@@ -43,6 +46,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       affiliateId: session.affiliateId,
       partyType: partyType || undefined,
       deliveryContextType: deliveryContextType || undefined,
+      tabName: tabName || undefined,
+      deliveryAddress: deliveryAddress || undefined,
+      deliveryDate: deliveryDate || undefined,
     });
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';

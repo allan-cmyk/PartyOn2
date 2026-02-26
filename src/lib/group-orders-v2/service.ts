@@ -60,6 +60,9 @@ const fullGroupIncludes = {
   participants: {
     orderBy: { joinedAt: 'asc' as const },
   },
+  affiliate: {
+    select: { id: true, code: true, businessName: true },
+  },
 };
 
 // ==========================================
@@ -200,6 +203,7 @@ function serializeGroup(group: Record<string, any>): GroupOrderV2Full {
     hostPhone: group.hostPhone,
     partyType: group.partyType ?? null,
     affiliateId: group.affiliateId ?? null,
+    affiliate: group.affiliate ?? null,
     source: group.source ?? 'DIRECT',
     expiresAt: group.expiresAt.toISOString(),
     createdAt: group.createdAt.toISOString(),
@@ -872,15 +876,23 @@ export async function createDashboardOrder(
     attempts++;
   }
 
-  // Placeholder delivery date: 7 days from now
-  const placeholderDate = new Date();
-  placeholderDate.setDate(placeholderDate.getDate() + 7);
-  // Skip Sunday
-  if (placeholderDate.getDay() === 0) {
-    placeholderDate.setDate(placeholderDate.getDate() + 1);
+  // Delivery date: use provided date or default to 7 days from now
+  let deliveryDate: Date;
+  if (input.deliveryDate) {
+    deliveryDate = new Date(input.deliveryDate);
+  } else {
+    deliveryDate = new Date();
+    deliveryDate.setDate(deliveryDate.getDate() + 7);
+    if (deliveryDate.getDay() === 0) {
+      deliveryDate.setDate(deliveryDate.getDate() + 1);
+    }
   }
   // Normalize to noon UTC to avoid timezone boundary issues
-  placeholderDate.setUTCHours(12, 0, 0, 0);
+  deliveryDate.setUTCHours(12, 0, 0, 0);
+
+  const deliveryAddress = input.deliveryAddress
+    ? { address1: input.deliveryAddress, city: '', province: 'TX', zip: '', country: 'US' }
+    : { address1: '', city: '', province: 'TX', zip: '', country: 'US' };
 
   const group = await prisma.groupOrderV2.create({
     data: {
@@ -896,12 +908,12 @@ export async function createDashboardOrder(
       expiresAt: defaultExpiresAt(),
       tabs: {
         create: {
-          name: 'Location 1',
+          name: input.tabName || 'Location 1',
           position: 0,
-          deliveryDate: placeholderDate,
+          deliveryDate,
           deliveryTime: '12:00 PM - 2:00 PM',
-          deliveryAddress: { address1: '', city: '', province: 'TX', zip: '', country: 'US' },
-          orderDeadline: computeOrderDeadline(placeholderDate),
+          deliveryAddress: deliveryAddress as unknown as Record<string, string>,
+          orderDeadline: computeOrderDeadline(deliveryDate),
           deliveryFee: 0,
           deliveryContextType: input.deliveryContextType || 'HOUSE',
         },
