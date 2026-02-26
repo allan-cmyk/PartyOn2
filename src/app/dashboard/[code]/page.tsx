@@ -311,8 +311,6 @@ export default function DashboardPage(): ReactElement {
       {showShareModal && (
         <ShareModal
           shareCode={groupOrder.shareCode}
-          hostEmail={groupOrder.hostEmail}
-          hostPhone={groupOrder.hostPhone}
           onClose={() => setShowShareModal(false)}
         />
       )}
