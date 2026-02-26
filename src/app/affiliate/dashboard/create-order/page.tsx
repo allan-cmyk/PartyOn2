@@ -194,7 +194,7 @@ export default function CreatePartnerOrderPage(): ReactElement {
                 placeholder="e.g. Lake Travis Boat Party"
                 className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg text-base focus:border-brand-blue focus:ring-0 transition-colors"
               />
-              <p className="text-xs text-gray-400 mt-1">Defaults to "Location 1" if blank</p>
+              <p className="text-xs text-gray-400 mt-1">Defaults to &ldquo;Location 1&rdquo; if blank</p>
             </div>
 
             <div>
