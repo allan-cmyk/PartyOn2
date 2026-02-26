@@ -208,6 +208,19 @@ export interface CreateDashboardInput {
 }
 
 // ==========================================
+// Promo / Discount
+// ==========================================
+
+export interface AppliedPromo {
+  type: 'discount' | 'affiliate';
+  code: string;
+  label: string;
+  discountAmount: number;
+  freeDelivery: boolean;
+  affiliateId?: string;
+}
+
+// ==========================================
 // Helpers
 // ==========================================
 

@@ -18,9 +18,13 @@ import ShareModal from '@/components/dashboard/ShareModal';
 import JoinOverlay from '@/components/dashboard/JoinOverlay';
 import type { RecommendationResult } from '@/components/dashboard/GetRecsModal';
 import { claimHostV2 } from '@/lib/group-orders-v2/api-client';
+import type { AppliedPromo } from '@/lib/group-orders-v2/types';
+import PromoCodeInput from '@/components/dashboard/PromoCodeInput';
+import ConfettiEffect from '@/components/dashboard/ConfettiEffect';
 import { OnboardingTourProvider, DashboardTour } from '@/components/dashboard/tour';
 
 const PARTICIPANT_KEY_PREFIX = 'dashboard_participant_';
+const PROMO_KEY_PREFIX = 'dashboard_promo_';
 
 export default function DashboardPage(): ReactElement {
   const params = useParams() ?? {};
@@ -40,6 +44,8 @@ export default function DashboardPage(): ReactElement {
   const [showLocationDetails, setShowLocationDetails] = useState(false);
   const [showNewLocation, setShowNewLocation] = useState(false);
   const [needsJoin, setNeedsJoin] = useState(false);
+  const [appliedPromo, setAppliedPromo] = useState<AppliedPromo | null>(null);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const cartRef = useRef<HTMLDivElement>(null);
 
@@ -51,6 +57,47 @@ export default function DashboardPage(): ReactElement {
       setParticipantId(stored);
     }
   }, [code]);
+
+  // Restore applied promo from localStorage
+  useEffect(() => {
+    if (!code) return;
+    try {
+      const stored = localStorage.getItem(`${PROMO_KEY_PREFIX}${code}`);
+      if (stored) {
+        setAppliedPromo(JSON.parse(stored));
+      }
+    } catch {
+      // Ignore parse errors
+    }
+  }, [code]);
+
+  // Auto-load affiliate from cookie (silent, no confetti)
+  useEffect(() => {
+    if (!code || !participantId) return;
+    // Skip if promo already applied
+    const stored = localStorage.getItem(`${PROMO_KEY_PREFIX}${code}`);
+    if (stored) return;
+
+    fetch('/api/v1/affiliate/attribution')
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.success && json.data?.active) {
+          const promo: AppliedPromo = {
+            type: 'affiliate',
+            code: json.data.affiliateId,
+            label: `Free Delivery (via ${json.data.partnerName})`,
+            discountAmount: 0,
+            freeDelivery: true,
+            affiliateId: json.data.affiliateId,
+          };
+          setAppliedPromo(promo);
+          localStorage.setItem(`${PROMO_KEY_PREFIX}${code}`, JSON.stringify(promo));
+        }
+      })
+      .catch(() => {
+        // Silent fail
+      });
+  }, [code, participantId]);
 
   // Detect whether user is a known participant or needs to join
   useEffect(() => {
@@ -115,6 +162,17 @@ export default function DashboardPage(): ReactElement {
     localStorage.setItem(`dashboard_onboarding_${code}`, '1');
     refresh();
   }, [code, refresh]);
+
+  const handlePromoApply = useCallback((promo: AppliedPromo) => {
+    setAppliedPromo(promo);
+    localStorage.setItem(`${PROMO_KEY_PREFIX}${code}`, JSON.stringify(promo));
+    setShowConfetti(true);
+  }, [code]);
+
+  const handlePromoRemove = useCallback(() => {
+    setAppliedPromo(null);
+    localStorage.removeItem(`${PROMO_KEY_PREFIX}${code}`);
+  }, [code]);
 
   if (isLoading || !groupOrder) {
     return (
@@ -182,6 +240,7 @@ export default function DashboardPage(): ReactElement {
   return (
     <OnboardingTourProvider shareCode={code}>
     <div className="min-h-screen bg-gray-50 pb-20 lg:pb-6">
+      <ConfettiEffect trigger={showConfetti} onComplete={() => setShowConfetti(false)} />
       <DashboardTour
         isHost={currentIsHost}
         hasPartyType={!!groupOrder.partyType}
@@ -219,27 +278,38 @@ export default function DashboardPage(): ReactElement {
               draftItems={tab.draftItems}
               purchasedItems={tab.purchasedItems}
               isLocked={isLocked}
+              appliedPromo={appliedPromo}
               onItemChanged={refresh}
               onCheckoutMine={() => setCheckoutMode('mine')}
               onCheckoutAll={() => setCheckoutMode('all')}
             />
           </div>
 
-          {/* Get Recs button */}
-          {!recommendations && (
-            <div className="mb-4 flex justify-center">
-              <button
-                data-tour="get-recs"
-                onClick={() => setShowGetRecs(true)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 bg-brand-yellow text-gray-900 font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors text-sm"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                </svg>
-                Get Recommendations
-              </button>
+          {/* Promo code + Get Recs */}
+          <div className="mb-4 flex flex-col sm:flex-row items-stretch gap-3 sm:gap-4">
+            <div className="flex-1 basis-0 min-w-0">
+              <PromoCodeInput
+                appliedPromo={appliedPromo}
+                subtotal={tab.draftItems.reduce((s, i) => s + i.price * i.quantity, 0)}
+                onApply={handlePromoApply}
+                onRemove={handlePromoRemove}
+              />
             </div>
-          )}
+            {!recommendations && (
+              <div className="flex-1 basis-0">
+                <button
+                  data-tour="get-recs"
+                  onClick={() => setShowGetRecs(true)}
+                  className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-brand-yellow text-gray-900 font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors text-sm"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                  Get Recommendations
+                </button>
+              </div>
+            )}
+          </div>
 
           <ProductBrowse
             shareCode={groupOrder.shareCode}
@@ -273,6 +343,7 @@ export default function DashboardPage(): ReactElement {
             draftItems={tab.draftItems}
             purchasedItems={tab.purchasedItems}
             isLocked={isLocked}
+            appliedPromo={appliedPromo}
             onItemChanged={refresh}
             onCheckoutMine={() => setCheckoutMode('mine')}
             onCheckoutAll={() => setCheckoutMode('all')}
@@ -295,6 +366,7 @@ export default function DashboardPage(): ReactElement {
           participantId={participantId}
           mode={checkoutMode}
           items={checkoutItems}
+          appliedPromo={appliedPromo}
           onClose={() => setCheckoutMode(null)}
           onOpenDeliveryDetails={() => {
             setCheckoutMode(null);

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, type ReactElement, type FormEvent } from 'react';
-import type { DraftCartItemView, SubOrderFull } from '@/lib/group-orders-v2/types';
+import type { DraftCartItemView, SubOrderFull, AppliedPromo } from '@/lib/group-orders-v2/types';
 import {
   checkoutParticipantV2,
   checkoutAllV2,
@@ -14,6 +14,7 @@ interface Props {
   participantId: string;
   mode: 'mine' | 'all';
   items: DraftCartItemView[];
+  appliedPromo?: AppliedPromo | null;
   onClose: () => void;
   onOpenDeliveryDetails: () => void;
 }
@@ -24,18 +25,25 @@ export default function DashboardCheckoutModal({
   participantId,
   mode,
   items,
+  appliedPromo,
   onClose,
   onOpenDeliveryDetails,
 }: Props): ReactElement {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Discount
-  const [discountCode, setDiscountCode] = useState('');
+  // Discount -- pre-populate from dashboard promo if it's a discount type
+  const [discountCode, setDiscountCode] = useState(
+    appliedPromo?.type === 'discount' ? appliedPromo.code : ''
+  );
   const [discountApplied, setDiscountApplied] = useState<{
     code: string;
     amount: number;
-  } | null>(null);
+  } | null>(
+    appliedPromo?.type === 'discount' && appliedPromo.discountAmount > 0
+      ? { code: appliedPromo.code, amount: appliedPromo.discountAmount }
+      : null
+  );
   const [discountError, setDiscountError] = useState('');
 
   const hasAddress = !!tab.deliveryAddress?.address1?.trim();
@@ -225,6 +233,22 @@ export default function DashboardCheckoutModal({
                 <span className="text-green-600">Discount</span>
                 <span className="text-green-600">-${discountAmount.toFixed(2)}</span>
               </div>
+            )}
+            <div className="flex justify-between text-sm mb-1">
+              <span className="text-gray-600">Delivery Fee</span>
+              {appliedPromo?.freeDelivery ? (
+                <span className="flex items-center gap-1.5">
+                  <span className="text-gray-400 line-through">$30.00</span>
+                  <span className="text-green-600 font-semibold">FREE</span>
+                </span>
+              ) : (
+                <span className="text-gray-500">Billed separately</span>
+              )}
+            </div>
+            {appliedPromo?.type === 'affiliate' && appliedPromo.freeDelivery && (
+              <p className="text-xs text-green-600 mb-1">
+                Free delivery via partner referral -- applied at delivery billing
+              </p>
             )}
             <div className="flex justify-between text-sm mb-1">
               <span className="text-gray-600">Tax</span>

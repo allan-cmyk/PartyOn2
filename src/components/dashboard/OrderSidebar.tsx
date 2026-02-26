@@ -6,6 +6,7 @@ import type {
   DraftCartItemView,
   PurchasedItemView,
   ParticipantSummary,
+  AppliedPromo,
 } from '@/lib/group-orders-v2/types';
 import {
   updateDraftItemV2,
@@ -20,6 +21,7 @@ interface Props {
   draftItems: DraftCartItemView[];
   purchasedItems: PurchasedItemView[];
   isLocked?: boolean;
+  appliedPromo?: AppliedPromo | null;
   onItemChanged: () => void;
   onCheckoutMine: () => void;
   onCheckoutAll: () => void;
@@ -34,6 +36,7 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
     draftItems,
     purchasedItems,
     isLocked,
+    appliedPromo,
     onItemChanged,
     onCheckoutMine,
     onCheckoutAll,
@@ -251,8 +254,36 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
   function renderCheckoutButtons() {
     if (isEmpty) return null;
 
+    const deliveryFee = 30;
+    const hasFreeDelivery = appliedPromo?.freeDelivery === true;
+
     return (
       <div data-tour="checkout-buttons" className="px-5 py-4 bg-gray-50 border-t border-gray-100">
+        {/* Delivery fee line */}
+        <div className="flex justify-between text-sm mb-2">
+          <span className="text-gray-600">Delivery Fee</span>
+          {hasFreeDelivery ? (
+            <span className="flex items-center gap-1.5">
+              <span className="text-gray-400 line-through">${deliveryFee.toFixed(2)}</span>
+              <span className="text-green-600 font-semibold">FREE</span>
+            </span>
+          ) : (
+            <span className="text-gray-600">${deliveryFee.toFixed(2)}</span>
+          )}
+        </div>
+
+        {/* Promo badge */}
+        {appliedPromo && (
+          <div className="flex items-center gap-1.5 mb-3">
+            <svg className="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <span className="text-xs font-medium text-green-700 truncate">
+              {appliedPromo.label}
+            </span>
+          </div>
+        )}
+
         {isSolo ? (
           <button
             onClick={onCheckoutMine}

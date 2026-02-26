@@ -13,6 +13,7 @@ import type {
   UpdateTabInput,
   JoinGroupOrderInput,
   AddDraftItemInput,
+  AppliedPromo,
 } from './types';
 
 const API_BASE = '/api/v2/group-orders';
@@ -270,6 +271,17 @@ export async function generateHostClaimTokenV2(
   return apiFetch(`${API_BASE}/${code}/host-claim-token`, {
     method: 'POST',
     body: JSON.stringify({ hostParticipantId }),
+  });
+}
+
+/** Validate a promo code (discount or affiliate) */
+export async function validatePromoCode(
+  code: string,
+  subtotal: number
+): Promise<AppliedPromo> {
+  return apiFetch<AppliedPromo>(`${API_BASE}/validate-promo`, {
+    method: 'POST',
+    body: JSON.stringify({ code, subtotal }),
   });
 }
 
