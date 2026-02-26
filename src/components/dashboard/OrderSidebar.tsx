@@ -96,7 +96,7 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
   function renderItemRow(item: DraftCartItemView, editable: boolean) {
     const isUpdating = updatingId === item.id;
     return (
-      <div key={item.id} className="flex items-center gap-3 py-3">
+      <div key={item.id} className="flex items-start gap-3 py-3">
         <div className="w-14 h-14 rounded-lg bg-gray-100 flex-shrink-0 relative overflow-hidden">
           {item.imageUrl && (
             <Image
@@ -109,50 +109,56 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-base font-medium text-gray-900 truncate">
+          <p className="text-sm font-medium text-gray-900 leading-snug">
             {item.title}
           </p>
           {item.variantTitle && (
-            <p className="text-sm text-gray-500">{item.variantTitle}</p>
+            <p className="text-xs text-gray-500">{item.variantTitle}</p>
           )}
-          <p className="text-sm text-gray-600">${item.price.toFixed(2)} each</p>
-        </div>
-        {editable && !isLocked ? (
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => handleUpdate(item.id, item.quantity - 1)}
-              disabled={isUpdating}
-              className="w-8 h-8 flex items-center justify-center rounded bg-gray-100 hover:bg-gray-200 text-gray-700 disabled:opacity-50"
-            >
-              {item.quantity === 1 ? (
-                <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-              ) : (
-                <span className="text-base font-medium">-</span>
-              )}
-            </button>
-            <span className="w-7 text-center text-base font-semibold">
-              {isUpdating ? (
-                <span className="inline-block w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
-              ) : (
-                item.quantity
+          <div className="flex items-center justify-between mt-1.5">
+            <span className="text-sm font-semibold text-gray-900">
+              ${(item.price * item.quantity).toFixed(2)}
+              {item.quantity > 1 && (
+                <span className="text-xs font-normal text-gray-500 ml-1">
+                  (${item.price.toFixed(2)} ea)
+                </span>
               )}
             </span>
-            <button
-              onClick={() => handleUpdate(item.id, item.quantity + 1)}
-              disabled={isUpdating}
-              className="w-8 h-8 flex items-center justify-center rounded bg-gray-100 hover:bg-gray-200 text-gray-700 disabled:opacity-50"
-            >
-              <span className="text-base font-medium">+</span>
-            </button>
+            {editable && !isLocked ? (
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => handleUpdate(item.id, item.quantity - 1)}
+                  disabled={isUpdating}
+                  className="w-7 h-7 flex items-center justify-center rounded bg-gray-100 hover:bg-gray-200 text-gray-700 disabled:opacity-50"
+                >
+                  {item.quantity === 1 ? (
+                    <svg className="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  ) : (
+                    <span className="text-sm font-medium">-</span>
+                  )}
+                </button>
+                <span className="w-6 text-center text-sm font-semibold">
+                  {isUpdating ? (
+                    <span className="inline-block w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    item.quantity
+                  )}
+                </span>
+                <button
+                  onClick={() => handleUpdate(item.id, item.quantity + 1)}
+                  disabled={isUpdating}
+                  className="w-7 h-7 flex items-center justify-center rounded bg-gray-100 hover:bg-gray-200 text-gray-700 disabled:opacity-50"
+                >
+                  <span className="text-sm font-medium">+</span>
+                </button>
+              </div>
+            ) : (
+              <span className="text-xs text-gray-500">x{item.quantity}</span>
+            )}
           </div>
-        ) : (
-          <span className="text-sm text-gray-500">x{item.quantity}</span>
-        )}
-        <span className="text-base font-semibold text-gray-900 w-20 text-right">
-          ${(item.price * item.quantity).toFixed(2)}
-        </span>
+        </div>
       </div>
     );
   }
