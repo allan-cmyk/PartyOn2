@@ -338,6 +338,7 @@ export default function DashboardPage(): ReactElement {
             shareCode={groupOrder.shareCode}
             tabId={tab.id}
             participantId={participantId}
+            partyType={tab.partyType}
             draftItems={tab.draftItems}
             isLocked={isLocked}
             onItemChanged={refresh}
@@ -448,8 +449,11 @@ export default function DashboardPage(): ReactElement {
       {showOnboarding && (
         <OnboardingPopup
           shareCode={groupOrder.shareCode}
+          firstTabId={groupOrder.tabs[0]?.id}
+          participantId={participantId}
           onComplete={() => {
             handleOnboardingDismiss();
+            refresh();
           }}
           onDismiss={handleOnboardingDismiss}
         />

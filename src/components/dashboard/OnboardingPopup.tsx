@@ -1,26 +1,30 @@
 'use client';
 
 import { useState, useRef, useEffect, type ReactElement } from 'react';
-import { updateGroupOrderV2 } from '@/lib/group-orders-v2/api-client';
+import { updateGroupOrderV2, updateTabV2 } from '@/lib/group-orders-v2/api-client';
 import type { PartyType } from '@/lib/group-orders-v2/types';
 
 interface Props {
   shareCode: string;
+  firstTabId?: string;
+  participantId: string;
   onComplete: () => void;
   onDismiss: () => void;
 }
 
 const PARTY_TYPES: { value: PartyType; label: string }[] = [
-  { value: 'BOAT', label: 'Boat' },
-  { value: 'BACH', label: 'Bach' },
+  { value: 'BOAT', label: 'Boat Party' },
+  { value: 'BACH', label: 'Bach Weekend' },
+  { value: 'HOUSE_PARTY', label: 'House Party' },
+  { value: 'CORPORATE', label: 'Corporate Event' },
   { value: 'WEDDING', label: 'Wedding' },
-  { value: 'CORPORATE', label: 'Corporate' },
-  { value: 'HOUSE_PARTY', label: 'Private' },
   { value: 'OTHER', label: 'Other' },
 ];
 
 export default function OnboardingPopup({
   shareCode,
+  firstTabId,
+  participantId,
   onComplete,
   onDismiss,
 }: Props): ReactElement {
@@ -49,6 +53,12 @@ export default function OnboardingPopup({
     setSaving(true);
     try {
       await updateGroupOrderV2(shareCode, data as { partyType?: string; name?: string });
+      if (selected && firstTabId) {
+        await updateTabV2(shareCode, firstTabId, {
+          participantId,
+          partyType: selected as PartyType,
+        });
+      }
     } catch {
       // Non-blocking
     }

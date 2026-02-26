@@ -154,6 +154,7 @@ function serializeTab(tab: any): SubOrderFull {
     position: tab.position,
     status: tab.status,
     orderType: tab.orderType ?? null,
+    partyType: tab.partyType ?? null,
     deliveryContextType: tab.deliveryContextType ?? 'HOUSE',
     deliveryDate: tab.deliveryDate.toISOString(),
     deliveryTime: tab.deliveryTime,
@@ -384,6 +385,7 @@ export async function createTab(
       name: input.name,
       position: nextPos,
       orderType: input.orderType ?? null,
+      partyType: input.partyType ?? null,
       deliveryDate,
       deliveryTime: input.deliveryTime || 'TBD',
       deliveryAddress: (input.deliveryAddress || { address1: '', city: '', province: 'TX', zip: '', country: 'US' }) as unknown as Record<string, string>,
@@ -412,6 +414,7 @@ export async function updateTab(
   const data: Record<string, unknown> = {};
   if (input.name) data.name = input.name;
   if (input.orderType !== undefined) data.orderType = input.orderType || null;
+  if (input.partyType !== undefined) data.partyType = input.partyType || null;
   if (input.status) data.status = input.status;
   if (input.deliveryTime) data.deliveryTime = input.deliveryTime;
   if (input.deliveryAddress) {

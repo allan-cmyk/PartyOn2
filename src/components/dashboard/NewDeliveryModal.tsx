@@ -2,6 +2,7 @@
 
 import { useState, type ReactElement } from 'react';
 import { createTabV2 } from '@/lib/group-orders-v2/api-client';
+import type { PartyType } from '@/lib/group-orders-v2/types';
 
 interface Props {
   shareCode: string;
@@ -12,11 +13,11 @@ interface Props {
 }
 
 const PARTY_LABELS: { value: string; label: string }[] = [
-  { value: 'BOAT', label: 'Boat' },
-  { value: 'BACH', label: 'Bach' },
+  { value: 'BOAT', label: 'Boat Party' },
+  { value: 'BACH', label: 'Bach Weekend' },
+  { value: 'HOUSE_PARTY', label: 'House Party' },
+  { value: 'CORPORATE', label: 'Corporate Event' },
   { value: 'WEDDING', label: 'Wedding' },
-  { value: 'CORPORATE', label: 'Corporate' },
-  { value: 'HOTEL', label: 'B&B/Hotel' },
   { value: 'OTHER', label: 'Other' },
 ];
 
@@ -42,6 +43,7 @@ export default function NewDeliveryModal({
       await createTabV2(shareCode, {
         participantId,
         name,
+        partyType: selected as PartyType,
       });
       onCreated();
     } catch (err) {

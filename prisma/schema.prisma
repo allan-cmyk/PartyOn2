@@ -1672,6 +1672,7 @@ model SubOrder {
   deliveryFee    Decimal        @default(0) @map("delivery_fee") @db.Decimal(10, 2)
   deliveryFeeWaived Boolean     @default(false) @map("delivery_fee_waived")
   orderType           String?             @map("order_type")
+  partyType           String?             @map("party_type")
   deliveryContextType DeliveryContextType @default(HOUSE) @map("delivery_context_type")
   status              SubOrderStatus      @default(OPEN)
   createdAt      DateTime       @default(now()) @map("created_at")

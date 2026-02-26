@@ -42,9 +42,12 @@ const deliveryDateSchema = z.string().refine(
 );
 
 /** Single tab input (delivery fields optional -- filled in later via DeliveryDetailsModal) */
+const partyTypeSchema = z.enum(['BACHELOR', 'BACHELORETTE', 'WEDDING', 'CORPORATE', 'HOUSE_PARTY', 'OTHER', 'BOAT', 'BACH']).optional();
+
 const CreateTabSchema = z.object({
   name: z.string().min(1, 'Tab name is required').max(100),
   orderType: z.enum(['boat', 'house', 'bus', 'other']).optional(),
+  partyType: partyTypeSchema,
   deliveryDate: deliveryDateSchema.optional(),
   deliveryTime: z.string().min(1, 'Delivery time is required').optional(),
   deliveryAddress: DeliveryAddressSchema.optional(),
@@ -66,6 +69,7 @@ export const CreateGroupOrderV2Schema = z.object({
 export const UpdateTabSchema = z.object({
   name: z.string().min(1).max(100).optional(),
   orderType: z.enum(['boat', 'house', 'bus', 'other']).optional(),
+  partyType: partyTypeSchema,
   status: z.enum(['OPEN', 'LOCKED']).optional(),
   deliveryDate: deliveryDateSchema.optional(),
   deliveryTime: z.string().optional(),

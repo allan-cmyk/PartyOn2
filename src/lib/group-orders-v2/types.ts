@@ -66,6 +66,7 @@ export interface SubOrderFull {
   position: number;
   status: SubOrderStatus;
   orderType: string | null;
+  partyType: PartyType | null;
   deliveryContextType: DeliveryContextType;
   deliveryDate: string;
   deliveryTime: string;
@@ -155,6 +156,7 @@ export interface CreateGroupOrderV2Input {
 export interface CreateTabInput {
   name: string;
   orderType?: string;
+  partyType?: PartyType;
   deliveryDate?: string;
   deliveryTime?: string;
   deliveryAddress?: DeliveryAddressV2;
@@ -165,6 +167,7 @@ export interface CreateTabInput {
 export interface UpdateTabInput {
   name?: string;
   orderType?: string;
+  partyType?: PartyType;
   status?: 'OPEN' | 'LOCKED';
   deliveryDate?: string;
   deliveryTime?: string;

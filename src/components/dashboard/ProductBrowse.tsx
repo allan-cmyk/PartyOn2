@@ -3,7 +3,7 @@
 import { useState, useEffect, type ReactElement } from 'react';
 import type { Product } from '@/lib/types/product';
 import type { DraftCartItemView } from '@/lib/group-orders-v2/types';
-import { DASHBOARD_CATEGORIES } from '@/lib/dashboard/categories';
+import { getCategoriesForPartyType } from '@/lib/dashboard/categories';
 import CategorySection from './CategorySection';
 import DashboardProductCard from './DashboardProductCard';
 
@@ -11,6 +11,7 @@ interface Props {
   shareCode: string;
   tabId: string;
   participantId: string;
+  partyType?: string | null;
   draftItems: DraftCartItemView[];
   isLocked?: boolean;
   onItemChanged: () => void;
@@ -21,11 +22,13 @@ export default function ProductBrowse({
   shareCode,
   tabId,
   participantId,
+  partyType,
   draftItems,
   isLocked,
   onItemChanged,
   recsSection,
 }: Props): ReactElement {
+  const categories = getCategoriesForPartyType(partyType);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [searching, setSearching] = useState(false);
@@ -138,7 +141,7 @@ export default function ProductBrowse({
       ) : (
         <div>
           {recsSection}
-          {DASHBOARD_CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <CategorySection
               key={cat.collectionHandle}
               label={cat.label}
