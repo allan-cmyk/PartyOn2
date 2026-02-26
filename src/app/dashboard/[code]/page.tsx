@@ -18,6 +18,7 @@ import ShareModal from '@/components/dashboard/ShareModal';
 import JoinOverlay from '@/components/dashboard/JoinOverlay';
 import type { RecommendationResult } from '@/components/dashboard/GetRecsModal';
 import { claimHostV2 } from '@/lib/group-orders-v2/api-client';
+import { OnboardingTourProvider, DashboardTour } from '@/components/dashboard/tour';
 
 const PARTICIPANT_KEY_PREFIX = 'dashboard_participant_';
 
@@ -176,8 +177,16 @@ export default function DashboardPage(): ReactElement {
   const checkoutItems =
     checkoutMode === 'all' ? tab.draftItems : myDraftItems;
 
+  const currentIsHost = !!groupOrder.participants.find(p => p.id === participantId)?.isHost;
+
   return (
+    <OnboardingTourProvider shareCode={code}>
     <div className="min-h-screen bg-gray-50 pb-20 lg:pb-6">
+      <DashboardTour
+        isHost={currentIsHost}
+        hasPartyType={!!groupOrder.partyType}
+        shareCode={code}
+      />
       <DashboardHeader
         groupOrder={groupOrder}
         participantId={participantId}
@@ -213,8 +222,6 @@ export default function DashboardPage(): ReactElement {
               onItemChanged={refresh}
               onCheckoutMine={() => setCheckoutMode('mine')}
               onCheckoutAll={() => setCheckoutMode('all')}
-              onShareClick={() => setShowShareModal(true)}
-              onAddLocation={() => setShowNewLocation(true)}
             />
           </div>
 
@@ -222,6 +229,7 @@ export default function DashboardPage(): ReactElement {
           {!recommendations && (
             <div className="mb-4 flex justify-center">
               <button
+                data-tour="get-recs"
                 onClick={() => setShowGetRecs(true)}
                 className="inline-flex items-center gap-1.5 px-4 py-2 bg-brand-yellow text-gray-900 font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors text-sm"
               >
@@ -268,8 +276,6 @@ export default function DashboardPage(): ReactElement {
             onItemChanged={refresh}
             onCheckoutMine={() => setCheckoutMode('mine')}
             onCheckoutAll={() => setCheckoutMode('all')}
-            onShareClick={() => setShowShareModal(true)}
-            onAddLocation={() => setShowNewLocation(true)}
           />
         </div>
       </main>
@@ -354,5 +360,6 @@ export default function DashboardPage(): ReactElement {
         />
       )}
     </div>
+    </OnboardingTourProvider>
   );
 }

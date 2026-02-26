@@ -84,16 +84,16 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-8 py-16 md:py-24 lg:py-28">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-stretch">
+    <section className="relative bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 overflow-hidden lg:max-h-[calc(100svh-4rem)]">
+      <div className="max-w-7xl mx-auto px-6 md:px-8 py-8 md:py-12 lg:py-16 lg:h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-stretch lg:h-full">
           {/* Left Column: Text Content */}
-          <div className="order-1 text-center lg:text-left">
+          <div className="order-1 text-center lg:text-left flex flex-col justify-center">
             {/* Animated Headline */}
             <motion.div
               {...heroFadeUp}
               transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-              className="mb-4 md:mb-5"
+              className="mb-3 md:mb-4"
             >
               <AnimatedHeroText
                 drinks={["Beer", "Cocktails", "Seltzers", "Wine", "Champagne"]}
@@ -107,7 +107,7 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
             <motion.p
               {...heroFadeUp}
               transition={{ duration: 0.6, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
-              className="font-sans text-lg md:text-xl text-white/80 mb-6 md:mb-8 max-w-lg mx-auto lg:mx-0"
+              className="font-sans text-lg md:text-xl text-white/80 mb-4 md:mb-6 max-w-lg mx-auto lg:mx-0"
             >
               {content.tagline}
             </motion.p>
@@ -116,7 +116,7 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
             <motion.div
               {...heroFadeUp}
               transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-              className="flex justify-center lg:justify-start mb-6 md:mb-8"
+              className="flex justify-center lg:justify-start mb-4 md:mb-6"
             >
               {content.ctaButtons.map((cta, index) => (
                 <Link

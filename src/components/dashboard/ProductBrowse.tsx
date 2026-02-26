@@ -58,16 +58,18 @@ export default function ProductBrowse({
 
   const isSearching = searchQuery.trim().length > 0;
 
-  // Build draft item map for search results
+  // Build draft item map for search results (only this participant's items)
   const draftMap = new Map<string, DraftCartItemView>();
   for (const item of draftItems) {
-    draftMap.set(`${item.productId}:${item.variantId}`, item);
+    if (item.addedBy.id === participantId) {
+      draftMap.set(`${item.productId}:${item.variantId}`, item);
+    }
   }
 
   return (
     <div>
       {/* Search bar */}
-      <div className="mb-6">
+      <div className="mb-6" data-tour="product-search">
         <div className="relative">
           <svg
             className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"

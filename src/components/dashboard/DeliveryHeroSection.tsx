@@ -193,6 +193,7 @@ export default function DeliveryHeroSection({
             ))}
             {!tabsAtLimit && (
               <button
+                data-tour="add-tab"
                 onClick={onAddDelivery}
                 className="w-11 h-11 flex items-center justify-center rounded-t-2xl text-gray-400 hover:text-brand-blue hover:bg-gray-100 transition-colors ml-1 mb-0.5"
                 title="Add another location"
@@ -206,7 +207,7 @@ export default function DeliveryHeroSection({
         )}
 
         {/* Content card -- collapsible order details */}
-        <div className={`bg-white/70 backdrop-blur-md shadow-sm border border-white/50 ${
+        <div data-tour="delivery-details" className={`bg-white/70 backdrop-blur-md shadow-sm border border-white/50 ${
           showTabs ? 'rounded-2xl rounded-tl-none' : 'rounded-2xl'
         }`}>
           {/* Collapsed bar -- just a chevron toggle */}

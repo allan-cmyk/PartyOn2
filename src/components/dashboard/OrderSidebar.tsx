@@ -23,8 +23,6 @@ interface Props {
   onItemChanged: () => void;
   onCheckoutMine: () => void;
   onCheckoutAll: () => void;
-  onShareClick: () => void;
-  onAddLocation: () => void;
 }
 
 const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
@@ -39,8 +37,6 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
     onItemChanged,
     onCheckoutMine,
     onCheckoutAll,
-    onShareClick,
-    onAddLocation,
   },
   ref
 ): ReactElement {
@@ -256,7 +252,7 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
     if (isEmpty) return null;
 
     return (
-      <div className="px-5 py-4 bg-gray-50 border-t border-gray-100">
+      <div data-tour="checkout-buttons" className="px-5 py-4 bg-gray-50 border-t border-gray-100">
         {isSolo ? (
           <button
             onClick={onCheckoutMine}
@@ -293,37 +289,11 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
     );
   }
 
-  function renderSecondaryActions() {
-    return (
-      <div className="px-5 py-3 border-t border-gray-100 flex gap-2">
-        <button
-          onClick={onShareClick}
-          className="flex-1 py-2 text-sm font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center gap-1.5"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-          </svg>
-          Share
-        </button>
-        <button
-          onClick={onAddLocation}
-          className="flex-1 py-2 text-sm font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center gap-1.5"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-          Add Location
-        </button>
-      </div>
-    );
-  }
-
   return (
     <>
       {/* Desktop sidebar -- hidden on mobile */}
       <div className="hidden lg:block">
-        <div className="sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto bg-white rounded-xl border border-gray-200 shadow-sm">
+        <div data-tour="cart" className="sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto bg-white rounded-xl border border-gray-200 shadow-sm">
           <div className="px-5 py-4 border-b border-gray-100">
             <div className="flex items-center gap-3">
               <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -338,13 +308,13 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
             </div>
           </div>
           {renderCartContent()}
-          {renderSecondaryActions()}
+
         </div>
       </div>
 
       {/* Mobile collapsible cart -- hidden when empty */}
       {!isEmpty && (
-        <div ref={ref} className="lg:hidden mb-6">
+        <div ref={ref} className="lg:hidden mb-6" data-tour="cart">
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             {/* Header */}
             <button
@@ -375,7 +345,7 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
             {expanded && (
               <div className="border-t border-gray-100">
                 {renderCartContent()}
-                {renderSecondaryActions()}
+      
               </div>
             )}
           </div>

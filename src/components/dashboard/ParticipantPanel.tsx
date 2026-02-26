@@ -209,6 +209,7 @@ export default function ParticipantPanel({
               : 'Lock Order'}
           </button>
           <button
+            data-tour="add-host"
             onClick={handleCopyHostLink}
             disabled={copyingLink}
             className="w-full py-2 text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 bg-gray-100 text-gray-700 hover:bg-gray-200"
