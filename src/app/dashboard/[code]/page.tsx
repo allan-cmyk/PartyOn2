@@ -222,8 +222,6 @@ export default function DashboardPage(): ReactElement {
               onItemChanged={refresh}
               onCheckoutMine={() => setCheckoutMode('mine')}
               onCheckoutAll={() => setCheckoutMode('all')}
-              onShareClick={() => setShowShareModal(true)}
-              onAddLocation={() => setShowNewLocation(true)}
             />
           </div>
 
@@ -277,8 +275,6 @@ export default function DashboardPage(): ReactElement {
             onItemChanged={refresh}
             onCheckoutMine={() => setCheckoutMode('mine')}
             onCheckoutAll={() => setCheckoutMode('all')}
-            onShareClick={() => setShowShareModal(true)}
-            onAddLocation={() => setShowNewLocation(true)}
           />
         </div>
       </main>

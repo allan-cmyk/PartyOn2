@@ -85,8 +85,8 @@ export default function DashboardHeader({
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 py-3">
-        {/* Top row: logo, title centered, actions */}
-        <div className="flex items-center justify-between">
+        {/* Top row: logo, title, actions */}
+        <div className="flex items-center justify-between gap-3">
           <Link href="/" className="flex-shrink-0">
             <Image
               src="/images/pod-logo-2025.svg"
@@ -97,8 +97,8 @@ export default function DashboardHeader({
             />
           </Link>
 
-          {/* Centered title -- click to edit */}
-          <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
+          {/* Title -- truncates on mobile to avoid overlapping buttons */}
+          <div className="flex-1 min-w-0 flex items-center justify-center gap-2">
             {editingName ? (
               <input
                 ref={nameInputRef}
@@ -111,23 +111,23 @@ export default function DashboardHeader({
                 }}
                 maxLength={100}
                 disabled={savingName}
-                className="text-2xl md:text-3xl font-heading font-bold tracking-[0.06em] text-gray-900 bg-transparent border-b-2 border-brand-blue outline-none text-center"
+                className="text-xl md:text-3xl font-heading font-bold tracking-[0.06em] text-gray-900 bg-transparent border-b-2 border-brand-blue outline-none text-center w-full"
               />
             ) : (
               <button
                 onClick={startEditingName}
-                className="group flex items-center gap-2 cursor-pointer hover:opacity-80"
+                className="group flex items-center gap-2 cursor-pointer hover:opacity-80 min-w-0"
               >
-                <h1 className="text-2xl md:text-3xl font-heading font-bold tracking-[0.06em] text-gray-900">
+                <h1 className="text-xl md:text-3xl font-heading font-bold tracking-[0.06em] text-gray-900 truncate">
                   {displayName}
                 </h1>
-                <svg className="w-4 h-4 text-gray-400 group-hover:text-brand-blue transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-gray-400 group-hover:text-brand-blue transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                 </svg>
               </button>
             )}
             {isLocked && (
-              <span className="text-xs font-semibold uppercase tracking-wider text-red-600 bg-red-50 px-1.5 py-0.5 rounded">
+              <span className="text-xs font-semibold uppercase tracking-wider text-red-600 bg-red-50 px-1.5 py-0.5 rounded flex-shrink-0">
                 Locked
               </span>
             )}
