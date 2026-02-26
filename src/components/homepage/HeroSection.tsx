@@ -84,9 +84,9 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 overflow-hidden min-h-0 max-h-[calc(100svh-3.5rem)] md:max-h-[calc(100svh-4rem)]">
-      <div className="max-w-7xl mx-auto px-6 md:px-8 py-8 md:py-12 lg:py-16 h-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-stretch h-full">
+    <section className="relative bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 overflow-hidden lg:max-h-[calc(100svh-4rem)]">
+      <div className="max-w-7xl mx-auto px-6 md:px-8 py-8 md:py-12 lg:py-16 lg:h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-stretch lg:h-full">
           {/* Left Column: Text Content */}
           <div className="order-1 text-center lg:text-left flex flex-col justify-center">
             {/* Animated Headline */}

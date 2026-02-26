@@ -36,8 +36,8 @@ export default function OrderRedirectPage(): ReactElement {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <img src="/images/pod-logo-2025.svg" alt="Party On" className="h-40 w-auto mx-auto mb-8" />
-          <div className="w-8 h-8 border-3 border-gray-900 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-sm text-gray-500">Setting up your order...</p>
+          <div className="w-8 h-8 border-3 border-gray-900 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-lg font-semibold text-gray-900">Preparing to PARTY ON</p>
         </div>
       </div>
     }>
@@ -159,8 +159,8 @@ function OrderRedirectInner(): ReactElement {
           height={152}
           className="h-40 w-auto mx-auto mb-8"
         />
-        <div className="w-8 h-8 border-3 border-gray-900 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-        <p className="text-sm text-gray-500">Setting up your order...</p>
+        <div className="w-8 h-8 border-3 border-gray-900 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <p className="text-lg font-semibold text-gray-900">Preparing to PARTY ON</p>
       </div>
     </div>
   );
