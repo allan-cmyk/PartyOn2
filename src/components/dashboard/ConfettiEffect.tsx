@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface Props {
   trigger: boolean;
@@ -8,6 +8,9 @@ interface Props {
 }
 
 export default function ConfettiEffect({ trigger, onComplete }: Props) {
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
+
   useEffect(() => {
     if (!trigger) return;
 
@@ -34,14 +37,14 @@ export default function ConfettiEffect({ trigger, onComplete }: Props) {
           origin: { y: 0.65, x: 0.55 },
           colors: ['#003087', '#FFD700', '#FF6B35', '#00B4D8', '#FF1493'],
         });
-        onComplete?.();
+        onCompleteRef.current?.();
       }, 200);
     });
 
     return () => {
       cancelled = true;
     };
-  }, [trigger, onComplete]);
+  }, [trigger]);
 
   return null;
 }
