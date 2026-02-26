@@ -40,6 +40,13 @@ function buildSteps(): TourStep[] {
         'View who has joined your order. Add another host to help manage the order.',
       placement: 'bottom-end',
     },
+    {
+      target: '[data-tour="get-recs"]',
+      title: 'Get Recommendations',
+      content:
+        'Not sure what to order? Use our drink calculator to get personalized recommendations based on your party size and preferences.',
+      placement: 'top',
+    },
   ];
 }
 

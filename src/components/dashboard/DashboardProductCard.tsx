@@ -45,6 +45,15 @@ export default function DashboardProductCard({
   const available = variant.availableForSale && product.availableForSale !== false;
   const qty = existingItem?.quantity || 0;
 
+  function refreshWithoutScroll() {
+    const scrollY = window.scrollY;
+    onItemChanged();
+    // Restore scroll position after React re-render
+    requestAnimationFrame(() => {
+      window.scrollTo(0, scrollY);
+    });
+  }
+
   async function handleAdd() {
     if (busy || !available) return;
     setBusy(true);
@@ -59,7 +68,7 @@ export default function DashboardProductCard({
         imageUrl,
         quantity: 1,
       });
-      onItemChanged();
+      refreshWithoutScroll();
     } catch (err) {
       console.error('Failed to add item:', err);
     } finally {
@@ -78,7 +87,7 @@ export default function DashboardProductCard({
         participantId,
         existingItem.quantity + 1
       );
-      onItemChanged();
+      refreshWithoutScroll();
     } catch (err) {
       console.error('Failed to update item:', err);
     } finally {
@@ -101,7 +110,7 @@ export default function DashboardProductCard({
           existingItem.quantity - 1
         );
       }
-      onItemChanged();
+      refreshWithoutScroll();
     } catch (err) {
       console.error('Failed to update item:', err);
     } finally {

@@ -59,6 +59,7 @@ interface TooltipPosition {
   top: number;
   left: number;
   arrowSide: 'top' | 'bottom' | 'left' | 'right';
+  arrowOffset: number; // px from left (horizontal arrows) or top (vertical arrows) of tooltip
 }
 
 function computePosition(
@@ -75,6 +76,10 @@ function computePosition(
   let top = 0;
   let left = 0;
   let arrowSide: TooltipPosition['arrowSide'] = 'top';
+
+  // Target center in page coordinates
+  const targetCenterX = targetRect.left + scrollX + targetRect.width / 2;
+  const targetCenterY = targetRect.top + scrollY + targetRect.height / 2;
 
   switch (placement) {
     case 'bottom':
@@ -110,7 +115,15 @@ function computePosition(
   if (left + tw > vw - 8) left = vw - tw - 8;
   if (top < scrollY + 8) top = scrollY + 8;
 
-  return { top, left, arrowSide };
+  // Compute arrow offset so it points to the target center
+  let arrowOffset: number;
+  if (arrowSide === 'top' || arrowSide === 'bottom') {
+    arrowOffset = Math.min(Math.max(targetCenterX - left, 16), tw - 16);
+  } else {
+    arrowOffset = Math.min(Math.max(targetCenterY - top, 16), th - 16);
+  }
+
+  return { top, left, arrowSide, arrowOffset };
 }
 
 function TourTooltip({
@@ -251,29 +264,25 @@ function TourTooltip({
             style={{
               ...(pos.arrowSide === 'top' && {
                 top: -7,
-                left: '50%',
-                marginLeft: -6,
+                left: pos.arrowOffset - 6,
                 borderBottom: 'none',
                 borderRight: 'none',
               }),
               ...(pos.arrowSide === 'bottom' && {
                 bottom: -7,
-                left: '50%',
-                marginLeft: -6,
+                left: pos.arrowOffset - 6,
                 borderTop: 'none',
                 borderLeft: 'none',
               }),
               ...(pos.arrowSide === 'left' && {
                 left: -7,
-                top: '50%',
-                marginTop: -6,
+                top: pos.arrowOffset - 6,
                 borderTop: 'none',
                 borderRight: 'none',
               }),
               ...(pos.arrowSide === 'right' && {
                 right: -7,
-                top: '50%',
-                marginTop: -6,
+                top: pos.arrowOffset - 6,
                 borderBottom: 'none',
                 borderLeft: 'none',
               }),

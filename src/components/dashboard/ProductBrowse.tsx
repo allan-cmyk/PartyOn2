@@ -58,10 +58,12 @@ export default function ProductBrowse({
 
   const isSearching = searchQuery.trim().length > 0;
 
-  // Build draft item map for search results
+  // Build draft item map for search results (only this participant's items)
   const draftMap = new Map<string, DraftCartItemView>();
   for (const item of draftItems) {
-    draftMap.set(`${item.productId}:${item.variantId}`, item);
+    if (item.addedBy.id === participantId) {
+      draftMap.set(`${item.productId}:${item.variantId}`, item);
+    }
   }
 
   return (

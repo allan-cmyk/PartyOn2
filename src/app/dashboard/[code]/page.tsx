@@ -229,6 +229,7 @@ export default function DashboardPage(): ReactElement {
           {!recommendations && (
             <div className="mb-4 flex justify-center">
               <button
+                data-tour="get-recs"
                 onClick={() => setShowGetRecs(true)}
                 className="inline-flex items-center gap-1.5 px-4 py-2 bg-brand-yellow text-gray-900 font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors text-sm"
               >

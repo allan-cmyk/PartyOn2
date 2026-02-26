@@ -40,59 +40,60 @@ export default function AgeVerificationModal({ isOpen, onClose, onVerify }: AgeV
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ type: "spring", duration: 0.5 }}
-            className="bg-white max-w-sm w-full mx-4 border border-brand-yellow/20 shadow-2xl"
+            className="bg-white max-w-sm w-full mx-4 border border-brand-yellow/20 shadow-2xl max-h-[66svh] overflow-y-auto"
           >
             {/* Logo Header */}
-            <div className="bg-gradient-to-b from-gray-50 to-white px-8 pt-8 pb-4">
+            <div className="bg-gradient-to-b from-gray-50 to-white px-6 pt-5 pb-2 sm:px-8 sm:pt-8 sm:pb-4">
               <div className="flex justify-center">
                 <Image
                   src="/images/pod-logo-2025.svg"
                   alt="Party On Delivery"
-                  width={180}
-                  height={60}
+                  width={140}
+                  height={47}
+                  className="sm:w-[180px]"
                   priority
                 />
               </div>
             </div>
 
             {/* Content */}
-            <div className="px-8 pb-8">
-              <div className="text-center mb-6">
-                <h2 className="font-heading text-xl text-gray-900 tracking-[0.1em]">
+            <div className="px-6 pb-5 sm:px-8 sm:pb-8">
+              <div className="text-center mb-4 sm:mb-6">
+                <h2 className="font-heading text-lg sm:text-xl text-gray-900 tracking-[0.1em]">
                   Age Verification
                 </h2>
               </div>
 
               {/* Question */}
-              <div className="bg-gray-50 py-6 px-6 mb-6 text-center">
-                <p className="text-lg text-gray-800 font-light tracking-wide">
+              <div className="bg-gray-50 py-4 px-4 mb-4 sm:py-6 sm:px-6 sm:mb-6 text-center">
+                <p className="text-base sm:text-lg text-gray-800 font-light tracking-wide">
                   Are you 21 years of age or older?
                 </p>
               </div>
 
               {/* Buttons */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleYes}
-                  className="py-4 bg-brand-yellow text-gray-900 font-medium tracking-[0.08em] text-sm hover:bg-yellow-600 transition-colors"
+                  className="py-3 sm:py-4 bg-brand-yellow text-gray-900 font-medium tracking-[0.08em] text-sm hover:bg-yellow-600 transition-colors"
                 >
                   YES, I AM 21+
                 </motion.button>
-                
+
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleNo}
-                  className="py-4 border border-gray-300 text-gray-700 font-medium tracking-[0.08em] text-sm hover:bg-gray-50 transition-colors"
+                  className="py-3 sm:py-4 border border-gray-300 text-gray-700 font-medium tracking-[0.08em] text-sm hover:bg-gray-50 transition-colors"
                 >
                   NO
                 </motion.button>
               </div>
 
               {/* Legal Text */}
-              <p className="mt-6 text-xs text-gray-500 text-center leading-relaxed px-2">
+              <p className="mt-4 sm:mt-6 text-xs text-gray-500 text-center leading-relaxed px-2">
                 By entering this site, you agree to our{' '}
                 <Link href="/terms" className="underline hover:text-brand-yellow">Terms of Service</Link>
                 {' '}and{' '}

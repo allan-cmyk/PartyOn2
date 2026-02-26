@@ -76,10 +76,12 @@ export default function CategorySection({
 
   if (products.length === 0) return null;
 
-  // Build a map of productId+variantId -> draft item for quick lookup
+  // Build a map of productId+variantId -> draft item for quick lookup (only this participant's items)
   const draftMap = new Map<string, DraftCartItemView>();
   for (const item of draftItems) {
-    draftMap.set(`${item.productId}:${item.variantId}`, item);
+    if (item.addedBy.id === participantId) {
+      draftMap.set(`${item.productId}:${item.variantId}`, item);
+    }
   }
 
   const visibleCount =
