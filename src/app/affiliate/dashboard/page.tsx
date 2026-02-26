@@ -143,6 +143,15 @@ export default function AffiliateDashboardPage(): ReactElement {
           <p className="text-xs text-gray-500 mt-2">
             Share this link with your customers. They get free delivery on their order, and you earn commission.
           </p>
+          <Link
+            href="/affiliate/dashboard/create-order"
+            className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 bg-brand-blue text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Create Client Order
+          </Link>
         </div>
 
         {/* Month-to-Date Stats */}
