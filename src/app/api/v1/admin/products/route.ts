@@ -34,7 +34,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       sortBy: (searchParams.get('sortBy') as ProductListParams['sortBy']) || 'title',
       sortOrder: (searchParams.get('sortOrder') as 'asc' | 'desc') || 'asc',
       page: parseInt(searchParams.get('page') || '1'),
-      limit: Math.min(parseInt(searchParams.get('limit') || '20'), 100),
+      limit: Math.min(parseInt(searchParams.get('limit') || '20'), 2000),
     };
 
     // Build where clause

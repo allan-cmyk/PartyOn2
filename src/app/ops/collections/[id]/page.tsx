@@ -78,7 +78,7 @@ export default function CollectionDetailPage(): ReactElement {
   const fetchAllProducts = useCallback(async () => {
     setLoadingAll(true);
     try {
-      const res = await fetch('/api/v1/admin/products?limit=100&status=ACTIVE');
+      const res = await fetch('/api/v1/admin/products?limit=2000&status=ACTIVE');
       const json = await res.json();
       if (json.success) {
         const list = json.data?.products ?? json.data;
