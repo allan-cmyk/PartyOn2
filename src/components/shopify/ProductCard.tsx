@@ -86,7 +86,7 @@ export default function ProductCard({ product, index = 0, onProductClick }: Prod
               <img
                 src={imageUrl}
                 alt={product.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">

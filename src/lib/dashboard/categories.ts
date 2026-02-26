@@ -22,7 +22,7 @@ export const DASHBOARD_CATEGORIES: DashboardCategory[] = [
   { label: 'Sparkling & Rose', collectionHandle: 'sparkling-wine' },
   { label: 'White Wine', collectionHandle: 'white-wine' },
   { label: 'Red Wine', collectionHandle: 'red-wine' },
-  { label: 'Mixers', collectionHandle: 'mixers' },
+  { label: 'Mixers and N/A', collectionHandle: 'mixers' },
   { label: 'Cocktail Kits', collectionHandle: 'cocktail-kits' },
   { label: 'Kegs & Equipment', collectionHandle: 'kegs' },
   { label: 'Party Supplies', collectionHandle: 'weekend-party-supplies' },
