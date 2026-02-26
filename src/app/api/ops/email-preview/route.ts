@@ -8,6 +8,7 @@ import {
 import { generateInvoiceEmail, type InvoiceTextOverrides } from '@/lib/email/templates/invoice';
 import { getInvoiceTextOverrides } from '@/lib/email/template-content';
 import { generateAffiliateWelcomeEmail } from '@/lib/email/templates/affiliate-welcome';
+import { dashboardLinkEmail } from '@/lib/email/templates/dashboard-link';
 
 const SAMPLE_ORDER = {
   orderNumber: 1234,
@@ -116,6 +117,12 @@ export async function GET(request: NextRequest) {
         dashboardLink: 'https://partyondelivery.com/affiliate/login',
       });
       break;
+
+    case 'dashboard-link': {
+      const result = dashboardLinkEmail('https://partyondelivery.com/dashboard/SAMPLE123');
+      html = result.html;
+      break;
+    }
 
     default:
       html = '<p>Unknown email type</p>';
