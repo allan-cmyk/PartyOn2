@@ -119,7 +119,7 @@ export async function GET(request: NextRequest) {
       break;
 
     case 'dashboard-link': {
-      const result = dashboardLinkEmail('https://partyondelivery.com/dashboard/SAMPLE123');
+      const result = dashboardLinkEmail('https://partyondelivery.com/dashboard/SAMPLE123', "John's Bachelor Party");
       html = result.html;
       break;
     }

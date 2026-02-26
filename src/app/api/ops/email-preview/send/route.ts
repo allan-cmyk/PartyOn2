@@ -83,7 +83,7 @@ const SUBJECT_MAP: Record<string, string> = {
   'refund-processed': '[TEST] Refund Processed - Order #1234',
   'invoice': '[TEST] Your Invoice from Party On Delivery - $95.06',
   'affiliate-welcome': '[TEST] Welcome to the Party On Delivery Partner Program!',
-  'dashboard-link': '[TEST] Your Party On Delivery Dashboard Link',
+  'dashboard-link': "[TEST] Your Party On Delivery Dashboard for John's Bachelor Party",
 };
 
 export async function POST(request: NextRequest) {
@@ -144,8 +144,8 @@ export async function POST(request: NextRequest) {
         emailType = EmailType.AFFILIATE_WELCOME;
         break;
       case 'dashboard-link': {
-        const result = dashboardLinkEmail('https://partyondelivery.com/dashboard/SAMPLE123');
-        html = result.html;
+        const dlResult = dashboardLinkEmail('https://partyondelivery.com/dashboard/SAMPLE123', "John's Bachelor Party");
+        html = dlResult.html;
         emailType = EmailType.WELCOME;
         break;
       }

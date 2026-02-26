@@ -31,6 +31,18 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     const { hostEmail, hostPhone } = parsed.data;
 
+    // Fetch group order for name and to update contact info
+    const groupOrder = await prisma.groupOrderV2.findUnique({
+      where: { shareCode: code },
+      select: { id: true, name: true, hostName: true },
+    });
+    if (!groupOrder) {
+      return NextResponse.json(
+        { success: false, error: 'Group order not found' },
+        { status: 404 }
+      );
+    }
+
     // Update group order with contact info
     const updateData: Record<string, unknown> = {};
     if (hostEmail) updateData.hostEmail = hostEmail;
@@ -45,14 +57,15 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';
     const dashboardUrl = `${appUrl}/dashboard/${code}`;
+    const orderName = groupOrder.name || `${groupOrder.hostName}'s Party`;
 
     // Send email if provided
     if (hostEmail) {
       try {
-        const { html, text } = dashboardLinkEmail(dashboardUrl);
+        const { html, text, subject } = dashboardLinkEmail(dashboardUrl, orderName);
         await sendEmail({
           to: hostEmail,
-          subject: 'Your Party On Delivery Dashboard Link',
+          subject,
           html,
           text,
           type: 'WELCOME',
