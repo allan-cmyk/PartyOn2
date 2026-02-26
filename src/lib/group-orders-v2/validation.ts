@@ -21,7 +21,7 @@ const DeliveryAddressSchema = z.object({
 /** Date validation refinements (reusable) */
 const deliveryDateSchema = z.string().refine(
   (val) => {
-    const date = new Date(val.includes('T') ? val : `${val}T12:00:00`);
+    const date = new Date(val.includes('T') ? val : `${val}T12:00:00Z`);
     return !isNaN(date.getTime());
   },
   'Invalid delivery date'
@@ -35,7 +35,7 @@ const deliveryDateSchema = z.string().refine(
   'Delivery date cannot be in the past'
 ).refine(
   (val) => {
-    const date = new Date(val.includes('T') ? val : `${val}T12:00:00`);
+    const date = new Date(val.includes('T') ? val : `${val}T12:00:00Z`);
     return date.getDay() !== 0;
   },
   'Sunday deliveries are not available'

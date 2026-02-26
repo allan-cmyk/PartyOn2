@@ -213,7 +213,7 @@ export default function ParticipantPanel({
             disabled={copyingLink}
             className="w-full py-2 text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 bg-gray-100 text-gray-700 hover:bg-gray-200"
           >
-            {copiedLink ? 'Copied!' : copyingLink ? 'Generating...' : 'Copy Host Link'}
+            {copiedLink ? 'Copied!' : copyingLink ? 'Generating...' : 'Add Another Host'}
           </button>
         </div>
       )}

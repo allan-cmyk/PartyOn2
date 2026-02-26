@@ -4,15 +4,12 @@ import { useState, type ReactElement, type FormEvent } from 'react';
 
 interface Props {
   shareCode: string;
-  hostEmail?: string | null;
-  hostPhone?: string | null;
   onClose: () => void;
 }
 
-export default function ShareModal({ shareCode, hostEmail: existingEmail, hostPhone: existingPhone, onClose }: Props): ReactElement {
-  const hasContactInfo = !!(existingEmail || existingPhone);
-  const [email, setEmail] = useState(existingEmail || '');
-  const [phone, setPhone] = useState(existingPhone || '');
+export default function ShareModal({ shareCode, onClose }: Props): ReactElement {
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState('');
   const [copied, setCopied] = useState(false);
@@ -108,7 +105,7 @@ export default function ShareModal({ shareCode, hostEmail: existingEmail, hostPh
         </div>
 
         {/* Email/phone capture */}
-        {!hasContactInfo && !linkSent && (
+        {!linkSent && (
           <>
             <div className="border-t border-gray-200 pt-4">
               <p className="text-sm text-gray-500 text-center mb-3">

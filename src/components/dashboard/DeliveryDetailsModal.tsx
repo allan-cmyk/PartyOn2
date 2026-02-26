@@ -51,7 +51,10 @@ export default function DeliveryDetailsModal({
 }: Props): ReactElement {
   const addr = tab.deliveryAddress || { address1: '', address2: '', city: '', province: 'TX', zip: '', country: 'US' };
 
-  const [date, setDate] = useState(tab.deliveryDate !== 'TBD' ? tab.deliveryDate : '');
+  const [date, setDate] = useState(() => {
+    if (!tab.deliveryDate || tab.deliveryDate === 'TBD') return '';
+    return tab.deliveryDate.split('T')[0];
+  });
   const [time, setTime] = useState(tab.deliveryTime !== 'TBD' ? tab.deliveryTime : '');
   const [address1, setAddress1] = useState(addr.address1 || '');
   const [address2, setAddress2] = useState(addr.address2 || '');

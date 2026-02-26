@@ -368,6 +368,8 @@ export async function createTab(
     deliveryDate.setDate(deliveryDate.getDate() + 7);
     if (deliveryDate.getDay() === 0) deliveryDate.setDate(deliveryDate.getDate() + 1);
   }
+  // Normalize to noon UTC to avoid timezone boundary issues
+  deliveryDate.setUTCHours(12, 0, 0, 0);
 
   const zip = input.deliveryAddress?.zip || '';
   const feeResult = calculateDeliveryFee(zip, 0, false);
@@ -419,6 +421,7 @@ export async function updateTab(
   if (input.deliveryContextType) data.deliveryContextType = input.deliveryContextType;
   if (input.deliveryDate) {
     const deliveryDate = new Date(input.deliveryDate);
+    deliveryDate.setUTCHours(12, 0, 0, 0);
     data.deliveryDate = deliveryDate;
     data.orderDeadline = computeOrderDeadline(deliveryDate);
   }
@@ -876,6 +879,8 @@ export async function createDashboardOrder(
   if (placeholderDate.getDay() === 0) {
     placeholderDate.setDate(placeholderDate.getDate() + 1);
   }
+  // Normalize to noon UTC to avoid timezone boundary issues
+  placeholderDate.setUTCHours(12, 0, 0, 0);
 
   const group = await prisma.groupOrderV2.create({
     data: {

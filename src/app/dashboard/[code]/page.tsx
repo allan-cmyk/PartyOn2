@@ -168,9 +168,6 @@ export default function DashboardPage(): ReactElement {
     );
   }
 
-  const isHost = !!groupOrder.participants.find(
-    (p) => p.id === participantId && p.isHost
-  );
   const isLocked = tab.status === 'LOCKED';
 
   const myDraftItems = tab.draftItems.filter(
@@ -314,8 +311,6 @@ export default function DashboardPage(): ReactElement {
       {showShareModal && (
         <ShareModal
           shareCode={groupOrder.shareCode}
-          hostEmail={groupOrder.hostEmail}
-          hostPhone={groupOrder.hostPhone}
           onClose={() => setShowShareModal(false)}
         />
       )}
