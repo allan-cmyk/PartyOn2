@@ -50,6 +50,8 @@ export default function CollectionDetailPage(): ReactElement {
   const [adding, setAdding] = useState(false);
   const [removingId, setRemovingId] = useState<string | null>(null);
   const [reordering, setReordering] = useState(false);
+  const [editingPosition, setEditingPosition] = useState<string | null>(null);
+  const [positionValue, setPositionValue] = useState('');
 
   const fetchCollection = useCallback(async () => {
     setLoading(true);
@@ -158,6 +160,33 @@ export default function CollectionDetailPage(): ReactElement {
       });
     } catch {
       // Revert on failure
+      setProducts(products);
+    } finally {
+      setReordering(false);
+    }
+  };
+
+  const handlePositionChange = async (productId: string, currentIndex: number, newPosition: number) => {
+    const targetIndex = Math.max(0, Math.min(products.length - 1, newPosition - 1));
+    if (targetIndex === currentIndex) {
+      setEditingPosition(null);
+      return;
+    }
+
+    const newProducts = [...products];
+    const [moved] = newProducts.splice(currentIndex, 1);
+    newProducts.splice(targetIndex, 0, moved);
+    setProducts(newProducts);
+    setEditingPosition(null);
+
+    setReordering(true);
+    try {
+      await fetch(`/api/v1/admin/collections/${id}/products`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productIds: newProducts.map((p) => p.id) }),
+      });
+    } catch {
       setProducts(products);
     } finally {
       setReordering(false);
@@ -338,7 +367,42 @@ export default function CollectionDetailPage(): ReactElement {
               {products.map((p, idx) => (
                 <tr key={p.id} className="hover:bg-purple-50/50 transition-colors group">
                   <td className="px-4 py-4 text-center">
-                    <span className="text-sm font-mono text-gray-500">{idx + 1}</span>
+                    {editingPosition === p.id ? (
+                      <input
+                        type="number"
+                        min={1}
+                        max={products.length}
+                        value={positionValue}
+                        onChange={(e) => setPositionValue(e.target.value)}
+                        onBlur={() => {
+                          const num = parseInt(positionValue, 10);
+                          if (!isNaN(num)) handlePositionChange(p.id, idx, num);
+                          else setEditingPosition(null);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            const num = parseInt(positionValue, 10);
+                            if (!isNaN(num)) handlePositionChange(p.id, idx, num);
+                            else setEditingPosition(null);
+                          } else if (e.key === 'Escape') {
+                            setEditingPosition(null);
+                          }
+                        }}
+                        autoFocus
+                        className="w-12 text-center text-sm font-mono border border-purple-300 rounded px-1 py-0.5 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+                      />
+                    ) : (
+                      <button
+                        onClick={() => {
+                          setEditingPosition(p.id);
+                          setPositionValue(String(idx + 1));
+                        }}
+                        className="text-sm font-mono text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded px-2 py-0.5 transition-colors cursor-pointer"
+                        title="Click to set position"
+                      >
+                        {idx + 1}
+                      </button>
+                    )}
                   </td>
                   <td className="px-2 py-4 text-center">
                     <div className="flex items-center justify-center gap-1">
@@ -375,9 +439,14 @@ export default function CollectionDetailPage(): ReactElement {
                           </svg>
                         </div>
                       )}
-                      <span className="font-medium text-gray-900 group-hover:text-purple-600 transition-colors">
+                      <a
+                        href={`/ops/products/${p.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-gray-900 group-hover:text-purple-600 hover:underline transition-colors"
+                      >
                         {p.title}
-                      </span>
+                      </a>
                     </div>
                   </td>
                   <td className="px-6 py-4 text-center">
