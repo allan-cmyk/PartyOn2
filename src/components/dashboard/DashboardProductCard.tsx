@@ -45,6 +45,11 @@ export default function DashboardProductCard({
   const available = variant.availableForSale && product.availableForSale !== false;
   const qty = existingItem?.quantity || 0;
 
+  // Split title into product name and pack info (e.g. "12 Pack 12oz Cans")
+  const bulletIndex = product.title.indexOf(' \u2022 ');
+  const productName = bulletIndex >= 0 ? product.title.slice(0, bulletIndex) : product.title;
+  const packInfo = bulletIndex >= 0 ? product.title.slice(bulletIndex + 3) : null;
+
   function refreshWithoutScroll() {
     const scrollY = window.scrollY;
     onItemChanged();
@@ -151,9 +156,12 @@ export default function DashboardProductCard({
           </div>
 
           <div className="p-2 text-center">
-            <h3 className="text-base font-medium text-gray-900 line-clamp-2 leading-tight">
-              {product.title}
+            <h3 className="text-sm font-medium text-gray-900 line-clamp-2 leading-tight">
+              {productName}
             </h3>
+            {packInfo && (
+              <p className="text-sm text-gray-500 leading-tight line-clamp-1 mt-0.5">{packInfo}</p>
+            )}
             {variantTitle && (
               <p className="text-sm text-gray-500 mt-0.5">{variantTitle}</p>
             )}
