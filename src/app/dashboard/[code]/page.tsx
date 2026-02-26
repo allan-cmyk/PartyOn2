@@ -18,6 +18,7 @@ import ShareModal from '@/components/dashboard/ShareModal';
 import JoinOverlay from '@/components/dashboard/JoinOverlay';
 import type { RecommendationResult } from '@/components/dashboard/GetRecsModal';
 import { claimHostV2 } from '@/lib/group-orders-v2/api-client';
+import { OnboardingTourProvider, DashboardTour } from '@/components/dashboard/tour';
 
 const PARTICIPANT_KEY_PREFIX = 'dashboard_participant_';
 
@@ -176,8 +177,16 @@ export default function DashboardPage(): ReactElement {
   const checkoutItems =
     checkoutMode === 'all' ? tab.draftItems : myDraftItems;
 
+  const currentIsHost = !!groupOrder.participants.find(p => p.id === participantId)?.isHost;
+
   return (
+    <OnboardingTourProvider shareCode={code}>
     <div className="min-h-screen bg-gray-50 pb-20 lg:pb-6">
+      <DashboardTour
+        isHost={currentIsHost}
+        hasPartyType={!!groupOrder.partyType}
+        shareCode={code}
+      />
       <DashboardHeader
         groupOrder={groupOrder}
         participantId={participantId}
@@ -354,5 +363,6 @@ export default function DashboardPage(): ReactElement {
         />
       )}
     </div>
+    </OnboardingTourProvider>
   );
 }

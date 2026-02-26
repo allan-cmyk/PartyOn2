@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, type ReactElement } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { GroupOrderV2Full } from '@/lib/group-orders-v2/types';
+import { updateGroupOrderV2 } from '@/lib/group-orders-v2/api-client';
 import ParticipantPanel from './ParticipantPanel';
 
 interface Props {
@@ -22,6 +23,10 @@ export default function DashboardHeader({
   onShareClick,
 }: Props): ReactElement {
   const [showParticipants, setShowParticipants] = useState(false);
+  const [editingName, setEditingName] = useState(false);
+  const [nameValue, setNameValue] = useState('');
+  const [savingName, setSavingName] = useState(false);
+  const nameInputRef = useRef<HTMLInputElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
   const activeParticipants = groupOrder.participants.filter(
@@ -32,6 +37,38 @@ export default function DashboardHeader({
     .map((p) => p.name);
 
   const tab = groupOrder.tabs[0];
+  const displayName = groupOrder.name || `${groupOrder.hostName}'s Order`;
+
+  // Focus name input when entering edit mode
+  useEffect(() => {
+    if (editingName && nameInputRef.current) {
+      nameInputRef.current.focus();
+      nameInputRef.current.select();
+    }
+  }, [editingName]);
+
+  function startEditingName() {
+    setNameValue(displayName);
+    setEditingName(true);
+  }
+
+  async function saveOrderName() {
+    const trimmed = nameValue.trim();
+    if (!trimmed || trimmed === displayName) {
+      setEditingName(false);
+      return;
+    }
+    setSavingName(true);
+    try {
+      await updateGroupOrderV2(groupOrder.shareCode, { name: trimmed });
+      onRefresh();
+    } catch {
+      // Silently fail
+    } finally {
+      setSavingName(false);
+      setEditingName(false);
+    }
+  }
 
   // Close panel on outside click
   useEffect(() => {
@@ -60,11 +97,35 @@ export default function DashboardHeader({
             />
           </Link>
 
-          {/* Centered title */}
+          {/* Centered title -- click to edit */}
           <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
-            <h1 className="text-2xl md:text-3xl font-heading font-bold tracking-[0.06em] text-gray-900">
-              {groupOrder.name || `${groupOrder.hostName}'s Order`}
-            </h1>
+            {editingName ? (
+              <input
+                ref={nameInputRef}
+                value={nameValue}
+                onChange={(e) => setNameValue(e.target.value)}
+                onBlur={() => saveOrderName()}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') saveOrderName();
+                  if (e.key === 'Escape') setEditingName(false);
+                }}
+                maxLength={100}
+                disabled={savingName}
+                className="text-2xl md:text-3xl font-heading font-bold tracking-[0.06em] text-gray-900 bg-transparent border-b-2 border-brand-blue outline-none text-center"
+              />
+            ) : (
+              <button
+                onClick={startEditingName}
+                className="group flex items-center gap-2 cursor-pointer hover:opacity-80"
+              >
+                <h1 className="text-2xl md:text-3xl font-heading font-bold tracking-[0.06em] text-gray-900">
+                  {displayName}
+                </h1>
+                <svg className="w-4 h-4 text-gray-400 group-hover:text-brand-blue transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+              </button>
+            )}
             {isLocked && (
               <span className="text-xs font-semibold uppercase tracking-wider text-red-600 bg-red-50 px-1.5 py-0.5 rounded">
                 Locked
@@ -74,7 +135,7 @@ export default function DashboardHeader({
 
           <div className="flex items-center gap-3">
             {/* Participant count button */}
-            <div className="relative" ref={panelRef}>
+            <div className="relative" ref={panelRef} data-tour="participants">
               <button
                 onClick={() => setShowParticipants(!showParticipants)}
                 className="flex items-center gap-1.5 text-sm font-medium text-gray-700 border border-gray-200 rounded-lg px-3 py-1.5 hover:bg-gray-100 transition-colors"
@@ -107,6 +168,7 @@ export default function DashboardHeader({
             </div>
 
             <button
+              data-tour="share-button"
               onClick={onShareClick}
               className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white bg-brand-blue hover:bg-blue-700 rounded-lg shadow-sm transition-colors"
             >

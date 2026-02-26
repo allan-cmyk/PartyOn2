@@ -256,7 +256,7 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
     if (isEmpty) return null;
 
     return (
-      <div className="px-5 py-4 bg-gray-50 border-t border-gray-100">
+      <div data-tour="checkout-buttons" className="px-5 py-4 bg-gray-50 border-t border-gray-100">
         {isSolo ? (
           <button
             onClick={onCheckoutMine}
@@ -323,7 +323,7 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
     <>
       {/* Desktop sidebar -- hidden on mobile */}
       <div className="hidden lg:block">
-        <div className="sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto bg-white rounded-xl border border-gray-200 shadow-sm">
+        <div data-tour="cart" className="sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto bg-white rounded-xl border border-gray-200 shadow-sm">
           <div className="px-5 py-4 border-b border-gray-100">
             <div className="flex items-center gap-3">
               <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -344,7 +344,7 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
 
       {/* Mobile collapsible cart -- hidden when empty */}
       {!isEmpty && (
-        <div ref={ref} className="lg:hidden mb-6">
+        <div ref={ref} className="lg:hidden mb-6" data-tour="cart">
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             {/* Header */}
             <button
