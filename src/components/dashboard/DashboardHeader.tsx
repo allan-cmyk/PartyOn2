@@ -38,7 +38,10 @@ export default function DashboardHeader({
 
   const tab = groupOrder.tabs[0];
   const hostLabel = groupOrder.hostName === 'Party Host' ? 'Host' : groupOrder.hostName;
-  const displayName = groupOrder.name || `${hostLabel}'s Party`;
+  const rawName = groupOrder.name;
+  const displayName = (!rawName || rawName === "Party Host's Order")
+    ? `${hostLabel}'s Party`
+    : rawName;
 
   // Focus name input when entering edit mode
   useEffect(() => {

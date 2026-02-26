@@ -884,7 +884,7 @@ export async function createDashboardOrder(
 
   const group = await prisma.groupOrderV2.create({
     data: {
-      name: input.name || `${input.hostName}'s Order`,
+      name: input.name || (input.hostName === 'Party Host' ? "Host's Party" : `${input.hostName}'s Party`),
       hostName: input.hostName,
       hostEmail: input.hostEmail || null,
       hostPhone: input.hostPhone || null,

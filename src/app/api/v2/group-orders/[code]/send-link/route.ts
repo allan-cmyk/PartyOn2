@@ -57,7 +57,10 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';
     const dashboardUrl = `${appUrl}/dashboard/${code}`;
-    const orderName = groupOrder.name || `${groupOrder.hostName}'s Party`;
+    const hostLabel = groupOrder.hostName === 'Party Host' ? 'Host' : groupOrder.hostName;
+    const orderName = (!groupOrder.name || groupOrder.name === "Party Host's Order")
+      ? `${hostLabel}'s Party`
+      : groupOrder.name;
 
     // Send email if provided
     if (hostEmail) {
