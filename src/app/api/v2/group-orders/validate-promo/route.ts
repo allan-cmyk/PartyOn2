@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
 
     // 2. Try Affiliate table
     const affiliate = await prisma.affiliate.findFirst({
-      where: { referralCode: upperCode, status: 'ACTIVE' },
+      where: { code: upperCode, status: 'ACTIVE' },
     });
 
     if (affiliate) {
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
         success: true,
         data: {
           type: 'affiliate',
-          code: affiliate.referralCode,
+          code: affiliate.code,
           label: `Free Delivery (via ${affiliate.businessName})`,
           discountAmount: 0,
           freeDelivery: true,
