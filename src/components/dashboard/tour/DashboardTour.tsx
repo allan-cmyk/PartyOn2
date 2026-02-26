@@ -11,8 +11,6 @@ interface Props {
 }
 
 function buildSteps(): TourStep[] {
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
-
   return [
     {
       target: '[data-tour="delivery-details"]',
@@ -39,7 +37,7 @@ function buildSteps(): TourStep[] {
       target: '[data-tour="share-button"]',
       title: 'Invite Friends',
       content:
-        'Share this link so friends can add their own items to the order.',
+        "Share this link so friends can add their own items to the order. Everyone's items are tracked separately.",
       placement: 'bottom-end',
     },
     {
@@ -48,26 +46,6 @@ function buildSteps(): TourStep[] {
       content:
         'Give someone else full host access so they can manage the order too.',
       placement: 'bottom-end',
-    },
-    {
-      target: '[data-tour="product-search"]',
-      title: 'Find Products',
-      content: 'Search for anything or browse categories below.',
-      placement: 'bottom',
-    },
-    {
-      target: '[data-tour="cart"]',
-      title: 'Your Cart',
-      content:
-        "Items you add show up here. Everyone's items are tracked separately.",
-      placement: isMobile ? 'top' : 'left',
-    },
-    {
-      target: '[data-tour="checkout-buttons"]',
-      title: 'Flexible Checkout',
-      content:
-        'Pay for just your items, or cover the whole order for the group.',
-      placement: isMobile ? 'top' : 'left',
     },
   ];
 }
