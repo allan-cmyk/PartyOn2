@@ -183,7 +183,7 @@ export default function HeroCollage() {
   if (POOLED_CELLS.every(c => c.length === 0)) return null;
 
   return (
-    <div className="grid grid-cols-2 grid-rows-[1fr_1fr] gap-3 h-[300px] md:h-[450px] lg:h-full">
+    <div className="grid grid-cols-2 grid-rows-[1fr_1fr] gap-3 h-full min-h-[200px]">
       {/* Top-left */}
       <CollageCell
         media={POOLED_CELLS[0]}
