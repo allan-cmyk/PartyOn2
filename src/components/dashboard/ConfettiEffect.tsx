@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 
 interface Props {
   trigger: boolean;
@@ -8,16 +8,13 @@ interface Props {
 }
 
 export default function ConfettiEffect({ trigger, onComplete }: Props) {
+  const firedRef = useRef(false);
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
-  useEffect(() => {
-    if (!trigger) return;
-
-    let cancelled = false;
-
-    import('canvas-confetti').then((mod) => {
-      if (cancelled) return;
+  const fire = useCallback(async () => {
+    try {
+      const mod = await import('canvas-confetti');
       const confetti = mod.default;
 
       // Party-colored burst from center
@@ -30,7 +27,6 @@ export default function ConfettiEffect({ trigger, onComplete }: Props) {
 
       // Second burst slightly delayed
       setTimeout(() => {
-        if (cancelled) return;
         confetti({
           particleCount: 60,
           spread: 100,
@@ -39,12 +35,22 @@ export default function ConfettiEffect({ trigger, onComplete }: Props) {
         });
         onCompleteRef.current?.();
       }, 200);
-    });
+    } catch {
+      // If confetti fails, still call onComplete to reset trigger
+      onCompleteRef.current?.();
+    }
+  }, []);
 
-    return () => {
-      cancelled = true;
-    };
-  }, [trigger]);
+  useEffect(() => {
+    if (!trigger) {
+      firedRef.current = false;
+      return;
+    }
+    // Guard against strict mode double-fire
+    if (firedRef.current) return;
+    firedRef.current = true;
+    fire();
+  }, [trigger, fire]);
 
   return null;
 }
