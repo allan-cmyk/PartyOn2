@@ -196,6 +196,11 @@ export default function DashboardPage(): ReactElement {
       const tabIndex = Math.min(activeTabIndex, groupOrder.tabs.length - 1);
       const activeTab = groupOrder.tabs[tabIndex];
       if (!activeTab) return;
+      // Skip free product auto-add on boat tabs (survival package is a house/venue perk)
+      if (activeTab.deliveryContextType === 'BOAT') {
+        refresh();
+        return;
+      }
       for (const fp of promo.freeProducts) {
         // Skip if this variant is already in the cart (any participant)
         const alreadyInCart = activeTab.draftItems.some(
