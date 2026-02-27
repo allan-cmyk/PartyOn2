@@ -17,7 +17,7 @@ import RecommendationsSection from '@/components/dashboard/RecommendationsSectio
 import ShareModal from '@/components/dashboard/ShareModal';
 import JoinOverlay from '@/components/dashboard/JoinOverlay';
 import type { RecommendationResult } from '@/components/dashboard/GetRecsModal';
-import { claimHostV2 } from '@/lib/group-orders-v2/api-client';
+import { claimHostV2, addDraftItemV2, removeDraftItemV2 } from '@/lib/group-orders-v2/api-client';
 import type { AppliedPromo } from '@/lib/group-orders-v2/types';
 import PromoCodeInput from '@/components/dashboard/PromoCodeInput';
 import ConfettiEffect from '@/components/dashboard/ConfettiEffect';
@@ -186,16 +186,62 @@ export default function DashboardPage(): ReactElement {
     refresh();
   }, [code, refresh]);
 
-  const handlePromoApply = useCallback((promo: AppliedPromo) => {
+  const handlePromoApply = useCallback(async (promo: AppliedPromo) => {
     setAppliedPromo(promo);
     localStorage.setItem(`${PROMO_KEY_PREFIX}${code}`, JSON.stringify(promo));
     setShowConfetti(true);
-  }, [code]);
 
-  const handlePromoRemove = useCallback(() => {
+    // Auto-add free products if present
+    if (promo.freeProducts?.length && participantId && groupOrder) {
+      const tabIndex = Math.min(activeTabIndex, groupOrder.tabs.length - 1);
+      const activeTab = groupOrder.tabs[tabIndex];
+      if (!activeTab) return;
+      for (const fp of promo.freeProducts) {
+        // Skip if this variant is already in the cart (any participant)
+        const alreadyInCart = activeTab.draftItems.some(
+          (item) => item.variantId === fp.variantId && item.price === 0
+        );
+        if (alreadyInCart) continue;
+        try {
+          await addDraftItemV2(code, activeTab.id, {
+            participantId,
+            productId: fp.productId,
+            variantId: fp.variantId,
+            title: fp.name,
+            price: 0,
+            quantity: fp.quantity,
+          });
+        } catch (err) {
+          console.error('[Promo] Failed to add free product:', err);
+        }
+      }
+      refresh();
+    }
+  }, [code, participantId, groupOrder, activeTabIndex, refresh]);
+
+  const handlePromoRemove = useCallback(async () => {
+    const prevPromo = appliedPromo;
     setAppliedPromo(null);
     localStorage.removeItem(`${PROMO_KEY_PREFIX}${code}`);
-  }, [code]);
+
+    // Remove free products from cart
+    if (prevPromo?.freeProducts?.length && participantId && groupOrder) {
+      const tabIndex = Math.min(activeTabIndex, groupOrder.tabs.length - 1);
+      const activeTab = groupOrder.tabs[tabIndex];
+      if (!activeTab) return;
+      const freeVariantIds = new Set(prevPromo.freeProducts.map((fp) => fp.variantId));
+      for (const item of activeTab.draftItems) {
+        if (freeVariantIds.has(item.variantId) && item.price === 0) {
+          try {
+            await removeDraftItemV2(code, activeTab.id, item.id, item.addedBy.id);
+          } catch (err) {
+            console.error('[Promo] Failed to remove free product:', err);
+          }
+        }
+      }
+      refresh();
+    }
+  }, [code, appliedPromo, participantId, groupOrder, activeTabIndex, refresh]);
 
   if (isLoading || !groupOrder) {
     return (

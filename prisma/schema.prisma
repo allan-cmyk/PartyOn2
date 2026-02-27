@@ -1216,6 +1216,10 @@ model Discount {
   // Free shipping flag - allows any discount type to also waive delivery
   freeShipping Boolean @default(false) @map("free_shipping")
 
+  // Products auto-added for free when this discount is applied
+  // JSON array: [{ productId, variantId, name, quantity }]
+  includedProducts Json? @map("included_products")
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

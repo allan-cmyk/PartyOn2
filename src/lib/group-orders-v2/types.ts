@@ -218,6 +218,13 @@ export interface CreateDashboardInput {
 // Promo / Discount
 // ==========================================
 
+export interface FreeProductInfo {
+  productId: string;
+  variantId: string;
+  name: string;
+  quantity: number;
+}
+
 export interface AppliedPromo {
   type: 'discount' | 'affiliate';
   code: string;
@@ -225,6 +232,7 @@ export interface AppliedPromo {
   discountAmount: number;
   freeDelivery: boolean;
   affiliateId?: string;
+  freeProducts?: FreeProductInfo[];
 }
 
 // ==========================================

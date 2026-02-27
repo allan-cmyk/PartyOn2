@@ -74,6 +74,11 @@ export async function POST(request: NextRequest) {
           : `${discount.name} (Free Delivery)`;
       }
 
+      // Parse included free products if present
+      const freeProducts = Array.isArray(discount.includedProducts)
+        ? (discount.includedProducts as { productId: string; variantId: string; name: string; quantity: number }[])
+        : undefined;
+
       return NextResponse.json({
         success: true,
         data: {
@@ -82,6 +87,7 @@ export async function POST(request: NextRequest) {
           label,
           discountAmount,
           freeDelivery,
+          freeProducts,
         },
       });
     }
