@@ -256,47 +256,41 @@ function InnCahootsPageContent(): ReactElement {
 
       {/* TRUST SECTION */}
       <section className="py-20 px-6 md:px-12 bg-gray-900">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
-            {/* LEFT: Video/GIF */}
-            <div className="flex justify-center lg:justify-end items-stretch">
-              <div className="relative w-48 md:w-56 lg:w-full lg:max-w-xs rounded-2xl overflow-hidden bg-gray-800 shadow-2xl aspect-[9/16] lg:aspect-auto">
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="absolute inset-0 w-full h-full object-cover"
-                >
-                  <source src="/videos/trust-section.mp4" type="video/mp4" />
-                </video>
-              </div>
-            </div>
-
-            {/* RIGHT: Logo + Title + Paragraph */}
-            <div className="flex flex-col">
-              <div className="flex justify-center mb-6">
-                <Image
-                  src="/images/pod-logo-2025.svg"
-                  alt="Party On Delivery"
-                  width={180}
-                  height={180}
-                  className="w-32 h-32 md:w-44 md:h-44"
-                />
-              </div>
-
-              <h2 className="font-heading text-3xl md:text-4xl text-white tracking-wide mb-6 text-center">
-                Austin-Born. Fully Licensed. Always On Time.
-              </h2>
-
-              <p className="text-gray-300 text-lg md:text-xl leading-relaxed text-center">
-                Howdy! We&apos;re Allan and Brian, owners of Party On Delivery. Austin natives with 15+ years in events and hospitality, we built this business around one thing: taking care of people. We pride ourselves on clear communication, on-time delivery, and showing people the best of our great city. Our goal is simple - make your weekend easy, safe, and fun.
-              </p>
-              <p className="text-brand-yellow text-xl md:text-2xl font-heading mt-6 text-center tracking-wide">
-                PARTY ON Y&apos;ALL
-              </p>
+        <div className="max-w-3xl mx-auto text-center">
+          <div className="flex justify-center mb-8">
+            <div className="relative w-48 md:w-56 rounded-2xl overflow-hidden bg-gray-800 shadow-2xl aspect-[9/16]">
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover"
+              >
+                <source src="/videos/trust-section.mp4" type="video/mp4" />
+              </video>
             </div>
           </div>
+
+          <div className="flex justify-center mb-6">
+            <Image
+              src="/images/pod-logo-2025.svg"
+              alt="Party On Delivery"
+              width={180}
+              height={180}
+              className="w-32 h-32 md:w-44 md:h-44"
+            />
+          </div>
+
+          <h2 className="font-heading text-3xl md:text-4xl text-white tracking-wide mb-6">
+            Austin-Born. Fully Licensed. Always On Time.
+          </h2>
+
+          <p className="text-gray-300 text-lg md:text-xl leading-relaxed">
+            Howdy! We&apos;re Allan and Brian, owners of Party On Delivery. Austin natives with 15+ years in events and hospitality, we built this business around one thing: taking care of people. We pride ourselves on clear communication, on-time delivery, and showing people the best of our great city. Our goal is simple - make your weekend easy, safe, and fun.
+          </p>
+          <p className="text-brand-yellow text-xl md:text-2xl font-heading mt-6 tracking-wide">
+            PARTY ON Y&apos;ALL
+          </p>
         </div>
       </section>
 
