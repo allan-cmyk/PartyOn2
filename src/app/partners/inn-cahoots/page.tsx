@@ -1,20 +1,13 @@
 'use client';
 
-import { useState, useEffect, useRef, Suspense, type ReactElement } from 'react';
+import { useState, Suspense, type ReactElement } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
 import JoinOrderModal from '@/components/partners/JoinOrderModal';
-import DrinkCalculator from '@/components/partners/DrinkCalculator';
-import QuickOrderGrid from '@/components/quick-order/QuickOrderGrid';
-import QuickOrderSearch from '@/components/quick-order/QuickOrderSearch';
-import CartSummaryBar from '@/components/quick-order/CartSummaryBar';
 import InnCahootsHero from '@/components/partners/InnCahootsHero';
-import PremierHeroStickyCTA from '@/components/partners/PremierHeroStickyCTA';
-import { useQuickOrderProducts } from '@/hooks/useQuickOrderProducts';
-import { SHOPIFY_COLLECTIONS } from '@/lib/products/categories';
 
 const TESTIMONIALS = [
   {
@@ -71,64 +64,7 @@ function InnCahootsPageContent(): ReactElement {
   void searchParams;
 
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
-  const [activeCollection, setActiveCollection] = useState('favorites-home-page');
-  const [showSearchOverlay, setShowSearchOverlay] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-
-  // Sticky collections state
-  const [isCollectionsSticky, setIsCollectionsSticky] = useState(false);
-  const collectionsRef = useRef<HTMLElement>(null);
-  const sentinelRef = useRef<HTMLDivElement>(null);
-  const endSentinelRef = useRef<HTMLDivElement>(null);
-  const [isPastProductSection, setIsPastProductSection] = useState(false);
-
-  // Load products for active collection
-  const { products, loading, error } = useQuickOrderProducts(activeCollection);
-
-  // Intersection Observer for sticky detection
-  useEffect(() => {
-    if (!sentinelRef.current) return;
-
-    const startObserver = new IntersectionObserver(
-      ([entry]) => {
-        setIsCollectionsSticky(!entry.isIntersecting);
-      },
-      {
-        rootMargin: '-96px 0px 0px 0px',
-        threshold: 0,
-      }
-    );
-
-    startObserver.observe(sentinelRef.current);
-    return () => startObserver.disconnect();
-  }, []);
-
-  // Detect when user scrolls past the product section
-  useEffect(() => {
-    if (!endSentinelRef.current) return;
-
-    const endObserver = new IntersectionObserver(
-      ([entry]) => {
-        setIsPastProductSection(!entry.isIntersecting && entry.boundingClientRect.top < 0);
-      },
-      {
-        rootMargin: '0px 0px 0px 0px',
-        threshold: 0,
-      }
-    );
-
-    endObserver.observe(endSentinelRef.current);
-    return () => endObserver.disconnect();
-  }, []);
-
-  const scrollToCollections = () => {
-    document.getElementById('hotel-collections')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const handleCollectionChange = (handle: string) => {
-    if (activeCollection === handle) return;
-    setActiveCollection(handle);
-  };
 
   return (
     <div className="bg-white min-h-screen">
@@ -245,7 +181,7 @@ function InnCahootsPageContent(): ReactElement {
                   playsInline
                   className="w-full h-full object-cover"
                 >
-                  <source src="/videos/trust-section.mp4" type="video/mp4" />
+                  <source src="/videos/inn-cahoots-reel.mp4" type="video/mp4" />
                 </video>
               </div>
             </div>
@@ -287,144 +223,6 @@ function InnCahootsPageContent(): ReactElement {
           </div>
         </div>
       </section>
-
-      {/* Sentinel for sticky detection */}
-      <div ref={sentinelRef} id="hotel-collections" className="h-0" aria-hidden="true" />
-
-      {/* Featured Collections - Sticky only in product section */}
-      <section
-        ref={collectionsRef}
-        className={`bg-gray-50 border-b border-gray-200 transition-all duration-300 ${
-          isCollectionsSticky && !isPastProductSection
-            ? 'sticky z-40 py-2 shadow-md top-0'
-            : 'py-6'
-        }`}
-      >
-        <div className="px-4 md:max-w-7xl md:mx-auto md:px-8">
-          {/* CTA Buttons - hide when sticky */}
-          {!isCollectionsSticky && (
-            <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 mb-6">
-              <button
-                onClick={scrollToCollections}
-                className="w-full md:flex-1 group flex items-center justify-center gap-3 py-4 px-6 bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-800 font-semibold tracking-wide transition-all rounded-xl shadow-sm hover:shadow-md"
-              >
-                <span>Scroll Down to Make a Cart</span>
-                <svg
-                  className="w-5 h-5 animate-bounce"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
-              </button>
-
-              <span className="text-gray-400 font-medium text-sm uppercase tracking-wider">or</span>
-
-              <Link
-                href="/order"
-                className="w-full md:flex-1 flex items-center justify-center gap-3 py-4 px-6 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-semibold tracking-wide transition-all rounded-xl shadow-sm hover:shadow-md"
-              >
-                <span>Start a Group Order</span>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </Link>
-            </div>
-          )}
-
-          {/* Collections Grid/Horizontal Scroll */}
-          <div
-            className={
-              isCollectionsSticky
-                ? 'flex items-center gap-2'
-                : 'grid grid-cols-2 md:grid-cols-5 gap-2'
-            }
-          >
-            {/* Search button - only show when sticky */}
-            {isCollectionsSticky && (
-              <button
-                onClick={() => setShowSearchOverlay(true)}
-                className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
-                aria-label="Search products"
-              >
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
-            )}
-
-            {/* Categories */}
-            <div
-              className={
-                isCollectionsSticky
-                  ? 'flex overflow-x-auto gap-2 pb-2 -mr-4 pr-4 scrollbar-hide snap-x snap-mandatory flex-1'
-                  : 'contents'
-              }
-              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-            >
-              {SHOPIFY_COLLECTIONS.map((collection) => {
-                if (!collection?.colors) return null;
-                const isActive = activeCollection === collection.handle;
-                return (
-                  <button
-                    key={collection.handle}
-                    onClick={() => handleCollectionChange(collection.handle)}
-                    className={`
-                      text-center border transition-all rounded-lg relative
-                      ${isCollectionsSticky ? 'px-3 py-2' : 'px-4 py-3'}
-                      ${isActive
-                        ? `${collection.colors.bgActive} ${collection.colors.textActive} ${collection.colors.borderActive} shadow-lg ${isCollectionsSticky ? '' : 'scale-105'}`
-                        : `${collection.colors.bg} ${collection.colors.text} ${collection.colors.border} hover:scale-102`
-                      }
-                      text-xs md:text-sm
-                      ${isCollectionsSticky ? 'flex-shrink-0 snap-start whitespace-nowrap' : ''}
-                      tracking-[0.1em] font-medium
-                    `}
-                    disabled={loading && activeCollection !== collection.handle}
-                  >
-                    {collection.label.toUpperCase()}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Search Bar */}
-      <div className="bg-white border-b border-gray-200 px-4 py-3">
-        <div className="max-w-xl mx-auto">
-          <QuickOrderSearch />
-        </div>
-      </div>
-
-      {/* Product Grid */}
-      <main className="px-4 py-8">
-        <div id="product-grid" className="scroll-mt-24 max-w-7xl mx-auto">
-          {error ? (
-            <div className="text-center py-12">
-              <p className="text-red-500">Failed to load products. Please try again.</p>
-              <button
-                onClick={() => window.location.reload()}
-                className="mt-4 px-4 py-2 bg-brand-yellow text-gray-900 rounded-lg hover:bg-yellow-600"
-              >
-                Retry
-              </button>
-            </div>
-          ) : (
-            <QuickOrderGrid products={products} loading={loading} />
-          )}
-        </div>
-      </main>
-
-      {/* End sentinel for product section */}
-      <div ref={endSentinelRef} className="h-0" aria-hidden="true" />
-
-      {/* DRINK CALCULATOR */}
-      <div id="order-builder" className="scroll-mt-24">
-        <DrinkCalculator />
-      </div>
 
       {/* TESTIMONIALS */}
       <section className="relative py-16 px-6 md:px-12 bg-gray-100 overflow-hidden">
@@ -557,22 +355,8 @@ function InnCahootsPageContent(): ReactElement {
               href="/order"
               className="px-10 py-4 bg-gray-900 text-white hover:bg-gray-800 font-semibold tracking-wider transition-colors rounded-lg"
             >
-              Start a Group Order
+              Start an Order
             </Link>
-
-            <button
-              onClick={scrollToCollections}
-              className="text-gray-800 hover:text-gray-900 font-medium tracking-wider underline underline-offset-4"
-            >
-              or start an individual order
-            </button>
-
-            <button
-              onClick={() => setIsJoinModalOpen(true)}
-              className="text-gray-700 hover:text-gray-900 text-sm tracking-wider"
-            >
-              Have a share code? Join an order
-            </button>
           </div>
 
           <p className="text-gray-700">
@@ -585,49 +369,13 @@ function InnCahootsPageContent(): ReactElement {
       </section>
 
       {/* FOOTER */}
-      <div className="pb-24 md:pb-20">
-        <Footer />
-      </div>
-
-      {/* Cart Summary Bar - Fixed Bottom */}
-      <CartSummaryBar />
-
-      {/* Mobile Sticky CTA */}
-      <PremierHeroStickyCTA onJoinCode={() => setIsJoinModalOpen(true)} />
+      <Footer />
 
       {/* MODALS */}
       <JoinOrderModal
         isOpen={isJoinModalOpen}
         onClose={() => setIsJoinModalOpen(false)}
       />
-
-      {/* Search Overlay */}
-      {showSearchOverlay && (
-        <div
-          className="fixed inset-0 z-50 bg-black/50 px-4 pt-4"
-          onClick={() => setShowSearchOverlay(false)}
-        >
-          <div
-            className="bg-white w-full max-w-2xl mx-auto rounded-xl shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-4 flex items-start gap-3">
-              <div className="flex-1 relative">
-                <QuickOrderSearch autoFocus onResultClick={() => setShowSearchOverlay(false)} />
-              </div>
-              <button
-                onClick={() => setShowSearchOverlay(false)}
-                className="flex-shrink-0 p-2 text-gray-400 hover:text-gray-600 -mt-1"
-                aria-label="Close search"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
