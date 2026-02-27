@@ -197,7 +197,7 @@ export default function DashboardPage(): ReactElement {
       const activeTab = groupOrder.tabs[tabIndex];
       if (!activeTab) return;
       // Skip free product auto-add on boat tabs (survival package is a house/venue perk)
-      if (activeTab.deliveryContextType === 'BOAT') {
+      if (activeTab.partyType === 'BOAT' || activeTab.deliveryContextType === 'BOAT') {
         refresh();
         return;
       }
