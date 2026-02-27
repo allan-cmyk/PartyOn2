@@ -40,7 +40,7 @@ export default function AgeVerificationModal({ isOpen, onClose, onVerify }: AgeV
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ type: "spring", duration: 0.5 }}
-            className="bg-white max-w-sm w-full mx-4 border border-brand-yellow/20 shadow-2xl max-h-[66svh] overflow-y-auto"
+            className="bg-white max-w-sm w-full mx-4 border border-brand-yellow/20 shadow-2xl"
           >
             {/* Logo Header */}
             <div className="bg-gradient-to-b from-gray-50 to-white px-6 pt-5 pb-2 sm:px-8 sm:pt-8 sm:pb-4">
