@@ -233,6 +233,7 @@ export interface AppliedPromo {
   freeDelivery: boolean;
   affiliateId?: string;
   freeProducts?: FreeProductInfo[];
+  minOrderAmount?: number;
 }
 
 // ==========================================

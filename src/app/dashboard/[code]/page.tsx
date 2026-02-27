@@ -306,6 +306,20 @@ export default function DashboardPage(): ReactElement {
 
   const currentIsHost = !!groupOrder.participants.find(p => p.id === participantId)?.isHost;
 
+  // Compute effective promo per-tab: boat tabs get free delivery unconditionally,
+  // other tabs need to meet the minimum order amount
+  const effectivePromo = (() => {
+    if (!appliedPromo) return null;
+    if (!appliedPromo.freeDelivery) return appliedPromo;
+    const isBoatTab = tab.deliveryContextType === 'BOAT';
+    if (isBoatTab) return appliedPromo;
+    const min = appliedPromo.minOrderAmount || 0;
+    if (min <= 0) return appliedPromo;
+    const tabSubtotal = tab.draftItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    if (tabSubtotal >= min) return appliedPromo;
+    return { ...appliedPromo, freeDelivery: false };
+  })();
+
   return (
     <OnboardingTourProvider shareCode={code}>
     <div className="min-h-screen bg-gray-50 pb-20 lg:pb-6">
@@ -347,7 +361,7 @@ export default function DashboardPage(): ReactElement {
               draftItems={tab.draftItems}
               purchasedItems={tab.purchasedItems}
               isLocked={isLocked}
-              appliedPromo={appliedPromo}
+              appliedPromo={effectivePromo}
               onItemChanged={refresh}
               onCheckoutMine={() => setCheckoutMode('mine')}
               onCheckoutAll={() => setCheckoutMode('all')}
@@ -413,7 +427,7 @@ export default function DashboardPage(): ReactElement {
             draftItems={tab.draftItems}
             purchasedItems={tab.purchasedItems}
             isLocked={isLocked}
-            appliedPromo={appliedPromo}
+            appliedPromo={effectivePromo}
             onItemChanged={refresh}
             onCheckoutMine={() => setCheckoutMode('mine')}
             onCheckoutAll={() => setCheckoutMode('all')}
@@ -436,7 +450,7 @@ export default function DashboardPage(): ReactElement {
           participantId={participantId}
           mode={checkoutMode}
           items={checkoutItems}
-          appliedPromo={appliedPromo}
+          appliedPromo={effectivePromo}
           onClose={() => setCheckoutMode(null)}
           onOpenDeliveryDetails={() => {
             setCheckoutMode(null);
