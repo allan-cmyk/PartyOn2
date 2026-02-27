@@ -98,8 +98,8 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
               <AnimatedHeroText
                 drinks={["Beer", "Cocktails", "Seltzers", "Wine", "Champagne"]}
                 destinations={["boat party", "wedding", "corporate event", "house party", "Airbnb", "Austin venue"]}
-                drinkIntervalMs={3000}
-                transitionMs={1000}
+                drinkIntervalMs={3600}
+                transitionMs={1200}
               />
             </motion.div>
 
