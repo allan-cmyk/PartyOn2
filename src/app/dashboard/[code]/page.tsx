@@ -20,8 +20,29 @@ import type { RecommendationResult } from '@/components/dashboard/GetRecsModal';
 import { claimHostV2, addDraftItemV2, removeDraftItemV2 } from '@/lib/group-orders-v2/api-client';
 import type { AppliedPromo } from '@/lib/group-orders-v2/types';
 import PromoCodeInput from '@/components/dashboard/PromoCodeInput';
-import ConfettiEffect from '@/components/dashboard/ConfettiEffect';
 import { OnboardingTourProvider, DashboardTour } from '@/components/dashboard/tour';
+
+const CONFETTI_COLORS = ['#003087', '#FFD700', '#FF6B35', '#00B4D8', '#FF1493'];
+
+function fireConfetti() {
+  import('canvas-confetti').then((mod) => {
+    const confetti = mod.default;
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: CONFETTI_COLORS,
+    });
+    setTimeout(() => {
+      confetti({
+        particleCount: 60,
+        spread: 100,
+        origin: { y: 0.65, x: 0.55 },
+        colors: CONFETTI_COLORS,
+      });
+    }, 200);
+  }).catch(() => {});
+}
 
 const PARTICIPANT_KEY_PREFIX = 'dashboard_participant_';
 const PROMO_KEY_PREFIX = 'dashboard_promo_';
@@ -45,7 +66,6 @@ export default function DashboardPage(): ReactElement {
   const [showNewLocation, setShowNewLocation] = useState(false);
   const [needsJoin, setNeedsJoin] = useState(false);
   const [appliedPromo, setAppliedPromo] = useState<AppliedPromo | null>(null);
-  const [showConfetti, setShowConfetti] = useState(false);
 
   const cartRef = useRef<HTMLDivElement>(null);
 
@@ -189,7 +209,7 @@ export default function DashboardPage(): ReactElement {
   const handlePromoApply = useCallback(async (promo: AppliedPromo) => {
     setAppliedPromo(promo);
     localStorage.setItem(`${PROMO_KEY_PREFIX}${code}`, JSON.stringify(promo));
-    setShowConfetti(true);
+    fireConfetti();
 
     // Auto-add free products if present
     if (promo.freeProducts?.length && participantId && groupOrder) {
@@ -328,7 +348,6 @@ export default function DashboardPage(): ReactElement {
   return (
     <OnboardingTourProvider shareCode={code}>
     <div className="min-h-screen bg-gray-50 pb-20 lg:pb-6">
-      <ConfettiEffect trigger={showConfetti} onComplete={() => setShowConfetti(false)} />
       <DashboardTour
         isHost={currentIsHost}
         hasPartyType={!!groupOrder.partyType}
