@@ -164,8 +164,6 @@ export default function Navigation({
 
             {/* Desktop Navigation - Centered Links */}
             <div className="hidden md:flex flex-1 items-center justify-center space-x-8 lg:space-x-10">
-              <NavLink href="/order" isScrolled={isScrolled}>ORDER</NavLink>
-
               {/* Services Dropdown */}
               <div className="relative group">
                 <button
@@ -334,14 +332,6 @@ export default function Navigation({
             <div className="pt-4">
               <ProductSearch isScrolled={true} />
             </div>
-
-            <Link
-              href="/order"
-              className="text-xl font-heading font-semibold tracking-[0.04em] text-gray-900 hover:text-brand-blue transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              ORDER
-            </Link>
 
             {/* Services Section */}
             <div className="space-y-3">
