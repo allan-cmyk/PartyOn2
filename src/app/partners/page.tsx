@@ -32,6 +32,7 @@ export default function AustinPartnersPage() {
       boats: 0,
       transportation: 0,
       experiences: 0,
+      'places-to-stay': 0,
     };
 
     partners.forEach((partner) => {
