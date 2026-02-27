@@ -95,6 +95,7 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
 
   function renderItemRow(item: DraftCartItemView, editable: boolean) {
     const isUpdating = updatingId === item.id;
+    const isFreeItem = item.price === 0;
     return (
       <div key={item.id} className="flex items-start gap-3 py-3">
         <div className="w-14 h-14 rounded-lg bg-gray-100 flex-shrink-0 relative overflow-hidden">
@@ -116,15 +117,21 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
             <p className="text-xs text-gray-500">{item.variantTitle}</p>
           )}
           <div className="flex items-center justify-between mt-1.5">
-            <span className="text-sm font-semibold text-gray-900">
-              ${(item.price * item.quantity).toFixed(2)}
-              {item.quantity > 1 && (
-                <span className="text-xs font-normal text-gray-500 ml-1">
-                  (${item.price.toFixed(2)} ea)
-                </span>
-              )}
-            </span>
-            {editable && !isLocked ? (
+            {isFreeItem ? (
+              <span className="text-sm font-semibold text-green-600">FREE</span>
+            ) : (
+              <span className="text-sm font-semibold text-gray-900">
+                ${(item.price * item.quantity).toFixed(2)}
+                {item.quantity > 1 && (
+                  <span className="text-xs font-normal text-gray-500 ml-1">
+                    (${item.price.toFixed(2)} ea)
+                  </span>
+                )}
+              </span>
+            )}
+            {isFreeItem ? (
+              <span className="text-xs text-green-600 font-medium">x{item.quantity}</span>
+            ) : editable && !isLocked ? (
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => handleUpdate(item.id, item.quantity - 1)}

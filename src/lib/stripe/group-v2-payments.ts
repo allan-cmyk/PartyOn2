@@ -38,6 +38,7 @@ interface CreateCheckoutInput {
   participantName: string;
   draftItems: DraftItemForCheckout[];
   discountCode?: string;
+  tipAmount?: number;
   successUrl: string;
   cancelUrl: string;
   checkoutType?: 'participant' | 'all';
@@ -115,6 +116,21 @@ export async function createGroupV2CheckoutSession(input: CreateCheckoutInput) {
     quantity: item.quantity,
   }));
 
+  // Add tip line item
+  const tipAmount = input.tipAmount && input.tipAmount > 0 ? input.tipAmount : 0;
+  if (tipAmount > 0) {
+    lineItems.push({
+      price_data: {
+        currency: 'usd',
+        product_data: {
+          name: 'Tip for the Party On Team',
+        },
+        unit_amount: Math.round(tipAmount * 100),
+      },
+      quantity: 1,
+    });
+  }
+
   // Add tax line item (calculated on post-discount amount)
   if (taxAmount > 0) {
     const taxRateDisplay = `${(DEFAULT_TAX_RATE * 100).toFixed(2)}%`;
@@ -143,6 +159,7 @@ export async function createGroupV2CheckoutSession(input: CreateCheckoutInput) {
       subOrderId,
       participantId,
       checkoutType: input.checkoutType || 'participant',
+      ...(tipAmount > 0 ? { tipAmount: String(tipAmount) } : {}),
     },
     billing_address_collection: 'required',
     phone_number_collection: { enabled: true },
@@ -161,7 +178,7 @@ export async function createGroupV2CheckoutSession(input: CreateCheckoutInput) {
     sessionParams.discounts = [{ coupon: stripeCouponId }];
   }
 
-  const total = subtotal + taxAmount - discountAmount;
+  const total = subtotal + taxAmount - discountAmount + tipAmount;
 
   // Create Stripe session
   const session = await stripe.checkout.sessions.create(sessionParams);

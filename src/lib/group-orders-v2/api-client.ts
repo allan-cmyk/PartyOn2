@@ -198,11 +198,12 @@ export async function checkoutAllV2(
   code: string,
   tabId: string,
   participantId: string,
-  discountCode?: string
+  discountCode?: string,
+  tipAmount?: number
 ): Promise<{ checkoutUrl: string; sessionId: string }> {
   return apiFetch(`${API_BASE}/${code}/tabs/${tabId}/checkout-all`, {
     method: 'POST',
-    body: JSON.stringify({ participantId, discountCode }),
+    body: JSON.stringify({ participantId, discountCode, tipAmount }),
   });
 }
 
@@ -211,11 +212,12 @@ export async function checkoutParticipantV2(
   code: string,
   tabId: string,
   participantId: string,
-  discountCode?: string
+  discountCode?: string,
+  tipAmount?: number
 ): Promise<{ checkoutUrl: string; sessionId: string; paymentId: string }> {
   return apiFetch(`${API_BASE}/${code}/tabs/${tabId}/checkout`, {
     method: 'POST',
-    body: JSON.stringify({ participantId, discountCode }),
+    body: JSON.stringify({ participantId, discountCode, tipAmount }),
   });
 }
 

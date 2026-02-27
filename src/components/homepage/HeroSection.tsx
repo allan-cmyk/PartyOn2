@@ -84,9 +84,9 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 overflow-hidden lg:max-h-[calc(100svh-4rem)]">
-      <div className="max-w-7xl mx-auto px-6 md:px-8 py-8 md:py-12 lg:py-10 lg:h-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-stretch lg:h-full">
+    <section className="relative bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 md:px-8 pt-20 md:pt-24 lg:pt-24 pb-8 md:pb-12 lg:pb-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-stretch">
           {/* Left Column: Text Content */}
           <div className="order-1 text-center lg:text-left flex flex-col justify-center">
             {/* Animated Headline */}
@@ -153,7 +153,7 @@ export default function HeroSection({ variant, experimentId }: HeroSectionProps)
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-            className="order-2 h-full"
+            className="order-2"
           >
             <HeroCollage />
           </motion.div>

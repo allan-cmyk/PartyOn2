@@ -43,23 +43,15 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      // Check minimum order amount
-      if (discount.minOrderAmount && orderSubtotal < Number(discount.minOrderAmount)) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: `Minimum order of $${Number(discount.minOrderAmount).toFixed(2)} required`,
-          },
-          { status: 400 }
-        );
-      }
-
-      // Calculate discount amount
+      // Calculate discount amount (only if minimum met)
+      const minOrder = discount.minOrderAmount ? Number(discount.minOrderAmount) : 0;
       let discountAmount = 0;
-      if (discount.type === 'PERCENTAGE') {
-        discountAmount = Math.round(orderSubtotal * (Number(discount.value) / 100) * 100) / 100;
-      } else if (discount.type === 'FIXED_AMOUNT') {
-        discountAmount = Math.min(Number(discount.value), orderSubtotal);
+      if (orderSubtotal >= minOrder) {
+        if (discount.type === 'PERCENTAGE') {
+          discountAmount = Math.round(orderSubtotal * (Number(discount.value) / 100) * 100) / 100;
+        } else if (discount.type === 'FIXED_AMOUNT') {
+          discountAmount = Math.min(Number(discount.value), orderSubtotal);
+        }
       }
 
       const freeDelivery = discount.freeShipping || discount.type === 'FREE_SHIPPING';
@@ -74,6 +66,11 @@ export async function POST(request: NextRequest) {
           : `${discount.name} (Free Delivery)`;
       }
 
+      // Parse included free products if present
+      const freeProducts = Array.isArray(discount.includedProducts)
+        ? (discount.includedProducts as { productId: string; variantId: string; name: string; quantity: number }[])
+        : undefined;
+
       return NextResponse.json({
         success: true,
         data: {
@@ -82,6 +79,8 @@ export async function POST(request: NextRequest) {
           label,
           discountAmount,
           freeDelivery,
+          freeProducts,
+          minOrderAmount: minOrder || undefined,
         },
       });
     }

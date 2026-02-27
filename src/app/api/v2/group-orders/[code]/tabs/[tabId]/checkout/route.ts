@@ -19,7 +19,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
     const { code, tabId } = await params;
     const body = await request.json();
-    const { participantId, discountCode } = body;
+    const { participantId, discountCode, tipAmount } = body;
 
     if (!participantId) {
       return NextResponse.json(
@@ -66,6 +66,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       participantName: participant.guestName || 'Guest',
       draftItems,
       discountCode,
+      tipAmount: tipAmount ? Number(tipAmount) : undefined,
       successUrl: `${appUrl}/dashboard/${code}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${appUrl}/dashboard/${code}`,
     });

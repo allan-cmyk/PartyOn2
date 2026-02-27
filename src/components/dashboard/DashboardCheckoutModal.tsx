@@ -46,11 +46,20 @@ export default function DashboardCheckoutModal({
   );
   const [discountError, setDiscountError] = useState('');
 
+  // Tip state
+  const [tipPercent, setTipPercent] = useState<number | null>(null);
+  const [customTip, setCustomTip] = useState('');
+
   const hasAddress = !!tab.deliveryAddress?.address1?.trim();
 
   const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const discountAmount = discountApplied?.amount || 0;
-  const estimatedTotal = Math.max(0, subtotal - discountAmount);
+  const tipAmount = tipPercent !== null
+    ? Math.round(subtotal * tipPercent) / 100
+    : customTip
+      ? parseFloat(customTip) || 0
+      : 0;
+  const estimatedTotal = Math.max(0, subtotal - discountAmount + tipAmount);
 
   async function handleApplyDiscount() {
     if (!discountCode.trim()) return;
@@ -80,12 +89,14 @@ export default function DashboardCheckoutModal({
     setLoading(true);
 
     try {
+      const tip = tipAmount > 0 ? tipAmount : undefined;
       if (mode === 'mine') {
         const result = await checkoutParticipantV2(
           shareCode,
           tab.id,
           participantId,
-          discountApplied?.code
+          discountApplied?.code,
+          tip
         );
         window.location.href = result.checkoutUrl;
       } else {
@@ -93,7 +104,8 @@ export default function DashboardCheckoutModal({
           shareCode,
           tab.id,
           participantId,
-          discountApplied?.code
+          discountApplied?.code,
+          tip
         );
         window.location.href = result.checkoutUrl;
       }
@@ -139,8 +151,8 @@ export default function DashboardCheckoutModal({
                   <span className="text-gray-600 truncate mr-2">
                     {item.quantity}x {item.title}
                   </span>
-                  <span className="text-gray-900 font-medium flex-shrink-0">
-                    ${(item.price * item.quantity).toFixed(2)}
+                  <span className={`font-medium flex-shrink-0 ${item.price === 0 ? 'text-green-600' : 'text-gray-900'}`}>
+                    {item.price === 0 ? 'FREE' : `$${(item.price * item.quantity).toFixed(2)}`}
                   </span>
                 </div>
               ))}
@@ -189,6 +201,55 @@ export default function DashboardCheckoutModal({
             )}
           </div>
 
+          {/* Tip section */}
+          <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
+            <p className="text-sm font-medium text-gray-800 mb-2">
+              Show your support for the Party On crew!
+            </p>
+            <div className="flex gap-2 mb-2">
+              {[5, 10, 20].map((pct) => (
+                <button
+                  key={pct}
+                  type="button"
+                  onClick={() => {
+                    setTipPercent(tipPercent === pct ? null : pct);
+                    setCustomTip('');
+                  }}
+                  className={`flex-1 py-2 text-sm font-medium border rounded-lg transition-colors ${
+                    tipPercent === pct
+                      ? 'bg-brand-yellow text-gray-900 border-brand-yellow'
+                      : 'bg-white text-gray-700 border-gray-300 hover:border-brand-yellow'
+                  }`}
+                >
+                  {pct}%
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">Custom:</span>
+              <div className="relative flex-1">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">$</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={customTip}
+                  onChange={(e) => {
+                    setCustomTip(e.target.value);
+                    setTipPercent(null);
+                  }}
+                  placeholder="0.00"
+                  className="w-full pl-7 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-yellow"
+                />
+              </div>
+            </div>
+            {tipAmount > 0 && (
+              <p className="text-xs text-amber-700 mt-2">
+                +${tipAmount.toFixed(2)} tip added
+              </p>
+            )}
+          </div>
+
           {/* Delivery details section */}
           {hasAddress ? (
             <div className="bg-gray-50 rounded-lg px-4 py-3 space-y-1.5">
@@ -232,6 +293,12 @@ export default function DashboardCheckoutModal({
               <div className="flex justify-between text-sm mb-1">
                 <span className="text-green-600">Discount</span>
                 <span className="text-green-600">-${discountAmount.toFixed(2)}</span>
+              </div>
+            )}
+            {tipAmount > 0 && (
+              <div className="flex justify-between text-sm mb-1">
+                <span className="text-amber-700">Tip</span>
+                <span className="text-amber-700">${tipAmount.toFixed(2)}</span>
               </div>
             )}
             <div className="flex justify-between text-sm mb-1">
