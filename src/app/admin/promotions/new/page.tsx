@@ -74,7 +74,7 @@ export default function NewDiscountPage() {
         name: formData.name,
         description: formData.description || undefined,
         type: formData.type,
-        value: parseFloat(formData.value),
+        value: formData.type === 'FREE_SHIPPING' ? 0 : parseFloat(formData.value),
         minOrderAmount: formData.minOrderAmount ? parseFloat(formData.minOrderAmount) : undefined,
         minQuantity: formData.minQuantity ? parseInt(formData.minQuantity) : undefined,
         maxUsageCount: formData.maxUsageCount ? parseInt(formData.maxUsageCount) : undefined,
@@ -85,7 +85,7 @@ export default function NewDiscountPage() {
         expiresAt: formData.expiresAt ? new Date(formData.expiresAt).toISOString() : undefined,
         isActive: formData.isActive,
         combinable: formData.combinable,
-        freeShipping: formData.freeShipping,
+        freeShipping: formData.type === 'FREE_SHIPPING' ? true : formData.freeShipping,
       };
 
       const response = await fetch('/api/v1/admin/discounts', {
