@@ -7,7 +7,8 @@ export type PartnerCategory =
   | 'catering'
   | 'boats'
   | 'transportation'
-  | 'experiences';
+  | 'experiences'
+  | 'places-to-stay';
 
 export interface Partner {
   id: string;
@@ -73,6 +74,12 @@ export const PARTNER_CATEGORIES: CategoryInfo[] = [
     name: 'Experiences',
     description: 'Unique party experiences and entertainment',
     icon: 'sparkles',
+  },
+  {
+    id: 'places-to-stay',
+    name: 'Places to Stay',
+    description: 'Hotels, vacation rentals, and lodging for your Austin trip',
+    icon: 'bed',
   },
 ];
 
