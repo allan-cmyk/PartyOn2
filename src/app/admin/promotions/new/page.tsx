@@ -110,7 +110,7 @@ export default function NewDiscountPage() {
   };
 
   return (
-    <div className="p-8 max-w-2xl">
+    <div className="p-4 md:p-8 max-w-2xl">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-black">Create Discount</h1>
         <Link href="/admin/promotions" className="text-blue-600 hover:text-blue-800 text-sm">

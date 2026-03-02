@@ -211,9 +211,9 @@ export default function ProductsPage(): ReactElement {
   } : { total: 0, active: 0, draft: 0, lowStock: 0 };
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg">
@@ -229,7 +229,7 @@ export default function ProductsPage(): ReactElement {
             </div>
           </div>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3 w-full sm:w-auto">
           <Link
             href="/ops/collections"
             className="group px-4 py-2.5 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl font-medium hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-md shadow-purple-200 hover:shadow-lg hover:shadow-purple-300 flex items-center gap-2"
@@ -270,7 +270,7 @@ export default function ProductsPage(): ReactElement {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <StatCard
           title="Total Products"
           value={stats.total.toLocaleString()}

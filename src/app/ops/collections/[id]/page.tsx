@@ -203,7 +203,7 @@ export default function CollectionDetailPage(): ReactElement {
 
   if (loading) {
     return (
-      <div className="p-8 bg-gray-50 min-h-screen">
+      <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
         <div className="animate-pulse space-y-4">
           <div className="h-8 bg-gray-200 rounded w-1/3" />
           <div className="h-4 bg-gray-200 rounded w-1/4" />
@@ -215,7 +215,7 @@ export default function CollectionDetailPage(): ReactElement {
 
   if (!collection) {
     return (
-      <div className="p-8 bg-gray-50 min-h-screen">
+      <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
         <p className="text-gray-600">Collection not found.</p>
         <Link href="/ops/collections" className="text-purple-600 hover:underline mt-2 inline-block">
           Back to Collections
@@ -225,9 +225,9 @@ export default function CollectionDetailPage(): ReactElement {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -242,7 +242,7 @@ export default function CollectionDetailPage(): ReactElement {
             </p>
           </div>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3 w-full sm:w-auto">
           <button
             onClick={handleOpenAdd}
             className="group px-4 py-2.5 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl font-medium hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-md shadow-purple-200 flex items-center gap-2"

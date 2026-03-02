@@ -193,7 +193,7 @@ export default function CreateProductPage() {
   };
 
   return (
-    <div className="p-8 max-w-4xl">
+    <div className="p-4 md:p-8 max-w-4xl">
       {/* Breadcrumb */}
       <nav className="mb-6 flex items-center gap-2 text-sm">
         <Link href="/ops/products" className="text-blue-600 hover:underline">Products</Link>
@@ -202,7 +202,7 @@ export default function CreateProductPage() {
       </nav>
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <h1 className="text-2xl font-bold text-black">Create New Product</h1>
         <Link href="/ops/products" className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
           Cancel
@@ -268,7 +268,7 @@ export default function CreateProductPage() {
           <h2 className="font-semibold text-black mb-4">Product Images</h2>
 
           {/* Image Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
             {images.map((img, idx) => (
               <div key={idx} className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden group">
                 {img.url.startsWith('blob:') || img.url.startsWith('data:') ? (

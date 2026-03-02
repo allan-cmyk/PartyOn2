@@ -146,8 +146,8 @@ export default function CustomersPage() {
   };
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-4 md:p-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-black">Customers</h1>
           <p className="text-gray-600 text-sm">
@@ -164,7 +164,7 @@ export default function CustomersPage() {
 
       {/* Summary Stats */}
       {data && (
-        <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
           <div className="bg-blue-100 border-2 border-blue-300 rounded-lg p-4">
             <h3 className="text-xs font-medium text-gray-600 mb-1">Total Customers</h3>
             <p className="text-2xl font-bold text-black">{data.summary.total}</p>
@@ -230,7 +230,7 @@ export default function CustomersPage() {
         </div>
 
         {/* Sort Options */}
-        <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-200">
+        <div className="flex flex-wrap items-center gap-4 mt-4 pt-4 border-t border-gray-200">
           <span className="text-sm text-gray-600">Sort by:</span>
           <select
             value={sortBy}
@@ -278,15 +278,16 @@ export default function CustomersPage() {
             <p>No customers found matching your criteria.</p>
           </div>
         ) : (
+          <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Customer</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Tier</th>
+                <th className="hidden md:table-cell text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Tier</th>
                 <th className="text-right px-4 py-3 text-xs font-medium text-gray-500 uppercase">Orders</th>
                 <th className="text-right px-4 py-3 text-xs font-medium text-gray-500 uppercase">Lifetime Spend</th>
-                <th className="text-right px-4 py-3 text-xs font-medium text-gray-500 uppercase">Points</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Status</th>
+                <th className="hidden md:table-cell text-right px-4 py-3 text-xs font-medium text-gray-500 uppercase">Points</th>
+                <th className="hidden md:table-cell text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Status</th>
                 <th className="text-right px-4 py-3 text-xs font-medium text-gray-500 uppercase">Joined</th>
               </tr>
             </thead>
@@ -310,7 +311,7 @@ export default function CustomersPage() {
                       </div>
                     </Link>
                   </td>
-                  <td className="px-4 py-4">
+                  <td className="hidden md:table-cell px-4 py-4">
                     {customer.loyalty ? (
                       <span
                         className="inline-flex px-2 py-1 text-xs font-medium rounded-full"
@@ -333,12 +334,12 @@ export default function CustomersPage() {
                       {customer.loyalty ? formatCurrency(customer.loyalty.lifetimeSpend) : '-'}
                     </span>
                   </td>
-                  <td className="px-4 py-4 text-right">
+                  <td className="hidden md:table-cell px-4 py-4 text-right">
                     <span className="font-medium text-black">
                       {customer.loyalty?.points.toLocaleString() || '-'}
                     </span>
                   </td>
-                  <td className="px-4 py-4">
+                  <td className="hidden md:table-cell px-4 py-4">
                     <div className="flex items-center gap-2">
                       {customer.isActive ? (
                         <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
@@ -365,6 +366,7 @@ export default function CustomersPage() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
 
         {/* Pagination */}

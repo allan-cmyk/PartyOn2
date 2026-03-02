@@ -183,7 +183,7 @@ export default function EditDiscountPage({ params }: PageProps) {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <div className="animate-pulse space-y-4">
           <div className="h-8 bg-gray-200 rounded w-48" />
           <div className="h-64 bg-gray-200 rounded" />
@@ -194,7 +194,7 @@ export default function EditDiscountPage({ params }: PageProps) {
 
   if (!discount) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <div className="bg-red-100 border-2 border-red-300 rounded-lg p-4">
           <p className="text-red-700">{error || 'Discount not found'}</p>
           <Link href="/admin/promotions" className="text-blue-600 hover:text-blue-800 mt-2 inline-block">
@@ -206,7 +206,7 @@ export default function EditDiscountPage({ params }: PageProps) {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <div className="max-w-4xl">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-black">Edit Discount</h1>
@@ -221,7 +221,7 @@ export default function EditDiscountPage({ params }: PageProps) {
           </div>
         )}
 
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Form */}
           <div className="col-span-2">
             <form onSubmit={handleSubmit} className="space-y-6">

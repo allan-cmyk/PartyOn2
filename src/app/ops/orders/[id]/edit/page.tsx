@@ -554,13 +554,13 @@ export default function EditInvoicePage(): ReactElement {
   // Loading state
   if (loadingOrder) {
     return (
-      <div className="p-8 bg-gray-50 min-h-screen">
+      <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
         <div className="max-w-4xl">
           <div className="animate-pulse space-y-6">
             <div className="h-8 bg-gray-200 rounded w-1/3" />
             <div className="bg-white rounded-xl p-6 space-y-4">
               <div className="h-5 bg-gray-200 rounded w-1/4" />
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="h-10 bg-gray-200 rounded" />
                 <div className="h-10 bg-gray-200 rounded" />
                 <div className="h-10 bg-gray-200 rounded" />
@@ -575,7 +575,7 @@ export default function EditInvoicePage(): ReactElement {
   // Load error
   if (loadError) {
     return (
-      <div className="p-8 bg-gray-50 min-h-screen">
+      <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
             <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center shadow-lg">
@@ -600,7 +600,7 @@ export default function EditInvoicePage(): ReactElement {
   // Read-only view for non-editable statuses
   if (isReadOnly) {
     return (
-      <div className="p-8 bg-gray-50 min-h-screen">
+      <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
             <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center shadow-lg">
@@ -641,7 +641,7 @@ export default function EditInvoicePage(): ReactElement {
   // Success screen
   if (successData) {
     return (
-      <div className="p-8 bg-gray-50 min-h-screen">
+      <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
             <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center shadow-lg">
@@ -723,7 +723,7 @@ export default function EditInvoicePage(): ReactElement {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
       {/* Breadcrumb & Header */}
       <div className="mb-8">
         <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">

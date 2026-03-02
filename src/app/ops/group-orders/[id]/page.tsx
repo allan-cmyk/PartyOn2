@@ -168,11 +168,11 @@ export default function GroupOrderDetailPage(): ReactElement {
 
   if (loading) {
     return (
-      <div className="p-8 bg-gray-50 min-h-screen">
+      <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
         <div className="animate-pulse">
           <div className="h-8 bg-gray-200 rounded w-1/3 mb-4" />
           <div className="h-4 bg-gray-200 rounded w-1/4 mb-8" />
-          <div className="grid grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="h-24 bg-gray-200 rounded-lg" />
             ))}
@@ -184,7 +184,7 @@ export default function GroupOrderDetailPage(): ReactElement {
 
   if (error || !data) {
     return (
-      <div className="p-8 bg-gray-50 min-h-screen">
+      <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
           <p className="text-red-700">{error || 'Group order not found'}</p>
           <Link href="/ops/orders" className="text-blue-600 hover:underline mt-2 inline-block">
@@ -196,7 +196,7 @@ export default function GroupOrderDetailPage(): ReactElement {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
       {/* Breadcrumb */}
       <nav className="mb-6 flex items-center gap-2 text-sm">
         <Link href="/ops/orders" className="text-blue-600 hover:underline">Orders</Link>
@@ -207,7 +207,7 @@ export default function GroupOrderDetailPage(): ReactElement {
       </nav>
 
       {/* Header */}
-      <div className="flex items-start justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-8">
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold text-gray-900">{data.name}</h1>
@@ -231,7 +231,7 @@ export default function GroupOrderDetailPage(): ReactElement {
       </div>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 mb-8">
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
           <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Participants</p>
           <p className="text-2xl font-bold text-gray-900 mt-1">{data.summary.participantCount}</p>

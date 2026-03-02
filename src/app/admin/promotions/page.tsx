@@ -123,7 +123,7 @@ export default function PromotionsPage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <h1 className="text-2xl font-bold text-black mb-6">Promotions</h1>
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
@@ -135,8 +135,8 @@ export default function PromotionsPage() {
   }
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-4 md:p-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-black">Promotions</h1>
           <Link href="/admin/reports" className="text-blue-600 hover:text-blue-800 text-sm">
@@ -179,16 +179,17 @@ export default function PromotionsPage() {
       {activeTab === 'codes' && (
         <div className="bg-white border-2 border-gray-200 rounded-lg overflow-hidden">
           {discounts.length > 0 ? (
+            <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b-2 border-gray-200 bg-gray-50">
                   <th className="text-left py-3 px-4 font-semibold text-black">Code</th>
-                  <th className="text-left py-3 px-4 font-semibold text-black">Name</th>
-                  <th className="text-left py-3 px-4 font-semibold text-black">Type</th>
+                  <th className="hidden md:table-cell text-left py-3 px-4 font-semibold text-black">Name</th>
+                  <th className="hidden md:table-cell text-left py-3 px-4 font-semibold text-black">Type</th>
                   <th className="text-right py-3 px-4 font-semibold text-black">Value</th>
                   <th className="text-right py-3 px-4 font-semibold text-black">Usage</th>
-                  <th className="text-right py-3 px-4 font-semibold text-black">Total Saved</th>
-                  <th className="text-center py-3 px-4 font-semibold text-black">Stackable</th>
+                  <th className="hidden md:table-cell text-right py-3 px-4 font-semibold text-black">Total Saved</th>
+                  <th className="hidden md:table-cell text-center py-3 px-4 font-semibold text-black">Stackable</th>
                   <th className="text-center py-3 px-4 font-semibold text-black">Status</th>
                   <th className="text-right py-3 px-4 font-semibold text-black">Actions</th>
                 </tr>
@@ -201,8 +202,8 @@ export default function PromotionsPage() {
                         {discount.code}
                       </code>
                     </td>
-                    <td className="py-3 px-4 font-medium text-black">{discount.name}</td>
-                    <td className="py-3 px-4 text-gray-600">
+                    <td className="hidden md:table-cell py-3 px-4 font-medium text-black">{discount.name}</td>
+                    <td className="hidden md:table-cell py-3 px-4 text-gray-600">
                       {getDiscountTypeLabel(discount.type)}
                       {discount.freeShipping && discount.type !== 'FREE_SHIPPING' && (
                         <span className="ml-1 inline-block px-1.5 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded">
@@ -217,10 +218,10 @@ export default function PromotionsPage() {
                       {discount.usageCount}
                       {discount.maxUsageCount && ` / ${discount.maxUsageCount}`}
                     </td>
-                    <td className="py-3 px-4 text-right text-black">
+                    <td className="hidden md:table-cell py-3 px-4 text-right text-black">
                       {formatCurrency(discount.totalDiscountGiven)}
                     </td>
-                    <td className="py-3 px-4 text-center">
+                    <td className="hidden md:table-cell py-3 px-4 text-center">
                       <span
                         className={`px-2 py-1 rounded text-xs font-medium ${
                           discount.combinable
@@ -255,6 +256,7 @@ export default function PromotionsPage() {
                 ))}
               </tbody>
             </table>
+            </div>
           ) : (
             <div className="p-8 text-center text-gray-500">
               No discount codes yet.{' '}
@@ -270,14 +272,15 @@ export default function PromotionsPage() {
       {activeTab === 'automatic' && (
         <div className="bg-white border-2 border-gray-200 rounded-lg overflow-hidden">
           {autoDiscounts.length > 0 ? (
+            <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b-2 border-gray-200 bg-gray-50">
                   <th className="text-left py-3 px-4 font-semibold text-black">Name</th>
                   <th className="text-left py-3 px-4 font-semibold text-black">Type</th>
-                  <th className="text-right py-3 px-4 font-semibold text-black">Value</th>
+                  <th className="hidden md:table-cell text-right py-3 px-4 font-semibold text-black">Value</th>
                   <th className="text-left py-3 px-4 font-semibold text-black">Trigger</th>
-                  <th className="text-right py-3 px-4 font-semibold text-black">Priority</th>
+                  <th className="hidden md:table-cell text-right py-3 px-4 font-semibold text-black">Priority</th>
                   <th className="text-center py-3 px-4 font-semibold text-black">Status</th>
                 </tr>
               </thead>
@@ -288,7 +291,7 @@ export default function PromotionsPage() {
                     <td className="py-3 px-4 text-gray-600">
                       {getDiscountTypeLabel(discount.type)}
                     </td>
-                    <td className="py-3 px-4 text-right text-black">
+                    <td className="hidden md:table-cell py-3 px-4 text-right text-black">
                       {getDiscountValueDisplay(discount.type, discount.value)}
                     </td>
                     <td className="py-3 px-4 text-gray-600">
@@ -301,7 +304,7 @@ export default function PromotionsPage() {
                         </span>
                       )}
                     </td>
-                    <td className="py-3 px-4 text-right text-gray-600">{discount.priority}</td>
+                    <td className="hidden md:table-cell py-3 px-4 text-right text-gray-600">{discount.priority}</td>
                     <td className="py-3 px-4 text-center">
                       <span
                         className={`px-2 py-1 rounded text-xs font-medium ${
@@ -317,6 +320,7 @@ export default function PromotionsPage() {
                 ))}
               </tbody>
             </table>
+            </div>
           ) : (
             <div className="p-8 text-center text-gray-500">
               No automatic discounts configured.

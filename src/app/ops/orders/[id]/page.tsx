@@ -202,14 +202,14 @@ export default function OrderDetailPage(): ReactElement {
 
   if (loading) {
     return (
-      <div className="p-8 bg-gray-50 min-h-screen">
+      <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
         <div className="max-w-7xl mx-auto">
           <div className="animate-pulse space-y-6">
             <div className="flex items-center gap-4">
               <div className="h-8 w-32 bg-gray-200 rounded-lg" />
               <div className="h-10 w-48 bg-gray-200 rounded-lg" />
             </div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="h-24 bg-gray-200 rounded-xl" />
               <div className="h-24 bg-gray-200 rounded-xl" />
               <div className="h-24 bg-gray-200 rounded-xl" />
@@ -223,7 +223,7 @@ export default function OrderDetailPage(): ReactElement {
 
   if (error || !order) {
     return (
-      <div className="p-8 bg-gray-50 min-h-screen">
+      <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
         <div className="max-w-7xl mx-auto">
           <div className="bg-white rounded-xl shadow-sm border border-red-200 p-8 text-center">
             <svg className="w-16 h-16 mx-auto text-red-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -249,10 +249,10 @@ export default function OrderDetailPage(): ReactElement {
   return (
     <>
       {/* Screen View */}
-      <div className="p-8 bg-gray-50 min-h-screen print:hidden">
+      <div className="p-4 md:p-8 bg-gray-50 min-h-screen print:hidden">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div className="flex items-center gap-4">
               <Link
                 href="/ops/orders"
@@ -418,7 +418,7 @@ export default function OrderDetailPage(): ReactElement {
                   title="Delivery Details"
                 />
                 <div className="p-6">
-                  <div className="grid grid-cols-2 gap-6 mb-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                     <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
                       <p className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-1">Delivery Date</p>
                       <p className="font-bold text-gray-900 text-lg">{formatDate(order.delivery.date)}</p>

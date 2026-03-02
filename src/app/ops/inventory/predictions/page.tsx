@@ -91,15 +91,15 @@ export default function PredictionsPage(): ReactElement {
   };
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
+    <div className="p-4 md:p-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Stock Predictions</h1>
           <p className="text-gray-600 mt-1">
             AI-powered predictions for inventory management
           </p>
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-4 w-full sm:w-auto">
           <button
             onClick={() => fetchPredictions(false)}
             className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"

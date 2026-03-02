@@ -82,7 +82,7 @@ export default function SyncPage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <h1 className="text-2xl font-bold text-black mb-6">Data Synchronization</h1>
         <div className="animate-pulse bg-gray-200 rounded-lg h-64" />
       </div>
@@ -90,7 +90,7 @@ export default function SyncPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <h1 className="text-2xl font-bold text-black mb-6">Data Synchronization</h1>
 
       {/* Sync Controls */}
@@ -127,7 +127,7 @@ export default function SyncPage() {
           }`}
         >
           <h2 className="text-lg font-semibold text-black mb-4">Sync Result</h2>
-          <div className="grid grid-cols-3 gap-4 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
             <div>
               <p className="text-2xl font-bold text-green-600">{lastResult.synced}</p>
               <p className="text-sm text-black">Products Synced</p>

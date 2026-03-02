@@ -131,10 +131,10 @@ export default function CustomerDetailPage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <div className="animate-pulse space-y-6">
           <div className="h-8 bg-gray-200 rounded w-1/3" />
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => (
               <div key={i} className="h-24 bg-gray-200 rounded-lg" />
             ))}
@@ -147,7 +147,7 @@ export default function CustomerDetailPage() {
 
   if (error || !customer) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <Link href="/admin/customers" className="text-blue-600 hover:underline text-sm mb-4 inline-block">
           &larr; Back to Customers
         </Link>
@@ -159,14 +159,14 @@ export default function CustomerDetailPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       {/* Back link */}
       <Link href="/admin/customers" className="text-blue-600 hover:underline text-sm mb-4 inline-block">
         &larr; Back to Customers
       </Link>
 
       {/* Header */}
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
             <span className="text-2xl font-bold text-gray-600">

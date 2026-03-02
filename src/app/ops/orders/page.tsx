@@ -681,9 +681,9 @@ export default function OrdersPage(): ReactElement {
   };
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
@@ -699,7 +699,7 @@ export default function OrdersPage(): ReactElement {
             </div>
           </div>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3 w-full sm:w-auto">
           <Link
             href="/ops/orders/create"
             className="group px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-medium hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md shadow-blue-200 hover:shadow-lg hover:shadow-blue-300 flex items-center gap-2"
@@ -735,7 +735,7 @@ export default function OrdersPage(): ReactElement {
       </div>
 
       {/* View Toggle */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-6">
         <button
           onClick={() => setView('orders')}
           className={`px-5 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 flex items-center gap-2 ${
@@ -771,7 +771,7 @@ export default function OrdersPage(): ReactElement {
       {view === 'orders' && <>
       {/* Summary Stats */}
       {data && (
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           <StatCard
             title="Total Orders"
             value={data.summary.total.toLocaleString()}
@@ -878,7 +878,7 @@ export default function OrdersPage(): ReactElement {
         </div>
 
         {/* Group Order Filter */}
-        <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-100">
+        <div className="flex flex-wrap items-center gap-4 mt-4 pt-4 border-t border-gray-100">
           <span className="text-sm text-gray-500">Order type:</span>
           <div className="flex gap-2">
             <FilterButton active={groupTypeFilter === ''} onClick={() => { setGroupTypeFilter(''); setPage(1); }}>
@@ -893,7 +893,7 @@ export default function OrdersPage(): ReactElement {
           </div>
         </div>
 
-        <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-100">
+        <div className="flex flex-wrap items-center gap-4 mt-4 pt-4 border-t border-gray-100">
           <span className="text-sm text-gray-500">Sort by:</span>
           <div className="flex gap-2">
             <FilterButton active={sortBy === 'createdAt'} onClick={() => setSortBy('createdAt')}>

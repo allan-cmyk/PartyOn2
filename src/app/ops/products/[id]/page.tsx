@@ -327,10 +327,10 @@ export default function ProductDetailPage({ params }: PageProps) {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <div className="animate-pulse space-y-6">
           <div className="h-8 bg-gray-200 rounded w-1/3" />
-          <div className="grid grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
             <div className="h-96 bg-gray-200 rounded" />
             <div className="space-y-4">
               <div className="h-6 bg-gray-200 rounded w-3/4" />
@@ -345,7 +345,7 @@ export default function ProductDetailPage({ params }: PageProps) {
 
   if (error || !product) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6 text-center">
           <h2 className="text-lg font-semibold text-red-800 mb-2">Error Loading Product</h2>
           <p className="text-red-600 mb-4">{error || 'Product not found'}</p>
@@ -360,7 +360,7 @@ export default function ProductDetailPage({ params }: PageProps) {
   const mainImage = product.images[selectedImage] || product.images[0];
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       {/* Toast Notification */}
       {toast && (
         <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg ${
@@ -408,7 +408,7 @@ export default function ProductDetailPage({ params }: PageProps) {
       </nav>
 
       {/* Header */}
-      <div className="flex items-start justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-8">
         <div className="flex-1">
           {editMode ? (
             <input
@@ -434,7 +434,7 @@ export default function ProductDetailPage({ params }: PageProps) {
             {!editMode && product.productType && <span className="text-gray-400">| {product.productType}</span>}
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           {editMode ? (
             <>
               <button onClick={handleCancel} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
@@ -617,7 +617,7 @@ export default function ProductDetailPage({ params }: PageProps) {
           {/* Stats */}
           <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
             <h2 className="font-semibold text-black mb-4">Statistics</h2>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="text-center p-3 bg-blue-50 rounded-lg">
                 <p className="text-2xl font-bold text-blue-600">{product.totalInventory}</p>
                 <p className="text-xs text-gray-600">In Stock</p>

@@ -124,7 +124,7 @@ export default function AffiliatesPage(): ReactElement {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
         <h1 className="text-2xl font-bold text-gray-900">Affiliates</h1>
         <button
           onClick={() => setShowAddModal(true)}
@@ -162,7 +162,7 @@ export default function AffiliatesPage(): ReactElement {
           {pendingApps.length > 0 && (
             <div>
               <h2 className="text-lg font-semibold text-gray-800 mb-3">Pending Review ({pendingApps.length})</h2>
-              <div className="bg-white rounded-lg shadow overflow-hidden">
+              <div className="bg-white rounded-lg shadow overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead className="bg-gray-50">
                     <tr>
@@ -217,7 +217,7 @@ export default function AffiliatesPage(): ReactElement {
           {otherApps.length > 0 && (
             <div>
               <h2 className="text-lg font-semibold text-gray-800 mb-3">Past Applications</h2>
-              <div className="bg-white rounded-lg shadow overflow-hidden">
+              <div className="bg-white rounded-lg shadow overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead className="bg-gray-50">
                     <tr>
@@ -263,14 +263,14 @@ export default function AffiliatesPage(): ReactElement {
           {affiliates.length === 0 ? (
             <div className="text-gray-500 py-8 text-center">No affiliates yet.</div>
           ) : (
-            <div className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="bg-white rounded-lg shadow overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-4 py-3 text-left font-medium text-gray-600">Code</th>
                     <th className="px-4 py-3 text-left font-medium text-gray-600">Business</th>
                     <th className="px-4 py-3 text-left font-medium text-gray-600">Contact</th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-600">Category</th>
+                    <th className="hidden md:table-cell px-4 py-3 text-left font-medium text-gray-600">Category</th>
                     <th className="px-4 py-3 text-left font-medium text-gray-600">Perk</th>
                     <th className="px-4 py-3 text-left font-medium text-gray-600">Rate</th>
                     <th className="px-4 py-3 text-center font-medium text-gray-600">Orders</th>
@@ -289,7 +289,7 @@ export default function AffiliatesPage(): ReactElement {
                         <div className="text-gray-700">{aff.contactName}</div>
                         <div className="text-gray-500 text-xs">{aff.email}</div>
                       </td>
-                      <td className="px-4 py-3 text-gray-700">{categoryLabel(aff.category)}</td>
+                      <td className="hidden md:table-cell px-4 py-3 text-gray-700">{categoryLabel(aff.category)}</td>
                       <td className="px-4 py-3 text-gray-700 text-xs">{aff.customerPerk || 'Free Delivery'}</td>
                       <td className="px-4 py-3 text-gray-700 text-xs">
                         {aff.commissionRateOverride ? `${Number(aff.commissionRateOverride) * 100}%` : 'Progressive'}

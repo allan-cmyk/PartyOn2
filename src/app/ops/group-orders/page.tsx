@@ -98,9 +98,9 @@ export default function GroupOrdersPage(): ReactElement {
   };
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
@@ -176,7 +176,7 @@ export default function GroupOrdersPage(): ReactElement {
       </div>
 
       {/* Group Orders Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
         {loading ? (
           <div className="p-8">
             <div className="space-y-4">
@@ -222,8 +222,8 @@ export default function GroupOrdersPage(): ReactElement {
               <tr>
                 <th className="text-left px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Group</th>
                 <th className="text-left px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Host</th>
-                <th className="text-center px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Participants</th>
-                <th className="text-center px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Orders</th>
+                <th className="hidden md:table-cell text-center px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Participants</th>
+                <th className="hidden md:table-cell text-center px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Orders</th>
                 <th className="text-right px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Value</th>
                 <th className="text-center px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Status</th>
                 <th className="text-left px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Delivery</th>
@@ -253,12 +253,12 @@ export default function GroupOrdersPage(): ReactElement {
                       )}
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-center">
+                  <td className="hidden md:table-cell px-6 py-4 text-center">
                     <span className="inline-flex items-center justify-center w-9 h-9 bg-gradient-to-br from-purple-100 to-purple-200 text-purple-700 rounded-full font-bold shadow-sm">
                       {group.participantCount}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-center">
+                  <td className="hidden md:table-cell px-6 py-4 text-center">
                     <span className="inline-flex items-center justify-center w-9 h-9 bg-gradient-to-br from-blue-100 to-blue-200 text-blue-700 rounded-full font-bold shadow-sm">
                       {group.orderCount}
                     </span>

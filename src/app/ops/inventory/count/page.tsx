@@ -108,8 +108,8 @@ export default function AIInventoryCountPage(): ReactElement {
   };
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-4 md:p-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">AI Inventory Count</h1>
           <p className="text-gray-600 mt-1">
@@ -166,7 +166,7 @@ export default function AIInventoryCountPage(): ReactElement {
 
         {/* Selected Images Preview */}
         {selectedImages.length > 0 && (
-          <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {selectedImages.map((image, index) => (
               <div key={index} className="relative group">
                 <img

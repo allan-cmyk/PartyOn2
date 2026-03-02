@@ -427,7 +427,7 @@ function ExperimentCard({
 
       {experiment.status !== 'DRAFT' && (
         <>
-          <div className="mb-4 grid gap-4 md:grid-cols-4">
+          <div className="mb-4 grid grid-cols-2 gap-4 md:grid-cols-4">
             <div className="rounded-lg bg-gray-50 p-3 text-center">
               <div className="text-xs font-medium uppercase text-gray-500">Impressions</div>
               <div className="text-xl font-bold text-gray-900">
@@ -617,7 +617,7 @@ export default function ExperimentsPage(): ReactElement {
 
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         {/* Summary Cards */}
-        <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <button
             onClick={() => setFilter('active')}
             className={`rounded-lg border p-4 text-left transition-colors ${

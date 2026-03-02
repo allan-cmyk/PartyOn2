@@ -140,7 +140,7 @@ export default function FeaturesPage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <h1 className="text-2xl font-bold text-black mb-6">Feature Flags</h1>
         <div className="space-y-4">
           {[1, 2, 3, 4].map((i) => (
@@ -152,7 +152,7 @@ export default function FeaturesPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <h1 className="text-2xl font-bold text-black mb-2">Feature Flags</h1>
       <p className="text-gray-700 mb-6">
         Control which features use the custom system vs Shopify. Use rollout percentages for gradual

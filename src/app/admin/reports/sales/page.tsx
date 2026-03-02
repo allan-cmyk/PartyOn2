@@ -97,7 +97,7 @@ export default function SalesReportPage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <h1 className="text-2xl font-bold text-black mb-6">Sales Report</h1>
         <div className="space-y-6">
           {[1, 2, 3].map((i) => (
@@ -109,8 +109,8 @@ export default function SalesReportPage() {
   }
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-4 md:p-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-black">Sales Report</h1>
           <Link href="/admin/reports" className="text-blue-600 hover:text-blue-800 text-sm">
@@ -146,7 +146,7 @@ export default function SalesReportPage() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
         <div className="bg-green-100 border-2 border-green-300 rounded-lg p-4">
           <h3 className="text-xs font-medium text-gray-600 mb-1">Revenue</h3>
           <p className="text-xl font-bold text-black">{formatCurrency(data?.summary.totalRevenue || 0)}</p>

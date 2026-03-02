@@ -260,7 +260,7 @@ export default function DraftOrdersTable(): ReactElement {
 
       {/* Status Filter */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           <span className="text-sm text-gray-500">Status:</span>
           <select
             value={statusFilter}
@@ -280,7 +280,7 @@ export default function DraftOrdersTable(): ReactElement {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
         {loading ? (
           <div className="p-8">
             <div className="space-y-4">
@@ -318,8 +318,8 @@ export default function DraftOrdersTable(): ReactElement {
                 <th className="text-right px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Total</th>
                 <th className="text-left px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Delivery</th>
                 <th className="text-center px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Status</th>
-                <th className="text-center px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Email</th>
-                <th className="text-left px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Created</th>
+                <th className="hidden md:table-cell text-center px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Email</th>
+                <th className="hidden md:table-cell text-left px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Created</th>
                 <th className="text-right px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
@@ -351,7 +351,7 @@ export default function DraftOrdersTable(): ReactElement {
                       {order.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-center">
+                  <td className="hidden md:table-cell px-6 py-4 text-center">
                     <button
                       onClick={() => setExpandedRow(isExpanded ? null : order.id)}
                       className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-gray-100 transition-colors text-sm"
@@ -369,7 +369,7 @@ export default function DraftOrdersTable(): ReactElement {
                       </svg>
                     </button>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="hidden md:table-cell px-6 py-4">
                     <span className="text-sm text-gray-500">{formatDateTime(order.createdAt)}</span>
                   </td>
                   <td className="px-6 py-4">

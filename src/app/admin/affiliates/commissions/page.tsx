@@ -104,8 +104,8 @@ export default function CommissionsPage(): ReactElement {
                 <th className="px-3 py-3 text-left font-medium text-gray-600">Date</th>
                 <th className="px-3 py-3 text-left font-medium text-gray-600">Affiliate</th>
                 <th className="px-3 py-3 text-left font-medium text-gray-600">Order</th>
-                <th className="px-3 py-3 text-right font-medium text-gray-600">Base</th>
-                <th className="px-3 py-3 text-left font-medium text-gray-600">Tier</th>
+                <th className="hidden md:table-cell px-3 py-3 text-right font-medium text-gray-600">Base</th>
+                <th className="hidden md:table-cell px-3 py-3 text-left font-medium text-gray-600">Tier</th>
                 <th className="px-3 py-3 text-right font-medium text-gray-600">Commission</th>
                 <th className="px-3 py-3 text-left font-medium text-gray-600">Status</th>
                 <th className="px-3 py-3 text-right font-medium text-gray-600">Actions</th>
@@ -123,8 +123,8 @@ export default function CommissionsPage(): ReactElement {
                     <div className="text-gray-700">PO-{c.order.orderNumber}</div>
                     <div className="text-gray-500 text-xs">{c.order.customerName}</div>
                   </td>
-                  <td className="px-3 py-3 text-right text-gray-700">${(c.commissionBaseCents / 100).toFixed(2)}</td>
-                  <td className="px-3 py-3 text-gray-500 text-xs">{c.tierAtTime}</td>
+                  <td className="hidden md:table-cell px-3 py-3 text-right text-gray-700">${(c.commissionBaseCents / 100).toFixed(2)}</td>
+                  <td className="hidden md:table-cell px-3 py-3 text-gray-500 text-xs">{c.tierAtTime}</td>
                   <td className="px-3 py-3 text-right font-medium text-gray-900">${(c.commissionAmountCents / 100).toFixed(2)}</td>
                   <td className="px-3 py-3">
                     <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusColor(c.status)}`}>

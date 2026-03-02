@@ -16,8 +16,14 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+
+  // Auto-close mobile menu on navigation
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     // Check if already authenticated in this session
@@ -165,7 +171,7 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
               <span className="font-semibold text-brand-yellow">
                 Party On Staff
               </span>
-              <div className="flex gap-1">
+              <div className="hidden md:flex gap-1">
                 {navItems.map(item => (
                   <Link
                     key={item.href}
@@ -181,12 +187,12 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
                 ))}
               </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-4">
               <Link
                 href="/ops/inventory"
                 className="text-sm text-gray-400 hover:text-white transition-colors"
               >
-                → Ops Portal
+                Ops Portal
               </Link>
               <button
                 onClick={handleLogout}
@@ -195,8 +201,56 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
                 Logout
               </button>
             </div>
+            {/* Mobile hamburger */}
+            <button
+              className="md:hidden p-2 text-gray-300 hover:text-white"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
           </div>
         </div>
+        {/* Mobile menu panel */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-800 px-4 py-2 space-y-1">
+            {navItems.map(item => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`block px-3 py-2 min-h-[44px] flex items-center rounded-md text-sm font-medium transition-colors ${
+                  pathname?.startsWith(item.href)
+                    ? 'bg-gray-800 text-white'
+                    : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
+            <div className="border-t border-gray-800 pt-2 mt-2 space-y-1">
+              <Link
+                href="/ops/inventory"
+                className="block px-3 py-2 min-h-[44px] flex items-center text-sm text-gray-400 hover:text-white transition-colors"
+              >
+                Ops Portal
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="block w-full text-left px-3 py-2 min-h-[44px] flex items-center text-sm text-gray-400 hover:text-white transition-colors"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Main Content */}

@@ -95,7 +95,7 @@ export default function AIAssistantPage(): ReactElement {
   return (
     <div className="flex flex-col h-screen">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-8 py-4">
+      <div className="bg-white border-b border-gray-200 px-4 md:px-8 py-4">
         <h1 className="text-2xl font-bold text-gray-900">AI Inventory Assistant</h1>
         <p className="text-gray-600">
           Ask questions about your inventory in natural language
@@ -104,11 +104,11 @@ export default function AIAssistantPage(): ReactElement {
 
       {/* Quick Actions */}
       {messages.length === 0 && (
-        <div className="p-8">
+        <div className="p-4 md:p-8">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
             Quick Questions
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {QUICK_QUERIES.map((query, index) => (
               <button
                 key={index}
@@ -147,7 +147,7 @@ export default function AIAssistantPage(): ReactElement {
       )}
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-8 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-4">
         {messages.map((message, index) => (
           <div
             key={index}
