@@ -393,27 +393,41 @@ export async function handleGroupV2PaymentCompleted(
   });
 
   // Resolve or create Customer for guest participants
+  // Fall back to Stripe checkout session email/name when participant record is missing them
+  const customerEmail = participant.guestEmail || session.customer_details?.email || '';
+  const customerName = (participant.guestName && participant.guestName !== 'Party Host')
+    ? participant.guestName
+    : session.customer_details?.name || participant.guestName || 'Guest';
+  const customerPhone = participant.guestPhone || session.customer_details?.phone || '';
+
   let customerId = participant.customerId;
-  if (!customerId && participant.guestEmail) {
+  if (!customerId && customerEmail) {
     const existing = await prisma.customer.findFirst({
-      where: { email: participant.guestEmail },
+      where: { email: customerEmail },
     });
     if (existing) {
       customerId = existing.id;
     } else {
+      const nameParts = customerName.split(' ');
       const newCustomer = await prisma.customer.create({
         data: {
-          email: participant.guestEmail,
-          firstName: participant.guestName || 'Guest',
-          lastName: '',
+          email: customerEmail,
+          firstName: nameParts[0] || 'Guest',
+          lastName: nameParts.slice(1).join(' ') || '',
+          phone: customerPhone || undefined,
         },
       });
       customerId = newCustomer.id;
     }
-    // Link participant to customer for future lookups
+    // Link participant to customer and update their details for future lookups
     await prisma.groupParticipantV2.update({
       where: { id: participantId },
-      data: { customerId },
+      data: {
+        customerId,
+        guestEmail: participant.guestEmail || customerEmail || undefined,
+        guestName: customerName !== participant.guestName ? customerName : undefined,
+        guestPhone: participant.guestPhone || customerPhone || undefined,
+      },
     });
   }
 
@@ -438,9 +452,9 @@ export async function handleGroupV2PaymentCompleted(
       deliveryDate: subOrder.deliveryDate,
       deliveryTime: subOrder.deliveryTime,
       deliveryAddress: subOrder.deliveryAddress || {},
-      deliveryPhone: subOrder.deliveryPhone || '',
-      customerEmail: participant.guestEmail || '',
-      customerName: participant.guestName || 'Guest',
+      deliveryPhone: subOrder.deliveryPhone || customerPhone || '',
+      customerEmail: customerEmail,
+      customerName: customerName,
       groupOrderId: null, // V2 doesn't use v1 group order FK
       items: {
         create: purchasedItems.map((item) => ({
