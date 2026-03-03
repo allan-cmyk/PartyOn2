@@ -531,7 +531,7 @@ export default function OrdersPage(): ReactElement {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('');
-  const [fulfillmentFilter, setFulfillmentFilter] = useState<string>('');
+  const [fulfillmentFilter, setFulfillmentFilter] = useState<string>('UNFULFILLED');
   const [deliveryTypeFilter, setDeliveryTypeFilter] = useState<string>('');
   const [groupTypeFilter, setGroupTypeFilter] = useState<string>('');
   const [page, setPage] = useState(1);
