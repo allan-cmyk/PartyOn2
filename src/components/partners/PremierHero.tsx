@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Button from '@/components/Button';
 
+
 const ROTATING_WORDS = ['Beer', 'Seltzers', 'Cocktails', 'Ice', 'Mixers', 'Cups', 'Everything'];
 
 const heroFadeUp = {
@@ -22,8 +23,6 @@ const heroFadeUp = {
  * Dark overlay on background image, centered content with CTAs
  */
 export default function PremierHero(): ReactElement {
-  const [joinCode, setJoinCode] = useState('');
-  const [showJoinInput, setShowJoinInput] = useState(false);
   const [wordIndex, setWordIndex] = useState(0);
 
   const rotateWord = useCallback(() => {
@@ -34,12 +33,6 @@ export default function PremierHero(): ReactElement {
     const interval = setInterval(rotateWord, 2400);
     return () => clearInterval(interval);
   }, [rotateWord]);
-
-  const handleJoin = () => {
-    if (joinCode.trim()) {
-      window.location.href = `/group/${joinCode.trim().toUpperCase()}`;
-    }
-  };
 
   return (
     <section className="relative min-h-[50vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden py-12 md:py-20">
@@ -117,75 +110,22 @@ export default function PremierHero(): ReactElement {
           </span>
         </motion.div>
 
-        {/* Stacked CTAs */}
+        {/* CTA */}
         <motion.div
           {...heroFadeUp}
           transition={{ duration: 0.6, delay: 0.45, ease: [0.25, 0.1, 0.25, 1] }}
+          className="flex flex-col items-center"
         >
-        <div className="flex flex-col items-center gap-2 md:gap-3 mb-4 md:mb-6">
           <Button variant="cart" size="lg" href="/order">
-            Start a Group Order (split payments)
+            Order Your Drinks
           </Button>
-          <button
-            onClick={() => {
-              document.getElementById('drink-calculator')?.scrollIntoView({ behavior: 'smooth' });
-            }}
-            className="inline-flex items-center justify-center font-sans font-semibold tracking-[0.08em] rounded-lg px-6 py-3 text-sm md:text-base border-2 border-white/40 text-white hover:bg-white/10 transition-colors"
-          >
-            Build my cart (Drink Calculator)
-          </button>
-        </div>
 
-        {/* Tertiary Links */}
-        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mb-4">
-          <button
-            onClick={() => {
-              document.getElementById('boat-collections')?.scrollIntoView({ behavior: 'smooth' });
-            }}
-            className="text-white/70 hover:text-white text-sm underline"
-          >
-            Shopping solo? Start an individual order
-          </button>
-
-          <span className="text-white/20 hidden sm:inline">|</span>
-
-          {!showJoinInput ? (
-            <button
-              onClick={() => setShowJoinInput(true)}
-              className="text-white/70 hover:text-white text-sm underline"
-            >
-              Already have a group? Enter code
-            </button>
-          ) : (
-            <div className="flex items-center gap-2">
-              <input
-                id="hero-join-code"
-                name="shareCode"
-                className="h-9 w-24 rounded-lg bg-black/30 border border-white/20 px-2 text-white text-sm text-center
-                           placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-brand-yellow/50"
-                placeholder="CODE"
-                value={joinCode}
-                onChange={(e) => setJoinCode(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleJoin()}
-                autoFocus
-              />
-              <button
-                type="button"
-                onClick={handleJoin}
-                disabled={!joinCode.trim()}
-                className="h-9 rounded-lg px-3 text-sm text-brand-yellow font-medium hover:text-brand-yellow/80 transition
-                           disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                Join
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Microcopy */}
-        <p className="text-white/60 text-sm">
-          Everyone adds items and pays their portion at checkout. No Venmo chasing.
-        </p>
+          <p className="text-base text-white/50 mt-4">
+            Questions? Text{' '}
+            <a href="tel:7373719700" className="text-brand-yellow hover:text-brand-yellow font-medium">
+              737-371-9700
+            </a>
+          </p>
         </motion.div>
       </div>
     </section>

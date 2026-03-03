@@ -1,24 +1,14 @@
 'use client';
 
-import { useState, useMemo, useEffect, useRef, Suspense, type ReactElement } from 'react';
+import { useState, Suspense, type ReactElement } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSearchParams } from 'next/navigation';
 import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
 import Button from '@/components/Button';
-import JoinOrderModal from '@/components/partners/JoinOrderModal';
-import DrinkCalculator from '@/components/partners/DrinkCalculator';
 import HouseTabUpsell from '@/components/partners/HouseTabUpsell';
-import QuickOrderGrid from '@/components/quick-order/QuickOrderGrid';
-import QuickOrderSearch from '@/components/quick-order/QuickOrderSearch';
-import CartSummaryBar from '@/components/quick-order/CartSummaryBar';
 import PremierHero from '@/components/partners/PremierHero';
 import PremierHeroStickyCTA from '@/components/partners/PremierHeroStickyCTA';
-import DontForgetRow from '@/components/quick-order/DontForgetRow';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
-import { useQuickOrderProducts } from '@/hooks/useQuickOrderProducts';
-import { useCollectionCounts } from '@/hooks/useCollectionCounts';
-import { PREMIER_BOAT_COLLECTIONS } from '@/lib/products/premier-collections';
 
 /** Real Google reviews for boat parties */
 const TESTIMONIALS = [
@@ -97,63 +87,8 @@ const HOUSE_FAQS = [
  * Optimized for customers who have already booked their boat
  */
 function PremierPartyCruisesPageContent(): ReactElement {
-  const searchParams = useSearchParams();
-  // Search params available for future use
-  void searchParams;
-
-  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
-  const [activeCollection, setActiveCollection] = useState('boat-essentials');
-  const [sortBy, setSortBy] = useState<'popular' | 'price-asc'>('popular');
-
-  // Sticky collections state
-  const [isCollectionsSticky, setIsCollectionsSticky] = useState(false);
-  const collectionsRef = useRef<HTMLElement>(null);
-  const sentinelRef = useRef<HTMLDivElement>(null);
   const [openBoatFaq, setOpenBoatFaq] = useState<number | null>(0);
   const [openHouseFaq, setOpenHouseFaq] = useState<number | null>(0);
-
-  // Load products for active collection
-  const { products, loading, error } = useQuickOrderProducts(activeCollection);
-  const { counts } = useCollectionCounts(PREMIER_BOAT_COLLECTIONS.map(c => c.handle));
-
-  // Client-side sort
-  const sortedProducts = useMemo(() => {
-    if (sortBy !== 'price-asc') return products;
-    return [...products].sort((a, b) => {
-      const priceA = parseFloat(a.variants.edges[0]?.node.price.amount ?? '0');
-      const priceB = parseFloat(b.variants.edges[0]?.node.price.amount ?? '0');
-      return priceA - priceB;
-    });
-  }, [products, sortBy]);
-
-  // Intersection Observer for sticky detection (start and end of product section)
-  useEffect(() => {
-    if (!sentinelRef.current) return;
-
-    const startObserver = new IntersectionObserver(
-      ([entry]) => {
-        setIsCollectionsSticky(!entry.isIntersecting);
-      },
-      {
-        rootMargin: '-96px 0px 0px 0px',
-        threshold: 0,
-      }
-    );
-
-    startObserver.observe(sentinelRef.current);
-    return () => startObserver.disconnect();
-  }, []);
-
-
-  const scrollToCollections = () => {
-    document.getElementById('boat-collections')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const handleCollectionChange = (handle: string) => {
-    if (activeCollection === handle) return;
-    setActiveCollection(handle);
-    setSortBy('popular');
-  };
 
   return (
     <div className="bg-white min-h-screen">
@@ -213,7 +148,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
 
               <div className="mt-6">
                 <Button variant="cart" size="md" href="/order">
-                  Start a Group Order &rarr;
+                  Order Your Drinks
                 </Button>
               </div>
             </div>
@@ -226,9 +161,9 @@ function PremierPartyCruisesPageContent(): ReactElement {
 
               <div className="space-y-4">
                 {[
-                  { step: 1, icon: '📱', title: 'Start the group', desc: 'Get a share link + code' },
-                  { step: 2, icon: '👥', title: 'Friends add what they want', desc: 'Each person checks out separately' },
-                  { step: 3, icon: '🧊', title: 'We deliver one combined order', desc: 'Iced and ready at the marina' },
+                  { step: 1, title: 'Start the group', desc: 'Get a share link + code' },
+                  { step: 2, title: 'Friends add what they want', desc: 'Each person checks out separately' },
+                  { step: 3, title: 'We deliver one combined order', desc: 'Iced and ready at the marina' },
                 ].map((s, idx) => (
                   <ScrollRevealCSS key={s.step} delay={idx * 100}>
                     <div className="flex items-start gap-4 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
@@ -236,8 +171,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
                         {s.step}
                       </div>
                       <div>
-                        <span className="text-xl mr-2">{s.icon}</span>
-                        <h3 className="font-heading text-base text-gray-900 font-bold inline">{s.title}</h3>
+                        <h3 className="font-heading text-base text-gray-900 font-bold">{s.title}</h3>
                         <p className="font-sans text-gray-600 text-sm mt-1">{s.desc}</p>
                       </div>
                     </div>
@@ -251,37 +185,6 @@ function PremierPartyCruisesPageContent(): ReactElement {
                   Hosts love this: everyone pays their portion. No collecting money.
                 </p>
               </div>
-
-              {/* Inline join module */}
-              <div className="mt-4 flex flex-col sm:flex-row items-center gap-3">
-                <span className="text-gray-700 font-sans text-sm">Have a code?</span>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    placeholder="Enter code"
-                    className="border border-gray-300 rounded-lg px-4 py-2 font-sans text-sm w-36 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        const val = (e.target as HTMLInputElement).value.trim().toUpperCase();
-                        if (val) window.location.href = `/group/${val}`;
-                      }
-                    }}
-                    id="how-it-works-join-code"
-                    name="joinCode"
-                  />
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={() => {
-                      const input = document.getElementById('how-it-works-join-code') as HTMLInputElement;
-                      const val = input?.value.trim().toUpperCase();
-                      if (val) window.location.href = `/group/${val}`;
-                    }}
-                  >
-                    Join
-                  </Button>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -289,157 +192,12 @@ function PremierPartyCruisesPageContent(): ReactElement {
       </section>
 
       {/* ============================================ */}
-      {/* SECTION 4: DRINK CALCULATOR                  */}
-      {/* ============================================ */}
-      <section className="bg-gray-100 py-0 md:py-24">
-        <div id="drink-calculator" className="scroll-mt-24">
-          <DrinkCalculator />
-        </div>
-        <div className="max-w-4xl mx-auto px-6 md:px-8 text-center mt-2 pb-4 md:pb-0 md:mt-6">
-          <p className="text-gray-500 text-sm">You can edit anything before checkout.</p>
-        </div>
-      </section>
-
-      {/* ============================================ */}
-      {/* SECTION 5: SHOP (Collections + Product Grid) */}
-      {/* ============================================ */}
-
-      {/* Shop wrapper — sticky header naturally unsticks when this container scrolls out */}
-      <div id="boat-collections">
-        {/* Sentinel for compact mode detection */}
-        <div ref={sentinelRef} className="h-0" aria-hidden="true" />
-
-        {/* Sticky header: categories + search */}
-        <div className="sticky top-0 z-40">
-          <section
-            ref={collectionsRef}
-            className={`bg-gray-50 border-b border-gray-200 transition-all duration-200 ${
-              isCollectionsSticky ? 'py-2 shadow-md' : 'py-6'
-            }`}
-          >
-            <div className="px-4 md:max-w-7xl md:mx-auto md:px-8">
-              {/* CTA Buttons - hide when compact */}
-              {!isCollectionsSticky && (
-                <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 mb-6">
-                  <h2 className="font-heading text-2xl md:text-3xl text-gray-900">Shop drinks</h2>
-                  <div className="flex-1" />
-                  <Button variant="cart" size="sm" href="/order">
-                    Start Group Order
-                  </Button>
-                </div>
-              )}
-
-              {/* Collections Grid/Horizontal Scroll */}
-              <div
-                className={
-                  isCollectionsSticky
-                    ? 'flex items-center gap-2'
-                    : 'grid grid-cols-2 md:grid-cols-5 gap-2'
-                }
-              >
-                {/* Categories */}
-                <div
-                  className={
-                    isCollectionsSticky
-                      ? 'flex overflow-x-auto gap-2 pb-2 -mr-4 pr-4 scrollbar-hide snap-x snap-mandatory flex-1'
-                      : 'contents'
-                  }
-                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                >
-                  {PREMIER_BOAT_COLLECTIONS.map((collection) => {
-                    const isActive = activeCollection === collection.handle;
-                    const count = counts[collection.handle];
-                    return (
-                      <button
-                        key={collection.handle}
-                        onClick={() => handleCollectionChange(collection.handle)}
-                        className={`
-                          text-center border transition-all rounded-lg relative
-                          ${isCollectionsSticky ? 'px-3 py-2' : 'px-4 py-3'}
-                          ${isActive
-                            ? `${collection.colors.bgActive} ${collection.colors.textActive} ${collection.colors.borderActive} shadow-lg ${isCollectionsSticky ? '' : 'scale-105'}`
-                            : `${collection.colors.bg} ${collection.colors.text} ${collection.colors.border} hover:scale-102`
-                          }
-                          text-xs md:text-sm
-                          ${isCollectionsSticky ? 'flex-shrink-0 snap-start whitespace-nowrap' : ''}
-                          tracking-[0.1em] font-medium
-                        `}
-                        disabled={loading && activeCollection !== collection.handle}
-                      >
-                        {collection.label.toUpperCase()}
-                        {count != null && count > 0 && (
-                          <span className="ml-1 opacity-70">({count})</span>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Search Bar — part of sticky header */}
-          <div className="bg-white border-b border-gray-200 px-4 py-3">
-            <div className="max-w-xl mx-auto">
-              <QuickOrderSearch />
-            </div>
-          </div>
-        </div>
-
-        {/* Product Grid */}
-        <main className="px-4 py-8">
-          <div id="product-grid" className="scroll-mt-24 max-w-7xl mx-auto">
-            {error ? (
-              <div className="text-center py-12">
-                <p className="text-red-500">Failed to load products. Please try again.</p>
-                <Button variant="cart" size="sm" onClick={() => window.location.reload()}>
-                  Retry
-                </Button>
-              </div>
-            ) : (
-              <>
-                <DontForgetRow />
-
-                {/* Sort Toggle */}
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-xs text-gray-500 uppercase tracking-[0.08em] mr-1">Sort:</span>
-                  <button
-                    onClick={() => setSortBy('popular')}
-                    className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
-                      sortBy === 'popular'
-                        ? 'bg-gray-900 text-white border-gray-900'
-                        : 'bg-white text-gray-600 border-gray-300 hover:border-gray-400'
-                    }`}
-                  >
-                    Popular
-                  </button>
-                  <button
-                    onClick={() => setSortBy('price-asc')}
-                    className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
-                      sortBy === 'price-asc'
-                        ? 'bg-gray-900 text-white border-gray-900'
-                        : 'bg-white text-gray-600 border-gray-300 hover:border-gray-400'
-                    }`}
-                  >
-                    Price Low&rarr;High
-                  </button>
-                </div>
-
-                <QuickOrderGrid products={sortedProducts} loading={loading} />
-              </>
-            )}
-          </div>
-        </main>
-
-      </div>
-
-      {/* ============================================ */}
-      {/* SECTION 6: HOUSE TAB UPSELL                  */}
+      {/* SECTION 4: HOUSE TAB UPSELL                  */}
       {/* ============================================ */}
       <HouseTabUpsell />
 
       {/* ============================================ */}
-      {/* SECTION 7: EXPERIENCE PROOF (Video)          */}
+      {/* SECTION 5: EXPERIENCE PROOF (Video)          */}
       {/* ============================================ */}
       <section id="experience-proof" className="bg-white py-16 md:py-24">
         <div className="max-w-6xl mx-auto px-6 md:px-8">
@@ -480,7 +238,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
                 ))}
               </ul>
               <Button variant="cart" size="lg" href="/order">
-                Start a Group Order
+                Order Your Drinks
               </Button>
             </ScrollRevealCSS>
           </div>
@@ -488,7 +246,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
       </section>
 
       {/* ============================================ */}
-      {/* SECTION 8: REVIEWS (Social Proof)            */}
+      {/* SECTION 6: REVIEWS (Social Proof)            */}
       {/* ============================================ */}
       <section className="bg-gray-50 py-16 md:py-24">
         <div className="max-w-5xl mx-auto px-6 md:px-8">
@@ -523,14 +281,14 @@ function PremierPartyCruisesPageContent(): ReactElement {
 
           <div className="mt-10 text-center">
             <Button variant="cart" size="lg" href="/order">
-              Start a Group Order (split payments)
+              Order Your Drinks
             </Button>
           </div>
         </div>
       </section>
 
       {/* ============================================ */}
-      {/* SECTION 9: FAQ (Two-Column)                  */}
+      {/* SECTION 7: FAQ (Two-Column)                  */}
       {/* ============================================ */}
       <section className="py-16 px-6 bg-white">
         <div className="max-w-4xl mx-auto">
@@ -631,7 +389,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
       </section>
 
       {/* ============================================ */}
-      {/* SECTION 10: ABOUT / TRUST                    */}
+      {/* SECTION 8: ABOUT / TRUST                    */}
       {/* ============================================ */}
       <section className="bg-gray-900 py-16 md:py-24">
         <div className="max-w-6xl mx-auto px-6 md:px-8">
@@ -685,7 +443,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
       </section>
 
       {/* ============================================ */}
-      {/* SECTION 11: FINAL CTA (Strong Close)         */}
+      {/* SECTION 9: FINAL CTA (Strong Close)         */}
       {/* ============================================ */}
       <section className="bg-brand-yellow py-16 md:py-24">
         <ScrollRevealCSS>
@@ -699,22 +457,8 @@ function PremierPartyCruisesPageContent(): ReactElement {
 
             <div className="flex flex-col items-center gap-3 mb-6">
               <Button variant="primary" size="lg" href="/order">
-                Start a Group Order
+                Order Your Drinks
               </Button>
-
-              <button
-                onClick={scrollToCollections}
-                className="text-gray-900/70 hover:text-gray-900 text-sm underline font-sans"
-              >
-                Start an individual order
-              </button>
-
-              <button
-                onClick={() => setIsJoinModalOpen(true)}
-                className="text-gray-900/70 hover:text-gray-900 text-sm underline font-sans"
-              >
-                Join with code
-              </button>
             </div>
 
             <p className="text-gray-900/60 text-sm font-sans">
@@ -728,23 +472,14 @@ function PremierPartyCruisesPageContent(): ReactElement {
       </section>
 
       {/* ============================================ */}
-      {/* SECTION 12: FOOTER                           */}
+      {/* SECTION 10: FOOTER                           */}
       {/* ============================================ */}
       <div className="pb-24 md:pb-20">
         <Footer />
       </div>
 
-      {/* Cart Summary Bar - Fixed Bottom */}
-      <CartSummaryBar />
-
       {/* Mobile Sticky CTA - only visible on mobile */}
-      <PremierHeroStickyCTA onJoinCode={() => setIsJoinModalOpen(true)} />
-
-      {/* MODALS */}
-      <JoinOrderModal
-        isOpen={isJoinModalOpen}
-        onClose={() => setIsJoinModalOpen(false)}
-      />
+      <PremierHeroStickyCTA />
 
     </div>
   );

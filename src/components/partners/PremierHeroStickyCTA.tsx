@@ -9,18 +9,15 @@ import type { ReactElement } from 'react';
 import Link from 'next/link';
 
 interface PremierHeroStickyCTAProps {
-  /** Callback when user clicks Join button */
-  onJoinCode: () => void;
+  /** @deprecated No longer used — kept for backward compatibility with other partner pages */
+  onJoinCode?: () => void;
 }
 
 /**
  * Fixed bottom CTA bar for mobile devices
- * Hidden on desktop, shows Start Group Order and Join buttons
+ * Hidden on desktop, shows Order Your Drinks button
  */
-export default function PremierHeroStickyCTA({
-  onJoinCode: _onJoinCode,
-}: PremierHeroStickyCTAProps): ReactElement {
-  void _onJoinCode;
+export default function PremierHeroStickyCTA(_props?: PremierHeroStickyCTAProps): ReactElement {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-gray-900 border-t border-gray-800 shadow-lg pb-safe">
       <div className="px-4 py-3 flex items-center justify-center">
@@ -28,7 +25,7 @@ export default function PremierHeroStickyCTA({
           href="/order"
           className="flex-1 py-3 bg-brand-yellow hover:bg-yellow-400 text-gray-900 font-semibold tracking-[0.08em] text-center rounded-lg transition-colors text-sm"
         >
-          Start Group Order
+          Order Your Drinks
         </Link>
       </div>
     </div>
