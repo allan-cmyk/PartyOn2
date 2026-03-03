@@ -17,7 +17,8 @@ interface PremierHeroStickyCTAProps {
  * Fixed bottom CTA bar for mobile devices
  * Hidden on desktop, shows Order Your Drinks button
  */
-export default function PremierHeroStickyCTA(_props?: PremierHeroStickyCTAProps): ReactElement {
+export default function PremierHeroStickyCTA(props?: PremierHeroStickyCTAProps): ReactElement {
+  void props;
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-gray-900 border-t border-gray-800 shadow-lg pb-safe">
       <div className="px-4 py-3 flex items-center justify-center">
