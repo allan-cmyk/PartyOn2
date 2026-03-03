@@ -22,22 +22,26 @@ export const metadata: Metadata = {
 
 
 export default async function CocktailKitsPage() {
-  // Fetch cocktail kit products from PostgreSQL
-  const products = await prisma.product.findMany({
-    where: {
-      status: 'ACTIVE',
-      productType: 'Cocktail Kit',
-    },
-    include: {
-      images: { orderBy: { position: 'asc' } },
-      variants: { include: { image: true }, orderBy: { createdAt: 'asc' } },
-      categories: { include: { category: true } },
-    },
-    orderBy: { title: 'asc' },
-    take: 50,
+  // Fetch cocktail kit products via collection, ordered by position
+  const category = await prisma.category.findFirst({
+    where: { handle: 'cocktail-kits' },
   })
 
-  const cocktailKits = products.map(p => transformToProduct(p))
+  const productCategories = category ? await prisma.productCategory.findMany({
+    where: { categoryId: category.id, product: { status: 'ACTIVE' } },
+    include: {
+      product: {
+        include: {
+          images: { orderBy: { position: 'asc' } },
+          variants: { include: { image: true }, orderBy: { createdAt: 'asc' } },
+          categories: { include: { category: true } },
+        },
+      },
+    },
+    orderBy: { position: 'asc' },
+  }) : []
+
+  const cocktailKits = productCategories.map(pc => transformToProduct(pc.product))
 
   // Find specific featured kits by name patterns
   const findKit = (pattern: string) =>
@@ -46,7 +50,7 @@ export default async function CocktailKitsPage() {
     )
 
   // Get 4 specific featured kits — summery cocktails first
-  const austinRitaKit = findKit('austin rita party pitcher')
+  const austinRitaKit = findKit('austin rita cocktail kit - serves')
   const aperolSpritzKit = findKit('aperol spritz')
   const espressoMartiniKit = findKit('espresso martini cocktail kit')
   const oldFashionedKit = findKit('hill country old-fashioned') || findKit('hill country old')
@@ -62,10 +66,9 @@ export default async function CocktailKitsPage() {
   // Get IDs of featured kits to exclude from secondary grid
   const featuredKitIds = new Set(featuredKits.map(kit => kit.id))
 
-  // Get other cocktail kits not in featured list (exclude limes and other non-kit items)
+  // Get other cocktail kits not in featured list
   const otherKits = cocktailKits.filter((kit: Product) =>
-    !featuredKitIds.has(kit.id) &&
-    !kit.title.toLowerCase().includes('lime')
+    !featuredKitIds.has(kit.id)
   )
 
   // Short, punchy subheadlines for each kit
