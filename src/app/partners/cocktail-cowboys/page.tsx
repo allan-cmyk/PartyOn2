@@ -109,9 +109,9 @@ function CocktailCowboysPageContent(): ReactElement {
                 <Image
                   src="/images/partners/cocktailcowboys-logo-white.png"
                   alt="Cocktail Cowboys"
-                  width={120}
-                  height={120}
-                  className="h-20 md:h-24 w-auto object-contain mx-auto"
+                  width={240}
+                  height={240}
+                  className="h-40 md:h-48 w-auto object-contain mx-auto"
                 />
               </div>
 
@@ -144,9 +144,9 @@ function CocktailCowboysPageContent(): ReactElement {
                 <Image
                   src="/images/pod-logo-2025.png"
                   alt="Party On Delivery"
-                  width={180}
-                  height={180}
-                  className="h-16 md:h-20 w-auto object-contain"
+                  width={360}
+                  height={360}
+                  className="h-32 md:h-40 w-auto object-contain"
                 />
               </div>
             </div>
