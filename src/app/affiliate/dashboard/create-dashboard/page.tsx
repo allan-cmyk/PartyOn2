@@ -155,8 +155,8 @@ export default function CreateDashboardPage(): ReactElement {
   function buildTabs(): Array<{ name: string; deliveryAddress?: string; deliveryContextType?: string }> {
     const tabs: Array<{ name: string; deliveryAddress?: string; deliveryContextType?: string }> = [];
 
-    if (presets) {
-      // Preset affiliates: use selected preset tabs
+    if (presets && selectedPresetIds.length > 0) {
+      // Preset affiliates with selections: use selected preset tabs
       selectedPresetIds.forEach((presetId) => {
         if (presetId === 'custom') return;
         const preset = presets.tabPresets.find((p) => p.id === presetId);
@@ -180,7 +180,7 @@ export default function CreateDashboardPage(): ReactElement {
         });
       }
     } else {
-      // Non-preset affiliates: use custom tab inputs directly
+      // Non-preset affiliates or no presets selected: use custom tab inputs
       customTabs.forEach((ct) => {
         const name = ct.name.trim();
         tabs.push({
