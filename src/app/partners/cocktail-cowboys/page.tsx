@@ -60,7 +60,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Do the Cowboys bring the alcohol?',
-    a: 'No -- the Cowboys bring the bartending skills, games, and energy. You provide the drinks, and that\'s where we come in. Order through Party On and we\'ll have your fridge stocked before the party.',
+    a: 'No -- the Cowboys bring the bartending skills, games, and energy. You provide the drinks, and that\'s where we come in. Order through Party On and we\'ll handle stocking coolers or fridge.',
   },
   {
     q: 'What should I order for a Cocktail Cowboys party?',
@@ -130,25 +130,25 @@ function CocktailCowboysPageContent(): ReactElement {
 
             {/* Right Column: Logos + Image + Trust */}
             <div className="order-2 flex flex-col gap-5">
-              <div className="flex items-center justify-center gap-3">
+              <div className="flex items-center justify-center gap-4 bg-white/10 rounded-xl px-6 py-3">
                 <Image
                   src="/images/partners/cocktailcowboys-logo.webp"
                   alt="Cocktail Cowboys"
-                  width={44}
-                  height={44}
-                  className="h-9 md:h-11 w-auto object-contain rounded-full"
+                  width={64}
+                  height={64}
+                  className="h-12 md:h-14 w-auto object-contain rounded-full"
                 />
-                <span className="text-xs md:text-sm text-white/70 tracking-wide whitespace-nowrap">
+                <span className="text-sm md:text-base text-white font-semibold tracking-wide whitespace-nowrap">
                   Cocktail Cowboys{' '}
-                  <span className="text-white/40">&times;</span>{' '}
+                  <span className="text-white/60">&times;</span>{' '}
                   Party On Delivery
                 </span>
                 <Image
                   src="/images/pod-logo-2025.svg"
                   alt="Party On Delivery"
-                  width={44}
-                  height={44}
-                  className="h-9 md:h-11 w-auto object-contain"
+                  width={64}
+                  height={64}
+                  className="h-12 md:h-14 w-auto object-contain brightness-0 invert"
                 />
               </div>
 
