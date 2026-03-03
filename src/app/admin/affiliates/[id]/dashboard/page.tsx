@@ -82,7 +82,7 @@ const STATUS_BADGE: Record<string, string> = {
 
 export default function AdminAffiliateDashboardPage(): ReactElement {
   const params = useParams();
-  const affiliateId = params.id as string;
+  const affiliateId = params?.id as string;
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
