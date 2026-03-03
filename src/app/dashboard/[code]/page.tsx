@@ -41,7 +41,7 @@ function fireConfetti() {
         colors: CONFETTI_COLORS,
       });
     }, 200);
-  }).catch(() => {});
+  }).catch((err) => { console.error('Confetti error:', err); });
 }
 
 const PARTICIPANT_KEY_PREFIX = 'dashboard_participant_';

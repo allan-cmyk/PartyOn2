@@ -15,7 +15,7 @@ export default function ConfettiEffect({ trigger, onComplete }: Props) {
   const fire = useCallback(async () => {
     try {
       const mod = await import('canvas-confetti');
-      const confetti = mod.default;
+      const confetti = typeof mod.default === 'function' ? mod.default : mod;
 
       // Party-colored burst from center
       confetti({

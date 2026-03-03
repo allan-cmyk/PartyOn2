@@ -295,6 +295,7 @@ const nextConfig: NextConfig = {
               "base-uri 'self'",
               "form-action 'self' *.shopify.com *.myshopify.com",
               "frame-ancestors 'self'",
+              "worker-src 'self' blob:",
               "upgrade-insecure-requests"
             ].join('; '),
           },
