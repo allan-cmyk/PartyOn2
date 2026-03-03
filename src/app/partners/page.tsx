@@ -111,7 +111,7 @@ export default function AustinPartnersPage() {
             {/* Premier Party Cruises Featured Tile */}
             <Link
               href="/partners/premier-party-cruises"
-              className="group relative block w-full aspect-[21/9] sm:aspect-[21/7] rounded-2xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500"
+              className="group relative block w-full aspect-[4/3] sm:aspect-[21/9] lg:aspect-[21/7] rounded-2xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500"
             >
               <Image
                 src="/images/partners/premierpartycruises-hero.webp"
