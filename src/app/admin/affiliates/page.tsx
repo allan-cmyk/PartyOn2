@@ -307,6 +307,12 @@ export default function AffiliatesPage(): ReactElement {
                       <td className="px-4 py-3 text-right">
                         <div className="flex gap-2 justify-end">
                           <Link
+                            href={`/admin/affiliates/${aff.id}/dashboard`}
+                            className="px-3 py-1 bg-gray-800 text-white rounded text-xs font-medium hover:bg-gray-900"
+                          >
+                            Dashboard
+                          </Link>
+                          <Link
                             href={`/admin/affiliates/${aff.id}`}
                             className="px-3 py-1 bg-blue-600 text-white rounded text-xs font-medium hover:bg-blue-700"
                           >
