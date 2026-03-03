@@ -55,6 +55,11 @@ export default function AffiliateDashboardPage(): ReactElement {
   const [payouts, setPayouts] = useState<PayoutItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [passwordMessage, setPasswordMessage] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
   useEffect(() => {
     Promise.all([
@@ -86,6 +91,42 @@ export default function AffiliateDashboardPage(): ReactElement {
     navigator.clipboard.writeText(link);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleSetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError('');
+    setPasswordMessage('');
+
+    if (newPassword.length < 8) {
+      setPasswordError('Password must be at least 8 characters');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError('Passwords do not match');
+      return;
+    }
+
+    setPasswordSaving(true);
+    try {
+      const res = await fetch('/api/v1/affiliate/set-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: newPassword }),
+      });
+      const result = await res.json();
+      if (result.success) {
+        setPasswordMessage('Password saved. You can now log in with your email and password.');
+        setNewPassword('');
+        setConfirmPassword('');
+      } else {
+        setPasswordError(result.error || 'Failed to set password');
+      }
+    } catch {
+      setPasswordError('Network error. Please try again.');
+    } finally {
+      setPasswordSaving(false);
+    }
   };
 
   const cents = (c: number) => `$${(c / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -267,6 +308,57 @@ export default function AffiliateDashboardPage(): ReactElement {
               </table>
             </div>
           )}
+        </div>
+
+        {/* Set Password */}
+        <div className="bg-white rounded-lg shadow p-5">
+          <h2 className="font-semibold text-gray-800 mb-3">Account Password</h2>
+          <p className="text-sm text-gray-500 mb-4">
+            Set a password to log in directly instead of using an email link each time.
+          </p>
+          <form onSubmit={handleSetPassword} className="space-y-3 max-w-sm">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                placeholder="At least 8 characters"
+                minLength={8}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                placeholder="Re-enter password"
+                minLength={8}
+                required
+              />
+            </div>
+            {passwordError && (
+              <div className="p-2 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
+                {passwordError}
+              </div>
+            )}
+            {passwordMessage && (
+              <div className="p-2 bg-green-50 border border-green-200 text-green-700 rounded-md text-sm">
+                {passwordMessage}
+              </div>
+            )}
+            <button
+              type="submit"
+              disabled={passwordSaving}
+              className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            >
+              {passwordSaving ? 'Saving...' : 'Set Password'}
+            </button>
+          </form>
         </div>
       </div>
     </div>

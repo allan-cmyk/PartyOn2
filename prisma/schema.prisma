@@ -1947,6 +1947,7 @@ model Affiliate {
   payoutMethod  String? @map("payout_method")
   payoutDetails Json?   @map("payout_details")
 
+  passwordHash  String? @map("password_hash")
   internalNotes String? @map("internal_notes") @db.Text
 
   createdAt DateTime @default(now()) @map("created_at")
