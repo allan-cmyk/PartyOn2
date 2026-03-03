@@ -69,8 +69,8 @@ export default function HouseTabUpsell(): ReactElement {
           <ScrollRevealCSS delay={200} className="flex justify-center">
             <div className="relative w-full max-w-sm aspect-square rounded-xl overflow-hidden shadow-2xl border border-white/10">
               <Image
-                src="/images/products/austin-survival-package.png"
-                alt="Austin Survival Welcome Package - included free with $300+ house delivery orders"
+                src="/images/products/welcome-to-austin-survival-package.png"
+                alt="Welcome to Austin Survival Package - included free with $300+ house delivery orders"
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 384px"
