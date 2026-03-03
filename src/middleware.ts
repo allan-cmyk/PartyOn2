@@ -44,18 +44,6 @@ export function middleware(request: NextRequest) {
     response.cookies.set('ref_code', refCode.toUpperCase(), cookieOptions);
   }
 
-  // Set attribution cookie when visiting partner landing pages directly
-  // Map known partner slugs to their actual affiliate codes
-  const PARTNER_SLUG_TO_CODE: Record<string, string> = {
-    'inn-cahoots': 'MISCHIEF',
-    'premier-party-cruises': 'PREMIER',
-  };
-  const partnersMatch = request.nextUrl.pathname.match(/^\/partners\/([^/]+)$/);
-  if (partnersMatch) {
-    const slug = partnersMatch[1];
-    const code = PARTNER_SLUG_TO_CODE[slug] || slug.toUpperCase();
-    response.cookies.set('ref_code', code, cookieOptions);
-  }
 
   return response;
 }

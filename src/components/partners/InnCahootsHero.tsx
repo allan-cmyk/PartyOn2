@@ -43,7 +43,7 @@ export default function InnCahootsHero(): ReactElement {
             {/* CTA */}
             <div className="mb-8">
               <Link
-                href="/order?ref=MISCHIEF"
+                href="/order"
                 className="inline-block h-14 md:h-16 px-10 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-semibold tracking-wide transition-colors rounded-lg text-lg md:text-xl leading-[3.5rem] md:leading-[4rem]"
               >
                 Start an Order

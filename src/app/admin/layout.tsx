@@ -34,7 +34,20 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
       setIsAuthenticated(true);
       setRole(storedRole);
     } else {
-      setIsAuthenticated(false);
+      // sessionStorage is empty (tab was closed) -- check if the httpOnly cookie is still valid
+      fetch('/api/ops/session')
+        .then(res => res.json())
+        .then(data => {
+          if (data.authenticated && data.role) {
+            sessionStorage.setItem('admin_authenticated', 'true');
+            sessionStorage.setItem('admin_role', data.role);
+            setIsAuthenticated(true);
+            setRole(data.role);
+          } else {
+            setIsAuthenticated(false);
+          }
+        })
+        .catch(() => setIsAuthenticated(false));
     }
   }, []);
 
@@ -82,7 +95,12 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/ops/logout', { method: 'POST' });
+    } catch {
+      // Best-effort cookie clear
+    }
     sessionStorage.removeItem('admin_authenticated');
     sessionStorage.removeItem('admin_role');
     setIsAuthenticated(false);

@@ -535,8 +535,8 @@ export default function OrdersPage(): ReactElement {
   const [deliveryTypeFilter, setDeliveryTypeFilter] = useState<string>('');
   const [groupTypeFilter, setGroupTypeFilter] = useState<string>('');
   const [page, setPage] = useState(1);
-  const [sortBy, setSortBy] = useState<string>('createdAt');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [sortBy, setSortBy] = useState<string>('deliveryDate');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
   const [selectedOrders, setSelectedOrders] = useState<Set<string>>(new Set());
   const [fulfilling, setFulfilling] = useState(false);

@@ -28,7 +28,19 @@ export default function OpsLayout({ children }: OpsLayoutProps): ReactElement {
     if (authenticated === 'true') {
       setIsAuthenticated(true);
     } else {
-      setIsAuthenticated(false);
+      // sessionStorage is empty (tab was closed) -- check if the httpOnly cookie is still valid
+      fetch('/api/ops/session')
+        .then(res => res.json())
+        .then(data => {
+          if (data.authenticated && data.role) {
+            sessionStorage.setItem('ops_authenticated', 'true');
+            sessionStorage.setItem('ops_role', data.role);
+            setIsAuthenticated(true);
+          } else {
+            setIsAuthenticated(false);
+          }
+        })
+        .catch(() => setIsAuthenticated(false));
     }
   }, []);
 
@@ -51,7 +63,7 @@ export default function OpsLayout({ children }: OpsLayoutProps): ReactElement {
         sessionStorage.setItem('ops_role', data.role);
         setIsAuthenticated(true);
         if (pathname === '/ops') {
-          router.push('/ops/inventory');
+          router.push('/ops/orders');
         }
       } else {
         setError(data.error || 'Invalid password');

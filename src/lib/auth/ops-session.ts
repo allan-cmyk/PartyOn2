@@ -10,7 +10,7 @@ import { SignJWT, jwtVerify } from 'jose';
 export type OpsRole = 'admin' | 'employee';
 
 const OPS_SESSION_COOKIE = 'ops_session';
-const TOKEN_EXPIRY = '12h';
+const TOKEN_EXPIRY = '48h';
 
 function getJwtSecret(): Uint8Array {
   const secret = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
@@ -62,7 +62,7 @@ export async function setOpsSessionCookie(role: OpsRole): Promise<void> {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    maxAge: 60 * 60 * 12, // 12 hours
+    maxAge: 60 * 60 * 48, // 48 hours
     path: '/',
   });
 }
