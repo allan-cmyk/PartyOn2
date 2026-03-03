@@ -18,6 +18,12 @@ export default function AffiliateLoginPage(): ReactElement {
     setError('');
     setSubmitting(true);
 
+    // No password entered -- send magic link directly
+    if (!password.trim()) {
+      await sendMagicLink();
+      return;
+    }
+
     try {
       const res = await fetch('/api/v1/affiliate/login', {
         method: 'POST',
@@ -32,7 +38,6 @@ export default function AffiliateLoginPage(): ReactElement {
       }
 
       if (data.error === 'NO_PASSWORD_SET') {
-        // Auto-send magic link and show message
         await sendMagicLink();
         setError('No password set yet. We sent you a login link -- once logged in you can set a password from the dashboard.');
         return;
@@ -103,7 +108,7 @@ export default function AffiliateLoginPage(): ReactElement {
           <Link href="/" className="text-2xl font-bold text-gray-900">Party On</Link>
           <h1 className="text-xl font-semibold text-gray-800 mt-4">Partner Dashboard</h1>
           <p className="text-gray-500 text-sm mt-1">
-            {showMagicLink ? 'Enter your email to receive a login link' : 'Sign in with your email and password'}
+            {showMagicLink ? 'Enter your email to receive a login link' : 'Sign in with your email and password, or leave password blank for a login link'}
           </p>
         </div>
 
@@ -163,11 +168,10 @@ export default function AffiliateLoginPage(): ReactElement {
               <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
               <input
                 type="password"
-                required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter your password"
+                placeholder="Leave blank to get a login link"
               />
             </div>
 
