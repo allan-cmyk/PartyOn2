@@ -28,7 +28,7 @@ export default function CreateDashboardPage(): ReactElement {
   // Form state
   const [clientName, setClientName] = useState('');
   const [deliveryDate, setDeliveryDate] = useState('');
-  const [deliveryTime, setDeliveryTime] = useState('12:00 PM - 2:00 PM');
+  const [deliveryTime, setDeliveryTime] = useState('12:00 PM - 12:30 PM');
   const [partyType, setPartyType] = useState('');
   const [selectedPresetIds, setSelectedPresetIds] = useState<string[]>([]);
   const [customTabs, setCustomTabs] = useState<CustomTab[]>([{ name: '', deliveryAddress: '' }]);
@@ -156,6 +156,7 @@ export default function CreateDashboardPage(): ReactElement {
     const tabs: Array<{ name: string; deliveryAddress?: string; deliveryContextType?: string }> = [];
 
     if (presets) {
+      // Preset affiliates: use selected preset tabs
       selectedPresetIds.forEach((presetId) => {
         if (presetId === 'custom') return;
         const preset = presets.tabPresets.find((p) => p.id === presetId);
@@ -167,16 +168,25 @@ export default function CreateDashboardPage(): ReactElement {
           });
         }
       });
-    }
 
-    if (selectedPresetIds.includes('custom')) {
+      if (selectedPresetIds.includes('custom')) {
+        customTabs.forEach((ct) => {
+          if (ct.name.trim()) {
+            tabs.push({
+              name: ct.name.trim(),
+              deliveryAddress: ct.deliveryAddress.trim() || undefined,
+            });
+          }
+        });
+      }
+    } else {
+      // Non-preset affiliates: use custom tab inputs directly
       customTabs.forEach((ct) => {
-        if (ct.name.trim()) {
-          tabs.push({
-            name: ct.name.trim(),
-            deliveryAddress: ct.deliveryAddress.trim() || undefined,
-          });
-        }
+        const name = ct.name.trim();
+        tabs.push({
+          name: name || 'Location 1',
+          deliveryAddress: ct.deliveryAddress.trim() || undefined,
+        });
       });
     }
 
@@ -401,11 +411,26 @@ export default function CreateDashboardPage(): ReactElement {
                 onChange={(e) => setDeliveryTime(e.target.value)}
                 className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg text-base focus:border-brand-blue focus:ring-0 transition-colors bg-white"
               >
-                <option value="8:00 AM - 10:00 AM">8:00 AM - 10:00 AM</option>
-                <option value="10:00 AM - 12:00 PM">10:00 AM - 12:00 PM</option>
-                <option value="12:00 PM - 2:00 PM">12:00 PM - 2:00 PM</option>
-                <option value="2:00 PM - 4:00 PM">2:00 PM - 4:00 PM</option>
-                <option value="4:00 PM - 6:00 PM">4:00 PM - 6:00 PM</option>
+                <option value="8:00 AM - 8:30 AM">8:00 AM - 8:30 AM</option>
+                <option value="8:30 AM - 9:00 AM">8:30 AM - 9:00 AM</option>
+                <option value="9:00 AM - 9:30 AM">9:00 AM - 9:30 AM</option>
+                <option value="9:30 AM - 10:00 AM">9:30 AM - 10:00 AM</option>
+                <option value="10:00 AM - 10:30 AM">10:00 AM - 10:30 AM</option>
+                <option value="10:30 AM - 11:00 AM">10:30 AM - 11:00 AM</option>
+                <option value="11:00 AM - 11:30 AM">11:00 AM - 11:30 AM</option>
+                <option value="11:30 AM - 12:00 PM">11:30 AM - 12:00 PM</option>
+                <option value="12:00 PM - 12:30 PM">12:00 PM - 12:30 PM</option>
+                <option value="12:30 PM - 1:00 PM">12:30 PM - 1:00 PM</option>
+                <option value="1:00 PM - 1:30 PM">1:00 PM - 1:30 PM</option>
+                <option value="1:30 PM - 2:00 PM">1:30 PM - 2:00 PM</option>
+                <option value="2:00 PM - 2:30 PM">2:00 PM - 2:30 PM</option>
+                <option value="2:30 PM - 3:00 PM">2:30 PM - 3:00 PM</option>
+                <option value="3:00 PM - 3:30 PM">3:00 PM - 3:30 PM</option>
+                <option value="3:30 PM - 4:00 PM">3:30 PM - 4:00 PM</option>
+                <option value="4:00 PM - 4:30 PM">4:00 PM - 4:30 PM</option>
+                <option value="4:30 PM - 5:00 PM">4:30 PM - 5:00 PM</option>
+                <option value="5:00 PM - 5:30 PM">5:00 PM - 5:30 PM</option>
+                <option value="5:30 PM - 6:00 PM">5:30 PM - 6:00 PM</option>
               </select>
             </div>
 
