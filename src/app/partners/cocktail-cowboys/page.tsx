@@ -107,7 +107,7 @@ function CocktailCowboysPageContent(): ReactElement {
               {/* Cocktail Cowboys Logo */}
               <div className="mb-6">
                 <Image
-                  src="/images/partners/cocktailcowboys-logo-clean.png"
+                  src="/images/partners/cocktailcowboys-logo-white.png"
                   alt="Cocktail Cowboys"
                   width={120}
                   height={120}
@@ -142,11 +142,11 @@ function CocktailCowboysPageContent(): ReactElement {
               <div className="flex flex-col items-center gap-2">
                 <span className="text-white/40 text-xs uppercase tracking-[0.12em]">Provided by</span>
                 <Image
-                  src="/images/pod-logo-2025.svg"
+                  src="/images/pod-logo-2025.png"
                   alt="Party On Delivery"
                   width={180}
-                  height={48}
-                  className="h-10 md:h-12 w-auto object-contain brightness-0 invert"
+                  height={180}
+                  className="h-16 md:h-20 w-auto object-contain"
                 />
               </div>
             </div>
