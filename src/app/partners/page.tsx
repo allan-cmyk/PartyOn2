@@ -49,7 +49,7 @@ export default function AustinPartnersPage() {
       <Navigation hideMobileLogo />
 
       {/* Hero Section */}
-      <section className="relative h-[50vh] min-h-[400px] mt-24 flex items-center">
+      <section className="relative h-[50vh] min-h-[400px] pt-20 flex items-center">
         <div className="absolute inset-0">
           <Image
             src="/images/hero/austin-skyline-golden-hour.webp"

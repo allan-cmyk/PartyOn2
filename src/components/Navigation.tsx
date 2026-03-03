@@ -23,6 +23,7 @@ const NAV_HIDDEN_ROUTES = [
 const NAV_TRANSPARENT_ROUTES = [
   '/',          // Homepage - h-screen dark hero covers nav area
   '/services',  // Dark gradient (from-slate-900) starts from top of page
+  '/partners',  // Partners directory - dark hero image covers nav area
 ];
 
 interface NavLinkProps {
