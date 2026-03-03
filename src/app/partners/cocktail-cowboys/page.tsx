@@ -104,6 +104,17 @@ function CocktailCowboysPageContent(): ReactElement {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 items-center">
             {/* Left Column: Content */}
             <div className="order-1 text-center">
+              {/* Cocktail Cowboys Logo */}
+              <div className="mb-6">
+                <Image
+                  src="/images/partners/cocktailcowboys-logo-clean.png"
+                  alt="Cocktail Cowboys"
+                  width={120}
+                  height={120}
+                  className="h-20 md:h-24 w-auto object-contain mx-auto"
+                />
+              </div>
+
               <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl text-white mb-4 tracking-wide leading-tight">
                 Party Hosts + Drinks, All Handled
               </h1>
@@ -120,38 +131,28 @@ function CocktailCowboysPageContent(): ReactElement {
                 </Link>
               </div>
 
-              <p className="text-base text-white/50">
+              <p className="text-base text-white/50 mb-6">
                 Questions? Text{' '}
                 <a href="tel:7373719700" className="text-brand-yellow hover:text-brand-yellow font-medium">
                   737-371-9700
                 </a>
               </p>
-            </div>
 
-            {/* Right Column: Logos + Image + Trust */}
-            <div className="order-2 flex flex-col gap-5">
-              <div className="flex items-center justify-center gap-4 bg-white/10 rounded-xl px-6 py-3">
-                <Image
-                  src="/images/partners/cocktailcowboys-logo.webp"
-                  alt="Cocktail Cowboys"
-                  width={64}
-                  height={64}
-                  className="h-12 md:h-14 w-auto object-contain rounded-full"
-                />
-                <span className="text-sm md:text-base text-white font-semibold tracking-wide whitespace-nowrap">
-                  Cocktail Cowboys{' '}
-                  <span className="text-white/60">&times;</span>{' '}
-                  Party On Delivery
-                </span>
+              {/* Provided by Party On */}
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-white/40 text-xs uppercase tracking-[0.12em]">Provided by</span>
                 <Image
                   src="/images/pod-logo-2025.svg"
                   alt="Party On Delivery"
-                  width={64}
-                  height={64}
-                  className="h-12 md:h-14 w-auto object-contain brightness-0 invert"
+                  width={180}
+                  height={48}
+                  className="h-10 md:h-12 w-auto object-contain brightness-0 invert"
                 />
               </div>
+            </div>
 
+            {/* Right Column: Image + Trust */}
+            <div className="order-2 flex flex-col gap-5">
               <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden shadow-lg border border-white/10">
                 <Image
                   src="/images/partners/cocktailcowboys-hero.jpg"
