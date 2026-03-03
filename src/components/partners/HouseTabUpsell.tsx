@@ -17,36 +17,21 @@ export default function HouseTabUpsell(): ReactElement {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 items-center">
           {/* Left: Content */}
           <div>
-            {/* Eyebrow */}
-            <p className="text-sm font-heading uppercase tracking-[0.08em] text-brand-yellow mb-2">
-              Bonus
-            </p>
-
-            {/* Headlines */}
+            {/* Headline */}
             <h2 className="font-heading text-3xl md:text-4xl text-white mb-3">
-              Get a Free Austin Survival Welcome Package
+              Free Welcome Package
             </h2>
-            <h3 className="font-heading text-xl md:text-2xl text-brand-yellow mb-8">
-              Get Free Delivery and Stocking
-            </h3>
-
-            {/* How to qualify */}
-            <ScrollRevealCSS>
-              <div className="border border-brand-yellow/30 rounded-lg p-5 bg-brand-yellow/5 mb-8">
-                <p className="text-white font-sans">
-                  Spend <strong className="text-brand-yellow">$300+</strong> on a house delivery{' '}
-                  and get a <strong className="text-brand-yellow">FREE Austin Survival Welcome Package</strong>{' '}
-                  plus <strong className="text-brand-yellow">free delivery &amp; fridge stocking</strong>.
-                </p>
-              </div>
-            </ScrollRevealCSS>
+            <p className="text-white/80 font-sans text-lg mb-8">
+              Spend <strong className="text-brand-yellow">$300+</strong> on a house delivery and we include a{' '}
+              <strong className="text-brand-yellow">Welcome to Austin Survival Package</strong>,{' '}
+              free delivery, and fridge stocking.
+            </p>
 
             {/* Value bullets */}
             <div className="space-y-4 mb-8">
               {[
-                'Everyone picks drinks for the house AND the boat on one group link',
-                'Separate delivery to the house before you arrive',
-                'We stock the fridge and fill the cooler',
+                'One group link for house and boat orders',
+                'Delivered and stocked before you arrive',
               ].map((bullet, idx) => (
                 <ScrollRevealCSS key={bullet} delay={idx * 100}>
                   <div className="flex items-start gap-3">
