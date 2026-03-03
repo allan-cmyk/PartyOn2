@@ -24,22 +24,26 @@ export const metadata: Metadata = {
 
 
 export default async function CocktailKitsGiftPage() {
-  // Fetch cocktail kit products from PostgreSQL
-  const products = await prisma.product.findMany({
-    where: {
-      status: 'ACTIVE',
-      productType: { equals: 'Cocktail Kit', mode: 'insensitive' },
-    },
-    include: {
-      images: { orderBy: { position: 'asc' } },
-      variants: { include: { image: true }, orderBy: { createdAt: 'asc' } },
-      categories: { include: { category: true } },
-    },
-    orderBy: { title: 'asc' },
-    take: 50,
+  // Fetch cocktail kit products via the cocktail-kits collection, ordered by position
+  const category = await prisma.category.findFirst({
+    where: { handle: 'cocktail-kits' },
   })
 
-  const cocktailKits = products.map(p => transformToProduct(p))
+  const productCategories = category ? await prisma.productCategory.findMany({
+    where: { categoryId: category.id, product: { status: 'ACTIVE' } },
+    include: {
+      product: {
+        include: {
+          images: { orderBy: { position: 'asc' } },
+          variants: { include: { image: true }, orderBy: { createdAt: 'asc' } },
+          categories: { include: { category: true } },
+        },
+      },
+    },
+    orderBy: { position: 'asc' },
+  }) : []
+
+  const cocktailKits = productCategories.map(pc => transformToProduct(pc.product))
 
   // Find specific featured kits by name patterns
   const findKit = (pattern: string) =>
