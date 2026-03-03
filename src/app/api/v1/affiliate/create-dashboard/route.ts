@@ -97,12 +97,16 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';
+    const baseUrl = `${appUrl}/dashboard/${groupOrder.shareCode}`;
+    const claimUrl = groupOrder.hostClaimToken
+      ? `${baseUrl}?claim=${groupOrder.hostClaimToken}`
+      : baseUrl;
 
     return NextResponse.json({
       success: true,
       data: {
         shareCode: groupOrder.shareCode,
-        dashboardUrl: `${appUrl}/dashboard/${groupOrder.shareCode}`,
+        dashboardUrl: claimUrl,
         groupOrderId: groupOrder.id,
       },
     });

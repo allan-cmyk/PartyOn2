@@ -945,7 +945,7 @@ export async function createDashboardOrder(
  */
 export async function createMultiTabDashboardOrder(
   input: CreateMultiTabDashboardInput
-): Promise<GroupOrderV2Full> {
+): Promise<GroupOrderV2Full & { hostClaimToken: string }> {
   let shareCode = generateShareCode();
   let attempts = 0;
   while (attempts < 5) {
@@ -960,11 +960,17 @@ export async function createMultiTabDashboardOrder(
   const deliveryDate = new Date(input.deliveryDate);
   deliveryDate.setUTCHours(12, 0, 0, 0);
 
+  // Generate host claim token so the affiliate can share a link
+  // that automatically makes the client the host on first visit
+  const { randomBytes } = await import('crypto');
+  const hostClaimToken = randomBytes(24).toString('hex');
+
   const group = await prisma.groupOrderV2.create({
     data: {
       name: input.dashboardTitle,
       hostName: input.hostName,
       shareCode,
+      hostClaimToken,
       partyType: input.partyType || null,
       affiliateId: input.affiliateId,
       source: input.source || 'PARTNER_PAGE',
@@ -999,7 +1005,7 @@ export async function createMultiTabDashboardOrder(
     include: fullGroupIncludes,
   });
 
-  return serializeGroup(group);
+  return { ...serializeGroup(group), hostClaimToken };
 }
 
 /**
