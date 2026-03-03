@@ -17,6 +17,9 @@ interface DashboardOrder {
   draftItemCount: number;
   purchasedItemCount: number;
   totalRevenue: number;
+  viewCount: number;
+  tabCount: number;
+  deliveryDate: string | null;
   dashboardUrl: string;
   createdAt: string;
 }
@@ -33,6 +36,7 @@ export default function PartnerOrdersPage(): ReactElement {
   const [orders, setOrders] = useState<DashboardOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchOrders() {
@@ -53,6 +57,12 @@ export default function PartnerOrdersPage(): ReactElement {
     }
     fetchOrders();
   }, [router]);
+
+  function handleCopyLink(order: DashboardOrder) {
+    navigator.clipboard.writeText(order.dashboardUrl);
+    setCopiedId(order.id);
+    setTimeout(() => setCopiedId(null), 2000);
+  }
 
   if (loading) {
     return (
@@ -82,10 +92,10 @@ export default function PartnerOrdersPage(): ReactElement {
               Back to Dashboard
             </Link>
             <Link
-              href="/affiliate/dashboard/create-order"
+              href="/affiliate/dashboard/create-dashboard"
               className="px-4 py-2 text-sm font-semibold text-white bg-brand-blue rounded-lg hover:bg-blue-700 transition-colors"
             >
-              Create Order
+              Create Dashboard
             </Link>
           </div>
         </div>
@@ -100,10 +110,10 @@ export default function PartnerOrdersPage(): ReactElement {
           <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
             <p className="text-base text-gray-500 mb-4">No orders yet</p>
             <Link
-              href="/affiliate/dashboard/create-order"
+              href="/affiliate/dashboard/create-dashboard"
               className="inline-flex px-6 py-3 bg-brand-blue text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
             >
-              Create Your First Order
+              Create Your First Dashboard
             </Link>
           </div>
         ) : (
@@ -114,10 +124,10 @@ export default function PartnerOrdersPage(): ReactElement {
                   <tr className="border-b border-gray-200 bg-gray-50">
                     <th className="px-4 py-3 text-sm font-semibold text-gray-700">Order Name</th>
                     <th className="px-4 py-3 text-sm font-semibold text-gray-700">Status</th>
-                    <th className="px-4 py-3 text-sm font-semibold text-gray-700">Contact</th>
+                    <th className="px-4 py-3 text-sm font-semibold text-gray-700">Delivery</th>
                     <th className="px-4 py-3 text-sm font-semibold text-gray-700">Items</th>
                     <th className="px-4 py-3 text-sm font-semibold text-gray-700">Revenue</th>
-                    <th className="px-4 py-3 text-sm font-semibold text-gray-700">Created</th>
+                    <th className="px-4 py-3 text-sm font-semibold text-gray-700">Views</th>
                     <th className="px-4 py-3 text-sm font-semibold text-gray-700"></th>
                   </tr>
                 </thead>
@@ -126,23 +136,28 @@ export default function PartnerOrdersPage(): ReactElement {
                     <tr key={order.id} className="hover:bg-gray-50">
                       <td className="px-4 py-3">
                         <p className="text-sm font-medium text-gray-900">{order.name}</p>
-                        <p className="text-sm text-gray-500">{order.hostName}</p>
+                        <p className="text-xs text-gray-500">
+                          {order.hostName}
+                          {order.tabCount > 1 && (
+                            <span className="ml-1 text-gray-400">
+                              ({order.tabCount} tabs)
+                            </span>
+                          )}
+                        </p>
                       </td>
                       <td className="px-4 py-3">
-                        <span className={`inline-flex px-2 py-0.5 text-sm font-medium rounded-full ${STATUS_BADGE[order.status] || 'bg-gray-100 text-gray-800'}`}>
+                        <span className={`inline-flex px-2 py-0.5 text-xs font-medium rounded-full ${STATUS_BADGE[order.status] || 'bg-gray-100 text-gray-800'}`}>
                           {order.status}
                         </span>
                       </td>
-                      <td className="px-4 py-3">
-                        {order.hostEmail && (
-                          <p className="text-sm text-gray-600">{order.hostEmail}</p>
-                        )}
-                        {order.hostPhone && (
-                          <p className="text-sm text-gray-500">{order.hostPhone}</p>
-                        )}
-                        {!order.hostEmail && !order.hostPhone && (
-                          <p className="text-sm text-gray-400">--</p>
-                        )}
+                      <td className="px-4 py-3 text-sm text-gray-600">
+                        {order.deliveryDate
+                          ? new Date(order.deliveryDate).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              timeZone: 'UTC',
+                            })
+                          : '--'}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-600">
                         {order.draftItemCount + order.purchasedItemCount}
@@ -153,22 +168,32 @@ export default function PartnerOrdersPage(): ReactElement {
                       <td className="px-4 py-3 text-sm font-medium text-gray-900">
                         ${order.totalRevenue.toFixed(2)}
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-500">
-                        {new Date(order.createdAt).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })}
+                      <td className="px-4 py-3">
+                        {order.viewCount > 0 ? (
+                          <span className="inline-flex px-2 py-0.5 text-xs font-bold rounded-full bg-green-100 text-green-800">
+                            POD: {order.viewCount}x
+                          </span>
+                        ) : (
+                          <span className="text-xs text-gray-400">--</span>
+                        )}
                       </td>
                       <td className="px-4 py-3">
-                        <a
-                          href={order.dashboardUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-sm font-medium text-brand-blue hover:text-blue-700"
-                        >
-                          Open
-                        </a>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleCopyLink(order)}
+                            className="text-xs font-medium text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 px-2.5 py-1 rounded-md transition-colors"
+                          >
+                            {copiedId === order.id ? 'Copied!' : 'Copy Link'}
+                          </button>
+                          <a
+                            href={order.dashboardUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs font-medium text-brand-blue hover:text-blue-700"
+                          >
+                            Open
+                          </a>
+                        </div>
                       </td>
                     </tr>
                   ))}

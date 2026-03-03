@@ -214,6 +214,24 @@ export interface CreateDashboardInput {
   deliveryAddress?: string;
 }
 
+export interface MultiTabPreset {
+  name: string;
+  deliveryAddress?: string;
+  deliveryContextType?: DeliveryContextType;
+  deliveryTime?: string;
+}
+
+export interface CreateMultiTabDashboardInput {
+  hostName: string;
+  dashboardTitle: string;
+  deliveryDate: string;
+  deliveryTime: string;
+  partyType?: PartyType;
+  affiliateId: string;
+  source?: DashboardSource;
+  tabs: MultiTabPreset[];
+}
+
 // ==========================================
 // Promo / Discount
 // ==========================================

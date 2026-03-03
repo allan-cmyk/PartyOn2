@@ -91,6 +91,12 @@ export default function DashboardPage(): ReactElement {
     }
   }, [code]);
 
+  // Track dashboard view (fire-and-forget)
+  useEffect(() => {
+    if (!code) return;
+    fetch(`/api/v2/group-orders/${code}/track-view`, { method: 'POST' }).catch(() => {});
+  }, [code]);
+
   // Auto-load affiliate from cookie (with confetti on first apply)
   useEffect(() => {
     if (!code || !participantId) return;

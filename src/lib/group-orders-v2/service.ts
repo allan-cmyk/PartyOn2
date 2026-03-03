@@ -24,6 +24,7 @@ import type {
   TimerInfo,
   CreateGroupOrderV2Input,
   CreateDashboardInput,
+  CreateMultiTabDashboardInput,
   CreateTabInput,
   UpdateTabInput,
   JoinGroupOrderInput,
@@ -926,6 +927,69 @@ export async function createDashboardOrder(
           guestName: input.hostName,
           guestEmail: input.hostEmail || null,
           guestPhone: input.hostPhone || null,
+          isHost: true,
+          ageVerified: true,
+          status: 'ACTIVE',
+        },
+      },
+    },
+    include: fullGroupIncludes,
+  });
+
+  return serializeGroup(group);
+}
+
+/**
+ * Create a multi-tab dashboard order.
+ * Used by affiliate create-dashboard form to create orders with multiple preset tabs.
+ */
+export async function createMultiTabDashboardOrder(
+  input: CreateMultiTabDashboardInput
+): Promise<GroupOrderV2Full> {
+  let shareCode = generateShareCode();
+  let attempts = 0;
+  while (attempts < 5) {
+    const existing = await prisma.groupOrderV2.findUnique({
+      where: { shareCode },
+    });
+    if (!existing) break;
+    shareCode = generateShareCode();
+    attempts++;
+  }
+
+  const deliveryDate = new Date(input.deliveryDate);
+  deliveryDate.setUTCHours(12, 0, 0, 0);
+
+  const group = await prisma.groupOrderV2.create({
+    data: {
+      name: input.dashboardTitle,
+      hostName: input.hostName,
+      shareCode,
+      partyType: input.partyType || null,
+      affiliateId: input.affiliateId,
+      source: input.source || 'PARTNER_PAGE',
+      expiresAt: defaultExpiresAt(),
+      tabs: {
+        create: input.tabs.map((tab, idx) => {
+          const address = tab.deliveryAddress
+            ? { address1: tab.deliveryAddress, city: '', province: 'TX', zip: '', country: 'US' }
+            : { address1: '', city: '', province: 'TX', zip: '', country: 'US' };
+
+          return {
+            name: tab.name,
+            position: idx,
+            deliveryDate,
+            deliveryTime: tab.deliveryTime || input.deliveryTime,
+            deliveryAddress: address as unknown as Record<string, string>,
+            orderDeadline: computeOrderDeadline(deliveryDate),
+            deliveryFee: 0,
+            deliveryContextType: tab.deliveryContextType || 'HOUSE',
+          };
+        }),
+      },
+      participants: {
+        create: {
+          guestName: input.hostName,
           isHost: true,
           ageVerified: true,
           status: 'ACTIVE',

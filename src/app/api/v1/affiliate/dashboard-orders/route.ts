@@ -51,6 +51,10 @@ export async function GET(): Promise<NextResponse> {
         0
       );
 
+      // First tab's delivery date (for display)
+      const firstTab = order.tabs.sort((a, b) => a.position - b.position)[0];
+      const deliveryDate = firstTab?.deliveryDate?.toISOString() || null;
+
       return {
         id: order.id,
         name: order.name,
@@ -64,6 +68,9 @@ export async function GET(): Promise<NextResponse> {
         draftItemCount: totalDraftItems,
         purchasedItemCount: totalPurchasedItems,
         totalRevenue,
+        viewCount: order.viewCount,
+        tabCount: order.tabs.length,
+        deliveryDate,
         dashboardUrl: `${appUrl}/dashboard/${order.shareCode}`,
         createdAt: order.createdAt.toISOString(),
       };
