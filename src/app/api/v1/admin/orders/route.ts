@@ -136,6 +136,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       deliveryTime: order.deliveryTime,
       deliveryType: order.deliveryType,
       createdAt: order.createdAt.toISOString(),
+      deliveryAddress: order.deliveryAddress as Record<string, string> | null,
+      items: order.items.map(i => ({ quantity: i.quantity, title: i.product.title })),
       // Group order info
       groupOrderId: order.groupOrderId,
       groupOrder: order.groupOrder ? {

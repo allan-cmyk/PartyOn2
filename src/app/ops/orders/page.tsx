@@ -39,6 +39,8 @@ interface Order {
   createdAt: string;
   groupOrderId: string | null;
   groupOrder: GroupOrderInfo | null;
+  deliveryAddress: Record<string, string> | null;
+  items: { quantity: number; title: string }[];
 }
 
 // Grouped order type for accordion display
@@ -525,6 +527,189 @@ function processOrdersForDisplay(orders: Order[]): DisplayItem[] {
   return displayItems;
 }
 
+// Format delivery address from JSON
+function formatAddress(addr: Record<string, string> | null): string {
+  if (!addr) return '';
+  const parts = [addr.address1, addr.address2, addr.city, addr.state, addr.zip].filter(Boolean);
+  return parts.join(', ');
+}
+
+// Mobile Order Card
+function MobileOrderCard({ order, selected, onToggle }: { order: Order; selected: boolean; onToggle: () => void }): ReactElement {
+  const [expanded, setExpanded] = useState(false);
+  const address = formatAddress(order.deliveryAddress);
+
+  return (
+    <div className={`bg-white rounded-xl border shadow-sm overflow-hidden ${selected ? 'border-blue-300 bg-blue-50/30' : 'border-gray-200'}`}>
+      <div className="p-4">
+        {/* Row 1: Checkbox + Name + Total */}
+        <div className="flex items-start gap-3">
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={onToggle}
+            className="w-4 h-4 mt-1 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer flex-shrink-0"
+          />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <Link href={`/ops/orders/${order.id}`} className="font-semibold text-gray-900 hover:text-blue-600 block truncate">
+                  {order.customerName}
+                </Link>
+                <p className="text-sm text-gray-500 mt-0.5">
+                  {formatDate(order.deliveryDate)} - {order.deliveryTime}
+                </p>
+              </div>
+              <span className="font-bold text-gray-900 whitespace-nowrap">{formatCurrency(order.total)}</span>
+            </div>
+
+            {/* Address */}
+            {address && (
+              <p className="text-sm text-gray-500 mt-1 truncate">{address}</p>
+            )}
+
+            {/* Row 3: Badges + item count + chevron */}
+            <div className="flex items-center gap-2 mt-2 flex-wrap">
+              <span className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
+                {order.status}
+              </span>
+              <span className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${getFulfillmentColor(order.fulfillmentStatus)}`}>
+                {order.fulfillmentStatus}
+              </span>
+              <span className="text-xs text-gray-500">{order.itemCount} items</span>
+              {order.groupOrder && (
+                <Link
+                  href={`/ops/group-orders/${order.groupOrder.id}`}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-purple-100 text-purple-700 rounded-full"
+                >
+                  {order.groupOrder.shareCode}
+                </Link>
+              )}
+              <button
+                onClick={(e) => { e.preventDefault(); setExpanded(!expanded); }}
+                className="ml-auto p-1 text-gray-400 hover:text-gray-600"
+                aria-label={expanded ? 'Collapse items' : 'Expand items'}
+              >
+                <svg className={`w-5 h-5 transition-transform ${expanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Expanded items */}
+      {expanded && order.items.length > 0 && (
+        <div className="border-t border-gray-100 bg-gray-50 px-4 py-3">
+          <div className="space-y-1.5 pl-7">
+            {order.items.map((item, idx) => (
+              <div key={idx} className="flex gap-2 text-sm">
+                <span className="text-gray-500 font-medium whitespace-nowrap">{item.quantity}x</span>
+                <span className="text-gray-700">{item.title}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Mobile Group Card
+function MobileGroupCard({
+  group,
+  isExpanded,
+  onToggle,
+  selectedOrders,
+  onToggleOrder,
+}: {
+  group: GroupedOrder;
+  isExpanded: boolean;
+  onToggle: () => void;
+  selectedOrders: Set<string>;
+  onToggleOrder: (id: string) => void;
+}): ReactElement {
+  const allGroupSelected = group.orders.every((o) => selectedOrders.has(o.id));
+  const someGroupSelected = group.orders.some((o) => selectedOrders.has(o.id));
+
+  const toggleAllInGroup = () => {
+    for (const o of group.orders) {
+      if (allGroupSelected) {
+        if (selectedOrders.has(o.id)) onToggleOrder(o.id);
+      } else {
+        if (!selectedOrders.has(o.id)) onToggleOrder(o.id);
+      }
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-xl border border-purple-200 shadow-sm overflow-hidden">
+      {/* Group header */}
+      <div className="p-4 bg-purple-50/50 cursor-pointer" onClick={onToggle}>
+        <div className="flex items-start gap-3">
+          <input
+            type="checkbox"
+            checked={allGroupSelected}
+            ref={(el) => { if (el) el.indeterminate = someGroupSelected && !allGroupSelected; }}
+            onClick={(e) => { e.stopPropagation(); toggleAllInGroup(); }}
+            onChange={() => {}}
+            className="w-4 h-4 mt-1 text-purple-600 border-gray-300 rounded focus:ring-purple-500 cursor-pointer flex-shrink-0"
+          />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-purple-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  <span className="font-bold text-purple-700">{group.groupInfo.shareCode}</span>
+                </div>
+                <p className="text-sm text-purple-600 mt-0.5">{group.groupInfo.name}</p>
+              </div>
+              <span className="font-bold text-purple-700 whitespace-nowrap">{formatCurrency(group.totalAmount)}</span>
+            </div>
+            <div className="flex items-center gap-2 mt-2">
+              <span className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${getGroupStatusColor(group.groupInfo.status)}`}>
+                {group.groupInfo.status}
+              </span>
+              <span className="text-xs text-gray-500">{group.orders.length} orders - {group.totalItems} items</span>
+              <svg className={`w-5 h-5 ml-auto text-purple-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Expanded sub-orders */}
+      {isExpanded && (
+        <div className="border-t border-purple-100 divide-y divide-gray-100">
+          {group.orders.map((order) => (
+            <MobileOrderCard
+              key={order.id}
+              order={order}
+              selected={selectedOrders.has(order.id)}
+              onToggle={() => onToggleOrder(order.id)}
+            />
+          ))}
+          <div className="p-3 bg-purple-50/30">
+            <Link
+              href={`/ops/group-orders/${group.groupId}`}
+              className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-purple-700 bg-purple-100 rounded-lg hover:bg-purple-200 transition-colors"
+            >
+              View Group Details
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function OrdersPage(): ReactElement {
   const [view, setView] = useState<'orders' | 'invoices'>('orders');
   const [data, setData] = useState<OrdersData | null>(null);
@@ -771,7 +956,7 @@ export default function OrdersPage(): ReactElement {
       {view === 'orders' && <>
       {/* Summary Stats */}
       {data && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+        <div className="hidden md:grid md:grid-cols-5 gap-4 mb-8">
           <StatCard
             title="Total Orders"
             value={data.summary.total.toLocaleString()}
@@ -974,8 +1159,72 @@ export default function OrdersPage(): ReactElement {
         </div>
       )}
 
-      {/* Orders Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      {/* Mobile Card List */}
+      <div className="md:hidden space-y-3">
+        {loading ? (
+          <div className="space-y-3">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="animate-pulse bg-white rounded-xl border border-gray-200 p-4">
+                <div className="flex gap-3">
+                  <div className="w-4 h-4 bg-gray-200 rounded mt-1" />
+                  <div className="flex-1 space-y-2">
+                    <div className="flex justify-between">
+                      <div className="h-5 bg-gray-200 rounded w-1/3" />
+                      <div className="h-5 bg-gray-200 rounded w-1/5" />
+                    </div>
+                    <div className="h-4 bg-gray-200 rounded w-2/3" />
+                    <div className="flex gap-2">
+                      <div className="h-5 bg-gray-200 rounded-full w-20" />
+                      <div className="h-5 bg-gray-200 rounded-full w-24" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : data?.orders.length === 0 ? (
+          <div className="p-12 text-center bg-white rounded-xl border border-gray-200">
+            <p className="text-gray-700 text-lg font-semibold">No orders found</p>
+            <p className="text-gray-500 mt-1 text-sm">Try adjusting your filters</p>
+            <button
+              onClick={() => {
+                setSearch('');
+                setStatusFilter('');
+                setFulfillmentFilter('');
+                setDeliveryTypeFilter('');
+                setGroupTypeFilter('');
+                setPage(1);
+              }}
+              className="mt-4 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors text-sm"
+            >
+              Clear all filters
+            </button>
+          </div>
+        ) : (
+          processOrdersForDisplay(data?.orders || []).map((item) =>
+            item.type === 'group' ? (
+              <MobileGroupCard
+                key={`group-${item.group.groupId}`}
+                group={item.group}
+                isExpanded={expandedGroups.has(item.group.groupId)}
+                onToggle={() => toggleGroupExpansion(item.group.groupId)}
+                selectedOrders={selectedOrders}
+                onToggleOrder={toggleOrderSelection}
+              />
+            ) : (
+              <MobileOrderCard
+                key={item.order.id}
+                order={item.order}
+                selected={selectedOrders.has(item.order.id)}
+                onToggle={() => toggleOrderSelection(item.order.id)}
+              />
+            )
+          )
+        )}
+      </div>
+
+      {/* Orders Table (Desktop) */}
+      <div className="hidden md:block bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         {loading ? (
           <div className="p-8">
             <div className="space-y-4">
@@ -1063,55 +1312,56 @@ export default function OrdersPage(): ReactElement {
           </table>
         )}
 
-        {/* Pagination */}
-        {data && data.pagination.pages > 1 && (
-          <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between bg-gradient-to-r from-gray-50 to-white">
-            <button
-              onClick={() => setPage(Math.max(1, page - 1))}
-              disabled={page === 1}
-              className="group px-4 py-2.5 text-sm font-medium bg-white border border-gray-200 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 flex items-center gap-2 shadow-sm"
-            >
-              <svg className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Previous
-            </button>
-            <div className="flex items-center gap-2">
-              {Array.from({ length: Math.min(5, data.pagination.pages) }, (_, i) => {
-                let pageNum = i + 1;
-                if (data.pagination.pages > 5) {
-                  if (page <= 3) pageNum = i + 1;
-                  else if (page >= data.pagination.pages - 2) pageNum = data.pagination.pages - 4 + i;
-                  else pageNum = page - 2 + i;
-                }
-                return (
-                  <button
-                    key={pageNum}
-                    onClick={() => setPage(pageNum)}
-                    className={`w-10 h-10 text-sm font-semibold rounded-xl transition-all duration-200 ${
-                      page === pageNum
-                        ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-md shadow-blue-200 scale-105'
-                        : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 shadow-sm'
-                    }`}
-                  >
-                    {pageNum}
-                  </button>
-                );
-              })}
-            </div>
-            <button
-              onClick={() => setPage(Math.min(data.pagination.pages, page + 1))}
-              disabled={page === data.pagination.pages}
-              className="group px-4 py-2.5 text-sm font-medium bg-white border border-gray-200 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 flex items-center gap-2 shadow-sm"
-            >
-              Next
-              <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
-        )}
       </div>
+
+      {/* Pagination */}
+      {data && data.pagination.pages > 1 && (
+        <div className="mt-4 px-4 md:px-6 py-4 bg-white rounded-xl border border-gray-100 flex items-center justify-between shadow-sm">
+          <button
+            onClick={() => setPage(Math.max(1, page - 1))}
+            disabled={page === 1}
+            className="group px-3 md:px-4 py-2 md:py-2.5 text-sm font-medium bg-white border border-gray-200 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 flex items-center gap-1 md:gap-2 shadow-sm"
+          >
+            <svg className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span className="hidden sm:inline">Previous</span>
+          </button>
+          <div className="flex items-center gap-1 md:gap-2">
+            {Array.from({ length: Math.min(5, data.pagination.pages) }, (_, i) => {
+              let pageNum = i + 1;
+              if (data.pagination.pages > 5) {
+                if (page <= 3) pageNum = i + 1;
+                else if (page >= data.pagination.pages - 2) pageNum = data.pagination.pages - 4 + i;
+                else pageNum = page - 2 + i;
+              }
+              return (
+                <button
+                  key={pageNum}
+                  onClick={() => setPage(pageNum)}
+                  className={`w-9 h-9 md:w-10 md:h-10 text-sm font-semibold rounded-xl transition-all duration-200 ${
+                    page === pageNum
+                      ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-md shadow-blue-200 scale-105'
+                      : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 shadow-sm'
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
+          </div>
+          <button
+            onClick={() => setPage(Math.min(data.pagination.pages, page + 1))}
+            disabled={page === data.pagination.pages}
+            className="group px-3 md:px-4 py-2 md:py-2.5 text-sm font-medium bg-white border border-gray-200 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 flex items-center gap-1 md:gap-2 shadow-sm"
+          >
+            <span className="hidden sm:inline">Next</span>
+            <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      )}
       </>}
     </div>
   );
