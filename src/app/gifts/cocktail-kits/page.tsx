@@ -28,7 +28,7 @@ export default async function CocktailKitsGiftPage() {
   const products = await prisma.product.findMany({
     where: {
       status: 'ACTIVE',
-      productType: { equals: 'Cocktail Kits', mode: 'insensitive' },
+      productType: { equals: 'Cocktail Kit', mode: 'insensitive' },
     },
     include: {
       images: { orderBy: { position: 'asc' } },
@@ -48,7 +48,7 @@ export default async function CocktailKitsGiftPage() {
     )
 
   // Get 4 specific featured kits
-  const austinRitaKit = findKit('austin rita party pitcher')
+  const austinRitaKit = findKit('austin rita cocktail kit - serves')
   const espressoMartiniKit = findKit('espresso martini cocktail kit')
   const oldFashionedKit = findKit('hill country old-fashioned') || findKit('hill country old')
   const aperolSpritzKit = findKit('apple cider aperol spritz')
@@ -64,10 +64,9 @@ export default async function CocktailKitsGiftPage() {
   // Get IDs of featured kits to exclude from secondary grid
   const featuredKitIds = new Set(featuredKits.map(kit => kit.id))
 
-  // Get other cocktail kits not in featured list (exclude limes and other non-kit items)
+  // Get other cocktail kits not in featured list
   const otherKits = cocktailKits.filter((kit: Product) =>
-    !featuredKitIds.has(kit.id) &&
-    !kit.title.toLowerCase().includes('lime')
+    !featuredKitIds.has(kit.id)
   )
 
   // Short, punchy subheadlines for each kit
