@@ -97,7 +97,7 @@ export const AddDraftItemSchema = z.object({
   title: z.string().min(1),
   variantTitle: z.string().optional(),
   price: z.number().min(0, 'Price must be zero or positive'),
-  imageUrl: z.string().url().optional().or(z.literal('')),
+  imageUrl: z.string().min(1).optional().or(z.literal('')),
   quantity: z.number().int().min(1).max(99),
 });
 
