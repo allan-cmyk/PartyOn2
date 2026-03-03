@@ -222,6 +222,19 @@
       "order": 1
     },
     {
+      "id": "20",
+      "name": "Cocktail Cowboys",
+      "slug": "cocktail-cowboys",
+      "description": "As seen on Shark Tank. Professional party hosts and bartenders bringing unforgettable bachelorette experiences to your Austin rental. Cocktail Cowboys serve drinks, host games, DJ the music, and keep the party going. Pair with Party On Delivery to get your drinks delivered before they arrive.",
+      "website": "https://partyhostboys.com/location/austin/",
+      "logo": "/images/partners/cocktailcowboys-logo.webp",
+      "heroImage": "/images/partners/cocktailcowboys-hero.jpg",
+      "category": "experiences",
+      "featured": true,
+      "order": 2,
+      "partnerPage": "/partners/cocktail-cowboys"
+    },
+    {
       "id": "19",
       "name": "Inn Cahoots",
       "slug": "inn-cahoots",
