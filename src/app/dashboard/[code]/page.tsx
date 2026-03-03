@@ -524,6 +524,9 @@ export default function DashboardPage(): ReactElement {
           onClose={() => setShowNewLocation(false)}
           onCreated={async () => {
             setShowNewLocation(false);
+            // Clear promo code -- discounts should not carry over to new tabs
+            setAppliedPromo(null);
+            localStorage.removeItem(`${PROMO_KEY_PREFIX}${code}`);
             const updated = await refresh();
             if (updated) {
               setActiveTabIndex(updated.tabs.length - 1);
