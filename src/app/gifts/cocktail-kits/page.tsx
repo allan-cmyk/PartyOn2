@@ -131,8 +131,8 @@ export default async function CocktailKitsGiftPage() {
             <div className="relative">
               <div className="relative aspect-square rounded-lg overflow-hidden shadow-2xl">
                 <Image
-                  src={espressoMartiniKit?.images.edges[0]?.node.url || 'https://cdn.shopify.com/s/files/1/0538/1767/1858/files/Gemini_Generated_Image_tk6mbhtk6mbhtk6m.png?v=1764702134'}
-                  alt={espressoMartiniKit?.title || 'Espresso Martini Cocktail Kit'}
+                  src={austinRitaKit?.images.edges[0]?.node.url || 'https://cdn.shopify.com/s/files/1/0538/1767/1858/files/Gemini_Generated_Image_tk6mbhtk6mbhtk6m.png?v=1764702134'}
+                  alt={austinRitaKit?.title || 'Austin Rita Cocktail Kit'}
                   fill
                   className="object-cover"
                   priority
