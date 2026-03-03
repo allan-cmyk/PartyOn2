@@ -5,39 +5,16 @@
 
 'use client';
 
-import { useState, type ReactElement } from 'react';
+import { type ReactElement } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
 /**
  * Boat Babes hero section - split layout
- * Left: headline, CTAs, group order, phone
+ * Left: headline, CTA, phone
  * Right: partner logos, hero image, trust signals
  */
 export default function BoatBabesHero(): ReactElement {
-  const [joinCode, setJoinCode] = useState('');
-  const [showJoinInput, setShowJoinInput] = useState(false);
-
-  const scrollToProducts = () => {
-    document.getElementById('product-grid')?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
-  };
-
-  const scrollToCalculator = () => {
-    document.getElementById('order-builder')?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
-  };
-
-  const handleJoin = () => {
-    if (joinCode.trim()) {
-      window.location.href = `/group/${joinCode.trim().toUpperCase()}`;
-    }
-  };
-
   return (
     <section
       className="relative overflow-hidden"
@@ -63,66 +40,14 @@ export default function BoatBabesHero(): ReactElement {
               Delivered to the marina before your Boat Babes arrive.
             </p>
 
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-3 mb-8">
-              <button
-                onClick={scrollToProducts}
-                className="flex-1 h-14 md:h-16 px-8 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-semibold tracking-wide transition-colors rounded-lg text-lg md:text-xl"
-              >
-                Shop Drinks
-              </button>
-              <button
-                onClick={scrollToCalculator}
-                className="flex-1 h-14 md:h-16 px-8 border-2 border-white/40 hover:bg-white/20 text-white font-semibold tracking-wide transition-colors rounded-lg text-lg md:text-xl"
-              >
-                See Drink Calculator
-              </button>
-            </div>
-
-            {/* Group Order + Join */}
-            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-base mb-4">
+            {/* CTA */}
+            <div className="mb-8">
               <Link
                 href="/order"
-                className="text-white/70 hover:text-white transition-colors"
+                className="inline-block h-14 md:h-16 px-10 bg-yellow-500 hover:bg-brand-yellow text-gray-900 font-semibold tracking-wide transition-colors rounded-lg text-lg md:text-xl leading-[3.5rem] md:leading-[4rem]"
               >
-                Ordering with friends?{' '}
-                <span className="text-brand-yellow font-medium">Start a group &rarr;</span>
+                Start an Order
               </Link>
-
-              <span className="text-white/20 hidden sm:inline">|</span>
-
-              {!showJoinInput ? (
-                <button
-                  onClick={() => setShowJoinInput(true)}
-                  className="text-white/70 hover:text-white transition-colors"
-                >
-                  Joining a group?{' '}
-                  <span className="text-brand-yellow font-medium">Enter code</span>
-                </button>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <input
-                    id="shareCode"
-                    name="shareCode"
-                    className="h-9 w-24 rounded bg-black/30 border border-white/20 px-2 text-white text-base text-center
-                               placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-brand-yellow/50"
-                    placeholder="CODE"
-                    value={joinCode}
-                    onChange={(e) => setJoinCode(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleJoin()}
-                    autoFocus
-                  />
-                  <button
-                    type="button"
-                    onClick={handleJoin}
-                    disabled={!joinCode.trim()}
-                    className="h-9 rounded px-3 text-base text-brand-yellow font-medium hover:text-brand-yellow transition
-                               disabled:opacity-40 disabled:cursor-not-allowed"
-                  >
-                    Join
-                  </button>
-                </div>
-              )}
             </div>
 
             {/* Phone */}
