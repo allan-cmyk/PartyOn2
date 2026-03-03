@@ -109,10 +109,10 @@ function PremierPartyCruisesPageContent(): ReactElement {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
             {/* LEFT: Every Order Includes */}
             <div>
-              <p className="text-sm font-heading uppercase tracking-[0.08em] text-brand-blue mb-2">
+              <p className="text-sm font-heading uppercase tracking-[0.08em] text-brand-blue mb-2 text-center md:text-left">
                 Boat Day = Handled
               </p>
-              <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-6">
+              <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-6 text-center md:text-left">
                 Every Order Includes
               </h2>
 
@@ -140,13 +140,13 @@ function PremierPartyCruisesPageContent(): ReactElement {
                 ))}
               </div>
 
-              <div className="mt-4 pt-3 border-t border-gray-300">
+              <div className="mt-4 pt-3 border-t border-gray-300 text-center md:text-left">
                 <span className="text-gray-700 font-sans">
                   Premier guest perks: <strong className="text-gray-900">$75+ value included</strong>
                 </span>
               </div>
 
-              <div className="mt-6">
+              <div className="mt-6 text-center md:text-left">
                 <Button variant="cart" size="md" href="/order">
                   Order Your Drinks
                 </Button>
@@ -155,7 +155,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
 
             {/* RIGHT: How It Works */}
             <div>
-              <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-6">
+              <h2 className="font-heading text-3xl md:text-4xl text-gray-900 mb-6 text-center md:text-left">
                 How group ordering works
               </h2>
 
