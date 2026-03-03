@@ -352,7 +352,7 @@ function InnCahootsPageContent(): ReactElement {
 
           <div className="flex flex-col items-center gap-3 mb-6">
             <Link
-              href="/order"
+              href="/order?ref=MISCHIEF"
               className="px-10 py-4 bg-gray-900 text-white hover:bg-gray-800 font-semibold tracking-wider transition-colors rounded-lg"
             >
               Start an Order

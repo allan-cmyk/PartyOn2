@@ -91,7 +91,7 @@ export default function DashboardPage(): ReactElement {
     }
   }, [code]);
 
-  // Auto-load affiliate from cookie (silent, no confetti)
+  // Auto-load affiliate from cookie (with confetti on first apply)
   useEffect(() => {
     if (!code || !participantId) return;
     // Skip if promo already applied
@@ -112,6 +112,7 @@ export default function DashboardPage(): ReactElement {
           };
           setAppliedPromo(promo);
           localStorage.setItem(`${PROMO_KEY_PREFIX}${code}`, JSON.stringify(promo));
+          fireConfetti();
         }
       })
       .catch(() => {
@@ -139,6 +140,7 @@ export default function DashboardPage(): ReactElement {
       };
       setAppliedPromo(promo);
       localStorage.setItem(`${PROMO_KEY_PREFIX}${code}`, JSON.stringify(promo));
+      fireConfetti();
     }
   }, [code, participantId, groupOrder, appliedPromo]);
 

@@ -83,6 +83,22 @@ function OrderRedirectInner(): ReactElement {
           }
         }
 
+        // Fallback: check ref_code cookie if no ?ref= or ?a= param
+        if (!affiliateId && !affiliateParam) {
+          try {
+            const cookieRes = await fetch('/api/v1/affiliate/attribution');
+            if (cookieRes.ok) {
+              const cookieJson = await cookieRes.json();
+              if (cookieJson.success && cookieJson.data?.affiliateId) {
+                affiliateId = cookieJson.data.affiliateId;
+                source = 'PARTNER_PAGE';
+              }
+            }
+          } catch {
+            // Non-blocking, proceed without affiliate
+          }
+        }
+
         if (affiliateParam) {
           affiliateId = affiliateParam;
           source = 'PARTNER_PAGE';

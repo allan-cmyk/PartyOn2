@@ -123,7 +123,7 @@ export default function PremierHero(): ReactElement {
           transition={{ duration: 0.6, delay: 0.45, ease: [0.25, 0.1, 0.25, 1] }}
         >
         <div className="flex flex-col items-center gap-2 md:gap-3 mb-4 md:mb-6">
-          <Button variant="cart" size="lg" href="/order">
+          <Button variant="cart" size="lg" href="/order?ref=PREMIER">
             Start a Group Order (split payments)
           </Button>
           <button

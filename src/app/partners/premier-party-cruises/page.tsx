@@ -212,7 +212,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
               </div>
 
               <div className="mt-6">
-                <Button variant="cart" size="md" href="/order">
+                <Button variant="cart" size="md" href="/order?ref=PREMIER">
                   Start a Group Order &rarr;
                 </Button>
               </div>
@@ -323,7 +323,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
                 <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 mb-6">
                   <h2 className="font-heading text-2xl md:text-3xl text-gray-900">Shop drinks</h2>
                   <div className="flex-1" />
-                  <Button variant="cart" size="sm" href="/order">
+                  <Button variant="cart" size="sm" href="/order?ref=PREMIER">
                     Start Group Order
                   </Button>
                 </div>
@@ -479,7 +479,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
                   </li>
                 ))}
               </ul>
-              <Button variant="cart" size="lg" href="/order">
+              <Button variant="cart" size="lg" href="/order?ref=PREMIER">
                 Start a Group Order
               </Button>
             </ScrollRevealCSS>
@@ -522,7 +522,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
           </div>
 
           <div className="mt-10 text-center">
-            <Button variant="cart" size="lg" href="/order">
+            <Button variant="cart" size="lg" href="/order?ref=PREMIER">
               Start a Group Order (split payments)
             </Button>
           </div>
@@ -698,7 +698,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
             </p>
 
             <div className="flex flex-col items-center gap-3 mb-6">
-              <Button variant="primary" size="lg" href="/order">
+              <Button variant="primary" size="lg" href="/order?ref=PREMIER">
                 Start a Group Order
               </Button>
 
