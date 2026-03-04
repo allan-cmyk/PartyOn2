@@ -55,6 +55,51 @@ export async function GET(): Promise<NextResponse> {
     const tierLabel = getTierLabel(yearRevenueCents);
     const tierProgressPercent = Math.round(getTierProgress(yearRevenueCents));
 
+    // Monthly stats for the last 6 months
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
+    sixMonthsAgo.setDate(1);
+    sixMonthsAgo.setHours(0, 0, 0, 0);
+
+    const recentCommissions = await prisma.affiliateCommission.findMany({
+      where: {
+        affiliateId: affiliate.id,
+        createdAt: { gte: sixMonthsAgo },
+        status: { not: CommissionStatus.VOID },
+      },
+      select: {
+        commissionBaseCents: true,
+        commissionAmountCents: true,
+        createdAt: true,
+      },
+    });
+
+    // Group by month
+    const monthMap = new Map<string, { revenueCents: number; commissionCents: number; orderCount: number }>();
+    for (let i = 0; i < 6; i++) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - (5 - i));
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      monthMap.set(key, { revenueCents: 0, commissionCents: 0, orderCount: 0 });
+    }
+
+    for (const c of recentCommissions) {
+      const key = `${c.createdAt.getFullYear()}-${String(c.createdAt.getMonth() + 1).padStart(2, '0')}`;
+      const entry = monthMap.get(key);
+      if (entry) {
+        entry.revenueCents += c.commissionBaseCents;
+        entry.commissionCents += c.commissionAmountCents;
+        entry.orderCount += 1;
+      }
+    }
+
+    const monthlyStats = Array.from(monthMap.entries()).map(([month, stats]) => {
+      const [y, m] = month.split('-');
+      const date = new Date(Number(y), Number(m) - 1);
+      const label = date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+      return { month, label, ...stats };
+    });
+
     return NextResponse.json({
       success: true,
       data: {
@@ -78,6 +123,7 @@ export async function GET(): Promise<NextResponse> {
           commissionCents: lifetimeCommissions._sum.commissionAmountCents || 0,
           orderCount: lifetimeCommissions._count,
         },
+        monthlyStats,
       },
     });
   } catch (error) {
