@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
     if (auth instanceof NextResponse) return auth;
 
     const body = await request.json();
-    const { contactName, businessName, code, personalNote } = body;
+    const { contactName, businessName, code, partnerSlug, personalNote } = body;
 
     if (!contactName || !businessName) {
       return NextResponse.json(
@@ -20,8 +20,9 @@ export async function POST(request: NextRequest) {
     }
 
     const previewCode = code || 'YOURCODE';
-    const referralLink = `${BASE_URL}/partners/${previewCode.toLowerCase()}`;
-    const directReferralLink = `${BASE_URL}/partners/${previewCode.toLowerCase()}?ref=${previewCode}`;
+    const slug = partnerSlug || previewCode.toLowerCase();
+    const referralLink = `${BASE_URL}/partners/${slug}`;
+    const directReferralLink = `${BASE_URL}/partners/${slug}?ref=${previewCode}`;
     const dashboardLink = `${BASE_URL}/affiliate/login`;
 
     const html = generateAffiliateWelcomeEmail({

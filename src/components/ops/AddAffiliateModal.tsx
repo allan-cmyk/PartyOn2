@@ -64,6 +64,7 @@ export default function AddAffiliateModal({ onClose, onCreated }: AddAffiliateMo
           contactName,
           businessName,
           code: code || undefined,
+          partnerSlug: partnerSlug || undefined,
           personalNote: personalNote || undefined,
         }),
       });
@@ -78,7 +79,7 @@ export default function AddAffiliateModal({ onClose, onCreated }: AddAffiliateMo
     } finally {
       setPreviewLoading(false);
     }
-  }, [contactName, businessName, code, personalNote]);
+  }, [contactName, businessName, code, partnerSlug, personalNote]);
 
   // Load preview when entering step 2
   useEffect(() => {
