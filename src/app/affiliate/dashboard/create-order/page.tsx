@@ -102,7 +102,7 @@ export default function CreatePartnerOrderPage(): ReactElement {
                 </svg>
               </div>
               <p className="text-lg font-semibold text-gray-900 mb-1">
-                Dashboard ready for {clientName}
+                Order ready for {clientName}
               </p>
               <p className="text-sm text-gray-500">
                 Share this link with your client so they can browse and order.
@@ -110,7 +110,7 @@ export default function CreatePartnerOrderPage(): ReactElement {
             </div>
 
             <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs font-medium text-gray-500 mb-1">Dashboard Link</p>
+              <p className="text-xs font-medium text-gray-500 mb-1">Order Link</p>
               <p className="text-sm text-gray-900 break-all font-mono">
                 {successData.dashboardUrl}
               </p>
@@ -128,7 +128,7 @@ export default function CreatePartnerOrderPage(): ReactElement {
                 href={`/dashboard/${successData.shareCode}`}
                 className="flex-1 py-2.5 text-center text-sm font-semibold text-brand-blue border-2 border-brand-blue rounded-lg hover:bg-blue-50 transition-colors"
               >
-                Open Dashboard
+                Open Order
               </Link>
               <button
                 onClick={() => {

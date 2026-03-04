@@ -239,7 +239,7 @@ export default function CreateDashboardPage(): ReactElement {
         loadTemplates();
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create dashboard');
+      setError(err instanceof Error ? err.message : 'Failed to create order');
       setLoading(false);
     }
   }
@@ -270,7 +270,7 @@ export default function CreateDashboardPage(): ReactElement {
         <div className="max-w-lg mx-auto px-4 py-8">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-heading font-bold tracking-[0.04em] text-gray-900">
-              Dashboard Created
+              Order Created
             </h1>
             <Link
               href="/affiliate/dashboard/orders"
@@ -288,7 +288,7 @@ export default function CreateDashboardPage(): ReactElement {
                 </svg>
               </div>
               <p className="text-lg font-semibold text-gray-900 mb-1">
-                Dashboard ready for {clientName || 'client'}
+                Order ready for {clientName || 'client'}
               </p>
               <p className="text-sm text-gray-500">
                 Share this link with your client so they can browse and order.
@@ -296,7 +296,7 @@ export default function CreateDashboardPage(): ReactElement {
             </div>
 
             <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs font-medium text-gray-500 mb-1">Dashboard Link</p>
+              <p className="text-xs font-medium text-gray-500 mb-1">Order Link</p>
               <p className="text-sm text-gray-900 break-all font-mono">
                 {successData.dashboardUrl}
               </p>
@@ -314,7 +314,7 @@ export default function CreateDashboardPage(): ReactElement {
                 href={`/dashboard/${successData.shareCode}`}
                 className="flex-1 py-2.5 text-center text-sm font-semibold text-brand-blue border-2 border-brand-blue rounded-lg hover:bg-blue-50 transition-colors"
               >
-                Open Dashboard
+                Open Order
               </Link>
               <button
                 onClick={handleCreateAnother}
@@ -340,7 +340,7 @@ export default function CreateDashboardPage(): ReactElement {
       <div className="max-w-lg mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-heading font-bold tracking-[0.04em] text-gray-900">
-            Create Dashboard
+            Create Client Order
           </h1>
           <Link
             href="/affiliate/dashboard/orders"
@@ -461,7 +461,7 @@ export default function CreateDashboardPage(): ReactElement {
 
             {/* Title Preview */}
             <div className="bg-gray-50 rounded-lg px-3 py-2">
-              <p className="text-xs font-medium text-gray-500 mb-0.5">Dashboard Title</p>
+              <p className="text-xs font-medium text-gray-500 mb-0.5">Order Title</p>
               <p className="text-sm font-semibold text-gray-900">{getTitlePreview()}</p>
             </div>
 
@@ -591,7 +591,7 @@ export default function CreateDashboardPage(): ReactElement {
               disabled={loading || !clientName.trim() || !deliveryDate}
               className="w-full py-3 bg-brand-blue text-white text-base font-semibold tracking-[0.08em] rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Creating...' : 'Create Dashboard'}
+              {loading ? 'Creating...' : 'Create Order'}
             </button>
 
             <p className="text-sm text-gray-500 text-center">

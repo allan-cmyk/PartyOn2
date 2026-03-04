@@ -39,7 +39,7 @@ export default function AffiliateLoginPage(): ReactElement {
 
       if (data.error === 'NO_PASSWORD_SET') {
         await sendMagicLink();
-        setError('No password set yet. We sent you a login link -- once logged in you can set a password from the dashboard.');
+        setError('No password set yet. We sent you a login link -- once logged in you can set a password from your account.');
         return;
       }
 

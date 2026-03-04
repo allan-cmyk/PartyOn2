@@ -81,7 +81,7 @@ export default function PartnerOrdersPage(): ReactElement {
               Client Orders
             </h1>
             <p className="text-sm text-gray-500 mt-1">
-              Orders created through your partner dashboard
+              Client orders you've created
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -95,7 +95,7 @@ export default function PartnerOrdersPage(): ReactElement {
               href="/affiliate/dashboard/create-dashboard"
               className="px-4 py-2 text-sm font-semibold text-white bg-brand-blue rounded-lg hover:bg-blue-700 transition-colors"
             >
-              Create Dashboard
+              Create Order
             </Link>
           </div>
         </div>
@@ -113,7 +113,7 @@ export default function PartnerOrdersPage(): ReactElement {
               href="/affiliate/dashboard/create-dashboard"
               className="inline-flex px-6 py-3 bg-brand-blue text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
             >
-              Create Your First Dashboard
+              Create Your First Client Order
             </Link>
           </div>
         ) : (

@@ -142,7 +142,7 @@ export default function AffiliateDashboardPage(): ReactElement {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-gray-500">Loading dashboard...</div>
+        <div className="text-gray-500">Loading...</div>
       </div>
     );
   }
@@ -191,7 +191,7 @@ export default function AffiliateDashboardPage(): ReactElement {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            Create Client Dashboard
+            Create Client Order
           </Link>
         </div>
 
