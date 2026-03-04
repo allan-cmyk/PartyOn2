@@ -64,7 +64,7 @@ function wrapEmail(title: string, emoji: string, backgroundColor: string, conten
           <tr>
             <td style="background-color: #1a1a1a; padding: 24px; text-align: center;">
               <p style="margin: 0; color: #D4AF37; font-size: 14px;">Questions about your delivery?</p>
-              <p style="margin: 8px 0 0; color: #ffffff; font-size: 14px;">Reply to this email or contact us at support@partyondelivery.com</p>
+              <p style="margin: 8px 0 0; color: #ffffff; font-size: 14px;">Reply to this email or contact us at info@partyondelivery.com</p>
               <p style="margin: 16px 0 0; color: #666; font-size: 12px;">&copy; ${new Date().getFullYear()} Party On Delivery. All rights reserved.</p>
             </td>
           </tr>
@@ -257,7 +257,7 @@ Delivering to:
 
 IMPORTANT: Please have a valid photo ID ready. We are required to verify that all recipients are 21 or older.
 
-Questions? Reply to this email or contact support@partyondelivery.com
+Questions? Reply to this email or contact info@partyondelivery.com
 
 Party On Delivery
 Premium Alcohol Delivery

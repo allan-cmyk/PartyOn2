@@ -113,7 +113,7 @@ export function dashboardLinkEmail(
           <!-- Footer -->
           <tr>
             <td style="background-color: #1a1a1a; padding: 24px; text-align: center;">
-              <p style="margin: 0; color: #D4AF37; font-size: 14px;">Questions? Contact us at orders@partyondelivery.com</p>
+              <p style="margin: 0; color: #D4AF37; font-size: 14px;">Questions? Contact us at info@partyondelivery.com</p>
               <p style="margin: 8px 0 0; color: #999; font-size: 12px;">${new Date().getFullYear()} Party On Delivery. Austin, Texas.</p>
             </td>
           </tr>
@@ -136,7 +136,7 @@ What you can do:
 
 Open your dashboard: ${dashboardUrl}
 
-Questions? Contact us at orders@partyondelivery.com
+Questions? Contact us at info@partyondelivery.com
 ${new Date().getFullYear()} Party On Delivery. Austin, Texas.`;
 
   return { html, text, subject };

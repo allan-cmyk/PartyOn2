@@ -46,7 +46,7 @@ export const INVOICE_TEXT_DEFAULTS: Required<InvoiceTextOverrides> = {
   bodyText: "Here's your invoice for your upcoming delivery. Click the button below to complete your payment.",
   buttonText: 'PAY NOW',
   linkText: 'Or copy this link:',
-  footerText: 'Questions? Contact us at orders@partyondelivery.com',
+  footerText: 'Questions? Contact us at info@partyondelivery.com',
   copyrightText: '{year} Party On Delivery. Austin, Texas.',
 };
 

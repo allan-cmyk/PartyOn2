@@ -216,7 +216,7 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
           <tr>
             <td style="background-color: #1a1a1a; padding: 24px 32px; border-radius: 0 0 8px 8px; text-align: center;">
               <p style="margin: 0 0 8px; color: #D4AF37; font-size: 14px;">
-                Questions? Contact us at orders@partyondelivery.com
+                Questions? Contact us at info@partyondelivery.com
               </p>
               <p style="margin: 0; color: #666; font-size: 12px;">
                 &copy; ${year} Party On Delivery. Austin, Texas.
@@ -282,7 +282,7 @@ export function generateAffiliateWelcomeText(data: AffiliateWelcomeEmailData): s
     '- Share your partner page on social media and in your bio',
     '- Mention the free delivery perk -- it\'s a great selling point',
     '',
-    'Questions? Contact us at orders@partyondelivery.com',
+    'Questions? Contact us at info@partyondelivery.com',
     `Party On Delivery. Austin, Texas.`,
   );
 
