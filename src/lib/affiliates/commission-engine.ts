@@ -1,7 +1,7 @@
 /**
  * Commission Engine
  * Progressive tier calculation and commission lifecycle management
- * Tiers are based on year-to-date referred revenue (calendar year).
+ * Tiers are based on rolling annual revenue from the affiliate's start date.
  */
 
 import { prisma } from '@/lib/database/client';
@@ -63,17 +63,42 @@ export function getTierProgress(revenueCents: number): number {
 }
 
 /**
- * Get year-to-date commission base revenue for an affiliate (in cents).
- * Only counts commissions that are not VOID. Uses calendar year (Jan 1).
+ * Get the start of the current tier year for an affiliate.
+ * Uses a rolling 12-month window based on the affiliate's createdAt date.
+ * E.g. if affiliate joined June 15 2025, their tier year runs Jun 15 - Jun 14 each year.
+ */
+export function getAnniversaryYearStart(affiliateCreatedAt: Date): Date {
+  const now = new Date();
+  const month = affiliateCreatedAt.getMonth();
+  const day = affiliateCreatedAt.getDate();
+
+  // Start of current anniversary year
+  let start = new Date(now.getFullYear(), month, day);
+  if (start > now) {
+    start = new Date(now.getFullYear() - 1, month, day);
+  }
+  return start;
+}
+
+/**
+ * Get current-year commission base revenue for an affiliate (in cents).
+ * Only counts commissions that are not VOID.
+ * Uses rolling annual window from affiliate's join date.
  */
 export async function getYearToDateRevenue(affiliateId: string): Promise<number> {
-  const now = new Date();
-  const startOfYear = new Date(now.getFullYear(), 0, 1);
+  const affiliate = await prisma.affiliate.findUnique({
+    where: { id: affiliateId },
+    select: { createdAt: true },
+  });
+
+  const yearStart = affiliate
+    ? getAnniversaryYearStart(affiliate.createdAt)
+    : new Date(new Date().getFullYear(), 0, 1);
 
   const result = await prisma.affiliateCommission.aggregate({
     where: {
       affiliateId,
-      createdAt: { gte: startOfYear },
+      createdAt: { gte: yearStart },
       status: { not: CommissionStatus.VOID },
     },
     _sum: {

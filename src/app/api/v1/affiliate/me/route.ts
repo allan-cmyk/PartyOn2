@@ -7,7 +7,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/database/client';
 import { getAffiliateSession } from '@/lib/affiliates/affiliate-session';
 import { CommissionStatus } from '@prisma/client';
-import { getTierLabel, getTierProgress } from '@/lib/affiliates/commission-engine';
+import { getTierLabel, getTierProgress, getAnniversaryYearStart } from '@/lib/affiliates/commission-engine';
 
 export async function GET(): Promise<NextResponse> {
   try {
@@ -24,14 +24,13 @@ export async function GET(): Promise<NextResponse> {
       return NextResponse.json({ success: false, error: 'Affiliate not found' }, { status: 404 });
     }
 
-    // Year-to-date stats (calendar year)
-    const now = new Date();
-    const startOfYear = new Date(now.getFullYear(), 0, 1);
+    // Year-to-date stats (rolling year from affiliate join date)
+    const yearStart = getAnniversaryYearStart(affiliate.createdAt);
 
     const yearCommissions = await prisma.affiliateCommission.findMany({
       where: {
         affiliateId: affiliate.id,
-        createdAt: { gte: startOfYear },
+        createdAt: { gte: yearStart },
         status: { not: CommissionStatus.VOID },
       },
     });

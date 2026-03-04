@@ -139,7 +139,7 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
                 <thead>
                   <tr style="background-color: #1a1a1a;">
                     <th style="padding: 12px 16px; text-align: left; font-size: 13px; color: #D4AF37; font-weight: 600; letter-spacing: 0.05em;">TIER</th>
-                    <th style="padding: 12px 16px; text-align: center; font-size: 13px; color: #D4AF37; font-weight: 600; letter-spacing: 0.05em;">CALENDAR YEAR REVENUE</th>
+                    <th style="padding: 12px 16px; text-align: center; font-size: 13px; color: #D4AF37; font-weight: 600; letter-spacing: 0.05em;">ANNUAL REVENUE</th>
                     <th style="padding: 12px 16px; text-align: right; font-size: 13px; color: #D4AF37; font-weight: 600; letter-spacing: 0.05em;">COMMISSION</th>
                   </tr>
                 </thead>
@@ -167,7 +167,7 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
                 Payout Schedule
               </h3>
               <p style="margin: 0 0 24px; color: #4b5563; font-size: 15px; line-height: 1.6;">
-                Tiers are based on calendar year referred revenue (Jan 1 - Dec 31) and reset each year. Commissions are paid out monthly by the <strong>15th of the following month</strong>. You can track your earnings in real time from your partner dashboard.
+                Tiers are based on your annual referred revenue, starting from your join date and resetting each year on that anniversary. Commissions are paid out monthly by the <strong>15th of the following month</strong>. You can track your earnings in real time from your partner dashboard.
               </p>
 
               <!-- Partner Dashboard -->
@@ -265,13 +265,13 @@ export function generateAffiliateWelcomeText(data: AffiliateWelcomeEmailData): s
     '- You earn a commission on every order placed through your referral',
     '- The more revenue you refer, the higher your commission rate grows',
     '',
-    'COMMISSION TIERS (calendar year revenue, Jan-Dec)',
+    'COMMISSION TIERS (annual revenue from your join date)',
     'Starter ($0-$10k): 5%',
     'Growth ($10k-$20k): 8%',
     'Pro ($20k+): 10%',
     '',
     'PAYOUT SCHEDULE',
-    'Tiers are based on calendar year referred revenue (Jan 1 - Dec 31) and reset each year. Commissions are paid out monthly by the 15th of the following month.',
+    'Tiers are based on your annual referred revenue, starting from your join date and resetting each year on that anniversary. Commissions are paid out monthly by the 15th of the following month.',
     '',
     'YOUR PARTNER DASHBOARD',
     `Access your dashboard: ${data.dashboardLink}`,
