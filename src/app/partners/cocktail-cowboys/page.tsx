@@ -241,6 +241,95 @@ function CocktailCowboysPageContent(): ReactElement {
         </div>
       </section>
 
+      {/* BACHELORETTE PARTY FAVORITES */}
+      <section className="py-12 px-6 md:px-12 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10">
+            <p className="text-gray-500 tracking-[0.1em] uppercase text-sm mb-2">
+              Top Sellers
+            </p>
+            <h2 className="font-heading text-2xl md:text-3xl text-gray-900 tracking-wide">
+              Bachelorette Party Favorites
+            </h2>
+            <p className="text-gray-600 mt-3 max-w-2xl mx-auto">
+              Our most popular picks for bachelorette weekends in Austin. Order everything in one shot.
+            </p>
+          </div>
+
+          {/* Hero Product: The Full Send Bar */}
+          <Link href="/order" className="block group mb-8">
+            <div className="bg-gray-50 rounded-xl border border-gray-200 shadow-sm overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-0">
+              <div className="relative aspect-[4/3] md:aspect-auto">
+                <Image
+                  src="/images/products/the-full-send-bar.png"
+                  alt="The Full Send Bar"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              </div>
+              <div className="p-6 md:p-8 flex flex-col justify-center">
+                <span className="text-brand-blue text-xs font-semibold uppercase tracking-[0.1em] mb-2">Featured Bundle</span>
+                <h3 className="font-heading text-xl md:text-2xl text-gray-900 mb-3">The Full Send Bar</h3>
+                <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-5">
+                  Everything your bartender needs in one box -- vodka, tequila, whiskey, mixers, garnishes, cups, and ice. Hand it to your Cocktail Cowboys and let them work their magic.
+                </p>
+                <span className="inline-flex items-center gap-2 text-brand-blue font-semibold group-hover:gap-3 transition-all">
+                  Order Now
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </Link>
+
+          {/* Product Tiles - updated images */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              {
+                name: 'Margarita Cocktail Kit',
+                tagline: 'Party pitcher -- just add ice',
+                image: 'https://cdn.shopify.com/s/files/1/0538/1767/1858/files/Gemini_Generated_Image_ea6zuuea6zuuea6z.png?v=1765906526',
+              },
+              {
+                name: 'Espresso Martini Kit',
+                tagline: 'Coffee + cocktails in one',
+                image: 'https://cdn.shopify.com/s/files/1/0538/1767/1858/files/Gemini_Generated_Image_tk6mbhtk6mbhtk6m.png?v=1764702134',
+              },
+              {
+                name: 'Austin Survival Package',
+                tagline: 'Hangover kit for the crew',
+                image: '/images/products/welcome-to-austin-survival-package.png',
+              },
+              {
+                name: 'Aperol Spritz Kit',
+                tagline: '16 drinks, zero effort',
+                image: 'https://cdn.shopify.com/s/files/1/0538/1767/1858/files/Gemini_Generated_Image_cmdz47cmdz47cmdz.png?v=1767930088',
+              },
+            ].map((product) => (
+              <Link key={product.name} href="/order" className="group">
+                <div className="bg-gray-50 rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                  <div className="relative aspect-square bg-white">
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      fill
+                      className="object-contain p-3"
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                    />
+                  </div>
+                  <div className="p-3 md:p-4">
+                    <h3 className="font-heading text-sm md:text-base text-gray-900 mb-1">{product.name}</h3>
+                    <p className="text-gray-500 text-xs md:text-sm">{product.tagline}</p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* EXPERIENCES */}
       <section className="py-12 px-6 md:px-12 bg-white">
         <div className="max-w-5xl mx-auto">
