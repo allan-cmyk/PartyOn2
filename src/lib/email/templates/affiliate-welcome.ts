@@ -65,15 +65,27 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
                 <h3 style="margin: 0 0 12px; color: #1a1a1a; font-size: 18px;">
                   Your Partner Page
                 </h3>
-                <p style="margin: 0 0 12px; color: #4b5563; font-size: 15px; line-height: 1.6;">
-                  A branded landing page to share with customers:
-                </p>
-                <div style="background-color: #1a1a1a; color: #D4AF37; font-family: 'Courier New', Courier, monospace; font-size: 18px; font-weight: 700; padding: 16px 24px; border-radius: 8px; display: inline-block; margin-bottom: 12px;">
+                <div style="background-color: #1a1a1a; color: #D4AF37; font-family: 'Courier New', Courier, monospace; font-size: 18px; font-weight: 700; padding: 16px 24px; border-radius: 8px; display: inline-block; margin-bottom: 16px;">
                   <a href="${data.referralLink}" style="color: #D4AF37; text-decoration: none;">${data.referralLink}</a>
                 </div>
-                <p style="margin: 0; color: #6b7280; font-size: 13px;">
-                  Referral code: <strong>${data.code}</strong>
-                </p>
+                <div style="border: 3px solid #D4AF37; border-radius: 8px; padding: 16px 24px; margin-bottom: 16px; text-align: center;">
+                  <p style="margin: 0 0 4px; color: #6b7280; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em;">Referral Code</p>
+                  <p style="margin: 0; color: #1a1a1a; font-size: 28px; font-weight: 700; letter-spacing: 0.1em; font-family: 'Courier New', Courier, monospace;">${data.code}</p>
+                </div>
+                <table cellpadding="0" cellspacing="0" border="0" width="100%" style="text-align: left;">
+                  <tr>
+                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6; vertical-align: top; width: 24px;">&#8226;</td>
+                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">A branded landing page for your business</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6; vertical-align: top;">&#8226;</td>
+                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">Anyone can open this link -- great for social media, text messages, or sharing directly</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6; vertical-align: top;">&#8226;</td>
+                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">Customers enter this code at checkout to get their discount</td>
+                  </tr>
+                </table>
               </div>
 
               <!-- Website Referral Link -->
@@ -81,15 +93,23 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
                 <h3 style="margin: 0 0 12px; color: #1a1a1a; font-size: 18px;">
                   Your Website Referral Link
                 </h3>
-                <p style="margin: 0 0 12px; color: #4b5563; font-size: 15px; line-height: 1.6;">
-                  Add this link to your website, booking confirmations, or anywhere you send customers. When someone clicks it, they land on your branded partner page and are automatically tagged as your referral for 30 days.
-                </p>
                 <div style="background-color: #1a1a1a; color: #D4AF37; font-family: 'Courier New', Courier, monospace; font-size: 16px; font-weight: 700; padding: 16px 24px; border-radius: 8px; display: inline-block; margin-bottom: 12px;">
                   <a href="${data.directReferralLink}" style="color: #D4AF37; text-decoration: none;">${data.directReferralLink}</a>
                 </div>
-                <p style="margin: 0; color: #6b7280; font-size: 13px;">
-                  Your Partner Page URL is for sharing directly (social media, messages). Your Referral Link is for embedding on your website -- it looks the same to the customer but tracks the referral back to you.
-                </p>
+                <table cellpadding="0" cellspacing="0" border="0" width="100%" style="text-align: left;">
+                  <tr>
+                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6; vertical-align: top; width: 24px;">&#8226;</td>
+                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">Embed this on your website, booking confirmations, or email signatures</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6; vertical-align: top;">&#8226;</td>
+                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">When someone clicks this link, they are <strong>automatically tagged</strong> as your referral for 30 days -- no code needed</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6; vertical-align: top;">&#8226;</td>
+                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">The customer sees the same partner page -- the tracking happens behind the scenes</td>
+                  </tr>
+                </table>
               </div>
 
               <!-- How It Works -->
@@ -119,7 +139,7 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
                 <thead>
                   <tr style="background-color: #1a1a1a;">
                     <th style="padding: 12px 16px; text-align: left; font-size: 13px; color: #D4AF37; font-weight: 600; letter-spacing: 0.05em;">TIER</th>
-                    <th style="padding: 12px 16px; text-align: center; font-size: 13px; color: #D4AF37; font-weight: 600; letter-spacing: 0.05em;">YEARLY REVENUE</th>
+                    <th style="padding: 12px 16px; text-align: center; font-size: 13px; color: #D4AF37; font-weight: 600; letter-spacing: 0.05em;">CALENDAR YEAR REVENUE</th>
                     <th style="padding: 12px 16px; text-align: right; font-size: 13px; color: #D4AF37; font-weight: 600; letter-spacing: 0.05em;">COMMISSION</th>
                   </tr>
                 </thead>
@@ -147,7 +167,7 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
                 Payout Schedule
               </h3>
               <p style="margin: 0 0 24px; color: #4b5563; font-size: 15px; line-height: 1.6;">
-                Tiers are based on yearly referred revenue. Commissions are paid out monthly by the <strong>15th of the following month</strong>. You can track your earnings in real time from your partner dashboard.
+                Tiers are based on calendar year referred revenue (Jan 1 - Dec 31) and reset each year. Commissions are paid out monthly by the <strong>15th of the following month</strong>. You can track your earnings in real time from your partner dashboard.
               </p>
 
               <!-- Partner Dashboard -->
@@ -155,7 +175,7 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
                 Your Partner Dashboard
               </h3>
               <p style="margin: 0 0 24px; color: #4b5563; font-size: 15px; line-height: 1.6;">
-                Access your dashboard at any time to view orders, commissions, and payouts. Just enter your email and we'll send you a magic link -- no password needed.
+                Access your dashboard at any time to view orders, commissions, and payouts. For your first login, enter your email and we'll send you a one-time access link. Once inside, you can set a password so you can log in directly going forward.
               </p>
 
               <!-- CTA Button -->
@@ -229,31 +249,33 @@ export function generateAffiliateWelcomeText(data: AffiliateWelcomeEmailData): s
 
   lines.push(
     'YOUR PARTNER PAGE',
-    `A branded landing page to share with customers: ${data.referralLink}`,
-    `Referral code: ${data.code}`,
+    data.referralLink,
+    `- A branded landing page for your business`,
+    '- Anyone can open this link -- great for social media, text messages, or sharing directly',
+    `- Customers enter your referral code ${data.code} at checkout to get their discount`,
     '',
     'YOUR WEBSITE REFERRAL LINK',
-    `Add this link to your website, booking confirmations, or anywhere you send customers: ${data.directReferralLink}`,
-    'When someone clicks it, they land on your branded partner page and are automatically tagged as your referral for 30 days.',
-    '',
-    'Your Partner Page URL is for sharing directly (social media, messages). Your Referral Link is for embedding on your website -- it looks the same to the customer but tracks the referral back to you.',
+    data.directReferralLink,
+    '- Embed this on your website, booking confirmations, or email signatures',
+    '- When someone clicks this link, they are automatically tagged as your referral for 30 days -- no code needed',
+    '- The customer sees the same partner page -- the tracking happens behind the scenes',
     '',
     'HOW IT WORKS',
     '- Your customers get free delivery when they order through your partner page',
     '- You earn a commission on every order placed through your referral',
     '- The more revenue you refer, the higher your commission rate grows',
     '',
-    'COMMISSION TIERS',
-    'Starter ($0-$10k/yr): 5%',
-    'Growth ($10k-$20k/yr): 8%',
-    'Pro ($20k+/yr): 10%',
+    'COMMISSION TIERS (calendar year revenue, Jan-Dec)',
+    'Starter ($0-$10k): 5%',
+    'Growth ($10k-$20k): 8%',
+    'Pro ($20k+): 10%',
     '',
     'PAYOUT SCHEDULE',
-    'Tiers are based on yearly referred revenue. Commissions are paid out monthly by the 15th of the following month.',
+    'Tiers are based on calendar year referred revenue (Jan 1 - Dec 31) and reset each year. Commissions are paid out monthly by the 15th of the following month.',
     '',
     'YOUR PARTNER DASHBOARD',
     `Access your dashboard: ${data.dashboardLink}`,
-    'Enter your email and we\'ll send you a magic link -- no password needed.',
+    'For your first login, enter your email and we\'ll send you a one-time access link. Once inside, you can set a password so you can log in directly going forward.',
     '',
     'MARKETING TIPS',
     '- Add your referral link to your website and booking confirmations',
