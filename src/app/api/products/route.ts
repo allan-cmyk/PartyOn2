@@ -147,13 +147,21 @@ export async function GET(request: NextRequest) {
       const searchLower = searchTerm.toLowerCase();
       const baseWhere = { ...where, status: 'ACTIVE' as const };
 
+      // Sort by lowest category position (sales rank) - lower position = more popular
+      const byPopularity = (a: ProductWithRelations, b: ProductWithRelations) => {
+        const aPos = Math.min(...(a.categories?.map((c: { position: number }) => c.position) || []), Infinity);
+        const bPos = Math.min(...(b.categories?.map((c: { position: number }) => c.position) || []), Infinity);
+        return aPos - bPos;
+      };
+
       // Query 1: productType matches (highest relevance)
       const productTypeMatches = await prisma.product.findMany({
         where: { ...baseWhere, productType: { contains: searchTerm, mode: 'insensitive' } },
         include: productInclude,
-        orderBy: { position: 'asc' },
+        orderBy: { title: 'asc' },
         take: first,
       });
+      productTypeMatches.sort(byPopularity);
 
       const productTypeIds = new Set(productTypeMatches.map(p => p.id));
 
@@ -165,9 +173,10 @@ export async function GET(request: NextRequest) {
           title: { contains: searchTerm, mode: 'insensitive' },
         },
         include: productInclude,
-        orderBy: { position: 'asc' },
+        orderBy: { title: 'asc' },
         take: first,
       });
+      titleMatches.sort(byPopularity);
 
       const usedIds = new Set([...productTypeIds, ...titleMatches.map(p => p.id)]);
 
@@ -183,9 +192,10 @@ export async function GET(request: NextRequest) {
           ],
         },
         include: productInclude,
-        orderBy: { position: 'asc' },
+        orderBy: { title: 'asc' },
         take: first,
       });
+      otherMatches.sort(byPopularity);
 
       products = [...productTypeMatches, ...titleMatches, ...otherMatches].slice(skip, skip + first);
     } else if (collection) {
