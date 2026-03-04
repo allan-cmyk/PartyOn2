@@ -41,7 +41,7 @@ export default async function DynamicPartnerPage({ params }: Props) {
     notFound();
   }
 
-  const referralLink = `/order?ref=${affiliate.code}`;
+  const referralLink = '/order';
   const partnerLogo = findPartnerLogo(affiliate.businessName);
 
   return (

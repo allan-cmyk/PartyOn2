@@ -8,6 +8,7 @@ export interface AffiliateWelcomeEmailData {
   businessName: string;
   code: string;
   referralLink: string;
+  directReferralLink: string;
   dashboardLink: string;
   personalNote?: string;
 }
@@ -59,19 +60,35 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
 
               ${personalNoteHtml}
 
-              <!-- Referral Link -->
+              <!-- Partner Page -->
               <div style="background-color: #f9fafb; border-radius: 8px; padding: 20px; margin-bottom: 24px; text-align: center;">
                 <h3 style="margin: 0 0 12px; color: #1a1a1a; font-size: 18px;">
                   Your Partner Page
                 </h3>
                 <p style="margin: 0 0 12px; color: #4b5563; font-size: 15px; line-height: 1.6;">
-                  Share this link with your customers:
+                  A branded landing page to share with customers:
                 </p>
                 <div style="background-color: #1a1a1a; color: #D4AF37; font-family: 'Courier New', Courier, monospace; font-size: 18px; font-weight: 700; padding: 16px 24px; border-radius: 8px; display: inline-block; margin-bottom: 12px;">
                   <a href="${data.referralLink}" style="color: #D4AF37; text-decoration: none;">${data.referralLink}</a>
                 </div>
                 <p style="margin: 0; color: #6b7280; font-size: 13px;">
                   Referral code: <strong>${data.code}</strong>
+                </p>
+              </div>
+
+              <!-- Website Referral Link -->
+              <div style="background-color: #f9fafb; border-radius: 8px; padding: 20px; margin-bottom: 24px; text-align: center;">
+                <h3 style="margin: 0 0 12px; color: #1a1a1a; font-size: 18px;">
+                  Your Website Referral Link
+                </h3>
+                <p style="margin: 0 0 12px; color: #4b5563; font-size: 15px; line-height: 1.6;">
+                  Add this link to your website, booking confirmations, or anywhere you send customers. When someone clicks it, they land on your branded partner page and are automatically tagged as your referral for 30 days.
+                </p>
+                <div style="background-color: #1a1a1a; color: #D4AF37; font-family: 'Courier New', Courier, monospace; font-size: 16px; font-weight: 700; padding: 16px 24px; border-radius: 8px; display: inline-block; margin-bottom: 12px;">
+                  <a href="${data.directReferralLink}" style="color: #D4AF37; text-decoration: none;">${data.directReferralLink}</a>
+                </div>
+                <p style="margin: 0; color: #6b7280; font-size: 13px;">
+                  Your Partner Page URL is for sharing directly (social media, messages). Your Referral Link is for embedding on your website -- it looks the same to the customer but tracks the referral back to you.
                 </p>
               </div>
 
@@ -160,15 +177,15 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
                 <table cellpadding="0" cellspacing="0" border="0" width="100%">
                   <tr>
                     <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6; vertical-align: top; width: 24px;">&#8226;</td>
-                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">Share your partner page link on social media and in your bio</td>
+                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">Add your referral link to your website and booking confirmations</td>
                   </tr>
                   <tr>
                     <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6; vertical-align: top;">&#8226;</td>
-                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">Add it to your website, booking confirmations, or invoices</td>
+                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">Share your partner page on social media and in your bio</td>
                   </tr>
                   <tr>
                     <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6; vertical-align: top;">&#8226;</td>
-                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">Mention the <strong>free delivery perk</strong> -- it's a great selling point for your clients</td>
+                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">Mention the <strong>free delivery perk</strong> -- it's a great selling point</td>
                   </tr>
                 </table>
               </div>
@@ -212,8 +229,14 @@ export function generateAffiliateWelcomeText(data: AffiliateWelcomeEmailData): s
 
   lines.push(
     'YOUR PARTNER PAGE',
-    `Share this link with your customers: ${data.referralLink}`,
+    `A branded landing page to share with customers: ${data.referralLink}`,
     `Referral code: ${data.code}`,
+    '',
+    'YOUR WEBSITE REFERRAL LINK',
+    `Add this link to your website, booking confirmations, or anywhere you send customers: ${data.directReferralLink}`,
+    'When someone clicks it, they land on your branded partner page and are automatically tagged as your referral for 30 days.',
+    '',
+    'Your Partner Page URL is for sharing directly (social media, messages). Your Referral Link is for embedding on your website -- it looks the same to the customer but tracks the referral back to you.',
     '',
     'HOW IT WORKS',
     '- Your customers get free delivery when they order through your partner page',
@@ -233,9 +256,9 @@ export function generateAffiliateWelcomeText(data: AffiliateWelcomeEmailData): s
     'Enter your email and we\'ll send you a magic link -- no password needed.',
     '',
     'MARKETING TIPS',
-    '- Share your partner page link on social media and in your bio',
-    '- Add it to your website, booking confirmations, or invoices',
-    '- Mention the free delivery perk -- it\'s a great selling point for your clients',
+    '- Add your referral link to your website and booking confirmations',
+    '- Share your partner page on social media and in your bio',
+    '- Mention the free delivery perk -- it\'s a great selling point',
     '',
     'Questions? Contact us at orders@partyondelivery.com',
     `Party On Delivery. Austin, Texas.`,

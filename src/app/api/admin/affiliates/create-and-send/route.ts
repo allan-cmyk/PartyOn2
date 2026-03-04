@@ -52,6 +52,7 @@ export async function POST(request: NextRequest) {
 
     // Send welcome email
     const referralLink = `${BASE_URL}/partners/${affiliate.code.toLowerCase()}`;
+    const directReferralLink = `${BASE_URL}/partners/${affiliate.code.toLowerCase()}?ref=${affiliate.code}`;
     const dashboardLink = `${BASE_URL}/affiliate/login`;
 
     const html = generateAffiliateWelcomeEmail({
@@ -59,6 +60,7 @@ export async function POST(request: NextRequest) {
       businessName,
       code: affiliate.code,
       referralLink,
+      directReferralLink,
       dashboardLink,
       personalNote: personalNote || undefined,
     });
@@ -68,6 +70,7 @@ export async function POST(request: NextRequest) {
       businessName,
       code: affiliate.code,
       referralLink,
+      directReferralLink,
       dashboardLink,
       personalNote: personalNote || undefined,
     });

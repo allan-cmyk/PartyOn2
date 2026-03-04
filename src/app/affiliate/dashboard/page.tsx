@@ -55,7 +55,7 @@ export default function AffiliateDashboardPage(): ReactElement {
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [payouts, setPayouts] = useState<PayoutItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<'partner' | 'referral' | false>(false);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordSaving, setPasswordSaving] = useState(false);
@@ -86,11 +86,13 @@ export default function AffiliateDashboardPage(): ReactElement {
     router.push('/affiliate/login');
   };
 
-  const handleCopy = () => {
+  const handleCopy = (type: 'partner' | 'referral') => {
     if (!data) return;
-    const link = `${window.location.origin}/partners/${data.affiliate.code.toLowerCase()}`;
+    const link = type === 'partner'
+      ? `${window.location.origin}/partners/${data.affiliate.code.toLowerCase()}`
+      : `${window.location.origin}/partners/${data.affiliate.code.toLowerCase()}?ref=${data.affiliate.code}`;
     navigator.clipboard.writeText(link);
-    setCopied(true);
+    setCopied(type);
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -150,7 +152,9 @@ export default function AffiliateDashboardPage(): ReactElement {
 
   if (!data) return <div />;
 
-  const referralLink = `${typeof window !== 'undefined' ? window.location.origin : 'https://partyondelivery.com'}/partners/${data.affiliate.code.toLowerCase()}`;
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://partyondelivery.com';
+  const partnerPageLink = `${origin}/partners/${data.affiliate.code.toLowerCase()}`;
+  const directReferralLink = `${origin}/partners/${data.affiliate.code.toLowerCase()}?ref=${data.affiliate.code}`;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -168,26 +172,51 @@ export default function AffiliateDashboardPage(): ReactElement {
       </nav>
 
       <div className="max-w-5xl mx-auto px-4 py-6 space-y-6">
-        {/* Referral Link */}
+        {/* Your Links */}
         <div className="bg-white rounded-lg shadow p-5">
-          <h2 className="font-semibold text-gray-800 mb-2">Your Referral Link</h2>
-          <div className="flex gap-2 items-center">
-            <div className="flex-1 bg-gray-50 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700 break-all font-mono">
-              {referralLink}
+          <h2 className="font-semibold text-gray-800 mb-4">Your Links</h2>
+
+          {/* Partner Page */}
+          <div className="mb-4">
+            <h3 className="text-sm font-medium text-gray-700 mb-1">Partner Page</h3>
+            <div className="flex gap-2 items-center">
+              <div className="flex-1 bg-gray-50 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700 break-all font-mono">
+                {partnerPageLink}
+              </div>
+              <button
+                onClick={() => handleCopy('partner')}
+                className="px-4 py-2 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700 whitespace-nowrap"
+              >
+                {copied === 'partner' ? 'Copied!' : 'Copy'}
+              </button>
             </div>
-            <button
-              onClick={handleCopy}
-              className="px-4 py-2 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700 whitespace-nowrap"
-            >
-              {copied ? 'Copied!' : 'Copy'}
-            </button>
+            <p className="text-xs text-gray-500 mt-1">
+              A branded landing page to share with customers
+            </p>
           </div>
-          <p className="text-xs text-gray-500 mt-2">
-            Share this link with your customers. They get free delivery on their order, and you earn commission.
-          </p>
+
+          {/* Direct Referral Link */}
+          <div className="mb-4">
+            <h3 className="text-sm font-medium text-gray-700 mb-1">Referral Link</h3>
+            <div className="flex gap-2 items-center">
+              <div className="flex-1 bg-gray-50 border border-gray-200 rounded px-3 py-2 text-sm text-gray-700 break-all font-mono">
+                {directReferralLink}
+              </div>
+              <button
+                onClick={() => handleCopy('referral')}
+                className="px-4 py-2 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700 whitespace-nowrap"
+              >
+                {copied === 'referral' ? 'Copied!' : 'Copy'}
+              </button>
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              Add this to your website or booking confirmations -- customers land on your partner page and are tagged as your referral for 30 days
+            </p>
+          </div>
+
           <Link
             href="/affiliate/dashboard/create-dashboard"
-            className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 bg-brand-blue text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-brand-blue text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
