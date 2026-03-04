@@ -186,7 +186,8 @@ const nextConfig: NextConfig = {
       {
         source: '/products',
         destination: '/order',
-        permanent: true,
+        permanent: false,
+        missing: [{ type: 'query', key: 'search' }],
       },
       {
         source: '/quick-order',

@@ -151,7 +151,7 @@ export async function GET(request: NextRequest) {
       const productTypeMatches = await prisma.product.findMany({
         where: { ...baseWhere, productType: { contains: searchTerm, mode: 'insensitive' } },
         include: productInclude,
-        orderBy: { title: 'asc' },
+        orderBy: { position: 'asc' },
         take: first,
       });
 
@@ -165,7 +165,7 @@ export async function GET(request: NextRequest) {
           title: { contains: searchTerm, mode: 'insensitive' },
         },
         include: productInclude,
-        orderBy: { title: 'asc' },
+        orderBy: { position: 'asc' },
         take: first,
       });
 
@@ -183,7 +183,7 @@ export async function GET(request: NextRequest) {
           ],
         },
         include: productInclude,
-        orderBy: { title: 'asc' },
+        orderBy: { position: 'asc' },
         take: first,
       });
 
