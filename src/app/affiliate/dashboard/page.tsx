@@ -11,6 +11,7 @@ interface AffiliateData {
     businessName: string;
     contactName: string;
     email: string;
+    hasPassword?: boolean;
   };
   yearToDate: {
     revenueCents: number;
@@ -310,7 +311,8 @@ export default function AffiliateDashboardPage(): ReactElement {
           )}
         </div>
 
-        {/* Set Password */}
+        {/* Set Password -- hide once password is already set */}
+        {!data.affiliate.hasPassword && (
         <div className="bg-white rounded-lg shadow p-5">
           <h2 className="font-semibold text-gray-800 mb-3">Account Password</h2>
           <p className="text-sm text-gray-500 mb-4">
@@ -360,6 +362,7 @@ export default function AffiliateDashboardPage(): ReactElement {
             </button>
           </form>
         </div>
+        )}
       </div>
     </div>
   );

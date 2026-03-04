@@ -995,14 +995,8 @@ export async function createMultiTabDashboardOrder(
           };
         }),
       },
-      participants: {
-        create: {
-          guestName: input.hostName,
-          isHost: true,
-          ageVerified: true,
-          status: 'ACTIVE',
-        },
-      },
+      // No host participant created here -- the client joins via the claim link
+      // and becomes host at that point.
     },
     include: fullGroupIncludes,
   });

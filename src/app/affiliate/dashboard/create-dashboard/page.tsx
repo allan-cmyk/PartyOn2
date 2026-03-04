@@ -27,6 +27,7 @@ interface CustomTab {
 export default function CreateDashboardPage(): ReactElement {
   // Form state
   const [clientName, setClientName] = useState('');
+  const [orderTitle, setOrderTitle] = useState('');
   const [deliveryDate, setDeliveryDate] = useState('');
   const [deliveryTime, setDeliveryTime] = useState('12:00 PM - 12:30 PM');
   const [partyType, setPartyType] = useState('');
@@ -144,6 +145,7 @@ export default function CreateDashboardPage(): ReactElement {
 
   // Build title preview
   function getTitlePreview(): string {
+    if (orderTitle.trim()) return orderTitle.trim();
     const name = clientName.trim() || '[Client Name]';
     if (!presets) return `${name}'s Order`;
     const pt = presets.partyTypes.find((p) => p.value === partyType);
@@ -212,6 +214,7 @@ export default function CreateDashboardPage(): ReactElement {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           clientName: clientName.trim(),
+          orderTitle: orderTitle.trim() || undefined,
           partyType: partyType || undefined,
           deliveryDate,
           deliveryTime,
@@ -254,6 +257,7 @@ export default function CreateDashboardPage(): ReactElement {
   function handleCreateAnother() {
     setSuccessData(null);
     setClientName('');
+    setOrderTitle('');
     setDeliveryDate('');
     setLoading(false);
     setCopied(false);
@@ -296,7 +300,8 @@ export default function CreateDashboardPage(): ReactElement {
             </div>
 
             <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs font-medium text-gray-500 mb-1">Order Link</p>
+              <p className="text-xs font-medium text-gray-500 mb-0.5">Order Link</p>
+              <p className="text-xs text-gray-400 mb-1">Whoever opens this link will become the host of the order.</p>
               <p className="text-sm text-gray-900 break-all font-mono">
                 {successData.dashboardUrl}
               </p>
@@ -383,6 +388,20 @@ export default function CreateDashboardPage(): ReactElement {
                 onChange={(e) => setClientName(e.target.value)}
                 placeholder="e.g. Madison & Dane"
                 required
+                className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg text-base focus:border-brand-blue focus:ring-0 transition-colors"
+              />
+            </div>
+
+            {/* Order Title */}
+            <div>
+              <label className="block text-base font-medium text-gray-900 mb-1.5">
+                Order Title
+              </label>
+              <input
+                type="text"
+                value={orderTitle}
+                onChange={(e) => setOrderTitle(e.target.value)}
+                placeholder="Leave blank if same as client name"
                 className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg text-base focus:border-brand-blue focus:ring-0 transition-colors"
               />
             </div>

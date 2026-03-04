@@ -18,6 +18,7 @@ const TabSchema = z.object({
 
 const CreateDashboardSchema = z.object({
   clientName: z.string().min(1, 'Client name is required').max(200),
+  orderTitle: z.string().max(200).optional(),
   partyType: z.enum(['BACH', 'BOAT']).optional(),
   deliveryDate: z.string().min(1, 'Delivery date is required'),
   deliveryTime: z.string().max(50).default('12:00 PM - 2:00 PM'),
@@ -48,11 +49,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const { clientName, partyType, deliveryDate, deliveryTime, tabs, saveAsTemplate } = parsed.data;
+    const { clientName, orderTitle, partyType, deliveryDate, deliveryTime, tabs, saveAsTemplate } = parsed.data;
 
-    // Build dashboard title from party type
+    // Build dashboard title: use explicit orderTitle, or fall back to party-type format
     let dashboardTitle: string;
-    if (partyType === 'BACH') {
+    if (orderTitle) {
+      dashboardTitle = orderTitle;
+    } else if (partyType === 'BACH') {
       dashboardTitle = `${clientName} Bach Drink Delivery!`;
     } else if (partyType === 'BOAT') {
       dashboardTitle = `${clientName} Drink Delivery!`;

@@ -65,6 +65,7 @@ export async function GET(): Promise<NextResponse> {
           businessName: affiliate.businessName,
           contactName: affiliate.contactName,
           email: affiliate.email,
+          hasPassword: !!affiliate.passwordHash,
         },
         yearToDate: {
           revenueCents: yearRevenueCents,
