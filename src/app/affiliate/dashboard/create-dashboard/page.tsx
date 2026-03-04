@@ -27,7 +27,6 @@ interface CustomTab {
 export default function CreateDashboardPage(): ReactElement {
   // Form state
   const [clientName, setClientName] = useState('');
-  const [orderTitle, setOrderTitle] = useState('');
   const [deliveryDate, setDeliveryDate] = useState('');
   const [deliveryTime, setDeliveryTime] = useState('12:00 PM - 12:30 PM');
   const [partyType, setPartyType] = useState('');
@@ -143,16 +142,6 @@ export default function CreateDashboardPage(): ReactElement {
     );
   }
 
-  // Build title preview
-  function getTitlePreview(): string {
-    if (orderTitle.trim()) return orderTitle.trim();
-    const name = clientName.trim() || '[Client Name]';
-    if (!presets) return `${name}'s Order`;
-    const pt = presets.partyTypes.find((p) => p.value === partyType);
-    if (pt) return pt.titleFormat.replace('{name}', name);
-    return `${name}'s Order`;
-  }
-
   // Build tabs array from selections
   function buildTabs(): Array<{ name: string; deliveryAddress?: string; deliveryContextType?: string }> {
     const tabs: Array<{ name: string; deliveryAddress?: string; deliveryContextType?: string }> = [];
@@ -214,7 +203,6 @@ export default function CreateDashboardPage(): ReactElement {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           clientName: clientName.trim(),
-          orderTitle: orderTitle.trim() || undefined,
           partyType: partyType || undefined,
           deliveryDate,
           deliveryTime,
@@ -257,7 +245,6 @@ export default function CreateDashboardPage(): ReactElement {
   function handleCreateAnother() {
     setSuccessData(null);
     setClientName('');
-    setOrderTitle('');
     setDeliveryDate('');
     setLoading(false);
     setCopied(false);
@@ -392,20 +379,6 @@ export default function CreateDashboardPage(): ReactElement {
               />
             </div>
 
-            {/* Order Title */}
-            <div>
-              <label className="block text-base font-medium text-gray-900 mb-1.5">
-                Order Title
-              </label>
-              <input
-                type="text"
-                value={orderTitle}
-                onChange={(e) => setOrderTitle(e.target.value)}
-                placeholder="Leave blank if same as client name"
-                className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg text-base focus:border-brand-blue focus:ring-0 transition-colors"
-              />
-            </div>
-
             {/* Delivery Date */}
             <div>
               <label className="block text-base font-medium text-gray-900 mb-1.5">
@@ -477,12 +450,6 @@ export default function CreateDashboardPage(): ReactElement {
                 </div>
               </div>
             )}
-
-            {/* Title Preview */}
-            <div className="bg-gray-50 rounded-lg px-3 py-2">
-              <p className="text-xs font-medium text-gray-500 mb-0.5">Order Title</p>
-              <p className="text-sm font-semibold text-gray-900">{getTitlePreview()}</p>
-            </div>
 
             {/* Tab Selection */}
             {presets && (
