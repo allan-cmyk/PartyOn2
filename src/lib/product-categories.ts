@@ -74,6 +74,15 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
     allProductTypes: ['Cocktail Kit'],
   },
   {
+    id: 'batched-cocktails',
+    label: 'Batched Cocktails',
+    icon: 'M9 3h6l1 7H8l1-7zM5 12h14l-1 9H6l-1-9z',
+    subcategories: [
+      { label: 'Batched Cocktails', productTypes: ['Batched Cocktail'] },
+    ],
+    allProductTypes: ['Batched Cocktail'],
+  },
+  {
     id: 'mixers',
     label: 'Mixers',
     icon: 'M12 2a10 10 0 100 20 10 10 0 000-20zm0 5v10m-5-5h10',
@@ -155,6 +164,7 @@ export function getCategoryColor(categoryId: string): string {
     'seltzers-rtds': 'bg-cyan-100 text-cyan-800 border-cyan-200',
     'wine': 'bg-purple-100 text-purple-800 border-purple-200',
     'cocktail-kits': 'bg-pink-100 text-pink-800 border-pink-200',
+    'batched-cocktails': 'bg-teal-100 text-teal-800 border-teal-200',
     'mixers': 'bg-green-100 text-green-800 border-green-200',
     'party-supplies': 'bg-rose-100 text-rose-800 border-rose-200',
     'kegs': 'bg-stone-100 text-stone-800 border-stone-200',

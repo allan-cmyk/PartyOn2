@@ -31,6 +31,12 @@ export const PRODUCT_CATEGORIES = {
     productTypes: ['Cocktail Kit'],
     collections: ['cocktail-kits']
   },
+  batchedCocktails: {
+    label: 'Batched Cocktails',
+    handle: 'batched-cocktails',
+    productTypes: ['Batched Cocktail'],
+    collections: ['batched-cocktails']
+  },
   mixers: {
     label: 'Mixers',
     handle: 'mixers',
