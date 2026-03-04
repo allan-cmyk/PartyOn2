@@ -167,8 +167,19 @@ export default function DashboardPage(): ReactElement {
       }
     }
 
+    // If URL has a claim token, auto-assign as the existing host (skip JoinOverlay)
+    const claimToken = searchParams?.get('claim');
+    if (claimToken) {
+      const host = groupOrder.participants.find((p) => p.isHost && p.status === 'ACTIVE');
+      if (host) {
+        localStorage.setItem(`${PARTICIPANT_KEY_PREFIX}${code}`, host.id);
+        setParticipantId(host.id);
+        return;
+      }
+    }
+
     setNeedsJoin(true);
-  }, [groupOrder, participantId, code]);
+  }, [groupOrder, participantId, code, searchParams]);
 
   // Check if participant has email on file
   useEffect(() => {
