@@ -52,24 +52,22 @@ export default function AffiliateDashboardHeader({
 
         {/* Links row */}
         <div className="flex flex-col md:flex-row gap-3 mb-4">
-          <div className="flex-1 flex items-center gap-2 bg-[#2a2a2a] rounded-lg px-3 py-2">
-            <span className="text-xs text-gray-400 shrink-0">Partner Page:</span>
-            <span className="text-sm text-[#D4AF37] font-mono truncate flex-1">{partnerPageLink}</span>
+          <div className="flex items-center gap-2 bg-[#2a2a2a] rounded-lg px-3 py-2 min-w-0">
+            <span className="text-xs text-gray-400 shrink-0">Partner Page</span>
             <button
               onClick={() => handleCopy('partner')}
               className="text-xs px-2.5 py-1 bg-[#D4AF37] text-[#1a1a1a] rounded font-medium hover:bg-[#c9a430] transition-colors shrink-0"
             >
-              {copied === 'partner' ? 'Copied!' : 'Copy'}
+              {copied === 'partner' ? 'Copied!' : 'Copy Link'}
             </button>
           </div>
-          <div className="flex-1 flex items-center gap-2 bg-[#2a2a2a] rounded-lg px-3 py-2">
-            <span className="text-xs text-gray-400 shrink-0">Referral Link:</span>
-            <span className="text-sm text-[#D4AF37] font-mono truncate flex-1">{referralLink}</span>
+          <div className="flex items-center gap-2 bg-[#2a2a2a] rounded-lg px-3 py-2 min-w-0">
+            <span className="text-xs text-gray-400 shrink-0">Referral Link</span>
             <button
               onClick={() => handleCopy('referral')}
               className="text-xs px-2.5 py-1 bg-[#D4AF37] text-[#1a1a1a] rounded font-medium hover:bg-[#c9a430] transition-colors shrink-0"
             >
-              {copied === 'referral' ? 'Copied!' : 'Copy'}
+              {copied === 'referral' ? 'Copied!' : 'Copy Link'}
             </button>
           </div>
         </div>

@@ -37,7 +37,7 @@ interface Affiliate {
 type Tab = 'applications' | 'affiliates';
 
 export default function AffiliatesPage(): ReactElement {
-  const [tab, setTab] = useState<Tab>('applications');
+  const [tab, setTab] = useState<Tab>('affiliates');
   const [applications, setApplications] = useState<Application[]>([]);
   const [affiliates, setAffiliates] = useState<Affiliate[]>([]);
   const [loading, setLoading] = useState(true);
