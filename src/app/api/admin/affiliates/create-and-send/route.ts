@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdminRole } from '@/lib/auth/ops-session';
-import { createAffiliate, getAffiliateByEmail } from '@/lib/affiliates/affiliate-service';
+import { createAffiliate, getAffiliateByEmail, getPartnerSlug } from '@/lib/affiliates/affiliate-service';
 import { sendEmail } from '@/lib/email/resend-client';
 import { generateAffiliateWelcomeEmail, generateAffiliateWelcomeText } from '@/lib/email/templates/affiliate-welcome';
 import { AffiliateCategory, EmailType } from '@prisma/client';
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     if (auth instanceof NextResponse) return auth;
 
     const body = await request.json();
-    const { contactName, businessName, email, phone, category, code, personalNote } = body;
+    const { contactName, businessName, email, phone, category, code, personalNote, partnerSlug } = body;
 
     // Validate required fields
     if (!contactName || !businessName || !email || !category) {
@@ -48,11 +48,13 @@ export async function POST(request: NextRequest) {
       phone: phone || undefined,
       category,
       code: code || undefined,
+      partnerSlug: partnerSlug || undefined,
     });
 
     // Send welcome email
-    const referralLink = `${BASE_URL}/partners/${affiliate.code.toLowerCase()}`;
-    const directReferralLink = `${BASE_URL}/partners/${affiliate.code.toLowerCase()}?ref=${affiliate.code}`;
+    const slug = getPartnerSlug(affiliate);
+    const referralLink = `${BASE_URL}/partners/${slug}`;
+    const directReferralLink = `${BASE_URL}/partners/${slug}?ref=${affiliate.code}`;
     const dashboardLink = `${BASE_URL}/affiliate/login`;
 
     const html = generateAffiliateWelcomeEmail({

@@ -11,6 +11,7 @@ interface AffiliateData {
   affiliate: {
     id: string;
     code: string;
+    partnerSlug?: string | null;
     businessName: string;
     contactName: string;
     email: string;
@@ -131,6 +132,7 @@ export default function AffiliateDashboardPage(): ReactElement {
       <AffiliateDashboardHeader
         contactName={data.affiliate.contactName}
         code={data.affiliate.code}
+        partnerSlug={data.affiliate.partnerSlug}
         onLogout={handleLogout}
       />
 

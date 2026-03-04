@@ -106,6 +106,7 @@ export async function GET(
         affiliate: {
           id: affiliate.id,
           code: affiliate.code,
+          partnerSlug: affiliate.partnerSlug,
           businessName: affiliate.businessName,
           contactName: affiliate.contactName,
           email: affiliate.email,

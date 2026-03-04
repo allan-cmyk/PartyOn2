@@ -5,6 +5,7 @@ import { ReactElement, useState } from 'react';
 interface PartnershipInfoTabProps {
   affiliate: {
     code: string;
+    partnerSlug?: string | null;
     hasPassword?: boolean;
   };
   hasPassword: boolean;
@@ -21,8 +22,9 @@ export default function PartnershipInfoTab({
   const [passwordError, setPasswordError] = useState('');
 
   const origin = typeof window !== 'undefined' ? window.location.origin : 'https://partyondelivery.com';
-  const partnerPageLink = `${origin}/partners/${affiliate.code.toLowerCase()}`;
-  const referralLink = `${origin}/partners/${affiliate.code.toLowerCase()}?ref=${affiliate.code}`;
+  const slug = affiliate.partnerSlug ?? affiliate.code.toLowerCase();
+  const partnerPageLink = `${origin}/partners/${slug}`;
+  const referralLink = `${origin}/partners/${slug}?ref=${affiliate.code}`;
 
   const handleSetPassword = async (e: React.FormEvent) => {
     e.preventDefault();

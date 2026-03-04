@@ -17,6 +17,29 @@ export async function getAffiliateByCode(code: string) {
 }
 
 /**
+ * Get affiliate by partner page slug (tries partnerSlug first, falls back to code)
+ */
+export async function getAffiliateBySlug(slug: string) {
+  const lower = slug.toLowerCase();
+  // Try partnerSlug first
+  const bySlug = await prisma.affiliate.findUnique({
+    where: { partnerSlug: lower },
+  });
+  if (bySlug) return bySlug;
+  // Fall back to code lookup
+  return prisma.affiliate.findUnique({
+    where: { code: slug.toUpperCase() },
+  });
+}
+
+/**
+ * Get the URL slug for a partner page
+ */
+export function getPartnerSlug(affiliate: { partnerSlug?: string | null; code: string }): string {
+  return affiliate.partnerSlug ?? affiliate.code.toLowerCase();
+}
+
+/**
  * Get affiliate by ID with relations
  */
 export async function getAffiliateById(id: string) {
@@ -85,6 +108,7 @@ export async function createAffiliate(data: {
   phone?: string;
   category: AffiliateCategory;
   code?: string;
+  partnerSlug?: string;
 }) {
   const code = data.code || generateReferralCode(data.businessName);
 
@@ -95,6 +119,7 @@ export async function createAffiliate(data: {
   return prisma.affiliate.create({
     data: {
       code: finalCode,
+      partnerSlug: data.partnerSlug || null,
       contactName: data.contactName,
       businessName: data.businessName,
       email: data.email.toLowerCase(),
@@ -142,7 +167,7 @@ export async function updateAffiliateCode(id: string, newCode: string) {
 export async function updateAffiliate(id: string, data: Record<string, unknown>) {
   // Filter to only allowed fields
   const allowed = ['contactName', 'businessName', 'phone', 'commissionRateOverride',
-    'categoryRateOverride', 'payoutMethod', 'payoutDetails', 'internalNotes', 'customerPerk'];
+    'categoryRateOverride', 'payoutMethod', 'payoutDetails', 'internalNotes', 'customerPerk', 'partnerSlug'];
   const filtered: Record<string, unknown> = {};
   for (const key of allowed) {
     if (key in data) filtered[key] = data[key];

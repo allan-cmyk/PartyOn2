@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdminRole } from '@/lib/auth/ops-session';
 import { prisma } from '@/lib/database/client';
+import { getPartnerSlug } from '@/lib/affiliates/affiliate-service';
 import { sendEmail } from '@/lib/email/resend-client';
 import { generateAffiliateWelcomeEmail, generateAffiliateWelcomeText } from '@/lib/email/templates/affiliate-welcome';
 import { EmailType } from '@prisma/client';
@@ -27,8 +28,9 @@ export async function POST(
       return NextResponse.json({ success: false, error: 'Affiliate not found' }, { status: 404 });
     }
 
-    const referralLink = `${BASE_URL}/partners/${affiliate.code.toLowerCase()}`;
-    const directReferralLink = `${BASE_URL}/partners/${affiliate.code.toLowerCase()}?ref=${affiliate.code}`;
+    const slug = getPartnerSlug(affiliate);
+    const referralLink = `${BASE_URL}/partners/${slug}`;
+    const directReferralLink = `${BASE_URL}/partners/${slug}?ref=${affiliate.code}`;
     const dashboardLink = `${BASE_URL}/affiliate/login`;
 
     const html = generateAffiliateWelcomeEmail({

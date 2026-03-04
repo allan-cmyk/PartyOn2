@@ -7,6 +7,7 @@ import Link from 'next/link';
 interface AffiliateInfo {
   id: string;
   code: string;
+  partnerSlug: string | null;
   businessName: string;
   contactName: string;
   email: string;
@@ -144,7 +145,8 @@ export default function AdminAffiliateDashboardPage(): ReactElement {
   }
 
   const { affiliate, yearToDate, lifetime, orders, payouts, dashboardOrders } = data;
-  const referralLink = `https://partyondelivery.com/partners/${affiliate.code.toLowerCase()}`;
+  const slug = affiliate.partnerSlug ?? affiliate.code.toLowerCase();
+  const referralLink = `https://partyondelivery.com/partners/${slug}`;
 
   return (
     <div className="min-h-screen bg-gray-50">

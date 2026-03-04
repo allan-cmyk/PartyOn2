@@ -4,7 +4,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdminRole } from '@/lib/auth/ops-session';
-import { approveApplication } from '@/lib/affiliates/affiliate-service';
+import { approveApplication, getPartnerSlug } from '@/lib/affiliates/affiliate-service';
 import { sendEmail } from '@/lib/email/resend-client';
 import { generateAffiliateWelcomeEmail, generateAffiliateWelcomeText } from '@/lib/email/templates/affiliate-welcome';
 import { EmailType } from '@prisma/client';
@@ -25,8 +25,9 @@ export async function POST(
     // Send welcome email (don't block approval if email fails)
     let emailSent = false;
     try {
-      const referralLink = `${BASE_URL}/partners/${affiliate.code.toLowerCase()}`;
-      const directReferralLink = `${BASE_URL}/partners/${affiliate.code.toLowerCase()}?ref=${affiliate.code}`;
+      const slug = getPartnerSlug(affiliate);
+      const referralLink = `${BASE_URL}/partners/${slug}`;
+      const directReferralLink = `${BASE_URL}/partners/${slug}?ref=${affiliate.code}`;
       const dashboardLink = `${BASE_URL}/affiliate/login`;
 
       const html = generateAffiliateWelcomeEmail({

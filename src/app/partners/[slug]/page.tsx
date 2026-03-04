@@ -4,7 +4,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
-import { getAffiliateByCode } from '@/lib/affiliates/affiliate-service';
+import { getAffiliateBySlug } from '@/lib/affiliates/affiliate-service';
 import partnersData from '@/data/austin-partners.json';
 
 interface Props {
@@ -21,7 +21,7 @@ function findPartnerLogo(businessName: string): string | null {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const affiliate = await getAffiliateByCode(slug.toUpperCase());
+  const affiliate = await getAffiliateBySlug(slug);
 
   if (!affiliate || affiliate.status !== 'ACTIVE') {
     return { title: 'Partner Not Found' };
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function DynamicPartnerPage({ params }: Props) {
   const { slug } = await params;
-  const affiliate = await getAffiliateByCode(slug.toUpperCase());
+  const affiliate = await getAffiliateBySlug(slug);
 
   if (!affiliate || affiliate.status !== 'ACTIVE') {
     notFound();

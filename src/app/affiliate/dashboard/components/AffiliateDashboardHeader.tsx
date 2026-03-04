@@ -6,19 +6,22 @@ import Link from 'next/link';
 interface AffiliateDashboardHeaderProps {
   contactName: string;
   code: string;
+  partnerSlug?: string | null;
   onLogout: () => void;
 }
 
 export default function AffiliateDashboardHeader({
   contactName,
   code,
+  partnerSlug,
   onLogout,
 }: AffiliateDashboardHeaderProps): ReactElement {
   const [copied, setCopied] = useState<'partner' | 'referral' | false>(false);
 
   const origin = typeof window !== 'undefined' ? window.location.origin : 'https://partyondelivery.com';
-  const partnerPageLink = `${origin}/partners/${code.toLowerCase()}`;
-  const referralLink = `${origin}/partners/${code.toLowerCase()}?ref=${code}`;
+  const slug = partnerSlug ?? code.toLowerCase();
+  const partnerPageLink = `${origin}/partners/${slug}`;
+  const referralLink = `${origin}/partners/${slug}?ref=${code}`;
 
   const handleCopy = (type: 'partner' | 'referral') => {
     const link = type === 'partner' ? partnerPageLink : referralLink;

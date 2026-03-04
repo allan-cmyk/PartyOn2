@@ -27,6 +27,7 @@ export default function AddAffiliateModal({ onClose, onCreated }: AddAffiliateMo
   const [phone, setPhone] = useState('');
   const [category, setCategory] = useState<Category>('BARTENDER');
   const [code, setCode] = useState('');
+  const [partnerSlug, setPartnerSlug] = useState('');
 
   // Step 2
   const [personalNote, setPersonalNote] = useState('');
@@ -122,6 +123,7 @@ export default function AddAffiliateModal({ onClose, onCreated }: AddAffiliateMo
           phone: phone || undefined,
           category,
           code: code || undefined,
+          partnerSlug: partnerSlug || undefined,
           personalNote: personalNote || undefined,
         }),
       });
@@ -247,6 +249,23 @@ export default function AddAffiliateModal({ onClose, onCreated }: AddAffiliateMo
                   placeholder="Leave blank to auto-generate"
                   className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                 />
+              </div>
+
+              {/* Partner Page Slug */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Partner Page Slug <span className="text-gray-400 font-normal">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={partnerSlug}
+                  onChange={(e) => setPartnerSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                  placeholder="e.g. cocktail-cowboys"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                />
+                <p className="text-xs text-gray-400 mt-1">
+                  Custom URL slug for /partners/... page. Defaults to lowercase referral code if left blank.
+                </p>
               </div>
             </>
           ) : (

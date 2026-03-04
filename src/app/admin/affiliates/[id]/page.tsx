@@ -31,6 +31,7 @@ interface Payout {
 interface AffiliateDetail {
   id: string;
   code: string;
+  partnerSlug: string | null;
   status: string;
   category: string;
   contactName: string;
@@ -130,7 +131,8 @@ export default function AffiliateDetailPage(): ReactElement {
     .filter((c) => c.status !== 'VOID')
     .reduce((sum, c) => sum + c.commissionBaseCents, 0);
   const appUrl = typeof window !== 'undefined' ? window.location.origin : 'https://partyondelivery.com';
-  const referralLink = `${appUrl}/partners/${affiliate.code.toLowerCase()}`;
+  const slug = affiliate.partnerSlug ?? affiliate.code.toLowerCase();
+  const referralLink = `${appUrl}/partners/${slug}`;
 
   const statusColor = (s: string) => {
     const map: Record<string, string> = {
