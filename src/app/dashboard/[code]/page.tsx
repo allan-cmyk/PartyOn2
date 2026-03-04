@@ -16,8 +16,9 @@ import GetRecsModal from '@/components/dashboard/GetRecsModal';
 import RecommendationsSection from '@/components/dashboard/RecommendationsSection';
 import ShareModal from '@/components/dashboard/ShareModal';
 import JoinOverlay from '@/components/dashboard/JoinOverlay';
+import EmailPromptModal from '@/components/dashboard/EmailPromptModal';
 import type { RecommendationResult } from '@/components/dashboard/GetRecsModal';
-import { claimHostV2, addDraftItemV2, removeDraftItemV2 } from '@/lib/group-orders-v2/api-client';
+import { claimHostV2, addDraftItemV2, removeDraftItemV2, updateParticipantEmailV2 } from '@/lib/group-orders-v2/api-client';
 import type { AppliedPromo } from '@/lib/group-orders-v2/types';
 import PromoCodeInput from '@/components/dashboard/PromoCodeInput';
 import { OnboardingTourProvider, DashboardTour } from '@/components/dashboard/tour';
@@ -66,6 +67,8 @@ export default function DashboardPage(): ReactElement {
   const [showNewLocation, setShowNewLocation] = useState(false);
   const [needsJoin, setNeedsJoin] = useState(false);
   const [appliedPromo, setAppliedPromo] = useState<AppliedPromo | null>(null);
+  const [showEmailPrompt, setShowEmailPrompt] = useState(false);
+  const [participantHasEmail, setParticipantHasEmail] = useState(false);
 
   const cartRef = useRef<HTMLDivElement>(null);
 
@@ -167,6 +170,15 @@ export default function DashboardPage(): ReactElement {
     setNeedsJoin(true);
   }, [groupOrder, participantId, code]);
 
+  // Check if participant has email on file
+  useEffect(() => {
+    if (!groupOrder || !participantId) return;
+    const p = groupOrder.participants.find((pp) => pp.id === participantId);
+    if (p?.email) {
+      setParticipantHasEmail(true);
+    }
+  }, [groupOrder, participantId]);
+
   // Show onboarding for new orders (no party type set yet)
   useEffect(() => {
     if (!groupOrder || !participantId) return;
@@ -207,6 +219,22 @@ export default function DashboardPage(): ReactElement {
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groupOrder?.id, participantId]);
+
+  const handleNeedEmail = useCallback(() => {
+    setShowEmailPrompt(true);
+  }, []);
+
+  const handleEmailSubmit = useCallback(async (email: string) => {
+    if (!participantId) return;
+    try {
+      await updateParticipantEmailV2(code, participantId, email);
+      setParticipantHasEmail(true);
+      setShowEmailPrompt(false);
+      refresh();
+    } catch (err) {
+      console.error('Failed to update email:', err);
+    }
+  }, [code, participantId, refresh]);
 
   const handleOnboardingDismiss = useCallback(() => {
     setShowOnboarding(false);
@@ -434,6 +462,8 @@ export default function DashboardPage(): ReactElement {
             draftItems={tab.draftItems}
             isLocked={isLocked}
             onItemChanged={refresh}
+            hasEmail={participantHasEmail}
+            onNeedEmail={handleNeedEmail}
             recsSection={
               recommendations ? (
                 <RecommendationsSection
@@ -443,6 +473,8 @@ export default function DashboardPage(): ReactElement {
                   participantId={participantId}
                   onItemChanged={refresh}
                   onDismiss={() => setRecommendations(null)}
+                  hasEmail={participantHasEmail}
+                  onNeedEmail={handleNeedEmail}
                 />
               ) : null
             }
@@ -538,6 +570,16 @@ export default function DashboardPage(): ReactElement {
               setActiveTabIndex(updated.tabs.length - 1);
             }
           }}
+        />
+      )}
+
+      {showEmailPrompt && (
+        <EmailPromptModal
+          participantName={
+            groupOrder.participants.find((p) => p.id === participantId)?.name || 'there'
+          }
+          onSubmit={handleEmailSubmit}
+          onClose={() => setShowEmailPrompt(false)}
         />
       )}
 

@@ -14,6 +14,8 @@ interface Props {
   draftItems: DraftCartItemView[];
   isLocked?: boolean;
   onItemChanged: () => void;
+  hasEmail?: boolean;
+  onNeedEmail?: () => void;
 }
 
 type ExpansionState = 'initial' | 'more' | 'all';
@@ -30,6 +32,8 @@ export default function CategorySection({
   draftItems,
   isLocked,
   onItemChanged,
+  hasEmail,
+  onNeedEmail,
 }: Props): ReactElement | null {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -113,6 +117,8 @@ export default function CategorySection({
               existingItem={existingItem}
               isLocked={isLocked}
               onItemChanged={onItemChanged}
+              hasEmail={hasEmail}
+              onNeedEmail={onNeedEmail}
             />
           );
         })}

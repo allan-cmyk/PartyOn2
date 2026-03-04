@@ -179,7 +179,7 @@ export interface UpdateTabInput {
 
 export interface JoinGroupOrderInput {
   guestName: string;
-  guestEmail: string;
+  guestEmail?: string;
   ageVerified: boolean;
   customerId?: string;
 }

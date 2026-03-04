@@ -82,7 +82,7 @@ export const UpdateTabSchema = z.object({
 /** Join group order */
 export const JoinGroupOrderSchema = z.object({
   guestName: z.string().min(1, 'Name is required').max(100),
-  guestEmail: z.string().email('Valid email is required'),
+  guestEmail: z.string().email('Valid email is required').optional(),
   ageVerified: z.boolean().refine((val) => val === true, {
     message: 'Age verification is required',
   }),

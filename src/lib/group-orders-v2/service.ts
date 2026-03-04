@@ -465,32 +465,34 @@ export async function joinGroupOrder(
   if (!group) throw new Error('Group order not found');
   if (group.status !== 'ACTIVE') throw new Error('Group order is not accepting new participants');
 
-  // Check for existing participant (idempotent join)
-  const existingByEmail = await prisma.groupParticipantV2.findUnique({
-    where: {
-      groupOrderId_guestEmail: {
-        groupOrderId: group.id,
-        guestEmail: input.guestEmail,
+  // Check for existing participant (idempotent join by email, if email provided)
+  if (input.guestEmail) {
+    const existingByEmail = await prisma.groupParticipantV2.findUnique({
+      where: {
+        groupOrderId_guestEmail: {
+          groupOrderId: group.id,
+          guestEmail: input.guestEmail,
+        },
       },
-    },
-  });
-  if (existingByEmail) {
-    if (existingByEmail.status === 'REMOVED') {
-      // Re-activate removed participant
-      const reactivated = await prisma.groupParticipantV2.update({
-        where: { id: existingByEmail.id },
-        data: { status: 'ACTIVE', ageVerified: input.ageVerified },
-      });
-      return serializeParticipant(reactivated);
+    });
+    if (existingByEmail) {
+      if (existingByEmail.status === 'REMOVED') {
+        // Re-activate removed participant
+        const reactivated = await prisma.groupParticipantV2.update({
+          where: { id: existingByEmail.id },
+          data: { status: 'ACTIVE', ageVerified: input.ageVerified },
+        });
+        return serializeParticipant(reactivated);
+      }
+      return serializeParticipant(existingByEmail);
     }
-    return serializeParticipant(existingByEmail);
   }
 
   const participant = await prisma.groupParticipantV2.create({
     data: {
       groupOrderId: group.id,
       guestName: input.guestName,
-      guestEmail: input.guestEmail,
+      guestEmail: input.guestEmail || null,
       customerId: input.customerId || null,
       ageVerified: input.ageVerified,
       isHost: false,

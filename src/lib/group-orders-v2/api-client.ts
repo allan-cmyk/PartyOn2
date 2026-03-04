@@ -104,6 +104,18 @@ export async function joinGroupOrderV2(
   });
 }
 
+/** Update participant email */
+export async function updateParticipantEmailV2(
+  code: string,
+  pid: string,
+  email: string
+): Promise<void> {
+  await apiFetch(`${API_BASE}/${code}/participants/${pid}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ email }),
+  });
+}
+
 /** Remove participant */
 export async function removeParticipantV2(
   code: string,

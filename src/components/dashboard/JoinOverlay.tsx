@@ -20,21 +20,15 @@ export default function JoinOverlay({
   onJoined,
 }: Props): ReactElement {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
   const [ageVerified, setAgeVerified] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   async function handleJoin() {
     const trimmedName = name.trim();
-    const trimmedEmail = email.trim();
 
     if (!trimmedName) {
       setError('Please enter your name.');
-      return;
-    }
-    if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
-      setError('Please enter a valid email address.');
       return;
     }
     if (!ageVerified) {
@@ -48,7 +42,6 @@ export default function JoinOverlay({
     try {
       const participant = await joinGroupOrderV2(shareCode, {
         guestName: trimmedName,
-        guestEmail: trimmedEmail,
         ageVerified: true,
       });
       onJoined(participant.id);
@@ -109,21 +102,7 @@ export default function JoinOverlay({
               placeholder="First name"
               className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all hover:border-gray-300"
               disabled={loading}
-            />
-          </div>
-
-          <div>
-            <label htmlFor="join-email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <input
-              id="join-email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all hover:border-gray-300"
-              disabled={loading}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleJoin(); }}
             />
           </div>
 
@@ -150,7 +129,7 @@ export default function JoinOverlay({
           disabled={loading}
           className="mt-5 w-full py-3 bg-brand-yellow text-gray-900 font-semibold tracking-[0.08em] rounded-lg hover:bg-yellow-400 active:bg-yellow-500 transition-colors disabled:opacity-50"
         >
-          {loading ? 'Joining...' : 'Join Order'}
+          {loading ? 'Joining...' : 'View Dashboard'}
         </button>
         </>
         )}
