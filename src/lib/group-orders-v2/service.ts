@@ -825,38 +825,15 @@ export async function claimHost(
   );
   if (!newHost) throw new Error('Participant not found or inactive');
 
-  // Already host? Just clear the token
-  if (newHost.isHost) {
-    await prisma.groupOrderV2.update({
-      where: { shareCode },
-      data: { hostClaimToken: null },
-    });
-    return;
-  }
+  // Already host? No-op.
+  if (newHost.isHost) return;
 
-  const currentHost = group.participants.find((p) => p.isHost);
-
-  await prisma.$transaction([
-    ...(currentHost
-      ? [prisma.groupParticipantV2.update({
-          where: { id: currentHost.id },
-          data: { isHost: false },
-        })]
-      : []),
-    prisma.groupParticipantV2.update({
-      where: { id: participantId },
-      data: { isHost: true },
-    }),
-    prisma.groupOrderV2.update({
-      where: { shareCode },
-      data: {
-        hostClaimToken: null,
-        hostName: newHost.guestName || 'Unknown',
-        hostEmail: newHost.guestEmail,
-        hostPhone: newHost.guestPhone,
-      },
-    }),
-  ]);
+  // Promote participant to host (additive -- existing hosts keep their role).
+  // Keep the claim token so it remains reusable for additional hosts.
+  await prisma.groupParticipantV2.update({
+    where: { id: participantId },
+    data: { isHost: true },
+  });
 }
 
 // ==========================================

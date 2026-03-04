@@ -316,7 +316,7 @@ export default function CreateDashboardPage(): ReactElement {
 
             <div className="flex gap-3">
               <Link
-                href={`/dashboard/${successData.shareCode}`}
+                href={successData.dashboardUrl}
                 className="flex-1 py-2.5 text-center text-sm font-semibold text-brand-blue border-2 border-brand-blue rounded-lg hover:bg-blue-50 transition-colors"
               >
                 Open Order
