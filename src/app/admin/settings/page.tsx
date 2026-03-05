@@ -143,10 +143,6 @@ export default function SettingsPage() {
                     <span className="font-medium text-black ml-2">$100</span>
                   </div>
                   <div>
-                    <span className="text-gray-600">Advance Booking Required:</span>
-                    <span className="font-medium text-black ml-2">72 hours</span>
-                  </div>
-                  <div>
                     <span className="text-gray-600">Express Delivery Fee:</span>
                     <span className="font-medium text-black ml-2">$50</span>
                   </div>

@@ -11,10 +11,6 @@ const faqData = [
     answer: "$100 for central Austin, $150 for outer areas including Lake Travis and surrounding communities."
   },
   {
-    question: "How far in advance must I place my order?",
-    answer: "72-hour advance notice is required for all orders to ensure availability and proper planning."
-  },
-  {
     question: "What is required for age verification?",
     answer: "Valid government-issued photo ID showing you are 21 or older is required. We verify ID upon delivery."
   },

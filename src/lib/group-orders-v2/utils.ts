@@ -20,22 +20,12 @@ export function generateShareCode(): string {
 }
 
 /**
- * Compute order deadline = deliveryDate - 72 hours
+ * Compute order deadline = deliveryDate - 4 hours
  */
 export function computeOrderDeadline(deliveryDate: Date): Date {
   const deadline = new Date(deliveryDate);
-  deadline.setHours(deadline.getHours() - 72);
+  deadline.setHours(deadline.getHours() - 4);
   return deadline;
-}
-
-/**
- * Check if a delivery date is at least 72 hours in the future
- */
-export function isAtLeast72HoursAway(deliveryDate: Date): boolean {
-  const now = new Date();
-  const diff = deliveryDate.getTime() - now.getTime();
-  const hours = diff / (1000 * 60 * 60);
-  return hours >= 72;
 }
 
 /**

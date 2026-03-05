@@ -24,10 +24,6 @@ export default function FAQsPage() {
           a: "TESTING MODE: Currently no minimum order requirements. Normally $100 for central Austin, $150 for outer areas."
         },
         {
-          q: "How far in advance must I place my order?",
-          a: "TESTING MODE: Orders can be placed anytime. Normally 72-hour advance notice is required."
-        },
-        {
           q: "What are your delivery hours?",
           a: "We deliver 10AM - 9PM (except Sundays). Special arrangements can be made for early morning or late-night events with advance notice."
         }
