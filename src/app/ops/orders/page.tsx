@@ -264,7 +264,8 @@ function GroupOrderRow({
         className="bg-purple-50/50 hover:bg-purple-100/50 transition-colors cursor-pointer border-l-4 border-l-purple-500"
         onClick={onToggle}
       >
-        <td className="w-12 px-4 py-4">
+        <td className="w-8 pl-2 pr-0 py-4"></td>
+        <td className="w-12 px-2 py-4">
           <input
             type="checkbox"
             checked={allGroupSelected}
@@ -349,7 +350,8 @@ function GroupOrderRow({
       {/* Expanded Sub-Orders */}
       {isExpanded && group.orders.map((order) => (
         <tr key={order.id} className={`bg-gray-50/80 hover:bg-gray-100/80 transition-colors border-l-4 border-l-purple-300 ${selectedOrders.has(order.id) ? 'bg-blue-50/30' : ''}`}>
-          <td className="w-12 px-4 py-3">
+          <td className="w-8 pl-2 pr-0 py-3"></td>
+          <td className="w-12 px-2 py-3">
             <input
               type="checkbox"
               checked={selectedOrders.has(order.id)}
@@ -404,78 +406,107 @@ function GroupOrderRow({
 
 // Regular Order Row Component
 function OrderRow({ order, selected, onToggle }: { order: Order; selected: boolean; onToggle: () => void }): ReactElement {
+  const [expanded, setExpanded] = useState(false);
+
   return (
-    <tr className={`hover:bg-blue-50/50 transition-colors group ${selected ? 'bg-blue-50/30' : ''}`}>
-      <td className="w-12 px-4 py-4">
-        <input
-          type="checkbox"
-          checked={selected}
-          onChange={onToggle}
-          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
-        />
-      </td>
-      <td className="px-6 py-4">
-        <Link href={`/ops/orders/${order.id}`} className="block">
-          <span className="font-mono font-bold text-blue-600 group-hover:text-blue-700 text-lg">
-            #{order.orderNumber}
-          </span>
-        </Link>
-        {order.groupOrder && (
-          <Link
-            href={`/ops/group-orders/${order.groupOrder.id}`}
-            className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 text-xs font-medium bg-purple-100 text-purple-700 rounded-full hover:bg-purple-200 transition-colors"
-            title={`Part of "${order.groupOrder.name}" (${order.groupOrder.shareCode})`}
+    <>
+      <tr className={`hover:bg-blue-50/50 transition-colors group ${selected ? 'bg-blue-50/30' : ''}`}>
+        <td className="w-8 pl-2 pr-0 py-4">
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors"
+            aria-label={expanded ? 'Collapse items' : 'Expand items'}
           >
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            <svg className={`w-4 h-4 transition-transform ${expanded ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
-            {order.groupOrder.name || order.groupOrder.shareCode}
+          </button>
+        </td>
+        <td className="w-12 px-2 py-4">
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={onToggle}
+            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
+          />
+        </td>
+        <td className="px-6 py-4">
+          <Link href={`/ops/orders/${order.id}`} className="block">
+            <span className="font-mono font-bold text-blue-600 group-hover:text-blue-700 text-lg">
+              #{order.orderNumber}
+            </span>
           </Link>
-        )}
-      </td>
-      <td className="px-6 py-4">
-        <div>
-          <p className="font-medium text-gray-900">{order.customerName}</p>
-          <p className="text-sm text-gray-500">{order.customerEmail}</p>
-        </div>
-      </td>
-      <td className="px-6 py-4 text-center">
-        <span className="inline-flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full font-semibold text-gray-700">
-          {order.itemCount}
-        </span>
-      </td>
-      <td className="px-6 py-4 text-right">
-        <span className="font-bold text-gray-900 text-lg">{formatCurrency(order.total)}</span>
-        {order.discountCode && (
-          <p className="text-xs text-green-600 font-medium">-{formatCurrency(order.discountAmount)} ({order.discountCode})</p>
-        )}
-      </td>
-      <td className="px-6 py-4 text-center">
-        <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
-          {order.status}
-        </span>
-      </td>
-      <td className="px-6 py-4 text-center">
-        <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${getFulfillmentColor(order.fulfillmentStatus)}`}>
-          {order.fulfillmentStatus}
-        </span>
-      </td>
-      <td className="px-6 py-4">
-        <div>
-          <p className="font-medium text-gray-900">{formatDate(order.deliveryDate)}</p>
-          <p className="text-sm text-gray-500">{order.deliveryTime}</p>
-          <span className="inline-flex px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded mt-1">
-            {order.deliveryType}
-          </span>
-          {order.deliveryAddress && (
-            <p className="text-xs text-gray-400 mt-1">{formatAddress(order.deliveryAddress)}</p>
+          {order.groupOrder && (
+            <Link
+              href={`/ops/group-orders/${order.groupOrder.id}`}
+              className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 text-xs font-medium bg-purple-100 text-purple-700 rounded-full hover:bg-purple-200 transition-colors"
+              title={`Part of "${order.groupOrder.name}" (${order.groupOrder.shareCode})`}
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              {order.groupOrder.name || order.groupOrder.shareCode}
+            </Link>
           )}
-        </div>
-      </td>
-      <td className="px-6 py-4 text-right">
-        <span className="text-gray-500 text-sm">{formatDateTime(order.createdAt)}</span>
-      </td>
-    </tr>
+        </td>
+        <td className="px-6 py-4">
+          <Link href={`/ops/orders/${order.id}`} className="block hover:text-blue-600 transition-colors">
+            <p className="font-medium text-gray-900 group-hover:text-blue-600">{order.customerName}</p>
+            <p className="text-sm text-gray-500">{order.customerEmail}</p>
+          </Link>
+        </td>
+        <td className="px-6 py-4 text-center">
+          <span className="inline-flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full font-semibold text-gray-700">
+            {order.itemCount}
+          </span>
+        </td>
+        <td className="px-6 py-4 text-right">
+          <span className="font-bold text-gray-900 text-lg">{formatCurrency(order.total)}</span>
+          {order.discountCode && (
+            <p className="text-xs text-green-600 font-medium">-{formatCurrency(order.discountAmount)} ({order.discountCode})</p>
+          )}
+        </td>
+        <td className="px-6 py-4 text-center">
+          <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
+            {order.status}
+          </span>
+        </td>
+        <td className="px-6 py-4 text-center">
+          <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${getFulfillmentColor(order.fulfillmentStatus)}`}>
+            {order.fulfillmentStatus}
+          </span>
+        </td>
+        <td className="px-6 py-4">
+          <div>
+            <p className="font-medium text-gray-900">{formatDate(order.deliveryDate)}</p>
+            <p className="text-sm text-gray-500">{order.deliveryTime}</p>
+            <span className="inline-flex px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded mt-1">
+              {order.deliveryType}
+            </span>
+            {order.deliveryAddress && (
+              <p className="text-xs text-gray-400 mt-1">{formatAddress(order.deliveryAddress)}</p>
+            )}
+          </div>
+        </td>
+        <td className="px-6 py-4 text-right">
+          <span className="text-gray-500 text-sm">{formatDateTime(order.createdAt)}</span>
+        </td>
+      </tr>
+      {expanded && order.items.length > 0 && (
+        <tr className="bg-gray-50/80">
+          <td colSpan={10} className="px-6 py-3">
+            <div className="pl-10 space-y-1">
+              {order.items.map((item, idx) => (
+                <div key={idx} className="flex gap-2 text-sm">
+                  <span className="text-gray-500 font-medium whitespace-nowrap">{item.quantity}x</span>
+                  <span className="text-gray-700">{item.title}</span>
+                </div>
+              ))}
+            </div>
+          </td>
+        </tr>
+      )}
+    </>
   );
 }
 
@@ -1266,7 +1297,8 @@ export default function OrdersPage(): ReactElement {
           <table className="w-full">
             <thead className="bg-gradient-to-r from-gray-50 to-gray-100/50 border-b border-gray-200">
               <tr>
-                <th className="w-12 px-4 py-4">
+                <th className="w-8 pl-2 pr-0 py-4"></th>
+                <th className="w-12 px-2 py-4">
                   <input
                     type="checkbox"
                     checked={allSelected}
