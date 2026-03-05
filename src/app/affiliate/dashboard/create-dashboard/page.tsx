@@ -420,10 +420,6 @@ export default function CreateDashboardPage(): ReactElement {
                 onChange={(e) => setDeliveryTime(e.target.value)}
                 className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg text-base focus:border-brand-blue focus:ring-0 transition-colors bg-white"
               >
-                <option value="8:00 AM - 8:30 AM">8:00 AM - 8:30 AM</option>
-                <option value="8:30 AM - 9:00 AM">8:30 AM - 9:00 AM</option>
-                <option value="9:00 AM - 9:30 AM">9:00 AM - 9:30 AM</option>
-                <option value="9:30 AM - 10:00 AM">9:30 AM - 10:00 AM</option>
                 <option value="10:00 AM - 10:30 AM">10:00 AM - 10:30 AM</option>
                 <option value="10:30 AM - 11:00 AM">10:30 AM - 11:00 AM</option>
                 <option value="11:00 AM - 11:30 AM">11:00 AM - 11:30 AM</option>

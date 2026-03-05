@@ -14,7 +14,7 @@ interface Props {
 
 function generateTimeSlots(): string[] {
   const slots: string[] = [];
-  for (let h = 8; h <= 20; h++) {
+  for (let h = 10; h <= 20; h++) {
     for (const m of [0, 30]) {
       const hour = h % 12 || 12;
       const ampm = h < 12 ? 'AM' : 'PM';
