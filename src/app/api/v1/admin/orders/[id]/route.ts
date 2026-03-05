@@ -41,6 +41,9 @@ export async function GET(
             },
           },
         },
+        amendments: {
+          orderBy: { createdAt: 'desc' },
+        },
         groupOrder: {
           select: {
             id: true,
@@ -58,6 +61,36 @@ export async function GET(
         { status: 404 }
       );
     }
+
+    // Find previous and next orders sorted by delivery date ascending, then order number
+    const [previousOrder, nextOrder] = await Promise.all([
+      prisma.order.findFirst({
+        where: {
+          OR: [
+            { deliveryDate: { lt: order.deliveryDate } },
+            {
+              deliveryDate: order.deliveryDate,
+              orderNumber: { lt: order.orderNumber },
+            },
+          ],
+        },
+        orderBy: [{ deliveryDate: 'desc' }, { orderNumber: 'desc' }],
+        select: { id: true },
+      }),
+      prisma.order.findFirst({
+        where: {
+          OR: [
+            { deliveryDate: { gt: order.deliveryDate } },
+            {
+              deliveryDate: order.deliveryDate,
+              orderNumber: { gt: order.orderNumber },
+            },
+          ],
+        },
+        orderBy: [{ deliveryDate: 'asc' }, { orderNumber: 'asc' }],
+        select: { id: true },
+      }),
+    ]);
 
     // Parse delivery address
     const deliveryAddress = order.deliveryAddress as {
@@ -173,12 +206,31 @@ export async function GET(
           status: order.groupOrder?.status || null,
           siblingOrders,
         },
+        amendments: order.amendments.map((a) => ({
+          id: a.id,
+          type: a.type,
+          changes: a.changes,
+          previousTotal: Number(a.previousTotal),
+          newTotal: Number(a.newTotal),
+          amountDelta: Number(a.amountDelta),
+          resolution: a.resolution,
+          draftOrderId: a.draftOrderId,
+          refundId: a.refundId,
+          notes: a.notes,
+          processedBy: a.processedBy,
+          createdAt: a.createdAt.toISOString(),
+          resolvedAt: a.resolvedAt?.toISOString() || null,
+        })),
         notes: {
           customer: order.customerNote,
           internal: order.internalNote,
         },
         createdAt: order.createdAt.toISOString(),
         updatedAt: order.updatedAt.toISOString(),
+        navigation: {
+          previousOrderId: previousOrder?.id || null,
+          nextOrderId: nextOrder?.id || null,
+        },
       },
     });
   } catch (error) {

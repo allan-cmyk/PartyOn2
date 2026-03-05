@@ -1,0 +1,155 @@
+/**
+ * Order Refund API
+ * POST /api/v1/admin/orders/[id]/refund
+ * Process a Stripe refund for an order
+ */
+
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/database/client';
+import { stripe } from '@/lib/stripe/client';
+import { createRefund } from '@/lib/inventory/services/order-service';
+import { sendRefundProcessedEmail } from '@/lib/email/email-service';
+
+interface RouteParams {
+  params: Promise<{ id: string }>;
+}
+
+export async function POST(
+  request: NextRequest,
+  { params }: RouteParams
+): Promise<NextResponse> {
+  try {
+    const { id } = await params;
+    const body = await request.json();
+    const { amount, reason, amendmentId } = body as {
+      amount: number;
+      reason?: string;
+      amendmentId?: string;
+    };
+
+    if (!amount || amount <= 0) {
+      return NextResponse.json(
+        { success: false, error: 'Refund amount must be greater than 0' },
+        { status: 400 }
+      );
+    }
+
+    const order = await prisma.order.findUnique({
+      where: { id },
+      include: {
+        refunds: true,
+      },
+    });
+
+    if (!order) {
+      return NextResponse.json(
+        { success: false, error: 'Order not found' },
+        { status: 404 }
+      );
+    }
+
+    if (!order.stripePaymentIntentId) {
+      return NextResponse.json(
+        { success: false, error: 'No Stripe payment found for this order. Cannot process refund.' },
+        { status: 400 }
+      );
+    }
+
+    // Calculate total prior refunds
+    const totalPriorRefunds = order.refunds.reduce(
+      (sum, r) => sum + Number(r.amount),
+      0
+    );
+
+    const originalCharge = Number(order.total);
+    const maxRefundable = Math.round((originalCharge - totalPriorRefunds) * 100) / 100;
+
+    if (amount > maxRefundable) {
+      return NextResponse.json({
+        success: false,
+        error: `Refund amount ($${amount.toFixed(2)}) exceeds maximum refundable ($${maxRefundable.toFixed(2)})`,
+      }, { status: 400 });
+    }
+
+    // Process Stripe refund
+    const refund = await stripe.refunds.create({
+      payment_intent: order.stripePaymentIntentId,
+      amount: Math.round(amount * 100), // Stripe uses cents
+      reason: 'requested_by_customer',
+      metadata: {
+        orderId: id,
+        orderNumber: String(order.orderNumber),
+        reason: reason || 'Order amendment refund',
+      },
+    });
+
+    // Create refund record in DB and update financial status
+    await createRefund(id, amount, reason || 'Order amendment refund');
+
+    // Update the refund record with the Stripe refund ID
+    const dbRefund = await prisma.refund.findFirst({
+      where: { orderId: id },
+      orderBy: { createdAt: 'desc' },
+    });
+    if (dbRefund) {
+      await prisma.refund.update({
+        where: { id: dbRefund.id },
+        data: {
+          stripeRefundId: refund.id,
+          processedBy: 'admin',
+          processedAt: new Date(),
+        },
+      });
+    }
+
+    // Update OrderAmendment resolution if linked
+    if (amendmentId) {
+      await prisma.orderAmendment.update({
+        where: { id: amendmentId },
+        data: {
+          resolution: 'REFUNDED',
+          refundId: dbRefund?.id || null,
+          resolvedAt: new Date(),
+        },
+      });
+    }
+
+    // Send refund email
+    try {
+      await sendRefundProcessedEmail(
+        order.customerEmail,
+        order.customerName,
+        order.orderNumber,
+        amount,
+        reason || 'Order amendment'
+      );
+    } catch (emailError) {
+      console.error('[Refund API] Failed to send refund email:', emailError);
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        stripeRefundId: refund.id,
+        amount,
+        status: refund.status,
+      },
+    });
+  } catch (error) {
+    console.error('[Refund API] Error:', error);
+
+    // Handle Stripe-specific errors
+    if (error && typeof error === 'object' && 'type' in error) {
+      const stripeError = error as { type: string; message: string };
+      return NextResponse.json(
+        { success: false, error: `Stripe error: ${stripeError.message}` },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json(
+      { success: false, error: 'Failed to process refund' },
+      { status: 500 }
+    );
+  }
+}

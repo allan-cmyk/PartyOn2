@@ -9,7 +9,8 @@ import { getCheckoutSession } from './checkout';
 import { prisma } from '@/lib/database/client';
 import { createOrderFromCheckout, createRefund, getOrderByCheckoutSession, createOrderFromDraftOrder } from '@/lib/inventory/services/order-service';
 import { getCartById } from '@/lib/inventory/services/cart-service';
-import { getDraftOrderById, updateDraftOrderStatus } from '@/lib/draft-orders';
+import { getDraftOrderById, updateDraftOrderStatus, DraftOrderWithTotal } from '@/lib/draft-orders';
+import { Prisma } from '@prisma/client';
 import {
   sendOrderConfirmationEmail,
   sendPaymentFailedEmail,
@@ -214,6 +215,17 @@ async function handleDraftOrderPayment(
   // Check if already processed
   if (draftOrder.status === 'PAID' || draftOrder.status === 'CONVERTED') {
     console.log('[Stripe Webhook] Draft order already processed:', draftOrderId);
+    return;
+  }
+
+  // Check if this is an amendment invoice payment
+  const rawDraftOrder = await prisma.draftOrder.findUnique({
+    where: { id: draftOrderId },
+    select: { amendmentForOrderId: true },
+  });
+
+  if (rawDraftOrder?.amendmentForOrderId) {
+    await handleAmendmentInvoicePayment(draftOrderId, rawDraftOrder.amendmentForOrderId, draftOrder, session);
     return;
   }
 
@@ -514,6 +526,134 @@ export async function processWebhookEvent(event: Stripe.Event): Promise<void> {
     default:
       console.log('[Stripe Webhook] Unhandled event type:', event.type);
   }
+}
+
+/**
+ * Handle amendment invoice payment
+ * Updates the existing order instead of creating a new one
+ */
+async function handleAmendmentInvoicePayment(
+  draftOrderId: string,
+  existingOrderId: string,
+  draftOrder: DraftOrderWithTotal,
+  session: Stripe.Checkout.Session
+): Promise<void> {
+  console.log('[Stripe Webhook] Processing amendment invoice payment for order:', existingOrderId);
+
+  const existingOrder = await prisma.order.findUnique({
+    where: { id: existingOrderId },
+    include: { items: true },
+  });
+
+  if (!existingOrder) {
+    throw new Error(`[Stripe Webhook] Existing order not found for amendment: ${existingOrderId}`);
+  }
+
+  // Add amendment items to existing order
+  const amendmentItems = draftOrder.items;
+  for (const item of amendmentItems) {
+    // Check if this product+variant already exists on the order
+    const existingItem = existingOrder.items.find(
+      i => i.productId === item.productId && i.variantId === item.variantId
+    );
+
+    if (existingItem) {
+      // Increase quantity on existing item
+      const newQty = existingItem.quantity + item.quantity;
+      await prisma.orderItem.update({
+        where: { id: existingItem.id },
+        data: {
+          quantity: newQty,
+          totalPrice: new Prisma.Decimal(Number(existingItem.price) * newQty),
+        },
+      });
+    } else {
+      // Create new order item
+      await prisma.orderItem.create({
+        data: {
+          orderId: existingOrderId,
+          productId: item.productId,
+          variantId: item.variantId,
+          title: item.title,
+          variantTitle: item.variantTitle || null,
+          price: new Prisma.Decimal(item.price),
+          quantity: item.quantity,
+          totalPrice: new Prisma.Decimal(item.price * item.quantity),
+        },
+      });
+    }
+  }
+
+  // Update order totals (add amendment amounts)
+  const amendmentSubtotal = Number(draftOrder.subtotal);
+  const amendmentTax = Number(draftOrder.taxAmount);
+  const amendmentDeliveryFee = Number(draftOrder.deliveryFee);
+  const amendmentTotal = Number(draftOrder.total);
+
+  await prisma.order.update({
+    where: { id: existingOrderId },
+    data: {
+      subtotal: new Prisma.Decimal(Number(existingOrder.subtotal) + amendmentSubtotal),
+      taxAmount: new Prisma.Decimal(Number(existingOrder.taxAmount) + amendmentTax),
+      deliveryFee: new Prisma.Decimal(Number(existingOrder.deliveryFee) + amendmentDeliveryFee),
+      total: new Prisma.Decimal(Number(existingOrder.total) + amendmentTotal),
+    },
+  });
+
+  // Mark draft order as converted
+  await updateDraftOrderStatus(draftOrderId, 'CONVERTED', {
+    paidAt: new Date(),
+    stripePaymentIntentId: session.payment_intent as string,
+    convertedOrderId: existingOrderId,
+  });
+
+  // Update linked OrderAmendment resolution to PAID
+  const amendment = await prisma.orderAmendment.findFirst({
+    where: { draftOrderId, orderId: existingOrderId },
+  });
+  if (amendment) {
+    await prisma.orderAmendment.update({
+      where: { id: amendment.id },
+      data: {
+        resolution: 'PAID',
+        resolvedAt: new Date(),
+      },
+    });
+  }
+
+  // Send confirmation email
+  try {
+    await sendOrderConfirmationEmail({
+      orderNumber: existingOrder.orderNumber,
+      customerName: existingOrder.customerName,
+      customerEmail: existingOrder.customerEmail,
+      items: amendmentItems.map((item) => ({
+        title: item.title,
+        variantTitle: item.variantTitle,
+        quantity: item.quantity,
+        price: item.price,
+        totalPrice: item.price * item.quantity,
+      })),
+      subtotal: amendmentSubtotal,
+      deliveryFee: amendmentDeliveryFee,
+      taxAmount: amendmentTax,
+      discountAmount: 0,
+      total: amendmentTotal,
+      deliveryDate: existingOrder.deliveryDate,
+      deliveryTime: existingOrder.deliveryTime,
+      deliveryAddress: {
+        address1: (existingOrder.deliveryAddress as { address1?: string })?.address1 || '',
+        city: (existingOrder.deliveryAddress as { city?: string })?.city || 'Austin',
+        province: (existingOrder.deliveryAddress as { province?: string; state?: string })?.province || (existingOrder.deliveryAddress as { state?: string })?.state || 'TX',
+        zip: (existingOrder.deliveryAddress as { zip?: string })?.zip || '',
+      },
+    });
+    console.log('[Stripe Webhook] Amendment confirmation email sent for order:', existingOrder.orderNumber);
+  } catch (emailError) {
+    console.error('[Stripe Webhook] Failed to send amendment confirmation email:', emailError);
+  }
+
+  console.log('[Stripe Webhook] Amendment invoice processed for order:', existingOrder.orderNumber);
 }
 
 /**

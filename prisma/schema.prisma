@@ -806,6 +806,7 @@ model Order {
   items        OrderItem[]
   fulfillments Fulfillment[]
   refunds      Refund[]
+  amendments   OrderAmendment[]
   deliveryTask DeliveryTask?
   affiliateCommissions AffiliateCommission[]
 
@@ -927,6 +928,50 @@ enum RefundStatus {
   PROCESSING
   SUCCEEDED
   FAILED
+}
+
+model OrderAmendment {
+  id      String        @id @default(uuid())
+  orderId String        @map("order_id")
+  type    AmendmentType
+
+  // JSON diff of changes: { added: [], removed: [], modified: [], deliveryFeeChange?: { from, to } }
+  changes Json
+
+  previousTotal Decimal             @map("previous_total") @db.Decimal(10, 2)
+  newTotal      Decimal             @map("new_total") @db.Decimal(10, 2)
+  amountDelta   Decimal             @map("amount_delta") @db.Decimal(10, 2) // positive = charge, negative = refund
+  resolution    AmendmentResolution @default(PENDING)
+
+  // Links
+  draftOrderId String? @map("draft_order_id") // Amendment invoice draft order
+  refundId     String? @map("refund_id")      // Stripe refund record
+
+  notes       String? @db.Text
+  processedBy String? @map("processed_by")
+
+  createdAt  DateTime  @default(now()) @map("created_at")
+  resolvedAt DateTime? @map("resolved_at")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@map("order_amendments")
+}
+
+enum AmendmentType {
+  ITEMS_ADDED
+  ITEMS_REMOVED
+  DELIVERY_FEE_CHANGED
+  MIXED
+}
+
+enum AmendmentResolution {
+  PENDING
+  INVOICE_SENT
+  PAID
+  REFUNDED
+  WAIVED
 }
 
 enum DeliveryType {
@@ -1515,6 +1560,9 @@ model DraftOrder {
   affiliateId   String? @map("affiliate_id")
   affiliateCode String? @map("affiliate_code")
 
+  // Amendment: if this draft order is an amendment invoice for an existing order
+  amendmentForOrderId String? @map("amendment_for_order_id")
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -1522,6 +1570,7 @@ model DraftOrder {
   @@index([status])
   @@index([createdAt])
   @@index([groupOrderId])
+  @@index([amendmentForOrderId])
   @@map("draft_orders")
 }
 

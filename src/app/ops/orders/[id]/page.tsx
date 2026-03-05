@@ -2,7 +2,7 @@
 
 import { useState, useEffect, ReactElement, useCallback, useRef } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 interface OrderItem {
   id: string;
@@ -14,6 +14,27 @@ interface OrderItem {
   quantity: number;
   price: number;
   total: number;
+}
+
+interface Amendment {
+  id: string;
+  type: string;
+  changes: {
+    added: { title: string; quantity: number; price: number }[];
+    removed: { title: string; quantity: number; price: number }[];
+    modified: { title: string; oldQuantity: number; newQuantity: number; price: number }[];
+    deliveryFeeChange: { from: number; to: number } | null;
+  };
+  previousTotal: number;
+  newTotal: number;
+  amountDelta: number;
+  resolution: string;
+  draftOrderId: string | null;
+  refundId: string | null;
+  notes: string | null;
+  processedBy: string | null;
+  createdAt: string;
+  resolvedAt: string | null;
 }
 
 interface OrderDetail {
@@ -80,12 +101,62 @@ interface OrderDetail {
       status: string;
     }[];
   };
+  amendments: Amendment[];
   notes: {
     customer: string | null;
     internal: string | null;
   };
   createdAt: string;
   updatedAt: string;
+  navigation: {
+    previousOrderId: string | null;
+    nextOrderId: string | null;
+  };
+}
+
+interface EditItem {
+  productId: string;
+  variantId: string;
+  title: string;
+  variantTitle?: string;
+  quantity: number;
+  price: number;
+  imageUrl?: string;
+  isNew?: boolean;
+}
+
+interface SearchProduct {
+  id: string;
+  title: string;
+  status: string;
+  variants: {
+    id: string;
+    title: string | null;
+    price: string | number;
+    sku: string | null;
+    option1Value: string | null;
+    option2Value: string | null;
+  }[];
+  images: { url: string }[];
+}
+
+interface PreviewData {
+  previousTotal: number;
+  newTotal: number;
+  amountDelta: number;
+  previousSubtotal: number;
+  newSubtotal: number;
+  previousTax: number;
+  newTax: number;
+  previousDeliveryFee: number;
+  newDeliveryFee: number;
+  changes: {
+    added: { title: string; quantity: number; price: number }[];
+    removed: { title: string; quantity: number; price: number }[];
+    modified: { title: string; oldQuantity: number; newQuantity: number; price: number }[];
+    deliveryFeeChange: { from: number; to: number } | null;
+  };
+  warnings: string[];
 }
 
 const STATUS_OPTIONS = ['PENDING', 'CONFIRMED', 'PROCESSING', 'COMPLETED', 'CANCELLED'];
@@ -100,10 +171,13 @@ function getStatusColor(status: string): string {
     CANCELLED: 'bg-red-100 text-red-700 border-red-200',
     PAID: 'bg-green-100 text-green-700 border-green-200',
     PARTIALLY_PAID: 'bg-yellow-100 text-yellow-700 border-yellow-200',
+    PARTIALLY_REFUNDED: 'bg-yellow-100 text-yellow-700 border-yellow-200',
     REFUNDED: 'bg-gray-100 text-gray-700 border-gray-200',
     FULFILLED: 'bg-green-100 text-green-700 border-green-200',
     UNFULFILLED: 'bg-orange-100 text-orange-700 border-orange-200',
     PARTIAL: 'bg-yellow-100 text-yellow-700 border-yellow-200',
+    INVOICE_SENT: 'bg-blue-100 text-blue-700 border-blue-200',
+    WAIVED: 'bg-gray-100 text-gray-700 border-gray-200',
   };
   return colors[status] || 'bg-gray-100 text-gray-700 border-gray-200';
 }
@@ -127,18 +201,21 @@ function formatDateTime(dateString: string): string {
   });
 }
 
-// Section header component
-function SectionHeader({ icon, title }: { icon: ReactElement; title: string }): ReactElement {
+function SectionHeader({ icon, title, action }: { icon: ReactElement; title: string; action?: ReactElement }): ReactElement {
   return (
-    <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-100 bg-gray-50">
-      <span className="text-gray-400">{icon}</span>
-      <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+    <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50">
+      <div className="flex items-center gap-3">
+        <span className="text-gray-400">{icon}</span>
+        <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+      </div>
+      {action}
     </div>
   );
 }
 
 export default function OrderDetailPage(): ReactElement {
   const params = useParams();
+  const router = useRouter();
   const orderId = params?.id as string;
 
   const [order, setOrder] = useState<OrderDetail | null>(null);
@@ -147,6 +224,27 @@ export default function OrderDetailPage(): ReactElement {
   const [saving, setSaving] = useState(false);
   const [internalNote, setInternalNote] = useState('');
   const printRef = useRef<HTMLDivElement>(null);
+
+  // Amendment edit mode state
+  const [isEditing, setIsEditing] = useState(false);
+  const [editItems, setEditItems] = useState<EditItem[]>([]);
+  const [editDeliveryFee, setEditDeliveryFee] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<SearchProduct[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [preview, setPreview] = useState<PreviewData | null>(null);
+  const [amendProcessing, setAmendProcessing] = useState(false);
+  const [amendNotes, setAmendNotes] = useState('');
+  const searchRef = useRef<HTMLDivElement>(null);
+  const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Refund dialog state
+  const [showRefundDialog, setShowRefundDialog] = useState(false);
+  const [refundAmount, setRefundAmount] = useState(0);
+  const [refundReason, setRefundReason] = useState('');
+  const [refundProcessing, setRefundProcessing] = useState(false);
+  const [pendingAmendmentId, setPendingAmendmentId] = useState<string | null>(null);
 
   const fetchOrder = useCallback(async () => {
     try {
@@ -170,6 +268,237 @@ export default function OrderDetailPage(): ReactElement {
   useEffect(() => {
     fetchOrder();
   }, [fetchOrder]);
+
+  // Close search dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowSearchResults(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  function enterEditMode() {
+    if (!order) return;
+    setEditItems(
+      order.items.map((item) => ({
+        productId: item.product.id,
+        variantId: item.variant?.id || '',
+        title: item.title,
+        variantTitle: item.variantTitle || undefined,
+        quantity: item.quantity,
+        price: item.price,
+      }))
+    );
+    setEditDeliveryFee(order.pricing.deliveryFee);
+    setAmendNotes('');
+    setPreview(null);
+    setIsEditing(true);
+  }
+
+  function cancelEditMode() {
+    setIsEditing(false);
+    setEditItems([]);
+    setPreview(null);
+    setSearchQuery('');
+    setSearchResults([]);
+    setShowSearchResults(false);
+  }
+
+  // Product search
+  const searchProducts = useCallback(async (query: string) => {
+    if (query.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+    setSearchLoading(true);
+    try {
+      const res = await fetch(`/api/v1/products/search?q=${encodeURIComponent(query)}&limit=10`);
+      const data = await res.json();
+      if (data.success) {
+        setSearchResults(data.data);
+        setShowSearchResults(true);
+      }
+    } finally {
+      setSearchLoading(false);
+    }
+  }, []);
+
+  function handleSearchInput(value: string) {
+    setSearchQuery(value);
+    if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+    searchDebounceRef.current = setTimeout(() => searchProducts(value), 300);
+  }
+
+  function addProduct(product: SearchProduct, variant: SearchProduct['variants'][0]) {
+    const key = `${product.id}-${variant.id}`;
+    const existing = editItems.find(
+      (item) => `${item.productId}-${item.variantId}` === key
+    );
+    if (existing) {
+      setEditItems(
+        editItems.map((item) =>
+          `${item.productId}-${item.variantId}` === key
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        )
+      );
+    } else {
+      const variantTitle = [variant.option1Value, variant.option2Value].filter(Boolean).join(' / ');
+      setEditItems([
+        ...editItems,
+        {
+          productId: product.id,
+          variantId: variant.id,
+          title: product.title,
+          variantTitle: variantTitle || (variant.title !== 'Default Title' ? variant.title || undefined : undefined),
+          quantity: 1,
+          price: parseFloat(variant.price as string),
+          imageUrl: product.images[0]?.url || '',
+          isNew: true,
+        },
+      ]);
+    }
+    setSearchQuery('');
+    setShowSearchResults(false);
+    setPreview(null);
+  }
+
+  function updateItemQuantity(productId: string, variantId: string, delta: number) {
+    setEditItems(
+      editItems
+        .map((item) =>
+          item.productId === productId && item.variantId === variantId
+            ? { ...item, quantity: Math.max(0, item.quantity + delta) }
+            : item
+        )
+        .filter((item) => item.quantity > 0)
+    );
+    setPreview(null);
+  }
+
+  function removeItem(productId: string, variantId: string) {
+    setEditItems(editItems.filter((item) => !(item.productId === productId && item.variantId === variantId)));
+    setPreview(null);
+  }
+
+  async function fetchPreview() {
+    if (!order) return;
+    setAmendProcessing(true);
+    try {
+      const res = await fetch(`/api/v1/admin/orders/${orderId}/amend`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'preview',
+          items: editItems,
+          deliveryFee: editDeliveryFee,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setPreview(data.data);
+      } else {
+        alert(data.error || 'Failed to preview amendment');
+      }
+    } catch {
+      alert('Failed to preview amendment');
+    } finally {
+      setAmendProcessing(false);
+    }
+  }
+
+  async function confirmAmendment() {
+    if (!order || !preview) return;
+    setAmendProcessing(true);
+    try {
+      const res = await fetch(`/api/v1/admin/orders/${orderId}/amend`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'confirm',
+          items: editItems,
+          deliveryFee: editDeliveryFee,
+          notes: amendNotes || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        const amendment = data.data.amendment;
+        if (amendment.amountDelta > 0 && amendment.draftOrderId) {
+          // Positive delta -- offer to send amendment invoice
+          if (confirm(`Amendment invoice created ($${amendment.amountDelta.toFixed(2)}). Send invoice email to customer now?`)) {
+            await sendAmendmentInvoice(amendment.id);
+          }
+        } else if (amendment.amountDelta < 0) {
+          // Negative delta -- show refund dialog
+          setPendingAmendmentId(amendment.id);
+          setRefundAmount(Math.abs(amendment.amountDelta));
+          setRefundReason('Order amendment');
+          setShowRefundDialog(true);
+        }
+        setIsEditing(false);
+        setPreview(null);
+        await fetchOrder();
+      } else {
+        alert(data.error || 'Failed to confirm amendment');
+      }
+    } catch {
+      alert('Failed to confirm amendment');
+    } finally {
+      setAmendProcessing(false);
+    }
+  }
+
+  async function sendAmendmentInvoice(amendmentId: string) {
+    try {
+      const res = await fetch(`/api/v1/admin/orders/${orderId}/send-amendment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amendmentId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert(`Invoice sent to ${data.data.sentTo}`);
+        await fetchOrder();
+      } else {
+        alert(data.error || 'Failed to send invoice');
+      }
+    } catch {
+      alert('Failed to send invoice');
+    }
+  }
+
+  async function processRefund() {
+    if (!order) return;
+    setRefundProcessing(true);
+    try {
+      const res = await fetch(`/api/v1/admin/orders/${orderId}/refund`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: refundAmount,
+          reason: refundReason || 'Order amendment',
+          amendmentId: pendingAmendmentId,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert(`Refund of $${refundAmount.toFixed(2)} processed successfully`);
+        setShowRefundDialog(false);
+        setPendingAmendmentId(null);
+        await fetchOrder();
+      } else {
+        alert(data.error || 'Failed to process refund');
+      }
+    } catch {
+      alert('Failed to process refund');
+    } finally {
+      setRefundProcessing(false);
+    }
+  }
 
   async function updateOrder(updates: Record<string, unknown>): Promise<void> {
     if (!order) return;
@@ -199,6 +528,8 @@ export default function OrderDetailPage(): ReactElement {
   function handlePrint(): void {
     window.print();
   }
+
+  const canAmend = order && !['CANCELLED', 'REFUNDED'].includes(order.status);
 
   if (loading) {
     return (
@@ -249,7 +580,7 @@ export default function OrderDetailPage(): ReactElement {
   return (
     <>
       {/* Screen View */}
-      <div className="p-4 md:p-8 bg-gray-50 min-h-screen print:hidden">
+      <div className={`p-4 md:p-8 bg-gray-50 min-h-screen print:hidden ${isEditing ? 'pb-48' : ''}`}>
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
@@ -279,20 +610,78 @@ export default function OrderDetailPage(): ReactElement {
               </div>
             </div>
 
-            <button
-              onClick={handlePrint}
-              className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors shadow-sm flex items-center gap-2"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-              </svg>
-              Print Order Sheet
-            </button>
+            <div className="flex items-center gap-3">
+              {/* Prev/Next Navigation */}
+              <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                <button
+                  onClick={() => order.navigation.previousOrderId && router.push(`/ops/orders/${order.navigation.previousOrderId}`)}
+                  disabled={!order.navigation.previousOrderId}
+                  className="p-2 bg-white text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed border-r border-gray-200"
+                  title="Previous order (by delivery date)"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => order.navigation.nextOrderId && router.push(`/ops/orders/${order.navigation.nextOrderId}`)}
+                  disabled={!order.navigation.nextOrderId}
+                  className="p-2 bg-white text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  title="Next order (by delivery date)"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+
+              <button
+                onClick={handlePrint}
+                className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors shadow-sm flex items-center gap-2"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                </svg>
+                Print
+              </button>
+
+              {canAmend && !isEditing && (
+                <button
+                  onClick={enterEditMode}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  Amend Order
+                </button>
+              )}
+
+              {isEditing && (
+                <button
+                  onClick={cancelEditMode}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
           </div>
+
+          {/* Edit mode banner */}
+          {isEditing && (
+            <div className="mb-6 bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center gap-3">
+              <svg className="w-5 h-5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p className="text-blue-800 font-medium">
+                Edit Mode -- Add/remove items and adjust delivery fee. Click &quot;Preview Changes&quot; when ready.
+              </p>
+            </div>
+          )}
 
           {/* Status Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            {/* Order Status */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
               <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">
                 Order Status
@@ -309,7 +698,6 @@ export default function OrderDetailPage(): ReactElement {
               </select>
             </div>
 
-            {/* Financial Status */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
               <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">
                 Payment Status
@@ -319,7 +707,6 @@ export default function OrderDetailPage(): ReactElement {
               </div>
             </div>
 
-            {/* Fulfillment Status */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
               <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">
                 Fulfillment
@@ -406,29 +793,132 @@ export default function OrderDetailPage(): ReactElement {
                   }
                   title="Order Items"
                 />
-                <div className="divide-y divide-gray-100">
-                  {order.items.map((item) => (
-                    <div key={item.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-                      <div className="flex-1">
-                        <p className="font-semibold text-gray-900">{item.title}</p>
-                        {item.variantTitle && item.variantTitle !== 'Default Title' && (
-                          <p className="text-sm text-gray-500">{item.variantTitle}</p>
-                        )}
-                        {item.sku && (
-                          <p className="text-xs text-gray-400 font-mono">SKU: {item.sku}</p>
-                        )}
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold text-gray-900">
-                          {item.quantity} x ${item.price.toFixed(2)}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          ${item.total.toFixed(2)}
-                        </p>
-                      </div>
+
+                {/* Product search (edit mode only) */}
+                {isEditing && (
+                  <div className="px-6 py-4 border-b border-gray-100 bg-blue-50" ref={searchRef}>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => handleSearchInput(e.target.value)}
+                        placeholder="Search products to add..."
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                      {searchLoading && (
+                        <div className="absolute right-3 top-3.5">
+                          <svg className="animate-spin h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                          </svg>
+                        </div>
+                      )}
+                      {showSearchResults && searchResults.length > 0 && (
+                        <div className="absolute z-10 top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-80 overflow-y-auto">
+                          {searchResults.map((product) => (
+                            <div key={product.id}>
+                              {product.variants.map((variant) => (
+                                <button
+                                  key={variant.id}
+                                  onClick={() => addProduct(product, variant)}
+                                  className="w-full text-left px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 flex justify-between items-center"
+                                >
+                                  <div>
+                                    <p className="font-medium text-gray-900">{product.title}</p>
+                                    {variant.title && variant.title !== 'Default Title' && (
+                                      <p className="text-sm text-gray-500">{variant.title}</p>
+                                    )}
+                                  </div>
+                                  <span className="text-gray-700 font-medium">
+                                    ${parseFloat(variant.price as string).toFixed(2)}
+                                  </span>
+                                </button>
+                              ))}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  ))}
+                  </div>
+                )}
+
+                <div className="divide-y divide-gray-100">
+                  {isEditing ? (
+                    // Edit mode items
+                    editItems.map((item) => (
+                      <div
+                        key={`${item.productId}-${item.variantId}`}
+                        className={`px-6 py-4 flex items-center justify-between ${item.isNew ? 'bg-green-50' : ''}`}
+                      >
+                        <div className="flex-1">
+                          <p className="font-semibold text-gray-900">
+                            {item.title}
+                            {item.isNew && (
+                              <span className="ml-2 text-xs font-medium text-green-700 bg-green-100 px-2 py-0.5 rounded">NEW</span>
+                            )}
+                          </p>
+                          {item.variantTitle && (
+                            <p className="text-sm text-gray-500">{item.variantTitle}</p>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-gray-600">${item.price.toFixed(2)}</span>
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => updateItemQuantity(item.productId, item.variantId, -1)}
+                              className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-gray-600"
+                            >
+                              -
+                            </button>
+                            <span className="w-8 text-center font-semibold">{item.quantity}</span>
+                            <button
+                              onClick={() => updateItemQuantity(item.productId, item.variantId, 1)}
+                              className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-gray-600"
+                            >
+                              +
+                            </button>
+                          </div>
+                          <span className="w-20 text-right font-medium">
+                            ${(item.price * item.quantity).toFixed(2)}
+                          </span>
+                          <button
+                            onClick={() => removeItem(item.productId, item.variantId)}
+                            className="w-8 h-8 flex items-center justify-center rounded-lg text-red-500 hover:bg-red-50"
+                            title="Remove item"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    // Read-only items
+                    order.items.map((item) => (
+                      <div key={item.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                        <div className="flex-1">
+                          <p className="font-semibold text-gray-900">{item.title}</p>
+                          {item.variantTitle && item.variantTitle !== 'Default Title' && (
+                            <p className="text-sm text-gray-500">{item.variantTitle}</p>
+                          )}
+                          {item.sku && (
+                            <p className="text-xs text-gray-400 font-mono">SKU: {item.sku}</p>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold text-gray-900">
+                            {item.quantity} x ${item.price.toFixed(2)}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            ${item.total.toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
+
                 {/* Pricing Summary */}
                 <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 space-y-2">
                   <div className="flex justify-between text-sm">
@@ -449,7 +939,24 @@ export default function OrderDetailPage(): ReactElement {
                   )}
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Delivery Fee</span>
-                    <span className="text-gray-900 font-medium">${order.pricing.deliveryFee.toFixed(2)}</span>
+                    {isEditing ? (
+                      <div className="flex items-center gap-2">
+                        <span className="text-gray-400">$</span>
+                        <input
+                          type="number"
+                          value={editDeliveryFee}
+                          onChange={(e) => {
+                            setEditDeliveryFee(parseFloat(e.target.value) || 0);
+                            setPreview(null);
+                          }}
+                          step="0.01"
+                          min="0"
+                          className="w-20 px-2 py-1 border border-gray-300 rounded text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                    ) : (
+                      <span className="text-gray-900 font-medium">${order.pricing.deliveryFee.toFixed(2)}</span>
+                    )}
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Tax (8.25%)</span>
@@ -461,6 +968,89 @@ export default function OrderDetailPage(): ReactElement {
                   </div>
                 </div>
               </div>
+
+              {/* Amendment History */}
+              {order.amendments && order.amendments.length > 0 && (
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                  <SectionHeader
+                    icon={
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    }
+                    title="Amendment History"
+                  />
+                  <div className="divide-y divide-gray-100">
+                    {order.amendments.map((amendment) => (
+                      <div key={amendment.id} className="px-6 py-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-3">
+                            <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(amendment.resolution)}`}>
+                              {amendment.resolution}
+                            </span>
+                            <span className="text-sm font-medium text-gray-700">
+                              {amendment.type.replace(/_/g, ' ')}
+                            </span>
+                          </div>
+                          <span className="text-sm text-gray-500">
+                            {formatDateTime(amendment.createdAt)}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-4 text-sm">
+                          <span className="text-gray-500">
+                            ${amendment.previousTotal.toFixed(2)} &rarr; ${amendment.newTotal.toFixed(2)}
+                          </span>
+                          <span className={`font-semibold ${amendment.amountDelta > 0 ? 'text-red-600' : amendment.amountDelta < 0 ? 'text-green-600' : 'text-gray-500'}`}>
+                            {amendment.amountDelta > 0 ? '+' : ''}${amendment.amountDelta.toFixed(2)}
+                          </span>
+                        </div>
+                        {/* Show changes details */}
+                        <div className="mt-2 text-xs text-gray-500 space-y-0.5">
+                          {amendment.changes.added?.map((item, i) => (
+                            <p key={`a-${i}`}>+ Added {item.quantity}x {item.title} (${item.price.toFixed(2)})</p>
+                          ))}
+                          {amendment.changes.removed?.map((item, i) => (
+                            <p key={`r-${i}`}>- Removed {item.quantity}x {item.title}</p>
+                          ))}
+                          {amendment.changes.modified?.map((item, i) => (
+                            <p key={`m-${i}`}>~ {item.title}: qty {item.oldQuantity} &rarr; {item.newQuantity}</p>
+                          ))}
+                          {amendment.changes.deliveryFeeChange && (
+                            <p>Delivery fee: ${amendment.changes.deliveryFeeChange.from.toFixed(2)} &rarr; ${amendment.changes.deliveryFeeChange.to.toFixed(2)}</p>
+                          )}
+                        </div>
+                        {amendment.notes && (
+                          <p className="mt-2 text-sm text-gray-600 italic">{amendment.notes}</p>
+                        )}
+                        {/* Action buttons for pending amendments */}
+                        {amendment.resolution === 'PENDING' && amendment.amountDelta > 0 && amendment.draftOrderId && (
+                          <button
+                            onClick={() => sendAmendmentInvoice(amendment.id)}
+                            className="mt-2 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                          >
+                            Send Invoice (${amendment.amountDelta.toFixed(2)})
+                          </button>
+                        )}
+                        {amendment.resolution === 'PENDING' && amendment.amountDelta < 0 && (
+                          <button
+                            onClick={() => {
+                              setPendingAmendmentId(amendment.id);
+                              setRefundAmount(Math.abs(amendment.amountDelta));
+                              setRefundReason('Order amendment');
+                              setShowRefundDialog(true);
+                            }}
+                            disabled={!order.payment.stripePaymentIntentId}
+                            className="mt-2 px-3 py-1.5 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                            title={!order.payment.stripePaymentIntentId ? 'No Stripe payment found for this order' : ''}
+                          >
+                            Process Refund (${Math.abs(amendment.amountDelta).toFixed(2)})
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Notes */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -552,7 +1142,7 @@ export default function OrderDetailPage(): ReactElement {
                 </div>
               </div>
 
-              {/* Group Order Info - Only show if part of a group */}
+              {/* Group Order Info */}
               {order.groupOrder.isGroupOrder && order.groupOrder.id && (
                 <div className="bg-white rounded-xl shadow-sm border border-purple-200 overflow-hidden">
                   <div className="flex items-center gap-3 px-6 py-4 border-b border-purple-100 bg-purple-50">
@@ -682,9 +1272,160 @@ export default function OrderDetailPage(): ReactElement {
         </div>
       </div>
 
-      {/* Print View - Compact Order Sheet (fits one letter page) */}
+      {/* Amendment Summary Bar (sticky bottom in edit mode) */}
+      {isEditing && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 shadow-2xl z-50 print:hidden">
+          <div className="max-w-7xl mx-auto px-4 md:px-8 py-4">
+            {preview ? (
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-4 text-lg">
+                    <span className="text-gray-500">Original: ${preview.previousTotal.toFixed(2)}</span>
+                    <span className="text-gray-400">&rarr;</span>
+                    <span className="font-bold text-gray-900">New: ${preview.newTotal.toFixed(2)}</span>
+                    <span className={`font-bold text-lg ${preview.amountDelta > 0 ? 'text-red-600' : preview.amountDelta < 0 ? 'text-green-600' : 'text-gray-500'}`}>
+                      ({preview.amountDelta > 0 ? '+' : ''}${preview.amountDelta.toFixed(2)})
+                    </span>
+                  </div>
+                  {preview.warnings.length > 0 && (
+                    <div className="text-sm text-yellow-700">
+                      {preview.warnings.map((w, i) => (
+                        <p key={i}>{w}</p>
+                      ))}
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={amendNotes}
+                      onChange={(e) => setAmendNotes(e.target.value)}
+                      placeholder="Amendment notes (optional)"
+                      className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={cancelEditMode}
+                    className="px-4 py-2.5 text-gray-700 bg-gray-100 rounded-lg font-medium hover:bg-gray-200"
+                  >
+                    Cancel
+                  </button>
+                  {preview.amountDelta > 0 ? (
+                    <button
+                      onClick={confirmAmendment}
+                      disabled={amendProcessing}
+                      className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
+                    >
+                      {amendProcessing ? 'Processing...' : `Create Amendment Invoice ($${preview.amountDelta.toFixed(2)})`}
+                    </button>
+                  ) : preview.amountDelta < 0 ? (
+                    <button
+                      onClick={confirmAmendment}
+                      disabled={amendProcessing || !order.payment.stripePaymentIntentId}
+                      className="px-6 py-2.5 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 disabled:opacity-50 flex items-center gap-2"
+                      title={!order.payment.stripePaymentIntentId ? 'No Stripe payment found -- cannot process refund' : ''}
+                    >
+                      {amendProcessing ? 'Processing...' : `Process Refund ($${Math.abs(preview.amountDelta).toFixed(2)})`}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={confirmAmendment}
+                      disabled={amendProcessing}
+                      className="px-6 py-2.5 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50"
+                    >
+                      {amendProcessing ? 'Processing...' : 'Apply Changes'}
+                    </button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between">
+                <p className="text-gray-600">
+                  {editItems.length} item{editItems.length !== 1 ? 's' : ''} | Delivery: ${editDeliveryFee.toFixed(2)}
+                </p>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={cancelEditMode}
+                    className="px-4 py-2.5 text-gray-700 bg-gray-100 rounded-lg font-medium hover:bg-gray-200"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={fetchPreview}
+                    disabled={amendProcessing}
+                    className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50"
+                  >
+                    {amendProcessing ? 'Loading...' : 'Preview Changes'}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Refund Confirmation Dialog */}
+      {showRefundDialog && (
+        <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4 print:hidden">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Process Refund</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Refund Amount</label>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-500">$</span>
+                  <input
+                    type="number"
+                    value={refundAmount}
+                    onChange={(e) => setRefundAmount(parseFloat(e.target.value) || 0)}
+                    step="0.01"
+                    min="0"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Reason</label>
+                <input
+                  type="text"
+                  value={refundReason}
+                  onChange={(e) => setRefundReason(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Reason for refund"
+                />
+              </div>
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                <p className="text-sm text-red-800">
+                  This will process a refund of <strong>${refundAmount.toFixed(2)}</strong> via Stripe.
+                  The customer will receive an email notification.
+                </p>
+              </div>
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  onClick={() => {
+                    setShowRefundDialog(false);
+                    setPendingAmendmentId(null);
+                  }}
+                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={processRefund}
+                  disabled={refundProcessing || refundAmount <= 0}
+                  className="px-6 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 disabled:opacity-50"
+                >
+                  {refundProcessing ? 'Processing...' : 'Confirm Refund'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Print View */}
       <div ref={printRef} className="hidden print:block order-sheet">
-        {/* Header row: order number + business name on one line */}
         <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
           <div className="flex items-center gap-3">
             <span className="bg-black text-white text-lg font-bold px-3 py-1 rounded">
@@ -697,7 +1438,6 @@ export default function OrderDetailPage(): ReactElement {
           </span>
         </div>
 
-        {/* Delivery + Customer side by side, compact */}
         <div className="flex gap-4 mb-3">
           <div className="flex-1 border border-gray-400 rounded p-2">
             <div className="font-bold text-xs uppercase tracking-wide border-b border-gray-300 pb-1 mb-1">Delivery</div>
@@ -725,21 +1465,20 @@ export default function OrderDetailPage(): ReactElement {
           </div>
         </div>
 
-        {/* Delivery instructions - compact */}
         {order.delivery.instructions && (
           <div className="mb-3 px-2 py-1.5 border-2 border-yellow-500 bg-yellow-50 rounded text-sm">
             <span className="font-bold">Instructions: </span>{order.delivery.instructions}
           </div>
         )}
 
-        {/* Items Table - tight rows */}
         <table className="w-full mb-3 border-collapse text-sm">
           <thead>
             <tr className="border-b-2 border-black">
               <th className="text-left py-1 px-2 font-bold">Item</th>
               <th className="text-center py-1 px-2 w-12 font-bold">Qty</th>
               <th className="text-right py-1 px-2 w-20 font-bold">Price</th>
-              <th className="text-center py-1 w-10 font-bold">OK</th>
+              <th className="text-center py-1 w-16 font-bold">In Store?</th>
+              <th className="text-center py-1 w-16 font-bold">Packed?</th>
             </tr>
           </thead>
           <tbody>
@@ -756,12 +1495,14 @@ export default function OrderDetailPage(): ReactElement {
                 <td className="text-center py-1">
                   <span className="inline-block w-4 h-4 border-2 border-black rounded-sm"></span>
                 </td>
+                <td className="text-center py-1">
+                  <span className="inline-block w-4 h-4 border-2 border-black rounded-sm"></span>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        {/* Bottom row: notes on left, totals on right */}
         <div className="flex gap-4">
           <div className="flex-1">
             {order.notes.customer && (
