@@ -66,7 +66,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'What should I order for a Cocktail Cowboys party?',
-    a: 'We recommend a mix of spirits (vodka, tequila, whiskey), mixers (soda, juice, simple syrup), seltzers, beer, ice, and cups. Our group ordering tool makes it easy to split costs with your crew.',
+    a: 'We recommend a mix of spirits (vodka, tequila), mixers (soda, juice, simple syrup), seltzers, beer, ice, and cups. Our group ordering tool makes it easy to split costs with your crew.',
   },
   {
     q: 'Can you deliver to my Airbnb or vacation rental?',
@@ -262,9 +262,6 @@ function CocktailCowboysPageContent(): ReactElement {
       <section className="py-12 px-6 md:px-12 bg-white">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-gray-500 tracking-[0.1em] uppercase text-sm mb-2">
-              Top Sellers
-            </p>
             <h2 className="font-heading text-2xl md:text-3xl text-gray-900 tracking-wide">
               Bachelorette Party Favorites
             </h2>
@@ -289,7 +286,7 @@ function CocktailCowboysPageContent(): ReactElement {
                 <span className="text-brand-blue text-xs font-semibold uppercase tracking-[0.1em] mb-2">Featured Bundle</span>
                 <h3 className="font-heading text-xl md:text-2xl text-gray-900 mb-3">The Full Send Bar</h3>
                 <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-5">
-                  Everything your bartender needs in one box -- vodka, tequila, whiskey, mixers, garnishes, cups, and ice. Hand it to your Cocktail Cowboys and let them work their magic.
+                  Everything your bartender needs in one box -- vodka, tequila, mixers, garnishes, cups, and ice. Hand it to your Cocktail Cowboys and let them work their magic.
                 </p>
                 <span className="inline-flex items-center gap-2 text-brand-blue font-semibold group-hover:gap-3 transition-all">
                   View Details
