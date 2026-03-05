@@ -1,13 +1,11 @@
 'use client';
 
-import { Suspense, useState, useCallback, type ReactElement } from 'react';
+import { Suspense, type ReactElement } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
-import ProductModal from '@/components/ProductModal';
-import { Product } from '@/lib/types';
 
 const EXPERIENCES = [
   {
@@ -85,21 +83,6 @@ const FAQ_ITEMS = [
 function CocktailCowboysPageContent(): ReactElement {
   const searchParams = useSearchParams();
   void searchParams;
-
-  const [modalProduct, setModalProduct] = useState<Product | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
-
-  const openProductModal = useCallback(async (handle: string) => {
-    try {
-      const res = await fetch(`/api/products/${handle}`);
-      if (!res.ok) return;
-      const product = await res.json();
-      setModalProduct(product);
-      setModalOpen(true);
-    } catch {
-      // fall through silently
-    }
-  }, []);
 
   return (
     <div className="bg-white min-h-screen">
@@ -271,7 +254,7 @@ function CocktailCowboysPageContent(): ReactElement {
           </div>
 
           {/* Hero Product: The Full Send Bar */}
-          <button onClick={() => openProductModal('the-full-send-bar')} className="block group mb-8 w-full text-left cursor-pointer">
+          <Link href="/order" className="block group mb-8 w-full text-left cursor-pointer">
             <div className="bg-gray-50 rounded-xl border border-gray-200 shadow-sm overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-0">
               <div className="relative aspect-[4/3] md:aspect-auto">
                 <Image
@@ -289,14 +272,14 @@ function CocktailCowboysPageContent(): ReactElement {
                   Everything your bartender needs in one box -- vodka, tequila, mixers, garnishes, cups, and ice. Hand it to your Cocktail Cowboys and let them work their magic.
                 </p>
                 <span className="inline-flex items-center gap-2 text-brand-blue font-semibold group-hover:gap-3 transition-all">
-                  View Details
+                  Start Order
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </span>
               </div>
             </div>
-          </button>
+          </Link>
 
           {/* Product Tiles - updated images */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -305,28 +288,24 @@ function CocktailCowboysPageContent(): ReactElement {
                 name: 'Margarita Cocktail Kit',
                 tagline: 'Party pitcher -- just add ice',
                 image: 'https://cdn.shopify.com/s/files/1/0538/1767/1858/files/Gemini_Generated_Image_ea6zuuea6zuuea6z.png?v=1765906526',
-                handle: 'classic-margarita-pitcher-kit-20-drinks-per-pitcher',
               },
               {
                 name: 'Espresso Martini Kit',
                 tagline: 'Coffee + cocktails in one',
                 image: 'https://cdn.shopify.com/s/files/1/0538/1767/1858/files/Gemini_Generated_Image_tk6mbhtk6mbhtk6m.png?v=1764702134',
-                handle: 'espresso-martini',
               },
               {
                 name: 'Austin Survival Package',
                 tagline: 'Hangover kit for the crew',
                 image: '/images/products/welcome-to-austin-survival-package.png',
-                handle: 'party-starter-bundle',
               },
               {
                 name: 'Aperol Spritz Kit',
                 tagline: '16 drinks, zero effort',
                 image: 'https://cdn.shopify.com/s/files/1/0538/1767/1858/files/Gemini_Generated_Image_cmdz47cmdz47cmdz.png?v=1767930088',
-                handle: 'aperol-spritz-party-pitcher-kit-16-drinks',
               },
             ].map((product) => (
-              <button key={product.name} onClick={() => openProductModal(product.handle)} className="group text-left cursor-pointer">
+              <Link key={product.name} href="/order" className="group text-left cursor-pointer">
                 <div className="bg-gray-50 rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                   <div className="relative aspect-square bg-white">
                     <Image
@@ -342,7 +321,7 @@ function CocktailCowboysPageContent(): ReactElement {
                     <p className="text-gray-500 text-xs md:text-sm">{product.tagline}</p>
                   </div>
                 </div>
-              </button>
+              </Link>
             ))}
           </div>
         </div>
@@ -552,12 +531,6 @@ function CocktailCowboysPageContent(): ReactElement {
       </section>
 
       <Footer />
-
-      <ProductModal
-        product={modalProduct}
-        isOpen={modalOpen}
-        onClose={() => { setModalOpen(false); setModalProduct(null); }}
-      />
     </div>
   );
 }
