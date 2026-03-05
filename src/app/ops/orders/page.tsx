@@ -517,13 +517,6 @@ function processOrdersForDisplay(orders: Order[]): DisplayItem[] {
     displayItems.push({ type: 'individual', order });
   }
 
-  // Sort by most recent first (using the first order's createdAt for groups)
-  displayItems.sort((a, b) => {
-    const dateA = a.type === 'group' ? new Date(a.group.orders[0].createdAt) : new Date(a.order.createdAt);
-    const dateB = b.type === 'group' ? new Date(b.group.orders[0].createdAt) : new Date(b.order.createdAt);
-    return dateB.getTime() - dateA.getTime();
-  });
-
   return displayItems;
 }
 
