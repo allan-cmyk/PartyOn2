@@ -269,7 +269,7 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
   function renderCheckoutButtons() {
     if (isEmpty) return null;
 
-    const deliveryFee = tabDeliveryFee || 30;
+    const deliveryFee = tabDeliveryFee || 40;
     const hasFreeDelivery = appliedPromo?.freeDelivery === true;
 
     return (

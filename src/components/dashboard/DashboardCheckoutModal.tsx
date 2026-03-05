@@ -305,7 +305,7 @@ export default function DashboardCheckoutModal({
               <span className="text-gray-600">Delivery Fee</span>
               {appliedPromo?.freeDelivery ? (
                 <span className="flex items-center gap-1.5">
-                  <span className="text-gray-400 line-through">${Number(tab.deliveryFee || 30).toFixed(2)}</span>
+                  <span className="text-gray-400 line-through">${Number(tab.deliveryFee || 40).toFixed(2)}</span>
                   <span className="text-green-600 font-semibold">FREE</span>
                 </span>
               ) : (

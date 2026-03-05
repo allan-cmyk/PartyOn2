@@ -899,7 +899,7 @@ export async function createDashboardOrder(
           orderDeadline: computeOrderDeadline(deliveryDate),
           deliveryFee: deliveryAddress.zip
             ? calculateDeliveryFee(deliveryAddress.zip, 0, false).originalFee
-            : 30,
+            : 40,
           deliveryContextType: input.deliveryContextType || 'HOUSE',
         },
       },
@@ -971,7 +971,7 @@ export async function createMultiTabDashboardOrder(
             orderDeadline: computeOrderDeadline(deliveryDate),
             deliveryFee: address.zip
               ? calculateDeliveryFee(address.zip, 0, false).originalFee
-              : 30,
+              : 40,
             deliveryContextType: tab.deliveryContextType || 'HOUSE',
           };
         }),

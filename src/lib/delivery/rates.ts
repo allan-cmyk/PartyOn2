@@ -50,8 +50,8 @@ export const DELIVERY_ZONES: DeliveryZone[] = [
   {
     name: 'Central Austin',
     description: 'Downtown, UT Campus, East Austin, South Congress',
-    baseRate: 15,
-    expressRate: 25,
+    baseRate: 25,
+    expressRate: 40,
     minimumOrder: 100,
     freeDeliveryThreshold: 250,
     zipCodes: [
@@ -69,8 +69,8 @@ export const DELIVERY_ZONES: DeliveryZone[] = [
   {
     name: 'Greater Austin',
     description: 'North Austin, South Austin, Round Rock',
-    baseRate: 20,
-    expressRate: 35,
+    baseRate: 30,
+    expressRate: 50,
     minimumOrder: 125,
     freeDeliveryThreshold: 300,
     zipCodes: [
@@ -116,8 +116,8 @@ export const DELIVERY_ZONES: DeliveryZone[] = [
   {
     name: 'Extended Austin',
     description: 'Cedar Park, Georgetown, Dripping Springs',
-    baseRate: 30,
-    expressRate: 50,
+    baseRate: 40,
+    expressRate: 65,
     minimumOrder: 150,
     freeDeliveryThreshold: 400,
     zipCodes: [
