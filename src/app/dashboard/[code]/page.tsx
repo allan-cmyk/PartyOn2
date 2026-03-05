@@ -421,6 +421,7 @@ export default function DashboardPage(): ReactElement {
               draftItems={tab.draftItems}
               purchasedItems={tab.purchasedItems}
               isLocked={isLocked}
+              deliveryFee={tab.deliveryFee}
               appliedPromo={effectivePromo}
               onItemChanged={refresh}
               onCheckoutMine={() => setCheckoutMode('mine')}
@@ -491,6 +492,7 @@ export default function DashboardPage(): ReactElement {
             draftItems={tab.draftItems}
             purchasedItems={tab.purchasedItems}
             isLocked={isLocked}
+            deliveryFee={tab.deliveryFee}
             appliedPromo={effectivePromo}
             onItemChanged={refresh}
             onCheckoutMine={() => setCheckoutMode('mine')}

@@ -60,6 +60,12 @@ export default function DeliveryFeeInvoice({
     }
   };
 
+  const now = new Date();
+  const deliveryDate = new Date(tab.deliveryDate);
+  const hoursUntilDelivery = (deliveryDate.getTime() - now.getTime()) / (1000 * 60 * 60);
+  const isUrgent = hoursUntilDelivery <= 24 && hoursUntilDelivery > 0;
+  const isPastDue = hoursUntilDelivery <= 0;
+
   return (
     <div className="space-y-2">
       {freeShippingCode && (
@@ -67,7 +73,13 @@ export default function DeliveryFeeInvoice({
           Free delivery will be auto-applied — code <span className="font-semibold">{freeShippingCode}</span> includes free shipping
         </div>
       )}
-      <div className={`${freeShippingCode ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'} border rounded-lg p-4`}>
+      <div className={`${
+        isUrgent || isPastDue
+          ? 'bg-red-50 border-red-300 border-2'
+          : freeShippingCode
+            ? 'bg-green-50 border-green-200'
+            : 'bg-yellow-50 border-yellow-200'
+      } border rounded-lg p-4`}>
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-gray-900">
@@ -87,12 +99,26 @@ export default function DeliveryFeeInvoice({
             className={`px-4 py-2 text-white text-sm font-medium rounded-lg disabled:opacity-50 ${
               freeShippingCode
                 ? 'bg-green-600 hover:bg-green-700'
-                : 'bg-brand-blue hover:bg-brand-blue/90'
+                : isUrgent || isPastDue
+                  ? 'bg-red-600 hover:bg-red-700'
+                  : 'bg-brand-blue hover:bg-brand-blue/90'
             }`}
           >
             {loading ? 'Processing...' : freeShippingCode ? 'Claim Free Delivery' : 'Pay Delivery Fee'}
           </button>
         </div>
+        {!freeShippingCode && (isUrgent || isPastDue) && (
+          <p className="mt-2 text-sm font-medium text-red-700">
+            {isPastDue
+              ? 'Your delivery date has passed. Please pay the delivery fee immediately to reschedule.'
+              : 'Your delivery is less than 24 hours away. Pay now to ensure your order is delivered on time.'}
+          </p>
+        )}
+        {!freeShippingCode && !isUrgent && !isPastDue && (
+          <p className="mt-2 text-xs text-gray-500">
+            Delivery fee must be paid at least 24 hours before your delivery date or your order may not be delivered.
+          </p>
+        )}
         {error && (
           <p className="mt-2 text-sm text-red-600">{error}</p>
         )}

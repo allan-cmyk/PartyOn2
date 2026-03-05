@@ -21,6 +21,7 @@ interface Props {
   draftItems: DraftCartItemView[];
   purchasedItems: PurchasedItemView[];
   isLocked?: boolean;
+  deliveryFee: number;
   appliedPromo?: AppliedPromo | null;
   onItemChanged: () => void;
   onCheckoutMine: () => void;
@@ -36,6 +37,7 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
     draftItems,
     purchasedItems,
     isLocked,
+    deliveryFee: tabDeliveryFee,
     appliedPromo,
     onItemChanged,
     onCheckoutMine,
@@ -267,7 +269,7 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
   function renderCheckoutButtons() {
     if (isEmpty) return null;
 
-    const deliveryFee = 30;
+    const deliveryFee = tabDeliveryFee || 30;
     const hasFreeDelivery = appliedPromo?.freeDelivery === true;
 
     return (

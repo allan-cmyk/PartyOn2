@@ -897,7 +897,9 @@ export async function createDashboardOrder(
           deliveryTime: '12:00 PM - 2:00 PM',
           deliveryAddress: deliveryAddress as unknown as Record<string, string>,
           orderDeadline: computeOrderDeadline(deliveryDate),
-          deliveryFee: 0,
+          deliveryFee: deliveryAddress.zip
+            ? calculateDeliveryFee(deliveryAddress.zip, 0, false).originalFee
+            : 30,
           deliveryContextType: input.deliveryContextType || 'HOUSE',
         },
       },
@@ -967,7 +969,9 @@ export async function createMultiTabDashboardOrder(
             deliveryTime: tab.deliveryTime || input.deliveryTime,
             deliveryAddress: address as unknown as Record<string, string>,
             orderDeadline: computeOrderDeadline(deliveryDate),
-            deliveryFee: 0,
+            deliveryFee: address.zip
+              ? calculateDeliveryFee(address.zip, 0, false).originalFee
+              : 30,
             deliveryContextType: tab.deliveryContextType || 'HOUSE',
           };
         }),
