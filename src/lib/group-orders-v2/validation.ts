@@ -3,7 +3,6 @@
  */
 
 import { z } from 'zod';
-import { isInDeliveryArea } from '@/lib/delivery/rates';
 
 /** Delivery address schema */
 const DeliveryAddressSchema = z.object({
@@ -11,10 +10,7 @@ const DeliveryAddressSchema = z.object({
   address2: z.string().optional(),
   city: z.string().min(1, 'City is required'),
   province: z.string().default('TX'),
-  zip: z.string().min(5, 'Zip code is required').max(10).refine(
-    (zip) => isInDeliveryArea(zip),
-    'Zip code is outside our delivery area'
-  ),
+  zip: z.string().min(5, 'Zip code is required').max(10),
   country: z.string().default('US'),
 });
 
