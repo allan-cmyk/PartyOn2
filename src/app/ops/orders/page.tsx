@@ -39,7 +39,7 @@ interface Order {
   createdAt: string;
   groupOrderId: string | null;
   groupOrder: GroupOrderInfo | null;
-  deliveryAddress: Record<string, string> | null;
+  deliveryAddress: Record<string, string> | string | null;
   items: { quantity: number; title: string }[];
 }
 
@@ -523,10 +523,11 @@ function processOrdersForDisplay(orders: Order[]): DisplayItem[] {
   return displayItems;
 }
 
-// Format delivery address from JSON
-function formatAddress(addr: Record<string, string> | null): string {
+// Format delivery address from JSON object or plain string
+function formatAddress(addr: Record<string, string> | string | null): string {
   if (!addr) return '';
-  const parts = [addr.address1, addr.address2, addr.city, addr.state, addr.zip].filter(Boolean);
+  if (typeof addr === 'string') return addr;
+  const parts = [addr.address1, addr.address2, addr.city, addr.state || addr.province, addr.zip].filter(Boolean);
   return parts.join(', ');
 }
 
