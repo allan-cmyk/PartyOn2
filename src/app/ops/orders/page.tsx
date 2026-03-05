@@ -424,12 +424,12 @@ function OrderRow({ order, selected, onToggle }: { order: Order; selected: boole
           <Link
             href={`/ops/group-orders/${order.groupOrder.id}`}
             className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 text-xs font-medium bg-purple-100 text-purple-700 rounded-full hover:bg-purple-200 transition-colors"
-            title={`Part of "${order.groupOrder.name}"`}
+            title={`Part of "${order.groupOrder.name}" (${order.groupOrder.shareCode})`}
           >
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
-            {order.groupOrder.shareCode}
+            {order.groupOrder.name || order.groupOrder.shareCode}
           </Link>
         )}
       </td>
@@ -467,6 +467,9 @@ function OrderRow({ order, selected, onToggle }: { order: Order; selected: boole
           <span className="inline-flex px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded mt-1">
             {order.deliveryType}
           </span>
+          {order.deliveryAddress && (
+            <p className="text-xs text-gray-400 mt-1">{formatAddress(order.deliveryAddress)}</p>
+          )}
         </div>
       </td>
       <td className="px-6 py-4 text-right">
@@ -575,7 +578,7 @@ function MobileOrderCard({ order, selected, onToggle }: { order: Order; selected
                   href={`/ops/group-orders/${order.groupOrder.id}`}
                   className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-purple-100 text-purple-700 rounded-full"
                 >
-                  {order.groupOrder.shareCode}
+                  {order.groupOrder.name || order.groupOrder.shareCode}
                 </Link>
               )}
               <button
