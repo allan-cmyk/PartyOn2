@@ -210,6 +210,13 @@ MDX-based blog stored in `content/blog/posts/` (134 posts). NOT database-backed.
 
 ---
 
+## Forbidden Actions
+- Do not run `next build` to verify changes. Use `npx next lint` or `npx tsc --noEmit` for error checking.
+- Do not use Playwright or take screenshots to verify layouts.
+- Do not read or open image files. Reference images by path only.
+
+---
+
 ## Code Standards
 
 - Files < 500 lines, components < 200 lines, functions < 50 lines
