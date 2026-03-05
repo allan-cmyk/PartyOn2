@@ -13,9 +13,10 @@ interface ProductModalProps {
   product: Product | null;
   isOpen: boolean;
   onClose: () => void;
+  ctaOverride?: { label: string; href: string };
 }
 
-export default function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
+export default function ProductModal({ product, isOpen, onClose, ctaOverride }: ProductModalProps) {
   const { addToCart, loading: cartLoading } = useCartContext();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -335,7 +336,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                 ) : null}
 
                 {/* Quantity Selector */}
-                <div className="mb-6">
+                {!ctaOverride && <div className="mb-6">
                   <label className="block text-xs text-gray-600 tracking-[0.1em] mb-2">QUANTITY</label>
                   <div className="flex items-center border border-gray-300 w-fit">
                     <button
@@ -360,26 +361,35 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                       </svg>
                     </button>
                   </div>
-                </div>
-                
-                {/* Add to Cart Button */}
-                <button
-                  onClick={handleAddToCart}
-                  disabled={!variant?.availableForSale || isAdding || cartLoading}
-                  className={`w-full py-3 transition-colors duration-300 text-sm tracking-[0.08em] ${
-                    variant?.availableForSale && !isAdding && !cartLoading
-                      ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
-                      : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                  }`}
-                >
-                  {isAdding || cartLoading 
-                    ? 'ADDING...' 
-                    : !variant?.availableForSale 
-                      ? 'OUT OF STOCK' 
-                      : quantity > 1 
-                        ? `ADD ${quantity} TO CART`
-                        : 'ADD TO CART'}
-                </button>
+                </div>}
+
+                {/* Add to Cart / CTA Override Button */}
+                {ctaOverride ? (
+                  <Link
+                    href={ctaOverride.href}
+                    className="block w-full py-3 text-center transition-colors duration-300 text-sm tracking-[0.08em] bg-brand-yellow text-gray-900 hover:bg-yellow-600"
+                  >
+                    {ctaOverride.label}
+                  </Link>
+                ) : (
+                  <button
+                    onClick={handleAddToCart}
+                    disabled={!variant?.availableForSale || isAdding || cartLoading}
+                    className={`w-full py-3 transition-colors duration-300 text-sm tracking-[0.08em] ${
+                      variant?.availableForSale && !isAdding && !cartLoading
+                        ? 'bg-brand-yellow text-gray-900 hover:bg-yellow-600'
+                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    }`}
+                  >
+                    {isAdding || cartLoading
+                      ? 'ADDING...'
+                      : !variant?.availableForSale
+                        ? 'OUT OF STOCK'
+                        : quantity > 1
+                          ? `ADD ${quantity} TO CART`
+                          : 'ADD TO CART'}
+                  </button>
+                )}
               </div>
             </motion.div>
           </>
