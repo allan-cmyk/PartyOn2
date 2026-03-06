@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, ReactElement } from 'react';
 
-type EmailType = 'order-confirmation' | 'delivery-en-route' | 'delivery-completed' | 'payment-failed' | 'refund-processed' | 'invoice' | 'affiliate-welcome' | 'dashboard-link';
+type EmailType = 'order-confirmation' | 'delivery-en-route' | 'delivery-completed' | 'payment-failed' | 'refund-processed' | 'order-cancelled' | 'invoice' | 'affiliate-welcome' | 'dashboard-link';
 
 interface InvoiceTextOverrides {
   greeting?: string;
@@ -238,6 +238,7 @@ export default function EmailPreviewPage(): ReactElement {
             { id: 'delivery-completed', label: 'Delivery Completed' },
             { id: 'payment-failed', label: 'Payment Failed' },
             { id: 'refund-processed', label: 'Refund Processed' },
+            { id: 'order-cancelled', label: 'Order Cancelled' },
             { id: 'invoice', label: 'Invoice' },
             { id: 'affiliate-welcome', label: 'Affiliate Welcome' },
             { id: 'dashboard-link', label: 'Dashboard Link' },

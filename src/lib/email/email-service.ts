@@ -17,6 +17,11 @@ import {
   generateDeliveryCompletedText,
   DeliveryUpdateData,
 } from './templates/delivery-update';
+import {
+  generateOrderCancellationEmail,
+  generateOrderCancellationText,
+  OrderCancellationData,
+} from './templates/order-cancellation';
 
 /**
  * Send order confirmation email
@@ -482,6 +487,29 @@ Premium Alcohol Delivery
       orderNumber,
       refundAmount,
       reason,
+    },
+  });
+}
+
+/**
+ * Send order cancellation notification
+ */
+export async function sendOrderCancellationEmail(
+  customerEmail: string,
+  data: OrderCancellationData
+): Promise<string | null> {
+  const html = generateOrderCancellationEmail(data);
+  const text = generateOrderCancellationText(data);
+
+  return sendEmail({
+    to: customerEmail,
+    subject: `Order Cancelled - #${data.orderNumber}`,
+    html,
+    text,
+    type: EmailType.ORDER_CANCELLED,
+    metadata: {
+      orderNumber: data.orderNumber,
+      refundIssued: data.refundIssued || false,
     },
   });
 }

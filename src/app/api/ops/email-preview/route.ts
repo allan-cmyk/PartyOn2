@@ -9,6 +9,7 @@ import { generateInvoiceEmail, type InvoiceTextOverrides } from '@/lib/email/tem
 import { getInvoiceTextOverrides } from '@/lib/email/template-content';
 import { generateAffiliateWelcomeEmail } from '@/lib/email/templates/affiliate-welcome';
 import { dashboardLinkEmail } from '@/lib/email/templates/dashboard-link';
+import { generateOrderCancellationEmail } from '@/lib/email/templates/order-cancellation';
 
 const SAMPLE_ORDER = {
   orderNumber: 1234,
@@ -100,6 +101,23 @@ export async function GET(request: NextRequest) {
 
     case 'refund-processed':
       html = generateRefundHtml('John Smith', 1234, 95.06, 'Order cancelled by customer');
+      break;
+
+    case 'order-cancelled':
+      html = generateOrderCancellationEmail({
+        customerName: 'John Smith',
+        orderNumber: 1234,
+        total: 95.06,
+        customNote: 'We apologize for the inconvenience. Please let us know if you would like to place a new order.',
+        refundIssued: true,
+        refundAmount: 95.06,
+        items: [
+          { title: "Tito's Vodka 750ml", quantity: 2, price: 24.99 },
+          { title: 'Corona Extra 12 Pack', quantity: 1, price: 18.99 },
+          { title: 'Lime Wedges', quantity: 1, price: 4.99 },
+        ],
+        deliveryDate: 'Saturday, February 15, 2026',
+      });
       break;
 
     case 'invoice': {

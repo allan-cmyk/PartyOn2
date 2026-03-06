@@ -246,6 +246,13 @@ export default function OrderDetailPage(): ReactElement {
   const [refundProcessing, setRefundProcessing] = useState(false);
   const [pendingAmendmentId, setPendingAmendmentId] = useState<string | null>(null);
 
+  // Cancel dialog state
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [cancelNote, setCancelNote] = useState('');
+  const [cancelProcessing, setCancelProcessing] = useState(false);
+  const [cancelEmailPreview, setCancelEmailPreview] = useState('');
+  const [issueRefund, setIssueRefund] = useState(false);
+
   const fetchOrder = useCallback(async () => {
     try {
       const response = await fetch(`/api/v1/admin/orders/${orderId}`);
@@ -500,6 +507,79 @@ export default function OrderDetailPage(): ReactElement {
     }
   }
 
+  async function openCancelDialog() {
+    setCancelNote('');
+    setIssueRefund(false);
+    setCancelProcessing(false);
+    setCancelEmailPreview('');
+    setShowCancelDialog(true);
+
+    // Fetch preview HTML
+    try {
+      const res = await fetch(`/api/v1/admin/orders/${orderId}/cancel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ preview: true }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCancelEmailPreview(data.html);
+      }
+    } catch {
+      console.error('Failed to load cancel email preview');
+    }
+  }
+
+  function getCancelPreviewHtml(): string {
+    if (!cancelEmailPreview) return '';
+    if (!cancelNote) return cancelEmailPreview;
+
+    const escaped = cancelNote
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/\n/g, '<br>');
+
+    const noteHtml = `
+      <div style="background-color: #f9fafb; border-left: 4px solid #D4AF37; border-radius: 4px; padding: 16px; margin-bottom: 16px;">
+        <p style="margin: 0 0 4px; color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Note from Party On Delivery</p>
+        <p style="margin: 0; font-size: 14px; color: #1a1a1a; line-height: 1.5;">${escaped}</p>
+      </div>`;
+
+    return cancelEmailPreview.replace('<!--CUSTOM_NOTE-->', noteHtml);
+  }
+
+  async function processCancellation() {
+    if (!order) return;
+    setCancelProcessing(true);
+    try {
+      const res = await fetch(`/api/v1/admin/orders/${orderId}/cancel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customNote: cancelNote || undefined,
+          issueRefund,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setShowCancelDialog(false);
+        await fetchOrder();
+        alert(
+          issueRefund && data.data?.refund
+            ? `Order cancelled and refund of $${data.data.refund.amount.toFixed(2)} processed`
+            : 'Order cancelled successfully'
+        );
+      } else {
+        alert(data.error || 'Failed to cancel order');
+      }
+    } catch {
+      alert('Failed to cancel order');
+    } finally {
+      setCancelProcessing(false);
+    }
+  }
+
   async function updateOrder(updates: Record<string, unknown>): Promise<void> {
     if (!order) return;
     setSaving(true);
@@ -646,15 +726,26 @@ export default function OrderDetailPage(): ReactElement {
               </button>
 
               {canAmend && !isEditing && (
-                <button
-                  onClick={enterEditMode}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-2"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                  Amend Order
-                </button>
+                <>
+                  <button
+                    onClick={enterEditMode}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-2"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    Amend Order
+                  </button>
+                  <button
+                    onClick={openCancelDialog}
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors shadow-sm flex items-center gap-2"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Cancel Order
+                  </button>
+                </>
               )}
 
               {isEditing && (
@@ -1419,6 +1510,86 @@ export default function OrderDetailPage(): ReactElement {
                   {refundProcessing ? 'Processing...' : 'Confirm Refund'}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cancel Order Dialog */}
+      {showCancelDialog && order && (
+        <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4 print:hidden">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-200">
+              <h3 className="text-lg font-bold text-gray-900">Cancel Order #{order.orderNumber}</h3>
+              <p className="text-sm text-gray-500 mt-1">The customer will receive a cancellation notification email.</p>
+            </div>
+
+            <div className="p-6 space-y-4">
+              {/* Warning */}
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                <p className="text-sm text-red-800 font-medium">This action cannot be undone.</p>
+              </div>
+
+              {/* Refund checkbox */}
+              {order.financialStatus === 'PAID' && order.payment.stripePaymentIntentId && (
+                <label className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
+                  <input
+                    type="checkbox"
+                    checked={issueRefund}
+                    onChange={(e) => setIssueRefund(e.target.checked)}
+                    className="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
+                  />
+                  <span className="text-sm text-gray-900">
+                    Issue a full refund (<strong>${order.pricing.total.toFixed(2)}</strong>) right now
+                  </span>
+                </label>
+              )}
+
+              {/* Custom note */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Custom Note (optional)</label>
+                <textarea
+                  value={cancelNote}
+                  onChange={(e) => setCancelNote(e.target.value)}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
+                  placeholder="Add a personal message to the customer..."
+                />
+              </div>
+
+              {/* Email preview */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Email Preview</label>
+                {cancelEmailPreview ? (
+                  <iframe
+                    srcDoc={getCancelPreviewHtml()}
+                    sandbox=""
+                    className="w-full border border-gray-200 rounded-lg"
+                    style={{ height: '400px' }}
+                    title="Cancellation email preview"
+                  />
+                ) : (
+                  <div className="w-full h-[400px] border border-gray-200 rounded-lg flex items-center justify-center text-gray-400">
+                    Loading preview...
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-gray-200 flex items-center justify-end gap-3">
+              <button
+                onClick={() => setShowCancelDialog(false)}
+                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+              >
+                Go Back
+              </button>
+              <button
+                onClick={processCancellation}
+                disabled={cancelProcessing}
+                className="px-6 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 disabled:opacity-50"
+              >
+                {cancelProcessing ? 'Cancelling...' : 'Confirm Cancellation'}
+              </button>
             </div>
           </div>
         </div>

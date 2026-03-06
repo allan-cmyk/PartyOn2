@@ -10,6 +10,7 @@ import { generateInvoiceEmail } from '@/lib/email/templates/invoice';
 import { getInvoiceTextOverrides } from '@/lib/email/template-content';
 import { generateAffiliateWelcomeEmail } from '@/lib/email/templates/affiliate-welcome';
 import { dashboardLinkEmail } from '@/lib/email/templates/dashboard-link';
+import { generateOrderCancellationEmail } from '@/lib/email/templates/order-cancellation';
 import { EmailType } from '@prisma/client';
 
 const SAMPLE_ORDER = {
@@ -81,6 +82,7 @@ const SUBJECT_MAP: Record<string, string> = {
   'delivery-completed': '[TEST] Delivery Complete - Order #1234',
   'payment-failed': '[TEST] Payment Issue - Party On Delivery',
   'refund-processed': '[TEST] Refund Processed - Order #1234',
+  'order-cancelled': '[TEST] Order Cancelled - #1234',
   'invoice': '[TEST] Your Invoice from Party On Delivery - $95.06',
   'affiliate-welcome': '[TEST] Welcome to the Party On Delivery Partner Program!',
   'dashboard-link': "[TEST] Your Party On Delivery Dashboard for John's Bachelor Party",
@@ -126,6 +128,23 @@ export async function POST(request: NextRequest) {
       case 'refund-processed':
         html = generateRefundHtml('John Smith', 1234, 95.06, 'Order cancelled by customer');
         emailType = EmailType.REFUND_PROCESSED;
+        break;
+      case 'order-cancelled':
+        html = generateOrderCancellationEmail({
+          customerName: 'John Smith',
+          orderNumber: 1234,
+          total: 95.06,
+          customNote: 'We apologize for the inconvenience. Please let us know if you would like to place a new order.',
+          refundIssued: true,
+          refundAmount: 95.06,
+          items: [
+            { title: "Tito's Vodka 750ml", quantity: 2, price: 24.99 },
+            { title: 'Corona Extra 12 Pack', quantity: 1, price: 18.99 },
+            { title: 'Lime Wedges', quantity: 1, price: 4.99 },
+          ],
+          deliveryDate: 'Saturday, February 15, 2026',
+        });
+        emailType = EmailType.ORDER_CANCELLED;
         break;
       case 'invoice': {
         const overrides = await getInvoiceTextOverrides();
