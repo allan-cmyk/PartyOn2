@@ -42,6 +42,10 @@ __MACOSX/
 # image generator tool (contains API keys)
 image-generator-tool/
 
+# tool output directories
+.firecrawl/
+.playwright-mcp/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
