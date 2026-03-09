@@ -120,7 +120,14 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
           )}
           <div className="flex items-center justify-between mt-1.5">
             {isFreeItem ? (
-              <span className="text-sm font-semibold text-green-600">FREE</span>
+              <span className="text-sm font-semibold text-green-600">
+                FREE
+                {item.compareAtPrice != null && (
+                  <span className="text-xs font-normal text-gray-400 line-through ml-1">
+                    ${item.compareAtPrice.toFixed(2)}
+                  </span>
+                )}
+              </span>
             ) : (
               <span className="text-sm font-semibold text-gray-900">
                 ${(item.price * item.quantity).toFixed(2)}

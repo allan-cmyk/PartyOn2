@@ -113,6 +113,7 @@ function serializeTab(tab: any): SubOrderFull {
     title: item.title,
     variantTitle: item.variantTitle,
     price: toNum(item.price),
+    compareAtPrice: toNum(item.price) === 0 && item.variant ? toNum(item.variant.price) : null,
     imageUrl: item.imageUrl,
     quantity: item.quantity,
     addedBy: serializeParticipantInfo(item.addedBy),
@@ -396,7 +397,7 @@ export async function createTab(
       deliveryFee: feeResult.originalFee,
     },
     include: {
-      draftItems: { include: { addedBy: true } },
+      draftItems: { include: { addedBy: true, variant: true } },
       purchasedItems: { include: { participant: true, payment: true } },
       deliveryInvoice: true,
     },
@@ -438,7 +439,7 @@ export async function updateTab(
     where: { id: tabId },
     data,
     include: {
-      draftItems: { include: { addedBy: true } },
+      draftItems: { include: { addedBy: true, variant: true } },
       purchasedItems: { include: { participant: true, payment: true } },
       deliveryInvoice: true,
     },
@@ -579,6 +580,7 @@ export async function addDraftItem(
     title: item.title,
     variantTitle: item.variantTitle,
     price: toNum(item.price),
+    compareAtPrice: null,
     imageUrl: item.imageUrl,
     quantity: item.quantity,
     addedBy: serializeParticipantInfo(item.addedBy),
@@ -604,7 +606,7 @@ export async function updateDraftItem(
   const updated = await prisma.draftCartItem.update({
     where: { id: itemId },
     data: { quantity },
-    include: { addedBy: true },
+    include: { addedBy: true, variant: true },
   });
 
   return {
@@ -614,6 +616,7 @@ export async function updateDraftItem(
     title: updated.title,
     variantTitle: updated.variantTitle,
     price: toNum(updated.price),
+    compareAtPrice: toNum(updated.price) === 0 && updated.variant ? toNum(updated.variant.price) : null,
     imageUrl: updated.imageUrl,
     quantity: updated.quantity,
     addedBy: serializeParticipantInfo(updated.addedBy),

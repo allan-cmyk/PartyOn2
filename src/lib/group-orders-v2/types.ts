@@ -89,6 +89,7 @@ export interface DraftCartItemView {
   title: string;
   variantTitle: string | null;
   price: number;
+  compareAtPrice: number | null;
   imageUrl: string | null;
   quantity: number;
   addedBy: ParticipantInfo;

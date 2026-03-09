@@ -152,7 +152,9 @@ export default function DashboardCheckoutModal({
                     {item.quantity}x {item.title}
                   </span>
                   <span className={`font-medium flex-shrink-0 ${item.price === 0 ? 'text-green-600' : 'text-gray-900'}`}>
-                    {item.price === 0 ? 'FREE' : `$${(item.price * item.quantity).toFixed(2)}`}
+                    {item.price === 0 ? (
+                      <>FREE{item.compareAtPrice != null && <span className="text-gray-400 line-through ml-1 font-normal">${item.compareAtPrice.toFixed(2)}</span>}</>
+                    ) : `$${(item.price * item.quantity).toFixed(2)}`}
                   </span>
                 </div>
               ))}
