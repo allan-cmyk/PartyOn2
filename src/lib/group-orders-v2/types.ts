@@ -86,6 +86,7 @@ export interface DraftCartItemView {
   id: string;
   productId: string;
   variantId: string;
+  handle: string;
   title: string;
   variantTitle: string | null;
   price: number;

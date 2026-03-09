@@ -47,6 +47,7 @@ const fullGroupIncludes = {
       draftItems: {
         include: {
           addedBy: true,
+          product: { select: { handle: true } },
         },
       },
       purchasedItems: {
@@ -110,6 +111,7 @@ function serializeTab(tab: any): SubOrderFull {
     id: item.id,
     productId: item.productId,
     variantId: item.variantId,
+    handle: item.product?.handle || '',
     title: item.title,
     variantTitle: item.variantTitle,
     price: toNum(item.price),
@@ -554,7 +556,7 @@ export async function addDraftItem(
     item = await prisma.draftCartItem.update({
       where: { id: existing.id },
       data: { quantity: existing.quantity + input.quantity },
-      include: { addedBy: true },
+      include: { addedBy: true, product: { select: { handle: true } } },
     });
   } else {
     item = await prisma.draftCartItem.create({
@@ -569,7 +571,7 @@ export async function addDraftItem(
         imageUrl: input.imageUrl || null,
         quantity: input.quantity,
       },
-      include: { addedBy: true },
+      include: { addedBy: true, product: { select: { handle: true } } },
     });
   }
 
@@ -577,6 +579,7 @@ export async function addDraftItem(
     id: item.id,
     productId: item.productId,
     variantId: item.variantId,
+    handle: item.product?.handle || '',
     title: item.title,
     variantTitle: item.variantTitle,
     price: toNum(item.price),
@@ -606,13 +609,14 @@ export async function updateDraftItem(
   const updated = await prisma.draftCartItem.update({
     where: { id: itemId },
     data: { quantity },
-    include: { addedBy: true, variant: true },
+    include: { addedBy: true, variant: true, product: { select: { handle: true } } },
   });
 
   return {
     id: updated.id,
     productId: updated.productId,
     variantId: updated.variantId,
+    handle: updated.product?.handle || '',
     title: updated.title,
     variantTitle: updated.variantTitle,
     price: toNum(updated.price),

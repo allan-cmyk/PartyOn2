@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, forwardRef, type ReactElement } from 'react';
+import { useState, useCallback, forwardRef, type ReactElement } from 'react';
 import Image from 'next/image';
 import type {
   DraftCartItemView,
@@ -8,10 +8,12 @@ import type {
   ParticipantSummary,
   AppliedPromo,
 } from '@/lib/group-orders-v2/types';
+import type { Product } from '@/lib/types/product';
 import {
   updateDraftItemV2,
   removeDraftItemV2,
 } from '@/lib/group-orders-v2/api-client';
+import ProductDetailModal from './ProductDetailModal';
 
 interface Props {
   shareCode: string;
@@ -47,6 +49,33 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
 ): ReactElement {
   const [expanded, setExpanded] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [loadingProduct, setLoadingProduct] = useState(false);
+
+  // Derive current item from props so qty updates reactively after onItemChanged
+  const selectedItem = selectedItemId ? draftItems.find((i) => i.id === selectedItemId) ?? null : null;
+
+  const openProductModal = useCallback(async (item: DraftCartItemView) => {
+    if (!item.handle) return;
+    setSelectedItemId(item.id);
+    setLoadingProduct(true);
+    try {
+      const res = await fetch(`/api/products/${item.handle}`);
+      if (res.ok) {
+        setSelectedProduct(await res.json());
+      }
+    } catch (err) {
+      console.error('Failed to fetch product:', err);
+    } finally {
+      setLoadingProduct(false);
+    }
+  }, []);
+
+  const closeProductModal = useCallback(() => {
+    setSelectedItemId(null);
+    setSelectedProduct(null);
+  }, []);
 
   const isSolo = participants.filter((p) => p.status === 'ACTIVE').length <= 1;
   const myItems = draftItems.filter((i) => i.addedBy.id === participantId);
@@ -98,9 +127,15 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
   function renderItemRow(item: DraftCartItemView, editable: boolean) {
     const isUpdating = updatingId === item.id;
     const isFreeItem = item.price === 0;
+    const clickable = !!item.handle;
     return (
       <div key={item.id} className="flex items-start gap-3 py-3">
-        <div className="w-14 h-14 rounded-lg bg-gray-100 flex-shrink-0 relative overflow-hidden">
+        <button
+          type="button"
+          onClick={() => clickable && openProductModal(item)}
+          disabled={!clickable}
+          className={`w-14 h-14 rounded-lg bg-gray-100 flex-shrink-0 relative overflow-hidden ${clickable ? 'cursor-pointer hover:ring-2 hover:ring-brand-blue/30 transition-shadow' : ''}`}
+        >
           {item.imageUrl && (
             <Image
               src={item.imageUrl}
@@ -110,11 +145,16 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
               sizes="56px"
             />
           )}
-        </div>
+        </button>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-900 leading-snug">
+          <button
+            type="button"
+            onClick={() => clickable && openProductModal(item)}
+            disabled={!clickable}
+            className={`text-sm font-medium text-gray-900 leading-snug text-left ${clickable ? 'hover:text-brand-blue transition-colors' : ''}`}
+          >
             {item.title}
-          </p>
+          </button>
           {item.variantTitle && (
             <p className="text-xs text-gray-500">{item.variantTitle}</p>
           )}
@@ -139,7 +179,24 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
               </span>
             )}
             {isFreeItem ? (
-              <span className="text-xs text-green-600 font-medium">x{item.quantity}</span>
+              editable && !isLocked ? (
+                <button
+                  onClick={() => handleUpdate(item.id, 0)}
+                  disabled={isUpdating}
+                  className="w-7 h-7 flex items-center justify-center rounded bg-gray-100 hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50"
+                  title="Remove"
+                >
+                  {isUpdating ? (
+                    <span className="inline-block w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  )}
+                </button>
+              ) : (
+                <span className="text-xs text-green-600 font-medium">x{item.quantity}</span>
+              )
             ) : editable && !isLocked ? (
               <div className="flex items-center gap-1">
                 <button
@@ -398,9 +455,41 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
             {expanded && (
               <div className="border-t border-gray-100">
                 {renderCartContent()}
-      
+
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Product detail modal -- opened by clicking cart items */}
+      {selectedProduct && selectedItem && (
+        <ProductDetailModal
+          product={selectedProduct}
+          onClose={closeProductModal}
+          qty={selectedItem.quantity}
+          busy={updatingId === selectedItem.id}
+          available={true}
+          isLocked={isLocked}
+          onAddToCart={() => {
+            handleUpdate(selectedItem.id, selectedItem.quantity + 1);
+          }}
+          onIncrement={() => {
+            handleUpdate(selectedItem.id, selectedItem.quantity + 1);
+          }}
+          onDecrement={() => {
+            handleUpdate(selectedItem.id, selectedItem.quantity - 1);
+            if (selectedItem.quantity <= 1) closeProductModal();
+          }}
+        />
+      )}
+
+      {/* Loading overlay for product fetch */}
+      {loadingProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+          <div className="bg-white rounded-xl p-6 shadow-xl flex items-center gap-3">
+            <span className="inline-block w-5 h-5 border-2 border-brand-blue border-t-transparent rounded-full animate-spin" />
+            <span className="text-sm text-gray-700">Loading product details...</span>
           </div>
         </div>
       )}
