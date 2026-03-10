@@ -259,6 +259,32 @@
       "featured": true,
       "order": 3,
       "partnerPage": "/partners/pour-twenty-four"
+    },
+    {
+      "id": "22",
+      "name": "DTR Bartending",
+      "slug": "dtr-bartending",
+      "description": "Drink to Remember -- Austin's premier event bartending service. TABC licensed and fully insured, DTR specializes in craft cocktails and memorable beverage experiences for weddings, corporate events, and private parties.",
+      "website": "https://www.dtrbartending.com",
+      "logo": "/images/partners/dtr-logo.png",
+      "heroImage": "/images/partners/dtr-hero.webp",
+      "category": "experiences",
+      "featured": true,
+      "order": 4,
+      "partnerPage": "/partners/dtr-bartending"
+    },
+    {
+      "id": "23",
+      "name": "Tap Truck Austin",
+      "slug": "tap-truck-austin",
+      "description": "Full service mobile catering bar inside a vintage 1959 Ford F100 truck. Equipped with 6 taps for beer, wine, cocktails, cold brew, and more. Available for all gatherings big and small across Austin.",
+      "website": "https://www.taptruckaustin.com",
+      "logo": "/images/partners/taptruck-logo.png",
+      "heroImage": "/images/partners/taptruck-hero.webp",
+      "category": "experiences",
+      "featured": true,
+      "order": 5,
+      "partnerPage": "/partners/tap-truck-austin"
     }
   ]
 }
