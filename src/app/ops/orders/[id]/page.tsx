@@ -101,6 +101,12 @@ interface OrderDetail {
       status: string;
     }[];
   };
+  affiliate: {
+    id: string;
+    code: string;
+    businessName: string;
+    contactName: string;
+  } | null;
   amendments: Amendment[];
   notes: {
     customer: string | null;
@@ -252,6 +258,11 @@ export default function OrderDetailPage(): ReactElement {
   const [cancelProcessing, setCancelProcessing] = useState(false);
   const [cancelEmailPreview, setCancelEmailPreview] = useState('');
   const [issueRefund, setIssueRefund] = useState(false);
+
+  // Affiliate attribution state
+  const [affiliateCode, setAffiliateCode] = useState('');
+  const [affiliateLinking, setAffiliateLinking] = useState(false);
+  const [affiliateError, setAffiliateError] = useState('');
 
   const fetchOrder = useCallback(async () => {
     try {
@@ -602,6 +613,53 @@ export default function OrderDetailPage(): ReactElement {
       alert('Failed to update order');
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleLinkAffiliate() {
+    if (!order || !affiliateCode.trim()) return;
+    setAffiliateLinking(true);
+    setAffiliateError('');
+    try {
+      const res = await fetch(`/api/v1/admin/orders/${orderId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ linkAffiliateCode: affiliateCode.trim().toUpperCase() }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAffiliateCode('');
+        await fetchOrder();
+      } else {
+        setAffiliateError(data.error || 'Failed to link affiliate');
+      }
+    } catch {
+      setAffiliateError('Network error');
+    } finally {
+      setAffiliateLinking(false);
+    }
+  }
+
+  async function handleUnlinkAffiliate() {
+    if (!order?.affiliate) return;
+    if (!confirm(`Remove ${order.affiliate.businessName} from this order? This will void their commission.`)) return;
+    setAffiliateLinking(true);
+    try {
+      const res = await fetch(`/api/v1/admin/orders/${orderId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ unlinkAffiliate: true }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        await fetchOrder();
+      } else {
+        alert(data.error || 'Failed to remove affiliate');
+      }
+    } catch {
+      alert('Network error');
+    } finally {
+      setAffiliateLinking(false);
     }
   }
 
@@ -1332,6 +1390,64 @@ export default function OrderDetailPage(): ReactElement {
                       <p className="text-sm text-gray-600">
                         #{order.shopify.orderNumber}
                       </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Affiliate Attribution */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <SectionHeader
+                  icon={
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  }
+                  title="Affiliate"
+                />
+                <div className="p-6">
+                  {order.affiliate ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3 px-3 py-2.5 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-blue-800">
+                            {order.affiliate.businessName}
+                            <span className="ml-2 text-xs font-mono text-blue-600">({order.affiliate.code})</span>
+                          </p>
+                          <p className="text-xs text-blue-600">{order.affiliate.contactName}</p>
+                        </div>
+                        <button
+                          onClick={handleUnlinkAffiliate}
+                          disabled={affiliateLinking}
+                          className="text-xs text-red-600 hover:text-red-700 font-medium disabled:opacity-50"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <p className="text-xs text-gray-500">No affiliate attributed. Enter a code to link one.</p>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={affiliateCode}
+                          onChange={(e) => { setAffiliateCode(e.target.value.toUpperCase()); setAffiliateError(''); }}
+                          placeholder="e.g. POUR24"
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 uppercase"
+                          onKeyDown={(e) => e.key === 'Enter' && handleLinkAffiliate()}
+                        />
+                        <button
+                          onClick={handleLinkAffiliate}
+                          disabled={affiliateLinking || !affiliateCode.trim()}
+                          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                        >
+                          {affiliateLinking ? 'Linking...' : 'Link'}
+                        </button>
+                      </div>
+                      {affiliateError && (
+                        <p className="text-xs text-red-600">{affiliateError}</p>
+                      )}
                     </div>
                   )}
                 </div>

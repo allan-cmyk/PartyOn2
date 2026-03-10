@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/database/client';
 import { OrderStatus, FinancialStatus, FulfillmentStatus } from '@prisma/client';
+import { linkOrderToAffiliate, voidCommissionForOrder } from '@/lib/affiliates/commission-engine';
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -39,6 +40,14 @@ export async function GET(
             variant: {
               select: { id: true, title: true, sku: true },
             },
+          },
+        },
+        affiliate: {
+          select: {
+            id: true,
+            code: true,
+            businessName: true,
+            contactName: true,
           },
         },
         amendments: {
@@ -198,6 +207,12 @@ export async function GET(
           orderId: order.shopifyOrderId,
           orderNumber: order.shopifyOrderNumber,
         },
+        affiliate: order.affiliate ? {
+          id: order.affiliate.id,
+          code: order.affiliate.code,
+          businessName: order.affiliate.businessName,
+          contactName: order.affiliate.contactName,
+        } : null,
         groupOrder: {
           id: order.groupOrderId,
           isGroupOrder: !!order.groupOrderId,
@@ -288,9 +303,39 @@ export async function PUT(
       updateData.customerNote = body.customerNote;
     }
 
+    // Link affiliate to order (manual attribution)
+    if (body.linkAffiliateCode) {
+      const commission = await linkOrderToAffiliate(
+        {
+          id: existing.id,
+          subtotal: existing.subtotal,
+          discountAmount: existing.discountAmount,
+          customerEmail: existing.customerEmail,
+        },
+        body.linkAffiliateCode
+      );
+      if (!commission) {
+        return NextResponse.json(
+          { success: false, error: 'Affiliate code not found or inactive' },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Remove affiliate from order
+    if (body.unlinkAffiliate) {
+      await voidCommissionForOrder(existing.id, 'admin_removed');
+      updateData.affiliateId = null;
+    }
+
     const order = await prisma.order.update({
       where: { id },
       data: updateData,
+      include: {
+        affiliate: {
+          select: { id: true, code: true, businessName: true, contactName: true },
+        },
+      },
     });
 
     return NextResponse.json({
@@ -301,6 +346,12 @@ export async function PUT(
         status: order.status,
         financialStatus: order.financialStatus,
         fulfillmentStatus: order.fulfillmentStatus,
+        affiliate: order.affiliate ? {
+          id: order.affiliate.id,
+          code: order.affiliate.code,
+          businessName: order.affiliate.businessName,
+          contactName: order.affiliate.contactName,
+        } : null,
         updatedAt: order.updatedAt.toISOString(),
       },
     });
