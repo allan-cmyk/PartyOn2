@@ -12,12 +12,15 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-function findPartnerLogo(businessName: string): string | null {
+function findPartnerData(businessName: string): { logo: string | null; heroImage: string | null } {
   const lower = businessName.toLowerCase();
   const match = partnersData.partners.find(
     (p) => p.name.toLowerCase() === lower
   );
-  return match?.logo ?? null;
+  return {
+    logo: match?.logo ?? null,
+    heroImage: match?.heroImage ?? null,
+  };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -56,7 +59,7 @@ export default async function DynamicPartnerPage({ params }: Props) {
     notFound();
   }
 
-  const partnerLogo = findPartnerLogo(affiliate.businessName);
+  const { logo: partnerLogo, heroImage: partnerHeroImage } = findPartnerData(affiliate.businessName);
   const CategoryTemplate = getCategoryTemplate(affiliate.category);
 
   if (CategoryTemplate) {
@@ -73,6 +76,7 @@ export default async function DynamicPartnerPage({ params }: Props) {
           partnerSlug: affiliate.partnerSlug,
         }}
         partnerLogo={partnerLogo}
+        partnerHeroImage={partnerHeroImage}
       />
     );
   }

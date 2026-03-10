@@ -10,4 +10,5 @@ export interface CategoryTemplateProps {
     partnerSlug: string | null;
   };
   partnerLogo: string | null;
+  partnerHeroImage: string | null;
 }

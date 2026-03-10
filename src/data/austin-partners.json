@@ -246,6 +246,19 @@
       "featured": true,
       "order": 1,
       "partnerPage": "/partners/inn-cahoots"
+    },
+    {
+      "id": "21",
+      "name": "Pour Twenty Four",
+      "slug": "pour-twenty-four",
+      "description": "Upscale mobile bartending service proudly serving Austin and the surrounding areas. PourTwentyFour specializes in quality craft cocktails made with the freshest ingredients and a focus on elevated guest experiences for weddings, corporate events, and private parties.",
+      "website": "https://www.pourtwentyfour.com",
+      "logo": "/images/partners/pour24-logo.png",
+      "heroImage": "/images/partners/pour24-hero.webp",
+      "category": "experiences",
+      "featured": true,
+      "order": 3,
+      "partnerPage": "/partners/pour-twenty-four"
     }
   ]
 }

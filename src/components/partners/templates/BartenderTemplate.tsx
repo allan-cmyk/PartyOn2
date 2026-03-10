@@ -76,8 +76,9 @@ function StarIcon() {
   );
 }
 
-export function BartenderTemplate({ affiliate, partnerLogo }: CategoryTemplateProps) {
+export function BartenderTemplate({ affiliate, partnerLogo, partnerHeroImage }: CategoryTemplateProps) {
   const { businessName } = affiliate;
+  const heroImage = partnerHeroImage || '/images/hero/mobile-bartender-outdoor-event.webp';
 
   return (
     <div className="bg-white min-h-screen">
@@ -141,8 +142,8 @@ export function BartenderTemplate({ affiliate, partnerLogo }: CategoryTemplatePr
             <div className="order-2 flex flex-col gap-5">
               <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden shadow-lg border border-white/10">
                 <Image
-                  src="/images/hero/mobile-bartender-outdoor-event.webp"
-                  alt="Mobile bartender setup for an outdoor event"
+                  src={heroImage}
+                  alt={`${businessName} bartending`}
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 50vw"
