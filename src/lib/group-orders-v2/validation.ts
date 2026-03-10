@@ -122,6 +122,8 @@ export const CreateDashboardSchema = z.object({
   source: z.enum(['DIRECT', 'PARTNER_PAGE', 'INTERNAL']).optional(),
   affiliateId: z.string().optional(),
   deliveryContextType: z.enum(['HOUSE', 'BOAT', 'VENUE', 'HOTEL', 'OTHER']).optional(),
+  tabName: z.string().max(200).optional(),
+  deliveryAddress: DeliveryAddressSchema.optional(),
 });
 
 export {

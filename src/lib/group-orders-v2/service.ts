@@ -881,7 +881,7 @@ export async function createDashboardOrder(
   deliveryDate.setUTCHours(12, 0, 0, 0);
 
   const deliveryAddress = input.deliveryAddress
-    ? { address1: input.deliveryAddress, city: '', province: 'TX', zip: '', country: 'US' }
+    ? { ...input.deliveryAddress, province: input.deliveryAddress.province || 'TX', country: input.deliveryAddress.country || 'US' }
     : { address1: '', city: '', province: 'TX', zip: '', country: 'US' };
 
   const group = await prisma.groupOrderV2.create({

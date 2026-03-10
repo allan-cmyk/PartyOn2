@@ -213,7 +213,14 @@ export interface CreateDashboardInput {
   name?: string;
   tabName?: string;
   deliveryDate?: string;
-  deliveryAddress?: string;
+  deliveryAddress?: {
+    address1: string;
+    address2?: string;
+    city: string;
+    province?: string;
+    zip: string;
+    country?: string;
+  };
 }
 
 export interface MultiTabPreset {

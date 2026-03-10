@@ -25,6 +25,14 @@ export interface AffiliatePresetConfig {
 
 const PREMIER_ADDRESS = '13993 FM 2769, Leander TX 78641';
 
+export const PREMIER_MARINA_ADDRESS = {
+  address1: '13993 Farm to Market Rd 2769',
+  city: 'Leander',
+  province: 'TX',
+  zip: '78641',
+  country: 'US',
+};
+
 const PREMIER_PRESETS: AffiliatePresetConfig = {
   partyTypes: [
     {
@@ -71,4 +79,9 @@ const PRESET_REGISTRY: Record<string, AffiliatePresetConfig> = {
 
 export function getAffiliatePresets(affiliateCode: string): AffiliatePresetConfig | null {
   return PRESET_REGISTRY[affiliateCode] || null;
+}
+
+export function getAffiliateDefaultAddress(affiliateCode: string): typeof PREMIER_MARINA_ADDRESS | null {
+  if (affiliateCode === 'PREMIER') return PREMIER_MARINA_ADDRESS;
+  return null;
 }

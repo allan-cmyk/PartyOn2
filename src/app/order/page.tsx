@@ -11,6 +11,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { createDashboardOrderV2 } from '@/lib/group-orders-v2/api-client';
 import type { PartyType, DashboardSource, DeliveryContextType } from '@/lib/group-orders-v2/types';
+import { getAffiliateDefaultAddress } from '@/lib/affiliates/presets';
 
 const PARTY_TYPE_MAP: Record<string, PartyType> = {
   bachelor: 'BACHELOR',
@@ -66,6 +67,7 @@ function OrderRedirectInner(): ReactElement {
 
         // Look up affiliate if ref code provided
         let affiliateId: string | undefined;
+        let affiliateCode: string | undefined;
         let source: DashboardSource = 'DIRECT';
 
         if (ref) {
@@ -73,8 +75,9 @@ function OrderRedirectInner(): ReactElement {
             const attrRes = await fetch(`/api/v1/affiliate/attribution?code=${ref}`);
             if (attrRes.ok) {
               const attrJson = await attrRes.json();
-              if (attrJson.affiliateId) {
-                affiliateId = attrJson.affiliateId;
+              if (attrJson.data?.affiliateId) {
+                affiliateId = attrJson.data.affiliateId;
+                affiliateCode = attrJson.data.affiliateCode;
                 source = 'PARTNER_PAGE';
               }
             }
@@ -109,6 +112,8 @@ function OrderRedirectInner(): ReactElement {
           ? DELIVERY_CONTEXT_MAP[deliveryParam]
           : undefined;
 
+        const premierAddress = affiliateCode ? getAffiliateDefaultAddress(affiliateCode) : null;
+
         const group = await createDashboardOrderV2({
           hostName: nameParam || 'Party Host',
           partyType,
@@ -116,6 +121,8 @@ function OrderRedirectInner(): ReactElement {
           affiliateId,
           source,
           name: nameParam ? `${nameParam}'s Order` : undefined,
+          deliveryAddress: premierAddress || undefined,
+          tabName: premierAddress ? 'Marina Delivery' : undefined,
         });
 
         // Store participant ID

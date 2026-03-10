@@ -32,6 +32,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       data: {
         active: true,
         affiliateId: affiliate.id,
+        affiliateCode: affiliate.code,
         partnerName: affiliate.businessName,
         customerPerk: affiliate.customerPerk,
       },
