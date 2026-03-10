@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import { getAffiliateBySlug } from '@/lib/affiliates/affiliate-service';
+import { getCategoryTemplate } from '@/components/partners/templates';
 import partnersData from '@/data/austin-partners.json';
 
 interface Props {
@@ -27,6 +28,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: 'Partner Not Found' };
   }
 
+  const CategoryTemplate = getCategoryTemplate(affiliate.category);
+
+  if (CategoryTemplate) {
+    return {
+      title: `${affiliate.businessName} x Party On Delivery | Free Drink Delivery for Your Event`,
+      description: `Book ${affiliate.businessName} for your Austin event and get drinks delivered for free. Spirits, mixers, seltzers, ice, and cups delivered to your door by Party On Delivery.`,
+      openGraph: {
+        title: `${affiliate.businessName} x Party On Delivery | Free Drink Delivery for Your Event`,
+        description: `Book ${affiliate.businessName} for your Austin event and get drinks delivered for free.`,
+        images: [{ url: '/images/hero/austin-skyline-night-lake.webp' }],
+      },
+    };
+  }
+
   return {
     title: `${affiliate.businessName} x Party On Delivery | ${affiliate.customerPerk}`,
     description: `Order through ${affiliate.businessName} and get ${affiliate.customerPerk.toLowerCase()} on your alcohol order from Party On Delivery in Austin, TX.`,
@@ -41,8 +56,28 @@ export default async function DynamicPartnerPage({ params }: Props) {
     notFound();
   }
 
-  const referralLink = '/order';
   const partnerLogo = findPartnerLogo(affiliate.businessName);
+  const CategoryTemplate = getCategoryTemplate(affiliate.category);
+
+  if (CategoryTemplate) {
+    return (
+      <CategoryTemplate
+        affiliate={{
+          businessName: affiliate.businessName,
+          code: affiliate.code,
+          category: affiliate.category,
+          customerPerk: affiliate.customerPerk,
+          contactName: affiliate.contactName,
+          phone: affiliate.phone,
+          email: affiliate.email,
+          partnerSlug: affiliate.partnerSlug,
+        }}
+        partnerLogo={partnerLogo}
+      />
+    );
+  }
+
+  const referralLink = '/order';
 
   return (
     <>
