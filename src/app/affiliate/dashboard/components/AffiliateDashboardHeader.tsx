@@ -8,6 +8,7 @@ interface AffiliateDashboardHeaderProps {
   code: string;
   partnerSlug?: string | null;
   onLogout: () => void;
+  adminMode?: boolean;
 }
 
 export default function AffiliateDashboardHeader({
@@ -15,6 +16,7 @@ export default function AffiliateDashboardHeader({
   code,
   partnerSlug,
   onLogout,
+  adminMode,
 }: AffiliateDashboardHeaderProps): ReactElement {
   const [copied, setCopied] = useState<'partner' | 'referral' | false>(false);
 
@@ -44,12 +46,14 @@ export default function AffiliateDashboardHeader({
           </Link>
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-300">{contactName}</span>
-            <button
-              onClick={onLogout}
-              className="text-sm text-gray-400 hover:text-white transition-colors"
-            >
-              Log Out
-            </button>
+            {!adminMode && (
+              <button
+                onClick={onLogout}
+                className="text-sm text-gray-400 hover:text-white transition-colors"
+              >
+                Log Out
+              </button>
+            )}
           </div>
         </div>
 
@@ -76,15 +80,17 @@ export default function AffiliateDashboardHeader({
         </div>
 
         {/* Create Order CTA */}
-        <Link
-          href="/affiliate/dashboard/create-dashboard"
-          className="inline-flex items-center gap-1.5 px-4 py-2 bg-brand-blue text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Create Client Order
-        </Link>
+        {!adminMode && (
+          <Link
+            href="/affiliate/dashboard/create-dashboard"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-brand-blue text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Create Client Order
+          </Link>
+        )}
       </div>
     </header>
   );

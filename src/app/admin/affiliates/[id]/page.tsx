@@ -39,7 +39,10 @@ interface AffiliateDetail {
   email: string;
   phone: string | null;
   commissionRateOverride: string | null;
+  categoryRateOverride: string | null;
   customerPerk: string;
+  payoutMethod: string | null;
+  payoutDetails: unknown;
   internalNotes: string | null;
   createdAt: string;
   commissions: Commission[];
@@ -57,6 +60,14 @@ export default function AffiliateDetailPage(): ReactElement {
   const [editNotes, setEditNotes] = useState('');
   const [editPerk, setEditPerk] = useState('Free Delivery');
   const [editCommissionRate, setEditCommissionRate] = useState('');
+  const [editContactName, setEditContactName] = useState('');
+  const [editBusinessName, setEditBusinessName] = useState('');
+  const [editPhone, setEditPhone] = useState('');
+  const [editCategory, setEditCategory] = useState('OTHER');
+  const [editPartnerSlug, setEditPartnerSlug] = useState('');
+  const [editCategoryRateOverride, setEditCategoryRateOverride] = useState('');
+  const [editPayoutMethod, setEditPayoutMethod] = useState('');
+  const [editPayoutDetails, setEditPayoutDetails] = useState('');
   const [sendingWelcome, setSendingWelcome] = useState(false);
   const [welcomeResult, setWelcomeResult] = useState<{ success: boolean; message: string } | null>(null);
 
@@ -65,11 +76,20 @@ export default function AffiliateDetailPage(): ReactElement {
       .then((r) => r.json())
       .then((data) => {
         if (data.success) {
-          setAffiliate(data.data);
-          setEditCode(data.data.code);
-          setEditNotes(data.data.internalNotes || '');
-          setEditPerk(data.data.customerPerk || 'Free Delivery');
-          setEditCommissionRate(data.data.commissionRateOverride ? String(Number(data.data.commissionRateOverride) * 100) : '');
+          const d = data.data;
+          setAffiliate(d);
+          setEditCode(d.code);
+          setEditNotes(d.internalNotes || '');
+          setEditPerk(d.customerPerk || 'Free Delivery');
+          setEditCommissionRate(d.commissionRateOverride ? String(Number(d.commissionRateOverride) * 100) : '');
+          setEditContactName(d.contactName || '');
+          setEditBusinessName(d.businessName || '');
+          setEditPhone(d.phone || '');
+          setEditCategory(d.category || 'OTHER');
+          setEditPartnerSlug(d.partnerSlug || '');
+          setEditCategoryRateOverride(d.categoryRateOverride ? String(Number(d.categoryRateOverride) * 100) : '');
+          setEditPayoutMethod(d.payoutMethod || '');
+          setEditPayoutDetails(d.payoutDetails ? JSON.stringify(d.payoutDetails, null, 2) : '');
         }
       })
       .finally(() => setLoading(false));
@@ -78,20 +98,48 @@ export default function AffiliateDetailPage(): ReactElement {
   const handleSave = async () => {
     setSaving(true);
     try {
+      let parsedPayoutDetails: unknown = undefined;
+      if (editPayoutDetails.trim()) {
+        try {
+          parsedPayoutDetails = JSON.parse(editPayoutDetails);
+        } catch {
+          parsedPayoutDetails = editPayoutDetails;
+        }
+      } else {
+        parsedPayoutDetails = null;
+      }
+
       const res = await fetch(`/api/admin/affiliates/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           code: editCode !== affiliate?.code ? editCode : undefined,
+          contactName: editContactName,
+          businessName: editBusinessName,
+          phone: editPhone || null,
+          category: editCategory,
+          partnerSlug: editPartnerSlug || null,
           internalNotes: editNotes,
           customerPerk: editPerk,
           commissionRateOverride: editCommissionRate ? Number(editCommissionRate) / 100 : null,
+          categoryRateOverride: editCategoryRateOverride ? Number(editCategoryRateOverride) / 100 : null,
+          payoutMethod: editPayoutMethod || null,
+          payoutDetails: parsedPayoutDetails,
         }),
       });
       const data = await res.json();
       if (data.success) {
-        setAffiliate(data.data);
-        setEditCode(data.data.code);
+        const d = data.data;
+        setAffiliate(d);
+        setEditCode(d.code);
+        setEditContactName(d.contactName || '');
+        setEditBusinessName(d.businessName || '');
+        setEditPhone(d.phone || '');
+        setEditCategory(d.category || 'OTHER');
+        setEditPartnerSlug(d.partnerSlug || '');
+        setEditCategoryRateOverride(d.categoryRateOverride ? String(Number(d.categoryRateOverride) * 100) : '');
+        setEditPayoutMethod(d.payoutMethod || '');
+        setEditPayoutDetails(d.payoutDetails ? JSON.stringify(d.payoutDetails, null, 2) : '');
       } else {
         alert(data.error || 'Failed to save');
       }
@@ -164,12 +212,48 @@ export default function AffiliateDetailPage(): ReactElement {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="bg-white rounded-lg shadow p-5 space-y-4">
           <h2 className="font-semibold text-gray-800">Details</h2>
-          <div className="text-sm space-y-2">
-            <div><span className="text-gray-500">Contact:</span> {affiliate.contactName}</div>
-            <div><span className="text-gray-500">Email:</span> {affiliate.email}</div>
-            <div><span className="text-gray-500">Phone:</span> {affiliate.phone || '-'}</div>
-            <div><span className="text-gray-500">Category:</span> {affiliate.category}</div>
-            <div><span className="text-gray-500">Joined:</span> {new Date(affiliate.createdAt).toLocaleDateString()}</div>
+          <div className="text-sm space-y-1 text-gray-500">
+            <div>Email: {affiliate.email}</div>
+            <div>Joined: {new Date(affiliate.createdAt).toLocaleDateString()}</div>
+          </div>
+          <div>
+            <label className="block text-sm text-gray-500 mb-1">Contact Name</label>
+            <input
+              value={editContactName}
+              onChange={(e) => setEditContactName(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-500 mb-1">Business Name</label>
+            <input
+              value={editBusinessName}
+              onChange={(e) => setEditBusinessName(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-500 mb-1">Phone</label>
+            <input
+              value={editPhone}
+              onChange={(e) => setEditPhone(e.target.value)}
+              placeholder="(512) 555-1234"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-500 mb-1">Category</label>
+            <select
+              value={editCategory}
+              onChange={(e) => setEditCategory(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+            >
+              <option value="BARTENDER">Bartender</option>
+              <option value="BOAT">Boat</option>
+              <option value="VENUE">Venue</option>
+              <option value="PLANNER">Planner</option>
+              <option value="OTHER">Other</option>
+            </select>
           </div>
           <div>
             <label className="block text-sm text-gray-500 mb-1">Referral Code</label>
@@ -178,6 +262,16 @@ export default function AffiliateDetailPage(): ReactElement {
               onChange={(e) => setEditCode(e.target.value.toUpperCase())}
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-mono"
             />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-500 mb-1">Partner Slug</label>
+            <input
+              value={editPartnerSlug}
+              onChange={(e) => setEditPartnerSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+              placeholder="e.g. cocktail-cowboys"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-mono"
+            />
+            <p className="text-xs text-gray-400 mt-1">URL slug for /partners/[slug]. Leave blank to use code.</p>
           </div>
           <div>
             <label className="block text-sm text-gray-500 mb-1">Referral Link</label>
@@ -206,6 +300,40 @@ export default function AffiliateDetailPage(): ReactElement {
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
             />
             <p className="text-xs text-gray-400 mt-1">Leave blank for default progressive tiers (5%/8%/10%)</p>
+          </div>
+          <div>
+            <label className="block text-sm text-gray-500 mb-1">Category Rate Override (%)</label>
+            <input
+              type="number"
+              value={editCategoryRateOverride}
+              onChange={(e) => setEditCategoryRateOverride(e.target.value)}
+              placeholder="No override"
+              min="0"
+              max="100"
+              step="0.5"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+            />
+            <p className="text-xs text-gray-400 mt-1">Override rate for this affiliate category. Leave blank for default.</p>
+          </div>
+          <div>
+            <label className="block text-sm text-gray-500 mb-1">Payout Method</label>
+            <input
+              value={editPayoutMethod}
+              onChange={(e) => setEditPayoutMethod(e.target.value)}
+              placeholder="e.g. Venmo, Zelle, Check"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-500 mb-1">Payout Details</label>
+            <textarea
+              value={editPayoutDetails}
+              onChange={(e) => setEditPayoutDetails(e.target.value)}
+              rows={2}
+              placeholder='e.g. {"venmo": "@username"}'
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-mono"
+            />
+            <p className="text-xs text-gray-400 mt-1">JSON or plain text with payout info</p>
           </div>
           <div>
             <label className="block text-sm text-gray-500 mb-1">Internal Notes</label>

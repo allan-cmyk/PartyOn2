@@ -9,11 +9,13 @@ interface PartnershipInfoTabProps {
     hasPassword?: boolean;
   };
   hasPassword: boolean;
+  adminMode?: boolean;
 }
 
 export default function PartnershipInfoTab({
   affiliate,
   hasPassword,
+  adminMode,
 }: PartnershipInfoTabProps): ReactElement {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -169,7 +171,7 @@ export default function PartnershipInfoTab({
       </div>
 
       {/* Password Setup */}
-      {!hasPassword && (
+      {!adminMode && !hasPassword && (
         <div className="bg-white rounded-lg shadow p-5">
           <h2 className="font-semibold text-gray-800 mb-2">Account Password</h2>
           <p className="text-sm text-gray-500 mb-4">

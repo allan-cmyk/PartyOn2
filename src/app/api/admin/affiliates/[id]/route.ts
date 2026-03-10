@@ -60,6 +60,10 @@ export async function PUT(
     if (body.payoutDetails !== undefined) updateData.payoutDetails = body.payoutDetails;
     if (body.internalNotes !== undefined) updateData.internalNotes = body.internalNotes;
     if (body.customerPerk !== undefined) updateData.customerPerk = body.customerPerk;
+    if (body.partnerSlug !== undefined) updateData.partnerSlug = body.partnerSlug || null;
+    if (body.category && ['BARTENDER', 'BOAT', 'VENUE', 'PLANNER', 'OTHER'].includes(body.category)) {
+      updateData.category = body.category;
+    }
 
     if (Object.keys(updateData).length > 0) {
       await updateAffiliate(id, updateData);
