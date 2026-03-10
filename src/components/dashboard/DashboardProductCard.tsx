@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type ReactElement } from 'react';
+import { useState, useRef, type ReactElement } from 'react';
 import Image from 'next/image';
 import type { Product } from '@/lib/types/product';
 import type { DraftCartItemView } from '@/lib/group-orders-v2/types';
@@ -36,6 +36,9 @@ export default function DashboardProductCard({
 }: Props): ReactElement {
   const [busy, setBusy] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [editValue, setEditValue] = useState('');
+  const editInputRef = useRef<HTMLInputElement>(null);
 
   const variant = product.variants.edges[0]?.node;
   if (!variant) return <div />;
@@ -131,6 +134,23 @@ export default function DashboardProductCard({
     }
   }
 
+  async function handleSetQuantity(newQty: number) {
+    if (busy || !existingItem) return;
+    setBusy(true);
+    try {
+      if (newQty <= 0) {
+        await removeDraftItemV2(shareCode, tabId, existingItem.id, participantId);
+      } else {
+        await updateDraftItemV2(shareCode, tabId, existingItem.id, participantId, newQty);
+      }
+      refreshWithoutScroll();
+    } catch (err) {
+      console.error('Failed to update item:', err);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <>
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col">
@@ -200,13 +220,50 @@ export default function DashboardProductCard({
                   <span className="text-base font-bold leading-none">−</span>
                 )}
               </button>
-              <span className="text-sm font-bold text-gray-900 min-w-[20px] text-center">
-                {busy ? (
-                  <span className="inline-block w-3 h-3 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  qty
-                )}
-              </span>
+              {editing ? (
+                <input
+                  ref={editInputRef}
+                  type="number"
+                  min="1"
+                  step="1"
+                  value={editValue}
+                  onChange={(e) => setEditValue(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.currentTarget.blur();
+                    } else if (e.key === 'Escape') {
+                      setEditing(false);
+                    }
+                  }}
+                  onBlur={() => {
+                    const val = parseInt(editValue, 10);
+                    if (!isNaN(val) && val !== qty) {
+                      handleSetQuantity(val);
+                    } else if (editValue === '' || val === 0) {
+                      handleSetQuantity(0);
+                    }
+                    setEditing(false);
+                  }}
+                  className="w-8 text-center text-sm font-bold text-gray-900 bg-white border border-gray-900 rounded outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (busy) return;
+                    setEditing(true);
+                    setEditValue(String(qty));
+                    setTimeout(() => editInputRef.current?.select(), 0);
+                  }}
+                  className="text-sm font-bold text-gray-900 min-w-[24px] text-center cursor-text hover:bg-yellow-300 rounded transition-colors"
+                >
+                  {busy ? (
+                    <span className="inline-block w-3 h-3 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    qty
+                  )}
+                </button>
+              )}
               <button
                 onClick={handleIncrement}
                 disabled={busy}
@@ -242,6 +299,7 @@ export default function DashboardProductCard({
           isLocked={isLocked}
           onIncrement={handleIncrement}
           onDecrement={handleDecrement}
+          onSetQuantity={handleSetQuantity}
         />
       )}
     </>

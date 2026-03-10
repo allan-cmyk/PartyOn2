@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactElement } from 'react';
+import { useState, useRef, type ReactElement } from 'react';
 import Image from 'next/image';
 import type { Product } from '@/lib/types/product';
 
@@ -14,6 +14,7 @@ interface Props {
   isLocked?: boolean;
   onIncrement: () => void;
   onDecrement: () => void;
+  onSetQuantity?: (qty: number) => void;
 }
 
 export default function ProductDetailModal({
@@ -26,7 +27,11 @@ export default function ProductDetailModal({
   isLocked,
   onIncrement,
   onDecrement,
+  onSetQuantity,
 }: Props): ReactElement {
+  const [editing, setEditing] = useState(false);
+  const [editValue, setEditValue] = useState('');
+  const editInputRef = useRef<HTMLInputElement>(null);
   const variant = product.variants.edges[0]?.node;
   const price = variant ? parseFloat(variant.price.amount) : 0;
   const variantTitle =
@@ -121,13 +126,52 @@ export default function ProductDetailModal({
                       <span className="text-lg font-medium">-</span>
                     )}
                   </button>
-                  <span className="w-10 text-center text-base font-semibold text-gray-900">
-                    {busy ? (
-                      <span className="inline-block w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      qty
-                    )}
-                  </span>
+                  {editing ? (
+                    <input
+                      ref={editInputRef}
+                      type="number"
+                      min="1"
+                      step="1"
+                      value={editValue}
+                      onChange={(e) => setEditValue(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.currentTarget.blur();
+                        } else if (e.key === 'Escape') {
+                          setEditing(false);
+                        }
+                      }}
+                      onBlur={() => {
+                        const val = parseInt(editValue, 10);
+                        if (onSetQuantity) {
+                          if (editValue === '' || val === 0) {
+                            onSetQuantity(0);
+                          } else if (!isNaN(val) && val !== qty) {
+                            onSetQuantity(val);
+                          }
+                        }
+                        setEditing(false);
+                      }}
+                      className="w-10 text-center text-base font-semibold text-gray-900 bg-white border border-brand-blue rounded outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (busy || !onSetQuantity) return;
+                        setEditing(true);
+                        setEditValue(String(qty));
+                        setTimeout(() => editInputRef.current?.select(), 0);
+                      }}
+                      className={`w-10 text-center text-base font-semibold text-gray-900 ${onSetQuantity ? 'cursor-text hover:bg-gray-200 rounded transition-colors' : ''}`}
+                    >
+                      {busy ? (
+                        <span className="inline-block w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        qty
+                      )}
+                    </button>
+                  )}
                   <button
                     onClick={onIncrement}
                     disabled={busy}

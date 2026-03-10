@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, forwardRef, type ReactElement } from 'react';
+import { useState, useCallback, useRef, forwardRef, type ReactElement } from 'react';
 import Image from 'next/image';
 import type {
   DraftCartItemView,
@@ -52,6 +52,9 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [loadingProduct, setLoadingProduct] = useState(false);
+  const [editingItemId, setEditingItemId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState('');
+  const editInputRef = useRef<HTMLInputElement>(null);
 
   // Derive current item from props so qty updates reactively after onItemChanged
   const selectedItem = selectedItemId ? draftItems.find((i) => i.id === selectedItemId) ?? null : null;
@@ -212,13 +215,50 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
                     <span className="text-sm font-medium">-</span>
                   )}
                 </button>
-                <span className="w-6 text-center text-sm font-semibold">
-                  {isUpdating ? (
-                    <span className="inline-block w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    item.quantity
-                  )}
-                </span>
+                {editingItemId === item.id ? (
+                  <input
+                    ref={editInputRef}
+                    type="number"
+                    min="1"
+                    step="1"
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.currentTarget.blur();
+                      } else if (e.key === 'Escape') {
+                        setEditingItemId(null);
+                      }
+                    }}
+                    onBlur={() => {
+                      const val = parseInt(editValue, 10);
+                      if (!isNaN(val) && val !== item.quantity) {
+                        handleUpdate(item.id, val);
+                      } else if (editValue === '' || val === 0) {
+                        handleUpdate(item.id, 0);
+                      }
+                      setEditingItemId(null);
+                    }}
+                    className="w-8 text-center text-sm font-semibold bg-white border border-brand-blue rounded outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (isUpdating) return;
+                      setEditingItemId(item.id);
+                      setEditValue(String(item.quantity));
+                      setTimeout(() => editInputRef.current?.select(), 0);
+                    }}
+                    className="w-8 text-center text-sm font-semibold cursor-text hover:bg-gray-100 rounded transition-colors"
+                  >
+                    {isUpdating ? (
+                      <span className="inline-block w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      item.quantity
+                    )}
+                  </button>
+                )}
                 <button
                   onClick={() => handleUpdate(item.id, item.quantity + 1)}
                   disabled={isUpdating}
@@ -480,6 +520,10 @@ const OrderSidebar = forwardRef<HTMLDivElement, Props>(function OrderSidebar(
           onDecrement={() => {
             handleUpdate(selectedItem.id, selectedItem.quantity - 1);
             if (selectedItem.quantity <= 1) closeProductModal();
+          }}
+          onSetQuantity={(q) => {
+            handleUpdate(selectedItem.id, q);
+            if (q <= 0) closeProductModal();
           }}
         />
       )}
