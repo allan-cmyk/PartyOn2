@@ -106,7 +106,7 @@ export function BartenderTemplate({ affiliate, partnerLogo, partnerHeroImage }: 
                     alt={`${businessName} logo`}
                     width={240}
                     height={240}
-                    className="h-40 md:h-48 w-auto object-contain mx-auto brightness-0 invert"
+                    className="h-40 md:h-48 w-auto object-contain mx-auto rounded-lg"
                   />
                 </div>
               )}
