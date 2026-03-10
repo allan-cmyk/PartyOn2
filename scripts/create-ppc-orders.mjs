@@ -2,11 +2,14 @@
  * Create Party On Delivery order dashboards for Premier Party Cruises bookings.
  *
  * Usage:
- *   # First 5 rows (test):
+ *   # First 10 rows (test):
  *   node scripts/create-ppc-orders.mjs
  *
  *   # All rows:
  *   node scripts/create-ppc-orders.mjs --all
+ *
+ *   # Backfill host claim tokens for already-created orders:
+ *   node scripts/create-ppc-orders.mjs --backfill-tokens
  *
  * Requires .env.local with POSTGRES_URL set.
  */
@@ -49,6 +52,11 @@ function generateShareCode() {
     code += chars[bytes[i] % chars.length];
   }
   return code;
+}
+
+// Generate a host claim token (UUID v4)
+function generateClaimToken() {
+  return crypto.randomUUID();
 }
 
 // Parse CSV handling quoted fields with commas
@@ -102,9 +110,88 @@ function formatTime(hour, minute) {
   return `${h}:${String(minute).padStart(2, '0')} ${ampm}`;
 }
 
+// Extract share code from a dashboard URL like https://partyondelivery.com/dashboard/JQ44ZG
+function extractShareCode(url) {
+  const match = url.match(/\/dashboard\/([A-Z0-9]+)/);
+  return match ? match[1] : null;
+}
+
+async function backfillTokens() {
+  const csvText = fs.readFileSync(CSV_PATH, 'utf-8');
+  const rows = parseCSV(csvText);
+  const header = rows[0];
+  const dataRows = rows.slice(1);
+
+  const colIndex = {};
+  header.forEach((h, i) => { colIndex[h] = i; });
+
+  const dashCol = header.indexOf('Order Dashboard');
+  if (dashCol === -1) {
+    console.log('No "Order Dashboard" column found. Nothing to backfill.');
+    return;
+  }
+
+  // Ensure "Host Link" column exists
+  const outputHeader = [...header];
+  let hostLinkCol = outputHeader.indexOf('Host Link');
+  if (hostLinkCol === -1) {
+    outputHeader.push('Host Link');
+    hostLinkCol = outputHeader.length - 1;
+  }
+
+  const outputRows = [outputHeader];
+  let backfilled = 0;
+
+  for (let i = 0; i < dataRows.length; i++) {
+    const row = [...dataRows[i]];
+    while (row.length < outputHeader.length) row.push('');
+
+    const dashUrl = row[dashCol];
+    const existingHostLink = row[hostLinkCol];
+
+    // Only backfill rows that have a dashboard URL but no host link
+    if (dashUrl?.startsWith('https://') && !existingHostLink?.startsWith('https://')) {
+      const shareCode = extractShareCode(dashUrl);
+      if (shareCode) {
+        const order = await prisma.groupOrderV2.findUnique({ where: { shareCode } });
+        if (order) {
+          let token = order.hostClaimToken;
+          if (!token) {
+            token = generateClaimToken();
+            await prisma.groupOrderV2.update({
+              where: { id: order.id },
+              data: { hostClaimToken: token },
+            });
+          }
+          row[hostLinkCol] = `https://partyondelivery.com/dashboard/${shareCode}?claim=${token}`;
+          backfilled++;
+          console.log(`  ${row[colIndex['Name']]} -> token added`);
+        }
+      }
+    }
+
+    outputRows.push(row);
+  }
+
+  const csvOutput = outputRows.map(row =>
+    row.map(field => (field.includes(',') ? `"${field}"` : field)).join(',')
+  ).join('\n');
+
+  fs.writeFileSync(CSV_PATH, csvOutput + '\n', 'utf-8');
+  console.log(`\nBackfilled ${backfilled} host claim tokens.`);
+}
+
 async function main() {
   const doAll = process.argv.includes('--all');
-  const limit = doAll ? Infinity : 5;
+  const doBackfill = process.argv.includes('--backfill-tokens');
+
+  if (doBackfill) {
+    await backfillTokens();
+    await prisma.$disconnect();
+    return;
+  }
+
+  const limit = doAll ? Infinity : 10;
 
   const csvText = fs.readFileSync(CSV_PATH, 'utf-8');
   const rows = parseCSV(csvText);
@@ -168,10 +255,13 @@ async function main() {
       if (attempts > 10) throw new Error('Failed to generate unique share code');
     }
 
+    // Generate host claim token
+    const hostClaimToken = generateClaimToken();
+
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 30);
 
-    // Create GroupOrderV2 with tabs and host participant
+    // Create GroupOrderV2 with tabs, host participant, and claim token
     const groupOrder = await prisma.groupOrderV2.create({
       data: {
         name,
@@ -179,6 +269,7 @@ async function main() {
         hostEmail: email,
         hostPhone: phone,
         shareCode,
+        hostClaimToken,
         partyType: 'BOAT',
         affiliateId: AFFILIATE_ID,
         source: 'PARTNER_PAGE',
@@ -238,20 +329,26 @@ async function main() {
     }
 
     const dashboardUrl = `https://partyondelivery.com/dashboard/${shareCode}`;
-    created.push({ rowIndex: i, shareCode, dashboardUrl, name, email });
+    const hostLink = `https://partyondelivery.com/dashboard/${shareCode}?claim=${hostClaimToken}`;
+    created.push({ rowIndex: i, shareCode, dashboardUrl, hostLink, name, email });
 
     console.log(`  ${i + 1}. ${name} -> ${dashboardUrl}`);
+    console.log(`     Host link: ${hostLink}`);
     console.log(`     Email: ${email} | Cruise: ${cruiseDateStr} ${timeStr} | Deliver: ${deliveryTimeStr}`);
     console.log(`     + Survival Package added to House/BnB tab (free)`);
   }
 
-  // Write dashboard URLs back to CSV
-  // Add "Order Dashboard" column if not present, update rows that were processed
+  // Write dashboard URLs and host links back to CSV
   const outputHeader = [...header];
   let dashColIndex = outputHeader.indexOf('Order Dashboard');
   if (dashColIndex === -1) {
     outputHeader.push('Order Dashboard');
     dashColIndex = outputHeader.length - 1;
+  }
+  let hostLinkColIndex = outputHeader.indexOf('Host Link');
+  if (hostLinkColIndex === -1) {
+    outputHeader.push('Host Link');
+    hostLinkColIndex = outputHeader.length - 1;
   }
 
   const outputRows = [outputHeader];
@@ -259,10 +356,11 @@ async function main() {
     const row = [...dataRows[i]];
     // Pad row to match header length
     while (row.length < outputHeader.length) row.push('');
-    // Set dashboard URL if this row was processed
+    // Set dashboard URL and host link if this row was processed
     const match = created.find(c => c.rowIndex === i);
     if (match) {
       row[dashColIndex] = match.dashboardUrl;
+      row[hostLinkColIndex] = match.hostLink;
     }
     outputRows.push(row);
   }
@@ -275,7 +373,7 @@ async function main() {
   fs.writeFileSync(CSV_PATH, csvOutput + '\n', 'utf-8');
 
   console.log(`\nDone! Created ${created.length} order dashboards.`);
-  console.log(`CSV updated with "Order Dashboard" column.`);
+  console.log(`CSV updated with "Order Dashboard" and "Host Link" columns.`);
 
   await prisma.$disconnect();
 }
