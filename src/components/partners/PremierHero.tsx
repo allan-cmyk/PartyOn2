@@ -116,7 +116,7 @@ export default function PremierHero(): ReactElement {
           transition={{ duration: 0.6, delay: 0.45, ease: [0.25, 0.1, 0.25, 1] }}
           className="flex flex-col items-center"
         >
-          <Button variant="cart" size="lg" href="/order">
+          <Button variant="cart" size="lg" href="/order?ref=PREMIER&p=boat&d=boat">
             Order Your Drinks
           </Button>
 

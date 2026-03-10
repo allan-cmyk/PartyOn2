@@ -147,7 +147,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
               </div>
 
               <div className="mt-6 text-center md:text-left">
-                <Button variant="cart" size="md" href="/order">
+                <Button variant="cart" size="md" href="/order?ref=PREMIER&p=boat&d=boat">
                   Order Your Drinks
                 </Button>
               </div>
@@ -237,7 +237,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
                   </li>
                 ))}
               </ul>
-              <Button variant="cart" size="lg" href="/order">
+              <Button variant="cart" size="lg" href="/order?ref=PREMIER&p=boat&d=boat">
                 Order Your Drinks
               </Button>
             </ScrollRevealCSS>
@@ -280,7 +280,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
           </div>
 
           <div className="mt-10 text-center">
-            <Button variant="cart" size="lg" href="/order">
+            <Button variant="cart" size="lg" href="/order?ref=PREMIER&p=boat&d=boat">
               Order Your Drinks
             </Button>
           </div>
@@ -456,7 +456,7 @@ function PremierPartyCruisesPageContent(): ReactElement {
             </p>
 
             <div className="flex flex-col items-center gap-3 mb-6">
-              <Button variant="primary" size="lg" href="/order">
+              <Button variant="primary" size="lg" href="/order?ref=PREMIER&p=boat&d=boat">
                 Order Your Drinks
               </Button>
             </div>
