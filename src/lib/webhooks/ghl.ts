@@ -15,6 +15,13 @@ export interface GhlOrderPayload {
   event: 'order.created';
   orderNumber: number;
   orderType: string;
+  orderUrl: string;
+  // GHL-standard contact fields (used by Create Contact action)
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  // Legacy fields (kept for backwards compat with existing workflows)
   customerName: string;
   customerFirstName: string;
   customerLastName: string;
@@ -36,6 +43,7 @@ export interface GhlOrderPayload {
 
 /** Shape accepted by buildGhlPayload — matches OrderWithItems and raw Prisma orders */
 interface OrderLike {
+  id: string;
   orderNumber: number;
   customerName: string;
   customerEmail: string;
@@ -105,6 +113,13 @@ export function buildGhlPayload(order: OrderLike, orderType: string): GhlOrderPa
     event: 'order.created',
     orderNumber: order.orderNumber,
     orderType,
+    orderUrl: `https://partyondelivery.com/ops/orders/${order.id}`,
+    // GHL-standard contact fields
+    first_name: firstName,
+    last_name: lastName,
+    email: order.customerEmail,
+    phone: order.customerPhone || '',
+    // Legacy fields
     customerName: order.customerName,
     customerFirstName: firstName,
     customerLastName: lastName,

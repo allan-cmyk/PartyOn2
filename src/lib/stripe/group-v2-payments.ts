@@ -455,6 +455,7 @@ export async function handleGroupV2PaymentCompleted(
       deliveryPhone: subOrder.deliveryPhone || customerPhone || '',
       customerEmail: customerEmail,
       customerName: customerName,
+      customerPhone: customerPhone || null,
       groupOrderId: null, // V2 doesn't use v1 group order FK
       items: {
         create: purchasedItems.map((item) => ({
