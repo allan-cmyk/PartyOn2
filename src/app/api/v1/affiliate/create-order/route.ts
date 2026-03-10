@@ -47,7 +47,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       partyType: partyType || undefined,
       deliveryContextType: deliveryContextType || undefined,
       tabName: tabName || undefined,
-      deliveryAddress: deliveryAddress || undefined,
+      deliveryAddress: deliveryAddress
+        ? { address1: deliveryAddress, city: '', province: 'TX', zip: '', country: 'US' }
+        : undefined,
       deliveryDate: deliveryDate || undefined,
     });
 
