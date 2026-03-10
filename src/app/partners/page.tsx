@@ -64,14 +64,11 @@ export default function AustinPartnersPage() {
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 text-white">
           <ScrollRevealCSS duration={800} y={30}>
-            <p className="text-brand-yellow tracking-[0.1em] uppercase text-sm mb-4">
-              Austin Vendor Directory
-            </p>
             <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl mb-6 tracking-[0.1em] max-w-4xl">
-              Best Austin Event Vendors
+              Austin&apos;s Best Event Vendors
             </h1>
             <p className="text-lg sm:text-xl max-w-2xl leading-relaxed text-gray-200">
-              Discover Austin&apos;s top-rated event vendors for 2025. From wedding planners
+              Discover Austin&apos;s top-rated event vendors for 2026. From wedding planners
               and Lake Travis boat rentals to mobile bartenders and caterers—find the
               best local professionals for your next Austin event.
             </p>
@@ -268,7 +265,7 @@ export default function AustinPartnersPage() {
                   How do I find wedding vendors in Austin, TX?
                 </h3>
                 <p className="text-gray-600">
-                  Browse our Austin vendor directory to find top-rated wedding planners, caterers,
+                  Browse our Austin event vendor page to find top-rated wedding planners, caterers,
                   bartenders, and venues. For venue options, check out our{' '}
                   <Link href="/austin-byob-venues" className="text-brand-yellow hover:text-yellow-600">
                     full list of 75+ BYOB venues in Austin

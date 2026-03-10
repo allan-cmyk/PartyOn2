@@ -4,16 +4,16 @@ import partnersData from '@/data/austin-partners.json';
 import { generateBreadcrumbSchema, generateFAQSchema } from '@/lib/seo/schemas';
 
 export const metadata: Metadata = {
-  title: 'Best Austin Event Vendors 2025 | Wedding, Party & Corporate | Party On Delivery',
+  title: 'Best Austin Event Vendors 2026 | Wedding, Party & Corporate | Party On Delivery',
   description:
     "Discover Austin's best event vendors - top-rated wedding planners, Lake Travis boat rentals, mobile bartenders, caterers, venues & party services. Your complete guide to planning unforgettable Austin events.",
   keywords:
-    'austin event vendors, best austin wedding vendors, austin party vendors, lake travis boat rentals, austin mobile bartenders, austin wedding planners, austin catering services, austin event venues, austin bachelorette party vendors, things to do in austin for parties, best of austin vendors, austin corporate event vendors, austin party planning, TABC certified bartenders austin, austin hill country venues, downtown austin event vendors, austin vendor directory',
+    'austin event vendors, best austin wedding vendors, austin party vendors, lake travis boat rentals, austin mobile bartenders, austin wedding planners, austin catering services, austin event venues, austin bachelorette party vendors, things to do in austin for parties, best of austin vendors, austin corporate event vendors, austin party planning, TABC certified bartenders austin, austin hill country venues, downtown austin event vendors, austin event services',
   alternates: {
     canonical: '/partners',
   },
   openGraph: {
-    title: 'Best Austin Event Vendors & Party Services 2025 | Party On Delivery',
+    title: 'Best Austin Event Vendors & Party Services 2026 | Party On Delivery',
     description:
       "Austin's top-rated event vendors: wedding planners, Lake Travis boats, mobile bartenders, caterers & venues. Plan your perfect Austin event.",
     url: 'https://partyondelivery.com/partners',
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Best Austin Event Vendors & Party Services 2025',
+    title: 'Best Austin Event Vendors & Party Services 2026',
     description:
       "Austin's top-rated event vendors: wedding planners, Lake Travis boats, mobile bartenders, caterers & venues.",
     images: ['/images/hero/austin-skyline-golden-hour.webp'],
@@ -50,7 +50,7 @@ function generatePartnersStructuredData() {
   const itemListSchema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Best Austin Event Vendors 2025',
+    name: 'Best Austin Event Vendors 2026',
     description:
       'Directory of the best Austin event vendors including wedding planners, Lake Travis boat rentals, mobile bartenders, caterers, venues, and party services',
     numberOfItems: partnersData.partners.length,
@@ -78,7 +78,7 @@ function generatePartnersStructuredData() {
     '@type': 'CollectionPage',
     name: 'Best Austin Event Vendors Directory',
     description:
-      "Discover Austin's best event vendors - top wedding planners, Lake Travis boat rentals, mobile bartenders, caterers, venues and party services for 2025.",
+      "Discover Austin's best event vendors - top wedding planners, Lake Travis boat rentals, mobile bartenders, caterers, venues and party services for 2026.",
     url: 'https://partyondelivery.com/partners',
     mainEntity: {
       '@type': 'ItemList',
