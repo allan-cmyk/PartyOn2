@@ -181,7 +181,7 @@ export default function AdminAffiliateDashboardPage(): ReactElement {
           />
         )}
         {activeTab === 'orders' && (
-          <OrdersTab clientOrders={data.clientOrders} />
+          <OrdersTab clientOrders={data.clientOrders} commissionOrders={data.orders} />
         )}
         {activeTab === 'partnership' && (
           <PartnershipInfoTab

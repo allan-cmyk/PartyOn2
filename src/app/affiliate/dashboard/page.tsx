@@ -168,7 +168,7 @@ export default function AffiliateDashboardPage(): ReactElement {
             payouts={payouts}
           />
         )}
-        {activeTab === 'orders' && <OrdersTab clientOrders={clientOrders} />}
+        {activeTab === 'orders' && <OrdersTab clientOrders={clientOrders} commissionOrders={orders} />}
         {activeTab === 'partnership' && (
           <PartnershipInfoTab
             affiliate={data.affiliate}
