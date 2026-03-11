@@ -7,12 +7,13 @@ interface AddAffiliateModalProps {
   onCreated: () => void;
 }
 
-type Category = 'BARTENDER' | 'BOAT' | 'VENUE' | 'PLANNER' | 'OTHER';
+type Category = 'BARTENDER' | 'BOAT' | 'VENUE' | 'LODGING' | 'PLANNER' | 'OTHER';
 
 const CATEGORY_OPTIONS: { value: Category; label: string }[] = [
   { value: 'BARTENDER', label: 'Bartender' },
   { value: 'BOAT', label: 'Boat' },
   { value: 'VENUE', label: 'Venue' },
+  { value: 'LODGING', label: 'Lodging' },
   { value: 'PLANNER', label: 'Planner' },
   { value: 'OTHER', label: 'Other' },
 ];
