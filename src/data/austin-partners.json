@@ -285,6 +285,18 @@
       "featured": true,
       "order": 5,
       "partnerPage": "/partners/tap-truck-austin"
+    },
+    {
+      "id": "24",
+      "name": "Five Star Vacation Home Rentals",
+      "slug": "five-star",
+      "description": "Luxury vacation home rentals in Austin featuring estates with pools, spas, and outdoor living spaces for events, weddings, retreats, and family getaways.",
+      "website": "https://www.fivestarvacationhomerentals.com",
+      "logo": "/images/partners/fivestar-logo.png",
+      "heroImage": null,
+      "category": "lodging",
+      "featured": true,
+      "order": 24
     }
   ]
 }
