@@ -185,7 +185,7 @@ export function DefaultTemplate({ affiliate, partnerLogo, partnerHeroImage }: Ca
                     alt={`${businessName} logo`}
                     width={240}
                     height={240}
-                    className="h-40 md:h-48 w-auto object-contain mx-auto rounded-lg"
+                    className="h-40 md:h-48 w-auto object-contain mx-auto rounded-lg brightness-0 invert drop-shadow-lg"
                   />
                 </div>
               )}
