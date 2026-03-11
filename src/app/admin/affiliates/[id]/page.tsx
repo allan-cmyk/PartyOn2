@@ -2,6 +2,7 @@
 
 import { useState, useEffect, ReactElement } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 
 interface Commission {
@@ -251,6 +252,7 @@ export default function AffiliateDetailPage(): ReactElement {
               <option value="BARTENDER">Bartender</option>
               <option value="BOAT">Boat</option>
               <option value="VENUE">Venue</option>
+              <option value="LODGING">Lodging</option>
               <option value="PLANNER">Planner</option>
               <option value="OTHER">Other</option>
             </select>
@@ -363,6 +365,12 @@ export default function AffiliateDetailPage(): ReactElement {
             >
               {affiliate.status === 'ACTIVE' ? 'Pause' : 'Activate'}
             </button>
+            <Link
+              href={`/admin/affiliates/embed-generator?id=${id}`}
+              className="px-4 py-2 bg-gray-800 text-white rounded text-sm font-medium hover:bg-gray-900 inline-block text-center"
+            >
+              Get Embed Code
+            </Link>
             <button
               onClick={async () => {
                 setSendingWelcome(true);

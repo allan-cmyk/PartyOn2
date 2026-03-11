@@ -117,7 +117,7 @@ export default function AffiliatesPage(): ReactElement {
 
   const categoryLabel = (cat: string) => {
     const map: Record<string, string> = {
-      BARTENDER: 'Bartender', BOAT: 'Boat', VENUE: 'Venue', PLANNER: 'Planner', OTHER: 'Other',
+      BARTENDER: 'Bartender', BOAT: 'Boat', VENUE: 'Venue', LODGING: 'Lodging', PLANNER: 'Planner', OTHER: 'Other',
     };
     return map[cat] || cat;
   };
@@ -126,12 +126,20 @@ export default function AffiliatesPage(): ReactElement {
     <div className="max-w-7xl mx-auto px-4 py-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
         <h1 className="text-2xl font-bold text-gray-900">Affiliates</h1>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="px-4 py-2 text-sm font-semibold text-gray-900 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-lg hover:from-amber-500 hover:to-yellow-600 transition-all shadow-sm"
-        >
-          + Add Affiliate
-        </button>
+        <div className="flex gap-2">
+          <Link
+            href="/admin/affiliates/embed-generator"
+            className="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all shadow-sm"
+          >
+            Embed Widgets
+          </Link>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="px-4 py-2 text-sm font-semibold text-gray-900 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-lg hover:from-amber-500 hover:to-yellow-600 transition-all shadow-sm"
+          >
+            + Add Affiliate
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}

@@ -1937,6 +1937,7 @@ enum AffiliateCategory {
   BARTENDER
   BOAT
   VENUE
+  LODGING
   PLANNER
   OTHER
 }
