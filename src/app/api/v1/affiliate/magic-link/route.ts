@@ -80,7 +80,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       console.log('[Magic Link] Sent to:', affiliate.email);
     } catch (emailError) {
       console.error('[Magic Link] Failed to send email:', emailError);
-      // Still return success to prevent enumeration
+      // Affiliate was found, so this is a real send failure -- tell the client
+      return NextResponse.json(
+        { success: false, error: 'Failed to send login email. Please try again.' },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ success: true });

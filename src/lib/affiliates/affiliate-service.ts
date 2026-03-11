@@ -63,8 +63,8 @@ export async function getAffiliateById(id: string) {
  * Get affiliate by email
  */
 export async function getAffiliateByEmail(email: string) {
-  return prisma.affiliate.findUnique({
-    where: { email: email.toLowerCase() },
+  return prisma.affiliate.findFirst({
+    where: { email: { equals: email, mode: 'insensitive' } },
   });
 }
 
