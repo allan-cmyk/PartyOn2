@@ -24,6 +24,9 @@ export default function EmbedGeneratorPage(): ReactElement {
   const [format, setFormat] = useState<WidgetFormat>('banner');
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [tagline, setTagline] = useState('');
+  const [buttonText, setButtonText] = useState('');
+  const [partnerLabel, setPartnerLabel] = useState('');
 
   const fetchAffiliates = useCallback(async () => {
     try {
@@ -48,10 +51,20 @@ export default function EmbedGeneratorPage(): ReactElement {
   }, [fetchAffiliates]);
 
   const selected = affiliates.find((a) => a.id === selectedId);
-  const html = selected
+  const embedParams = selected
+    ? {
+        code: selected.code,
+        customerPerk: selected.customerPerk,
+        ...(tagline && { tagline }),
+        ...(buttonText && { buttonText }),
+        ...(partnerLabel && { partnerLabel }),
+      }
+    : null;
+
+  const html = embedParams
     ? format === 'banner'
-      ? generateBannerHtml({ code: selected.code, customerPerk: selected.customerPerk })
-      : generateCardHtml({ code: selected.code, customerPerk: selected.customerPerk })
+      ? generateBannerHtml(embedParams)
+      : generateCardHtml(embedParams)
     : '';
 
   const handleCopy = async () => {
@@ -117,11 +130,48 @@ export default function EmbedGeneratorPage(): ReactElement {
           </div>
         </div>
         {selected && (
-          <div className="mt-3 text-sm text-gray-500">
-            Perk: <span className="font-medium text-gray-700">{selected.customerPerk || 'Free Delivery'}</span>
-            {' | '}
-            Link: <code className="text-xs bg-gray-100 px-1.5 py-0.5 rounded">partyondelivery.com/order?ref={selected.code}</code>
-          </div>
+          <>
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Customize Text</label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Tagline</label>
+                  <input
+                    type="text"
+                    value={tagline}
+                    onChange={(e) => setTagline(e.target.value)}
+                    placeholder="Cold drinks. On time. Best buy-back policy in Austin."
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Button Text</label>
+                  <input
+                    type="text"
+                    value={buttonText}
+                    onChange={(e) => setButtonText(e.target.value)}
+                    placeholder="Order Now"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Partner Label <span className="text-gray-400">(card only)</span></label>
+                  <input
+                    type="text"
+                    value={partnerLabel}
+                    onChange={(e) => setPartnerLabel(e.target.value)}
+                    placeholder="Official Partner"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="mt-3 text-sm text-gray-500">
+              Perk: <span className="font-medium text-gray-700">{selected.customerPerk || 'Free Delivery'}</span>
+              {' | '}
+              Link: <code className="text-xs bg-gray-100 px-1.5 py-0.5 rounded">partyondelivery.com/order?ref={selected.code}</code>
+            </div>
+          </>
         )}
       </div>
 
