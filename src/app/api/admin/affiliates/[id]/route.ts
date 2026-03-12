@@ -61,7 +61,7 @@ export async function PUT(
     if (body.internalNotes !== undefined) updateData.internalNotes = body.internalNotes;
     if (body.customerPerk !== undefined) updateData.customerPerk = body.customerPerk;
     if (body.partnerSlug !== undefined) updateData.partnerSlug = body.partnerSlug || null;
-    if (body.category && ['BARTENDER', 'BOAT', 'VENUE', 'PLANNER', 'OTHER'].includes(body.category)) {
+    if (body.category && ['BARTENDER', 'BOAT', 'VENUE', 'LODGING', 'PLANNER', 'OTHER'].includes(body.category)) {
       updateData.category = body.category;
     }
 
