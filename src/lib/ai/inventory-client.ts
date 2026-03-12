@@ -150,3 +150,91 @@ export function daysBetween(date1: Date, date2: Date): number {
   const diff = Math.abs(date2.getTime() - date1.getTime());
   return Math.ceil(diff / (1000 * 60 * 60 * 24));
 }
+
+/**
+ * Tool-use types and function for OpenRouter agentic workflows
+ */
+
+export interface OpenRouterToolDefinition {
+  type: 'function';
+  function: {
+    name: string;
+    description: string;
+    parameters: Record<string, unknown>;
+  };
+}
+
+export interface OpenRouterToolCall {
+  id: string;
+  type: 'function';
+  function: {
+    name: string;
+    arguments: string; // JSON string
+  };
+}
+
+export interface OpenRouterToolMessage {
+  role: 'tool';
+  tool_call_id: string;
+  content: string;
+}
+
+export interface OpenRouterAssistantMessage {
+  role: 'assistant';
+  content: string | null;
+  tool_calls?: OpenRouterToolCall[];
+}
+
+export interface OpenRouterToolResponse {
+  choices: {
+    message: OpenRouterAssistantMessage;
+    finish_reason: string;
+  }[];
+  usage?: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+  };
+}
+
+export type AgentMessage = OpenRouterMessage | OpenRouterToolMessage | OpenRouterAssistantMessage;
+
+/**
+ * Call OpenRouter API with tool-use support
+ */
+export async function callOpenRouterWithTools(
+  model: string,
+  messages: AgentMessage[],
+  tools: OpenRouterToolDefinition[],
+  options?: {
+    temperature?: number;
+    maxTokens?: number;
+  }
+): Promise<OpenRouterToolResponse> {
+  const apiKey = getOpenRouterApiKey();
+
+  const response = await fetch(OPENROUTER_API_URL, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': 'https://partyondelivery.com',
+      'X-Title': 'Party On Delivery Ops Agent',
+    },
+    body: JSON.stringify({
+      model,
+      messages,
+      tools,
+      temperature: options?.temperature ?? 0.3,
+      max_tokens: options?.maxTokens ?? 4000,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.text();
+    console.error('OpenRouter API error:', response.status, errorData);
+    throw new Error(`OpenRouter API error: ${response.status} - ${errorData}`);
+  }
+
+  return response.json();
+}

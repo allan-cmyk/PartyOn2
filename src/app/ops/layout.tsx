@@ -154,6 +154,7 @@ export default function OpsLayout({ children }: OpsLayoutProps): ReactElement {
     { href: '/ops/orders', label: 'Orders' },
     { href: '/ops/group-orders', label: 'Group Orders' },
     { href: '/ops/collections', label: 'Collections' },
+    { href: '/ops/agent', label: 'Agent' },
   ];
 
   const isActive = (href: string) =>
