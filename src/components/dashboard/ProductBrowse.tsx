@@ -16,8 +16,6 @@ interface Props {
   isLocked?: boolean;
   onItemChanged: () => void;
   recsSection?: ReactElement | null;
-  hasEmail?: boolean;
-  onNeedEmail?: () => void;
 }
 
 export default function ProductBrowse({
@@ -29,8 +27,6 @@ export default function ProductBrowse({
   isLocked,
   onItemChanged,
   recsSection,
-  hasEmail,
-  onNeedEmail,
 }: Props): ReactElement {
   const categories = getCategoriesForPartyType(partyType);
   const [searchQuery, setSearchQuery] = useState('');
@@ -136,8 +132,6 @@ export default function ProductBrowse({
                   participantId={participantId}
                   existingItem={existingItem}
                   isLocked={isLocked}
-                  hasEmail={hasEmail}
-                  onNeedEmail={onNeedEmail}
                   onItemChanged={onItemChanged}
                 />
               );
@@ -158,8 +152,6 @@ export default function ProductBrowse({
               draftItems={draftItems}
               isLocked={isLocked}
               onItemChanged={onItemChanged}
-              hasEmail={hasEmail}
-              onNeedEmail={onNeedEmail}
             />
           ))}
         </div>

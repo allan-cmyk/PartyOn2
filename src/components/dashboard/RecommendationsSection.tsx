@@ -12,8 +12,6 @@ interface Props {
   participantId: string;
   onItemChanged: () => void;
   onDismiss: () => void;
-  hasEmail?: boolean;
-  onNeedEmail?: () => void;
 }
 
 export default function RecommendationsSection({
@@ -23,8 +21,6 @@ export default function RecommendationsSection({
   participantId,
   onItemChanged,
   onDismiss,
-  hasEmail = true,
-  onNeedEmail,
 }: Props): ReactElement | null {
   const [addingAll, setAddingAll] = useState(false);
   const [addingId, setAddingId] = useState<string | null>(null);
@@ -36,7 +32,6 @@ export default function RecommendationsSection({
 
   async function handleAddOne(rec: RecommendationResult) {
     if (!rec.matchedProduct || addingId) return;
-    if (!hasEmail && onNeedEmail) { onNeedEmail(); return; }
     setAddingId(rec.matchedProduct.id);
     try {
       await addDraftItemV2(shareCode, tabId, {
@@ -58,7 +53,6 @@ export default function RecommendationsSection({
 
   async function handleAddAll() {
     if (addingAll) return;
-    if (!hasEmail && onNeedEmail) { onNeedEmail(); return; }
     setAddingAll(true);
     try {
       for (const rec of matchedRecs) {

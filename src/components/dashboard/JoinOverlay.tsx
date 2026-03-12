@@ -20,6 +20,7 @@ export default function JoinOverlay({
   onJoined,
 }: Props): ReactElement {
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [ageVerified, setAgeVerified] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -42,6 +43,7 @@ export default function JoinOverlay({
     try {
       const participant = await joinGroupOrderV2(shareCode, {
         guestName: trimmedName,
+        guestEmail: email.trim() || undefined,
         ageVerified: true,
       });
       onJoined(participant.id);
@@ -104,6 +106,22 @@ export default function JoinOverlay({
               disabled={loading}
               onKeyDown={(e) => { if (e.key === 'Enter') handleJoin(); }}
             />
+          </div>
+
+          <div>
+            <label htmlFor="join-email" className="block text-sm font-medium text-gray-700 mb-1">
+              Email <span className="font-normal text-gray-400">(optional)</span>
+            </label>
+            <input
+              id="join-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all hover:border-gray-300"
+              disabled={loading}
+            />
+            <p className="text-xs text-gray-400 mt-1">We will send you updates or reminders about your order, no spam</p>
           </div>
 
           <label className="flex items-start gap-2 cursor-pointer">

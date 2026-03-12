@@ -15,6 +15,7 @@ interface Props {
   mode: 'mine' | 'all';
   items: DraftCartItemView[];
   appliedPromo?: AppliedPromo | null;
+  participantEmail?: string | null;
   onClose: () => void;
   onOpenDeliveryDetails: () => void;
 }
@@ -26,11 +27,14 @@ export default function DashboardCheckoutModal({
   mode,
   items,
   appliedPromo,
+  participantEmail,
   onClose,
   onOpenDeliveryDetails,
 }: Props): ReactElement {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [email, setEmail] = useState(participantEmail || '');
+  const [emailError, setEmailError] = useState('');
 
   // Discount -- pre-populate from dashboard promo if it's a discount type
   const [discountCode, setDiscountCode] = useState(
@@ -86,6 +90,13 @@ export default function DashboardCheckoutModal({
       return;
     }
 
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setEmailError('Please enter a valid email address');
+      return;
+    }
+    setEmailError('');
+
     setLoading(true);
 
     try {
@@ -96,7 +107,8 @@ export default function DashboardCheckoutModal({
           tab.id,
           participantId,
           discountApplied?.code,
-          tip
+          tip,
+          trimmedEmail
         );
         window.location.href = result.checkoutUrl;
       } else {
@@ -105,7 +117,8 @@ export default function DashboardCheckoutModal({
           tab.id,
           participantId,
           discountApplied?.code,
-          tip
+          tip,
+          trimmedEmail
         );
         window.location.href = result.checkoutUrl;
       }
@@ -159,6 +172,25 @@ export default function DashboardCheckoutModal({
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Email */}
+          <div>
+            <label htmlFor="checkout-email" className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
+            <input
+              id="checkout-email"
+              type="email"
+              value={email}
+              onChange={(e) => { setEmail(e.target.value); setEmailError(''); }}
+              placeholder="you@example.com"
+              className={`w-full px-3 py-2 border ${emailError ? 'border-red-300' : 'border-gray-300'} rounded-lg text-sm focus:border-brand-blue focus:ring-0 transition-all`}
+            />
+            {emailError && (
+              <p className="text-xs text-red-600 mt-1">{emailError}</p>
+            )}
+            <p className="text-xs text-gray-400 mt-1">For order confirmation and updates</p>
           </div>
 
           {/* Discount code */}

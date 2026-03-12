@@ -19,8 +19,6 @@ interface Props {
   existingItem?: DraftCartItemView;
   isLocked?: boolean;
   onItemChanged: () => void;
-  hasEmail?: boolean;
-  onNeedEmail?: () => void;
 }
 
 export default function DashboardProductCard({
@@ -31,8 +29,6 @@ export default function DashboardProductCard({
   existingItem,
   isLocked,
   onItemChanged,
-  hasEmail = true,
-  onNeedEmail,
 }: Props): ReactElement {
   const [busy, setBusy] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
@@ -68,10 +64,6 @@ export default function DashboardProductCard({
 
   async function handleAdd() {
     if (busy || !available) return;
-    if (!hasEmail && onNeedEmail) {
-      onNeedEmail();
-      return;
-    }
     setBusy(true);
     try {
       await addDraftItemV2(shareCode, tabId, {

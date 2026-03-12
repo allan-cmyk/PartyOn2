@@ -4,6 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/database/client';
 import {
   getGroupOrderByCode,
   getParticipantDraftItems,
@@ -19,7 +20,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
     const { code, tabId } = await params;
     const body = await request.json();
-    const { participantId, discountCode, tipAmount } = body;
+    const { participantId, discountCode, tipAmount, email } = body;
 
     if (!participantId) {
       return NextResponse.json(
@@ -56,13 +57,33 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       );
     }
 
+    // Save email to participant if provided and they don't have one
+    const effectiveEmail = email || participant.guestEmail || undefined;
+    if (email && !participant.guestEmail) {
+      try {
+        await prisma.groupParticipantV2.update({
+          where: { id: participantId },
+          data: { guestEmail: email },
+        });
+      } catch (err) {
+        // Unique constraint violation -- another participant has this email in the same group
+        if (err && typeof err === 'object' && 'code' in err && err.code === 'P2002') {
+          return NextResponse.json(
+            { success: false, error: 'This email is already in use by another participant in this group' },
+            { status: 409 }
+          );
+        }
+        console.error('[Group V2] Failed to save participant email:', err);
+      }
+    }
+
     // Create Stripe checkout session
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     const result = await createGroupV2CheckoutSession({
       groupOrderId: group.id,
       subOrderId: tabId,
       participantId,
-      participantEmail: participant.guestEmail || undefined,
+      participantEmail: effectiveEmail,
       participantName: participant.guestName || 'Guest',
       draftItems,
       discountCode,
