@@ -9,7 +9,7 @@ import { prisma } from '@/lib/database/client';
 import { getPartnerSlug } from '@/lib/affiliates/affiliate-service';
 import { sendEmail } from '@/lib/email/resend-client';
 import { generateAffiliateWelcomeEmail, generateAffiliateWelcomeText } from '@/lib/email/templates/affiliate-welcome';
-import { EmailType } from '@prisma/client';
+import { AffiliateStatus, EmailType } from '@prisma/client';
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';
 
@@ -63,7 +63,17 @@ export async function POST(
       return NextResponse.json({ success: false, error: 'Failed to send email' }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true, emailSent: true });
+    // Activate DRAFT affiliates on first welcome email
+    let activated = false;
+    if (affiliate.status === AffiliateStatus.DRAFT) {
+      await prisma.affiliate.update({
+        where: { id },
+        data: { status: AffiliateStatus.ACTIVE },
+      });
+      activated = true;
+    }
+
+    return NextResponse.json({ success: true, emailSent: true, activated });
   } catch (error) {
     console.error('[Affiliate Send Welcome] Error:', error);
     return NextResponse.json(

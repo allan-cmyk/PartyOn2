@@ -3,7 +3,7 @@ import { requireAdminRole } from '@/lib/auth/ops-session';
 import { createAffiliate, getAffiliateByEmail, getPartnerSlug } from '@/lib/affiliates/affiliate-service';
 import { sendEmail } from '@/lib/email/resend-client';
 import { generateAffiliateWelcomeEmail, generateAffiliateWelcomeText } from '@/lib/email/templates/affiliate-welcome';
-import { AffiliateCategory, EmailType } from '@prisma/client';
+import { AffiliateCategory, AffiliateStatus, EmailType } from '@prisma/client';
 
 const VALID_CATEGORIES: AffiliateCategory[] = ['BARTENDER', 'BOAT', 'VENUE', 'PLANNER', 'OTHER'];
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create affiliate
+    // Create affiliate -- DRAFT if no email will be sent, ACTIVE otherwise
     const affiliate = await createAffiliate({
       contactName,
       businessName,
@@ -49,6 +49,7 @@ export async function POST(request: NextRequest) {
       category,
       code: code || undefined,
       partnerSlug: partnerSlug || undefined,
+      status: skipEmail ? AffiliateStatus.DRAFT : AffiliateStatus.ACTIVE,
     });
 
     // Send welcome email (unless explicitly skipped)

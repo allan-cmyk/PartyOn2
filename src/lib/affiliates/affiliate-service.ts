@@ -109,6 +109,7 @@ export async function createAffiliate(data: {
   category: AffiliateCategory;
   code?: string;
   partnerSlug?: string;
+  status?: AffiliateStatus;
 }) {
   const code = data.code || generateReferralCode(data.businessName);
 
@@ -125,7 +126,7 @@ export async function createAffiliate(data: {
       email: data.email.toLowerCase(),
       phone: data.phone,
       category: data.category,
-      status: AffiliateStatus.ACTIVE,
+      status: data.status ?? AffiliateStatus.ACTIVE,
     },
   });
 }

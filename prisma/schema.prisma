@@ -1928,6 +1928,7 @@ enum ApplicationStatus {
 }
 
 enum AffiliateStatus {
+  DRAFT
   ACTIVE
   PAUSED
   INACTIVE

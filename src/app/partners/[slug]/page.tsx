@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const affiliate = await getAffiliateBySlug(slug);
 
-  if (!affiliate || affiliate.status !== 'ACTIVE') {
+  if (!affiliate || !['ACTIVE', 'DRAFT'].includes(affiliate.status)) {
     return { title: 'Partner Not Found' };
   }
 
@@ -42,7 +42,7 @@ export default async function DynamicPartnerPage({ params }: Props) {
   const { slug } = await params;
   const affiliate = await getAffiliateBySlug(slug);
 
-  if (!affiliate || affiliate.status !== 'ACTIVE') {
+  if (!affiliate || !['ACTIVE', 'DRAFT'].includes(affiliate.status)) {
     notFound();
   }
 

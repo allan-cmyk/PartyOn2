@@ -371,7 +371,7 @@ export default function AddAffiliateModal({ onClose, onCreated }: AddAffiliateMo
                   disabled={!isFormValid || submitting}
                   className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {submitting ? 'Creating...' : 'Create Without Email'}
+                  {submitting ? 'Creating...' : 'Create as Draft'}
                 </button>
                 <button
                   onClick={handleNext}

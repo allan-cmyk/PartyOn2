@@ -185,6 +185,7 @@ export default function AffiliateDetailPage(): ReactElement {
 
   const statusColor = (s: string) => {
     const map: Record<string, string> = {
+      DRAFT: 'bg-blue-100 text-blue-700',
       HELD: 'bg-yellow-100 text-yellow-700',
       HELD_REVIEW: 'bg-orange-100 text-orange-700',
       APPROVED: 'bg-blue-100 text-blue-700',
@@ -379,7 +380,10 @@ export default function AffiliateDetailPage(): ReactElement {
                   const res = await fetch(`/api/admin/affiliates/${id}/send-welcome`, { method: 'POST' });
                   const data = await res.json();
                   if (res.ok && data.success) {
-                    setWelcomeResult({ success: true, message: `Welcome email sent to ${affiliate.email}` });
+                    if (data.activated) {
+                      setAffiliate({ ...affiliate, status: 'ACTIVE' });
+                    }
+                    setWelcomeResult({ success: true, message: data.activated ? `Welcome email sent to ${affiliate.email} -- affiliate activated` : `Welcome email sent to ${affiliate.email}` });
                   } else {
                     setWelcomeResult({ success: false, message: data.error || 'Failed to send' });
                   }
@@ -392,7 +396,7 @@ export default function AffiliateDetailPage(): ReactElement {
               disabled={sendingWelcome}
               className="px-4 py-2 bg-pink-600 text-white rounded text-sm font-medium hover:bg-pink-700 disabled:opacity-50"
             >
-              {sendingWelcome ? 'Sending...' : 'Send Welcome Email'}
+              {sendingWelcome ? 'Sending...' : affiliate.status === 'DRAFT' ? 'Send Welcome Email & Activate' : 'Send Welcome Email'}
             </button>
           </div>
           {welcomeResult && (

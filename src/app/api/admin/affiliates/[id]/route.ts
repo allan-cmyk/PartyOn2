@@ -45,7 +45,7 @@ export async function PUT(
     }
 
     // Handle status change
-    if (body.status && ['ACTIVE', 'PAUSED', 'INACTIVE'].includes(body.status)) {
+    if (body.status && ['DRAFT', 'ACTIVE', 'PAUSED', 'INACTIVE'].includes(body.status)) {
       await updateAffiliateStatus(id, body.status as AffiliateStatus);
     }
 
