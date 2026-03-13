@@ -297,6 +297,18 @@
       "category": "lodging",
       "featured": true,
       "order": 24
+    },
+    {
+      "id": "25",
+      "name": "BigTex Boat Rentals",
+      "slug": "big-tex-boats",
+      "description": "Pontoon and party boat rentals on Lake Travis and surrounding Central Texas lakes. Perfect for groups, parties, and corporate events.",
+      "website": "https://bigtexboatrentals.com",
+      "logo": "/images/partners/bigtexboats-logo.png",
+      "heroImage": "/images/partners/bigtexboats-hero.jpg",
+      "category": "boat",
+      "featured": true,
+      "order": 25
     }
   ]
 }
