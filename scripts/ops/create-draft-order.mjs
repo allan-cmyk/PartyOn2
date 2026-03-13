@@ -44,10 +44,24 @@ const TAX_RATE = 0.0825;
 try {
   const input = JSON.parse(process.argv[2]);
 
-  const items = input.items;
+  // Auto-fetch product images for items that have a productId but no imageUrl
+  const items = await Promise.all(input.items.map(async (item) => {
+    if (item.imageUrl || !item.productId) return item;
+    const image = await prisma.productImage.findFirst({
+      where: { productId: item.productId },
+      orderBy: { position: 'asc' },
+      select: { url: true },
+    });
+    return { ...item, imageUrl: image?.url || null };
+  }));
   const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const discountAmount = input.discountAmount || 0;
   const delivery = calcDeliveryFee(input.deliveryZip, subtotal);
+  // Allow manual delivery fee override
+  if (input.deliveryFee != null) {
+    delivery.fee = input.deliveryFee;
+    delivery.free = input.deliveryFee === 0;
+  }
   const taxable = Math.max(0, subtotal - discountAmount);
   const taxAmount = Math.round(taxable * TAX_RATE * 100) / 100;
   const total = subtotal - discountAmount + taxAmount + delivery.fee;

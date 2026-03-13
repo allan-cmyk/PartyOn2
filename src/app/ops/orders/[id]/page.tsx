@@ -14,6 +14,7 @@ interface OrderItem {
   quantity: number;
   price: number;
   total: number;
+  imageUrl?: string | null;
 }
 
 interface Amendment {
@@ -1046,7 +1047,13 @@ export default function OrderDetailPage(): ReactElement {
                     // Read-only items
                     order.items.map((item) => (
                       <div key={item.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-                        <div className="flex-1">
+                        <div className="flex items-center gap-3 flex-1">
+                          {item.imageUrl ? (
+                            <img src={item.imageUrl} alt="" className="w-10 h-10 rounded-lg object-cover border border-gray-100 flex-shrink-0" />
+                          ) : (
+                            <div className="w-10 h-10 rounded-lg bg-gray-100 flex-shrink-0" />
+                          )}
+                          <div>
                           <p className="font-semibold text-gray-900">{item.title}</p>
                           {item.variantTitle && item.variantTitle !== 'Default Title' && (
                             <p className="text-sm text-gray-500">{item.variantTitle}</p>
@@ -1054,6 +1061,7 @@ export default function OrderDetailPage(): ReactElement {
                           {item.sku && (
                             <p className="text-xs text-gray-400 font-mono">SKU: {item.sku}</p>
                           )}
+                          </div>
                         </div>
                         <div className="text-right">
                           <p className="font-semibold text-gray-900">

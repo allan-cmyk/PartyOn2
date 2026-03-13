@@ -35,7 +35,12 @@ export async function GET(
         items: {
           include: {
             product: {
-              select: { id: true, title: true, handle: true },
+              select: {
+                id: true,
+                title: true,
+                handle: true,
+                images: { select: { url: true }, orderBy: { position: 'asc' }, take: 1 },
+              },
             },
             variant: {
               select: { id: true, title: true, sku: true },
@@ -174,6 +179,7 @@ export async function GET(
           quantity: item.quantity,
           price: Number(item.price),
           total: Number(item.totalPrice),
+          imageUrl: item.product.images[0]?.url || null,
         })),
         pricing: {
           subtotal: Number(order.subtotal),
