@@ -395,9 +395,9 @@ export async function handleGroupV2PaymentCompleted(
   // Resolve or create Customer for guest participants
   // Fall back to Stripe checkout session email/name when participant record is missing them
   const customerEmail = participant.guestEmail || session.customer_details?.email || '';
-  const customerName = (participant.guestName && participant.guestName !== 'Party Host')
-    ? participant.guestName
-    : session.customer_details?.name || participant.guestName || 'Guest';
+  const customerName = session.customer_details?.name
+    || participant.guestName
+    || 'Guest';
   const customerPhone = participant.guestPhone || session.customer_details?.phone || '';
 
   let customerId = participant.customerId;
