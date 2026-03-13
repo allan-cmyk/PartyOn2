@@ -111,7 +111,7 @@ export default function AddAffiliateModal({ onClose, onCreated }: AddAffiliateMo
     setStep(1);
   };
 
-  const handleCreateAndSend = async () => {
+  const handleCreate = async (skipEmail: boolean) => {
     setSubmitting(true);
     setError(null);
     try {
@@ -127,11 +127,12 @@ export default function AddAffiliateModal({ onClose, onCreated }: AddAffiliateMo
           code: code || undefined,
           partnerSlug: partnerSlug || undefined,
           personalNote: personalNote || undefined,
+          skipEmail,
         }),
       });
       const data = await res.json();
       if (data.success) {
-        if (!data.data.emailSent) {
+        if (!skipEmail && !data.data.emailSent) {
           alert('Affiliate created but welcome email failed to send. You may need to resend manually.');
         }
         onCreated();
@@ -364,16 +365,25 @@ export default function AddAffiliateModal({ onClose, onCreated }: AddAffiliateMo
               Cancel
             </button>
             {step === 1 ? (
-              <button
-                onClick={handleNext}
-                disabled={!isFormValid}
-                className="px-6 py-2.5 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Next
-              </button>
+              <>
+                <button
+                  onClick={() => handleCreate(true)}
+                  disabled={!isFormValid || submitting}
+                  className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {submitting ? 'Creating...' : 'Create Without Email'}
+                </button>
+                <button
+                  onClick={handleNext}
+                  disabled={!isFormValid}
+                  className="px-6 py-2.5 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Next
+                </button>
+              </>
             ) : (
               <button
-                onClick={handleCreateAndSend}
+                onClick={() => handleCreate(false)}
                 disabled={submitting}
                 className="px-6 py-2.5 text-sm font-semibold text-gray-900 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-lg hover:from-amber-500 hover:to-yellow-600 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >

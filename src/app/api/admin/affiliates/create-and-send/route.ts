@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     if (auth instanceof NextResponse) return auth;
 
     const body = await request.json();
-    const { contactName, businessName, email, phone, category, code, personalNote, partnerSlug } = body;
+    const { contactName, businessName, email, phone, category, code, personalNote, partnerSlug, skipEmail } = body;
 
     // Validate required fields
     if (!contactName || !businessName || !email || !category) {
@@ -51,44 +51,46 @@ export async function POST(request: NextRequest) {
       partnerSlug: partnerSlug || undefined,
     });
 
-    // Send welcome email
-    const slug = getPartnerSlug(affiliate);
-    const referralLink = `${BASE_URL}/partners/${slug}`;
-    const directReferralLink = `${BASE_URL}/partners/${slug}?ref=${affiliate.code}`;
-    const dashboardLink = `${BASE_URL}/affiliate/login`;
-
-    const html = generateAffiliateWelcomeEmail({
-      contactName,
-      businessName,
-      code: affiliate.code,
-      referralLink,
-      directReferralLink,
-      dashboardLink,
-      personalNote: personalNote || undefined,
-    });
-
-    const text = generateAffiliateWelcomeText({
-      contactName,
-      businessName,
-      code: affiliate.code,
-      referralLink,
-      directReferralLink,
-      dashboardLink,
-      personalNote: personalNote || undefined,
-    });
-
+    // Send welcome email (unless explicitly skipped)
     let emailSent = false;
-    try {
-      const resendId = await sendEmail({
-        to: email,
-        subject: 'Welcome to the Party On Delivery Partner Program!',
-        html,
-        text,
-        type: EmailType.AFFILIATE_WELCOME,
+    if (!skipEmail) {
+      const slug = getPartnerSlug(affiliate);
+      const referralLink = `${BASE_URL}/partners/${slug}`;
+      const directReferralLink = `${BASE_URL}/partners/${slug}?ref=${affiliate.code}`;
+      const dashboardLink = `${BASE_URL}/affiliate/login`;
+
+      const html = generateAffiliateWelcomeEmail({
+        contactName,
+        businessName,
+        code: affiliate.code,
+        referralLink,
+        directReferralLink,
+        dashboardLink,
+        personalNote: personalNote || undefined,
       });
-      emailSent = resendId !== null;
-    } catch (emailError) {
-      console.error('[Affiliate] Welcome email failed:', emailError);
+
+      const text = generateAffiliateWelcomeText({
+        contactName,
+        businessName,
+        code: affiliate.code,
+        referralLink,
+        directReferralLink,
+        dashboardLink,
+        personalNote: personalNote || undefined,
+      });
+
+      try {
+        const resendId = await sendEmail({
+          to: email,
+          subject: 'Welcome to the Party On Delivery Partner Program!',
+          html,
+          text,
+          type: EmailType.AFFILIATE_WELCOME,
+        });
+        emailSent = resendId !== null;
+      } catch (emailError) {
+        console.error('[Affiliate] Welcome email failed:', emailError);
+      }
     }
 
     return NextResponse.json({
