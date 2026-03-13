@@ -8,8 +8,7 @@ import { Prisma } from '@prisma/client';
 import { callOpenRouterWithTools, AI_MODELS } from '@/lib/ai/inventory-client';
 import type { AgentMessage } from '@/lib/ai/inventory-client';
 import { AGENT_TOOLS, executeTool } from './tools';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { ORDER_LOGIC } from './order-logic-content';
 
 const MAX_ITERATIONS = 10;
 
@@ -27,24 +26,10 @@ interface RunAgentResult {
 }
 
 /**
- * Load the order-logic knowledge base
- */
-function getOrderLogic(): string {
-  try {
-    return readFileSync(
-      join(process.cwd(), 'src/lib/agent/order-logic.md'),
-      'utf-8'
-    );
-  } catch {
-    return '(Order logic document not found -- use your general knowledge of the business.)';
-  }
-}
-
-/**
  * Build the system prompt for the agent
  */
 function buildSystemPrompt(): string {
-  const orderLogic = getOrderLogic();
+  const orderLogic = ORDER_LOGIC;
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
