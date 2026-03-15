@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, type ReactElement } from 'react';
 import type { GroupOrderV2Full, SubOrderFull } from '@/lib/group-orders-v2/types';
-import { updateTabV2 } from '@/lib/group-orders-v2/api-client';
+import { updateTabV2, deleteTabV2 } from '@/lib/group-orders-v2/api-client';
 
 interface Props {
   groupOrder: GroupOrderV2Full;
@@ -151,6 +151,25 @@ export default function DeliveryHeroSection({
     return tab.name || `Location ${index + 1}`;
   }
 
+  const isHost = !!groupOrder.participants.find(p => p.id === participantId)?.isHost;
+  const canDeleteTabs = isHost && groupOrder.tabs.length >= 2;
+
+  async function handleDeleteTab(tab: SubOrderFull, tabIndex: number) {
+    const tabName = getTabLabel(tab, tabIndex);
+    if (!window.confirm(`Delete '${tabName}'? Draft items will be removed.`)) return;
+    try {
+      await deleteTabV2(groupOrder.shareCode, tab.id, participantId);
+      if (tabIndex === activeTabIndex) {
+        onTabChange(Math.max(0, activeTabIndex - 1));
+      } else if (tabIndex < activeTabIndex) {
+        onTabChange(activeTabIndex - 1);
+      }
+      onRefresh();
+    } catch {
+      // Silently fail
+    }
+  }
+
   const tabsAtLimit = groupOrder.tabs.length >= 4;
   const showTabs = true;
 
@@ -176,19 +195,35 @@ export default function DeliveryHeroSection({
                   className="px-5 py-3 text-base font-bold rounded-t-2xl border-2 border-b-0 border-brand-blue bg-white text-gray-900 outline-none min-w-[100px] max-w-[220px]"
                 />
               ) : (
-                <button
-                  key={tab.id}
-                  onClick={() => onTabChange(i)}
-                  onDoubleClick={() => startEditingTab(tab, i)}
-                  className={`px-6 py-3.5 text-base font-bold transition-all rounded-t-2xl border-2 border-b-0 ${
-                    i === activeTabIndex
-                      ? 'bg-brand-blue text-white border-brand-blue relative z-10 -mb-px shadow-md'
-                      : 'bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 border-transparent'
-                  }`}
-                  title="Double-click to rename"
-                >
-                  {getTabLabel(tab, i)}
-                </button>
+                <div key={tab.id} className="relative group">
+                  <button
+                    onClick={() => onTabChange(i)}
+                    onDoubleClick={() => startEditingTab(tab, i)}
+                    className={`px-6 py-3.5 text-base font-bold transition-all rounded-t-2xl border-2 border-b-0 ${
+                      i === activeTabIndex
+                        ? 'bg-brand-blue text-white border-brand-blue relative z-10 -mb-px shadow-md'
+                        : 'bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200 border-transparent'
+                    } ${canDeleteTabs && tab.status !== 'CANCELLED' && tab.status !== 'FULFILLED' ? 'pr-8' : ''}`}
+                    title="Double-click to rename"
+                  >
+                    {getTabLabel(tab, i)}
+                  </button>
+                  {canDeleteTabs && tab.status !== 'CANCELLED' && tab.status !== 'FULFILLED' && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleDeleteTab(tab, i); }}
+                      className={`absolute top-1 right-1 w-5 h-5 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-opacity ${
+                        i === activeTabIndex
+                          ? 'text-white/60 hover:text-white hover:bg-white/20'
+                          : 'text-gray-400 hover:text-red-500 hover:bg-red-50'
+                      }`}
+                      title={`Delete ${getTabLabel(tab, i)}`}
+                    >
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
               )
             ))}
             {!tabsAtLimit && (
