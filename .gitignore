@@ -39,6 +39,9 @@ yarn-error.log*
 # macOS system files
 __MACOSX/
 
+# Windows WSL metadata
+*:Zone.Identifier
+
 # image generator tool (contains API keys)
 image-generator-tool/
 

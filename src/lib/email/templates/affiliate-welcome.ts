@@ -175,7 +175,7 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
                 Your Partner Dashboard
               </h3>
               <p style="margin: 0 0 24px; color: #4b5563; font-size: 15px; line-height: 1.6;">
-                Access your dashboard at any time to view orders, commissions, and payouts. For your first login, enter your email and we'll send you a one-time access link. Once inside, you can set a password so you can log in directly going forward.
+                Go to <a href="${data.dashboardLink}" style="color: #D4AF37; font-weight: 600;">partyondelivery.com/affiliate/login</a>, enter your email, and we'll send you a one-time access link. Once inside, you can set a password so you can log in directly going forward. You can check your orders, commissions, and payouts anytime from your dashboard.
               </p>
 
               <!-- CTA Button -->
@@ -274,8 +274,7 @@ export function generateAffiliateWelcomeText(data: AffiliateWelcomeEmailData): s
     'Tiers are based on your annual referred revenue, starting from your join date and resetting each year on that anniversary. Commissions are paid out monthly by the 15th of the following month.',
     '',
     'YOUR PARTNER DASHBOARD',
-    `Access your dashboard: ${data.dashboardLink}`,
-    'For your first login, enter your email and we\'ll send you a one-time access link. Once inside, you can set a password so you can log in directly going forward.',
+    'Go to partyondelivery.com/affiliate/login, enter your email, and we\'ll send you a one-time access link. Once inside, you can set a password so you can log in directly going forward. You can check your orders, commissions, and payouts anytime from your dashboard.',
     '',
     'MARKETING TIPS',
     '- Add your referral link to your website and booking confirmations',
