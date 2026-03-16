@@ -297,6 +297,7 @@ export default function DashboardPage(): ReactElement {
         shareCode={code}
         orderName={groupOrder.name}
         hostName={host?.name || groupOrder.hostName}
+        hostParticipantId={host?.id}
         isLocked={joinLocked}
         onJoined={(newPid) => {
           setParticipantId(newPid);

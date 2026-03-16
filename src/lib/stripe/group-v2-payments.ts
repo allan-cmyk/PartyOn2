@@ -408,27 +408,46 @@ export async function handleGroupV2PaymentCompleted(
     if (existing) {
       customerId = existing.id;
     } else {
-      const nameParts = customerName.split(' ');
-      const newCustomer = await prisma.customer.create({
-        data: {
-          email: customerEmail,
-          firstName: nameParts[0] || 'Guest',
-          lastName: nameParts.slice(1).join(' ') || '',
-          phone: customerPhone || undefined,
-        },
-      });
-      customerId = newCustomer.id;
+      try {
+        const nameParts = customerName.split(' ');
+        const newCustomer = await prisma.customer.create({
+          data: {
+            email: customerEmail,
+            firstName: nameParts[0] || 'Guest',
+            lastName: nameParts.slice(1).join(' ') || '',
+            phone: customerPhone || undefined,
+          },
+        });
+        customerId = newCustomer.id;
+      } catch (createErr) {
+        // Race condition: another webhook may have created the customer concurrently
+        const raceCustomer = await prisma.customer.findFirst({
+          where: { email: customerEmail },
+        });
+        if (raceCustomer) {
+          customerId = raceCustomer.id;
+        } else {
+          throw createErr; // Genuine error, not a race
+        }
+      }
     }
     // Link participant to customer and update their details for future lookups
-    await prisma.groupParticipantV2.update({
-      where: { id: participantId },
-      data: {
-        customerId,
-        guestEmail: participant.guestEmail || customerEmail || undefined,
-        guestName: customerName !== participant.guestName ? customerName : undefined,
-        guestPhone: participant.guestPhone || customerPhone || undefined,
-      },
-    });
+    // Wrapped in try/catch: this is non-critical backfill -- must not block order creation
+    // (can fail if Stripe email matches another participant in the same group due to unique constraint)
+    try {
+      await prisma.groupParticipantV2.update({
+        where: { id: participantId },
+        data: {
+          customerId,
+          guestEmail: participant.guestEmail || customerEmail || undefined,
+          guestName: customerName !== participant.guestName ? customerName : undefined,
+          guestPhone: participant.guestPhone || customerPhone || undefined,
+        },
+      });
+    } catch (linkErr) {
+      console.error('[Group V2 Payment] Non-fatal: failed to link participant to customer:', linkErr);
+      // Still set customerId so order creation can proceed
+    }
   }
 
   if (!customerId) {

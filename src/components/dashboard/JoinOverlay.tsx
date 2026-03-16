@@ -8,6 +8,7 @@ interface Props {
   shareCode: string;
   orderName: string;
   hostName: string;
+  hostParticipantId?: string;
   isLocked?: boolean;
   onJoined: (participantId: string) => void;
 }
@@ -16,14 +17,22 @@ export default function JoinOverlay({
   shareCode,
   orderName,
   hostName,
+  hostParticipantId,
   isLocked,
   onJoined,
 }: Props): ReactElement {
+  const [mode, setMode] = useState<'choose' | 'guest'>('choose');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [ageVerified, setAgeVerified] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  function handleContinueAsHost() {
+    if (hostParticipantId) {
+      onJoined(hostParticipantId);
+    }
+  }
 
   async function handleJoin() {
     const trimmedName = name.trim();
@@ -70,14 +79,16 @@ export default function JoinOverlay({
         </div>
 
         <h1 className="text-lg font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-1">
-          You&apos;ve been invited to
+          {mode === 'choose' ? 'Welcome to' : 'You\u2019ve been invited to'}
         </h1>
         <p className="text-lg font-semibold text-yellow-600 text-center mb-1">
           {orderName}
         </p>
-        <p className="text-sm text-gray-500 text-center mb-6">
-          Hosted by {hostName}
-        </p>
+        {mode === 'guest' && (
+          <p className="text-sm text-gray-500 text-center mb-6">
+            Hosted by {hostName}
+          </p>
+        )}
 
         {isLocked ? (
           <div className="text-center py-4">
@@ -89,8 +100,34 @@ export default function JoinOverlay({
             <p className="text-sm font-medium text-gray-900 mb-1">This order is closed</p>
             <p className="text-xs text-gray-500">The host has locked this order. No new participants can join.</p>
           </div>
+        ) : mode === 'choose' && hostParticipantId ? (
+          <div className="mt-4 space-y-3">
+            <p className="text-sm text-gray-600 text-center mb-4">
+              Are you the host of this order?
+            </p>
+            <button
+              onClick={handleContinueAsHost}
+              className="w-full py-3 bg-brand-blue text-white font-semibold tracking-[0.08em] rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors"
+            >
+              Continue as {hostName}
+            </button>
+            <button
+              onClick={() => setMode('guest')}
+              className="w-full py-3 bg-white text-gray-700 font-semibold tracking-[0.08em] rounded-lg border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors"
+            >
+              Join as a guest
+            </button>
+          </div>
         ) : (
         <>
+        {mode === 'guest' && hostParticipantId && (
+          <button
+            onClick={() => setMode('choose')}
+            className="text-sm text-brand-blue hover:underline mb-4 block mx-auto"
+          >
+            Are you {hostName}?
+          </button>
+        )}
         <div className="space-y-3">
           <div>
             <label htmlFor="join-name" className="block text-sm font-medium text-gray-700 mb-1">
