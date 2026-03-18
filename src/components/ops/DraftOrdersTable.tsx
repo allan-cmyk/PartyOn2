@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, ReactElement } from 'react';
+import React, { useState, useEffect, useCallback, useRef, ReactElement } from 'react';
 import Link from 'next/link';
 import InvoiceSendModal from './InvoiceSendModal';
 import EmailEventTimeline from './EmailEventTimeline';
@@ -121,6 +121,9 @@ export default function DraftOrdersTable(): ReactElement {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
   const [offset, setOffset] = useState(0);
+  const [searchInput, setSearchInput] = useState('');
+  const [search, setSearch] = useState('');
+  const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [sendModalOrder, setSendModalOrder] = useState<DraftOrder | null>(null);
@@ -137,6 +140,7 @@ export default function DraftOrdersTable(): ReactElement {
     try {
       const params = new URLSearchParams();
       if (statusFilter) params.set('status', statusFilter);
+      if (search) params.set('search', search);
       params.set('limit', limit.toString());
       params.set('offset', offset.toString());
       params.set('orderBy', 'createdAt');
@@ -153,7 +157,7 @@ export default function DraftOrdersTable(): ReactElement {
     } finally {
       setLoading(false);
     }
-  }, [statusFilter, offset]);
+  }, [statusFilter, search, offset]);
 
   useEffect(() => {
     fetchDraftOrders();
@@ -261,6 +265,26 @@ export default function DraftOrdersTable(): ReactElement {
       {/* Status Filter */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
         <div className="flex flex-wrap items-center gap-4">
+          <div className="relative group">
+            <svg className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search by name or email..."
+              value={searchInput}
+              onChange={(e) => {
+                const value = e.target.value;
+                setSearchInput(value);
+                if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+                searchDebounceRef.current = setTimeout(() => {
+                  setSearch(value);
+                  setOffset(0);
+                }, 300);
+              }}
+              className="w-full pl-11 pr-4 py-2.5 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+            />
+          </div>
           <span className="text-sm text-gray-500">Status:</span>
           <select
             value={statusFilter}

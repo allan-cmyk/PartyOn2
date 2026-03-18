@@ -245,6 +245,7 @@ export async function listDraftOrders(options?: {
   status?: DraftOrderStatus;
   customerEmail?: string;
   groupOrderId?: string;
+  search?: string;
   limit?: number;
   offset?: number;
   orderBy?: 'createdAt' | 'updatedAt' | 'deliveryDate';
@@ -254,6 +255,7 @@ export async function listDraftOrders(options?: {
     status,
     customerEmail,
     groupOrderId,
+    search,
     limit = 50,
     offset = 0,
     orderBy = 'createdAt',
@@ -264,6 +266,12 @@ export async function listDraftOrders(options?: {
   if (status) where.status = status;
   if (customerEmail) where.customerEmail = { contains: customerEmail, mode: 'insensitive' };
   if (groupOrderId) where.groupOrderId = groupOrderId;
+  if (search) {
+    where.OR = [
+      { customerName: { contains: search, mode: 'insensitive' } },
+      { customerEmail: { contains: search, mode: 'insensitive' } },
+    ];
+  }
 
   const [draftOrders, total] = await Promise.all([
     prisma.draftOrder.findMany({

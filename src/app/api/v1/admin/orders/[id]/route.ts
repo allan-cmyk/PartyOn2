@@ -66,6 +66,9 @@ export async function GET(
             status: true,
           },
         },
+        refunds: {
+          select: { amount: true },
+        },
       },
     });
 
@@ -115,6 +118,24 @@ export async function GET(
       zip?: string;
       country?: string;
     };
+
+    // Fetch bundle components for any bundle products in this order
+    const productIds = order.items.map((item) => item.product.id);
+    const bundleComponents = await prisma.bundleComponent.findMany({
+      where: { bundleProductId: { in: productIds } },
+      include: {
+        componentProduct: { select: { title: true } },
+        componentVariant: { select: { title: true } },
+      },
+    });
+
+    // Group by bundle product ID
+    const bundleMap = new Map<string, typeof bundleComponents>();
+    for (const bc of bundleComponents) {
+      const existing = bundleMap.get(bc.bundleProductId) || [];
+      existing.push(bc);
+      bundleMap.set(bc.bundleProductId, existing);
+    }
 
     // Fetch sibling orders if this is a group order
     let siblingOrders: { id: string; orderNumber: string; customerName: string; total: number; status: string }[] = [];
@@ -180,6 +201,11 @@ export async function GET(
           price: Number(item.price),
           total: Number(item.totalPrice),
           imageUrl: item.product.images[0]?.url || null,
+          bundleComponents: (bundleMap.get(item.product.id) || []).map((bc) => ({
+            title: bc.componentProduct.title,
+            variantTitle: bc.componentVariant?.title || null,
+            quantity: bc.quantity,
+          })),
         })),
         pricing: {
           subtotal: Number(order.subtotal),
@@ -251,6 +277,10 @@ export async function GET(
         navigation: {
           previousOrderId: previousOrder?.id || null,
           nextOrderId: nextOrder?.id || null,
+        },
+        refunds: {
+          totalRefunded: order.refunds.reduce((sum, r) => sum + Number(r.amount), 0),
+          count: order.refunds.length,
         },
       },
     });

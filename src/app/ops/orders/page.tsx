@@ -1,8 +1,27 @@
 'use client';
 
-import { useState, useEffect, useCallback, ReactElement } from 'react';
+import { useState, useEffect, useCallback, useRef, ReactElement } from 'react';
 import Link from 'next/link';
 import DraftOrdersTable from '@/components/ops/DraftOrdersTable';
+
+// --- In Stock / Packed localStorage helpers ---
+interface ItemChecks {
+  [itemTitle: string]: { inStock: boolean; packed: boolean };
+}
+
+function loadChecks(orderId: string): ItemChecks {
+  try {
+    const raw = localStorage.getItem(`ops_order_checks_${orderId}`);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveChecks(orderId: string, data: ItemChecks): void {
+  localStorage.setItem(`ops_order_checks_${orderId}`, JSON.stringify(data));
+}
+
 
 interface OrderCustomer {
   id: string;
@@ -40,7 +59,7 @@ interface Order {
   groupOrderId: string | null;
   groupOrder: GroupOrderInfo | null;
   deliveryAddress: Record<string, string> | string | null;
-  items: { quantity: number; title: string }[];
+  items: { quantity: number; title: string; productId?: string; bundleComponents?: { title: string; variantTitle: string | null; quantity: number }[] }[];
 }
 
 // Grouped order type for accordion display
@@ -405,8 +424,18 @@ function GroupOrderRow({
 }
 
 // Regular Order Row Component
-function OrderRow({ order, selected, onToggle }: { order: Order; selected: boolean; onToggle: () => void }): ReactElement {
+function OrderRow({ order, selected, onToggle, onPrint }: { order: Order; selected: boolean; onToggle: () => void; onPrint?: (orderId: string) => void }): ReactElement {
   const [expanded, setExpanded] = useState(false);
+  const [checks, setChecks] = useState<ItemChecks>(() => loadChecks(order.id));
+  const isPacked = order.items.length > 0 && order.items.every((item) => checks[item.title]?.packed);
+
+  const toggleCheck = (title: string, field: 'inStock' | 'packed') => {
+    setChecks((prev) => {
+      const updated = { ...prev, [title]: { ...prev[title], [field]: !prev[title]?.[field] } };
+      saveChecks(order.id, updated);
+      return updated;
+    });
+  };
 
   return (
     <>
@@ -456,9 +485,16 @@ function OrderRow({ order, selected, onToggle }: { order: Order; selected: boole
           </Link>
         </td>
         <td className="px-6 py-4 text-center">
-          <span className="inline-flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full font-semibold text-gray-700">
-            {order.itemCount}
-          </span>
+          <div className="inline-flex items-center gap-1.5">
+            <span className="inline-flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full font-semibold text-gray-700">
+              {order.itemCount}
+            </span>
+            {isPacked && (
+              <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="All items packed">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            )}
+          </div>
         </td>
         <td className="px-6 py-4 text-right">
           <span className="font-bold text-gray-900 text-lg">{formatCurrency(order.total)}</span>
@@ -495,13 +531,61 @@ function OrderRow({ order, selected, onToggle }: { order: Order; selected: boole
       {expanded && order.items.length > 0 && (
         <tr className="bg-gray-50/80">
           <td colSpan={10} className="px-6 py-3">
-            <div className="pl-10 space-y-1">
-              {order.items.map((item, idx) => (
-                <div key={idx} className="flex gap-2 text-sm">
-                  <span className="text-gray-500 font-medium whitespace-nowrap">{item.quantity}x</span>
-                  <span className="text-gray-700">{item.title}</span>
-                </div>
-              ))}
+            <div className="pl-10">
+              <div className="flex gap-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5 pl-1">
+                <span className="w-16 text-center">In Stock</span>
+                <span className="w-16 text-center">Packed</span>
+                <span>Item</span>
+              </div>
+              <div className="space-y-1">
+                {order.items.map((item, idx) => (
+                  <div key={idx}>
+                    <div className="flex items-center gap-4">
+                      <label className="w-16 flex justify-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={!!checks[item.title]?.inStock}
+                          onChange={() => toggleCheck(item.title, 'inStock')}
+                          className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 cursor-pointer"
+                        />
+                      </label>
+                      <label className="w-16 flex justify-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={!!checks[item.title]?.packed}
+                          onChange={() => toggleCheck(item.title, 'packed')}
+                          className="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 cursor-pointer"
+                        />
+                      </label>
+                      <div className="flex gap-2 text-sm">
+                        <span className="text-gray-500 font-medium whitespace-nowrap">{item.quantity}x</span>
+                        <span className="text-gray-700">{item.title}</span>
+                      </div>
+                    </div>
+                    {item.bundleComponents && item.bundleComponents.length > 0 && item.bundleComponents.map((bc, bcIdx) => (
+                      <div key={`bc-${bcIdx}`} className="flex items-center gap-4 pl-4">
+                        <span className="w-16"></span>
+                        <span className="w-16"></span>
+                        <div className="flex gap-2 text-xs text-gray-400">
+                          <span className="whitespace-nowrap">|- {item.quantity * bc.quantity}x</span>
+                          <span>{bc.title}{bc.variantTitle && bc.variantTitle !== 'Default Title' ? ` (${bc.variantTitle})` : ''}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+              {onPrint && (
+                <button
+                  onClick={() => onPrint(order.id)}
+                  className="mt-3 px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-1.5"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                  </svg>
+                  Print Pick Sheet
+                </button>
+              )}
             </div>
           </td>
         </tr>
@@ -565,7 +649,16 @@ function formatAddress(addr: Record<string, string> | string | null): string {
 // Mobile Order Card
 function MobileOrderCard({ order, selected, onToggle }: { order: Order; selected: boolean; onToggle: () => void }): ReactElement {
   const [expanded, setExpanded] = useState(false);
+  const [checks, setChecks] = useState<ItemChecks>(() => loadChecks(order.id));
   const address = formatAddress(order.deliveryAddress);
+
+  const toggleCheck = (title: string, field: 'inStock' | 'packed') => {
+    setChecks((prev) => {
+      const updated = { ...prev, [title]: { ...prev[title], [field]: !prev[title]?.[field] } };
+      saveChecks(order.id, updated);
+      return updated;
+    });
+  };
 
   return (
     <div className={`bg-white rounded-xl border shadow-sm overflow-hidden ${selected ? 'border-blue-300 bg-blue-50/30' : 'border-gray-200'}`}>
@@ -630,13 +723,50 @@ function MobileOrderCard({ order, selected, onToggle }: { order: Order; selected
       {/* Expanded items */}
       {expanded && order.items.length > 0 && (
         <div className="border-t border-gray-100 bg-gray-50 px-4 py-3">
-          <div className="space-y-1.5 pl-7">
-            {order.items.map((item, idx) => (
-              <div key={idx} className="flex gap-2 text-sm">
-                <span className="text-gray-500 font-medium whitespace-nowrap">{item.quantity}x</span>
-                <span className="text-gray-700">{item.title}</span>
-              </div>
-            ))}
+          <div className="pl-7">
+            <div className="flex gap-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+              <span className="w-10 text-center">Stock</span>
+              <span className="w-10 text-center">Pack</span>
+              <span>Item</span>
+            </div>
+            <div className="space-y-1.5">
+              {order.items.map((item, idx) => (
+                <div key={idx}>
+                  <div className="flex items-center gap-3">
+                    <label className="w-10 flex justify-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={!!checks[item.title]?.inStock}
+                        onChange={() => toggleCheck(item.title, 'inStock')}
+                        className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 cursor-pointer"
+                      />
+                    </label>
+                    <label className="w-10 flex justify-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={!!checks[item.title]?.packed}
+                        onChange={() => toggleCheck(item.title, 'packed')}
+                        className="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 cursor-pointer"
+                      />
+                    </label>
+                    <div className="flex gap-2 text-sm">
+                      <span className="text-gray-500 font-medium whitespace-nowrap">{item.quantity}x</span>
+                      <span className="text-gray-700">{item.title}</span>
+                    </div>
+                  </div>
+                  {item.bundleComponents && item.bundleComponents.length > 0 && item.bundleComponents.map((bc, bcIdx) => (
+                    <div key={`bc-${bcIdx}`} className="flex items-center gap-3 pl-4">
+                      <span className="w-10"></span>
+                      <span className="w-10"></span>
+                      <div className="flex gap-2 text-xs text-gray-400">
+                        <span className="whitespace-nowrap">|- {item.quantity * bc.quantity}x</span>
+                        <span>{bc.title}{bc.variantTitle && bc.variantTitle !== 'Default Title' ? ` (${bc.variantTitle})` : ''}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -753,6 +883,8 @@ export default function OrdersPage(): ReactElement {
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
   const [selectedOrders, setSelectedOrders] = useState<Set<string>>(new Set());
   const [fulfilling, setFulfilling] = useState(false);
+  const [printOrderIds, setPrintOrderIds] = useState<string[]>([]);
+  const printRef = useRef<HTMLDivElement>(null);
 
   // Selection helpers
   const toggleOrderSelection = (orderId: string) => {
@@ -803,6 +935,21 @@ export default function OrdersPage(): ReactElement {
       alert('Failed to fulfill orders');
     } finally {
       setFulfilling(false);
+    }
+  };
+
+  // Print pick sheets
+  const handlePrintOrders = (orderIds: string[]) => {
+    setPrintOrderIds(orderIds);
+    // Wait for state to render, then print
+    setTimeout(() => window.print(), 100);
+  };
+
+  const handlePrintSelected = () => {
+    if (selectedOrders.size > 0) {
+      handlePrintOrders(Array.from(selectedOrders));
+    } else if (data?.orders) {
+      handlePrintOrders(data.orders.map((o) => o.id));
     }
   };
 
@@ -894,7 +1041,8 @@ export default function OrdersPage(): ReactElement {
   };
 
   return (
-    <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
+    <div className="p-4 md:p-8 bg-gray-50 min-h-screen print:p-0 print:bg-white">
+      <div className="print:hidden">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
@@ -1179,6 +1327,15 @@ export default function OrdersPage(): ReactElement {
             )}
           </button>
           <button
+            onClick={handlePrintSelected}
+            className="px-4 py-2 bg-white border border-blue-200 text-blue-700 text-sm font-semibold rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+            </svg>
+            Print Pick Sheets
+          </button>
+          <button
             onClick={() => setSelectedOrders(new Set())}
             className="px-3 py-2 text-sm font-medium text-blue-700 hover:text-blue-900 hover:bg-blue-100 rounded-lg transition-colors"
           >
@@ -1334,6 +1491,7 @@ export default function OrdersPage(): ReactElement {
                     order={item.order}
                     selected={selectedOrders.has(item.order.id)}
                     onToggle={() => toggleOrderSelection(item.order.id)}
+                    onPrint={(id) => handlePrintOrders([id])}
                   />
                 )
               )}
@@ -1392,6 +1550,113 @@ export default function OrdersPage(): ReactElement {
         </div>
       )}
       </>}
+      </div>{/* end print:hidden */}
+
+      {/* Print Pick Sheets (hidden on screen, shown on print) */}
+      <div ref={printRef} className="hidden print:block">
+        {printOrderIds.length > 0 && data?.orders && printOrderIds.map((orderId, pageIdx) => {
+          const order = data.orders.find((o) => o.id === orderId);
+          if (!order) return null;
+          const addr = order.deliveryAddress;
+          const addrStr = addr ? formatAddress(addr) : '';
+          return (
+            <div key={orderId} className={`order-sheet ${pageIdx > 0 ? 'break-before-page' : ''}`} style={pageIdx > 0 ? { pageBreakBefore: 'always' } : undefined}>
+              <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
+                <div className="flex items-center gap-3">
+                  <span className="bg-black text-white text-lg font-bold px-3 py-1 rounded">
+                    #{order.orderNumber}
+                  </span>
+                  <span className="text-lg font-bold">Party On Delivery</span>
+                </div>
+                <span className="text-xs text-gray-500">
+                  Printed {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                </span>
+              </div>
+
+              <div className="flex gap-4 mb-3">
+                <div className="flex-1 border border-gray-400 rounded p-2">
+                  <div className="font-bold text-xs uppercase tracking-wide border-b border-gray-300 pb-1 mb-1">Delivery</div>
+                  <div className="font-bold text-sm">
+                    {new Date(order.deliveryDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' })}
+                    {' '}&middot;{' '}{order.deliveryTime}
+                  </div>
+                  {addrStr && <div className="text-sm mt-1">{addrStr}</div>}
+                </div>
+                <div className="w-52 border border-gray-400 rounded p-2">
+                  <div className="font-bold text-xs uppercase tracking-wide border-b border-gray-300 pb-1 mb-1">Customer</div>
+                  <div className="font-bold text-sm">{order.customerName}</div>
+                  <div className="text-sm">{order.customerEmail}</div>
+                </div>
+              </div>
+
+              <table className="w-full mb-3 border-collapse text-sm">
+                <thead>
+                  <tr className="border-b-2 border-black">
+                    <th className="text-left py-1 px-2 font-bold">Item</th>
+                    <th className="text-center py-1 px-2 w-12 font-bold">Qty</th>
+                    <th className="text-center py-1 w-16 font-bold">In Stock?</th>
+                    <th className="text-center py-1 w-16 font-bold">Packed?</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {order.items.map((item, idx) => (
+                    <>
+                      <tr key={idx} className="border-b border-gray-300">
+                        <td className="py-1 px-2">
+                          <span className="font-medium">{item.title}</span>
+                        </td>
+                        <td className="text-center py-1 px-2 font-bold text-base">{item.quantity}</td>
+                        <td className="text-center py-1">
+                          <span className="inline-block w-4 h-4 border-2 border-black rounded-sm"></span>
+                        </td>
+                        <td className="text-center py-1">
+                          <span className="inline-block w-4 h-4 border-2 border-black rounded-sm"></span>
+                        </td>
+                      </tr>
+                      {item.bundleComponents && item.bundleComponents.length > 0 && item.bundleComponents.map((bc, bcIdx) => (
+                        <tr key={`${idx}-bc-${bcIdx}`} className="border-b border-gray-200">
+                          <td className="py-0.5 pl-6 pr-2 text-gray-500 text-xs">
+                            |- {item.quantity * bc.quantity}x {bc.title}
+                            {bc.variantTitle && bc.variantTitle !== 'Default Title' && ` (${bc.variantTitle})`}
+                          </td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                      ))}
+                    </>
+                  ))}
+                </tbody>
+              </table>
+
+              <div className="w-48 border border-gray-400 rounded overflow-hidden text-sm ml-auto">
+                <div className="flex justify-between py-0.5 px-2 border-b border-gray-200">
+                  <span>Subtotal</span>
+                  <span>{formatCurrency(order.subtotal)}</span>
+                </div>
+                {order.discountAmount > 0 && (
+                  <div className="flex justify-between py-0.5 px-2 border-b border-gray-200">
+                    <span>Discount</span>
+                    <span>-{formatCurrency(order.discountAmount)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between py-0.5 px-2 border-b border-gray-200">
+                  <span>Delivery</span>
+                  <span>{formatCurrency(order.deliveryFee)}</span>
+                </div>
+                <div className="flex justify-between py-0.5 px-2 border-b border-gray-200">
+                  <span>Tax</span>
+                  <span>{formatCurrency(order.taxAmount)}</span>
+                </div>
+                <div className="flex justify-between py-1 px-2 bg-gray-100 font-bold text-base">
+                  <span>TOTAL</span>
+                  <span>{formatCurrency(order.total)}</span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

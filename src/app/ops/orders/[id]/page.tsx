@@ -15,6 +15,7 @@ interface OrderItem {
   price: number;
   total: number;
   imageUrl?: string | null;
+  bundleComponents?: { title: string; variantTitle: string | null; quantity: number }[];
 }
 
 interface Amendment {
@@ -118,6 +119,10 @@ interface OrderDetail {
   navigation: {
     previousOrderId: string | null;
     nextOrderId: string | null;
+  };
+  refunds: {
+    totalRefunded: number;
+    count: number;
   };
 }
 
@@ -228,6 +233,7 @@ export default function OrderDetailPage(): ReactElement {
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [internalNote, setInternalNote] = useState('');
   const printRef = useRef<HTMLDivElement>(null);
@@ -252,6 +258,7 @@ export default function OrderDetailPage(): ReactElement {
   const [refundReason, setRefundReason] = useState('');
   const [refundProcessing, setRefundProcessing] = useState(false);
   const [pendingAmendmentId, setPendingAmendmentId] = useState<string | null>(null);
+  const [refundType, setRefundType] = useState<string>('custom');
 
   // Cancel dialog state
   const [showCancelDialog, setShowCancelDialog] = useState(false);
@@ -668,6 +675,70 @@ export default function OrderDetailPage(): ReactElement {
     window.print();
   }
 
+  const showToast = (message: string) => {
+    setToast(message);
+    setTimeout(() => setToast(null), 2500);
+  };
+
+  function buildOrderSummaryText(o: OrderDetail): string {
+    const lines: string[] = [];
+    lines.push(`Order #${o.orderNumber} - ${o.customer.name || o.customerSnapshot.name || 'Guest'}`);
+
+    const deliveryDate = new Date(o.delivery.date).toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      timeZone: 'UTC',
+    });
+    lines.push(`Delivery: ${deliveryDate} at ${o.delivery.time}`);
+
+    const addr = o.delivery.address;
+    const addrParts = [addr.address1, addr.address2].filter(Boolean).join(', ');
+    lines.push(`Address: ${addrParts}, ${addr.city}, ${addr.state} ${addr.zip}`);
+
+    if (o.delivery.phone) lines.push(`Phone: ${o.delivery.phone}`);
+    if (o.customer.email) lines.push(`Email: ${o.customer.email}`);
+
+    lines.push('');
+    lines.push('Items:');
+    for (const item of o.items) {
+      const variant = item.variantTitle && item.variantTitle !== 'Default Title' ? ` (${item.variantTitle})` : '';
+      lines.push(`- ${item.quantity}x ${item.title}${variant} ($${item.price.toFixed(2)} ea) = $${item.total.toFixed(2)}`);
+    }
+
+    lines.push('');
+    lines.push(`Subtotal: $${o.pricing.subtotal.toFixed(2)}`);
+    if (o.pricing.discountAmount > 0) {
+      lines.push(`Discount${o.pricing.discountCode ? ` (${o.pricing.discountCode})` : ''}: -$${o.pricing.discountAmount.toFixed(2)}`);
+    }
+    lines.push(`Delivery: $${o.pricing.deliveryFee.toFixed(2)}`);
+    lines.push(`Tax: $${o.pricing.taxAmount.toFixed(2)}`);
+    if (o.pricing.tipAmount > 0) {
+      lines.push(`Tip: $${o.pricing.tipAmount.toFixed(2)}`);
+    }
+    lines.push(`Total: $${o.pricing.total.toFixed(2)}`);
+
+    return lines.join('\n');
+  }
+
+  async function handleCopySummary() {
+    if (!order) return;
+    const text = buildOrderSummaryText(order);
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast('Order summary copied');
+    } catch {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      showToast('Order summary copied');
+    }
+  }
+
   const canAmend = order && !['CANCELLED', 'REFUNDED'].includes(order.status);
 
   if (loading) {
@@ -718,6 +789,11 @@ export default function OrderDetailPage(): ReactElement {
 
   return (
     <>
+      {toast && (
+        <div className="fixed top-6 right-6 z-50 px-4 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-lg shadow-lg animate-fade-in print:hidden">
+          {toast}
+        </div>
+      )}
       {/* Screen View */}
       <div className={`p-4 md:p-8 bg-gray-50 min-h-screen print:hidden ${isEditing ? 'pb-48' : ''}`}>
         <div className="max-w-7xl mx-auto">
@@ -773,6 +849,16 @@ export default function OrderDetailPage(): ReactElement {
                   </svg>
                 </button>
               </div>
+
+              <button
+                onClick={handleCopySummary}
+                className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors shadow-sm flex items-center gap-2"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                </svg>
+                Copy Summary
+              </button>
 
               <button
                 onClick={handlePrint}
@@ -1586,6 +1672,91 @@ export default function OrderDetailPage(): ReactElement {
           <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
             <h3 className="text-lg font-bold text-gray-900 mb-4">Process Refund</h3>
             <div className="space-y-4">
+              {/* Quick-select refund type buttons */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Refund Type</label>
+                <div className="flex flex-wrap gap-2">
+                  {order.pricing.deliveryFee > 0 && (
+                    <button
+                      onClick={() => {
+                        setRefundType('delivery');
+                        setRefundAmount(order.pricing.deliveryFee);
+                        setRefundReason('Delivery fee refund');
+                      }}
+                      className={`px-3 py-1.5 text-sm font-medium rounded-full border transition-colors ${
+                        refundType === 'delivery'
+                          ? 'bg-blue-100 text-blue-700 border-blue-300'
+                          : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
+                      }`}
+                    >
+                      Delivery Fee (${order.pricing.deliveryFee.toFixed(2)})
+                    </button>
+                  )}
+                  {order.pricing.tipAmount > 0 && (
+                    <button
+                      onClick={() => {
+                        setRefundType('tip');
+                        setRefundAmount(order.pricing.tipAmount);
+                        setRefundReason('Tip refund');
+                      }}
+                      className={`px-3 py-1.5 text-sm font-medium rounded-full border transition-colors ${
+                        refundType === 'tip'
+                          ? 'bg-blue-100 text-blue-700 border-blue-300'
+                          : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
+                      }`}
+                    >
+                      Tip (${order.pricing.tipAmount.toFixed(2)})
+                    </button>
+                  )}
+                  {order.pricing.deliveryFee > 0 && order.pricing.tipAmount > 0 && (
+                    <button
+                      onClick={() => {
+                        setRefundType('delivery_tip');
+                        setRefundAmount(order.pricing.deliveryFee + order.pricing.tipAmount);
+                        setRefundReason('Delivery fee + tip refund');
+                      }}
+                      className={`px-3 py-1.5 text-sm font-medium rounded-full border transition-colors ${
+                        refundType === 'delivery_tip'
+                          ? 'bg-blue-100 text-blue-700 border-blue-300'
+                          : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
+                      }`}
+                    >
+                      Delivery + Tip (${(order.pricing.deliveryFee + order.pricing.tipAmount).toFixed(2)})
+                    </button>
+                  )}
+                  <button
+                    onClick={() => {
+                      const maxRefundable = order.pricing.total - (order.refunds?.totalRefunded || 0);
+                      setRefundType('full');
+                      setRefundAmount(Math.max(0, maxRefundable));
+                      setRefundReason('Full refund');
+                    }}
+                    className={`px-3 py-1.5 text-sm font-medium rounded-full border transition-colors ${
+                      refundType === 'full'
+                        ? 'bg-blue-100 text-blue-700 border-blue-300'
+                        : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
+                    }`}
+                  >
+                    Full Refund (${Math.max(0, order.pricing.total - (order.refunds?.totalRefunded || 0)).toFixed(2)})
+                  </button>
+                  <button
+                    onClick={() => {
+                      setRefundType('custom');
+                      setRefundAmount(0);
+                      setRefundReason('');
+                    }}
+                    className={`px-3 py-1.5 text-sm font-medium rounded-full border transition-colors ${
+                      refundType === 'custom'
+                        ? 'bg-blue-100 text-blue-700 border-blue-300'
+                        : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
+                    }`}
+                  >
+                    Custom
+                  </button>
+                </div>
+              </div>
+
+              {/* Amount input */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Refund Amount</label>
                 <div className="flex items-center gap-2">
@@ -1593,13 +1764,23 @@ export default function OrderDetailPage(): ReactElement {
                   <input
                     type="number"
                     value={refundAmount}
-                    onChange={(e) => setRefundAmount(parseFloat(e.target.value) || 0)}
+                    onChange={(e) => {
+                      setRefundAmount(parseFloat(e.target.value) || 0);
+                      setRefundType('custom');
+                    }}
                     step="0.01"
                     min="0"
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
+                {order.refunds && order.refunds.totalRefunded > 0 && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Previously refunded: ${order.refunds.totalRefunded.toFixed(2)} | Max remaining: ${Math.max(0, order.pricing.total - order.refunds.totalRefunded).toFixed(2)}
+                  </p>
+                )}
               </div>
+
+              {/* Reason input */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Reason</label>
                 <input
@@ -1610,17 +1791,22 @@ export default function OrderDetailPage(): ReactElement {
                   placeholder="Reason for refund"
                 />
               </div>
+
+              {/* Warning */}
               <div className="bg-red-50 border border-red-200 rounded-lg p-3">
                 <p className="text-sm text-red-800">
                   This will process a refund of <strong>${refundAmount.toFixed(2)}</strong> via Stripe.
                   The customer will receive an email notification.
                 </p>
               </div>
+
+              {/* Buttons */}
               <div className="flex items-center justify-end gap-3 pt-2">
                 <button
                   onClick={() => {
                     setShowRefundDialog(false);
                     setPendingAmendmentId(null);
+                    setRefundType('custom');
                   }}
                   className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
                 >
@@ -1778,22 +1964,36 @@ export default function OrderDetailPage(): ReactElement {
           </thead>
           <tbody>
             {order.items.map((item) => (
-              <tr key={item.id} className="border-b border-gray-300">
-                <td className="py-1 px-2">
-                  <span className="font-medium">{item.title}</span>
-                  {item.variantTitle && item.variantTitle !== 'Default Title' && (
-                    <span className="text-gray-500 ml-1">({item.variantTitle})</span>
-                  )}
-                </td>
-                <td className="text-center py-1 px-2 font-bold text-base">{item.quantity}</td>
-                <td className="text-right py-1 px-2">${item.total.toFixed(2)}</td>
-                <td className="text-center py-1">
-                  <span className="inline-block w-4 h-4 border-2 border-black rounded-sm"></span>
-                </td>
-                <td className="text-center py-1">
-                  <span className="inline-block w-4 h-4 border-2 border-black rounded-sm"></span>
-                </td>
-              </tr>
+              <>
+                <tr key={item.id} className="border-b border-gray-300">
+                  <td className="py-1 px-2">
+                    <span className="font-medium">{item.title}</span>
+                    {item.variantTitle && item.variantTitle !== 'Default Title' && (
+                      <span className="text-gray-500 ml-1">({item.variantTitle})</span>
+                    )}
+                  </td>
+                  <td className="text-center py-1 px-2 font-bold text-base">{item.quantity}</td>
+                  <td className="text-right py-1 px-2">${item.total.toFixed(2)}</td>
+                  <td className="text-center py-1">
+                    <span className="inline-block w-4 h-4 border-2 border-black rounded-sm"></span>
+                  </td>
+                  <td className="text-center py-1">
+                    <span className="inline-block w-4 h-4 border-2 border-black rounded-sm"></span>
+                  </td>
+                </tr>
+                {item.bundleComponents && item.bundleComponents.length > 0 && item.bundleComponents.map((bc, bcIdx) => (
+                  <tr key={`${item.id}-bc-${bcIdx}`} className="border-b border-gray-200">
+                    <td className="py-0.5 pl-6 pr-2 text-gray-500 text-xs">
+                      |- {item.quantity * bc.quantity}x {bc.title}
+                      {bc.variantTitle && bc.variantTitle !== 'Default Title' && ` (${bc.variantTitle})`}
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                ))}
+              </>
             ))}
           </tbody>
         </table>

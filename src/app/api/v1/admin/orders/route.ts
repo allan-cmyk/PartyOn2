@@ -99,7 +99,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         },
         items: {
           include: {
-            product: { select: { title: true } },
+            product: { select: { id: true, title: true } },
           },
         },
         groupOrder: {
@@ -110,6 +110,30 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         },
       },
     });
+
+    // Fetch bundle components for all product IDs across all orders
+    const allProductIds = orders.flatMap((o) => o.items.map((i) => i.product.id));
+    const uniqueProductIds = [...new Set(allProductIds)];
+    const allBundleComponents = uniqueProductIds.length > 0
+      ? await prisma.bundleComponent.findMany({
+          where: { bundleProductId: { in: uniqueProductIds } },
+          include: {
+            componentProduct: { select: { title: true } },
+            componentVariant: { select: { title: true } },
+          },
+        })
+      : [];
+
+    const bundleMap = new Map<string, { title: string; variantTitle: string | null; quantity: number }[]>();
+    for (const bc of allBundleComponents) {
+      const existing = bundleMap.get(bc.bundleProductId) || [];
+      existing.push({
+        title: bc.componentProduct.title,
+        variantTitle: bc.componentVariant?.title || null,
+        quantity: bc.quantity,
+      });
+      bundleMap.set(bc.bundleProductId, existing);
+    }
 
     // Transform orders
     const transformedOrders = orders.map((order) => ({
@@ -137,7 +161,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       deliveryType: order.deliveryType,
       createdAt: order.createdAt.toISOString(),
       deliveryAddress: order.deliveryAddress as Record<string, string> | null,
-      items: order.items.map(i => ({ quantity: i.quantity, title: i.product.title })),
+      items: order.items.map(i => ({
+        quantity: i.quantity,
+        title: i.product.title,
+        productId: i.product.id,
+        bundleComponents: bundleMap.get(i.product.id) || [],
+      })),
       // Group order info
       groupOrderId: order.groupOrderId,
       groupOrder: order.groupOrder ? {

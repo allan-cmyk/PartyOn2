@@ -55,6 +55,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status') as DraftOrderStatus | null;
     const customerEmail = searchParams.get('customerEmail') || undefined;
     const groupOrderId = searchParams.get('groupOrderId') || undefined;
+    const search = searchParams.get('search') || undefined;
     const limit = parseInt(searchParams.get('limit') || '50', 10);
     const offset = parseInt(searchParams.get('offset') || '0', 10);
     const orderBy = (searchParams.get('orderBy') as 'createdAt' | 'updatedAt' | 'deliveryDate') || 'createdAt';
@@ -64,6 +65,7 @@ export async function GET(request: NextRequest) {
       status: status || undefined,
       customerEmail,
       groupOrderId,
+      search,
       limit,
       offset,
       orderBy,
