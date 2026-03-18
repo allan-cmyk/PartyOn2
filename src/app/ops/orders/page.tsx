@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef, ReactElement } from 'react';
+import React, { useState, useEffect, useCallback, useRef, ReactElement } from 'react';
 import Link from 'next/link';
 import DraftOrdersTable from '@/components/ops/DraftOrdersTable';
 
@@ -562,16 +562,33 @@ function OrderRow({ order, selected, onToggle, onPrint }: { order: Order; select
                         <span className="text-gray-700">{item.title}</span>
                       </div>
                     </div>
-                    {item.bundleComponents && item.bundleComponents.length > 0 && item.bundleComponents.map((bc, bcIdx) => (
-                      <div key={`bc-${bcIdx}`} className="flex items-center gap-4 pl-4">
-                        <span className="w-16"></span>
-                        <span className="w-16"></span>
-                        <div className="flex gap-2 text-xs text-gray-400">
-                          <span className="whitespace-nowrap">|- {item.quantity * bc.quantity}x</span>
-                          <span>{bc.title}{bc.variantTitle && bc.variantTitle !== 'Default Title' ? ` (${bc.variantTitle})` : ''}</span>
+                    {item.bundleComponents && item.bundleComponents.length > 0 && item.bundleComponents.map((bc, bcIdx) => {
+                      const bcKey = `${item.title}::${bc.title}`;
+                      return (
+                        <div key={`bc-${bcIdx}`} className="flex items-center gap-4 pl-4">
+                          <label className="w-16 flex justify-center cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={!!checks[bcKey]?.inStock}
+                              onChange={() => toggleCheck(bcKey, 'inStock')}
+                              className="w-3.5 h-3.5 text-green-600 border-gray-300 rounded focus:ring-green-500 cursor-pointer"
+                            />
+                          </label>
+                          <label className="w-16 flex justify-center cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={!!checks[bcKey]?.packed}
+                              onChange={() => toggleCheck(bcKey, 'packed')}
+                              className="w-3.5 h-3.5 text-amber-600 border-gray-300 rounded focus:ring-amber-500 cursor-pointer"
+                            />
+                          </label>
+                          <div className="flex gap-2 text-xs text-gray-400">
+                            <span className="whitespace-nowrap">|- {item.quantity * bc.quantity}x</span>
+                            <span>{bc.title}{bc.variantTitle && bc.variantTitle !== 'Default Title' ? ` (${bc.variantTitle})` : ''}</span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ))}
               </div>
@@ -754,16 +771,33 @@ function MobileOrderCard({ order, selected, onToggle }: { order: Order; selected
                       <span className="text-gray-700">{item.title}</span>
                     </div>
                   </div>
-                  {item.bundleComponents && item.bundleComponents.length > 0 && item.bundleComponents.map((bc, bcIdx) => (
-                    <div key={`bc-${bcIdx}`} className="flex items-center gap-3 pl-4">
-                      <span className="w-10"></span>
-                      <span className="w-10"></span>
-                      <div className="flex gap-2 text-xs text-gray-400">
-                        <span className="whitespace-nowrap">|- {item.quantity * bc.quantity}x</span>
-                        <span>{bc.title}{bc.variantTitle && bc.variantTitle !== 'Default Title' ? ` (${bc.variantTitle})` : ''}</span>
+                  {item.bundleComponents && item.bundleComponents.length > 0 && item.bundleComponents.map((bc, bcIdx) => {
+                    const bcKey = `${item.title}::${bc.title}`;
+                    return (
+                      <div key={`bc-${bcIdx}`} className="flex items-center gap-3 pl-4">
+                        <label className="w-10 flex justify-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={!!checks[bcKey]?.inStock}
+                            onChange={() => toggleCheck(bcKey, 'inStock')}
+                            className="w-3.5 h-3.5 text-green-600 border-gray-300 rounded focus:ring-green-500 cursor-pointer"
+                          />
+                        </label>
+                        <label className="w-10 flex justify-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={!!checks[bcKey]?.packed}
+                            onChange={() => toggleCheck(bcKey, 'packed')}
+                            className="w-3.5 h-3.5 text-amber-600 border-gray-300 rounded focus:ring-amber-500 cursor-pointer"
+                          />
+                        </label>
+                        <div className="flex gap-2 text-xs text-gray-400">
+                          <span className="whitespace-nowrap">|- {item.quantity * bc.quantity}x</span>
+                          <span>{bc.title}{bc.variantTitle && bc.variantTitle !== 'Default Title' ? ` (${bc.variantTitle})` : ''}</span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ))}
             </div>
@@ -1589,45 +1623,81 @@ export default function OrdersPage(): ReactElement {
                 </div>
               </div>
 
-              <table className="w-full mb-3 border-collapse text-sm">
-                <thead>
-                  <tr className="border-b-2 border-black">
-                    <th className="text-left py-1 px-2 font-bold">Item</th>
-                    <th className="text-center py-1 px-2 w-12 font-bold">Qty</th>
-                    <th className="text-center py-1 w-16 font-bold">In Stock?</th>
-                    <th className="text-center py-1 w-16 font-bold">Packed?</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {order.items.map((item, idx) => (
-                    <>
-                      <tr key={idx} className="border-b border-gray-300">
-                        <td className="py-1 px-2">
-                          <span className="font-medium">{item.title}</span>
-                        </td>
-                        <td className="text-center py-1 px-2 font-bold text-base">{item.quantity}</td>
-                        <td className="text-center py-1">
-                          <span className="inline-block w-4 h-4 border-2 border-black rounded-sm"></span>
-                        </td>
-                        <td className="text-center py-1">
-                          <span className="inline-block w-4 h-4 border-2 border-black rounded-sm"></span>
-                        </td>
+              {(() => {
+                const printChecks = loadChecks(order.id);
+                return (
+                  <table className="w-full mb-3 border-collapse text-sm">
+                    <thead>
+                      <tr className="border-b-2 border-black">
+                        <th className="text-left py-1 px-2 font-bold">Item</th>
+                        <th className="text-center py-1 px-2 w-12 font-bold">Qty</th>
+                        <th className="text-center py-1 w-16 font-bold">In Stock?</th>
+                        <th className="text-center py-1 w-16 font-bold">Packed?</th>
                       </tr>
-                      {item.bundleComponents && item.bundleComponents.length > 0 && item.bundleComponents.map((bc, bcIdx) => (
-                        <tr key={`${idx}-bc-${bcIdx}`} className="border-b border-gray-200">
-                          <td className="py-0.5 pl-6 pr-2 text-gray-500 text-xs">
-                            |- {item.quantity * bc.quantity}x {bc.title}
-                            {bc.variantTitle && bc.variantTitle !== 'Default Title' && ` (${bc.variantTitle})`}
-                          </td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                        </tr>
+                    </thead>
+                    <tbody>
+                      {order.items.map((item, idx) => (
+                        <React.Fragment key={idx}>
+                          <tr className="border-b border-gray-300">
+                            <td className="py-1 px-2">
+                              <span className="font-medium">{item.title}</span>
+                            </td>
+                            <td className="text-center py-1 px-2 font-bold text-base">{item.quantity}</td>
+                            <td className="text-center py-1">
+                              <span className={`inline-block w-4 h-4 border-2 border-black rounded-sm ${printChecks[item.title]?.inStock ? 'bg-black' : ''}`}>
+                                {printChecks[item.title]?.inStock && (
+                                  <svg className="w-full h-full text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={4}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                  </svg>
+                                )}
+                              </span>
+                            </td>
+                            <td className="text-center py-1">
+                              <span className={`inline-block w-4 h-4 border-2 border-black rounded-sm ${printChecks[item.title]?.packed ? 'bg-black' : ''}`}>
+                                {printChecks[item.title]?.packed && (
+                                  <svg className="w-full h-full text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={4}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                  </svg>
+                                )}
+                              </span>
+                            </td>
+                          </tr>
+                          {item.bundleComponents && item.bundleComponents.length > 0 && item.bundleComponents.map((bc, bcIdx) => {
+                            const bcKey = `${item.title}::${bc.title}`;
+                            return (
+                              <tr key={`${idx}-bc-${bcIdx}`} className="border-b border-gray-200">
+                                <td className="py-0.5 pl-6 pr-2 text-gray-500 text-xs">
+                                  |- {item.quantity * bc.quantity}x {bc.title}
+                                  {bc.variantTitle && bc.variantTitle !== 'Default Title' && ` (${bc.variantTitle})`}
+                                </td>
+                                <td></td>
+                                <td className="text-center py-0.5">
+                                  <span className={`inline-block w-3.5 h-3.5 border-2 border-black rounded-sm ${printChecks[bcKey]?.inStock ? 'bg-black' : ''}`}>
+                                    {printChecks[bcKey]?.inStock && (
+                                      <svg className="w-full h-full text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={4}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                      </svg>
+                                    )}
+                                  </span>
+                                </td>
+                                <td className="text-center py-0.5">
+                                  <span className={`inline-block w-3.5 h-3.5 border-2 border-black rounded-sm ${printChecks[bcKey]?.packed ? 'bg-black' : ''}`}>
+                                    {printChecks[bcKey]?.packed && (
+                                      <svg className="w-full h-full text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={4}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                      </svg>
+                                    )}
+                                  </span>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </React.Fragment>
                       ))}
-                    </>
-                  ))}
-                </tbody>
-              </table>
+                    </tbody>
+                  </table>
+                );
+              })()}
 
               <div className="w-48 border border-gray-400 rounded overflow-hidden text-sm ml-auto">
                 <div className="flex justify-between py-0.5 px-2 border-b border-gray-200">

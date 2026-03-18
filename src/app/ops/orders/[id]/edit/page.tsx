@@ -122,6 +122,7 @@ export default function EditInvoicePage(): ReactElement {
   const [error, setError] = useState('');
   const [successData, setSuccessData] = useState<{ id: string; invoiceUrl: string; token: string } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [copiedSummary, setCopiedSummary] = useState(false);
   const [showSendModal, setShowSendModal] = useState(false);
   const [savingAndSending, setSavingAndSending] = useState(false);
 
@@ -481,6 +482,46 @@ export default function EditInvoicePage(): ReactElement {
     }
   };
 
+  const copyOrderSummary = async () => {
+    const lines: string[] = [];
+    lines.push(`Order - ${customerName || 'Guest'}`);
+    if (deliveryDate) {
+      const d = new Date(deliveryDate + 'T12:00:00Z');
+      const dateStr = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+      lines.push(`Delivery: ${dateStr}${deliveryTime ? ` at ${deliveryTime}` : ''}`);
+    }
+    const addrParts = [deliveryAddress, deliveryCity, `${deliveryState} ${deliveryZip}`].filter(Boolean).join(', ');
+    if (addrParts.trim()) lines.push(`Address: ${addrParts}`);
+    if (customerPhone) lines.push(`Phone: ${customerPhone}`);
+    if (customerEmail) lines.push(`Email: ${customerEmail}`);
+    lines.push('');
+    lines.push('Items:');
+    for (const item of lineItems) {
+      const itemTotal = item.price * item.quantity;
+      lines.push(`- ${item.quantity}x ${item.title} ($${item.price.toFixed(2)} ea) = $${itemTotal.toFixed(2)}`);
+    }
+    lines.push('');
+    lines.push(`Subtotal: $${subtotal.toFixed(2)}`);
+    if (discountAmount > 0) {
+      lines.push(`Discount${discountCode ? ` (${discountCode})` : ''}: -$${discountAmount.toFixed(2)}`);
+    }
+    lines.push(`Delivery: $${deliveryFeeNum.toFixed(2)}`);
+    lines.push(`Tax: $${taxAmount.toFixed(2)}`);
+    lines.push(`Total: $${total.toFixed(2)}`);
+    try {
+      await navigator.clipboard.writeText(lines.join('\n'));
+    } catch {
+      const textarea = document.createElement('textarea');
+      textarea.value = lines.join('\n');
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+    }
+    setCopiedSummary(true);
+    setTimeout(() => setCopiedSummary(false), 2000);
+  };
+
   const handleSaveAndSend = async () => {
     setError('');
 
@@ -689,6 +730,19 @@ export default function EditInvoicePage(): ReactElement {
             </div>
 
             <div className="flex items-center justify-center gap-3 flex-wrap">
+              <button
+                onClick={copyOrderSummary}
+                className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 shadow-sm flex items-center gap-2 ${
+                  copiedSummary
+                    ? 'bg-green-100 text-green-700 border border-green-200'
+                    : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300'
+                }`}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                </svg>
+                {copiedSummary ? 'Copied!' : 'Copy Summary'}
+              </button>
               <Link
                 href={`/invoice/${successData.token}`}
                 target="_blank"
