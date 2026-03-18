@@ -63,6 +63,7 @@ interface OrderDetail {
     discountAmount: number;
     taxAmount: number;
     deliveryFee: number;
+    tipAmount: number;
     total: number;
   };
   delivery: {
@@ -1205,6 +1206,12 @@ export default function OrderDetailPage(): ReactElement {
                     <span className="text-gray-600">Tax (8.25%)</span>
                     <span className="text-gray-900 font-medium">${order.pricing.taxAmount.toFixed(2)}</span>
                   </div>
+                  {order.pricing.tipAmount > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Tip</span>
+                      <span className="text-amber-600 font-medium">${order.pricing.tipAmount.toFixed(2)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-xl font-bold pt-3 mt-3 border-t border-gray-200">
                     <span>Total</span>
                     <span className="text-blue-600">${order.pricing.total.toFixed(2)}</span>
@@ -2034,6 +2041,12 @@ export default function OrderDetailPage(): ReactElement {
               <span>Tax</span>
               <span>${order.pricing.taxAmount.toFixed(2)}</span>
             </div>
+            {order.pricing.tipAmount > 0 && (
+              <div className="flex justify-between py-0.5 px-2 border-b border-gray-200">
+                <span>Tip</span>
+                <span>${order.pricing.tipAmount.toFixed(2)}</span>
+              </div>
+            )}
             <div className="flex justify-between py-1 px-2 bg-gray-100 font-bold text-base">
               <span>TOTAL</span>
               <span>${order.pricing.total.toFixed(2)}</span>

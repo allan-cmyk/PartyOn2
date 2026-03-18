@@ -34,33 +34,31 @@ For placeholder customer info, use:
 For each requested product, run a Prisma query via the project's Node.js/Prisma setup:
 
 ```bash
-cd /home/allan/projects/PartyOn2 && set -a && source .env.local && set +a && npx tsx -e "
-const { PrismaClient } = require('@prisma/client');
+cd /home/allan/projects/PartyOn2 && set -a && source .env.local && set +a && node --input-type=module -e "
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
-(async () => {
-  const products = await prisma.product.findMany({
-    where: {
-      status: 'ACTIVE',
-      title: { contains: '<SEARCH_TERM>', mode: 'insensitive' }
-    },
-    include: {
-      variants: true,
-      images: { take: 1, orderBy: { position: 'asc' } }
-    }
-  });
-  console.log(JSON.stringify(products.map(p => ({
-    id: p.id,
-    title: p.title,
-    variants: p.variants.map(v => ({
-      id: v.id,
-      title: v.title,
-      price: Number(v.price),
-      sku: v.sku
-    })),
-    imageUrl: p.images[0]?.url || null
-  })), null, 2));
-  await prisma.\$disconnect();
-})();
+const products = await prisma.product.findMany({
+  where: {
+    status: 'ACTIVE',
+    title: { contains: '<SEARCH_TERM>', mode: 'insensitive' }
+  },
+  include: {
+    variants: true,
+    images: { take: 1, orderBy: { position: 'asc' } }
+  }
+});
+console.log(JSON.stringify(products.map(p => ({
+  id: p.id,
+  title: p.title,
+  variants: p.variants.map(v => ({
+    id: v.id,
+    title: v.title,
+    price: Number(v.price),
+    sku: v.sku
+  })),
+  imageUrl: p.images[0]?.url || null
+})), null, 2));
+await prisma.\$disconnect();
 "
 ```
 
@@ -136,42 +134,40 @@ Ask: "Create this draft order? (or tell me what to change)"
 After user confirms, insert via Prisma:
 
 ```bash
-cd /home/allan/projects/PartyOn2 && set -a && source .env.local && set +a && npx tsx -e "
-const { PrismaClient } = require('@prisma/client');
+cd /home/allan/projects/PartyOn2 && set -a && source .env.local && set +a && node --input-type=module -e "
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
-(async () => {
-  const order = await prisma.draftOrder.create({
-    data: {
-      customerEmail: '<email>',
-      customerName: '<name>',
-      customerPhone: '<phone or null>',
-      deliveryAddress: '<address>',
-      deliveryCity: '<city>',
-      deliveryState: 'TX',
-      deliveryZip: '<zip>',
-      deliveryDate: new Date('<ISO date>'),
-      deliveryTime: '<time string>',
-      deliveryNotes: '<notes or null>',
-      items: <JSON items array>,
-      subtotal: <number>,
-      taxAmount: <number>,
-      deliveryFee: <number>,
-      discountAmount: <number>,
-      discountCode: '<code or null>',
-      total: <number>,
-      createdBy: 'admin',
-      adminNotes: '<notes or null>',
-      status: 'PENDING'
-    }
-  });
-  console.log(JSON.stringify({
-    id: order.id,
-    token: order.token,
-    total: Number(order.total),
-    invoiceUrl: 'https://partyondelivery.com/invoice/' + order.token
-  }, null, 2));
-  await prisma.\$disconnect();
-})();
+const order = await prisma.draftOrder.create({
+  data: {
+    customerEmail: '<email>',
+    customerName: '<name>',
+    customerPhone: '<phone or null>',
+    deliveryAddress: '<address>',
+    deliveryCity: '<city>',
+    deliveryState: 'TX',
+    deliveryZip: '<zip>',
+    deliveryDate: new Date('<ISO date>'),
+    deliveryTime: '<time string>',
+    deliveryNotes: '<notes or null>',
+    items: <JSON items array>,
+    subtotal: <number>,
+    taxAmount: <number>,
+    deliveryFee: <number>,
+    discountAmount: <number>,
+    discountCode: '<code or null>',
+    total: <number>,
+    createdBy: 'admin',
+    adminNotes: '<notes or null>',
+    status: 'PENDING'
+  }
+});
+console.log(JSON.stringify({
+  id: order.id,
+  token: order.token,
+  total: Number(order.total),
+  invoiceUrl: 'https://partyondelivery.com/invoice/' + order.token
+}, null, 2));
+await prisma.\$disconnect();
 "
 ```
 

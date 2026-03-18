@@ -20,6 +20,21 @@ You have CLI scripts that query the production database. Load env vars before ea
 | Create draft order | `set -a && source .env.local && set +a && node scripts/ops/create-draft-order.mjs '<json>'` |
 | Adjust inventory | `set -a && source .env.local && set +a && node scripts/ops/adjust-inventory.mjs <product-id> <qty> "reason" [variant-id]` |
 
+## Ad-Hoc Prisma Queries
+
+When you need to run inline Prisma queries (not covered by the scripts above), you MUST use `--input-type=module` with `node -e` so that ES module `import` syntax works:
+
+```bash
+set -a && source .env.local && set +a && node --input-type=module -e "
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
+// ... your query ...
+await prisma.\$disconnect();
+"
+```
+
+**NEVER** use plain `node -e` with `import` -- it will crash with a massive Prisma runtime dump. The `--input-type=module` flag is required for ESM imports in inline scripts.
+
 ## Business Rules
 
 Read `src/lib/agent/order-logic.md` for full business rules. Key points:
@@ -63,7 +78,12 @@ When the operator provides a Total Wine (or similar retailer) URL for a product 
 4. **Download the image** to `public/images/products/<handle>.jpg`
 5. **Create the product** in the DB using Prisma directly (inline Node script):
    ```
-   set -a && source .env.local && set +a && node -e "..."
+   set -a && source .env.local && set +a && node --input-type=module -e "
+   import { PrismaClient } from '@prisma/client';
+   const prisma = new PrismaClient();
+   // ... prisma.product.upsert() ...
+   await prisma.\$disconnect();
+   "
    ```
    Use `prisma.product.upsert()` with:
    - `handle`: kebab-case slug (e.g., `bigallet-china-china-amer-liqueur-750ml`)
