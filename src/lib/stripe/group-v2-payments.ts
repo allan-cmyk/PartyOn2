@@ -193,6 +193,7 @@ export async function createGroupV2CheckoutSession(input: CreateCheckoutInput) {
       taxAmount,
       discountCode: discountCode || null,
       discountAmount,
+      tipAmount,
       total,
       status: 'PENDING',
     },
@@ -467,6 +468,7 @@ export async function handleGroupV2PaymentCompleted(
       deliveryFee: 0, // Host pays delivery separately
       discountCode: payment.discountCode,
       discountAmount: payment.discountAmount,
+      tipAmount: payment.tipAmount,
       total: payment.total,
       deliveryDate: subOrder.deliveryDate,
       deliveryTime: subOrder.deliveryTime,
