@@ -196,7 +196,6 @@ export default function LuxuryPrabalPage() {
             <div className="flex space-x-8">
               <Link href="/contact" className="font-bold hover:underline">CONTACT</Link>
               <Link href="/about" className="font-bold hover:underline">ABOUT</Link>
-              <Link href="/careers" className="font-bold hover:underline">CAREERS</Link>
             </div>
           </div>
         </div>
