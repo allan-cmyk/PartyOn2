@@ -187,6 +187,7 @@ export async function GET(
           discountAmount: Number(order.discountAmount),
           taxAmount: Number(order.taxAmount),
           deliveryFee: Number(order.deliveryFee),
+          tipAmount: Number(order.tipAmount),
           total: Number(order.total),
         },
         delivery: {
