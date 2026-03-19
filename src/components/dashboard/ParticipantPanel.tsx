@@ -7,6 +7,7 @@ import {
   updateTabV2,
   transferHostV2,
   generateHostClaimTokenV2,
+  updateParticipantNameV2,
 } from '@/lib/group-orders-v2/api-client';
 
 interface Props {
@@ -35,8 +36,25 @@ export default function ParticipantPanel({
   const [locking, setLocking] = useState(false);
   const [copyingLink, setCopyingLink] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [editingNameId, setEditingNameId] = useState<string | null>(null);
+  const [editNameValue, setEditNameValue] = useState('');
+  const [savingName, setSavingName] = useState(false);
 
   const isHost = participants.find((p) => p.id === participantId)?.isHost ?? false;
+
+  async function handleSaveName(pid: string) {
+    if (!editNameValue.trim()) return;
+    setSavingName(true);
+    try {
+      await updateParticipantNameV2(shareCode, pid, editNameValue.trim());
+      setEditingNameId(null);
+      onRefresh();
+    } catch (err) {
+      console.error('Failed to update name:', err);
+    } finally {
+      setSavingName(false);
+    }
+  }
   const activeParticipants = participants.filter((p) => p.status === 'ACTIVE');
 
   async function handleRemove(pid: string) {
@@ -115,8 +133,46 @@ export default function ParticipantPanel({
         {activeParticipants.map((p) => (
           <div key={p.id} className="px-4 py-2.5 flex items-center justify-between">
             <div className="min-w-0">
+              {editingNameId === p.id ? (
+                <div className="flex items-center gap-1">
+                  <input
+                    type="text"
+                    value={editNameValue}
+                    onChange={(e) => setEditNameValue(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleSaveName(p.id);
+                      if (e.key === 'Escape') setEditingNameId(null);
+                    }}
+                    disabled={savingName}
+                    autoFocus
+                    className="text-sm font-medium text-gray-900 border border-gray-300 rounded px-1.5 py-0.5 w-28 focus:border-brand-blue focus:ring-0"
+                  />
+                  <button
+                    onClick={() => handleSaveName(p.id)}
+                    disabled={savingName || !editNameValue.trim()}
+                    className="text-xs text-brand-blue hover:text-blue-700 font-medium disabled:opacity-50"
+                  >
+                    {savingName ? '...' : 'Save'}
+                  </button>
+                  <button
+                    onClick={() => setEditingNameId(null)}
+                    className="text-xs text-gray-400 hover:text-gray-600"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-900 truncate">
+                <span
+                  className={`text-sm font-medium text-gray-900 truncate ${p.id === participantId ? 'cursor-pointer hover:text-brand-blue' : ''}`}
+                  onClick={() => {
+                    if (p.id === participantId) {
+                      setEditingNameId(p.id);
+                      setEditNameValue(p.name);
+                    }
+                  }}
+                  title={p.id === participantId ? 'Click to edit your name' : undefined}
+                >
                   {p.name}
                 </span>
                 {p.isHost && (
@@ -130,9 +186,12 @@ export default function ParticipantPanel({
                   </span>
                 )}
               </div>
+              )}
+              {editingNameId !== p.id && (
               <p className="text-xs text-gray-400">
-                Joined {new Date(p.joinedAt).toLocaleDateString()}
+                {p.id === participantId ? 'Tap name to edit' : `Joined ${new Date(p.joinedAt).toLocaleDateString()}`}
               </p>
+              )}
             </div>
 
             {isHost && !p.isHost && p.id !== participantId && (

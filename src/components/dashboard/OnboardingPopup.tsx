@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, type ReactElement } from 'react';
-import { updateGroupOrderV2, updateTabV2 } from '@/lib/group-orders-v2/api-client';
+import { updateGroupOrderV2, updateTabV2, updateParticipantNameV2 } from '@/lib/group-orders-v2/api-client';
 import type { PartyType } from '@/lib/group-orders-v2/types';
 
 interface Props {
@@ -28,31 +28,42 @@ export default function OnboardingPopup({
   onComplete,
   onDismiss,
 }: Props): ReactElement {
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [hostName, setHostName] = useState('');
   const [selected, setSelected] = useState<PartyType | null>(null);
   const [orderName, setOrderName] = useState('');
   const [saving, setSaving] = useState(false);
   const nameInputRef = useRef<HTMLInputElement>(null);
+  const orderNameInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (step === 2 && nameInputRef.current) {
+    if (step === 1 && nameInputRef.current) {
       nameInputRef.current.focus();
+    }
+    if (step === 3 && orderNameInputRef.current) {
+      orderNameInputRef.current.focus();
     }
   }, [step]);
 
-  async function handleFinish(skipName?: boolean) {
-    const data: { partyType?: string; name?: string } = {};
-    if (selected) data.partyType = selected;
-    if (!skipName && orderName.trim()) data.name = orderName.trim();
-
-    if (Object.keys(data).length === 0) {
-      onComplete();
-      return;
-    }
-
+  async function handleFinish(skipOrderName?: boolean) {
     setSaving(true);
     try {
-      await updateGroupOrderV2(shareCode, data as { partyType?: string; name?: string });
+      // Save host name to participant + group order
+      if (hostName.trim()) {
+        await updateParticipantNameV2(shareCode, participantId, hostName.trim());
+      }
+
+      // Save party type and order name to group order
+      const data: { partyType?: string; name?: string } = {};
+      if (selected) data.partyType = selected;
+      if (!skipOrderName && orderName.trim()) {
+        data.name = orderName.trim();
+      }
+
+      if (Object.keys(data).length > 0) {
+        await updateGroupOrderV2(shareCode, data as { partyType?: string; name?: string });
+      }
+
       if (selected && firstTabId) {
         await updateTabV2(shareCode, firstTabId, {
           participantId,
@@ -88,9 +99,42 @@ export default function OnboardingPopup({
         <div className="flex justify-center gap-2 mb-6">
           <div className={`w-2 h-2 rounded-full ${step === 1 ? 'bg-brand-blue' : 'bg-gray-300'}`} />
           <div className={`w-2 h-2 rounded-full ${step === 2 ? 'bg-brand-blue' : 'bg-gray-300'}`} />
+          <div className={`w-2 h-2 rounded-full ${step === 3 ? 'bg-brand-blue' : 'bg-gray-300'}`} />
         </div>
 
         {step === 1 && (
+          <>
+            <h2 className="text-xl md:text-2xl font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-2">
+              What&apos;s your name?
+            </h2>
+            <p className="text-sm text-gray-500 text-center mb-6">
+              So your guests know who&apos;s hosting.
+            </p>
+
+            <input
+              ref={nameInputRef}
+              type="text"
+              value={hostName}
+              onChange={(e) => setHostName(e.target.value)}
+              placeholder="Your name"
+              disabled={saving}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base focus:border-brand-blue focus:ring-0 transition-colors placeholder-gray-400"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && hostName.trim()) setStep(2);
+              }}
+            />
+
+            <button
+              onClick={() => setStep(2)}
+              disabled={!hostName.trim() || saving}
+              className="mt-6 w-full py-4 bg-brand-blue text-white text-lg font-semibold tracking-[0.08em] rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              NEXT
+            </button>
+          </>
+        )}
+
+        {step === 2 && (
           <>
             <h2 className="text-xl md:text-2xl font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-6">
               What type of party is this for?
@@ -114,7 +158,7 @@ export default function OnboardingPopup({
             </div>
 
             <button
-              onClick={() => setStep(2)}
+              onClick={() => setStep(3)}
               disabled={!selected || saving}
               className="mt-6 w-full py-4 bg-brand-blue text-white text-lg font-semibold tracking-[0.08em] rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -123,7 +167,7 @@ export default function OnboardingPopup({
           </>
         )}
 
-        {step === 2 && (
+        {step === 3 && (
           <>
             <h2 className="text-xl md:text-2xl font-heading font-bold tracking-[0.08em] text-gray-900 text-center mb-2">
               What should we call your party page?
@@ -133,11 +177,11 @@ export default function OnboardingPopup({
             </p>
 
             <input
-              ref={nameInputRef}
+              ref={orderNameInputRef}
               type="text"
               value={orderName}
               onChange={(e) => setOrderName(e.target.value)}
-              placeholder="Bob's Bachelor Party"
+              placeholder={hostName.trim() ? `${hostName.trim()}'s ${selected === 'BACH' ? 'Bach Weekend' : selected === 'BOAT' ? 'Boat Party' : selected === 'WEDDING' ? 'Wedding' : selected === 'CORPORATE' ? 'Event' : 'Party'}` : "Bob's Bachelor Party"}
               disabled={saving}
               className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base focus:border-brand-blue focus:ring-0 transition-colors placeholder-gray-400"
               onKeyDown={(e) => {

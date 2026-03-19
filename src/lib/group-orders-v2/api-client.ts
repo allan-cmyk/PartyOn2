@@ -116,6 +116,18 @@ export async function updateParticipantEmailV2(
   });
 }
 
+/** Update participant name */
+export async function updateParticipantNameV2(
+  code: string,
+  pid: string,
+  name: string
+): Promise<void> {
+  await apiFetch(`${API_BASE}/${code}/participants/${pid}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ name }),
+  });
+}
+
 /** Remove participant */
 export async function removeParticipantV2(
   code: string,

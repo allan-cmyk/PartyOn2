@@ -19,11 +19,25 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
     const { code, pid } = await params;
     const body = await request.json();
-    const { email } = body;
+    const { email, name } = body;
 
-    if (!email || typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!email && !name) {
+      return NextResponse.json(
+        { success: false, error: 'Email or name is required' },
+        { status: 400 }
+      );
+    }
+
+    if (email && (typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) {
       return NextResponse.json(
         { success: false, error: 'Valid email is required' },
+        { status: 400 }
+      );
+    }
+
+    if (name && (typeof name !== 'string' || name.trim().length === 0 || name.length > 100)) {
+      return NextResponse.json(
+        { success: false, error: 'Name must be 1-100 characters' },
         { status: 400 }
       );
     }
@@ -46,25 +60,39 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     }
 
     // Check if another participant already has this email in this group
-    const existingWithEmail = await prisma.groupParticipantV2.findUnique({
-      where: {
-        groupOrderId_guestEmail: {
-          groupOrderId: group.id,
-          guestEmail: email,
+    if (email) {
+      const existingWithEmail = await prisma.groupParticipantV2.findUnique({
+        where: {
+          groupOrderId_guestEmail: {
+            groupOrderId: group.id,
+            guestEmail: email,
+          },
         },
-      },
-    });
-    if (existingWithEmail && existingWithEmail.id !== pid) {
-      return NextResponse.json(
-        { success: false, error: 'This email is already associated with another participant' },
-        { status: 409 }
-      );
+      });
+      if (existingWithEmail && existingWithEmail.id !== pid) {
+        return NextResponse.json(
+          { success: false, error: 'This email is already associated with another participant' },
+          { status: 409 }
+        );
+      }
     }
+
+    const updateData: Record<string, string> = {};
+    if (email) updateData.guestEmail = email;
+    if (name) updateData.guestName = name.trim();
 
     await prisma.groupParticipantV2.update({
       where: { id: pid },
-      data: { guestEmail: email },
+      data: updateData,
     });
+
+    // If this participant is the host, also update hostName on the group order
+    if (name && participant.isHost) {
+      await prisma.groupOrderV2.update({
+        where: { id: group.id },
+        data: { hostName: name.trim() },
+      });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
