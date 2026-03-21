@@ -10,6 +10,12 @@ import AgeVerificationModal from '../AgeVerificationModal';
 
 // What's included for each kit type
 const kitIngredients: Record<string, string[]> = {
+  'lady bird': [
+    'Lunazul Blanco Tequila',
+    'Fresh Victor Mexican Lime & Agave (x3)',
+    'H-E-B Club Soda',
+    'Drink Dispenser Included',
+  ],
   'austin rita': [
     'Dulce Vida Blanco Tequila',
     'Stirrings Triple Sec',
@@ -42,11 +48,23 @@ const kitIngredients: Record<string, string[]> = {
     'Cinnamon Sugar',
     'Cinnamon Sticks',
   ],
+  'soco carajillo': [
+    'Licor 43 Liqueur',
+    'Tito\'s Handmade Vodka',
+    'High Brew Cold Brew Coffee',
+    'Califia Farms Barista Oat Milk',
+    'Drink Dispenser Included',
+  ],
+  'barton springs': [
+    'Island Getaway White Rum',
+    'Fresh Victor Three Citrus & Mint Leaf (x2)',
+    'H-E-B Club Soda',
+    'Drink Dispenser Included',
+  ],
   'aperol spritz': [
     'Aperol',
     'Prosecco',
     'Sparkling Water',
-    'Fresh Orange Slices',
   ],
 };
 
@@ -148,6 +166,11 @@ export default function FeaturedKitCard({
           </div>
         )}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+        {product.title.toLowerCase().includes('lady bird') && (
+          <div className="absolute top-4 right-4 bg-yellow-500 text-gray-900 px-4 py-2 text-sm font-bold tracking-wider shadow-lg">
+            BESTSELLER
+          </div>
+        )}
       </button>
       ) : (
       <Link

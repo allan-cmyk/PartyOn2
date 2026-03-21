@@ -11,7 +11,7 @@ export const revalidate = 300
 
 export const metadata: Metadata = {
   title: 'Cocktail Kits | Austin Delivery | Party On Delivery',
-  description: 'Premium cocktail kits delivered in Austin. Everything you need to make bar-quality margaritas, aperol spritzes, espresso martinis & more. Each kit makes 16-30 drinks!',
+  description: 'Premium cocktail kits delivered in Austin. Everything you need to make bar-quality margaritas, aperol spritzes, espresso martinis & more. Each kit makes 16-24 drinks!',
   keywords: 'cocktail kits Austin, margarita kit delivery, party kits, aperol spritz kit, espresso martini kit, Austin cocktail delivery',
   openGraph: {
     title: 'Premium Cocktail Kits | Party On Delivery',
@@ -49,18 +49,18 @@ export default async function CocktailKitsPage() {
       p.title.toLowerCase().includes(pattern.toLowerCase())
     )
 
-  // Get 4 specific featured kits — summery cocktails first
-  const austinRitaKit = findKit('austin rita cocktail kit - serves')
+  // Get 4 specific featured kits
+  const ladyBirdKit = findKit('lady bird margarita')
   const aperolSpritzKit = findKit('aperol spritz')
-  const espressoMartiniKit = findKit('espresso martini cocktail kit')
-  const oldFashionedKit = findKit('hill country old-fashioned') || findKit('hill country old')
+  const socoCarajilloKit = findKit('soco carajillo')
+  const bartonSpringsMojitoKit = findKit('barton springs mojito')
 
   // Build array of 4 featured kits
   const featuredKits = [
-    austinRitaKit,
+    ladyBirdKit,
     aperolSpritzKit,
-    espressoMartiniKit,
-    oldFashionedKit
+    socoCarajilloKit,
+    bartonSpringsMojitoKit,
   ].filter(Boolean) as Product[]
 
   // Get IDs of featured kits to exclude from secondary grid
@@ -73,8 +73,11 @@ export default async function CocktailKitsPage() {
 
   // Short, punchy subheadlines for each kit
   const kitSubheadlines: Record<string, string> = {
-    'austin rita': 'The perfect Austin party starter.',
+    'lady bird': 'Fresh Victor meets Lunazul Tequila. Our signature Austin margarita.',
     'aperol spritz': 'Light, bubbly, and perfect for warm days.',
+    'soco carajillo': 'Cold brew, oat milk, and Licor 43. A smooth after-dinner crowd-pleaser.',
+    'barton springs': 'White rum, fresh citrus, and mint. Cool and refreshing.',
+    'austin rita': 'The perfect Austin party starter.',
     'espresso martini': 'The after-dinner crowd-pleaser.',
     'hill country old': 'A refreshing Texas twist on a classic.',
     'vodka lemonade': 'Refreshing and easy — a summer classic.',
@@ -95,7 +98,7 @@ export default async function CocktailKitsPage() {
                 Everything you need to make bar-quality cocktails at home. Just add ice.
               </p>
               <p className="text-lg text-gray-700 mb-8 leading-relaxed">
-                Skip the store runs and recipe hunting. Each kit comes with premium spirits, fresh mixers, and garnishes — perfectly portioned to make 16-30 cocktails for your next party.
+                Skip the store runs and recipe hunting. Each kit comes with premium spirits, fresh mixers, and garnishes — perfectly portioned to make 16-24 cocktails for your next party.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -118,16 +121,12 @@ export default async function CocktailKitsPage() {
             <div className="relative">
               <div className="relative aspect-square rounded-lg overflow-hidden shadow-2xl">
                 <Image
-                  src={austinRitaKit?.images.edges[0]?.node.url || espressoMartiniKit?.images.edges[0]?.node.url || 'https://cdn.shopify.com/s/files/1/0538/1767/1858/files/Gemini_Generated_Image_tk6mbhtk6mbhtk6m.png?v=1764702134'}
-                  alt={austinRitaKit?.title || 'Austin Rita Cocktail Kit'}
+                  src="/images/products/fresh-victor-cocktails/cocktail-kits-grid.png"
+                  alt="Fresh Victor Cocktail Kits"
                   fill
                   className="object-cover"
                   priority
                 />
-                {/* Badge */}
-                <div className="absolute top-4 right-4 bg-yellow-500 text-gray-900 px-4 py-2 text-sm font-bold tracking-wider shadow-lg">
-                  BESTSELLER
-                </div>
               </div>
 
               {/* Trust Badges */}
@@ -158,7 +157,7 @@ export default async function CocktailKitsPage() {
               Our Most Popular Cocktail Kits
             </h2>
             <p className="text-lg text-gray-700 max-w-2xl mx-auto">
-              Curated cocktail kits featuring local ingredients and classic recipes. Each makes 16-30 drinks!
+              Curated cocktail kits featuring local ingredients and classic recipes. Each makes 16-24 drinks!
             </p>
           </div>
 
@@ -207,7 +206,7 @@ export default async function CocktailKitsPage() {
                   </svg>
                 </div>
                 <h3 className="font-heading text-xl text-gray-900 mb-2 font-semibold">
-                  Makes 20-30 Drinks
+                  Makes 16-24 Drinks
                 </h3>
                 <p className="text-gray-700">
                   Way more value than a single bottle. Perfect for parties, gatherings, or enjoying over multiple occasions.
@@ -409,7 +408,7 @@ export default async function CocktailKitsPage() {
                 </svg>
               </summary>
               <p className="mt-4 text-gray-700 leading-relaxed">
-                Each kit makes between 16 and 30 cocktails depending on the recipe. The Austin Rita makes 24 margaritas, and our larger kits can make up to 30 drinks — perfect for parties of any size.
+                Each kit makes between 16 and 24 cocktails depending on the recipe. The Austin Rita makes 24 margaritas — perfect for parties of any size.
               </p>
             </details>
 
@@ -457,7 +456,7 @@ export default async function CocktailKitsPage() {
                 </svg>
               </summary>
               <p className="mt-4 text-gray-700 leading-relaxed">
-                Yes! Each kit includes premium spirits, mixers, garnishes, and everything needed to make 20-30 cocktails. Just add ice and enjoy. No additional purchases needed.
+                Yes! Each kit includes premium spirits, mixers, garnishes, and everything needed to make 16-24 cocktails. Just add ice and enjoy. No additional purchases needed.
               </p>
             </details>
 
