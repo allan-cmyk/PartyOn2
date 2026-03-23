@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Product } from '@/lib/types'
@@ -12,8 +12,15 @@ interface ExpandableKitGridProps {
 
 export default function ExpandableKitGrid({ kits, onClickProduct }: ExpandableKitGridProps) {
   const [showAll, setShowAll] = useState(false)
-  const visibleKits = showAll ? kits : kits.slice(0, 6)
-  const hasMore = kits.length > 6
+  const [initialCount, setInitialCount] = useState(9)
+
+  useEffect(() => {
+    const isDesktop = window.matchMedia('(min-width: 1024px)').matches
+    setInitialCount(isDesktop ? 8 : 9)
+  }, [])
+
+  const visibleKits = showAll ? kits : kits.slice(0, initialCount)
+  const hasMore = kits.length > initialCount
 
   const CardWrapper = ({ kit, children }: { kit: Product; children: React.ReactNode }) => {
     if (onClickProduct) {
