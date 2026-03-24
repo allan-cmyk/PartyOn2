@@ -328,8 +328,8 @@ export async function PUT(
       updateData.fulfillmentStatus = body.fulfillmentStatus;
 
       // Auto-update order status based on fulfillment
-      if (body.fulfillmentStatus === 'FULFILLED') {
-        updateData.status = 'COMPLETED';
+      if (body.fulfillmentStatus === 'DELIVERED') {
+        updateData.status = 'DELIVERED';
       }
     }
 

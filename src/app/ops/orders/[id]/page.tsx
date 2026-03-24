@@ -173,14 +173,16 @@ interface PreviewData {
   warnings: string[];
 }
 
-const STATUS_OPTIONS = ['PENDING', 'CONFIRMED', 'PROCESSING', 'COMPLETED', 'CANCELLED'];
-const FULFILLMENT_OPTIONS = ['UNFULFILLED', 'PARTIAL', 'FULFILLED'];
+const STATUS_OPTIONS = ['PENDING', 'CONFIRMED', 'PROCESSING', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED'];
+const FULFILLMENT_OPTIONS = ['UNFULFILLED', 'PENDING', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED', 'FAILED'];
 
 function getStatusColor(status: string): string {
   const colors: Record<string, string> = {
     PENDING: 'bg-yellow-100 text-yellow-700 border-yellow-200',
     CONFIRMED: 'bg-blue-100 text-blue-700 border-blue-200',
     PROCESSING: 'bg-purple-100 text-purple-700 border-purple-200',
+    OUT_FOR_DELIVERY: 'bg-indigo-100 text-indigo-700 border-indigo-200',
+    DELIVERED: 'bg-green-100 text-green-700 border-green-200',
     COMPLETED: 'bg-green-100 text-green-700 border-green-200',
     CANCELLED: 'bg-red-100 text-red-700 border-red-200',
     PAID: 'bg-green-100 text-green-700 border-green-200',
@@ -189,7 +191,9 @@ function getStatusColor(status: string): string {
     REFUNDED: 'bg-gray-100 text-gray-700 border-gray-200',
     FULFILLED: 'bg-green-100 text-green-700 border-green-200',
     UNFULFILLED: 'bg-orange-100 text-orange-700 border-orange-200',
+    IN_TRANSIT: 'bg-blue-100 text-blue-700 border-blue-200',
     PARTIAL: 'bg-yellow-100 text-yellow-700 border-yellow-200',
+    FAILED: 'bg-red-100 text-red-700 border-red-200',
     INVOICE_SENT: 'bg-blue-100 text-blue-700 border-blue-200',
     WAIVED: 'bg-gray-100 text-gray-700 border-gray-200',
   };
@@ -942,7 +946,7 @@ export default function OrderDetailPage(): ReactElement {
                 </button>
               )}
 
-              {order.payment.stripePaymentIntentId && (order.status === 'COMPLETED' || order.fulfillmentStatus === 'FULFILLED') && (
+              {order.payment.stripePaymentIntentId && (order.status === 'DELIVERED' || order.fulfillmentStatus === 'DELIVERED') && (
                 <button
                   onClick={() => {
                     setReturnItems({});
