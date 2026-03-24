@@ -198,6 +198,7 @@ export async function GET(
           variantTitle: item.variantTitle,
           sku: item.sku,
           quantity: item.quantity,
+          refundedQuantity: item.refundedQuantity || 0,
           price: Number(item.price),
           total: Number(item.totalPrice),
           imageUrl: item.product.images[0]?.url || null,

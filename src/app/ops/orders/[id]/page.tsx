@@ -12,6 +12,7 @@ interface OrderItem {
   variantTitle: string | null;
   sku: string | null;
   quantity: number;
+  refundedQuantity: number;
   price: number;
   total: number;
   imageUrl?: string | null;
@@ -267,6 +268,12 @@ export default function OrderDetailPage(): ReactElement {
   const [cancelProcessing, setCancelProcessing] = useState(false);
   const [cancelEmailPreview, setCancelEmailPreview] = useState('');
   const [issueRefund, setIssueRefund] = useState(false);
+
+  // Return dialog state
+  const [showReturnDialog, setShowReturnDialog] = useState(false);
+  const [returnItems, setReturnItems] = useState<Record<string, number>>({});
+  const [returnReason, setReturnReason] = useState('');
+  const [returnProcessing, setReturnProcessing] = useState(false);
 
   // Affiliate attribution state
   const [affiliateCode, setAffiliateCode] = useState('');
@@ -524,6 +531,52 @@ export default function OrderDetailPage(): ReactElement {
       alert('Failed to process refund');
     } finally {
       setRefundProcessing(false);
+    }
+  }
+
+  const returnRefundTotal = order?.items.reduce((sum, item) => {
+    const qty = returnItems[item.id] || 0;
+    return sum + qty * item.price;
+  }, 0) || 0;
+
+  const returnItemCount = Object.values(returnItems).reduce((sum, qty) => sum + qty, 0);
+
+  async function processReturn() {
+    if (!order) return;
+    setReturnProcessing(true);
+    try {
+      const itemsToReturn = order.items
+        .filter((item) => (returnItems[item.id] || 0) > 0)
+        .map((item) => ({
+          orderItemId: item.id,
+          productId: item.product.id,
+          variantId: item.variant?.id || null,
+          returnQuantity: returnItems[item.id],
+          unitPrice: item.price,
+        }));
+
+      const res = await fetch(`/api/v1/admin/orders/${orderId}/return`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: itemsToReturn,
+          reason: returnReason || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setShowReturnDialog(false);
+        setReturnItems({});
+        setReturnReason('');
+        await fetchOrder();
+        alert(`Return processed: $${data.data.amount.toFixed(2)} refunded, ${data.data.itemsReturned} item(s) returned to inventory`);
+      } else {
+        alert(data.error || 'Failed to process return');
+      }
+    } catch {
+      alert('Failed to process return');
+    } finally {
+      setReturnProcessing(false);
     }
   }
 
@@ -889,6 +942,22 @@ export default function OrderDetailPage(): ReactElement {
                 </button>
               )}
 
+              {order.payment.stripePaymentIntentId && (order.status === 'COMPLETED' || order.fulfillmentStatus === 'FULFILLED') && (
+                <button
+                  onClick={() => {
+                    setReturnItems({});
+                    setReturnReason('');
+                    setShowReturnDialog(true);
+                  }}
+                  className="px-4 py-2 bg-white border border-orange-200 text-orange-700 rounded-lg font-medium hover:bg-orange-50 transition-colors shadow-sm flex items-center gap-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z" />
+                  </svg>
+                  Process Return
+                </button>
+              )}
+
               {canAmend && !isEditing && (
                 <>
                   <button
@@ -1165,6 +1234,11 @@ export default function OrderDetailPage(): ReactElement {
                           )}
                           {item.sku && (
                             <p className="text-xs text-gray-400 font-mono">SKU: {item.sku}</p>
+                          )}
+                          {item.refundedQuantity > 0 && (
+                            <span className="inline-flex items-center px-2 py-0.5 mt-1 text-xs font-medium bg-orange-100 text-orange-700 border border-orange-200 rounded-full">
+                              {item.refundedQuantity} returned
+                            </span>
                           )}
                           </div>
                         </div>
@@ -1845,6 +1919,132 @@ export default function OrderDetailPage(): ReactElement {
                   {refundProcessing ? 'Processing...' : 'Confirm Refund'}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Return Dialog */}
+      {showReturnDialog && order && (
+        <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4 print:hidden">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-200">
+              <h3 className="text-lg font-bold text-gray-900">Process Return -- Order #{order.orderNumber}</h3>
+              <p className="text-sm text-gray-500 mt-1">Select items to return. Inventory will be restored and a Stripe refund will be issued.</p>
+            </div>
+
+            <div className="p-6 space-y-4">
+              {/* Item list */}
+              <div className="divide-y divide-gray-100 border border-gray-200 rounded-lg overflow-hidden">
+                {order.items.map((item) => {
+                  const maxReturnable = item.quantity - item.refundedQuantity;
+                  const currentQty = returnItems[item.id] || 0;
+                  const lineRefund = currentQty * item.price;
+
+                  return (
+                    <div key={item.id} className="px-4 py-3 flex items-center gap-3">
+                      {item.imageUrl ? (
+                        <img src={item.imageUrl} alt="" className="w-10 h-10 rounded-lg object-cover border border-gray-100 flex-shrink-0" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-lg bg-gray-100 flex-shrink-0" />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-gray-900 text-sm truncate">{item.title}</p>
+                        {item.variantTitle && item.variantTitle !== 'Default Title' && (
+                          <p className="text-xs text-gray-500">{item.variantTitle}</p>
+                        )}
+                        <div className="flex items-center gap-3 text-xs text-gray-500 mt-0.5">
+                          <span>Ordered: {item.quantity}</span>
+                          {item.refundedQuantity > 0 && (
+                            <span className="text-orange-600">Previously returned: {item.refundedQuantity}</span>
+                          )}
+                          <span>${item.price.toFixed(2)} each</span>
+                        </div>
+                        {item.bundleComponents && item.bundleComponents.length > 0 && (
+                          <p className="text-xs text-blue-600 mt-0.5">Bundle -- component inventory will be restored</p>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        {maxReturnable > 0 ? (
+                          <>
+                            <button
+                              onClick={() => setReturnItems({ ...returnItems, [item.id]: Math.max(0, currentQty - 1) })}
+                              disabled={currentQty === 0}
+                              className="w-7 h-7 flex items-center justify-center rounded border border-gray-300 bg-white hover:bg-gray-50 text-gray-600 disabled:opacity-30 text-sm"
+                            >
+                              -
+                            </button>
+                            <span className="w-6 text-center font-semibold text-sm">{currentQty}</span>
+                            <button
+                              onClick={() => setReturnItems({ ...returnItems, [item.id]: Math.min(maxReturnable, currentQty + 1) })}
+                              disabled={currentQty >= maxReturnable}
+                              className="w-7 h-7 flex items-center justify-center rounded border border-gray-300 bg-white hover:bg-gray-50 text-gray-600 disabled:opacity-30 text-sm"
+                            >
+                              +
+                            </button>
+                            {lineRefund > 0 && (
+                              <span className="text-sm font-medium text-gray-700 w-16 text-right">${lineRefund.toFixed(2)}</span>
+                            )}
+                          </>
+                        ) : (
+                          <span className="text-xs text-gray-400">Fully returned</span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Summary */}
+              {returnItemCount > 0 && (
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-orange-800">
+                      {returnItemCount} item{returnItemCount !== 1 ? 's' : ''} returning
+                    </span>
+                    <span className="text-lg font-bold text-orange-900">
+                      ${returnRefundTotal.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Reason */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Reason (optional)</label>
+                <input
+                  type="text"
+                  value={returnReason}
+                  onChange={(e) => setReturnReason(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
+                  placeholder="e.g. Customer returned unopened items"
+                />
+              </div>
+
+              {/* Warning */}
+              {returnItemCount > 0 && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                  <p className="text-sm text-yellow-800">
+                    This will refund <strong>${returnRefundTotal.toFixed(2)}</strong> via Stripe and restore <strong>{returnItemCount}</strong> item{returnItemCount !== 1 ? 's' : ''} to inventory.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="p-6 border-t border-gray-200 flex items-center justify-end gap-3">
+              <button
+                onClick={() => setShowReturnDialog(false)}
+                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={processReturn}
+                disabled={returnProcessing || returnItemCount === 0}
+                className="px-6 py-2 bg-orange-600 text-white rounded-lg font-semibold hover:bg-orange-700 disabled:opacity-50"
+              >
+                {returnProcessing ? 'Processing...' : 'Confirm Return'}
+              </button>
             </div>
           </div>
         </div>
