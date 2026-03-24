@@ -103,7 +103,7 @@ export function BoatTemplate({ affiliate, partnerLogo, partnerHeroImage }: Categ
                     alt={`${businessName} logo`}
                     width={240}
                     height={240}
-                    className="h-40 md:h-48 w-auto object-contain mx-auto rounded-lg brightness-0 invert drop-shadow-lg"
+                    className="h-40 md:h-48 w-auto object-contain mx-auto rounded-xl bg-white/90 p-4 drop-shadow-lg"
                   />
                 </div>
               )}
