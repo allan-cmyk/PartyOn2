@@ -99,6 +99,7 @@ export default function CheckoutSummaryModal({
               weekday: 'short',
               month: 'short',
               day: 'numeric',
+              timeZone: 'UTC',
             })}{' '}
             at {tab.deliveryTime}
           </p>

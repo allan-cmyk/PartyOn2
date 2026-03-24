@@ -154,6 +154,7 @@ export default function GroupOrderDetailPage(): ReactElement {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
+      timeZone: 'UTC',
     });
   };
 

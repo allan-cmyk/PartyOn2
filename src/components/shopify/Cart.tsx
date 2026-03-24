@@ -291,7 +291,7 @@ export default function Cart() {
                       </div>
                       <p className="text-sm text-green-800 font-medium">{currentGroupOrder.name}</p>
                       <p className="text-xs text-green-700 mt-1">
-                        Delivery: {new Date(currentGroupOrder.deliveryDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} at {currentGroupOrder.deliveryTime}
+                        Delivery: {new Date(currentGroupOrder.deliveryDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' })} at {currentGroupOrder.deliveryTime}
                       </p>
                       {isHost && (
                         <Link href="/order" onClick={closeCart}>

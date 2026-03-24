@@ -225,7 +225,7 @@ export async function createParticipantCheckoutSession(
     custom_text: {
       submit: {
         message: `Payment for ${groupOrder.name} group order. ` +
-          `Your items will be delivered with the group order on ${groupOrder.deliveryDate.toLocaleDateString()}.`,
+          `Your items will be delivered with the group order on ${groupOrder.deliveryDate.toLocaleDateString('en-US', { timeZone: 'UTC' })}.`,
       },
     },
   };

@@ -28,7 +28,7 @@ const CreateDraftOrderSchema = z.object({
   deliveryCity: z.string().min(1),
   deliveryState: z.string().default('TX'),
   deliveryZip: z.string().min(5),
-  deliveryDate: z.string().transform((str) => new Date(str)),
+  deliveryDate: z.string().transform((str) => { const d = new Date(str); d.setUTCHours(12, 0, 0, 0); return d; }),
   deliveryTime: z.string().min(1),
   deliveryNotes: z.string().optional(),
   items: z.array(DraftOrderItemSchema).min(1),

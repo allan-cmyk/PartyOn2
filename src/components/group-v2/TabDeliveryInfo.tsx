@@ -22,6 +22,7 @@ export default function TabDeliveryInfo({ tab, isHost, onEdit }: Props): ReactEl
               weekday: 'long',
               month: 'long',
               day: 'numeric',
+              timeZone: 'UTC',
             })}
           </span>
           <span className="text-lg text-gray-500">at {tab.deliveryTime}</span>

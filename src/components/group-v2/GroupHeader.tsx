@@ -27,8 +27,8 @@ function getDateSubtitle(groupOrder: GroupOrderV2Full): string {
   const tab = (groupOrder.tabs || [])[0];
   const dateStr = tab?.deliveryDate;
   const date = dateStr ? new Date(dateStr) : new Date();
-  const month = date.toLocaleString('en-US', { month: 'short' }).toUpperCase();
-  const year = date.getFullYear();
+  const month = date.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' }).toUpperCase();
+  const year = date.getUTCFullYear();
   return `${month} ${year} ATX`;
 }
 

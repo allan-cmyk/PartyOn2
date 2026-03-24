@@ -204,10 +204,14 @@ export async function setDeliveryInfo(
   cartId: string,
   delivery: DeliveryInfo
 ): Promise<CartWithItems> {
+  // Normalize delivery date to noon UTC to prevent timezone display issues
+  const normalizedDate = new Date(delivery.date);
+  normalizedDate.setUTCHours(12, 0, 0, 0);
+
   await prisma.cart.update({
     where: { id: cartId },
     data: {
-      deliveryDate: delivery.date,
+      deliveryDate: normalizedDate,
       deliveryTime: delivery.time,
       deliveryAddress: delivery.address as Prisma.InputJsonValue,
       deliveryPhone: delivery.phone,

@@ -1,5 +1,15 @@
 /** Delivery utility functions */
 
+/**
+ * Normalize a delivery date to noon UTC to prevent timezone display issues.
+ * Dates stored as midnight UTC (00:00) display as the previous day in US timezones.
+ */
+export function normalizeDeliveryDate(date: Date | string): Date {
+  const d = new Date(date);
+  d.setUTCHours(12, 0, 0, 0);
+  return d;
+}
+
 export function getEarliestDeliveryDate(): Date {
   const date = new Date();
   date.setHours(date.getHours() + 72);
@@ -12,6 +22,7 @@ export function formatDeliveryDate(date: Date): string {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
+    timeZone: 'UTC',
   }).format(date);
 }
 

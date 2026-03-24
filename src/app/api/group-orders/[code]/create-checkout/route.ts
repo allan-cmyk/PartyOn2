@@ -144,7 +144,7 @@ async function createLocalCheckout(
     <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #e9ecef;">
       <h3 style="color: #1a1a2e; margin: 0 0 15px; border-bottom: 2px solid #D4AF37; padding-bottom: 10px;">Order Summary</h3>
       <p style="margin: 8px 0; color: #495057;"><strong>Participants:</strong> ${activeParticipants.length}</p>
-      <p style="margin: 8px 0; color: #495057;"><strong>Delivery Date:</strong> ${deliveryDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</p>
+      <p style="margin: 8px 0; color: #495057;"><strong>Delivery Date:</strong> ${deliveryDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}</p>
       <p style="margin: 8px 0; color: #495057;"><strong>Delivery Time:</strong> ${groupOrder.deliveryTime}</p>
       <p style="margin: 8px 0; color: #495057;"><strong>Address:</strong> ${groupOrder.deliveryAddress.address1}, ${groupOrder.deliveryAddress.city}, ${groupOrder.deliveryAddress.province} ${groupOrder.deliveryAddress.zip}</p>
     </div>

@@ -125,7 +125,7 @@ export default function ProposalCard({ id, type, status, data, onApprove, onReje
             <span className="text-gray-500">Date:</span>{' '}
             <span className="font-medium">
               {new Date(d.deliveryDate).toLocaleDateString('en-US', {
-                weekday: 'short', month: 'short', day: 'numeric',
+                weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC',
               })} at {d.deliveryTime}
             </span>
             {d.deliveryNotes && (

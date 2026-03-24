@@ -41,6 +41,10 @@ export async function createDraftOrder(input: CreateDraftOrderInput): Promise<Dr
   // Calculate total
   const total = subtotal - discountAmount + taxAmount + deliveryFee;
 
+  // Normalize delivery date to noon UTC
+  const normalizedDeliveryDate = new Date(deliveryDate);
+  normalizedDeliveryDate.setUTCHours(12, 0, 0, 0);
+
   const draftOrder = await prisma.draftOrder.create({
     data: {
       customerEmail,
@@ -50,7 +54,7 @@ export async function createDraftOrder(input: CreateDraftOrderInput): Promise<Dr
       deliveryCity,
       deliveryState,
       deliveryZip,
-      deliveryDate,
+      deliveryDate: normalizedDeliveryDate,
       deliveryTime,
       deliveryNotes,
       items: items as unknown as Prisma.InputJsonValue,
@@ -130,7 +134,11 @@ export async function updateDraftOrder(
   if (input.deliveryCity) updateData.deliveryCity = input.deliveryCity;
   if (input.deliveryState) updateData.deliveryState = input.deliveryState;
   if (input.deliveryZip) updateData.deliveryZip = input.deliveryZip;
-  if (input.deliveryDate) updateData.deliveryDate = input.deliveryDate;
+  if (input.deliveryDate) {
+    const nd = new Date(input.deliveryDate);
+    nd.setUTCHours(12, 0, 0, 0);
+    updateData.deliveryDate = nd;
+  }
   if (input.deliveryTime) updateData.deliveryTime = input.deliveryTime;
   if (input.deliveryNotes !== undefined) updateData.deliveryNotes = input.deliveryNotes;
   if (input.adminNotes !== undefined) updateData.adminNotes = input.adminNotes;

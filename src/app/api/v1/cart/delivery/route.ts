@@ -104,6 +104,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Validate delivery date is in the future
     const deliveryDate = new Date(body.date);
+    deliveryDate.setUTCHours(12, 0, 0, 0);
     const now = new Date();
     if (deliveryDate < now) {
       return NextResponse.json(
