@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, ReactElement } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import AddAffiliateModal from '@/components/ops/AddAffiliateModal';
 
 interface Application {
@@ -37,12 +38,15 @@ interface Affiliate {
 type Tab = 'applications' | 'affiliates';
 
 export default function AffiliatesPage(): ReactElement {
+  const router = useRouter();
   const [tab, setTab] = useState<Tab>('affiliates');
   const [applications, setApplications] = useState<Application[]>([]);
   const [affiliates, setAffiliates] = useState<Affiliate[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [search, setSearch] = useState('');
+  const [impersonateLoading, setImpersonateLoading] = useState<string | null>(null);
 
   const fetchApplications = useCallback(async () => {
     const res = await fetch('/api/admin/affiliates/applications');
@@ -109,6 +113,23 @@ export default function AffiliatesPage(): ReactElement {
       alert('Network error');
     } finally {
       setActionLoading(null);
+    }
+  };
+
+  const handleImpersonate = async (affiliateId: string) => {
+    setImpersonateLoading(affiliateId);
+    try {
+      const res = await fetch(`/api/admin/affiliates/${affiliateId}/impersonate`, { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        router.push(data.redirectTo);
+      } else {
+        alert(data.error || 'Failed to impersonate');
+      }
+    } catch {
+      alert('Network error');
+    } finally {
+      setImpersonateLoading(null);
     }
   };
 
@@ -268,6 +289,15 @@ export default function AffiliatesPage(): ReactElement {
       ) : (
         /* Affiliates Tab */
         <div>
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Search by name, business, code, or email..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full sm:w-80 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
           {affiliates.length === 0 ? (
             <div className="text-gray-500 py-8 text-center">No affiliates yet.</div>
           ) : (
@@ -287,7 +317,14 @@ export default function AffiliatesPage(): ReactElement {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {affiliates.map((aff) => (
+                  {affiliates.filter((aff) => {
+                    if (!search) return true;
+                    const q = search.toLowerCase();
+                    return aff.businessName.toLowerCase().includes(q) ||
+                      aff.contactName.toLowerCase().includes(q) ||
+                      aff.code.toLowerCase().includes(q) ||
+                      aff.email.toLowerCase().includes(q);
+                  }).map((aff) => (
                     <tr key={aff.id} className="hover:bg-gray-50">
                       <td className="px-4 py-3">
                         <code className="text-sm font-mono bg-gray-100 px-2 py-0.5 rounded">{aff.code}</code>
@@ -315,6 +352,13 @@ export default function AffiliatesPage(): ReactElement {
                       </td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex gap-2 justify-end">
+                          <button
+                            onClick={() => handleImpersonate(aff.id)}
+                            disabled={impersonateLoading === aff.id}
+                            className="px-3 py-1 bg-amber-500 text-white rounded text-xs font-medium hover:bg-amber-600 disabled:opacity-50"
+                          >
+                            {impersonateLoading === aff.id ? '...' : 'Impersonate'}
+                          </button>
                           <Link
                             href={`/admin/affiliates/${aff.id}/dashboard`}
                             className="px-3 py-1 bg-gray-800 text-white rounded text-xs font-medium hover:bg-gray-900"

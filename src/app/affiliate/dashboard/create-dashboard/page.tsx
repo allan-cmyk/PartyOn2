@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, type ReactElement, type FormEvent } from 'react';
 import Link from 'next/link';
 import type { AffiliatePresetConfig, TabPresetOption } from '@/lib/affiliates/presets';
+import ImpersonationBanner from '../components/ImpersonationBanner';
 
 interface TemplateOption {
   id: string;
@@ -261,6 +262,7 @@ export default function CreateDashboardPage(): ReactElement {
   if (successData) {
     return (
       <div className="min-h-screen bg-gray-50">
+        <ImpersonationBanner />
         <div className="max-w-lg mx-auto px-4 py-8">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-heading font-bold tracking-[0.04em] text-gray-900">
@@ -332,6 +334,7 @@ export default function CreateDashboardPage(): ReactElement {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <ImpersonationBanner />
       <div className="max-w-lg mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-heading font-bold tracking-[0.04em] text-gray-900">

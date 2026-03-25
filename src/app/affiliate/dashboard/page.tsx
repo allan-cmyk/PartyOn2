@@ -6,6 +6,7 @@ import AffiliateDashboardHeader from './components/AffiliateDashboardHeader';
 import SalesAnalyticsTab from './components/SalesAnalyticsTab';
 import OrdersTab from './components/OrdersTab';
 import PartnershipInfoTab from './components/PartnershipInfoTab';
+import ImpersonationBanner from './components/ImpersonationBanner';
 
 interface AffiliateData {
   affiliate: {
@@ -129,6 +130,7 @@ export default function AffiliateDashboardPage(): ReactElement {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <ImpersonationBanner />
       <AffiliateDashboardHeader
         contactName={data.affiliate.contactName}
         code={data.affiliate.code}

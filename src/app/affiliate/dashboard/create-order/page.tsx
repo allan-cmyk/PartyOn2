@@ -2,6 +2,7 @@
 
 import { useState, type ReactElement, type FormEvent } from 'react';
 import Link from 'next/link';
+import ImpersonationBanner from '../components/ImpersonationBanner';
 
 const PARTY_TYPES = [
   { value: 'BOAT', label: 'Boat' },
@@ -81,6 +82,7 @@ export default function CreatePartnerOrderPage(): ReactElement {
   if (successData) {
     return (
       <div className="min-h-screen bg-gray-50">
+        <ImpersonationBanner />
         <div className="max-w-lg mx-auto px-4 py-8">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-heading font-bold tracking-[0.04em] text-gray-900">
@@ -154,6 +156,7 @@ export default function CreatePartnerOrderPage(): ReactElement {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <ImpersonationBanner />
       <div className="max-w-lg mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-heading font-bold tracking-[0.04em] text-gray-900">
