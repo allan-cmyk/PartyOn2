@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
     });
 
     const processingMs = Date.now() - startTime;
-    const dashboardUrl = `https://partyondelivery.com/dashboard/${result.shareCode}?claim=${result.hostClaimToken}`;
+    const dashboardUrl = `https://partyondelivery.com/dashboard/${result.shareCode}`;
 
     // Log success
     const log = await prisma.affiliateWebhookLog.create({

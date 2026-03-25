@@ -5,6 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AddDraftItemSchema } from '@/lib/group-orders-v2/validation';
 import { addDraftItem, getGroupOrderByCode } from '@/lib/group-orders-v2/service';
+import { prisma } from '@/lib/prisma';
 
 interface RouteParams {
   params: Promise<{ code: string; tabId: string }>;
@@ -42,6 +43,18 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     }
 
     const item = await addDraftItem(tabId, parsed.data);
+
+    // Auto-promote to host: first person to add an item becomes host
+    // if no host exists yet (e.g. webhook-created dashboards)
+    if (parsed.data.participantId) {
+      const hasHost = group.participants.some((p) => p.isHost);
+      if (!hasHost) {
+        await prisma.groupParticipantV2.update({
+          where: { id: parsed.data.participantId },
+          data: { isHost: true },
+        });
+      }
+    }
 
     return NextResponse.json(
       { success: true, data: item },
