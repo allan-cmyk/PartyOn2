@@ -112,26 +112,22 @@ export async function POST(request: NextRequest) {
     // Fire outbound callback (non-blocking)
     if (affiliate.callbackUrl) {
       const callbackPayload: DashboardCallbackPayload = {
-        status: 'success',
-        customer_name: payload.customer_name,
+        pod_dashboard_url: dashboardUrl,
         customer_email: payload.customer_email,
-        customer_phone: payload.customer_phone,
-        dashboard_url: dashboardUrl,
-        cruise_date: payload.cruise_date,
-        cruise_type: cruiseType,
-        guest_count: payload.guest_count,
-        created_at: new Date().toISOString(),
+        booking_id: payload.booking_id,
       };
 
       // Don't await -- fire and forget, update log when done
-      sendDashboardCallback(affiliate.callbackUrl, callbackPayload).then(
-        async (callbackStatus) => {
-          await prisma.affiliateWebhookLog.update({
-            where: { id: log.id },
-            data: { callbackStatus },
-          });
-        }
-      );
+      sendDashboardCallback(
+        affiliate.callbackUrl,
+        affiliate.callbackApiKey,
+        callbackPayload
+      ).then(async (callbackStatus) => {
+        await prisma.affiliateWebhookLog.update({
+          where: { id: log.id },
+          data: { callbackStatus },
+        });
+      });
     }
 
     return NextResponse.json({

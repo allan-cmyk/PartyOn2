@@ -120,30 +120,31 @@ function formatTime12h(totalMinutes: number): string {
 // ──────────────────────────────────────────────
 
 export interface DashboardCallbackPayload {
-  status: 'success';
-  customer_name: string;
+  pod_dashboard_url: string;
   customer_email: string;
-  customer_phone: string;
-  dashboard_url: string;
-  cruise_date: string;
-  cruise_type: CruiseType;
-  guest_count: number;
-  created_at: string;
+  booking_id: string | null;
 }
 
 /**
  * POST dashboard data to the affiliate's callback URL.
  * Fire-and-forget with one retry after 30s on failure.
+ * Includes callbackApiKey as "apikey" header if provided.
  */
 export async function sendDashboardCallback(
   callbackUrl: string,
+  callbackApiKey: string | null,
   payload: DashboardCallbackPayload
 ): Promise<'SENT' | 'FAILED' | 'RETRIED'> {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (callbackApiKey) {
+    headers['apikey'] = callbackApiKey;
+  }
+
   const doPost = async (): Promise<boolean> => {
     try {
       const res = await fetch(callbackUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(payload),
       });
       if (!res.ok) {

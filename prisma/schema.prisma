@@ -2006,8 +2006,9 @@ model Affiliate {
   passwordHash  String? @map("password_hash")
   internalNotes String? @map("internal_notes") @db.Text
 
-  callbackUrl   String? @map("callback_url")
-  webhookApiKey String? @unique @map("webhook_api_key")
+  callbackUrl    String? @map("callback_url")
+  callbackApiKey String? @map("callback_api_key")
+  webhookApiKey  String? @unique @map("webhook_api_key")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
