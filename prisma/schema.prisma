@@ -1646,6 +1646,7 @@ enum DashboardSource {
   DIRECT
   PARTNER_PAGE
   INTERNAL
+  WEBHOOK
 }
 
 enum DeliveryContextType {
@@ -2004,6 +2005,9 @@ model Affiliate {
   passwordHash  String? @map("password_hash")
   internalNotes String? @map("internal_notes") @db.Text
 
+  callbackUrl   String? @map("callback_url")
+  webhookApiKey String? @unique @map("webhook_api_key")
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -2014,6 +2018,7 @@ model Affiliate {
   magicLinks          MagicLinkToken[]
   groupOrdersV2       GroupOrderV2[]
   dashboardTemplates  DashboardTemplate[]
+  webhookLogs         AffiliateWebhookLog[]
 
   @@index([code])
   @@map("affiliates")
@@ -2031,6 +2036,36 @@ model DashboardTemplate {
 
   @@index([affiliateId])
   @@map("dashboard_templates")
+}
+
+enum WebhookLogStatus {
+  SUCCESS
+  FAILED
+}
+
+enum CallbackStatus {
+  SENT
+  FAILED
+  RETRIED
+  NO_URL
+}
+
+model AffiliateWebhookLog {
+  id             String           @id @default(uuid())
+  affiliateId    String           @map("affiliate_id")
+  payload        Json
+  status         WebhookLogStatus
+  errorMessage   String?          @map("error_message") @db.Text
+  dashboardId    String?          @map("dashboard_id")
+  dashboardUrl   String?          @map("dashboard_url")
+  callbackStatus CallbackStatus   @default(NO_URL) @map("callback_status")
+  processingMs   Int?             @map("processing_ms")
+  createdAt      DateTime         @default(now()) @map("created_at")
+
+  affiliate Affiliate @relation(fields: [affiliateId], references: [id], onDelete: Cascade)
+
+  @@index([affiliateId])
+  @@map("affiliate_webhook_logs")
 }
 
 model DashboardView {
