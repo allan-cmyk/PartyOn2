@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Fire outbound callback (non-blocking)
+    // Fire outbound callback (must await -- Vercel freezes after response)
     if (affiliate.callbackUrl) {
       const callbackPayload: DashboardCallbackPayload = {
         pod_dashboard_url: dashboardUrl,
@@ -117,16 +117,14 @@ export async function POST(request: NextRequest) {
         booking_id: payload.booking_id,
       };
 
-      // Don't await -- fire and forget, update log when done
-      sendDashboardCallback(
+      const callbackStatus = await sendDashboardCallback(
         affiliate.callbackUrl,
         affiliate.callbackApiKey,
         callbackPayload
-      ).then(async (callbackStatus) => {
-        await prisma.affiliateWebhookLog.update({
-          where: { id: log.id },
-          data: { callbackStatus },
-        });
+      );
+      await prisma.affiliateWebhookLog.update({
+        where: { id: log.id },
+        data: { callbackStatus },
       });
     }
 
