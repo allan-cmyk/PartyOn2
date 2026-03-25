@@ -105,7 +105,10 @@ export async function POST(
     const oldDeliveryFee = Number(order.deliveryFee);
     const oldSubtotal = Number(order.subtotal);
     const oldTaxAmount = Number(order.taxAmount);
-    const oldTotal = Number(order.total);
+    const oldTipAmount = Number(order.tipAmount);
+    // Exclude tip from oldTotal so the delta comparison is apples-to-apples
+    // (computeAmounts does not include tip in newTotal)
+    const oldTotal = Number(order.total) - oldTipAmount;
 
     // Build diff
     const originalItemMap = new Map(
@@ -196,8 +199,8 @@ export async function POST(
     };
 
     const preview = {
-      previousTotal: oldTotal,
-      newTotal,
+      previousTotal: oldTotal + oldTipAmount,
+      newTotal: newTotal + oldTipAmount,
       amountDelta,
       previousSubtotal: oldSubtotal,
       newSubtotal,
@@ -205,6 +208,7 @@ export async function POST(
       newTax: newTaxAmount,
       previousDeliveryFee: oldDeliveryFee,
       newDeliveryFee: deliveryFee,
+      tipAmount: oldTipAmount,
       discountAmount,
       changes,
       amendmentType,
@@ -267,14 +271,14 @@ export async function POST(
         });
       }
 
-      // 4. Update order totals
+      // 4. Update order totals (preserve tip in the stored total)
       await tx.order.update({
         where: { id },
         data: {
           subtotal: new Prisma.Decimal(newSubtotal),
           taxAmount: new Prisma.Decimal(newTaxAmount),
           deliveryFee: new Prisma.Decimal(deliveryFee),
-          total: new Prisma.Decimal(newTotal),
+          total: new Prisma.Decimal(newTotal + oldTipAmount),
         },
       });
     });
@@ -357,8 +361,8 @@ export async function POST(
         orderId: id,
         type: amendmentType,
         changes: changes as unknown as Prisma.InputJsonValue,
-        previousTotal: new Prisma.Decimal(oldTotal),
-        newTotal: new Prisma.Decimal(newTotal),
+        previousTotal: new Prisma.Decimal(oldTotal + oldTipAmount),
+        newTotal: new Prisma.Decimal(newTotal + oldTipAmount),
         amountDelta: new Prisma.Decimal(amountDelta),
         resolution,
         draftOrderId,
