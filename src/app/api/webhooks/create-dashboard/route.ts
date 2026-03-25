@@ -88,12 +88,21 @@ export async function POST(request: NextRequest) {
     const processingMs = Date.now() - startTime;
     const dashboardUrl = `https://partyondelivery.com/dashboard/${result.shareCode}`;
 
+    // Store external booking ID on the dashboard for cross-referencing
+    if (payload.booking_id) {
+      await prisma.groupOrderV2.update({
+        where: { id: result.id },
+        data: { externalBookingId: payload.booking_id },
+      });
+    }
+
     // Log success
     const log = await prisma.affiliateWebhookLog.create({
       data: {
         affiliateId: affiliate.id,
         payload: payload as unknown as Record<string, string | number>,
         status: 'SUCCESS',
+        externalBookingId: payload.booking_id,
         dashboardId: result.id,
         dashboardUrl,
         processingMs,
@@ -142,6 +151,7 @@ export async function POST(request: NextRequest) {
         affiliateId: affiliate.id,
         payload: payload as unknown as Record<string, string | number>,
         status: 'FAILED',
+        externalBookingId: payload.booking_id,
         errorMessage,
         processingMs,
       },

@@ -1695,8 +1695,9 @@ model GroupOrderV2 {
   partyType       PartyType?         @map("party_type")
   affiliateId     String?            @map("affiliate_id")
   source          DashboardSource    @default(DIRECT)
-  hostClaimToken  String?            @unique @map("host_claim_token")
-  viewCount       Int                @default(0) @map("view_count")
+  hostClaimToken    String?            @unique @map("host_claim_token")
+  externalBookingId String?           @map("external_booking_id")
+  viewCount         Int               @default(0) @map("view_count")
   expiresAt       DateTime           @map("expires_at")
   createdAt       DateTime           @default(now()) @map("created_at")
   updatedAt       DateTime           @updatedAt @map("updated_at")
@@ -2051,16 +2052,17 @@ enum CallbackStatus {
 }
 
 model AffiliateWebhookLog {
-  id             String           @id @default(uuid())
-  affiliateId    String           @map("affiliate_id")
-  payload        Json
-  status         WebhookLogStatus
-  errorMessage   String?          @map("error_message") @db.Text
-  dashboardId    String?          @map("dashboard_id")
-  dashboardUrl   String?          @map("dashboard_url")
-  callbackStatus CallbackStatus   @default(NO_URL) @map("callback_status")
-  processingMs   Int?             @map("processing_ms")
-  createdAt      DateTime         @default(now()) @map("created_at")
+  id                String           @id @default(uuid())
+  affiliateId       String           @map("affiliate_id")
+  payload           Json
+  status            WebhookLogStatus
+  errorMessage      String?          @map("error_message") @db.Text
+  externalBookingId String?          @map("external_booking_id")
+  dashboardId       String?          @map("dashboard_id")
+  dashboardUrl      String?          @map("dashboard_url")
+  callbackStatus    CallbackStatus   @default(NO_URL) @map("callback_status")
+  processingMs      Int?             @map("processing_ms")
+  createdAt         DateTime         @default(now()) @map("created_at")
 
   affiliate Affiliate @relation(fields: [affiliateId], references: [id], onDelete: Cascade)
 

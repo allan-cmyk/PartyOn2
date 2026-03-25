@@ -26,6 +26,8 @@ const rawWebhookSchema = z.object({
     z.number().int().positive(),
     z.string().transform((s) => parseInt(s, 10)),
   ]).pipe(z.number().int().positive('guest_count must be a positive integer')),
+  // Xola booking ID for cross-referencing
+  booking_id: z.string().optional(),
 });
 
 export const affiliateWebhookSchema = rawWebhookSchema.transform((data) => {
@@ -47,6 +49,7 @@ export const affiliateWebhookSchema = rawWebhookSchema.transform((data) => {
     cruise_start_time: data.cruise_start_time || null,
     items_name: data.items_name,
     guest_count: data.guest_count,
+    booking_id: data.booking_id || null,
   };
 });
 
