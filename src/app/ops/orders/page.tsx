@@ -47,6 +47,11 @@ interface Order {
   customer: OrderCustomer;
   customerName: string;
   customerEmail: string;
+  customerPhone: string | null;
+  deliveryPhone: string | null;
+  deliveryInstructions: string | null;
+  customerNote: string | null;
+  internalNote: string | null;
   subtotal: number;
   discountCode: string | null;
   discountAmount: number;
@@ -60,6 +65,7 @@ interface Order {
   createdAt: string;
   groupOrderId: string | null;
   groupOrder: GroupOrderInfo | null;
+  affiliate: { id: string; code: string; businessName: string; contactName: string; phone: string | null } | null;
   dashboardSource: { id: string; shareCode: string; name: string; hostName: string } | null;
   deliveryAddress: Record<string, string> | string | null;
   items: { quantity: number; title: string; productId?: string; bundleComponents?: { title: string; variantTitle: string | null; quantity: number }[] }[];
@@ -549,6 +555,37 @@ function OrderRow({ order, selected, onToggle, onPrint }: { order: Order; select
         <tr className="bg-gray-50/80">
           <td colSpan={10} className="px-6 py-3">
             <div className="pl-10">
+              {/* Quick info: phone, notes, affiliate */}
+              <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-gray-600 mb-3">
+                {order.customerPhone && (
+                  <span>Customer Tel: <span className="font-medium text-gray-800">{order.customerPhone}</span></span>
+                )}
+                {order.deliveryPhone && order.deliveryPhone !== order.customerPhone && (
+                  <span>Delivery Tel: <span className="font-medium text-gray-800">{order.deliveryPhone}</span></span>
+                )}
+                {order.affiliate && (
+                  <span>Partner: <span className="font-medium text-gray-800">{order.affiliate.businessName}</span>{order.affiliate.phone ? ` (${order.affiliate.phone})` : ''}</span>
+                )}
+              </div>
+              {order.deliveryInstructions && (
+                <div className="mb-2 px-2 py-1 border border-yellow-400 bg-yellow-50 rounded text-xs text-gray-700">
+                  <span className="font-bold">Instructions: </span>{order.deliveryInstructions}
+                </div>
+              )}
+              {(order.customerNote || order.internalNote) && (
+                <div className="mb-2 space-y-1">
+                  {order.customerNote && (
+                    <div className="px-2 py-1 border border-gray-300 rounded text-xs text-gray-700">
+                      <span className="font-bold">Customer Note: </span>{order.customerNote}
+                    </div>
+                  )}
+                  {order.internalNote && (
+                    <div className="px-2 py-1 border border-gray-300 rounded text-xs text-gray-700">
+                      <span className="font-bold">Internal Note: </span>{order.internalNote}
+                    </div>
+                  )}
+                </div>
+              )}
               <div className="flex gap-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5 pl-1">
                 <span className="w-16 text-center">In Stock</span>
                 <span className="w-16 text-center">Packed</span>
@@ -768,6 +805,37 @@ function MobileOrderCard({ order, selected, onToggle }: { order: Order; selected
       {expanded && order.items.length > 0 && (
         <div className="border-t border-gray-100 bg-gray-50 px-4 py-3">
           <div className="pl-7">
+            {/* Quick info: phone, notes, affiliate */}
+            <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-gray-600 mb-3">
+              {order.customerPhone && (
+                <span>Customer Tel: <span className="font-medium text-gray-800">{order.customerPhone}</span></span>
+              )}
+              {order.deliveryPhone && order.deliveryPhone !== order.customerPhone && (
+                <span>Delivery Tel: <span className="font-medium text-gray-800">{order.deliveryPhone}</span></span>
+              )}
+              {order.affiliate && (
+                <span>Partner: <span className="font-medium text-gray-800">{order.affiliate.businessName}</span>{order.affiliate.phone ? ` (${order.affiliate.phone})` : ''}</span>
+              )}
+            </div>
+            {order.deliveryInstructions && (
+              <div className="mb-2 px-2 py-1 border border-yellow-400 bg-yellow-50 rounded text-xs text-gray-700">
+                <span className="font-bold">Instructions: </span>{order.deliveryInstructions}
+              </div>
+            )}
+            {(order.customerNote || order.internalNote) && (
+              <div className="mb-2 space-y-1">
+                {order.customerNote && (
+                  <div className="px-2 py-1 border border-gray-300 rounded text-xs text-gray-700">
+                    <span className="font-bold">Customer Note: </span>{order.customerNote}
+                  </div>
+                )}
+                {order.internalNote && (
+                  <div className="px-2 py-1 border border-gray-300 rounded text-xs text-gray-700">
+                    <span className="font-bold">Internal Note: </span>{order.internalNote}
+                  </div>
+                )}
+              </div>
+            )}
             <div className="flex gap-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
               <span className="w-10 text-center">Stock</span>
               <span className="w-10 text-center">Pack</span>
@@ -1660,7 +1728,7 @@ export default function OrdersPage(): ReactElement {
                 </div>
               )}
 
-              <div className="flex gap-4 mb-3">
+              <div className="flex gap-3 mb-3">
                 <div className="flex-1 border border-gray-400 rounded p-2">
                   <div className="font-bold text-xs uppercase tracking-wide border-b border-gray-300 pb-1 mb-1">Delivery</div>
                   <div className="font-bold text-sm">
@@ -1668,13 +1736,50 @@ export default function OrdersPage(): ReactElement {
                     {' '}&middot;{' '}{order.deliveryTime}
                   </div>
                   {addrStr && <div className="text-sm mt-1">{addrStr}</div>}
+                  {order.deliveryPhone && (
+                    <div className="text-sm mt-1">Tel: {order.deliveryPhone}</div>
+                  )}
                 </div>
                 <div className="flex-1 border border-gray-400 rounded p-2">
                   <div className="font-bold text-xs uppercase tracking-wide border-b border-gray-300 pb-1 mb-1">Customer</div>
                   <div className="font-bold text-sm">{order.customerName}</div>
                   <div className="text-sm">{order.customerEmail}</div>
+                  {order.customerPhone && (
+                    <div className="text-sm">Tel: {order.customerPhone}</div>
+                  )}
                 </div>
+                {order.affiliate && (
+                  <div className="flex-1 border border-gray-400 rounded p-2">
+                    <div className="font-bold text-xs uppercase tracking-wide border-b border-gray-300 pb-1 mb-1">Partner</div>
+                    <div className="font-bold text-sm">{order.affiliate.businessName}</div>
+                    <div className="text-sm">{order.affiliate.contactName}</div>
+                    {order.affiliate.phone && (
+                      <div className="text-sm">Tel: {order.affiliate.phone}</div>
+                    )}
+                  </div>
+                )}
               </div>
+
+              {order.deliveryInstructions && (
+                <div className="mb-3 px-2 py-1.5 border-2 border-yellow-500 bg-yellow-50 rounded text-sm">
+                  <span className="font-bold">Instructions: </span>{order.deliveryInstructions}
+                </div>
+              )}
+
+              {(order.customerNote || order.internalNote) && (
+                <div className="mb-3 space-y-1">
+                  {order.customerNote && (
+                    <div className="px-2 py-1 border border-gray-400 rounded text-sm">
+                      <span className="font-bold">Customer Note: </span>{order.customerNote}
+                    </div>
+                  )}
+                  {order.internalNote && (
+                    <div className="px-2 py-1 border border-gray-400 rounded text-sm">
+                      <span className="font-bold">Internal Note: </span>{order.internalNote}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {(() => {
                 const printChecks = loadChecks(order.id);

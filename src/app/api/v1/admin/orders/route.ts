@@ -95,7 +95,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       take: params.limit || 20,
       include: {
         customer: {
-          select: { id: true, email: true, firstName: true, lastName: true },
+          select: { id: true, email: true, firstName: true, lastName: true, phone: true },
         },
         items: {
           include: {
@@ -104,6 +104,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         },
         groupOrder: {
           select: { id: true, shareCode: true, name: true, status: true },
+        },
+        affiliate: {
+          select: { id: true, code: true, businessName: true, contactName: true, phone: true },
         },
         _count: {
           select: { items: true },
@@ -178,6 +181,11 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       },
       customerName: order.customerName,
       customerEmail: order.customerEmail,
+      customerPhone: order.customerPhone || order.customer.phone || null,
+      deliveryPhone: order.deliveryPhone || null,
+      deliveryInstructions: order.deliveryInstructions || null,
+      customerNote: order.customerNote || null,
+      internalNote: order.internalNote || null,
       subtotal: Number(order.subtotal),
       discountCode: order.discountCode,
       discountAmount: Number(order.discountAmount),
@@ -203,6 +211,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         shareCode: order.groupOrder.shareCode,
         name: order.groupOrder.name,
         status: order.groupOrder.status,
+      } : null,
+      affiliate: order.affiliate ? {
+        id: order.affiliate.id,
+        code: order.affiliate.code,
+        businessName: order.affiliate.businessName,
+        contactName: order.affiliate.contactName,
+        phone: order.affiliate.phone,
       } : null,
       dashboardSource: dashboardSourceMap.get(order.id) || null,
     }));
