@@ -111,6 +111,35 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       },
     });
 
+    // Batch-lookup which orders originated from a V2 dashboard via ParticipantPayment
+    const orderIds = orders.map(o => o.id);
+    const v2Payments = orderIds.length > 0
+      ? await prisma.participantPayment.findMany({
+          where: { orderId: { in: orderIds } },
+          select: {
+            orderId: true,
+            subOrder: {
+              select: {
+                groupOrder: {
+                  select: { id: true, shareCode: true, name: true, hostName: true }
+                }
+              }
+            }
+          }
+        })
+      : [];
+    const dashboardSourceMap = new Map<string, { id: string; shareCode: string; name: string; hostName: string }>();
+    for (const p of v2Payments) {
+      if (p.orderId && !dashboardSourceMap.has(p.orderId)) {
+        dashboardSourceMap.set(p.orderId, {
+          id: p.subOrder.groupOrder.id,
+          shareCode: p.subOrder.groupOrder.shareCode,
+          name: p.subOrder.groupOrder.name,
+          hostName: p.subOrder.groupOrder.hostName,
+        });
+      }
+    }
+
     // Fetch bundle components for all product IDs across all orders
     const allProductIds = orders.flatMap((o) => o.items.map((i) => i.product.id));
     const uniqueProductIds = [...new Set(allProductIds)];
@@ -175,6 +204,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         name: order.groupOrder.name,
         status: order.groupOrder.status,
       } : null,
+      dashboardSource: dashboardSourceMap.get(order.id) || null,
     }));
 
     // Get summary stats

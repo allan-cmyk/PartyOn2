@@ -53,6 +53,7 @@ export async function GET(
             code: true,
             businessName: true,
             contactName: true,
+            phone: true,
           },
         },
         amendments: {
@@ -246,6 +247,7 @@ export async function GET(
           code: order.affiliate.code,
           businessName: order.affiliate.businessName,
           contactName: order.affiliate.contactName,
+          phone: order.affiliate.phone,
         } : null,
         groupOrder: {
           id: order.groupOrderId,
@@ -371,7 +373,7 @@ export async function PUT(
       data: updateData,
       include: {
         affiliate: {
-          select: { id: true, code: true, businessName: true, contactName: true },
+          select: { id: true, code: true, businessName: true, contactName: true, phone: true },
         },
       },
     });
@@ -389,6 +391,7 @@ export async function PUT(
           code: order.affiliate.code,
           businessName: order.affiliate.businessName,
           contactName: order.affiliate.contactName,
+          phone: order.affiliate.phone,
         } : null,
         updatedAt: order.updatedAt.toISOString(),
       },

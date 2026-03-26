@@ -2,7 +2,9 @@
 
 import React, { useState, useEffect, useCallback, useRef, ReactElement } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import DraftOrdersTable from '@/components/ops/DraftOrdersTable';
+import UnpaidCartsTable from '@/components/ops/UnpaidCartsTable';
 
 // --- In Stock / Packed localStorage helpers ---
 interface ItemChecks {
@@ -58,6 +60,7 @@ interface Order {
   createdAt: string;
   groupOrderId: string | null;
   groupOrder: GroupOrderInfo | null;
+  dashboardSource: { id: string; shareCode: string; name: string; hostName: string } | null;
   deliveryAddress: Record<string, string> | string | null;
   items: { quantity: number; title: string; productId?: string; bundleComponents?: { title: string; variantTitle: string | null; quantity: number }[] }[];
 }
@@ -477,6 +480,20 @@ function OrderRow({ order, selected, onToggle, onPrint }: { order: Order; select
               {order.groupOrder.name || order.groupOrder.shareCode}
             </Link>
           )}
+          {order.dashboardSource && (
+            <a
+              href={`/dashboard/${order.dashboardSource.shareCode}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 text-xs font-medium bg-teal-100 text-teal-700 rounded-full hover:bg-teal-200 transition-colors"
+              title={`Dashboard: ${order.dashboardSource.name} by ${order.dashboardSource.hostName}`}
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
+              Dashboard
+            </a>
+          )}
         </td>
         <td className="px-6 py-4">
           <Link href={`/ops/orders/${order.id}`} className="block hover:text-blue-600 transition-colors">
@@ -723,6 +740,16 @@ function MobileOrderCard({ order, selected, onToggle }: { order: Order; selected
                   {order.groupOrder.name || order.groupOrder.shareCode}
                 </Link>
               )}
+              {order.dashboardSource && (
+                <a
+                  href={`/dashboard/${order.dashboardSource.shareCode}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-teal-100 text-teal-700 rounded-full"
+                >
+                  Dashboard
+                </a>
+              )}
               <button
                 onClick={(e) => { e.preventDefault(); setExpanded(!expanded); }}
                 className="ml-auto p-1 text-gray-400 hover:text-gray-600"
@@ -903,7 +930,11 @@ function MobileGroupCard({
 }
 
 export default function OrdersPage(): ReactElement {
-  const [view, setView] = useState<'orders' | 'invoices'>('orders');
+  const searchParams = useSearchParams();
+  const initialView = searchParams?.get('view');
+  const [view, setView] = useState<'orders' | 'invoices' | 'carts'>(
+    initialView === 'invoices' || initialView === 'carts' ? initialView : 'orders'
+  );
   const [data, setData] = useState<OrdersData | null>(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -1157,10 +1188,26 @@ export default function OrdersPage(): ReactElement {
           </svg>
           Invoices
         </button>
+        <button
+          onClick={() => setView('carts')}
+          className={`px-5 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 flex items-center gap-2 ${
+            view === 'carts'
+              ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md shadow-orange-200'
+              : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300'
+          }`}
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
+          </svg>
+          Unpaid Carts
+        </button>
       </div>
 
       {/* Invoices View */}
       {view === 'invoices' && <DraftOrdersTable />}
+
+      {/* Unpaid Carts View */}
+      {view === 'carts' && <UnpaidCartsTable />}
 
       {/* Orders View */}
       {view === 'orders' && <>
@@ -1607,6 +1654,12 @@ export default function OrdersPage(): ReactElement {
                 </span>
               </div>
 
+              {order.groupOrder && (
+                <div className="mb-3 px-2 py-1.5 border-2 border-blue-500 bg-blue-50 rounded text-sm font-bold">
+                  Group Order: {order.groupOrder.name || order.groupOrder.shareCode}
+                </div>
+              )}
+
               <div className="flex gap-4 mb-3">
                 <div className="flex-1 border border-gray-400 rounded p-2">
                   <div className="font-bold text-xs uppercase tracking-wide border-b border-gray-300 pb-1 mb-1">Delivery</div>
@@ -1616,7 +1669,7 @@ export default function OrdersPage(): ReactElement {
                   </div>
                   {addrStr && <div className="text-sm mt-1">{addrStr}</div>}
                 </div>
-                <div className="w-52 border border-gray-400 rounded p-2">
+                <div className="flex-1 border border-gray-400 rounded p-2">
                   <div className="font-bold text-xs uppercase tracking-wide border-b border-gray-300 pb-1 mb-1">Customer</div>
                   <div className="font-bold text-sm">{order.customerName}</div>
                   <div className="text-sm">{order.customerEmail}</div>
@@ -1695,6 +1748,18 @@ export default function OrdersPage(): ReactElement {
                         </React.Fragment>
                       ))}
                     </tbody>
+                    <tfoot>
+                      <tr className="border-t-2 border-black">
+                        <td className="py-1.5 px-2 font-bold">
+                          Total Items: {order.items.reduce((sum, item) => sum + item.quantity, 0)}
+                        </td>
+                        <td></td>
+                        <td colSpan={2} className="text-center py-1.5">
+                          <span className="font-bold text-xs mr-1">Order Complete?</span>
+                          <span className="inline-block w-5 h-5 border-2 border-black rounded-sm align-middle"></span>
+                        </td>
+                      </tr>
+                    </tfoot>
                   </table>
                 );
               })()}

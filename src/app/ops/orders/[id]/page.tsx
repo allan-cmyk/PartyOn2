@@ -110,6 +110,7 @@ interface OrderDetail {
     code: string;
     businessName: string;
     contactName: string;
+    phone: string | null;
   } | null;
   amendments: Amendment[];
   notes: {
@@ -2136,6 +2137,7 @@ export default function OrderDetailPage(): ReactElement {
 
       {/* Print View */}
       <div ref={printRef} className="hidden print:block order-sheet">
+        {/* Header */}
         <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
           <div className="flex items-center gap-3">
             <span className="bg-black text-white text-lg font-bold px-3 py-1 rounded">
@@ -2148,7 +2150,15 @@ export default function OrderDetailPage(): ReactElement {
           </span>
         </div>
 
-        <div className="flex gap-4 mb-3">
+        {/* Group Order banner */}
+        {order.groupOrder.isGroupOrder && (
+          <div className="mb-3 px-2 py-1.5 border-2 border-blue-500 bg-blue-50 rounded text-sm font-bold">
+            Group Order: {order.groupOrder.name || order.groupOrder.shareCode}
+          </div>
+        )}
+
+        {/* Info boxes */}
+        <div className="flex gap-3 mb-3">
           <div className="flex-1 border border-gray-400 rounded p-2">
             <div className="font-bold text-xs uppercase tracking-wide border-b border-gray-300 pb-1 mb-1">Delivery</div>
             <div className="font-bold text-sm">
@@ -2165,7 +2175,7 @@ export default function OrderDetailPage(): ReactElement {
               <div className="text-sm mt-1">Tel: {order.delivery.phone}</div>
             )}
           </div>
-          <div className="w-52 border border-gray-400 rounded p-2">
+          <div className="flex-1 border border-gray-400 rounded p-2">
             <div className="font-bold text-xs uppercase tracking-wide border-b border-gray-300 pb-1 mb-1">Customer</div>
             <div className="font-bold text-sm">{order.customer.name || order.customerSnapshot.name || 'Guest'}</div>
             <div className="text-sm">{order.customer.email}</div>
@@ -2173,21 +2183,49 @@ export default function OrderDetailPage(): ReactElement {
               <div className="text-sm">Tel: {order.customer.phone || order.customerSnapshot.phone}</div>
             )}
           </div>
+          {order.affiliate && (
+            <div className="flex-1 border border-gray-400 rounded p-2">
+              <div className="font-bold text-xs uppercase tracking-wide border-b border-gray-300 pb-1 mb-1">Partner</div>
+              <div className="font-bold text-sm">{order.affiliate.businessName}</div>
+              <div className="text-sm">{order.affiliate.contactName}</div>
+              {order.affiliate.phone && (
+                <div className="text-sm">Tel: {order.affiliate.phone}</div>
+              )}
+            </div>
+          )}
         </div>
 
+        {/* Delivery instructions */}
         {order.delivery.instructions && (
           <div className="mb-3 px-2 py-1.5 border-2 border-yellow-500 bg-yellow-50 rounded text-sm">
             <span className="font-bold">Instructions: </span>{order.delivery.instructions}
           </div>
         )}
 
+        {/* Notes */}
+        {(order.notes.customer || order.notes.internal) && (
+          <div className="mb-3 space-y-1">
+            {order.notes.customer && (
+              <div className="px-2 py-1 border border-gray-400 rounded text-sm">
+                <span className="font-bold">Customer Note: </span>{order.notes.customer}
+              </div>
+            )}
+            {order.notes.internal && (
+              <div className="px-2 py-1 border border-gray-400 rounded text-sm">
+                <span className="font-bold">Internal Note: </span>{order.notes.internal}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Items table */}
         <table className="w-full mb-3 border-collapse text-sm">
           <thead>
             <tr className="border-b-2 border-black">
               <th className="text-left py-1 px-2 font-bold">Item</th>
               <th className="text-center py-1 px-2 w-12 font-bold">Qty</th>
               <th className="text-right py-1 px-2 w-20 font-bold">Price</th>
-              <th className="text-center py-1 w-16 font-bold">In Store?</th>
+              <th className="text-center py-1 w-16 font-bold">In Stock?</th>
               <th className="text-center py-1 w-16 font-bold">Packed?</th>
             </tr>
           </thead>
@@ -2225,17 +2263,26 @@ export default function OrderDetailPage(): ReactElement {
               </>
             ))}
           </tbody>
+          <tfoot>
+            <tr className="border-t-2 border-black">
+              <td className="py-1.5 px-2 font-bold">
+                Total Items: {order.items.reduce((sum, item) => sum + item.quantity, 0)}
+              </td>
+              <td></td>
+              <td></td>
+              <td colSpan={2} className="text-center py-1.5">
+                <span className="font-bold text-xs mr-1">Order Complete?</span>
+                <span className="inline-block w-5 h-5 border-2 border-black rounded-sm align-middle"></span>
+              </td>
+            </tr>
+          </tfoot>
         </table>
 
+        {/* Footer: discount + pricing summary */}
         <div className="flex gap-4">
           <div className="flex-1">
-            {order.notes.customer && (
-              <div className="border border-gray-400 rounded p-2 text-sm">
-                <span className="font-bold">Customer Note: </span>{order.notes.customer}
-              </div>
-            )}
             {order.pricing.discountCode && (
-              <div className="mt-1 text-sm">
+              <div className="text-sm">
                 <span className="font-bold">Discount: </span>
                 <span className="font-mono">{order.pricing.discountCode}</span>
                 {order.pricing.discountAmount > 0 && (
