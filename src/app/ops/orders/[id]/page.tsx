@@ -2137,18 +2137,31 @@ export default function OrderDetailPage(): ReactElement {
 
       {/* Print View */}
       <div ref={printRef} className="hidden print:block order-sheet">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
-          <div className="flex items-center gap-3">
-            <span className="bg-black text-white text-lg font-bold px-3 py-1 rounded">
-              #{order.orderNumber}
-            </span>
-            <span className="text-lg font-bold">Party On Delivery</span>
-          </div>
-          <span className="text-xs text-gray-500">
-            Printed {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-          </span>
-        </div>
+        {/* Color-coded banner */}
+        {(() => {
+          const addr = order.delivery.address.address1?.toLowerCase() || '';
+          const isMarina = addr.includes('13993 fm 2769') || addr.includes('rocky hills');
+          const customerName = order.customer.name || order.customerSnapshot.name || 'Guest';
+          const lastName = customerName.trim().split(/\s+/).pop() || customerName;
+          const dayOfWeek = new Date(order.delivery.date).toLocaleDateString('en-US', { weekday: 'long', timeZone: 'UTC' });
+          const printTime = (order.delivery.time || '').replace(/:00\s*/g, ' ').trim();
+          return (
+            <div className={`rounded-lg px-4 py-3 mb-3 overflow-hidden ${isMarina ? 'bg-blue-600 text-white' : 'bg-yellow-400 text-black'}`}>
+              <div className="flex items-center gap-4 overflow-hidden">
+                <span className="text-[60px] font-black leading-none tracking-tight whitespace-nowrap">#{order.orderNumber}</span>
+                <span className="text-[48px] font-light leading-none opacity-50">|</span>
+                <span className="text-[60px] font-black leading-none tracking-tight whitespace-nowrap">{lastName}</span>
+                <span className="text-[48px] font-light leading-none opacity-50">|</span>
+                <span className="text-[60px] font-black leading-none tracking-tight whitespace-nowrap">{dayOfWeek} {printTime}</span>
+              </div>
+              {order.affiliate && (
+                <div className="flex justify-end mt-1">
+                  <span className="text-xl font-semibold opacity-85">{order.affiliate.businessName}</span>
+                </div>
+              )}
+            </div>
+          );
+        })()}
 
         {/* Group Order banner */}
         {order.groupOrder.isGroupOrder && (
@@ -2157,8 +2170,16 @@ export default function OrderDetailPage(): ReactElement {
           </div>
         )}
 
-        {/* Info boxes */}
+        {/* Info boxes: Customer | Delivery | Partner */}
         <div className="flex gap-3 mb-3">
+          <div className="flex-1 border border-gray-400 rounded p-2">
+            <div className="font-bold text-xs uppercase tracking-wide border-b border-gray-300 pb-1 mb-1">Customer</div>
+            <div className="font-bold text-sm">{order.customer.name || order.customerSnapshot.name || 'Guest'}</div>
+            <div className="text-sm">{order.customer.email}</div>
+            {(order.customer.phone || order.customerSnapshot.phone) && (
+              <div className="text-sm">Tel: {order.customer.phone || order.customerSnapshot.phone}</div>
+            )}
+          </div>
           <div className="flex-1 border border-gray-400 rounded p-2">
             <div className="font-bold text-xs uppercase tracking-wide border-b border-gray-300 pb-1 mb-1">Delivery</div>
             <div className="font-bold text-sm">
@@ -2173,14 +2194,6 @@ export default function OrderDetailPage(): ReactElement {
             </div>
             {order.delivery.phone && (
               <div className="text-sm mt-1">Tel: {order.delivery.phone}</div>
-            )}
-          </div>
-          <div className="flex-1 border border-gray-400 rounded p-2">
-            <div className="font-bold text-xs uppercase tracking-wide border-b border-gray-300 pb-1 mb-1">Customer</div>
-            <div className="font-bold text-sm">{order.customer.name || order.customerSnapshot.name || 'Guest'}</div>
-            <div className="text-sm">{order.customer.email}</div>
-            {(order.customer.phone || order.customerSnapshot.phone) && (
-              <div className="text-sm">Tel: {order.customer.phone || order.customerSnapshot.phone}</div>
             )}
           </div>
           {order.affiliate && (
@@ -2219,14 +2232,14 @@ export default function OrderDetailPage(): ReactElement {
         )}
 
         {/* Items table */}
-        <table className="w-full mb-3 border-collapse text-sm">
+        <table className="w-full mb-3 border-collapse text-lg">
           <thead>
             <tr className="border-b-2 border-black">
               <th className="text-left py-1 px-2 font-bold">Item</th>
-              <th className="text-center py-1 px-2 w-12 font-bold">Qty</th>
-              <th className="text-right py-1 px-2 w-20 font-bold">Price</th>
-              <th className="text-center py-1 w-16 font-bold">In Stock?</th>
-              <th className="text-center py-1 w-16 font-bold">Packed?</th>
+              <th className="text-center py-1 px-2 w-14 font-bold">Qty</th>
+              <th className="text-right py-1 px-2 w-24 font-bold">Price</th>
+              <th className="text-center py-1 w-20 font-bold">In Stock?</th>
+              <th className="text-center py-1 w-20 font-bold">Packed?</th>
             </tr>
           </thead>
           <tbody>
@@ -2239,25 +2252,29 @@ export default function OrderDetailPage(): ReactElement {
                       <span className="text-gray-500 ml-1">({item.variantTitle})</span>
                     )}
                   </td>
-                  <td className="text-center py-1 px-2 font-bold text-base">{item.quantity}</td>
+                  <td className="text-center py-1 px-2 font-bold text-xl">{item.quantity}</td>
                   <td className="text-right py-1 px-2">${item.total.toFixed(2)}</td>
                   <td className="text-center py-1">
-                    <span className="inline-block w-4 h-4 border-2 border-black rounded-sm"></span>
+                    <span className="inline-block w-5 h-5 border-2 border-black rounded-sm"></span>
                   </td>
                   <td className="text-center py-1">
-                    <span className="inline-block w-4 h-4 border-2 border-black rounded-sm"></span>
+                    <span className="inline-block w-5 h-5 border-2 border-black rounded-sm"></span>
                   </td>
                 </tr>
                 {item.bundleComponents && item.bundleComponents.length > 0 && item.bundleComponents.map((bc, bcIdx) => (
                   <tr key={`${item.id}-bc-${bcIdx}`} className="border-b border-gray-200">
-                    <td className="py-0.5 pl-6 pr-2 text-gray-500 text-xs">
-                      |- {item.quantity * bc.quantity}x {bc.title}
+                    <td className="py-0.5 pl-6 pr-2 text-gray-500 text-[15px]">
+                      |- {bc.title}
                       {bc.variantTitle && bc.variantTitle !== 'Default Title' && ` (${bc.variantTitle})`}
                     </td>
+                    <td className="text-center py-0.5 text-base font-semibold text-gray-500">{item.quantity * bc.quantity}</td>
                     <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td className="text-center py-0.5">
+                      <span className="inline-block w-[18px] h-[18px] border-[1.5px] border-black rounded-sm"></span>
+                    </td>
+                    <td className="text-center py-0.5">
+                      <span className="inline-block w-[18px] h-[18px] border-[1.5px] border-black rounded-sm"></span>
+                    </td>
                   </tr>
                 ))}
               </>
@@ -2271,8 +2288,8 @@ export default function OrderDetailPage(): ReactElement {
               <td></td>
               <td></td>
               <td colSpan={2} className="text-center py-1.5">
-                <span className="font-bold text-xs mr-1">Order Complete?</span>
-                <span className="inline-block w-5 h-5 border-2 border-black rounded-sm align-middle"></span>
+                <span className="font-bold text-sm mr-1">Order Complete?</span>
+                <span className="inline-block w-6 h-6 border-2 border-black rounded-sm align-middle"></span>
               </td>
             </tr>
           </tfoot>
