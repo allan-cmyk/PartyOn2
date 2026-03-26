@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Print Sheet Preview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f3f4f6; padding: 24px; }
+  h2 { margin: 32px 0 12px; font-size: 14px; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; }
+  .sheet { width: 8.5in; background: white; padding: 20px; margin-bottom: 40px; border: 1px solid #d1d5db; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+  /* Banner */
+  .banner { padding: 12px 16px; border-radius: 6px; margin-bottom: 12px; overflow: hidden; }
+  .banner-marina { background: #2563eb; color: white; }
+  .banner-default { background: #facc15; color: #111; }
+  .banner-row1 { display: flex; align-items: center; gap: 16px; overflow: hidden; }
+  .banner-big { font-size: min(60px, 8vw); font-weight: 900; line-height: 1; letter-spacing: -2px; white-space: nowrap; }
+  .banner-sep { font-size: 48px; font-weight: 300; opacity: 0.5; line-height: 1; }
+  .banner-row2 { display: flex; justify-content: flex-end; align-items: center; gap: 16px; margin-top: 4px; }
+  .banner-partner { font-size: 21px; font-weight: 600; opacity: 0.85; }
+
+  /* Group order */
+  .group-banner { margin-bottom: 12px; padding: 6px 10px; border: 2px solid #3b82f6; background: #eff6ff; border-radius: 6px; font-size: 13px; font-weight: 700; }
+
+  /* Info boxes */
+  .info-row { display: flex; gap: 12px; margin-bottom: 12px; }
+  .info-box { flex: 1; border: 1px solid #9ca3af; border-radius: 6px; padding: 8px; }
+  .info-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #d1d5db; padding-bottom: 4px; margin-bottom: 4px; }
+  .info-box .name { font-size: 13px; font-weight: 700; }
+  .info-box .detail { font-size: 12px; color: #374151; }
+
+  /* Instructions / notes */
+  .instructions { margin-bottom: 12px; padding: 6px 10px; border: 2px solid #eab308; background: #fefce8; border-radius: 6px; font-size: 12px; }
+  .note { margin-bottom: 6px; padding: 4px 8px; border: 1px solid #9ca3af; border-radius: 4px; font-size: 12px; }
+  .note b, .instructions b { font-weight: 700; }
+
+  /* Items table */
+  table { width: 100%; border-collapse: collapse; font-size: 18px; margin-bottom: 12px; }
+  thead tr { border-bottom: 2px solid black; }
+  th { text-align: left; padding: 4px 8px; font-weight: 700; }
+  th.center { text-align: center; }
+  th.right { text-align: right; }
+  tbody tr { border-bottom: 1px solid #d1d5db; }
+  td { padding: 4px 8px; }
+  td.center { text-align: center; }
+  td.right { text-align: right; }
+  td.bold { font-weight: 700; font-size: 20px; }
+  .checkbox { display: inline-block; width: 20px; height: 20px; border: 2px solid black; border-radius: 2px; }
+  .checkbox-lg { width: 24px; height: 24px; }
+
+  /* Footer row */
+  tfoot tr { border-top: 2px solid black; }
+  tfoot td { padding: 6px 8px; font-weight: 700; }
+
+  /* Pricing */
+  .footer { display: flex; gap: 16px; }
+  .footer-left { flex: 1; }
+  .pricing { width: 200px; border: 1px solid #9ca3af; border-radius: 6px; overflow: hidden; font-size: 12px; }
+  .pricing-row { display: flex; justify-content: space-between; padding: 2px 8px; border-bottom: 1px solid #e5e7eb; }
+  .pricing-total { display: flex; justify-content: space-between; padding: 6px 8px; background: #f3f4f6; font-weight: 700; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<h2>Marina Order (Blue Banner)</h2>
+<div class="sheet">
+  <div class="banner banner-marina">
+    <div class="banner-row1">
+      <span class="banner-big">#52</span>
+      <span class="banner-sep">|</span>
+      <span class="banner-big">Johnson</span>
+      <span class="banner-sep">|</span>
+      <span class="banner-big">Friday 3 PM</span>
+    </div>
+    <div class="banner-row2">
+      <span class="banner-partner">Paradise Cove Marina</span>
+    </div>
+  </div>
+
+  <div class="group-banner">Group Order: Katie's Bachelorette</div>
+
+  <div class="info-row">
+    <div class="info-box">
+      <div class="info-label">Customer</div>
+      <div class="name">Katie Johnson</div>
+      <div class="detail">katie@email.com</div>
+      <div class="detail">Tel: (512) 555-5678</div>
+    </div>
+    <div class="info-box">
+      <div class="info-label">Delivery</div>
+      <div class="name">Fri, Mar 28 &middot; 3 PM</div>
+      <div class="detail">13993 FM 2769<br>Volente, TX 78641</div>
+      <div class="detail">Tel: (512) 555-1234</div>
+    </div>
+    <div class="info-box">
+      <div class="info-label">Partner</div>
+      <div class="name">Paradise Cove Marina</div>
+      <div class="detail">Mike Thompson</div>
+      <div class="detail">Tel: (512) 555-9012</div>
+    </div>
+  </div>
+
+  <div class="instructions"><b>Instructions: </b>Deliver to Slip #42, call when arriving at the gate.</div>
+
+  <div class="note"><b>Customer Note: </b>Bachelorette party, need everything by 2pm if possible!</div>
+  <div class="note" style="margin-bottom:12px"><b>Internal Note: </b>VIP - comp extra ice if available</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th class="center" style="width:48px">Qty</th>
+        <th class="right" style="width:80px">Price</th>
+        <th class="center" style="width:64px">In Stock?</th>
+        <th class="center" style="width:64px">Packed?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span style="font-weight:500">Tito's Handmade Vodka</span> <span style="color:#6b7280">(1L)</span></td>
+        <td class="center bold">4</td>
+        <td class="right">$111.96</td>
+        <td class="center"><span class="checkbox"></span></td>
+        <td class="center"><span class="checkbox"></span></td>
+      </tr>
+      <tr>
+        <td><span style="font-weight:500">Casamigos Tequila Blanco</span> <span style="color:#6b7280">(750ml)</span></td>
+        <td class="center bold">3</td>
+        <td class="right">$149.97</td>
+        <td class="center"><span class="checkbox"></span></td>
+        <td class="center"><span class="checkbox"></span></td>
+      </tr>
+      <tr>
+        <td><span style="font-weight:500">White Claw Variety 12-Pack</span></td>
+        <td class="center bold">6</td>
+        <td class="right">$119.94</td>
+        <td class="center"><span class="checkbox"></span></td>
+        <td class="center"><span class="checkbox"></span></td>
+      </tr>
+      <tr>
+        <td><span style="font-weight:500">Domaine Ste Michelle Brut</span> <span style="color:#6b7280">(750ml)</span></td>
+        <td class="center bold">8</td>
+        <td class="right">$119.92</td>
+        <td class="center"><span class="checkbox"></span></td>
+        <td class="center"><span class="checkbox"></span></td>
+      </tr>
+      <tr>
+        <td><span style="font-weight:500">Party Starter Bundle</span></td>
+        <td class="center bold">1</td>
+        <td class="right">$74.99</td>
+        <td class="center"><span class="checkbox"></span></td>
+        <td class="center"><span class="checkbox"></span></td>
+      </tr>
+      <tr style="border-bottom:1px solid #e5e7eb">
+        <td style="padding:2px 8px 2px 24px; color:#6b7280; font-size:15px">|-Ranch Water Mix</td>
+        <td class="center" style="font-weight:600; font-size:16px; color:#6b7280">2</td>
+        <td></td>
+        <td class="center"><span class="checkbox" style="width:18px;height:18px;border-width:1.5px"></span></td>
+        <td class="center"><span class="checkbox" style="width:18px;height:18px;border-width:1.5px"></span></td>
+      </tr>
+      <tr style="border-bottom:1px solid #e5e7eb">
+        <td style="padding:2px 8px 2px 24px; color:#6b7280; font-size:15px">|-Topo Chico 12-Pack</td>
+        <td class="center" style="font-weight:600; font-size:16px; color:#6b7280">1</td>
+        <td></td>
+        <td class="center"><span class="checkbox" style="width:18px;height:18px;border-width:1.5px"></span></td>
+        <td class="center"><span class="checkbox" style="width:18px;height:18px;border-width:1.5px"></span></td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td>Total Items: 22</td>
+        <td></td>
+        <td></td>
+        <td colspan="2" class="center">
+          <span style="font-size:11px; font-weight:700; margin-right:4px;">Order Complete?</span>
+          <span class="checkbox checkbox-lg" style="vertical-align:middle"></span>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div class="footer">
+    <div class="footer-left">
+      <div style="font-size:12px"><b>Discount: </b><code>PARADISECOVE</code> (-$30.00)</div>
+    </div>
+    <div class="pricing">
+      <div class="pricing-row"><span>Subtotal</span><span>$576.78</span></div>
+      <div class="pricing-row"><span>Discount</span><span>-$30.00</span></div>
+      <div class="pricing-row"><span>Delivery</span><span>$0.00</span></div>
+      <div class="pricing-row"><span>Tax</span><span>$45.11</span></div>
+      <div class="pricing-total"><span>TOTAL</span><span>$591.89</span></div>
+    </div>
+  </div>
+</div>
+
+<h2>Regular Order (Yellow Banner)</h2>
+<div class="sheet">
+  <div class="banner banner-default">
+    <div class="banner-row1">
+      <span class="banner-big">#48</span>
+      <span class="banner-sep">|</span>
+      <span class="banner-big">Rivera</span>
+      <span class="banner-sep">|</span>
+      <span class="banner-big">Saturday 11 AM</span>
+    </div>
+    <div class="banner-row2">
+    </div>
+  </div>
+
+  <div class="info-row">
+    <div class="info-box">
+      <div class="info-label">Customer</div>
+      <div class="name">Jake Rivera</div>
+      <div class="detail">jake.rivera@email.com</div>
+      <div class="detail">Tel: (512) 555-4444</div>
+    </div>
+    <div class="info-box">
+      <div class="info-label">Delivery</div>
+      <div class="name">Sat, Apr 5 &middot; 11 AM</div>
+      <div class="detail">1234 S Lamar Blvd<br>Austin, TX 78704</div>
+      <div class="detail">Tel: (512) 555-3333</div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th class="center" style="width:48px">Qty</th>
+        <th class="right" style="width:80px">Price</th>
+        <th class="center" style="width:64px">In Stock?</th>
+        <th class="center" style="width:64px">Packed?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span style="font-weight:500">Jameson Irish Whiskey</span> <span style="color:#6b7280">(750ml)</span></td>
+        <td class="center bold">2</td>
+        <td class="right">$69.98</td>
+        <td class="center"><span class="checkbox"></span></td>
+        <td class="center"><span class="checkbox"></span></td>
+      </tr>
+      <tr>
+        <td><span style="font-weight:500">Corona Extra 24-Pack</span></td>
+        <td class="center bold">2</td>
+        <td class="right">$55.98</td>
+        <td class="center"><span class="checkbox"></span></td>
+        <td class="center"><span class="checkbox"></span></td>
+      </tr>
+      <tr>
+        <td><span style="font-weight:500">14 Hands Cabernet Sauvignon</span> <span style="color:#6b7280">(750ml)</span></td>
+        <td class="center bold">3</td>
+        <td class="right">$41.97</td>
+        <td class="center"><span class="checkbox"></span></td>
+        <td class="center"><span class="checkbox"></span></td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td>Total Items: 7</td>
+        <td></td>
+        <td></td>
+        <td colspan="2" class="center">
+          <span style="font-size:11px; font-weight:700; margin-right:4px;">Order Complete?</span>
+          <span class="checkbox checkbox-lg" style="vertical-align:middle"></span>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div class="footer">
+    <div class="footer-left"></div>
+    <div class="pricing">
+      <div class="pricing-row"><span>Subtotal</span><span>$167.93</span></div>
+      <div class="pricing-row"><span>Delivery</span><span>$14.99</span></div>
+      <div class="pricing-row"><span>Tax</span><span>$13.85</span></div>
+      <div class="pricing-total"><span>TOTAL</span><span>$196.77</span></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
