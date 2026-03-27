@@ -51,6 +51,9 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       );
     }
 
+    // Base URL for resolving relative image paths
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';
+
     // Build line items for Stripe
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
 
@@ -62,7 +65,9 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
           product_data: {
             name: item.title,
             description: item.variantTitle || undefined,
-            images: item.imageUrl ? [item.imageUrl] : undefined,
+            images: item.imageUrl
+              ? [item.imageUrl.startsWith('http') ? item.imageUrl : `${baseUrl}${item.imageUrl}`]
+              : undefined,
             metadata: {
               productId: item.productId,
               variantId: item.variantId,
@@ -112,7 +117,6 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     }
 
     // Build success and cancel URLs
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';
     const successUrl = `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
     const cancelUrl = `${baseUrl}/invoice/${token}?cancelled=true`;
 
