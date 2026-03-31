@@ -1,6 +1,7 @@
 /**
  * GET /api/v2/group-orders/[code]/recommendations?guests=30&duration=4h&drinkTypes=beer,seltzers
  * Generate drink recommendations using the drink planner logic, matched to real products.
+ * Reads partyType from the GroupOrderV2 record to determine which recommendation track to use.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -13,26 +14,36 @@ interface RouteParams {
   params: Promise<{ code: string }>;
 }
 
+// Map DB PartyType enum to EventType used by the algorithm
+const PARTY_TYPE_TO_EVENT: Record<string, EventType> = {
+  BACHELOR: 'bachelor',
+  BACHELORETTE: 'bachelorette',
+  WEDDING: 'wedding',
+  CORPORATE: 'corporate',
+  HOUSE_PARTY: 'house-party',
+  BOAT: 'boat-day',
+  BACH: 'weekend-trip',
+  OTHER: 'other',
+};
+
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    await params; // consume route params
+    const { code } = await params;
 
     const searchParams = request.nextUrl.searchParams;
     const guests = parseInt(searchParams.get('guests') || '20');
     const duration = (searchParams.get('duration') || '4h') as Duration;
     const drinkTypesParam = searchParams.get('drinkTypes') || 'beer,seltzers';
     const drinkCategories = drinkTypesParam.split(',').filter(Boolean) as DrinkCategory[];
-    const partyType = searchParams.get('partyType') || null;
 
-    // Map partyType to eventType for the quiz
-    const eventTypeMap: Record<string, EventType> = {
-      BACHELOR: 'bachelor',
-      BACHELORETTE: 'bachelorette',
-      WEDDING: 'wedding',
-      CORPORATE: 'corporate',
-      HOUSE_PARTY: 'house-party',
-    };
-    const eventType: EventType = (partyType && eventTypeMap[partyType]) || 'house-party';
+    // Read partyType from the GroupOrderV2 record
+    const groupOrder = await prisma.groupOrderV2.findFirst({
+      where: { shareCode: code },
+      select: { partyType: true },
+    });
+
+    const partyType = groupOrder?.partyType || null;
+    const eventType: EventType = (partyType && PARTY_TYPE_TO_EVENT[partyType]) || 'house-party';
 
     // Build a minimal QuizState to pass to the calculator
     const quizState: QuizState = {
@@ -57,10 +68,12 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     // Match recommendations to real products in DB
     const matchedRecs = [];
     for (const rec of results.recommendations) {
-      const searchTerm = SEARCH_OVERRIDES[rec.name] || rec.searchQuery || rec.name;
+      const override = SEARCH_OVERRIDES[rec.name];
+      const searchTerm = override ? override.search : (rec.searchQuery || rec.name);
+      const variantHint = override?.variantHint;
 
-      // Search for product by title
-      const product = await prisma.product.findFirst({
+      // Find matching products -- if we have a variantHint, fetch multiple to pick the right one
+      const products = await prisma.product.findMany({
         where: {
           status: 'ACTIVE',
           title: { contains: searchTerm, mode: 'insensitive' },
@@ -70,15 +83,31 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
           variants: {
             include: { image: true },
             orderBy: { createdAt: 'asc' },
-            take: 1,
           },
           categories: { include: { category: true } },
         },
+        take: 10,
       });
 
+      // Pick the best product match -- prefer one whose title contains the variantHint
+      let product = products[0] || null;
+      if (variantHint && products.length > 1) {
+        const hintMatch = products.find(p =>
+          p.title.toLowerCase().includes(variantHint.toLowerCase())
+        );
+        if (hintMatch) product = hintMatch;
+      }
+
       if (product && product.variants.length > 0) {
-        const variant = product.variants[0];
-        // Need to pass bundleComponents for transformToProduct
+        // Pick the best variant -- prefer one matching variantHint
+        let variant = product.variants[0];
+        if (variantHint && product.variants.length > 1) {
+          const vMatch = product.variants.find(v =>
+            v.title.toLowerCase().includes(variantHint.toLowerCase())
+          );
+          if (vMatch) variant = vMatch;
+        }
+
         const fullProduct = {
           ...product,
           bundleComponents: [],
@@ -103,7 +132,6 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
           },
         });
       } else {
-        // Include rec without matched product
         matchedRecs.push({
           name: rec.name,
           searchQuery: rec.searchQuery,

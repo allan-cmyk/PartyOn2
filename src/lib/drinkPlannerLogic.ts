@@ -5,23 +5,14 @@ import type {
   StepId,
   DrinkCategory,
   EventType,
-  DrinkingVibe,
   Duration,
   QuizAction,
 } from './drinkPlannerTypes';
 import { EVENT_TYPE_LABELS, VIBE_LABELS, DURATION_LABELS } from './drinkPlannerTypes';
 
-// Drinks per person per hour based on event type and vibe
-const DRINKS_PER_HOUR: Record<EventType, Record<DrinkingVibe, number>> = {
-  'bachelor':      { light: 1.5,  social: 2.0,  party: 2.5  },
-  'bachelorette':  { light: 1.25, social: 1.75, party: 2.0  },
-  'house-party':   { light: 1.25, social: 1.75, party: 2.25 },
-  'corporate':     { light: 1.0,  social: 1.5,  party: 1.75 },
-  'wedding':       { light: 1.0,  social: 1.5,  party: 2.0  },
-  'boat-day':      { light: 1.5,  social: 2.0,  party: 2.5  },
-  'weekend-trip':  { light: 1.25, social: 1.75, party: 2.25 },
-  'other':         { light: 1.25, social: 1.75, party: 2.0  },
-};
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
 
 const DURATION_HOURS: Record<Duration, number> = {
   '2h': 2,
@@ -32,57 +23,113 @@ const DURATION_HOURS: Record<Duration, number> = {
   'multi-day': 16,
 };
 
-// Hardcoded estimated prices from the store (used for cost estimation only)
-const ESTIMATED_PRICES: Record<string, number> = {
-  'Miller Lite 24pk': 29.99,
-  'Modelo 24pk': 34.99,
-  'Austin Beerworks': 12.99,
-  'High Noon Variety': 24.99,
-  'Ranch Water': 19.99,
-  'White Claw Variety': 19.99,
-  'Dark Horse Pinot Grigio': 12.99,
-  'Jam Cellars Chardonnay': 14.99,
-  'La Marca Prosecco': 16.99,
-  'Wycliff Brut Rose': 9.99,
-  'Andre Brut': 8.99,
-  'The Classic Austin Rita': 49.99,
-  "Tito's Lemonade Kit": 44.99,
-  'Rum Punch Kit': 44.99,
-  'The Hill Country Old-Fashioned': 54.99,
-  'Aperol Spritz Kit': 49.99,
-  'Espresso Martini Kit': 54.99,
-  'Margarita Kit': 44.99,
-  'Ice Bags': 4.99,
-  'Topo Chico Mineral Water': 14.99,
-  'Liquid Death': 14.99,
+// Boat/Bach track: flat 2 drinks/person/hour
+const BOAT_BACH_RATE = 2;
+
+// "Everything Else" track event types
+const BOAT_BACH_TYPES: EventType[] = ['boat-day', 'bachelor', 'bachelorette', 'weekend-trip'];
+
+function isBoatBachTrack(eventType: EventType): boolean {
+  return BOAT_BACH_TYPES.includes(eventType);
+}
+
+// Default category split for "Everything Else" track (without cocktail kits)
+// These are the base weights -- when categories are deselected, we redistribute proportionally
+const EVERYTHING_ELSE_BASE_SPLIT: Record<string, number> = {
+  spirits: 0.50,
+  beer: 0.30,
+  seltzers: 0.05,
+  wine: 0.15,
 };
 
-// Product search queries for the product search API
-export const SEARCH_OVERRIDES: Record<string, string> = {
-  'Ice Bags': 'ice bag',
-  'Miller Lite 24pk': 'Miller Lite 24',
-  'Modelo 24pk': 'Modelo Especial 24',
-  'Austin Beerworks': 'Austin Beerworks',
-  'High Noon Variety': 'High Noon',
-  'Surfside Variety': 'Surfside',
-  'White Claw Variety': 'White Claw',
-  'Ranch Water': 'Ranch Water',
-  'Topo Chico Seltzer': 'Topo Chico Hard Seltzer',
-  'Austin Rita Kit': 'Austin Rita',
-  "Tito's Lemonade Kit": "Tito's Lemonade",
-  'Rum Punch Kit': 'Rum Punch',
-  'Old-Fashioned Kit': 'Old-Fashioned',
-  'Aperol Spritz Kit': 'Aperol Spritz',
-  'Espresso Martini Kit': 'Espresso Martini',
-  'Margarita Kit': 'Margarita',
-  'Dark Horse Pinot Grigio': 'Dark Horse Pinot Grigio',
-  'Jam Cellars Chardonnay': 'Jam Cellars',
-  'La Marca Prosecco': 'La Marca',
-  'Wycliff Brut Rose': 'Wycliff',
-  'Andre Brut': 'Andre Brut',
-  'Topo Chico Mineral Water': 'Topo Chico Mineral',
-  'Liquid Death': 'Liquid Death',
+// When cocktail kits ARE selected on the Everything Else track, spirits share is reduced
+const EVERYTHING_ELSE_KITS_SPLIT: Record<string, number> = {
+  'cocktail-kits': 0.35,
+  spirits: 0.15,
+  beer: 0.30,
+  seltzers: 0.05,
+  wine: 0.15,
 };
+
+// Product search queries -- maps recommendation name to DB search term
+// DB titles use bullet separator: "Miller Lite \u2022 24 Pack 12oz Can"
+// Search terms must match text on ONE side of the bullet, not span across it.
+// For multi-variant products, we also store the preferred variant title to disambiguate.
+export const SEARCH_OVERRIDES: Record<string, { search: string; variantHint?: string }> = {
+  // Beer
+  'Miller Lite 24pk': { search: 'Miller Lite', variantHint: '24 Pack' },
+  'Modelo Especial 24pk': { search: 'Modelo Especial', variantHint: '24 Pack' },
+  'Austin Beerworks Variety 12pk': { search: 'Austin Beerworks Variety' },
+  // Seltzers
+  'High Noon Variety 12pk': { search: 'High Noon Variety Pack', variantHint: '12 Pack' },
+  'White Claw Variety 24pk': { search: 'White Claw Variety', variantHint: '24 Pack' },
+  'Surfside Starter Pack': { search: 'Surfside Starter' },
+  // Wine
+  'Dark Horse Pinot Grigio': { search: 'Dark Horse Pinot Grigio' },
+  '14 Hands Cabernet Sauvignon': { search: '14 Hands Cabernet' },
+  // Spirits
+  'Espolon Tequila Blanco': { search: 'Espolon Tequila Blanco', variantHint: '750ml' },
+  "Tito's Handmade Vodka 1L": { search: "Tito's Handmade Vodka", variantHint: '1L' },
+  'Still Austin Bourbon': { search: 'Still Austin Straight Bourbon' },
+  'Island Getaway White Rum': { search: 'Island Getaway White Rum' },
+  'Dripping Springs Artisan Gin': { search: 'Dripping Springs Artisan Gin' },
+  // Cocktail kits
+  'Lady Bird Margarita': { search: 'Lady Bird Margarita' },
+  'Barton Springs Mojito': { search: 'Barton Springs Mojito' },
+  'Eastside Gin & Tonic': { search: 'Eastside Gin' },
+  // Ice
+  'Ice Bags': { search: 'Bag of Ice' },
+};
+
+// Estimated prices for cost summary (approximate)
+const ESTIMATED_PRICES: Record<string, number> = {
+  'Miller Lite 24pk': 29.99,
+  'Modelo Especial 24pk': 34.99,
+  'Austin Beerworks Variety 12pk': 12.99,
+  'High Noon Variety 12pk': 24.99,
+  'White Claw Variety 24pk': 29.99,
+  'Surfside Starter Pack': 19.99,
+  'Dark Horse Pinot Grigio': 12.99,
+  '14 Hands Cabernet Sauvignon': 14.99,
+  'Espolon Tequila Blanco': 29.99,
+  "Tito's Handmade Vodka 1L": 34.99,
+  'Still Austin Bourbon': 39.99,
+  'Island Getaway White Rum': 24.99,
+  'Dripping Springs Artisan Gin': 29.99,
+  'Lady Bird Margarita': 59.99,
+  'Barton Springs Mojito': 59.99,
+  'Eastside Gin & Tonic': 59.99,
+  'Ice Bags': 4.99,
+};
+
+// Servings per unit for converting drink counts to product quantities
+const SERVINGS_PER_UNIT: Record<string, number> = {
+  // Beer
+  'Miller Lite 24pk': 24,
+  'Modelo Especial 24pk': 24,
+  'Austin Beerworks Variety 12pk': 12,
+  // Seltzers
+  'High Noon Variety 12pk': 12,
+  'White Claw Variety 24pk': 24,
+  'Surfside Starter Pack': 12, // approximate
+  // Wine (750ml = 5 glasses)
+  'Dark Horse Pinot Grigio': 5,
+  '14 Hands Cabernet Sauvignon': 5,
+  // Spirits (750ml = 17, 1L = 22)
+  'Espolon Tequila Blanco': 17,
+  "Tito's Handmade Vodka 1L": 22,
+  'Still Austin Bourbon': 17,
+  'Island Getaway White Rum': 17,
+  'Dripping Springs Artisan Gin': 17,
+  // Cocktail kits
+  'Lady Bird Margarita': 16,
+  'Barton Springs Mojito': 16,
+  'Eastside Gin & Tonic': 16,
+};
+
+// ---------------------------------------------------------------------------
+// Quiz stepper functions (unchanged -- used by standalone quiz page)
+// ---------------------------------------------------------------------------
 
 export function getSteps(state: QuizState): StepId[] {
   const steps: StepId[] = [
@@ -121,12 +168,9 @@ export function getPrevStep(state: QuizState): StepId | null {
 
 export function getGuestValues(eventType: EventType | null): number[] {
   const values: number[] = [];
-  // 5-20 by 1s
   for (let i = 5; i <= 20; i++) values.push(i);
   const max = (eventType === 'boat-day' || eventType === 'weekend-trip') ? 50 : 200;
-  // 25-100 by 5s (or up to max)
   for (let i = 25; i <= Math.min(100, max); i += 5) values.push(i);
-  // 110-200 by 10s (if max allows)
   if (max > 100) {
     for (let i = 110; i <= max; i += 10) values.push(i);
   }
@@ -151,6 +195,10 @@ export function getGuestStep(value: number): number {
   return value >= 100 ? 10 : 5;
 }
 
+// ---------------------------------------------------------------------------
+// Core recommendation algorithm
+// ---------------------------------------------------------------------------
+
 function calculateEstimatedCost(recommendations: ProductRecommendation[]): number {
   let total = 0;
   for (const rec of recommendations) {
@@ -160,140 +208,228 @@ function calculateEstimatedCost(recommendations: ProductRecommendation[]): numbe
   return Math.round(total * 100) / 100;
 }
 
+function roundUp(n: number): number {
+  return Math.max(1, Math.ceil(n));
+}
+
+function addProduct(
+  recs: ProductRecommendation[],
+  name: string,
+  drinks: number,
+  unit: string,
+  category: DrinkCategory | 'ice',
+) {
+  const servings = SERVINGS_PER_UNIT[name] || 1;
+  const qty = roundUp(drinks / servings);
+  const override = SEARCH_OVERRIDES[name];
+  recs.push({
+    name,
+    searchQuery: override ? override.search : name,
+    quantity: qty,
+    unit,
+    category,
+  });
+}
+
+function addBeerRecs(recs: ProductRecommendation[], beerDrinks: number) {
+  // 40% Miller Lite 24pk, 40% Modelo 24pk, 20% Austin Beerworks 12pk
+  addProduct(recs, 'Miller Lite 24pk', beerDrinks * 0.4, '24-pack', 'beer');
+  addProduct(recs, 'Modelo Especial 24pk', beerDrinks * 0.4, '24-pack', 'beer');
+  addProduct(recs, 'Austin Beerworks Variety 12pk', beerDrinks * 0.2, '12-pack', 'beer');
+}
+
+function addSeltzerRecs(recs: ProductRecommendation[], seltzerDrinks: number) {
+  // 40% High Noon 12pk, 30% White Claw 24pk, 30% Surfside
+  addProduct(recs, 'High Noon Variety 12pk', seltzerDrinks * 0.4, '12-pack', 'seltzers');
+  addProduct(recs, 'White Claw Variety 24pk', seltzerDrinks * 0.3, '24-pack', 'seltzers');
+  addProduct(recs, 'Surfside Starter Pack', seltzerDrinks * 0.3, 'pack', 'seltzers');
+}
+
+function addWineRecs(recs: ProductRecommendation[], wineDrinks: number) {
+  // 50/50 Dark Horse Pinot Grigio and 14 Hands Cabernet
+  addProduct(recs, 'Dark Horse Pinot Grigio', wineDrinks * 0.5, 'bottle', 'wine');
+  addProduct(recs, '14 Hands Cabernet Sauvignon', wineDrinks * 0.5, 'bottle', 'wine');
+}
+
+function addSpiritRecs(recs: ProductRecommendation[], spiritDrinks: number) {
+  // 40% Espolon, 30% Tito's, 10% Still Austin, 10% Rum, 10% Gin
+  addProduct(recs, 'Espolon Tequila Blanco', spiritDrinks * 0.4, 'bottle', 'spirits');
+  addProduct(recs, "Tito's Handmade Vodka 1L", spiritDrinks * 0.3, 'bottle', 'spirits');
+  addProduct(recs, 'Still Austin Bourbon', spiritDrinks * 0.1, 'bottle', 'spirits');
+  addProduct(recs, 'Island Getaway White Rum', spiritDrinks * 0.1, 'bottle', 'spirits');
+  addProduct(recs, 'Dripping Springs Artisan Gin', spiritDrinks * 0.1, 'bottle', 'spirits');
+}
+
+function addCocktailKitRecs(recs: ProductRecommendation[], kitDrinks: number) {
+  // 3 kits, split evenly, minimum 1 of each
+  const kitsPerType = Math.max(1, roundUp(kitDrinks / 16 / 3));
+  const kitNames = ['Lady Bird Margarita', 'Barton Springs Mojito', 'Eastside Gin & Tonic'] as const;
+  for (const name of kitNames) {
+    const override = SEARCH_OVERRIDES[name];
+    recs.push({
+      name,
+      searchQuery: override ? override.search : name,
+      quantity: kitsPerType,
+      unit: 'kit',
+      category: 'cocktail-kits',
+    });
+  }
+}
+
+/**
+ * Redistribute category shares proportionally when some categories are not selected.
+ * Returns a map of selected category -> share of total drinks.
+ */
+function getSelectedShares(
+  baseSplit: Record<string, number>,
+  selectedCategories: DrinkCategory[],
+): Record<string, number> {
+  // Sum up the weights of selected categories
+  let selectedTotal = 0;
+  for (const cat of selectedCategories) {
+    if (baseSplit[cat] !== undefined) {
+      selectedTotal += baseSplit[cat];
+    }
+  }
+
+  // If nothing matched the base split, distribute evenly
+  if (selectedTotal === 0) {
+    const even = 1 / selectedCategories.length;
+    const result: Record<string, number> = {};
+    for (const cat of selectedCategories) {
+      result[cat] = even;
+    }
+    return result;
+  }
+
+  // Redistribute proportionally so shares sum to 1.0
+  const result: Record<string, number> = {};
+  for (const cat of selectedCategories) {
+    if (baseSplit[cat] !== undefined) {
+      result[cat] = baseSplit[cat] / selectedTotal;
+    }
+  }
+  return result;
+}
+
 export function calculateQuizResults(state: QuizState): QuizResults {
   const eventType = state.eventType || 'other';
-  const vibe = state.drinkingVibe || 'social';
   const duration = state.duration || '4h';
   const guests = state.guestCount || 20;
-  const isPremium = state.packageTier === 'premium';
-
-  const rate = DRINKS_PER_HOUR[eventType][vibe];
   const hours = DURATION_HOURS[duration];
-  const totalDrinks = Math.ceil(guests * hours * rate);
 
-  // Reduce drinks based on cocktail/wine selections
-  const hasCocktails = state.drinkCategories.includes('cocktail-kits');
-  const hasWine = state.drinkCategories.includes('wine') || state.drinkCategories.includes('champagne');
-  let reductionFactor = 1.0;
-  if (hasCocktails && hasWine) reductionFactor = 0.65;
-  else if (hasCocktails) reductionFactor = 0.75;
-  else if (hasWine) reductionFactor = 0.85;
+  const boatBach = isBoatBachTrack(eventType);
 
-  const adjustedDrinks = Math.ceil(totalDrinks * reductionFactor);
-  const premiumMultiplier = isPremium ? 1.25 : 1.0;
+  // Calculate total drinks
+  let totalDrinks: number;
+  if (boatBach) {
+    // Boat/Bach: flat rate
+    totalDrinks = Math.ceil(guests * hours * BOAT_BACH_RATE);
+  } else {
+    // Everything Else: guests x (hours + 1) -- heavier first hour
+    totalDrinks = Math.ceil(guests * (hours + 1));
+  }
 
   const recommendations: ProductRecommendation[] = [];
+  const selectedCategories = state.drinkCategories.length > 0
+    ? state.drinkCategories
+    : (boatBach ? ['beer', 'seltzers', 'cocktail-kits'] : ['beer', 'wine', 'spirits']) as DrinkCategory[];
 
-  // Beer recommendations
-  if (state.drinkCategories.includes('beer')) {
-    const beerDrinks = calculateCategoryDrinks(adjustedDrinks, state.drinkCategories);
-    const beerTotal = Math.ceil(beerDrinks * premiumMultiplier);
+  if (boatBach) {
+    // -----------------------------------------------------------------------
+    // TRACK 1: Boat Party / Bach Weekend
+    // Even split among selected categories, redistributed proportionally
+    // -----------------------------------------------------------------------
+    const boatBaseSplit: Record<string, number> = {
+      beer: 1 / 3,
+      seltzers: 1 / 3,
+      'cocktail-kits': 1 / 3,
+      // If they select wine or spirits on boat/bach, give them equal share too
+      wine: 1 / 3,
+      spirits: 1 / 3,
+    };
 
-    // Split between two beer brands
-    const millerQty = roundToPackSize(Math.ceil(beerTotal * 0.5), 24);
-    const modeloQty = roundToPackSize(Math.ceil(beerTotal * 0.5), 24);
+    const shares = getSelectedShares(boatBaseSplit, selectedCategories);
 
-    recommendations.push({
-      name: 'Miller Lite 24pk',
-      searchQuery: 'Miller Lite 24',
-      quantity: millerQty / 24,
-      unit: '24-pack',
-      category: 'beer',
-      premiumAlternative: isPremium ? undefined : { name: 'Austin Beerworks', searchQuery: 'Austin Beerworks' },
-    });
-    recommendations.push({
-      name: 'Modelo 24pk',
-      searchQuery: 'Modelo Especial 24',
-      quantity: modeloQty / 24,
-      unit: '24-pack',
-      category: 'beer',
-    });
+    for (const [cat, share] of Object.entries(shares)) {
+      const drinks = totalDrinks * share;
+      switch (cat) {
+        case 'beer': addBeerRecs(recommendations, drinks); break;
+        case 'seltzers': addSeltzerRecs(recommendations, drinks); break;
+        case 'cocktail-kits': addCocktailKitRecs(recommendations, drinks); break;
+        case 'wine': addWineRecs(recommendations, drinks); break;
+        case 'spirits': addSpiritRecs(recommendations, drinks); break;
+      }
+    }
+  } else {
+    // -----------------------------------------------------------------------
+    // TRACK 2: Everything Else (Wedding, Corporate, House Party, etc.)
+    // -----------------------------------------------------------------------
+    const hasKits = selectedCategories.includes('cocktail-kits');
+    const baseSplit = hasKits ? EVERYTHING_ELSE_KITS_SPLIT : EVERYTHING_ELSE_BASE_SPLIT;
+
+    // Build the effective category list:
+    // - Always include seltzers at 5% (High Noon) even if not explicitly selected
+    const effectiveCategories = [...selectedCategories];
+    if (!effectiveCategories.includes('seltzers')) {
+      effectiveCategories.push('seltzers');
+    }
+
+    // Single category cap: if only 1 category was explicitly selected (before auto-seltzer),
+    // cap that category at 70% and show complementary picks for the other 30%
+    const singleCategory = selectedCategories.length === 1;
+
+    if (singleCategory) {
+      const mainCat = selectedCategories[0];
+      const mainDrinks = totalDrinks * 0.70;
+      const complementaryDrinks = totalDrinks * 0.30;
+
+      // Add main category
+      switch (mainCat) {
+        case 'beer': addBeerRecs(recommendations, mainDrinks); break;
+        case 'seltzers': addSeltzerRecs(recommendations, mainDrinks); break;
+        case 'wine': addWineRecs(recommendations, mainDrinks); break;
+        case 'spirits': addSpiritRecs(recommendations, mainDrinks); break;
+        case 'cocktail-kits': addCocktailKitRecs(recommendations, mainDrinks); break;
+      }
+
+      // Add complementary picks from the best complementary categories
+      // (spirits if they picked beer, beer if they picked spirits, etc.)
+      const complementaryPicks: DrinkCategory[] = [];
+      if (mainCat !== 'beer') complementaryPicks.push('beer');
+      if (mainCat !== 'spirits' && mainCat !== 'cocktail-kits') complementaryPicks.push('spirits');
+      if (mainCat !== 'wine') complementaryPicks.push('wine');
+
+      // Split complementary drinks evenly among complementary categories
+      const compShare = complementaryDrinks / complementaryPicks.length;
+      for (const cat of complementaryPicks) {
+        switch (cat) {
+          case 'beer': addBeerRecs(recommendations, compShare); break;
+          case 'spirits': addSpiritRecs(recommendations, compShare); break;
+          case 'wine': addWineRecs(recommendations, compShare); break;
+          case 'seltzers': addSeltzerRecs(recommendations, compShare); break;
+          case 'cocktail-kits': addCocktailKitRecs(recommendations, compShare); break;
+        }
+      }
+    } else {
+      // Multiple categories selected -- use proportional redistribution
+      const shares = getSelectedShares(baseSplit, effectiveCategories);
+
+      for (const [cat, share] of Object.entries(shares)) {
+        const drinks = totalDrinks * share;
+        switch (cat) {
+          case 'beer': addBeerRecs(recommendations, drinks); break;
+          case 'seltzers': addSeltzerRecs(recommendations, drinks); break;
+          case 'wine': addWineRecs(recommendations, drinks); break;
+          case 'spirits': addSpiritRecs(recommendations, drinks); break;
+          case 'cocktail-kits': addCocktailKitRecs(recommendations, drinks); break;
+        }
+      }
+    }
   }
 
-  // Seltzers
-  if (state.drinkCategories.includes('seltzers')) {
-    const seltzerDrinks = calculateCategoryDrinks(adjustedDrinks, state.drinkCategories);
-    const seltzerTotal = Math.ceil(seltzerDrinks * premiumMultiplier);
-
-    const highNoonQty = roundToPackSize(Math.ceil(seltzerTotal * 0.4), 12);
-    const ranchWaterQty = roundToPackSize(Math.ceil(seltzerTotal * 0.3), 12);
-    const whiteClawQty = roundToPackSize(Math.ceil(seltzerTotal * 0.3), 12);
-
-    recommendations.push({
-      name: 'High Noon Variety',
-      searchQuery: 'High Noon',
-      quantity: highNoonQty / 12,
-      unit: '12-pack',
-      category: 'seltzers',
-    });
-    recommendations.push({
-      name: 'Ranch Water',
-      searchQuery: 'Ranch Water',
-      quantity: ranchWaterQty / 12,
-      unit: '12-pack',
-      category: 'seltzers',
-    });
-    recommendations.push({
-      name: 'White Claw Variety',
-      searchQuery: 'White Claw',
-      quantity: whiteClawQty / 12,
-      unit: '12-pack',
-      category: 'seltzers',
-    });
-  }
-
-  // Wine
-  if (state.drinkCategories.includes('wine')) {
-    const wineServings = Math.ceil(guests * 0.3 * premiumMultiplier);
-    const bottles = Math.ceil(wineServings / 5); // 5 glasses per bottle
-    const half = Math.ceil(bottles / 2);
-
-    recommendations.push({
-      name: 'Dark Horse Pinot Grigio',
-      searchQuery: 'Dark Horse Pinot Grigio',
-      quantity: half,
-      unit: 'bottle',
-      category: 'wine',
-    });
-    recommendations.push({
-      name: 'Jam Cellars Chardonnay',
-      searchQuery: 'Jam Cellars',
-      quantity: bottles - half,
-      unit: 'bottle',
-      category: 'wine',
-    });
-  }
-
-  // Champagne
-  if (state.drinkCategories.includes('champagne')) {
-    const champServings = Math.ceil(guests * 0.25 * premiumMultiplier);
-    const bottles = Math.ceil(champServings / 5);
-    const half = Math.ceil(bottles / 2);
-
-    recommendations.push({
-      name: 'La Marca Prosecco',
-      searchQuery: 'La Marca',
-      quantity: half,
-      unit: 'bottle',
-      category: 'champagne',
-    });
-    recommendations.push({
-      name: 'Wycliff Brut Rose',
-      searchQuery: 'Wycliff',
-      quantity: bottles - half,
-      unit: 'bottle',
-      category: 'champagne',
-    });
-  }
-
-  // Cocktail kits
-  if (state.drinkCategories.includes('cocktail-kits')) {
-    const cocktailKits = getCocktailRecommendations(state, isPremium);
-    recommendations.push(...cocktailKits);
-  }
-
-  // Ice
-  const iceBags = Math.ceil(guests / 4 * premiumMultiplier);
+  // Ice: 1 bag per 10 guests, always
+  const iceBags = roundUp(guests / 10);
   recommendations.push({
     name: 'Ice Bags',
     searchQuery: 'ice bag',
@@ -301,18 +437,6 @@ export function calculateQuizResults(state: QuizState): QuizResults {
     unit: 'bag',
     category: 'ice',
   });
-
-  // NA/Water extras
-  if (state.extras.includes('na-water')) {
-    const waterPacks = Math.ceil(guests / 12);
-    recommendations.push({
-      name: 'Topo Chico Mineral Water',
-      searchQuery: 'Topo Chico Mineral',
-      quantity: waterPacks,
-      unit: '12-pack',
-      category: 'extras',
-    });
-  }
 
   const filtered = recommendations.filter(r => r.quantity > 0);
 
@@ -324,88 +448,24 @@ export function calculateQuizResults(state: QuizState): QuizResults {
       eventType: EVENT_TYPE_LABELS[eventType],
       guestCount: guests,
       duration: DURATION_LABELS[duration],
-      vibe: VIBE_LABELS[vibe].label,
+      vibe: VIBE_LABELS[state.drinkingVibe || 'social'].label,
     },
   };
 }
 
-function calculateCategoryDrinks(
-  totalDrinks: number,
-  categories: DrinkCategory[]
-): number {
-  // Only count beer/seltzer categories for the main drink split
-  const mainCategories = categories.filter(c => c === 'beer' || c === 'seltzers');
-  if (mainCategories.length === 0) return 0;
-  return totalDrinks / mainCategories.length;
-}
-
-function roundToPackSize(qty: number, packSize: number): number {
-  return Math.max(packSize, Math.ceil(qty / packSize) * packSize);
-}
-
-function getCocktailRecommendations(
-  state: QuizState,
-  isPremium: boolean
-): ProductRecommendation[] {
-  const kits: ProductRecommendation[] = [];
-  const guests = state.guestCount || 20;
-  const qtyPerKit = Math.max(1, Math.ceil(guests / 15 * (isPremium ? 1.25 : 1)));
-
-  // Default cocktails based on event type if none selected
-  const cocktails = state.selectedCocktails.length > 0
-    ? state.selectedCocktails
-    : getDefaultCocktails(state.eventType);
-
-  for (const cocktail of cocktails) {
-    const mapping = COCKTAIL_SEARCH_MAP[cocktail];
-    if (mapping) {
-      kits.push({
-        name: mapping.name,
-        searchQuery: mapping.searchQuery,
-        quantity: qtyPerKit,
-        unit: 'kit',
-        category: 'cocktail-kits',
-      });
-    }
-  }
-
-  return kits;
-}
-
-const COCKTAIL_SEARCH_MAP: Record<string, { name: string; searchQuery: string }> = {
-  'austin-rita': { name: 'The Classic Austin Rita', searchQuery: 'Austin Rita' },
-  'titos-lemonade': { name: "Tito's Lemonade Kit", searchQuery: "Tito's Lemonade" },
-  'rum-punch': { name: 'Rum Punch Kit', searchQuery: 'Rum Punch' },
-  'old-fashioned': { name: 'The Hill Country Old-Fashioned', searchQuery: 'Old-Fashioned' },
-  'aperol-spritz': { name: 'Aperol Spritz Kit', searchQuery: 'Aperol Spritz' },
-  'espresso-martini': { name: 'Espresso Martini Kit', searchQuery: 'Espresso Martini' },
-  'margarita': { name: 'Margarita Kit', searchQuery: 'Margarita' },
-};
-
-function getDefaultCocktails(eventType: EventType | null): string[] {
-  switch (eventType) {
-    case 'bachelor':
-    case 'boat-day':
-      return ['austin-rita', 'old-fashioned'];
-    case 'bachelorette':
-      return ['aperol-spritz', 'espresso-martini'];
-    case 'wedding':
-      return ['austin-rita', 'aperol-spritz'];
-    case 'corporate':
-      return ['old-fashioned', 'austin-rita'];
-    default:
-      return ['austin-rita', 'titos-lemonade'];
-  }
-}
+// ---------------------------------------------------------------------------
+// Cocktail options (used by standalone quiz cocktail-pick step)
+// ---------------------------------------------------------------------------
 
 export const COCKTAIL_OPTIONS = [
-  { id: 'austin-rita', name: 'The Classic Austin Rita', description: 'Tequila, lime, agave' },
-  { id: 'titos-lemonade', name: "Tito's Lemonade", description: "Tito's vodka, fresh lemonade" },
-  { id: 'rum-punch', name: 'Rum Punch', description: 'Tropical rum punch' },
-  { id: 'old-fashioned', name: 'The Hill Country Old-Fashioned', description: 'Bourbon, bitters, sugar' },
-  { id: 'aperol-spritz', name: 'Aperol Spritz', description: 'Aperol, prosecco, soda' },
-  { id: 'espresso-martini', name: 'Espresso Martini', description: 'Vodka, espresso, coffee liqueur' },
+  { id: 'lady-bird-margarita', name: 'Lady Bird Margarita', description: 'Tequila, lime, agave' },
+  { id: 'barton-springs-mojito', name: 'Barton Springs Mojito', description: 'Rum, mint, lime, soda' },
+  { id: 'eastside-gin-tonic', name: 'Eastside Gin & Tonic', description: 'Gin, tonic, cucumber, lime' },
 ];
+
+// ---------------------------------------------------------------------------
+// Quiz state management (unchanged -- used by standalone quiz page)
+// ---------------------------------------------------------------------------
 
 export const initialQuizState: QuizState = {
   currentStep: 'welcome',
@@ -428,11 +488,9 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
   switch (action.type) {
     case 'SET_EVENT_TYPE': {
       const newState = { ...state, eventType: action.payload };
-      // Auto-select no-glass for boat day
       if (action.payload === 'boat-day' && !state.extras.includes('no-glass')) {
         newState.extras = [...state.extras, 'no-glass'];
       }
-      // Adjust guest count if out of range
       const range = getGuestRange(action.payload);
       if (newState.guestCount < range.min) newState.guestCount = range.min;
       if (newState.guestCount > range.max) newState.guestCount = range.max;
