@@ -9,6 +9,7 @@ import {
 import { generateInvoiceEmail } from '@/lib/email/templates/invoice';
 import { getInvoiceTextOverrides } from '@/lib/email/template-content';
 import { generateAffiliateWelcomeEmail } from '@/lib/email/templates/affiliate-welcome';
+import { generateAffiliateProspectEmail } from '@/lib/email/templates/affiliate-prospect';
 import { dashboardLinkEmail } from '@/lib/email/templates/dashboard-link';
 import { generateOrderCancellationEmail } from '@/lib/email/templates/order-cancellation';
 import { EmailType } from '@prisma/client';
@@ -86,6 +87,7 @@ const SUBJECT_MAP: Record<string, string> = {
   'invoice': '[TEST] Your Invoice from Party On Delivery - $95.06',
   'affiliate-welcome': '[TEST] Welcome to the Party On Delivery Partner Program!',
   'dashboard-link': "[TEST] Your Party On Delivery Dashboard for John's Bachelor Party",
+  'affiliate-prospect': '[TEST] Partner Program - Party On Delivery',
 };
 
 export async function POST(request: NextRequest) {
@@ -93,7 +95,8 @@ export async function POST(request: NextRequest) {
     const auth = await requireOpsAuth();
     if (auth instanceof NextResponse) return auth;
 
-    const { type, to } = await request.json();
+    const body = await request.json();
+    const { type, to } = body;
 
     if (!to || !type) {
       return NextResponse.json({ error: 'Missing email address or type' }, { status: 400 });
@@ -163,6 +166,14 @@ export async function POST(request: NextRequest) {
         });
         emailType = EmailType.AFFILIATE_WELCOME;
         break;
+      case 'affiliate-prospect':
+        html = generateAffiliateProspectEmail({
+          contactName: body.contactName || 'Jane Doe',
+          businessName: body.businessName || 'Sunset Bar & Grill',
+          introText: body.introText || undefined,
+        });
+        emailType = EmailType.AFFILIATE_WELCOME;
+        break;
       case 'dashboard-link': {
         const dlResult = dashboardLinkEmail('https://partyondelivery.com/dashboard/SAMPLE123', "John's Bachelor Party");
         html = dlResult.html;
@@ -173,7 +184,11 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Unknown email type' }, { status: 400 });
     }
 
-    const subject = SUBJECT_MAP[type] || '[TEST] Party On Delivery';
+    let subject = SUBJECT_MAP[type] || '[TEST] Party On Delivery';
+    // Allow sending prospect emails without [TEST] prefix
+    if (type === 'affiliate-prospect' && body.live) {
+      subject = 'Partner Program - Party On Delivery';
+    }
 
     const emailId = await sendEmail({
       to,

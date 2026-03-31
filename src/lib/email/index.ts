@@ -24,3 +24,7 @@ export type { OrderCancellationData } from './templates/order-cancellation';
 
 // Template generators
 export { generateInvoiceEmail, generateInvoiceSubject } from './templates/invoice';
+export { generateAffiliateProspectEmail } from './templates/affiliate-prospect';
+
+// Prospect template types
+export type { AffiliateProspectEmailData } from './templates/affiliate-prospect';

@@ -8,6 +8,7 @@ import {
 import { generateInvoiceEmail, type InvoiceTextOverrides } from '@/lib/email/templates/invoice';
 import { getInvoiceTextOverrides } from '@/lib/email/template-content';
 import { generateAffiliateWelcomeEmail } from '@/lib/email/templates/affiliate-welcome';
+import { generateAffiliateProspectEmail } from '@/lib/email/templates/affiliate-prospect';
 import { dashboardLinkEmail } from '@/lib/email/templates/dashboard-link';
 import { generateOrderCancellationEmail } from '@/lib/email/templates/order-cancellation';
 
@@ -137,6 +138,13 @@ export async function GET(request: NextRequest) {
       });
       break;
 
+    case 'affiliate-prospect':
+      html = generateAffiliateProspectEmail({
+        contactName: 'Jane Doe',
+        businessName: 'Sunset Bar & Grill',
+      });
+      break;
+
     case 'dashboard-link': {
       const result = dashboardLinkEmail('https://partyondelivery.com/dashboard/SAMPLE123', "John's Bachelor Party");
       html = result.html;
@@ -155,14 +163,24 @@ export async function POST(request: NextRequest) {
     const auth = await requireOpsAuth();
     if (auth instanceof NextResponse) return auth;
 
-    const { type, textOverrides } = await request.json();
+    const body = await request.json();
+    const { type, textOverrides } = body;
 
     if (type === 'invoice') {
       const html = generateInvoiceEmail(SAMPLE_INVOICE, textOverrides as InvoiceTextOverrides);
       return NextResponse.json({ html });
     }
 
-    return NextResponse.json({ error: 'Only invoice type supports live preview' }, { status: 400 });
+    if (type === 'affiliate-prospect') {
+      const html = generateAffiliateProspectEmail({
+        contactName: body.contactName || 'Jane Doe',
+        businessName: body.businessName || 'Sunset Bar & Grill',
+        introText: body.introText || undefined,
+      });
+      return NextResponse.json({ html });
+    }
+
+    return NextResponse.json({ error: 'Only invoice and affiliate-prospect types support live preview' }, { status: 400 });
   } catch (error) {
     console.error('[Email Preview POST] Error:', error);
     return NextResponse.json({ error: 'Failed to generate preview' }, { status: 500 });

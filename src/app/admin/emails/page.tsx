@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, ReactElement } from 'react';
 
-type EmailType = 'order-confirmation' | 'delivery-en-route' | 'delivery-completed' | 'payment-failed' | 'refund-processed' | 'order-cancelled' | 'invoice' | 'affiliate-welcome' | 'dashboard-link';
+type EmailType = 'order-confirmation' | 'delivery-en-route' | 'delivery-completed' | 'payment-failed' | 'refund-processed' | 'order-cancelled' | 'invoice' | 'affiliate-welcome' | 'affiliate-prospect' | 'dashboard-link';
 
 interface InvoiceTextOverrides {
   greeting?: string;
@@ -69,7 +69,13 @@ export default function EmailPreviewPage(): ReactElement {
   const [saveResult, setSaveResult] = useState<{ success: boolean; message: string } | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Prospect form state
+  const [prospectName, setProspectName] = useState('');
+  const [prospectBusiness, setProspectBusiness] = useState('');
+  const [prospectIntro, setProspectIntro] = useState('');
+
   const isInvoice = selectedEmail === 'invoice';
+  const isProspect = selectedEmail === 'affiliate-prospect';
 
   // Load invoice template content (defaults + overrides) when entering edit mode
   const loadTemplateContent = useCallback(async () => {
@@ -118,15 +124,54 @@ export default function EmailPreviewPage(): ReactElement {
     }
   };
 
-  const sendTestEmail = async () => {
+  // Live preview for prospect email with debounce
+  const updateProspectPreview = useCallback(async (name: string, business: string, intro: string) => {
+    try {
+      const res = await fetch('/api/ops/email-preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'affiliate-prospect',
+          contactName: name || undefined,
+          businessName: business || undefined,
+          introText: intro || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (data.html) setHtml(data.html);
+    } catch {
+      // silently fail
+    }
+  }, []);
+
+  const handleProspectFieldChange = (setter: (v: string) => void, value: string, name: string, business: string, intro: string) => {
+    setter(value);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      updateProspectPreview(
+        name,
+        business,
+        intro,
+      );
+    }, 500);
+  };
+
+  const sendTestEmail = async (live = false) => {
     if (!testEmail.trim() || !html) return;
     setSending(true);
     setSendResult(null);
     try {
+      const payload: Record<string, string | boolean> = { type: selectedEmail, to: testEmail.trim() };
+      if (selectedEmail === 'affiliate-prospect') {
+        if (prospectName) payload.contactName = prospectName;
+        if (prospectBusiness) payload.businessName = prospectBusiness;
+        if (prospectIntro) payload.introText = prospectIntro;
+        if (live) payload.live = true;
+      }
       const res = await fetch('/api/ops/email-preview/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: selectedEmail, to: testEmail.trim() }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (res.ok && data.success) {
@@ -241,6 +286,7 @@ export default function EmailPreviewPage(): ReactElement {
             { id: 'order-cancelled', label: 'Order Cancelled' },
             { id: 'invoice', label: 'Invoice' },
             { id: 'affiliate-welcome', label: 'Affiliate Welcome' },
+            { id: 'affiliate-prospect', label: 'Partner Prospect' },
             { id: 'dashboard-link', label: 'Dashboard Link' },
           ].map((email) => (
             <button
@@ -267,7 +313,7 @@ export default function EmailPreviewPage(): ReactElement {
             className="flex-1 max-w-xs px-4 py-2.5 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500"
           />
           <button
-            onClick={sendTestEmail}
+            onClick={() => sendTestEmail(false)}
             disabled={sending || !testEmail.trim() || !html}
             className="px-5 py-2.5 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-medium hover:from-green-700 hover:to-green-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-md shadow-green-200 flex items-center gap-2"
           >
@@ -276,6 +322,18 @@ export default function EmailPreviewPage(): ReactElement {
             </svg>
             {sending ? 'Sending...' : 'Send Test Email'}
           </button>
+          {isProspect && (
+            <button
+              onClick={() => sendTestEmail(true)}
+              disabled={sending || !testEmail.trim() || !html}
+              className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-xl font-medium hover:from-amber-600 hover:to-amber-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-md shadow-amber-200 flex items-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              </svg>
+              {sending ? 'Sending...' : 'Send to Prospect'}
+            </button>
+          )}
           {isInvoice && html && (
             <button
               onClick={() => editMode ? setEditMode(false) : enterEditMode()}
@@ -298,6 +356,46 @@ export default function EmailPreviewPage(): ReactElement {
           )}
         </div>
       </div>
+
+      {/* Prospect Form Fields */}
+      {isProspect && (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
+          <h3 className="text-sm font-semibold text-gray-700 mb-3">Prospect Details</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+            <div>
+              <label className="text-xs font-medium text-gray-500 mb-1 block">Contact Name</label>
+              <input
+                type="text"
+                value={prospectName}
+                onChange={(e) => handleProspectFieldChange(setProspectName, e.target.value, e.target.value, prospectBusiness, prospectIntro)}
+                placeholder="Jane Doe"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-gray-500 mb-1 block">Business Name</label>
+              <input
+                type="text"
+                value={prospectBusiness}
+                onChange={(e) => handleProspectFieldChange(setProspectBusiness, e.target.value, prospectName, e.target.value, prospectIntro)}
+                placeholder="Sunset Bar & Grill"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500"
+              />
+            </div>
+          </div>
+          <div className="mb-3">
+            <label className="text-xs font-medium text-gray-500 mb-1 block">Intro Text</label>
+            <textarea
+              value={prospectIntro}
+              onChange={(e) => handleProspectFieldChange(setProspectIntro, e.target.value, prospectName, prospectBusiness, e.target.value)}
+              placeholder="Great talking with you about partnering with Party On Delivery! Here's a quick overview of how our partner program works and what your business can expect."
+              rows={3}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 resize-vertical"
+            />
+          </div>
+          <p className="text-xs text-gray-400">Fill in the fields above to customize the preview. Leave Intro Text blank to use the default. Enter the recipient email in the bar above to send.</p>
+        </div>
+      )}
 
       {/* Invoice Editor + Preview split layout */}
       {isInvoice && editMode && defaults ? (
