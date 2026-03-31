@@ -145,11 +145,83 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
+  // Modelo Ranch Water 6-Pack - High-traffic product optimization
+  if (handle === 'modelo-ranch-water-6-pack') {
+    return {
+      title: 'Modelo Ranch Water 6-Pack | $10.99 | Austin Delivery',
+      description: 'Buy Modelo Ranch Water 6-pack 12oz cans in Austin. Crisp tequila-style ranch water with lime. Same-day delivery available. Order online.',
+      keywords: 'modelo ranch water, ranch water, modelo ranch water 6 pack, ranch water austin, tequila ranch water, modelo delivery austin',
+      robots,
+      openGraph: {
+        title: 'Modelo Ranch Water 6-Pack | Austin Delivery',
+        description: 'Modelo Ranch Water 6-pack delivered in Austin. Crisp, refreshing tequila-style ranch water with lime.',
+        type: 'website',
+        url: `https://partyondelivery.com/products/${handle}`,
+        images: [{ url: image, width: 1200, height: 1200, alt: 'Modelo Ranch Water 6-pack 12oz cans' }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Modelo Ranch Water 6-Pack | Austin Delivery',
+        description: 'Modelo Ranch Water delivered in Austin. Crisp ranch water with lime.',
+        images: [image],
+      },
+      alternates: { canonical: `/products/${handle}` },
+    };
+  }
+
+  // Bud Light 24-Pack - High-traffic product optimization
+  if (handle === 'bud-light-24-can-suitcase-12oz') {
+    return {
+      title: 'Bud Light 24-Pack | $29.99 | Austin Beer Delivery',
+      description: 'Order a 24-pack of Bud Light 12oz cans delivered in Austin TX. Perfect for parties, tailgates & cookouts. Same-day delivery available.',
+      keywords: '24 pack bud light, bud light 24 pack, bud light delivery austin, bud light case, beer delivery austin, party beer austin',
+      robots,
+      openGraph: {
+        title: 'Bud Light 24-Pack | Austin Beer Delivery',
+        description: '24-pack Bud Light 12oz cans delivered in Austin. Perfect for parties and tailgates.',
+        type: 'website',
+        url: `https://partyondelivery.com/products/${handle}`,
+        images: [{ url: image, width: 1200, height: 1200, alt: 'Bud Light 24-pack suitcase 12oz cans' }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Bud Light 24-Pack | Austin Beer Delivery',
+        description: '24-pack Bud Light delivered in Austin. Same-day delivery available.',
+        images: [image],
+      },
+      alternates: { canonical: `/products/${handle}` },
+    };
+  }
+
+  // Aperol Spritz Party Pitcher Kit - High-traffic product optimization
+  if (handle === 'aperol-spritz-party-pitcher-kit-16-drinks') {
+    return {
+      title: 'Aperol Spritz Kit | Serves 16 | $67.99 | Austin',
+      description: 'Aperol Spritz Party Pitcher Kit -- serves 16 drinks. Everything you need for poolside gatherings & bridal showers in Austin. Delivered to your door.',
+      keywords: 'aperol spritz kit, aperol spritz party kit, aperol spritz pitcher, cocktail kit austin, aperol delivery austin, bridal shower drinks, pool party cocktails',
+      robots,
+      openGraph: {
+        title: 'Aperol Spritz Party Pitcher Kit | Serves 16 | Austin',
+        description: 'Complete Aperol Spritz kit for 16 drinks. Perfect for Austin poolside gatherings, bridal showers & rooftop parties.',
+        type: 'website',
+        url: `https://partyondelivery.com/products/${handle}`,
+        images: [{ url: image, width: 1200, height: 1200, alt: 'Aperol Spritz Party Pitcher Kit serves 16 drinks' }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Aperol Spritz Kit | Serves 16 | Austin Delivery',
+        description: 'Complete Aperol Spritz party kit for 16 drinks. Delivered in Austin.',
+        images: [image],
+      },
+      alternates: { canonical: `/products/${handle}` },
+    };
+  }
+
   // Borrasca Brut Cava
   if (handle === 'borrasca-brut-cava') {
     return {
-      title: 'Borrasca Brut Cava Austin | Spanish Sparkling Wine | Delivered',
-      description: 'Buy Borrasca Brut Cava sparkling wine in Austin. Crisp, dry Spanish cava perfect for celebrations, toasts, weddings. Austin delivery available. Order now!',
+      title: 'Borrasca Brut Cava | Spanish Sparkling Wine | Austin',
+      description: 'Buy Borrasca Brut Cava in Austin. Crisp Spanish sparkling wine perfect for weddings, toasts & celebrations. Fast delivery available. Order now.',
       keywords: 'borrasca cava, brut cava austin, spanish sparkling wine, cava delivery austin, sparkling wine austin, champagne alternative, wedding sparkling wine',
       robots,
       openGraph: {

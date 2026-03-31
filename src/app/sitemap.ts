@@ -74,18 +74,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/austin-partners'
   ].map(route => ({
     url: `${baseUrl}${route}`,
-    lastModified: new Date(),
+    lastModified: new Date('2026-03-27'),
     changeFrequency: 'weekly' as const,
     priority: route === '' ? 1 : route === '/order' ? 0.9 : 0.8
   }))
 
-  // Product pages (dynamic)
-  const productPages = products.map(product => ({
-    url: `${baseUrl}/products/${product.handle}`,
-    lastModified: product.updatedAt,
-    changeFrequency: 'daily' as const,
-    priority: 0.8
-  }))
+  // Product pages (dynamic) - filter out test products
+  const productPages = products
+    .filter(product => !product.handle.includes('test'))
+    .map(product => ({
+      url: `${baseUrl}/products/${product.handle}`,
+      lastModified: product.updatedAt,
+      changeFrequency: 'daily' as const,
+      priority: 0.8
+    }))
 
   // Location pages for SEO (dynamic routes)
   const locationSlugs = [

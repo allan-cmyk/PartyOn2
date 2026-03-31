@@ -40,15 +40,15 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://partyondelivery.com'),
-  title: "Party On Delivery | Premium Alcohol Delivery in Austin",
-  description: "Austin's premier alcohol delivery for weddings, corporate events, bachelorette parties & special occasions. Beer kegs, wine, spirits & party supplies delivered. Serving Downtown, Lake Travis & all of Austin.",
-  keywords: "alcohol delivery austin, wedding bar service, lake travis boat party, austin party delivery, premium spirits delivery",
+  title: "Alcohol Delivery Austin | Party On Delivery",
+  description: "Beer, wine, liquor, kegs & party supplies delivered in Austin TX. Same-day delivery for weddings, lake parties & events. Order online now.",
+  keywords: "alcohol delivery austin, alcohol delivery near me, alcohol delivery service, wedding bar service, lake travis boat party, austin party delivery, beer delivery austin, liquor delivery austin",
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: "Party On Delivery | Premium Alcohol Delivery in Austin",
-    description: "Austin's premier alcohol delivery for weddings, corporate events, bachelorette parties & special occasions. Beer kegs, wine, spirits & party supplies delivered. Serving Downtown, Lake Travis & all of Austin.",
+    title: "Alcohol Delivery Austin | Party On Delivery",
+    description: "Beer, wine, liquor, kegs & party supplies delivered in Austin TX. Same-day delivery for weddings, lake parties & events. Order online now.",
     url: "https://partyondelivery.com",
     siteName: "Party On Delivery",
     images: [
@@ -64,8 +64,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Party On Delivery | Premium Alcohol Delivery in Austin",
-    description: "Austin's premier alcohol delivery for weddings, corporate events, bachelorette parties & special occasions. Beer kegs, wine, spirits & party supplies delivered. Serving Downtown, Lake Travis & all of Austin.",
+    title: "Alcohol Delivery Austin | Party On Delivery",
+    description: "Beer, wine, liquor, kegs & party supplies delivered in Austin TX. Same-day delivery for weddings, lake parties & events. Order online now.",
     images: ["/images/og-image.png"],
   },
   robots: {

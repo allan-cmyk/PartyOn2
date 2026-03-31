@@ -34,9 +34,9 @@ export const seoConfig = {
   // Page-specific metadata
   pages: {
     home: {
-      title: "Austin's Premier Alcohol Delivery Service",
-      description: 'Premium alcohol delivery for weddings, boat parties, and events. 72-hour advance booking. Licensed & insured. Serving Austin & Lake Travis.',
-      keywords: 'alcohol delivery austin, party delivery service, wedding bar austin, lake travis delivery',
+      title: 'Alcohol Delivery Austin | Party On Delivery',
+      description: 'Beer, wine, liquor, kegs & party supplies delivered in Austin TX. Same-day delivery for weddings, lake parties & events. Order online now.',
+      keywords: 'alcohol delivery austin, alcohol delivery near me, alcohol delivery service, beer delivery austin, liquor delivery austin, wedding bar austin, lake travis delivery',
     },
     products: {
       title: 'Premium Spirits, Wine & Beer Collection',
