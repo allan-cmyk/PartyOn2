@@ -242,6 +242,13 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
 
+      // Dead product pages (crawled but no longer in catalog)
+      {
+        source: '/products/heb-cage-free-white-extra-l:suffix*',
+        destination: '/order',
+        permanent: true,
+      },
+
       // Catch-all for blog truncations with various patterns (only match obvious truncation artifacts)
       {
         source: '/blog/:slug*(November[0-9]|0\\.06|0\\.07|0\\.04|0\\.01)$',
