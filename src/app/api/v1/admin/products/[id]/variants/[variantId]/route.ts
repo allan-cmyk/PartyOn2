@@ -23,15 +23,6 @@ export async function GET(
         id: variantId,
         productId: productId,
       },
-      include: {
-        inventoryItems: {
-          include: {
-            location: {
-              select: { id: true, name: true },
-            },
-          },
-        },
-      },
     });
 
     if (!variant) {
@@ -49,21 +40,13 @@ export async function GET(
         sku: variant.sku,
         price: Number(variant.price),
         compareAtPrice: variant.compareAtPrice ? Number(variant.compareAtPrice) : null,
+        costPerUnit: variant.costPerUnit ? Number(variant.costPerUnit) : null,
         inventoryQuantity: variant.inventoryQuantity,
         trackInventory: variant.trackInventory,
         allowBackorder: variant.allowBackorder,
         availableForSale: variant.availableForSale,
         weight: variant.weight ? Number(variant.weight) : null,
         weightUnit: variant.weightUnit,
-        inventoryItems: variant.inventoryItems.map((item) => ({
-          id: item.id,
-          locationId: item.locationId,
-          locationName: item.location.name,
-          quantity: item.quantity,
-          costPerUnit: item.costPerUnit ? Number(item.costPerUnit) : null,
-          lowStockThreshold: item.lowStockThreshold,
-          reorderPoint: item.reorderPoint,
-        })),
       },
     });
   } catch (error) {
@@ -128,64 +111,17 @@ export async function PUT(
       variantUpdate.availableForSale = Boolean(body.availableForSale);
     }
 
-    // Handle inventory adjustment
+    // Handle inventory adjustment (single source of truth: ProductVariant.inventoryQuantity)
     if (body.inventoryAdjustment !== undefined) {
-      const { type, value, locationId } = body.inventoryAdjustment;
+      const { type, value } = body.inventoryAdjustment;
+      const adjustValue = parseInt(value);
 
-      if (locationId) {
-        // Update specific location
-        const inventoryItem = await prisma.inventoryItem.findFirst({
-          where: { variantId, locationId },
-        });
-
-        if (inventoryItem) {
-          let newQuantity = inventoryItem.quantity;
-
-          if (type === 'set') {
-            newQuantity = parseInt(value);
-          } else if (type === 'add') {
-            newQuantity = inventoryItem.quantity + parseInt(value);
-          } else if (type === 'remove') {
-            newQuantity = Math.max(0, inventoryItem.quantity - parseInt(value));
-          }
-
-          await prisma.inventoryItem.update({
-            where: { id: inventoryItem.id },
-            data: { quantity: newQuantity },
-          });
-
-          // Update variant's total inventory quantity
-          const allItems = await prisma.inventoryItem.findMany({
-            where: { variantId },
-            select: { quantity: true },
-          });
-          variantUpdate.inventoryQuantity = allItems.reduce((sum, i) => sum + i.quantity, 0);
-        }
-      } else {
-        // Update all locations proportionally or just the first one
-        const inventoryItems = await prisma.inventoryItem.findMany({
-          where: { variantId },
-        });
-
-        if (inventoryItems.length > 0) {
-          const firstItem = inventoryItems[0];
-          let newQuantity = firstItem.quantity;
-
-          if (type === 'set') {
-            newQuantity = parseInt(value);
-          } else if (type === 'add') {
-            newQuantity = firstItem.quantity + parseInt(value);
-          } else if (type === 'remove') {
-            newQuantity = Math.max(0, firstItem.quantity - parseInt(value));
-          }
-
-          await prisma.inventoryItem.update({
-            where: { id: firstItem.id },
-            data: { quantity: newQuantity },
-          });
-
-          variantUpdate.inventoryQuantity = newQuantity;
-        }
+      if (type === 'set') {
+        variantUpdate.inventoryQuantity = adjustValue;
+      } else if (type === 'add') {
+        variantUpdate.inventoryQuantity = existing.inventoryQuantity + adjustValue;
+      } else if (type === 'remove') {
+        variantUpdate.inventoryQuantity = Math.max(0, existing.inventoryQuantity - adjustValue);
       }
     }
 
@@ -193,13 +129,6 @@ export async function PUT(
     const updated = await prisma.productVariant.update({
       where: { id: variantId },
       data: variantUpdate,
-      include: {
-        inventoryItems: {
-          include: {
-            location: { select: { id: true, name: true } },
-          },
-        },
-      },
     });
 
     // Recalculate product total inventory
@@ -219,12 +148,6 @@ export async function PUT(
         trackInventory: updated.trackInventory,
         allowBackorder: updated.allowBackorder,
         availableForSale: updated.availableForSale,
-        inventoryItems: updated.inventoryItems.map((item) => ({
-          id: item.id,
-          locationId: item.locationId,
-          locationName: item.location.name,
-          quantity: item.quantity,
-        })),
         productTotalInventory: totalInventory,
       },
     });

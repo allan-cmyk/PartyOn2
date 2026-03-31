@@ -1,24 +1,23 @@
 /**
  * Inventory Service
- * Business logic for inventory management
+ * Single source of truth: ProductVariant.inventoryQuantity
+ * InventoryMovement is used as an audit log, linked directly to variantId.
  */
 
 import { prisma } from '@/lib/database/client';
 import { Prisma, InventoryMovementType } from '@prisma/client';
 import type {
   InventoryAdjustment,
-  InventoryTransfer,
   InventoryCount,
   LowStockItem,
 } from '../types';
 
+const LOW_STOCK_THRESHOLD = 10;
+
 // ==========================================
-// Inventory Locations
+// Inventory Locations (kept for backward compat)
 // ==========================================
 
-/**
- * Get all inventory locations
- */
 export async function getLocations() {
   return prisma.inventoryLocation.findMany({
     where: { isActive: true },
@@ -26,18 +25,12 @@ export async function getLocations() {
   });
 }
 
-/**
- * Get default location
- */
 export async function getDefaultLocation() {
   return prisma.inventoryLocation.findFirst({
     where: { isActive: true, isDefault: true },
   });
 }
 
-/**
- * Create inventory location
- */
 export async function createLocation(name: string, address?: Prisma.InputJsonValue) {
   return prisma.inventoryLocation.create({
     data: { name, address: address ?? Prisma.JsonNull },
@@ -45,60 +38,35 @@ export async function createLocation(name: string, address?: Prisma.InputJsonVal
 }
 
 // ==========================================
-// Inventory Items
+// Inventory Queries
 // ==========================================
 
 /**
- * Get inventory for a product across all locations
+ * Get inventory for a product (all variants)
  */
 export async function getProductInventory(productId: string) {
-  return prisma.inventoryItem.findMany({
+  return prisma.productVariant.findMany({
     where: { productId },
-    include: {
-      location: true,
-      variant: { select: { id: true, title: true, sku: true } },
+    select: {
+      id: true,
+      title: true,
+      sku: true,
+      inventoryQuantity: true,
+      costPerUnit: true,
     },
   });
 }
 
 /**
- * Get inventory at a specific location
+ * Get all inventory (replaces getLocationInventory)
  */
-export async function getLocationInventory(locationId: string) {
-  return prisma.inventoryItem.findMany({
-    where: { locationId },
+export async function getLocationInventory(_locationId?: string) {
+  return prisma.productVariant.findMany({
     include: {
       product: { select: { id: true, title: true, handle: true } },
-      variant: { select: { id: true, title: true, sku: true } },
     },
     orderBy: { product: { title: 'asc' } },
   });
-}
-
-/**
- * Get or create inventory item
- */
-async function getOrCreateInventoryItem(
-  productId: string,
-  locationId: string,
-  variantId?: string
-) {
-  let item = await prisma.inventoryItem.findFirst({
-    where: { productId, locationId, variantId: variantId || null },
-  });
-
-  if (!item) {
-    item = await prisma.inventoryItem.create({
-      data: {
-        productId,
-        locationId,
-        variantId: variantId || null,
-        quantity: 0,
-      },
-    });
-  }
-
-  return item;
 }
 
 // ==========================================
@@ -107,24 +75,43 @@ async function getOrCreateInventoryItem(
 
 /**
  * Adjust inventory (add/remove stock)
+ * Writes directly to ProductVariant.inventoryQuantity
  */
 export async function adjustInventory(adjustment: InventoryAdjustment) {
-  const { productId, variantId, locationId, quantity, reason, type } = adjustment;
+  const { productId, variantId, quantity, reason, type } = adjustment;
 
-  const item = await getOrCreateInventoryItem(productId, locationId, variantId);
-  const previousQuantity = item.quantity;
+  // Find the variant to adjust
+  let variant;
+  if (variantId) {
+    variant = await prisma.productVariant.findUnique({
+      where: { id: variantId },
+      select: { id: true, inventoryQuantity: true },
+    });
+  } else {
+    // Fall back to first variant for the product
+    variant = await prisma.productVariant.findFirst({
+      where: { productId },
+      select: { id: true, inventoryQuantity: true },
+    });
+  }
+
+  if (!variant) {
+    throw new Error(`No variant found for product ${productId}`);
+  }
+
+  const previousQuantity = variant.inventoryQuantity;
   const newQuantity = previousQuantity + quantity;
 
-  // Update inventory item
-  await prisma.inventoryItem.update({
-    where: { id: item.id },
-    data: { quantity: newQuantity },
+  // Update ProductVariant -- the single source of truth
+  await prisma.productVariant.update({
+    where: { id: variant.id },
+    data: { inventoryQuantity: newQuantity },
   });
 
-  // Create movement record
+  // Create audit trail
   const movement = await prisma.inventoryMovement.create({
     data: {
-      inventoryItemId: item.id,
+      variantId: variant.id,
       type: type as InventoryMovementType,
       quantity,
       previousQuantity,
@@ -134,134 +121,50 @@ export async function adjustInventory(adjustment: InventoryAdjustment) {
   });
 
   // Check for low stock alert
-  if (newQuantity <= item.lowStockThreshold && previousQuantity > item.lowStockThreshold) {
-    await createLowStockAlert(productId, variantId, locationId, newQuantity, item.lowStockThreshold);
+  if (newQuantity <= LOW_STOCK_THRESHOLD && previousQuantity > LOW_STOCK_THRESHOLD) {
+    await createLowStockAlert(productId, variant.id, newQuantity, LOW_STOCK_THRESHOLD);
   }
 
-  // Also update variant inventory count if tracking at variant level
-  if (variantId) {
-    await prisma.productVariant.update({
-      where: { id: variantId },
-      data: { inventoryQuantity: newQuantity },
-    });
-  }
-
-  return { item, movement, previousQuantity, newQuantity };
-}
-
-/**
- * Transfer inventory between locations
- */
-export async function transferInventory(transfer: InventoryTransfer) {
-  const { productId, variantId, fromLocationId, toLocationId, quantity, reason } = transfer;
-
-  if (quantity <= 0) {
-    throw new Error('Transfer quantity must be positive');
-  }
-
-  // Get source inventory
-  const sourceItem = await getOrCreateInventoryItem(productId, fromLocationId, variantId);
-
-  if (sourceItem.quantity < quantity) {
-    throw new Error(`Insufficient inventory at source location. Available: ${sourceItem.quantity}`);
-  }
-
-  // Perform transfer in a transaction
-  return prisma.$transaction(async tx => {
-    // Decrease from source
-    const fromPrevious = sourceItem.quantity;
-    const fromNew = fromPrevious - quantity;
-
-    await tx.inventoryItem.update({
-      where: { id: sourceItem.id },
-      data: { quantity: fromNew },
-    });
-
-    await tx.inventoryMovement.create({
-      data: {
-        inventoryItemId: sourceItem.id,
-        type: 'TRANSFER',
-        quantity: -quantity,
-        previousQuantity: fromPrevious,
-        newQuantity: fromNew,
-        reason: reason || `Transfer to location ${toLocationId}`,
-      },
-    });
-
-    // Increase at destination
-    let destItem = await tx.inventoryItem.findFirst({
-      where: { productId, locationId: toLocationId, variantId: variantId || null },
-    });
-
-    if (!destItem) {
-      destItem = await tx.inventoryItem.create({
-        data: {
-          productId,
-          locationId: toLocationId,
-          variantId: variantId || null,
-          quantity: 0,
-        },
-      });
-    }
-
-    const toPrevious = destItem.quantity;
-    const toNew = toPrevious + quantity;
-
-    await tx.inventoryItem.update({
-      where: { id: destItem.id },
-      data: { quantity: toNew },
-    });
-
-    await tx.inventoryMovement.create({
-      data: {
-        inventoryItemId: destItem.id,
-        type: 'TRANSFER',
-        quantity,
-        previousQuantity: toPrevious,
-        newQuantity: toNew,
-        reason: reason || `Transfer from location ${fromLocationId}`,
-      },
-    });
-
-    return {
-      from: { locationId: fromLocationId, previousQuantity: fromPrevious, newQuantity: fromNew },
-      to: { locationId: toLocationId, previousQuantity: toPrevious, newQuantity: toNew },
-    };
-  });
+  return { item: variant, movement, previousQuantity, newQuantity };
 }
 
 /**
  * Set absolute inventory count (for inventory counting)
  */
 export async function setInventoryCount(count: InventoryCount) {
-  const { locationId, items, countedBy } = count;
+  const { items, countedBy } = count;
 
   const results = [];
 
   for (const item of items) {
-    const inventoryItem = await getOrCreateInventoryItem(
-      item.productId,
-      locationId,
-      item.variantId
-    );
+    let variant;
+    if (item.variantId) {
+      variant = await prisma.productVariant.findUnique({
+        where: { id: item.variantId },
+        select: { id: true, inventoryQuantity: true },
+      });
+    } else {
+      variant = await prisma.productVariant.findFirst({
+        where: { productId: item.productId },
+        select: { id: true, inventoryQuantity: true },
+      });
+    }
 
-    const previousQuantity = inventoryItem.quantity;
+    if (!variant) continue;
+
+    const previousQuantity = variant.inventoryQuantity;
     const newQuantity = item.countedQuantity;
     const difference = newQuantity - previousQuantity;
 
     if (difference !== 0) {
-      await prisma.inventoryItem.update({
-        where: { id: inventoryItem.id },
-        data: {
-          quantity: newQuantity,
-          lastCountedAt: new Date(),
-          lastCountedBy: countedBy,
-        },
+      await prisma.productVariant.update({
+        where: { id: variant.id },
+        data: { inventoryQuantity: newQuantity },
       });
 
       await prisma.inventoryMovement.create({
         data: {
-          inventoryItemId: inventoryItem.id,
+          variantId: variant.id,
           type: 'ADJUSTMENT',
           quantity: difference,
           previousQuantity,
@@ -270,19 +173,11 @@ export async function setInventoryCount(count: InventoryCount) {
           createdBy: countedBy,
         },
       });
-
-      // Update variant if applicable
-      if (item.variantId) {
-        await prisma.productVariant.update({
-          where: { id: item.variantId },
-          data: { inventoryQuantity: newQuantity },
-        });
-      }
     }
 
     results.push({
       productId: item.productId,
-      variantId: item.variantId,
+      variantId: variant.id,
       previousQuantity,
       newQuantity,
       adjusted: difference !== 0,
@@ -296,22 +191,16 @@ export async function setInventoryCount(count: InventoryCount) {
 // Low Stock Alerts
 // ==========================================
 
-/**
- * Create low stock alert
- */
 async function createLowStockAlert(
   productId: string,
-  variantId: string | undefined,
-  locationId: string | undefined,
+  variantId: string,
   currentQuantity: number,
   threshold: number
 ) {
-  // Check if alert already exists
   const existing = await prisma.lowStockAlert.findFirst({
     where: {
       productId,
-      variantId: variantId || null,
-      locationId: locationId || null,
+      variantId,
       status: 'ACTIVE',
     },
   });
@@ -321,7 +210,6 @@ async function createLowStockAlert(
       data: {
         productId,
         variantId,
-        locationId,
         currentQuantity,
         threshold,
         status: 'ACTIVE',
@@ -330,56 +218,32 @@ async function createLowStockAlert(
   }
 }
 
-/**
- * Get active low stock alerts
- */
 export async function getLowStockAlerts(): Promise<LowStockItem[]> {
-  const alerts = await prisma.lowStockAlert.findMany({
-    where: { status: 'ACTIVE' },
-    orderBy: { createdAt: 'desc' },
+  // Query variants directly instead of relying on LowStockAlert table
+  const variants = await prisma.productVariant.findMany({
+    where: {
+      inventoryQuantity: { lte: LOW_STOCK_THRESHOLD },
+      trackInventory: true,
+    },
+    include: {
+      product: { select: { id: true, title: true } },
+    },
+    orderBy: { inventoryQuantity: 'asc' },
   });
 
-  const items: LowStockItem[] = [];
-
-  for (const alert of alerts) {
-    const product = await prisma.product.findUnique({
-      where: { id: alert.productId },
-      select: { title: true },
-    });
-
-    const variant = alert.variantId
-      ? await prisma.productVariant.findUnique({
-          where: { id: alert.variantId },
-          select: { title: true, sku: true },
-        })
-      : null;
-
-    const inventoryItem = await prisma.inventoryItem.findFirst({
-      where: {
-        productId: alert.productId,
-        variantId: alert.variantId || null,
-      },
-    });
-
-    items.push({
-      productId: alert.productId,
-      productTitle: product?.title || 'Unknown',
-      variantId: alert.variantId || undefined,
-      variantTitle: variant?.title,
-      sku: variant?.sku || undefined,
-      currentQuantity: alert.currentQuantity,
-      threshold: alert.threshold,
-      reorderPoint: inventoryItem?.reorderPoint || alert.threshold,
-      recommendedReorderQuantity: inventoryItem?.reorderQuantity || 50,
-    });
-  }
-
-  return items;
+  return variants.map(v => ({
+    productId: v.productId,
+    productTitle: v.product.title,
+    variantId: v.id,
+    variantTitle: v.title,
+    sku: v.sku || undefined,
+    currentQuantity: v.inventoryQuantity,
+    threshold: LOW_STOCK_THRESHOLD,
+    reorderPoint: LOW_STOCK_THRESHOLD,
+    recommendedReorderQuantity: 50,
+  }));
 }
 
-/**
- * Acknowledge alert
- */
 export async function acknowledgeAlert(alertId: string, acknowledgedBy: string) {
   return prisma.lowStockAlert.update({
     where: { id: alertId },
@@ -391,9 +255,6 @@ export async function acknowledgeAlert(alertId: string, acknowledgedBy: string) 
   });
 }
 
-/**
- * Resolve alert
- */
 export async function resolveAlert(alertId: string) {
   return prisma.lowStockAlert.update({
     where: { id: alertId },
@@ -405,31 +266,22 @@ export async function resolveAlert(alertId: string) {
 // Inventory History
 // ==========================================
 
-/**
- * Get movement history for an inventory item
- */
 export async function getMovementHistory(
   productId: string,
-  options: { variantId?: string; locationId?: string; limit?: number } = {}
+  options: { variantId?: string; limit?: number } = {}
 ) {
-  const { variantId, locationId, limit = 50 } = options;
+  const { variantId, limit = 50 } = options;
 
-  const where: Prisma.InventoryMovementWhereInput = {
-    inventoryItem: {
-      productId,
-      ...(variantId && { variantId }),
-      ...(locationId && { locationId }),
-    },
-  };
+  const where: Prisma.InventoryMovementWhereInput = variantId
+    ? { variantId }
+    : {
+        variant: { productId },
+      };
 
   return prisma.inventoryMovement.findMany({
     where,
     include: {
-      inventoryItem: {
-        include: {
-          location: { select: { name: true } },
-        },
-      },
+      variant: { select: { id: true, title: true, sku: true } },
     },
     orderBy: { createdAt: 'desc' },
     take: limit,

@@ -22,15 +22,15 @@ export async function GET(): Promise<NextResponse> {
       // Total products
       prisma.product.count({ where: { status: 'ACTIVE' } }),
 
-      // Low stock items (above 0 but at or below threshold)
-      prisma.inventoryItem.count({
-        where: {
-          quantity: { gt: 0, lte: prisma.inventoryItem.fields.lowStockThreshold },
-        },
-      }).catch(() => 0), // This query might not work directly, handle in alternative way
+      // Low stock items (above 0 but at or below 10)
+      prisma.productVariant.count({
+        where: { inventoryQuantity: { gt: 0, lte: 10 }, trackInventory: true },
+      }),
 
       // Out of stock
-      prisma.inventoryItem.count({ where: { quantity: 0 } }),
+      prisma.productVariant.count({
+        where: { inventoryQuantity: { lte: 0 }, trackInventory: true },
+      }),
 
       // Pending orders
       prisma.order.count({ where: { status: 'PENDING' } }),
@@ -62,35 +62,29 @@ export async function GET(): Promise<NextResponse> {
       }),
 
       // Low stock items for alerts
-      prisma.$queryRaw<Array<{ id: string; name: string; quantity: number; threshold: number }>>`
-        SELECT
-          ii.id,
-          p.title as name,
-          ii.quantity,
-          ii.low_stock_threshold as threshold
-        FROM inventory_items ii
-        JOIN products p ON ii.product_id = p.id
-        WHERE ii.quantity <= ii.low_stock_threshold
-        ORDER BY ii.quantity ASC
-        LIMIT 5
-      `.catch(() => []),
+      prisma.productVariant.findMany({
+        where: { inventoryQuantity: { gt: 0, lte: 10 }, trackInventory: true },
+        orderBy: { inventoryQuantity: 'asc' },
+        take: 5,
+        select: {
+          id: true,
+          inventoryQuantity: true,
+          product: { select: { title: true } },
+        },
+      }).then(items => items.map(i => ({
+        id: i.id,
+        name: i.product.title,
+        quantity: i.inventoryQuantity,
+        threshold: 10,
+      }))).catch(() => []),
     ]);
-
-    // Alternative low stock count using raw query
-    const lowStockCount = await prisma.$queryRaw<Array<{ count: bigint }>>`
-      SELECT COUNT(*) as count
-      FROM inventory_items
-      WHERE quantity > 0 AND quantity <= low_stock_threshold
-    `.catch(() => [{ count: BigInt(0) }]);
-
-    const actualLowStockItems = Number(lowStockCount[0]?.count || 0);
 
     return NextResponse.json({
       success: true,
       data: {
         stats: {
           totalProducts,
-          lowStockItems: actualLowStockItems || lowStockItems,
+          lowStockItems,
           outOfStockItems,
           pendingOrders,
           todayOrders,

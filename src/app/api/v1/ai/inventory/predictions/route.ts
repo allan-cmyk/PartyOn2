@@ -15,20 +15,17 @@ import type { PredictionProduct, SalesDataPoint } from '@/lib/ai/inventory-index
 /**
  * Build prediction products from database
  */
+const LOW_STOCK_THRESHOLD = 10;
+const REORDER_POINT = 10;
+
 async function buildPredictionProducts(
   productIds?: string[]
 ): Promise<PredictionProduct[]> {
-  // Get inventory items
-  const inventoryItems = await prisma.inventoryItem.findMany({
+  // Get product variants with product info
+  const variants = await prisma.productVariant.findMany({
     where: productIds ? { productId: { in: productIds } } : undefined,
     include: {
       product: {
-        select: {
-          id: true,
-          title: true,
-        },
-      },
-      variant: {
         select: {
           id: true,
           title: true,
@@ -41,44 +38,45 @@ async function buildPredictionProducts(
   const ninetyDaysAgo = new Date();
   ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
 
+  const variantIds = variants.map((v) => v.id);
+
   const salesMovements = await prisma.inventoryMovement.findMany({
     where: {
       type: 'SOLD',
       createdAt: { gte: ninetyDaysAgo },
-      inventoryItemId: {
-        in: inventoryItems.map((i) => i.id),
-      },
+      variantId: { in: variantIds },
     },
     select: {
-      inventoryItemId: true,
+      variantId: true,
       quantity: true,
       createdAt: true,
     },
     orderBy: { createdAt: 'asc' },
   });
 
-  // Group sales by inventory item
-  const salesByItem = new Map<string, SalesDataPoint[]>();
+  // Group sales by variant
+  const salesByVariant = new Map<string, SalesDataPoint[]>();
   for (const movement of salesMovements) {
-    if (!salesByItem.has(movement.inventoryItemId)) {
-      salesByItem.set(movement.inventoryItemId, []);
+    if (!movement.variantId) continue;
+    if (!salesByVariant.has(movement.variantId)) {
+      salesByVariant.set(movement.variantId, []);
     }
-    salesByItem.get(movement.inventoryItemId)!.push({
+    salesByVariant.get(movement.variantId)!.push({
       date: movement.createdAt,
       quantity: Math.abs(movement.quantity),
     });
   }
 
   // Build prediction products
-  return inventoryItems.map((item) => ({
-    id: item.id,
-    name: `${item.product.title}${item.variant ? ` - ${item.variant.title}` : ''}`,
-    currentStock: item.quantity - item.reservedQuantity,
-    reorderPoint: item.reorderPoint,
-    lowStockThreshold: item.lowStockThreshold,
+  return variants.map((variant) => ({
+    id: variant.id,
+    name: `${variant.product.title}${variant.title !== 'Default' ? ` - ${variant.title}` : ''}`,
+    currentStock: variant.inventoryQuantity,
+    reorderPoint: REORDER_POINT,
+    lowStockThreshold: LOW_STOCK_THRESHOLD,
     leadTimeDays: 7, // Default lead time, could be per-product
-    unitCost: item.costPerUnit ? Number(item.costPerUnit) : undefined,
-    salesHistory: salesByItem.get(item.id) || [],
+    unitCost: variant.costPerUnit ? Number(variant.costPerUnit) : undefined,
+    salesHistory: salesByVariant.get(variant.id) || [],
   }));
 }
 

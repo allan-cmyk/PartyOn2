@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { adjustInventory, getDefaultLocation } from '@/lib/inventory/services/inventory-service';
+import { adjustInventory } from '@/lib/inventory/services/inventory-service';
 
 interface ApplyAdjustment {
   productId: string;
@@ -46,15 +46,6 @@ export async function POST(
       );
     }
 
-    // Get default location for adjustments
-    const defaultLocation = await getDefaultLocation();
-    if (!defaultLocation) {
-      return NextResponse.json(
-        { success: false, error: 'No default inventory location configured' },
-        { status: 500 }
-      );
-    }
-
     const results = [];
 
     for (const adj of adjustments) {
@@ -65,22 +56,27 @@ export async function POST(
       } else if (adj.action === 'remove') {
         quantity = -Math.abs(adj.quantity);
       } else {
-        // 'set' - we need to calculate the delta from current inventory
-        const currentItem = await prisma.inventoryItem.findFirst({
-          where: {
-            productId: adj.productId,
-            locationId: defaultLocation.id,
-            variantId: adj.variantId || null,
-          },
-        });
-        const currentQty = currentItem?.quantity ?? 0;
+        // 'set' - calculate delta from current ProductVariant.inventoryQuantity
+        let currentQty = 0;
+        if (adj.variantId) {
+          const variant = await prisma.productVariant.findUnique({
+            where: { id: adj.variantId },
+            select: { inventoryQuantity: true },
+          });
+          currentQty = variant?.inventoryQuantity ?? 0;
+        } else {
+          const variant = await prisma.productVariant.findFirst({
+            where: { productId: adj.productId },
+            select: { inventoryQuantity: true },
+          });
+          currentQty = variant?.inventoryQuantity ?? 0;
+        }
         quantity = adj.quantity - currentQty;
       }
 
       const result = await adjustInventory({
         productId: adj.productId,
         variantId: adj.variantId,
-        locationId: defaultLocation.id,
         quantity,
         reason: `Inventory note: ${note.content.substring(0, 100)}`,
         type: 'ADJUSTMENT',

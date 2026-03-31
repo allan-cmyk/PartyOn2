@@ -105,7 +105,7 @@ export interface VariantUpdateInput extends Partial<VariantCreateInput> {
 export interface InventoryAdjustment {
   productId: string;
   variantId?: string;
-  locationId: string;
+  locationId?: string; // Deprecated -- ignored, kept for backward compatibility
   quantity: number;
   reason?: string;
   type: 'RECEIVED' | 'SOLD' | 'ADJUSTMENT' | 'TRANSFER' | 'RETURN' | 'DAMAGED';
@@ -121,7 +121,7 @@ export interface InventoryTransfer {
 }
 
 export interface InventoryCount {
-  locationId: string;
+  locationId?: string; // Deprecated -- ignored, kept for backward compatibility
   items: Array<{
     productId: string;
     variantId?: string;

@@ -26,9 +26,6 @@ export async function GET(
         variants: {
           include: {
             image: true,
-            inventoryItems: {
-              include: { location: true },
-            },
           },
           orderBy: { createdAt: 'asc' },
         },
@@ -37,9 +34,6 @@ export async function GET(
         },
         categories: {
           include: { category: true },
-        },
-        inventoryItems: {
-          include: { location: true },
         },
         bundleComponents: {
           include: {
@@ -113,16 +107,13 @@ export async function GET(
           height: img.height,
           position: img.position,
         })),
-        variants: product.variants.map((v) => {
-          // Get cost from the first inventory item for this variant (or null)
-          const variantCost = v.inventoryItems[0]?.costPerUnit;
-          return {
+        variants: product.variants.map((v) => ({
             id: v.id,
             sku: v.sku,
             title: v.title,
             price: Number(v.price),
             compareAtPrice: v.compareAtPrice ? Number(v.compareAtPrice) : null,
-            costPerUnit: variantCost ? Number(variantCost) : null,
+            costPerUnit: v.costPerUnit ? Number(v.costPerUnit) : null,
             options: {
               option1: v.option1Name ? { name: v.option1Name, value: v.option1Value } : null,
               option2: v.option2Name ? { name: v.option2Name, value: v.option2Value } : null,
@@ -135,24 +126,16 @@ export async function GET(
             weight: v.weight,
             weightUnit: v.weightUnit,
             image: v.image ? { url: v.image.url, altText: v.image.altText } : null,
-            inventoryByLocation: v.inventoryItems.map((inv) => ({
-              id: inv.id,
-              locationId: inv.locationId,
-              location: inv.location.name,
-              quantity: inv.quantity,
-              costPerUnit: inv.costPerUnit ? Number(inv.costPerUnit) : null,
-            })),
-          };
-        }),
+        })),
         categories: product.categories.map((c) => ({
           id: c.category.id,
           handle: c.category.handle,
           title: c.category.title,
         })),
-        totalInventory: product.inventoryItems.reduce((sum, i) => sum + i.quantity, 0),
-        // Get the primary cost (first inventory item's cost or null)
-        costPerUnit: product.inventoryItems[0]?.costPerUnit
-          ? Number(product.inventoryItems[0].costPerUnit)
+        totalInventory: product.variants.reduce((sum, v) => sum + v.inventoryQuantity, 0),
+        // Get the primary cost from the first variant
+        costPerUnit: product.variants[0]?.costPerUnit
+          ? Number(product.variants[0].costPerUnit)
           : null,
         stats: {
           totalSold: orderStats._sum.quantity || 0,
@@ -242,12 +225,12 @@ export async function PUT(
       data: updateData,
     });
 
-    // Handle costPerUnit update (stored in InventoryItem, not Product)
+    // Handle costPerUnit update (stored on ProductVariant)
     if (body.costPerUnit !== undefined) {
       const costValue = body.costPerUnit === null ? null : parseFloat(body.costPerUnit);
 
-      // Update all inventory items for this product with the new cost
-      await prisma.inventoryItem.updateMany({
+      // Update all variants for this product with the new cost
+      await prisma.productVariant.updateMany({
         where: { productId: id },
         data: { costPerUnit: costValue },
       });

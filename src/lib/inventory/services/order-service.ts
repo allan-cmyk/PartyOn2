@@ -54,11 +54,12 @@ export interface OrderItemWithProduct {
 
 /**
  * Shared helper: decrement inventory for a single order item.
+ * Writes directly to ProductVariant.inventoryQuantity (single source of truth).
  * If the product is a bundle, decrements each component's inventory instead.
  */
 type TransactionClient = Omit<typeof prisma, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>;
 
-async function decrementInventoryForOrderItem(
+export async function decrementInventoryForOrderItem(
   tx: TransactionClient,
   productId: string,
   variantId: string,
@@ -84,29 +85,35 @@ async function decrementInventoryForOrderItem(
   if (product?.isBundle && product.bundleComponents.length > 0) {
     // Bundle: decrement each component's inventory
     for (const component of product.bundleComponents) {
-      const componentVariantId = component.componentVariantId;
       const decrementQty = component.quantity * orderQuantity;
 
-      const inventoryItem = await tx.inventoryItem.findFirst({
-        where: {
-          productId: component.componentProductId,
-          ...(componentVariantId ? { variantId: componentVariantId } : {}),
-        },
-      });
+      // Find the variant to decrement
+      let componentVariant;
+      if (component.componentVariantId) {
+        componentVariant = await tx.productVariant.findUnique({
+          where: { id: component.componentVariantId },
+          select: { id: true, inventoryQuantity: true },
+        });
+      } else {
+        componentVariant = await tx.productVariant.findFirst({
+          where: { productId: component.componentProductId },
+          select: { id: true, inventoryQuantity: true },
+        });
+      }
 
-      if (inventoryItem) {
-        await tx.inventoryItem.update({
-          where: { id: inventoryItem.id },
-          data: { quantity: { decrement: decrementQty } },
+      if (componentVariant) {
+        await tx.productVariant.update({
+          where: { id: componentVariant.id },
+          data: { inventoryQuantity: { decrement: decrementQty } },
         });
 
         await tx.inventoryMovement.create({
           data: {
-            inventoryItemId: inventoryItem.id,
+            variantId: componentVariant.id,
             type: 'SOLD',
             quantity: -decrementQty,
-            previousQuantity: inventoryItem.quantity,
-            newQuantity: inventoryItem.quantity - decrementQty,
+            previousQuantity: componentVariant.inventoryQuantity,
+            newQuantity: componentVariant.inventoryQuantity - decrementQty,
             reason: `Order #${orderNumber} (bundle component)`,
             referenceId: orderId,
             referenceType: 'Order',
@@ -115,24 +122,25 @@ async function decrementInventoryForOrderItem(
       }
     }
   } else {
-    // Regular product: decrement directly
-    const inventoryItem = await tx.inventoryItem.findFirst({
-      where: { productId, variantId },
+    // Regular product: decrement variant directly
+    const variant = await tx.productVariant.findUnique({
+      where: { id: variantId },
+      select: { id: true, inventoryQuantity: true },
     });
 
-    if (inventoryItem) {
-      await tx.inventoryItem.update({
-        where: { id: inventoryItem.id },
-        data: { quantity: { decrement: orderQuantity } },
+    if (variant) {
+      await tx.productVariant.update({
+        where: { id: variant.id },
+        data: { inventoryQuantity: { decrement: orderQuantity } },
       });
 
       await tx.inventoryMovement.create({
         data: {
-          inventoryItemId: inventoryItem.id,
+          variantId: variant.id,
           type: 'SOLD',
           quantity: -orderQuantity,
-          previousQuantity: inventoryItem.quantity,
-          newQuantity: inventoryItem.quantity - orderQuantity,
+          previousQuantity: variant.inventoryQuantity,
+          newQuantity: variant.inventoryQuantity - orderQuantity,
           reason: `Order #${orderNumber}`,
           referenceId: orderId,
           referenceType: 'Order',

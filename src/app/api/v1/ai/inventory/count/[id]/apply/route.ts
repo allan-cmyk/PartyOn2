@@ -81,31 +81,30 @@ export async function POST(
         // Use adjustment if provided, otherwise use AI detected quantity
         const targetQuantity = adjustments?.[item.productId] ?? item.estimatedQuantity;
 
-        // Find inventory item for this product at this location
-        const inventoryItem = await tx.inventoryItem.findFirst({
-          where: {
-            productId: item.productId,
-            locationId: aiCount.locationId,
-          },
-        });
+        // Find the variant to update
+        const variant = item.variantId
+          ? await tx.productVariant.findUnique({
+              where: { id: item.variantId },
+              select: { id: true, inventoryQuantity: true },
+            })
+          : await tx.productVariant.findFirst({
+              where: { productId: item.productId },
+              select: { id: true, inventoryQuantity: true },
+            });
 
-        if (inventoryItem) {
-          const previousQuantity = inventoryItem.quantity;
+        if (variant) {
+          const previousQuantity = variant.inventoryQuantity;
 
-          // Update inventory
-          await tx.inventoryItem.update({
-            where: { id: inventoryItem.id },
-            data: {
-              quantity: targetQuantity,
-              lastCountedAt: new Date(),
-              lastCountedBy: userId || 'AI',
-            },
+          // Update ProductVariant directly
+          await tx.productVariant.update({
+            where: { id: variant.id },
+            data: { inventoryQuantity: targetQuantity },
           });
 
           // Create movement record
           await tx.inventoryMovement.create({
             data: {
-              inventoryItemId: inventoryItem.id,
+              variantId: variant.id,
               type: 'AI_COUNT',
               quantity: targetQuantity - previousQuantity,
               previousQuantity,

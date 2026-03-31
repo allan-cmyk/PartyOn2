@@ -92,8 +92,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         where: { createdAt: { gte: prevStart, lte: prevEnd } },
       }),
       // Inventory stats
-      prisma.inventoryItem.aggregate({
-        _sum: { quantity: true },
+      prisma.productVariant.aggregate({
+        _sum: { inventoryQuantity: true },
         _count: true,
       }),
       // Top selling products
@@ -162,10 +162,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       : 0;
 
     // Count low stock items
-    const lowStockItems = await prisma.inventoryItem.count({
-      where: {
-        quantity: { lte: prisma.inventoryItem.fields.lowStockThreshold },
-      },
+    const lowStockItems = await prisma.productVariant.count({
+      where: { inventoryQuantity: { gt: 0, lte: 10 }, trackInventory: true },
     });
 
     const summary = {
@@ -185,7 +183,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       },
       inventory: {
         totalItems: inventoryStats._count,
-        totalUnits: Number(inventoryStats._sum.quantity || 0),
+        totalUnits: Number(inventoryStats._sum.inventoryQuantity || 0),
         lowStockItems,
       },
       topProducts: topProducts.map((p) => ({

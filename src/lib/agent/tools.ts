@@ -292,13 +292,11 @@ async function executeCheckInventory(args: Record<string, unknown>): Promise<str
   const items = await getProductInventory(productId);
 
   return JSON.stringify(items.map(item => ({
-    locationName: item.location.name,
-    variantTitle: item.variant?.title || 'Default',
-    sku: item.variant?.sku || null,
-    quantity: item.quantity,
-    reservedQuantity: item.reservedQuantity,
-    available: item.quantity - item.reservedQuantity,
-    lowStockThreshold: item.lowStockThreshold,
+    locationName: 'Main Warehouse',
+    variantTitle: item.title || 'Default',
+    sku: item.sku || null,
+    quantity: item.inventoryQuantity,
+    available: item.inventoryQuantity,
   })));
 }
 

@@ -40,9 +40,8 @@ export async function GET(
     const inventory = await getProductInventory(product.id);
 
     // Calculate totals
-    const totalQuantity = inventory.reduce((sum, item) => sum + item.quantity, 0);
-    const totalReserved = inventory.reduce((sum, item) => sum + item.reservedQuantity, 0);
-    const availableQuantity = totalQuantity - totalReserved;
+    const totalQuantity = inventory.reduce((sum, item) => sum + item.inventoryQuantity, 0);
+    const availableQuantity = totalQuantity;
 
     const response: {
       success: boolean;
@@ -66,9 +65,9 @@ export async function GET(
         inventory,
         totals: {
           totalQuantity,
-          reservedQuantity: totalReserved,
+          reservedQuantity: 0,
           availableQuantity,
-          locationCount: inventory.length,
+          locationCount: 1,
         },
       },
     };

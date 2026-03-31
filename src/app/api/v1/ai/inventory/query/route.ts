@@ -17,23 +17,18 @@ import type { InventoryItemSummary } from '@/lib/ai/inventory-index';
 /**
  * Build inventory context from database
  */
+const LOW_STOCK_THRESHOLD = 10;
+const REORDER_POINT = 10;
+
 async function buildInventoryContext(): Promise<InventoryItemSummary[]> {
-  // Get all active inventory items with product info
-  const inventoryItems = await prisma.inventoryItem.findMany({
+  // Get all product variants with product info
+  const variants = await prisma.productVariant.findMany({
     include: {
       product: {
         select: {
           id: true,
           title: true,
           productType: true,
-        },
-      },
-      variant: {
-        select: {
-          id: true,
-          sku: true,
-          title: true,
-          price: true,
         },
       },
     },
@@ -47,32 +42,34 @@ async function buildInventoryContext(): Promise<InventoryItemSummary[]> {
     where: {
       type: 'SOLD',
       createdAt: { gte: thirtyDaysAgo },
+      variantId: { not: null },
     },
     select: {
-      inventoryItemId: true,
+      variantId: true,
       quantity: true,
       createdAt: true,
     },
   });
 
-  // Calculate sales per inventory item
-  const salesByItem = new Map<string, number>();
+  // Calculate sales per variant
+  const salesByVariant = new Map<string, number>();
   for (const movement of recentMovements) {
-    const current = salesByItem.get(movement.inventoryItemId) || 0;
-    salesByItem.set(movement.inventoryItemId, current + Math.abs(movement.quantity));
+    if (!movement.variantId) continue;
+    const current = salesByVariant.get(movement.variantId) || 0;
+    salesByVariant.set(movement.variantId, current + Math.abs(movement.quantity));
   }
 
   // Map to InventoryItemSummary
-  return inventoryItems.map((item) => ({
-    id: item.id,
-    name: `${item.product.title}${item.variant ? ` - ${item.variant.title}` : ''}`,
-    sku: item.variant?.sku || item.id,
-    quantity: item.quantity - item.reservedQuantity,
-    lowStockThreshold: item.lowStockThreshold,
-    reorderPoint: item.reorderPoint,
-    category: item.product.productType || undefined,
-    price: item.variant?.price ? Number(item.variant.price) : undefined,
-    salesLast30Days: salesByItem.get(item.id) || 0,
+  return variants.map((variant) => ({
+    id: variant.id,
+    name: `${variant.product.title}${variant.title !== 'Default' ? ` - ${variant.title}` : ''}`,
+    sku: variant.sku || variant.id,
+    quantity: variant.inventoryQuantity,
+    lowStockThreshold: LOW_STOCK_THRESHOLD,
+    reorderPoint: REORDER_POINT,
+    category: variant.product.productType || undefined,
+    price: variant.price ? Number(variant.price) : undefined,
+    salesLast30Days: salesByVariant.get(variant.id) || 0,
   }));
 }
 

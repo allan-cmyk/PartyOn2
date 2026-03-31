@@ -54,29 +54,34 @@ async function restoreInventoryForReturnItem(
   if (product?.isBundle && product.bundleComponents.length > 0) {
     // Bundle: increment each component's inventory
     for (const component of product.bundleComponents) {
-      const componentVariantId = component.componentVariantId;
       const incrementQty = component.quantity * returnQuantity;
 
-      const inventoryItem = await tx.inventoryItem.findFirst({
-        where: {
-          productId: component.componentProductId,
-          ...(componentVariantId ? { variantId: componentVariantId } : {}),
-        },
-      });
+      let componentVariant;
+      if (component.componentVariantId) {
+        componentVariant = await tx.productVariant.findUnique({
+          where: { id: component.componentVariantId },
+          select: { id: true, inventoryQuantity: true },
+        });
+      } else {
+        componentVariant = await tx.productVariant.findFirst({
+          where: { productId: component.componentProductId },
+          select: { id: true, inventoryQuantity: true },
+        });
+      }
 
-      if (inventoryItem) {
-        await tx.inventoryItem.update({
-          where: { id: inventoryItem.id },
-          data: { quantity: { increment: incrementQty } },
+      if (componentVariant) {
+        await tx.productVariant.update({
+          where: { id: componentVariant.id },
+          data: { inventoryQuantity: { increment: incrementQty } },
         });
 
         await tx.inventoryMovement.create({
           data: {
-            inventoryItemId: inventoryItem.id,
+            variantId: componentVariant.id,
             type: 'RETURN',
             quantity: incrementQty,
-            previousQuantity: inventoryItem.quantity,
-            newQuantity: inventoryItem.quantity + incrementQty,
+            previousQuantity: componentVariant.inventoryQuantity,
+            newQuantity: componentVariant.inventoryQuantity + incrementQty,
             reason: `Return from Order #${orderNumber} (bundle component)`,
             referenceId: orderId,
             referenceType: 'Order',
@@ -85,27 +90,33 @@ async function restoreInventoryForReturnItem(
       }
     }
   } else {
-    // Regular product: increment directly
-    const inventoryItem = await tx.inventoryItem.findFirst({
-      where: {
-        productId,
-        ...(variantId ? { variantId } : {}),
-      },
-    });
+    // Regular product: increment variant directly
+    let variant;
+    if (variantId) {
+      variant = await tx.productVariant.findUnique({
+        where: { id: variantId },
+        select: { id: true, inventoryQuantity: true },
+      });
+    } else {
+      variant = await tx.productVariant.findFirst({
+        where: { productId },
+        select: { id: true, inventoryQuantity: true },
+      });
+    }
 
-    if (inventoryItem) {
-      await tx.inventoryItem.update({
-        where: { id: inventoryItem.id },
-        data: { quantity: { increment: returnQuantity } },
+    if (variant) {
+      await tx.productVariant.update({
+        where: { id: variant.id },
+        data: { inventoryQuantity: { increment: returnQuantity } },
       });
 
       await tx.inventoryMovement.create({
         data: {
-          inventoryItemId: inventoryItem.id,
+          variantId: variant.id,
           type: 'RETURN',
           quantity: returnQuantity,
-          previousQuantity: inventoryItem.quantity,
-          newQuantity: inventoryItem.quantity + returnQuantity,
+          previousQuantity: variant.inventoryQuantity,
+          newQuantity: variant.inventoryQuantity + returnQuantity,
           reason: `Return from Order #${orderNumber}`,
           referenceId: orderId,
           referenceType: 'Order',

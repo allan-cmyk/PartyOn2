@@ -55,7 +55,6 @@ export {
   getProductInventory,
   getLocationInventory,
   adjustInventory,
-  transferInventory,
   setInventoryCount,
   getLowStockAlerts,
   acknowledgeAlert,

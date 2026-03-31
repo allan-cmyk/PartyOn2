@@ -42,8 +42,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const searchParams = request.nextUrl.searchParams;
     const { start, end } = getDateRange(searchParams);
 
-    // Fetch inventory items with product details
-    const inventoryItems = await prisma.inventoryItem.findMany({
+    // Fetch product variants with product details
+    const inventoryItems = await prisma.productVariant.findMany({
+      where: { trackInventory: true },
       include: {
         product: {
           select: {
@@ -51,13 +52,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             title: true,
             productType: true,
             basePrice: true,
-          },
-        },
-        variant: {
-          select: {
-            id: true,
-            title: true,
-            sku: true,
           },
         },
       },
@@ -80,26 +74,28 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     );
 
     // Calculate metrics for each item
+    const LOW_STOCK_THRESHOLD = 10;
+    const REORDER_POINT = 5;
     const itemMetrics = inventoryItems.map((item) => {
-      const soldQuantity = salesMap.get(`${item.productId}-${item.variantId}`) || 0;
+      const soldQuantity = salesMap.get(`${item.productId}-${item.id}`) || 0;
       const daysInRange = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
       const dailySales = daysInRange > 0 ? soldQuantity / daysInRange : 0;
-      const daysOfStock = dailySales > 0 ? Math.round(item.quantity / dailySales) : null;
-      const turnoverRate = item.quantity > 0 ? (soldQuantity / item.quantity) * 100 : 0;
-      const inventoryValue = Number(item.costPerUnit || item.product.basePrice) * item.quantity;
-      const isLowStock = item.quantity <= item.lowStockThreshold;
-      const needsReorder = item.quantity <= item.reorderPoint;
+      const daysOfStock = dailySales > 0 ? Math.round(item.inventoryQuantity / dailySales) : null;
+      const turnoverRate = item.inventoryQuantity > 0 ? (soldQuantity / item.inventoryQuantity) * 100 : 0;
+      const inventoryValue = Number(item.costPerUnit || item.product.basePrice) * item.inventoryQuantity;
+      const isLowStock = item.inventoryQuantity > 0 && item.inventoryQuantity <= LOW_STOCK_THRESHOLD;
+      const needsReorder = item.inventoryQuantity <= REORDER_POINT;
 
       return {
         id: item.id,
         productId: item.productId,
         productTitle: item.product.title,
         productType: item.product.productType,
-        variantTitle: item.variant?.title,
-        sku: item.variant?.sku,
-        quantity: item.quantity,
-        lowStockThreshold: item.lowStockThreshold,
-        reorderPoint: item.reorderPoint,
+        variantTitle: item.title,
+        sku: item.sku,
+        quantity: item.inventoryQuantity,
+        lowStockThreshold: LOW_STOCK_THRESHOLD,
+        reorderPoint: REORDER_POINT,
         soldQuantity,
         dailySales: Math.round(dailySales * 100) / 100,
         daysOfStock,
@@ -112,7 +108,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     // Summary metrics
     const totalItems = inventoryItems.length;
-    const totalUnits = inventoryItems.reduce((sum, i) => sum + i.quantity, 0);
+    const totalUnits = inventoryItems.reduce((sum, i) => sum + i.inventoryQuantity, 0);
     const totalValue = itemMetrics.reduce((sum, i) => sum + i.inventoryValue, 0);
     const lowStockCount = itemMetrics.filter((i) => i.isLowStock).length;
     const needsReorderCount = itemMetrics.filter((i) => i.needsReorder).length;
