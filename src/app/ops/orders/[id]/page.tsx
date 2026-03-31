@@ -176,6 +176,14 @@ interface PreviewData {
 
 const STATUS_OPTIONS = ['PENDING', 'CONFIRMED', 'PROCESSING', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED'];
 const FULFILLMENT_OPTIONS = ['UNFULFILLED', 'PENDING', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED', 'FAILED'];
+const TIME_SLOTS = [
+  '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM',
+  '12:00 PM', '12:30 PM', '1:00 PM', '1:30 PM',
+  '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM',
+  '4:00 PM', '4:30 PM', '5:00 PM', '5:30 PM',
+  '6:00 PM', '6:30 PM', '7:00 PM', '7:30 PM',
+  '8:00 PM', '8:30 PM', '9:00 PM',
+];
 
 function getStatusColor(status: string): string {
   const colors: Record<string, string> = {
@@ -245,10 +253,16 @@ export default function OrderDetailPage(): ReactElement {
   const [internalNote, setInternalNote] = useState('');
   const printRef = useRef<HTMLDivElement>(null);
 
-  // Amendment edit mode state
+  // Edit mode state
   const [isEditing, setIsEditing] = useState(false);
   const [editItems, setEditItems] = useState<EditItem[]>([]);
   const [editDeliveryFee, setEditDeliveryFee] = useState(0);
+  const [editCustomerName, setEditCustomerName] = useState('');
+  const [editDeliveryDate, setEditDeliveryDate] = useState('');
+  const [editDeliveryTime, setEditDeliveryTime] = useState('');
+  const [editDeliveryPhone, setEditDeliveryPhone] = useState('');
+  const [editDeliveryInstructions, setEditDeliveryInstructions] = useState('');
+  const [editDeliveryAddress, setEditDeliveryAddress] = useState({ address1: '', address2: '', city: '', state: '', zip: '' });
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<SearchProduct[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
@@ -332,6 +346,19 @@ export default function OrderDetailPage(): ReactElement {
       }))
     );
     setEditDeliveryFee(order.pricing.deliveryFee);
+    setEditCustomerName(order.customerSnapshot.name || order.customer.name || '');
+    // Parse ISO date to YYYY-MM-DD for input
+    setEditDeliveryDate(order.delivery.date.split('T')[0]);
+    setEditDeliveryTime(order.delivery.time || '');
+    setEditDeliveryPhone(order.delivery.phone || '');
+    setEditDeliveryInstructions(order.delivery.instructions || '');
+    setEditDeliveryAddress({
+      address1: order.delivery.address.address1 || '',
+      address2: order.delivery.address.address2 || '',
+      city: order.delivery.address.city || '',
+      state: order.delivery.address.state || '',
+      zip: order.delivery.address.zip || '',
+    });
     setAmendNotes('');
     setPreview(null);
     setIsEditing(true);
@@ -344,6 +371,12 @@ export default function OrderDetailPage(): ReactElement {
     setSearchQuery('');
     setSearchResults([]);
     setShowSearchResults(false);
+    setEditCustomerName('');
+    setEditDeliveryDate('');
+    setEditDeliveryTime('');
+    setEditDeliveryPhone('');
+    setEditDeliveryInstructions('');
+    setEditDeliveryAddress({ address1: '', address2: '', city: '', state: '', zip: '' });
   }
 
   // Product search
@@ -449,10 +482,63 @@ export default function OrderDetailPage(): ReactElement {
     }
   }
 
+  function hasFinancialChanges(): boolean {
+    if (!order) return false;
+    if (editDeliveryFee !== order.pricing.deliveryFee) return true;
+    const origItems = order.items.map(i => `${i.product.id}-${i.variant?.id || ''}-${i.quantity}-${i.price}`).sort().join('|');
+    const editItemsStr = editItems.map(i => `${i.productId}-${i.variantId}-${i.quantity}-${i.price}`).sort().join('|');
+    return origItems !== editItemsStr;
+  }
+
+  function getNonFinancialUpdates(): Record<string, unknown> {
+    if (!order) return {};
+    const updates: Record<string, unknown> = {};
+    const origName = order.customerSnapshot.name || order.customer.name || '';
+    if (editCustomerName !== origName) updates.customerName = editCustomerName;
+    if (editDeliveryDate !== order.delivery.date.split('T')[0]) updates.deliveryDate = editDeliveryDate;
+    if (editDeliveryTime !== (order.delivery.time || '')) updates.deliveryTime = editDeliveryTime;
+    if (editDeliveryPhone !== (order.delivery.phone || '')) updates.deliveryPhone = editDeliveryPhone;
+    if (editDeliveryInstructions !== (order.delivery.instructions || '')) updates.deliveryInstructions = editDeliveryInstructions;
+    const origAddr = order.delivery.address;
+    if (editDeliveryAddress.address1 !== (origAddr.address1 || '') ||
+        editDeliveryAddress.address2 !== (origAddr.address2 || '') ||
+        editDeliveryAddress.city !== (origAddr.city || '') ||
+        editDeliveryAddress.state !== (origAddr.state || '') ||
+        editDeliveryAddress.zip !== (origAddr.zip || '')) {
+      updates.deliveryAddress = editDeliveryAddress;
+    }
+    return updates;
+  }
+
+  async function saveNonFinancialChanges() {
+    const updates = getNonFinancialUpdates();
+    if (Object.keys(updates).length === 0) {
+      setIsEditing(false);
+      return;
+    }
+    setAmendProcessing(true);
+    try {
+      await updateOrder(updates);
+      setIsEditing(false);
+      setToast('Order updated successfully');
+      setTimeout(() => setToast(null), 3000);
+    } catch {
+      alert('Failed to save changes');
+    } finally {
+      setAmendProcessing(false);
+    }
+  }
+
   async function confirmAmendment() {
     if (!order || !preview) return;
     setAmendProcessing(true);
     try {
+      // Save non-financial changes alongside the amendment
+      const nonFinancialUpdates = getNonFinancialUpdates();
+      if (Object.keys(nonFinancialUpdates).length > 0) {
+        await updateOrder(nonFinancialUpdates);
+      }
+
       const res = await fetch(`/api/v1/admin/orders/${orderId}/amend`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -972,7 +1058,7 @@ export default function OrderDetailPage(): ReactElement {
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
-                    Amend Order
+                    Edit Order
                   </button>
                   <button
                     onClick={openCancelDialog}
@@ -1004,7 +1090,7 @@ export default function OrderDetailPage(): ReactElement {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <p className="text-blue-800 font-medium">
-                Edit Mode -- Add/remove items and adjust delivery fee. Click &quot;Preview Changes&quot; when ready.
+                Edit Mode -- You can edit delivery details, customer name, items, and delivery fee. Click &quot;Save Changes&quot; when done.
               </p>
             </div>
           )}
@@ -1068,47 +1154,147 @@ export default function OrderDetailPage(): ReactElement {
                   title="Delivery Details"
                 />
                 <div className="p-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-                    <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
-                      <p className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-1">Delivery Date</p>
-                      <p className="font-bold text-gray-900 text-lg">{formatDate(order.delivery.date)}</p>
-                    </div>
-                    <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
-                      <p className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-1">Time Window</p>
-                      <p className="font-bold text-gray-900 text-lg">{order.delivery.time}</p>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Delivery Address</p>
-                      <p className="font-medium text-gray-900">
-                        {order.delivery.address.address1}
-                        {order.delivery.address.address2 && `, ${order.delivery.address.address2}`}
-                      </p>
-                      <p className="text-gray-600">
-                        {order.delivery.address.city}, {order.delivery.address.state} {order.delivery.address.zip}
-                      </p>
-                    </div>
-                    {order.delivery.phone && (
-                      <div>
-                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Delivery Phone</p>
-                        <a href={`tel:${order.delivery.phone}`} className="text-blue-600 hover:underline font-medium">
-                          {order.delivery.phone}
-                        </a>
-                      </div>
-                    )}
-                    {order.delivery.instructions && (
-                      <div>
-                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Delivery Instructions</p>
-                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-gray-800">
-                          <svg className="w-5 h-5 text-yellow-500 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          {order.delivery.instructions}
+                  {isEditing ? (
+                    <>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Delivery Date</label>
+                          <input
+                            type="date"
+                            value={editDeliveryDate}
+                            onChange={(e) => setEditDeliveryDate(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Time Window</label>
+                          <select
+                            value={editDeliveryTime}
+                            onChange={(e) => setEditDeliveryTime(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          >
+                            <option value="">Select time</option>
+                            {TIME_SLOTS.map((slot) => (
+                              <option key={slot} value={slot}>{slot}</option>
+                            ))}
+                          </select>
                         </div>
                       </div>
-                    )}
-                  </div>
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Address Line 1</label>
+                          <input
+                            type="text"
+                            value={editDeliveryAddress.address1}
+                            onChange={(e) => setEditDeliveryAddress({ ...editDeliveryAddress, address1: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Address Line 2</label>
+                          <input
+                            type="text"
+                            value={editDeliveryAddress.address2}
+                            onChange={(e) => setEditDeliveryAddress({ ...editDeliveryAddress, address2: e.target.value })}
+                            placeholder="Apt, suite, unit, etc."
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
+                        </div>
+                        <div className="grid grid-cols-3 gap-3">
+                          <div>
+                            <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">City</label>
+                            <input
+                              type="text"
+                              value={editDeliveryAddress.city}
+                              onChange={(e) => setEditDeliveryAddress({ ...editDeliveryAddress, city: e.target.value })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">State</label>
+                            <input
+                              type="text"
+                              value={editDeliveryAddress.state}
+                              onChange={(e) => setEditDeliveryAddress({ ...editDeliveryAddress, state: e.target.value })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">ZIP</label>
+                            <input
+                              type="text"
+                              value={editDeliveryAddress.zip}
+                              onChange={(e) => setEditDeliveryAddress({ ...editDeliveryAddress, zip: e.target.value })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Delivery Phone</label>
+                          <input
+                            type="tel"
+                            value={editDeliveryPhone}
+                            onChange={(e) => setEditDeliveryPhone(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Delivery Instructions</label>
+                          <textarea
+                            value={editDeliveryInstructions}
+                            onChange={(e) => setEditDeliveryInstructions(e.target.value)}
+                            rows={3}
+                            placeholder="Gate code, special instructions, etc."
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                          />
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                        <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
+                          <p className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-1">Delivery Date</p>
+                          <p className="font-bold text-gray-900 text-lg">{formatDate(order.delivery.date)}</p>
+                        </div>
+                        <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
+                          <p className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-1">Time Window</p>
+                          <p className="font-bold text-gray-900 text-lg">{order.delivery.time}</p>
+                        </div>
+                      </div>
+                      <div className="space-y-4">
+                        <div>
+                          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Delivery Address</p>
+                          <p className="font-medium text-gray-900">
+                            {order.delivery.address.address1}
+                            {order.delivery.address.address2 && `, ${order.delivery.address.address2}`}
+                          </p>
+                          <p className="text-gray-600">
+                            {order.delivery.address.city}, {order.delivery.address.state} {order.delivery.address.zip}
+                          </p>
+                        </div>
+                        {order.delivery.phone && (
+                          <div>
+                            <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Delivery Phone</p>
+                            <a href={`tel:${order.delivery.phone}`} className="text-blue-600 hover:underline font-medium">
+                              {order.delivery.phone}
+                            </a>
+                          </div>
+                        )}
+                        {order.delivery.instructions && (
+                          <div>
+                            <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Delivery Instructions</p>
+                            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-gray-800">
+                              <svg className="w-5 h-5 text-yellow-500 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              {order.delivery.instructions}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -1451,9 +1637,21 @@ export default function OrderDetailPage(): ReactElement {
                 />
                 <div className="p-6 space-y-4">
                   <div>
-                    <p className="font-semibold text-gray-900 text-lg">
-                      {order.customer.name || order.customerSnapshot.name || 'Guest'}
-                    </p>
+                    {isEditing ? (
+                      <>
+                        <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Customer Name</label>
+                        <input
+                          type="text"
+                          value={editCustomerName}
+                          onChange={(e) => setEditCustomerName(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-semibold text-gray-900"
+                        />
+                      </>
+                    ) : (
+                      <p className="font-semibold text-gray-900 text-lg">
+                        {order.customer.name || order.customerSnapshot.name || 'Guest'}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Email</p>
@@ -1677,7 +1875,7 @@ export default function OrderDetailPage(): ReactElement {
         </div>
       </div>
 
-      {/* Amendment Summary Bar (sticky bottom in edit mode) */}
+      {/* Edit Bar (sticky bottom in edit mode) */}
       {isEditing && (
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 shadow-2xl z-50 print:hidden">
           <div className="max-w-7xl mx-auto px-4 md:px-8 py-4">
@@ -1748,6 +1946,9 @@ export default function OrderDetailPage(): ReactElement {
               <div className="flex items-center justify-between">
                 <p className="text-gray-600">
                   {editItems.length} item{editItems.length !== 1 ? 's' : ''} | Delivery: ${editDeliveryFee.toFixed(2)}
+                  {Object.keys(getNonFinancialUpdates()).length > 0 && (
+                    <span className="ml-2 text-blue-600">+ delivery/customer changes</span>
+                  )}
                 </p>
                 <div className="flex items-center gap-3">
                   <button
@@ -1756,13 +1957,23 @@ export default function OrderDetailPage(): ReactElement {
                   >
                     Cancel
                   </button>
-                  <button
-                    onClick={fetchPreview}
-                    disabled={amendProcessing}
-                    className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50"
-                  >
-                    {amendProcessing ? 'Loading...' : 'Preview Changes'}
-                  </button>
+                  {hasFinancialChanges() ? (
+                    <button
+                      onClick={fetchPreview}
+                      disabled={amendProcessing}
+                      className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50"
+                    >
+                      {amendProcessing ? 'Loading...' : 'Preview Changes'}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={saveNonFinancialChanges}
+                      disabled={amendProcessing || Object.keys(getNonFinancialUpdates()).length === 0}
+                      className="px-6 py-2.5 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50"
+                    >
+                      {amendProcessing ? 'Saving...' : 'Save Changes'}
+                    </button>
+                  )}
                 </div>
               </div>
             )}

@@ -343,6 +343,28 @@ export async function PUT(
       updateData.customerNote = body.customerNote;
     }
 
+    // Update customer info
+    if (body.customerName !== undefined) {
+      updateData.customerName = body.customerName;
+    }
+
+    // Update delivery details
+    if (body.deliveryDate !== undefined) {
+      updateData.deliveryDate = new Date(body.deliveryDate);
+    }
+    if (body.deliveryTime !== undefined) {
+      updateData.deliveryTime = body.deliveryTime;
+    }
+    if (body.deliveryPhone !== undefined) {
+      updateData.deliveryPhone = body.deliveryPhone;
+    }
+    if (body.deliveryInstructions !== undefined) {
+      updateData.deliveryInstructions = body.deliveryInstructions || null;
+    }
+    if (body.deliveryAddress !== undefined) {
+      updateData.deliveryAddress = body.deliveryAddress;
+    }
+
     // Link affiliate to order (manual attribution)
     if (body.linkAffiliateCode) {
       const commission = await linkOrderToAffiliate(
