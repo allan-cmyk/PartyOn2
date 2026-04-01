@@ -20,7 +20,7 @@ import type { RecommendationResult } from '@/components/dashboard/GetRecsModal';
 import { claimHostV2, addDraftItemV2, removeDraftItemV2 } from '@/lib/group-orders-v2/api-client';
 import type { AppliedPromo } from '@/lib/group-orders-v2/types';
 import PromoCodeInput from '@/components/dashboard/PromoCodeInput';
-import SurvivalPackageBanner from '@/components/dashboard/SurvivalPackageBanner';
+import PremierPerksBanner from '@/components/dashboard/PremierPerksBanner';
 import { OnboardingTourProvider, DashboardTour } from '@/components/dashboard/tour';
 
 const CONFETTI_COLORS = ['#003087', '#FFD700', '#FF6B35', '#00B4D8', '#FF1493'];
@@ -429,7 +429,7 @@ export default function DashboardPage(): ReactElement {
             )}
           </div>
 
-          <SurvivalPackageBanner
+          <PremierPerksBanner
             groupOrder={groupOrder}
             activeTab={tab}
             participantId={participantId}
