@@ -220,6 +220,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         phone: order.affiliate.phone,
       } : null,
       dashboardSource: dashboardSourceMap.get(order.id) || null,
+      reviewRequestSentAt: order.reviewRequestSentAt?.toISOString() || null,
     }));
 
     // Get summary stats

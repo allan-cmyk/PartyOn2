@@ -276,6 +276,7 @@ export async function GET(
           customer: order.customerNote,
           internal: order.internalNote,
         },
+        reviewRequestSentAt: order.reviewRequestSentAt?.toISOString() || null,
         createdAt: order.createdAt.toISOString(),
         updatedAt: order.updatedAt.toISOString(),
         navigation: {

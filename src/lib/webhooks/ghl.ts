@@ -6,6 +6,7 @@
  */
 
 const GHL_WEBHOOK_URL = process.env.GHL_ORDER_WEBHOOK_URL;
+const GHL_REVIEW_WEBHOOK_URL = process.env.GHL_REVIEW_WEBHOOK_URL;
 
 // ──────────────────────────────────────────────
 // Types
@@ -144,6 +145,17 @@ export function buildGhlPayload(order: OrderLike, orderType: string): GhlOrderPa
  * POST order data to the GHL inbound webhook.
  * Fire-and-forget: logs errors, never throws.
  */
+export interface GhlReviewPayload {
+  event: 'review.request';
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  orderNumber: number;
+  orderUrl: string;
+  deliveryDate: string;
+}
+
 export async function notifyNewOrder(payload: GhlOrderPayload): Promise<void> {
   if (!GHL_WEBHOOK_URL) return;
 
@@ -160,5 +172,28 @@ export async function notifyNewOrder(payload: GhlOrderPayload): Promise<void> {
     }
   } catch (err) {
     console.error('[GHL Webhook] Error:', err);
+  }
+}
+
+/**
+ * POST review request data to the GHL review webhook.
+ * Fire-and-forget: logs errors, never throws.
+ */
+export async function sendReviewRequest(payload: GhlReviewPayload): Promise<void> {
+  if (!GHL_REVIEW_WEBHOOK_URL) return;
+
+  try {
+    const res = await fetch(GHL_REVIEW_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      console.error('[GHL Review Webhook] Failed:', res.status, await res.text());
+    } else {
+      console.log('[GHL Review Webhook] Review request sent for order:', payload.orderNumber);
+    }
+  } catch (err) {
+    console.error('[GHL Review Webhook] Error:', err);
   }
 }

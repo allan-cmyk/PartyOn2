@@ -123,6 +123,7 @@ interface OrderDetail {
     previousOrderId: string | null;
     nextOrderId: string | null;
   };
+  reviewRequestSentAt: string | null;
   refunds: {
     totalRefunded: number;
     count: number;
@@ -298,6 +299,8 @@ export default function OrderDetailPage(): ReactElement {
   const [affiliateCode, setAffiliateCode] = useState('');
   const [affiliateLinking, setAffiliateLinking] = useState(false);
   const [affiliateError, setAffiliateError] = useState('');
+  const [showReviewPrompt, setShowReviewPrompt] = useState(false);
+  const [sendingReview, setSendingReview] = useState(false);
 
   const fetchOrder = useCallback(async () => {
     try {
@@ -759,6 +762,10 @@ export default function OrderDetailPage(): ReactElement {
 
       if (data.success) {
         await fetchOrder();
+        // Show review prompt when fulfillment changes to DELIVERED
+        if (updates.fulfillmentStatus === 'DELIVERED' && !order.reviewRequestSentAt) {
+          setShowReviewPrompt(true);
+        }
       } else {
         alert('Failed to update order: ' + data.error);
       }
@@ -766,6 +773,34 @@ export default function OrderDetailPage(): ReactElement {
       alert('Failed to update order');
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleSendReview(): Promise<void> {
+    if (!order) return;
+    setSendingReview(true);
+    try {
+      const response = await fetch('/api/v1/admin/orders/send-review-requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderIds: [order.id] }),
+      });
+      const result = await response.json();
+      if (result.success && result.data.sentCount > 0) {
+        setToast('Review request sent');
+        setTimeout(() => setToast(null), 3000);
+      } else if (result.success && result.data.skippedCount > 0) {
+        const detail = result.data.details?.[0];
+        alert('Review request skipped: ' + (detail?.reason || 'Unknown reason'));
+      } else {
+        alert('Failed to send review request');
+      }
+    } catch {
+      alert('Failed to send review request');
+    } finally {
+      setSendingReview(false);
+      setShowReviewPrompt(false);
+      await fetchOrder();
     }
   }
 
@@ -1136,6 +1171,39 @@ export default function OrderDetailPage(): ReactElement {
                   <option key={s} value={s}>{s}</option>
                 ))}
               </select>
+
+              {/* Review request prompt */}
+              {showReviewPrompt && !order.reviewRequestSentAt && (
+                <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm font-medium text-blue-900 mb-2">
+                    Send review request to {order.customerSnapshot.name || order.customer.name}?
+                  </p>
+                  {(order.customerSnapshot.phone || order.customer.phone || order.delivery.phone) ? (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handleSendReview}
+                        disabled={sendingReview}
+                        className="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                      >
+                        {sendingReview ? 'Sending...' : 'Send'}
+                      </button>
+                      <button
+                        onClick={() => setShowReviewPrompt(false)}
+                        className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                      >
+                        Skip
+                      </button>
+                    </div>
+                  ) : (
+                    <p className="text-xs text-blue-700">No phone number available</p>
+                  )}
+                </div>
+              )}
+              {order.reviewRequestSentAt && (
+                <p className="mt-2 text-xs text-gray-500">
+                  Review request sent {new Date(order.reviewRequestSentAt).toLocaleDateString()}
+                </p>
+              )}
             </div>
           </div>
 

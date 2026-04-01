@@ -60,7 +60,7 @@ export async function getProductInventory(productId: string) {
 /**
  * Get all inventory (replaces getLocationInventory)
  */
-export async function getLocationInventory(_locationId?: string) {
+export async function getLocationInventory() {
   return prisma.productVariant.findMany({
     include: {
       product: { select: { id: true, title: true, handle: true } },
