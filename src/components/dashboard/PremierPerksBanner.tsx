@@ -154,7 +154,7 @@ function MocktailSelector({
             key={m.variantId}
             type="button"
             onClick={() => onSelect(m)}
-            className={`relative w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 transition-all duration-200 flex-shrink-0 cursor-pointer ${
+            className={`relative w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border-2 transition-all duration-200 flex-shrink-0 cursor-pointer ${
               selected.variantId === m.variantId
                 ? 'border-emerald-500 ring-2 ring-emerald-300 scale-110'
                 : 'border-gray-200 hover:border-emerald-300'
@@ -166,7 +166,7 @@ function MocktailSelector({
               alt={m.shortName}
               fill
               className="object-cover"
-              sizes="48px"
+              sizes="64px"
             />
           </button>
         ))}
@@ -342,7 +342,7 @@ export default function PremierPerksBanner({
         <PerkCard
           icon={<FridgeIcon className="w-full h-full" />}
           label="FREE Stock the Fridge"
-          subtitle="We stock it for you"
+          subtitle=""
           locked={!isUnlocked && !alreadyClaimed}
         />
         <PlusSeparator locked={!isUnlocked && !alreadyClaimed} />
