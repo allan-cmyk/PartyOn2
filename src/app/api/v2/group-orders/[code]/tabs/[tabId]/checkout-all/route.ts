@@ -78,6 +78,13 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       }
     }
 
+    // Include delivery fee in checkout if not already paid/waived
+    const shouldIncludeDeliveryFee = !tab.deliveryFeeWaived
+      && Number(tab.deliveryFee) > 0
+      && !(await prisma.groupDeliveryInvoice.findFirst({
+        where: { subOrderId: tabId, status: 'PAID' },
+      }));
+
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     const result = await createGroupV2CheckoutSession({
       groupOrderId: group.id,
@@ -89,6 +96,8 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       discountCode,
       tipAmount: tipAmount ? Number(tipAmount) : undefined,
       checkoutType: 'all',
+      includeDeliveryFee: shouldIncludeDeliveryFee,
+      deliveryFeeAmount: shouldIncludeDeliveryFee ? Number(tab.deliveryFee) : undefined,
       successUrl: `${appUrl}/dashboard/${code}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${appUrl}/dashboard/${code}`,
     });

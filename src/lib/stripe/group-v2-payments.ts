@@ -43,6 +43,9 @@ interface CreateCheckoutInput {
   successUrl: string;
   cancelUrl: string;
   checkoutType?: 'participant' | 'all';
+  /** When true, delivery fee is bundled into this checkout instead of a separate invoice */
+  includeDeliveryFee?: boolean;
+  deliveryFeeAmount?: number;
 }
 
 interface CreateDeliveryInvoiceInput {
@@ -117,6 +120,23 @@ export async function createGroupV2CheckoutSession(input: CreateCheckoutInput) {
     quantity: item.quantity,
   }));
 
+  // Add delivery fee line item when bundled into this checkout
+  const includeDeliveryFee = input.includeDeliveryFee && input.deliveryFeeAmount && input.deliveryFeeAmount > 0;
+  const deliveryFeeAmount = includeDeliveryFee ? input.deliveryFeeAmount! : 0;
+  if (includeDeliveryFee) {
+    lineItems.push({
+      price_data: {
+        currency: 'usd',
+        product_data: {
+          name: 'Delivery Fee',
+          description: 'Party On Delivery fee',
+        },
+        unit_amount: Math.round(deliveryFeeAmount * 100),
+      },
+      quantity: 1,
+    });
+  }
+
   // Add tip line item
   const tipAmount = input.tipAmount && input.tipAmount > 0 ? input.tipAmount : 0;
   if (tipAmount > 0) {
@@ -161,6 +181,7 @@ export async function createGroupV2CheckoutSession(input: CreateCheckoutInput) {
       participantId,
       checkoutType: input.checkoutType || 'participant',
       ...(tipAmount > 0 ? { tipAmount: String(tipAmount) } : {}),
+      ...(includeDeliveryFee ? { deliveryFee: String(deliveryFeeAmount) } : {}),
     },
     billing_address_collection: 'required',
     phone_number_collection: { enabled: true },
@@ -179,7 +200,7 @@ export async function createGroupV2CheckoutSession(input: CreateCheckoutInput) {
     sessionParams.discounts = [{ coupon: stripeCouponId }];
   }
 
-  const total = subtotal + taxAmount - discountAmount + tipAmount;
+  const total = subtotal + taxAmount - discountAmount + tipAmount + deliveryFeeAmount;
 
   // Create Stripe session
   const session = await stripe.checkout.sessions.create(sessionParams);
@@ -456,6 +477,9 @@ export async function handleGroupV2PaymentCompleted(
     throw new Error(`[Group V2 Payment] No customer ID or email for participant: ${participantId}`);
   }
 
+  // Delivery fee: use bundled amount from metadata, otherwise 0 (host pays separately)
+  const bundledDeliveryFee = session.metadata?.deliveryFee ? Number(session.metadata.deliveryFee) : 0;
+
   const order = await prisma.order.create({
     data: {
       customerId,
@@ -466,7 +490,7 @@ export async function handleGroupV2PaymentCompleted(
       stripePaymentIntentId: paymentIntentId || null,
       subtotal: payment.subtotal,
       taxAmount: payment.taxAmount,
-      deliveryFee: 0, // Host pays delivery separately
+      deliveryFee: bundledDeliveryFee,
       discountCode: payment.discountCode,
       discountAmount: payment.discountAmount,
       tipAmount: payment.tipAmount,
@@ -499,6 +523,14 @@ export async function handleGroupV2PaymentCompleted(
     where: { id: payment.id },
     data: { orderId: order.id },
   });
+
+  // If delivery fee was bundled, mark it as paid on the SubOrder
+  if (bundledDeliveryFee > 0) {
+    await prisma.subOrder.update({
+      where: { id: subOrderId },
+      data: { deliveryFeeWaived: true },
+    });
+  }
 
   // Decrement inventory for each purchased item
   for (const item of order.items) {
