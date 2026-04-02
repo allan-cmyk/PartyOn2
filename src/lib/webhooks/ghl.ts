@@ -7,6 +7,7 @@
 
 const GHL_WEBHOOK_URL = process.env.GHL_ORDER_WEBHOOK_URL;
 const GHL_REVIEW_WEBHOOK_URL = process.env.GHL_REVIEW_WEBHOOK_URL;
+const GHL_DASHBOARD_WEBHOOK_URL = process.env.GHL_DASHBOARD_WEBHOOK_URL;
 
 // ──────────────────────────────────────────────
 // Types
@@ -195,5 +196,45 @@ export async function sendReviewRequest(payload: GhlReviewPayload): Promise<void
     }
   } catch (err) {
     console.error('[GHL Review Webhook] Error:', err);
+  }
+}
+
+// ──────────────────────────────────────────────
+// Dashboard Created Notification
+// ──────────────────────────────────────────────
+
+export interface GhlDashboardPayload {
+  event: 'dashboard.created';
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  dashboard_url: string;
+  host_claim_url: string;
+  cruise_date: string;
+  cruise_type: string;
+  booking_id: string;
+}
+
+/**
+ * POST dashboard data to the GHL dashboard webhook.
+ * Fire-and-forget: logs errors, never throws.
+ */
+export async function notifyDashboardCreated(payload: GhlDashboardPayload): Promise<void> {
+  if (!GHL_DASHBOARD_WEBHOOK_URL) return;
+
+  try {
+    const res = await fetch(GHL_DASHBOARD_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      console.error('[GHL Dashboard Webhook] Failed:', res.status, await res.text());
+    } else {
+      console.log('[GHL Dashboard Webhook] Dashboard notification sent:', payload.dashboard_url);
+    }
+  } catch (err) {
+    console.error('[GHL Dashboard Webhook] Error:', err);
   }
 }

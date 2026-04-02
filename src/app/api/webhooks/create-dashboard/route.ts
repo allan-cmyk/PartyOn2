@@ -19,6 +19,7 @@ import {
   LODGING_TAB_NAME,
 } from '@/lib/webhooks/affiliate-dashboard';
 import type { DashboardCallbackPayload } from '@/lib/webhooks/affiliate-dashboard';
+import { notifyDashboardCreated } from '@/lib/webhooks/ghl';
 
 export const maxDuration = 60;
 
@@ -126,6 +127,26 @@ export async function POST(request: NextRequest) {
         where: { id: log.id },
         data: { callbackStatus },
       });
+    }
+
+    // Notify GHL with customer info + dashboard links
+    const hostClaimUrl = `${dashboardUrl}?claim=${result.hostClaimToken}`;
+    const nameParts = payload.customer_name.trim().split(/\s+/);
+    try {
+      await notifyDashboardCreated({
+        event: 'dashboard.created',
+        first_name: nameParts[0] || '',
+        last_name: nameParts.slice(1).join(' ') || '',
+        email: payload.customer_email || '',
+        phone: payload.customer_phone || '',
+        dashboard_url: dashboardUrl,
+        host_claim_url: hostClaimUrl,
+        cruise_date: payload.cruise_date,
+        cruise_type: cruiseType,
+        booking_id: payload.booking_id || '',
+      });
+    } catch (ghlErr) {
+      console.error('[Affiliate Webhook] GHL dashboard notify failed:', ghlErr);
     }
 
     return NextResponse.json({
