@@ -197,7 +197,7 @@ export function InventoryTable({
                   >
                     {variant.inventory}
                   </span>
-                  {variant.inventoryByLocation.length > 1 && (
+                  {variant.inventoryByLocation?.length > 1 && (
                     <div className="text-xs text-gray-500 mt-1">
                       {variant.inventoryByLocation.map((loc) => (
                         <div key={loc.location}>
