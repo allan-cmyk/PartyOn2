@@ -98,6 +98,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       checkoutType: 'all',
       includeDeliveryFee: shouldIncludeDeliveryFee,
       deliveryFeeAmount: shouldIncludeDeliveryFee ? Number(tab.deliveryFee) : undefined,
+      affiliateCode: group.affiliate?.code,
       successUrl: `${appUrl}/dashboard/${code}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${appUrl}/dashboard/${code}`,
     });

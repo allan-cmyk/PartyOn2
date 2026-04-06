@@ -88,6 +88,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       draftItems,
       discountCode,
       tipAmount: tipAmount ? Number(tipAmount) : undefined,
+      affiliateCode: group.affiliate?.code,
       successUrl: `${appUrl}/dashboard/${code}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${appUrl}/dashboard/${code}`,
     });

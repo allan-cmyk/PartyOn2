@@ -46,6 +46,8 @@ interface CreateCheckoutInput {
   /** When true, delivery fee is bundled into this checkout instead of a separate invoice */
   includeDeliveryFee?: boolean;
   deliveryFeeAmount?: number;
+  /** Affiliate code from the GroupOrderV2 — passed through Stripe metadata for commission tracking */
+  affiliateCode?: string;
 }
 
 interface CreateDeliveryInvoiceInput {
@@ -182,6 +184,7 @@ export async function createGroupV2CheckoutSession(input: CreateCheckoutInput) {
       checkoutType: input.checkoutType || 'participant',
       ...(tipAmount > 0 ? { tipAmount: String(tipAmount) } : {}),
       ...(includeDeliveryFee ? { deliveryFee: String(deliveryFeeAmount) } : {}),
+      ...(input.affiliateCode ? { affiliateCode: input.affiliateCode } : {}),
     },
     billing_address_collection: 'required',
     phone_number_collection: { enabled: true },
