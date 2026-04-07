@@ -87,15 +87,26 @@ When the operator provides a Total Wine (or similar retailer) URL for a product 
    ```
    Use `prisma.product.upsert()` with:
    - `handle`: kebab-case slug (e.g., `bigallet-china-china-amer-liqueur-750ml`)
-   - `title`: "Brand Name * Size Bottle" (use bullet character)
+   - `title`: "Brand Name * Size Bottle" (use bullet character \u2022)
    - `productType`: Match existing types (Liqueur, Tequila, Rum, Gin, Vodka, Whiskey, Red Wine, White Wine, Sparkling Wine, etc.)
    - `vendor`: "Party On Delivery"
    - `basePrice`: Our calculated price
    - Create one variant with same price and a SKU
    - Create one image record pointing to the downloaded file: `/images/products/<handle>.jpg`
-   - Add to the appropriate category (find category by handle, e.g., `spirits-liqueurs`, `red-wine`, `white-wine`)
-6. **Verify** with `search-products.mjs` that the product appears in search
-7. **Tell the operator** the product ID and price so they can use it in orders
+
+   **IMPORTANT -- Category join table**: Categories use a many-to-many join table (`ProductCategory`). Do NOT use `categories: { connect: ... }` inside the upsert. Instead, create the product first, then add the category separately:
+   ```js
+   await prisma.productCategory.create({
+     data: { productId: product.id, categoryId: '<category-id>', position: 0 }
+   }).catch(() => { /* already exists */ });
+   ```
+   Find the category ID first with: `await prisma.category.findFirst({ where: { handle: { contains: 'liqueur', mode: 'insensitive' } } })`
+
+   Common category handles: `spirits-liqueurs`, `red-wine`, `white-wine`, `sparkling-wine`, `beer`, `seltzers-ciders`, `mixers-non-alcoholic`
+
+6. **Commit and push the image**: The image in `public/images/products/` must be committed and pushed to main for it to appear on the live site. Always do this after creating a product.
+7. **Verify** with `search-products.mjs` that the product appears in search
+8. **Tell the operator** the product ID and price so they can use it in orders
 
 The operator may override the calculated price -- always use their price if specified.
 
