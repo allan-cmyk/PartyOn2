@@ -351,7 +351,9 @@ export async function PUT(
 
     // Update delivery details
     if (body.deliveryDate !== undefined) {
-      updateData.deliveryDate = new Date(body.deliveryDate);
+      const d = new Date(body.deliveryDate);
+      d.setUTCHours(12, 0, 0, 0);
+      updateData.deliveryDate = d;
     }
     if (body.deliveryTime !== undefined) {
       updateData.deliveryTime = body.deliveryTime;
