@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+import HeroCarousel from '@/components/partners/HeroCarousel';
 import type { CategoryTemplateProps } from './template-types';
 
 interface CategoryConfig {
@@ -124,7 +125,7 @@ const FAQ_ITEMS = [
   },
 ];
 
-const VALUE_TABLE = [
+const DEFAULT_VALUE_TABLE = [
   { item: 'Free delivery to your rental or venue', value: 'Up to $100' },
   { item: '100% money back on unopened returns (up to 25% of total order)', value: 'Risk-free' },
   { item: 'Group ordering with split payments', value: 'FREE' },
@@ -133,6 +134,17 @@ const VALUE_TABLE = [
   { item: 'Bulk ice delivery -- as much as you need', value: 'Included' },
   { item: 'Same-day delivery available', value: 'Peace of mind' },
 ];
+
+const CATEGORY_VALUE_TABLES: Record<string, Array<{ item: string; value: string }>> = {
+  PLANNER: [
+    { item: 'Free delivery and fridge stocking at your rental or venue', value: 'Up to $50' },
+    { item: 'Group ordering with split payments', value: 'FREE' },
+    { item: 'We will try to honor any custom item request, just ask!', value: 'On request' },
+    { item: 'We coordinate delivery timing with your event schedule', value: 'Included' },
+    { item: 'Bulk ice delivery -- as much as you need', value: 'Included' },
+    { item: 'Same-day delivery available', value: 'Peace of mind' },
+  ],
+};
 
 function CheckIcon() {
   return (
@@ -154,10 +166,12 @@ function getConfig(category: string): CategoryConfig {
   return CATEGORY_CONFIGS[category] ?? CATEGORY_CONFIGS.OTHER;
 }
 
-export function DefaultTemplate({ affiliate, partnerLogo, partnerHeroImage }: CategoryTemplateProps) {
+export function DefaultTemplate({ affiliate, partnerLogo, partnerHeroImage, heroImages }: CategoryTemplateProps) {
   const { businessName, category } = affiliate;
   const config = getConfig(category);
+  const valueTable = CATEGORY_VALUE_TABLES[category] ?? DEFAULT_VALUE_TABLE;
   const heroImage = partnerHeroImage || config.defaultHeroImage;
+  const carouselImages = heroImages && heroImages.length > 1 ? heroImages : null;
 
   return (
     <div className="bg-white min-h-screen">
@@ -220,13 +234,20 @@ export function DefaultTemplate({ affiliate, partnerLogo, partnerHeroImage }: Ca
 
             <div className="order-2 flex flex-col gap-5">
               <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden shadow-lg border border-white/10">
-                <Image
-                  src={heroImage}
-                  alt={`${businessName} - Party On Delivery`}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
+                {carouselImages ? (
+                  <HeroCarousel
+                    images={carouselImages}
+                    alt={`${businessName} - Party On Delivery`}
+                  />
+                ) : (
+                  <Image
+                    src={heroImage}
+                    alt={`${businessName} - Party On Delivery`}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                )}
               </div>
 
               <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-white/60">
@@ -318,7 +339,7 @@ export function DefaultTemplate({ affiliate, partnerLogo, partnerHeroImage }: Ca
 
           <div className="bg-gray-50 rounded-xl p-8 shadow-lg border border-gray-200">
             <div className="space-y-4">
-              {VALUE_TABLE.map((row, idx) => (
+              {valueTable.map((row, idx) => (
                 <div
                   key={idx}
                   className="flex justify-between items-center py-3 border-b border-gray-200 last:border-0"
