@@ -77,6 +77,16 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       }
     }
 
+    // Bundle delivery fee into this checkout if it hasn't already been paid/waived.
+    // Mirrors checkout-all/route.ts so participant checkout doesn't drop the fee.
+    const existingPaidInvoice = await prisma.groupDeliveryInvoice.findFirst({
+      where: { subOrderId: tabId, status: 'PAID' },
+    });
+    const shouldIncludeDeliveryFee =
+      !tab.deliveryFeeWaived &&
+      Number(tab.deliveryFee) > 0 &&
+      !existingPaidInvoice;
+
     // Create Stripe checkout session
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     const result = await createGroupV2CheckoutSession({
@@ -89,6 +99,8 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       discountCode,
       tipAmount: tipAmount ? Number(tipAmount) : undefined,
       affiliateCode: group.affiliate?.code,
+      includeDeliveryFee: shouldIncludeDeliveryFee,
+      deliveryFeeAmount: shouldIncludeDeliveryFee ? Number(tab.deliveryFee) : undefined,
       successUrl: `${appUrl}/dashboard/${code}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${appUrl}/dashboard/${code}`,
     });
