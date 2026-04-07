@@ -19,6 +19,7 @@ You have CLI scripts that query the production database. Load env vars before ea
 | Low stock alerts | `set -a && source .env.local && set +a && node scripts/ops/low-stock.mjs` |
 | Create draft order | `set -a && source .env.local && set +a && node scripts/ops/create-draft-order.mjs '<json>'` |
 | Adjust inventory | `set -a && source .env.local && set +a && node scripts/ops/adjust-inventory.mjs <product-id> <qty> "reason" [variant-id]` |
+| Aggregated order list | `set -a && source .env.local && set +a && node scripts/ops/order-list.mjs <start-date> [end-date] [--html]` |
 
 ## Ad-Hoc Prisma Queries
 
@@ -109,6 +110,17 @@ When the operator provides a Total Wine (or similar retailer) URL for a product 
 8. **Tell the operator** the product ID and price so they can use it in orders
 
 The operator may override the calculated price -- always use their price if specified.
+
+## Workflow: Order List (Pick List for a Weekend)
+
+When the operator asks for an "order list," "pick list," "shopping list," or "what we need to order" for a date or date range:
+
+1. Run `order-list.mjs <start-date> [end-date]` -- pulls only PAID orders, aggregates quantities by product, groups by category (Beer, Seltzers & RTDs, Wine, Spirits, Cocktail Kits, Mixers & Non-Alcoholic, Supplies, Rentals), shows vendor/distributor in brackets, and lists which orders need each item by customer last name (with `(qty)` when more than 1)
+2. Display the terminal output to the operator as a clean table
+3. **ALWAYS ask** at the end: "Do you want me to generate a printable HTML sheet?" -- if yes, re-run with `--html` to save `order-list.html` in the project root (single-page printable layout with checkboxes)
+4. Default behavior: show in terminal first, only generate HTML on request
+
+Example: `node scripts/ops/order-list.mjs 2026-04-10 2026-04-11`
 
 ## Workflow: Inventory Adjustments
 
