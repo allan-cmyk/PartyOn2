@@ -41,20 +41,35 @@ export function transformToProduct(product: ProductWithRelations): Product {
   // This must match the cart system which stores local UUIDs
   const productId = product.id;
 
-  // Compute bundle availability
+  // Compute bundle availability.
+  // Bundles whose own variant has trackInventory:false are treated as always
+  // available (we still decrement component stock when they sell -- that's
+  // handled by order-service.ts -- but we don't block customers from ordering).
+  // This is how the operator marks "evergreen" SKUs like batched cocktail kits
+  // that should never go OOS regardless of component stock.
   let bundleAvailable = true;
   let bundleMaxQuantity: number | null = null;
+  const bundleAlwaysAvailable =
+    product.isBundle &&
+    product.variants.length > 0 &&
+    product.variants.every((v) => v.trackInventory === false);
+
   if (product.isBundle && product.bundleComponents && product.bundleComponents.length > 0) {
-    for (const comp of product.bundleComponents) {
-      const stock = comp.componentVariant
-        ? comp.componentVariant.inventoryQuantity
-        : comp.componentProduct.variants.reduce((sum, v) => sum + v.inventoryQuantity, 0);
-      const possibleQty = Math.floor(stock / comp.quantity);
-      if (bundleMaxQuantity === null || possibleQty < bundleMaxQuantity) {
-        bundleMaxQuantity = possibleQty;
-      }
-      if (possibleQty <= 0) {
-        bundleAvailable = false;
+    if (bundleAlwaysAvailable) {
+      bundleAvailable = true;
+      bundleMaxQuantity = 999;
+    } else {
+      for (const comp of product.bundleComponents) {
+        const stock = comp.componentVariant
+          ? comp.componentVariant.inventoryQuantity
+          : comp.componentProduct.variants.reduce((sum, v) => sum + v.inventoryQuantity, 0);
+        const possibleQty = Math.floor(stock / comp.quantity);
+        if (bundleMaxQuantity === null || possibleQty < bundleMaxQuantity) {
+          bundleMaxQuantity = possibleQty;
+        }
+        if (possibleQty <= 0) {
+          bundleAvailable = false;
+        }
       }
     }
   }
