@@ -288,6 +288,19 @@ export default function DashboardPage(): ReactElement {
     );
   }
 
+  if (groupOrder.status === 'CANCELLED') {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="max-w-md text-center space-y-3">
+          <h1 className="text-2xl font-semibold text-gray-900">This order has been cancelled</h1>
+          <p className="text-gray-600">
+            The host or partner cancelled this group order. Please reach out to them if you think this is a mistake.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   if (!participantId && needsJoin && groupOrder) {
     const host = groupOrder.participants.find((p) => p.isHost);
     const firstTab = groupOrder.tabs[0];

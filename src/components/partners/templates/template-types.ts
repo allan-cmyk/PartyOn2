@@ -11,4 +11,10 @@ export interface CategoryTemplateProps {
   };
   partnerLogo: string | null;
   partnerHeroImage: string | null;
+  /**
+   * Optional carousel of hero images. When set with 2+ entries, the template
+   * renders a fading carousel instead of the single partnerHeroImage.
+   * For PLANNER affiliates, this is [partnerHero, ...sharedPlannerHeros].
+   */
+  heroImages?: string[];
 }

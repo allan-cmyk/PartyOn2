@@ -18,7 +18,7 @@ export async function GET(): Promise<NextResponse> {
     }
 
     const orders = await prisma.groupOrderV2.findMany({
-      where: { affiliateId: session.affiliateId },
+      where: { affiliateId: session.affiliateId, status: { not: 'CANCELLED' } },
       orderBy: { createdAt: 'desc' },
       include: {
         tabs: {

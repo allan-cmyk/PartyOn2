@@ -200,7 +200,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       deliveryAddress: order.deliveryAddress as Record<string, string> | null,
       items: order.items.map(i => ({
         quantity: i.quantity,
-        title: i.product.title,
+        title: i.title || i.product.title,
         productId: i.product.id,
         bundleComponents: bundleMap.get(i.product.id) || [],
       })),

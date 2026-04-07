@@ -336,6 +336,44 @@ export async function cancelGroupOrder(
   });
 }
 
+/**
+ * Affiliate-initiated cancellation. Only allowed when:
+ *   - the group belongs to this affiliate
+ *   - the group isn't already CANCELLED / COMPLETED
+ *   - no ParticipantPayment on any tab is PAID
+ *
+ * Throws sentinel Error messages the route handler maps to HTTP codes:
+ *   NOT_FOUND, FORBIDDEN, ALREADY_CLOSED, HAS_PAID_PAYMENT
+ */
+export async function cancelGroupOrderByAffiliate(
+  affiliateId: string,
+  groupOrderId: string
+): Promise<void> {
+  const group = await prisma.groupOrderV2.findUnique({
+    where: { id: groupOrderId },
+    select: {
+      affiliateId: true,
+      status: true,
+      tabs: { select: { payments: { select: { status: true } } } },
+    },
+  });
+
+  if (!group) throw new Error('NOT_FOUND');
+  if (group.affiliateId !== affiliateId) throw new Error('FORBIDDEN');
+  if (group.status === 'CANCELLED' || group.status === 'COMPLETED') {
+    throw new Error('ALREADY_CLOSED');
+  }
+  const hasPaidPayment = group.tabs.some((t) =>
+    t.payments.some((p) => p.status === 'PAID')
+  );
+  if (hasPaidPayment) throw new Error('HAS_PAID_PAYMENT');
+
+  await prisma.groupOrderV2.update({
+    where: { id: groupOrderId },
+    data: { status: 'CANCELLED' },
+  });
+}
+
 export async function getMyGroupOrders(
   customerId: string
 ): Promise<GroupOrderV2Full[]> {

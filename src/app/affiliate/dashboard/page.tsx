@@ -118,6 +118,20 @@ export default function AffiliateDashboardPage(): ReactElement {
     router.push('/affiliate/login');
   };
 
+  const handleCancelClientOrder = async (
+    id: string
+  ): Promise<{ ok: boolean; error?: string }> => {
+    const res = await fetch(`/api/v1/affiliate/me/client-orders/${id}/cancel`, {
+      method: 'POST',
+    });
+    const json = await res.json();
+    if (json.success) {
+      setClientOrders((prev) => prev.filter((o) => o.id !== id));
+      return { ok: true };
+    }
+    return { ok: false, error: json.error || 'Failed to cancel' };
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -170,7 +184,13 @@ export default function AffiliateDashboardPage(): ReactElement {
             payouts={payouts}
           />
         )}
-        {activeTab === 'orders' && <OrdersTab clientOrders={clientOrders} commissionOrders={orders} />}
+        {activeTab === 'orders' && (
+          <OrdersTab
+            clientOrders={clientOrders}
+            commissionOrders={orders}
+            onCancelClientOrder={handleCancelClientOrder}
+          />
+        )}
         {activeTab === 'partnership' && (
           <PartnershipInfoTab
             affiliate={data.affiliate}

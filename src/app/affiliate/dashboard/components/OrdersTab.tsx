@@ -47,6 +47,7 @@ interface UnifiedOrder {
 interface OrdersTabProps {
   clientOrders: ClientOrder[];
   commissionOrders: CommissionOrder[];
+  onCancelClientOrder?: (id: string) => Promise<{ ok: boolean; error?: string }>;
 }
 
 type SubTab = 'all' | 'draft' | 'in_progress' | 'paid' | 'completed';
@@ -94,8 +95,27 @@ const sourceBadge = (source: 'referral' | 'dashboard') => {
   return 'bg-blue-50 text-blue-700';
 };
 
-export default function OrdersTab({ clientOrders, commissionOrders }: OrdersTabProps): ReactElement {
+export default function OrdersTab({
+  clientOrders,
+  commissionOrders,
+  onCancelClientOrder,
+}: OrdersTabProps): ReactElement {
   const [activeSubTab, setActiveSubTab] = useState<SubTab>('all');
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+
+  const handleCancel = async (id: string) => {
+    if (!onCancelClientOrder) return;
+    if (!confirm('Cancel this dashboard? The link will stop working for the customer.')) return;
+    setCancellingId(id);
+    const result = await onCancelClientOrder(id);
+    setCancellingId(null);
+    if (!result.ok) alert(result.error || 'Failed to cancel');
+  };
+
+  const canCancel = (order: UnifiedOrder): boolean =>
+    !!onCancelClientOrder &&
+    order.source === 'dashboard' &&
+    (order.lifecycleStatus === 'draft' || order.lifecycleStatus === 'in_progress');
 
   // Merge both order types into unified list
   const unified: UnifiedOrder[] = [
@@ -226,7 +246,7 @@ export default function OrdersTab({ clientOrders, commissionOrders }: OrdersTabP
                         {statusLabel(order.lifecycleStatus)}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-4 py-3 text-right whitespace-nowrap">
                       {order.dashboardUrl && (
                         <Link
                           href={order.dashboardUrl}
@@ -234,6 +254,15 @@ export default function OrdersTab({ clientOrders, commissionOrders }: OrdersTabP
                         >
                           Open
                         </Link>
+                      )}
+                      {canCancel(order) && (
+                        <button
+                          onClick={() => handleCancel(order.id)}
+                          disabled={cancellingId === order.id}
+                          className="ml-3 text-sm text-red-600 hover:underline font-medium disabled:opacity-50"
+                        >
+                          {cancellingId === order.id ? 'Cancelling…' : 'Cancel'}
+                        </button>
                       )}
                     </td>
                   </tr>
@@ -293,6 +322,15 @@ export default function OrdersTab({ clientOrders, commissionOrders }: OrdersTabP
                   >
                     Open Dashboard
                   </Link>
+                )}
+                {canCancel(order) && (
+                  <button
+                    onClick={() => handleCancel(order.id)}
+                    disabled={cancellingId === order.id}
+                    className="mt-2 block w-full text-center text-sm font-medium text-red-600 hover:underline disabled:opacity-50"
+                  >
+                    {cancellingId === order.id ? 'Cancelling…' : 'Cancel Dashboard'}
+                  </button>
                 )}
               </div>
             ))}
