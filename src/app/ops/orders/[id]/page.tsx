@@ -216,6 +216,7 @@ function formatDate(dateString: string): string {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    timeZone: 'UTC',
   });
 }
 
@@ -226,6 +227,7 @@ function formatDateTime(dateString: string): string {
     year: 'numeric',
     hour: 'numeric',
     minute: '2-digit',
+    timeZone: 'UTC',
   });
 }
 

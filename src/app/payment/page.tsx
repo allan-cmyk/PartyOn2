@@ -313,10 +313,11 @@ export default function PaymentPage() {
                     <h3 className="text-sm font-medium text-gray-700 mb-3 tracking-[0.1em]">DELIVERY TO</h3>
                     <p className="text-sm text-gray-600">{checkoutInfo.delivery.address || 'Address not provided'}</p>
                     <p className="text-sm text-gray-600 mt-2">
-                      {checkoutInfo.delivery.date ? new Date(checkoutInfo.delivery.date).toLocaleDateString('en-US', { 
-                        weekday: 'long', 
-                        month: 'long', 
-                        day: 'numeric' 
+                      {checkoutInfo.delivery.date ? new Date(checkoutInfo.delivery.date).toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        month: 'long',
+                        day: 'numeric',
+                        timeZone: 'UTC',
                       }) : 'Date not selected'}
                     </p>
                     <p className="text-sm text-gray-600">{checkoutInfo.delivery.time || 'Time not selected'}</p>
