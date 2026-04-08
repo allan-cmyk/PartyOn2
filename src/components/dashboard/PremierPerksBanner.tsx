@@ -108,10 +108,10 @@ function PerkCard({
   locked: boolean;
 }) {
   return (
-    <div className={`flex flex-col items-center text-center transition-all duration-500 ${locked ? 'opacity-60 grayscale-[50%]' : ''}`}>
-      <div className="w-10 h-10 sm:w-12 sm:h-12 mb-1.5 text-emerald-600">{icon}</div>
-      <span className="text-sm font-semibold text-emerald-900 leading-tight">{label}</span>
-      <span className="text-xs text-emerald-700 mt-0.5">{subtitle}</span>
+    <div className={`flex flex-col items-center text-center min-w-0 flex-1 transition-all duration-500 ${locked ? 'opacity-60 grayscale-[50%]' : ''}`}>
+      <div className="w-8 h-8 sm:w-12 sm:h-12 mb-1 sm:mb-1.5 text-emerald-600">{icon}</div>
+      <span className="text-[11px] sm:text-sm font-semibold text-emerald-900 leading-tight">{label}</span>
+      <span className="text-[10px] sm:text-xs text-emerald-700 mt-0.5">{subtitle}</span>
     </div>
   );
 }
@@ -123,7 +123,7 @@ function PerkCard({
 function PlusSeparator({ locked }: { locked: boolean }) {
   return (
     <span
-      className={`text-lg font-bold transition-all duration-500 self-center ${
+      className={`text-base sm:text-lg font-bold transition-all duration-500 self-center flex-shrink-0 ${
         locked ? 'text-emerald-300' : 'text-emerald-400'
       }`}
     >
@@ -146,15 +146,15 @@ function MocktailSelector({
   locked: boolean;
 }) {
   return (
-    <div className="flex flex-col items-center transition-all duration-500">
-      <span className={`text-sm font-semibold text-emerald-900 leading-tight mb-2 transition-opacity duration-500 ${locked ? 'opacity-60' : ''}`}>FREE Mocktail</span>
-      <div className="flex gap-1.5">
+    <div className="flex flex-col items-center min-w-0 flex-shrink-0 transition-all duration-500">
+      <span className={`text-[11px] sm:text-sm font-semibold text-emerald-900 leading-tight mb-1 sm:mb-2 transition-opacity duration-500 ${locked ? 'opacity-60' : ''}`}>FREE Mocktail</span>
+      <div className="flex gap-1 sm:gap-1.5">
         {MOCKTAILS.map((m) => (
           <button
             key={m.variantId}
             type="button"
             onClick={() => onSelect(m)}
-            className={`relative w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border-2 transition-all duration-200 flex-shrink-0 cursor-pointer ${
+            className={`relative w-7 h-7 sm:w-16 sm:h-16 rounded-full overflow-hidden border-2 transition-all duration-200 flex-shrink-0 cursor-pointer ${
               selected.variantId === m.variantId
                 ? 'border-emerald-500 ring-2 ring-emerald-300 scale-110'
                 : 'border-gray-200 hover:border-emerald-300'
@@ -166,12 +166,12 @@ function MocktailSelector({
               alt={m.shortName}
               fill
               className="object-cover"
-              sizes="64px"
+              sizes="(max-width: 640px) 32px, 64px"
             />
           </button>
         ))}
       </div>
-      <span className="text-xs text-emerald-700 mt-1.5 h-4 truncate max-w-[160px]">
+      <span className="text-[10px] sm:text-xs text-emerald-700 mt-1 sm:mt-1.5 h-4 truncate max-w-full sm:max-w-[160px]">
         {selected.shortName}
       </span>
     </div>
@@ -319,7 +319,7 @@ export default function PremierPerksBanner({
   /* ---- Main banner: locked or unlocked ---- */
 
   return (
-    <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl p-4 mb-4">
+    <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl p-3 sm:p-4 mb-4 overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-heading font-semibold tracking-[0.08em] text-emerald-900 uppercase">
@@ -331,7 +331,7 @@ export default function PremierPerksBanner({
       </div>
 
       {/* 3-perk row */}
-      <div className="flex items-start justify-center gap-3 sm:gap-4">
+      <div className="flex items-start justify-center gap-1 sm:gap-4">
         <PerkCard
           icon={<DeliveryIcon className="w-full h-full" />}
           label="FREE Delivery"
