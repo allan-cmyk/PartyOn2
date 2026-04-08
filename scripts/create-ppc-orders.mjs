@@ -32,16 +32,9 @@ const ANDERSON_MILL_ADDRESS = {
 };
 const DELIVERY_FEE = 40; // Extended Austin zone
 
-// Welcome to Austin Survival Package - auto-added to House/BnB tab
-const SURVIVAL_PACKAGE = {
-  productId: '26fe5ebe-4940-42c5-933e-7748b4050b79',
-  variantId: 'd69300f4-9e68-4baa-86bc-aa57caf781b8',
-  title: 'Welcome to Austin Survival Package',
-  variantTitle: 'Default',
-  price: 0, // Free with PPC partnership
-  imageUrl: '/images/products/welcome-to-austin-survival-package.png',
-  quantity: 1,
-};
+// PPC perks: free mocktail is offered via PremierPerksBanner in the dashboard UI
+// (customer self-claims one of 4 mocktails after hitting subtotal threshold).
+// Do NOT auto-add the Welcome to Austin Survival Package or any other freebie here.
 
 // Share code generation (mirrors src/lib/group-orders-v2/utils.ts)
 function generateShareCode() {
@@ -315,19 +308,6 @@ async function main() {
       include: { tabs: true, participants: true },
     });
 
-    // Add Welcome to Austin Survival Package to House/BnB tab as free item
-    const houseTab = groupOrder.tabs.find(t => t.position === 1);
-    const hostParticipant = groupOrder.participants.find(p => p.isHost);
-    if (houseTab && hostParticipant) {
-      await prisma.draftCartItem.create({
-        data: {
-          subOrderId: houseTab.id,
-          addedByParticipantId: hostParticipant.id,
-          ...SURVIVAL_PACKAGE,
-        },
-      });
-    }
-
     const dashboardUrl = `https://partyondelivery.com/dashboard/${shareCode}`;
     const hostLink = `https://partyondelivery.com/dashboard/${shareCode}?claim=${hostClaimToken}`;
     created.push({ rowIndex: i, shareCode, dashboardUrl, hostLink, name, email });
@@ -335,7 +315,6 @@ async function main() {
     console.log(`  ${i + 1}. ${name} -> ${dashboardUrl}`);
     console.log(`     Host link: ${hostLink}`);
     console.log(`     Email: ${email} | Cruise: ${cruiseDateStr} ${timeStr} | Deliver: ${deliveryTimeStr}`);
-    console.log(`     + Survival Package added to House/BnB tab (free)`);
   }
 
   // Write dashboard URLs and host links back to CSV
