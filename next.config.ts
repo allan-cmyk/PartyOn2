@@ -260,52 +260,80 @@ const nextConfig: NextConfig = {
 
   // Headers for caching, performance, and security
   async headers() {
-    return [
-      // Security headers for all routes
+    // Shared CSP directives used by both the strict (non-partner) and the
+    // relaxed (partner landing page) rule. Only `frame-ancestors` differs
+    // between the two so affiliates can embed their landing pages on their
+    // own sites while the rest of the app stays locked down.
+    const baseCspDirectives = [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' *.shopify.com *.myshopify.com *.google-analytics.com *.googletagmanager.com cdn.vercel-insights.com vercel.live connect.facebook.net *.doubleclick.net www.googleadservices.com *.google.com",
+      "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
+      "font-src 'self' fonts.gstatic.com data:",
+      "img-src 'self' data: blob: https: http: *.shopify.com *.myshopify.com images.unsplash.com *.squarespace-cdn.com *.wixstatic.com *.showit.co *.googleapis.com *.website-files.com *.simpleviewinc.com *.facebook.com www.facebook.com",
+      "connect-src 'self' *.shopify.com *.myshopify.com *.google-analytics.com *.googletagmanager.com vitals.vercel-insights.com hooks.zapier.com connect.facebook.net *.facebook.com *.doubleclick.net www.googleadservices.com *.google.com",
+      "frame-src 'self' *.shopify.com *.myshopify.com *.youtube.com *.youtube-nocookie.com *.recomsale.com vercel.live *.googletagmanager.com *.instagram.com",
+      "object-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self' *.shopify.com *.myshopify.com",
+      "worker-src 'self' blob:",
+      "upgrade-insecure-requests",
+    ];
+
+    const commonSecurityHeaders = [
       {
-        source: '/:path*',
+        key: 'X-Content-Type-Options',
+        value: 'nosniff',
+      },
+      {
+        key: 'X-XSS-Protection',
+        value: '1; mode=block',
+      },
+      {
+        key: 'Referrer-Policy',
+        value: 'strict-origin-when-cross-origin',
+      },
+      {
+        key: 'Strict-Transport-Security',
+        value: 'max-age=31536000; includeSubDomains; preload',
+      },
+      {
+        key: 'Permissions-Policy',
+        value: 'camera=(), microphone=(), geolocation=()',
+      },
+    ];
+
+    return [
+      // Security headers for all routes EXCEPT /partners/* (strict iframe policy).
+      // The negative lookahead keeps this rule from matching /partners so the
+      // partner-specific rule below can relax X-Frame-Options and frame-ancestors
+      // without conflicting (Next.js merges matching header rules, and duplicate
+      // X-Frame-Options headers cause browsers to block embedding).
+      {
+        source: '/:path((?!partners).*)',
         headers: [
           {
             key: 'X-Frame-Options',
             value: 'SAMEORIGIN',
           },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-          {
-            key: 'Strict-Transport-Security',
-            value: 'max-age=31536000; includeSubDomains; preload',
-          },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()',
-          },
+          ...commonSecurityHeaders,
           {
             key: 'Content-Security-Policy',
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' *.shopify.com *.myshopify.com *.google-analytics.com *.googletagmanager.com cdn.vercel-insights.com vercel.live connect.facebook.net *.doubleclick.net www.googleadservices.com *.google.com",
-              "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
-              "font-src 'self' fonts.gstatic.com data:",
-              "img-src 'self' data: blob: https: http: *.shopify.com *.myshopify.com images.unsplash.com *.squarespace-cdn.com *.wixstatic.com *.showit.co *.googleapis.com *.website-files.com *.simpleviewinc.com *.facebook.com www.facebook.com",
-              "connect-src 'self' *.shopify.com *.myshopify.com *.google-analytics.com *.googletagmanager.com vitals.vercel-insights.com hooks.zapier.com connect.facebook.net *.facebook.com *.doubleclick.net www.googleadservices.com *.google.com",
-              "frame-src 'self' *.shopify.com *.myshopify.com *.youtube.com *.youtube-nocookie.com *.recomsale.com vercel.live *.googletagmanager.com *.instagram.com",
-              "object-src 'none'",
-              "base-uri 'self'",
-              "form-action 'self' *.shopify.com *.myshopify.com",
-              "frame-ancestors 'self'",
-              "worker-src 'self' blob:",
-              "upgrade-insecure-requests"
-            ].join('; '),
+            value: [...baseCspDirectives, "frame-ancestors 'self'"].join('; '),
+          },
+        ],
+      },
+      // Partner landing pages: allow any origin to iframe-embed them so
+      // affiliates can drop the POD store iframe into their own websites.
+      // X-Frame-Options is intentionally omitted (the header has no spec-
+      // compliant "allow all" value, and modern browsers honor CSP
+      // frame-ancestors instead).
+      {
+        source: '/partners/:path*',
+        headers: [
+          ...commonSecurityHeaders,
+          {
+            key: 'Content-Security-Policy',
+            value: [...baseCspDirectives, 'frame-ancestors *'].join('; '),
           },
         ],
       },
