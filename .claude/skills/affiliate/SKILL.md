@@ -107,12 +107,13 @@ The script:
 - Defaults `status` to `DRAFT` (do not override unless the user explicitly asks)
 - Auto-generates `code` and `partnerSlug` if omitted
 - Errors out if email or partnerSlug already exists
-- Prints the new affiliate's id, code, partner page URL, and referral link
+- **Also creates a matching `Discount` row** with code = affiliate code (uppercased), type `FREE_SHIPPING`, so customers can enter the code at checkout to redeem the `customerPerk` (defaults to "Free Delivery"). The validate-discount route uppercases incoming codes, so the stored Discount.code must be uppercase. If a Discount with that code already exists, the script prints a warning and leaves it alone.
+- Prints the new affiliate's id, code, partner page URL, referral link, and discount code
 
 ### Step 4 -- Report back to the user
 
 Summarize concisely:
-- Affiliate code, partner page URL, referral link (from script output)
+- Affiliate code, partner page URL, referral link, and discount code (from script output)
 - Logo path (`public/images/partners/{slug}-logo.png`) and final dimensions
 - Reminder: "Created as DRAFT. Send the welcome email from /ops/affiliates to activate and notify the partner."
 
@@ -125,6 +126,11 @@ The `Affiliate` model is in `prisma/schema.prisma`. Key facts:
 - `AffiliateStatus` enum: `DRAFT`, `ACTIVE`, `PAUSED`, `INACTIVE` (NOT `APPROVED`)
 - `AffiliateCategory` enum: `BARTENDER`, `BOAT`, `VENUE`, `LODGING`, `PLANNER`, `OTHER`
 - The model has NO `logoUrl` field -- logos live on disk at `public/images/partners/{slug}-logo.png` and are referenced from partner page templates and `src/data/austin-partners.json`
+
+## Other ops scripts
+
+- `scripts/ops/audit-affiliate-discounts.mjs` -- cross-references all active affiliates against the `Discount` table and reports MISSING / WRONG_TYPE / LEGACY orphaned discounts. Run when investigating "my discount code isn't working" reports from partners.
+- `scripts/ops/fix-affiliate-discounts.mjs` -- idempotent repair script. Edit the `DELETE_CODES`, `UPDATE_TO_FREE_SHIPPING`, `CREATE_FOR`, and `SKIPPED` arrays at the top, then run. Safe to re-run.
 
 ## Future operations (not yet implemented)
 

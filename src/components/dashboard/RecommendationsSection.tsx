@@ -12,6 +12,7 @@ interface Props {
   participantId: string;
   onItemChanged: () => void;
   onDismiss: () => void;
+  hiddenProductIds?: Set<string>;
 }
 
 export default function RecommendationsSection({
@@ -21,14 +22,22 @@ export default function RecommendationsSection({
   participantId,
   onItemChanged,
   onDismiss,
+  hiddenProductIds,
 }: Props): ReactElement | null {
   const [addingAll, setAddingAll] = useState(false);
   const [addingId, setAddingId] = useState<string | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
-  if (dismissed || recommendations.length === 0) return null;
+  // Filter out products hidden for this affiliate (e.g. ice for Centex)
+  const visibleRecs = hiddenProductIds && hiddenProductIds.size > 0
+    ? recommendations.filter(
+        (r) => !r.matchedProduct || !hiddenProductIds.has(r.matchedProduct.id)
+      )
+    : recommendations;
 
-  const matchedRecs = recommendations.filter((r) => r.matchedProduct);
+  if (dismissed || visibleRecs.length === 0) return null;
+
+  const matchedRecs = visibleRecs.filter((r) => r.matchedProduct);
 
   async function handleAddOne(rec: RecommendationResult) {
     if (!rec.matchedProduct || addingId) return;
@@ -104,7 +113,7 @@ export default function RecommendationsSection({
       </div>
 
       <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2">
-        {recommendations.map((rec, idx) => {
+        {visibleRecs.map((rec, idx) => {
           const mp = rec.matchedProduct;
           const isAdding = addingId === mp?.id;
           return (

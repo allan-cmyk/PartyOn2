@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef, type ReactElement } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef, type ReactElement } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { useGroupOrderV2 } from '@/lib/group-orders-v2/hooks';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
@@ -22,6 +22,7 @@ import type { AppliedPromo } from '@/lib/group-orders-v2/types';
 import PromoCodeInput from '@/components/dashboard/PromoCodeInput';
 import PremierPerksBanner from '@/components/dashboard/PremierPerksBanner';
 import { OnboardingTourProvider, DashboardTour } from '@/components/dashboard/tour';
+import { getHiddenProductIds } from '@/lib/affiliates/product-exclusions';
 
 const CONFETTI_COLORS = ['#003087', '#FFD700', '#FF6B35', '#00B4D8', '#FF1493'];
 
@@ -69,6 +70,12 @@ export default function DashboardPage(): ReactElement {
   const [appliedPromo, setAppliedPromo] = useState<AppliedPromo | null>(null);
 
   const cartRef = useRef<HTMLDivElement>(null);
+
+  // Products hidden by affiliate (e.g. Centex Boat Rentals hides Bag of Ice)
+  const dashboardHiddenProductIds = useMemo(
+    () => new Set(getHiddenProductIds(groupOrder?.affiliate?.code)),
+    [groupOrder?.affiliate?.code]
+  );
 
   // Restore participant ID from localStorage
   useEffect(() => {
@@ -458,6 +465,7 @@ export default function DashboardPage(): ReactElement {
             draftItems={tab.draftItems}
             isLocked={isLocked}
             onItemChanged={refresh}
+            affiliateCode={groupOrder.affiliate?.code}
             recsSection={
               recommendations ? (
                 <RecommendationsSection
@@ -467,6 +475,7 @@ export default function DashboardPage(): ReactElement {
                   participantId={participantId}
                   onItemChanged={refresh}
                   onDismiss={() => setRecommendations(null)}
+                  hiddenProductIds={dashboardHiddenProductIds}
                 />
               ) : null
             }
