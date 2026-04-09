@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect, type ReactElement } from 'react';
+import { useState, useEffect, useMemo, type ReactElement } from 'react';
 import type { Product } from '@/lib/types/product';
 import type { DraftCartItemView } from '@/lib/group-orders-v2/types';
 import { getCategoriesForPartyType } from '@/lib/dashboard/categories';
+import { getHiddenProductIds } from '@/lib/affiliates/product-exclusions';
 import CategorySection from './CategorySection';
 import DashboardProductCard from './DashboardProductCard';
 
@@ -16,6 +17,7 @@ interface Props {
   isLocked?: boolean;
   onItemChanged: () => void;
   recsSection?: ReactElement | null;
+  affiliateCode?: string | null;
 }
 
 export default function ProductBrowse({
@@ -27,8 +29,13 @@ export default function ProductBrowse({
   isLocked,
   onItemChanged,
   recsSection,
+  affiliateCode,
 }: Props): ReactElement {
   const categories = getCategoriesForPartyType(partyType);
+  const hiddenIds = useMemo(
+    () => new Set(getHiddenProductIds(affiliateCode)),
+    [affiliateCode]
+  );
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [searching, setSearching] = useState(false);
@@ -46,9 +53,9 @@ export default function ProductBrowse({
         );
         if (!res.ok) return;
         const json = await res.json();
-        const items = (json.products?.edges || []).map(
-          (e: { node: Product }) => e.node
-        );
+        const items = (json.products?.edges || [])
+          .map((e: { node: Product }) => e.node)
+          .filter((p: Product) => !hiddenIds.has(p.id));
         setSearchResults(items);
       } catch {
         // Silently fail
@@ -57,7 +64,7 @@ export default function ProductBrowse({
       }
     }, 300);
     return () => clearTimeout(timer);
-  }, [searchQuery]);
+  }, [searchQuery, hiddenIds]);
 
   const isSearching = searchQuery.trim().length > 0;
 
@@ -152,6 +159,7 @@ export default function ProductBrowse({
               draftItems={draftItems}
               isLocked={isLocked}
               onItemChanged={onItemChanged}
+              hiddenProductIds={hiddenIds}
             />
           ))}
         </div>

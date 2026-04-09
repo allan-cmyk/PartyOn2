@@ -14,6 +14,7 @@ interface Props {
   draftItems: DraftCartItemView[];
   isLocked?: boolean;
   onItemChanged: () => void;
+  hiddenProductIds?: Set<string>;
 }
 
 type ExpansionState = 'initial' | 'more' | 'all';
@@ -30,6 +31,7 @@ export default function CategorySection({
   draftItems,
   isLocked,
   onItemChanged,
+  hiddenProductIds,
 }: Props): ReactElement | null {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,9 +47,9 @@ export default function CategorySection({
         if (!res.ok) return;
         const json = await res.json();
         if (cancelled) return;
-        const items = (json.products?.edges || []).map(
-          (e: { node: Product }) => e.node
-        );
+        const items = (json.products?.edges || [])
+          .map((e: { node: Product }) => e.node)
+          .filter((p: Product) => !hiddenProductIds?.has(p.id));
         setProducts(items);
       } catch {
         // Silently fail
@@ -59,7 +61,7 @@ export default function CategorySection({
     return () => {
       cancelled = true;
     };
-  }, [collectionHandle]);
+  }, [collectionHandle, hiddenProductIds]);
 
   if (loading) {
     return (
