@@ -131,6 +131,37 @@ const affiliate = await prisma.affiliate.create({
   },
 });
 
+// Create the matching Discount row that delivers the affiliate's customerPerk.
+// The validate-discount route (src/app/api/v2/group-orders/validate-discount/route.ts)
+// uppercases the user-entered code before lookup, so we ALWAYS store the Discount
+// code as uppercase -- even if the affiliate code itself is mixed case.
+//
+// customerPerk defaults to "Free Delivery" (prisma/schema.prisma line 2013), so
+// we create a FREE_SHIPPING discount. If the perk ever becomes configurable,
+// this branch will need to map other perk types.
+const discountCode = affiliate.code.toUpperCase();
+let discount = null;
+const existingDiscount = await prisma.discount.findUnique({ where: { code: discountCode } });
+if (existingDiscount) {
+  console.log(`\nWARNING: Discount code "${discountCode}" already exists (type=${existingDiscount.type}). Leaving it alone.`);
+} else {
+  discount = await prisma.discount.create({
+    data: {
+      code: discountCode,
+      name: discountCode,
+      type: 'FREE_SHIPPING',
+      value: '0',
+      appliesToAll: true,
+      applicableProducts: [],
+      applicableCategories: [],
+      minOrderAmount: '0.01',
+      isActive: true,
+      combinable: false,
+      freeShipping: false,
+    },
+  });
+}
+
 console.log('');
 console.log('Affiliate created');
 console.log('  id:           ', affiliate.id);
@@ -141,8 +172,12 @@ console.log('  email:        ', affiliate.email);
 console.log('  category:     ', affiliate.category);
 console.log('  status:       ', affiliate.status);
 console.log('  partnerSlug:  ', affiliate.partnerSlug);
+console.log('  customerPerk: ', affiliate.customerPerk);
 console.log('  partnerPage:  ', `https://partyondelivery.com/partners/${affiliate.partnerSlug}`);
 console.log('  referralLink: ', `https://partyondelivery.com/?ref=${affiliate.code}`);
+if (discount) {
+  console.log(`  discountCode: ${discount.code} (${discount.type}) -- customers enter this at checkout for free delivery`);
+}
 console.log('');
 if (status === 'DRAFT') {
   console.log('NOTE: Affiliate is DRAFT. Admin must send welcome email from /ops/affiliates to activate.');
