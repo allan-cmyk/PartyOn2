@@ -67,6 +67,14 @@ export async function GET(
             status: true,
           },
         },
+        groupOrderV2: {
+          select: {
+            id: true,
+            name: true,
+            shareCode: true,
+            hostName: true,
+          },
+        },
         refunds: {
           select: { amount: true },
         },
@@ -164,6 +172,42 @@ export async function GET(
       }));
     }
 
+    // Fetch V2 sibling orders (orders from the same Group Dashboard)
+    let siblingOrdersV2: {
+      id: string;
+      orderNumber: string;
+      customerName: string;
+      total: number;
+      status: string;
+      fulfillmentStatus: string;
+    }[] = [];
+    if (order.groupOrderV2Id) {
+      const siblingsV2 = await prisma.order.findMany({
+        where: {
+          groupOrderV2Id: order.groupOrderV2Id,
+          id: { not: order.id },
+        },
+        select: {
+          id: true,
+          orderNumber: true,
+          customerName: true,
+          total: true,
+          status: true,
+          fulfillmentStatus: true,
+          createdAt: true,
+        },
+        orderBy: { createdAt: 'asc' },
+      });
+      siblingOrdersV2 = siblingsV2.map((s) => ({
+        id: s.id,
+        orderNumber: String(s.orderNumber),
+        customerName: s.customerName || 'Guest',
+        total: Number(s.total),
+        status: String(s.status),
+        fulfillmentStatus: String(s.fulfillmentStatus),
+      }));
+    }
+
     return NextResponse.json({
       success: true,
       data: {
@@ -257,6 +301,16 @@ export async function GET(
           status: order.groupOrder?.status || null,
           siblingOrders,
         },
+        groupOrderV2: order.groupOrderV2
+          ? {
+              id: order.groupOrderV2.id,
+              isGroupOrder: true,
+              name: order.groupOrderV2.name,
+              shareCode: order.groupOrderV2.shareCode,
+              hostName: order.groupOrderV2.hostName,
+              siblingOrders: siblingOrdersV2,
+            }
+          : null,
         amendments: order.amendments.map((a) => ({
           id: a.id,
           type: a.type,

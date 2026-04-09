@@ -105,6 +105,21 @@ interface OrderDetail {
       status: string;
     }[];
   };
+  groupOrderV2: {
+    id: string;
+    isGroupOrder: boolean;
+    name: string;
+    shareCode: string;
+    hostName: string;
+    siblingOrders: {
+      id: string;
+      orderNumber: string;
+      customerName: string;
+      total: number;
+      status: string;
+      fulfillmentStatus: string;
+    }[];
+  } | null;
   affiliate: {
     id: string;
     code: string;
@@ -865,6 +880,12 @@ export default function OrderDetailPage(): ReactElement {
   function buildOrderSummaryText(o: OrderDetail): string {
     const lines: string[] = [];
     lines.push(`Order #${o.orderNumber} - ${o.customer.name || o.customerSnapshot.name || 'Guest'}`);
+
+    if (o.groupOrderV2?.isGroupOrder) {
+      lines.push(`Group Dashboard: ${o.groupOrderV2.name}${o.groupOrderV2.hostName ? ` (Host: ${o.groupOrderV2.hostName})` : ''}`);
+    } else if (o.groupOrder.isGroupOrder) {
+      lines.push(`Group Order: ${o.groupOrder.name || o.groupOrder.shareCode}`);
+    }
 
     const deliveryDate = new Date(o.delivery.date).toLocaleDateString('en-US', {
       weekday: 'short',
@@ -1825,6 +1846,65 @@ export default function OrderDetailPage(): ReactElement {
                 </div>
               )}
 
+              {/* Group Dashboard (V2) Info */}
+              {order.groupOrderV2 && (
+                <div className="bg-white rounded-xl shadow-sm border border-teal-200 overflow-hidden">
+                  <div className="flex items-center gap-3 px-6 py-4 border-b border-teal-100 bg-teal-50">
+                    <span className="text-teal-500">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                      </svg>
+                    </span>
+                    <h2 className="text-lg font-semibold text-teal-900">Part of Group Dashboard</h2>
+                    <Link
+                      href={`/dashboard/${order.groupOrderV2.shareCode}`}
+                      target="_blank"
+                      className="ml-auto text-sm text-teal-600 hover:underline"
+                    >
+                      Open dashboard
+                    </Link>
+                  </div>
+                  <div className="p-6 space-y-4">
+                    <div>
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Dashboard</p>
+                      <p className="text-sm text-gray-700">
+                        <span className="font-semibold">{order.groupOrderV2.name}</span>
+                        <span className="text-gray-500"> - Host: {order.groupOrderV2.hostName}</span>
+                      </p>
+                      <p className="mt-1 text-xs font-mono text-gray-400">{order.groupOrderV2.shareCode}</p>
+                    </div>
+
+                    {order.groupOrderV2.siblingOrders.length > 0 && (
+                      <div>
+                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
+                          Other Orders in This Group ({order.groupOrderV2.siblingOrders.length})
+                        </p>
+                        <div className="space-y-2">
+                          {order.groupOrderV2.siblingOrders.map((sibling) => (
+                            <Link
+                              key={sibling.id}
+                              href={`/ops/orders/${sibling.id}`}
+                              className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                            >
+                              <div>
+                                <span className="font-mono text-sm text-gray-900">#{sibling.orderNumber}</span>
+                                <span className="text-gray-500 ml-2">- {sibling.customerName}</span>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <span className="font-medium text-gray-900">${sibling.total.toFixed(2)}</span>
+                                <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${getStatusColor(sibling.fulfillmentStatus)}`}>
+                                  {sibling.fulfillmentStatus}
+                                </span>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Payment Info */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <SectionHeader
@@ -2444,10 +2524,18 @@ export default function OrderDetailPage(): ReactElement {
           );
         })()}
 
-        {/* Group Order banner */}
+        {/* Group Order banner (V1) */}
         {order.groupOrder.isGroupOrder && (
           <div className="mb-3 px-2 py-1.5 border-2 border-blue-500 bg-blue-50 rounded text-sm font-bold">
             Group Order: {order.groupOrder.name || order.groupOrder.shareCode}
+          </div>
+        )}
+
+        {/* Group Dashboard banner (V2) */}
+        {order.groupOrderV2?.isGroupOrder && (
+          <div className="mb-3 px-2 py-1.5 border-2 border-teal-600 bg-teal-50 rounded text-sm font-bold text-teal-900">
+            Group Dashboard: {order.groupOrderV2.name}
+            {order.groupOrderV2.hostName && ` (Host: ${order.groupOrderV2.hostName})`}
           </div>
         )}
 

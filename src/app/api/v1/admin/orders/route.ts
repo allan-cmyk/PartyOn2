@@ -15,10 +15,11 @@ interface OrderListParams {
   deliveryType?: DeliveryType;
   groupType?: 'all' | 'regular' | 'group';
   groupOrderId?: string;
+  groupOrderV2Id?: string;
   dateFrom?: string;
   dateTo?: string;
   customerId?: string;
-  sortBy?: 'orderNumber' | 'createdAt' | 'total' | 'deliveryDate';
+  sortBy?: 'orderNumber' | 'createdAt' | 'total' | 'deliveryDate' | 'groupOrderV2Id';
   sortOrder?: 'asc' | 'desc';
   page?: number;
   limit?: number;
@@ -36,6 +37,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       deliveryType: (searchParams.get('deliveryType') as DeliveryType) || undefined,
       groupType: (searchParams.get('groupType') as 'all' | 'regular' | 'group') || undefined,
       groupOrderId: searchParams.get('groupOrderId') || undefined,
+      groupOrderV2Id: searchParams.get('groupOrderV2Id') || undefined,
       dateFrom: searchParams.get('dateFrom') || undefined,
       dateTo: searchParams.get('dateTo') || undefined,
       customerId: searchParams.get('customerId') || undefined,
@@ -72,6 +74,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     if (params.groupOrderId) {
       where.groupOrderId = params.groupOrderId;
     }
+    if (params.groupOrderV2Id) {
+      where.groupOrderV2Id = params.groupOrderV2Id;
+    }
 
     if (params.dateFrom || params.dateTo) {
       where.createdAt = {};
@@ -80,9 +85,16 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     }
 
     // Build orderBy
-    const orderBy: Prisma.OrderOrderByWithRelationInput = {
-      [params.sortBy || 'createdAt']: params.sortOrder || 'desc',
-    };
+    // "groupOrderV2Id" sort clusters sibling orders together
+    const orderBy: Prisma.OrderOrderByWithRelationInput | Prisma.OrderOrderByWithRelationInput[] =
+      params.sortBy === 'groupOrderV2Id'
+        ? [
+            { groupOrderV2Id: (params.sortOrder || 'asc') as 'asc' | 'desc' },
+            { createdAt: 'asc' },
+          ]
+        : {
+            [params.sortBy || 'createdAt']: params.sortOrder || 'desc',
+          };
 
     // Get total count
     const total = await prisma.order.count({ where });
@@ -105,6 +117,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         groupOrder: {
           select: { id: true, shareCode: true, name: true, status: true },
         },
+        groupOrderV2: {
+          select: { id: true, shareCode: true, name: true, hostName: true },
+        },
         affiliate: {
           select: { id: true, code: true, businessName: true, contactName: true, phone: true },
         },
@@ -113,35 +128,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         },
       },
     });
-
-    // Batch-lookup which orders originated from a V2 dashboard via ParticipantPayment
-    const orderIds = orders.map(o => o.id);
-    const v2Payments = orderIds.length > 0
-      ? await prisma.participantPayment.findMany({
-          where: { orderId: { in: orderIds } },
-          select: {
-            orderId: true,
-            subOrder: {
-              select: {
-                groupOrder: {
-                  select: { id: true, shareCode: true, name: true, hostName: true }
-                }
-              }
-            }
-          }
-        })
-      : [];
-    const dashboardSourceMap = new Map<string, { id: string; shareCode: string; name: string; hostName: string }>();
-    for (const p of v2Payments) {
-      if (p.orderId && !dashboardSourceMap.has(p.orderId)) {
-        dashboardSourceMap.set(p.orderId, {
-          id: p.subOrder.groupOrder.id,
-          shareCode: p.subOrder.groupOrder.shareCode,
-          name: p.subOrder.groupOrder.name,
-          hostName: p.subOrder.groupOrder.hostName,
-        });
-      }
-    }
 
     // Fetch bundle components for all product IDs across all orders
     const allProductIds = orders.flatMap((o) => o.items.map((i) => i.product.id));
@@ -219,7 +205,14 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         contactName: order.affiliate.contactName,
         phone: order.affiliate.phone,
       } : null,
-      dashboardSource: dashboardSourceMap.get(order.id) || null,
+      dashboardSource: order.groupOrderV2
+        ? {
+            id: order.groupOrderV2.id,
+            shareCode: order.groupOrderV2.shareCode,
+            name: order.groupOrderV2.name,
+            hostName: order.groupOrderV2.hostName,
+          }
+        : null,
       reviewRequestSentAt: order.reviewRequestSentAt?.toISOString() || null,
     }));
 
