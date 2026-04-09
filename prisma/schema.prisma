@@ -789,7 +789,8 @@ model Order {
   customerName  String  @map("customer_name")
 
   // Group order
-  groupOrderId String? @map("group_order_id")
+  groupOrderId   String? @map("group_order_id")
+  groupOrderV2Id String? @map("group_order_v2_id")
 
   // Affiliate attribution
   affiliateId String? @map("affiliate_id")
@@ -810,6 +811,7 @@ model Order {
 
   customer     Customer      @relation(fields: [customerId], references: [id])
   groupOrder   GroupOrder?   @relation(fields: [groupOrderId], references: [id])
+  groupOrderV2 GroupOrderV2? @relation("GroupOrderV2Orders", fields: [groupOrderV2Id], references: [id])
   affiliate    Affiliate?    @relation("AffiliateOrders", fields: [affiliateId], references: [id])
   items        OrderItem[]
   fulfillments Fulfillment[]
@@ -824,6 +826,7 @@ model Order {
   @@index([deliveryDate])
   @@index([shopifyOrderId])
   @@index([affiliateId])
+  @@index([groupOrderV2Id])
   @@map("orders")
 }
 
@@ -1712,6 +1715,7 @@ model GroupOrderV2 {
 
   tabs         SubOrder[]
   participants GroupParticipantV2[]
+  orders       Order[] @relation("GroupOrderV2Orders")
 
   hostCustomer Customer?  @relation("GroupOrderV2Host", fields: [hostCustomerId], references: [id], onDelete: SetNull)
   affiliate    Affiliate? @relation(fields: [affiliateId], references: [id])

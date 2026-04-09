@@ -436,7 +436,7 @@ function GroupOrderRow({
 }
 
 // Regular Order Row Component
-function OrderRow({ order, selected, onToggle, onPrint }: { order: Order; selected: boolean; onToggle: () => void; onPrint?: (orderId: string) => void }): ReactElement {
+function OrderRow({ order, selected, onToggle, onPrint, onFilterByGroup }: { order: Order; selected: boolean; onToggle: () => void; onPrint?: (orderId: string) => void; onFilterByGroup?: (groupId: string) => void }): ReactElement {
   const [expanded, setExpanded] = useState(false);
   const [checks, setChecks] = useState<ItemChecks>(() => loadChecks(order.id));
   const isPacked = order.items.length > 0 && order.items.every((item) => checks[item.title]?.packed);
@@ -490,18 +490,29 @@ function OrderRow({ order, selected, onToggle, onPrint }: { order: Order; select
             </Link>
           )}
           {order.dashboardSource && (
-            <a
-              href={`/dashboard/${order.dashboardSource.shareCode}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 text-xs font-medium bg-teal-100 text-teal-700 rounded-full hover:bg-teal-200 transition-colors"
-              title={`Dashboard: ${order.dashboardSource.name} by ${order.dashboardSource.hostName}`}
-            >
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-              </svg>
-              Dashboard
-            </a>
+            <div className="mt-1 flex items-center gap-1 flex-wrap">
+              <a
+                href={`/dashboard/${order.dashboardSource.shareCode}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-teal-100 text-teal-700 rounded-full hover:bg-teal-200 transition-colors"
+                title={`Dashboard: ${order.dashboardSource.name} by ${order.dashboardSource.hostName}`}
+              >
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                </svg>
+                Group: {order.dashboardSource.name} ({order.dashboardSource.hostName})
+              </a>
+              {onFilterByGroup && (
+                <button
+                  onClick={() => onFilterByGroup(order.dashboardSource!.id)}
+                  className="text-xs text-teal-600 hover:underline"
+                  title="Show only orders in this group"
+                >
+                  filter
+                </button>
+              )}
+            </div>
           )}
         </td>
         <td className="px-6 py-4">
@@ -721,7 +732,7 @@ function formatAddress(addr: Record<string, string> | string | null): string {
 }
 
 // Mobile Order Card
-function MobileOrderCard({ order, selected, onToggle }: { order: Order; selected: boolean; onToggle: () => void }): ReactElement {
+function MobileOrderCard({ order, selected, onToggle, onFilterByGroup }: { order: Order; selected: boolean; onToggle: () => void; onFilterByGroup?: (groupId: string) => void }): ReactElement {
   const [expanded, setExpanded] = useState(false);
   const [checks, setChecks] = useState<ItemChecks>(() => loadChecks(order.id));
   const address = formatAddress(order.deliveryAddress);
@@ -781,14 +792,26 @@ function MobileOrderCard({ order, selected, onToggle }: { order: Order; selected
                 </Link>
               )}
               {order.dashboardSource && (
-                <a
-                  href={`/dashboard/${order.dashboardSource.shareCode}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-teal-100 text-teal-700 rounded-full"
-                >
-                  Dashboard
-                </a>
+                <>
+                  <a
+                    href={`/dashboard/${order.dashboardSource.shareCode}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-teal-100 text-teal-700 rounded-full"
+                    title={`Dashboard: ${order.dashboardSource.name} by ${order.dashboardSource.hostName}`}
+                  >
+                    Group: {order.dashboardSource.name} ({order.dashboardSource.hostName})
+                  </a>
+                  {onFilterByGroup && (
+                    <button
+                      onClick={(e) => { e.preventDefault(); onFilterByGroup(order.dashboardSource!.id); }}
+                      className="text-xs text-teal-600 hover:underline"
+                      title="Show only orders in this group"
+                    >
+                      filter
+                    </button>
+                  )}
+                </>
               )}
               <button
                 onClick={(e) => { e.preventDefault(); setExpanded(!expanded); }}
@@ -1013,6 +1036,9 @@ export default function OrdersPage(): ReactElement {
   const [fulfillmentFilter, setFulfillmentFilter] = useState<string>('UNFULFILLED');
   const [deliveryTypeFilter, setDeliveryTypeFilter] = useState<string>('');
   const [groupTypeFilter, setGroupTypeFilter] = useState<string>('');
+  const [groupOrderV2IdFilter, setGroupOrderV2IdFilter] = useState<string>(
+    searchParams?.get('groupOrderV2Id') || ''
+  );
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<string>('deliveryDate');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
@@ -1167,6 +1193,7 @@ export default function OrdersPage(): ReactElement {
       if (fulfillmentFilter) params.set('fulfillmentStatus', fulfillmentFilter);
       if (deliveryTypeFilter) params.set('deliveryType', deliveryTypeFilter);
       if (groupTypeFilter) params.set('groupType', groupTypeFilter);
+      if (groupOrderV2IdFilter) params.set('groupOrderV2Id', groupOrderV2IdFilter);
       params.set('page', page.toString());
       params.set('sortBy', sortBy);
       params.set('sortOrder', sortOrder);
@@ -1183,7 +1210,7 @@ export default function OrdersPage(): ReactElement {
     } finally {
       setLoading(false);
     }
-  }, [search, statusFilter, fulfillmentFilter, deliveryTypeFilter, groupTypeFilter, page, sortBy, sortOrder]);
+  }, [search, statusFilter, fulfillmentFilter, deliveryTypeFilter, groupTypeFilter, groupOrderV2IdFilter, page, sortBy, sortOrder]);
 
   useEffect(() => {
     const debounce = setTimeout(() => {
@@ -1460,6 +1487,31 @@ export default function OrdersPage(): ReactElement {
               Group Orders
             </FilterButton>
           </div>
+          {groupOrderV2IdFilter && (
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-teal-50 border border-teal-200 rounded-full text-xs font-medium text-teal-700">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+              <span>
+                Filtered to group:{' '}
+                {(() => {
+                  const match = data?.orders.find(
+                    (o) => o.dashboardSource?.id === groupOrderV2IdFilter
+                  );
+                  return match?.dashboardSource
+                    ? `${match.dashboardSource.name} (${match.dashboardSource.hostName})`
+                    : 'selected dashboard';
+                })()}
+              </span>
+              <button
+                onClick={() => { setGroupOrderV2IdFilter(''); setPage(1); }}
+                className="text-teal-600 hover:text-teal-900 font-bold"
+                title="Clear group filter"
+              >
+                x
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="flex flex-wrap items-center gap-4 mt-4 pt-4 border-t border-gray-100">
@@ -1476,6 +1528,9 @@ export default function OrdersPage(): ReactElement {
             </FilterButton>
             <FilterButton active={sortBy === 'deliveryDate'} onClick={() => setSortBy('deliveryDate')}>
               Delivery
+            </FilterButton>
+            <FilterButton active={sortBy === 'groupOrderV2Id'} onClick={() => setSortBy('groupOrderV2Id')}>
+              Group together
             </FilterButton>
           </div>
           <button
@@ -1586,6 +1641,7 @@ export default function OrdersPage(): ReactElement {
                 setFulfillmentFilter('');
                 setDeliveryTypeFilter('');
                 setGroupTypeFilter('');
+                setGroupOrderV2IdFilter('');
                 setPage(1);
               }}
               className="mt-4 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors text-sm"
@@ -1610,6 +1666,7 @@ export default function OrdersPage(): ReactElement {
                 order={item.order}
                 selected={selectedOrders.has(item.order.id)}
                 onToggle={() => toggleOrderSelection(item.order.id)}
+                onFilterByGroup={(id) => { setGroupOrderV2IdFilter(id); setPage(1); }}
               />
             )
           )
@@ -1651,6 +1708,7 @@ export default function OrdersPage(): ReactElement {
                 setFulfillmentFilter('');
                 setDeliveryTypeFilter('');
                 setGroupTypeFilter('');
+                setGroupOrderV2IdFilter('');
                 setPage(1);
               }}
               className="mt-6 px-5 py-2.5 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
@@ -1700,6 +1758,7 @@ export default function OrdersPage(): ReactElement {
                     selected={selectedOrders.has(item.order.id)}
                     onToggle={() => toggleOrderSelection(item.order.id)}
                     onPrint={(id) => handlePrintOrders([id])}
+                    onFilterByGroup={(id) => { setGroupOrderV2IdFilter(id); setPage(1); }}
                   />
                 )
               )}

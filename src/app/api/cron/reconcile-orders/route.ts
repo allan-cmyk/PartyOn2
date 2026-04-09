@@ -255,6 +255,7 @@ export async function GET(request: NextRequest) {
             customerEmail: participant.guestEmail || '',
             customerName: participant.guestName || 'Guest',
             groupOrderId: null,
+            groupOrderV2Id: payment.subOrder.groupOrderId,
             items: {
               create: purchasedItems.map((item) => ({
                 productId: item.productId,
