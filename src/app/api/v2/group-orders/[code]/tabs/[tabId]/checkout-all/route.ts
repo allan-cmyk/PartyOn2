@@ -79,11 +79,34 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     }
 
     // Include delivery fee in checkout if not already paid/waived
-    const shouldIncludeDeliveryFee = !tab.deliveryFeeWaived
+    let shouldIncludeDeliveryFee = !tab.deliveryFeeWaived
       && Number(tab.deliveryFee) > 0
       && !(await prisma.groupDeliveryInvoice.findFirst({
         where: { subOrderId: tabId, status: 'PAID' },
       }));
+
+    // Premier Party Cruises perk:
+    //   - Marina address (address1 contains "13993") = free delivery, no minimum
+    //   - Other house addresses                      = free delivery on $300+ only
+    // draftItems here is already the whole tab's remaining drafts.
+    let premierPerkApplies = false;
+    if (shouldIncludeDeliveryFee && group.affiliate?.code === 'PREMIER') {
+      const address1 = (tab.deliveryAddress?.address1 || '').toLowerCase();
+      const isMarinaAddress = address1.includes('13993');
+
+      const tabSubtotal = draftItems.reduce(
+        (sum, item) => sum + Number(item.price) * item.quantity,
+        0,
+      );
+
+      if (isMarinaAddress || tabSubtotal >= 300) {
+        premierPerkApplies = true;
+      }
+    }
+
+    if (premierPerkApplies) {
+      shouldIncludeDeliveryFee = false;
+    }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     const result = await createGroupV2CheckoutSession({
@@ -98,6 +121,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       checkoutType: 'all',
       includeDeliveryFee: shouldIncludeDeliveryFee,
       deliveryFeeAmount: shouldIncludeDeliveryFee ? Number(tab.deliveryFee) : undefined,
+      waiveDeliveryFee: premierPerkApplies,
       affiliateCode: group.affiliate?.code,
       successUrl: `${appUrl}/dashboard/${code}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${appUrl}/dashboard/${code}`,
