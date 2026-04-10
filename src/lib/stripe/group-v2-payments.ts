@@ -48,6 +48,8 @@ interface CreateCheckoutInput {
   deliveryFeeAmount?: number;
   /** Affiliate code from the GroupOrderV2 — passed through Stripe metadata for commission tracking */
   affiliateCode?: string;
+  /** When true, the delivery fee is being waived by an affiliate perk -- webhook will stamp deliveryFeeWaived */
+  waiveDeliveryFee?: boolean;
 }
 
 interface CreateDeliveryInvoiceInput {
@@ -80,15 +82,23 @@ export async function createGroupV2CheckoutSession(input: CreateCheckoutInput) {
   // Resolve discount BEFORE calculating tax (tax applies to post-discount amount)
   let discountAmount = 0;
   let stripeCouponId: string | undefined;
+  let discountWaivesDelivery = false;
 
   if (discountCode) {
     const discount = await prisma.discount.findUnique({
       where: { code: discountCode, isActive: true },
     });
-    if (discount && discount.type === 'PERCENTAGE') {
-      discountAmount = Math.round(subtotal * (Number(discount.value) / 100) * 100) / 100;
-    } else if (discount && discount.type === 'FIXED_AMOUNT') {
-      discountAmount = Math.min(Number(discount.value), subtotal);
+    if (discount) {
+      if (discount.type === 'PERCENTAGE') {
+        discountAmount = Math.round(subtotal * (Number(discount.value) / 100) * 100) / 100;
+      } else if (discount.type === 'FIXED_AMOUNT') {
+        discountAmount = Math.min(Number(discount.value), subtotal);
+      }
+      // Free shipping discounts (e.g. affiliate codes like BACHPLAN) waive the delivery fee.
+      // Schema has both fields for legacy reasons -- match the discount engine OR logic.
+      if (discount.freeShipping || discount.type === 'FREE_SHIPPING') {
+        discountWaivesDelivery = true;
+      }
     }
     if (discountAmount > 0) {
       const coupon = await stripe.coupons.create({
@@ -122,8 +132,14 @@ export async function createGroupV2CheckoutSession(input: CreateCheckoutInput) {
     quantity: item.quantity,
   }));
 
-  // Add delivery fee line item when bundled into this checkout
-  const includeDeliveryFee = input.includeDeliveryFee && input.deliveryFeeAmount && input.deliveryFeeAmount > 0;
+  // Add delivery fee line item when bundled into this checkout.
+  // A FREE_SHIPPING discount code (e.g. BACHPLAN) overrides includeDeliveryFee
+  // and triggers the waive metadata path so the webhook stamps deliveryFeeWaived.
+  const includeDeliveryFee = !discountWaivesDelivery
+    && input.includeDeliveryFee
+    && input.deliveryFeeAmount
+    && input.deliveryFeeAmount > 0;
+  const effectiveWaiveDeliveryFee = input.waiveDeliveryFee || discountWaivesDelivery;
   const deliveryFeeAmount = includeDeliveryFee ? input.deliveryFeeAmount! : 0;
   if (includeDeliveryFee) {
     lineItems.push({
@@ -183,7 +199,11 @@ export async function createGroupV2CheckoutSession(input: CreateCheckoutInput) {
       participantId,
       checkoutType: input.checkoutType || 'participant',
       ...(tipAmount > 0 ? { tipAmount: String(tipAmount) } : {}),
-      ...(includeDeliveryFee ? { deliveryFee: String(deliveryFeeAmount) } : {}),
+      ...(includeDeliveryFee
+        ? { deliveryFee: String(deliveryFeeAmount) }
+        : effectiveWaiveDeliveryFee
+          ? { deliveryFee: '0', deliveryFeeWaivedByAffiliate: 'true' }
+          : {}),
       ...(input.affiliateCode ? { affiliateCode: input.affiliateCode } : {}),
     },
     billing_address_collection: 'required',
@@ -528,8 +548,10 @@ export async function handleGroupV2PaymentCompleted(
     data: { orderId: order.id },
   });
 
-  // If delivery fee was bundled, mark it as paid on the SubOrder
-  if (bundledDeliveryFee > 0) {
+  // If delivery fee was bundled OR waived by an affiliate perk, mark the tab as waived
+  // so the separate host-invoice flow won't charge it later.
+  const waivedByAffiliate = session.metadata?.deliveryFeeWaivedByAffiliate === 'true';
+  if (bundledDeliveryFee > 0 || waivedByAffiliate) {
     await prisma.subOrder.update({
       where: { id: subOrderId },
       data: { deliveryFeeWaived: true },
