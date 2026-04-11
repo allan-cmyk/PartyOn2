@@ -87,16 +87,11 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       Number(tab.deliveryFee) > 0 &&
       !existingPaidInvoice;
 
-    // Premier Party Cruises perk:
-    //   - Marina address (address1 contains "13993") = free delivery, no minimum
-    //   - Other house addresses                      = free delivery on $300+ only
-    // Threshold is the WHOLE tab subtotal, not just this participant's items
-    // (matches PremierPerksBanner.tsx unlock logic).
-    let premierPerkApplies = false;
-    if (shouldIncludeDeliveryFee && group.affiliate?.code === 'PREMIER') {
-      const address1 = (tab.deliveryAddress?.address1 || '').toLowerCase();
-      const isMarinaAddress = address1.includes('13993');
-
+    // Affiliate perk: waive delivery fee when the group is attributed to an affiliate.
+    // Uses the affiliate's matching FREE_SHIPPING Discount row to find the minimum.
+    // Premier has custom rules (marina address override + $300 house minimum).
+    let affiliatePerkWaives = false;
+    if (shouldIncludeDeliveryFee && group.affiliate) {
       const allTabDrafts = await prisma.draftCartItem.findMany({
         where: { subOrderId: tabId },
       });
@@ -105,12 +100,26 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         0,
       );
 
-      if (isMarinaAddress || tabSubtotal >= 300) {
-        premierPerkApplies = true;
+      const code = group.affiliate.code;
+      if (code === 'PREMIER') {
+        const address1 = (tab.deliveryAddress?.address1 || '').toLowerCase();
+        if (address1.includes('13993') || tabSubtotal >= 300) {
+          affiliatePerkWaives = true;
+        }
+      } else {
+        const discount = await prisma.discount.findUnique({
+          where: { code: code.toUpperCase(), isActive: true },
+        });
+        if (discount && (discount.type === 'FREE_SHIPPING' || discount.freeShipping)) {
+          const minOrder = Number(discount.minOrderAmount || 0);
+          if (tabSubtotal >= minOrder) {
+            affiliatePerkWaives = true;
+          }
+        }
       }
     }
 
-    if (premierPerkApplies) {
+    if (affiliatePerkWaives) {
       shouldIncludeDeliveryFee = false;
     }
 
@@ -128,7 +137,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       affiliateCode: group.affiliate?.code,
       includeDeliveryFee: shouldIncludeDeliveryFee,
       deliveryFeeAmount: shouldIncludeDeliveryFee ? Number(tab.deliveryFee) : undefined,
-      waiveDeliveryFee: premierPerkApplies,
+      waiveDeliveryFee: affiliatePerkWaives,
       successUrl: `${appUrl}/dashboard/${code}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${appUrl}/dashboard/${code}`,
     });
