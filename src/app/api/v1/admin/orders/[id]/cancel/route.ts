@@ -7,7 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/database/client';
 import { stripe } from '@/lib/stripe/client';
-import { createRefund } from '@/lib/inventory/services/order-service';
+import { createRefund, releaseCommittedInventory } from '@/lib/inventory/services/order-service';
 import { sendOrderCancellationEmail } from '@/lib/email/email-service';
 import { sendRefundProcessedEmail } from '@/lib/email/email-service';
 import { generateOrderCancellationEmail } from '@/lib/email/templates/order-cancellation';
@@ -163,6 +163,20 @@ export async function POST(
           status: 'CANCELLED',
         },
       });
+    }
+
+    // Release committed inventory (fixes bug: cancel previously left stock decremented)
+    try {
+      if (order.fulfillmentStatus === 'DELIVERED') {
+        // Already fulfilled: inventoryQuantity was already decremented by fulfillment,
+        // committedQuantity is already 0. Restoring stock is handled by the return flow.
+        // No inventory action needed here — the physical goods were delivered.
+      } else {
+        // Not yet fulfilled: release the committed quantity back to available
+        await releaseCommittedInventory(id);
+      }
+    } catch (inventoryError) {
+      console.error('[Cancel API] Failed to release committed inventory:', inventoryError);
     }
 
     // Send cancellation email

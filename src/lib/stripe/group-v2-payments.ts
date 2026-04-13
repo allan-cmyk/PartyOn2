@@ -14,7 +14,7 @@ import { recordDiscountUsage } from '@/lib/discounts/discount-engine';
 import { linkOrderToAffiliate } from '@/lib/affiliates/commission-engine';
 import { getAffiliateByCode } from '@/lib/affiliates/affiliate-service';
 import { createOrderCalendarEvent } from '@/lib/calendar/google-calendar';
-import { decrementInventoryForOrderItem } from '@/lib/inventory/services/order-service';
+import { commitInventoryForOrderItem } from '@/lib/inventory/services/order-service';
 
 // ==========================================
 // Types
@@ -558,10 +558,10 @@ export async function handleGroupV2PaymentCompleted(
     });
   }
 
-  // Decrement inventory for each purchased item
+  // Commit inventory for each purchased item
   for (const item of order.items) {
     try {
-      await decrementInventoryForOrderItem(
+      await commitInventoryForOrderItem(
         prisma,
         item.productId,
         item.variantId,
@@ -570,7 +570,7 @@ export async function handleGroupV2PaymentCompleted(
         order.id
       );
     } catch (invErr) {
-      console.error(`[Group V2 Payment] Failed to decrement inventory for ${item.title}:`, invErr);
+      console.error(`[Group V2 Payment] Failed to commit inventory for ${item.title}:`, invErr);
     }
   }
 

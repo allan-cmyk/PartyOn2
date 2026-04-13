@@ -62,13 +62,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {};
 
-    // Filter by stock status
-    if (filter === 'out_of_stock') {
-      where.inventoryQuantity = 0;
-    } else if (filter === 'low_stock') {
-      where.inventoryQuantity = { gt: 0, lte: 10 };
-    }
-
     // Search by product name, variant title, or SKU
     if (search) {
       where.OR = [
@@ -78,22 +71,45 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       ];
     }
 
-    // Get total count for pagination
-    const totalCount = await prisma.productVariant.count({ where });
+    // For stock status filters, we need to fetch all matching variants and post-filter
+    // because "available" = inventoryQuantity - committedQuantity is computed
+    const needsPostFilter = filter === 'out_of_stock' || filter === 'low_stock';
 
     // Fetch variants with product info
-    const variants = await prisma.productVariant.findMany({
+    const allVariants = await prisma.productVariant.findMany({
       where,
       include: {
         product: { select: { id: true, title: true, handle: true } },
       },
       orderBy: [{ product: { title: 'asc' } }, { title: 'asc' }],
-      skip: (page - 1) * limit,
-      take: limit,
+      ...(!needsPostFilter ? { skip: (page - 1) * limit, take: limit } : {}),
     });
 
+    // Post-filter by available quantity
+    let filteredVariants = allVariants;
+    if (filter === 'out_of_stock') {
+      filteredVariants = allVariants.filter(v => (v.inventoryQuantity - v.committedQuantity) <= 0);
+    } else if (filter === 'low_stock') {
+      filteredVariants = allVariants.filter(v => {
+        const available = v.inventoryQuantity - v.committedQuantity;
+        return available > 0 && available <= 10;
+      });
+    }
+
+    const totalCount = filteredVariants.length;
+
+    // Apply pagination for post-filtered results
+    const paginatedVariants = needsPostFilter
+      ? filteredVariants.slice((page - 1) * limit, page * limit)
+      : filteredVariants;
+
+    // Get total count for non-filtered case
+    const totalForMeta = needsPostFilter
+      ? totalCount
+      : await prisma.productVariant.count({ where });
+
     // Transform to expected format
-    const formattedItems = variants.map(variant => ({
+    const formattedItems = paginatedVariants.map(variant => ({
       id: variant.id,
       productId: variant.productId,
       productName: variant.product.title,
@@ -101,7 +117,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       variantName: variant.title || null,
       sku: variant.sku || null,
       quantity: variant.inventoryQuantity,
-      reservedQuantity: 0,
+      committedQuantity: variant.committedQuantity,
+      available: variant.inventoryQuantity - variant.committedQuantity,
+      reservedQuantity: variant.committedQuantity, // backward compat alias
       lowStockThreshold: 10,
       reorderPoint: 5,
       locationId: 'main-warehouse',
@@ -114,10 +132,10 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       data: formattedItems,
       meta: {
         count: formattedItems.length,
-        total: totalCount,
+        total: totalForMeta,
         page,
         limit,
-        totalPages: Math.ceil(totalCount / limit),
+        totalPages: Math.ceil(totalForMeta / limit),
       },
     });
   } catch (error) {

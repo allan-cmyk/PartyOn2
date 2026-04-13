@@ -30,10 +30,10 @@ const productInclude = {
     select: {
       quantity: true,
       componentProduct: {
-        select: { variants: { select: { inventoryQuantity: true } } },
+        select: { variants: { select: { inventoryQuantity: true, committedQuantity: true } } },
       },
       componentVariant: {
-        select: { inventoryQuantity: true },
+        select: { inventoryQuantity: true, committedQuantity: true },
       },
     },
   },

@@ -360,6 +360,7 @@ model ProductVariant {
 
   // Inventory tracking
   inventoryQuantity Int      @default(0) @map("inventory_quantity")
+  committedQuantity Int      @default(0) @map("committed_quantity")  // Units tied to paid, unfulfilled orders
   trackInventory    Boolean  @default(true) @map("track_inventory")
   allowBackorder    Boolean  @default(false) @map("allow_backorder")
   costPerUnit       Decimal? @map("cost_per_unit") @db.Decimal(10, 2)
@@ -579,6 +580,8 @@ enum InventoryMovementType {
   AI_COUNT
   DAMAGED
   EXPIRED
+  COMMITTED
+  FULFILLED
 }
 
 enum AlertStatus {

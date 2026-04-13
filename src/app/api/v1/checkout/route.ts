@@ -14,6 +14,7 @@ import { notifyNewOrder, buildGhlPayload } from '@/lib/webhooks/ghl';
 import { getAffiliateByCode } from '@/lib/affiliates/affiliate-service';
 import { linkOrderToAffiliate } from '@/lib/affiliates/commission-engine';
 import { createOrderCalendarEvent } from '@/lib/calendar/google-calendar';
+import { prisma } from '@/lib/database/client';
 
 const CART_ID_COOKIE = 'cart_id';
 
@@ -116,6 +117,71 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         { success: false, error: 'Delivery information is required' },
         { status: 400 }
       );
+    }
+
+    // Validate stock availability before proceeding to Stripe
+    for (const item of cart.items) {
+      const variant = await prisma.productVariant.findUnique({
+        where: { id: item.variantId },
+        select: {
+          inventoryQuantity: true,
+          committedQuantity: true,
+          trackInventory: true,
+          allowBackorder: true,
+          product: {
+            select: {
+              title: true,
+              isBundle: true,
+              bundleComponents: {
+                select: {
+                  componentProductId: true,
+                  componentVariantId: true,
+                  quantity: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!variant || !variant.trackInventory || variant.allowBackorder) continue;
+
+      if (variant.product.isBundle && variant.product.bundleComponents.length > 0) {
+        // Bundle: check each component's available stock
+        for (const comp of variant.product.bundleComponents) {
+          let compVariant;
+          if (comp.componentVariantId) {
+            compVariant = await prisma.productVariant.findUnique({
+              where: { id: comp.componentVariantId },
+              select: { inventoryQuantity: true, committedQuantity: true, trackInventory: true, allowBackorder: true },
+            });
+          } else {
+            compVariant = await prisma.productVariant.findFirst({
+              where: { productId: comp.componentProductId },
+              select: { inventoryQuantity: true, committedQuantity: true, trackInventory: true, allowBackorder: true },
+            });
+          }
+          if (!compVariant || !compVariant.trackInventory || compVariant.allowBackorder) continue;
+
+          const compAvailable = compVariant.inventoryQuantity - compVariant.committedQuantity;
+          const compNeeded = comp.quantity * item.quantity;
+          if (compAvailable < compNeeded) {
+            return NextResponse.json(
+              { success: false, error: `${variant.product.title} only has ${Math.max(0, Math.floor(compAvailable / comp.quantity))} available` },
+              { status: 400 }
+            );
+          }
+        }
+      } else {
+        // Regular product
+        const available = variant.inventoryQuantity - variant.committedQuantity;
+        if (available < item.quantity) {
+          return NextResponse.json(
+            { success: false, error: `${variant.product.title} only has ${Math.max(0, available)} available` },
+            { status: 400 }
+          );
+        }
+      }
     }
 
     // Check for affiliate attribution cookie (in-memory only -- do NOT mutate cart)

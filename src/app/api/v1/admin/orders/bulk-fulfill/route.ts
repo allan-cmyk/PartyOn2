@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/database/client';
 import { FulfillmentStatus, OrderStatus } from '@prisma/client';
 import { markCommissionsDelivered } from '@/lib/affiliates/commission-engine';
+import { fulfillInventoryForOrder } from '@/lib/inventory/services/order-service';
 
 export async function PATCH(request: NextRequest): Promise<NextResponse> {
   try {
@@ -28,29 +29,44 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const result = await prisma.order.updateMany({
+    // Fetch eligible orders individually so we can trigger per-order inventory fulfillment
+    const orders = await prisma.order.findMany({
       where: {
         id: { in: orderIds },
         fulfillmentStatus: { not: FulfillmentStatus.DELIVERED },
       },
-      data: {
-        fulfillmentStatus: FulfillmentStatus.DELIVERED,
-        status: OrderStatus.DELIVERED,
-      },
+      select: { id: true },
     });
+
+    let fulfilledCount = 0;
+    for (const order of orders) {
+      try {
+        await prisma.order.update({
+          where: { id: order.id },
+          data: {
+            fulfillmentStatus: FulfillmentStatus.DELIVERED,
+            status: OrderStatus.DELIVERED,
+          },
+        });
+
+        await fulfillInventoryForOrder(order.id);
+        fulfilledCount++;
+      } catch (err) {
+        console.error(`[Bulk Fulfill API] Failed to fulfill order ${order.id}:`, err);
+      }
+    }
 
     // Update affiliate commissions for delivered orders
     try {
       await markCommissionsDelivered(orderIds);
     } catch (err) {
       console.error('[Bulk Fulfill API] Failed to update affiliate commissions:', err);
-      // Non-fatal: orders were fulfilled successfully
     }
 
     return NextResponse.json({
       success: true,
       data: {
-        updatedCount: result.count,
+        updatedCount: fulfilledCount,
         requestedCount: orderIds.length,
       },
     });

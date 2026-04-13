@@ -52,6 +52,7 @@ export async function getProductInventory(productId: string) {
       title: true,
       sku: true,
       inventoryQuantity: true,
+      committedQuantity: true,
       costPerUnit: true,
     },
   });
@@ -85,13 +86,13 @@ export async function adjustInventory(adjustment: InventoryAdjustment) {
   if (variantId) {
     variant = await prisma.productVariant.findUnique({
       where: { id: variantId },
-      select: { id: true, inventoryQuantity: true },
+      select: { id: true, inventoryQuantity: true, committedQuantity: true },
     });
   } else {
     // Fall back to first variant for the product
     variant = await prisma.productVariant.findFirst({
       where: { productId },
-      select: { id: true, inventoryQuantity: true },
+      select: { id: true, inventoryQuantity: true, committedQuantity: true },
     });
   }
 
@@ -120,9 +121,11 @@ export async function adjustInventory(adjustment: InventoryAdjustment) {
     },
   });
 
-  // Check for low stock alert
-  if (newQuantity <= LOW_STOCK_THRESHOLD && previousQuantity > LOW_STOCK_THRESHOLD) {
-    await createLowStockAlert(productId, variant.id, newQuantity, LOW_STOCK_THRESHOLD);
+  // Check for low stock alert based on available quantity
+  const newAvailable = newQuantity - variant.committedQuantity;
+  const previousAvailable = previousQuantity - variant.committedQuantity;
+  if (newAvailable <= LOW_STOCK_THRESHOLD && previousAvailable > LOW_STOCK_THRESHOLD) {
+    await createLowStockAlert(productId, variant.id, newAvailable, LOW_STOCK_THRESHOLD);
   }
 
   return { item: variant, movement, previousQuantity, newQuantity };
@@ -219,29 +222,28 @@ async function createLowStockAlert(
 }
 
 export async function getLowStockAlerts(): Promise<LowStockItem[]> {
-  // Query variants directly instead of relying on LowStockAlert table
+  // Query all tracked variants and filter by available quantity (inStock - committed)
   const variants = await prisma.productVariant.findMany({
-    where: {
-      inventoryQuantity: { lte: LOW_STOCK_THRESHOLD },
-      trackInventory: true,
-    },
+    where: { trackInventory: true },
     include: {
       product: { select: { id: true, title: true } },
     },
     orderBy: { inventoryQuantity: 'asc' },
   });
 
-  return variants.map(v => ({
-    productId: v.productId,
-    productTitle: v.product.title,
-    variantId: v.id,
-    variantTitle: v.title,
-    sku: v.sku || undefined,
-    currentQuantity: v.inventoryQuantity,
-    threshold: LOW_STOCK_THRESHOLD,
-    reorderPoint: LOW_STOCK_THRESHOLD,
-    recommendedReorderQuantity: 50,
-  }));
+  return variants
+    .filter(v => (v.inventoryQuantity - v.committedQuantity) <= LOW_STOCK_THRESHOLD)
+    .map(v => ({
+      productId: v.productId,
+      productTitle: v.product.title,
+      variantId: v.id,
+      variantTitle: v.title,
+      sku: v.sku || undefined,
+      currentQuantity: v.inventoryQuantity - v.committedQuantity,
+      threshold: LOW_STOCK_THRESHOLD,
+      reorderPoint: LOW_STOCK_THRESHOLD,
+      recommendedReorderQuantity: 50,
+    }));
 }
 
 export async function acknowledgeAlert(alertId: string, acknowledgedBy: string) {

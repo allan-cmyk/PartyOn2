@@ -11,6 +11,8 @@ interface InventoryItem {
   variantName?: string;
   sku?: string;
   quantity: number;
+  committedQuantity: number;
+  available: number;
   reservedQuantity: number;
   lowStockThreshold: number;
   reorderPoint: number;
@@ -113,15 +115,15 @@ function FilterButton({
   );
 }
 
-function StockStatus({ quantity, threshold }: { quantity: number; threshold: number }): ReactElement {
-  if (quantity === 0) {
+function StockStatus({ available, threshold }: { available: number; threshold: number }): ReactElement {
+  if (available <= 0) {
     return (
       <span className="px-3 py-1 bg-red-100 text-red-700 border border-red-200 rounded-full text-xs font-semibold">
         Out of Stock
       </span>
     );
   }
-  if (quantity <= threshold) {
+  if (available <= threshold) {
     return (
       <span className="px-3 py-1 bg-yellow-100 text-yellow-700 border border-yellow-200 rounded-full text-xs font-semibold">
         Low Stock
@@ -439,11 +441,11 @@ export default function InventoryPage(): ReactElement {
           setInventory(data.data || []);
           setMeta(data.meta || null);
 
-          // Calculate stats from meta if available, or from inventory
+          // Calculate stats from available quantity (inStock - committed)
           const items = data.data || [];
-          const lowStockCount = items.filter((i: InventoryItem) => i.quantity > 0 && i.quantity <= i.lowStockThreshold).length;
-          const outOfStockCount = items.filter((i: InventoryItem) => i.quantity === 0).length;
-          const inStockCount = items.filter((i: InventoryItem) => i.quantity > i.lowStockThreshold).length;
+          const lowStockCount = items.filter((i: InventoryItem) => i.available > 0 && i.available <= i.lowStockThreshold).length;
+          const outOfStockCount = items.filter((i: InventoryItem) => i.available <= 0).length;
+          const inStockCount = items.filter((i: InventoryItem) => i.available > i.lowStockThreshold).length;
 
           setStats({
             total: data.meta?.total || items.length,
@@ -602,10 +604,10 @@ export default function InventoryPage(): ReactElement {
 
   const filteredInventory = inventory.filter((item) => {
     if (filter === 'low_stock') {
-      return item.quantity <= item.lowStockThreshold && item.quantity > 0;
+      return item.available > 0 && item.available <= item.lowStockThreshold;
     }
     if (filter === 'out_of_stock') {
-      return item.quantity === 0;
+      return item.available <= 0;
     }
     return true;
   });
@@ -807,10 +809,13 @@ export default function InventoryPage(): ReactElement {
                     Location
                   </th>
                   <th className="text-center px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Quantity
+                    In Stock
                   </th>
                   <th className="text-center px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Reserved
+                    Committed
+                  </th>
+                  <th className="text-center px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Available
                   </th>
                   <th className="text-center px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Status
@@ -854,27 +859,32 @@ export default function InventoryPage(): ReactElement {
                           min={0}
                         />
                       ) : (
-                        <span className={`text-lg font-bold ${
-                          item.quantity === 0 ? 'text-red-600' :
-                          item.quantity <= item.lowStockThreshold ? 'text-yellow-600' :
-                          'text-gray-900'
-                        }`}>
+                        <span className="text-lg font-bold text-gray-900">
                           {item.quantity}
                         </span>
                       )}
                     </td>
                     <td className="px-6 py-4 text-center">
-                      {item.reservedQuantity > 0 ? (
+                      {item.committedQuantity > 0 ? (
                         <span className="inline-flex items-center justify-center px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
-                          {item.reservedQuantity}
+                          {item.committedQuantity}
                         </span>
                       ) : (
                         <span className="text-gray-400">&mdash;</span>
                       )}
                     </td>
                     <td className="px-6 py-4 text-center">
+                      <span className={`text-lg font-bold ${
+                        item.available <= 0 ? 'text-red-600' :
+                        item.available <= item.lowStockThreshold ? 'text-yellow-600' :
+                        'text-green-700'
+                      }`}>
+                        {item.available}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
                       <StockStatus
-                        quantity={item.quantity}
+                        available={item.available}
                         threshold={item.lowStockThreshold}
                       />
                     </td>

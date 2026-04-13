@@ -176,9 +176,73 @@ const all = [...confirmedRows, ...invoiceRows, ...draftRows].sort(
   (a, b) => a.deliveryDate.localeCompare(b.deliveryDate) || a.deliveryTime.localeCompare(b.deliveryTime)
 );
 
+// =============================================
+// Stock Adequacy Check
+// =============================================
+// Aggregate product demand across all upcoming orders and compare to available stock
+const demandMap = new Map(); // variantId -> { title, demanded }
+for (const row of all) {
+  // Parse item details like "2x Corona Extra 12 Pack"
+  for (const detail of row.itemDetails || []) {
+    const match = detail.match(/^(\d+)x\s+(.+)$/);
+    if (match) {
+      const qty = parseInt(match[1]);
+      const title = match[2];
+      const key = title;
+      const existing = demandMap.get(key) || { title, demanded: 0 };
+      existing.demanded += qty;
+      demandMap.set(key, existing);
+    }
+  }
+}
+
+// Look up available stock for demanded products
+const stockAdequacy = [];
+if (demandMap.size > 0) {
+  const demandTitles = [...demandMap.keys()];
+  for (const title of demandTitles) {
+    const demand = demandMap.get(title);
+    // Find product+variant by matching item title
+    const variant = await prisma.productVariant.findFirst({
+      where: {
+        OR: [
+          { product: { title: { equals: title, mode: 'insensitive' } } },
+          { title: { equals: title, mode: 'insensitive' } },
+        ],
+      },
+      select: {
+        inventoryQuantity: true,
+        committedQuantity: true,
+        product: { select: { title: true } },
+      },
+    });
+    const available = variant
+      ? variant.inventoryQuantity - variant.committedQuantity
+      : null;
+    stockAdequacy.push({
+      product: demand.title,
+      demanded: demand.demanded,
+      available: available,
+      shortfall: available !== null ? Math.max(0, demand.demanded - available) : null,
+    });
+  }
+}
+
 console.log(JSON.stringify(all, null, 2));
 console.error(`\n${all.length} total orders in next ${daysAhead} days:`);
 console.error(`  ${confirmedRows.length} confirmed (paid, need delivery)`);
 console.error(`  ${invoiceRows.length} pending invoices`);
 console.error(`  ${draftRows.length} draft dashboard orders`);
+
+if (stockAdequacy.length > 0) {
+  const shortfalls = stockAdequacy.filter(s => s.shortfall && s.shortfall > 0);
+  if (shortfalls.length > 0) {
+    console.error(`\n⚠ Stock shortfalls for upcoming orders:`);
+    for (const s of shortfalls) {
+      console.error(`  ${s.product}: need ${s.demanded}, only ${s.available} available (short ${s.shortfall})`);
+    }
+  } else {
+    console.error(`\nStock adequate for all upcoming demand.`);
+  }
+}
 await prisma.$disconnect();
