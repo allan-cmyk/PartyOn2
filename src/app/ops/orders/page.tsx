@@ -128,11 +128,11 @@ function StatCard({
   };
 
   return (
-    <div className="group relative bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-lg hover:border-gray-200 hover:-translate-y-0.5 transition-all duration-300 overflow-hidden">
+    <div className="group relative bg-white rounded-xl shadow-sm border border-gray-100 p-3 hover:shadow-lg hover:border-gray-200 hover:-translate-y-0.5 transition-all duration-300 overflow-hidden">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1 tabular-nums">{value}</p>
+          <p className="text-xl font-bold text-gray-900 mt-1 tabular-nums">{value}</p>
           {trend && (
             <div className={`flex items-center gap-1 mt-1 text-xs font-medium ${
               trend === 'up' ? 'text-green-600' : trend === 'down' ? 'text-red-600' : 'text-gray-500'
@@ -144,7 +144,7 @@ function StatCard({
           )}
         </div>
         {icon && (
-          <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${colors[color]} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+          <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${colors[color]} flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform duration-300 [&>svg]:w-5 [&>svg]:h-5`}>
             {icon}
           </div>
         )}
@@ -295,8 +295,8 @@ function GroupOrderRow({
         className="bg-purple-50/50 hover:bg-purple-100/50 transition-colors cursor-pointer border-l-4 border-l-purple-500"
         onClick={onToggle}
       >
-        <td className="w-8 pl-2 pr-0 py-4"></td>
-        <td className="w-12 px-2 py-4">
+        <td className="w-8 pl-2 pr-0 py-2.5"></td>
+        <td className="w-12 px-2 py-2.5">
           <input
             type="checkbox"
             checked={allGroupSelected}
@@ -306,7 +306,7 @@ function GroupOrderRow({
             className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500 cursor-pointer"
           />
         </td>
-        <td className="px-6 py-4">
+        <td className="px-4 py-2.5">
           <div className="flex items-center gap-2">
             <button
               className="p-1 hover:bg-purple-200 rounded transition-colors"
@@ -323,10 +323,10 @@ function GroupOrderRow({
             </button>
             <div>
               <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
-                <span className="font-bold text-purple-700 text-lg">
+                <span className="font-bold text-purple-700 text-base">
                   Group: {group.groupInfo.shareCode}
                 </span>
               </div>
@@ -334,44 +334,42 @@ function GroupOrderRow({
             </div>
           </div>
         </td>
-        <td className="px-6 py-4">
+        <td className="px-4 py-2.5">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center justify-center w-8 h-8 bg-purple-200 text-purple-700 rounded-full font-semibold text-sm">
+            <span className="inline-flex items-center justify-center w-7 h-7 bg-purple-200 text-purple-700 rounded-full font-semibold text-sm">
               {group.orders.length}
             </span>
             <span className="text-gray-600 text-sm">orders</span>
           </div>
         </td>
-        <td className="px-6 py-4 text-center">
-          <span className="inline-flex items-center justify-center w-8 h-8 bg-purple-100 rounded-full font-semibold text-purple-700">
+        <td className="px-4 py-2.5 text-center">
+          <span className="inline-flex items-center justify-center w-7 h-7 bg-purple-100 rounded-full font-semibold text-purple-700 text-sm">
             {group.totalItems}
           </span>
         </td>
-        <td className="px-6 py-4 text-right">
-          <span className="font-bold text-purple-700 text-lg">{formatCurrency(group.totalAmount)}</span>
+        <td className="px-4 py-2.5 text-right">
+          <span className="font-bold text-purple-700">{formatCurrency(group.totalAmount)}</span>
         </td>
-        <td className="px-6 py-4 text-center">
-          <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${getGroupStatusColor(group.groupInfo.status)}`}>
+        <td className="px-4 py-2.5">
+          <p className="font-medium text-gray-900">{formatDate(group.orders[0]?.deliveryDate || '')}</p>
+          <p className="text-sm text-gray-500">{group.orders[0]?.deliveryTime || ''}</p>
+        </td>
+        <td className="px-4 py-2.5">
+          <span className="text-gray-400 text-sm">--</span>
+        </td>
+        <td className="px-4 py-2.5 text-center">
+          <span className={`inline-flex px-2.5 py-0.5 text-xs font-semibold rounded-full ${getGroupStatusColor(group.groupInfo.status)}`}>
             {group.groupInfo.status}
           </span>
         </td>
-        <td className="px-6 py-4 text-center">
-          <span className="text-gray-500 text-sm">—</span>
-        </td>
-        <td className="px-6 py-4">
-          <div>
-            <p className="font-medium text-gray-900">{formatDate(group.orders[0]?.deliveryDate || '')}</p>
-            <p className="text-sm text-gray-500">{group.orders[0]?.deliveryTime || ''}</p>
-          </div>
-        </td>
-        <td className="px-6 py-4 text-right">
+        <td className="px-4 py-2.5 text-center">
           <Link
             href={`/ops/group-orders/${group.groupId}`}
             onClick={(e) => e.stopPropagation()}
-            className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-purple-700 bg-purple-100 rounded-lg hover:bg-purple-200 transition-colors"
+            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-purple-700 bg-purple-100 rounded-lg hover:bg-purple-200 transition-colors"
           >
-            View Details
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            Details
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
           </Link>
@@ -381,8 +379,8 @@ function GroupOrderRow({
       {/* Expanded Sub-Orders */}
       {isExpanded && group.orders.map((order) => (
         <tr key={order.id} className={`bg-gray-50/80 hover:bg-gray-100/80 transition-colors border-l-4 border-l-purple-300 ${selectedOrders.has(order.id) ? 'bg-blue-50/30' : ''}`}>
-          <td className="w-8 pl-2 pr-0 py-3"></td>
-          <td className="w-12 px-2 py-3">
+          <td className="w-8 pl-2 pr-0 py-2"></td>
+          <td className="w-12 px-2 py-2">
             <input
               type="checkbox"
               checked={selectedOrders.has(order.id)}
@@ -390,44 +388,44 @@ function GroupOrderRow({
               className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
             />
           </td>
-          <td className="px-6 py-3 pl-16">
+          <td className="px-4 py-2 pl-14">
             <Link href={`/ops/orders/${order.id}`} className="block">
               <span className="font-mono font-semibold text-blue-600 hover:text-blue-700">
                 #{order.orderNumber}
               </span>
             </Link>
           </td>
-          <td className="px-6 py-3">
+          <td className="px-4 py-2">
             <div>
               <p className="font-medium text-gray-900 text-sm">{order.customerName}</p>
               <p className="text-xs text-gray-500">{order.customerEmail}</p>
             </div>
           </td>
-          <td className="px-6 py-3 text-center">
+          <td className="px-4 py-2 text-center">
             <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-200 rounded-full font-medium text-gray-700 text-sm">
               {order.itemCount}
             </span>
           </td>
-          <td className="px-6 py-3 text-right">
+          <td className="px-4 py-2 text-right">
             <span className="font-semibold text-gray-900">{formatCurrency(order.total)}</span>
           </td>
-          <td className="px-6 py-3 text-center">
-            <span className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
-              {order.status}
-            </span>
+          <td className="px-4 py-2">
+            <span className="text-xs text-gray-500">--</span>
           </td>
-          <td className="px-6 py-3 text-center">
-            <span className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${getFulfillmentColor(order.fulfillmentStatus)}`}>
-              {order.fulfillmentStatus}
-            </span>
-          </td>
-          <td className="px-6 py-3">
+          <td className="px-4 py-2">
             <span className="inline-flex px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded">
               {order.deliveryType}
             </span>
           </td>
-          <td className="px-6 py-3 text-right">
-            <span className="text-gray-500 text-xs">{formatDateTime(order.createdAt)}</span>
+          <td className="px-4 py-2 text-center">
+            <span className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
+              {order.status}
+            </span>
+          </td>
+          <td className="px-4 py-2 text-center">
+            <span className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${getFulfillmentColor(order.fulfillmentStatus)}`}>
+              {order.fulfillmentStatus}
+            </span>
           </td>
         </tr>
       ))}
@@ -452,7 +450,7 @@ function OrderRow({ order, selected, onToggle, onPrint, onFilterByGroup }: { ord
   return (
     <>
       <tr className={`hover:bg-blue-50/50 transition-colors group ${selected ? 'bg-blue-50/30' : ''}`}>
-        <td className="w-8 pl-2 pr-0 py-4">
+        <td className="w-8 pl-2 pr-0 py-2.5">
           <button
             onClick={() => setExpanded(!expanded)}
             className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors"
@@ -463,7 +461,7 @@ function OrderRow({ order, selected, onToggle, onPrint, onFilterByGroup }: { ord
             </svg>
           </button>
         </td>
-        <td className="w-12 px-2 py-4">
+        <td className="w-12 px-2 py-2.5">
           <input
             type="checkbox"
             checked={selected}
@@ -471,9 +469,9 @@ function OrderRow({ order, selected, onToggle, onPrint, onFilterByGroup }: { ord
             className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
           />
         </td>
-        <td className="px-6 py-4">
+        <td className="px-4 py-2.5">
           <Link href={`/ops/orders/${order.id}`} className="block">
-            <span className="font-mono font-bold text-blue-600 group-hover:text-blue-700 text-lg">
+            <span className="font-mono font-bold text-blue-600 group-hover:text-blue-700 text-base">
               #{order.orderNumber}
             </span>
           </Link>
@@ -515,59 +513,56 @@ function OrderRow({ order, selected, onToggle, onPrint, onFilterByGroup }: { ord
             </div>
           )}
         </td>
-        <td className="px-6 py-4">
+        <td className="px-4 py-2.5">
           <Link href={`/ops/orders/${order.id}`} className="block hover:text-blue-600 transition-colors">
             <p className="font-medium text-gray-900 group-hover:text-blue-600">{order.customerName}</p>
             <p className="text-sm text-gray-500">{order.customerEmail}</p>
           </Link>
         </td>
-        <td className="px-6 py-4 text-center">
+        <td className="px-4 py-2.5 text-center">
           <div className="inline-flex items-center gap-1.5">
-            <span className="inline-flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full font-semibold text-gray-700">
+            <span className="inline-flex items-center justify-center w-7 h-7 bg-gray-100 rounded-full font-semibold text-gray-700 text-sm">
               {order.itemCount}
             </span>
             {isPacked && (
-              <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="All items packed">
+              <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="All items packed">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             )}
           </div>
         </td>
-        <td className="px-6 py-4 text-right">
-          <span className="font-bold text-gray-900 text-lg">{formatCurrency(order.total)}</span>
+        <td className="px-4 py-2.5 text-right">
+          <span className="font-bold text-gray-900">{formatCurrency(order.total)}</span>
           {order.discountCode && (
             <p className="text-xs text-green-600 font-medium">-{formatCurrency(order.discountAmount)} ({order.discountCode})</p>
           )}
         </td>
-        <td className="px-6 py-4 text-center">
-          <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
+        <td className="px-4 py-2.5">
+          <p className="font-medium text-gray-900">{formatDate(order.deliveryDate)}</p>
+          <p className="text-sm text-gray-500">{order.deliveryTime}</p>
+        </td>
+        <td className="px-4 py-2.5">
+          <span className="inline-flex px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded">
+            {order.deliveryType}
+          </span>
+          {order.deliveryAddress && (
+            <p className="text-sm text-gray-600 truncate max-w-[200px] mt-0.5">{formatAddress(order.deliveryAddress)}</p>
+          )}
+        </td>
+        <td className="px-4 py-2.5 text-center">
+          <span className={`inline-flex px-2.5 py-0.5 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
             {order.status}
           </span>
         </td>
-        <td className="px-6 py-4 text-center">
-          <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${getFulfillmentColor(order.fulfillmentStatus)}`}>
+        <td className="px-4 py-2.5 text-center">
+          <span className={`inline-flex px-2.5 py-0.5 text-xs font-semibold rounded-full ${getFulfillmentColor(order.fulfillmentStatus)}`}>
             {order.fulfillmentStatus}
           </span>
-        </td>
-        <td className="px-6 py-4">
-          <div>
-            <p className="font-medium text-gray-900">{formatDate(order.deliveryDate)}</p>
-            <p className="text-sm text-gray-500">{order.deliveryTime}</p>
-            <span className="inline-flex px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded mt-1">
-              {order.deliveryType}
-            </span>
-            {order.deliveryAddress && (
-              <p className="text-xs text-gray-400 mt-1">{formatAddress(order.deliveryAddress)}</p>
-            )}
-          </div>
-        </td>
-        <td className="px-6 py-4 text-right">
-          <span className="text-gray-500 text-sm">{formatDateTime(order.createdAt)}</span>
         </td>
       </tr>
       {expanded && order.items.length > 0 && (
         <tr className="bg-gray-50/80">
-          <td colSpan={10} className="px-6 py-3">
+          <td colSpan={9} className="px-4 py-2">
             <div className="pl-10">
               {/* Quick info: phone, notes, affiliate */}
               <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-gray-600 mb-3">
@@ -731,8 +726,8 @@ function formatAddress(addr: Record<string, string> | string | null): string {
   return parts.join(', ');
 }
 
-// Mobile Order Card
-function MobileOrderCard({ order, selected, onToggle, onFilterByGroup }: { order: Order; selected: boolean; onToggle: () => void; onFilterByGroup?: (groupId: string) => void }): ReactElement {
+// Compact Mobile Order Row (1-2 lines, expandable)
+function MobileOrderRow({ order, onFilterByGroup }: { order: Order; onFilterByGroup?: (groupId: string) => void }): ReactElement {
   const [expanded, setExpanded] = useState(false);
   const [checks, setChecks] = useState<ItemChecks>(() => loadChecks(order.id));
   const address = formatAddress(order.deliveryAddress);
@@ -745,283 +740,165 @@ function MobileOrderCard({ order, selected, onToggle, onFilterByGroup }: { order
     });
   };
 
+  const shortDate = new Date(order.deliveryDate).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
+
+  const fulfillmentDot = order.fulfillmentStatus === 'DELIVERED'
+    ? 'bg-green-500'
+    : order.fulfillmentStatus === 'UNFULFILLED'
+    ? 'bg-orange-400'
+    : 'bg-yellow-400';
+
   return (
-    <div className={`bg-white rounded-xl border shadow-sm overflow-hidden ${selected ? 'border-blue-300 bg-blue-50/30' : 'border-gray-200'}`}>
-      <div className="p-4">
-        {/* Row 1: Checkbox + Name + Total */}
-        <div className="flex items-start gap-3">
-          <input
-            type="checkbox"
-            checked={selected}
-            onChange={onToggle}
-            className="w-4 h-4 mt-1 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer flex-shrink-0"
-          />
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0">
-                <Link href={`/ops/orders/${order.id}`} className="font-semibold text-gray-900 hover:text-blue-600 block truncate">
-                  {order.customerName}
-                </Link>
-                <p className="text-sm text-gray-500 mt-0.5">
-                  {formatDate(order.deliveryDate)} - {order.deliveryTime}
-                </p>
-              </div>
-              <span className="font-bold text-gray-900 whitespace-nowrap">{formatCurrency(order.total)}</span>
-            </div>
+    <div className="border-b border-gray-100 last:border-b-0">
+      {/* Compact row */}
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="w-full flex items-center gap-2 px-3 py-2.5 text-left active:bg-gray-50"
+      >
+        <span className={`w-2 h-2 rounded-full flex-shrink-0 ${fulfillmentDot}`} />
+        <span className="font-medium text-gray-900 truncate flex-1 text-sm">{order.customerName}</span>
+        <span className="text-xs text-gray-500 flex-shrink-0">{shortDate}</span>
+        <span className="text-sm font-semibold text-gray-700 flex-shrink-0 w-16 text-right">{formatCurrency(order.total)}</span>
+        <svg className={`w-4 h-4 text-gray-400 flex-shrink-0 transition-transform ${expanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
 
-            {/* Address */}
-            {address && (
-              <p className="text-sm text-gray-500 mt-1 truncate">{address}</p>
+      {/* Expanded detail */}
+      {expanded && (
+        <div className="px-3 pb-3 space-y-2">
+          {/* Order info row */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <Link href={`/ops/orders/${order.id}`} className="text-xs font-mono text-blue-600 font-semibold">
+              #{order.orderNumber}
+            </Link>
+            <span className={`inline-flex px-1.5 py-0.5 text-[10px] font-semibold rounded-full ${getStatusColor(order.status)}`}>
+              {order.status}
+            </span>
+            <span className={`inline-flex px-1.5 py-0.5 text-[10px] font-semibold rounded-full ${getFulfillmentColor(order.fulfillmentStatus)}`}>
+              {order.fulfillmentStatus}
+            </span>
+            <span className="text-xs text-gray-500">{order.itemCount} items</span>
+            <span className="text-xs text-gray-400">{order.deliveryTime}</span>
+          </div>
+
+          {/* Address */}
+          {address && (
+            <p className="text-xs text-gray-500 truncate">{address}</p>
+          )}
+
+          {/* Contact info */}
+          <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-gray-500">
+            {order.customerEmail && <span>{order.customerEmail}</span>}
+            {order.customerPhone && <a href={`tel:${order.customerPhone}`} className="text-blue-600">{order.customerPhone}</a>}
+            {order.deliveryPhone && order.deliveryPhone !== order.customerPhone && (
+              <a href={`tel:${order.deliveryPhone}`} className="text-blue-600">{order.deliveryPhone}</a>
             )}
+          </div>
 
-            {/* Row 3: Badges + item count + chevron */}
-            <div className="flex items-center gap-2 mt-2 flex-wrap">
-              <span className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
-                {order.status}
-              </span>
-              <span className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${getFulfillmentColor(order.fulfillmentStatus)}`}>
-                {order.fulfillmentStatus}
-              </span>
-              <span className="text-xs text-gray-500">{order.itemCount} items</span>
+          {/* Discount */}
+          {order.discountCode && (
+            <p className="text-xs text-green-600 font-medium">-{formatCurrency(order.discountAmount)} ({order.discountCode})</p>
+          )}
+
+          {/* Group / Dashboard badges */}
+          {(order.groupOrder || order.dashboardSource || order.affiliate) && (
+            <div className="flex items-center gap-1.5 flex-wrap">
               {order.groupOrder && (
-                <Link
-                  href={`/ops/group-orders/${order.groupOrder.id}`}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-purple-100 text-purple-700 rounded-full"
-                >
+                <Link href={`/ops/group-orders/${order.groupOrder.id}`} className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium bg-purple-100 text-purple-700 rounded-full">
                   {order.groupOrder.name || order.groupOrder.shareCode}
                 </Link>
               )}
               {order.dashboardSource && (
                 <>
-                  <a
-                    href={`/dashboard/${order.dashboardSource.shareCode}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-teal-100 text-teal-700 rounded-full"
-                    title={`Dashboard: ${order.dashboardSource.name} by ${order.dashboardSource.hostName}`}
-                  >
-                    Group: {order.dashboardSource.name} ({order.dashboardSource.hostName})
+                  <a href={`/dashboard/${order.dashboardSource.shareCode}`} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium bg-teal-100 text-teal-700 rounded-full">
+                    {order.dashboardSource.name}
                   </a>
                   {onFilterByGroup && (
-                    <button
-                      onClick={(e) => { e.preventDefault(); onFilterByGroup(order.dashboardSource!.id); }}
-                      className="text-xs text-teal-600 hover:underline"
-                      title="Show only orders in this group"
-                    >
-                      filter
-                    </button>
+                    <button onClick={() => onFilterByGroup(order.dashboardSource!.id)} className="text-[10px] text-teal-600 underline">filter</button>
                   )}
                 </>
               )}
-              <button
-                onClick={(e) => { e.preventDefault(); setExpanded(!expanded); }}
-                className="ml-auto p-1 text-gray-400 hover:text-gray-600"
-                aria-label={expanded ? 'Collapse items' : 'Expand items'}
-              >
-                <svg className={`w-5 h-5 transition-transform ${expanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Expanded items */}
-      {expanded && order.items.length > 0 && (
-        <div className="border-t border-gray-100 bg-gray-50 px-4 py-3">
-          <div className="pl-7">
-            {/* Quick info: phone, notes, affiliate */}
-            <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-gray-600 mb-3">
-              {order.customerPhone && (
-                <span>Customer Tel: <span className="font-medium text-gray-800">{order.customerPhone}</span></span>
-              )}
-              {order.deliveryPhone && order.deliveryPhone !== order.customerPhone && (
-                <span>Delivery Tel: <span className="font-medium text-gray-800">{order.deliveryPhone}</span></span>
-              )}
               {order.affiliate && (
-                <span>Partner: <span className="font-medium text-gray-800">{order.affiliate.businessName}</span>{order.affiliate.phone ? ` (${order.affiliate.phone})` : ''}</span>
+                <span className="text-[10px] text-gray-500">via {order.affiliate.businessName}</span>
               )}
             </div>
-            {order.deliveryInstructions && (
-              <div className="mb-2 px-2 py-1 border border-yellow-400 bg-yellow-50 rounded text-xs text-gray-700">
-                <span className="font-bold">Instructions: </span>{order.deliveryInstructions}
-              </div>
-            )}
-            {(order.customerNote || order.internalNote) && (
-              <div className="mb-2 space-y-1">
-                {order.customerNote && (
-                  <div className="px-2 py-1 border border-gray-300 rounded text-xs text-gray-700">
-                    <span className="font-bold">Customer Note: </span>{order.customerNote}
-                  </div>
-                )}
-                {order.internalNote && (
-                  <div className="px-2 py-1 border border-gray-300 rounded text-xs text-gray-700">
-                    <span className="font-bold">Internal Note: </span>{order.internalNote}
-                  </div>
-                )}
-              </div>
-            )}
-            <div className="flex gap-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
-              <span className="w-10 text-center">Stock</span>
-              <span className="w-10 text-center">Pack</span>
-              <span>Item</span>
+          )}
+
+          {/* Delivery instructions / notes */}
+          {order.deliveryInstructions && (
+            <div className="px-2 py-1 border border-yellow-400 bg-yellow-50 rounded text-xs text-gray-700">
+              <span className="font-bold">Instructions: </span>{order.deliveryInstructions}
             </div>
-            <div className="space-y-1.5">
-              {order.items.map((item, idx) => (
-                <div key={idx}>
-                  <div className="flex items-center gap-3">
-                    <label className="w-10 flex justify-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={!!checks[item.title]?.inStock}
-                        onChange={() => toggleCheck(item.title, 'inStock')}
-                        className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 cursor-pointer"
-                      />
-                    </label>
-                    <label className="w-10 flex justify-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={!!checks[item.title]?.packed}
-                        onChange={() => toggleCheck(item.title, 'packed')}
-                        className="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 cursor-pointer"
-                      />
-                    </label>
-                    <div className="flex gap-2 text-sm">
-                      <span className="text-gray-500 font-medium whitespace-nowrap">{item.quantity}x</span>
-                      <span className="text-gray-700">{item.title}</span>
+          )}
+          {order.customerNote && (
+            <div className="px-2 py-1 border border-gray-200 rounded text-xs text-gray-700">
+              <span className="font-bold">Note: </span>{order.customerNote}
+            </div>
+          )}
+
+          {/* Items with checkboxes */}
+          {order.items.length > 0 && (
+            <div className="pt-1">
+              <div className="flex gap-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">
+                <span className="w-8 text-center">Stk</span>
+                <span className="w-8 text-center">Pk</span>
+                <span>Item</span>
+              </div>
+              <div className="space-y-1">
+                {order.items.map((item, idx) => (
+                  <div key={idx}>
+                    <div className="flex items-center gap-3">
+                      <label className="w-8 flex justify-center">
+                        <input type="checkbox" checked={!!checks[item.title]?.inStock} onChange={() => toggleCheck(item.title, 'inStock')}
+                          className="w-3.5 h-3.5 text-green-600 border-gray-300 rounded cursor-pointer" />
+                      </label>
+                      <label className="w-8 flex justify-center">
+                        <input type="checkbox" checked={!!checks[item.title]?.packed} onChange={() => toggleCheck(item.title, 'packed')}
+                          className="w-3.5 h-3.5 text-amber-600 border-gray-300 rounded cursor-pointer" />
+                      </label>
+                      <span className="text-xs"><span className="text-gray-500 font-medium">{item.quantity}x</span> <span className="text-gray-700">{item.title}</span></span>
                     </div>
-                  </div>
-                  {item.bundleComponents && item.bundleComponents.length > 0 && item.bundleComponents.map((bc, bcIdx) => {
-                    const bcKey = `${item.title}::${bc.title}`;
-                    return (
-                      <div key={`bc-${bcIdx}`} className="flex items-center gap-3 pl-4">
-                        <label className="w-10 flex justify-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={!!checks[bcKey]?.inStock}
-                            onChange={() => toggleCheck(bcKey, 'inStock')}
-                            className="w-3.5 h-3.5 text-green-600 border-gray-300 rounded focus:ring-green-500 cursor-pointer"
-                          />
-                        </label>
-                        <label className="w-10 flex justify-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={!!checks[bcKey]?.packed}
-                            onChange={() => toggleCheck(bcKey, 'packed')}
-                            className="w-3.5 h-3.5 text-amber-600 border-gray-300 rounded focus:ring-amber-500 cursor-pointer"
-                          />
-                        </label>
-                        <div className="flex gap-2 text-xs text-gray-400">
-                          <span className="whitespace-nowrap">|- {item.quantity * bc.quantity}x</span>
-                          <span>{bc.title}{bc.variantTitle && bc.variantTitle !== 'Default Title' ? ` (${bc.variantTitle})` : ''}</span>
+                    {item.bundleComponents && item.bundleComponents.length > 0 && item.bundleComponents.map((bc, bcIdx) => {
+                      const bcKey = `${item.title}::${bc.title}`;
+                      return (
+                        <div key={`bc-${bcIdx}`} className="flex items-center gap-3 pl-4">
+                          <label className="w-8 flex justify-center">
+                            <input type="checkbox" checked={!!checks[bcKey]?.inStock} onChange={() => toggleCheck(bcKey, 'inStock')}
+                              className="w-3 h-3 text-green-600 border-gray-300 rounded cursor-pointer" />
+                          </label>
+                          <label className="w-8 flex justify-center">
+                            <input type="checkbox" checked={!!checks[bcKey]?.packed} onChange={() => toggleCheck(bcKey, 'packed')}
+                              className="w-3 h-3 text-amber-600 border-gray-300 rounded cursor-pointer" />
+                          </label>
+                          <span className="text-[10px] text-gray-400">|- {item.quantity * bc.quantity}x {bc.title}</span>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// Mobile Group Card
-function MobileGroupCard({
-  group,
-  isExpanded,
-  onToggle,
-  selectedOrders,
-  onToggleOrder,
-}: {
-  group: GroupedOrder;
-  isExpanded: boolean;
-  onToggle: () => void;
-  selectedOrders: Set<string>;
-  onToggleOrder: (id: string) => void;
-}): ReactElement {
-  const allGroupSelected = group.orders.every((o) => selectedOrders.has(o.id));
-  const someGroupSelected = group.orders.some((o) => selectedOrders.has(o.id));
-
-  const toggleAllInGroup = () => {
-    for (const o of group.orders) {
-      if (allGroupSelected) {
-        if (selectedOrders.has(o.id)) onToggleOrder(o.id);
-      } else {
-        if (!selectedOrders.has(o.id)) onToggleOrder(o.id);
-      }
-    }
-  };
-
-  return (
-    <div className="bg-white rounded-xl border border-purple-200 shadow-sm overflow-hidden">
-      {/* Group header */}
-      <div className="p-4 bg-purple-50/50 cursor-pointer" onClick={onToggle}>
-        <div className="flex items-start gap-3">
-          <input
-            type="checkbox"
-            checked={allGroupSelected}
-            ref={(el) => { if (el) el.indeterminate = someGroupSelected && !allGroupSelected; }}
-            onClick={(e) => { e.stopPropagation(); toggleAllInGroup(); }}
-            onChange={() => {}}
-            className="w-4 h-4 mt-1 text-purple-600 border-gray-300 rounded focus:ring-purple-500 cursor-pointer flex-shrink-0"
-          />
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-purple-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                  <span className="font-bold text-purple-700">{group.groupInfo.shareCode}</span>
-                </div>
-                <p className="text-sm text-purple-600 mt-0.5">{group.groupInfo.name}</p>
+                      );
+                    })}
+                  </div>
+                ))}
               </div>
-              <span className="font-bold text-purple-700 whitespace-nowrap">{formatCurrency(group.totalAmount)}</span>
             </div>
-            <div className="flex items-center gap-2 mt-2">
-              <span className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${getGroupStatusColor(group.groupInfo.status)}`}>
-                {group.groupInfo.status}
-              </span>
-              <span className="text-xs text-gray-500">{group.orders.length} orders - {group.totalItems} items</span>
-              <svg className={`w-5 h-5 ml-auto text-purple-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
+          )}
 
-      {/* Expanded sub-orders */}
-      {isExpanded && (
-        <div className="border-t border-purple-100 divide-y divide-gray-100">
-          {group.orders.map((order) => (
-            <MobileOrderCard
-              key={order.id}
-              order={order}
-              selected={selectedOrders.has(order.id)}
-              onToggle={() => onToggleOrder(order.id)}
-            />
-          ))}
-          <div className="p-3 bg-purple-50/30">
-            <Link
-              href={`/ops/group-orders/${group.groupId}`}
-              className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-purple-700 bg-purple-100 rounded-lg hover:bg-purple-200 transition-colors"
-            >
-              View Group Details
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-            </Link>
-          </div>
+          {/* Quick action link */}
+          <Link href={`/ops/orders/${order.id}`} className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 pt-1">
+            View full order
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
         </div>
       )}
     </div>
   );
 }
+
 
 export default function OrdersPage(): ReactElement {
   const searchParams = useSearchParams();
@@ -1260,22 +1137,69 @@ export default function OrdersPage(): ReactElement {
   };
 
   return (
-    <div className="p-4 md:p-8 bg-gray-50 min-h-screen print:p-0 print:bg-white">
-      <div className="print:hidden">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+    <div className="md:px-6 md:py-4 bg-gray-50 min-h-screen print:p-0 print:bg-white">
+      {/* Mobile: sticky search bar at very top */}
+      <div className="md:hidden sticky top-0 z-20 bg-white border-b border-gray-200 px-3 py-2 shadow-sm">
+        <div className="relative">
+          <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search orders..."
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+            className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+          />
+        </div>
+        {/* Mobile view tabs */}
+        <div className="flex items-center gap-1 mt-2">
+          <button onClick={() => setView('orders')} className={`px-2.5 py-1 text-xs font-semibold rounded-md ${view === 'orders' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600'}`}>Orders</button>
+          <button onClick={() => setView('invoices')} className={`px-2.5 py-1 text-xs font-semibold rounded-md ${view === 'invoices' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600'}`}>Invoices</button>
+          <button onClick={() => setView('carts')} className={`px-2.5 py-1 text-xs font-semibold rounded-md ${view === 'carts' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-600'}`}>Carts</button>
+        </div>
+        {/* Compact mobile filter row */}
+        <div className={`flex items-center gap-2 mt-1.5 overflow-x-auto pb-0.5 -mx-1 px-1 ${view !== 'orders' ? 'hidden' : ''}`}>
+          <select
+            value={fulfillmentFilter}
+            onChange={(e) => { setFulfillmentFilter(e.target.value); setPage(1); }}
+            className="text-xs px-2 py-1 border border-gray-200 rounded-md bg-white text-gray-700 flex-shrink-0"
+          >
+            <option value="">All</option>
+            <option value="UNFULFILLED">Unfulfilled</option>
+            <option value="DELIVERED">Delivered</option>
+            <option value="IN_TRANSIT">In Transit</option>
+            <option value="OUT_FOR_DELIVERY">Out for Delivery</option>
+          </select>
+          <select
+            value={statusFilter}
+            onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+            className="text-xs px-2 py-1 border border-gray-200 rounded-md bg-white text-gray-700 flex-shrink-0"
+          >
+            <option value="">All Status</option>
+            <option value="CONFIRMED">Confirmed</option>
+            <option value="PENDING">Pending</option>
+            <option value="DELIVERED">Delivered</option>
+            <option value="CANCELLED">Cancelled</option>
+          </select>
+          {data && (
+            <span className="text-[10px] text-gray-400 flex-shrink-0 ml-auto">{data.pagination.total} orders</span>
+          )}
+        </div>
+      </div>
+
+      <div className="p-4 md:p-0 print:hidden">
+      {/* Header (desktop only) */}
+      <div className="hidden md:flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
         <div>
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Orders</h1>
-              <p className="text-gray-500 mt-0.5">
-                Manage and track all customer orders
-              </p>
+              <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
             </div>
           </div>
         </div>
@@ -1315,10 +1239,10 @@ export default function OrdersPage(): ReactElement {
       </div>
 
       {/* View Toggle */}
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="hidden md:flex flex-wrap gap-2 mb-3">
         <button
           onClick={() => setView('orders')}
-          className={`px-5 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 flex items-center gap-2 ${
+          className={`px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200 flex items-center gap-2 ${
             view === 'orders'
               ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md shadow-blue-200'
               : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300'
@@ -1331,7 +1255,7 @@ export default function OrdersPage(): ReactElement {
         </button>
         <button
           onClick={() => setView('invoices')}
-          className={`px-5 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 flex items-center gap-2 ${
+          className={`px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200 flex items-center gap-2 ${
             view === 'invoices'
               ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md shadow-blue-200'
               : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300'
@@ -1344,7 +1268,7 @@ export default function OrdersPage(): ReactElement {
         </button>
         <button
           onClick={() => setView('carts')}
-          className={`px-5 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 flex items-center gap-2 ${
+          className={`px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200 flex items-center gap-2 ${
             view === 'carts'
               ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md shadow-orange-200'
               : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300'
@@ -1358,16 +1282,16 @@ export default function OrdersPage(): ReactElement {
       </div>
 
       {/* Invoices View */}
-      {view === 'invoices' && <DraftOrdersTable />}
+      {view === 'invoices' && <div className="mt-2 md:mt-0"><DraftOrdersTable /></div>}
 
       {/* Unpaid Carts View */}
-      {view === 'carts' && <UnpaidCartsTable />}
+      {view === 'carts' && <div className="mt-2 md:mt-0"><UnpaidCartsTable /></div>}
 
       {/* Orders View */}
       {view === 'orders' && <>
       {/* Summary Stats */}
       {data && (
-        <div className="hidden md:grid md:grid-cols-5 gap-4 mb-8">
+        <div className="hidden md:grid md:grid-cols-5 gap-3 mb-4">
           <StatCard
             title="Total Orders"
             value={data.summary.total.toLocaleString()}
@@ -1421,9 +1345,9 @@ export default function OrdersPage(): ReactElement {
         </div>
       )}
 
-      {/* Filters */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+      {/* Filters (desktop only - mobile has sticky bar) */}
+      <div className="hidden md:block bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-3">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
           <div className="md:col-span-2">
             <div className="relative group">
               <svg className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1434,7 +1358,7 @@ export default function OrdersPage(): ReactElement {
                 placeholder="Search by order #, customer name, or email..."
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-                className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                className="w-full pl-11 pr-4 py-2 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
               />
             </div>
           </div>
@@ -1442,7 +1366,7 @@ export default function OrdersPage(): ReactElement {
           <select
             value={statusFilter}
             onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-            className="px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white cursor-pointer transition-all duration-200 hover:border-gray-300"
+            className="px-4 py-2 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white cursor-pointer transition-all duration-200 hover:border-gray-300"
           >
             <option value="">All Statuses</option>
             {data?.filters.statuses.map((status) => (
@@ -1453,7 +1377,7 @@ export default function OrdersPage(): ReactElement {
           <select
             value={fulfillmentFilter}
             onChange={(e) => { setFulfillmentFilter(e.target.value); setPage(1); }}
-            className="px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white cursor-pointer transition-all duration-200 hover:border-gray-300"
+            className="px-4 py-2 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white cursor-pointer transition-all duration-200 hover:border-gray-300"
           >
             <option value="">All Fulfillment</option>
             {data?.filters.fulfillmentStatuses.map((status) => (
@@ -1464,7 +1388,7 @@ export default function OrdersPage(): ReactElement {
           <select
             value={deliveryTypeFilter}
             onChange={(e) => { setDeliveryTypeFilter(e.target.value); setPage(1); }}
-            className="px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white cursor-pointer transition-all duration-200 hover:border-gray-300"
+            className="px-4 py-2 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white cursor-pointer transition-all duration-200 hover:border-gray-300"
           >
             <option value="">All Delivery Types</option>
             {data?.filters.deliveryTypes.map((type) => (
@@ -1474,7 +1398,7 @@ export default function OrdersPage(): ReactElement {
         </div>
 
         {/* Group Order Filter */}
-        <div className="flex flex-wrap items-center gap-4 mt-4 pt-4 border-t border-gray-100">
+        <div className="flex flex-wrap items-center gap-3 mt-2 pt-2 border-t border-gray-100">
           <span className="text-sm text-gray-500">Order type:</span>
           <div className="flex gap-2">
             <FilterButton active={groupTypeFilter === ''} onClick={() => { setGroupTypeFilter(''); setPage(1); }}>
@@ -1514,7 +1438,7 @@ export default function OrdersPage(): ReactElement {
           )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-4 mt-4 pt-4 border-t border-gray-100">
+        <div className="flex flex-wrap items-center gap-3 mt-2 pt-2 border-t border-gray-100">
           <span className="text-sm text-gray-500">Sort by:</span>
           <div className="flex gap-2">
             <FilterButton active={sortBy === 'createdAt'} onClick={() => setSortBy('createdAt')}>
@@ -1563,7 +1487,7 @@ export default function OrdersPage(): ReactElement {
 
       {/* Bulk Action Bar */}
       {someSelected && (
-        <div className="mb-4 flex items-center gap-4 bg-blue-50 border border-blue-200 rounded-xl px-6 py-3 shadow-sm">
+        <div className="mb-3 flex items-center gap-4 bg-blue-50 border border-blue-200 rounded-xl px-4 py-2 shadow-sm">
           <span className="text-sm font-semibold text-blue-800">
             {selectedOrders.size} order{selectedOrders.size !== 1 ? 's' : ''} selected
           </span>
@@ -1607,33 +1531,24 @@ export default function OrdersPage(): ReactElement {
         </div>
       )}
 
-      {/* Mobile Card List */}
-      <div className="md:hidden space-y-3">
+      {/* Mobile Compact List */}
+      <div className="md:hidden">
         {loading ? (
-          <div className="space-y-3">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="animate-pulse bg-white rounded-xl border border-gray-200 p-4">
-                <div className="flex gap-3">
-                  <div className="w-4 h-4 bg-gray-200 rounded mt-1" />
-                  <div className="flex-1 space-y-2">
-                    <div className="flex justify-between">
-                      <div className="h-5 bg-gray-200 rounded w-1/3" />
-                      <div className="h-5 bg-gray-200 rounded w-1/5" />
-                    </div>
-                    <div className="h-4 bg-gray-200 rounded w-2/3" />
-                    <div className="flex gap-2">
-                      <div className="h-5 bg-gray-200 rounded-full w-20" />
-                      <div className="h-5 bg-gray-200 rounded-full w-24" />
-                    </div>
-                  </div>
-                </div>
+          <div className="bg-white rounded-lg border border-gray-200">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="flex items-center gap-2 px-3 py-2.5 border-b border-gray-100 animate-pulse">
+                <div className="w-2 h-2 bg-gray-200 rounded-full" />
+                <div className="h-4 bg-gray-200 rounded w-1/3" />
+                <div className="h-3 bg-gray-200 rounded w-12 ml-auto" />
+                <div className="h-4 bg-gray-200 rounded w-14" />
+                <div className="w-4 h-4 bg-gray-200 rounded" />
               </div>
             ))}
           </div>
         ) : data?.orders.length === 0 ? (
-          <div className="p-12 text-center bg-white rounded-xl border border-gray-200">
-            <p className="text-gray-700 text-lg font-semibold">No orders found</p>
-            <p className="text-gray-500 mt-1 text-sm">Try adjusting your filters</p>
+          <div className="p-8 text-center bg-white rounded-lg border border-gray-200 mt-2">
+            <p className="text-gray-700 font-semibold">No orders found</p>
+            <p className="text-gray-500 mt-1 text-xs">Try adjusting your filters</p>
             <button
               onClick={() => {
                 setSearch('');
@@ -1644,32 +1559,21 @@ export default function OrdersPage(): ReactElement {
                 setGroupOrderV2IdFilter('');
                 setPage(1);
               }}
-              className="mt-4 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors text-sm"
+              className="mt-3 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md font-medium hover:bg-gray-200 text-xs"
             >
               Clear all filters
             </button>
           </div>
         ) : (
-          processOrdersForDisplay(data?.orders || []).map((item) =>
-            item.type === 'group' ? (
-              <MobileGroupCard
-                key={`group-${item.group.groupId}`}
-                group={item.group}
-                isExpanded={expandedGroups.has(item.group.groupId)}
-                onToggle={() => toggleGroupExpansion(item.group.groupId)}
-                selectedOrders={selectedOrders}
-                onToggleOrder={toggleOrderSelection}
-              />
-            ) : (
-              <MobileOrderCard
-                key={item.order.id}
-                order={item.order}
-                selected={selectedOrders.has(item.order.id)}
-                onToggle={() => toggleOrderSelection(item.order.id)}
+          <div className="bg-white rounded-lg border border-gray-200 mt-2 divide-y divide-gray-100">
+            {(data?.orders || []).map((order) => (
+              <MobileOrderRow
+                key={order.id}
+                order={order}
                 onFilterByGroup={(id) => { setGroupOrderV2IdFilter(id); setPage(1); }}
               />
-            )
-          )
+            ))}
+          </div>
         )}
       </div>
 
@@ -1720,8 +1624,8 @@ export default function OrdersPage(): ReactElement {
           <table className="w-full">
             <thead className="bg-gradient-to-r from-gray-50 to-gray-100/50 border-b border-gray-200">
               <tr>
-                <th className="w-8 pl-2 pr-0 py-4"></th>
-                <th className="w-12 px-2 py-4">
+                <th className="w-8 pl-2 pr-0 py-2.5"></th>
+                <th className="w-12 px-2 py-2.5">
                   <input
                     type="checkbox"
                     checked={allSelected}
@@ -1730,14 +1634,14 @@ export default function OrdersPage(): ReactElement {
                     className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
                   />
                 </th>
-                <th className="text-left px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Order</th>
-                <th className="text-left px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Customer</th>
-                <th className="text-center px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Items</th>
-                <th className="text-right px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Total</th>
-                <th className="text-center px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Status</th>
-                <th className="text-center px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Fulfillment</th>
-                <th className="text-left px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Delivery</th>
-                <th className="text-right px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider">Created</th>
+                <th className="text-left px-4 py-2.5 text-xs font-bold text-gray-600 uppercase tracking-wider">Order</th>
+                <th className="text-left px-4 py-2.5 text-xs font-bold text-gray-600 uppercase tracking-wider">Customer</th>
+                <th className="text-center px-4 py-2.5 text-xs font-bold text-gray-600 uppercase tracking-wider">Items</th>
+                <th className="text-right px-4 py-2.5 text-xs font-bold text-gray-600 uppercase tracking-wider">Total</th>
+                <th className="text-left px-4 py-2.5 text-xs font-bold text-gray-600 uppercase tracking-wider">Delivery</th>
+                <th className="text-left px-4 py-2.5 text-xs font-bold text-gray-600 uppercase tracking-wider">Address</th>
+                <th className="text-center px-4 py-2.5 text-xs font-bold text-gray-600 uppercase tracking-wider">Status</th>
+                <th className="text-center px-4 py-2.5 text-xs font-bold text-gray-600 uppercase tracking-wider">Fulfillment</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -1770,7 +1674,7 @@ export default function OrdersPage(): ReactElement {
 
       {/* Pagination */}
       {data && data.pagination.pages > 1 && (
-        <div className="mt-4 px-4 md:px-6 py-4 bg-white rounded-xl border border-gray-100 flex items-center justify-between shadow-sm">
+        <div className="mt-3 px-4 md:px-4 py-2.5 bg-white rounded-xl border border-gray-100 flex items-center justify-between shadow-sm">
           <button
             onClick={() => setPage(Math.max(1, page - 1))}
             disabled={page === 1}
