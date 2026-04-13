@@ -40,6 +40,7 @@
     "@google-analytics/data": "^5.2.1",
     "@google/generative-ai": "^0.24.1",
     "@heroicons/react": "^2.2.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "@prisma/client": "^6.15.0",
     "@react-email/components": "^1.0.4",
     "@shopify/buy-button-js": "^3.0.5",

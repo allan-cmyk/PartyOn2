@@ -2219,3 +2219,22 @@ model AgentProposal {
   @@index([status])
   @@map("agent_proposals")
 }
+
+// MCP Server request logging
+model McpRequestLog {
+  id         String   @id @default(uuid())
+  toolName   String   @map("tool_name")
+  authLevel  String   @map("auth_level")
+  actor      String   @default("unknown")
+  params     Json?
+  success    Boolean  @default(true)
+  errorMsg   String?  @map("error_msg") @db.Text
+  rowCount   Int?     @map("row_count")
+  durationMs Int?     @map("duration_ms")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([toolName])
+  @@index([createdAt])
+  @@index([actor])
+  @@map("mcp_request_log")
+}
