@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Adjust inventory for a product
+ * Adjust inventory for a product (physical stock only — committedQuantity is managed by the order lifecycle)
  * Usage: node scripts/ops/adjust-inventory.mjs <product-id> <quantity-change> <reason> [variant-id]
  *
  * Examples:
@@ -16,42 +16,42 @@ const reason = process.argv[4];
 const variantId = process.argv[5] || null;
 
 if (!productId || isNaN(quantity) || !reason) {
-  console.error('Usage: node scripts/ops/adjust-inventory.mjs <product-id> <quantity> <reason> [variant-id]');
+  console.error('Usage: node scripts/ops/adjust-inventory.mjs <product-id> <qty> <reason> [variant-id]');
   process.exit(1);
 }
 
-// Get default location
-const location = await prisma.inventoryLocation.findFirst({
-  where: { isActive: true, isDefault: true },
-});
-
-if (!location) {
-  console.error(JSON.stringify({ success: false, error: 'No default inventory location found' }));
-  process.exit(1);
-}
-
-// Get or create inventory item
-let item = await prisma.inventoryItem.findFirst({
-  where: { productId, locationId: location.id, variantId },
-});
-
-if (!item) {
-  item = await prisma.inventoryItem.create({
-    data: { productId, locationId: location.id, variantId, quantity: 0 },
+// Find the variant to adjust
+let variant;
+if (variantId) {
+  variant = await prisma.productVariant.findUnique({
+    where: { id: variantId },
+    select: { id: true, inventoryQuantity: true, committedQuantity: true },
+  });
+} else {
+  variant = await prisma.productVariant.findFirst({
+    where: { productId },
+    select: { id: true, inventoryQuantity: true, committedQuantity: true },
   });
 }
 
-const previousQuantity = item.quantity;
+if (!variant) {
+  console.error(JSON.stringify({ success: false, error: 'No variant found for this product' }));
+  process.exit(1);
+}
+
+const previousQuantity = variant.inventoryQuantity;
 const newQuantity = previousQuantity + quantity;
 
-await prisma.inventoryItem.update({
-  where: { id: item.id },
-  data: { quantity: newQuantity },
+// Update ProductVariant.inventoryQuantity (physical stock only)
+await prisma.productVariant.update({
+  where: { id: variant.id },
+  data: { inventoryQuantity: newQuantity },
 });
 
+// Create audit trail
 await prisma.inventoryMovement.create({
   data: {
-    inventoryItemId: item.id,
+    variantId: variant.id,
     type: quantity > 0 ? 'RECEIVED' : 'ADJUSTMENT',
     quantity,
     previousQuantity,
@@ -60,25 +60,21 @@ await prisma.inventoryMovement.create({
   },
 });
 
-if (variantId) {
-  await prisma.productVariant.update({
-    where: { id: variantId },
-    data: { inventoryQuantity: newQuantity },
-  });
-}
-
 const product = await prisma.product.findUnique({
   where: { id: productId },
   select: { title: true },
 });
 
+const newAvailable = newQuantity - variant.committedQuantity;
+
 console.log(JSON.stringify({
   success: true,
   product: product?.title || productId,
-  location: location.name,
-  previousQuantity,
+  previousInStock: previousQuantity,
   change: quantity > 0 ? `+${quantity}` : `${quantity}`,
-  newQuantity,
+  newInStock: newQuantity,
+  committed: variant.committedQuantity,
+  available: newAvailable,
   reason,
 }, null, 2));
 

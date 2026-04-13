@@ -1,37 +1,33 @@
 #!/usr/bin/env node
 /**
- * List active low-stock alerts
- * Usage: node scripts/ops/low-stock.mjs
+ * List products with low available stock (inStock - committed <= threshold)
+ * Usage: node scripts/ops/low-stock.mjs [threshold]
  */
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
+const threshold = parseInt(process.argv[2]) || 10;
 
-const alerts = await prisma.lowStockAlert.findMany({
-  where: { status: 'ACTIVE' },
-  orderBy: { createdAt: 'desc' },
+const variants = await prisma.productVariant.findMany({
+  where: { trackInventory: true },
+  include: {
+    product: { select: { title: true } },
+  },
+  orderBy: { inventoryQuantity: 'asc' },
 });
 
-const results = await Promise.all(alerts.map(async (alert) => {
-  const product = await prisma.product.findUnique({
-    where: { id: alert.productId },
-    select: { title: true },
-  });
-  const variant = alert.variantId
-    ? await prisma.productVariant.findUnique({
-        where: { id: alert.variantId },
-        select: { title: true, sku: true },
-      })
-    : null;
+const lowStock = variants
+  .map(v => ({
+    productTitle: v.product.title,
+    variant: v.title || 'Default',
+    sku: v.sku || null,
+    inStock: v.inventoryQuantity,
+    committed: v.committedQuantity,
+    available: v.inventoryQuantity - v.committedQuantity,
+  }))
+  .filter(v => v.available <= threshold)
+  .sort((a, b) => a.available - b.available);
 
-  return {
-    productTitle: product?.title || 'Unknown',
-    variant: variant?.title,
-    sku: variant?.sku,
-    currentQuantity: alert.currentQuantity,
-    threshold: alert.threshold,
-  };
-}));
-
-console.log(JSON.stringify(results, null, 2));
+console.log(JSON.stringify(lowStock, null, 2));
+console.error(`\n${lowStock.length} items with available stock <= ${threshold}`);
 await prisma.$disconnect();

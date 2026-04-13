@@ -19,10 +19,12 @@ export type ProductWithRelations = Prisma.ProductGetPayload<{
     componentProduct: {
       variants: Array<{
         inventoryQuantity: number;
+        committedQuantity: number;
       }>;
     };
     componentVariant: {
       inventoryQuantity: number;
+      committedQuantity: number;
     } | null;
   }>;
 };
@@ -60,10 +62,10 @@ export function transformToProduct(product: ProductWithRelations): Product {
       bundleMaxQuantity = 999;
     } else {
       for (const comp of product.bundleComponents) {
-        const stock = comp.componentVariant
-          ? comp.componentVariant.inventoryQuantity
-          : comp.componentProduct.variants.reduce((sum, v) => sum + v.inventoryQuantity, 0);
-        const possibleQty = Math.floor(stock / comp.quantity);
+        const available = comp.componentVariant
+          ? comp.componentVariant.inventoryQuantity - comp.componentVariant.committedQuantity
+          : comp.componentProduct.variants.reduce((sum, v) => sum + (v.inventoryQuantity - v.committedQuantity), 0);
+        const possibleQty = Math.floor(available / comp.quantity);
         if (bundleMaxQuantity === null || possibleQty < bundleMaxQuantity) {
           bundleMaxQuantity = possibleQty;
         }
@@ -114,7 +116,7 @@ export function transformToProduct(product: ProductWithRelations): Product {
             id: variantId,
             title: v.title,
             availableForSale: product.isBundle ? isAvailable : v.availableForSale,
-            quantityAvailable: product.isBundle ? (bundleMaxQuantity ?? 0) : v.inventoryQuantity,
+            quantityAvailable: product.isBundle ? (bundleMaxQuantity ?? 0) : (v.inventoryQuantity - v.committedQuantity),
             price: {
               amount: Number(v.price).toFixed(2),
               currencyCode: product.currencyCode,

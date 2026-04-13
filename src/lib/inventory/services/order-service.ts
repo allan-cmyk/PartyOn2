@@ -53,13 +53,14 @@ export interface OrderItemWithProduct {
 }
 
 /**
- * Shared helper: decrement inventory for a single order item.
- * Writes directly to ProductVariant.inventoryQuantity (single source of truth).
- * If the product is a bundle, decrements each component's inventory instead.
+ * Shared helper: commit inventory for a single order item.
+ * Increments committedQuantity on ProductVariant (does NOT decrement inventoryQuantity).
+ * Physical stock is only decremented when the order is fulfilled/delivered.
+ * If the product is a bundle, commits each component's inventory instead.
  */
 type TransactionClient = Omit<typeof prisma, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>;
 
-export async function decrementInventoryForOrderItem(
+export async function commitInventoryForOrderItem(
   tx: TransactionClient,
   productId: string,
   variantId: string,
@@ -83,37 +84,36 @@ export async function decrementInventoryForOrderItem(
   });
 
   if (product?.isBundle && product.bundleComponents.length > 0) {
-    // Bundle: decrement each component's inventory
+    // Bundle: commit each component's inventory
     for (const component of product.bundleComponents) {
-      const decrementQty = component.quantity * orderQuantity;
+      const commitQty = component.quantity * orderQuantity;
 
-      // Find the variant to decrement
       let componentVariant;
       if (component.componentVariantId) {
         componentVariant = await tx.productVariant.findUnique({
           where: { id: component.componentVariantId },
-          select: { id: true, inventoryQuantity: true },
+          select: { id: true, committedQuantity: true },
         });
       } else {
         componentVariant = await tx.productVariant.findFirst({
           where: { productId: component.componentProductId },
-          select: { id: true, inventoryQuantity: true },
+          select: { id: true, committedQuantity: true },
         });
       }
 
       if (componentVariant) {
         await tx.productVariant.update({
           where: { id: componentVariant.id },
-          data: { inventoryQuantity: { decrement: decrementQty } },
+          data: { committedQuantity: { increment: commitQty } },
         });
 
         await tx.inventoryMovement.create({
           data: {
             variantId: componentVariant.id,
-            type: 'SOLD',
-            quantity: -decrementQty,
-            previousQuantity: componentVariant.inventoryQuantity,
-            newQuantity: componentVariant.inventoryQuantity - decrementQty,
+            type: 'COMMITTED',
+            quantity: commitQty,
+            previousQuantity: componentVariant.committedQuantity,
+            newQuantity: componentVariant.committedQuantity + commitQty,
             reason: `Order #${orderNumber} (bundle component)`,
             referenceId: orderId,
             referenceType: 'Order',
@@ -122,25 +122,25 @@ export async function decrementInventoryForOrderItem(
       }
     }
   } else {
-    // Regular product: decrement variant directly
+    // Regular product: commit variant directly
     const variant = await tx.productVariant.findUnique({
       where: { id: variantId },
-      select: { id: true, inventoryQuantity: true },
+      select: { id: true, committedQuantity: true },
     });
 
     if (variant) {
       await tx.productVariant.update({
         where: { id: variant.id },
-        data: { inventoryQuantity: { decrement: orderQuantity } },
+        data: { committedQuantity: { increment: orderQuantity } },
       });
 
       await tx.inventoryMovement.create({
         data: {
           variantId: variant.id,
-          type: 'SOLD',
-          quantity: -orderQuantity,
-          previousQuantity: variant.inventoryQuantity,
-          newQuantity: variant.inventoryQuantity - orderQuantity,
+          type: 'COMMITTED',
+          quantity: orderQuantity,
+          previousQuantity: variant.committedQuantity,
+          newQuantity: variant.committedQuantity + orderQuantity,
           reason: `Order #${orderNumber}`,
           referenceId: orderId,
           referenceType: 'Order',
@@ -148,6 +148,215 @@ export async function decrementInventoryForOrderItem(
       });
     }
   }
+}
+
+/**
+ * Fulfill inventory for an entire order.
+ * Decrements both inventoryQuantity and committedQuantity for each item.
+ * Called when an order's fulfillmentStatus changes to DELIVERED.
+ */
+export async function fulfillInventoryForOrder(orderId: string): Promise<void> {
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: {
+      items: {
+        include: {
+          product: {
+            select: {
+              isBundle: true,
+              bundleComponents: {
+                select: {
+                  componentProductId: true,
+                  componentVariantId: true,
+                  quantity: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!order) return;
+
+  await prisma.$transaction(async (tx: TransactionClient) => {
+    for (const item of order.items) {
+      const effectiveQty = item.quantity - item.refundedQuantity;
+      if (effectiveQty <= 0) continue;
+
+      if (item.product.isBundle && item.product.bundleComponents.length > 0) {
+        for (const component of item.product.bundleComponents) {
+          const fulfillQty = component.quantity * effectiveQty;
+
+          let componentVariant;
+          if (component.componentVariantId) {
+            componentVariant = await tx.productVariant.findUnique({
+              where: { id: component.componentVariantId },
+              select: { id: true, inventoryQuantity: true, committedQuantity: true, trackInventory: true },
+            });
+          } else {
+            componentVariant = await tx.productVariant.findFirst({
+              where: { productId: component.componentProductId },
+              select: { id: true, inventoryQuantity: true, committedQuantity: true, trackInventory: true },
+            });
+          }
+
+          if (componentVariant && componentVariant.trackInventory) {
+            await tx.productVariant.update({
+              where: { id: componentVariant.id },
+              data: {
+                inventoryQuantity: { decrement: fulfillQty },
+                committedQuantity: { decrement: fulfillQty },
+              },
+            });
+
+            await tx.inventoryMovement.create({
+              data: {
+                variantId: componentVariant.id,
+                type: 'FULFILLED',
+                quantity: -fulfillQty,
+                previousQuantity: componentVariant.inventoryQuantity,
+                newQuantity: componentVariant.inventoryQuantity - fulfillQty,
+                reason: `Order #${order.orderNumber} fulfilled (bundle component)`,
+                referenceId: orderId,
+                referenceType: 'Order',
+              },
+            });
+          }
+        }
+      } else {
+        const variant = await tx.productVariant.findUnique({
+          where: { id: item.variantId },
+          select: { id: true, inventoryQuantity: true, committedQuantity: true, trackInventory: true },
+        });
+
+        if (variant && variant.trackInventory) {
+          await tx.productVariant.update({
+            where: { id: variant.id },
+            data: {
+              inventoryQuantity: { decrement: effectiveQty },
+              committedQuantity: { decrement: effectiveQty },
+            },
+          });
+
+          await tx.inventoryMovement.create({
+            data: {
+              variantId: variant.id,
+              type: 'FULFILLED',
+              quantity: -effectiveQty,
+              previousQuantity: variant.inventoryQuantity,
+              newQuantity: variant.inventoryQuantity - effectiveQty,
+              reason: `Order #${order.orderNumber} fulfilled`,
+              referenceId: orderId,
+              referenceType: 'Order',
+            },
+          });
+        }
+      }
+    }
+  });
+}
+
+/**
+ * Release committed inventory for an order (e.g. on cancellation before fulfillment).
+ * Decrements committedQuantity only — stock stays on the shelf.
+ */
+export async function releaseCommittedInventory(orderId: string): Promise<void> {
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: {
+      items: {
+        include: {
+          product: {
+            select: {
+              isBundle: true,
+              bundleComponents: {
+                select: {
+                  componentProductId: true,
+                  componentVariantId: true,
+                  quantity: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!order) return;
+
+  await prisma.$transaction(async (tx: TransactionClient) => {
+    for (const item of order.items) {
+      const effectiveQty = item.quantity - item.refundedQuantity;
+      if (effectiveQty <= 0) continue;
+
+      if (item.product.isBundle && item.product.bundleComponents.length > 0) {
+        for (const component of item.product.bundleComponents) {
+          const releaseQty = component.quantity * effectiveQty;
+
+          let componentVariant;
+          if (component.componentVariantId) {
+            componentVariant = await tx.productVariant.findUnique({
+              where: { id: component.componentVariantId },
+              select: { id: true, committedQuantity: true },
+            });
+          } else {
+            componentVariant = await tx.productVariant.findFirst({
+              where: { productId: component.componentProductId },
+              select: { id: true, committedQuantity: true },
+            });
+          }
+
+          if (componentVariant) {
+            await tx.productVariant.update({
+              where: { id: componentVariant.id },
+              data: { committedQuantity: { decrement: releaseQty } },
+            });
+
+            await tx.inventoryMovement.create({
+              data: {
+                variantId: componentVariant.id,
+                type: 'RETURN',
+                quantity: releaseQty,
+                previousQuantity: componentVariant.committedQuantity,
+                newQuantity: componentVariant.committedQuantity - releaseQty,
+                reason: `Order #${order.orderNumber} cancelled (bundle component)`,
+                referenceId: orderId,
+                referenceType: 'Order',
+              },
+            });
+          }
+        }
+      } else {
+        const variant = await tx.productVariant.findUnique({
+          where: { id: item.variantId },
+          select: { id: true, committedQuantity: true },
+        });
+
+        if (variant) {
+          await tx.productVariant.update({
+            where: { id: variant.id },
+            data: { committedQuantity: { decrement: effectiveQty } },
+          });
+
+          await tx.inventoryMovement.create({
+            data: {
+              variantId: variant.id,
+              type: 'RETURN',
+              quantity: effectiveQty,
+              previousQuantity: variant.committedQuantity,
+              newQuantity: variant.committedQuantity - effectiveQty,
+              reason: `Order #${order.orderNumber} cancelled`,
+              referenceId: orderId,
+              referenceType: 'Order',
+            },
+          });
+        }
+      }
+    }
+  });
 }
 
 /**
@@ -275,9 +484,9 @@ export async function createOrderFromCheckout(
       });
     }
 
-    // Decrement inventory for each item (handles bundles automatically)
+    // Commit inventory for each item (handles bundles automatically)
     for (const item of cart.items) {
-      await decrementInventoryForOrderItem(tx, item.productId, item.variantId, item.quantity, newOrder.orderNumber, newOrder.id);
+      await commitInventoryForOrderItem(tx, item.productId, item.variantId, item.quantity, newOrder.orderNumber, newOrder.id);
     }
 
     // Get the order with items
@@ -408,9 +617,9 @@ export async function createFreeOrder(
       });
     }
 
-    // Decrement inventory (handles bundles automatically)
+    // Commit inventory (handles bundles automatically)
     for (const item of cart.items) {
-      await decrementInventoryForOrderItem(tx, item.productId, item.variantId, item.quantity, newOrder.orderNumber, newOrder.id);
+      await commitInventoryForOrderItem(tx, item.productId, item.variantId, item.quantity, newOrder.orderNumber, newOrder.id);
     }
 
     return await tx.order.findUnique({
@@ -771,13 +980,13 @@ export async function createOrderFromDraftOrder(
       });
     }
 
-    // Decrement inventory for each item (handles bundles automatically, skips missing products)
+    // Commit inventory for each item (handles bundles automatically, skips missing products)
     for (const item of items) {
       try {
-        await decrementInventoryForOrderItem(tx, item.productId, item.variantId, item.quantity, newOrder.orderNumber, newOrder.id);
+        await commitInventoryForOrderItem(tx, item.productId, item.variantId, item.quantity, newOrder.orderNumber, newOrder.id);
       } catch (inventoryError) {
         // Custom items may not have inventory tracking - log and continue
-        console.warn(`[Order Service] Could not decrement inventory for ${item.title}:`, inventoryError);
+        console.warn(`[Order Service] Could not commit inventory for ${item.title}:`, inventoryError);
       }
     }
 

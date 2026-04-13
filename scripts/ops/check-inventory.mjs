@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Check inventory for a product
+ * Check inventory for a product (three-tier: In Stock / Committed / Available)
  * Usage: node scripts/ops/check-inventory.mjs <product-id>
  */
 import { PrismaClient } from '@prisma/client';
@@ -18,24 +18,29 @@ const product = await prisma.product.findUnique({
   select: { title: true },
 });
 
-const items = await prisma.inventoryItem.findMany({
+const variants = await prisma.productVariant.findMany({
   where: { productId },
-  include: {
-    location: { select: { name: true } },
-    variant: { select: { title: true, sku: true } },
+  select: {
+    id: true,
+    title: true,
+    sku: true,
+    inventoryQuantity: true,
+    committedQuantity: true,
+    trackInventory: true,
   },
+  orderBy: { title: 'asc' },
 });
 
 console.log(JSON.stringify({
   productTitle: product?.title || 'Unknown',
-  inventory: items.map(item => ({
-    location: item.location.name,
-    variant: item.variant?.title || 'Default',
-    sku: item.variant?.sku || null,
-    quantity: item.quantity,
-    reserved: item.reservedQuantity,
-    available: item.quantity - item.reservedQuantity,
-    lowStockThreshold: item.lowStockThreshold,
+  inventory: variants.map(v => ({
+    variantId: v.id,
+    variant: v.title || 'Default',
+    sku: v.sku || null,
+    inStock: v.inventoryQuantity,
+    committed: v.committedQuantity,
+    available: v.inventoryQuantity - v.committedQuantity,
+    trackInventory: v.trackInventory,
   })),
 }, null, 2));
 

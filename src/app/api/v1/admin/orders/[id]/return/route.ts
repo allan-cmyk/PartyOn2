@@ -9,6 +9,7 @@ import { prisma } from '@/lib/database/client';
 import { stripe } from '@/lib/stripe/client';
 import { sendRefundProcessedEmail } from '@/lib/email/email-service';
 import { Prisma } from '@prisma/client';
+import { releaseCommittedInventory } from '@/lib/inventory/services/order-service';
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -229,6 +230,10 @@ export async function POST(
     // DB transaction for all writes
     await prisma.$transaction(async (tx: TransactionClient) => {
       // Update refundedQuantity on each returned item and restore inventory
+      // For fulfilled orders: restore inventoryQuantity (stock back on shelf)
+      // For unfulfilled orders: release committedQuantity instead
+      const isFulfilled = order.fulfillmentStatus === 'DELIVERED';
+
       for (const returnItem of items) {
         await tx.orderItem.update({
           where: { id: returnItem.orderItemId },
@@ -237,14 +242,18 @@ export async function POST(
           },
         });
 
-        await restoreInventoryForReturnItem(
-          tx,
-          returnItem.productId,
-          returnItem.variantId,
-          returnItem.returnQuantity,
-          order.orderNumber,
-          order.id,
-        );
+        if (isFulfilled) {
+          // Order was delivered — restore physical stock
+          await restoreInventoryForReturnItem(
+            tx,
+            returnItem.productId,
+            returnItem.variantId,
+            returnItem.returnQuantity,
+            order.orderNumber,
+            order.id,
+          );
+        }
+        // If not fulfilled, committedQuantity will be released after the transaction
       }
 
       // Create refund record
@@ -270,6 +279,15 @@ export async function POST(
         data: { financialStatus: newFinancialStatus },
       });
     });
+
+    // For unfulfilled orders, release committed inventory outside transaction
+    if (order.fulfillmentStatus !== 'DELIVERED') {
+      try {
+        await releaseCommittedInventory(id);
+      } catch (err) {
+        console.error('[Return API] Failed to release committed inventory:', err);
+      }
+    }
 
     // Send refund email (non-blocking)
     try {

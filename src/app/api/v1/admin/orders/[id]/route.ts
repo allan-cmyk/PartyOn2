@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/database/client';
 import { OrderStatus, FinancialStatus, FulfillmentStatus } from '@prisma/client';
 import { linkOrderToAffiliate, voidCommissionForOrder } from '@/lib/affiliates/commission-engine';
+import { fulfillInventoryForOrder } from '@/lib/inventory/services/order-service';
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -387,6 +388,15 @@ export async function PUT(
       // Auto-update order status based on fulfillment
       if (body.fulfillmentStatus === 'DELIVERED') {
         updateData.status = 'DELIVERED';
+      }
+    }
+
+    // Fulfill inventory when transitioning to DELIVERED
+    if (body.fulfillmentStatus === 'DELIVERED' && existing.fulfillmentStatus !== 'DELIVERED') {
+      try {
+        await fulfillInventoryForOrder(id);
+      } catch (err) {
+        console.error(`[Admin Order API] Failed to fulfill inventory for order ${id}:`, err);
       }
     }
 

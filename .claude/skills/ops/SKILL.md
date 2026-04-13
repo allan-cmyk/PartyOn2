@@ -13,13 +13,12 @@ You have CLI scripts that query the production database. Load env vars before ea
 | Task | Command |
 |------|---------|
 | Search products | `set -a && source .env.local && set +a && node scripts/ops/search-products.mjs "query" [limit]` |
-| Check inventory | `set -a && source .env.local && set +a && node scripts/ops/check-inventory.mjs <product-id>` |
 | Look up customer | `set -a && source .env.local && set +a && node scripts/ops/lookup-customer.mjs "email or name"` |
 | Upcoming orders | `set -a && source .env.local && set +a && node scripts/ops/upcoming-orders.mjs [days]` |
-| Low stock alerts | `set -a && source .env.local && set +a && node scripts/ops/low-stock.mjs` |
 | Create draft order | `set -a && source .env.local && set +a && node scripts/ops/create-draft-order.mjs '<json>'` |
-| Adjust inventory | `set -a && source .env.local && set +a && node scripts/ops/adjust-inventory.mjs <product-id> <qty> "reason" [variant-id]` |
 | Aggregated order list | `set -a && source .env.local && set +a && node scripts/ops/order-list.mjs <start-date> [end-date] [--html]` |
+
+> **Inventory management** (check stock, adjust, low-stock alerts) has moved to the `/inventory` skill.
 
 ## Ad-Hoc Prisma Queries
 
