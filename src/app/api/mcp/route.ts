@@ -37,31 +37,6 @@ function authOrReject(request: Request) {
   return { auth, response: null };
 }
 
-// Ensure the Accept header includes what the MCP SDK requires.
-// Some clients (e.g. Cowork) may not send the full Accept header.
-function ensureAcceptHeader(request: Request): Request {
-  const accept = request.headers.get('accept') ?? '';
-  const needsJson = !accept.includes('application/json');
-  const needsSse = !accept.includes('text/event-stream');
-
-  if (!needsJson && !needsSse) return request;
-
-  const parts = [accept, needsJson && 'application/json', needsSse && 'text/event-stream']
-    .filter(Boolean)
-    .join(', ');
-
-  const headers = new Headers(request.headers);
-  headers.set('accept', parts);
-
-  return new Request(request.url, {
-    method: request.method,
-    headers,
-    body: request.body,
-    // @ts-expect-error duplex is needed for streaming bodies
-    duplex: 'half',
-  });
-}
-
 async function handleMcpRequest(request: Request): Promise<Response> {
   const { auth, response: authError } = authOrReject(request);
   if (!auth) return authError!;
@@ -81,17 +56,42 @@ async function handleMcpRequest(request: Request): Promise<Response> {
 
   await server.connect(transport);
 
-  // For POST, parse body first in case Next.js has already consumed the stream
   if (request.method === 'POST') {
+    // Parse body before creating the patched request (body can only be read once)
     const body = await request.json();
-    const patched = ensureAcceptHeader(request);
+
+    // Build a new request with the correct Accept header and a fresh body.
+    // The MCP SDK checks Accept before looking at parsedBody, so we must
+    // set it on the request object itself.
+    const headers = new Headers(request.headers);
+    headers.set('accept', 'application/json, text/event-stream');
+
+    const patched = new Request(request.url, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
+    });
+
     const response = await transport.handleRequest(patched, { parsedBody: body });
     return addCorsHeaders(response);
   }
 
-  // For GET (SSE) and DELETE, pass through directly
-  const patched = ensureAcceptHeader(request);
-  const response = await transport.handleRequest(patched);
+  // For GET (SSE), patch Accept header
+  if (request.method === 'GET') {
+    const headers = new Headers(request.headers);
+    headers.set('accept', 'text/event-stream');
+
+    const patched = new Request(request.url, {
+      method: 'GET',
+      headers,
+    });
+
+    const response = await transport.handleRequest(patched);
+    return addCorsHeaders(response);
+  }
+
+  // DELETE
+  const response = await transport.handleRequest(request);
   return addCorsHeaders(response);
 }
 
