@@ -257,8 +257,6 @@ function OrderBody({ order }: { order: OrderDetail }) {
               <tr>
                 <th className="px-3 py-2 text-left font-semibold">Item</th>
                 <th className="px-3 py-2 text-right font-semibold w-16">Qty</th>
-                <th className="px-3 py-2 text-right font-semibold w-20">Price</th>
-                <th className="px-3 py-2 text-right font-semibold w-20">Total</th>
               </tr>
             </thead>
             <tbody>
@@ -276,12 +274,6 @@ function OrderBody({ order }: { order: OrderDetail }) {
                     )}
                   </td>
                   <td className="px-3 py-2 text-right font-mono">{item.quantity}</td>
-                  <td className="px-3 py-2 text-right font-mono text-gray-600">
-                    ${item.price.toFixed(2)}
-                  </td>
-                  <td className="px-3 py-2 text-right font-mono font-medium">
-                    ${item.totalPrice.toFixed(2)}
-                  </td>
                 </tr>
               ))}
             </tbody>
@@ -336,17 +328,14 @@ function OrderBody({ order }: { order: OrderDetail }) {
                 {tab.items.length > 0 && (
                   <ul className="text-sm text-gray-700 space-y-0.5">
                     {tab.items.map((i, idx) => (
-                      <li key={idx} className="flex justify-between gap-3">
-                        <span>
-                          <span className="font-mono text-gray-500 mr-2">
-                            {i.quantity}&times;
-                          </span>
-                          {i.title}
-                          {i.variantTitle && (
-                            <span className="text-gray-500 ml-1">({i.variantTitle})</span>
-                          )}
+                      <li key={idx}>
+                        <span className="font-mono text-gray-500 mr-2">
+                          {i.quantity}&times;
                         </span>
-                        <span className="font-mono text-gray-600">${i.price.toFixed(2)}</span>
+                        {i.title}
+                        {i.variantTitle && (
+                          <span className="text-gray-500 ml-1">({i.variantTitle})</span>
+                        )}
                       </li>
                     ))}
                   </ul>
