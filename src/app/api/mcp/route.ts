@@ -56,42 +56,22 @@ async function handleMcpRequest(request: Request): Promise<Response> {
 
   await server.connect(transport);
 
-  if (request.method === 'POST') {
-    // Parse body before creating the patched request (body can only be read once)
-    const body = await request.json();
+  // Parse body before creating the patched request (body can only be read once)
+  const body = await request.json();
 
-    // Build a new request with the correct Accept header and a fresh body.
-    // The MCP SDK checks Accept before looking at parsedBody, so we must
-    // set it on the request object itself.
-    const headers = new Headers(request.headers);
-    headers.set('accept', 'application/json, text/event-stream');
+  // Build a new request with the correct Accept header and a fresh body.
+  // The MCP SDK checks Accept before looking at parsedBody, so we must
+  // set it on the request object itself.
+  const headers = new Headers(request.headers);
+  headers.set('accept', 'application/json, text/event-stream');
 
-    const patched = new Request(request.url, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(body),
-    });
+  const patched = new Request(request.url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  });
 
-    const response = await transport.handleRequest(patched, { parsedBody: body });
-    return addCorsHeaders(response);
-  }
-
-  // For GET (SSE), patch Accept header
-  if (request.method === 'GET') {
-    const headers = new Headers(request.headers);
-    headers.set('accept', 'text/event-stream');
-
-    const patched = new Request(request.url, {
-      method: 'GET',
-      headers,
-    });
-
-    const response = await transport.handleRequest(patched);
-    return addCorsHeaders(response);
-  }
-
-  // DELETE
-  const response = await transport.handleRequest(request);
+  const response = await transport.handleRequest(patched, { parsedBody: body });
   return addCorsHeaders(response);
 }
 
@@ -103,10 +83,18 @@ export async function POST(request: Request): Promise<Response> {
   return handleMcpRequest(request);
 }
 
-export async function GET(request: Request): Promise<Response> {
-  return handleMcpRequest(request);
+// Stateless mode: GET (SSE) and DELETE (session teardown) are unsupported.
+// Per MCP Streamable HTTP spec, return 405 so clients fall back to request/response only.
+export async function GET(): Promise<Response> {
+  return new Response(
+    JSON.stringify({ error: 'method_not_allowed', message: 'Server runs in stateless mode; use POST.' }),
+    { status: 405, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json', Allow: 'POST, OPTIONS' } }
+  );
 }
 
-export async function DELETE(request: Request): Promise<Response> {
-  return handleMcpRequest(request);
+export async function DELETE(): Promise<Response> {
+  return new Response(
+    JSON.stringify({ error: 'method_not_allowed', message: 'Server runs in stateless mode; use POST.' }),
+    { status: 405, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json', Allow: 'POST, OPTIONS' } }
+  );
 }
