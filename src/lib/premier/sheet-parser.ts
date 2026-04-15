@@ -206,12 +206,12 @@ const DSC_COLUMNS = {
   addOns: 4, pod: 5, count: 6, tip: 7,
 };
 
+// Used for PVT tabs only. DSC tabs go through parseDSCTab() directly (see parseSheet).
 export function normalizeBookings(
   blocks: RawDayBlock[], sheetTab: string, extractionWarnings: ParseWarning[],
 ): ParseResult {
   const bookings: ParsedBooking[] = [];
   const warnings: ParseWarning[] = [...extractionWarnings];
-  const isPVT = sheetTab.toUpperCase().includes('PVT');
 
   for (const block of blocks) {
     const isoDate = parseToISO(block.date);
@@ -222,9 +222,9 @@ export function normalizeBookings(
 
     for (const dataRow of block.dataRows) {
       try {
-        const booking = isPVT
-          ? normalizePVTRow(dataRow.cells, block, isoDate, sheetTab, dataRow.rowIndex)
-          : normalizeDSCRow(dataRow.cells, block, isoDate, sheetTab, dataRow.rowIndex);
+        const booking = normalizePVTRow(
+          dataRow.cells, block, isoDate, sheetTab, dataRow.rowIndex,
+        );
         if (booking) bookings.push(booking);
       } catch (err) {
         warnings.push({
