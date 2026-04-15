@@ -12,7 +12,7 @@ const DEFAULT_LIMIT = 20;
 export function registerListOrders(server: McpServer, auth: McpAuth) {
   server.registerTool('list_orders', {
     description:
-      'List recent orders with optional filters. Use to check what\'s come in recently, find orders by status, or see orders for a specific affiliate. Returns summary fields only -- use get_order for full details.',
+      'List orders with optional filters. Use deliveryDateFrom/deliveryDateTo for "what\'s being delivered on X" / "parties this weekend" questions; use dateFrom/dateTo for "orders placed on X" questions. Returns summary fields only -- use get_order for full details.',
     inputSchema: {
       status: z.enum([
         'PENDING', 'CONFIRMED', 'PROCESSING', 'OUT_FOR_DELIVERY',
@@ -22,8 +22,10 @@ export function registerListOrders(server: McpServer, auth: McpAuth) {
         'UNFULFILLED', 'PENDING', 'IN_TRANSIT', 'OUT_FOR_DELIVERY',
         'DELIVERED', 'FAILED',
       ]).optional().describe('Filter by fulfillment status'),
-      dateFrom: z.string().optional().describe('Start date (ISO format, e.g. 2026-04-01)'),
-      dateTo: z.string().optional().describe('End date (ISO format, e.g. 2026-04-13)'),
+      dateFrom: z.string().optional().describe('Filter by order CREATION date start (ISO, e.g. 2026-04-01). For "orders placed on" questions.'),
+      dateTo: z.string().optional().describe('Filter by order CREATION date end (ISO). For "orders placed on" questions.'),
+      deliveryDateFrom: z.string().optional().describe('Filter by DELIVERY date start (ISO, e.g. 2026-04-17). For "deliveries on Friday" / "parties this weekend" questions. Use this for anything about when an order is delivered, NOT dateFrom.'),
+      deliveryDateTo: z.string().optional().describe('Filter by DELIVERY date end (ISO). Pair with deliveryDateFrom.'),
       affiliateId: z.string().optional().describe('Filter by affiliate ID'),
       limit: z.number().optional().describe(`Max results to return (default ${DEFAULT_LIMIT}, max ${MAX_LIMIT})`),
       offset: z.number().optional().describe('Number of results to skip (default 0)'),
@@ -43,6 +45,12 @@ export function registerListOrders(server: McpServer, auth: McpAuth) {
         where.createdAt = {};
         if (args.dateFrom) where.createdAt.gte = new Date(args.dateFrom);
         if (args.dateTo) where.createdAt.lte = new Date(args.dateTo);
+      }
+
+      if (args.deliveryDateFrom || args.deliveryDateTo) {
+        where.deliveryDate = {};
+        if (args.deliveryDateFrom) where.deliveryDate.gte = new Date(args.deliveryDateFrom);
+        if (args.deliveryDateTo) where.deliveryDate.lte = new Date(args.deliveryDateTo);
       }
 
       const [orders, total] = await Promise.all([
