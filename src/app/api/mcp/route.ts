@@ -30,7 +30,14 @@ function authOrReject(request: Request) {
       auth: null,
       response: Response.json(
         { error: 'unauthorized', message: 'Missing or invalid Bearer token.' },
-        { status: 401, headers: CORS_HEADERS }
+        {
+          status: 401,
+          headers: {
+            ...CORS_HEADERS,
+            'WWW-Authenticate':
+              'Bearer realm="mcp", resource_metadata="https://partyondelivery.com/.well-known/oauth-protected-resource"',
+          },
+        }
       ),
     };
   }
