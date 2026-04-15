@@ -1,6 +1,5 @@
-import crypto from 'node:crypto';
 import { NextResponse } from 'next/server';
-import { kv } from '@/lib/database/client';
+import { signCode } from '@/lib/oauth/code';
 
 export async function GET(request: Request) {
   try {
@@ -26,13 +25,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const code = crypto.randomBytes(32).toString('hex');
-
-    await kv.set(
-      `oauth:code:${code}`,
-      { code_challenge, client_id, redirect_uri },
-      { ex: 600 }
-    );
+    const code = signCode({ code_challenge, client_id, redirect_uri });
 
     const redirect = new URL(redirect_uri);
     redirect.searchParams.set('code', code);
