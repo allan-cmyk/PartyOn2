@@ -26,6 +26,16 @@ async function isAuthorized(req: NextRequest): Promise<boolean> {
   const expected = process.env.BOAT_SCHEDULE_SYNC_KEY;
   if (expected && apiKey && apiKey === expected) return true;
 
+  // Public captain-facing page is allowed to trigger sync. Sync is idempotent
+  // and read-only against the sheet, so no additional data is exposed beyond
+  // what the public view already shows.
+  const publicKey = process.env.PREMIER_SCHEDULE_PUBLIC_KEY;
+  const publicHeader = req.headers.get('x-public-key');
+  const publicCookie = req.cookies.get('pbs_key')?.value;
+  if (publicKey && (publicHeader === publicKey || publicCookie === publicKey)) {
+    return true;
+  }
+
   const session = await getOpsSession();
   return session !== null;
 }

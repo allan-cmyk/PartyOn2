@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
+import OrderDetailModal from './OrderDetailModal';
 
 type ViewTab = 'upcoming' | 'exceptions' | 'today' | 'weekly';
 
@@ -103,6 +104,7 @@ export default function BoatSchedulePage() {
   const [expandedRow, setExpandedRow] = useState<Set<number>>(new Set());
   const [menuOpen, setMenuOpen] = useState(false);
   const [linkingEntry, setLinkingEntry] = useState<number | null>(null);
+  const [modalOrderNumber, setModalOrderNumber] = useState<number | null>(null);
   const [linkOrderNumber, setLinkOrderNumber] = useState<string>('');
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -372,6 +374,7 @@ export default function BoatSchedulePage() {
                     onConfirm={(sid, oid) =>
                       postAction('status', sid, oid, { status: 'matched' })
                     }
+                    onOpenOrder={setModalOrderNumber}
                   />
                 ))}
             </div>
@@ -425,6 +428,13 @@ export default function BoatSchedulePage() {
           )}
         </>
       )}
+
+      {modalOrderNumber !== null && (
+        <OrderDetailModal
+          orderNumber={modalOrderNumber}
+          onClose={() => setModalOrderNumber(null)}
+        />
+      )}
     </div>
   );
 }
@@ -447,6 +457,7 @@ function DaySection({
   setLinkOrderNumber,
   onUnlink,
   onConfirm,
+  onOpenOrder,
 }: {
   date: string;
   timeSlots: Record<string, ScheduleEntry[]>;
@@ -459,6 +470,7 @@ function DaySection({
   linkingEntry: number | null;
   linkOrderNumber: string;
   setLinkOrderNumber: (v: string) => void;
+  onOpenOrder: (orderNumber: number) => void;
   onUnlink: (sid: number, oid: string) => void;
   onConfirm: (sid: number, oid: string) => void;
 }) {
@@ -468,22 +480,28 @@ function DaySection({
     for (const e of timeSlots[slot]) allEntries.push(e);
   }
 
-  // Compute summary
+  // Compute summary. DSC bookings get attached to every PVT Disco row for their
+  // (date, timeSlot), so dedupe by booking id when counting day-level totals.
   const boatSet = new Set<string>();
+  const seenDiscoIds = new Set<number>();
   let bookings = 0;
   let podCount = 0;
   let matched = 0;
   for (const e of allEntries) {
     boatSet.add(e.boat);
-    if (e.clientName) {
+    if (e.clientName && !e.isDiscoRow) {
       bookings++;
       if (e.podFlag) podCount++;
       if (e.matchStatus === 'matched') matched++;
     }
     if (e.isDiscoRow) {
-      bookings += e.discoBookings.length;
-      podCount += e.discoBookings.filter(b => b.podFlag).length;
-      matched += e.discoBookings.filter(b => b.matchStatus === 'matched').length;
+      for (const b of e.discoBookings) {
+        if (seenDiscoIds.has(b.id)) continue;
+        seenDiscoIds.add(b.id);
+        bookings++;
+        if (b.podFlag) podCount++;
+        if (b.matchStatus === 'matched') matched++;
+      }
     }
   }
 
@@ -553,6 +571,7 @@ function DaySection({
                 setLinkOrderNumber={setLinkOrderNumber}
                 onUnlink={() => entry.order && onUnlink(entry.id, entry.order.id)}
                 onConfirm={() => entry.order && onConfirm(entry.id, entry.order.id)}
+                onOpenOrder={onOpenOrder}
               />
             ))}
           </tbody>
@@ -578,6 +597,7 @@ function EntryRow({
   setLinkOrderNumber,
   onUnlink,
   onConfirm,
+  onOpenOrder,
 }: {
   entry: ScheduleEntry;
   isExpanded: boolean;
@@ -587,6 +607,7 @@ function EntryRow({
   onLink: () => void;
   isLinking: boolean;
   linkOrderNumber: string;
+  onOpenOrder: (orderNumber: number) => void;
   setLinkOrderNumber: (v: string) => void;
   onUnlink: () => void;
   onConfirm: () => void;
@@ -634,13 +655,15 @@ function EntryRow({
         </td>
         <td className="px-2 py-2.5">
           {entry.order ? (
-            <Link
-              href={`/ops/orders?search=${entry.order.orderNumber}`}
+            <button
+              onClick={e => {
+                e.stopPropagation();
+                onOpenOrder(entry.order!.orderNumber);
+              }}
               className="inline-flex items-center gap-1.5 text-blue-700 hover:underline font-semibold text-sm font-mono"
-              onClick={e => e.stopPropagation()}
             >
               #{entry.order.orderNumber}
-            </Link>
+            </button>
           ) : entry.clientName && !entry.isDiscoRow ? (
             <button
               onClick={e => {
@@ -668,7 +691,7 @@ function EntryRow({
         <tr className={rowTint}>
           <td colSpan={6} className="pl-10 pr-4 py-4 border-t border-gray-100">
             {entry.isDiscoRow ? (
-              <DiscoExpansion entry={entry} />
+              <DiscoExpansion entry={entry} onOpenOrder={onOpenOrder} />
             ) : (
               <PrivateExpansion
                 entry={entry}
@@ -840,7 +863,13 @@ function PrivateExpansion({
   );
 }
 
-function DiscoExpansion({ entry }: { entry: ScheduleEntry }) {
+function DiscoExpansion({
+  entry,
+  onOpenOrder,
+}: {
+  entry: ScheduleEntry;
+  onOpenOrder: (orderNumber: number) => void;
+}) {
   if (entry.discoBookings.length === 0) {
     return (
       <div className="text-sm text-gray-500 italic">
@@ -946,12 +975,12 @@ function DiscoExpansion({ entry }: { entry: ScheduleEntry }) {
                   </td>
                   <td className="px-2 py-1.5">
                     {b.order ? (
-                      <Link
-                        href={`/ops/orders?search=${b.order.orderNumber}`}
+                      <button
+                        onClick={() => onOpenOrder(b.order!.orderNumber)}
                         className="text-blue-700 hover:underline font-medium font-mono"
                       >
                         #{b.order.orderNumber}
-                      </Link>
+                      </button>
                     ) : (
                       <span className="text-gray-400">—</span>
                     )}

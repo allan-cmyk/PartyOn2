@@ -62,6 +62,8 @@ export default function PublicBoatScheduleClient({
   const [view, setView] = useState<ViewTab>('upcoming');
   const [data, setData] = useState<PublicData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
+  const [syncResult, setSyncResult] = useState<string | null>(null);
   const [dateFrom, setDateFrom] = useState<string>('');
   const [dateTo, setDateTo] = useState<string>('');
   const [expandedRow, setExpandedRow] = useState<Set<number>>(new Set());
@@ -118,6 +120,31 @@ export default function PublicBoatScheduleClient({
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
+  const syncNow = async () => {
+    setSyncing(true);
+    setSyncResult(null);
+    try {
+      const res = await fetch('/api/ops/boat-schedule/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ triggeredBy: 'public_page' }),
+      });
+      const json = await res.json();
+      if (res.ok) {
+        setSyncResult(
+          `Synced ${json.rows_upserted} rows · ${json.auto_matched} new matches`,
+        );
+        await load();
+      } else {
+        setSyncResult(`Sync failed: ${json.error || 'Unknown error'}`);
+      }
+    } catch (err) {
+      setSyncResult(`Sync error: ${err instanceof Error ? err.message : String(err)}`);
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   const toggleRow = (id: number) => {
     setExpandedRow(prev => {
       const next = new Set(prev);
@@ -140,14 +167,24 @@ export default function PublicBoatScheduleClient({
             </p>
           </div>
 
-          <div className="relative" ref={menuRef}>
+          <div className="flex items-start gap-2">
             <button
-              onClick={() => setMenuOpen(o => !o)}
-              className="inline-flex items-center justify-center w-9 h-9 rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 transition-colors"
-              aria-label="Open menu"
+              onClick={syncNow}
+              disabled={syncing}
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-900 text-white rounded-md text-sm font-semibold hover:bg-blue-800 disabled:opacity-50 transition-colors shadow-sm"
             >
-              <MenuIcon />
+              <SyncIcon spinning={syncing} />
+              {syncing ? 'Syncing' : 'Sync Now'}
             </button>
+
+            <div className="relative" ref={menuRef}>
+              <button
+                onClick={() => setMenuOpen(o => !o)}
+                className="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 transition-colors"
+                aria-label="Open menu"
+              >
+                <MenuIcon />
+              </button>
             {menuOpen && (
               <div className="absolute right-0 top-10 w-56 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-20">
                 <div className="px-3 py-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
@@ -170,8 +207,15 @@ export default function PublicBoatScheduleClient({
                 ))}
               </div>
             )}
+            </div>
           </div>
         </div>
+
+        {syncResult && (
+          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
+            {syncResult}
+          </div>
+        )}
 
         <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
           <div className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-gray-500 font-semibold">
@@ -262,18 +306,25 @@ function DaySection({
     for (const e of timeSlots[slot]) allEntries.push(e);
   }
 
+  // DSC bookings attach to every PVT Disco row for their (date, slot) —
+  // dedupe by id when totalling.
   const boatSet = new Set<string>();
+  const seenDiscoIds = new Set<number>();
   let bookings = 0;
   let podCount = 0;
   for (const e of allEntries) {
     boatSet.add(e.boat);
-    if (e.clientName) {
+    if (e.clientName && !e.isDiscoRow) {
       bookings++;
       if (e.podFlag) podCount++;
     }
     if (e.isDiscoRow) {
-      bookings += e.discoBookings.length;
-      podCount += e.discoBookings.filter(b => b.podFlag).length;
+      for (const b of e.discoBookings) {
+        if (seenDiscoIds.has(b.id)) continue;
+        seenDiscoIds.add(b.id);
+        bookings++;
+        if (b.podFlag) podCount++;
+      }
     }
   }
 
@@ -620,6 +671,25 @@ function StatBlock({ label, value }: { label: string; value: string }) {
       </div>
       <div className="text-sm font-medium text-gray-900">{value}</div>
     </div>
+  );
+}
+
+function SyncIcon({ spinning }: { spinning: boolean }) {
+  return (
+    <svg
+      className={spinning ? 'animate-spin' : ''}
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 12a9 9 0 1 1-3-6.7L21 8" />
+      <path d="M21 3v5h-5" />
+    </svg>
   );
 }
 
