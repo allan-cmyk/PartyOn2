@@ -664,16 +664,6 @@ function EntryRow({
             >
               #{entry.order.orderNumber}
             </button>
-          ) : entry.clientName && !entry.isDiscoRow ? (
-            <button
-              onClick={e => {
-                e.stopPropagation();
-                onStartLink();
-              }}
-              className="text-xs text-blue-700 hover:bg-blue-50 px-1.5 py-0.5 rounded"
-            >
-              Link...
-            </button>
           ) : entry.isDiscoRow ? (
             <span className="text-xs text-gray-400">
               {entry.discoBookings.length > 0
