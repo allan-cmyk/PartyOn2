@@ -438,6 +438,17 @@ function EntryRow({
             >
               #{entry.order.orderNumber}
             </button>
+          ) : entry.isDiscoRow ? (
+            (() => {
+              const podCount = entry.discoBookings.filter(b => b.order).length;
+              return podCount > 0 ? (
+                <span className="text-sm font-semibold text-blue-700 font-mono">
+                  {podCount}
+                </span>
+              ) : (
+                <span className="text-gray-300">—</span>
+              );
+            })()
           ) : (
             <span className="text-gray-300">—</span>
           )}
