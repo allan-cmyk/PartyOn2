@@ -68,6 +68,7 @@ export default function PublicBoatScheduleClient({
   const [dateTo, setDateTo] = useState<string>('');
   const [expandedRow, setExpandedRow] = useState<Set<number>>(new Set());
   const [menuOpen, setMenuOpen] = useState(false);
+  const [modalOrderNumber, setModalOrderNumber] = useState<number | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // On first visit via ?key=, store in a long-lived cookie so future visits
@@ -275,6 +276,7 @@ export default function PublicBoatScheduleClient({
                       timeSlots={timeSlots}
                       expandedRow={expandedRow}
                       onToggleRow={toggleRow}
+                      onOpenOrder={setModalOrderNumber}
                     />
                   ))}
               </div>
@@ -286,6 +288,13 @@ export default function PublicBoatScheduleClient({
           Party On Delivery &middot; Read only
         </footer>
       </div>
+
+      {modalOrderNumber !== null && (
+        <PublicOrderModal
+          orderNumber={modalOrderNumber}
+          onClose={() => setModalOrderNumber(null)}
+        />
+      )}
     </div>
   );
 }
@@ -295,11 +304,13 @@ function DaySection({
   timeSlots,
   expandedRow,
   onToggleRow,
+  onOpenOrder,
 }: {
   date: string;
   timeSlots: Record<string, PublicScheduleEntry[]>;
   expandedRow: Set<number>;
   onToggleRow: (id: number) => void;
+  onOpenOrder: (orderNumber: number) => void;
 }) {
   const allEntries: PublicScheduleEntry[] = [];
   for (const slot of Object.keys(timeSlots).sort()) {
@@ -369,6 +380,7 @@ function DaySection({
                 entry={entry}
                 isExpanded={expandedRow.has(entry.id)}
                 onToggle={() => onToggleRow(entry.id)}
+                onOpenOrder={onOpenOrder}
               />
             ))}
           </tbody>
@@ -382,10 +394,12 @@ function EntryRow({
   entry,
   isExpanded,
   onToggle,
+  onOpenOrder,
 }: {
   entry: PublicScheduleEntry;
   isExpanded: boolean;
   onToggle: () => void;
+  onOpenOrder: (orderNumber: number) => void;
 }) {
   const timeTint = getTimeOfDayTint(entry.timeSlot);
 
@@ -415,9 +429,15 @@ function EntryRow({
         </td>
         <td className="px-2 py-2.5">
           {entry.order ? (
-            <span className="inline-flex items-center gap-1.5 text-blue-700 font-semibold text-sm font-mono">
+            <button
+              onClick={e => {
+                e.stopPropagation();
+                onOpenOrder(entry.order!.orderNumber);
+              }}
+              className="inline-flex items-center gap-1.5 text-blue-700 hover:underline font-semibold text-sm font-mono"
+            >
               #{entry.order.orderNumber}
-            </span>
+            </button>
           ) : (
             <span className="text-gray-300">—</span>
           )}
@@ -428,7 +448,7 @@ function EntryRow({
         <tr className={timeTint}>
           <td colSpan={6} className="pl-10 pr-4 py-4 border-t border-gray-100">
             {entry.isDiscoRow ? (
-              <DiscoExpansion entry={entry} />
+              <DiscoExpansion entry={entry} onOpenOrder={onOpenOrder} />
             ) : (
               <PrivateExpansion entry={entry} />
             )}
@@ -505,7 +525,13 @@ function PrivateExpansion({ entry }: { entry: PublicScheduleEntry }) {
   );
 }
 
-function DiscoExpansion({ entry }: { entry: PublicScheduleEntry }) {
+function DiscoExpansion({
+  entry,
+  onOpenOrder,
+}: {
+  entry: PublicScheduleEntry;
+  onOpenOrder: (orderNumber: number) => void;
+}) {
   if (entry.discoBookings.length === 0) {
     return (
       <div className="text-sm text-gray-500 italic">
@@ -616,9 +642,12 @@ function DiscoExpansion({ entry }: { entry: PublicScheduleEntry }) {
                   </td>
                   <td className="px-2 py-1.5">
                     {b.order ? (
-                      <span className="text-blue-700 font-medium font-mono">
+                      <button
+                        onClick={() => onOpenOrder(b.order!.orderNumber)}
+                        className="text-blue-700 hover:underline font-medium font-mono"
+                      >
                         #{b.order.orderNumber}
-                      </span>
+                      </button>
                     ) : (
                       <span className="text-gray-400">—</span>
                     )}
@@ -631,6 +660,292 @@ function DiscoExpansion({ entry }: { entry: PublicScheduleEntry }) {
       </div>
     </div>
   );
+}
+
+// ============================================
+// Order detail modal (public, captain-safe)
+// ============================================
+
+interface PublicOrderDetail {
+  orderNumber: number;
+  fulfillmentStatus: string;
+  customerName: string;
+  customerPhone: string | null;
+  deliveryPhone: string | null;
+  deliveryDate: string;
+  deliveryTime: string;
+  deliveryAddress: Record<string, string> | null;
+  deliveryInstructions: string | null;
+  customerNote: string | null;
+  items: {
+    id: string;
+    title: string;
+    variantTitle: string | null;
+    quantity: number;
+  }[];
+  groupOrderV2: {
+    shareCode: string;
+    name: string;
+    tabs: {
+      id: string;
+      name: string;
+      status: string;
+      itemCount: number;
+      items: { title: string; variantTitle: string | null; quantity: number }[];
+    }[];
+  } | null;
+}
+
+function PublicOrderModal({
+  orderNumber,
+  onClose,
+}: {
+  orderNumber: number;
+  onClose: () => void;
+}) {
+  const [order, setOrder] = useState<PublicOrderDetail | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    (async () => {
+      try {
+        const res = await fetch(`/api/public/boat-schedule/order/${orderNumber}`, {
+          signal: controller.signal,
+        });
+        if (!res.ok) {
+          const j = await res.json().catch(() => ({}));
+          throw new Error(j.error || `HTTP ${res.status}`);
+        }
+        setOrder(await res.json());
+      } catch (err) {
+        if ((err as Error).name !== 'AbortError') {
+          setError(err instanceof Error ? err.message : String(err));
+        }
+      } finally {
+        setLoading(false);
+      }
+    })();
+    return () => controller.abort();
+  }, [orderNumber]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    window.addEventListener('keydown', onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [onClose]);
+
+  const addr = order?.deliveryAddress || {};
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2 sm:p-6"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-lg shadow-2xl w-full max-w-5xl h-[95vh] flex flex-col overflow-hidden"
+        onClick={e => e.stopPropagation()}
+      >
+        <header className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-900 to-blue-800 text-white">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight">
+              Order #{order?.orderNumber ?? orderNumber}
+            </h2>
+            {order && (
+              <p className="text-xs text-blue-200 mt-0.5 font-mono uppercase tracking-widest">
+                {order.fulfillmentStatus.replace(/_/g, ' ')} &middot;{' '}
+                {order.items.length} {order.items.length === 1 ? 'item' : 'items'}
+              </p>
+            )}
+          </div>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="flex items-center justify-center w-10 h-10 rounded-full text-white hover:bg-white/10 transition-colors"
+          >
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </header>
+
+        <div className="flex-1 overflow-y-auto">
+          {loading && (
+            <div className="p-12 text-center text-gray-500">Loading order...</div>
+          )}
+          {error && (
+            <div className="p-8">
+              <div className="bg-red-50 border border-red-200 text-red-800 rounded-md p-4 text-sm">
+                {error}
+              </div>
+            </div>
+          )}
+          {order && (
+            <div className="p-4 sm:p-6 space-y-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <ModalSectionTitle>Customer</ModalSectionTitle>
+                  <div className="text-base font-semibold text-gray-900">
+                    {order.customerName}
+                  </div>
+                  {(order.customerPhone || order.deliveryPhone) && (
+                    <a
+                      href={`tel:${order.customerPhone || order.deliveryPhone}`}
+                      className="text-sm font-mono text-gray-600 hover:text-blue-700"
+                    >
+                      {formatPhone(order.customerPhone || order.deliveryPhone || '')}
+                    </a>
+                  )}
+                </div>
+                <div>
+                  <ModalSectionTitle>Delivery</ModalSectionTitle>
+                  <div className="text-sm text-gray-900 font-medium">
+                    {formatDeliveryDate(order.deliveryDate)} &middot; {order.deliveryTime}
+                  </div>
+                  <div className="text-sm text-gray-700 leading-snug mt-1">
+                    {addr.address1 && <div>{addr.address1}</div>}
+                    {addr.address2 && <div>{addr.address2}</div>}
+                    {(addr.city || addr.province || addr.zip) && (
+                      <div>
+                        {addr.city}
+                        {addr.city && (addr.province || addr.zip) ? ', ' : ''}
+                        {addr.province} {addr.zip}
+                      </div>
+                    )}
+                  </div>
+                  {order.deliveryInstructions && (
+                    <div className="text-xs text-gray-600 mt-2 italic">
+                      {order.deliveryInstructions}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {order.customerNote && (
+                <div>
+                  <ModalSectionTitle>Customer Note</ModalSectionTitle>
+                  <div className="text-sm text-gray-700 bg-amber-50 border border-amber-200 rounded-md p-3 leading-snug">
+                    {order.customerNote}
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <ModalSectionTitle>Items ({order.items.length})</ModalSectionTitle>
+                <div className="border border-gray-200 rounded-md overflow-hidden">
+                  <table className="w-full text-sm">
+                    <thead className="bg-gray-50 text-[10px] uppercase tracking-widest text-gray-500">
+                      <tr>
+                        <th className="px-3 py-2 text-left font-semibold">Item</th>
+                        <th className="px-3 py-2 text-right font-semibold w-16">Qty</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {order.items.map(item => (
+                        <tr
+                          key={item.id}
+                          className="border-t border-gray-100 hover:bg-gray-50"
+                        >
+                          <td className="px-3 py-2">
+                            <div className="font-medium text-gray-900">{item.title}</div>
+                            {item.variantTitle && (
+                              <div className="text-xs text-gray-500">
+                                {item.variantTitle}
+                              </div>
+                            )}
+                          </td>
+                          <td className="px-3 py-2 text-right font-mono">
+                            {item.quantity}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {order.groupOrderV2 && order.groupOrderV2.tabs.length > 0 && (
+                <div>
+                  <ModalSectionTitle>
+                    Group Order Sub-Orders ({order.groupOrderV2.tabs.length})
+                  </ModalSectionTitle>
+                  <p className="text-xs text-gray-500 mb-3">
+                    Group: <span className="font-mono">{order.groupOrderV2.shareCode}</span>
+                    {order.groupOrderV2.name && ` · ${order.groupOrderV2.name}`}
+                  </p>
+                  <div className="space-y-3">
+                    {order.groupOrderV2.tabs.map(tab => (
+                      <div key={tab.id} className="border border-gray-200 rounded-md p-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="font-semibold text-gray-900">{tab.name}</div>
+                          <span className="text-[10px] uppercase tracking-widest font-mono text-gray-500">
+                            {tab.status} &middot; {tab.itemCount}{' '}
+                            {tab.itemCount === 1 ? 'item' : 'items'}
+                          </span>
+                        </div>
+                        {tab.items.length > 0 && (
+                          <ul className="text-sm text-gray-700 space-y-0.5">
+                            {tab.items.map((i, idx) => (
+                              <li key={idx}>
+                                <span className="font-mono text-gray-500 mr-2">
+                                  {i.quantity}&times;
+                                </span>
+                                {i.title}
+                                {i.variantTitle && (
+                                  <span className="text-gray-500 ml-1">
+                                    ({i.variantTitle})
+                                  </span>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ModalSectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="text-[10px] uppercase tracking-widest text-gray-500 font-semibold mb-1.5">
+      {children}
+    </div>
+  );
+}
+
+function formatDeliveryDate(iso: string): string {
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
 }
 
 function TypePill({ type }: { type: 'disco' | 'private' }) {
