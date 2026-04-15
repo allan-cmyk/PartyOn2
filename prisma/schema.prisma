@@ -822,6 +822,7 @@ model Order {
   amendments   OrderAmendment[]
   deliveryTask DeliveryTask?
   affiliateCommissions AffiliateCommission[]
+  scheduleMatches ScheduleOrderMatch[]
 
   @@index([customerId])
   @@index([orderNumber])
@@ -2237,4 +2238,84 @@ model McpRequestLog {
   @@index([createdAt])
   @@index([actor])
   @@map("mcp_request_log")
+}
+
+// ============================================
+// Premier Party Cruises Boat Schedule
+// ============================================
+
+model BoatSchedule {
+  id              Int       @id @default(autoincrement())
+  sheetTab        String    @map("sheet_tab")
+  cruiseDate      DateTime  @map("cruise_date") @db.Date
+  dayOfWeek       String?   @map("day_of_week")
+  weekType        String?   @map("week_type")
+  timeSlot        String?   @map("time_slot")
+  boat            String
+  clientName      String    @default("") @map("client_name")
+  clientPhone     String?   @map("client_phone")
+  normalizedName  String?   @map("normalized_name")
+  normalizedPhone String?   @map("normalized_phone")
+  package         String?
+  addOns          String?   @map("add_ons")
+  occasion        String?
+  avgAge          String?   @map("avg_age")
+  headcount       Int?
+  dj              String?
+  photographer    String?
+  tip             Decimal?  @db.Decimal(10, 2)
+  amount          Decimal?  @db.Decimal(10, 2)
+  podFlag         Boolean   @default(false) @map("pod_flag")
+  captainCrew     String?   @map("captain_crew")
+  sheetRow        Int?      @map("sheet_row")
+  rawData         Json?     @map("raw_data")
+  isStale         Boolean   @default(false) @map("is_stale")
+  firstSeenAt     DateTime  @default(now()) @map("first_seen_at")
+  lastSeenAt      DateTime  @default(now()) @map("last_seen_at")
+
+  matches         ScheduleOrderMatch[]
+
+  @@unique([cruiseDate, timeSlot, boat, clientName], map: "boat_schedule_date_slot_boat_client")
+  @@index([cruiseDate])
+  @@index([normalizedPhone])
+  @@index([normalizedName])
+  @@map("boat_schedule")
+}
+
+model ScheduleOrderMatch {
+  id              Int       @id @default(autoincrement())
+  scheduleId      Int       @map("schedule_id")
+  orderId         String    @map("order_id")
+  matchType       String    @map("match_type")
+  matchConfidence Decimal?  @map("match_confidence") @db.Decimal(3, 2)
+  status          String    @default("matched")
+  matchedAt       DateTime  @default(now()) @map("matched_at")
+  notes           String?
+
+  schedule        BoatSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  order           Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@unique([scheduleId, orderId], map: "unique_schedule_order")
+  @@index([scheduleId])
+  @@index([orderId])
+  @@index([status])
+  @@map("schedule_order_matches")
+}
+
+model SyncLog {
+  id                Int       @id @default(autoincrement())
+  startedAt         DateTime  @default(now()) @map("started_at")
+  completedAt       DateTime? @map("completed_at")
+  status            String?
+  rowsParsed        Int       @default(0) @map("rows_parsed")
+  rowsUpserted      Int       @default(0) @map("rows_upserted")
+  rowsStale         Int       @default(0) @map("rows_stale")
+  autoMatched       Int       @default(0) @map("auto_matched")
+  needsReview       Int       @default(0) @map("needs_review")
+  unmatchedBookings Int       @default(0) @map("unmatched_bookings")
+  unmatchedOrders   Int       @default(0) @map("unmatched_orders")
+  errors            Json      @default("[]")
+  triggeredBy       String?   @map("triggered_by")
+
+  @@map("sync_log")
 }
