@@ -318,6 +318,7 @@ export default function OrderDetailPage(): ReactElement {
   const [affiliateError, setAffiliateError] = useState('');
   const [showReviewPrompt, setShowReviewPrompt] = useState(false);
   const [sendingReview, setSendingReview] = useState(false);
+  const [sendingReceipt, setSendingReceipt] = useState(false);
 
   const fetchOrder = useCallback(async () => {
     try {
@@ -942,6 +943,28 @@ export default function OrderDetailPage(): ReactElement {
     }
   }
 
+  async function handleSendReceipt() {
+    if (!order) return;
+    const email = order.customerSnapshot.email || order.customer.email;
+    if (!confirm(`Send receipt to ${email}?`)) return;
+    setSendingReceipt(true);
+    try {
+      const res = await fetch(`/api/v1/admin/orders/${order.id}/send-receipt`, {
+        method: 'POST',
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(`Receipt sent to ${data.data.sentTo}`);
+      } else {
+        alert(data.error || 'Failed to send receipt');
+      }
+    } catch {
+      alert('Failed to send receipt');
+    } finally {
+      setSendingReceipt(false);
+    }
+  }
+
   const canAmend = order && !['CANCELLED', 'REFUNDED'].includes(order.status);
 
   if (loading) {
@@ -1072,6 +1095,19 @@ export default function OrderDetailPage(): ReactElement {
                 </svg>
                 Print
               </button>
+
+              {order.financialStatus === 'PAID' && (
+                <button
+                  onClick={handleSendReceipt}
+                  disabled={sendingReceipt}
+                  className="px-4 py-2 bg-white border border-green-200 text-green-700 rounded-lg font-medium hover:bg-green-50 transition-colors shadow-sm flex items-center gap-2 disabled:opacity-50"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  {sendingReceipt ? 'Sending...' : 'Send Receipt'}
+                </button>
+              )}
 
               {order.payment.stripePaymentIntentId && (
                 <button

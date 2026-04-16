@@ -20,10 +20,12 @@ export {
 export type { OrderConfirmationData } from './templates/order-confirmation';
 export type { DeliveryUpdateData } from './templates/delivery-update';
 export type { InvoiceEmailData } from './templates/invoice';
+export type { ReceiptEmailData } from './templates/receipt';
 export type { OrderCancellationData } from './templates/order-cancellation';
 
 // Template generators
 export { generateInvoiceEmail, generateInvoiceSubject } from './templates/invoice';
+export { generateReceiptEmail, generateReceiptSubject } from './templates/receipt';
 export { generateAffiliateProspectEmail } from './templates/affiliate-prospect';
 
 // Prospect template types

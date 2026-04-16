@@ -1221,6 +1221,7 @@ enum EmailType {
   AFFILIATE_WELCOME
   AFFILIATE_PAYOUT
   ORDER_CANCELLED
+  RECEIPT
 }
 
 enum EmailStatus {
