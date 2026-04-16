@@ -475,7 +475,8 @@ function parseToISO(dateStr: string): string | null {
 
 export function normalizeName(name: string | null | undefined): string | null {
   if (!name) return null;
-  return name.toLowerCase().replace(/[^a-z\s]/g, '').replace(/\s+/g, ' ').trim() || null;
+  const firstLine = name.split('\n')[0];
+  return firstLine.toLowerCase().replace(/[^a-z\s]/g, '').replace(/\s+/g, ' ').trim() || null;
 }
 
 export function normalizePhone(phone: string | null | undefined): string | null {
