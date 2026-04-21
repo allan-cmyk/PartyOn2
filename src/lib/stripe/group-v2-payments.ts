@@ -593,17 +593,27 @@ export async function handleGroupV2PaymentCompleted(
     }
   }
 
-  // Link order to affiliate if attributed
-  const affiliateCode = session.metadata?.affiliateCode;
+  // Link order to affiliate if attributed.
+  // Prefer the Stripe metadata code (set at checkout). If missing — e.g. orders
+  // created before metadata propagation landed — fall back to the group's
+  // affiliateId so attribution still flows through.
+  let resolvedAffiliateCode = session.metadata?.affiliateCode;
+  if (!resolvedAffiliateCode) {
+    const group = await prisma.groupOrderV2.findUnique({
+      where: { id: groupOrderId },
+      select: { affiliate: { select: { code: true } } },
+    });
+    resolvedAffiliateCode = group?.affiliate?.code;
+  }
   let affiliateEmail: string | null = null;
-  if (affiliateCode) {
+  if (resolvedAffiliateCode) {
     try {
-      await linkOrderToAffiliate(order, affiliateCode);
-      const affiliate = await getAffiliateByCode(affiliateCode);
+      await linkOrderToAffiliate(order, resolvedAffiliateCode);
+      const affiliate = await getAffiliateByCode(resolvedAffiliateCode);
       if (affiliate?.email) {
         affiliateEmail = affiliate.email;
       }
-      console.log('[Group V2 Payment] Linked to affiliate:', affiliateCode);
+      console.log('[Group V2 Payment] Linked to affiliate:', resolvedAffiliateCode);
     } catch (affiliateErr) {
       console.error('[Group V2 Payment] Failed to link affiliate:', affiliateErr);
     }

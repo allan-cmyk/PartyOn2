@@ -3,6 +3,7 @@
 import { useState, useEffect, ReactElement } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import LinkPastOrderSection from '@/components/ops/LinkPastOrderSection';
 
 
 interface Commission {
@@ -71,6 +72,7 @@ export default function AffiliateDetailPage(): ReactElement {
   const [editPayoutDetails, setEditPayoutDetails] = useState('');
   const [sendingWelcome, setSendingWelcome] = useState(false);
   const [welcomeResult, setWelcomeResult] = useState<{ success: boolean; message: string } | null>(null);
+  const [refreshTick, setRefreshTick] = useState(0);
 
   useEffect(() => {
     fetch(`/api/admin/affiliates/${id}`)
@@ -94,7 +96,7 @@ export default function AffiliateDetailPage(): ReactElement {
         }
       })
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, refreshTick]);
 
   const handleSave = async () => {
     setSaving(true);
@@ -428,6 +430,9 @@ export default function AffiliateDetailPage(): ReactElement {
           </div>
         </div>
       </div>
+
+      {/* Link Past Order */}
+      <LinkPastOrderSection affiliateId={affiliate.id} onLinked={() => setRefreshTick((n) => n + 1)} />
 
       {/* Commissions */}
       <div className="mb-8">
