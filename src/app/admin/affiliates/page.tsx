@@ -149,6 +149,12 @@ export default function AffiliatesPage(): ReactElement {
         <h1 className="text-2xl font-bold text-gray-900">Affiliates</h1>
         <div className="flex gap-2">
           <Link
+            href="/admin/affiliates/payouts"
+            className="px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 transition-all shadow-sm"
+          >
+            Payouts
+          </Link>
+          <Link
             href="/admin/affiliates/embed-generator"
             className="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all shadow-sm"
           >

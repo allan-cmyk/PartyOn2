@@ -13,19 +13,18 @@ import { CommissionStatus, PayoutStatus } from '@prisma/client';
 export async function generateMonthlyPayouts(year: number, month: number) {
   const payoutPeriod = `${year}-${String(month).padStart(2, '0')}`;
 
-  // Find the month range
-  const startOfMonth = new Date(year, month - 1, 1);
+  // End-of-month cutoff. We sweep every APPROVED+unpaid commission created on or
+  // before the end of the target month, regardless of when it was created. This
+  // catches late-approved commissions from prior months that would otherwise
+  // never roll into a payout (the previous window-only query silently skipped
+  // them forever).
   const endOfMonth = new Date(year, month, 1);
 
-  // Get all APPROVED commissions in this month that haven't been assigned a payout
   const commissions = await prisma.affiliateCommission.findMany({
     where: {
       status: CommissionStatus.APPROVED,
       payoutId: null,
-      createdAt: {
-        gte: startOfMonth,
-        lt: endOfMonth,
-      },
+      createdAt: { lt: endOfMonth },
     },
     orderBy: { affiliateId: 'asc' },
   });
