@@ -198,8 +198,8 @@ export async function linkOrderToAffiliate(
   },
   affiliateCode: string
 ) {
-  const affiliate = await prisma.affiliate.findUnique({
-    where: { code: affiliateCode.toUpperCase() },
+  const affiliate = await prisma.affiliate.findFirst({
+    where: { code: { equals: affiliateCode, mode: 'insensitive' } },
   });
 
   if (!affiliate || affiliate.status !== 'ACTIVE') {

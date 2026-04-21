@@ -11,8 +11,8 @@ import crypto from 'crypto';
  * Get an active affiliate by referral code
  */
 export async function getAffiliateByCode(code: string) {
-  return prisma.affiliate.findUnique({
-    where: { code: code.toUpperCase() },
+  return prisma.affiliate.findFirst({
+    where: { code: { equals: code, mode: 'insensitive' } },
   });
 }
 
@@ -26,9 +26,9 @@ export async function getAffiliateBySlug(slug: string) {
     where: { partnerSlug: lower },
   });
   if (bySlug) return bySlug;
-  // Fall back to code lookup
-  return prisma.affiliate.findUnique({
-    where: { code: slug.toUpperCase() },
+  // Fall back to code lookup (case-insensitive)
+  return prisma.affiliate.findFirst({
+    where: { code: { equals: slug, mode: 'insensitive' } },
   });
 }
 
