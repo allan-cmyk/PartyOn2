@@ -6,9 +6,14 @@ import { useSearchParams } from 'next/navigation';
 import DraftOrdersTable from '@/components/ops/DraftOrdersTable';
 import UnpaidCartsTable from '@/components/ops/UnpaidCartsTable';
 
-// --- In Stock / Packed localStorage helpers ---
+// --- In Stock / Packed / Short By localStorage helpers ---
+interface ItemCheckEntry {
+  inStock: boolean;
+  packed: boolean;
+  shortBy?: number;
+}
 interface ItemChecks {
-  [itemTitle: string]: { inStock: boolean; packed: boolean };
+  [itemTitle: string]: ItemCheckEntry;
 }
 
 function loadChecks(orderId: string): ItemChecks {
@@ -447,6 +452,15 @@ function OrderRow({ order, selected, onToggle, onPrint, onFilterByGroup }: { ord
     });
   };
 
+  const setShortBy = (title: string, value: number) => {
+    const clamped = Math.max(0, Math.floor(value) || 0);
+    setChecks((prev) => {
+      const updated = { ...prev, [title]: { ...prev[title], shortBy: clamped } };
+      saveChecks(order.id, updated);
+      return updated;
+    });
+  };
+
   return (
     <>
       <tr className={`hover:bg-blue-50/50 transition-colors group ${selected ? 'bg-blue-50/30' : ''}`}>
@@ -598,6 +612,7 @@ function OrderRow({ order, selected, onToggle, onPrint, onFilterByGroup }: { ord
               <div className="flex gap-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5 pl-1">
                 <span className="w-16 text-center">In Stock</span>
                 <span className="w-16 text-center">Packed</span>
+                <span className="w-24 text-center">Short By</span>
                 <span>Item</span>
               </div>
               <div className="space-y-1">
@@ -620,6 +635,31 @@ function OrderRow({ order, selected, onToggle, onPrint, onFilterByGroup }: { ord
                           className="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 cursor-pointer"
                         />
                       </label>
+                      <div className="w-24 flex items-center justify-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => setShortBy(item.title, (checks[item.title]?.shortBy ?? 0) - 1)}
+                          className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-100"
+                          aria-label="Decrease short by"
+                        >
+                          −
+                        </button>
+                        <input
+                          type="number"
+                          min={0}
+                          value={checks[item.title]?.shortBy ?? 0}
+                          onChange={(e) => setShortBy(item.title, Number(e.target.value))}
+                          className="w-10 text-center text-sm border border-gray-300 rounded py-0.5 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShortBy(item.title, (checks[item.title]?.shortBy ?? 0) + 1)}
+                          className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-100"
+                          aria-label="Increase short by"
+                        >
+                          +
+                        </button>
+                      </div>
                       <div className="flex gap-2 text-sm">
                         <span className="text-gray-500 font-medium whitespace-nowrap">{item.quantity}x</span>
                         <span className="text-gray-700">{item.title}</span>
@@ -645,6 +685,31 @@ function OrderRow({ order, selected, onToggle, onPrint, onFilterByGroup }: { ord
                               className="w-3.5 h-3.5 text-amber-600 border-gray-300 rounded focus:ring-amber-500 cursor-pointer"
                             />
                           </label>
+                          <div className="w-24 flex items-center justify-center gap-1">
+                            <button
+                              type="button"
+                              onClick={() => setShortBy(bcKey, (checks[bcKey]?.shortBy ?? 0) - 1)}
+                              className="w-5 h-5 flex items-center justify-center border border-gray-300 rounded text-gray-500 text-xs hover:bg-gray-100"
+                              aria-label="Decrease short by"
+                            >
+                              −
+                            </button>
+                            <input
+                              type="number"
+                              min={0}
+                              value={checks[bcKey]?.shortBy ?? 0}
+                              onChange={(e) => setShortBy(bcKey, Number(e.target.value))}
+                              className="w-9 text-center text-xs border border-gray-300 rounded py-0.5 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShortBy(bcKey, (checks[bcKey]?.shortBy ?? 0) + 1)}
+                              className="w-5 h-5 flex items-center justify-center border border-gray-300 rounded text-gray-500 text-xs hover:bg-gray-100"
+                              aria-label="Increase short by"
+                            >
+                              +
+                            </button>
+                          </div>
                           <div className="flex gap-2 text-xs text-gray-400">
                             <span className="whitespace-nowrap">|- {item.quantity * bc.quantity}x</span>
                             <span>{bc.title}{bc.variantTitle && bc.variantTitle !== 'Default Title' ? ` (${bc.variantTitle})` : ''}</span>
@@ -735,6 +800,15 @@ function MobileOrderRow({ order, onFilterByGroup }: { order: Order; onFilterByGr
   const toggleCheck = (title: string, field: 'inStock' | 'packed') => {
     setChecks((prev) => {
       const updated = { ...prev, [title]: { ...prev[title], [field]: !prev[title]?.[field] } };
+      saveChecks(order.id, updated);
+      return updated;
+    });
+  };
+
+  const setShortBy = (title: string, value: number) => {
+    const clamped = Math.max(0, Math.floor(value) || 0);
+    setChecks((prev) => {
+      const updated = { ...prev, [title]: { ...prev[title], shortBy: clamped } };
       saveChecks(order.id, updated);
       return updated;
     });
@@ -848,6 +922,7 @@ function MobileOrderRow({ order, onFilterByGroup }: { order: Order; onFilterByGr
               <div className="flex gap-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">
                 <span className="w-8 text-center">Stk</span>
                 <span className="w-8 text-center">Pk</span>
+                <span className="w-16 text-center">Short</span>
                 <span>Item</span>
               </div>
               <div className="space-y-1">
@@ -862,6 +937,15 @@ function MobileOrderRow({ order, onFilterByGroup }: { order: Order; onFilterByGr
                         <input type="checkbox" checked={!!checks[item.title]?.packed} onChange={() => toggleCheck(item.title, 'packed')}
                           className="w-3.5 h-3.5 text-amber-600 border-gray-300 rounded cursor-pointer" />
                       </label>
+                      <div className="w-16 flex items-center justify-center gap-0.5">
+                        <button type="button" onClick={() => setShortBy(item.title, (checks[item.title]?.shortBy ?? 0) - 1)}
+                          className="w-5 h-5 flex items-center justify-center border border-gray-300 rounded text-gray-600 text-xs" aria-label="Decrease">−</button>
+                        <input type="number" min={0} value={checks[item.title]?.shortBy ?? 0}
+                          onChange={(e) => setShortBy(item.title, Number(e.target.value))}
+                          className="w-7 text-center text-xs border border-gray-300 rounded py-0.5 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none" />
+                        <button type="button" onClick={() => setShortBy(item.title, (checks[item.title]?.shortBy ?? 0) + 1)}
+                          className="w-5 h-5 flex items-center justify-center border border-gray-300 rounded text-gray-600 text-xs" aria-label="Increase">+</button>
+                      </div>
                       <span className="text-xs"><span className="text-gray-500 font-medium">{item.quantity}x</span> <span className="text-gray-700">{item.title}</span></span>
                     </div>
                     {item.bundleComponents && item.bundleComponents.length > 0 && item.bundleComponents.map((bc, bcIdx) => {
@@ -876,6 +960,15 @@ function MobileOrderRow({ order, onFilterByGroup }: { order: Order; onFilterByGr
                             <input type="checkbox" checked={!!checks[bcKey]?.packed} onChange={() => toggleCheck(bcKey, 'packed')}
                               className="w-3 h-3 text-amber-600 border-gray-300 rounded cursor-pointer" />
                           </label>
+                          <div className="w-16 flex items-center justify-center gap-0.5">
+                            <button type="button" onClick={() => setShortBy(bcKey, (checks[bcKey]?.shortBy ?? 0) - 1)}
+                              className="w-4 h-4 flex items-center justify-center border border-gray-300 rounded text-gray-500 text-[10px]" aria-label="Decrease">−</button>
+                            <input type="number" min={0} value={checks[bcKey]?.shortBy ?? 0}
+                              onChange={(e) => setShortBy(bcKey, Number(e.target.value))}
+                              className="w-6 text-center text-[10px] border border-gray-300 rounded [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none" />
+                            <button type="button" onClick={() => setShortBy(bcKey, (checks[bcKey]?.shortBy ?? 0) + 1)}
+                              className="w-4 h-4 flex items-center justify-center border border-gray-300 rounded text-gray-500 text-[10px]" aria-label="Increase">+</button>
+                          </div>
                           <span className="text-[10px] text-gray-400">|- {item.quantity * bc.quantity}x {bc.title}</span>
                         </div>
                       );
@@ -927,6 +1020,53 @@ export default function OrdersPage(): ReactElement {
   const [reviewModalOrders, setReviewModalOrders] = useState<Order[] | null>(null);
   const [reviewChecked, setReviewChecked] = useState<Set<string>>(new Set());
   const [sendingReviews, setSendingReviews] = useState(false);
+  const [shortageList, setShortageList] = useState<{ title: string; quantity: number; orderNumbers: number[] }[] | null>(null);
+
+  const handleGenerateShortageList = () => {
+    const aggregated = new Map<string, { title: string; quantity: number; orderNumbers: Set<number> }>();
+    const selectedOrdersArray = (data?.orders || []).filter((o) => selectedOrders.has(o.id));
+
+    for (const order of selectedOrdersArray) {
+      const orderChecks = loadChecks(order.id);
+      for (const item of order.items) {
+        const hasBundle = item.bundleComponents && item.bundleComponents.length > 0;
+        if (hasBundle) {
+          for (const bc of item.bundleComponents!) {
+            const bcKey = `${item.title}::${bc.title}`;
+            const shortBy = orderChecks[bcKey]?.shortBy ?? 0;
+            if (shortBy > 0) {
+              const displayTitle = bc.variantTitle && bc.variantTitle !== 'Default Title'
+                ? `${bc.title} (${bc.variantTitle})`
+                : bc.title;
+              const existing = aggregated.get(displayTitle);
+              if (existing) {
+                existing.quantity += shortBy;
+                existing.orderNumbers.add(order.orderNumber);
+              } else {
+                aggregated.set(displayTitle, { title: displayTitle, quantity: shortBy, orderNumbers: new Set([order.orderNumber]) });
+              }
+            }
+          }
+        } else {
+          const shortBy = orderChecks[item.title]?.shortBy ?? 0;
+          if (shortBy > 0) {
+            const existing = aggregated.get(item.title);
+            if (existing) {
+              existing.quantity += shortBy;
+              existing.orderNumbers.add(order.orderNumber);
+            } else {
+              aggregated.set(item.title, { title: item.title, quantity: shortBy, orderNumbers: new Set([order.orderNumber]) });
+            }
+          }
+        }
+      }
+    }
+
+    const list = Array.from(aggregated.values())
+      .map((entry) => ({ title: entry.title, quantity: entry.quantity, orderNumbers: Array.from(entry.orderNumbers).sort((a, b) => a - b) }))
+      .sort((a, b) => b.quantity - a.quantity);
+    setShortageList(list);
+  };
 
   // Selection helpers
   const toggleOrderSelection = (orderId: string) => {
@@ -1523,6 +1663,15 @@ export default function OrdersPage(): ReactElement {
             Print Pick Sheets
           </button>
           <button
+            onClick={handleGenerateShortageList}
+            className="px-4 py-2 bg-white border border-blue-200 text-blue-700 text-sm font-semibold rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+            Generate Shortage List
+          </button>
+          <button
             onClick={() => setSelectedOrders(new Set())}
             className="px-3 py-2 text-sm font-medium text-blue-700 hover:text-blue-900 hover:bg-blue-100 rounded-lg transition-colors"
           >
@@ -1826,6 +1975,7 @@ export default function OrdersPage(): ReactElement {
                         <th className="text-center py-1 px-2 w-14 font-bold">Qty</th>
                         <th className="text-center py-1 w-20 font-bold">In Stock?</th>
                         <th className="text-center py-1 w-20 font-bold">Packed?</th>
+                        <th className="text-center py-1 w-20 font-bold">Short By</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1853,6 +2003,9 @@ export default function OrdersPage(): ReactElement {
                                   </svg>
                                 )}
                               </span>
+                            </td>
+                            <td className="text-center py-1 font-bold text-xl">
+                              {printChecks[item.title]?.shortBy ? printChecks[item.title]?.shortBy : ''}
                             </td>
                           </tr>
                           {item.bundleComponents && item.bundleComponents.length > 0 && item.bundleComponents.map((bc, bcIdx) => {
@@ -1882,6 +2035,9 @@ export default function OrdersPage(): ReactElement {
                                     )}
                                   </span>
                                 </td>
+                                <td className="text-center py-0.5 text-base font-semibold text-gray-500">
+                                  {printChecks[bcKey]?.shortBy ? printChecks[bcKey]?.shortBy : ''}
+                                </td>
                               </tr>
                             );
                           })}
@@ -1894,7 +2050,7 @@ export default function OrdersPage(): ReactElement {
                           Total Items: {order.items.reduce((sum, item) => sum + item.quantity, 0)}
                         </td>
                         <td></td>
-                        <td colSpan={2} className="text-center py-1.5">
+                        <td colSpan={3} className="text-center py-1.5">
                           <span className="font-bold text-sm mr-1">Order Complete?</span>
                           <span className="inline-block w-6 h-6 border-2 border-black rounded-sm align-middle"></span>
                         </td>
@@ -1992,6 +2148,106 @@ export default function OrdersPage(): ReactElement {
                 className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {sendingReviews ? 'Sending...' : `Send to ${reviewChecked.size} customer${reviewChecked.size !== 1 ? 's' : ''}`}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Shortage List Modal */}
+      {shortageList && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col">
+            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Shortage List</h3>
+                <p className="text-sm text-gray-500 mt-1">
+                  Aggregated across {selectedOrders.size} selected order{selectedOrders.size !== 1 ? 's' : ''}
+                </p>
+              </div>
+              <button
+                onClick={() => setShortageList(null)}
+                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg"
+                aria-label="Close"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto px-6 py-4">
+              {shortageList.length === 0 ? (
+                <p className="text-sm text-gray-600 py-8 text-center">
+                  No shortages recorded for the selected orders.
+                </p>
+              ) : (
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-gray-200 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      <th className="py-2 w-16 text-center">Qty</th>
+                      <th className="py-2">Item</th>
+                      <th className="py-2 text-right">Orders</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {shortageList.map((row) => (
+                      <tr key={row.title} className="border-b border-gray-100">
+                        <td className="py-2 text-center font-bold text-gray-900">{row.quantity}</td>
+                        <td className="py-2 text-gray-800">{row.title}</td>
+                        <td className="py-2 text-right text-xs text-gray-500">
+                          {row.orderNumbers.map((n) => `#${n}`).join(', ')}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot>
+                    <tr className="border-t-2 border-gray-300">
+                      <td className="py-2 text-center font-bold text-gray-900">
+                        {shortageList.reduce((sum, r) => sum + r.quantity, 0)}
+                      </td>
+                      <td className="py-2 font-semibold text-gray-700">Total units short</td>
+                      <td></td>
+                    </tr>
+                  </tfoot>
+                </table>
+              )}
+            </div>
+            <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-2">
+              <button
+                onClick={() => {
+                  const text = shortageList
+                    .map((r) => `${r.quantity}\t${r.title}\t${r.orderNumbers.map((n) => `#${n}`).join(', ')}`)
+                    .join('\n');
+                  navigator.clipboard.writeText(text);
+                }}
+                disabled={shortageList.length === 0}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+              >
+                Copy as TSV
+              </button>
+              <button
+                onClick={() => {
+                  const csv = 'Quantity,Item,Orders\n' + shortageList
+                    .map((r) => `${r.quantity},"${r.title.replace(/"/g, '""')}","${r.orderNumbers.map((n) => `#${n}`).join('; ')}"`)
+                    .join('\n');
+                  const blob = new Blob([csv], { type: 'text/csv' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `shortage-list-${new Date().toISOString().split('T')[0]}.csv`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+                disabled={shortageList.length === 0}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              >
+                Download CSV
+              </button>
+              <button
+                onClick={() => setShortageList(null)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+              >
+                Close
               </button>
             </div>
           </div>
