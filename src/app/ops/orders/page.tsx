@@ -1021,6 +1021,30 @@ export default function OrdersPage(): ReactElement {
   const [reviewChecked, setReviewChecked] = useState<Set<string>>(new Set());
   const [sendingReviews, setSendingReviews] = useState(false);
   const [shortageList, setShortageList] = useState<{ title: string; quantity: number; orderNumbers: number[] }[] | null>(null);
+  const [emailingShortage, setEmailingShortage] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+
+  const handleEmailShortageList = async () => {
+    if (!shortageList || shortageList.length === 0) return;
+    setEmailingShortage('sending');
+    try {
+      const res = await fetch('/api/v1/admin/shortage-list/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: shortageList }),
+      });
+      if (!res.ok) {
+        const { error } = await res.json().catch(() => ({ error: 'Send failed' }));
+        console.error('[Shortage Email]', error);
+        setEmailingShortage('error');
+        return;
+      }
+      setEmailingShortage('sent');
+      setTimeout(() => setEmailingShortage('idle'), 3000);
+    } catch (err) {
+      console.error('[Shortage Email]', err);
+      setEmailingShortage('error');
+    }
+  };
 
   const handleGenerateShortageList = () => {
     const aggregated = new Map<string, { title: string; quantity: number; orderNumbers: Set<number> }>();
@@ -2242,6 +2266,22 @@ export default function OrdersPage(): ReactElement {
                 className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
               >
                 Download CSV
+              </button>
+              <button
+                onClick={handleEmailShortageList}
+                disabled={shortageList.length === 0 || emailingShortage === 'sending' || emailingShortage === 'sent'}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${
+                  emailingShortage === 'sent'
+                    ? 'bg-green-600 text-white'
+                    : emailingShortage === 'error'
+                    ? 'bg-red-600 text-white hover:bg-red-700'
+                    : 'bg-brand-blue text-white hover:bg-blue-700'
+                }`}
+              >
+                {emailingShortage === 'sending' && 'Sending...'}
+                {emailingShortage === 'sent' && 'Sent ✓'}
+                {emailingShortage === 'error' && 'Retry Email'}
+                {emailingShortage === 'idle' && 'Email to Allan'}
               </button>
               <button
                 onClick={() => setShortageList(null)}
