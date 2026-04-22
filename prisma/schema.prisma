@@ -1903,6 +1903,70 @@ model InventoryNote {
   @@map("inventory_notes")
 }
 
+// ==========================================
+// DISTRIBUTOR RECEIVING (INVOICE → INVENTORY)
+// ==========================================
+
+model ReceivingInvoice {
+  id                String                  @id @default(cuid())
+  imageUrl          String                  @map("image_url")
+  distributorName   String?                 @map("distributor_name")
+  invoiceNumber     String?                 @map("invoice_number")
+  invoiceDate       DateTime?               @map("invoice_date")
+  status            String                  @default("PENDING_REVIEW") // PENDING_REVIEW, APPLIED, CANCELLED
+  rawParse          Json?                   @map("raw_parse")
+  parseErrorMessage String?                 @map("parse_error_message") @db.Text
+  createdBy         String?                 @map("created_by")
+  createdAt         DateTime                @default(now()) @map("created_at")
+  updatedAt         DateTime                @updatedAt @map("updated_at")
+  appliedAt         DateTime?               @map("applied_at")
+
+  lines ReceivingInvoiceLine[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("receiving_invoices")
+}
+
+model ReceivingInvoiceLine {
+  id                   String  @id @default(cuid())
+  invoiceId            String  @map("invoice_id")
+  distributorSku       String? @map("distributor_sku")
+  distributorDescription String @map("distributor_description") @db.Text
+  cases                Int     @default(0)
+  unitsPerCase         Int     @default(1) @map("units_per_case")
+  totalUnits           Int     @map("total_units") // redundant but explicit
+  matchedVariantId     String? @map("matched_variant_id")
+  status               String  @default("PENDING") // PENDING, MATCHED, SKIPPED, APPLIED
+  notes                String? @db.Text
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  invoice ReceivingInvoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId])
+  @@index([matchedVariantId])
+  @@map("receiving_invoice_lines")
+}
+
+model DistributorSkuMap {
+  id               String    @id @default(cuid())
+  distributorKey   String    @unique @map("distributor_key") // normalized SKU or description hash
+  distributorSku   String?   @map("distributor_sku")
+  distributorDescription String @map("distributor_description") @db.Text
+  distributorName  String?   @map("distributor_name")
+  variantId        String    @map("variant_id")
+  unitsPerCase     Int       @default(1) @map("units_per_case")
+  timesUsed        Int       @default(0) @map("times_used")
+  lastUsedAt       DateTime? @map("last_used_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  @@index([variantId])
+  @@index([distributorSku])
+  @@map("distributor_sku_map")
+}
+
 model GroupDeliveryInvoice {
   id                      String               @id @default(uuid())
   subOrderId              String               @unique @map("sub_order_id")
