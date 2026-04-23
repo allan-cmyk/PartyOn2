@@ -15,6 +15,8 @@ interface Props {
   isLocked?: boolean;
   onItemChanged: () => void;
   hiddenProductIds?: Set<string>;
+  /** If set, intersect displayed products with this whitelist (last-minute mode). */
+  allowedProductIds?: Set<string> | null;
 }
 
 type ExpansionState = 'initial' | 'more' | 'all';
@@ -32,10 +34,16 @@ export default function CategorySection({
   isLocked,
   onItemChanged,
   hiddenProductIds,
+  allowedProductIds,
 }: Props): ReactElement | null {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [expansion, setExpansion] = useState<ExpansionState>('initial');
+
+  // Cocktail kits are already a curated category — don't intersect them with
+  // the last-minute whitelist or we'd hide kits ops hasn't re-tagged.
+  const applyAllowList =
+    !!allowedProductIds && collectionHandle !== 'cocktail-kits';
 
   useEffect(() => {
     let cancelled = false;
@@ -49,7 +57,8 @@ export default function CategorySection({
         if (cancelled) return;
         const items = (json.products?.edges || [])
           .map((e: { node: Product }) => e.node)
-          .filter((p: Product) => !hiddenProductIds?.has(p.id));
+          .filter((p: Product) => !hiddenProductIds?.has(p.id))
+          .filter((p: Product) => !applyAllowList || allowedProductIds!.has(p.id));
         setProducts(items);
       } catch {
         // Silently fail
@@ -61,7 +70,7 @@ export default function CategorySection({
     return () => {
       cancelled = true;
     };
-  }, [collectionHandle, hiddenProductIds]);
+  }, [collectionHandle, hiddenProductIds, allowedProductIds, applyAllowList]);
 
   if (loading) {
     return (

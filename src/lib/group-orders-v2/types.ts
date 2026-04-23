@@ -53,6 +53,7 @@ export interface GroupOrderV2Full {
   affiliateId: string | null;
   affiliate?: { id: string; code: string; businessName: string } | null;
   source: DashboardSource;
+  isLastMinute: boolean;
   expiresAt: string;
   createdAt: string;
   tabs: SubOrderFull[];
@@ -213,6 +214,7 @@ export interface CreateDashboardInput {
   name?: string;
   tabName?: string;
   deliveryDate?: string;
+  isLastMinute?: boolean;
   deliveryAddress?: {
     address1: string;
     address2?: string;

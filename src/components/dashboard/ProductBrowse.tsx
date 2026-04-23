@@ -18,6 +18,8 @@ interface Props {
   onItemChanged: () => void;
   recsSection?: ReactElement | null;
   affiliateCode?: string | null;
+  /** Whitelist of product IDs allowed in last-minute mode. Null = no restriction. */
+  allowedProductIds?: Set<string> | null;
 }
 
 export default function ProductBrowse({
@@ -30,6 +32,7 @@ export default function ProductBrowse({
   onItemChanged,
   recsSection,
   affiliateCode,
+  allowedProductIds,
 }: Props): ReactElement {
   const categories = getCategoriesForPartyType(partyType);
   const hiddenIds = useMemo(
@@ -55,7 +58,8 @@ export default function ProductBrowse({
         const json = await res.json();
         const items = (json.products?.edges || [])
           .map((e: { node: Product }) => e.node)
-          .filter((p: Product) => !hiddenIds.has(p.id));
+          .filter((p: Product) => !hiddenIds.has(p.id))
+          .filter((p: Product) => !allowedProductIds || allowedProductIds.has(p.id));
         setSearchResults(items);
       } catch {
         // Silently fail
@@ -64,7 +68,7 @@ export default function ProductBrowse({
       }
     }, 300);
     return () => clearTimeout(timer);
-  }, [searchQuery, hiddenIds]);
+  }, [searchQuery, hiddenIds, allowedProductIds]);
 
   const isSearching = searchQuery.trim().length > 0;
 
@@ -160,6 +164,7 @@ export default function ProductBrowse({
               isLocked={isLocked}
               onItemChanged={onItemChanged}
               hiddenProductIds={hiddenIds}
+              allowedProductIds={allowedProductIds}
             />
           ))}
         </div>

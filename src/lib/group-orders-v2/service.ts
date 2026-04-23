@@ -210,6 +210,7 @@ function serializeGroup(group: Record<string, any>): GroupOrderV2Full {
     affiliateId: group.affiliateId ?? null,
     affiliate: group.affiliate ?? null,
     source: group.source ?? 'DIRECT',
+    isLastMinute: group.isLastMinute ?? false,
     expiresAt: group.expiresAt.toISOString(),
     createdAt: group.createdAt.toISOString(),
     tabs,
@@ -933,6 +934,7 @@ export async function createDashboardOrder(
       partyType: input.partyType || null,
       affiliateId: input.affiliateId || null,
       source: input.source || 'DIRECT',
+      isLastMinute: input.isLastMinute ?? false,
       expiresAt: defaultExpiresAt(),
       tabs: {
         create: {

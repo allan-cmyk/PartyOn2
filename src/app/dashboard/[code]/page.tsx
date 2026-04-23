@@ -77,6 +77,32 @@ export default function DashboardPage(): ReactElement {
     [groupOrder?.affiliate?.code]
   );
 
+  // Last-minute whitelist: when flagged, load the `last-minute` Shopify
+  // collection and use it as the allow-set for product display.
+  const [lastMinuteAllowedIds, setLastMinuteAllowedIds] = useState<Set<string> | null>(null);
+  useEffect(() => {
+    if (!groupOrder?.isLastMinute) {
+      setLastMinuteAllowedIds(null);
+      return;
+    }
+    let cancelled = false;
+    fetch('/api/products?localCollection=last-minute&first=200')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (cancelled || !json) return;
+        const ids = new Set<string>(
+          (json.products?.edges || []).map((e: { node: { id: string } }) => e.node.id)
+        );
+        setLastMinuteAllowedIds(ids);
+      })
+      .catch(() => {
+        // Silent fail — fall back to no filter rather than empty dashboard
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [groupOrder?.isLastMinute]);
+
   // Restore participant ID from localStorage
   useEffect(() => {
     if (!code) return;
@@ -466,6 +492,7 @@ export default function DashboardPage(): ReactElement {
             isLocked={isLocked}
             onItemChanged={refresh}
             affiliateCode={groupOrder.affiliate?.code}
+            allowedProductIds={groupOrder.isLastMinute ? lastMinuteAllowedIds : null}
             recsSection={
               recommendations ? (
                 <RecommendationsSection

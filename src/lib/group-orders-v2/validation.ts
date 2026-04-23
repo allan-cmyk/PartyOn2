@@ -123,6 +123,7 @@ export const CreateDashboardSchema = z.object({
   affiliateId: z.string().optional(),
   deliveryContextType: z.enum(['HOUSE', 'BOAT', 'VENUE', 'HOTEL', 'OTHER']).optional(),
   tabName: z.string().max(200).optional(),
+  isLastMinute: z.boolean().optional(),
   deliveryAddress: DeliveryAddressSchema.optional(),
 });
 
