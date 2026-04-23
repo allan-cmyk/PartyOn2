@@ -33,9 +33,11 @@ export default function ReceivingUploadPage(): ReactElement {
       const formData = new FormData();
       formData.append('image', file);
       const res = await fetch('/api/v1/inventory/receiving', { method: 'POST', body: formData });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || 'Upload failed');
+      const text = await res.text();
+      let data: { invoiceId?: string; error?: string } = {};
+      try { data = text ? JSON.parse(text) : {}; } catch { /* non-JSON response */ }
+      if (!res.ok || !data.invoiceId) {
+        setError(data.error || `Upload failed (${res.status})${text && !data.error ? `: ${text.slice(0, 200)}` : ''}`);
         setUploading(false);
         return;
       }

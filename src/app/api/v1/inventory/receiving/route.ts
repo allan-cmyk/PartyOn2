@@ -34,20 +34,29 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'Only image uploads are supported' }, { status: 400 });
   }
 
-  const upload = await uploadToBlob(file, {
-    folder: 'receiving',
-    contentType: file.type,
-  });
+  let uploadUrl: string;
+  try {
+    const upload = await uploadToBlob(file, {
+      folder: 'receiving',
+      contentType: file.type,
+    });
+    uploadUrl = upload.url;
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Blob upload failed';
+    console.error('[Receiving] Blob upload error:', err);
+    return NextResponse.json({ error: `Upload failed: ${message}` }, { status: 500 });
+  }
 
   let invoiceId: string;
   try {
-    const parsed = await parseInvoiceImage(upload.url);
-    invoiceId = await createInvoiceFromParse({ imageUrl: upload.url, parsed });
+    const parsed = await parseInvoiceImage(uploadUrl);
+    invoiceId = await createInvoiceFromParse({ imageUrl: uploadUrl, parsed });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Parse failed';
+    console.error('[Receiving] Parse error:', err);
     const invoice = await prisma.receivingInvoice.create({
       data: {
-        imageUrl: upload.url,
+        imageUrl: uploadUrl,
         status: 'PENDING_REVIEW',
         parseErrorMessage: message,
       },
