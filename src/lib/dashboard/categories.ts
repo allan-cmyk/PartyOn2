@@ -136,8 +136,8 @@ export const LAST_MINUTE_CATEGORIES: DashboardCategory[] = [
   { label: 'Cocktail Kits', collectionHandle: 'cocktail-kits' },
   { label: 'Beer', collectionHandle: 'last-minute-beer' },
   { label: 'Wine & Sparkling', collectionHandle: 'last-minute-wine' },
-  { label: 'Spirits', collectionHandle: 'spirits' },
-  { label: 'Seltzers & RTDs', collectionHandle: 'seltzers-rtds' },
+  { label: 'Spirits', collectionHandle: 'last-minute-spirits' },
+  { label: 'Seltzers & RTDs', collectionHandle: 'last-minute-seltzers' },
   { label: 'Mixers & More', collectionHandle: 'last-minute-mixers' },
 ];
 

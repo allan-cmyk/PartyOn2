@@ -24,8 +24,11 @@ const WINE = [
   ['Wycliff Brut Rose', ['wycliff', 'rose']],
 ];
 
+// Spirits — Tito's 1L and Espolon 1.75L first per Allan
 const SPIRITS = [
-  ['Espolon Blanco 750', ['espolon', '750']],
+  ["Tito's 1L", ['tito', '1l']],
+  ['Espolon Blanco 1.75L', ['espolon tequila blanco', '1.75']],
+  ['Espolon Blanco 750', ['espolon tequila blanco', '750']],
   ['Lunazul Blanco 750', ['lunazul', '750']],
   ['Lunazul Blanco 1.75', ['lunazul', '1.75']],
   ["Tito's 750", ['tito', '750']],
@@ -41,12 +44,15 @@ const SELTZERS = [
   ['Surfside Starter Variety', ['surfside', 'starter', 'variety']],
   ['Surfside Lemonade Variety', ['surfside', 'lemonade', 'variety']],
   ['High Noon Variety 12pk', ['high noon', 'variety', '12 pack']],
-  ['High Noon Variety 8pk', ['high noon variety', '8 pack']],
   ['High Noon Tequila Variety', ['high noon', 'tequila', 'variety']],
+  ['Sun Cruiser Iced Tea 12pk', ['sun cruiser iced tea', '12 pack']],
   ['White Claw Variety 24', ['white claw', 'variety', '24']],
 ];
 
+// Ice + cups at the top, then sodas, then everything else
 const MIXERS = [
+  ['Bag of Ice', ['bag of ice']],
+  ['Solo Cups', ['solo cup']],
   ['Coca-Cola 12pk', ['coca-cola']],
   ['Diet Coke', ['diet coke']],
   ['Coke Zero', ['coke zero']],
@@ -62,18 +68,15 @@ const MIXERS = [
   ['Fresh Victor mixers', ['fresh victor']],
   ['Red Bull 12pk', ['red bull', '12 pack']],
   ['Sugar Free Red Bull', ['sugar free red bull']],
-  ['Bag of Ice', ['bag of ice']],
-  ['Solo Cups', ['solo cup']],
 ];
 
 const SUB_COLLECTIONS = [
   { handle: 'last-minute-beer', title: 'Beer (Last Minute)', wishlist: BEER },
   { handle: 'last-minute-wine', title: 'Wine & Sparkling (Last Minute)', wishlist: WINE },
+  { handle: 'last-minute-spirits', title: 'Spirits (Last Minute)', wishlist: SPIRITS },
+  { handle: 'last-minute-seltzers', title: 'Seltzers & RTDs (Last Minute)', wishlist: SELTZERS },
   { handle: 'last-minute-mixers', title: 'Mixers & More (Last Minute)', wishlist: MIXERS },
 ];
-
-// Categories that use existing collections intersected with the master whitelist
-const EXTRA_WHITELIST = [...SPIRITS, ...SELTZERS];
 
 async function findMatches(includes, excludes = []) {
   const where = {
@@ -94,6 +97,9 @@ async function resolveWishlist(wishlist) {
   const resolved = [];
   const misses = [];
   const ids = new Set();
+  // orderedIds preserves the wishlist sequence so sub-collection positions
+  // match the configured order exactly.
+  const orderedIds = [];
   for (const [label, includes, excludes = []] of wishlist) {
     const matches = await findMatches(includes, excludes);
     if (matches.length === 0) {
@@ -101,9 +107,12 @@ async function resolveWishlist(wishlist) {
       continue;
     }
     resolved.push({ label, matches });
-    for (const m of matches) ids.add(m.id);
+    for (const m of matches) {
+      if (!ids.has(m.id)) orderedIds.push(m.id);
+      ids.add(m.id);
+    }
   }
-  return { resolved, misses, ids };
+  return { resolved, misses, ids, orderedIds };
 }
 
 async function upsertCollection(handle, title, description = null) {
@@ -116,7 +125,8 @@ async function upsertCollection(handle, title, description = null) {
 
 async function setCollectionProducts(categoryId, productIds) {
   await prisma.productCategory.deleteMany({ where: { categoryId } });
-  const links = Array.from(productIds).map((pid, i) => ({
+  const idArr = Array.isArray(productIds) ? productIds : Array.from(productIds);
+  const links = idArr.map((pid, i) => ({
     productId: pid,
     categoryId,
     position: i,
@@ -132,9 +142,9 @@ async function main() {
 
   const masterIds = new Set();
 
-  // Sub-collections: beer, wine, mixers
+  // Sub-collections: beer, wine, spirits, seltzers, mixers
   for (const sub of SUB_COLLECTIONS) {
-    const { resolved, misses, ids } = await resolveWishlist(sub.wishlist);
+    const { resolved, misses, orderedIds } = await resolveWishlist(sub.wishlist);
     console.log(`\n=== ${sub.handle} (${resolved.length}/${sub.wishlist.length}) ===`);
     for (const r of resolved) {
       console.log(`  ${r.label} -> ${r.matches.map((m) => m.title).join(' | ')}`);
@@ -142,22 +152,11 @@ async function main() {
     for (const m of misses) console.log(`  MISS: ${m}`);
 
     const cat = await upsertCollection(sub.handle, sub.title);
-    const linked = await setCollectionProducts(cat.id, ids);
+    const linked = await setCollectionProducts(cat.id, orderedIds);
     console.log(`  Linked ${linked} products to ${sub.handle}`);
 
-    for (const id of ids) masterIds.add(id);
+    for (const id of orderedIds) masterIds.add(id);
   }
-
-  // Extra products that belong to the master whitelist but aren't in a sub-collection
-  // (spirits and seltzers reuse the main category collection, filtered by the whitelist)
-  console.log('\n=== spirits + seltzers (whitelist only; uses existing collections) ===');
-  const { resolved: extraResolved, misses: extraMisses, ids: extraIds } =
-    await resolveWishlist(EXTRA_WHITELIST);
-  for (const r of extraResolved) {
-    console.log(`  ${r.label} -> ${r.matches.map((m) => m.title).join(' | ')}`);
-  }
-  for (const m of extraMisses) console.log(`  MISS: ${m}`);
-  for (const id of extraIds) masterIds.add(id);
 
   // All cocktail kits (always show in full, no filter)
   const kitsCategory = await prisma.category.findUnique({ where: { handle: 'cocktail-kits' } });
