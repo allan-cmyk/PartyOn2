@@ -31,7 +31,6 @@ const SPIRITS = [
   ['Espolon Blanco 750', ['espolon tequila blanco', '750']],
   ['Lunazul Blanco 750', ['lunazul', '750']],
   ['Lunazul Blanco 1.75', ['lunazul', '1.75']],
-  ["Tito's 750", ['tito', '750']],
   ["Tito's 1.75L", ['tito', '1.75']],
   ['Bacardi Superior 750', ['bacardi', '750']],
   ['Dripping Springs Gin 750', ['dripping springs', 'gin', '750']],
@@ -49,17 +48,18 @@ const SELTZERS = [
   ['White Claw Variety 24', ['white claw', 'variety', '24']],
 ];
 
-// Ice + cups at the top, then sodas, then everything else
+// Ice + cups lead; Sprite lands 4th, Lemonade 64oz lands 6th
 const MIXERS = [
   ['Bag of Ice', ['bag of ice']],
   ['Solo Cups', ['solo cup']],
   ['Coca-Cola 12pk', ['coca-cola']],
+  ['Sprite 12pk', ['sprite', '12 pack'], ['zero']],
   ['Diet Coke', ['diet coke']],
+  ['Lemonade 64oz', ['lemonade', '64oz']],
   ['Coke Zero', ['coke zero']],
-  ['Sprite 12pk', ['sprite', '12 pack']],
+  ['Sprite Zero 12pk', ['sprite zero']],
   ['Sprite 2L', ['sprite', '2l']],
   ['Orange Juice 48oz', ['orange juice', '48oz'], ['pineapple']],
-  ['Lemonade 64oz', ['lemonade', '64oz']],
   ['Lemonade 89oz', ['lemonade', '89oz']],
   ['Club Soda', ['club soda']],
   ['Cranberry Juice', ['cranberry juice']],
