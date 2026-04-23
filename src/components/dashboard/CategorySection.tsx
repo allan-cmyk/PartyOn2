@@ -40,10 +40,13 @@ export default function CategorySection({
   const [loading, setLoading] = useState(true);
   const [expansion, setExpansion] = useState<ExpansionState>('initial');
 
-  // Cocktail kits are already a curated category — don't intersect them with
-  // the last-minute whitelist or we'd hide kits ops hasn't re-tagged.
+  // Cocktail kits + the curated `last-minute-*` sub-collections are already
+  // whitelists themselves — applying the master last-minute filter would be
+  // redundant at best and accidentally hide items at worst.
   const applyAllowList =
-    !!allowedProductIds && collectionHandle !== 'cocktail-kits';
+    !!allowedProductIds &&
+    collectionHandle !== 'cocktail-kits' &&
+    !collectionHandle.startsWith('last-minute');
 
   useEffect(() => {
     let cancelled = false;

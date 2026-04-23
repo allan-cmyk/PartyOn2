@@ -126,6 +126,21 @@ export const PARTY_TYPE_CATEGORIES: Record<PartyType, DashboardCategory[]> = {
 /** Default categories when no party type is set (same as OTHER/HOUSE_PARTY) */
 export const DASHBOARD_CATEGORIES: DashboardCategory[] = OTHER;
 
+/**
+ * Simplified, always-in-stock category list for /order/last-minute.
+ * Uses dedicated sub-collections (last-minute-beer/wine/mixers) that merge
+ * several normal categories into one; spirits + seltzers reuse the main
+ * collections but get intersected with the master `last-minute` whitelist.
+ */
+export const LAST_MINUTE_CATEGORIES: DashboardCategory[] = [
+  { label: 'Cocktail Kits', collectionHandle: 'cocktail-kits' },
+  { label: 'Beer', collectionHandle: 'last-minute-beer' },
+  { label: 'Wine & Sparkling', collectionHandle: 'last-minute-wine' },
+  { label: 'Spirits', collectionHandle: 'spirits' },
+  { label: 'Seltzers & RTDs', collectionHandle: 'seltzers-rtds' },
+  { label: 'Mixers & More', collectionHandle: 'last-minute-mixers' },
+];
+
 /** Get categories for a given party type, falling back to default */
 export function getCategoriesForPartyType(partyType: string | null | undefined): DashboardCategory[] {
   if (partyType && partyType in PARTY_TYPE_CATEGORIES) {

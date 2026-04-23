@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, type ReactElement } from 'react';
 import type { Product } from '@/lib/types/product';
 import type { DraftCartItemView } from '@/lib/group-orders-v2/types';
-import { getCategoriesForPartyType } from '@/lib/dashboard/categories';
+import { getCategoriesForPartyType, LAST_MINUTE_CATEGORIES } from '@/lib/dashboard/categories';
 import { getHiddenProductIds } from '@/lib/affiliates/product-exclusions';
 import CategorySection from './CategorySection';
 import DashboardProductCard from './DashboardProductCard';
@@ -34,7 +34,10 @@ export default function ProductBrowse({
   affiliateCode,
   allowedProductIds,
 }: Props): ReactElement {
-  const categories = getCategoriesForPartyType(partyType);
+  const isLastMinute = !!allowedProductIds;
+  const categories = isLastMinute
+    ? LAST_MINUTE_CATEGORIES
+    : getCategoriesForPartyType(partyType);
   const hiddenIds = useMemo(
     () => new Set(getHiddenProductIds(affiliateCode)),
     [affiliateCode]
