@@ -230,6 +230,17 @@ MDX-based blog stored in `content/blog/posts/` (134 posts). NOT database-backed.
 
 ---
 
+## Analytics & Marketing Optimization
+
+- **Snapshot doc**: `docs/WEBSITE-ANALYTICS.md` — regenerated nightly by `/api/cron/analytics-snapshot` (07:00 UTC). Read this before any conversion/SEO/margin conversation.
+- **Marketing Director subagent**: `.claude/agents/marketing-director.md` — invoke when the user asks "what should I work on next," "why is conversion dropping on X," margin questions, or landing-page optimization.
+- **Admin endpoints** (all behind `requireOpsAuth`): `/api/admin/analytics/ga4`, `/vercel`, `/gbp`, `/internal` — see subagent file for curl examples.
+- **Attribution**: first-touch landing page + UTMs captured client-side via `AttributionTracker` component → Stripe session metadata → `Order.landingPage/utmSource/...`.
+- **Margin**: `OrderItem.unitCost/totalCost` + `Order.marginAmount` populated at order creation from `ProductVariant.costPerUnit`. Backfill historical: `npx tsx scripts/backfill-order-margins.ts`.
+- **A/B significance**: `src/lib/analytics/experiment-significance.ts` — two-proportion z-test; use `computeSignificance()` to pick winners.
+
+---
+
 ## Special Business Rules
 
 - **Age verification**: Required modal for alcohol purchases
