@@ -8,6 +8,7 @@ import { Prisma, OrderStatus, FulfillmentStatus, FinancialStatus } from '@prisma
 import type Stripe from 'stripe';
 import { CartWithItems } from './cart-service';
 import type { DraftOrderWithTotal, DraftOrderItem } from '@/lib/draft-orders/types';
+import { snapshotItemCost, finalizeOrderMargin } from '@/lib/analytics/margin-service';
 
 /**
  * Order with all relations
@@ -463,12 +464,20 @@ export async function createOrderFromCheckout(
         customerEmail,
         customerPhone,
         customerName,
+        landingPage: session.metadata?.landingPage || null,
+        utmSource: session.metadata?.utmSource || null,
+        utmMedium: session.metadata?.utmMedium || null,
+        utmCampaign: session.metadata?.utmCampaign || null,
+        utmTerm: session.metadata?.utmTerm || null,
+        utmContent: session.metadata?.utmContent || null,
+        referrer: session.metadata?.referrer || null,
       },
       include: { items: true },
     });
 
     // Create order items
     for (const item of cart.items) {
+      const { unitCost, totalCost } = await snapshotItemCost(tx, item.variantId, item.quantity);
       await tx.orderItem.create({
         data: {
           orderId: newOrder.id,
@@ -480,6 +489,8 @@ export async function createOrderFromCheckout(
           quantity: item.quantity,
           price: item.price,
           totalPrice: new Prisma.Decimal(Number(item.price) * item.quantity),
+          unitCost,
+          totalCost,
         },
       });
     }
@@ -488,6 +499,8 @@ export async function createOrderFromCheckout(
     for (const item of cart.items) {
       await commitInventoryForOrderItem(tx, item.productId, item.variantId, item.quantity, newOrder.orderNumber, newOrder.id);
     }
+
+    await finalizeOrderMargin(tx, newOrder.id);
 
     // Get the order with items
     const orderWithItems = await tx.order.findUnique({
@@ -602,6 +615,7 @@ export async function createFreeOrder(
     });
 
     for (const item of cart.items) {
+      const { unitCost, totalCost } = await snapshotItemCost(tx, item.variantId, item.quantity);
       await tx.orderItem.create({
         data: {
           orderId: newOrder.id,
@@ -613,6 +627,8 @@ export async function createFreeOrder(
           quantity: item.quantity,
           price: item.price,
           totalPrice: new Prisma.Decimal(Number(item.price) * item.quantity),
+          unitCost,
+          totalCost,
         },
       });
     }
@@ -621,6 +637,8 @@ export async function createFreeOrder(
     for (const item of cart.items) {
       await commitInventoryForOrderItem(tx, item.productId, item.variantId, item.quantity, newOrder.orderNumber, newOrder.id);
     }
+
+    await finalizeOrderMargin(tx, newOrder.id);
 
     return await tx.order.findUnique({
       where: { id: newOrder.id },
@@ -965,6 +983,7 @@ export async function createOrderFromDraftOrder(
         }
       }
 
+      const { unitCost, totalCost } = await snapshotItemCost(tx, variantId, item.quantity);
       await tx.orderItem.create({
         data: {
           orderId: newOrder.id,
@@ -976,6 +995,8 @@ export async function createOrderFromDraftOrder(
           quantity: item.quantity,
           price: new Prisma.Decimal(item.price),
           totalPrice: new Prisma.Decimal(item.price * item.quantity),
+          unitCost,
+          totalCost,
         },
       });
     }
@@ -989,6 +1010,8 @@ export async function createOrderFromDraftOrder(
         console.warn(`[Order Service] Could not commit inventory for ${item.title}:`, inventoryError);
       }
     }
+
+    await finalizeOrderMargin(tx, newOrder.id);
 
     // Get the order with items
     const orderWithItems = await tx.order.findUnique({
