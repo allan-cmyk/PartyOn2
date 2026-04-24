@@ -90,12 +90,13 @@ export default function ReceivingReviewPage({ params }: { params: Promise<{ id: 
       setVariantResults((prev) => ({ ...prev, [lineId]: [] }));
       return;
     }
-    const res = await fetch(`/api/v1/inventory?search=${encodeURIComponent(q)}`);
+    const res = await fetch(`/api/v1/inventory?search=${encodeURIComponent(q)}&limit=10`);
     const data = await res.json();
-    const variants: VariantOption[] = (data.inventory || data.items || []).slice(0, 10).map((v: { id: string; productTitle?: string; title?: string; variantTitle?: string | null }) => ({
-      id: v.id,
-      productTitle: v.productTitle || v.title || 'Unknown',
-      variantTitle: v.variantTitle ?? null,
+    const items: Array<{ variantId?: string; id?: string; productName?: string; variantName?: string | null; sku?: string | null }> = data.data || [];
+    const variants: VariantOption[] = items.slice(0, 10).map((v) => ({
+      id: v.variantId || v.id || '',
+      productTitle: v.productName || 'Unknown',
+      variantTitle: v.variantName ?? null,
     }));
     setVariantResults((prev) => ({ ...prev, [lineId]: variants }));
   };
