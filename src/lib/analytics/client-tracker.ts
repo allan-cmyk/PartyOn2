@@ -33,7 +33,7 @@ const FLUSH_INTERVAL_MS = 5000;
 const MAX_BATCH = 50;
 const ENDPOINT = '/api/v1/events/track';
 
-let queue: QueuedEvent[] = [];
+const queue: QueuedEvent[] = [];
 let flushTimer: ReturnType<typeof setInterval> | null = null;
 let initialized = false;
 
