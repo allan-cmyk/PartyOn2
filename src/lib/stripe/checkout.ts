@@ -24,6 +24,15 @@ export interface CheckoutMetadata {
   discountCode?: string;
   affiliateCode?: string;
   tipAmount?: string;
+
+  // First-touch marketing attribution (captured on landing, forwarded by client)
+  landingPage?: string;
+  utmSource?: string;
+  utmMedium?: string;
+  utmCampaign?: string;
+  utmTerm?: string;
+  utmContent?: string;
+  referrer?: string;
 }
 
 /**
@@ -51,6 +60,15 @@ export interface CreateCheckoutOptions {
   affiliateCode?: string;
   overrideDeliveryFee?: number;
   tipAmount?: number;
+  attribution?: {
+    landingPage?: string | null;
+    utmSource?: string | null;
+    utmMedium?: string | null;
+    utmCampaign?: string | null;
+    utmTerm?: string | null;
+    utmContent?: string | null;
+    referrer?: string | null;
+  };
 }
 
 /**
@@ -59,7 +77,7 @@ export interface CreateCheckoutOptions {
 export async function createCheckoutSession(
   options: CreateCheckoutOptions
 ): Promise<Stripe.Checkout.Session> {
-  const { cart, successUrl, cancelUrl, customerEmail, stripeCustomerId, affiliateCode, overrideDeliveryFee, tipAmount } = options;
+  const { cart, successUrl, cancelUrl, customerEmail, stripeCustomerId, affiliateCode, overrideDeliveryFee, tipAmount, attribution } = options;
 
   // Build line items from cart
   const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = cart.items.map((item) => ({
@@ -123,6 +141,13 @@ export async function createCheckoutSession(
     discountCode: cart.discountCode || undefined,
     affiliateCode: affiliateCode || undefined,
     tipAmount: tipAmount && tipAmount > 0 ? tipAmount.toFixed(2) : undefined,
+    landingPage: attribution?.landingPage || undefined,
+    utmSource: attribution?.utmSource || undefined,
+    utmMedium: attribution?.utmMedium || undefined,
+    utmCampaign: attribution?.utmCampaign || undefined,
+    utmTerm: attribution?.utmTerm || undefined,
+    utmContent: attribution?.utmContent || undefined,
+    referrer: attribution?.referrer || undefined,
   };
 
   // Filter out undefined values for Stripe metadata

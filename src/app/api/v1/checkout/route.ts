@@ -203,7 +203,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Get request body for optional params
     const body = await request.json().catch(() => ({}));
-    const { customerEmail, customerName, customerPhone, returnUrl, tipAmount: rawTip } = body;
+    const { customerEmail, customerName, customerPhone, returnUrl, tipAmount: rawTip, attribution } = body;
     const tipAmount = typeof rawTip === 'number' && rawTip > 0 ? Math.round(rawTip * 100) / 100 : 0;
 
     // Compute effective totals (affiliate free delivery applied in-memory only)
@@ -275,6 +275,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       affiliateCode,
       overrideDeliveryFee: affiliateFreeDelivery ? 0 : undefined,
       tipAmount: tipAmount > 0 ? tipAmount : undefined,
+      attribution: attribution && typeof attribution === 'object' ? attribution : undefined,
     });
 
     return NextResponse.json({

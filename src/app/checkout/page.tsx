@@ -267,6 +267,8 @@ export default function CheckoutPage() {
       }
 
       // Create checkout session (Stripe for paid orders, direct for $0 orders)
+      const { getAttribution } = await import('@/lib/analytics/attribution');
+      const attribution = getAttribution();
       const checkoutResponse = await fetch('/api/v1/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -275,6 +277,7 @@ export default function CheckoutPage() {
           customerName: `${billingAddress.firstName} ${billingAddress.lastName}`.trim(),
           customerPhone: billingAddress.phone,
           tipAmount: tipAmount > 0 ? tipAmount : undefined,
+          attribution,
         }),
       });
 
