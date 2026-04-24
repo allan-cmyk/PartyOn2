@@ -55,11 +55,83 @@ model AnalyticsSnapshot {
   topProducts        Json?    @map("top_products")
   topKeywords        Json?    @map("top_keywords")
   topReferrers       Json?    @map("top_referrers")
+
+  // External data source payloads (populated by nightly cron)
+  semrushData  Json? @map("semrush_data")
+  vercelData   Json? @map("vercel_data")
+  gbpData      Json? @map("gbp_data")
+  marginData   Json? @map("margin_data")
+  segmentData  Json? @map("segment_data")
+
   createdAt          DateTime @default(now()) @map("created_at")
   updatedAt          DateTime @updatedAt @map("updated_at")
 
   @@unique([date])
   @@map("analytics_snapshots")
+}
+
+// First-party event stream — captures pageviews, CTA clicks, scroll depth,
+// experiment exposures/conversions. Source of truth for A/B significance and
+// any analytics that needs to be sample-free or joinable to internal tables.
+// Volume estimate: ~30 events/session × 5k sessions/mo = ~150k rows/mo. Cheap.
+model AnalyticsEvent {
+  id          String   @id @default(uuid())
+  // Event identity
+  name        String   // page_view | cta_click | scroll_depth | section_view |
+                      // experiment_exposure | experiment_conversion | form_submit | etc.
+  occurredAt  DateTime @default(now()) @map("occurred_at")
+
+  // Session / visitor (anonymous identifiers; no PII)
+  sessionId   String   @map("session_id")
+  visitorId   String?  @map("visitor_id") // long-lived per-browser
+
+  // Page context
+  path        String?  // pathname only, no query
+  fullUrl     String?  @map("full_url") @db.Text
+  referrer    String?  @db.Text
+
+  // Marketing attribution (mirrors first-touch on the visitor)
+  utmSource   String?  @map("utm_source")
+  utmMedium   String?  @map("utm_medium")
+  utmCampaign String?  @map("utm_campaign")
+
+  // Experiment context (set on every event from a user in an active experiment)
+  experimentId String? @map("experiment_id")
+  variantId    String? @map("variant_id")
+
+  // Customer / order linkage when known
+  customerId  String?  @map("customer_id")
+  orderId     String?  @map("order_id")
+
+  // Free-form event-specific payload (button text, scroll %, product id, etc.)
+  properties  Json?
+
+  @@index([name, occurredAt])
+  @@index([sessionId])
+  @@index([experimentId, variantId])
+  @@index([occurredAt])
+  @@index([path])
+  @@map("analytics_events")
+}
+
+// Google Business Profile reviews (pulled nightly; inferred segment used for sentiment trends)
+model GbpReview {
+  id           String   @id @default(uuid())
+  reviewId     String   @unique @map("review_id")
+  rating       Int
+  text         String?  @db.Text
+  authorName   String?  @map("author_name")
+  reply        String?  @db.Text
+  replyAt      DateTime? @map("reply_at")
+  reviewedAt   DateTime @map("reviewed_at")
+  segment      String?  // wedding | bach | boat | corporate | other — inferred from text
+  sentiment    String?  // positive | neutral | negative
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([reviewedAt])
+  @@index([segment])
+  @@map("gbp_reviews")
 }
 
 // A/B Testing Experiments
@@ -798,6 +870,18 @@ model Order {
   // Affiliate attribution
   affiliateId String? @map("affiliate_id")
 
+  // Channel / marketing attribution (first-touch)
+  landingPage String? @map("landing_page")
+  utmSource   String? @map("utm_source")
+  utmMedium   String? @map("utm_medium")
+  utmCampaign String? @map("utm_campaign")
+  utmTerm     String? @map("utm_term")
+  utmContent  String? @map("utm_content")
+  referrer    String? @map("referrer")
+
+  // Margin (computed at order creation; null for orders created before margin pipeline existed)
+  marginAmount Decimal? @map("margin_amount") @db.Decimal(10, 2)
+
   // Notes
   customerNote String? @map("customer_note") @db.Text
   internalNote String? @map("internal_note") @db.Text
@@ -831,6 +915,8 @@ model Order {
   @@index([shopifyOrderId])
   @@index([affiliateId])
   @@index([groupOrderV2Id])
+  @@index([utmSource])
+  @@index([landingPage])
   @@map("orders")
 }
 
@@ -847,6 +933,11 @@ model OrderItem {
   price        Decimal @db.Decimal(10, 2)
   quantity     Int
   totalPrice   Decimal @map("total_price") @db.Decimal(10, 2)
+
+  // COGS snapshot at time of order (copied from ProductVariant.costPerUnit)
+  // Null = cost was unknown at order time; nullable keeps historical orders valid.
+  unitCost  Decimal? @map("unit_cost") @db.Decimal(10, 2)
+  totalCost Decimal? @map("total_cost") @db.Decimal(10, 2)
 
   // Fulfillment tracking
   fulfilledQuantity Int @default(0) @map("fulfilled_quantity")
