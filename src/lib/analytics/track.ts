@@ -1,4 +1,5 @@
 import { track } from '@vercel/analytics';
+import { trackPodEvent } from './client-tracker';
 
 /**
  * Analytics Event Names - Centralized constants for consistency
@@ -76,6 +77,8 @@ export function trackEvent(
     } else {
       track(eventName);
     }
+    // Mirror to first-party event stream (own DB, no sampling, joinable to orders)
+    trackPodEvent(eventName, properties as Record<string, unknown> | undefined);
   } catch (error) {
     // Silently fail in production, log in development
     if (process.env.NODE_ENV === 'development') {

@@ -1,7 +1,20 @@
 /**
  * GA4 Custom Event Tracking for A/B Testing
  * @module lib/analytics/ga4-events
+ *
+ * Every event mirrors to the first-party AnalyticsEvent stream via
+ * `trackPodEvent` so we have a sample-free, joinable copy in our own DB.
+ *
+ * For experiment_id / variant_id to be queryable in the GA4 Reporting API,
+ * they MUST be registered as custom event-scoped dimensions in GA4 admin:
+ *   Admin → Custom definitions → Create custom dimension
+ *     - Dimension name: Experiment ID,  Event parameter: experiment_id
+ *     - Dimension name: Variant ID,     Event parameter: variant_id
+ *     - Dimension name: Section,        Event parameter: section
+ * Without that registration, the events fire fine but you can't slice by them.
  */
+
+import { trackPodEvent } from './client-tracker';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 declare global {
@@ -50,6 +63,12 @@ export function trackCTAClick(
     ...(experimentId && { experiment_id: experimentId }),
     ...(variantId && { variant_id: variantId }),
   });
+
+  trackPodEvent(
+    'cta_click',
+    { button_text: buttonText, button_url: buttonUrl, section },
+    { experimentId, variantId }
+  );
 }
 
 /**
@@ -68,6 +87,8 @@ export function trackScrollDepth(percentage: 25 | 50 | 75 | 100): void {
     percent_scrolled: percentage,
     page_location: window.location.href,
   });
+
+  trackPodEvent('scroll_depth', { percent_scrolled: percentage });
 }
 
 /**
@@ -86,6 +107,8 @@ export function trackSectionView(sectionName: string): void {
     section_name: sectionName,
     page_location: window.location.href,
   });
+
+  trackPodEvent('section_view', { section_name: sectionName });
 }
 
 /**
@@ -112,6 +135,12 @@ export function trackHeroVariant(
     element_id: elementId,
     page_location: window.location.href,
   });
+
+  trackPodEvent(
+    'experiment_exposure',
+    { element_id: elementId },
+    { experimentId, variantId }
+  );
 }
 
 /**
@@ -141,6 +170,12 @@ export function trackExperimentConversion(
     ...(value !== undefined && { value }),
     page_location: window.location.href,
   });
+
+  trackPodEvent(
+    'experiment_conversion',
+    { conversion_type: conversionType, value: value ?? null },
+    { experimentId, variantId }
+  );
 }
 
 /**
