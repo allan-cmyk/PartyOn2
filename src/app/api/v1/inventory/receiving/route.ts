@@ -33,6 +33,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   if (!file.type.startsWith('image/')) {
     return NextResponse.json({ error: 'Only image uploads are supported' }, { status: 400 });
   }
+  if (file.size > 4 * 1024 * 1024) {
+    return NextResponse.json({ error: 'Image too large — please retake at lower quality' }, { status: 413 });
+  }
 
   let uploadUrl: string;
   try {

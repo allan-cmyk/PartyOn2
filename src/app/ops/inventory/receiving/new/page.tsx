@@ -3,14 +3,16 @@
 import { useRef, useState, ReactElement } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { compressImageForUpload } from '@/lib/inventory/receiving/image-compress';
 
 export default function ReceivingUploadPage(): ReactElement {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
+  const [stage, setStage] = useState<'idle' | 'compressing' | 'uploading' | 'parsing'>('idle');
   const [error, setError] = useState<string | null>(null);
+  const uploading = stage !== 'idle';
 
   const handleFileSelected = (selected: File | null) => {
     setError(null);
@@ -27,24 +29,28 @@ export default function ReceivingUploadPage(): ReactElement {
 
   const handleUpload = async () => {
     if (!file) return;
-    setUploading(true);
     setError(null);
     try {
+      setStage('compressing');
+      const compressed = await compressImageForUpload(file);
+
+      setStage('uploading');
       const formData = new FormData();
-      formData.append('image', file);
+      formData.append('image', compressed);
       const res = await fetch('/api/v1/inventory/receiving', { method: 'POST', body: formData });
+      setStage('parsing');
       const text = await res.text();
       let data: { invoiceId?: string; error?: string } = {};
       try { data = text ? JSON.parse(text) : {}; } catch { /* non-JSON response */ }
       if (!res.ok || !data.invoiceId) {
         setError(data.error || `Upload failed (${res.status})${text && !data.error ? `: ${text.slice(0, 200)}` : ''}`);
-        setUploading(false);
+        setStage('idle');
         return;
       }
       router.push(`/ops/inventory/receiving/${data.invoiceId}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload failed');
-      setUploading(false);
+      setStage('idle');
     }
   };
 
@@ -102,7 +108,10 @@ export default function ReceivingUploadPage(): ReactElement {
                   disabled={uploading}
                   className="px-6 py-2 bg-brand-blue text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-60"
                 >
-                  {uploading ? 'Parsing invoice…' : 'Parse Invoice'}
+                  {stage === 'compressing' && 'Compressing…'}
+                  {stage === 'uploading' && 'Uploading…'}
+                  {stage === 'parsing' && 'Parsing invoice…'}
+                  {stage === 'idle' && 'Parse Invoice'}
                 </button>
               </div>
             </div>
