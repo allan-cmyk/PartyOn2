@@ -16,6 +16,25 @@ function normalizeKey(sku: string | null, description: string): string {
   return base;
 }
 
+/**
+ * Extract the pack-size multiplier from a variant's product+variant title.
+ * Distributor invoices print per-bottle/can cost, but ProductVariant.costPerUnit is
+ * per-selling-unit (which for our catalog is usually a multi-pack like "24 Pack").
+ * So variant.costPerUnit = invoiceUnitCost * packSize.
+ *
+ * Examples:
+ *   "Lone Star • 24 Pack 12oz Can"           → 24
+ *   "Saint Arnold Summer Pils • 6 Pack 12oz" → 6
+ *   "Casamigos Tequila Blanco • 750ml Bottle" → 1
+ *   "Bottled Water • 32 Pack 16.9oz"          → 32
+ */
+export function extractPackSizeFromTitle(combinedTitle: string): number {
+  const match = combinedTitle.match(/(\d+)\s*Pack/i);
+  if (!match) return 1;
+  const n = parseInt(match[1], 10);
+  return Number.isFinite(n) && n > 0 ? n : 1;
+}
+
 export async function createInvoiceFromParse(params: {
   imageUrl: string;
   parsed: ParsedInvoice;
@@ -126,7 +145,12 @@ export async function applyInvoice(invoiceId: string): Promise<{ appliedCount: n
 
     const variant = await prisma.productVariant.findUnique({
       where: { id: line.matchedVariantId },
-      select: { id: true, productId: true },
+      select: {
+        id: true,
+        productId: true,
+        title: true,
+        product: { select: { title: true } },
+      },
     });
     if (!variant) {
       skipped++;
@@ -142,11 +166,15 @@ export async function applyInvoice(invoiceId: string): Promise<{ appliedCount: n
     });
 
     // Propagate unit cost to ProductVariant.costPerUnit so margin calculations have real data.
-    // The latest applied invoice's cost wins (overwrites any prior value).
+    // The invoice prints per-bottle cost; the variant cost is per selling unit (often a multi-pack),
+    // so multiply by the pack-size from the title. The latest applied invoice's cost wins.
     if (line.unitCost != null) {
+      const combinedTitle = `${variant.product.title} ${variant.title ?? ''}`;
+      const packSize = extractPackSizeFromTitle(combinedTitle);
+      const variantCost = new Prisma.Decimal(line.unitCost).mul(packSize);
       await prisma.productVariant.update({
         where: { id: variant.id },
-        data: { costPerUnit: line.unitCost },
+        data: { costPerUnit: variantCost },
       });
     }
 

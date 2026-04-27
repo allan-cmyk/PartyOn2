@@ -14,6 +14,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/database/client';
 import { parseInvoiceImage, type ParsedInvoiceLine } from '@/lib/inventory/receiving/parser';
+import { extractPackSizeFromTitle } from '@/lib/inventory/receiving/service';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 300;
@@ -64,7 +65,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       lineId: string;
       label: string;
       action: 'updated' | 'no-match' | 'no-cost' | 'no-variant' | 'unchanged';
-      unitCost: number | null;
+      invoiceUnitCost: number | null;     // per-bottle from OCR
+      packSize: number | null;             // multiplier derived from variant title
+      variantCost: number | null;          // invoiceUnitCost × packSize — what we'd write
       variantId: string | null;
       variantLabel: string | null;
       previousVariantCost: number | null;
@@ -101,26 +104,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
       if (!reocrLine) {
         invSummary.perLine.push({
-          lineId: dbLine.id,
-          label,
-          action: 'no-match',
-          unitCost: null,
-          variantId: dbLine.matchedVariantId,
-          variantLabel: null,
-          previousVariantCost: null,
+          lineId: dbLine.id, label, action: 'no-match',
+          invoiceUnitCost: null, packSize: null, variantCost: null,
+          variantId: dbLine.matchedVariantId, variantLabel: null, previousVariantCost: null,
         });
         continue;
       }
 
       if (reocrLine.unitCost == null) {
         invSummary.perLine.push({
-          lineId: dbLine.id,
-          label,
-          action: 'no-cost',
-          unitCost: null,
-          variantId: dbLine.matchedVariantId,
-          variantLabel: null,
-          previousVariantCost: null,
+          lineId: dbLine.id, label, action: 'no-cost',
+          invoiceUnitCost: null, packSize: null, variantCost: null,
+          variantId: dbLine.matchedVariantId, variantLabel: null, previousVariantCost: null,
         });
         continue;
       }
@@ -135,8 +130,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         ? `${variant.product.title}${variant.title && variant.title !== 'Default Title' ? ' / ' + variant.title : ''}`
         : null;
       const previousVariantCost = variant?.costPerUnit ? Number(variant.costPerUnit) : null;
+      const packSize = variant
+        ? extractPackSizeFromTitle(`${variant.product.title} ${variant.title ?? ''}`)
+        : 1;
+      const variantCost = Number((reocrLine.unitCost * packSize).toFixed(4));
 
-      // Write to line.
+      // Write to line (raw per-bottle invoice cost).
       if (!dryRun) {
         await prisma.receivingInvoiceLine.update({
           where: { id: dbLine.id },
@@ -145,12 +144,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         totalLineUpdates++;
       }
 
-      // Optionally write to variant.
+      // Optionally write to variant (per-selling-unit cost = invoiceUnitCost × packSize).
       const willTouchVariant = applyToVariants && variant != null;
       if (willTouchVariant && !dryRun) {
         await prisma.productVariant.update({
           where: { id: variant!.id },
-          data: { costPerUnit: new Prisma.Decimal(reocrLine.unitCost) },
+          data: { costPerUnit: new Prisma.Decimal(variantCost) },
         });
         totalVariantUpdates++;
       }
@@ -159,7 +158,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         lineId: dbLine.id,
         label,
         action: variant ? 'updated' : 'no-variant',
-        unitCost: reocrLine.unitCost,
+        invoiceUnitCost: reocrLine.unitCost,
+        packSize,
+        variantCost,
         variantId: dbLine.matchedVariantId,
         variantLabel,
         previousVariantCost,
