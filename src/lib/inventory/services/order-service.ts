@@ -9,6 +9,7 @@ import type Stripe from 'stripe';
 import { CartWithItems } from './cart-service';
 import type { DraftOrderWithTotal, DraftOrderItem } from '@/lib/draft-orders/types';
 import { snapshotItemCost, finalizeOrderMargin } from '@/lib/analytics/margin-service';
+import { classifySegment } from '@/lib/analytics/segment-classifier';
 
 /**
  * Order with all relations
@@ -471,6 +472,10 @@ export async function createOrderFromCheckout(
         utmTerm: session.metadata?.utmTerm || null,
         utmContent: session.metadata?.utmContent || null,
         referrer: session.metadata?.referrer || null,
+        segment: classifySegment(
+          session.metadata?.landingPage,
+          session.metadata?.utmCampaign
+        ),
       },
       include: { items: true },
     });

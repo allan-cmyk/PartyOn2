@@ -57,11 +57,12 @@ model AnalyticsSnapshot {
   topReferrers       Json?    @map("top_referrers")
 
   // External data source payloads (populated by nightly cron)
-  semrushData  Json? @map("semrush_data")
-  vercelData   Json? @map("vercel_data")
-  gbpData      Json? @map("gbp_data")
-  marginData   Json? @map("margin_data")
-  segmentData  Json? @map("segment_data")
+  semrushData    Json? @map("semrush_data")
+  vercelData     Json? @map("vercel_data")
+  gbpData        Json? @map("gbp_data")
+  marginData     Json? @map("margin_data")
+  segmentData    Json? @map("segment_data")
+  comparisonData Json? @map("comparison_data") // Prior-period rollups + WoW/MoM deltas
 
   createdAt          DateTime @default(now()) @map("created_at")
   updatedAt          DateTime @updatedAt @map("updated_at")
@@ -879,6 +880,10 @@ model Order {
   utmContent  String? @map("utm_content")
   referrer    String? @map("referrer")
 
+  // Customer segment (bach | wedding | corporate | boat | kegs | general),
+  // derived from landingPage + utmCampaign at order creation. See segment-classifier.ts.
+  segment     String? @map("segment")
+
   // Margin (computed at order creation; null for orders created before margin pipeline existed)
   marginAmount Decimal? @map("margin_amount") @db.Decimal(10, 2)
 
@@ -917,6 +922,7 @@ model Order {
   @@index([groupOrderV2Id])
   @@index([utmSource])
   @@index([landingPage])
+  @@index([segment])
   @@map("orders")
 }
 
@@ -2457,6 +2463,39 @@ model ScheduleOrderMatch {
   @@index([orderId])
   @@index([status])
   @@map("schedule_order_matches")
+}
+
+// Persisted output of the Marketing Director / heuristic engine. Each row is a single
+// proposed action; status workflow is open → approved → shipped (or rejected/invalidated).
+// `riskTier` enables the Phase 2 autonomy ramp: 'autonomous' rows can be picked up by a
+// worker for auto-PR, 'recommend' rows always require human approval, 'hard_stop' rows
+// (e.g. anything touching TABC) never ship.
+model RecommendationItem {
+  id                    String    @id @default(uuid())
+  generatedAt           DateTime  @default(now()) @map("generated_at")
+  source                String    // 'auto-snapshot' | 'director' | 'manual'
+  title                 String
+  body                  String?   @db.Text
+  segment               String?   // bach | wedding | corporate | boat | kegs | general | null (cross-segment)
+  metric                String?   // e.g. 'conversion-by-page:/weddings'
+  currentValue          String?   @map("current_value")
+  targetValue           String?   @map("target_value")
+  impactDollarsMonthly  Int?      @map("impact_dollars_monthly")
+  effortTier            String?   @map("effort_tier")  // s | m | l
+  riskTier              String    @default("recommend") @map("risk_tier")  // autonomous | recommend | hard_stop
+  status                String    @default("open")   // open | approved | shipped | rejected | invalidated
+  shippedAt             DateTime? @map("shipped_at")
+  resultMetricBefore    Json?     @map("result_metric_before")
+  resultMetricAfter     Json?     @map("result_metric_after")
+  notes                 String?   @db.Text
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@index([generatedAt])
+  @@index([segment])
+  @@index([title, segment])
+  @@map("recommendation_items")
 }
 
 model SyncLog {
