@@ -124,7 +124,11 @@ export async function getVariantSuggestions(description: string, limit = 5): Pro
   return scored.slice(0, limit);
 }
 
-export async function applyInvoice(invoiceId: string): Promise<{ appliedCount: number; skipped: number }> {
+export async function applyInvoice(
+  invoiceId: string,
+  options: { skipInventory?: boolean } = {}
+): Promise<{ appliedCount: number; skipped: number; skipInventory: boolean }> {
+  const skipInventory = options.skipInventory === true;
   const invoice = await prisma.receivingInvoice.findUnique({
     where: { id: invoiceId },
     include: { lines: true },
@@ -157,13 +161,15 @@ export async function applyInvoice(invoiceId: string): Promise<{ appliedCount: n
       continue;
     }
 
-    await adjustInventory({
-      productId: variant.productId,
-      variantId: variant.id,
-      quantity: line.totalUnits,
-      reason,
-      type: 'RECEIVED',
-    });
+    if (!skipInventory) {
+      await adjustInventory({
+        productId: variant.productId,
+        variantId: variant.id,
+        quantity: line.totalUnits,
+        reason,
+        type: 'RECEIVED',
+      });
+    }
 
     // Propagate unit cost to ProductVariant.costPerUnit. Invoice prints per-bottle cost;
     // variant cost is per selling unit (often a multi-pack), so multiply by pack-size.
@@ -228,5 +234,5 @@ export async function applyInvoice(invoiceId: string): Promise<{ appliedCount: n
     data: { status: 'APPLIED', appliedAt: new Date() },
   });
 
-  return { appliedCount, skipped };
+  return { appliedCount, skipped, skipInventory };
 }

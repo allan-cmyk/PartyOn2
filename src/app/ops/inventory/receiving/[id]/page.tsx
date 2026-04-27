@@ -102,18 +102,25 @@ export default function ReceivingReviewPage({ params }: { params: Promise<{ id: 
     setVariantResults((prev) => ({ ...prev, [lineId]: variants }));
   };
 
-  const apply = async () => {
+  const apply = async (skipInventory = false) => {
     if (!invoice) return;
-    if (!confirm('Apply all matched lines to inventory? This increments stock for each matched item.')) return;
+    const msg = skipInventory
+      ? 'Apply COSTS ONLY (no inventory)? This writes per-unit cost to matched variants but does NOT increment stock.'
+      : 'Apply all matched lines to inventory? This increments stock AND writes cost-per-unit for each matched item.';
+    if (!confirm(msg)) return;
     setApplying(true);
     try {
-      const res = await fetch(`/api/v1/inventory/receiving/${id}/apply`, { method: 'POST' });
+      const url = skipInventory
+        ? `/api/v1/inventory/receiving/${id}/apply?skipInventory=1`
+        : `/api/v1/inventory/receiving/${id}/apply`;
+      const res = await fetch(url, { method: 'POST' });
       const data = await res.json();
       if (!res.ok) {
         alert(data.error || 'Apply failed');
         return;
       }
-      alert(`Applied ${data.appliedCount} line${data.appliedCount === 1 ? '' : 's'}. ${data.skipped} skipped.`);
+      const mode = skipInventory ? ' (cost-only)' : '';
+      alert(`Applied${mode} ${data.appliedCount} line${data.appliedCount === 1 ? '' : 's'}. ${data.skipped} skipped.`);
       router.push('/ops/inventory');
     } finally {
       setApplying(false);
@@ -144,13 +151,23 @@ export default function ReceivingReviewPage({ params }: { params: Promise<{ id: 
             </p>
           </div>
           {invoice.status === 'PENDING_REVIEW' && (
-            <button
-              onClick={apply}
-              disabled={!canApply || applying}
-              className="px-6 py-3 bg-brand-blue text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {applying ? 'Applying…' : `Apply ${matchedCount} line${matchedCount === 1 ? '' : 's'} (+${totalUnitsMatched} units)`}
-            </button>
+            <div className="flex flex-col md:flex-row gap-2">
+              <button
+                onClick={() => apply(true)}
+                disabled={!canApply || applying}
+                className="px-4 py-3 bg-white text-brand-blue border-2 border-brand-blue rounded-lg font-semibold hover:bg-blue-50 disabled:opacity-60 disabled:cursor-not-allowed"
+                title="Writes per-unit cost to matched variants without changing inventory. Use for historical invoices."
+              >
+                {applying ? 'Applying…' : `Apply costs only (${matchedCount})`}
+              </button>
+              <button
+                onClick={() => apply(false)}
+                disabled={!canApply || applying}
+                className="px-6 py-3 bg-brand-blue text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {applying ? 'Applying…' : `Apply ${matchedCount} line${matchedCount === 1 ? '' : 's'} (+${totalUnitsMatched} units)`}
+              </button>
+            </div>
           )}
         </div>
 
