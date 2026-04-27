@@ -163,12 +163,23 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   const stageA = lines.join('\n');
   const outDir = path.join(process.cwd(), 'docs', 'marketing', 'weekly');
-  fs.mkdirSync(outDir, { recursive: true });
-  const stageAPath = path.join(outDir, `${week.label}.md`);
-  fs.writeFileSync(stageAPath, stageA);
+  const stageAFsPath = path.join(outDir, `${week.label}.md`);
+  let stageAFsWritten = false;
+  let stageAFsError: string | null = null;
+  try {
+    fs.mkdirSync(outDir, { recursive: true });
+    fs.writeFileSync(stageAFsPath, stageA);
+    stageAFsWritten = true;
+  } catch (err) {
+    stageAFsError = err instanceof Error ? err.message : String(err);
+    // Vercel functions have a read-only filesystem — that's expected. The markdown is
+    // returned in the response body so callers can render or commit it locally.
+  }
 
   // Stage B — LLM narrative analysis
-  let stageBPath: string | null = null;
+  let stageBContent: string | null = null;
+  let stageBFsPath: string | null = null;
+  let stageBFsWritten = false;
   let stageBError: string | null = null;
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (apiKey) {
@@ -213,9 +224,14 @@ ${stageA}`;
       const narrative = json.choices?.[0]?.message?.content?.trim();
       if (!narrative) throw new Error('empty response from OpenRouter');
 
-      const stageB = `# Marketing Director — narrative briefing — ${week.label}\n\n_Generated ${now.toISOString()}. Layered on top of the deterministic briefing at \`${week.label}.md\`._\n\n${narrative}\n`;
-      stageBPath = path.join(outDir, `${week.label}-director.md`);
-      fs.writeFileSync(stageBPath, stageB);
+      stageBContent = `# Marketing Director — narrative briefing — ${week.label}\n\n_Generated ${now.toISOString()}. Layered on top of the deterministic briefing at \`${week.label}.md\`._\n\n${narrative}\n`;
+      stageBFsPath = path.join(outDir, `${week.label}-director.md`);
+      try {
+        fs.writeFileSync(stageBFsPath, stageBContent);
+        stageBFsWritten = true;
+      } catch (err) {
+        stageBError = `fs: ${err instanceof Error ? err.message : String(err)}`;
+      }
     } catch (err) {
       stageBError = err instanceof Error ? err.message : String(err);
       console.error('[weekly-briefing] Stage B failed:', err);
@@ -225,13 +241,24 @@ ${stageA}`;
   return NextResponse.json({
     ok: true,
     week: week.label,
-    stageAPath: path.relative(process.cwd(), stageAPath),
-    stageBPath: stageBPath ? path.relative(process.cwd(), stageBPath) : null,
-    stageBError,
     counts: {
       openRecs: openRecs.length,
       movers: movers.length,
       flags: flags.filter((f) => !f.startsWith('_')).length,
     },
+    stageA: {
+      content: stageA,
+      fsPath: path.relative(process.cwd(), stageAFsPath),
+      fsWritten: stageAFsWritten,
+      fsError: stageAFsError,
+    },
+    stageB: stageBContent
+      ? {
+          content: stageBContent,
+          fsPath: stageBFsPath ? path.relative(process.cwd(), stageBFsPath) : null,
+          fsWritten: stageBFsWritten,
+          fsError: stageBError,
+        }
+      : { content: null, fsError: stageBError },
   });
 }
