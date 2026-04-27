@@ -29,7 +29,12 @@ import {
   getChannelRollup,
   getLandingPageRollup,
   getProductMargins,
+  getSegmentRollup,
+  getAffiliateRoi,
 } from '@/lib/analytics/internal-rollups';
+import { getRepeatRateBySegment, getLtvBySegment } from '@/lib/analytics/cohort-rollups';
+import { buildSnapshotRecommendations } from '@/lib/analytics/snapshot-recommendations';
+import { persistRecommendations, listRecommendations } from '@/lib/analytics/recommendation-store';
 import { getPageEngagement } from '@/lib/analytics/variant-rollup';
 
 export const dynamic = 'force-dynamic';
@@ -47,12 +52,57 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  // Idempotent additive migrations — schema.prisma drift means we can't `prisma db push`,
+  // so apply additive DDL inline. No-ops once columns/tables exist.
+  await prisma.$executeRawUnsafe(
+    `ALTER TABLE analytics_snapshots ADD COLUMN IF NOT EXISTS comparison_data JSONB`
+  );
+  await prisma.$executeRawUnsafe(
+    `ALTER TABLE orders ADD COLUMN IF NOT EXISTS segment TEXT`
+  );
+  await prisma.$executeRawUnsafe(
+    `CREATE INDEX IF NOT EXISTS orders_segment_idx ON orders(segment)`
+  );
+  await prisma.$executeRawUnsafe(`
+    CREATE TABLE IF NOT EXISTS recommendation_items (
+      id TEXT PRIMARY KEY,
+      generated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      source TEXT NOT NULL,
+      title TEXT NOT NULL,
+      body TEXT,
+      segment TEXT,
+      metric TEXT,
+      current_value TEXT,
+      target_value TEXT,
+      impact_dollars_monthly INTEGER,
+      effort_tier TEXT,
+      risk_tier TEXT NOT NULL DEFAULT 'recommend',
+      status TEXT NOT NULL DEFAULT 'open',
+      shipped_at TIMESTAMP(3),
+      result_metric_before JSONB,
+      result_metric_after JSONB,
+      notes TEXT,
+      created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS rec_status_idx ON recommendation_items(status)`);
+  await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS rec_generated_idx ON recommendation_items(generated_at)`);
+  await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS rec_segment_idx ON recommendation_items(segment)`);
+  await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS rec_title_segment_idx ON recommendation_items(title, segment)`);
+
   const today = startOfDay(new Date());
   const endDate = new Date();
   const start7 = new Date();
   start7.setDate(start7.getDate() - 7);
   const start30 = new Date();
   start30.setDate(start30.getDate() - 30);
+
+  // Prior 30-day window (for WoW/MoM deltas) — 30 days ending 30 days ago.
+  const prior30End = new Date();
+  prior30End.setDate(prior30End.getDate() - 30);
+  const prior30Start = new Date();
+  prior30Start.setDate(prior30Start.getDate() - 60);
 
   const errors: string[] = [];
   const safe = async <T>(label: string, fn: () => Promise<T>): Promise<T | null> => {
@@ -65,43 +115,79 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     }
   };
 
-  // Parallel pulls across sources
+  // Parallel pulls across sources. GA4/GSC traffic & SEO metrics natively support
+  // a compare period; for other slices we issue a parallel "prior" call below.
   const [
     traffic,
     trafficSources,
     topPages,
     revenueByChannel,
+    revenueByChannelPrior,
     conversionByPage,
+    conversionByPagePrior,
     funnel,
     seoMetrics,
     topKeywords,
     webVitals,
     vercelTopPages,
     channels,
+    channelsPrior,
     landingRollup,
+    landingRollupPrior,
     productMargins,
+    productMarginsPrior,
   ] = await Promise.all([
-    safe('ga4.traffic', () => getTrafficMetrics(start30, endDate)),
+    safe('ga4.traffic', () => getTrafficMetrics(start30, endDate, prior30Start, prior30End)),
     safe('ga4.sources', () => getTrafficSources(start30, endDate)),
     safe('ga4.top-pages', () => getTopPages(start30, endDate, 20)),
     safe('ga4.revenue-by-channel', () => getRevenueByChannel(start30, endDate)),
+    safe('ga4.revenue-by-channel.prior', () => getRevenueByChannel(prior30Start, prior30End)),
     safe('ga4.conversion-by-page', () => getConversionByLandingPage(start30, endDate)),
+    safe('ga4.conversion-by-page.prior', () => getConversionByLandingPage(prior30Start, prior30End)),
     safe('ga4.funnel', () => getCheckoutFunnel(start30, endDate)),
-    safe('gsc.seo', () => getSEOMetrics(start30, endDate)),
+    safe('gsc.seo', () => getSEOMetrics(start30, endDate, prior30Start, prior30End)),
     safe('gsc.keywords', () => getTopKeywords(start30, endDate, 50)),
     safe('vercel.web-vitals', () => getWebVitals(start7, endDate)),
     safe('vercel.top-pages', () => getVercelTopPages(start30, endDate)),
     safe('internal.channels', () => getChannelRollup(30)),
+    safe('internal.channels.prior', () => getChannelRollup(30, 30)),
     safe('internal.landing-pages', () => getLandingPageRollup(30)),
+    safe('internal.landing-pages.prior', () => getLandingPageRollup(30, 30)),
     safe('internal.product-margins', () => getProductMargins(30)),
+    safe('internal.product-margins.prior', () => getProductMargins(30, 25, 30)),
   ]);
 
   const pageEngagement = await safe('internal.page-engagement', () => getPageEngagement(30));
+  const [segmentRollup, segmentRollupPrior, repeatRate, ltvBySegment, affiliateRoi] = await Promise.all([
+    safe('internal.segments', () => getSegmentRollup(30)),
+    safe('internal.segments.prior', () => getSegmentRollup(30, 30)),
+    safe('internal.repeat-rate', () => getRepeatRateBySegment(30)),
+    safe('internal.ltv', () => getLtvBySegment(12)),
+    safe('internal.affiliate-roi', () => getAffiliateRoi(30)),
+  ]);
 
   // GBP sync (writes to GbpReview table) + insights
   await safe('gbp.sync', () => syncGbpReviews());
   const gbpInsights = await safe('gbp.insights', () => getGbpInsights(30));
   const gbpSegments = await safe('gbp.segments', () => getSegmentSentiment(90));
+
+  const comparisonPayload = {
+    windowDays: 30,
+    priorWindow: { startDate: prior30Start.toISOString(), endDate: prior30End.toISOString() },
+    channels: channelsPrior,
+    landingPages: landingRollupPrior,
+    productMargins: productMarginsPrior,
+    revenueByChannel: revenueByChannelPrior,
+    conversionByPage: conversionByPagePrior,
+    trafficDeltas: {
+      sessionsChange: traffic?.sessionsChange ?? null,
+      usersChange: traffic?.usersChange ?? null,
+    },
+    seoDeltas: {
+      impressionsChange: seoMetrics?.impressionsChange ?? null,
+      clicksChange: seoMetrics?.clicksChange ?? null,
+    },
+  };
 
   // Upsert snapshot
   const snapshot = await prisma.analyticsSnapshot.upsert({
@@ -121,14 +207,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       topReferrers: (trafficSources ?? []) as unknown as object,
       vercelData: { webVitals, topPages: vercelTopPages } as unknown as object,
       gbpData: { insights: gbpInsights, segments: gbpSegments } as unknown as object,
-      marginData: { channels, productMargins } as unknown as object,
+      marginData: { channels, productMargins, affiliateRoi } as unknown as object,
       segmentData: {
         landingPages: landingRollup,
         revenueByChannel,
         conversionByPage,
         funnel,
         pageEngagement,
+        segments: segmentRollup,
+        repeatRate,
+        ltvBySegment,
       } as unknown as object,
+      comparisonData: { ...comparisonPayload, segments: segmentRollupPrior } as unknown as object,
     },
     create: {
       date: today,
@@ -146,16 +236,35 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       topReferrers: (trafficSources ?? []) as unknown as object,
       vercelData: { webVitals, topPages: vercelTopPages } as unknown as object,
       gbpData: { insights: gbpInsights, segments: gbpSegments } as unknown as object,
-      marginData: { channels, productMargins } as unknown as object,
+      marginData: { channels, productMargins, affiliateRoi } as unknown as object,
       segmentData: {
         landingPages: landingRollup,
         revenueByChannel,
         conversionByPage,
         funnel,
         pageEngagement,
+        segments: segmentRollup,
+        repeatRate,
+        ltvBySegment,
       } as unknown as object,
+      comparisonData: { ...comparisonPayload, segments: segmentRollupPrior } as unknown as object,
     },
   });
+
+  // Generate + persist recommendations from this snapshot's rollups, then pull the open queue
+  // so the markdown can show what ops should pay attention to.
+  const snapshotRecs = buildSnapshotRecommendations({
+    segments: segmentRollup ?? [],
+    segmentsPrior: segmentRollupPrior ?? [],
+    affiliateRoi: affiliateRoi ?? [],
+    productMargins: productMargins ?? [],
+  });
+  const persistResult = await safe('recs.persist', () =>
+    persistRecommendations(snapshotRecs, 'auto-snapshot')
+  );
+  const openRecs = (await safe('recs.list-open', () =>
+    listRecommendations({ status: ['open', 'approved'], limit: 25 })
+  )) ?? [];
 
   // Regenerate human-readable markdown summary
   try {
@@ -163,15 +272,27 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       date: today,
       traffic,
       channels: channels ?? [],
+      channelsPrior: channelsPrior ?? [],
       landingRollup: landingRollup ?? [],
+      landingRollupPrior: landingRollupPrior ?? [],
       revenueByChannel: revenueByChannel ?? [],
+      revenueByChannelPrior: revenueByChannelPrior ?? [],
       conversionByPage: conversionByPage ?? [],
+      conversionByPagePrior: conversionByPagePrior ?? [],
       funnel: funnel ?? [],
       productMargins: productMargins ?? [],
+      productMarginsPrior: productMarginsPrior ?? [],
+      segmentRollup: segmentRollup ?? [],
+      segmentRollupPrior: segmentRollupPrior ?? [],
+      repeatRate: repeatRate ?? [],
+      ltvBySegment: ltvBySegment ?? [],
+      affiliateRoi: affiliateRoi ?? [],
+      openRecs,
       gbpInsights,
       gbpSegments: gbpSegments ?? [],
       webVitals,
       topKeywords: topKeywords ?? [],
+      seoMetrics,
       pageEngagement: pageEngagement ?? [],
       errors,
     });
@@ -186,23 +307,69 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   return NextResponse.json({
     ok: true,
     snapshotId: snapshot.id,
+    recommendations: persistResult,
+    openRecCount: openRecs.length,
     errors: errors.length ? errors : undefined,
   });
 }
 
+type ChannelRow = { channel: string; orders: number; revenue: number; margin: number | null; averageOrderValue: number; averageMarginPct: number | null };
+type SegmentRow = { segment: string; orders: number; revenue: number; margin: number | null; averageOrderValue: number; averageMarginPct: number | null };
+type LandingRow = { landingPage: string; orders: number; revenue: number; averageOrderValue: number };
+type GaChannelRow = { channel: string; sessions: number; transactions: number; revenue: number; conversionRate: number };
+type GaPageRow = { path: string; sessions: number; transactions: number; conversionRate: number };
+type ProductMarginRow = { title: string; unitsSold: number; revenue: number; margin: number; marginPct: number };
+
+/** "▲ 18%" / "▼ 7%" / "—" / "🆕". Prior=0 with current>0 is treated as new-from-zero. */
+function fmtDelta(current: number, prior: number | null | undefined): string {
+  if (prior == null) return '—';
+  if (prior === 0 && current === 0) return '—';
+  if (prior === 0) return '🆕';
+  const pct = ((current - prior) / prior) * 100;
+  if (Math.abs(pct) < 1) return '—';
+  return `${pct > 0 ? '▲' : '▼'} ${Math.abs(pct).toFixed(0)}%`;
+}
+
+/** Format a precomputed change (e.g. from GA4/GSC's built-in compare) the same way. */
+function fmtChangePct(change: number | null | undefined): string {
+  if (change == null) return '—';
+  if (Math.abs(change) < 1) return '—';
+  return `${change > 0 ? '▲' : '▼'} ${Math.abs(change).toFixed(0)}%`;
+}
+
+function findBy<T>(arr: T[] | undefined, keyFn: (t: T) => string, key: string): T | undefined {
+  return arr?.find((x) => keyFn(x) === key);
+}
+
 function renderMarkdown(s: {
   date: Date;
-  traffic: { sessions: number; users: number; pageviews: number } | null;
-  channels: Array<{ channel: string; orders: number; revenue: number; margin: number | null; averageOrderValue: number; averageMarginPct: number | null }>;
-  landingRollup: Array<{ landingPage: string; orders: number; revenue: number; averageOrderValue: number }>;
-  revenueByChannel: Array<{ channel: string; sessions: number; transactions: number; revenue: number; conversionRate: number }>;
-  conversionByPage: Array<{ path: string; sessions: number; transactions: number; conversionRate: number }>;
+  traffic:
+    | { sessions: number; users: number; pageviews: number; sessionsChange?: number; usersChange?: number }
+    | null;
+  channels: ChannelRow[];
+  channelsPrior: ChannelRow[];
+  landingRollup: LandingRow[];
+  landingRollupPrior: LandingRow[];
+  revenueByChannel: GaChannelRow[];
+  revenueByChannelPrior: GaChannelRow[];
+  conversionByPage: GaPageRow[];
+  conversionByPagePrior: GaPageRow[];
   funnel: Array<{ eventName: string; users: number; dropOffFromPrevious: number | null }>;
-  productMargins: Array<{ title: string; unitsSold: number; revenue: number; margin: number; marginPct: number }>;
+  productMargins: ProductMarginRow[];
+  productMarginsPrior: ProductMarginRow[];
+  segmentRollup: SegmentRow[];
+  segmentRollupPrior: SegmentRow[];
+  repeatRate: Array<{ segment: string; orders: number; repeatOrders: number; repeatRatePct: number }>;
+  ltvBySegment: Array<{ segment: string; customers: number; totalRevenue: number; averageLtv: number }>;
+  affiliateRoi: Array<{ code: string; businessName: string; orders: number; revenue: number; margin: number | null; commissionPaid: number; netMargin: number | null; roiPct: number | null }>;
+  openRecs: Array<{ id: string; title: string; segment: string | null; impactDollarsMonthly: number | null; effortTier: string | null; riskTier: string; status: string; generatedAt: Date }>;
   gbpInsights: { reviewCount: number; averageRating: number; fiveStarPct: number; oneStarPct: number } | null;
   gbpSegments: Array<{ segment: string; count: number; averageRating: number }>;
   webVitals: { lcp: number | null; inp: number | null; cls: number | null } | null;
   topKeywords: Array<{ keyword: string; clicks: number; impressions: number; position: number }>;
+  seoMetrics:
+    | { impressions: number; clicks: number; ctr: number; avgPosition: number; impressionsChange?: number; clicksChange?: number }
+    | null;
   pageEngagement: Array<{ path: string; sessions: number; pageviews: number; bounceRate: number; avgScrollDepth: number; ctaClicks: number; ctaClickRate: number }>;
   errors: string[];
 }): string {
@@ -217,56 +384,140 @@ function renderMarkdown(s: {
     lines.push('');
   }
 
+  lines.push('## Open recommendations');
+  if (s.openRecs.length) {
+    lines.push('| Status | Risk | Effort | Impact $/mo | Segment | Title |');
+    lines.push('|---|---|---|---:|---|---|');
+    for (const r of s.openRecs) {
+      const impact = r.impactDollarsMonthly != null ? `$${r.impactDollarsMonthly.toLocaleString()}` : '—';
+      lines.push(
+        `| ${r.status} | ${r.riskTier} | ${r.effortTier ?? '—'} | ${impact} | ${r.segment ?? '—'} | ${r.title} |`
+      );
+    }
+    lines.push('');
+    lines.push('_Update status via `POST /api/admin/analytics/recommendations` with `{ id, status, notes? }`._');
+  } else {
+    lines.push('_no open recommendations — heuristics may not have flagged anything yet, or this is the first snapshot run_');
+  }
+  lines.push('');
+
   lines.push('## Traffic (last 30 days)');
   if (s.traffic) {
-    lines.push(`- Sessions: **${s.traffic.sessions.toLocaleString()}**  •  Users: **${s.traffic.users.toLocaleString()}**  •  Pageviews: **${s.traffic.pageviews.toLocaleString()}**`);
+    const sCh = fmtChangePct(s.traffic.sessionsChange);
+    const uCh = fmtChangePct(s.traffic.usersChange);
+    lines.push(
+      `- Sessions: **${s.traffic.sessions.toLocaleString()}** (${sCh})  •  Users: **${s.traffic.users.toLocaleString()}** (${uCh})  •  Pageviews: **${s.traffic.pageviews.toLocaleString()}**`
+    );
   } else {
     lines.push('- _GA4 data unavailable_');
   }
   lines.push('');
 
-  lines.push('## Revenue by internal channel (30d)');
+  lines.push('## SEO (Search Console, 30d)');
+  if (s.seoMetrics) {
+    const iCh = fmtChangePct(s.seoMetrics.impressionsChange);
+    const cCh = fmtChangePct(s.seoMetrics.clicksChange);
+    lines.push(
+      `- Impressions: **${s.seoMetrics.impressions.toLocaleString()}** (${iCh})  •  Clicks: **${s.seoMetrics.clicks.toLocaleString()}** (${cCh})  •  CTR: ${s.seoMetrics.ctr}%  •  Avg position: ${s.seoMetrics.avgPosition}`
+    );
+  } else {
+    lines.push('- _Search Console data unavailable_');
+  }
+  lines.push('');
+
+  lines.push('## Revenue by internal channel (30d, vs prior 30d)');
   if (s.channels.length) {
-    lines.push('| Channel | Orders | Revenue | AOV | Margin % |');
-    lines.push('|---|---:|---:|---:|---:|');
+    lines.push('| Channel | Orders | Revenue | AOV | Margin % | Rev WoW |');
+    lines.push('|---|---:|---:|---:|---:|---:|');
     for (const c of s.channels) {
-      lines.push(`| ${c.channel} | ${c.orders} | $${c.revenue.toLocaleString()} | $${c.averageOrderValue} | ${c.averageMarginPct ?? '—'}% |`);
+      const prior = findBy(s.channelsPrior, (x) => x.channel, c.channel);
+      lines.push(
+        `| ${c.channel} | ${c.orders} | $${c.revenue.toLocaleString()} | $${c.averageOrderValue} | ${c.averageMarginPct ?? '—'}% | ${fmtDelta(c.revenue, prior?.revenue ?? null)} |`
+      );
     }
   } else {
     lines.push('_no orders_');
   }
   lines.push('');
 
-  lines.push('## Landing page → orders (30d, our DB)');
-  if (s.landingRollup.length) {
-    lines.push('| Landing page | Orders | Revenue | AOV |');
+  lines.push('## Revenue & margin by customer segment (30d, vs prior 30d)');
+  if (s.segmentRollup.length) {
+    lines.push('| Segment | Orders | Revenue | AOV | Margin % | Rev WoW |');
+    lines.push('|---|---:|---:|---:|---:|---:|');
+    for (const r of s.segmentRollup) {
+      const prior = findBy(s.segmentRollupPrior, (x) => x.segment, r.segment);
+      lines.push(
+        `| ${r.segment} | ${r.orders} | $${r.revenue.toLocaleString()} | $${r.averageOrderValue} | ${r.averageMarginPct ?? '—'}% | ${fmtDelta(r.revenue, prior?.revenue ?? null)} |`
+      );
+    }
+  } else {
+    lines.push('_no segment data — run `npx tsx scripts/backfill-order-segments.ts` to populate Order.segment_');
+  }
+  lines.push('');
+
+  lines.push('## Repeat purchase rate by segment (30d)');
+  if (s.repeatRate.length) {
+    lines.push('| Segment | Orders | Repeat orders | Repeat rate |');
     lines.push('|---|---:|---:|---:|');
+    for (const r of s.repeatRate) {
+      lines.push(`| ${r.segment} | ${r.orders} | ${r.repeatOrders} | ${r.repeatRatePct}% |`);
+    }
+  } else {
+    lines.push('_no orders in window_');
+  }
+  lines.push('');
+
+  lines.push('## LTV by entry segment (customers whose first order was in last 12 months)');
+  if (s.ltvBySegment.length) {
+    lines.push('| Entry segment | Customers | Total revenue | Avg LTV |');
+    lines.push('|---|---:|---:|---:|');
+    for (const r of s.ltvBySegment) {
+      lines.push(`| ${r.segment} | ${r.customers} | $${r.totalRevenue.toLocaleString()} | $${r.averageLtv.toLocaleString()} |`);
+    }
+  } else {
+    lines.push('_no customer data_');
+  }
+  lines.push('');
+
+  lines.push('## Landing page → orders (30d, our DB, vs prior 30d)');
+  if (s.landingRollup.length) {
+    lines.push('| Landing page | Orders | Revenue | AOV | Rev WoW |');
+    lines.push('|---|---:|---:|---:|---:|');
     for (const r of s.landingRollup.slice(0, 15)) {
-      lines.push(`| ${r.landingPage} | ${r.orders} | $${r.revenue.toLocaleString()} | $${r.averageOrderValue} |`);
+      const prior = findBy(s.landingRollupPrior, (x) => x.landingPage, r.landingPage);
+      lines.push(
+        `| ${r.landingPage} | ${r.orders} | $${r.revenue.toLocaleString()} | $${r.averageOrderValue} | ${fmtDelta(r.revenue, prior?.revenue ?? null)} |`
+      );
     }
   } else {
     lines.push('_no attribution data yet — new orders will populate this_');
   }
   lines.push('');
 
-  lines.push('## GA4 revenue by channel (30d)');
+  lines.push('## GA4 revenue by channel (30d, vs prior 30d)');
   if (s.revenueByChannel.length) {
-    lines.push('| Channel | Sessions | Transactions | Revenue | Conv rate |');
-    lines.push('|---|---:|---:|---:|---:|');
+    lines.push('| Channel | Sessions | Transactions | Revenue | Conv rate | Rev WoW |');
+    lines.push('|---|---:|---:|---:|---:|---:|');
     for (const r of s.revenueByChannel) {
-      lines.push(`| ${r.channel} | ${r.sessions} | ${r.transactions} | $${r.revenue.toLocaleString()} | ${(r.conversionRate * 100).toFixed(2)}% |`);
+      const prior = findBy(s.revenueByChannelPrior, (x) => x.channel, r.channel);
+      lines.push(
+        `| ${r.channel} | ${r.sessions} | ${r.transactions} | $${r.revenue.toLocaleString()} | ${(r.conversionRate * 100).toFixed(2)}% | ${fmtDelta(r.revenue, prior?.revenue ?? null)} |`
+      );
     }
   } else {
     lines.push('_GA4 data unavailable_');
   }
   lines.push('');
 
-  lines.push('## Conversion by landing page (GA4, 30d)');
+  lines.push('## Conversion by landing page (GA4, 30d, vs prior 30d)');
   if (s.conversionByPage.length) {
-    lines.push('| Path | Sessions | Transactions | Conv rate |');
-    lines.push('|---|---:|---:|---:|');
+    lines.push('| Path | Sessions | Transactions | Conv rate | Conv WoW |');
+    lines.push('|---|---:|---:|---:|---:|');
     for (const r of s.conversionByPage.slice(0, 15)) {
-      lines.push(`| ${r.path} | ${r.sessions} | ${r.transactions} | ${(r.conversionRate * 100).toFixed(2)}% |`);
+      const prior = findBy(s.conversionByPagePrior, (x) => x.path, r.path);
+      lines.push(
+        `| ${r.path} | ${r.sessions} | ${r.transactions} | ${(r.conversionRate * 100).toFixed(2)}% | ${fmtDelta(r.conversionRate, prior?.conversionRate ?? null)} |`
+      );
     }
   }
   lines.push('');
@@ -281,12 +532,40 @@ function renderMarkdown(s: {
   }
   lines.push('');
 
-  lines.push('## Top product margins (30d)');
+  lines.push('## Affiliate ROI (30d) — top 10 by net margin');
+  if (s.affiliateRoi.length) {
+    lines.push('| Affiliate | Orders | Revenue | Margin | Commission paid | Net margin | ROI |');
+    lines.push('|---|---:|---:|---:|---:|---:|---:|');
+    for (const a of s.affiliateRoi.slice(0, 10)) {
+      const margin = a.margin == null ? '—' : `$${a.margin.toLocaleString()}`;
+      const netMargin = a.netMargin == null ? '—' : `$${a.netMargin.toLocaleString()}`;
+      const roi = a.roiPct == null ? '—' : `${a.roiPct}%`;
+      lines.push(
+        `| ${a.businessName} (${a.code}) | ${a.orders} | $${a.revenue.toLocaleString()} | ${margin} | $${a.commissionPaid.toLocaleString()} | ${netMargin} | ${roi} |`
+      );
+    }
+    const negative = s.affiliateRoi.filter((a) => a.netMargin != null && a.netMargin < 0);
+    if (negative.length) {
+      lines.push('');
+      lines.push('**⚠️ Negative-ROI partners (commission > margin):**');
+      for (const a of negative) {
+        lines.push(`- ${a.businessName} (${a.code}): commission $${a.commissionPaid.toLocaleString()} > margin $${a.margin?.toLocaleString() ?? '—'}`);
+      }
+    }
+  } else {
+    lines.push('_no affiliate orders in window_');
+  }
+  lines.push('');
+
+  lines.push('## Top product margins (30d, vs prior 30d)');
   if (s.productMargins.length) {
-    lines.push('| Product | Units | Revenue | Margin | Margin % |');
-    lines.push('|---|---:|---:|---:|---:|');
+    lines.push('| Product | Units | Revenue | Margin | Margin % | Units WoW |');
+    lines.push('|---|---:|---:|---:|---:|---:|');
     for (const p of s.productMargins.slice(0, 15)) {
-      lines.push(`| ${p.title} | ${p.unitsSold} | $${p.revenue.toLocaleString()} | $${p.margin.toLocaleString()} | ${p.marginPct}% |`);
+      const prior = findBy(s.productMarginsPrior, (x) => x.title, p.title);
+      lines.push(
+        `| ${p.title} | ${p.unitsSold} | $${p.revenue.toLocaleString()} | $${p.margin.toLocaleString()} | ${p.marginPct}% | ${fmtDelta(p.unitsSold, prior?.unitsSold ?? null)} |`
+      );
     }
   }
   lines.push('');
