@@ -54,3 +54,4 @@ image-generator-tool/
 next-env.d.ts
 .env.local
 .env*.local
+.claude/scheduled_tasks.lock
