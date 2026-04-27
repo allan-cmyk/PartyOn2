@@ -18,6 +18,7 @@
 import { PrismaClient } from '@prisma/client';
 import { writeFileSync } from 'fs';
 import { resolve } from 'path';
+import { resolveGroupLabel } from './_group-label.mjs';
 
 const prisma = new PrismaClient();
 
@@ -97,24 +98,35 @@ if (orders.length === 0) {
   process.exit(0);
 }
 
-// Build last-name lookup from orders
-function getLastName(customerName) {
-  if (!customerName) return '?';
-  const parts = customerName.trim().split(/\s+/);
-  return parts[parts.length - 1];
+// Build last-name lookup from orders.
+// IMPORTANT: when an order is part of a group dashboard, the picker's "who needs this"
+// label should be the cruise OWNER's last name (manifest name), NOT the payer's, so it
+// matches the boat schedule. The payer is shown in brackets if different.
+function getOrderLabel(order) {
+  const grp = resolveGroupLabel(order.groupOrderV2, order.customerName);
+  const sourceName = grp.manifestName || order.customerName || '';
+  const parts = sourceName.trim().split(/\s+/);
+  const lastName = parts[parts.length - 1] || '?';
+  // If payer differs, show as "Cruz [Mercado]"
+  if (grp.payerDiffers) {
+    const payerParts = (order.customerName || '').trim().split(/\s+/);
+    const payerLast = payerParts[payerParts.length - 1] || '?';
+    return { lastName: `${lastName}[${payerLast}]`, primaryLastName: lastName };
+  }
+  return { lastName, primaryLastName: lastName };
 }
 
 function buildGroupLabel(order) {
   if (!order.groupOrderV2) return null;
-  const firstName = (order.groupOrderV2.hostName || '').trim().split(/\s+/)[0] || '?';
-  return `${order.groupOrderV2.name} (${firstName})`;
+  const grp = resolveGroupLabel(order.groupOrderV2, order.customerName);
+  return grp.manifestName || order.groupOrderV2.name;
 }
 
 // Aggregate items by product
 const aggregated = new Map();
 
 for (const order of orders) {
-  const lastName = getLastName(order.customerName);
+  const { lastName } = getOrderLabel(order);
   const groupLabel = buildGroupLabel(order);
   for (const item of order.items) {
     // Aggregate by the REAL product identity, not the historical title snapshot.

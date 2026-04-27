@@ -1,6 +1,6 @@
 ---
 name: ops
-description: Party On Delivery ops agent for searching products, checking inventory, creating draft orders, adjusting stock, adding new products from retailer URLs, and entering product COGS for margin tracking. Use when the user wants to manage orders or inventory via CLI.
+description: Party On Delivery ops agent for searching products, checking inventory, creating draft orders, adjusting stock, and adding new products from retailer URLs. Use when the user wants to manage orders or inventory via CLI.
 argument-hint: "[paste customer message or ask about inventory]"
 ---
 
@@ -17,9 +17,34 @@ You have CLI scripts that query the production database. Load env vars before ea
 | Upcoming orders | `set -a && source .env.local && set +a && node scripts/ops/upcoming-orders.mjs [days]` |
 | Create draft order | `set -a && source .env.local && set +a && node scripts/ops/create-draft-order.mjs '<json>'` |
 | Aggregated order list | `set -a && source .env.local && set +a && node scripts/ops/order-list.mjs <start-date> [end-date] [--html]` |
-| Enter COGS for top products | `set -a && source .env.local && set +a && node scripts/ops/enter-cogs.mjs [--limit=20] [--days=90] [--no-backfill]` |
+| Delivery schedule (printable) | `set -a && source .env.local && set +a && node scripts/ops/delivery-schedule.mjs <start-date> <end-date> [output.html]` |
 
 > **Inventory management** (check stock, adjust, low-stock alerts) has moved to the `/inventory` skill.
+
+## Group Orders — ALWAYS surface the manifest name
+
+An Order's `customerName` is just the **payer**. When an order is part of a group dashboard (`Order.groupOrderV2Id` is set), the cruise owner / boat-manifest name lives on `GroupOrderV2.name` in the form `"{manifestName} Drink Delivery!"` (Premier webhook ground truth).
+
+**Rule:** Whenever you report on an order — delivery schedule, pick list, lookup, draft creation confirmation, anything — if the order has a `groupOrderV2Id`, **always resolve and display the manifest name**, not just the payer's name. Ops needs this to cross-reference the boat schedule.
+
+Use the shared helper:
+```js
+import { resolveGroupLabel } from './scripts/ops/_group-label.mjs';
+const lbl = resolveGroupLabel(order.groupOrderV2, order.customerName);
+// lbl.manifestName  -> "Cynthia Cruz" (use to match boat manifest)
+// lbl.displayLabel  -> best human label, never null
+// lbl.payerDiffers  -> true if payer name != manifest name (show "paid by ___")
+// lbl.shareCode     -> dashboard code
+```
+
+Display pattern when payer differs (e.g. Maria Mercado paid via Cynthia Cruz's dashboard):
+```
+Cynthia Cruz                      ← primary label (manifest name)
+paid by Maria Mercado             ← subtitle
++1 916-661-0704 · m.mercado@…    ← contact (the payer's contact)
+```
+
+For pick lists, use `Cruz[Mercado]` so the picker can see both at a glance. The cruise type / boat schedule lookup must use the manifest name (or the group's `hostPhone`), never just the payer's name — otherwise orders like Maria's won't match the manifest.
 
 ## Ad-Hoc Prisma Queries
 
@@ -121,26 +146,6 @@ When the operator asks for an "order list," "pick list," "shopping list," or "wh
 4. Default behavior: show in terminal first, only generate HTML on request
 
 Example: `node scripts/ops/order-list.mjs 2026-04-10 2026-04-11`
-
-## Workflow: Enter Product COGS
-
-When the operator says "enter COGS", "add product costs", "fill in margins", or wants to populate missing cost data:
-
-1. Run `node scripts/ops/enter-cogs.mjs` — it walks through the top 20 products (by 90-day revenue) that are missing cost data, one variant at a time
-2. For each variant it shows: product title, units sold, revenue, current retail price
-3. Operator enters cost per unit → script previews margin% → confirms → saves
-4. By default it also backfills historical OrderItem.unitCost/totalCost and recomputes Order.marginAmount for any past orders with that variant, so margin reports become accurate immediately
-5. Flags: `--limit=50` for more products, `--days=180` for broader revenue window, `--no-backfill` to skip historical update
-
-If the operator provides a specific product + cost in chat (e.g. "High Noon Variety = $18.50 cost"), use `search-products.mjs` to find the variant ID, then update via inline Prisma:
-```bash
-set -a && source .env.local && set +a && node --input-type=module -e "
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
-await prisma.productVariant.update({ where: { id: '<VARIANT_ID>' }, data: { costPerUnit: 18.50 }});
-await prisma.\$disconnect();
-"
-```
 
 ## Workflow: Inventory Adjustments
 
