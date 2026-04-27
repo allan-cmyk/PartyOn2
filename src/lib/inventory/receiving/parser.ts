@@ -5,8 +5,15 @@ export interface ParsedInvoiceLine {
   description: string;
   cases: number;
   unitsPerCase: number;
-  /** Per-unit COGS extracted from the invoice. Null if not present/legible. */
-  unitCost: number | null;
+  /**
+   * Case cost in dollars — the price the distributor charges per case for this line,
+   * as printed on the invoice. Null if not legible. The applyInvoice flow translates
+   * this into ProductVariant.costPerUnit using the matched variant's selling unit
+   * (case for multi-packs, bottle for single-bottle variants like wine and liquor).
+   *
+   * The DB column is still named `unitCost` for legacy reasons; this field maps to it.
+   */
+  caseCost: number | null;
 }
 
 export interface ParsedInvoice {
@@ -29,8 +36,7 @@ Return ONLY JSON matching this shape, no prose:
       "description": string,              // full product description as printed
       "cases": number,                    // number of cases ordered (integer)
       "unitsPerCase": number,             // bottles/cans per case. Infer from pack size (e.g. "12/750ML" -> 12, "24/12OZ" -> 24). Default to 1 if not inferable.
-      "unitCost": number | null,          // per-unit cost in dollars. See cost rules below.
-      "caseCost": number | null           // per-case cost in dollars. See cost rules below.
+      "caseCost": number | null           // PER-CASE price in dollars. See cost rules below.
     }
   ]
 }
@@ -43,12 +49,12 @@ Rules:
 - If the photo is blurry or you cannot read a field, use null.
 
 Cost rules:
-- Distributor invoices typically show one or more of: case price, unit/bottle price, line extension (cases × case price). Capture whichever the invoice shows directly.
-- "unitCost" = price per single bottle/can/container (NOT per case). If the invoice prints both a case price and a unit price, use the unit price.
-- "caseCost" = price per case. If only one cost is visible per line, populate the matching field and leave the other null — we'll derive the other side downstream.
-- Do NOT divide line totals or extensions. Only capture costs that are printed per-line as case price or unit price.
+- We only care about the CASE PRICE — the price for one full case as the distributor sells it.
+- "caseCost" = price per case as printed on the invoice. This is the dollar figure in the price column for the row, NOT a per-bottle/per-can price.
+- If the invoice ONLY shows a per-bottle/per-can unit price for a multi-bottle case, multiply it by unitsPerCase to get caseCost (e.g. 12 bottles × $15/bottle = $180 caseCost).
+- Do NOT use line-extension totals (cases × case price). Use the per-case price.
 - Exclude any deposit, freight, tax, fee, or discount adjustments — these are not COGS.
-- If no cost is legible, set both unitCost and caseCost to null. Do NOT guess.`;
+- If no case-level cost is legible, set caseCost to null. Do NOT guess.`;
 
 export async function parseInvoiceImage(imageUrl: string): Promise<ParsedInvoice> {
   const response = await callOpenRouter(
@@ -66,15 +72,14 @@ export async function parseInvoiceImage(imageUrl: string): Promise<ParsedInvoice
     { temperature: 0.1, maxTokens: 4000 }
   );
 
-  // The model may return either unitCost, caseCost, both, or neither — declare a loose
-  // shape here so the type checker doesn't reject the optional caseCost we look for below.
+  // Tolerate older response shapes (`unitCost`) so partial reocr / cached responses don't break.
   interface RawLine {
     distributorSku?: string | null;
     description?: string;
     cases?: number;
     unitsPerCase?: number;
-    unitCost?: number | null;
     caseCost?: number | null;
+    unitCost?: number | null; // legacy / fallback per-bottle field
   }
   interface RawInvoice {
     distributorName?: string | null;
@@ -96,19 +101,19 @@ export async function parseInvoiceImage(imageUrl: string): Promise<ParsedInvoice
     lines: parsed.lines.map((line) => {
       const cases = Math.max(0, Math.floor(Number(line.cases) || 0));
       const unitsPerCase = Math.max(1, Math.floor(Number(line.unitsPerCase) || 1));
-      // Prefer printed unitCost; otherwise derive from caseCost / unitsPerCase.
-      let unitCost: number | null = null;
-      if (typeof line.unitCost === 'number' && isFinite(line.unitCost) && line.unitCost > 0) {
-        unitCost = Number(line.unitCost.toFixed(4));
-      } else if (typeof line.caseCost === 'number' && isFinite(line.caseCost) && line.caseCost > 0 && unitsPerCase > 0) {
-        unitCost = Number((line.caseCost / unitsPerCase).toFixed(4));
+      let caseCost: number | null = null;
+      if (typeof line.caseCost === 'number' && isFinite(line.caseCost) && line.caseCost > 0) {
+        caseCost = Number(line.caseCost.toFixed(4));
+      } else if (typeof line.unitCost === 'number' && isFinite(line.unitCost) && line.unitCost > 0) {
+        // Legacy per-bottle path — promote to case cost.
+        caseCost = Number((line.unitCost * unitsPerCase).toFixed(4));
       }
       return {
         distributorSku: line.distributorSku ?? null,
         description: String(line.description ?? '').trim(),
         cases,
         unitsPerCase,
-        unitCost,
+        caseCost,
       };
     }).filter((line) => line.description.length > 0),
   };
