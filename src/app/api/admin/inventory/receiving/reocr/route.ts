@@ -64,13 +64,14 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     perLine: Array<{
       lineId: string;
       label: string;
-      action: 'updated' | 'no-match' | 'no-cost' | 'no-variant' | 'unchanged';
+      action: 'updated' | 'no-match' | 'no-cost' | 'no-variant' | 'unchanged' | 'skipped-sanity';
       invoiceUnitCost: number | null;     // per-bottle from OCR
       packSize: number | null;             // multiplier derived from variant title
       variantCost: number | null;          // invoiceUnitCost × packSize — what we'd write
       variantId: string | null;
       variantLabel: string | null;
       previousVariantCost: number | null;
+      sanityNote?: string;
     }>;
     error: string | null;
   }> = [];
@@ -144,8 +145,19 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         totalLineUpdates++;
       }
 
+      // Sanity check: skip variant update if existing cost differs from proposed by >50%.
+      // This catches OCR misreads where per-pack price was labeled as per-bottle (or vice versa).
+      const sanityOk =
+        previousVariantCost == null ||
+        previousVariantCost === 0 ||
+        Math.abs(variantCost - previousVariantCost) / previousVariantCost <= 0.5;
+      const sanityNote =
+        !sanityOk && previousVariantCost != null
+          ? `proposed $${variantCost.toFixed(2)} differs from existing $${previousVariantCost.toFixed(2)} by >50% — likely OCR ambiguity, leaving existing cost alone`
+          : undefined;
+
       // Optionally write to variant (per-selling-unit cost = invoiceUnitCost × packSize).
-      const willTouchVariant = applyToVariants && variant != null;
+      const willTouchVariant = applyToVariants && variant != null && sanityOk;
       if (willTouchVariant && !dryRun) {
         await prisma.productVariant.update({
           where: { id: variant!.id },
@@ -157,13 +169,14 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       invSummary.perLine.push({
         lineId: dbLine.id,
         label,
-        action: variant ? 'updated' : 'no-variant',
+        action: !variant ? 'no-variant' : !sanityOk ? 'skipped-sanity' : 'updated',
         invoiceUnitCost: reocrLine.unitCost,
         packSize,
         variantCost,
         variantId: dbLine.matchedVariantId,
         variantLabel,
         previousVariantCost,
+        sanityNote,
       });
     }
 

@@ -165,17 +165,32 @@ export async function applyInvoice(invoiceId: string): Promise<{ appliedCount: n
       type: 'RECEIVED',
     });
 
-    // Propagate unit cost to ProductVariant.costPerUnit so margin calculations have real data.
-    // The invoice prints per-bottle cost; the variant cost is per selling unit (often a multi-pack),
-    // so multiply by the pack-size from the title. The latest applied invoice's cost wins.
+    // Propagate unit cost to ProductVariant.costPerUnit. Invoice prints per-bottle cost;
+    // variant cost is per selling unit (often a multi-pack), so multiply by pack-size.
+    // Sanity check: if existing cost is set and the new value differs by >50%, leave it
+    // alone — that's typically OCR misreading per-pack as per-bottle (or vice versa)
+    // and would corrupt good data.
     if (line.unitCost != null) {
+      const fullVariant = await prisma.productVariant.findUnique({
+        where: { id: variant.id },
+        select: { costPerUnit: true },
+      });
       const combinedTitle = `${variant.product.title} ${variant.title ?? ''}`;
       const packSize = extractPackSizeFromTitle(combinedTitle);
-      const variantCost = new Prisma.Decimal(line.unitCost).mul(packSize);
-      await prisma.productVariant.update({
-        where: { id: variant.id },
-        data: { costPerUnit: variantCost },
-      });
+      const proposed = Number(line.unitCost) * packSize;
+      const existing = fullVariant?.costPerUnit ? Number(fullVariant.costPerUnit) : null;
+      const safe =
+        existing == null || existing === 0 || Math.abs(proposed - existing) / existing <= 0.5;
+      if (safe) {
+        await prisma.productVariant.update({
+          where: { id: variant.id },
+          data: { costPerUnit: new Prisma.Decimal(proposed) },
+        });
+      } else {
+        console.warn(
+          `[receiving] cost sanity-check skip: ${combinedTitle} (existing $${existing.toFixed(2)} → proposed $${proposed.toFixed(2)} from invoice line ${line.id})`
+        );
+      }
     }
 
     await prisma.receivingInvoiceLine.update({
