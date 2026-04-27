@@ -18,14 +18,6 @@ interface Address {
   isDefault: boolean;
 }
 
-interface LoyaltyTransaction {
-  id: string;
-  type: string;
-  points: number;
-  description: string | null;
-  createdAt: string;
-}
-
 interface OrderSummary {
   id: string;
   orderNumber: number;
@@ -55,14 +47,6 @@ interface CustomerDetail {
   shopifyId: string | null;
   stripeCustomerId: string | null;
   addresses: Address[];
-  loyalty: {
-    points: number;
-    lifetimeSpend: number;
-    lifetimePoints: number;
-    tier: { id: string; name: string; color: string; discountPercent: number; pointsMultiplier: number; benefits: unknown };
-    nextTier: { id: string; name: string; minSpend: number; spendNeeded: number } | null;
-    recentTransactions: LoyaltyTransaction[];
-  } | null;
   orders: OrderSummary[];
   stats: {
     totalOrders: number;
@@ -195,7 +179,7 @@ export default function CustomerDetailPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <h3 className="text-xs font-medium text-gray-600 mb-1">Total Orders</h3>
           <p className="text-2xl font-bold text-black">{customer.stats.totalOrders}</p>
@@ -207,15 +191,6 @@ export default function CustomerDetailPage() {
         <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
           <h3 className="text-xs font-medium text-gray-600 mb-1">Avg Order Value</h3>
           <p className="text-2xl font-bold text-black">{formatCurrency(customer.stats.averageOrderValue)}</p>
-        </div>
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <h3 className="text-xs font-medium text-gray-600 mb-1">Loyalty Points</h3>
-          <p className="text-2xl font-bold text-black">{customer.loyalty?.points.toLocaleString() || '0'}</p>
-          {customer.loyalty && (
-            <p className="text-xs mt-1" style={{ color: customer.loyalty.tier.color }}>
-              {customer.loyalty.tier.name} Tier
-            </p>
-          )}
         </div>
       </div>
 
@@ -285,36 +260,9 @@ export default function CustomerDetailPage() {
               </div>
             )}
           </div>
-
-          {/* Loyalty Progress */}
-          {customer.loyalty?.nextTier && (
-            <div className="bg-white border border-gray-200 rounded-lg p-5">
-              <h2 className="text-lg font-semibold text-black mb-4">Loyalty Progress</h2>
-              <div className="text-sm">
-                <div className="flex justify-between mb-2">
-                  <span style={{ color: customer.loyalty.tier.color }} className="font-medium">
-                    {customer.loyalty.tier.name}
-                  </span>
-                  <span className="text-gray-500">{customer.loyalty.nextTier.name}</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
-                  <div
-                    className="h-2 rounded-full"
-                    style={{
-                      backgroundColor: customer.loyalty.tier.color,
-                      width: `${Math.min(100, ((customer.loyalty.lifetimeSpend) / customer.loyalty.nextTier.minSpend) * 100)}%`,
-                    }}
-                  />
-                </div>
-                <p className="text-gray-500 text-xs">
-                  {formatCurrency(customer.loyalty.nextTier.spendNeeded)} more to reach {customer.loyalty.nextTier.name}
-                </p>
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Right Column - Orders & Transactions */}
+        {/* Right Column - Orders */}
         <div className="lg:col-span-2 space-y-6">
           {/* Orders */}
           <div className="bg-white border border-gray-200 rounded-lg p-5">
@@ -362,26 +310,6 @@ export default function CustomerDetailPage() {
               </div>
             )}
           </div>
-
-          {/* Loyalty Transactions */}
-          {customer.loyalty && customer.loyalty.recentTransactions.length > 0 && (
-            <div className="bg-white border border-gray-200 rounded-lg p-5">
-              <h2 className="text-lg font-semibold text-black mb-4">Loyalty Transactions</h2>
-              <div className="space-y-2">
-                {customer.loyalty.recentTransactions.map((tx) => (
-                  <div key={tx.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
-                    <div>
-                      <p className="text-sm text-black">{tx.description || tx.type}</p>
-                      <p className="text-xs text-gray-500">{formatDateTime(tx.createdAt)}</p>
-                    </div>
-                    <span className={`font-medium text-sm ${tx.points >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                      {tx.points >= 0 ? '+' : ''}{tx.points} pts
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>

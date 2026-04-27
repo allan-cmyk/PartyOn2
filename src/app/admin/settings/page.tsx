@@ -230,7 +230,6 @@ export default function SettingsPage() {
                   { id: 'delivery-scheduled', label: 'Delivery Scheduled', desc: 'Sent when delivery is confirmed', enabled: true },
                   { id: 'delivery-enroute', label: 'Delivery En Route', desc: 'Sent when driver is on the way', enabled: true },
                   { id: 'delivery-complete', label: 'Delivery Complete', desc: 'Sent when order is delivered', enabled: true },
-                  { id: 'loyalty-points', label: 'Points Earned', desc: 'Sent when loyalty points are awarded', enabled: false },
                 ].map((notification) => (
                   <div
                     key={notification.id}
@@ -372,14 +371,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Quick Links */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Link
-          href="/admin/loyalty"
-          className="p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-blue-300 transition-colors"
-        >
-          <h3 className="font-medium text-black">Loyalty Program</h3>
-          <p className="text-sm text-gray-500">Configure tiers and rewards</p>
-        </Link>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Link
           href="/admin/promotions"
           className="p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-blue-300 transition-colors"

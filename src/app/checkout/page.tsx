@@ -32,7 +32,6 @@ export default function CheckoutPage() {
     country: 'US'
   });
 
-  // const [applyLoyaltyPoints, setApplyLoyaltyPoints] = useState(false); // Disabled for now
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [discountCode, setDiscountCode] = useState('');
   const [isApplyingDiscount, setIsApplyingDiscount] = useState(false);
@@ -707,26 +706,6 @@ export default function CheckoutPage() {
                     </div>
                   )}
 
-                  {/* Loyalty Points - Disabled for now */}
-                  {/* {isAuthenticated && customer?.metafields && (
-                    <div className="pt-2 border-t">
-                      <label className="flex items-center justify-between cursor-pointer">
-                        <span className="text-sm">Apply Loyalty Points</span>
-                        <input
-                          type="checkbox"
-                          checked={applyLoyaltyPoints}
-                          onChange={(e) => setApplyLoyaltyPoints(e.target.checked)}
-                          className="rounded border-gray-300 text-brand-yellow focus:ring-brand-yellow"
-                        />
-                      </label>
-                      {applyLoyaltyPoints && (
-                        <p className="text-xs text-green-600 mt-1">
-                          -${loyaltyDiscount.toFixed(2)} discount applied
-                        </p>
-                      )}
-                    </div>
-                  )} */}
-                  
                   <div className="flex justify-between font-medium text-lg pt-4 border-t">
                     <span>Total</span>
                     <span>${total.toFixed(2)}</span>

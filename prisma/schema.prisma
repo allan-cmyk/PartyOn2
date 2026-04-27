@@ -1701,46 +1701,13 @@ enum DraftOrderStatus {
 }
 
 // ==========================================
-// DELIVERY ZONES (RATE MATRIX)
+// DELIVERY ZONES + TAX RATES — REMOVED 2026-04-23
 // ==========================================
-
-model DeliveryZone {
-  id           String   @id @default(uuid())
-  name         String
-  zipCodes     String[] @map("zip_codes") // Array of zip codes in zone
-  baseRate     Decimal  @map("base_rate") @db.Decimal(10, 2)
-  expressRate  Decimal  @map("express_rate") @db.Decimal(10, 2)
-  minimumOrder Decimal  @map("minimum_order") @db.Decimal(10, 2)
-  freeAbove    Decimal? @map("free_above") @db.Decimal(10, 2)
-  isActive     Boolean  @default(true) @map("is_active")
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@map("delivery_zones")
-}
-
-// ==========================================
-// TAX RATES (CONFIGURABLE)
-// ==========================================
-
-model TaxRate {
-  id       String   @id @default(uuid())
-  state    String
-  county   String?
-  city     String?
-  zipCode  String?  @map("zip_code")
-  rate     Decimal  @db.Decimal(5, 4) // e.g., 0.0825 for 8.25%
-  category String? // "alcohol", "general", etc.
-  validFrom DateTime @map("valid_from")
-  validTo  DateTime? @map("valid_to")
-
-  createdAt DateTime @default(now()) @map("created_at")
-
-  @@index([zipCode])
-  @@index([state, city])
-  @@map("tax_rates")
-}
+// These models were never read by runtime; the source of truth is
+// the hardcoded TypeScript tables in `src/lib/delivery/rates.ts` and
+// `src/lib/tax/rates.ts`. Models removed from schema. The underlying
+// Postgres tables (`delivery_zones`, `tax_rates`) still exist and can
+// be dropped in a follow-up migration when ready.
 
 // ==========================================
 // GROUP ORDERS V2 (Tab-Based Architecture)

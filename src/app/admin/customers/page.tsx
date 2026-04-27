@@ -3,19 +3,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
-interface CustomerTier {
-  id: string;
-  name: string;
-  color: string;
-}
-
-interface CustomerLoyalty {
-  points: number;
-  lifetimeSpend: number;
-  lifetimePoints: number;
-  tier: CustomerTier;
-}
-
 interface Customer {
   id: string;
   email: string;
@@ -30,7 +17,7 @@ interface Customer {
   totalOrders: number;
   lastOrderAt: string | null;
   lastOrderTotal: number | null;
-  loyalty: CustomerLoyalty | null;
+  lifetimeSpend: number;
   createdAt: string;
   lastLoginAt: string | null;
 }
@@ -38,7 +25,6 @@ interface Customer {
 interface CustomersData {
   customers: Customer[];
   pagination: { page: number; limit: number; total: number; pages: number };
-  filters: { loyaltyTiers: CustomerTier[] };
   summary: { total: number; active: number; withOrders: number };
 }
 
@@ -51,7 +37,6 @@ export default function CustomersPage() {
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState<string>('');
   const [ordersFilter, setOrdersFilter] = useState<string>('');
-  const [tierFilter, setTierFilter] = useState<string>('');
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<string>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
@@ -63,7 +48,6 @@ export default function CustomersPage() {
       if (search) params.set('search', search);
       if (activeFilter) params.set('isActive', activeFilter);
       if (ordersFilter) params.set('hasOrders', ordersFilter);
-      if (tierFilter) params.set('loyaltyTier', tierFilter);
       params.set('page', page.toString());
       params.set('sortBy', sortBy);
       params.set('sortOrder', sortOrder);
@@ -79,7 +63,7 @@ export default function CustomersPage() {
     } finally {
       setLoading(false);
     }
-  }, [search, activeFilter, ordersFilter, tierFilter, page, sortBy, sortOrder]);
+  }, [search, activeFilter, ordersFilter, page, sortBy, sortOrder]);
 
   useEffect(() => {
     const debounce = setTimeout(() => {
@@ -110,7 +94,6 @@ export default function CustomersPage() {
       if (search) params.set('search', search);
       if (activeFilter) params.set('isActive', activeFilter);
       if (ordersFilter) params.set('hasOrders', ordersFilter);
-      if (tierFilter) params.set('loyaltyTier', tierFilter);
       params.set('limit', '1000');
 
       const response = await fetch(`/api/v1/admin/customers?${params}`);
@@ -119,15 +102,13 @@ export default function CustomersPage() {
       if (!result.success) return;
 
       // Convert to CSV
-      const headers = ['Email', 'Name', 'Phone', 'Orders', 'Lifetime Spend', 'Tier', 'Points', 'Created'];
+      const headers = ['Email', 'Name', 'Phone', 'Orders', 'Lifetime Spend', 'Created'];
       const rows = result.data.customers.map((c: Customer) => [
         c.email,
         c.fullName,
         c.phone || '',
         c.totalOrders,
-        c.loyalty?.lifetimeSpend || 0,
-        c.loyalty?.tier.name || 'None',
-        c.loyalty?.points || 0,
+        c.lifetimeSpend || 0,
         formatDate(c.createdAt),
       ]);
 
@@ -182,7 +163,7 @@ export default function CustomersPage() {
 
       {/* Filters Row */}
       <div className="bg-white border-2 border-gray-200 rounded-lg p-4 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Search */}
           <div className="md:col-span-2">
             <input
@@ -215,18 +196,6 @@ export default function CustomersPage() {
             <option value="true">With Orders</option>
             <option value="false">No Orders</option>
           </select>
-
-          {/* Tier Filter */}
-          <select
-            value={tierFilter}
-            onChange={(e) => { setTierFilter(e.target.value); setPage(1); }}
-            className="px-3 py-2 border border-gray-300 rounded-md text-black"
-          >
-            <option value="">All Tiers</option>
-            {data?.filters.loyaltyTiers.map((tier) => (
-              <option key={tier.id} value={tier.id}>{tier.name}</option>
-            ))}
-          </select>
         </div>
 
         {/* Sort Options */}
@@ -241,7 +210,6 @@ export default function CustomersPage() {
             <option value="name">Name</option>
             <option value="email">Email</option>
             <option value="totalOrders">Order Count</option>
-            <option value="lifetimeSpend">Lifetime Spend</option>
           </select>
           <button
             onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
@@ -283,10 +251,8 @@ export default function CustomersPage() {
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Customer</th>
-                <th className="hidden md:table-cell text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Tier</th>
                 <th className="text-right px-4 py-3 text-xs font-medium text-gray-500 uppercase">Orders</th>
                 <th className="text-right px-4 py-3 text-xs font-medium text-gray-500 uppercase">Lifetime Spend</th>
-                <th className="hidden md:table-cell text-right px-4 py-3 text-xs font-medium text-gray-500 uppercase">Points</th>
                 <th className="hidden md:table-cell text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Status</th>
                 <th className="text-right px-4 py-3 text-xs font-medium text-gray-500 uppercase">Joined</th>
               </tr>
@@ -311,32 +277,12 @@ export default function CustomersPage() {
                       </div>
                     </Link>
                   </td>
-                  <td className="hidden md:table-cell px-4 py-4">
-                    {customer.loyalty ? (
-                      <span
-                        className="inline-flex px-2 py-1 text-xs font-medium rounded-full"
-                        style={{
-                          backgroundColor: `${customer.loyalty.tier.color}20`,
-                          color: customer.loyalty.tier.color,
-                        }}
-                      >
-                        {customer.loyalty.tier.name}
-                      </span>
-                    ) : (
-                      <span className="text-gray-400 text-xs">No loyalty</span>
-                    )}
-                  </td>
                   <td className="px-4 py-4 text-right">
                     <span className="font-medium text-black">{customer.totalOrders}</span>
                   </td>
                   <td className="px-4 py-4 text-right">
                     <span className="font-medium text-black">
-                      {customer.loyalty ? formatCurrency(customer.loyalty.lifetimeSpend) : '-'}
-                    </span>
-                  </td>
-                  <td className="hidden md:table-cell px-4 py-4 text-right">
-                    <span className="font-medium text-black">
-                      {customer.loyalty?.points.toLocaleString() || '-'}
+                      {customer.lifetimeSpend ? formatCurrency(customer.lifetimeSpend) : '-'}
                     </span>
                   </td>
                   <td className="hidden md:table-cell px-4 py-4">

@@ -11,8 +11,7 @@ interface CustomerListParams {
   search?: string;
   hasOrders?: boolean;
   isActive?: boolean;
-  loyaltyTier?: string;
-  sortBy?: 'name' | 'email' | 'createdAt' | 'totalOrders' | 'lifetimeSpend';
+  sortBy?: 'name' | 'email' | 'createdAt' | 'totalOrders';
   sortOrder?: 'asc' | 'desc';
   page?: number;
   limit?: number;
@@ -28,7 +27,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
                  searchParams.get('hasOrders') === 'false' ? false : undefined,
       isActive: searchParams.get('isActive') === 'true' ? true :
                 searchParams.get('isActive') === 'false' ? false : undefined,
-      loyaltyTier: searchParams.get('loyaltyTier') || undefined,
       sortBy: (searchParams.get('sortBy') as CustomerListParams['sortBy']) || 'createdAt',
       sortOrder: (searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc',
       page: parseInt(searchParams.get('page') || '1'),
@@ -55,10 +53,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       where.orders = params.hasOrders ? { some: {} } : { none: {} };
     }
 
-    if (params.loyaltyTier) {
-      where.loyalty = { tierId: params.loyaltyTier };
-    }
-
     // Build orderBy
     let orderBy: Prisma.CustomerOrderByWithRelationInput;
     switch (params.sortBy) {
@@ -70,9 +64,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         break;
       case 'totalOrders':
         orderBy = { orders: { _count: params.sortOrder } };
-        break;
-      case 'lifetimeSpend':
-        orderBy = { loyalty: { lifetimeSpend: params.sortOrder } };
         break;
       default:
         orderBy = { createdAt: params.sortOrder };
@@ -88,9 +79,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       skip: ((params.page || 1) - 1) * (params.limit || 20),
       take: params.limit || 20,
       include: {
-        loyalty: {
-          include: { tier: true },
-        },
         orders: {
           select: { id: true, total: true, createdAt: true },
           orderBy: { createdAt: 'desc' },
@@ -102,11 +90,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       },
     });
 
-    // Get loyalty tiers for filter
-    const loyaltyTiers = await prisma.loyaltyTier.findMany({
-      select: { id: true, name: true, color: true },
-      orderBy: { position: 'asc' },
-    });
+    // Compute lifetime spend per customer (sum of order totals)
+    const customerIds = customers.map((c) => c.id);
+    const spendByCustomer = customerIds.length > 0
+      ? await prisma.order.groupBy({
+          by: ['customerId'],
+          where: { customerId: { in: customerIds } },
+          _sum: { total: true },
+        })
+      : [];
+    const spendMap = new Map(
+      spendByCustomer.map((row) => [row.customerId, Number(row._sum.total || 0)])
+    );
 
     // Transform customers
     const transformedCustomers = customers.map((customer) => ({
@@ -123,16 +118,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       totalOrders: customer._count.orders,
       lastOrderAt: customer.orders[0]?.createdAt.toISOString() || null,
       lastOrderTotal: customer.orders[0] ? Number(customer.orders[0].total) : null,
-      loyalty: customer.loyalty ? {
-        points: customer.loyalty.points,
-        lifetimeSpend: Number(customer.loyalty.lifetimeSpend),
-        lifetimePoints: customer.loyalty.lifetimePoints,
-        tier: {
-          id: customer.loyalty.tier.id,
-          name: customer.loyalty.tier.name,
-          color: customer.loyalty.tier.color,
-        },
-      } : null,
+      lifetimeSpend: spendMap.get(customer.id) || 0,
       createdAt: customer.createdAt.toISOString(),
       lastLoginAt: customer.lastLoginAt?.toISOString() || null,
     }));
@@ -156,9 +142,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
           limit: params.limit || 20,
           total,
           pages: Math.ceil(total / (params.limit || 20)),
-        },
-        filters: {
-          loyaltyTiers,
         },
         summary: {
           total: stats._count.id,

@@ -1,6 +1,6 @@
 /**
  * Admin Single Customer API
- * GET /api/v1/admin/customers/[id] - Get customer details with orders and loyalty
+ * GET /api/v1/admin/customers/[id] - Get customer details with orders
  * PUT /api/v1/admin/customers/[id] - Update customer
  */
 
@@ -23,15 +23,6 @@ export async function GET(
       include: {
         addresses: {
           orderBy: { isDefault: 'desc' },
-        },
-        loyalty: {
-          include: {
-            tier: true,
-            transactions: {
-              orderBy: { createdAt: 'desc' },
-              take: 20,
-            },
-          },
         },
         orders: {
           orderBy: { createdAt: 'desc' },
@@ -64,25 +55,6 @@ export async function GET(
       _avg: { total: true },
     });
 
-    // Get next tier info if loyalty exists
-    let nextTier = null;
-    if (customer.loyalty) {
-      const next = await prisma.loyaltyTier.findFirst({
-        where: {
-          minLifetimeSpend: { gt: customer.loyalty.tier.minLifetimeSpend },
-        },
-        orderBy: { minLifetimeSpend: 'asc' },
-      });
-      if (next) {
-        nextTier = {
-          id: next.id,
-          name: next.name,
-          minSpend: Number(next.minLifetimeSpend),
-          spendNeeded: Number(next.minLifetimeSpend) - Number(customer.loyalty.lifetimeSpend),
-        };
-      }
-    }
-
     return NextResponse.json({
       success: true,
       data: {
@@ -114,27 +86,6 @@ export async function GET(
           phone: addr.phone,
           isDefault: addr.isDefault,
         })),
-        loyalty: customer.loyalty ? {
-          points: customer.loyalty.points,
-          lifetimeSpend: Number(customer.loyalty.lifetimeSpend),
-          lifetimePoints: customer.loyalty.lifetimePoints,
-          tier: {
-            id: customer.loyalty.tier.id,
-            name: customer.loyalty.tier.name,
-            color: customer.loyalty.tier.color,
-            discountPercent: customer.loyalty.tier.discountPercent,
-            pointsMultiplier: customer.loyalty.tier.pointsMultiplier,
-            benefits: customer.loyalty.tier.benefits,
-          },
-          nextTier,
-          recentTransactions: customer.loyalty.transactions.map((t) => ({
-            id: t.id,
-            type: t.type,
-            points: t.points,
-            description: t.description,
-            createdAt: t.createdAt.toISOString(),
-          })),
-        } : null,
         orders: customer.orders.map((order) => ({
           id: order.id,
           orderNumber: order.orderNumber,
