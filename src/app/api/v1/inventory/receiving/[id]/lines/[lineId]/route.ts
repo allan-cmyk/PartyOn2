@@ -6,6 +6,7 @@ const patchSchema = z.object({
   matchedVariantId: z.string().nullable().optional(),
   cases: z.number().int().min(0).optional(),
   unitsPerCase: z.number().int().min(1).optional(),
+  unitCost: z.number().min(0).nullable().optional(),
   status: z.enum(['PENDING', 'MATCHED', 'SKIPPED']).optional(),
   notes: z.string().nullable().optional(),
 });

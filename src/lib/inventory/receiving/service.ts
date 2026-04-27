@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/database/client';
+import { Prisma } from '@prisma/client';
 import { adjustInventory } from '@/lib/inventory/services/inventory-service';
 import type { ParsedInvoice } from './parser';
 
@@ -40,6 +41,7 @@ export async function createInvoiceFromParse(params: {
           cases: line.cases,
           unitsPerCase: line.unitsPerCase,
           totalUnits: line.cases * line.unitsPerCase,
+          unitCost: line.unitCost != null ? new Prisma.Decimal(line.unitCost) : null,
         })),
       },
     },
@@ -138,6 +140,15 @@ export async function applyInvoice(invoiceId: string): Promise<{ appliedCount: n
       reason,
       type: 'RECEIVED',
     });
+
+    // Propagate unit cost to ProductVariant.costPerUnit so margin calculations have real data.
+    // The latest applied invoice's cost wins (overwrites any prior value).
+    if (line.unitCost != null) {
+      await prisma.productVariant.update({
+        where: { id: variant.id },
+        data: { costPerUnit: line.unitCost },
+      });
+    }
 
     await prisma.receivingInvoiceLine.update({
       where: { id: line.id },

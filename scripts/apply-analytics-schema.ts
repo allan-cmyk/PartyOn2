@@ -57,6 +57,14 @@ const STATEMENTS: Array<[string, string]> = [
   ['rec_generated_idx', 'CREATE INDEX IF NOT EXISTS rec_generated_idx ON recommendation_items(generated_at)'],
   ['rec_segment_idx', 'CREATE INDEX IF NOT EXISTS rec_segment_idx ON recommendation_items(segment)'],
   ['rec_title_segment_idx', 'CREATE INDEX IF NOT EXISTS rec_title_segment_idx ON recommendation_items(title, segment)'],
+  [
+    'receiving_invoice_lines.unit_cost',
+    'ALTER TABLE receiving_invoice_lines ADD COLUMN IF NOT EXISTS unit_cost DECIMAL(10,4)',
+  ],
+  [
+    'orders.margin_coverage_pct',
+    'ALTER TABLE orders ADD COLUMN IF NOT EXISTS margin_coverage_pct DECIMAL(5,2)',
+  ],
 ];
 
 async function main() {

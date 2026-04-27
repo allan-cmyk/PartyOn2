@@ -32,10 +32,19 @@ export async function snapshotItemCost(
 }
 
 /**
- * Sum item-level margins and write Order.marginAmount.
- * margin = sum(totalPrice - totalCost) across items. Items with null cost
- * are skipped (treated as unknown, not zero) — margin will be partial when
- * any item lacks cost data. Null marginAmount = no cost data at all.
+ * Sum item-level margins and write Order.marginAmount + Order.marginCoveragePct.
+ *
+ * Behavior:
+ *  - margin = sum(totalPrice - totalCost) across items where totalCost is non-null.
+ *  - Items with null cost are EXCLUDED from the margin calculation (treated as unknown,
+ *    not zero) — so marginAmount represents only the portion of revenue we have cost
+ *    data for.
+ *  - marginCoveragePct = (revenue from items with known cost) / (total order revenue) × 100.
+ *    A 100% coverage means margin is fully computed; 0% means no cost data; partial
+ *    values mean the calculation is partial.
+ *
+ * Contract for callers: always inspect marginCoveragePct alongside marginAmount.
+ * Low coverage (< ~70%) means any margin-derived metric on this order is unreliable.
  */
 export async function finalizeOrderMargin(tx: Tx, orderId: string): Promise<void> {
   const items = await tx.orderItem.findMany({
@@ -43,8 +52,29 @@ export async function finalizeOrderMargin(tx: Tx, orderId: string): Promise<void
     select: { totalPrice: true, totalCost: true },
   });
 
+  if (items.length === 0) return;
+
   const itemsWithCost = items.filter((i) => i.totalCost !== null);
-  if (itemsWithCost.length === 0) return;
+  const totalRevenue = items.reduce(
+    (acc, i) => acc.add(new Prisma.Decimal(i.totalPrice)),
+    new Prisma.Decimal(0)
+  );
+  const knownRevenue = itemsWithCost.reduce(
+    (acc, i) => acc.add(new Prisma.Decimal(i.totalPrice)),
+    new Prisma.Decimal(0)
+  );
+  const coveragePct = totalRevenue.gt(0)
+    ? Number(knownRevenue.div(totalRevenue).mul(100).toFixed(2))
+    : 0;
+
+  if (itemsWithCost.length === 0) {
+    // No cost data at all — record coverage = 0 but leave marginAmount null.
+    await tx.order.update({
+      where: { id: orderId },
+      data: { marginCoveragePct: new Prisma.Decimal(coveragePct) },
+    });
+    return;
+  }
 
   const margin = itemsWithCost.reduce(
     (acc, i) =>
@@ -54,6 +84,9 @@ export async function finalizeOrderMargin(tx: Tx, orderId: string): Promise<void
 
   await tx.order.update({
     where: { id: orderId },
-    data: { marginAmount: margin },
+    data: {
+      marginAmount: margin,
+      marginCoveragePct: new Prisma.Decimal(coveragePct),
+    },
   });
 }

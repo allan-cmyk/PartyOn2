@@ -38,6 +38,7 @@ export async function GET(
       const matched = line.matchedVariantId ? variantById.get(line.matchedVariantId) : null;
       return {
         ...line,
+        unitCost: line.unitCost != null ? Number(line.unitCost) : null,
         matchedVariant: matched
           ? {
               variantId: matched.id,

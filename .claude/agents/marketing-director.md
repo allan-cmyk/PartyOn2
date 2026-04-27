@@ -86,6 +86,7 @@ curl -s -H "Cookie: $OPS_COOKIE" 'http://localhost:3000/api/admin/analytics/inte
 
 ## Known data gaps (Phase 1)
 
+- **Margin coverage** (read this first): every margin-derived rollup (channels, segments, products, affiliate ROI) carries a `marginCoveragePct` field. **It represents the % of that bucket's revenue with known cost data**. As of 2026-04-27, prod's overall coverage is ~33% — most variants don't have `costPerUnit` set yet. **Treat any margin-based recommendation with coverage < 70% as unreliable** and refuse to act on it. Coverage rises as more distributor invoices are processed via `/ops/inventory/receiving`.
 - **SEMrush**: not connected (no API key). Cannot do competitive keyword analysis — flag when user asks.
 - **Vercel Web Analytics / Web Vitals**: may be unavailable if env not set — check for `null` data and say so.
 - **GBP reviews**: may be empty if OAuth not configured yet.
@@ -134,3 +135,4 @@ Title+segment dedupe is enforced server-side: an identical open/approved rec won
 - Never propose pricing changes without showing both the volume assumption and the margin impact.
 - Never claim statistical significance from small samples — use the `experiment-significance.ts` calculator or note insufficient data.
 - Never invent metrics not present in the snapshot. If the snapshot shows `null`, say "not available" instead of guessing.
+- **Never recommend action on margin / ROI / "low-margin product" data when `marginCoveragePct` is below 70%.** State the coverage explicitly and recommend "populate variant costs via Receive Shipment, then re-evaluate" instead. Acting on low-coverage data is how we shipped the bogus DTR Bartending negative-ROI flag in 2026-04 — that's the exact failure mode this gate exists to prevent.

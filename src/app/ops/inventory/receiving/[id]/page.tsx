@@ -19,6 +19,7 @@ interface Line {
   cases: number;
   unitsPerCase: number;
   totalUnits: number;
+  unitCost: number | null;
   matchedVariantId: string | null;
   matchedVariant: Suggestion | null;
   suggestions: Suggestion[];
@@ -217,6 +218,23 @@ export default function ReceivingReviewPage({ params }: { params: Promise<{ id: 
                   </label>
                   <span className="text-gray-400">=</span>
                   <span className="font-bold text-gray-900">{line.totalUnits} units</span>
+                  <span className="text-gray-400 ml-3">·</span>
+                  <label className="flex items-center gap-1">
+                    <span className="text-xs text-gray-500">Unit cost $</span>
+                    <input
+                      type="number"
+                      min={0}
+                      step="0.01"
+                      defaultValue={line.unitCost ?? ''}
+                      placeholder="—"
+                      onBlur={(e) => {
+                        const raw = e.target.value.trim();
+                        const v = raw === '' ? null : Math.max(0, Number(raw));
+                        if (v !== line.unitCost) patchLine(line.id, { unitCost: v });
+                      }}
+                      className="w-20 px-2 py-1 border border-gray-300 rounded text-sm"
+                    />
+                  </label>
                 </div>
 
                 {line.matchedVariant ? (

@@ -886,6 +886,8 @@ model Order {
 
   // Margin (computed at order creation; null for orders created before margin pipeline existed)
   marginAmount Decimal? @map("margin_amount") @db.Decimal(10, 2)
+  /** % of order revenue with known cost data — 100 = fully covered, < 100 = partial. */
+  marginCoveragePct Decimal? @map("margin_coverage_pct") @db.Decimal(5, 2)
 
   // Notes
   customerNote String? @map("customer_note") @db.Text
@@ -2034,6 +2036,8 @@ model ReceivingInvoiceLine {
   cases                Int     @default(0)
   unitsPerCase         Int     @default(1) @map("units_per_case")
   totalUnits           Int     @map("total_units") // redundant but explicit
+  /** Per-unit cost extracted from invoice (or derived from caseCost/unitsPerCase). Null if unknown. */
+  unitCost             Decimal? @map("unit_cost") @db.Decimal(10, 4)
   matchedVariantId     String? @map("matched_variant_id")
   status               String  @default("PENDING") // PENDING, MATCHED, SKIPPED, APPLIED
   notes                String? @db.Text

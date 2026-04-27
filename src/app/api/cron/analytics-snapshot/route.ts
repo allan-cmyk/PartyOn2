@@ -90,6 +90,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS rec_generated_idx ON recommendation_items(generated_at)`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS rec_segment_idx ON recommendation_items(segment)`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS rec_title_segment_idx ON recommendation_items(title, segment)`);
+  await prisma.$executeRawUnsafe(
+    `ALTER TABLE receiving_invoice_lines ADD COLUMN IF NOT EXISTS unit_cost DECIMAL(10,4)`
+  );
+  await prisma.$executeRawUnsafe(
+    `ALTER TABLE orders ADD COLUMN IF NOT EXISTS margin_coverage_pct DECIMAL(5,2)`
+  );
 
   const today = startOfDay(new Date());
   const endDate = new Date();
@@ -313,12 +319,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   });
 }
 
-type ChannelRow = { channel: string; orders: number; revenue: number; margin: number | null; averageOrderValue: number; averageMarginPct: number | null };
-type SegmentRow = { segment: string; orders: number; revenue: number; margin: number | null; averageOrderValue: number; averageMarginPct: number | null };
+type ChannelRow = { channel: string; orders: number; revenue: number; margin: number | null; averageOrderValue: number; averageMarginPct: number | null; marginCoveragePct: number };
+type SegmentRow = { segment: string; orders: number; revenue: number; margin: number | null; averageOrderValue: number; averageMarginPct: number | null; marginCoveragePct: number };
 type LandingRow = { landingPage: string; orders: number; revenue: number; averageOrderValue: number };
 type GaChannelRow = { channel: string; sessions: number; transactions: number; revenue: number; conversionRate: number };
 type GaPageRow = { path: string; sessions: number; transactions: number; conversionRate: number };
-type ProductMarginRow = { title: string; unitsSold: number; revenue: number; margin: number; marginPct: number };
+type ProductMarginRow = { title: string; productId: string; unitsSold: number; revenue: number; margin: number; marginPct: number; marginCoveragePct: number };
 
 /** "▲ 18%" / "▼ 7%" / "—" / "🆕". Prior=0 with current>0 is treated as new-from-zero. */
 function fmtDelta(current: number, prior: number | null | undefined): string {
@@ -361,7 +367,7 @@ function renderMarkdown(s: {
   segmentRollupPrior: SegmentRow[];
   repeatRate: Array<{ segment: string; orders: number; repeatOrders: number; repeatRatePct: number }>;
   ltvBySegment: Array<{ segment: string; customers: number; totalRevenue: number; averageLtv: number }>;
-  affiliateRoi: Array<{ code: string; businessName: string; orders: number; revenue: number; margin: number | null; commissionPaid: number; netMargin: number | null; roiPct: number | null }>;
+  affiliateRoi: Array<{ code: string; businessName: string; orders: number; revenue: number; margin: number | null; commissionPaid: number; netMargin: number | null; roiPct: number | null; marginCoveragePct: number }>;
   openRecs: Array<{ id: string; title: string; segment: string | null; impactDollarsMonthly: number | null; effortTier: string | null; riskTier: string; status: string; generatedAt: Date }>;
   gbpInsights: { reviewCount: number; averageRating: number; fiveStarPct: number; oneStarPct: number } | null;
   gbpSegments: Array<{ segment: string; count: number; averageRating: number }>;
@@ -427,12 +433,12 @@ function renderMarkdown(s: {
 
   lines.push('## Revenue by internal channel (30d, vs prior 30d)');
   if (s.channels.length) {
-    lines.push('| Channel | Orders | Revenue | AOV | Margin % | Rev WoW |');
-    lines.push('|---|---:|---:|---:|---:|---:|');
+    lines.push('| Channel | Orders | Revenue | AOV | Margin % | Cost coverage | Rev WoW |');
+    lines.push('|---|---:|---:|---:|---:|---:|---:|');
     for (const c of s.channels) {
       const prior = findBy(s.channelsPrior, (x) => x.channel, c.channel);
       lines.push(
-        `| ${c.channel} | ${c.orders} | $${c.revenue.toLocaleString()} | $${c.averageOrderValue} | ${c.averageMarginPct ?? '—'}% | ${fmtDelta(c.revenue, prior?.revenue ?? null)} |`
+        `| ${c.channel} | ${c.orders} | $${c.revenue.toLocaleString()} | $${c.averageOrderValue} | ${c.averageMarginPct ?? '—'}% | ${c.marginCoveragePct.toFixed(0)}% | ${fmtDelta(c.revenue, prior?.revenue ?? null)} |`
       );
     }
   } else {
@@ -442,12 +448,12 @@ function renderMarkdown(s: {
 
   lines.push('## Revenue & margin by customer segment (30d, vs prior 30d)');
   if (s.segmentRollup.length) {
-    lines.push('| Segment | Orders | Revenue | AOV | Margin % | Rev WoW |');
-    lines.push('|---|---:|---:|---:|---:|---:|');
+    lines.push('| Segment | Orders | Revenue | AOV | Margin % | Cost coverage | Rev WoW |');
+    lines.push('|---|---:|---:|---:|---:|---:|---:|');
     for (const r of s.segmentRollup) {
       const prior = findBy(s.segmentRollupPrior, (x) => x.segment, r.segment);
       lines.push(
-        `| ${r.segment} | ${r.orders} | $${r.revenue.toLocaleString()} | $${r.averageOrderValue} | ${r.averageMarginPct ?? '—'}% | ${fmtDelta(r.revenue, prior?.revenue ?? null)} |`
+        `| ${r.segment} | ${r.orders} | $${r.revenue.toLocaleString()} | $${r.averageOrderValue} | ${r.averageMarginPct ?? '—'}% | ${r.marginCoveragePct.toFixed(0)}% | ${fmtDelta(r.revenue, prior?.revenue ?? null)} |`
       );
     }
   } else {
@@ -534,22 +540,30 @@ function renderMarkdown(s: {
 
   lines.push('## Affiliate ROI (30d) — top 10 by net margin');
   if (s.affiliateRoi.length) {
-    lines.push('| Affiliate | Orders | Revenue | Margin | Commission paid | Net margin | ROI |');
-    lines.push('|---|---:|---:|---:|---:|---:|---:|');
+    lines.push('| Affiliate | Orders | Revenue | Margin | Commission | Net margin | ROI | Cost coverage |');
+    lines.push('|---|---:|---:|---:|---:|---:|---:|---:|');
     for (const a of s.affiliateRoi.slice(0, 10)) {
       const margin = a.margin == null ? '—' : `$${a.margin.toLocaleString()}`;
       const netMargin = a.netMargin == null ? '—' : `$${a.netMargin.toLocaleString()}`;
       const roi = a.roiPct == null ? '—' : `${a.roiPct}%`;
       lines.push(
-        `| ${a.businessName} (${a.code}) | ${a.orders} | $${a.revenue.toLocaleString()} | ${margin} | $${a.commissionPaid.toLocaleString()} | ${netMargin} | ${roi} |`
+        `| ${a.businessName} (${a.code}) | ${a.orders} | $${a.revenue.toLocaleString()} | ${margin} | $${a.commissionPaid.toLocaleString()} | ${netMargin} | ${roi} | ${a.marginCoveragePct.toFixed(0)}% |`
       );
     }
-    const negative = s.affiliateRoi.filter((a) => a.netMargin != null && a.netMargin < 0);
-    if (negative.length) {
+    const negativeReliable = s.affiliateRoi.filter((a) => a.netMargin != null && a.netMargin < 0 && a.marginCoveragePct >= 70);
+    const negativeUnreliable = s.affiliateRoi.filter((a) => a.netMargin != null && a.netMargin < 0 && a.marginCoveragePct < 70);
+    if (negativeReliable.length) {
       lines.push('');
-      lines.push('**⚠️ Negative-ROI partners (commission > margin):**');
-      for (const a of negative) {
-        lines.push(`- ${a.businessName} (${a.code}): commission $${a.commissionPaid.toLocaleString()} > margin $${a.margin?.toLocaleString() ?? '—'}`);
+      lines.push('**⚠️ Negative-ROI partners (commission > margin, ≥70% cost coverage — reliable):**');
+      for (const a of negativeReliable) {
+        lines.push(`- ${a.businessName} (${a.code}): commission $${a.commissionPaid.toLocaleString()} > margin $${a.margin?.toLocaleString() ?? '—'} — coverage ${a.marginCoveragePct.toFixed(0)}%`);
+      }
+    }
+    if (negativeUnreliable.length) {
+      lines.push('');
+      lines.push('**⚠️ Possibly negative-ROI partners (low cost coverage — verify before acting):**');
+      for (const a of negativeUnreliable) {
+        lines.push(`- ${a.businessName} (${a.code}): cost coverage ${a.marginCoveragePct.toFixed(0)}% — populate variant costs (Receive Shipment) before evaluating.`);
       }
     }
   } else {
@@ -559,12 +573,12 @@ function renderMarkdown(s: {
 
   lines.push('## Top product margins (30d, vs prior 30d)');
   if (s.productMargins.length) {
-    lines.push('| Product | Units | Revenue | Margin | Margin % | Units WoW |');
-    lines.push('|---|---:|---:|---:|---:|---:|');
+    lines.push('| Product | Units | Revenue | Margin | Margin % | Cost coverage | Units WoW |');
+    lines.push('|---|---:|---:|---:|---:|---:|---:|');
     for (const p of s.productMargins.slice(0, 15)) {
       const prior = findBy(s.productMarginsPrior, (x) => x.title, p.title);
       lines.push(
-        `| ${p.title} | ${p.unitsSold} | $${p.revenue.toLocaleString()} | $${p.margin.toLocaleString()} | ${p.marginPct}% | ${fmtDelta(p.unitsSold, prior?.unitsSold ?? null)} |`
+        `| ${p.title} | ${p.unitsSold} | $${p.revenue.toLocaleString()} | $${p.margin.toLocaleString()} | ${p.marginPct}% | ${p.marginCoveragePct.toFixed(0)}% | ${fmtDelta(p.unitsSold, prior?.unitsSold ?? null)} |`
       );
     }
   }

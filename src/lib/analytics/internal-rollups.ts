@@ -12,6 +12,8 @@ export interface ChannelRollup {
   margin: number | null;
   averageOrderValue: number;
   averageMarginPct: number | null;
+  /** Weighted average margin coverage % across orders in this bucket. <70 = unreliable margin. */
+  marginCoveragePct: number;
 }
 
 export interface LandingPageRollup {
@@ -29,6 +31,8 @@ export interface ProductMarginRow {
   cost: number;
   margin: number;
   marginPct: number;
+  /** % of revenue with known cost — < 100 means margin is partial. */
+  marginCoveragePct: number;
 }
 
 export interface SegmentRollup {
@@ -38,6 +42,7 @@ export interface SegmentRollup {
   margin: number | null;
   averageOrderValue: number;
   averageMarginPct: number | null;
+  marginCoveragePct: number;
 }
 
 export interface AffiliateRoiRow {
@@ -50,6 +55,8 @@ export interface AffiliateRoiRow {
   commissionPaid: number;      // sum of AffiliateCommission.commissionAmountCents / 100, excluding VOIDED
   netMargin: number | null;    // margin - commissionPaid
   roiPct: number | null;       // (netMargin / commissionPaid) * 100, null if commissionPaid <= 0
+  /** Weighted-by-revenue margin coverage % across this affiliate's orders. <70 = ROI unreliable. */
+  marginCoveragePct: number;
 }
 
 function daysAgo(n: number): Date {
@@ -81,22 +88,27 @@ export async function getChannelRollup(windowDays = 30, endDaysAgo = 0): Promise
     select: {
       total: true,
       marginAmount: true,
+      marginCoveragePct: true,
       affiliateId: true,
       groupOrderV2Id: true,
       utmSource: true,
     },
   });
 
-  const buckets = new Map<string, { orders: number; revenue: number; margin: number; marginKnown: number }>();
+  type Bucket = { orders: number; revenue: number; margin: number; marginKnown: number; coveredRevenue: number };
+  const buckets = new Map<string, Bucket>();
   for (const o of orders) {
     let channel = 'direct';
     if (o.affiliateId) channel = 'affiliate';
     else if (o.groupOrderV2Id) channel = 'group';
     else if (o.utmSource) channel = `utm_${o.utmSource.toLowerCase()}`;
 
-    const b = buckets.get(channel) ?? { orders: 0, revenue: 0, margin: 0, marginKnown: 0 };
+    const b = buckets.get(channel) ?? { orders: 0, revenue: 0, margin: 0, marginKnown: 0, coveredRevenue: 0 };
     b.orders += 1;
-    b.revenue += Number(o.total);
+    const total = Number(o.total);
+    b.revenue += total;
+    const cov = o.marginCoveragePct != null ? Number(o.marginCoveragePct) : 0;
+    b.coveredRevenue += total * (cov / 100);
     if (o.marginAmount != null) {
       b.margin += Number(o.marginAmount);
       b.marginKnown += 1;
@@ -113,6 +125,7 @@ export async function getChannelRollup(windowDays = 30, endDaysAgo = 0): Promise
       averageOrderValue: b.orders > 0 ? Number((b.revenue / b.orders).toFixed(2)) : 0,
       averageMarginPct:
         b.marginKnown > 0 && b.revenue > 0 ? Number(((b.margin / b.revenue) * 100).toFixed(1)) : null,
+      marginCoveragePct: b.revenue > 0 ? Number(((b.coveredRevenue / b.revenue) * 100).toFixed(1)) : 0,
     }))
     .sort((a, b) => b.revenue - a.revenue);
 }
@@ -154,15 +167,19 @@ export async function getSegmentRollup(windowDays = 30, endDaysAgo = 0): Promise
   const window = dateWindow(windowDays, endDaysAgo);
   const orders = await prisma.order.findMany({
     where: { createdAt: window, status: { notIn: ['CANCELLED', 'REFUNDED'] } },
-    select: { segment: true, total: true, marginAmount: true },
+    select: { segment: true, total: true, marginAmount: true, marginCoveragePct: true },
   });
 
-  const buckets = new Map<string, { orders: number; revenue: number; margin: number; marginKnown: number }>();
+  type Bucket = { orders: number; revenue: number; margin: number; marginKnown: number; coveredRevenue: number };
+  const buckets = new Map<string, Bucket>();
   for (const o of orders) {
     const seg = o.segment ?? 'unknown';
-    const b = buckets.get(seg) ?? { orders: 0, revenue: 0, margin: 0, marginKnown: 0 };
+    const b = buckets.get(seg) ?? { orders: 0, revenue: 0, margin: 0, marginKnown: 0, coveredRevenue: 0 };
     b.orders += 1;
-    b.revenue += Number(o.total);
+    const total = Number(o.total);
+    b.revenue += total;
+    const cov = o.marginCoveragePct != null ? Number(o.marginCoveragePct) : 0;
+    b.coveredRevenue += total * (cov / 100);
     if (o.marginAmount != null) {
       b.margin += Number(o.marginAmount);
       b.marginKnown += 1;
@@ -179,6 +196,7 @@ export async function getSegmentRollup(windowDays = 30, endDaysAgo = 0): Promise
       averageOrderValue: b.orders > 0 ? Number((b.revenue / b.orders).toFixed(2)) : 0,
       averageMarginPct:
         b.marginKnown > 0 && b.revenue > 0 ? Number(((b.margin / b.revenue) * 100).toFixed(1)) : null,
+      marginCoveragePct: b.revenue > 0 ? Number(((b.coveredRevenue / b.revenue) * 100).toFixed(1)) : 0,
     }))
     .sort((a, b) => b.revenue - a.revenue);
 }
@@ -201,6 +219,7 @@ export async function getAffiliateRoi(windowDays = 30, endDaysAgo = 0): Promise<
       id: true,
       total: true,
       marginAmount: true,
+      marginCoveragePct: true,
       affiliateId: true,
       affiliate: { select: { id: true, code: true, businessName: true } },
     },
@@ -223,6 +242,7 @@ export async function getAffiliateRoi(windowDays = 30, endDaysAgo = 0): Promise<
     margin: number;
     marginKnown: number;
     commissionCents: number;
+    coveredRevenue: number;
   };
   const buckets = new Map<string, Bucket>();
 
@@ -238,9 +258,13 @@ export async function getAffiliateRoi(windowDays = 30, endDaysAgo = 0): Promise<
       margin: 0,
       marginKnown: 0,
       commissionCents: 0,
+      coveredRevenue: 0,
     };
     b.orders += 1;
-    b.revenue += Number(o.total);
+    const total = Number(o.total);
+    b.revenue += total;
+    const cov = o.marginCoveragePct != null ? Number(o.marginCoveragePct) : 0;
+    b.coveredRevenue += total * (cov / 100);
     if (o.marginAmount != null) {
       b.margin += Number(o.marginAmount);
       b.marginKnown += 1;
@@ -272,6 +296,7 @@ export async function getAffiliateRoi(windowDays = 30, endDaysAgo = 0): Promise<
         commissionPaid,
         netMargin,
         roiPct,
+        marginCoveragePct: b.revenue > 0 ? Number(((b.coveredRevenue / b.revenue) * 100).toFixed(1)) : 0,
       };
     })
     .sort((a, b) => (b.netMargin ?? -Infinity) - (a.netMargin ?? -Infinity));
@@ -297,7 +322,8 @@ export async function getProductMargins(
     },
   });
 
-  const agg = new Map<string, ProductMarginRow>();
+  type Agg = ProductMarginRow & { coveredRevenue: number };
+  const agg = new Map<string, Agg>();
   for (const i of items) {
     const row = agg.get(i.productId) ?? {
       productId: i.productId,
@@ -307,22 +333,33 @@ export async function getProductMargins(
       cost: 0,
       margin: 0,
       marginPct: 0,
+      marginCoveragePct: 0,
+      coveredRevenue: 0,
     };
     row.unitsSold += i.quantity;
     row.revenue += Number(i.totalPrice);
-    if (i.totalCost != null) row.cost += Number(i.totalCost);
+    if (i.totalCost != null) {
+      row.cost += Number(i.totalCost);
+      row.coveredRevenue += Number(i.totalPrice);
+    }
     agg.set(i.productId, row);
   }
 
   return Array.from(agg.values())
     .map((r) => {
-      const margin = r.revenue - r.cost;
+      // Use covered-revenue as denominator so marginPct reflects margin on items where cost is known —
+      // mixing known-cost margin with full revenue (which used to happen here) produced bogus low margins.
+      const margin = r.coveredRevenue - r.cost;
+      const denom = r.coveredRevenue > 0 ? r.coveredRevenue : r.revenue;
       return {
-        ...r,
+        productId: r.productId,
+        title: r.title,
+        unitsSold: r.unitsSold,
         revenue: Number(r.revenue.toFixed(2)),
         cost: Number(r.cost.toFixed(2)),
         margin: Number(margin.toFixed(2)),
-        marginPct: r.revenue > 0 ? Number(((margin / r.revenue) * 100).toFixed(1)) : 0,
+        marginPct: denom > 0 ? Number(((margin / denom) * 100).toFixed(1)) : 0,
+        marginCoveragePct: r.revenue > 0 ? Number(((r.coveredRevenue / r.revenue) * 100).toFixed(1)) : 0,
       };
     })
     .sort((a, b) => b.revenue - a.revenue)
