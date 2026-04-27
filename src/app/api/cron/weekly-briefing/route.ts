@@ -13,6 +13,7 @@ import fs from 'fs';
 import path from 'path';
 import { prisma } from '@/lib/database/client';
 import { listRecommendations } from '@/lib/analytics/recommendation-store';
+import { deliverBriefing } from '@/lib/analytics/briefing-delivery';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 300;
@@ -238,6 +239,15 @@ ${stageA}`;
     }
   }
 
+  // Deliver: email + commit to repo. Fails soft (errors logged, response stays green).
+  const deliverTo = process.env.MARKETING_BRIEFING_TO || 'allan@partyondelivery.com';
+  const delivery = await deliverBriefing({
+    weekLabel: week.label,
+    stageA,
+    stageB: stageBContent,
+    to: deliverTo,
+  });
+
   return NextResponse.json({
     ok: true,
     week: week.label,
@@ -246,6 +256,7 @@ ${stageA}`;
       movers: movers.length,
       flags: flags.filter((f) => !f.startsWith('_')).length,
     },
+    delivery,
     stageA: {
       content: stageA,
       fsPath: path.relative(process.cwd(), stageAFsPath),
