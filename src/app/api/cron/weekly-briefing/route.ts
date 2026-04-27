@@ -208,7 +208,7 @@ ${stageA}`;
           'X-Title': 'Party On Delivery Marketing Director',
         },
         body: JSON.stringify({
-          model: 'anthropic/claude-3.5-sonnet',
+          model: 'anthropic/claude-sonnet-4.5',
           messages: [
             { role: 'system', content: businessContext },
             { role: 'user', content: userPrompt },
