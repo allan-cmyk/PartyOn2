@@ -30,7 +30,6 @@ Three admin surfaces live in the app: `/admin/*` (business operator), `/ops/*` (
 | `/admin/reports/inventory` | `.../inventory/page.tsx` | Inventory report. |
 | `/admin/experiments` | `.../experiments/page.tsx` | A/B experiments. |
 | `/admin/features` | `.../features/page.tsx` | Feature flags. |
-| `/admin/loyalty` | `.../loyalty/page.tsx` | Loyalty tiers / points. |
 | `/admin/emails` | `.../emails/page.tsx` | Email template editor + log. |
 | `/admin/sync` | `.../sync/page.tsx` | Shopify sync trigger. |
 | `/admin/settings` | `.../settings/page.tsx` | Global settings. |
@@ -96,7 +95,7 @@ Three admin surfaces live in the app: `/admin/*` (business operator), `/ops/*` (
 These are **parallel namespaces, not a migration** — neither supersedes the other.
 
 - **`/api/admin/*`** is admin-UI-facing and is guarded by `ADMIN_API_KEY` / admin session. Covers: `affiliates`, `analytics`, `experiments`, `orders`, `sync`, `verify`.
-- **`/api/v1/admin/*`** is ops-panel-facing. Covers: `collections`, `customers`, `dashboard`, `discounts`, `draft-orders`, `features`, `loyalty`, `orders`, `products`, `reports`, `shortage-list`, `sync`, `unpaid-carts`.
+- **`/api/v1/admin/*`** is ops-panel-facing. Covers: `collections`, `customers`, `dashboard`, `discounts`, `draft-orders`, `features`, `orders`, `products`, `reports`, `shortage-list`, `sync`, `unpaid-carts`. (Loyalty admin page and APIs were removed 2026-04-23.)
 - Overlap is only `orders` and `sync`; each namespace's `orders` / `sync` endpoints serve a different consumer. Do not treat either as deprecated.
 
 ## Admin capabilities by domain
@@ -130,7 +129,7 @@ These are **parallel namespaces, not a migration** — neither supersedes the ot
 - Manual adjustments via `InventoryNote` (`/api/v1/inventory/notes/*`).
 
 ### Customers
-- `/admin/customers*` — search, detail, loyalty balance.
+- `/admin/customers*` — search, detail.
 - Email verification state, age-verification state visible.
 
 ### Group orders
@@ -140,10 +139,6 @@ These are **parallel namespaces, not a migration** — neither supersedes the ot
 ### Promotions / discounts
 - `/admin/promotions*` — `Discount`, `AutomaticDiscount`, `ReferralCode`.
 - Discount validate endpoint shared with cart: `/api/v1/admin/discounts/validate`.
-
-### Loyalty
-- `/admin/loyalty` — tiers + manual point adjustments.
-- `LoyaltyTier`, `CustomerLoyalty`, `PointsTransaction` models.
 
 ### Reporting
 - `/admin/reports/{sales,customers,inventory}` backed by `/api/v1/admin/reports/*`.
@@ -188,8 +183,10 @@ These are **parallel namespaces, not a migration** — neither supersedes the ot
 | `*/15 * * * *` | `/api/cron/reconcile-orders` | Compare Stripe sessions to `Order` rows; heal missed webhooks. |
 | `0 6 * * *` | `/api/cron/affiliate-commissions` | Accrue `AffiliateCommission` rows from eligible orders. |
 | `0 14 1 * *` (monthly 1st 14:00) | `/api/cron/affiliate-payouts` | Close commissions into `AffiliatePayout` + `PayoutLineItem`. |
-
-Not scheduled in `vercel.json` but present: `/api/cron/group-orders-v2/route.ts` — invoked on demand for v2 maintenance.
+| `0 7 * * *` (daily 07:00) | `/api/cron/analytics-snapshot` | Daily GA4/GSC rollup → `AnalyticsSnapshot`. |
+| `0 13 * * 1` (Mon 13:00) | `/api/cron/weekly-briefing` | Weekly operator briefing email. |
+| `0 13 * * 1` (Mon 13:00) | `/api/cron/weekly-purchase-plan` | Weekly distributor purchase plan (PAID orders, 14-day window). |
+| `0 */2 * * *` (every 2h) | `/api/cron/group-orders-v2` | Locks expired `SubOrder` tabs (`OPEN` → `LOCKED` when `orderDeadline` has passed) and closes expired `GroupOrderV2` (`ACTIVE` → `CLOSED` when `expiresAt` has passed). Added to `vercel.json` 2026-04-23. |
 
 ### Blog automation (GitHub Actions)
 

@@ -47,7 +47,7 @@ tags: [partyondelivery, codebase, architecture, stack, env]
 
 ```text
 src/
-├── app/                        # Next.js App Router — 154 page.tsx, 207 route.ts
+├── app/                        # Next.js App Router — 143 page.tsx, 214 route.ts
 │   ├── (main)/                 # Route group for marketing pages (areas, press, tabc…)
 │   ├── api/
 │   │   ├── v1/                 # Primary API: auth, products, orders, cart, inventory, admin, affiliate, invoice
@@ -99,7 +99,7 @@ src/
 │   ├── experiments/, features/
 │   ├── group-orders/, group-orders-v2/
 │   ├── inventory/services/     # Order creation, inventory, product services
-│   ├── loyalty/                # Loyalty tiers, points
+│   ├── (loyalty/ removed 2026-04-23 — Prisma models retained for data preservation)
 │   ├── mcp/                    # MCP server wiring
 │   ├── oauth/                  # OAuth server
 │   ├── partners/, premier/

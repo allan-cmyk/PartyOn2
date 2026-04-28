@@ -9,7 +9,11 @@ tags: [partyondelivery, codebase, prisma, data-model, schema]
 
 # Data Model
 
-Source of truth: `prisma/schema.prisma` (2387 lines). Datasource is PostgreSQL (`POSTGRES_URL`, `POSTGRES_URL_NON_POOLING`). 75 models, 43 enums. Migrations live under `prisma/migrations/` (managed by Prisma CLI via `npm run db:migrate` / `db:push`).
+Source of truth: `prisma/schema.prisma`. Datasource is PostgreSQL (`POSTGRES_URL`, `POSTGRES_URL_NON_POOLING`). 76 models, 43 enums. Migrations live under `prisma/migrations/` (managed by Prisma CLI via `npm run db:migrate` / `db:push`).
+
+> _`DeliveryZone` and `TaxRate` were removed 2026-04-23. Runtime uses hardcoded TS tables in `src/lib/delivery/rates.ts` and `src/lib/tax/rates.ts`. Postgres tables `delivery_zones` and `tax_rates` remain — drop in future migration._
+>
+> _`LoyaltyTier`, `CustomerLoyalty`, `PointsTransaction` are retained in the schema but the application code that read/wrote them was removed 2026-04-23 (loyalty program deprecated). Models retained for data preservation._
 
 > This document groups models into domain clusters and mirrors the schema verbatim — when fields are listed, they are present in `schema.prisma`. For any model, consult the line numbers below to read the definitive definition.
 
@@ -39,8 +43,8 @@ Source of truth: `prisma/schema.prisma` (2387 lines). Datasource is PostgreSQL (
 | 597 | Customer | 1446 | VercelAnalyticsEvent | 2196 | AffiliatePayout |
 | 645 | CustomerAddress | 1503 | DrinkCalculatorLead | 2217 | PayoutLineItem |
 | 676 | Cart | 1526 | DraftOrder | 2230 | MagicLinkToken |
-| 722 | CartItem | 1608 | DeliveryZone | 2249 | AgentConversation |
-| | | 1628 | TaxRate | 2273 | AgentProposal |
+| 722 | CartItem | | | 2249 | AgentConversation |
+| | | | | 2273 | AgentProposal |
 | | | | | 2291 | McpRequestLog |
 | | | | | 2313 | BoatSchedule |
 | | | | | 2351 | ScheduleOrderMatch |
@@ -132,10 +136,9 @@ erDiagram
   Order ||--o{ OrderAmendment : amended_by
   Order ||--o| DeliveryTask : dispatched_as
   Order ||--o{ ScheduleOrderMatch : boat_matched
-  DeliveryZone ||--o{ Order : "zone_logic"
-  TaxRate ||--o{ Order : "tax_logic"
   DraftOrder ||--o{ DraftCartItem : items
   Affiliate ||--o{ Order : attributed
+  %% DeliveryZone and TaxRate removed 2026-04-23 — runtime uses hardcoded TS tables.
   Affiliate ||--o{ AffiliateCommission : earns
   AffiliateCommission ||--o{ Order : on
   AffiliatePayout ||--o{ PayoutLineItem : groups
@@ -201,7 +204,7 @@ erDiagram
 
 ### Customer (line 597)
 - Fields include `email (unique)`, `passwordHash?`, `ageVerified`, `dateOfBirth?`, `stripeCustomerId?`, `shopifyId?`.
-- Relations: addresses, carts, orders, group-order participation (v1 + v2), loyalty.
+- Relations: addresses, carts, orders, group-order participation (v1 + v2), loyalty (schema-only — code removed 2026-04-23).
 
 ### CustomerAddress (645)
 - Default `province = "TX"`, `country = "US"`. `isDefault` flag.
@@ -211,8 +214,8 @@ erDiagram
 - `CartStatus`: ACTIVE | ABANDONED | CONVERTED | EXPIRED.
 - Unique `(cartId, variantId)`.
 
-### DeliveryZone (1608) / TaxRate (1628)
-- Zone records drive `deliveryFee` and sales-tax calc (`src/lib/delivery/`, `src/lib/tax/`).
+### Delivery zones / tax rates — _removed 2026-04-23_
+- `DeliveryZone` and `TaxRate` Prisma models were removed. Source of truth is now `src/lib/delivery/rates.ts` and `src/lib/tax/rates.ts` (hardcoded TS tables). Postgres tables remain — drop in future migration.
 
 ## Domain: Orders & fulfilment
 
@@ -258,7 +261,7 @@ erDiagram
 ## Domain: Discounts, loyalty, experiments
 
 - **Discount** (1241), **DiscountUsage** (1295), **ReferralCode** (1311), **AutomaticDiscount** (1329) — promo codes, usage caps, auto-rules; `DiscountType`, `AutoDiscountTrigger`.
-- **LoyaltyTier** (1378), **CustomerLoyalty** (1397), **PointsTransaction** (1417) — tiered loyalty points; `PointsType` enum.
+- **LoyaltyTier** (1378), **CustomerLoyalty** (1397), **PointsTransaction** (1417) — tiered loyalty points; `PointsType` enum. _Code that read/wrote these models was removed 2026-04-23. Models retained for data preservation; tables can be dropped in a future migration._
 - **Experiment** (66) + **ExperimentVariant** (95) — A/B testing with impressions/clicks/conversions/revenue per variant; `ExperimentStatus`.
 
 ## Domain: Affiliates & partners

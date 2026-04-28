@@ -24,7 +24,7 @@ End-to-end funnels traced with route + file references. For the full route inven
 **Success**: user adds a product to cart (see Journey B).
 **Failure / edge**:
 - Age-verification modal (`src/components/AgeVerificationModal.tsx`) blocks under-21 users; attestation stored via `/api/v1/auth/age-verify`.
-- Outside delivery zone → `DeliveryScheduler`/address gate refuses; `DeliveryZone` lookup lives in `src/lib/delivery/`.
+- Outside delivery zone → `DeliveryScheduler`/address gate refuses; zone lookup lives in `src/lib/delivery/rates.ts` (hardcoded TS table).
 - No products returned → `/order` shows empty state; `/search` layout available for search UIs.
 
 ## Journey B — Product selection & cart
@@ -34,7 +34,7 @@ End-to-end funnels traced with route + file references. For the full route inven
 1. Product view — either inline cards on `/order` or detail page `/products/[handle]` (`src/app/products/[handle]/page.tsx`), loaded via `/api/products/[handle]` or `/api/v1/products/[id]`.
 2. Add-to-cart → `CartContext` (`src/contexts/CartContext.tsx`) mutates state and persists to localStorage; server-side cart mirroring via `/api/v1/cart`.
 3. Optional: shareable cart via `/api/cart/share` and viewed at `/cart/shared/[id]` (`src/app/cart/shared/[id]/page.tsx`).
-4. Scheduling — `DeliveryScheduler` / `SimpleDeliveryScheduler` sets address + slot; delivery fee computed from `DeliveryZone` (`src/lib/delivery/`) and applied via `/api/v1/cart/delivery`.
+4. Scheduling — `DeliveryScheduler` / `SimpleDeliveryScheduler` sets address + slot; delivery fee computed from the hardcoded zone table in `src/lib/delivery/rates.ts` and applied via `/api/v1/cart/delivery`.
 5. Discounts — code entered and validated via `/api/v1/cart/discount` (server-side check against `Discount` + `AutomaticDiscount`).
 6. Upsell / AI — `/api/chat` and `AIConcierge.tsx` optionally surface recommendations.
 
@@ -49,7 +49,7 @@ End-to-end funnels traced with route + file references. For the full route inven
 **Trigger**: "Checkout" from cart.
 
 1. `/checkout` (`src/app/checkout/page.tsx`) requires age-verification cookie. `AgeVerificationModal` is blocking.
-2. `/api/v1/checkout` (`src/app/api/v1/checkout/route.ts`) creates a Stripe Checkout Session using `src/lib/stripe/`. The cart snapshot includes items, delivery fee, tax (`src/lib/tax/` → `TaxRate`), and discounts.
+2. `/api/v1/checkout` (`src/app/api/v1/checkout/route.ts`) creates a Stripe Checkout Session using `src/lib/stripe/`. The cart snapshot includes items, delivery fee, tax (`src/lib/tax/rates.ts` — hardcoded TS table), and discounts.
 3. User redirects to Stripe-hosted checkout → pays with live card (test cards are forbidden per CLAUDE.md).
 4. On success Stripe redirects to `/checkout/success` (`src/app/checkout/success/page.tsx`) **and** fires a `checkout.session.completed` event.
 5. `/api/webhooks/stripe` (`src/app/api/webhooks/stripe/route.ts`) verifies signature, idempotently persists via `WebhookEvent`, materializes `Order` + `OrderItem` (via `src/lib/inventory/services/order-service.ts`), decrements inventory, and enqueues Resend emails (order confirmation template under `src/lib/email/templates/`).
@@ -114,7 +114,7 @@ End-to-end funnels traced with route + file references. For the full route inven
 2. `CustomerContext` rehydrates from JWT via `/api/v1/auth/me`.
 3. `/account` entry, with subpages `/orders`, `/addresses`, `/group-orders`, `/preferences`.
 4. Re-order from `/account/orders` repopulates cart (client-side copy into `CartContext`).
-5. Loyalty — `/api/v1/loyalty/points` balance, `/redeem` at checkout.
+5. _Loyalty points/redeem flow was previously planned but removed 2026-04-23 before launch — no customer-facing loyalty integration exists._
 
 ## Conversion-critical touchpoints
 
@@ -123,7 +123,7 @@ End-to-end funnels traced with route + file references. For the full route inven
 | Age-verification modal | `src/components/AgeVerificationModal.tsx` + `/api/v1/auth/age-verify` | Regulatory blocker on every checkout. |
 | `/order` rendering | `src/app/order/page.tsx` + `/api/v1/products` | Primary catalog — any error collapses the funnel. |
 | Add-to-cart | `CartContext` + `/api/v1/cart` | Cart mutation must be optimistic + survive reload. |
-| Delivery zone check | `src/lib/delivery/` + `DeliveryZone` | Wrong zone = wrong fee or blocked checkout. |
+| Delivery zone check | `src/lib/delivery/rates.ts` (hardcoded TS table) | Wrong zone = wrong fee or blocked checkout. |
 | Stripe checkout session | `/api/v1/checkout` + `src/lib/stripe/` | Live keys — every failure is real money. |
 | Stripe webhook → order | `/api/webhooks/stripe` + `src/lib/inventory/services/order-service.ts` | Only path that creates `Order` from payment; idempotency via `WebhookEvent`. |
 | Reconcile cron | `/api/cron/reconcile-orders` | Safety net when the webhook is delayed/lost. |

@@ -15,7 +15,7 @@ PartyOn Delivery is a premium on-demand alcohol and party-goods delivery service
 
 The site is built as a hybrid of a marketing site, an e-commerce storefront, and a set of collaborative order dashboards. Visitors can either self-serve through the standard `/order` catalog, or go through curated landing pages for their use case (weddings, bach parties, boat parties, corporate, BYOB venues, delivery-area pages). A distinctive second flow is the **Universal Order Dashboard** — a shareable, code-addressable ordering surface at `/dashboard/[code]` where a host, a partner, or an affiliate can curate a cart that guests join, add to, and pay for individually or as one invoice.
 
-Behind the storefront sits a comprehensive back-office: an ops panel for order picking / inventory / receiving shipments / distributor invoice OCR, an admin panel for customers / promotions / discounts / reports / experiments / loyalty / AI assistance, and an affiliate program with magic-link auth, commission accrual, and monthly payout generation.
+Behind the storefront sits a comprehensive back-office: an ops panel for order picking / inventory / receiving shipments / distributor invoice OCR, an admin panel for customers / promotions / discounts / reports / experiments / AI assistance, and an affiliate program with magic-link auth, commission accrual, and monthly payout generation. (A points-based loyalty program was previously planned but the code was removed 2026-04-23 before launch; Postgres tables remain for data preservation only.)
 
 ## User types
 
@@ -54,7 +54,7 @@ Behind the storefront sits a comprehensive back-office: an ops panel for order p
 | Channel | Notes |
 |---|---|
 | Direct retail | Primary — product markup on alcohol, kits, kegs, rentals. |
-| Delivery fee | Computed in `src/lib/delivery/` by zone (`DeliveryZone` model). |
+| Delivery fee | Computed in `src/lib/delivery/rates.ts` (hardcoded TS zone table). |
 | Order minimums | $100–$150 depending on zone (per CLAUDE.md). |
 | Packages & kits | Tiered pricing (`src/lib/package-pricing.ts`, `/weddings/packages/[tier]`, `/bach-parties/packages/[tier]`, `/boat-parties/packages/[tier]`). |
 | Affiliate commissions | Paid out monthly via `AffiliateCommission` + `AffiliatePayout`. |
@@ -65,7 +65,7 @@ Behind the storefront sits a comprehensive back-office: an ops panel for order p
 
 - **City**: Austin, TX and adjacent suburbs.
 - **Neighborhood pages**: Downtown, East Austin, Lake Travis, South Congress (`src/app/(main)/areas/*`) plus `/delivery/[location]`.
-- **Zone logic**: `DeliveryZone` + `TaxRate` Prisma models drive the delivery-fee and sales-tax calculators (`src/lib/delivery/`, `src/lib/tax/`).
+- **Zone logic**: hardcoded TypeScript tables at `src/lib/delivery/rates.ts` and `src/lib/tax/rates.ts` drive the delivery-fee and sales-tax calculators. (`DeliveryZone` and `TaxRate` Prisma models were removed 2026-04-23.)
 - **Age compliance**: 21+ age-verification modal required before checkout; backed by `/api/v1/auth/age-verify` and `AgeVerificationModal.tsx`.
 - **Regulatory**: TABC-focused compliance page at `/(main)/tabc`.
 

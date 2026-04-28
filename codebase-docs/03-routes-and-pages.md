@@ -273,7 +273,7 @@ v1 `/api/group-orders/*` and v2 `/api/v2/group-orders/*` are **both live** — v
 These are **parallel namespaces, not a migration** — neither supersedes the other.
 
 - **`/api/admin/*`** is admin-UI-facing and is guarded by `ADMIN_API_KEY` / admin session. Covers: `affiliates`, `analytics`, `experiments`, `orders`, `sync`, `verify`.
-- **`/api/v1/admin/*`** is ops-panel-facing. Covers: `collections`, `customers`, `dashboard`, `discounts`, `draft-orders`, `features`, `loyalty`, `orders`, `products`, `reports`, `shortage-list`, `sync`, `unpaid-carts`.
+- **`/api/v1/admin/*`** is ops-panel-facing. Covers: `collections`, `customers`, `dashboard`, `discounts`, `draft-orders`, `features`, `orders`, `products`, `reports`, `shortage-list`, `sync`, `unpaid-carts`. (Loyalty admin page and APIs were removed 2026-04-23 (program deprecated).)
 - Overlap is only `orders` and `sync`; each namespace's `orders` / `sync` endpoints serve a different consumer. Do not treat either as deprecated.
 
 ### Admin APIs (`/api/v1/admin`)
@@ -314,7 +314,6 @@ These are **parallel namespaces, not a migration** — neither supersedes the ot
 | `/api/v1/admin/features` | | Feature flags. |
 | `/api/v1/admin/group-orders` | | Admin GroupOrderV2 list. |
 | `/api/v1/admin/group-orders/[id]` | | Detail / mutate. |
-| `/api/v1/admin/loyalty` | | Loyalty tiers / points. |
 | `/api/v1/admin/reports` | | Report index. |
 | `/api/v1/admin/reports/sales` | | Sales report. |
 | `/api/v1/admin/reports/customers` | | Customers report. |
@@ -407,8 +406,6 @@ These are **parallel namespaces, not a migration** — neither supersedes the ot
 | `/api/experiments/assign` | `.../experiments/assign/route.ts` | Assign variant. |
 | `/api/experiments/track` | `.../experiments/track/route.ts` | Track event. |
 | `/api/v1/features` | `src/app/api/v1/features/route.ts` | Client feature flags. |
-| `/api/v1/loyalty/points` | `.../loyalty/points/route.ts` | Points balance. |
-| `/api/v1/loyalty/redeem` | `.../loyalty/redeem/route.ts` | Redeem. |
 
 ### Webhooks
 
@@ -428,7 +425,10 @@ These are **parallel namespaces, not a migration** — neither supersedes the ot
 | `/api/cron/reconcile-orders` | `.../reconcile-orders/route.ts` | `*/15 * * * *` | Reconcile Stripe ↔ DB. |
 | `/api/cron/affiliate-commissions` | `.../affiliate-commissions/route.ts` | `0 6 * * *` | Daily commission accrual. |
 | `/api/cron/affiliate-payouts` | `.../affiliate-payouts/route.ts` | `0 14 1 * *` | Monthly payout generation. |
-| `/api/cron/group-orders-v2` | `.../group-orders-v2/route.ts` | (not in `vercel.json`) | On-demand v2 group-order maintenance. |
+| `/api/cron/analytics-snapshot` | `.../analytics-snapshot/route.ts` | `0 7 * * *` | Daily GA4/GSC rollup → `AnalyticsSnapshot`. |
+| `/api/cron/weekly-briefing` | `.../weekly-briefing/route.ts` | `0 13 * * 1` | Weekly Mon 13:00 UTC operator briefing email. |
+| `/api/cron/weekly-purchase-plan` | `.../weekly-purchase-plan/route.ts` | `0 13 * * 1` | Weekly Mon 13:00 UTC distributor purchase plan. |
+| `/api/cron/group-orders-v2` | `.../group-orders-v2/route.ts` | `0 */2 * * *` | Every 2h — locks expired `SubOrder` tabs (OPEN → LOCKED) and closes expired `GroupOrderV2` (ACTIVE → CLOSED). Added 2026-04-23. |
 
 ## Route groups & layouts
 
