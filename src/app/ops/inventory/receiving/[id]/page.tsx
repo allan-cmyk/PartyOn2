@@ -243,21 +243,14 @@ export default function ReceivingReviewPage({ params }: { params: Promise<{ id: 
                   <span className="font-bold text-gray-900">{line.totalUnits} units</span>
                   <span className="text-gray-400 ml-3">·</span>
                   {(() => {
-                    // Selling unit (= what we actually sell, = what costPerUnit stores):
-                    //  - matched variant title contains "Pack"/"Case" → the case
-                    //  - everything else → the single bottle/can
-                    // Default to bottle for unmatched lines (most distributor invoices are
-                    // case-of-bottles).
-                    const sellingUnitIsCase = line.matchedVariant
-                      ? /\b(\d+\s*pack|case)\b/i.test(
-                          `${line.matchedVariant.productTitle} ${line.matchedVariant.variantTitle ?? ''}`
-                        )
-                      : false;
+                    // Selling-unit cost = caseCost / unitsPerCase. The parser sets
+                    // unitsPerCase to PPC (sellable units per case) when available; for
+                    // straight single-bottle cases it falls back to PACK / bottles-per-case.
+                    // The operator can correct unitsPerCase above if the OCR got it wrong.
                     const unitsPerCase = Math.max(1, line.unitsPerCase);
-                    const unitLabel = sellingUnitIsCase ? 'case' : 'bottle';
                     const displayedUnitCost = line.unitCost == null
                       ? ''
-                      : (sellingUnitIsCase ? line.unitCost : line.unitCost / unitsPerCase).toFixed(2);
+                      : (line.unitCost / unitsPerCase).toFixed(2);
                     return (
                       <>
                         <label className="flex items-center gap-1">
@@ -274,7 +267,7 @@ export default function ReceivingReviewPage({ params }: { params: Promise<{ id: 
                               const newDisplay = raw === '' ? null : Math.max(0, Number(raw));
                               const newStoredCost = newDisplay == null
                                 ? null
-                                : sellingUnitIsCase ? newDisplay : newDisplay * unitsPerCase;
+                                : newDisplay * unitsPerCase;
                               if (newStoredCost !== line.unitCost) {
                                 patchLine(line.id, { unitCost: newStoredCost });
                               }
@@ -282,7 +275,6 @@ export default function ReceivingReviewPage({ params }: { params: Promise<{ id: 
                             className="w-24 px-2 py-1 border border-gray-300 rounded text-sm"
                           />
                         </label>
-                        <span className="text-xs text-gray-500">/ {unitLabel}</span>
                       </>
                     );
                   })()}

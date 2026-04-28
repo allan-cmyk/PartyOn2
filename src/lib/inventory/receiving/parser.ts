@@ -45,7 +45,15 @@ Rules:
 - One object per physical line on the invoice. Do NOT aggregate.
 - "cases" is the quantity column. If only singles are listed, set cases = quantity and unitsPerCase = 1.
 - Ignore totals, subtotals, tax, fees, freight, deposit lines.
-- For pack notation like "12/750", "24/12OZ", "6/4/12OZ": unitsPerCase is the FIRST number (12, 24, 24 respectively — the total individual containers per case).
+- "unitsPerCase" = number of SELLABLE UNITS per case (= what shows up in inventory after receiving). Source priority:
+  1. If the invoice has a "PPC" (Parts/Pieces Per Case) column, that IS unitsPerCase. Use it.
+  2. Otherwise use the "PACK" column when present (typical for invoices with single-bottle/can items).
+  3. As a last resort, infer from pack notation in the description: "12/750ML" → 12 bottles per case; "24/12OZ" with single cans → 24; for variety packs like "6/4/12OZ" → 6 (six four-packs per case).
+- Important examples to disambiguate:
+  - Wine "12/750ML" sold as bottles: unitsPerCase = 12
+  - Liquor "6/750ML" sold as bottles: unitsPerCase = 6
+  - Cutwater variety "24/12OZ 6/4" sold as four-packs: unitsPerCase = 6 (PPC column will say 6)
+  - Beer like "Coors Light 24-pack" sold as the 24-pack: PPC column will say 1
 - If the photo is blurry or you cannot read a field, use null.
 
 Cost rules:

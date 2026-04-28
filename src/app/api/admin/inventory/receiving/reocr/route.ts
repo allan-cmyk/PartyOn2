@@ -15,10 +15,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/database/client';
 import { parseInvoiceImage, type ParsedInvoiceLine } from '@/lib/inventory/receiving/parser';
-import {
-  isCasePricedVariant,
-  computeCostPerSellingUnit,
-} from '@/lib/inventory/receiving/service';
+import { computeCostPerSellingUnit } from '@/lib/inventory/receiving/service';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 300;
@@ -70,7 +67,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       label: string;
       action: 'updated' | 'no-match' | 'no-cost' | 'no-variant' | 'cost-guard-skip';
       caseCost: number | null;          // case cost from OCR
-      isCasePriced: boolean | null;      // selling-unit detection
       sellingUnitCost: number | null;    // what we'd write to costPerUnit
       variantId: string | null;
       variantLabel: string | null;
@@ -111,7 +107,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       if (!reocrLine) {
         invSummary.perLine.push({
           lineId: dbLine.id, label, action: 'no-match',
-          caseCost: null, isCasePriced: null, sellingUnitCost: null,
+          caseCost: null, sellingUnitCost: null,
           variantId: dbLine.matchedVariantId, variantLabel: null,
           previousVariantCost: null, retailDollars: null,
         });
@@ -121,7 +117,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       if (reocrLine.caseCost == null) {
         invSummary.perLine.push({
           lineId: dbLine.id, label, action: 'no-cost',
-          caseCost: null, isCasePriced: null, sellingUnitCost: null,
+          caseCost: null, sellingUnitCost: null,
           variantId: dbLine.matchedVariantId, variantLabel: null,
           previousVariantCost: null, retailDollars: null,
         });
@@ -142,12 +138,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         : null;
       const previousVariantCost = variant?.costPerUnit ? Number(variant.costPerUnit) : null;
       const retailDollars = variant?.price != null ? Number(variant.price) : null;
-      const combinedTitle = variant ? `${variant.product.title} ${variant.title ?? ''}` : '';
-      const isCase = variant ? isCasePricedVariant(combinedTitle) : null;
       const sellingUnitCost = variant
         ? Number(
             computeCostPerSellingUnit({
-              combinedTitle,
               caseCost: reocrLine.caseCost,
               unitsPerCase: reocrLine.unitsPerCase,
             }).toFixed(4)
@@ -163,10 +156,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         totalLineUpdates++;
       }
 
-      // Plausibility guard for single-bottle variants only.
+      // Plausibility guard: refuse the write if proposed selling-unit cost > 3× retail.
       const blocked =
         variant != null &&
-        isCase === false &&
         retailDollars != null &&
         retailDollars > 0 &&
         sellingUnitCost != null &&
@@ -189,7 +181,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         label,
         action: !variant ? 'no-variant' : blocked ? 'cost-guard-skip' : 'updated',
         caseCost: reocrLine.caseCost,
-        isCasePriced: isCase,
         sellingUnitCost,
         variantId: dbLine.matchedVariantId,
         variantLabel,

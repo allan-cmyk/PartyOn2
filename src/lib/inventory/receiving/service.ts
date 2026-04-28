@@ -17,28 +17,18 @@ function normalizeKey(sku: string | null, description: string): string {
 }
 
 /**
- * A variant is "case-priced" when its selling unit is the full distributor case —
- * e.g. a "24 Pack" of beer or a pre-built "Mixed Case" of wine. For these,
- * variant.costPerUnit equals the invoice case cost directly (no division).
- *
- * Single-bottle variants (wine, liquor, single 750ml/1.75L) are bottle-priced —
- * costPerUnit equals invoice case cost ÷ bottles per case.
- */
-export function isCasePricedVariant(combinedTitle: string): boolean {
-  return /\b(\d+\s*pack|case)\b/i.test(combinedTitle);
-}
-
-/**
  * Compute the per-selling-unit cost (what to write to ProductVariant.costPerUnit)
- * from an invoice line.
+ * from an invoice line. Always divides — the parser is responsible for setting
+ * unitsPerCase to the number of SELLABLE units per case (PPC column when present,
+ * else PACK column). For a Coors Light 24-pack sold as the 24-pack, PPC=1 and
+ * caseCost/1 = caseCost. For a Cutwater variety pack with 6 four-packs per case,
+ * PPC=6 and caseCost/6 = per-four-pack cost.
  */
 export function computeCostPerSellingUnit(params: {
-  combinedTitle: string;
   caseCost: number;
   unitsPerCase: number;
 }): number {
-  const { combinedTitle, caseCost, unitsPerCase } = params;
-  if (isCasePricedVariant(combinedTitle)) return caseCost;
+  const { caseCost, unitsPerCase } = params;
   const denom = unitsPerCase > 0 ? unitsPerCase : 1;
   return caseCost / denom;
 }
@@ -186,23 +176,22 @@ export async function applyInvoice(
       });
     }
 
-    // The DB column `unitCost` now holds the case cost from the invoice.
+    // The DB column `unitCost` holds the case cost from the invoice.
+    // Selling-unit cost is always caseCost / unitsPerCase — the parser is responsible
+    // for setting unitsPerCase to the number of sellable units per case (PPC column).
     if (line.unitCost != null) {
       const caseCost = Number(line.unitCost);
-      const combinedTitle = `${variant.product.title} ${variant.title ?? ''}`;
-      const isCase = isCasePricedVariant(combinedTitle);
       const proposed = computeCostPerSellingUnit({
-        combinedTitle,
         caseCost,
         unitsPerCase: line.unitsPerCase,
       });
 
-      // Plausibility guard for single-bottle variants only: if the computed cost is more
-      // than 3× the variant's retail price, the OCR almost certainly returned a per-line
-      // total or got unitsPerCase wrong. Refuse the write rather than corrupt costPerUnit.
+      // Plausibility guard: if the proposed selling-unit cost is more than 3× the
+      // variant's retail price, the OCR almost certainly got caseCost or unitsPerCase
+      // wrong. Refuse the write rather than corrupt costPerUnit.
       const retailDollars = variant.price != null ? Number(variant.price) : null;
       const blocked =
-        !isCase && retailDollars != null && retailDollars > 0 && proposed > retailDollars * 3;
+        retailDollars != null && retailDollars > 0 && proposed > retailDollars * 3;
 
       if (blocked) {
         const label =
