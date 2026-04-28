@@ -8,6 +8,7 @@ interface InventoryItem {
   id: string;
   productId: string;
   productName: string;
+  productStatus: 'ACTIVE' | 'DRAFT' | 'ARCHIVED';
   variantName?: string;
   sku?: string;
   quantity: number;
@@ -16,6 +17,8 @@ interface InventoryItem {
   reservedQuantity: number;
   lowStockThreshold: number;
   reorderPoint: number;
+  price: number | null;
+  costPerUnit: number | null;
   locationName: string;
   lastCountedAt?: string;
 }
@@ -402,8 +405,11 @@ export default function InventoryPage(): ReactElement {
   const [filter, setFilter] = useState(searchParams?.get('filter') || 'all');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
-  const [editingItem, setEditingItem] = useState<string | null>(null);
+  const [editingQty, setEditingQty] = useState<string | null>(null);
   const [editQuantity, setEditQuantity] = useState<number>(0);
+  const [editingCost, setEditingCost] = useState<string | null>(null);
+  const [editCostValue, setEditCostValue] = useState<string>('');
+  const [showArchived, setShowArchived] = useState(false);
 
   // Inventory notes state
   const [showNoteModal, setShowNoteModal] = useState(false);
@@ -422,7 +428,8 @@ export default function InventoryPage(): ReactElement {
     total: 0,
     inStock: 0,
     lowStock: 0,
-    outOfStock: 0
+    outOfStock: 0,
+    missingCost: 0,
   });
 
   const fetchInventory = useCallback(async () => {
@@ -431,6 +438,7 @@ export default function InventoryPage(): ReactElement {
       const params = new URLSearchParams();
       if (filter !== 'all') params.set('filter', filter);
       if (search) params.set('search', search);
+      if (showArchived) params.set('includeArchived', '1');
       params.set('page', page.toString());
       params.set('limit', '50');
 
@@ -440,19 +448,6 @@ export default function InventoryPage(): ReactElement {
         if (data.success) {
           setInventory(data.data || []);
           setMeta(data.meta || null);
-
-          // Calculate stats from available quantity (inStock - committed)
-          const items = data.data || [];
-          const lowStockCount = items.filter((i: InventoryItem) => i.available > 0 && i.available <= i.lowStockThreshold).length;
-          const outOfStockCount = items.filter((i: InventoryItem) => i.available <= 0).length;
-          const inStockCount = items.filter((i: InventoryItem) => i.available > i.lowStockThreshold).length;
-
-          setStats({
-            total: data.meta?.total || items.length,
-            inStock: inStockCount,
-            lowStock: lowStockCount,
-            outOfStock: outOfStockCount
-          });
         }
       }
     } catch (error) {
@@ -460,30 +455,84 @@ export default function InventoryPage(): ReactElement {
     } finally {
       setIsLoading(false);
     }
-  }, [filter, search, page]);
+  }, [filter, search, page, showArchived]);
+
+  // Stats are computed from separate, unfiltered fetches so the chip counts stay
+  // accurate regardless of which filter is currently active. Single round-trip via Promise.all.
+  const fetchStats = useCallback(async () => {
+    try {
+      const ar = showArchived ? '&includeArchived=1' : '';
+      const [allRes, lowRes, outRes, missingRes] = await Promise.all([
+        fetch(`/api/v1/inventory?limit=1${ar}`),
+        fetch(`/api/v1/inventory?filter=low_stock&limit=1${ar}`),
+        fetch(`/api/v1/inventory?filter=out_of_stock&limit=1${ar}`),
+        fetch(`/api/v1/inventory?filter=missing_cost&limit=1${ar}`),
+      ]);
+      const [all, low, out, missing] = await Promise.all([
+        allRes.ok ? allRes.json() : { meta: { total: 0 } },
+        lowRes.ok ? lowRes.json() : { meta: { total: 0 } },
+        outRes.ok ? outRes.json() : { meta: { total: 0 } },
+        missingRes.ok ? missingRes.json() : { meta: { total: 0 } },
+      ]);
+      const total = all.meta?.total ?? 0;
+      const lowStock = low.meta?.total ?? 0;
+      const outOfStock = out.meta?.total ?? 0;
+      setStats({
+        total,
+        inStock: Math.max(0, total - lowStock - outOfStock),
+        lowStock,
+        outOfStock,
+        missingCost: missing.meta?.total ?? 0,
+      });
+    } catch {
+      // Non-critical: leave previous stats.
+    }
+  }, [showArchived]);
 
   useEffect(() => {
     fetchInventory();
   }, [fetchInventory]);
 
   useEffect(() => {
-    setPage(1);
-  }, [filter, search]);
+    fetchStats();
+  }, [fetchStats]);
 
-  const handleUpdateQuantity = async (itemId: string) => {
+  useEffect(() => {
+    setPage(1);
+  }, [filter, search, showArchived]);
+
+  const handleUpdateQuantity = async (variantId: string) => {
     try {
-      const response = await fetch(`/api/v1/inventory/${itemId}`, {
+      const response = await fetch(`/api/v1/inventory/variants/${variantId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ quantity: editQuantity }),
       });
-
       if (response.ok) {
-        await fetchInventory();
-        setEditingItem(null);
+        await Promise.all([fetchInventory(), fetchStats()]);
+        setEditingQty(null);
       }
     } catch (error) {
       console.error('Failed to update quantity:', error);
+    }
+  };
+
+  const handleUpdateCost = async (variantId: string) => {
+    try {
+      const raw = editCostValue.trim();
+      const costPerUnit = raw === '' ? null : Math.max(0, Number(raw));
+      const response = await fetch(`/api/v1/inventory/variants/${variantId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ costPerUnit }),
+      });
+      if (response.ok) {
+        await Promise.all([fetchInventory(), fetchStats()]);
+        setEditingCost(null);
+        setEditCostValue('');
+      }
+    } catch (error) {
+      console.error('Failed to update cost:', error);
     }
   };
 
@@ -602,15 +651,20 @@ export default function InventoryPage(): ReactElement {
     }
   };
 
-  const filteredInventory = inventory.filter((item) => {
-    if (filter === 'low_stock') {
-      return item.available > 0 && item.available <= item.lowStockThreshold;
+  // Server already applies all filters; no client-side post-filter needed.
+  const filteredInventory = inventory;
+
+  const formatMargin = (price: number | null, cost: number | null): { label: string; color: string } => {
+    if (cost == null || price == null || price <= 0) {
+      return { label: '—', color: 'text-gray-400' };
     }
-    if (filter === 'out_of_stock') {
-      return item.available <= 0;
-    }
-    return true;
-  });
+    const margin = ((price - cost) / price) * 100;
+    if (margin >= 27) return { label: `${margin.toFixed(0)}%`, color: 'text-green-700' };
+    if (margin >= 15) return { label: `${margin.toFixed(0)}%`, color: 'text-amber-600' };
+    return { label: `${margin.toFixed(0)}%`, color: 'text-red-600' };
+  };
+
+  const formatMoney = (n: number | null): string => (n == null ? '—' : `$${n.toFixed(2)}`);
 
   const pendingNotesCount = pendingNotes.length;
 
@@ -686,9 +740,9 @@ export default function InventoryPage(): ReactElement {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-8">
         <StatCard
-          title="Total Items"
+          title={showArchived ? 'All Items' : 'Active Items'}
           value={stats.total.toLocaleString()}
           color="blue"
           icon={
@@ -698,12 +752,12 @@ export default function InventoryPage(): ReactElement {
           }
         />
         <StatCard
-          title="In Stock"
-          value={stats.inStock.toLocaleString()}
-          color="green"
+          title="Out of Stock"
+          value={stats.outOfStock.toLocaleString()}
+          color="red"
           icon={
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
             </svg>
           }
         />
@@ -718,12 +772,22 @@ export default function InventoryPage(): ReactElement {
           }
         />
         <StatCard
-          title="Out of Stock"
-          value={stats.outOfStock.toLocaleString()}
-          color="red"
+          title="In Stock"
+          value={stats.inStock.toLocaleString()}
+          color="green"
           icon={
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          }
+        />
+        <StatCard
+          title="Missing Cost"
+          value={stats.missingCost.toLocaleString()}
+          color="purple"
+          icon={
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           }
         />
@@ -746,12 +810,19 @@ export default function InventoryPage(): ReactElement {
               />
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <FilterButton
               active={filter === 'all'}
               onClick={() => setFilter('all')}
             >
               All Items
+            </FilterButton>
+            <FilterButton
+              active={filter === 'out_of_stock'}
+              onClick={() => setFilter('out_of_stock')}
+              count={stats.outOfStock}
+            >
+              Out of Stock
             </FilterButton>
             <FilterButton
               active={filter === 'low_stock'}
@@ -761,21 +832,30 @@ export default function InventoryPage(): ReactElement {
               Low Stock
             </FilterButton>
             <FilterButton
-              active={filter === 'out_of_stock'}
-              onClick={() => setFilter('out_of_stock')}
-              count={stats.outOfStock}
+              active={filter === 'missing_cost'}
+              onClick={() => setFilter('missing_cost')}
+              count={stats.missingCost}
             >
-              Out of Stock
+              Missing Cost
             </FilterButton>
           </div>
         </div>
-        {meta && (
-          <div className="mt-4 pt-4 border-t border-gray-100">
+        <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between flex-wrap gap-3">
+          {meta ? (
             <span className="text-sm text-gray-500">
-              {meta.total.toLocaleString()} item{meta.total !== 1 ? 's' : ''} total
+              {meta.total.toLocaleString()} item{meta.total !== 1 ? 's' : ''} match
             </span>
-          </div>
-        )}
+          ) : <span />}
+          <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={showArchived}
+              onChange={(e) => setShowArchived(e.target.checked)}
+              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+            Show archived &amp; draft products
+          </label>
+        </div>
       </div>
 
       {/* Inventory Table */}
@@ -809,133 +889,146 @@ export default function InventoryPage(): ReactElement {
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-100">
                 <tr>
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Product
-                  </th>
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    SKU
-                  </th>
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Location
-                  </th>
-                  <th className="text-center px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    In Stock
-                  </th>
-                  <th className="text-center px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Committed
-                  </th>
-                  <th className="text-center px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Available
-                  </th>
-                  <th className="text-center px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="text-right px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
+                  <th className="text-left px-4 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Product</th>
+                  <th className="text-left px-4 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">SKU</th>
+                  <th className="text-center px-4 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Available</th>
+                  <th className="text-center px-4 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Price</th>
+                  <th className="text-center px-4 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Cost</th>
+                  <th className="text-center px-4 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Margin</th>
+                  <th className="text-center px-4 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="text-right px-4 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {filteredInventory.map((item) => (
+                {filteredInventory.map((item) => {
+                  const margin = formatMargin(item.price, item.costPerUnit);
+                  const isEditingQty = editingQty === item.id;
+                  const isEditingCost = editingCost === item.id;
+                  return (
                   <tr key={item.id} className="hover:bg-blue-50/50 transition-colors group">
-                    <td className="px-6 py-4">
-                      <div>
-                        <Link
-                          href={`/ops/products/${item.productId}`}
-                          className="font-medium text-gray-900 group-hover:text-blue-600 transition-colors"
-                        >
-                          {item.productName}
-                        </Link>
-                        {item.variantName && (
-                          <p className="text-sm text-gray-500">{item.variantName}</p>
+                    <td className="px-4 py-4">
+                      <div className="flex items-start gap-2">
+                        <div className="min-w-0">
+                          <Link
+                            href={`/ops/products/${item.productId}`}
+                            className="font-medium text-gray-900 group-hover:text-blue-600 transition-colors"
+                          >
+                            {item.productName}
+                          </Link>
+                          {item.variantName && item.variantName !== 'Default Title' && (
+                            <p className="text-sm text-gray-500">{item.variantName}</p>
+                          )}
+                        </div>
+                        {item.productStatus !== 'ACTIVE' && (
+                          <span className="shrink-0 text-xs px-1.5 py-0.5 rounded bg-gray-100 text-gray-600 border border-gray-200">
+                            {item.productStatus.toLowerCase()}
+                          </span>
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="font-mono text-sm text-gray-600">
-                        {item.sku || '-'}
-                      </span>
+                    <td className="px-4 py-4">
+                      <span className="font-mono text-sm text-gray-600">{item.sku || '—'}</span>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm text-gray-600">{item.locationName}</span>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      {editingItem === item.id ? (
+                    <td className="px-4 py-4 text-center">
+                      {isEditingQty ? (
                         <input
                           type="number"
                           value={editQuantity}
                           onChange={(e) => setEditQuantity(parseInt(e.target.value) || 0)}
-                          className="w-20 px-3 py-1.5 border border-gray-200 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleUpdateQuantity(item.id);
+                            if (e.key === 'Escape') setEditingQty(null);
+                          }}
+                          autoFocus
+                          className="w-20 px-2 py-1 border border-blue-300 rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
                           min={0}
                         />
                       ) : (
-                        <span className="text-lg font-bold text-gray-900">
-                          {item.quantity}
-                        </span>
+                        <button
+                          onClick={() => { setEditingQty(item.id); setEditQuantity(item.quantity); }}
+                          className={`text-lg font-bold hover:underline ${
+                            item.available <= 0 ? 'text-red-600' :
+                            item.available <= item.lowStockThreshold ? 'text-yellow-600' :
+                            'text-green-700'
+                          }`}
+                          title={`In stock: ${item.quantity}, committed: ${item.committedQuantity}, available: ${item.available}. Click to edit.`}
+                        >
+                          {item.available}
+                        </button>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-center">
-                      {item.committedQuantity > 0 ? (
-                        <span className="inline-flex items-center justify-center px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
-                          {item.committedQuantity}
-                        </span>
+                    <td className="px-4 py-4 text-center">
+                      <span className="text-sm text-gray-700">{formatMoney(item.price)}</span>
+                    </td>
+                    <td className="px-4 py-4 text-center">
+                      {isEditingCost ? (
+                        <div className="inline-flex items-center gap-1">
+                          <span className="text-sm text-gray-500">$</span>
+                          <input
+                            type="number"
+                            step="0.01"
+                            min={0}
+                            value={editCostValue}
+                            onChange={(e) => setEditCostValue(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') handleUpdateCost(item.id);
+                              if (e.key === 'Escape') { setEditingCost(null); setEditCostValue(''); }
+                            }}
+                            autoFocus
+                            placeholder="—"
+                            className="w-20 px-2 py-1 border border-blue-300 rounded text-sm text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </div>
                       ) : (
-                        <span className="text-gray-400">&mdash;</span>
+                        <button
+                          onClick={() => {
+                            setEditingCost(item.id);
+                            setEditCostValue(item.costPerUnit != null ? String(item.costPerUnit) : '');
+                          }}
+                          className={`text-sm hover:underline ${item.costPerUnit == null ? 'text-amber-600 font-medium' : 'text-gray-700'}`}
+                          title="Click to edit cost"
+                        >
+                          {formatMoney(item.costPerUnit)}
+                        </button>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-center">
-                      <span className={`text-lg font-bold ${
-                        item.available <= 0 ? 'text-red-600' :
-                        item.available <= item.lowStockThreshold ? 'text-yellow-600' :
-                        'text-green-700'
-                      }`}>
-                        {item.available}
-                      </span>
+                    <td className="px-4 py-4 text-center">
+                      <span className={`text-sm font-semibold ${margin.color}`}>{margin.label}</span>
                     </td>
-                    <td className="px-6 py-4 text-center">
+                    <td className="px-4 py-4 text-center">
                       <StockStatus
                         available={item.available}
                         threshold={item.lowStockThreshold}
                       />
                     </td>
-                    <td className="px-6 py-4 text-right">
-                      {editingItem === item.id ? (
+                    <td className="px-4 py-4 text-right">
+                      {isEditingQty || isEditingCost ? (
                         <div className="flex justify-end gap-2">
                           <button
-                            onClick={() => handleUpdateQuantity(item.id)}
+                            onClick={() => isEditingQty ? handleUpdateQuantity(item.id) : handleUpdateCost(item.id)}
                             className="px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors"
                           >
                             Save
                           </button>
                           <button
-                            onClick={() => setEditingItem(null)}
+                            onClick={() => { setEditingQty(null); setEditingCost(null); setEditCostValue(''); }}
                             className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm rounded-lg hover:bg-gray-200 transition-colors"
                           >
                             Cancel
                           </button>
                         </div>
                       ) : (
-                        <div className="flex justify-end gap-2">
-                          <Link
-                            href={`/ops/products/${item.productId}`}
-                            className="px-3 py-1.5 text-sm font-medium text-purple-600 hover:text-purple-800 hover:bg-purple-50 rounded-lg transition-colors"
-                          >
-                            View
-                          </Link>
-                          <button
-                            onClick={() => {
-                              setEditingItem(item.id);
-                              setEditQuantity(item.quantity);
-                            }}
-                            className="px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
-                          >
-                            Edit Qty
-                          </button>
-                        </div>
+                        <Link
+                          href={`/ops/products/${item.productId}`}
+                          className="px-3 py-1.5 text-sm font-medium text-purple-600 hover:text-purple-800 hover:bg-purple-50 rounded-lg transition-colors"
+                        >
+                          View
+                        </Link>
                       )}
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
 

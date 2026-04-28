@@ -8,26 +8,33 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 import {
   adjustInventory,
   setInventoryCount,
 } from '@/lib/inventory/services/inventory-service';
+
+const LOW_STOCK_THRESHOLD = 10;
 
 /**
  * GET /api/v1/inventory
  * Get inventory items from ProductVariant (single source of truth)
  * Query params:
  *   - search: Search by product name, variant title, or SKU
- *   - filter: 'all' | 'low_stock' | 'out_of_stock'
+ *   - filter: 'all' | 'low_stock' | 'out_of_stock' | 'missing_cost'
+ *   - includeArchived: '1' to include ARCHIVED/DRAFT products (default: ACTIVE only)
  *   - view: 'locations' returns a single hardcoded location summary
  *   - page: Page number (default 1)
  *   - limit: Items per page (default 100)
+ *
+ * Default sort: out-of-stock → low-stock → in-stock, then product/variant title.
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const searchParams = request.nextUrl.searchParams;
     const search = searchParams.get('search') || '';
     const filter = searchParams.get('filter') || 'all';
+    const includeArchived = searchParams.get('includeArchived') === '1';
     const view = searchParams.get('view');
     const page = Math.max(1, parseInt(searchParams.get('page') || '1'));
     const limit = Math.min(500, Math.max(1, parseInt(searchParams.get('limit') || '100')));
@@ -58,70 +65,92 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       });
     }
 
-    // Build where clause for ProductVariant
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const where: any = {};
+    const where: Prisma.ProductVariantWhereInput = {};
 
-    // Search by product name, variant title, or SKU
+    if (!includeArchived) {
+      where.product = { status: 'ACTIVE' };
+    }
+
     if (search) {
-      where.OR = [
+      const searchOr: Prisma.ProductVariantWhereInput[] = [
         { product: { title: { contains: search, mode: 'insensitive' } } },
         { sku: { contains: search, mode: 'insensitive' } },
         { title: { contains: search, mode: 'insensitive' } },
       ];
+      where.OR = searchOr;
     }
 
-    // For stock status filters, we need to fetch all matching variants and post-filter
-    // because "available" = inventoryQuantity - committedQuantity is computed
+    if (filter === 'missing_cost') {
+      where.costPerUnit = null;
+    }
+
+    // Stock-tier filters require post-filter because available = inventoryQuantity - committedQuantity.
     const needsPostFilter = filter === 'out_of_stock' || filter === 'low_stock';
 
-    // Fetch variants with product info
     const allVariants = await prisma.productVariant.findMany({
       where,
       include: {
-        product: { select: { id: true, title: true, handle: true } },
+        product: { select: { id: true, title: true, handle: true, status: true } },
       },
       orderBy: [{ product: { title: 'asc' } }, { title: 'asc' }],
       ...(!needsPostFilter ? { skip: (page - 1) * limit, take: limit } : {}),
     });
 
-    // Post-filter by available quantity
     let filteredVariants = allVariants;
     if (filter === 'out_of_stock') {
       filteredVariants = allVariants.filter(v => (v.inventoryQuantity - v.committedQuantity) <= 0);
     } else if (filter === 'low_stock') {
       filteredVariants = allVariants.filter(v => {
         const available = v.inventoryQuantity - v.committedQuantity;
-        return available > 0 && available <= 10;
+        return available > 0 && available <= LOW_STOCK_THRESHOLD;
+      });
+    }
+
+    // Default sort (filter='all' or 'missing_cost'): by stock-tier urgency, then alphabetical.
+    // out-of-stock (0) → low-stock (1) → in-stock (2). Ties broken by product/variant title.
+    if (!needsPostFilter) {
+      const tierOf = (qty: number, committed: number): number => {
+        const available = qty - committed;
+        if (available <= 0) return 0;
+        if (available <= LOW_STOCK_THRESHOLD) return 1;
+        return 2;
+      };
+      filteredVariants = [...filteredVariants].sort((a, b) => {
+        const ta = tierOf(a.inventoryQuantity, a.committedQuantity);
+        const tb = tierOf(b.inventoryQuantity, b.committedQuantity);
+        if (ta !== tb) return ta - tb;
+        const pa = a.product.title.localeCompare(b.product.title);
+        if (pa !== 0) return pa;
+        return (a.title ?? '').localeCompare(b.title ?? '');
       });
     }
 
     const totalCount = filteredVariants.length;
 
-    // Apply pagination for post-filtered results
     const paginatedVariants = needsPostFilter
       ? filteredVariants.slice((page - 1) * limit, page * limit)
       : filteredVariants;
 
-    // Get total count for non-filtered case
     const totalForMeta = needsPostFilter
       ? totalCount
       : await prisma.productVariant.count({ where });
 
-    // Transform to expected format
     const formattedItems = paginatedVariants.map(variant => ({
       id: variant.id,
       productId: variant.productId,
       productName: variant.product.title,
+      productStatus: variant.product.status,
       variantId: variant.id,
       variantName: variant.title || null,
       sku: variant.sku || null,
       quantity: variant.inventoryQuantity,
       committedQuantity: variant.committedQuantity,
       available: variant.inventoryQuantity - variant.committedQuantity,
-      reservedQuantity: variant.committedQuantity, // backward compat alias
-      lowStockThreshold: 10,
+      reservedQuantity: variant.committedQuantity,
+      lowStockThreshold: LOW_STOCK_THRESHOLD,
       reorderPoint: 5,
+      price: variant.price != null ? Number(variant.price) : null,
+      costPerUnit: variant.costPerUnit != null ? Number(variant.costPerUnit) : null,
       locationId: 'main-warehouse',
       locationName: 'Main Warehouse',
       lastCountedAt: null,
@@ -162,7 +191,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     switch (operation) {
       case 'adjust': {
-        // Validate required fields (locationId no longer required)
         if (!body.productId || body.quantity === undefined) {
           return NextResponse.json(
             { success: false, error: 'Missing required fields: productId, quantity' },
@@ -189,7 +217,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       }
 
       case 'count': {
-        // Validate required fields (locationId no longer required)
         if (!Array.isArray(body.items)) {
           return NextResponse.json(
             { success: false, error: 'Missing required field: items (array)' },
