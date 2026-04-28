@@ -17,22 +17,30 @@ function normalizeKey(sku: string | null, description: string): string {
 }
 
 /**
- * Extract the pack-size multiplier from a variant's product+variant title.
- * Distributor invoices print per-bottle/can cost, but ProductVariant.costPerUnit is
- * per-selling-unit (which for our catalog is usually a multi-pack like "24 Pack").
- * So variant.costPerUnit = invoiceUnitCost * packSize.
+ * A variant is "case-priced" when its selling unit is the full distributor case —
+ * e.g. a "24 Pack" of beer or a pre-built "Mixed Case" of wine. For these,
+ * variant.costPerUnit equals the invoice case cost directly (no division).
  *
- * Examples:
- *   "Lone Star • 24 Pack 12oz Can"           → 24
- *   "Saint Arnold Summer Pils • 6 Pack 12oz" → 6
- *   "Casamigos Tequila Blanco • 750ml Bottle" → 1
- *   "Bottled Water • 32 Pack 16.9oz"          → 32
+ * Single-bottle variants (wine, liquor, single 750ml/1.75L) are bottle-priced —
+ * costPerUnit equals invoice case cost ÷ bottles per case.
  */
-export function extractPackSizeFromTitle(combinedTitle: string): number {
-  const match = combinedTitle.match(/(\d+)\s*Pack/i);
-  if (!match) return 1;
-  const n = parseInt(match[1], 10);
-  return Number.isFinite(n) && n > 0 ? n : 1;
+export function isCasePricedVariant(combinedTitle: string): boolean {
+  return /\b(\d+\s*pack|case)\b/i.test(combinedTitle);
+}
+
+/**
+ * Compute the per-selling-unit cost (what to write to ProductVariant.costPerUnit)
+ * from an invoice line.
+ */
+export function computeCostPerSellingUnit(params: {
+  combinedTitle: string;
+  caseCost: number;
+  unitsPerCase: number;
+}): number {
+  const { combinedTitle, caseCost, unitsPerCase } = params;
+  if (isCasePricedVariant(combinedTitle)) return caseCost;
+  const denom = unitsPerCase > 0 ? unitsPerCase : 1;
+  return caseCost / denom;
 }
 
 export async function createInvoiceFromParse(params: {
@@ -54,20 +62,20 @@ export async function createInvoiceFromParse(params: {
       rawParse: parsed as unknown as object,
       createdBy: createdBy ?? null,
       lines: {
+        // Legacy DB column `unitCost` now stores the per-line CASE cost from the invoice.
         create: parsed.lines.map((line) => ({
           distributorSku: line.distributorSku,
           distributorDescription: line.description,
           cases: line.cases,
           unitsPerCase: line.unitsPerCase,
           totalUnits: line.cases * line.unitsPerCase,
-          unitCost: line.unitCost != null ? new Prisma.Decimal(line.unitCost) : null,
+          unitCost: line.caseCost != null ? new Prisma.Decimal(line.caseCost) : null,
         })),
       },
     },
     include: { lines: true },
   });
 
-  // Attempt auto-match from saved mappings
   for (const line of invoice.lines) {
     const key = normalizeKey(line.distributorSku, line.distributorDescription);
     const existingMap = await prisma.distributorSkuMap.findUnique({ where: { distributorKey: key } });
@@ -127,7 +135,12 @@ export async function getVariantSuggestions(description: string, limit = 5): Pro
 export async function applyInvoice(
   invoiceId: string,
   options: { skipInventory?: boolean } = {}
-): Promise<{ appliedCount: number; skipped: number; skipInventory: boolean }> {
+): Promise<{
+  appliedCount: number;
+  skipped: number;
+  skipInventory: boolean;
+  costGuardSkips: Array<{ lineId: string; label: string; reason: string }>;
+}> {
   const skipInventory = options.skipInventory === true;
   const invoice = await prisma.receivingInvoice.findUnique({
     where: { id: invoiceId },
@@ -139,6 +152,7 @@ export async function applyInvoice(
 
   let appliedCount = 0;
   let skipped = 0;
+  const costGuardSkips: Array<{ lineId: string; label: string; reason: string }> = [];
   const reason = `Received from ${invoice.distributorName ?? 'distributor'}${invoice.invoiceNumber ? ` — invoice #${invoice.invoiceNumber}` : ''}`;
 
   for (const line of invoice.lines) {
@@ -153,6 +167,7 @@ export async function applyInvoice(
         id: true,
         productId: true,
         title: true,
+        price: true,
         product: { select: { title: true } },
       },
     });
@@ -171,31 +186,35 @@ export async function applyInvoice(
       });
     }
 
-    // Propagate unit cost to ProductVariant.costPerUnit. Invoice prints per-bottle cost;
-    // variant cost is per selling unit (often a multi-pack), so multiply by pack-size.
-    // Sanity check: if existing cost is set and the new value differs by >50%, leave it
-    // alone — that's typically OCR misreading per-pack as per-bottle (or vice versa)
-    // and would corrupt good data.
+    // The DB column `unitCost` now holds the case cost from the invoice.
     if (line.unitCost != null) {
-      const fullVariant = await prisma.productVariant.findUnique({
-        where: { id: variant.id },
-        select: { costPerUnit: true },
-      });
+      const caseCost = Number(line.unitCost);
       const combinedTitle = `${variant.product.title} ${variant.title ?? ''}`;
-      const packSize = extractPackSizeFromTitle(combinedTitle);
-      const proposed = Number(line.unitCost) * packSize;
-      const existing = fullVariant?.costPerUnit ? Number(fullVariant.costPerUnit) : null;
-      const safe =
-        existing == null || existing === 0 || Math.abs(proposed - existing) / existing <= 0.5;
-      if (safe) {
+      const isCase = isCasePricedVariant(combinedTitle);
+      const proposed = computeCostPerSellingUnit({
+        combinedTitle,
+        caseCost,
+        unitsPerCase: line.unitsPerCase,
+      });
+
+      // Plausibility guard for single-bottle variants only: if the computed cost is more
+      // than 3× the variant's retail price, the OCR almost certainly returned a per-line
+      // total or got unitsPerCase wrong. Refuse the write rather than corrupt costPerUnit.
+      const retailDollars = variant.price != null ? Number(variant.price) : null;
+      const blocked =
+        !isCase && retailDollars != null && retailDollars > 0 && proposed > retailDollars * 3;
+
+      if (blocked) {
+        const label =
+          (line.distributorSku ? `[${line.distributorSku}] ` : '') + line.distributorDescription;
+        const note = `proposed cost $${proposed.toFixed(2)} > 3× retail $${retailDollars!.toFixed(2)} — likely OCR error on caseCost or unitsPerCase`;
+        console.warn(`[receiving] cost guard skip: ${label} — ${note}`);
+        costGuardSkips.push({ lineId: line.id, label, reason: note });
+      } else {
         await prisma.productVariant.update({
           where: { id: variant.id },
           data: { costPerUnit: new Prisma.Decimal(proposed) },
         });
-      } else {
-        console.warn(
-          `[receiving] cost sanity-check skip: ${combinedTitle} (existing $${existing.toFixed(2)} → proposed $${proposed.toFixed(2)} from invoice line ${line.id})`
-        );
       }
     }
 
@@ -234,5 +253,5 @@ export async function applyInvoice(
     data: { status: 'APPLIED', appliedAt: new Date() },
   });
 
-  return { appliedCount, skipped, skipInventory };
+  return { appliedCount, skipped, skipInventory, costGuardSkips };
 }

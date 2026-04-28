@@ -1,7 +1,8 @@
 /**
- * Re-OCR every applied receiving invoice with the cost-aware parser, write
- * ReceivingInvoiceLine.unitCost, and (when ?applyToVariants=1) push to
- * ProductVariant.costPerUnit. Idempotent — safe to run multiple times.
+ * Re-OCR every applied receiving invoice with the case-cost parser, write
+ * ReceivingInvoiceLine.unitCost (semantic = invoice case cost), and
+ * (when ?applyToVariants=1) push a selling-unit cost to ProductVariant.costPerUnit.
+ * Idempotent — safe to run multiple times.
  *
  * Auth: Bearer CRON_SECRET. One-shot admin op, mirrors the cron auth pattern.
  *
@@ -14,7 +15,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/database/client';
 import { parseInvoiceImage, type ParsedInvoiceLine } from '@/lib/inventory/receiving/parser';
-import { extractPackSizeFromTitle } from '@/lib/inventory/receiving/service';
+import {
+  isCasePricedVariant,
+  computeCostPerSellingUnit,
+} from '@/lib/inventory/receiving/service';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 300;
@@ -64,14 +68,15 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     perLine: Array<{
       lineId: string;
       label: string;
-      action: 'updated' | 'no-match' | 'no-cost' | 'no-variant' | 'unchanged' | 'skipped-sanity';
-      invoiceUnitCost: number | null;     // per-bottle from OCR
-      packSize: number | null;             // multiplier derived from variant title
-      variantCost: number | null;          // invoiceUnitCost × packSize — what we'd write
+      action: 'updated' | 'no-match' | 'no-cost' | 'no-variant' | 'cost-guard-skip';
+      caseCost: number | null;          // case cost from OCR
+      isCasePriced: boolean | null;      // selling-unit detection
+      sellingUnitCost: number | null;    // what we'd write to costPerUnit
       variantId: string | null;
       variantLabel: string | null;
       previousVariantCost: number | null;
-      sanityNote?: string;
+      retailDollars: number | null;
+      guardNote?: string;
     }>;
     error: string | null;
   }> = [];
@@ -106,17 +111,19 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       if (!reocrLine) {
         invSummary.perLine.push({
           lineId: dbLine.id, label, action: 'no-match',
-          invoiceUnitCost: null, packSize: null, variantCost: null,
-          variantId: dbLine.matchedVariantId, variantLabel: null, previousVariantCost: null,
+          caseCost: null, isCasePriced: null, sellingUnitCost: null,
+          variantId: dbLine.matchedVariantId, variantLabel: null,
+          previousVariantCost: null, retailDollars: null,
         });
         continue;
       }
 
-      if (reocrLine.unitCost == null) {
+      if (reocrLine.caseCost == null) {
         invSummary.perLine.push({
           lineId: dbLine.id, label, action: 'no-cost',
-          invoiceUnitCost: null, packSize: null, variantCost: null,
-          variantId: dbLine.matchedVariantId, variantLabel: null, previousVariantCost: null,
+          caseCost: null, isCasePriced: null, sellingUnitCost: null,
+          variantId: dbLine.matchedVariantId, variantLabel: null,
+          previousVariantCost: null, retailDollars: null,
         });
         continue;
       }
@@ -124,44 +131,55 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       const variant = dbLine.matchedVariantId
         ? await prisma.productVariant.findUnique({
             where: { id: dbLine.matchedVariantId },
-            select: { id: true, title: true, costPerUnit: true, product: { select: { title: true } } },
+            select: {
+              id: true, title: true, costPerUnit: true, price: true,
+              product: { select: { title: true } },
+            },
           })
         : null;
       const variantLabel = variant
         ? `${variant.product.title}${variant.title && variant.title !== 'Default Title' ? ' / ' + variant.title : ''}`
         : null;
       const previousVariantCost = variant?.costPerUnit ? Number(variant.costPerUnit) : null;
-      const packSize = variant
-        ? extractPackSizeFromTitle(`${variant.product.title} ${variant.title ?? ''}`)
-        : 1;
-      const variantCost = Number((reocrLine.unitCost * packSize).toFixed(4));
+      const retailDollars = variant?.price != null ? Number(variant.price) : null;
+      const combinedTitle = variant ? `${variant.product.title} ${variant.title ?? ''}` : '';
+      const isCase = variant ? isCasePricedVariant(combinedTitle) : null;
+      const sellingUnitCost = variant
+        ? Number(
+            computeCostPerSellingUnit({
+              combinedTitle,
+              caseCost: reocrLine.caseCost,
+              unitsPerCase: reocrLine.unitsPerCase,
+            }).toFixed(4)
+          )
+        : null;
 
-      // Write to line (raw per-bottle invoice cost).
+      // Always update the line's stored case cost so the source-of-truth on the invoice row matches re-OCR.
       if (!dryRun) {
         await prisma.receivingInvoiceLine.update({
           where: { id: dbLine.id },
-          data: { unitCost: new Prisma.Decimal(reocrLine.unitCost) },
+          data: { unitCost: new Prisma.Decimal(reocrLine.caseCost) },
         });
         totalLineUpdates++;
       }
 
-      // Sanity check: skip variant update if existing cost differs from proposed by >50%.
-      // This catches OCR misreads where per-pack price was labeled as per-bottle (or vice versa).
-      const sanityOk =
-        previousVariantCost == null ||
-        previousVariantCost === 0 ||
-        Math.abs(variantCost - previousVariantCost) / previousVariantCost <= 0.5;
-      const sanityNote =
-        !sanityOk && previousVariantCost != null
-          ? `proposed $${variantCost.toFixed(2)} differs from existing $${previousVariantCost.toFixed(2)} by >50% — likely OCR ambiguity, leaving existing cost alone`
-          : undefined;
+      // Plausibility guard for single-bottle variants only.
+      const blocked =
+        variant != null &&
+        isCase === false &&
+        retailDollars != null &&
+        retailDollars > 0 &&
+        sellingUnitCost != null &&
+        sellingUnitCost > retailDollars * 3;
+      const guardNote = blocked
+        ? `proposed selling-unit cost $${sellingUnitCost!.toFixed(2)} > 3× retail $${retailDollars!.toFixed(2)} — likely OCR error on caseCost or unitsPerCase`
+        : undefined;
 
-      // Optionally write to variant (per-selling-unit cost = invoiceUnitCost × packSize).
-      const willTouchVariant = applyToVariants && variant != null && sanityOk;
+      const willTouchVariant = applyToVariants && variant != null && !blocked && sellingUnitCost != null;
       if (willTouchVariant && !dryRun) {
         await prisma.productVariant.update({
           where: { id: variant!.id },
-          data: { costPerUnit: new Prisma.Decimal(variantCost) },
+          data: { costPerUnit: new Prisma.Decimal(sellingUnitCost!) },
         });
         totalVariantUpdates++;
       }
@@ -169,14 +187,15 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       invSummary.perLine.push({
         lineId: dbLine.id,
         label,
-        action: !variant ? 'no-variant' : !sanityOk ? 'skipped-sanity' : 'updated',
-        invoiceUnitCost: reocrLine.unitCost,
-        packSize,
-        variantCost,
+        action: !variant ? 'no-variant' : blocked ? 'cost-guard-skip' : 'updated',
+        caseCost: reocrLine.caseCost,
+        isCasePriced: isCase,
+        sellingUnitCost,
         variantId: dbLine.matchedVariantId,
         variantLabel,
         previousVariantCost,
-        sanityNote,
+        retailDollars,
+        guardNote,
       });
     }
 

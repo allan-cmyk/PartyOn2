@@ -120,7 +120,13 @@ export default function ReceivingReviewPage({ params }: { params: Promise<{ id: 
         return;
       }
       const mode = skipInventory ? ' (cost-only)' : '';
-      alert(`Applied${mode} ${data.appliedCount} line${data.appliedCount === 1 ? '' : 's'}. ${data.skipped} skipped.`);
+      const guardSkips: Array<{ label: string; reason: string }> = data.costGuardSkips ?? [];
+      const guardLine = guardSkips.length
+        ? `\n\nCost guard blocked ${guardSkips.length} write${guardSkips.length === 1 ? '' : 's'} (likely OCR error):\n` +
+          guardSkips.map((s) => `• ${s.label} — ${s.reason}`).join('\n') +
+          `\n\nLine status was applied; variant cost was NOT updated for these. Fix and re-OCR or set cost manually.`
+        : '';
+      alert(`Applied${mode} ${data.appliedCount} line${data.appliedCount === 1 ? '' : 's'}. ${data.skipped} skipped.${guardLine}`);
       router.push('/ops/inventory');
     } finally {
       setApplying(false);
@@ -237,7 +243,7 @@ export default function ReceivingReviewPage({ params }: { params: Promise<{ id: 
                   <span className="font-bold text-gray-900">{line.totalUnits} units</span>
                   <span className="text-gray-400 ml-3">·</span>
                   <label className="flex items-center gap-1">
-                    <span className="text-xs text-gray-500">Unit cost $</span>
+                    <span className="text-xs text-gray-500">Case cost $</span>
                     <input
                       type="number"
                       min={0}
@@ -249,9 +255,22 @@ export default function ReceivingReviewPage({ params }: { params: Promise<{ id: 
                         const v = raw === '' ? null : Math.max(0, Number(raw));
                         if (v !== line.unitCost) patchLine(line.id, { unitCost: v });
                       }}
-                      className="w-20 px-2 py-1 border border-gray-300 rounded text-sm"
+                      className="w-24 px-2 py-1 border border-gray-300 rounded text-sm"
                     />
                   </label>
+                  {(() => {
+                    if (line.unitCost == null || !line.matchedVariant) return null;
+                    const title = `${line.matchedVariant.productTitle} ${line.matchedVariant.variantTitle ?? ''}`;
+                    const isCase = /\b(\d+\s*pack|case)\b/i.test(title);
+                    const sellingUnitCost = isCase
+                      ? line.unitCost
+                      : line.unitCost / Math.max(1, line.unitsPerCase);
+                    return (
+                      <span className="text-xs text-gray-600">
+                        → ${sellingUnitCost.toFixed(2)} / {isCase ? 'case' : 'bottle'}
+                      </span>
+                    );
+                  })()}
                 </div>
 
                 {line.matchedVariant ? (
