@@ -405,10 +405,9 @@ export default function InventoryPage(): ReactElement {
   const [filter, setFilter] = useState(searchParams?.get('filter') || 'all');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
-  const [editingQty, setEditingQty] = useState<string | null>(null);
-  const [editQuantity, setEditQuantity] = useState<number>(0);
-  const [editingCost, setEditingCost] = useState<string | null>(null);
-  const [editCostValue, setEditCostValue] = useState<string>('');
+  type EditField = 'inStock' | 'committed' | 'available' | 'cost';
+  const [editing, setEditing] = useState<{ id: string; field: EditField } | null>(null);
+  const [editValue, setEditValue] = useState<string>('');
   const [showArchived, setShowArchived] = useState(false);
 
   // Inventory notes state
@@ -440,7 +439,7 @@ export default function InventoryPage(): ReactElement {
       if (search) params.set('search', search);
       if (showArchived) params.set('includeArchived', '1');
       params.set('page', page.toString());
-      params.set('limit', '50');
+      params.set('limit', '200');
 
       const response = await fetch(`/api/v1/inventory?${params.toString()}`);
       if (response.ok) {
@@ -501,38 +500,41 @@ export default function InventoryPage(): ReactElement {
     setPage(1);
   }, [filter, search, showArchived]);
 
-  const handleUpdateQuantity = async (variantId: string) => {
-    try {
-      const response = await fetch(`/api/v1/inventory/variants/${variantId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ quantity: editQuantity }),
-      });
-      if (response.ok) {
-        await Promise.all([fetchInventory(), fetchStats()]);
-        setEditingQty(null);
-      }
-    } catch (error) {
-      console.error('Failed to update quantity:', error);
-    }
+  const startEdit = (id: string, field: EditField, currentValue: number | null) => {
+    setEditing({ id, field });
+    setEditValue(currentValue == null ? '' : String(currentValue));
   };
 
-  const handleUpdateCost = async (variantId: string) => {
+  const cancelEdit = () => {
+    setEditing(null);
+    setEditValue('');
+  };
+
+  const saveEdit = async () => {
+    if (!editing) return;
+    const { id, field } = editing;
+    const raw = editValue.trim();
+    let body: Record<string, number | null>;
+    if (field === 'cost') {
+      body = { costPerUnit: raw === '' ? null : Math.max(0, Number(raw)) };
+    } else {
+      const num = Math.max(0, Math.floor(Number(raw) || 0));
+      body = field === 'inStock' ? { quantity: num }
+           : field === 'committed' ? { committed: num }
+           : { available: num };
+    }
     try {
-      const raw = editCostValue.trim();
-      const costPerUnit = raw === '' ? null : Math.max(0, Number(raw));
-      const response = await fetch(`/api/v1/inventory/variants/${variantId}`, {
+      const res = await fetch(`/api/v1/inventory/variants/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ costPerUnit }),
+        body: JSON.stringify(body),
       });
-      if (response.ok) {
+      if (res.ok) {
         await Promise.all([fetchInventory(), fetchStats()]);
-        setEditingCost(null);
-        setEditCostValue('');
+        cancelEdit();
       }
     } catch (error) {
-      console.error('Failed to update cost:', error);
+      console.error('Failed to save edit:', error);
     }
   };
 
@@ -890,20 +892,51 @@ export default function InventoryPage(): ReactElement {
               <thead className="bg-gray-50 border-b border-gray-100">
                 <tr>
                   <th className="text-left px-4 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Product</th>
-                  <th className="text-left px-4 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">SKU</th>
-                  <th className="text-center px-4 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Available</th>
-                  <th className="text-center px-4 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Price</th>
-                  <th className="text-center px-4 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Cost</th>
-                  <th className="text-center px-4 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Margin</th>
-                  <th className="text-center px-4 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="text-center px-3 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider" title="On-hand stock count (physical units in the warehouse)">In Stock</th>
+                  <th className="text-center px-3 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider" title="Units allocated to paid, unfulfilled orders">Committed</th>
+                  <th className="text-center px-3 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider" title="In Stock − Committed. What can be sold right now.">Available</th>
+                  <th className="text-center px-3 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Price</th>
+                  <th className="text-center px-3 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Cost</th>
+                  <th className="text-center px-3 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Margin</th>
+                  <th className="text-center px-3 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                   <th className="text-right px-4 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {filteredInventory.map((item) => {
                   const margin = formatMargin(item.price, item.costPerUnit);
-                  const isEditingQty = editingQty === item.id;
-                  const isEditingCost = editingCost === item.id;
+                  const isEditing = (f: EditField) => editing?.id === item.id && editing.field === f;
+                  const anyEditing = editing?.id === item.id;
+
+                  const renderNumberCell = (
+                    field: EditField,
+                    value: number,
+                    display: string,
+                    extraClass = ''
+                  ) => (
+                    isEditing(field) ? (
+                      <input
+                        type="number"
+                        min={0}
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') saveEdit();
+                          if (e.key === 'Escape') cancelEdit();
+                        }}
+                        autoFocus
+                        className="w-20 px-2 py-1 border border-blue-300 rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    ) : (
+                      <button
+                        onClick={() => startEdit(item.id, field, value)}
+                        className={`text-lg font-semibold hover:underline ${extraClass}`}
+                      >
+                        {display}
+                      </button>
+                    )
+                  );
+
                   return (
                   <tr key={item.id} className="hover:bg-blue-50/50 transition-colors group">
                     <td className="px-4 py-4">
@@ -926,53 +959,43 @@ export default function InventoryPage(): ReactElement {
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-4">
-                      <span className="font-mono text-sm text-gray-600">{item.sku || '—'}</span>
+                    <td className="px-3 py-4 text-center">
+                      {renderNumberCell('inStock', item.quantity, String(item.quantity), 'text-gray-900')}
                     </td>
-                    <td className="px-4 py-4 text-center">
-                      {isEditingQty ? (
-                        <input
-                          type="number"
-                          value={editQuantity}
-                          onChange={(e) => setEditQuantity(parseInt(e.target.value) || 0)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') handleUpdateQuantity(item.id);
-                            if (e.key === 'Escape') setEditingQty(null);
-                          }}
-                          autoFocus
-                          className="w-20 px-2 py-1 border border-blue-300 rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          min={0}
-                        />
-                      ) : (
-                        <button
-                          onClick={() => { setEditingQty(item.id); setEditQuantity(item.quantity); }}
-                          className={`text-lg font-bold hover:underline ${
-                            item.available <= 0 ? 'text-red-600' :
-                            item.available <= item.lowStockThreshold ? 'text-yellow-600' :
-                            'text-green-700'
-                          }`}
-                          title={`In stock: ${item.quantity}, committed: ${item.committedQuantity}, available: ${item.available}. Click to edit.`}
-                        >
-                          {item.available}
-                        </button>
+                    <td className="px-3 py-4 text-center">
+                      {renderNumberCell(
+                        'committed',
+                        item.committedQuantity,
+                        item.committedQuantity > 0 ? String(item.committedQuantity) : '—',
+                        item.committedQuantity > 0 ? 'text-purple-700' : 'text-gray-400 font-normal'
                       )}
                     </td>
-                    <td className="px-4 py-4 text-center">
+                    <td className="px-3 py-4 text-center">
+                      {renderNumberCell(
+                        'available',
+                        item.available,
+                        String(item.available),
+                        item.available <= 0 ? 'text-red-600' :
+                        item.available <= item.lowStockThreshold ? 'text-yellow-600' :
+                        'text-green-700'
+                      )}
+                    </td>
+                    <td className="px-3 py-4 text-center">
                       <span className="text-sm text-gray-700">{formatMoney(item.price)}</span>
                     </td>
-                    <td className="px-4 py-4 text-center">
-                      {isEditingCost ? (
+                    <td className="px-3 py-4 text-center">
+                      {isEditing('cost') ? (
                         <div className="inline-flex items-center gap-1">
                           <span className="text-sm text-gray-500">$</span>
                           <input
                             type="number"
                             step="0.01"
                             min={0}
-                            value={editCostValue}
-                            onChange={(e) => setEditCostValue(e.target.value)}
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
                             onKeyDown={(e) => {
-                              if (e.key === 'Enter') handleUpdateCost(item.id);
-                              if (e.key === 'Escape') { setEditingCost(null); setEditCostValue(''); }
+                              if (e.key === 'Enter') saveEdit();
+                              if (e.key === 'Escape') cancelEdit();
                             }}
                             autoFocus
                             placeholder="—"
@@ -981,37 +1004,33 @@ export default function InventoryPage(): ReactElement {
                         </div>
                       ) : (
                         <button
-                          onClick={() => {
-                            setEditingCost(item.id);
-                            setEditCostValue(item.costPerUnit != null ? String(item.costPerUnit) : '');
-                          }}
+                          onClick={() => startEdit(item.id, 'cost', item.costPerUnit)}
                           className={`text-sm hover:underline ${item.costPerUnit == null ? 'text-amber-600 font-medium' : 'text-gray-700'}`}
-                          title="Click to edit cost"
                         >
                           {formatMoney(item.costPerUnit)}
                         </button>
                       )}
                     </td>
-                    <td className="px-4 py-4 text-center">
+                    <td className="px-3 py-4 text-center">
                       <span className={`text-sm font-semibold ${margin.color}`}>{margin.label}</span>
                     </td>
-                    <td className="px-4 py-4 text-center">
+                    <td className="px-3 py-4 text-center">
                       <StockStatus
                         available={item.available}
                         threshold={item.lowStockThreshold}
                       />
                     </td>
                     <td className="px-4 py-4 text-right">
-                      {isEditingQty || isEditingCost ? (
+                      {anyEditing ? (
                         <div className="flex justify-end gap-2">
                           <button
-                            onClick={() => isEditingQty ? handleUpdateQuantity(item.id) : handleUpdateCost(item.id)}
+                            onClick={saveEdit}
                             className="px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors"
                           >
                             Save
                           </button>
                           <button
-                            onClick={() => { setEditingQty(null); setEditingCost(null); setEditCostValue(''); }}
+                            onClick={cancelEdit}
                             className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm rounded-lg hover:bg-gray-200 transition-colors"
                           >
                             Cancel
