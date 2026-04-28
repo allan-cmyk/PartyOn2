@@ -102,7 +102,14 @@ interface OrdersData {
   };
   summary: {
     total: number;
-    totalRevenue: number;
+    /** Sum of paid, non-cancelled order totals over the last 30 calendar days. */
+    last30Revenue: number;
+    /** Same metric for the 30 days before that — used to compute the % delta. */
+    prior30Revenue: number;
+    /** Percent change vs prior 30 days. `null` means no comparable baseline (first month w/ revenue). */
+    revenueChangePct: number | null;
+    /** Count of paid orders in the last 30 days. */
+    last30Orders: number;
     todayOrders: number;
     todayRevenue: number;
     pendingFulfillment: number;
@@ -115,13 +122,17 @@ function StatCard({
   value,
   color = 'blue',
   icon,
-  trend
+  changePct,
+  changeLabel,
 }: {
   title: string;
   value: string | number;
   color?: 'blue' | 'green' | 'purple' | 'indigo' | 'yellow' | 'orange';
   icon?: ReactElement;
-  trend?: 'up' | 'down' | 'neutral';
+  /** Percent change to render as a colored delta. `null` = "—" (no baseline); `undefined` = hide. */
+  changePct?: number | null;
+  /** Optional label for the change ("vs prior 30 days"). Defaults to nothing. */
+  changeLabel?: string;
 }): ReactElement {
   const colors = {
     blue: 'from-blue-500 to-blue-600',
@@ -132,21 +143,40 @@ function StatCard({
     orange: 'from-orange-500 to-orange-600',
   };
 
+  // Render the delta. `undefined` -> hide block entirely. `null` -> show neutral "—".
+  let deltaBlock: ReactElement | null = null;
+  if (changePct !== undefined) {
+    if (changePct === null) {
+      deltaBlock = (
+        <div className="flex items-center gap-1 mt-1 text-xs font-medium text-gray-500">
+          <span>—</span>
+          {changeLabel && <span className="text-gray-400">{changeLabel}</span>}
+        </div>
+      );
+    } else {
+      const up = changePct > 0;
+      const down = changePct < 0;
+      const flat = changePct === 0;
+      const colorClass = up ? 'text-green-600' : down ? 'text-red-600' : 'text-gray-500';
+      const arrow = up ? '↑' : down ? '↓' : '·';
+      const formatted = `${up ? '+' : ''}${changePct.toFixed(1)}%`;
+      deltaBlock = (
+        <div className={`flex items-center gap-1 mt-1 text-xs font-semibold ${colorClass}`}>
+          <span>{arrow}</span>
+          <span className="tabular-nums">{flat ? '0%' : formatted}</span>
+          {changeLabel && <span className="text-gray-400 font-normal">{changeLabel}</span>}
+        </div>
+      );
+    }
+  }
+
   return (
     <div className="group relative bg-white rounded-xl shadow-sm border border-gray-100 p-3 hover:shadow-lg hover:border-gray-200 hover:-translate-y-0.5 transition-all duration-300 overflow-hidden">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{title}</p>
           <p className="text-xl font-bold text-gray-900 mt-1 tabular-nums">{value}</p>
-          {trend && (
-            <div className={`flex items-center gap-1 mt-1 text-xs font-medium ${
-              trend === 'up' ? 'text-green-600' : trend === 'down' ? 'text-red-600' : 'text-gray-500'
-            }`}>
-              {trend === 'up' && <span>↑</span>}
-              {trend === 'down' && <span>↓</span>}
-              <span>{trend === 'up' ? 'Trending up' : trend === 'down' ? 'Trending down' : 'Stable'}</span>
-            </div>
-          )}
+          {deltaBlock}
         </div>
         {icon && (
           <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${colors[color]} flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform duration-300 [&>svg]:w-5 [&>svg]:h-5`}>
@@ -1467,9 +1497,11 @@ export default function OrdersPage(): ReactElement {
             }
           />
           <StatCard
-            title="Total Revenue"
-            value={formatCurrency(data.summary.totalRevenue)}
+            title="30-Day Revenue"
+            value={formatCurrency(data.summary.last30Revenue)}
             color="green"
+            changePct={data.summary.revenueChangePct}
+            changeLabel="vs prior 30 days"
             icon={
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
