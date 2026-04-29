@@ -333,17 +333,17 @@ UTM Campaign: ${formData.utm_campaign || 'none'}`,
           <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-6xl">
             <div className="text-center mb-8">
               <div className="eyebrow text-xs md:text-sm text-brand-yellow mb-4">
-                Networking event RSVP · Stay in the loop
+                For Austin-area luxury STR property managers
               </div>
               <h2 className="font-heading font-bold text-3xl md:text-5xl tracking-[0.04em] mb-3 text-cream">
-                Want the partner deck?
+                Want the partner one-pager?
               </h2>
               <p className="text-base md:text-lg text-cream/80 max-w-2xl mx-auto">
-                Drop your name and email. We&apos;ll send the partner one-pager, the full cocktail menu,
-                and a calendar link to schedule a 15-minute walkthrough.
+                Drop your details. We&apos;ll email the partner one-pager (PDF), the full cocktail menu,
+                and a link to book a 15-minute walkthrough.
               </p>
             </div>
-            <VacationRentalLeadCapture source="vacation-rental-event" />
+            <VacationRentalLeadCapture source="vacation-rental-onepager" />
             <div className="mt-8 flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-cream/70">
               <span className="flex items-center gap-2"><span className="text-brand-yellow font-bold">✓</span> TABC-licensed</span>
               <span className="flex items-center gap-2"><span className="text-brand-yellow font-bold">✓</span> Fully insured</span>

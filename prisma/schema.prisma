@@ -11,20 +11,23 @@ datasource db {
 
 // Partner Inquiries from the partner pages
 model PartnerInquiry {
-  id              String   @id @default(uuid())
-  businessName    String   @map("business_name")
-  businessType    String?  @map("business_type")
-  contactName     String   @map("contact_name")
+  id              String    @id @default(uuid())
+  businessName    String    @map("business_name")
+  businessType    String?   @map("business_type")
+  contactName     String    @map("contact_name")
   email           String
   phone           String?
-  numberOfRooms   String?  @map("number_of_rooms")
-  monthlyVolume   String?  @map("monthly_volume")
-  currentProvider String?  @map("current_provider")
+  numberOfRooms   String?   @map("number_of_rooms")
+  monthlyVolume   String?   @map("monthly_volume")
+  currentProvider String?   @map("current_provider")
   interests       String[]
   message         String?
-  status          String   @default("new")
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
+  status          String    @default("new")
+  emailSentAt     DateTime? @map("email_sent_at") @db.Timestamptz
+  meetingBooked   Boolean   @default(false) @map("meeting_booked")
+  signupQrId      String?   @map("signup_qr_id")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
 
   @@index([email])
   @@map("partner_inquiries")

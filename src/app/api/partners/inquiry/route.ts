@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/group-orders/database-vercel'
-import { sendPartnerInquiryNotification } from '@/lib/email/email-service'
+import { sendPartnerInquiryNotification, sendPartnerOnePagerEmail } from '@/lib/email/email-service'
 import type { PartnerInquiryData } from '@/lib/email/email-service'
 import { addContactToAudience } from '@/lib/email/resend-audiences'
-import { kv, isKVConfigured } from '@/lib/database/client'
+import { kv, isKVConfigured, prisma } from '@/lib/database/client'
+
+// Sources that trigger an automated outbound email with the partner one-pager
+// PDF + Calendly CTA (in addition to the existing ops notification).
+const ONEPAGER_SOURCES = new Set(['vacation-rental-onepager'])
+// Skip the outbound if we already sent it to this email in the last 24h.
+const ONEPAGER_DEDUPE_WINDOW_MS = 24 * 60 * 60 * 1000
 
 // In-memory rate limit fallback when KV is not configured
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
@@ -258,6 +264,67 @@ export async function POST(request: NextRequest) {
         firstName: firstNamePart,
         lastName: lastNameParts.join(' ') || undefined,
       });
+    }
+
+    // Outbound: send the partner one-pager email (PDF + Calendly CTA) for
+    // QR-landing / signup variants. 24h dedupe by email so re-scans don't
+    // spam the partner.
+    if (inquiry.source && ONEPAGER_SOURCES.has(inquiry.source) && dbResult?.id) {
+      try {
+        const signupQrId = String(body.signupQrId || body.signup_qr_id || '').trim() || undefined;
+
+        const recentSend = await prisma.partnerInquiry.findFirst({
+          where: {
+            email: inquiry.email,
+            emailSentAt: { gte: new Date(Date.now() - ONEPAGER_DEDUPE_WINDOW_MS) },
+          },
+          select: { id: true, emailSentAt: true },
+        });
+
+        if (recentSend) {
+          console.log('[Partner One-Pager] Skipping send — already emailed within 24h', {
+            email: inquiry.email,
+            lastSent: recentSend.emailSentAt,
+          });
+          // Still persist signupQrId on the new row if provided
+          if (signupQrId) {
+            await prisma.partnerInquiry.update({
+              where: { id: dbResult.id },
+              data: { signupQrId },
+            });
+          }
+        } else {
+          const sendResult = await sendPartnerOnePagerEmail({
+            to: inquiry.email,
+            companyName: inquiry.businessName,
+            source: inquiry.source,
+            signupQrId,
+          });
+
+          if (sendResult) {
+            await prisma.partnerInquiry.update({
+              where: { id: dbResult.id },
+              data: {
+                emailSentAt: new Date(),
+                ...(signupQrId ? { signupQrId } : {}),
+              },
+            });
+            console.log('[Partner One-Pager] Sent and timestamped', {
+              email: inquiry.email,
+              inquiryId: dbResult.id,
+              resendId: sendResult,
+            });
+          } else {
+            console.error('[Partner One-Pager] sendPartnerOnePagerEmail returned null — not stamping emailSentAt', {
+              email: inquiry.email,
+              inquiryId: dbResult.id,
+            });
+          }
+        }
+      } catch (oneErr) {
+        console.error('[Partner One-Pager] Outbound send pipeline error:', oneErr);
+        // Don't fail the request — the row is in the DB and can be re-fired manually.
+      }
     }
 
     // Also send to Zapier webhook as backup
