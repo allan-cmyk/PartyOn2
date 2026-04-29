@@ -392,16 +392,17 @@ export interface PartnerOnePagerEmailOptions {
   signupQrId?: string;
 }
 
+// Default partner Calendly URL — appears in the email body, so it's not
+// a secret. Hardcoded fallback so the send can never silently fail just
+// because the env var is missing.
+const DEFAULT_PARTNER_CALENDLY_URL = 'https://123.partyondelivery.com/partnership-call';
+
 export async function sendPartnerOnePagerEmail(
   options: PartnerOnePagerEmailOptions
 ): Promise<string | null> {
   const { to, companyName, source, signupQrId } = options;
 
-  const calendlyUrl = process.env.PARTNER_CALENDLY_URL;
-  if (!calendlyUrl) {
-    console.error('[Partner One-Pager] PARTNER_CALENDLY_URL is not set — refusing to send');
-    return null;
-  }
+  const calendlyUrl = process.env.PARTNER_CALENDLY_URL?.trim() || DEFAULT_PARTNER_CALENDLY_URL;
 
   // Mailto-based unsubscribe — keeps things simple, no separate page needed.
   const unsubscribeMailto = `mailto:info@partyondelivery.com?subject=${encodeURIComponent('Unsubscribe — Partner Email')}&body=${encodeURIComponent(`Please remove ${to} from the partner program list.`)}`;
