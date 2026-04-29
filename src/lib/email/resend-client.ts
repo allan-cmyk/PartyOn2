@@ -7,9 +7,14 @@ import { Resend } from 'resend';
 import { prisma } from '@/lib/database/client';
 import { EmailType, EmailStatus } from '@prisma/client';
 
-// Initialize Resend client
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'orders@partyondelivery.com';
+// Initialize Resend client. Sanitize whitespace/newlines that can sneak into
+// env values — both real CR/LF bytes and literal `\n` / `\r` escape sequences
+// from a quoted .env entry. Either form would corrupt the From header and
+// cause Resend to reject sends with a 422 validation error.
+const sanitizeEnv = (v: string | undefined) =>
+  v ? v.replace(/\\[rn]/g, '').trim() : v;
+const RESEND_API_KEY = sanitizeEnv(process.env.RESEND_API_KEY);
+const FROM_EMAIL = sanitizeEnv(process.env.RESEND_FROM_EMAIL) || 'orders@partyondelivery.com';
 const FROM_NAME = 'Party On Delivery';
 
 if (!RESEND_API_KEY) {
@@ -17,6 +22,15 @@ if (!RESEND_API_KEY) {
 }
 
 export const resend = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null;
+
+/**
+ * Optional attachment for outbound emails (matches Resend's attachment shape).
+ */
+export interface EmailAttachment {
+  filename: string;
+  content: Buffer | string;
+  contentType?: string;
+}
 
 /**
  * Email sending options
@@ -32,13 +46,18 @@ export interface SendEmailOptions {
   customerId?: string;
   draftOrderId?: string;
   metadata?: Record<string, unknown>;
+  attachments?: EmailAttachment[];
+  /** Additional Resend tags for campaign / source tracking */
+  tags?: Array<{ name: string; value: string }>;
+  /** Extra headers (e.g. List-Unsubscribe) */
+  headers?: Record<string, string>;
 }
 
 /**
  * Send an email and log it
  */
 export async function sendEmail(options: SendEmailOptions): Promise<string | null> {
-  const { to, cc, subject, html, text, type, orderId, customerId, draftOrderId, metadata } = options;
+  const { to, cc, subject, html, text, type, orderId, customerId, draftOrderId, metadata, attachments, tags, headers } = options;
 
   // Create email log entry
   const emailLog = await prisma.emailLog.create({
@@ -75,7 +94,22 @@ export async function sendEmail(options: SendEmailOptions): Promise<string | nul
       subject,
       html,
       text,
+      ...(attachments && attachments.length > 0 ? { attachments } : {}),
+      ...(tags && tags.length > 0 ? { tags } : {}),
+      ...(headers && Object.keys(headers).length > 0 ? { headers } : {}),
     });
+
+    // Resend doesn't throw on rejected sends — it returns the error in
+    // result.error. Surface it the same way as a thrown error.
+    if (result.error) {
+      const errorMessage = `${result.error.name || 'Resend error'}: ${result.error.message || JSON.stringify(result.error)}`;
+      await prisma.emailLog.update({
+        where: { id: emailLog.id },
+        data: { status: EmailStatus.FAILED, errorMessage },
+      });
+      console.error('[Email] Failed to send:', { to, subject, type, error: result.error });
+      return null;
+    }
 
     // Update log with success
     await prisma.emailLog.update({

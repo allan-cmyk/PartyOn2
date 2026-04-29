@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "prisma generate && node scripts/scan-hero-media.js && next build",
-    "hero:refresh": "node scripts/scan-hero-media.js",
+    "build": "prisma generate && node scripts/scan-hero-media.js && node scripts/scan-vacation-rental-hero.js && next build",
+    "hero:refresh": "node scripts/scan-hero-media.js && node scripts/scan-vacation-rental-hero.js",
     "lint:tokens": "node scripts/lint-design-tokens.js",
     "test": "vitest",
     "test:run": "vitest run",

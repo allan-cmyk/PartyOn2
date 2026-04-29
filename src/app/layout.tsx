@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow_Condensed, Inter } from 'next/font/google';
+import { Barlow_Condensed, Inter, Fraunces, Manrope } from 'next/font/google';
 import dynamic from 'next/dynamic';
 import "./globals.css";
 import AgeVerification from "@/components/AgeVerification";
@@ -31,6 +31,21 @@ const inter = Inter({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600'],
   variable: '--font-inter',
+  display: 'swap',
+});
+
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  style: ['italic'],
+  variable: '--font-fraunces',
+  display: 'swap',
+});
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-manrope',
   display: 'swap',
 });
 
@@ -106,7 +121,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
       </head>
-      <body className={`${inter.variable} ${barlowCondensed.variable} antialiased bg-white text-gray-900`}>
+      <body className={`${inter.variable} ${barlowCondensed.variable} ${fraunces.variable} ${manrope.variable} antialiased bg-white text-gray-900`}>
         <CustomerProvider>
           <CartProvider>
             <GroupOrderProvider>

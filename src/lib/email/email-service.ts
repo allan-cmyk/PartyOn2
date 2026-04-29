@@ -22,6 +22,12 @@ import {
   generateOrderCancellationText,
   OrderCancellationData,
 } from './templates/order-cancellation';
+import {
+  generatePartnerOnePagerEmail,
+  generatePartnerOnePagerEmailText,
+} from './templates/partner-onepager';
+import fs from 'fs/promises';
+import path from 'path';
 
 /**
  * Send order confirmation email
@@ -363,6 +369,86 @@ Submitted: ${data.submittedAt || new Date().toISOString()}
       email: data.email,
       partnerType: data.partnerType,
       source: data.source,
+    },
+  });
+}
+
+/**
+ * Send the partner one-pager email — the outbound to the partner who signed
+ * up via /partners/vacation-rentals (or scanned a QR on a Premier boat).
+ *
+ * Loads the PDF attachment from `public/email-assets/pod-partner-onepager.pdf`,
+ * interpolates the Calendly URL into the HTML template, and tags the send
+ * for campaign attribution.
+ */
+export interface PartnerOnePagerEmailOptions {
+  /** Partner's email address */
+  to: string;
+  /** Optional partner / property-management company name (for logging only) */
+  companyName?: string;
+  /** Source slug for tag attribution (e.g. 'vacation-rental-onepager') */
+  source?: string;
+  /** Optional QR id from the boat / placement */
+  signupQrId?: string;
+}
+
+export async function sendPartnerOnePagerEmail(
+  options: PartnerOnePagerEmailOptions
+): Promise<string | null> {
+  const { to, companyName, source, signupQrId } = options;
+
+  const calendlyUrl = process.env.PARTNER_CALENDLY_URL;
+  if (!calendlyUrl) {
+    console.error('[Partner One-Pager] PARTNER_CALENDLY_URL is not set — refusing to send');
+    return null;
+  }
+
+  // Mailto-based unsubscribe — keeps things simple, no separate page needed.
+  const unsubscribeMailto = `mailto:info@partyondelivery.com?subject=${encodeURIComponent('Unsubscribe — Partner Email')}&body=${encodeURIComponent(`Please remove ${to} from the partner program list.`)}`;
+
+  const html = generatePartnerOnePagerEmail({
+    calendlyUrl,
+    unsubscribeUrl: unsubscribeMailto,
+  });
+  const text = generatePartnerOnePagerEmailText({
+    calendlyUrl,
+    unsubscribeUrl: unsubscribeMailto,
+  });
+
+  const pdfPath = path.join(process.cwd(), 'public/email-assets/pod-partner-onepager.pdf');
+  let pdfBuffer: Buffer;
+  try {
+    pdfBuffer = await fs.readFile(pdfPath);
+  } catch (err) {
+    console.error('[Partner One-Pager] Failed to read PDF attachment at', pdfPath, err);
+    return null;
+  }
+
+  return sendEmail({
+    to,
+    subject: 'Your POD partner one-pager',
+    html,
+    text,
+    type: EmailType.PARTNER_INQUIRY,
+    attachments: [
+      {
+        filename: 'POD-Partner-OnePager.pdf',
+        content: pdfBuffer,
+        contentType: 'application/pdf',
+      },
+    ],
+    tags: [
+      { name: 'campaign', value: 'partner-program' },
+      { name: 'source', value: source || 'vacation-rental-onepager' },
+    ],
+    headers: {
+      'List-Unsubscribe': `<${unsubscribeMailto}>`,
+    },
+    metadata: {
+      to,
+      companyName,
+      source,
+      signupQrId,
     },
   });
 }
