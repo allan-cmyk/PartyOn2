@@ -33,8 +33,11 @@ Each cooler is a card with two regions:
 
 ### Banner (full width)
 - **Time pill** — yellow AM (before noon), blue PM (12–5 pm), purple EVE (5 pm+), gray TBD
-- **Type tag** — color-coded, manifest-driven for boat orders (DSC sheet → DISCO CRUISE in orange; PVT sheet → PRIVATE CRUISE in teal); falls back to dashboard source / partyType for non-boat orders (Partner page, Group · Bach/Wedding/House/Corp/Boat, Private)
-- **Flag pills** — `VERY LARGE` (≥ $500 OR ≥ 15 items) and `PRIVATE` (solo non-group) appear inline; left border tints orange and/or gray to match
+- **Type tag** — exactly three values:
+  - 🟧 `Disco` (orange) — Premier disco cruise (boat manifest sheet contains DSC, or order arrived via the Premier webhook)
+  - 🟦 `Private` (teal) — Premier private cruise (boat manifest sheet contains PVT)
+  - 🟢 `House` (forest green) — every other delivery (residential, weddings, bach parties, corporate events, solo orders, etc.). "Disco" and "Private" labels are reserved exclusively for Premier boat cruises.
+- **Flag pill** — `VERY LARGE` (≥ $500 OR ≥ 15 items) appears inline with an orange left border on the cooler card to match
 - **Group code + Premier external booking ID** — when present
 - **Cooler header** — large bold customer name, with checkbox for picker. **Label line** (date · AM/PM · type) sits to the right on the same row, monospace uppercase, ready to copy onto a physical sticker
 - **Group title sub-line** — when the dashboard had a real title that's NOT the customer name (e.g. "Sammi's Bach Weekend" appears beneath "Samantha Strahl")
@@ -89,20 +92,15 @@ So Brittney Mosbrucker's 6 sub-payers landing at the same Premier slot render as
 
 ## Type tag classification
 
-Priority order:
-1. **Manifest sheet tab** — if the cooler has a `BoatSchedule` match, the `sheetTab` value wins:
-   - `DSC*` → `DISCO CRUISE` (orange)
-   - `PVT*` → `PRIVATE CRUISE` (teal)
-2. **Dashboard source** (`GroupOrderV2.source`):
-   - `WEBHOOK` → `Disco · Premier` (orange)
-   - `PARTNER_PAGE` → `Partner page` (blue)
-3. **Party type** (`GroupOrderV2.partyType`):
-   - `BOAT` → `Group · Boat` (cyan)
-   - `BACH` / `BACHELOR` / `BACHELORETTE` → `Group · Bach`
-   - `WEDDING` / `HOUSE_PARTY` / `CORPORATE` → `Group · Wedding/House/Corp`
-4. **Solo** — non-group orders → `Private` (dark gray with gold text)
+Three states only — `Disco` and `Private` are reserved for Premier boat cruises; everything else is `House`.
 
-The label line at the top of each cooler shortens these to one word: `DISCO`, `PRIVATE`, `BACH`, `WEDDING`, `HOUSE`, `CORP`, `BOAT`, `GROUP`.
+| Output | Trigger |
+|---|---|
+| `DISCO` (orange) | `BoatSchedule` match where `sheetTab` contains `DSC`, OR `GroupOrderV2.source = WEBHOOK` (Premier webhook) |
+| `PRIVATE` (teal) | `BoatSchedule` match where `sheetTab` contains `PVT` (Premier private cruise charter) |
+| `HOUSE` (forest green) | Anything else — residential weddings, bach parties, corporate events, house parties, solo non-group customers, etc. |
+
+This matches the operator's mental model: when sticker-printing, the picker only needs to know "is this for a Premier boat (Disco/Private) or going to a house?". Finer party-type info is preserved in the `Group:` sub-line beneath the customer name and in the boat-manifest match line for cruises.
 
 ## Print behavior
 

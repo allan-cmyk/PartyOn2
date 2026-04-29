@@ -298,7 +298,6 @@ const coolers = [...coolerMap.values()].map((c) => {
   const total = c.payments.reduce((s, p) => s + p.total, 0);
   const totalItems = [...c.aggregatedItems.values()].reduce((s, q) => s + q, 0);
   const isVeryLarge = total >= 500 || totalItems >= 15;
-  const isPrivate = !c.isGroup;
   // Preserve the original group / cruise title so we can show it as supplementary
   // context beneath the customer name in the banner.
   const groupTitle =
@@ -306,7 +305,7 @@ const coolers = [...coolerMap.values()].map((c) => {
       ? c.primaryName
       : null;
   const displayName = preferredCustomerName(c);
-  return { ...c, primaryName: displayName, groupTitle, total, totalItems, isVeryLarge, isPrivate };
+  return { ...c, primaryName: displayName, groupTitle, total, totalItems, isVeryLarge };
 });
 
 // Sort by date asc, time asc
@@ -333,25 +332,18 @@ function timeOfDayPill(timeStr) {
   return { label: 'EVE', cls: 'pill-eve' };
 }
 
+// Three top-level cruise/delivery categories for the printable sheet:
+//   DISCO    — Premier disco cruise (boat manifest sheet contains DSC)
+//   PRIVATE  — Premier private cruise (boat manifest sheet contains PVT)
+//   HOUSE    — everything else (residential / non-Premier delivery)
+//
+// "Private" and "Disco" only mean Premier boat cruises now. A solo non-group
+// order going to a residential address is HOUSE.
 function typeTag(c) {
-  if (!c.isGroup) return { label: 'Private', cls: 'tag-private' };
-  // Boat manifest is the source of truth for cruise type — promote DSC/PVT to
-  // the top tag whenever a match exists, regardless of how the dashboard was
-  // created (DIRECT, PARTNER_PAGE, or WEBHOOK).
-  if (c.manifestMatch?.sheetTab) {
-    const tab = c.manifestMatch.sheetTab.toUpperCase();
-    if (tab.includes('DSC')) return { label: 'Disco Cruise', cls: 'tag-disco' };
-    if (tab.includes('PVT')) return { label: 'Private Cruise', cls: 'tag-pvt' };
-  }
-  if (c.source === 'WEBHOOK') return { label: 'Disco · Premier', cls: 'tag-disco' };
-  if (c.source === 'PARTNER_PAGE') return { label: 'Partner page', cls: 'tag-partner' };
-  if (c.partyType === 'BOAT') return { label: 'Group · Boat', cls: 'tag-boat' };
-  if (['BACH', 'BACHELOR', 'BACHELORETTE'].includes(c.partyType))
-    return { label: 'Group · Bach', cls: 'tag-group' };
-  if (c.partyType === 'WEDDING') return { label: 'Group · Wedding', cls: 'tag-group' };
-  if (c.partyType === 'HOUSE_PARTY') return { label: 'Group · House', cls: 'tag-group' };
-  if (c.partyType === 'CORPORATE') return { label: 'Group · Corp', cls: 'tag-group' };
-  return { label: 'Group', cls: 'tag-group' };
+  const t = shortType(c);
+  if (t === 'DISCO') return { label: 'Disco', cls: 'tag-disco' };
+  if (t === 'PRIVATE') return { label: 'Private', cls: 'tag-pvt' };
+  return { label: 'House', cls: 'tag-house' };
 }
 
 function isBoatish(c) {
@@ -379,22 +371,17 @@ function fmtDateShort(iso) {
   return `${DAY_NAMES_SHORT[d.getUTCDay()]} ${d.getUTCMonth() + 1}/${d.getUTCDate()}`;
 }
 
+// Returns DISCO, PRIVATE, or HOUSE. Premier-cruise labels (Disco, Private) only
+// apply when the cooler is on the Premier boat manifest or arrived via the
+// Premier webhook. Anything going to a non-Premier address is HOUSE.
 function shortType(c) {
-  // For label printing: Disco / Private for boat orders; otherwise the party
-  // type. Always returns a short, label-friendly word.
   if (c.manifestMatch?.sheetTab) {
     const tab = c.manifestMatch.sheetTab.toUpperCase();
     if (tab.includes('DSC')) return 'DISCO';
     if (tab.includes('PVT')) return 'PRIVATE';
   }
-  if (!c.isGroup) return 'PRIVATE';
   if (c.source === 'WEBHOOK') return 'DISCO';
-  if (c.partyType === 'BOAT') return 'BOAT';
-  if (['BACH', 'BACHELOR', 'BACHELORETTE'].includes(c.partyType)) return 'BACH';
-  if (c.partyType === 'WEDDING') return 'WEDDING';
-  if (c.partyType === 'HOUSE_PARTY') return 'HOUSE';
-  if (c.partyType === 'CORPORATE') return 'CORP';
-  return 'GROUP';
+  return 'HOUSE';
 }
 
 // ----- summary tallies ------------------------------------------------------
@@ -403,9 +390,9 @@ const stats = {
   coolers: coolers.length,
   payments: coolers.reduce((s, c) => s + c.payments.length, 0),
   totalRevenue: coolers.reduce((s, c) => s + c.total, 0),
-  disco: coolers.filter((c) => c.source === 'WEBHOOK').length,
-  groupCoolers: coolers.filter((c) => c.isGroup && c.source !== 'WEBHOOK').length,
-  privateCount: coolers.filter((c) => !c.isGroup).length,
+  disco: coolers.filter((c) => shortType(c) === 'DISCO').length,
+  privateCruise: coolers.filter((c) => shortType(c) === 'PRIVATE').length,
+  house: coolers.filter((c) => shortType(c) === 'HOUSE').length,
   veryLarge: coolers.filter((c) => c.isVeryLarge).length,
   manifestMatched: coolers.filter((c) => isBoatish(c) && c.manifestMatch).length,
   manifestMissing: coolers.filter((c) => isBoatish(c) && !c.manifestMatch).length,
@@ -438,11 +425,8 @@ const css = `
   .day-count { font-weight: 400; opacity: 0.85; font-size: 11px; }
   .cooler { border: 1px solid #ddd; border-top: 0; page-break-inside: avoid; break-inside: avoid; }
   .cooler.flag-large { border-left: 4px solid #d97706; }
-  .cooler.flag-private { border-left: 4px solid #6b7280; }
-  .cooler.flag-large.flag-private { border-left: 4px solid #d97706; box-shadow: inset 4px 0 0 #6b7280; }
   .cooler-banner { background: #f3f4f6; padding: 6px 10px 5px; border-bottom: 2px solid #d4d4d4; }
   .cooler-banner.has-large { background: linear-gradient(90deg, #fff7ed 0%, #f3f4f6 100%); }
-  .cooler-banner.has-private { background: linear-gradient(90deg, #f3f4f6 0%, #f9fafb 100%); }
   .cooler-name { font-size: 16px; font-weight: 800; letter-spacing: 0.02em; color: #111; line-height: 1.15; margin: 3px 0 1px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
   .cooler-name .check { width: 18px; height: 18px; border: 2.5px solid #111; border-radius: 3px; display: inline-block; vertical-align: middle; margin-right: 4px; flex-shrink: 0; align-self: center; }
   .cooler-subname { font-size: 10px; color: #555; margin: 0 0 3px 26px; font-style: italic; }
@@ -451,7 +435,7 @@ const css = `
   .label-line .lbl-sep { color: #9ca3af; margin: 0 4px; }
   .label-line .lbl-disco { color: #c2410c; }
   .label-line .lbl-pvt { color: #0f766e; }
-  .label-line .lbl-priv { color: #1f2937; }
+  .label-line .lbl-house { color: #166534; }
   .cooler-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 10px; padding: 7px 10px 8px; }
   .col-left { min-width: 0; display: flex; flex-direction: column; }
   .col-right { min-width: 0; display: flex; flex-direction: column; }
@@ -462,15 +446,11 @@ const css = `
   .pill-eve { background: #312e81; color: #fff; }
   .pill-tbd { background: #e5e7eb; color: #374151; }
   .pill-large { background: #fed7aa; color: #9a3412; border: 1px solid #fb923c; }
-  .pill-private { background: #f3f4f6; color: #374151; border: 1px solid #9ca3af; }
   .time { font-weight: 700; font-size: 12px; color: #111; }
   .tag { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1.1; }
   .tag-disco { background: #f97316; color: #fff; box-shadow: 0 0 0 1px #c2410c inset; }
   .tag-pvt { background: #0d9488; color: #fff; box-shadow: 0 0 0 1px #0f766e inset; }
-  .tag-partner { background: #dbeafe; color: #1e3a8a; box-shadow: 0 0 0 1px #3b82f6 inset; }
-  .tag-group { background: #f0e8d8; color: #6e5a1f; box-shadow: 0 0 0 1px #b08940 inset; }
-  .tag-boat { background: #cffafe; color: #0e7490; box-shadow: 0 0 0 1px #0891b2 inset; }
-  .tag-private { background: #1f2937; color: #fde68a; box-shadow: 0 0 0 1px #111 inset; }
+  .tag-house { background: #166534; color: #fff; box-shadow: 0 0 0 1px #14532d inset; }
   .ord-num { color: #888; font-size: 9px; }
   .meta { font-size: 10.5px; color: #444; margin: 1px 0; line-height: 1.3; }
   .meta a { color: #0B74B8; text-decoration: none; }
@@ -516,18 +496,17 @@ let html = `<!doctype html>
 <div class="subhead">${esc(fmtDate(startDateStr))} – ${esc(fmtDate(new Date(endDate.getTime() - 86400000).toISOString().slice(0, 10)))} · paid orders only · printed ${esc(new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' }))} CT</div>
 <div class="legend">
   <span><span class="legend-swatch lg"></span>Orange left border = Very large (≥ $500 or ≥ 15 items)</span>
-  <span><span class="legend-swatch pv"></span>Gray left border = Private (non-group)</span>
-  <span><span class="tag tag-disco" style="font-size:9px;padding:1px 6px;">Disco Cruise</span> = boat manifest sheet ends in DSC (Premier disco shuttle)</span>
-  <span><span class="tag tag-pvt" style="font-size:9px;padding:1px 6px;">Private Cruise</span> = boat manifest sheet ends in PVT (private charter)</span>
-  <span><span class="tag tag-private" style="font-size:9px;padding:1px 6px;">Private</span> = solo customer (no group dashboard)</span>
+  <span><span class="tag tag-disco" style="font-size:9px;padding:1px 6px;">Disco</span> = Premier disco cruise (manifest sheet contains DSC)</span>
+  <span><span class="tag tag-pvt" style="font-size:9px;padding:1px 6px;">Private</span> = Premier private cruise (manifest sheet contains PVT)</span>
+  <span><span class="tag tag-house" style="font-size:9px;padding:1px 6px;">House</span> = everything else (delivery to a non-Premier address)</span>
 </div>
 <div class="summary">
   <div><b>${stats.coolers}</b>Total coolers</div>
   <div><b>${stats.payments}</b>Sub-payments</div>
   <div><b>$${stats.totalRevenue.toFixed(2)}</b>Gross revenue</div>
   <div><b>${stats.disco}</b>Disco cruises</div>
-  <div><b>${stats.groupCoolers}</b>Group coolers</div>
-  <div><b>${stats.privateCount}</b>Private orders</div>
+  <div><b>${stats.privateCruise}</b>Private cruises</div>
+  <div><b>${stats.house}</b>House deliveries</div>
   <div><b>${stats.veryLarge}</b>Very-large flags</div>
   <div><b>${stats.manifestMatched} / ${stats.manifestMatched + stats.manifestMissing}</b>Boat manifest matches</div>
 </div>
@@ -543,10 +522,7 @@ for (const date of [...byDate.keys()].sort()) {
     const pill = timeOfDayPill(c.deliveryTime);
     const tag = typeTag(c);
     const flagLarge = c.isVeryLarge ? `<span class="pill pill-large">VERY LARGE</span>` : '';
-    const flagPrivate = c.isPrivate ? `<span class="pill pill-private">PRIVATE</span>` : '';
-    const flagClasses = [c.isVeryLarge ? 'flag-large' : '', c.isPrivate ? 'flag-private' : '']
-      .filter(Boolean)
-      .join(' ');
+    const flagClasses = c.isVeryLarge ? 'flag-large' : '';
     const groupCode = c.shareCode
       ? `<span class="ord-num">code ${esc(c.shareCode)}${c.extId ? ' · Premier#' + esc(c.extId).slice(0, 12) : ''}</span>`
       : '';
@@ -611,11 +587,9 @@ for (const date of [...byDate.keys()].sort()) {
 
     const hostContact = [c.hostPhone, c.hostEmail].filter(Boolean).map(esc).join(' · ');
 
-    const bannerCls = [
-      'cooler-banner',
-      c.isVeryLarge ? 'has-large' : '',
-      c.isPrivate ? 'has-private' : '',
-    ].filter(Boolean).join(' ');
+    const bannerCls = ['cooler-banner', c.isVeryLarge ? 'has-large' : '']
+      .filter(Boolean)
+      .join(' ');
 
     html += `<div class="cooler ${flagClasses}">
       <div class="${bannerCls}">
@@ -624,7 +598,6 @@ for (const date of [...byDate.keys()].sort()) {
           <span class="time">${esc(c.deliveryTime)}</span>
           <span class="tag ${tag.cls}">${esc(tag.label)}</span>
           ${flagLarge}
-          ${flagPrivate}
           ${groupCode}
         </div>
         <div class="cooler-name">
@@ -632,7 +605,7 @@ for (const date of [...byDate.keys()].sort()) {
           <span>${esc(c.primaryName)}</span>
           ${(() => {
             const t = shortType(c);
-            const tCls = t === 'DISCO' ? 'lbl-disco' : t === 'PRIVATE' && isBoatCooler(c) ? 'lbl-pvt' : t === 'PRIVATE' ? 'lbl-priv' : '';
+            const tCls = t === 'DISCO' ? 'lbl-disco' : t === 'PRIVATE' ? 'lbl-pvt' : 'lbl-house';
             return `<span class="label-line">${esc(fmtDateShort(c.deliveryDate))}<span class="lbl-sep">·</span>${pill.label}<span class="lbl-sep">·</span><span class="${tCls}">${t}</span></span>`;
           })()}
         </div>
@@ -673,7 +646,7 @@ fs.writeFileSync(outPath, html);
 console.error(`\n=== Weekly summary written to: ${outPath} ===`);
 console.error(`Range: ${startDateStr} → ${new Date(endDate.getTime() - 86400000).toISOString().slice(0, 10)} (${days} days)`);
 console.error(`Coolers: ${stats.coolers}  ·  Sub-payments: ${stats.payments}  ·  Revenue: $${stats.totalRevenue.toFixed(2)}`);
-console.error(`Disco cruises: ${stats.disco}  ·  Group coolers: ${stats.groupCoolers}  ·  Private: ${stats.privateCount}`);
+console.error(`Disco cruises: ${stats.disco}  ·  Private cruises: ${stats.privateCruise}  ·  House deliveries: ${stats.house}`);
 console.error(`Very-large flags: ${stats.veryLarge}`);
 console.error(`Boat manifest matched: ${stats.manifestMatched}  ·  Missing on manifest: ${stats.manifestMissing}`);
 console.log(outPath);
