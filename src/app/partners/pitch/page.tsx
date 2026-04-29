@@ -14,6 +14,7 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navigation from '@/components/Navigation';
+import PartnerDashboardMock from '@/components/partners/PartnerDashboardMock';
 
 const TOTAL_SLIDES = 5;
 
@@ -348,7 +349,6 @@ function Slide2() {
  * SLIDE 3 — Partner Dashboard (cream)
  * ========================================================================== */
 function Slide3() {
-  const dashboardSrc = '/partners/dashboard-mockup.png';
   const features = [
     {
       title: 'Real-time order pipeline',
@@ -400,45 +400,15 @@ function Slide3() {
             </div>
           </div>
 
-          {/* Right 55% — dashboard mockup. Falls back to a styled placeholder
-              if the PNG hasn't been added to the repo yet. */}
+          {/* Right 55% — interactive dashboard mock (FiveStar Vacation Rentals
+              fixture: KPIs, sparkline, recent orders). Real component, not
+              a static image, so it renders identically across environments. */}
           <div className="lg:col-span-7">
-            <div className="rounded-lg shadow-2xl overflow-hidden bg-white">
-              <DashboardMockupOrFallback src={dashboardSrc} />
-            </div>
+            <PartnerDashboardMock />
           </div>
         </div>
       </div>
     </section>
-  );
-}
-
-function DashboardMockupOrFallback({ src }: { src: string }) {
-  const [imageOk, setImageOk] = useState(true);
-  if (!imageOk) {
-    return (
-      <div className="aspect-[16/10] flex items-center justify-center bg-white border border-gray-200">
-        <div className="text-center px-8">
-          <div className="eyebrow text-[10px] font-semibold tracking-[0.18em] uppercase text-brand-blue mb-2">
-            Mockup pending
-          </div>
-          <div className="font-heading font-extrabold text-3xl text-gray-900">
-            Dashboard preview
-          </div>
-        </div>
-      </div>
-    );
-  }
-  return (
-    <Image
-      src={src}
-      alt="Partner dashboard preview — orders, revenue by property, status pipeline"
-      width={1280}
-      height={800}
-      sizes="(max-width: 1024px) 100vw, 55vw"
-      className="w-full h-auto"
-      onError={() => setImageOk(false)}
-    />
   );
 }
 
