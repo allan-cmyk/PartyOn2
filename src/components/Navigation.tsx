@@ -24,6 +24,9 @@ const NAV_TRANSPARENT_ROUTES = [
   '/',          // Homepage - h-screen dark hero covers nav area
   '/services',  // Dark gradient (from-slate-900) starts from top of page
   '/partners',  // Partners directory - dark hero image covers nav area
+  '/partners/mobile-bartenders',
+  '/partners/hotels-resorts',
+  '/partners/property-management',
 ];
 
 interface NavLinkProps {
@@ -73,11 +76,12 @@ export default function Navigation({
     pathname === route || pathname.startsWith(route)
   ) : false;
 
-  // Check if nav should be transparent (page has dark bg behind nav area)
+  // Check if nav should be transparent (page has dark bg behind nav area).
+  // Exact-match only — subpages must be listed explicitly. Prefix matching
+  // previously made every /partners/* page transparent, which broke any
+  // partner subpage with a light bg or `mt-24` (invisible white-on-white nav).
   const shouldBeTransparent = pathname
-    ? NAV_TRANSPARENT_ROUTES.some(route =>
-        route === '/' ? pathname === '/' : pathname === route || pathname.startsWith(route + '/')
-      )
+    ? NAV_TRANSPARENT_ROUTES.some(route => pathname === route)
     : false;
 
   const [isScrolled, setIsScrolled] = useState(forceScrolled || !shouldBeTransparent);
