@@ -13,8 +13,11 @@ module.exports = {
       colors: {
         // Brand Colors
         'brand-blue': '#0B74B8',
+        'brand-blue-dark': '#085286',
         'brand-yellow': '#F2D34F',
         'gold': '#D4AF37', // Premium accent - ONLY on dark backgrounds
+        'cream': '#FAF6EE',
+        'navy': '#0A1F33',
 
         // Neutrals
         white: '#FFFFFF',
@@ -48,6 +51,8 @@ module.exports = {
       fontFamily: {
         heading: ['var(--font-barlow-condensed)', 'sans-serif'],
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        fraunces: ['var(--font-fraunces)', 'Georgia', 'serif'],
+        manrope: ['var(--font-manrope)', 'system-ui', 'sans-serif'],
       },
       animation: {
         shimmer: 'shimmer 3s ease-in-out infinite',
@@ -164,9 +169,9 @@ module.exports = {
     'hover:bg-gray-100',
 
     // Brand colors
-    'bg-brand-blue', 'bg-brand-yellow', 'bg-gold',
-    'text-brand-blue', 'text-brand-yellow', 'text-gold',
-    'border-brand-blue', 'border-brand-yellow', 'border-gold',
+    'bg-brand-blue', 'bg-brand-blue-dark', 'bg-brand-yellow', 'bg-gold', 'bg-cream', 'bg-navy',
+    'text-brand-blue', 'text-brand-yellow', 'text-gold', 'text-cream', 'text-navy',
+    'border-brand-blue', 'border-brand-yellow', 'border-gold', 'border-cream', 'border-navy',
     'hover:bg-blue-700', 'hover:bg-yellow-400',
     'active:bg-blue-800', 'active:bg-yellow-500',
     'focus:ring-brand-blue',

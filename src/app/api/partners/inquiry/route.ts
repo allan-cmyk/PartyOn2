@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/group-orders/database-vercel'
 import { sendPartnerInquiryNotification } from '@/lib/email/email-service'
 import type { PartnerInquiryData } from '@/lib/email/email-service'
+import { addContactToAudience } from '@/lib/email/resend-audiences'
 import { kv, isKVConfigured } from '@/lib/database/client'
 
 // In-memory rate limit fallback when KV is not configured
@@ -246,6 +247,17 @@ export async function POST(request: NextRequest) {
     } catch (emailError) {
       console.error('[Partner Inquiry] Email notification failed:', emailError);
       // Don't fail the request if email fails
+    }
+
+    // Add to Resend audience for vacation-rental partner sources (best-effort)
+    if (inquiry.source === 'vacation-rental-event' || inquiry.source === 'vacation-rental-partners-page') {
+      const [firstNamePart, ...lastNameParts] = inquiry.contactName.split(' ');
+      await addContactToAudience({
+        audienceId: process.env.RESEND_VACATION_RENTAL_AUDIENCE_ID,
+        email: inquiry.email,
+        firstName: firstNamePart,
+        lastName: lastNameParts.join(' ') || undefined,
+      });
     }
 
     // Also send to Zapier webhook as backup
