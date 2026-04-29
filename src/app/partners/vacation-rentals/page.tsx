@@ -8,28 +8,11 @@ import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
 import VacationRentalLeadCapture from '@/components/partners/VacationRentalLeadCapture';
 import HorizontalImageCarousel from '@/components/partners/HorizontalImageCarousel';
 import PartnerDashboardMock from '@/components/partners/PartnerDashboardMock';
-import {
-  airbnbMedia,
-  boatMedia,
-  drinksMedia,
-  weddingMedia,
-  corporateMedia,
-} from '@/generated/hero-media-manifest';
+import { vacationRentalHeroMedia } from '@/generated/vacation-rental-hero-media';
 
-// 8 curated photos from the homepage hero collage manifest — real Party On Delivery
-// imagery (airbnb stockings, lake/boat days, drinks, weddings, corporate setups).
-const HERO_CAROUSEL_IMAGES = [
-  airbnbMedia[0],
-  drinksMedia[0],
-  boatMedia[4],
-  airbnbMedia[3],
-  weddingMedia[0],
-  drinksMedia[3],
-  corporateMedia[3],
-  airbnbMedia[5],
-]
-  .filter((m): m is { src: string; alt: string; type: 'image' | 'video' } => Boolean(m))
-  .map((m) => ({ src: m.src, alt: m.alt }));
+// Auto-loaded from public/images/partners/vacation-rental-hero/ — drop or delete
+// images in that folder, then `npm run hero:refresh` (build does it automatically).
+const HERO_CAROUSEL_IMAGES = vacationRentalHeroMedia;
 
 const TABC_CAROUSEL_IMAGES = [
   { src: '/images/services/boat-parties/captains-cooler.webp', alt: 'Party On Delivery cocktail kit cooler on a Premier party boat' },
