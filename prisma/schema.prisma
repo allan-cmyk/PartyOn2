@@ -911,6 +911,7 @@ model Order {
   groupOrderV2 GroupOrderV2? @relation("GroupOrderV2Orders", fields: [groupOrderV2Id], references: [id])
   affiliate    Affiliate?    @relation("AffiliateOrders", fields: [affiliateId], references: [id])
   items        OrderItem[]
+  pickStates   OrderItemPickState[]
   fulfillments Fulfillment[]
   refunds      Refund[]
   amendments   OrderAmendment[]
@@ -962,6 +963,25 @@ model OrderItem {
 
   @@index([orderId])
   @@map("order_items")
+}
+
+/// Persistent pick/pack state for the ops/orders pick UI.
+/// Keyed by (orderId, itemKey). itemKey = item title for line items, or
+/// `${itemTitle}::${bundleComponentTitle}` for bundle components — matches
+/// the keys the picker uses in the UI.
+model OrderItemPickState {
+  orderId   String   @map("order_id")
+  itemKey   String   @map("item_key")
+  inStock   Boolean  @default(false) @map("in_stock")
+  packed    Boolean  @default(false) @map("packed")
+  shortBy   Int      @default(0) @map("short_by")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@id([orderId, itemKey])
+  @@index([orderId])
+  @@map("order_item_pick_states")
 }
 
 model Fulfillment {

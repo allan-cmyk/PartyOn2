@@ -6,17 +6,21 @@ import { useSearchParams } from 'next/navigation';
 import DraftOrdersTable from '@/components/ops/DraftOrdersTable';
 import UnpaidCartsTable from '@/components/ops/UnpaidCartsTable';
 
-// --- In Stock / Packed / Short By localStorage helpers ---
+// --- In Stock / Packed / Short By state ---
+// Persisted server-side via /api/ops/orders/[id]/picks so checkbox state
+// syncs across devices/browsers/users. localStorage is kept as a
+// write-through cache so the row paints instantly with last-known state
+// while the network fetch resolves.
 interface ItemCheckEntry {
   inStock: boolean;
   packed: boolean;
   shortBy?: number;
 }
 interface ItemChecks {
-  [itemTitle: string]: ItemCheckEntry;
+  [itemKey: string]: ItemCheckEntry;
 }
 
-function loadChecks(orderId: string): ItemChecks {
+function loadCachedChecks(orderId: string): ItemChecks {
   try {
     const raw = localStorage.getItem(`ops_order_checks_${orderId}`);
     return raw ? JSON.parse(raw) : {};
@@ -25,8 +29,43 @@ function loadChecks(orderId: string): ItemChecks {
   }
 }
 
-function saveChecks(orderId: string, data: ItemChecks): void {
-  localStorage.setItem(`ops_order_checks_${orderId}`, JSON.stringify(data));
+function cacheChecks(orderId: string, data: ItemChecks): void {
+  try {
+    localStorage.setItem(`ops_order_checks_${orderId}`, JSON.stringify(data));
+  } catch {
+    // ignore quota / private-mode errors
+  }
+}
+
+async function fetchChecks(orderId: string): Promise<ItemChecks | null> {
+  try {
+    const res = await fetch(`/api/ops/orders/${orderId}/picks`, {
+      credentials: 'same-origin',
+      cache: 'no-store',
+    });
+    if (!res.ok) return null;
+    const data = (await res.json()) as { checks?: ItemChecks };
+    return data.checks ?? {};
+  } catch {
+    return null;
+  }
+}
+
+async function putCheck(
+  orderId: string,
+  itemKey: string,
+  patch: { inStock?: boolean; packed?: boolean; shortBy?: number },
+): Promise<void> {
+  try {
+    await fetch(`/api/ops/orders/${orderId}/picks`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ itemKey, ...patch }),
+    });
+  } catch {
+    // swallow; UI is already optimistic + cached in localStorage
+  }
 }
 
 
@@ -471,13 +510,30 @@ function GroupOrderRow({
 // Regular Order Row Component
 function OrderRow({ order, selected, onToggle, onPrint, onFilterByGroup }: { order: Order; selected: boolean; onToggle: () => void; onPrint?: (orderId: string) => void; onFilterByGroup?: (groupId: string) => void }): ReactElement {
   const [expanded, setExpanded] = useState(false);
-  const [checks, setChecks] = useState<ItemChecks>(() => loadChecks(order.id));
+  const [checks, setChecks] = useState<ItemChecks>(() => loadCachedChecks(order.id));
   const isPacked = order.items.length > 0 && order.items.every((item) => checks[item.title]?.packed);
+  const shortByTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+
+  // Pull authoritative state from server. Refetches when the row is expanded
+  // so an open accordion reflects what other devices have updated.
+  useEffect(() => {
+    let cancelled = false;
+    fetchChecks(order.id).then((server) => {
+      if (cancelled || !server) return;
+      setChecks(server);
+      cacheChecks(order.id, server);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [order.id, expanded]);
 
   const toggleCheck = (title: string, field: 'inStock' | 'packed') => {
     setChecks((prev) => {
-      const updated = { ...prev, [title]: { ...prev[title], [field]: !prev[title]?.[field] } };
-      saveChecks(order.id, updated);
+      const nextEntry = { ...prev[title], [field]: !prev[title]?.[field] } as ItemCheckEntry;
+      const updated = { ...prev, [title]: nextEntry };
+      cacheChecks(order.id, updated);
+      void putCheck(order.id, title, { [field]: nextEntry[field] });
       return updated;
     });
   };
@@ -486,9 +542,13 @@ function OrderRow({ order, selected, onToggle, onPrint, onFilterByGroup }: { ord
     const clamped = Math.max(0, Math.floor(value) || 0);
     setChecks((prev) => {
       const updated = { ...prev, [title]: { ...prev[title], shortBy: clamped } };
-      saveChecks(order.id, updated);
+      cacheChecks(order.id, updated);
       return updated;
     });
+    if (shortByTimers.current[title]) clearTimeout(shortByTimers.current[title]);
+    shortByTimers.current[title] = setTimeout(() => {
+      void putCheck(order.id, title, { shortBy: clamped });
+    }, 400);
   };
 
   return (
@@ -824,13 +884,28 @@ function formatAddress(addr: Record<string, string> | string | null): string {
 // Compact Mobile Order Row (1-2 lines, expandable)
 function MobileOrderRow({ order, onFilterByGroup }: { order: Order; onFilterByGroup?: (groupId: string) => void }): ReactElement {
   const [expanded, setExpanded] = useState(false);
-  const [checks, setChecks] = useState<ItemChecks>(() => loadChecks(order.id));
+  const [checks, setChecks] = useState<ItemChecks>(() => loadCachedChecks(order.id));
   const address = formatAddress(order.deliveryAddress);
+  const shortByTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchChecks(order.id).then((server) => {
+      if (cancelled || !server) return;
+      setChecks(server);
+      cacheChecks(order.id, server);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [order.id, expanded]);
 
   const toggleCheck = (title: string, field: 'inStock' | 'packed') => {
     setChecks((prev) => {
-      const updated = { ...prev, [title]: { ...prev[title], [field]: !prev[title]?.[field] } };
-      saveChecks(order.id, updated);
+      const nextEntry = { ...prev[title], [field]: !prev[title]?.[field] } as ItemCheckEntry;
+      const updated = { ...prev, [title]: nextEntry };
+      cacheChecks(order.id, updated);
+      void putCheck(order.id, title, { [field]: nextEntry[field] });
       return updated;
     });
   };
@@ -839,9 +914,13 @@ function MobileOrderRow({ order, onFilterByGroup }: { order: Order; onFilterByGr
     const clamped = Math.max(0, Math.floor(value) || 0);
     setChecks((prev) => {
       const updated = { ...prev, [title]: { ...prev[title], shortBy: clamped } };
-      saveChecks(order.id, updated);
+      cacheChecks(order.id, updated);
       return updated;
     });
+    if (shortByTimers.current[title]) clearTimeout(shortByTimers.current[title]);
+    shortByTimers.current[title] = setTimeout(() => {
+      void putCheck(order.id, title, { shortBy: clamped });
+    }, 400);
   };
 
   const shortDate = new Date(order.deliveryDate).toLocaleDateString('en-US', {
@@ -1076,12 +1155,23 @@ export default function OrdersPage(): ReactElement {
     }
   };
 
-  const handleGenerateShortageList = () => {
+  const handleGenerateShortageList = async () => {
     const aggregated = new Map<string, { title: string; quantity: number; orderNumbers: Set<number> }>();
     const selectedOrdersArray = (data?.orders || []).filter((o) => selectedOrders.has(o.id));
 
+    // Prefetch authoritative pick state for all selected orders so the
+    // shortage list reflects what other devices have updated, not just what
+    // this browser has seen.
+    await Promise.all(
+      selectedOrdersArray.map((o) =>
+        fetchChecks(o.id).then((server) => {
+          if (server) cacheChecks(o.id, server);
+        }),
+      ),
+    );
+
     for (const order of selectedOrdersArray) {
-      const orderChecks = loadChecks(order.id);
+      const orderChecks = loadCachedChecks(order.id);
       for (const item of order.items) {
         const hasBundle = item.bundleComponents && item.bundleComponents.length > 0;
         if (hasBundle) {
@@ -1228,7 +1318,16 @@ export default function OrdersPage(): ReactElement {
   };
 
   // Print pick sheets
-  const handlePrintOrders = (orderIds: string[]) => {
+  const handlePrintOrders = async (orderIds: string[]) => {
+    // Prefetch authoritative pick state into the localStorage cache before
+    // the print sheet reads it, so prints reflect cross-device updates.
+    await Promise.all(
+      orderIds.map((id) =>
+        fetchChecks(id).then((server) => {
+          if (server) cacheChecks(id, server);
+        }),
+      ),
+    );
     setPrintOrderIds(orderIds);
     // Wait for state to render, then print
     setTimeout(() => window.print(), 100);
@@ -1268,7 +1367,7 @@ export default function OrdersPage(): ReactElement {
       params.set('page', page.toString());
       params.set('sortBy', sortBy);
       params.set('sortOrder', sortOrder);
-      params.set('limit', '20');
+      params.set('limit', '100');
 
       const response = await fetch(`/api/v1/admin/orders?${params}`);
       const result = await response.json();
@@ -2022,7 +2121,7 @@ export default function OrdersPage(): ReactElement {
               )}
 
               {(() => {
-                const printChecks = loadChecks(order.id);
+                const printChecks = loadCachedChecks(order.id);
                 return (
                   <table className="w-full mb-3 border-collapse text-lg">
                     <thead>
