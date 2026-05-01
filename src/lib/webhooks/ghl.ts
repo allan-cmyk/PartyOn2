@@ -41,6 +41,10 @@ export interface GhlOrderPayload {
   deliveryType: string;
   deliveryInstructions: string;
   createdAt: string;
+  // Dashboard link for orders placed under a GroupOrderV2 (Premier cruise,
+  // partner-page dashboard, etc.). Empty string when the order has no group.
+  dashboard_url: string;
+  share_code: string;
 }
 
 /** Shape accepted by buildGhlPayload — matches OrderWithItems and raw Prisma orders */
@@ -67,6 +71,10 @@ interface OrderLike {
   deliveryType?: string;
   deliveryInstructions: string | null;
   createdAt: Date;
+  // Optional GroupOrderV2 link — when present, populates dashboard_url so the
+  // GHL SMS workflow can include the dashboard link in its template.
+  groupOrderV2Id?: string | null;
+  groupOrderV2?: { shareCode: string } | null;
 }
 
 // ──────────────────────────────────────────────
@@ -110,6 +118,10 @@ export function buildGhlPayload(order: OrderLike, orderType: string): GhlOrderPa
   const nameParts = order.customerName.trim().split(/\s+/);
   const firstName = nameParts[0] || '';
   const lastName = nameParts.slice(1).join(' ') || '';
+  const shareCode = order.groupOrderV2?.shareCode || '';
+  const dashboardUrl = shareCode
+    ? `https://partyondelivery.com/dashboard/${shareCode}`
+    : '';
 
   return {
     event: 'order.created',
@@ -139,6 +151,8 @@ export function buildGhlPayload(order: OrderLike, orderType: string): GhlOrderPa
     deliveryType: order.deliveryType || 'HOUSE',
     deliveryInstructions: order.deliveryInstructions || '',
     createdAt: order.createdAt.toISOString(),
+    dashboard_url: dashboardUrl,
+    share_code: shareCode,
   };
 }
 

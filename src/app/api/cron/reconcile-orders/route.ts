@@ -268,7 +268,10 @@ export async function GET(request: NextRequest) {
               })),
             },
           },
-          include: { items: true },
+          include: {
+            items: true,
+            groupOrderV2: { select: { shareCode: true } },
+          },
         });
 
         // Link order to payment
