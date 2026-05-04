@@ -7,6 +7,10 @@
  */
 
 import { resend } from '@/lib/email/resend-client';
+import {
+  renderBriefingEmail,
+  type BriefingEmailData,
+} from '@/lib/email/templates/marketing-briefing';
 
 const REPO_OWNER = process.env.GITHUB_REPO_OWNER ?? 'allan-cmyk';
 const REPO_NAME = process.env.GITHUB_REPO_NAME ?? 'PartyOn2';
@@ -22,6 +26,8 @@ interface BriefingPayload {
   stageA: string;               // deterministic markdown
   stageB: string | null;        // LLM narrative (null if not generated)
   to: string;                   // recipient email
+  /** Structured payload for the chart-driven email render. If absent, falls back to plain markdown <pre> render. */
+  emailData?: BriefingEmailData;
 }
 
 export async function deliverBriefing(payload: BriefingPayload): Promise<DeliveryResult> {
@@ -44,7 +50,7 @@ async function sendEmail(p: BriefingPayload): Promise<{ sent: boolean; error?: s
   }
 
   const subject = `Marketing weekly briefing — ${p.weekLabel}`;
-  const html = renderHtml(p);
+  const html = p.emailData ? renderBriefingEmail(p.emailData) : renderHtml(p);
   const text = renderText(p);
   const fromName = 'Party On Delivery — Marketing Director';
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'orders@partyondelivery.com';

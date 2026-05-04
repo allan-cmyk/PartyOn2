@@ -14,6 +14,7 @@ import path from 'path';
 import { prisma } from '@/lib/database/client';
 import { listRecommendations } from '@/lib/analytics/recommendation-store';
 import { deliverBriefing } from '@/lib/analytics/briefing-delivery';
+import { buildBriefingPayloadFromSnapshot } from '@/lib/analytics/briefing-payload';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 300;
@@ -241,11 +242,31 @@ ${stageA}`;
 
   // Deliver: email + commit to repo. Fails soft (errors logged, response stays green).
   const deliverTo = process.env.MARKETING_BRIEFING_TO || 'allan@partyondelivery.com';
+
+  // Build structured payload for the chart-driven email render. Failure here downgrades
+  // gracefully — delivery still happens with the legacy <pre> render.
+  let emailData: Awaited<ReturnType<typeof buildBriefingPayloadFromSnapshot>> | undefined;
+  try {
+    emailData = await buildBriefingPayloadFromSnapshot({
+      snapshot,
+      weekLabel: week.label,
+      issueNumber: week.week,
+      year: week.year,
+      generatedAt: now,
+      openRecs,
+      archiveUrl: `https://github.com/${process.env.GITHUB_REPO_OWNER ?? 'allan-cmyk'}/${process.env.GITHUB_REPO_NAME ?? 'PartyOn2'}/blob/${process.env.GITHUB_REPO_BRANCH ?? 'main'}/docs/marketing/weekly/${week.label}-director.md`,
+      queueUrl: 'https://partyondelivery.com/admin/analytics/recommendations',
+    });
+  } catch (err) {
+    console.warn('[weekly-briefing] structured payload build failed; falling back to plain HTML:', err);
+  }
+
   const delivery = await deliverBriefing({
     weekLabel: week.label,
     stageA,
     stageB: stageBContent,
     to: deliverTo,
+    emailData,
   });
 
   return NextResponse.json({
