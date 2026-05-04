@@ -6,6 +6,7 @@ import {
   updateRecommendationStatus,
   type RecommendationStatus,
 } from '@/lib/analytics/recommendation-store';
+import { mirrorRecommendation } from '@/lib/analytics/recommendation-mirror';
 
 export const dynamic = 'force-dynamic';
 
@@ -54,8 +55,25 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         { status: 400 }
       );
     }
-    const updated = await updateRecommendationStatus(body.id, status as RecommendationStatus, notes);
-    return NextResponse.json({ data: updated });
+    const { updated, priorStatus } = await updateRecommendationStatus(
+      body.id,
+      status as RecommendationStatus,
+      notes
+    );
+
+    // Mirror to GitHub (fail-soft). Only mirror on actual transitions to avoid noise.
+    let mirror: { mirrored: boolean; error?: string } | undefined;
+    if (priorStatus !== status) {
+      mirror = await mirrorRecommendation(updated, {
+        date: new Date().toISOString().slice(0, 10),
+        fromStatus: priorStatus,
+        toStatus: status,
+        notes,
+        actor: 'operator',
+      });
+    }
+
+    return NextResponse.json({ data: updated, mirror });
   }
 
   // Create path: { title, body?, segment?, impactDollarsMonthly?, effortTier?, riskTier?, source? }
