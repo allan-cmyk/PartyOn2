@@ -432,6 +432,7 @@ These are **parallel namespaces, not a migration** — neither supersedes the ot
 | `/api/cron/weekly-briefing` | `.../weekly-briefing/route.ts` | `0 13 * * 1` | Weekly Mon 13:00 UTC operator briefing email. |
 | `/api/cron/weekly-purchase-plan` | `.../weekly-purchase-plan/route.ts` | `0 13 * * 1` | Weekly Mon 13:00 UTC distributor purchase plan. |
 | `/api/cron/group-orders-v2` | `.../group-orders-v2/route.ts` | `0 */2 * * *` | Every 2h — locks expired `SubOrder` tabs (OPEN → LOCKED) and closes expired `GroupOrderV2` (ACTIVE → CLOSED). Added 2026-04-23. |
+| `/api/cron/measure-recommendations` | `.../measure-recommendations/route.ts` | `0 8 * * *` | Daily 08:00 UTC — captures the 14-day after-snapshot for shipped `MarketingRecommendation` rows (revenue/orders/AOV/margin coverage), then re-mirrors the markdown to GitHub. Added 2026-05-03. |
 
 ## Route groups & layouts
 

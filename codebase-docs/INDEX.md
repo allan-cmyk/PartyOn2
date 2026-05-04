@@ -34,7 +34,7 @@ PartyOn2 is the Next.js 15 App Router codebase that powers [partyondelivery.com]
 | Hosting | Vercel (crons in `vercel.json`) |
 | Primary package | `party-on-delivery` v0.1.0 |
 | `page.tsx` files | **145** |
-| `route.ts` API files | **216** |
+| `route.ts` API files | **217** |
 | Prisma models | **77** |
 | Prisma enums | **43** |
 | Blog posts in `content/blog/posts/` | **133** |
