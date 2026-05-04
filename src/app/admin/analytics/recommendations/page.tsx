@@ -16,6 +16,15 @@ type Status = 'open' | 'approved' | 'shipped' | 'rejected' | 'invalidated';
 type RiskTier = 'autonomous' | 'recommend' | 'hard_stop';
 type EffortTier = 's' | 'm' | 'l';
 
+interface MetricSnapshot {
+  capturedAt: string;
+  snapshotDate: string;
+  revenue: number;
+  orders: number;
+  averageOrderValue: number;
+  marginCoveragePct: number | null;
+}
+
 interface Recommendation {
   id: string;
   generatedAt: string;
@@ -32,6 +41,8 @@ interface Recommendation {
   status: Status;
   shippedAt: string | null;
   notes: string | null;
+  resultMetricBefore: MetricSnapshot | null;
+  resultMetricAfter: MetricSnapshot | null;
 }
 
 const STATUS_TABS: { value: Status | 'all'; label: string }[] = [
@@ -269,6 +280,11 @@ export default function RecommendationsTriagePage(): ReactElement {
                       </div>
                     </div>
 
+                    {/* Measurement block — appears for shipped recs once before is captured */}
+                    {(rec.resultMetricBefore || rec.resultMetricAfter) && (
+                      <MeasurementBlock before={rec.resultMetricBefore} after={rec.resultMetricAfter} />
+                    )}
+
                     {/* Notes block */}
                     <div className="mt-4 pt-4 border-t border-gray-100">
                       {isEditingThisNotes ? (
@@ -344,6 +360,73 @@ function StatusBadge({ status }: { status: Status }): ReactElement {
     >
       {status}
     </span>
+  );
+}
+
+function MeasurementBlock({
+  before,
+  after,
+}: {
+  before: MetricSnapshot | null;
+  after: MetricSnapshot | null;
+}): ReactElement {
+  const fmtMoney = (n: number) => `$${n.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+  const fmtDelta = (b: number | null, a: number | null) => {
+    if (b == null || a == null || b === 0) return null;
+    const pct = ((a - b) / b) * 100;
+    const arrow = pct > 0 ? '↑' : pct < 0 ? '↓' : '—';
+    return { pct, label: `${arrow} ${Math.abs(pct).toFixed(0)}%` };
+  };
+
+  const revenueDelta = before && after ? fmtDelta(before.revenue, after.revenue) : null;
+  const ordersDelta = before && after ? fmtDelta(before.orders, after.orders) : null;
+  const aovDelta = before && after ? fmtDelta(before.averageOrderValue, after.averageOrderValue) : null;
+  const coverageDelta =
+    before && after && before.marginCoveragePct != null && after.marginCoveragePct != null
+      ? fmtDelta(before.marginCoveragePct, after.marginCoveragePct)
+      : null;
+
+  const toneClass = (d: { pct: number } | null) =>
+    d == null
+      ? 'text-gray-400'
+      : d.pct > 0
+      ? 'text-green-700'
+      : d.pct < 0
+      ? 'text-red-600'
+      : 'text-gray-600';
+
+  return (
+    <div className="mt-4 pt-4 border-t border-gray-100">
+      <div className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2">
+        Measurement {after ? '(14 days post-ship)' : '(awaiting 14-day capture)'}
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+        {[
+          { label: 'Revenue', before: before?.revenue, after: after?.revenue, delta: revenueDelta, fmt: fmtMoney },
+          { label: 'Orders', before: before?.orders, after: after?.orders, delta: ordersDelta, fmt: (n: number) => n.toString() },
+          { label: 'AOV', before: before?.averageOrderValue, after: after?.averageOrderValue, delta: aovDelta, fmt: fmtMoney },
+          {
+            label: 'Coverage',
+            before: before?.marginCoveragePct ?? null,
+            after: after?.marginCoveragePct ?? null,
+            delta: coverageDelta,
+            fmt: (n: number) => `${n}%`,
+          },
+        ].map((m) => (
+          <div key={m.label} className="bg-gray-50 rounded-lg p-3">
+            <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">{m.label}</div>
+            <div className="text-base font-semibold text-gray-900">
+              {m.before != null ? m.fmt(m.before) : '—'}
+              {' → '}
+              {m.after != null ? m.fmt(m.after) : <span className="text-gray-400">pending</span>}
+            </div>
+            {m.delta && (
+              <div className={`text-xs font-semibold mt-0.5 ${toneClass(m.delta)}`}>{m.delta.label}</div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 

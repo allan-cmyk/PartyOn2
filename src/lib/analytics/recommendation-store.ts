@@ -9,6 +9,7 @@
  */
 
 import { prisma } from '@/lib/database/client';
+import type { Prisma } from '@prisma/client';
 
 export type RecommendationSource = 'auto-snapshot' | 'director' | 'manual';
 export type RiskTier = 'autonomous' | 'recommend' | 'hard_stop';
@@ -104,12 +105,66 @@ export async function updateRecommendationStatus(
   status: RecommendationStatus,
   notes?: string
 ) {
-  return prisma.recommendationItem.update({
+  // Capture prior status so callers can decide whether to mirror / log a transition.
+  const prior = await prisma.recommendationItem.findUnique({
+    where: { id },
+    select: { status: true, resultMetricBefore: true },
+  });
+  const priorStatus = prior?.status ?? null;
+
+  // On status → shipped, capture a snapshot of the relevant metrics into resultMetricBefore.
+  // (No-op if already populated — preserves the original snapshot from the first ship.)
+  let resultMetricBeforeUpdate: Record<string, unknown> | undefined;
+  if (status === 'shipped' && !prior?.resultMetricBefore) {
+    try {
+      resultMetricBeforeUpdate = await captureMetricSnapshot();
+    } catch (err) {
+      console.warn('[recommendation-store] metric capture failed at ship time:', err);
+    }
+  }
+
+  const updated = await prisma.recommendationItem.update({
     where: { id },
     data: {
       status,
       ...(status === 'shipped' ? { shippedAt: new Date() } : {}),
       ...(notes ? { notes } : {}),
+      ...(resultMetricBeforeUpdate ? { resultMetricBefore: resultMetricBeforeUpdate as Prisma.InputJsonValue } : {}),
     },
   });
+
+  return { updated, priorStatus };
+}
+
+/**
+ * Capture a small JSON snapshot of the metrics we care about at ship time.
+ * Pulls from the latest AnalyticsSnapshot. Returns `null` if no snapshot exists yet.
+ */
+async function captureMetricSnapshot(): Promise<Record<string, unknown> | undefined> {
+  const snapshot = await prisma.analyticsSnapshot.findFirst({
+    orderBy: { date: 'desc' },
+    select: {
+      date: true,
+      revenue: true,
+      orders: true,
+      averageOrderValue: true,
+      marginData: true,
+      segmentData: true,
+    },
+  });
+  if (!snapshot) return undefined;
+
+  const marginData = (snapshot.marginData ?? {}) as { coveragePct?: number; affiliateRoi?: unknown[] };
+  const segmentData = (snapshot.segmentData ?? {}) as { segments?: unknown[] };
+
+  return {
+    capturedAt: new Date().toISOString(),
+    snapshotDate: snapshot.date.toISOString().slice(0, 10),
+    revenue: Number(snapshot.revenue ?? 0),
+    orders: snapshot.orders,
+    averageOrderValue: Number(snapshot.averageOrderValue ?? 0),
+    marginCoveragePct: marginData.coveragePct ?? null,
+    affiliateRoi: marginData.affiliateRoi ?? null,
+    segments: segmentData.segments ?? null,
+  };
 }
