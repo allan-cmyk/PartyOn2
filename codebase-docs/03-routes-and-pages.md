@@ -3,7 +3,7 @@ title: Routes and Pages
 project: PartyOn2
 doc_type: codebase-reference
 section: routes
-last_generated: 2026-04-23
+last_generated: 2026-05-03
 tags: [partyondelivery, codebase, routes, api, pages]
 ---
 
@@ -93,6 +93,7 @@ Every `page.tsx` and `route.ts` discovered under `src/app/`. Paths are literal f
 | `/order/last-minute` | `src/app/order/last-minute/page.tsx` | Curated last-minute products. | — | No | Added in recent commits. |
 | `/partners` | `src/app/partners/page.tsx` | Partner program overview. | — | No | |
 | `/partners/[slug]` | `src/app/partners/[slug]/page.tsx` | Generic partner landing. | `slug` | No | iframe-embeddable. |
+| `/partners/pitch` | `src/app/partners/pitch/page.tsx` | 5-slide horizontal pitch deck for partner program. Mobile vertical-scroll fallback. | — | No | One-off; CTA → Calendly. |
 | `/partners/anderson-mill-marina-boat-club` | ... | Named partner. | — | No | |
 | `/partners/boat-babes` | ... | Named partner. | — | No | |
 | `/partners/cocktail-cowboys` | ... | Named partner. | — | No | |
@@ -267,6 +268,7 @@ v1 `/api/group-orders/*` and v2 `/api/v2/group-orders/*` are **both live** — v
 | `/api/ops/email-preview` | `.../email-preview/route.ts` | GET | Render email template. | Ops |
 | `/api/ops/email-preview/send` | `.../email-preview/send/route.ts` | POST | Send test email. | Ops |
 | `/api/ops/email-template-content` | `.../email-template-content/route.ts` | GET/PATCH | Edit template content. | Ops |
+| `/api/ops/orders/[id]/picks` | `.../orders/[id]/picks/route.ts` | GET/PUT | Persistent pick/pack state for the `/ops/orders` picker UI. Per `(orderId, itemKey)` row in `OrderItemPickState`; replaces prior per-browser localStorage so multiple devices see the same checkbox + short-by state. Added `86f58c77`. | Ops |
 
 ### Admin API namespaces — `/api/admin/*` vs `/api/v1/admin/*`
 
@@ -365,6 +367,7 @@ These are **parallel namespaces, not a migration** — neither supersedes the ot
 | `/api/v1/inventory/receiving/[id]` | `.../[id]/route.ts` | Detail. |
 | `/api/v1/inventory/receiving/[id]/apply` | `.../apply/route.ts` | Commit stock. |
 | `/api/v1/inventory/receiving/[id]/lines/[lineId]` | `.../[lineId]/route.ts` | Line edit. |
+| `/api/v1/inventory/variants/[id]` | `.../inventory/variants/[id]/route.ts` | PATCH — inline edits from the `/ops/inventory` page. Resolves quantity/committed/available/costPerUnit; `quantity > available > committed` write priority. |
 
 ### AI inventory & agent
 

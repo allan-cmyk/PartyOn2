@@ -3,7 +3,7 @@ title: Tech Stack and Architecture
 project: PartyOn2
 doc_type: codebase-reference
 section: architecture
-last_generated: 2026-04-23
+last_generated: 2026-05-03
 tags: [partyondelivery, codebase, architecture, stack, env]
 ---
 
@@ -314,7 +314,7 @@ Grouped to match the section headers in `.env.example` at repo root. This list i
 | Script | What it does |
 |---|---|
 | `npm run dev` | Next.js dev server with Turbopack on port 3000. |
-| `npm run build` | `prisma generate` → hero-media scan → `next build`. |
+| `npm run build` | `prisma generate` → `scripts/scan-hero-media.js` → `scripts/scan-vacation-rental-hero.js` → `next build`. |
 | `npm run start` | Production Next.js server. |
 | `npm run lint` | Next.js ESLint wrapper. |
 | `npm run lint:tokens` | Custom design-token linter (`scripts/lint-design-tokens.js`). |

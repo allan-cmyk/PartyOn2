@@ -3,7 +3,7 @@ title: PartyOn2 Codebase Reference — Index
 project: PartyOn2
 doc_type: codebase-reference
 section: index
-last_generated: 2026-04-23
+last_generated: 2026-05-03
 tags: [partyondelivery, codebase, index, toc]
 ---
 
@@ -19,7 +19,7 @@ PartyOn2 is the Next.js 15 App Router codebase that powers [partyondelivery.com]
 | [[02-tech-stack-and-architecture]] | Exact versions, folder tree, App Router patterns, env vars, conventions. |
 | [[03-routes-and-pages]] | Exhaustive table of every page + every API route under `src/app/`. |
 | [[04-customer-journey]] | Discovery to post-purchase funnel with route-level references. |
-| [[05-data-model]] | Prisma schema — all 76 models + 43 enums, ER diagrams, relationships. |
+| [[05-data-model]] | Prisma schema — all 77 models + 43 enums, ER diagrams, relationships. |
 | [[06-admin-features]] | `/admin`, `/ops`, `/affiliate` panels, cron jobs, webhooks, integrations. |
 
 ## Quick facts
@@ -33,12 +33,12 @@ PartyOn2 is the Next.js 15 App Router codebase that powers [partyondelivery.com]
 | Database | Neon Postgres via `@prisma/client` 6.15.0 |
 | Hosting | Vercel (crons in `vercel.json`) |
 | Primary package | `party-on-delivery` v0.1.0 |
-| `page.tsx` files | **143** |
-| `route.ts` API files | **214** |
-| Prisma models | **76** |
+| `page.tsx` files | **145** |
+| `route.ts` API files | **216** |
+| Prisma models | **77** |
 | Prisma enums | **43** |
 | Blog posts in `content/blog/posts/` | **133** |
-| TS/TSX files in `src/` | **868** |
+| TS/TSX files in `src/` | **902** |
 | Approx. LOC in `src/` (TS + TSX) | **~167,379** |
 
 ## How to use this reference (for LLMs)
