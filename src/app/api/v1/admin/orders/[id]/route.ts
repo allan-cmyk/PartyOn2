@@ -9,6 +9,7 @@ import { prisma } from '@/lib/database/client';
 import { OrderStatus, FinancialStatus, FulfillmentStatus } from '@prisma/client';
 import { linkOrderToAffiliate, voidCommissionForOrder } from '@/lib/affiliates/commission-engine';
 import { fulfillInventoryForOrder } from '@/lib/inventory/services/order-service';
+import { getStripeCapturedAmount } from '@/lib/stripe/refund-utils';
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -341,6 +342,10 @@ export async function GET(
         refunds: {
           totalRefunded: order.refunds.reduce((sum, r) => sum + Number(r.amount), 0),
           count: order.refunds.length,
+          // Stripe-captured amount, not order.total — order.total gets rewritten by amendments.
+          stripeCapturedAmount: order.stripePaymentIntentId
+            ? await getStripeCapturedAmount(order.stripePaymentIntentId).catch(() => null)
+            : null,
         },
       },
     });

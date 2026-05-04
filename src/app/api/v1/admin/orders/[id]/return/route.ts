@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/database/client';
 import { stripe } from '@/lib/stripe/client';
+import { getMaxRefundable } from '@/lib/stripe/refund-utils';
 import { sendRefundProcessedEmail } from '@/lib/email/email-service';
 import { Prisma } from '@prisma/client';
 import { releaseCommittedInventory } from '@/lib/inventory/services/order-service';
@@ -200,12 +201,13 @@ export async function POST(
     // Round to avoid floating point issues
     totalRefundAmount = Math.round(totalRefundAmount * 100) / 100;
 
-    // Validate total doesn't exceed max refundable
+    // Cap is based on what Stripe actually captured, not order.total —
+    // order.total gets rewritten by OrderAmendment when items are added/removed.
     const totalPriorRefunds = order.refunds.reduce(
       (sum, r) => sum + Number(r.amount),
       0
     );
-    const maxRefundable = Math.round((Number(order.total) - totalPriorRefunds) * 100) / 100;
+    const maxRefundable = await getMaxRefundable(order.stripePaymentIntentId, totalPriorRefunds);
 
     if (totalRefundAmount > maxRefundable) {
       return NextResponse.json({
