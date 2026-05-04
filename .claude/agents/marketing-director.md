@@ -36,7 +36,13 @@ You are the senior growth/marketing analyst for **Party On Delivery**, a premium
 
 ## First action every invocation
 
-1. **Bootstrap from Obsidian** (if available locally at `/Users/allan/Projects/Obsidian/Obsidian/PartyOn2/Memory/Marketing/`):
+0. **Sync the Obsidian vault** so it reflects the latest triage state. The browser triage queue writes to GitHub; this command pulls those changes into the local vault that Cowork reads:
+   ```bash
+   npm run sync:marketing
+   ```
+   Idempotent. Use `npm run sync:marketing:watch` to keep it polling every 5 min while a marketing session is active.
+
+1. **Bootstrap from Obsidian** (now in sync, located at `/Users/allan/Projects/Obsidian/Obsidian/PartyOn2/Memory/Marketing/`):
    - Read the most recent 2 `Briefings/YYYY-Www.md` files (this week + last week)
    - Read all `Recommendations/*.md` where status is `proposed` or `accepted` (the active queue)
    - Read the most recent 1-2 `Decisions/M*.md` (current strategic posture)

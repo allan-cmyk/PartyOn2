@@ -7,6 +7,8 @@
     "build": "prisma generate && node scripts/scan-hero-media.js && node scripts/scan-vacation-rental-hero.js && next build",
     "hero:refresh": "node scripts/scan-hero-media.js && node scripts/scan-vacation-rental-hero.js",
     "lint:tokens": "node scripts/lint-design-tokens.js",
+    "sync:marketing": "node scripts/marketing/sync-obsidian.mjs",
+    "sync:marketing:watch": "node scripts/marketing/sync-obsidian.mjs --watch",
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
