@@ -765,7 +765,13 @@ export async function updateFulfillmentStatus(
 }
 
 /**
- * Create a refund for an order
+ * Create a refund for an order.
+ *
+ * The financialStatus decision compares against the Stripe-captured amount
+ * when available. order.total alone gets rewritten by OrderAmendment when
+ * items are removed, so a refund for the removed items would otherwise look
+ * like a "full" refund (totalRefunded >= currentOrderTotal) even though
+ * the customer still has a net-positive paid order.
  */
 export async function createRefund(
   orderId: string,
@@ -790,16 +796,24 @@ export async function createRefund(
     },
   });
 
-  // Update order financial status based on total refunds
+  // Update order financial status based on total refunds vs originally captured.
   const totalRefunds = await prisma.refund.aggregate({
     where: { orderId },
     _sum: { amount: true },
   });
-
   const totalRefunded = Number(totalRefunds._sum.amount || 0);
-  const orderTotal = Number(order.total);
 
-  if (totalRefunded >= orderTotal) {
+  let originallyCharged = Number(order.total);
+  if (order.stripePaymentIntentId) {
+    const { getStripeCapturedAmount } = await import('@/lib/stripe/refund-utils');
+    try {
+      originallyCharged = await getStripeCapturedAmount(order.stripePaymentIntentId);
+    } catch {
+      // Fall back to order.total — better partial-refunded label than a hard fail.
+    }
+  }
+
+  if (totalRefunded >= originallyCharged - 0.005) {
     await prisma.order.update({
       where: { id: orderId },
       data: { financialStatus: 'REFUNDED' },
