@@ -1118,6 +1118,7 @@ export default function OrdersPage(): ReactElement {
   const [groupOrderV2IdFilter, setGroupOrderV2IdFilter] = useState<string>(
     searchParams?.get('groupOrderV2Id') || ''
   );
+  const [reviewSentFilter, setReviewSentFilter] = useState<'' | 'sent' | 'unsent'>('');
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<string>('deliveryDate');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
@@ -1364,6 +1365,7 @@ export default function OrdersPage(): ReactElement {
       if (deliveryTypeFilter) params.set('deliveryType', deliveryTypeFilter);
       if (groupTypeFilter) params.set('groupType', groupTypeFilter);
       if (groupOrderV2IdFilter) params.set('groupOrderV2Id', groupOrderV2IdFilter);
+      if (reviewSentFilter) params.set('reviewSent', reviewSentFilter);
       params.set('page', page.toString());
       params.set('sortBy', sortBy);
       params.set('sortOrder', sortOrder);
@@ -1380,7 +1382,7 @@ export default function OrdersPage(): ReactElement {
     } finally {
       setLoading(false);
     }
-  }, [search, statusFilter, fulfillmentFilter, deliveryTypeFilter, groupTypeFilter, groupOrderV2IdFilter, page, sortBy, sortOrder]);
+  }, [search, statusFilter, fulfillmentFilter, deliveryTypeFilter, groupTypeFilter, groupOrderV2IdFilter, reviewSentFilter, page, sortBy, sortOrder]);
 
   useEffect(() => {
     const debounce = setTimeout(() => {
@@ -1706,6 +1708,18 @@ export default function OrdersPage(): ReactElement {
               Group Orders
             </FilterButton>
           </div>
+          <span className="text-sm text-gray-500 ml-4">Review:</span>
+          <div className="flex gap-2">
+            <FilterButton active={reviewSentFilter === ''} onClick={() => { setReviewSentFilter(''); setPage(1); }}>
+              All
+            </FilterButton>
+            <FilterButton active={reviewSentFilter === 'unsent'} onClick={() => { setReviewSentFilter('unsent'); setPage(1); }}>
+              Pending review
+            </FilterButton>
+            <FilterButton active={reviewSentFilter === 'sent'} onClick={() => { setReviewSentFilter('sent'); setPage(1); }}>
+              Review sent
+            </FilterButton>
+          </div>
           {groupOrderV2IdFilter && (
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-teal-50 border border-teal-200 rounded-full text-xs font-medium text-teal-700">
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1817,6 +1831,27 @@ export default function OrdersPage(): ReactElement {
             </svg>
             Print Pick Sheets
           </button>
+          {reviewSentFilter === 'unsent' && (
+            <button
+              onClick={() => {
+                const selected = (data?.orders || []).filter(o => selectedOrders.has(o.id));
+                if (selected.length === 0) return;
+                const checkable = new Set(
+                  selected
+                    .filter(o => (o.customerPhone || o.deliveryPhone) && !o.reviewRequestSentAt)
+                    .map(o => o.id)
+                );
+                setReviewChecked(checkable);
+                setReviewModalOrders(selected);
+              }}
+              className="px-4 py-2 bg-white border border-blue-200 text-blue-700 text-sm font-semibold rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+              </svg>
+              Send Review Requests
+            </button>
+          )}
           <button
             onClick={handleGenerateShortageList}
             className="px-4 py-2 bg-white border border-blue-200 text-blue-700 text-sm font-semibold rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-2"
