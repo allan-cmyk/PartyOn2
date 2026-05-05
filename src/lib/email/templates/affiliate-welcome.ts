@@ -8,7 +8,6 @@ export interface AffiliateWelcomeEmailData {
   businessName: string;
   code: string;
   referralLink: string;
-  directReferralLink: string;
   dashboardLink: string;
   personalNote?: string;
 }
@@ -60,12 +59,12 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
 
               ${personalNoteHtml}
 
-              <!-- Partner Page -->
+              <!-- Referral Link -->
               <div style="background-color: #f9fafb; border-radius: 8px; padding: 20px; margin-bottom: 24px; text-align: center;">
                 <h3 style="margin: 0 0 12px; color: #1a1a1a; font-size: 18px;">
-                  Your Partner Page
+                  Your Referral Link
                 </h3>
-                <div style="background-color: #1a1a1a; color: #D4AF37; font-family: 'Courier New', Courier, monospace; font-size: 18px; font-weight: 700; padding: 16px 24px; border-radius: 8px; display: inline-block; margin-bottom: 16px;">
+                <div style="background-color: #1a1a1a; color: #D4AF37; font-family: 'Courier New', Courier, monospace; font-size: 16px; font-weight: 700; padding: 16px 24px; border-radius: 8px; display: inline-block; margin-bottom: 16px;">
                   <a href="${data.referralLink}" style="color: #D4AF37; text-decoration: none;">${data.referralLink}</a>
                 </div>
                 <div style="border: 3px solid #D4AF37; border-radius: 8px; padding: 16px 24px; margin-bottom: 16px; text-align: center;">
@@ -75,39 +74,15 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
                 <table cellpadding="0" cellspacing="0" border="0" width="100%" style="text-align: left;">
                   <tr>
                     <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6; vertical-align: top; width: 24px;">&#8226;</td>
-                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">A branded landing page for your business</td>
+                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">Share this link anywhere -- social media, text messages, your website, booking confirmations, email signatures</td>
                   </tr>
                   <tr>
                     <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6; vertical-align: top;">&#8226;</td>
-                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">Anyone can open this link -- great for social media, text messages, or sharing directly</td>
+                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">When someone clicks, they are <strong>automatically tagged</strong> as your referral for 30 days -- no code needed</td>
                   </tr>
                   <tr>
                     <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6; vertical-align: top;">&#8226;</td>
-                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">Customers enter this code at checkout to get their discount</td>
-                  </tr>
-                </table>
-              </div>
-
-              <!-- Website Referral Link -->
-              <div style="background-color: #f9fafb; border-radius: 8px; padding: 20px; margin-bottom: 24px; text-align: center;">
-                <h3 style="margin: 0 0 12px; color: #1a1a1a; font-size: 18px;">
-                  Your Website Referral Link
-                </h3>
-                <div style="background-color: #1a1a1a; color: #D4AF37; font-family: 'Courier New', Courier, monospace; font-size: 16px; font-weight: 700; padding: 16px 24px; border-radius: 8px; display: inline-block; margin-bottom: 12px;">
-                  <a href="${data.directReferralLink}" style="color: #D4AF37; text-decoration: none;">${data.directReferralLink}</a>
-                </div>
-                <table cellpadding="0" cellspacing="0" border="0" width="100%" style="text-align: left;">
-                  <tr>
-                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6; vertical-align: top; width: 24px;">&#8226;</td>
-                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">Embed this on your website, booking confirmations, or email signatures</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6; vertical-align: top;">&#8226;</td>
-                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">When someone clicks this link, they are <strong>automatically tagged</strong> as your referral for 30 days -- no code needed</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6; vertical-align: top;">&#8226;</td>
-                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">The customer sees the same partner page -- the tracking happens behind the scenes</td>
+                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">If a customer reaches the site some other way, they can enter your code at checkout to get the same discount</td>
                   </tr>
                 </table>
               </div>
@@ -119,7 +94,7 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
               <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 24px;">
                 <tr>
                   <td style="padding: 6px 0; color: #4b5563; font-size: 15px; line-height: 1.6; vertical-align: top; width: 24px;">&#8226;</td>
-                  <td style="padding: 6px 0; color: #4b5563; font-size: 15px; line-height: 1.6;">Your customers get <strong>free delivery</strong> when they order through your partner page</td>
+                  <td style="padding: 6px 0; color: #4b5563; font-size: 15px; line-height: 1.6;">Your customers get <strong>free delivery</strong> when they order through your referral link</td>
                 </tr>
                 <tr>
                   <td style="padding: 6px 0; color: #4b5563; font-size: 15px; line-height: 1.6; vertical-align: top;">&#8226;</td>
@@ -201,7 +176,7 @@ export function generateAffiliateWelcomeEmail(data: AffiliateWelcomeEmailData): 
                   </tr>
                   <tr>
                     <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6; vertical-align: top;">&#8226;</td>
-                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">Share your partner page on social media and in your bio</td>
+                    <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6;">Share your referral link on social media and in your bio</td>
                   </tr>
                   <tr>
                     <td style="padding: 4px 0; color: #4b5563; font-size: 14px; line-height: 1.6; vertical-align: top;">&#8226;</td>
@@ -248,20 +223,15 @@ export function generateAffiliateWelcomeText(data: AffiliateWelcomeEmailData): s
   }
 
   lines.push(
-    'YOUR PARTNER PAGE',
+    'YOUR REFERRAL LINK',
     data.referralLink,
-    `- A branded landing page for your business`,
-    '- Anyone can open this link -- great for social media, text messages, or sharing directly',
-    `- Customers enter your referral code ${data.code} at checkout to get their discount`,
-    '',
-    'YOUR WEBSITE REFERRAL LINK',
-    data.directReferralLink,
-    '- Embed this on your website, booking confirmations, or email signatures',
-    '- When someone clicks this link, they are automatically tagged as your referral for 30 days -- no code needed',
-    '- The customer sees the same partner page -- the tracking happens behind the scenes',
+    `Referral code: ${data.code}`,
+    '- Share this link anywhere -- social media, text messages, your website, booking confirmations, email signatures',
+    '- When someone clicks, they are automatically tagged as your referral for 30 days -- no code needed',
+    '- If a customer reaches the site some other way, they can enter your code at checkout to get the same discount',
     '',
     'HOW IT WORKS',
-    '- Your customers get free delivery when they order through your partner page',
+    '- Your customers get free delivery when they order through your referral link',
     '- You earn a commission on every order placed through your referral',
     '- The more revenue you refer, the higher your commission rate grows',
     '',
@@ -278,7 +248,7 @@ export function generateAffiliateWelcomeText(data: AffiliateWelcomeEmailData): s
     '',
     'MARKETING TIPS',
     '- Add your referral link to your website and booking confirmations',
-    '- Share your partner page on social media and in your bio',
+    '- Share your referral link on social media and in your bio',
     '- Mention the free delivery perk -- it\'s a great selling point',
     '',
     'Questions? Contact us at info@partyondelivery.com',

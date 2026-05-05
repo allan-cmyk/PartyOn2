@@ -3,13 +3,13 @@ title: Data Model
 project: PartyOn2
 doc_type: codebase-reference
 section: data-model
-last_generated: 2026-04-23
+last_generated: 2026-05-03
 tags: [partyondelivery, codebase, prisma, data-model, schema]
 ---
 
 # Data Model
 
-Source of truth: `prisma/schema.prisma`. Datasource is PostgreSQL (`POSTGRES_URL`, `POSTGRES_URL_NON_POOLING`). 76 models, 43 enums. Migrations live under `prisma/migrations/` (managed by Prisma CLI via `npm run db:migrate` / `db:push`).
+Source of truth: `prisma/schema.prisma`. Datasource is PostgreSQL (`POSTGRES_URL`, `POSTGRES_URL_NON_POOLING`). 77 models, 43 enums. Migrations live under `prisma/migrations/` (managed by Prisma CLI via `npm run db:migrate` / `db:push`).
 
 > _`DeliveryZone` and `TaxRate` were removed 2026-04-23. Runtime uses hardcoded TS tables in `src/lib/delivery/rates.ts` and `src/lib/tax/rates.ts`. Postgres tables `delivery_zones` and `tax_rates` remain — drop in future migration._
 >
@@ -26,29 +26,30 @@ Source of truth: `prisma/schema.prisma`. Datasource is PostgreSQL (`POSTGRES_URL
 | 66 | Experiment | 865 | Fulfillment | 1768 | GroupParticipantV2 |
 | 95 | ExperimentVariant | 893 | Refund | 1793 | DraftCartItem |
 | 116 | GroupOrderItem | 948 | OrderAmendment | 1819 | PurchasedItem |
-| 136 | GroupOrder | 1002 | AIInventoryCount | 1846 | ParticipantPayment |
-| 173 | GroupParticipant | 1029 | AIInventoryQuery | 1878 | EmailTemplateContent |
-| 203 | OrderAnalytics | 1043 | InventoryPrediction | 1893 | InventoryNote |
-| 253 | GroupOrderPayment | 1076 | FeatureFlag | 1911 | ReceivingInvoice |
-| 288 | Product | 1091 | ShopifySync | 1932 | ReceivingInvoiceLine |
-| 342 | ProductVariant | 1126 | DeliveryTask | 1953 | DistributorSkuMap |
-| 396 | ProductImage | 1165 | EmailLog | 1971 | GroupDeliveryInvoice |
-| 417 | Category | 1241 | Discount | 1993 | WebhookEvent |
-| 440 | ProductCategory | 1295 | DiscountUsage | 2045 | PartnerApplication |
-| 452 | BundleComponent | 1311 | ReferralCode | 2070 | Affiliate |
-| 479 | InventoryLocation | 1329 | AutomaticDiscount | 2111 | DashboardTemplate |
-| 495 | InventoryItem | 1378 | LoyaltyTier | 2137 | AffiliateWebhookLog |
-| 527 | InventoryMovement | 1397 | CustomerLoyalty | 2156 | DashboardView |
-| 556 | LowStockAlert | 1417 | PointsTransaction | 2167 | AffiliateCommission |
-| 597 | Customer | 1446 | VercelAnalyticsEvent | 2196 | AffiliatePayout |
-| 645 | CustomerAddress | 1503 | DrinkCalculatorLead | 2217 | PayoutLineItem |
-| 676 | Cart | 1526 | DraftOrder | 2230 | MagicLinkToken |
-| 722 | CartItem | | | 2249 | AgentConversation |
+| 136 | GroupOrder | 972 | OrderItemPickState | 1846 | ParticipantPayment |
+| 173 | GroupParticipant | 1002 | AIInventoryCount | 1878 | EmailTemplateContent |
+| 203 | OrderAnalytics | 1029 | AIInventoryQuery | 1893 | InventoryNote |
+| 253 | GroupOrderPayment | 1043 | InventoryPrediction | 1911 | ReceivingInvoice |
+| 288 | Product | 1076 | FeatureFlag | 1932 | ReceivingInvoiceLine |
+| 342 | ProductVariant | 1091 | ShopifySync | 1953 | DistributorSkuMap |
+| 396 | ProductImage | 1126 | DeliveryTask | 1971 | GroupDeliveryInvoice |
+| 417 | Category | 1165 | EmailLog | 1993 | WebhookEvent |
+| 440 | ProductCategory | 1241 | Discount | 2045 | PartnerApplication |
+| 452 | BundleComponent | 1295 | DiscountUsage | 2070 | Affiliate |
+| 479 | InventoryLocation | 1311 | ReferralCode | 2111 | DashboardTemplate |
+| 495 | InventoryItem | 1329 | AutomaticDiscount | 2137 | AffiliateWebhookLog |
+| 527 | InventoryMovement | 1378 | LoyaltyTier | 2156 | DashboardView |
+| 556 | LowStockAlert | 1397 | CustomerLoyalty | 2167 | AffiliateCommission |
+| 597 | Customer | 1417 | PointsTransaction | 2196 | AffiliatePayout |
+| 645 | CustomerAddress | 1446 | VercelAnalyticsEvent | 2217 | PayoutLineItem |
+| 676 | Cart | 1503 | DrinkCalculatorLead | 2230 | MagicLinkToken |
+| 722 | CartItem | 1526 | DraftOrder | 2249 | AgentConversation |
 | | | | | 2273 | AgentProposal |
 | | | | | 2291 | McpRequestLog |
 | | | | | 2313 | BoatSchedule |
 | | | | | 2351 | ScheduleOrderMatch |
 | | | | | 2371 | SyncLog |
+
 
 ## Enums (all 43)
 
@@ -136,6 +137,7 @@ erDiagram
   Order ||--o{ OrderAmendment : amended_by
   Order ||--o| DeliveryTask : dispatched_as
   Order ||--o{ ScheduleOrderMatch : boat_matched
+  Order ||--o{ OrderItemPickState : pick_state
   DraftOrder ||--o{ DraftCartItem : items
   Affiliate ||--o{ Order : attributed
   %% DeliveryZone and TaxRate removed 2026-04-23 — runtime uses hardcoded TS tables.
@@ -232,6 +234,11 @@ erDiagram
 
 ### DeliveryTask (1126)
 - Per-order dispatch row with `DeliveryTaskStatus`. Picker/driver assignment.
+
+### OrderItemPickState (972)
+- Persistent pick/pack state for the `/ops/orders` picker UI. One row per `(orderId, itemKey)` capturing `inStock`, `packed`, `shortBy`. `itemKey` is the item title for line items, or `${itemTitle}::${bundleComponentTitle}` for bundle components.
+- Replaces prior per-browser localStorage so multiple devices/pickers share the same checkbox + short-by state on a given order. Added 2026-05-03 (commit `86f58c77`).
+- Read/written by `/api/ops/orders/[id]/picks` (GET/PUT). Deleted by cascade when the parent `Order` is deleted.
 
 ### DraftOrder (1526), DraftCartItem (1793)
 - Admin-created invoices. Token-based customer view at `/invoice/[token]`. `DraftOrderStatus` enum.

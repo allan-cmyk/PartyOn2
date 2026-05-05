@@ -70,6 +70,7 @@ export interface SubOrderFull {
   partyType: PartyType | null;
   deliveryContextType: DeliveryContextType;
   deliveryDate: string;
+  deliveryDateConfirmed: boolean;
   deliveryTime: string;
   deliveryAddress: DeliveryAddressV2;
   deliveryPhone: string | null;
@@ -173,6 +174,7 @@ export interface UpdateTabInput {
   partyType?: PartyType;
   status?: 'OPEN' | 'LOCKED';
   deliveryDate?: string;
+  deliveryDateConfirmed?: boolean;
   deliveryTime?: string;
   deliveryAddress?: DeliveryAddressV2;
   deliveryPhone?: string;

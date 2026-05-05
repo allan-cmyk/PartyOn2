@@ -21,8 +21,7 @@ export async function POST(request: NextRequest) {
 
     const previewCode = code || 'YOURCODE';
     const slug = partnerSlug || previewCode.toLowerCase();
-    const referralLink = `${BASE_URL}/partners/${slug}`;
-    const directReferralLink = `${BASE_URL}/partners/${slug}?ref=${previewCode}`;
+    const referralLink = `${BASE_URL}/partners/${slug}?ref=${previewCode}`;
     const dashboardLink = `${BASE_URL}/affiliate/login`;
 
     const html = generateAffiliateWelcomeEmail({
@@ -30,7 +29,6 @@ export async function POST(request: NextRequest) {
       businessName,
       code: previewCode,
       referralLink,
-      directReferralLink,
       dashboardLink,
       personalNote: personalNote || undefined,
     });

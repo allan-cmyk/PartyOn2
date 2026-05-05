@@ -7,10 +7,11 @@
  */
 
 import { resend } from '@/lib/email/resend-client';
-
-const REPO_OWNER = process.env.GITHUB_REPO_OWNER ?? 'allan-cmyk';
-const REPO_NAME = process.env.GITHUB_REPO_NAME ?? 'PartyOn2';
-const REPO_BRANCH = process.env.GITHUB_REPO_BRANCH ?? 'main';
+import {
+  renderBriefingEmail,
+  type BriefingEmailData,
+} from '@/lib/email/templates/marketing-briefing';
+import { putFileToRepo } from '@/lib/github/put-file';
 
 export interface DeliveryResult {
   email: { sent: boolean; error?: string };
@@ -22,6 +23,8 @@ interface BriefingPayload {
   stageA: string;               // deterministic markdown
   stageB: string | null;        // LLM narrative (null if not generated)
   to: string;                   // recipient email
+  /** Structured payload for the chart-driven email render. If absent, falls back to plain markdown <pre> render. */
+  emailData?: BriefingEmailData;
 }
 
 export async function deliverBriefing(payload: BriefingPayload): Promise<DeliveryResult> {
@@ -44,7 +47,7 @@ async function sendEmail(p: BriefingPayload): Promise<{ sent: boolean; error?: s
   }
 
   const subject = `Marketing weekly briefing — ${p.weekLabel}`;
-  const html = renderHtml(p);
+  const html = p.emailData ? renderBriefingEmail(p.emailData) : renderHtml(p);
   const text = renderText(p);
   const fromName = 'Party On Delivery — Marketing Director';
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'orders@partyondelivery.com';
@@ -92,78 +95,26 @@ function escapeHtml(s: string): string {
 /* -------------------- Commit to GitHub repo -------------------- */
 
 async function commitToRepo(p: BriefingPayload): Promise<DeliveryResult['commit']> {
-  const token = process.env.GITHUB_REPO_TOKEN;
-  if (!token) {
-    return { committed: false, error: 'GITHUB_REPO_TOKEN not configured' };
-  }
-
-  // Commit Stage A and (if present) Stage B as two separate files in one commit attempt each.
-  // We use the simple "create or update file" endpoint — fine for low volume.
-  const stageARes = await putFile(token, `docs/marketing/weekly/${p.weekLabel}.md`, p.stageA, `chore(marketing): weekly briefing ${p.weekLabel}`);
-  let stageBSha: string | undefined;
-  let stageBHtmlUrl: string | undefined;
-
-  if (p.stageB) {
-    const stageBRes = await putFile(
-      token,
-      `docs/marketing/weekly/${p.weekLabel}-director.md`,
-      p.stageB,
-      `chore(marketing): weekly briefing narrative ${p.weekLabel}`
-    );
-    if (stageBRes.error) {
-      // Stage A succeeded but Stage B failed — surface the error but consider commit "done"
-      return { committed: true, sha: stageARes.sha, url: stageARes.htmlUrl, error: `stageB: ${stageBRes.error}` };
-    }
-    stageBSha = stageBRes.sha;
-    stageBHtmlUrl = stageBRes.htmlUrl;
-  }
-
-  if (stageARes.error) {
-    return { committed: false, error: stageARes.error };
-  }
-
-  return { committed: true, sha: stageBSha ?? stageARes.sha, url: stageBHtmlUrl ?? stageARes.htmlUrl };
-}
-
-interface PutFileResult {
-  sha?: string;
-  htmlUrl?: string;
-  error?: string;
-}
-
-async function putFile(token: string, path: string, content: string, message: string): Promise<PutFileResult> {
-  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    Accept: 'application/vnd.github+json',
-    'X-GitHub-Api-Version': '2022-11-28',
-  };
-
-  // GET to learn the existing SHA (so the PUT can update rather than reject as a duplicate path).
-  let existingSha: string | undefined;
-  const getRes = await fetch(`${url}?ref=${REPO_BRANCH}`, { headers });
-  if (getRes.ok) {
-    const body = (await getRes.json()) as { sha?: string };
-    existingSha = body.sha;
-  }
-  // 404 here is fine — file doesn't exist yet, we'll create.
-
-  const putRes = await fetch(url, {
-    method: 'PUT',
-    headers: { ...headers, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      message,
-      content: Buffer.from(content, 'utf-8').toString('base64'),
-      branch: REPO_BRANCH,
-      ...(existingSha ? { sha: existingSha } : {}),
-    }),
+  const stageARes = await putFileToRepo({
+    path: `docs/marketing/weekly/${p.weekLabel}.md`,
+    content: p.stageA,
+    message: `chore(marketing): weekly briefing ${p.weekLabel}`,
   });
 
-  if (!putRes.ok) {
-    const body = await putRes.text();
-    return { error: `GitHub PUT ${putRes.status}: ${body.slice(0, 300)}` };
+  if (p.stageB) {
+    const stageBRes = await putFileToRepo({
+      path: `docs/marketing/weekly/${p.weekLabel}-director.md`,
+      content: p.stageB,
+      message: `chore(marketing): weekly briefing narrative ${p.weekLabel}`,
+    });
+    if (stageBRes.error && stageARes.committed) {
+      return { committed: true, sha: stageARes.sha, url: stageARes.htmlUrl, error: `stageB: ${stageBRes.error}` };
+    }
+    if (stageBRes.committed) {
+      return { committed: true, sha: stageBRes.sha, url: stageBRes.htmlUrl };
+    }
   }
 
-  const body = (await putRes.json()) as { content?: { sha?: string; html_url?: string } };
-  return { sha: body.content?.sha, htmlUrl: body.content?.html_url };
+  if (!stageARes.committed) return { committed: false, error: stageARes.error };
+  return { committed: true, sha: stageARes.sha, url: stageARes.htmlUrl };
 }

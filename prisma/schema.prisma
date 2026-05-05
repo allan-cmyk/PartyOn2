@@ -1828,6 +1828,7 @@ model SubOrder {
   name           String
   position       Int            @default(0)
   deliveryDate   DateTime       @map("delivery_date")
+  deliveryDateConfirmed Boolean @default(false) @map("delivery_date_confirmed")
   deliveryTime   String         @map("delivery_time")
   deliveryAddress Json          @map("delivery_address")
   deliveryPhone  String?        @map("delivery_phone")

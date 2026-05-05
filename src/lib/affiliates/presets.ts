@@ -25,11 +25,27 @@ export interface AffiliatePresetConfig {
 
 const PREMIER_ADDRESS = '13993 FM 2769, Leander TX 78641';
 
-export const PREMIER_MARINA_ADDRESS = {
+export interface AffiliateAddress {
+  address1: string;
+  city: string;
+  province: string;
+  zip: string;
+  country: string;
+}
+
+export const PREMIER_MARINA_ADDRESS: AffiliateAddress = {
   address1: '13993 Farm to Market Rd 2769',
   city: 'Leander',
   province: 'TX',
   zip: '78641',
+  country: 'US',
+};
+
+export const INN_CAHOOTS_ADDRESS: AffiliateAddress = {
+  address1: '1221 E 6th St',
+  city: 'Austin',
+  province: 'TX',
+  zip: '78702',
   country: 'US',
 };
 
@@ -81,7 +97,40 @@ export function getAffiliatePresets(affiliateCode: string): AffiliatePresetConfi
   return PRESET_REGISTRY[affiliateCode] || null;
 }
 
-export function getAffiliateDefaultAddress(affiliateCode: string): typeof PREMIER_MARINA_ADDRESS | null {
-  if (affiliateCode === 'PREMIER') return PREMIER_MARINA_ADDRESS;
-  return null;
+export interface AffiliateOrderDefaults {
+  address: AffiliateAddress;
+  tabName: string;
+  deliveryContextType?: 'HOUSE' | 'BOAT' | 'VENUE' | 'HOTEL' | 'OTHER';
+  /** When true, /order tells the dashboard onboarding to skip the party-type step */
+  skipPartyType?: boolean;
+}
+
+const AFFILIATE_ORDER_DEFAULTS: Record<string, AffiliateOrderDefaults> = {
+  PREMIER: {
+    address: PREMIER_MARINA_ADDRESS,
+    tabName: 'Marina Delivery',
+    deliveryContextType: 'BOAT',
+  },
+  MISCHIEF: {
+    address: INN_CAHOOTS_ADDRESS,
+    tabName: 'Inn Cahoots Delivery',
+    deliveryContextType: 'HOTEL',
+    skipPartyType: true,
+  },
+};
+
+function normalizeAffiliateCode(code: string): string {
+  return code.toUpperCase().replace(/-/g, '');
+}
+
+export function getAffiliateOrderDefaults(affiliateCode: string): AffiliateOrderDefaults | null {
+  return AFFILIATE_ORDER_DEFAULTS[normalizeAffiliateCode(affiliateCode)] || null;
+}
+
+export function getAffiliateDefaultAddress(affiliateCode: string): AffiliateAddress | null {
+  return getAffiliateOrderDefaults(affiliateCode)?.address || null;
+}
+
+export function getAffiliateDefaultTabName(affiliateCode: string): string | null {
+  return getAffiliateOrderDefaults(affiliateCode)?.tabName || null;
 }

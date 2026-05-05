@@ -18,17 +18,15 @@ export default function AffiliateDashboardHeader({
   onLogout,
   adminMode,
 }: AffiliateDashboardHeaderProps): ReactElement {
-  const [copied, setCopied] = useState<'partner' | 'referral' | false>(false);
+  const [copied, setCopied] = useState(false);
 
   const origin = typeof window !== 'undefined' ? window.location.origin : 'https://partyondelivery.com';
   const slug = partnerSlug ?? code.toLowerCase();
-  const partnerPageLink = `${origin}/partners/${slug}`;
   const referralLink = `${origin}/partners/${slug}?ref=${code}`;
 
-  const handleCopy = (type: 'partner' | 'referral') => {
-    const link = type === 'partner' ? partnerPageLink : referralLink;
-    navigator.clipboard.writeText(link);
-    setCopied(type);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(referralLink);
+    setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -57,26 +55,16 @@ export default function AffiliateDashboardHeader({
           </div>
         </div>
 
-        {/* Links row */}
-        <div className="flex flex-col md:flex-row gap-3 mb-4">
-          <div className="flex items-center gap-2 bg-[#2a2a2a] rounded-lg px-3 py-2 min-w-0">
-            <span className="text-xs text-gray-400 shrink-0">Partner Page</span>
-            <button
-              onClick={() => handleCopy('partner')}
-              className="text-xs px-2.5 py-1 bg-[#D4AF37] text-[#1a1a1a] rounded font-medium hover:bg-[#c9a430] transition-colors shrink-0"
-            >
-              {copied === 'partner' ? 'Copied!' : 'Copy Link'}
-            </button>
-          </div>
-          <div className="flex items-center gap-2 bg-[#2a2a2a] rounded-lg px-3 py-2 min-w-0">
-            <span className="text-xs text-gray-400 shrink-0">Referral Link</span>
-            <button
-              onClick={() => handleCopy('referral')}
-              className="text-xs px-2.5 py-1 bg-[#D4AF37] text-[#1a1a1a] rounded font-medium hover:bg-[#c9a430] transition-colors shrink-0"
-            >
-              {copied === 'referral' ? 'Copied!' : 'Copy Link'}
-            </button>
-          </div>
+        {/* Referral link */}
+        <div className="flex items-center gap-2 bg-[#2a2a2a] rounded-lg px-3 py-2 mb-4 min-w-0">
+          <span className="text-xs text-gray-400 shrink-0">Your Referral Link</span>
+          <span className="text-xs text-gray-200 truncate flex-1 min-w-0">{referralLink}</span>
+          <button
+            onClick={handleCopy}
+            className="text-xs px-2.5 py-1 bg-[#D4AF37] text-[#1a1a1a] rounded font-medium hover:bg-[#c9a430] transition-colors shrink-0"
+          >
+            {copied ? 'Copied!' : 'Copy Link'}
+          </button>
         </div>
 
         {/* Create Order CTA */}
