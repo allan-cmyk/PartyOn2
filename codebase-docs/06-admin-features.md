@@ -3,7 +3,7 @@ title: Admin Features
 project: PartyOn2
 doc_type: codebase-reference
 section: admin
-last_generated: 2026-04-23
+last_generated: 2026-05-03
 tags: [partyondelivery, codebase, admin, ops, affiliate, cron, webhooks]
 ---
 
@@ -40,6 +40,7 @@ Three admin surfaces live in the app: `/admin/*` (business operator), `/ops/*` (
 | `/admin/affiliates/commissions` | `.../commissions/page.tsx` | Commission ledger. |
 | `/admin/affiliates/payouts` | `.../payouts/page.tsx` | Payouts. |
 | `/admin/affiliates/embed-generator` | `.../embed-generator/page.tsx` | Embed snippet builder. |
+| `/admin/analytics/recommendations` | `.../analytics/recommendations/page.tsx` | Marketing recommendation triage queue. Reads `MarketingRecommendation` rows surfaced by the snapshot cron + Marketing Director agent; operator moves items through `open → approved → shipped` (or `rejected` / `invalidated`). |
 
 ### `/ops/*` — warehouse / fulfilment
 
@@ -94,7 +95,7 @@ Three admin surfaces live in the app: `/admin/*` (business operator), `/ops/*` (
 
 These are **parallel namespaces, not a migration** — neither supersedes the other.
 
-- **`/api/admin/*`** is admin-UI-facing and is guarded by `ADMIN_API_KEY` / admin session. Covers: `affiliates`, `analytics`, `experiments`, `orders`, `sync`, `verify`.
+- **`/api/admin/*`** is admin-UI-facing and is guarded by `ADMIN_API_KEY` / admin session. Covers: `affiliates`, `analytics` (sub-routes: `ga4`, `gbp`, `vercel`, `internal`, `experiments`, `recommendations`), `experiments`, `orders`, `sync`, `verify`.
 - **`/api/v1/admin/*`** is ops-panel-facing. Covers: `collections`, `customers`, `dashboard`, `discounts`, `draft-orders`, `features`, `orders`, `products`, `reports`, `shortage-list`, `sync`, `unpaid-carts`. (Loyalty admin page and APIs were removed 2026-04-23.)
 - Overlap is only `orders` and `sync`; each namespace's `orders` / `sync` endpoints serve a different consumer. Do not treat either as deprecated.
 
