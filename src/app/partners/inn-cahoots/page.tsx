@@ -8,6 +8,7 @@ import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
 import JoinOrderModal from '@/components/partners/JoinOrderModal';
 import InnCahootsHero from '@/components/partners/InnCahootsHero';
+import LazyVideo from '@/components/partners/LazyVideo';
 
 const TESTIMONIALS = [
   {
@@ -174,15 +175,10 @@ function InnCahootsPageContent(): ReactElement {
             {/* Trust Video - Takes 3 columns on desktop */}
             <div className="lg:col-span-3 flex justify-center">
               <div className="w-full max-w-[400px] rounded-xl overflow-hidden shadow-2xl bg-gray-900 aspect-[9/16]">
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
+                <LazyVideo
+                  src="/videos/inn-cahoots-reel.mp4"
                   className="w-full h-full object-cover"
-                >
-                  <source src="/videos/inn-cahoots-reel.mp4" type="video/mp4" />
-                </video>
+                />
               </div>
             </div>
 
@@ -261,15 +257,10 @@ function InnCahootsPageContent(): ReactElement {
             {/* LEFT: Video */}
             <div className="flex justify-center">
               <div className="relative w-48 md:w-56 rounded-2xl overflow-hidden bg-gray-800 shadow-2xl aspect-[9/16]">
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
+                <LazyVideo
+                  src="/videos/trust-section.mp4"
                   className="absolute inset-0 w-full h-full object-cover"
-                >
-                  <source src="/videos/trust-section.mp4" type="video/mp4" />
-                </video>
+                />
               </div>
             </div>
 

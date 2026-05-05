@@ -1,5 +1,5 @@
 /**
- * @fileoverview Inn Cahoots hero - split two-column layout
+ * @fileoverview Inn Cahoots hero - cocktail mosaic background with logo watermark
  * @module components/partners/InnCahootsHero
  */
 
@@ -9,24 +9,19 @@ import { type ReactElement } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-/**
- * Inn Cahoots hero section - split layout
- * Left: headline, CTA, phone
- * Right: partner logos, hero image, trust signals
- */
 export default function InnCahootsHero(): ReactElement {
   return (
     <section
       className="relative overflow-hidden"
       style={{
-        backgroundImage: `url('/images/partners/hotel-partner.webp')`,
+        backgroundImage: `url('/images/partners/inncahoots-hero.webp')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
       }}
     >
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-900/70 to-gray-900/50" />
+      {/* Dark gradient overlay for legibility */}
+      <div className="absolute inset-0 bg-gradient-to-r from-gray-900/85 via-gray-900/70 to-gray-900/55" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pt-24 md:pt-28 pb-16 md:pb-20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 items-center">
@@ -59,22 +54,30 @@ export default function InnCahootsHero(): ReactElement {
             </p>
           </div>
 
-          {/* Right Column: Logos + Image + Trust */}
+          {/* Right Column: Cocktail mosaic + partnership badge + trust */}
           <div className="order-2 flex flex-col gap-5">
-            {/* Partner Logos Row */}
-            <div className="flex items-center justify-center gap-3">
+            {/* Cocktail mosaic */}
+            <div className="relative w-full aspect-square rounded-xl overflow-hidden shadow-lg border border-white/10">
+              <Image
+                src="/images/partners/inn-cahoots-cocktail-mosaic.webp"
+                alt="Cocktails delivered to Inn Cahoots"
+                fill
+                className="object-cover"
+                priority
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+            </div>
+
+            {/* Partnership Badge -- proper aspect ratio for the wordmark */}
+            <div className="flex items-center justify-center gap-4 flex-wrap">
               <Image
                 src="/images/partners/inncahoots-logo.png"
                 alt="Inn Cahoots"
-                width={44}
-                height={44}
-                className="h-9 md:h-11 w-auto object-contain rounded-full"
+                width={1389}
+                height={285}
+                className="h-7 md:h-8 w-auto object-contain"
               />
-              <span className="text-xs md:text-sm text-white/70 tracking-wide whitespace-nowrap">
-                Inn Cahoots{' '}
-                <span className="text-white/40">&times;</span>{' '}
-                Party On Delivery
-              </span>
+              <span className="text-white/40 text-lg">&times;</span>
               <Image
                 src="/images/pod-logo-2025.svg"
                 alt="Party On Delivery"
@@ -84,20 +87,8 @@ export default function InnCahootsHero(): ReactElement {
               />
             </div>
 
-            {/* Hero Image */}
-            <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden shadow-lg border border-white/10">
-              <Image
-                src="/images/partners/inncahoots-hero.webp"
-                alt="Inn Cahoots boutique hotel on East 6th Street Austin"
-                fill
-                className="object-cover"
-                priority
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-            </div>
-
             {/* Trust Signals Row */}
-            <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-white/60">
+            <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-white/70">
               <span className="flex items-center gap-1.5">
                 <svg className="w-4 h-4 text-brand-yellow" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
