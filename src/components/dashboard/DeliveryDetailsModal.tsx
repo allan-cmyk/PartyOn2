@@ -53,9 +53,14 @@ export default function DeliveryDetailsModal({
 
   const [date, setDate] = useState(() => {
     if (!tab.deliveryDate || tab.deliveryDate === 'TBD') return '';
+    if (!tab.deliveryDateConfirmed) return '';
     return tab.deliveryDate.split('T')[0];
   });
-  const [time, setTime] = useState(tab.deliveryTime !== 'TBD' ? tab.deliveryTime : '');
+  const [time, setTime] = useState(() => {
+    if (!tab.deliveryTime || tab.deliveryTime === 'TBD') return '';
+    if (!tab.deliveryDateConfirmed) return '';
+    return tab.deliveryTime;
+  });
   const [address1, setAddress1] = useState(addr.address1 || '');
   const [address2, setAddress2] = useState(addr.address2 || '');
   const [city, setCity] = useState(addr.city || '');
