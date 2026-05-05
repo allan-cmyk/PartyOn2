@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "input=$(cat); subagent=$(echo \"$input\" | jq -r '.tool_input.subagent_type // \"\"'); if [ \"$subagent\" = \"marketing-director\" ]; then echo \"[marketing-sync] firing\"; cd \"$CLAUDE_PROJECT_DIR\" && npm run sync:marketing 2>&1 | tail -5 || true; fi",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}
