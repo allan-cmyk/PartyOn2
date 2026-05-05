@@ -132,8 +132,7 @@ export async function GET(request: NextRequest) {
         contactName: 'Jane Doe',
         businessName: 'Sunset Bar & Grill',
         code: 'SUNSET',
-        referralLink: 'https://partyondelivery.com/partners/sunset',
-        directReferralLink: 'https://partyondelivery.com/partners/sunset?ref=SUNSET',
+        referralLink: 'https://partyondelivery.com/partners/sunset?ref=SUNSET',
         dashboardLink: 'https://partyondelivery.com/affiliate/login',
       });
       break;

@@ -33,8 +33,14 @@ export default function OnboardingPopup({
   const [selected, setSelected] = useState<PartyType | null>(null);
   const [orderName, setOrderName] = useState('');
   const [saving, setSaving] = useState(false);
+  const [skipPartyType, setSkipPartyType] = useState(false);
   const nameInputRef = useRef<HTMLInputElement>(null);
   const orderNameInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    setSkipPartyType(localStorage.getItem(`dashboard_skip_party_${shareCode}`) === '1');
+  }, [shareCode]);
 
   useEffect(() => {
     if (step === 1 && nameInputRef.current) {
@@ -98,7 +104,9 @@ export default function OnboardingPopup({
         {/* Step indicator */}
         <div className="flex justify-center gap-2 mb-6">
           <div className={`w-2 h-2 rounded-full ${step === 1 ? 'bg-brand-blue' : 'bg-gray-300'}`} />
-          <div className={`w-2 h-2 rounded-full ${step === 2 ? 'bg-brand-blue' : 'bg-gray-300'}`} />
+          {!skipPartyType && (
+            <div className={`w-2 h-2 rounded-full ${step === 2 ? 'bg-brand-blue' : 'bg-gray-300'}`} />
+          )}
           <div className={`w-2 h-2 rounded-full ${step === 3 ? 'bg-brand-blue' : 'bg-gray-300'}`} />
         </div>
 
@@ -120,12 +128,12 @@ export default function OnboardingPopup({
               disabled={saving}
               className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base focus:border-brand-blue focus:ring-0 transition-colors placeholder-gray-400"
               onKeyDown={(e) => {
-                if (e.key === 'Enter' && hostName.trim()) setStep(2);
+                if (e.key === 'Enter' && hostName.trim()) setStep(skipPartyType ? 3 : 2);
               }}
             />
 
             <button
-              onClick={() => setStep(2)}
+              onClick={() => setStep(skipPartyType ? 3 : 2)}
               disabled={!hostName.trim() || saving}
               className="mt-6 w-full py-4 bg-brand-blue text-white text-lg font-semibold tracking-[0.08em] rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
