@@ -234,6 +234,8 @@ export interface MultiTabPreset {
 
 export interface CreateMultiTabDashboardInput {
   hostName: string;
+  hostEmail?: string;
+  hostPhone?: string;
   dashboardTitle: string;
   deliveryDate: string;
   deliveryTime: string;

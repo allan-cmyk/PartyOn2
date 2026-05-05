@@ -67,6 +67,8 @@ export async function POST(request: NextRequest) {
   try {
     const result = await createMultiTabDashboardOrder({
       hostName: payload.customer_name,
+      hostEmail: payload.customer_email || undefined,
+      hostPhone: payload.customer_phone || undefined,
       dashboardTitle,
       deliveryDate: payload.cruise_date,
       deliveryTime,
