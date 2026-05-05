@@ -153,9 +153,51 @@ export async function commitInventoryForOrderItem(
 }
 
 /**
+ * Fulfill a single variant's inventory: floor inventoryQuantity and
+ * committedQuantity at 0 (oversells become Available < 0 via committed,
+ * never inventory < 0), record the movement, and warn on oversells.
+ */
+async function fulfillVariantInventory(
+  tx: TransactionClient,
+  variant: { id: string; inventoryQuantity: number; committedQuantity: number; trackInventory: boolean },
+  qty: number,
+  orderNumber: number,
+  orderId: string,
+  isBundleComponent: boolean,
+): Promise<{ oversoldBy: number }> {
+  if (!variant.trackInventory) return { oversoldBy: 0 };
+  const newInventory = Math.max(0, variant.inventoryQuantity - qty);
+  const newCommitted = Math.max(0, variant.committedQuantity - qty);
+  const oversoldBy = qty - (variant.inventoryQuantity - newInventory);
+  await tx.productVariant.update({
+    where: { id: variant.id },
+    data: { inventoryQuantity: newInventory, committedQuantity: newCommitted },
+  });
+  const suffix = isBundleComponent ? ' (bundle component)' : '';
+  await tx.inventoryMovement.create({
+    data: {
+      variantId: variant.id,
+      type: 'FULFILLED',
+      quantity: -qty,
+      previousQuantity: variant.inventoryQuantity,
+      newQuantity: newInventory,
+      reason: oversoldBy > 0
+        ? `Order #${orderNumber} fulfilled${suffix} — OVERSOLD by ${oversoldBy}`
+        : `Order #${orderNumber} fulfilled${suffix}`,
+      referenceId: orderId,
+      referenceType: 'Order',
+    },
+  });
+  if (oversoldBy > 0) {
+    console.warn(`[Oversell] Order #${orderNumber} variant ${variant.id} oversold by ${oversoldBy} — inventory floored at 0`);
+  }
+  return { oversoldBy };
+}
+
+/**
  * Fulfill inventory for an entire order.
- * Decrements both inventoryQuantity and committedQuantity for each item.
- * Called when an order's fulfillmentStatus changes to DELIVERED.
+ * Decrements both inventoryQuantity and committedQuantity for each item,
+ * floored at 0. Called when an order's fulfillmentStatus changes to DELIVERED.
  */
 export async function fulfillInventoryForOrder(orderId: string): Promise<void> {
   const order = await prisma.order.findUnique({
@@ -204,27 +246,8 @@ export async function fulfillInventoryForOrder(orderId: string): Promise<void> {
             });
           }
 
-          if (componentVariant && componentVariant.trackInventory) {
-            await tx.productVariant.update({
-              where: { id: componentVariant.id },
-              data: {
-                inventoryQuantity: { decrement: fulfillQty },
-                committedQuantity: { decrement: fulfillQty },
-              },
-            });
-
-            await tx.inventoryMovement.create({
-              data: {
-                variantId: componentVariant.id,
-                type: 'FULFILLED',
-                quantity: -fulfillQty,
-                previousQuantity: componentVariant.inventoryQuantity,
-                newQuantity: componentVariant.inventoryQuantity - fulfillQty,
-                reason: `Order #${order.orderNumber} fulfilled (bundle component)`,
-                referenceId: orderId,
-                referenceType: 'Order',
-              },
-            });
+          if (componentVariant) {
+            await fulfillVariantInventory(tx, componentVariant, fulfillQty, order.orderNumber, orderId, true);
           }
         }
       } else {
@@ -233,27 +256,8 @@ export async function fulfillInventoryForOrder(orderId: string): Promise<void> {
           select: { id: true, inventoryQuantity: true, committedQuantity: true, trackInventory: true },
         });
 
-        if (variant && variant.trackInventory) {
-          await tx.productVariant.update({
-            where: { id: variant.id },
-            data: {
-              inventoryQuantity: { decrement: effectiveQty },
-              committedQuantity: { decrement: effectiveQty },
-            },
-          });
-
-          await tx.inventoryMovement.create({
-            data: {
-              variantId: variant.id,
-              type: 'FULFILLED',
-              quantity: -effectiveQty,
-              previousQuantity: variant.inventoryQuantity,
-              newQuantity: variant.inventoryQuantity - effectiveQty,
-              reason: `Order #${order.orderNumber} fulfilled`,
-              referenceId: orderId,
-              referenceType: 'Order',
-            },
-          });
+        if (variant) {
+          await fulfillVariantInventory(tx, variant, effectiveQty, order.orderNumber, orderId, false);
         }
       }
     }
@@ -312,9 +316,10 @@ export async function releaseCommittedInventory(orderId: string): Promise<void> 
           }
 
           if (componentVariant) {
+            const newCommitted = Math.max(0, componentVariant.committedQuantity - releaseQty);
             await tx.productVariant.update({
               where: { id: componentVariant.id },
-              data: { committedQuantity: { decrement: releaseQty } },
+              data: { committedQuantity: newCommitted },
             });
 
             await tx.inventoryMovement.create({
@@ -323,7 +328,7 @@ export async function releaseCommittedInventory(orderId: string): Promise<void> 
                 type: 'RETURN',
                 quantity: releaseQty,
                 previousQuantity: componentVariant.committedQuantity,
-                newQuantity: componentVariant.committedQuantity - releaseQty,
+                newQuantity: newCommitted,
                 reason: `Order #${order.orderNumber} cancelled (bundle component)`,
                 referenceId: orderId,
                 referenceType: 'Order',
@@ -338,9 +343,10 @@ export async function releaseCommittedInventory(orderId: string): Promise<void> 
         });
 
         if (variant) {
+          const newCommitted = Math.max(0, variant.committedQuantity - effectiveQty);
           await tx.productVariant.update({
             where: { id: variant.id },
-            data: { committedQuantity: { decrement: effectiveQty } },
+            data: { committedQuantity: newCommitted },
           });
 
           await tx.inventoryMovement.create({
@@ -349,7 +355,7 @@ export async function releaseCommittedInventory(orderId: string): Promise<void> 
               type: 'RETURN',
               quantity: effectiveQty,
               previousQuantity: variant.committedQuantity,
-              newQuantity: variant.committedQuantity - effectiveQty,
+              newQuantity: newCommitted,
               reason: `Order #${order.orderNumber} cancelled`,
               referenceId: orderId,
               referenceType: 'Order',
