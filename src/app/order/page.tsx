@@ -11,7 +11,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { createDashboardOrderV2 } from '@/lib/group-orders-v2/api-client';
 import type { PartyType, DashboardSource, DeliveryContextType } from '@/lib/group-orders-v2/types';
-import { getAffiliateDefaultAddress } from '@/lib/affiliates/presets';
+import { getAffiliateOrderDefaults } from '@/lib/affiliates/presets';
 
 const PARTY_TYPE_MAP: Record<string, PartyType> = {
   bachelor: 'BACHELOR',
@@ -108,11 +108,14 @@ function OrderRedirectInner(): ReactElement {
         }
 
         const partyType = partyParam ? PARTY_TYPE_MAP[partyParam] : undefined;
+
+        // Resolve partner-page defaults by URL ref code (works even without a DB Affiliate row)
+        const presetCode = affiliateCode || ref || undefined;
+        const presets = presetCode ? getAffiliateOrderDefaults(presetCode) : null;
+
         const deliveryContextType = deliveryParam
           ? DELIVERY_CONTEXT_MAP[deliveryParam]
-          : undefined;
-
-        const premierAddress = affiliateCode ? getAffiliateDefaultAddress(affiliateCode) : null;
+          : presets?.deliveryContextType;
 
         const group = await createDashboardOrderV2({
           hostName: nameParam || 'Party Host',
@@ -121,8 +124,8 @@ function OrderRedirectInner(): ReactElement {
           affiliateId,
           source,
           name: nameParam ? `${nameParam}'s Order` : undefined,
-          deliveryAddress: premierAddress || undefined,
-          tabName: premierAddress ? 'Marina Delivery' : undefined,
+          deliveryAddress: presets?.address,
+          tabName: presets?.tabName,
         });
 
         // Store participant ID
@@ -132,6 +135,11 @@ function OrderRedirectInner(): ReactElement {
             `dashboard_participant_${group.shareCode}`,
             host.id
           );
+        }
+
+        // Persist skip-party flag for partner-page flows (read by OnboardingPopup)
+        if (presets?.skipPartyType) {
+          localStorage.setItem(`dashboard_skip_party_${group.shareCode}`, '1');
         }
 
         router.replace(`/dashboard/${group.shareCode}`);

@@ -25,7 +25,6 @@ export default function PartnershipInfoTab({
 
   const origin = typeof window !== 'undefined' ? window.location.origin : 'https://partyondelivery.com';
   const slug = affiliate.partnerSlug ?? affiliate.code.toLowerCase();
-  const partnerPageLink = `${origin}/partners/${slug}`;
   const referralLink = `${origin}/partners/${slug}?ref=${affiliate.code}`;
 
   const handleSetPassword = async (e: React.FormEvent) => {
@@ -66,29 +65,18 @@ export default function PartnershipInfoTab({
 
   return (
     <div className="space-y-6">
-      {/* Partner Page */}
+      {/* Referral Link */}
       <div className="bg-white rounded-lg shadow p-5">
-        <h2 className="font-semibold text-gray-800 mb-2">Your Partner Page</h2>
+        <h2 className="font-semibold text-gray-800 mb-2">Your Referral Link</h2>
         <p className="text-sm text-gray-600 mb-3">
-          A branded landing page for your business. Share it on social media, in text messages, or directly with customers.
-        </p>
-        <div className="bg-gray-50 border border-gray-200 rounded px-3 py-2 text-sm text-[#D4AF37] font-mono break-all">
-          {partnerPageLink}
-        </div>
-        <p className="text-xs text-gray-500 mt-2">
-          Customers can enter your referral code <span className="font-mono font-bold">{affiliate.code}</span> at checkout to get their discount.
-        </p>
-      </div>
-
-      {/* Website Referral Link */}
-      <div className="bg-white rounded-lg shadow p-5">
-        <h2 className="font-semibold text-gray-800 mb-2">Website Referral Link</h2>
-        <p className="text-sm text-gray-600 mb-3">
-          Embed this on your website, booking confirmations, or email signatures. When someone clicks, they are automatically tagged as your referral for 30 days -- no code needed.
+          Share this link anywhere -- social media, text messages, your website, booking confirmations, email signatures. When someone clicks, they are automatically tagged as your referral for 30 days.
         </p>
         <div className="bg-gray-50 border border-gray-200 rounded px-3 py-2 text-sm text-[#D4AF37] font-mono break-all">
           {referralLink}
         </div>
+        <p className="text-xs text-gray-500 mt-2">
+          Customers can also enter your referral code <span className="font-mono font-bold">{affiliate.code}</span> at checkout if they reach the site some other way.
+        </p>
       </div>
 
       {/* How It Works */}
@@ -97,7 +85,7 @@ export default function PartnershipInfoTab({
         <ul className="space-y-2 text-sm text-gray-600">
           <li className="flex gap-2">
             <span className="text-gray-400 shrink-0">&#8226;</span>
-            Your customers get <strong className="text-gray-800">free delivery</strong> when they order through your partner page
+            Your customers get <strong className="text-gray-800">free delivery</strong> when they order through your referral link
           </li>
           <li className="flex gap-2">
             <span className="text-gray-400 shrink-0">&#8226;</span>
@@ -161,7 +149,7 @@ export default function PartnershipInfoTab({
           </li>
           <li className="flex gap-2">
             <span className="text-gray-400 shrink-0">&#8226;</span>
-            Share your partner page on social media and in your bio
+            Share your referral link on social media and in your bio
           </li>
           <li className="flex gap-2">
             <span className="text-gray-400 shrink-0">&#8226;</span>
