@@ -198,8 +198,16 @@ export async function linkOrderToAffiliate(
   },
   affiliateCode: string
 ) {
+  // Match by Affiliate.code (from ?ref=<code>) OR by Affiliate.partnerSlug
+  // (from /partners/<slug> visits — middleware uppercases the slug into ref_code).
+  // Per ADR M0001: partner-page visits without an explicit ?ref= now attribute too.
   const affiliate = await prisma.affiliate.findFirst({
-    where: { code: { equals: affiliateCode, mode: 'insensitive' } },
+    where: {
+      OR: [
+        { code: { equals: affiliateCode, mode: 'insensitive' } },
+        { partnerSlug: affiliateCode.toLowerCase() },
+      ],
+    },
   });
 
   if (!affiliate || affiliate.status !== 'ACTIVE') {

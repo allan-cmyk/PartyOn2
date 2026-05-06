@@ -128,10 +128,10 @@ export default function DashboardCheckoutModal({
     }
   }
 
-  const deliveryDate = tab.deliveryDate && tab.deliveryDate !== 'TBD'
+  const deliveryDate = tab.deliveryDate && tab.deliveryDate !== 'TBD' && tab.deliveryDateConfirmed
     ? new Date(tab.deliveryDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })
     : '';
-  const deliveryTime = tab.deliveryTime && tab.deliveryTime !== 'TBD' ? tab.deliveryTime : '';
+  const deliveryTime = tab.deliveryTime && tab.deliveryTime !== 'TBD' && tab.deliveryDateConfirmed ? tab.deliveryTime : '';
   const addr = tab.deliveryAddress;
 
   return (

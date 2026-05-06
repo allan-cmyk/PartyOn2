@@ -30,6 +30,7 @@ function hasDeliveryDetails(tab: SubOrderFull): boolean {
   return !!(
     tab.deliveryDate &&
     tab.deliveryDate !== 'TBD' &&
+    tab.deliveryDateConfirmed &&
     tab.deliveryAddress?.address1
   );
 }

@@ -62,6 +62,22 @@ const RISK_LABEL: Record<RiskTier, string> = {
 
 const EFFORT_LABEL: Record<EffortTier, string> = { s: 'S', m: 'M', l: 'L' };
 
+/**
+ * Whether a status transition should prompt the operator for a reason before applying.
+ * - Reject: required (every dismissal needs an audit trail in Obsidian via the GitHub mirror)
+ * - Mark shipped: optional (outcome notes are useful for the 14-day measurement loop but not required)
+ * - Everything else (Approve, Re-open): no modal — keep the happy path frictionless
+ */
+const REASON_MODE: Record<Status, 'required' | 'optional' | 'none'> = {
+  rejected: 'required',
+  shipped: 'optional',
+  open: 'none',
+  approved: 'none',
+  invalidated: 'required',
+};
+
+const REASON_MIN_CHARS = 10;
+
 export default function RecommendationsTriagePage(): ReactElement {
   const [recs, setRecs] = useState<Recommendation[]>([]);
   const [filter, setFilter] = useState<Status | 'all'>('open');
@@ -70,6 +86,7 @@ export default function RecommendationsTriagePage(): ReactElement {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [editingNotes, setEditingNotes] = useState<string | null>(null);
   const [notesValue, setNotesValue] = useState('');
+  const [pendingTransition, setPendingTransition] = useState<{ rec: Recommendation; toStatus: Status } | null>(null);
 
   const fetchRecs = useCallback(async () => {
     setIsLoading(true);
@@ -115,6 +132,27 @@ export default function RecommendationsTriagePage(): ReactElement {
     await updateStatus(id, rec.status, notesValue);
     setEditingNotes(null);
     setNotesValue('');
+  };
+
+  /**
+   * Routes a status-change click. If the target status requires/accepts a reason, opens
+   * the transition modal; otherwise applies directly. Keeps Approve/Re-open frictionless.
+   */
+  const requestTransition = (rec: Recommendation, toStatus: Status) => {
+    if (REASON_MODE[toStatus] === 'none') {
+      void updateStatus(rec.id, toStatus);
+      return;
+    }
+    setPendingTransition({ rec, toStatus });
+  };
+
+  const submitTransition = async (reason: string) => {
+    if (!pendingTransition) return;
+    const { rec, toStatus } = pendingTransition;
+    const trimmed = reason.trim();
+    const notes = trimmed.length > 0 ? trimmed : undefined;
+    await updateStatus(rec.id, toStatus, notes);
+    setPendingTransition(null);
   };
 
   const toggleExpand = (id: string) => {
@@ -275,7 +313,7 @@ export default function RecommendationsTriagePage(): ReactElement {
                         <ActionButtons
                           rec={rec}
                           isSaving={isSaving}
-                          onChange={(status) => updateStatus(rec.id, status)}
+                          onChange={(status) => requestTransition(rec, status)}
                         />
                       </div>
                     </div>
@@ -341,6 +379,106 @@ export default function RecommendationsTriagePage(): ReactElement {
             })}
           </div>
         )}
+      </div>
+      {pendingTransition && (
+        <TransitionModal
+          rec={pendingTransition.rec}
+          toStatus={pendingTransition.toStatus}
+          isSaving={savingId === pendingTransition.rec.id}
+          onCancel={() => setPendingTransition(null)}
+          onSubmit={submitTransition}
+        />
+      )}
+    </div>
+  );
+}
+
+function TransitionModal({
+  rec,
+  toStatus,
+  isSaving,
+  onCancel,
+  onSubmit,
+}: {
+  rec: Recommendation;
+  toStatus: Status;
+  isSaving: boolean;
+  onCancel: () => void;
+  onSubmit: (reason: string) => void;
+}): ReactElement {
+  const mode = REASON_MODE[toStatus];
+  const [reason, setReason] = useState('');
+  const trimmed = reason.trim();
+  const tooShort = mode === 'required' && trimmed.length < REASON_MIN_CHARS;
+  const heading = toStatus === 'rejected'
+    ? 'Reject — why?'
+    : toStatus === 'shipped'
+    ? 'Mark shipped — outcome notes (optional)'
+    : toStatus === 'invalidated'
+    ? 'Invalidate — why?'
+    : 'Add a reason';
+  const placeholder = toStatus === 'rejected'
+    ? 'Explain why this rec is being dismissed. Reference an ADR if applicable (e.g. M0001).'
+    : toStatus === 'shipped'
+    ? 'What did you actually ship? Any deviations from the rec? Captured for the 14-day measurement loop.'
+    : 'Reason…';
+  const submitLabel = toStatus === 'rejected'
+    ? 'Reject'
+    : toStatus === 'shipped'
+    ? 'Mark shipped'
+    : toStatus === 'invalidated'
+    ? 'Invalidate'
+    : 'Confirm';
+  const submitTone = toStatus === 'rejected' || toStatus === 'invalidated' ? 'danger' : 'primary';
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 p-4"
+      onClick={onCancel}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="transition-modal-heading"
+    >
+      <div
+        className="bg-white rounded-xl shadow-xl max-w-lg w-full p-6"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2 id="transition-modal-heading" className="text-lg font-semibold text-gray-900">{heading}</h2>
+        <p className="text-sm text-gray-600 mt-1 line-clamp-2">{rec.title}</p>
+        <textarea
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+          placeholder={placeholder}
+          rows={5}
+          className="w-full mt-4 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+          autoFocus
+        />
+        <div className="flex items-center justify-between mt-2">
+          <span className={`text-xs ${tooShort ? 'text-red-600' : 'text-gray-500'}`}>
+            {mode === 'required'
+              ? `Required · ${trimmed.length}/${REASON_MIN_CHARS} min`
+              : 'Optional — leave blank to skip'}
+          </span>
+        </div>
+        <div className="flex gap-2 justify-end mt-4">
+          <button
+            onClick={onCancel}
+            className="px-4 py-2 text-sm bg-white border border-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => onSubmit(reason)}
+            disabled={isSaving || tooShort}
+            className={`px-4 py-2 text-sm rounded-lg font-semibold disabled:opacity-50 ${
+              submitTone === 'danger'
+                ? 'bg-red-600 text-white hover:bg-red-700'
+                : 'bg-brand-blue text-white hover:bg-blue-700'
+            }`}
+          >
+            {isSaving ? '…' : submitLabel}
+          </button>
+        </div>
       </div>
     </div>
   );

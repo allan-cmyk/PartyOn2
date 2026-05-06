@@ -161,6 +161,7 @@ function serializeTab(tab: any): SubOrderFull {
     partyType: tab.partyType ?? null,
     deliveryContextType: tab.deliveryContextType ?? 'HOUSE',
     deliveryDate: tab.deliveryDate.toISOString(),
+    deliveryDateConfirmed: tab.deliveryDateConfirmed ?? false,
     deliveryTime: tab.deliveryTime,
     deliveryAddress: tab.deliveryAddress as any,
     deliveryPhone: tab.deliveryPhone,
@@ -474,6 +475,10 @@ export async function updateTab(
     deliveryDate.setUTCHours(12, 0, 0, 0);
     data.deliveryDate = deliveryDate;
     data.orderDeadline = computeOrderDeadline(deliveryDate);
+    data.deliveryDateConfirmed = true;
+  }
+  if (input.deliveryDateConfirmed !== undefined) {
+    data.deliveryDateConfirmed = input.deliveryDateConfirmed;
   }
 
   const tab = await prisma.subOrder.update({
