@@ -9,13 +9,29 @@ export type ThemeColors = {
   primaryHover: string;
 };
 
+export type PackageLineItem = {
+  name: string;
+  qty: number;
+  unitPrice: number;
+  /** When true, this item is included free (counted toward "save" badge but not added to package price). */
+  freebie?: boolean;
+};
+
 export type Package = {
   name: string;
-  price: string;
-  save: string;
+  /** Legacy/marketing display strings — kept optional for back-compat. */
+  price?: string;
+  save?: string;
   serves: string;
   blurb: string;
-  items: string[];
+  /** Legacy flat string list for old hardcoded packages. */
+  items?: string[];
+  /** New itemized list including alcohol (paid) and freebies (free). */
+  lineItems?: PackageLineItem[];
+  /** Computed retail of paid alcohol items (= what we charge). */
+  packagePrice?: number;
+  /** Computed retail value of bundled freebies (= what we display as "savings"). */
+  freebiesValue?: number;
   image: string;
   featured?: boolean;
 };

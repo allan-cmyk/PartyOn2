@@ -175,98 +175,33 @@ export default function LandingPageTemplate({ config, catalog }: Props) {
       </section>
 
       {/* PACKAGES */}
-      <section id="packages" className="py-20 bg-white">
+      <section id="packages" className="py-24 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-14 max-w-3xl mx-auto">
+          <div className="text-center mb-20 max-w-3xl mx-auto">
             <p
-              className="font-bold tracking-[0.15em] text-sm mb-3"
+              className="font-bold tracking-[0.15em] text-sm mb-4"
               style={{ color: T.blue }}
             >
               {config.packagesEyebrow}
             </p>
-            <h2 className="font-heading text-4xl md:text-5xl font-bold mb-4" style={{ color: T.navy }}>
+            <h2 className="font-heading text-4xl md:text-5xl font-bold mb-6 leading-tight" style={{ color: T.navy }}>
               {config.packagesHeadline}
             </h2>
-            <p className="text-lg text-gray-600">{config.packagesBlurb}</p>
+            <p className="text-lg text-gray-600 leading-relaxed">{config.packagesBlurb}</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
             {config.packages.map((pkg) => (
-              <div
+              <PackageCard
                 key={pkg.name}
-                className="relative rounded-2xl overflow-hidden flex flex-col bg-white border-2 transition-all"
-                style={{
-                  borderColor: pkg.featured ? T.primary : '#E5E7EB',
-                  boxShadow: pkg.featured ? '0 25px 50px -12px rgba(0,0,0,0.18)' : '0 1px 3px rgba(0,0,0,0.05)',
-                  transform: pkg.featured ? 'scale(1.03)' : 'none',
-                }}
-              >
-                {pkg.featured && (
-                  <div
-                    className="absolute top-4 right-4 z-10 text-xs font-bold tracking-widest px-3 py-1 rounded-full"
-                    style={{ background: T.primary, color: T.primaryText }}
-                  >
-                    MOST BOOKED
-                  </div>
-                )}
-                <div
-                  className="relative w-full flex-shrink-0"
-                  style={{ height: '208px' }}
-                >
-                  <Image
-                    src={pkg.image}
-                    alt={pkg.name}
-                    fill
-                    sizes="(min-width: 768px) 33vw, 100vw"
-                    className="object-cover"
-                  />
-                </div>
-                <div className="p-6 flex flex-col flex-1">
-                  <div className="flex items-baseline justify-between mb-1">
-                    <h3 className="font-heading text-2xl font-bold" style={{ color: T.navy }}>
-                      {pkg.name}
-                    </h3>
-                    <span
-                      className="text-xs font-bold px-2 py-1 rounded"
-                      style={{ background: '#10B98119', color: '#047857' }}
-                    >
-                      {pkg.save}
-                    </span>
-                  </div>
-                  <div className="flex items-baseline gap-2 mb-2">
-                    <span className="font-heading text-4xl font-bold" style={{ color: T.blue }}>
-                      {pkg.price}
-                    </span>
-                    <span className="text-sm text-gray-500">{pkg.serves}</span>
-                  </div>
-                  <p className="text-gray-600 mb-5">{pkg.blurb}</p>
-                  <ul className="space-y-2 mb-7 text-sm text-gray-700 flex-1">
-                    {pkg.items.map((item) => (
-                      <li key={item} className="flex items-start gap-2">
-                        <span className="mt-0.5 font-bold" style={{ color: T.primary }}>
-                          ✓
-                        </span>
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <button
-                    type="button"
-                    onClick={openBuilder}
-                    className="block text-center font-bold py-4 px-6 rounded-md tracking-wide transition-colors w-full"
-                    style={{
-                      background: pkg.featured ? T.primary : T.navy,
-                      color: pkg.featured ? T.primaryText : '#FFFFFF',
-                    }}
-                  >
-                    BUILD MY PACKAGE
-                  </button>
-                </div>
-              </div>
+                pkg={pkg}
+                theme={T}
+                onCta={openBuilder}
+              />
             ))}
           </div>
 
-          <p className="text-center text-gray-600 mt-10">
+          <p className="text-center text-gray-600 mt-16">
             {config.customLine.split('—')[0]}
             <a href={config.phoneTel} className="font-bold underline" style={{ color: T.blue }}>
               {' '}
@@ -520,3 +455,182 @@ export default function LandingPageTemplate({ config, catalog }: Props) {
 
 // Helper export to get a typed ReactNode where needed
 export type { ReactNode };
+
+// ----- Package card with itemized dropdown ---------------------------------
+
+import type { Package, ThemeColors } from './types';
+
+function PackageCard({
+  pkg,
+  theme: T,
+  onCta,
+}: {
+  pkg: Package;
+  theme: ThemeColors;
+  onCta: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+
+  // Modern packages use lineItems + packagePrice + freebiesValue.
+  // Legacy/static packages use items + price + save (string).
+  const isLive = !!pkg.lineItems && pkg.packagePrice != null;
+
+  const priceLabel = isLive ? `$${pkg.packagePrice}` : pkg.price ?? '';
+  const saveLabel = isLive
+    ? `Save $${pkg.freebiesValue ?? 0}`
+    : pkg.save ?? '';
+
+  const alcoholItems = (pkg.lineItems ?? []).filter((i) => !i.freebie);
+  const freebieItems = (pkg.lineItems ?? []).filter((i) => i.freebie);
+
+  return (
+    <div
+      className="relative rounded-2xl overflow-hidden flex flex-col bg-white border-2 transition-all"
+      style={{
+        borderColor: pkg.featured ? T.primary : '#E5E7EB',
+        boxShadow: pkg.featured
+          ? '0 25px 50px -12px rgba(0,0,0,0.18)'
+          : '0 1px 3px rgba(0,0,0,0.05)',
+        transform: pkg.featured ? 'scale(1.03)' : 'none',
+      }}
+    >
+      {pkg.featured && (
+        <div
+          className="absolute top-4 right-4 z-10 text-xs font-bold tracking-widest px-3 py-1 rounded-full"
+          style={{ background: T.primary, color: T.primaryText }}
+        >
+          MOST BOOKED
+        </div>
+      )}
+      <div className="relative w-full flex-shrink-0" style={{ height: '208px' }}>
+        <Image
+          src={pkg.image}
+          alt={pkg.name}
+          fill
+          sizes="(min-width: 768px) 33vw, 100vw"
+          className="object-cover"
+        />
+      </div>
+      <div className="p-6 flex flex-col flex-1">
+        <div className="flex items-start justify-between gap-3 mb-2">
+          <h3 className="font-heading text-2xl font-bold leading-tight" style={{ color: T.navy }}>
+            {pkg.name}
+          </h3>
+          {saveLabel && (
+            <span
+              className="text-xs font-bold px-2 py-1 rounded whitespace-nowrap"
+              style={{ background: '#10B98119', color: '#047857' }}
+            >
+              {saveLabel}
+            </span>
+          )}
+        </div>
+        <div className="flex items-baseline gap-2 mb-3">
+          <span className="font-heading text-4xl font-bold" style={{ color: T.blue }}>
+            {priceLabel}
+          </span>
+          <span className="text-sm text-gray-500">{pkg.serves}</span>
+        </div>
+        <p className="text-gray-600 mb-5 leading-relaxed">{pkg.blurb}</p>
+
+        {/* Itemized dropdown */}
+        {isLive ? (
+          <div className="mb-5 flex-1">
+            <button
+              type="button"
+              onClick={() => setOpen((o) => !o)}
+              className="w-full flex items-center justify-between text-left font-bold text-sm py-2 border-b transition-colors"
+              style={{ color: T.navy, borderColor: '#E5E7EB' }}
+              aria-expanded={open}
+            >
+              <span>
+                {open ? 'Hide' : 'See'} what's inside ({pkg.lineItems!.length} items)
+              </span>
+              <span className="text-xs" style={{ color: T.blue }}>
+                {open ? '▲' : '▼'}
+              </span>
+            </button>
+            {open && (
+              <div className="mt-3 space-y-3 text-sm">
+                <div>
+                  <div className="text-[10px] font-bold tracking-widest text-gray-500 mb-1.5">
+                    INCLUDED ALCOHOL
+                  </div>
+                  <ul className="space-y-1.5">
+                    {alcoholItems.map((it, i) => (
+                      <li
+                        key={`a-${i}`}
+                        className="flex justify-between gap-3 text-gray-700"
+                      >
+                        <span className="flex-1">
+                          <span className="font-semibold" style={{ color: T.navy }}>
+                            {it.qty}×
+                          </span>{' '}
+                          {it.name}
+                        </span>
+                        <span className="text-gray-500 whitespace-nowrap">
+                          ${(it.unitPrice * it.qty).toFixed(2)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                {freebieItems.length > 0 && (
+                  <div className="pt-2 border-t" style={{ borderColor: '#E5E7EB' }}>
+                    <div
+                      className="text-[10px] font-bold tracking-widest mb-1.5"
+                      style={{ color: '#047857' }}
+                    >
+                      FREE PARTY SUPPLIES (BUNDLED IN)
+                    </div>
+                    <ul className="space-y-1.5">
+                      {freebieItems.map((it, i) => (
+                        <li
+                          key={`f-${i}`}
+                          className="flex justify-between gap-3 text-gray-700"
+                        >
+                          <span className="flex-1">
+                            <span className="font-semibold" style={{ color: T.navy }}>
+                              {it.qty}×
+                            </span>{' '}
+                            {it.name}
+                          </span>
+                          <span className="whitespace-nowrap font-semibold" style={{ color: '#047857' }}>
+                            FREE (${(it.unitPrice * it.qty).toFixed(2)})
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        ) : pkg.items ? (
+          <ul className="space-y-2 mb-7 text-sm text-gray-700 flex-1">
+            {pkg.items.map((item) => (
+              <li key={item} className="flex items-start gap-2">
+                <span className="mt-0.5 font-bold" style={{ color: T.primary }}>
+                  ✓
+                </span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+
+        <button
+          type="button"
+          onClick={onCta}
+          className="block text-center font-bold py-4 px-6 rounded-md tracking-wide transition-colors w-full"
+          style={{
+            background: pkg.featured ? T.primary : T.navy,
+            color: pkg.featured ? T.primaryText : '#FFFFFF',
+          }}
+        >
+          BUILD MY PACKAGE
+        </button>
+      </div>
+    </div>
+  );
+}

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import LandingPageTemplate from '@/components/landing/LandingPageTemplate';
 import { corporateConfig } from '@/components/landing/configs/corporate';
 import { getCuratedCatalog } from '@/lib/landing/getCuratedCatalog';
+import { getOccasionPackages } from '@/lib/landing/getOccasionPackages';
 
 export const metadata: Metadata = {
   title: corporateConfig.metaTitle,
@@ -16,6 +17,10 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const catalog = await getCuratedCatalog();
-  return <LandingPageTemplate config={corporateConfig} catalog={catalog} />;
+  const [catalog, packages] = await Promise.all([
+    getCuratedCatalog(),
+    getOccasionPackages('corporate'),
+  ]);
+  const config = { ...corporateConfig, packages };
+  return <LandingPageTemplate config={config} catalog={catalog} />;
 }
