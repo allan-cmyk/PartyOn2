@@ -1,0 +1,522 @@
+'use client';
+
+// SHARED landing-page template — all 4 event landing pages render through this.
+// Pass a config (see types.ts) to customize copy, theme, packages, FAQs, etc.
+
+import { useState, type ReactNode } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import PackageBuilderModal from './PackageBuilderModal';
+import type { LandingConfig, Catalog } from './types';
+
+type Props = { config: LandingConfig; catalog: Catalog };
+
+export default function LandingPageTemplate({ config, catalog }: Props) {
+  const [builderOpen, setBuilderOpen] = useState(false);
+  const T = config.theme;
+
+  const openBuilder = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    setBuilderOpen(true);
+  };
+
+  return (
+    <main className="bg-white text-gray-900">
+      {/* Slim header */}
+      <header
+        className="sticky top-0 z-40 backdrop-blur border-b"
+        style={{ background: 'rgba(255,255,255,0.95)', borderColor: '#F1F1F1' }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/images/party-on-logo-main.svg"
+              alt="Party On Delivery"
+              width={120}
+              height={32}
+              className="h-8 w-auto"
+              priority
+            />
+          </Link>
+          <a
+            href={config.phoneTel}
+            className="text-sm sm:text-base font-semibold"
+            style={{ color: T.blue }}
+          >
+            <span className="hidden sm:inline">Call </span>
+            {config.phoneDisplay}
+          </a>
+        </div>
+      </header>
+
+      {/* HERO */}
+      <section className="relative min-h-[88vh] flex items-center overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src={config.heroImage}
+            alt={`${config.audienceTitleCase} in Austin`}
+            fill
+            sizes="100vw"
+            className="object-cover"
+            priority
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `linear-gradient(105deg, ${T.navy}EB 0%, ${T.navy}D9 45%, ${T.navy}8C 100%)`,
+            }}
+          />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-28 w-full">
+          <div
+            className="max-w-3xl rounded-2xl p-6 sm:p-8 md:p-10"
+            style={{
+              background: `${T.navy}B8`,
+              boxShadow: '0 25px 60px -15px rgba(0,0,0,0.6)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              backdropFilter: 'blur(4px)',
+              WebkitBackdropFilter: 'blur(4px)',
+            }}
+          >
+            <p
+              className="inline-block text-xs sm:text-sm font-bold tracking-[0.15em] px-3 py-1.5 rounded mb-6 shadow-lg"
+              style={{ background: T.primary, color: T.primaryText }}
+            >
+              {config.heroEyebrow}
+            </p>
+
+            <h1
+              className="font-heading font-bold text-white text-4xl sm:text-5xl md:text-7xl leading-[1.05] tracking-tight mb-5"
+              style={{ textShadow: '0 2px 12px rgba(0,0,0,0.55)' }}
+            >
+              {config.heroHeadline}
+              <span className="block" style={{ color: T.primary }}>
+                {config.heroHeadlineAccent}
+              </span>
+            </h1>
+
+            <p
+              className="text-lg sm:text-xl text-white mb-8 max-w-2xl leading-relaxed"
+              style={{ textShadow: '0 1px 6px rgba(0,0,0,0.6)' }}
+            >
+              {config.heroSubhead}
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6">
+              <button
+                type="button"
+                onClick={openBuilder}
+                className="inline-flex items-center justify-center font-bold text-base sm:text-lg px-8 py-5 rounded-md tracking-wide transition-colors shadow-xl"
+                style={{ background: T.primary, color: T.primaryText }}
+              >
+                {config.ctaText}
+              </button>
+              <a
+                href={config.phoneTel}
+                className="inline-flex items-center justify-center border-2 border-white text-white font-semibold text-base px-8 py-5 rounded-md hover:bg-white transition-colors"
+                style={{ ['--hover-color' as string]: T.navy }}
+              >
+                Or call {config.phoneDisplay}
+              </a>
+            </div>
+
+            <div className="flex flex-wrap gap-2 text-xs sm:text-sm font-semibold">
+              {config.heroTrustBadges.map((b) => (
+                <span
+                  key={b}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white"
+                  style={{
+                    background: 'rgba(255,255,255,0.12)',
+                    border: '1px solid rgba(255,255,255,0.25)',
+                  }}
+                >
+                  {b}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TRUST BAR */}
+      <section
+        className="text-white py-8 border-b border-white/10"
+        style={{ background: T.navy }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          {config.trustStats.map((s) => (
+            <div key={s.label}>
+              <div
+                className="font-heading text-3xl md:text-4xl font-bold"
+                style={{ color: T.primary }}
+              >
+                {s.stat}
+              </div>
+              <div className="text-xs sm:text-sm uppercase tracking-widest opacity-80 mt-1">
+                {s.label}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* PAIN → SOLUTION */}
+      <section className="py-20" style={{ background: T.cream }}>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+          <h2
+            className="font-heading text-3xl md:text-5xl font-bold mb-6 leading-tight"
+            style={{ color: T.navy }}
+          >
+            {config.painHeadline}
+          </h2>
+          <p className="text-lg md:text-xl text-gray-700 leading-relaxed">{config.painBody}</p>
+        </div>
+      </section>
+
+      {/* PACKAGES */}
+      <section id="packages" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-14 max-w-3xl mx-auto">
+            <p
+              className="font-bold tracking-[0.15em] text-sm mb-3"
+              style={{ color: T.blue }}
+            >
+              {config.packagesEyebrow}
+            </p>
+            <h2 className="font-heading text-4xl md:text-5xl font-bold mb-4" style={{ color: T.navy }}>
+              {config.packagesHeadline}
+            </h2>
+            <p className="text-lg text-gray-600">{config.packagesBlurb}</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+            {config.packages.map((pkg) => (
+              <div
+                key={pkg.name}
+                className="relative rounded-2xl overflow-hidden flex flex-col bg-white border-2 transition-all"
+                style={{
+                  borderColor: pkg.featured ? T.primary : '#E5E7EB',
+                  boxShadow: pkg.featured ? '0 25px 50px -12px rgba(0,0,0,0.18)' : '0 1px 3px rgba(0,0,0,0.05)',
+                  transform: pkg.featured ? 'scale(1.03)' : 'none',
+                }}
+              >
+                {pkg.featured && (
+                  <div
+                    className="absolute top-4 right-4 z-10 text-xs font-bold tracking-widest px-3 py-1 rounded-full"
+                    style={{ background: T.primary, color: T.primaryText }}
+                  >
+                    MOST BOOKED
+                  </div>
+                )}
+                <div
+                  className="relative w-full flex-shrink-0"
+                  style={{ height: '208px' }}
+                >
+                  <Image
+                    src={pkg.image}
+                    alt={pkg.name}
+                    fill
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="p-6 flex flex-col flex-1">
+                  <div className="flex items-baseline justify-between mb-1">
+                    <h3 className="font-heading text-2xl font-bold" style={{ color: T.navy }}>
+                      {pkg.name}
+                    </h3>
+                    <span
+                      className="text-xs font-bold px-2 py-1 rounded"
+                      style={{ background: '#10B98119', color: '#047857' }}
+                    >
+                      {pkg.save}
+                    </span>
+                  </div>
+                  <div className="flex items-baseline gap-2 mb-2">
+                    <span className="font-heading text-4xl font-bold" style={{ color: T.blue }}>
+                      {pkg.price}
+                    </span>
+                    <span className="text-sm text-gray-500">{pkg.serves}</span>
+                  </div>
+                  <p className="text-gray-600 mb-5">{pkg.blurb}</p>
+                  <ul className="space-y-2 mb-7 text-sm text-gray-700 flex-1">
+                    {pkg.items.map((item) => (
+                      <li key={item} className="flex items-start gap-2">
+                        <span className="mt-0.5 font-bold" style={{ color: T.primary }}>
+                          ✓
+                        </span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <button
+                    type="button"
+                    onClick={openBuilder}
+                    className="block text-center font-bold py-4 px-6 rounded-md tracking-wide transition-colors w-full"
+                    style={{
+                      background: pkg.featured ? T.primary : T.navy,
+                      color: pkg.featured ? T.primaryText : '#FFFFFF',
+                    }}
+                  >
+                    BUILD MY PACKAGE
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-center text-gray-600 mt-10">
+            {config.customLine.split('—')[0]}
+            <a href={config.phoneTel} className="font-bold underline" style={{ color: T.blue }}>
+              {' '}
+              {config.phoneDisplay}
+            </a>
+          </p>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS */}
+      <section className="py-20" style={{ background: T.cream }}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-14">
+            <h2 className="font-heading text-4xl md:text-5xl font-bold mb-4" style={{ color: T.navy }}>
+              {config.stepsHeadline}
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {config.steps.map((s) => (
+              <div key={s.n} className="text-center">
+                <div
+                  className="inline-flex items-center justify-center w-16 h-16 text-white font-heading font-bold text-3xl rounded-full mb-5"
+                  style={{ background: T.blue }}
+                >
+                  {s.n}
+                </div>
+                <h3 className="font-heading text-2xl font-bold mb-3" style={{ color: T.navy }}>
+                  {s.title}
+                </h3>
+                <p className="text-gray-700 leading-relaxed">{s.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* WHERE WE DELIVER */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="relative h-80 md:h-[28rem] rounded-2xl overflow-hidden">
+              <Image
+                src={config.venuesImage}
+                alt="Where we deliver"
+                fill
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+            <div>
+              <p
+                className="font-bold tracking-[0.15em] text-sm mb-3"
+                style={{ color: T.blue }}
+              >
+                {config.venuesEyebrow}
+              </p>
+              <h2 className="font-heading text-4xl md:text-5xl font-bold mb-6" style={{ color: T.navy }}>
+                {config.venuesHeadline}
+              </h2>
+              <ul className="space-y-3">
+                {config.venues.map((v) => (
+                  <li key={v.area} className="flex gap-3">
+                    <span className="text-xl mt-0.5" style={{ color: T.primary }}>
+                      ✓
+                    </span>
+                    <div>
+                      <span className="font-bold" style={{ color: T.navy }}>
+                        {v.area}
+                      </span>
+                      <span className="text-gray-600"> — {v.detail}</span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SOCIAL PROOF */}
+      <section className="py-20 text-white" style={{ background: T.navy }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-14">
+            <p
+              className="font-bold tracking-[0.15em] text-sm mb-3"
+              style={{ color: T.primary }}
+            >
+              {config.reviewsEyebrow}
+            </p>
+            <h2 className="font-heading text-4xl md:text-5xl font-bold mb-4">
+              {config.reviewsHeadline}
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {config.reviews.map((r) => (
+              <div
+                key={r.author}
+                className="bg-white/5 backdrop-blur rounded-xl p-7"
+                style={{ border: '1px solid rgba(255,255,255,0.1)' }}
+              >
+                <div className="text-lg mb-3" style={{ color: T.primary }}>
+                  ★★★★★
+                </div>
+                <p className="text-gray-100 leading-relaxed mb-5">&ldquo;{r.quote}&rdquo;</p>
+                <div className="text-sm">
+                  <div className="font-bold text-white">{r.author}</div>
+                  <div className="opacity-70">{r.detail}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-20" style={{ background: T.cream }}>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12">
+            <h2 className="font-heading text-4xl md:text-5xl font-bold mb-4" style={{ color: T.navy }}>
+              {config.faqHeadline}
+            </h2>
+          </div>
+          <div className="space-y-3">
+            {config.faqs.map((f) => (
+              <details
+                key={f.q}
+                className="group bg-white rounded-lg overflow-hidden"
+                style={{ border: '1px solid #E5E7EB' }}
+              >
+                <summary
+                  className="flex items-center justify-between cursor-pointer p-5 font-bold text-lg list-none"
+                  style={{ color: T.navy }}
+                >
+                  <span>{f.q}</span>
+                  <span
+                    className="text-2xl group-open:rotate-45 transition-transform"
+                    style={{ color: T.blue }}
+                  >
+                    +
+                  </span>
+                </summary>
+                <div className="px-5 pb-5 text-gray-700 leading-relaxed">{f.a}</div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FINAL CTA */}
+      <section className="relative py-24 overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src={config.finalCtaImage}
+            alt="Austin event celebration"
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0" style={{ background: `${T.navy}C7` }} />
+        </div>
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6">
+          <div
+            className="rounded-2xl p-8 sm:p-12 text-center text-white"
+            style={{
+              background: `${T.navy}D9`,
+              border: '1px solid rgba(255,255,255,0.12)',
+              boxShadow: '0 25px 60px -15px rgba(0,0,0,0.7)',
+              backdropFilter: 'blur(6px)',
+              WebkitBackdropFilter: 'blur(6px)',
+            }}
+          >
+            <h2
+              className="font-heading text-4xl md:text-6xl font-bold mb-5 leading-tight"
+              style={{ textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
+            >
+              {config.finalCtaHeadline}{' '}
+              <span style={{ color: T.primary }}>{config.finalCtaHeadlineAccent}</span>
+            </h2>
+            <p
+              className="text-lg md:text-xl opacity-90 mb-10 max-w-2xl mx-auto"
+              style={{ textShadow: '0 1px 6px rgba(0,0,0,0.55)' }}
+            >
+              {config.finalCtaSubhead}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                type="button"
+                onClick={openBuilder}
+                className="inline-flex items-center justify-center font-bold text-lg px-10 py-5 rounded-md tracking-wide transition-colors shadow-xl"
+                style={{ background: T.primary, color: T.primaryText }}
+              >
+                {config.ctaText}
+              </button>
+              <a
+                href={config.phoneTel}
+                className="inline-flex items-center justify-center border-2 border-white text-white font-semibold text-lg px-10 py-5 rounded-md hover:bg-white transition-colors"
+              >
+                Call {config.phoneDisplay}
+              </a>
+            </div>
+            <p
+              className="text-sm opacity-80 mt-8 font-medium"
+              style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}
+            >
+              TABC-licensed • 1,000+ deliveries • 5.0★ Google rating
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-white/10 py-8 text-center" style={{ background: T.navy }}>
+        <p className="text-sm text-white opacity-70">
+          © {new Date().getFullYear()} Party On Delivery — Austin&apos;s {config.audienceTitleCase.toLowerCase()} HQ.
+          TABC-licensed alcohol retailer. Must be 21+ with valid ID at delivery.
+        </p>
+      </footer>
+
+      {/* Sticky mobile CTA bar */}
+      <div
+        className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200 px-4 py-3 flex gap-3 shadow-2xl"
+      >
+        <a
+          href={config.phoneTel}
+          className="flex-1 inline-flex items-center justify-center border-2 font-bold py-3 rounded-md text-sm"
+          style={{ borderColor: T.navy, color: T.navy }}
+        >
+          Call
+        </a>
+        <button
+          type="button"
+          onClick={openBuilder}
+          className="flex-[2] inline-flex items-center justify-center font-bold py-3 rounded-md text-sm"
+          style={{ background: T.primary, color: T.primaryText }}
+        >
+          {config.modal.ctaPrimaryShort} →
+        </button>
+      </div>
+      <div className="md:hidden h-16" aria-hidden />
+
+      {/* Modal */}
+      <PackageBuilderModal
+        open={builderOpen}
+        onClose={() => setBuilderOpen(false)}
+        config={config}
+        catalog={catalog}
+      />
+    </main>
+  );
+}
+
+// Helper export to get a typed ReactNode where needed
+export type { ReactNode };
