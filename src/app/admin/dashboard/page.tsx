@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, ReactElement } from 'react';
+import Link from 'next/link';
 import MetricCard from './components/MetricCard';
 import SalesChart from './components/SalesChart';
 import TopProductsTable from './components/TopProductsTable';
@@ -66,7 +67,7 @@ export default function DashboardPage(): ReactElement {
             <h1 className="text-xl font-semibold text-gray-900">
               Sales Analytics
             </h1>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               {(['7d', '30d', '90d'] as Period[]).map((p) => (
                 <button
                   key={p}
@@ -80,6 +81,15 @@ export default function DashboardPage(): ReactElement {
                   {periodLabels[p]}
                 </button>
               ))}
+              <Link
+                href="/admin/analytics/recommendations"
+                className="px-4 py-2 text-sm font-semibold rounded-md bg-brand-blue text-white hover:bg-blue-700 transition-colors inline-flex items-center gap-1.5"
+              >
+                Recommendations
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
             </div>
           </div>
         </div>
