@@ -101,7 +101,9 @@ export async function adjustInventory(adjustment: InventoryAdjustment) {
   }
 
   const previousQuantity = variant.inventoryQuantity;
-  const newQuantity = previousQuantity + quantity;
+  const requestedNewQuantity = previousQuantity + quantity;
+  const newQuantity = Math.max(0, requestedNewQuantity);
+  const flooredBy = newQuantity - requestedNewQuantity; // > 0 when clamped
 
   // Update ProductVariant -- the single source of truth
   await prisma.productVariant.update({
@@ -109,15 +111,16 @@ export async function adjustInventory(adjustment: InventoryAdjustment) {
     data: { inventoryQuantity: newQuantity },
   });
 
-  // Create audit trail
+  // Create audit trail. Quantity reflects actual delta after flooring;
+  // reason notes the clamp so the trail is honest.
   const movement = await prisma.inventoryMovement.create({
     data: {
       variantId: variant.id,
       type: type as InventoryMovementType,
-      quantity,
+      quantity: newQuantity - previousQuantity,
       previousQuantity,
       newQuantity,
-      reason,
+      reason: flooredBy > 0 ? `${reason || ''} (floored at 0; requested ${requestedNewQuantity})`.trim() : reason,
     },
   });
 
@@ -156,7 +159,7 @@ export async function setInventoryCount(count: InventoryCount) {
     if (!variant) continue;
 
     const previousQuantity = variant.inventoryQuantity;
-    const newQuantity = item.countedQuantity;
+    const newQuantity = Math.max(0, item.countedQuantity);
     const difference = newQuantity - previousQuantity;
 
     if (difference !== 0) {

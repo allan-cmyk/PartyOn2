@@ -78,8 +78,10 @@ export async function POST(
         // Skip items without product ID mapping
         if (!item.productId) continue;
 
-        // Use adjustment if provided, otherwise use AI detected quantity
-        const targetQuantity = adjustments?.[item.productId] ?? item.estimatedQuantity;
+        // Use adjustment if provided, otherwise use AI detected quantity.
+        // Floor at 0 — physical stock can't be negative.
+        const requested = adjustments?.[item.productId] ?? item.estimatedQuantity;
+        const targetQuantity = Math.max(0, requested);
 
         // Find the variant to update
         const variant = item.variantId

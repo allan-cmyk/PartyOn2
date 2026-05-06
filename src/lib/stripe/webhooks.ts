@@ -103,20 +103,35 @@ async function handleCheckoutSessionCompleted(
     const order = await createOrderFromCheckout(fullSession, cart);
     console.log('[Stripe Webhook] Order created:', order.orderNumber);
 
-    // Link order to affiliate if attributed
-    const affiliateCode = session.metadata?.affiliateCode;
+    // Link order to affiliate. Two paths:
+    //   1. Cookie/ref attribution from session metadata (affiliateCode)
+    //   2. Discount code happens to match an affiliate code — fallback when the
+    //      customer typed a partner's code at checkout without coming through
+    //      the partner page or ?ref= link.
+    const refCode = session.metadata?.affiliateCode;
+    const discountCode = order.discountCode;
+    let attributedCode: string | null = null;
     let affiliateEmail: string | null = null;
-    if (affiliateCode) {
+
+    const tryAttribute = async (code: string): Promise<boolean> => {
       try {
-        await linkOrderToAffiliate(order, affiliateCode);
-        const affiliate = await getAffiliateByCode(affiliateCode);
-        if (affiliate?.email) {
-          affiliateEmail = affiliate.email;
-        }
-      } catch (affiliateError) {
-        console.error('[Stripe Webhook] Failed to link affiliate:', affiliateError);
-        // Non-fatal: order was created successfully
+        const result = await linkOrderToAffiliate(order, code);
+        return Boolean(result);
+      } catch (err) {
+        console.error('[Stripe Webhook] Failed to link affiliate:', err);
+        return false;
       }
+    };
+
+    if (refCode && await tryAttribute(refCode)) {
+      attributedCode = refCode;
+    } else if (discountCode && discountCode !== refCode && await tryAttribute(discountCode)) {
+      attributedCode = discountCode;
+    }
+
+    if (attributedCode) {
+      const affiliate = await getAffiliateByCode(attributedCode);
+      if (affiliate?.email) affiliateEmail = affiliate.email;
     }
 
     // Notify GHL webhook
@@ -279,15 +294,27 @@ async function handleDraftOrderPayment(
     });
     console.log('[Stripe Webhook] Draft order marked as converted:', draftOrderId);
 
-    // Link order to affiliate if attributed
-    const affiliateCode = session.metadata?.affiliateCode || draftOrder.affiliateCode;
-    if (affiliateCode) {
+    // Link order to affiliate. Try ref/draft-attached code first; fall back to
+    // the discount code if the customer typed an affiliate code at checkout.
+    const draftRefCode = session.metadata?.affiliateCode || draftOrder.affiliateCode;
+    const draftDiscountCode = order.discountCode;
+    const tryDraftAttribute = async (code: string): Promise<boolean> => {
       try {
-        await linkOrderToAffiliate(order, affiliateCode);
-        console.log('[Stripe Webhook] Draft order linked to affiliate:', affiliateCode);
-      } catch (affiliateError) {
-        console.error('[Stripe Webhook] Failed to link draft order affiliate:', affiliateError);
+        const result = await linkOrderToAffiliate(order, code);
+        if (result) console.log('[Stripe Webhook] Draft order linked to affiliate:', code);
+        return Boolean(result);
+      } catch (err) {
+        console.error('[Stripe Webhook] Failed to link draft order affiliate:', err);
+        return false;
       }
+    };
+    if (draftRefCode) {
+      const linked = await tryDraftAttribute(draftRefCode);
+      if (!linked && draftDiscountCode && draftDiscountCode !== draftRefCode) {
+        await tryDraftAttribute(draftDiscountCode);
+      }
+    } else if (draftDiscountCode) {
+      await tryDraftAttribute(draftDiscountCode);
     }
 
     // Create delivery task

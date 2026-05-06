@@ -85,7 +85,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     }
 
     // Stock-tier filters require post-filter because available = inventoryQuantity - committedQuantity.
-    const needsPostFilter = filter === 'out_of_stock' || filter === 'low_stock';
+    const needsPostFilter = filter === 'out_of_stock' || filter === 'low_stock' || filter === 'oversold';
 
     const allVariants = await prisma.productVariant.findMany({
       where,
@@ -97,7 +97,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     });
 
     let filteredVariants = allVariants;
-    if (filter === 'out_of_stock') {
+    if (filter === 'oversold') {
+      filteredVariants = allVariants.filter(v => (v.inventoryQuantity - v.committedQuantity) < 0);
+    } else if (filter === 'out_of_stock') {
       filteredVariants = allVariants.filter(v => (v.inventoryQuantity - v.committedQuantity) <= 0);
     } else if (filter === 'low_stock') {
       filteredVariants = allVariants.filter(v => {

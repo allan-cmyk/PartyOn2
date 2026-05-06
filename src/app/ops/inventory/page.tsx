@@ -119,7 +119,14 @@ function FilterButton({
 }
 
 function StockStatus({ available, threshold }: { available: number; threshold: number }): ReactElement {
-  if (available <= 0) {
+  if (available < 0) {
+    return (
+      <span className="px-3 py-1 bg-red-200 text-red-800 border border-red-300 rounded-full text-xs font-semibold" title={`Oversold by ${Math.abs(available)} — paid commitments exceed stock`}>
+        Oversold ({available})
+      </span>
+    );
+  }
+  if (available === 0) {
     return (
       <span className="px-3 py-1 bg-red-100 text-red-700 border border-red-200 rounded-full text-xs font-semibold">
         Out of Stock
@@ -428,6 +435,7 @@ export default function InventoryPage(): ReactElement {
     inStock: 0,
     lowStock: 0,
     outOfStock: 0,
+    oversold: 0,
     missingCost: 0,
   });
 
@@ -461,16 +469,18 @@ export default function InventoryPage(): ReactElement {
   const fetchStats = useCallback(async () => {
     try {
       const ar = showArchived ? '&includeArchived=1' : '';
-      const [allRes, lowRes, outRes, missingRes] = await Promise.all([
+      const [allRes, lowRes, outRes, oversoldRes, missingRes] = await Promise.all([
         fetch(`/api/v1/inventory?limit=1${ar}`),
         fetch(`/api/v1/inventory?filter=low_stock&limit=1${ar}`),
         fetch(`/api/v1/inventory?filter=out_of_stock&limit=1${ar}`),
+        fetch(`/api/v1/inventory?filter=oversold&limit=1${ar}`),
         fetch(`/api/v1/inventory?filter=missing_cost&limit=1${ar}`),
       ]);
-      const [all, low, out, missing] = await Promise.all([
+      const [all, low, out, oversold, missing] = await Promise.all([
         allRes.ok ? allRes.json() : { meta: { total: 0 } },
         lowRes.ok ? lowRes.json() : { meta: { total: 0 } },
         outRes.ok ? outRes.json() : { meta: { total: 0 } },
+        oversoldRes.ok ? oversoldRes.json() : { meta: { total: 0 } },
         missingRes.ok ? missingRes.json() : { meta: { total: 0 } },
       ]);
       const total = all.meta?.total ?? 0;
@@ -481,6 +491,7 @@ export default function InventoryPage(): ReactElement {
         inStock: Math.max(0, total - lowStock - outOfStock),
         lowStock,
         outOfStock,
+        oversold: oversold.meta?.total ?? 0,
         missingCost: missing.meta?.total ?? 0,
       });
     } catch {
@@ -818,6 +829,13 @@ export default function InventoryPage(): ReactElement {
               onClick={() => setFilter('all')}
             >
               All Items
+            </FilterButton>
+            <FilterButton
+              active={filter === 'oversold'}
+              onClick={() => setFilter('oversold')}
+              count={stats.oversold}
+            >
+              Oversold
             </FilterButton>
             <FilterButton
               active={filter === 'out_of_stock'}
