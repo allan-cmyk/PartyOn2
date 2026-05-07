@@ -40,8 +40,50 @@ Fetch the retailer page with WebFetch and ask for the main product image URL. If
 ### 3. Calculate our price
 Apply the 20% markup → round UP to next .99 (see Pricing Rule above).
 
-### 4. Download the image
-Save to `public/images/products/<handle>.jpg` where `<handle>` is the kebab-case slug.
+### 4. Download + clean the image
+
+Every product image gets the same treatment: background removed, centered on white, square 1000×1000 JPG. This matches the rest of the catalog.
+
+One-time setup (already installed on this machine):
+```bash
+pip3 install rembg pillow onnxruntime
+```
+
+For each product, download the source then run this Python script (write to `/tmp/process-product.py` and run with `python3`):
+
+```python
+from rembg import remove
+from PIL import Image
+import io, sys
+
+src_path, dst_path = sys.argv[1], sys.argv[2]
+TARGET = 1000
+
+with open(src_path, "rb") as f:
+    cutout = Image.open(io.BytesIO(remove(f.read()))).convert("RGBA")
+
+bbox = cutout.getbbox()
+if bbox: cutout = cutout.crop(bbox)
+w, h = cutout.size
+scale = (TARGET * 0.85) / max(w, h)
+nw, nh = int(w * scale), int(h * scale)
+cutout = cutout.resize((nw, nh), Image.LANCZOS)
+
+canvas = Image.new("RGB", (TARGET, TARGET), (255, 255, 255))
+canvas.paste(cutout, ((TARGET - nw) // 2, (TARGET - nh) // 2), cutout)
+canvas.save(dst_path, "JPEG", quality=92, optimize=True)
+```
+
+Run as: `python3 /tmp/process-product.py <source.jpg> public/images/products/<handle>.jpg`
+
+The script:
+- removes background with `rembg` (downloads ~176MB U²-Net model on first run only)
+- crops to the product, resizes so the longest side is 85% of canvas (~7.5% padding)
+- centers on a white background, saves as 1000×1000 JPG
+
+If a source image is already on a clean white background, the rembg pass is still safe — it'll just re-isolate the product.
+
+Always show the cleaned-up image to the operator for confirmation before committing.
 
 ### 5. Create the product in the DB
 
@@ -62,28 +104,56 @@ Required fields:
 - `productType`: Match existing types (Liqueur, Tequila, Rum, Gin, Vodka, Whiskey, Red Wine, White Wine, Sparkling Wine, Beer, Seltzer, Mixer, etc.)
 - `vendor`: Distributor name if known (e.g. "Southern Glazer's of Texas", "Brown Distributing Company"), or "Party On Delivery" if direct
 - `basePrice`: Calculated price
-- One variant with same price + a SKU
+- `status: 'ACTIVE'`
+- One variant with same price + a SKU + **`allowBackorder: true`** (see below)
 - One image record pointing to `/images/products/<handle>.jpg`
+
+**Backorder default (MANDATORY):** Always set `allowBackorder: true` on the variant. New products are not physically stocked at the warehouse, so they ship by being ordered from a distributor. Without `allowBackorder: true`, the storefront will mark them out-of-stock and unsellable as soon as `inventoryQuantity` hits 0 (which is the default). The schema default is `false` — you MUST override.
+
+```js
+variants: {
+  create: {
+    title: 'Default Title',
+    option1Name: 'Title',
+    option1Value: 'Default Title',
+    sku: '<SKU>',
+    price: <price>,
+    availableForSale: true,
+    trackInventory: true,
+    allowBackorder: true,  // <-- always
+  },
+},
+```
 
 ### 6. Add the category (separate step!)
 
-**IMPORTANT:** Categories use a many-to-many join table (`ProductCategory`). Do NOT use `categories: { connect: ... }` inside the upsert — it'll silently fail. Instead, create the product first, then add the category:
+**IMPORTANT:** Categories use a many-to-many join table (`ProductCategory`). Do NOT use `categories: { connect: ... }` inside the upsert — it'll silently fail. Instead, create the product first, then add the category.
+
+**Position rule (MANDATORY):** New products go at the END of the category, not the front. The order page renders products in `position` ascending, so `position: 0` would shove the new product to the top of the list — operators have decided new arrivals should land at the bottom by default. Compute `(max position in this category) + 1`:
 
 ```js
 const cat = await prisma.category.findFirst({
   where: { handle: { contains: 'liqueur', mode: 'insensitive' } },
 });
+
+const last = await prisma.productCategory.findFirst({
+  where: { categoryId: cat.id },
+  orderBy: { position: 'desc' },
+  select: { position: true },
+});
+const nextPosition = (last?.position ?? -1) + 1;
+
 await prisma.productCategory.create({
-  data: { productId: product.id, categoryId: cat.id, position: 0 }
+  data: { productId: product.id, categoryId: cat.id, position: nextPosition }
 }).catch(() => { /* already exists */ });
 ```
 
 Common category handles:
-- `spirits-liqueurs`
+- `spirits-liqueurs`, `spirits-gin`, `spirits-vodka`, `spirits-tequila`, `spirits-rum`, `spirits-whiskey`
 - `red-wine`, `white-wine`, `sparkling-wine`
-- `beer`
-- `seltzers-ciders`
-- `mixers-non-alcoholic`
+- `light-beer`, `craft-beer`, `kegs`
+- `seltzers-rtds`
+- `mixers`, `food`
 
 ### 7. Commit and push the image
 
@@ -123,7 +193,10 @@ When extracting cost data from distributor invoices (Southern Glazer's, Brown, C
 
 ## Rules
 
-- ALWAYS confirm price + image before creating
+- ALWAYS clean the image (rembg → white bg → 1000×1000 JPG) — see step 4
+- ALWAYS confirm price + cleaned image with the operator before creating
+- ALWAYS set `allowBackorder: true` on the variant — new products are not stocked, must remain sellable when inventoryQuantity = 0
+- ALWAYS append to category — compute next position as `(max position) + 1`, never use `position: 0`
 - NEVER skip the category join step (products won't appear in storefront filtering otherwise)
 - ALWAYS commit and push images, otherwise they 404 in production
 
