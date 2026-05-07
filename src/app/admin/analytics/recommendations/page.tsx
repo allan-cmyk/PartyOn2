@@ -13,6 +13,8 @@ import { useEffect, useState, ReactElement, useCallback } from 'react';
 import Link from 'next/link';
 
 type Status = 'open' | 'approved' | 'shipped' | 'rejected' | 'invalidated';
+type Domain = 'marketing' | 'seo';
+type DomainFilter = Domain | 'all';
 type RiskTier = 'autonomous' | 'recommend' | 'hard_stop';
 type EffortTier = 's' | 'm' | 'l';
 
@@ -29,6 +31,7 @@ interface Recommendation {
   id: string;
   generatedAt: string;
   source: string;
+  domain: Domain;
   title: string;
   body: string | null;
   segment: string | null;
@@ -51,6 +54,12 @@ const STATUS_TABS: { value: Status | 'all'; label: string }[] = [
   { value: 'shipped', label: 'Shipped' },
   { value: 'rejected', label: 'Rejected' },
   { value: 'invalidated', label: 'Invalidated' },
+  { value: 'all', label: 'All' },
+];
+
+const DOMAIN_TABS: { value: DomainFilter; label: string }[] = [
+  { value: 'marketing', label: 'Marketing' },
+  { value: 'seo', label: 'SEO' },
   { value: 'all', label: 'All' },
 ];
 
@@ -81,6 +90,7 @@ const REASON_MIN_CHARS = 10;
 export default function RecommendationsTriagePage(): ReactElement {
   const [recs, setRecs] = useState<Recommendation[]>([]);
   const [filter, setFilter] = useState<Status | 'all'>('open');
+  const [domainFilter, setDomainFilter] = useState<DomainFilter>('marketing');
   const [isLoading, setIsLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
@@ -93,6 +103,7 @@ export default function RecommendationsTriagePage(): ReactElement {
     try {
       const params = new URLSearchParams();
       if (filter !== 'all') params.set('status', filter);
+      if (domainFilter !== 'all') params.set('domain', domainFilter);
       params.set('limit', '200');
       const res = await fetch(`/api/admin/analytics/recommendations?${params.toString()}`);
       if (res.ok) {
@@ -104,7 +115,7 @@ export default function RecommendationsTriagePage(): ReactElement {
     } finally {
       setIsLoading(false);
     }
-  }, [filter]);
+  }, [filter, domainFilter]);
 
   useEffect(() => {
     fetchRecs();
@@ -195,6 +206,26 @@ export default function RecommendationsTriagePage(): ReactElement {
           </button>
         </div>
 
+        {/* Domain tabs */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 mb-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs uppercase tracking-wider text-gray-500 font-medium mr-1">Domain</span>
+            {DOMAIN_TABS.map((d) => (
+              <button
+                key={d.value}
+                onClick={() => setDomainFilter(d.value)}
+                className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                  domainFilter === d.value
+                    ? 'bg-brand-blue text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {d.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Status tabs */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 mb-6">
           <div className="flex flex-wrap gap-2">
@@ -230,9 +261,15 @@ export default function RecommendationsTriagePage(): ReactElement {
         ) : recs.length === 0 ? (
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
             <p className="text-gray-500 text-sm">No recommendations match this filter.</p>
-            {filter === 'open' && (
+            {filter === 'open' && domainFilter === 'marketing' && (
               <p className="text-gray-400 text-xs mt-2">
-                The agent will populate this queue on the next weekly briefing run.
+                The Marketing Director will populate this queue on the next weekly briefing run.
+              </p>
+            )}
+            {filter === 'open' && domainFilter === 'seo' && (
+              <p className="text-gray-400 text-xs mt-2">
+                The SEO Director Phase 1 snapshot pipeline isn&apos;t live yet. SEO recs will start
+                appearing here once <code className="px-1 bg-gray-100 rounded">/api/cron/seo-snapshot</code> ships.
               </p>
             )}
           </div>
@@ -253,13 +290,30 @@ export default function RecommendationsTriagePage(): ReactElement {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                           <StatusBadge status={rec.status} />
+                          {domainFilter === 'all' && rec.domain && (
+                            <span
+                              className={`px-2 py-0.5 text-xs rounded-full font-medium ${
+                                rec.domain === 'seo'
+                                  ? 'bg-emerald-100 text-emerald-800'
+                                  : 'bg-indigo-100 text-indigo-800'
+                              }`}
+                            >
+                              {rec.domain === 'seo' ? 'SEO' : 'Marketing'}
+                            </span>
+                          )}
                           {rec.segment && (
                             <span className="px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-700 font-medium">
                               {rec.segment}
                             </span>
                           )}
                           <span className="text-xs text-gray-400">
-                            {rec.source === 'director' ? 'Director' : rec.source === 'auto-snapshot' ? 'Heuristic' : 'Manual'}
+                            {rec.source === 'seo-director'
+                              ? 'SEO Director'
+                              : rec.source === 'director'
+                                ? 'Director'
+                                : rec.source === 'auto-snapshot'
+                                  ? 'Heuristic'
+                                  : 'Manual'}
                             {' · '}
                             {new Date(rec.generatedAt).toLocaleDateString()}
                           </span>

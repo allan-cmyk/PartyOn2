@@ -2468,11 +2468,12 @@ model ScheduleOrderMatch {
 model RecommendationItem {
   id                    String    @id @default(uuid())
   generatedAt           DateTime  @default(now()) @map("generated_at")
-  source                String    // 'auto-snapshot' | 'director' | 'manual'
+  source                String    // 'auto-snapshot' | 'director' | 'manual' | 'seo-director'
+  domain                String    @default("marketing") // 'marketing' | 'seo' — see ADR S0001 in Memory/SEO/Decisions/
   title                 String
   body                  String?   @db.Text
   segment               String?   // bach | wedding | corporate | boat | kegs | general | null (cross-segment)
-  metric                String?   // e.g. 'conversion-by-page:/weddings'
+  metric                String?   // e.g. 'conversion-by-page:/weddings' or 'gsc-position:/weddings'
   currentValue          String?   @map("current_value")
   targetValue           String?   @map("target_value")
   impactDollarsMonthly  Int?      @map("impact_dollars_monthly")
@@ -2490,6 +2491,7 @@ model RecommendationItem {
   @@index([generatedAt])
   @@index([segment])
   @@index([title, segment])
+  @@index([domain, status])
   @@map("recommendation_items")
 }
 
