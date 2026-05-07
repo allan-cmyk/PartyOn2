@@ -1,0 +1,224 @@
+import type { LandingConfig } from '../types';
+
+const PHONE_DISPLAY = '(737) 371-9700';
+
+export const bacheloretteConfig: LandingConfig = {
+  slug: 'austin-bachelorette-party-delivery',
+  metaTitle:
+    'Austin Bachelorette Party Alcohol Delivery | Champagne, Cocktails & More | Party On Delivery',
+  metaDescription:
+    "Champagne, rosé, cocktail kits and brunch mimosa bars delivered to your Austin Airbnb, hotel suite, or boat. TABC-licensed. The bride says yes — and we say cheers.",
+  ogImage: '/images/services/bach-parties/bachelorette-champagne-tower.webp',
+
+  theme: {
+    primary: '#F5B0C5',          // soft rose
+    primaryHover: '#F19BB7',
+    primaryText: '#3F1A2C',      // deep wine
+    navy: '#3F1A2C',             // deep wine instead of navy
+    cream: '#FFF8F4',            // ivory cream
+    blue: '#9C5A87',             // muted plum for accents
+  },
+  eventLabel: 'AUSTIN BACHELORETTE PARTY ALCOHOL DELIVERY',
+  audienceTitleCase: 'Bachelorette Weekend',
+
+  heroEyebrow: 'AUSTIN BACHELORETTE PARTY ALCOHOL DELIVERY',
+  heroHeadline: 'Champagne Popped',
+  heroHeadlineAccent: 'Before The Bride Lands.',
+  heroSubhead:
+    "Bubbly, rosé, cocktail pitcher kits, and brunch mimosa bars — delivered to your Airbnb, hotel suite, or Lake Travis pontoon. You handle the sashes. We handle the rest.",
+  heroImage: '/images/services/bach-parties/bachelorette-champagne-tower.webp',
+  heroTrustBadges: ['✓ TABC-licensed', '✓ 800+ Austin bach groups', '★ 5.0 on Google'],
+
+  trustStats: [
+    { stat: '800+', label: 'Austin bachelorette groups' },
+    { stat: '5.0★', label: 'Google rating' },
+    { stat: '30 sec', label: 'To order' },
+    { stat: 'TABC', label: 'Licensed & insured' },
+  ],
+
+  painHeadline: "You're the maid of honor — not the liquor runner.",
+  painBody:
+    "Splitting up the girls on day one for a Costco haul. Hauling champagne up four flights to a hotel suite. Realizing nobody brought ice for the mimosa bar. Skip all of it — we deliver everything cold, set up, and ready to pop.",
+
+  packagesEyebrow: 'CURATED FOR AUSTIN BACHELORETTE WEEKENDS',
+  packagesHeadline: 'Pick a package. Pop the bottles.',
+  packagesBlurb:
+    'Built around the weekends groups actually plan in Austin — Rainey Street, Lake Travis, brunch on South Congress.',
+  packages: [
+    {
+      name: 'Welcome Cocktail Kit',
+      price: '$249',
+      save: 'Save $40',
+      serves: 'Welcome night for 6–8',
+      blurb: 'The girls land, the rosé pops, the weekend begins.',
+      items: [
+        'Whispering Angel Rosé (750ml)',
+        'Veuve Clicquot Brut (750ml)',
+        'Espresso Martini Cocktail Kit',
+        'Strawberries, citrus, ice',
+        'Champagne flutes + napkins',
+      ],
+      image: '/images/services/bach-parties/bachelorette-champagne-tower.webp',
+    },
+    {
+      name: 'Lake Day & Night',
+      price: '$549',
+      save: 'Save $90',
+      serves: 'Boat day + Rainey night for 10–12',
+      blurb: 'A full day on the water plus a downtown night out — stocked end to end.',
+      items: [
+        'Veuve Clicquot Brut (750ml)',
+        '2× Whispering Angel Rosé (750ml)',
+        '12× High Noon Variety',
+        'Hugo Spritz Pitcher Kit',
+        'Floppy hats, koozies, cooler',
+      ],
+      image: '/images/gallery/sunset-champagne-pontoon.webp',
+      featured: true,
+    },
+    {
+      name: 'Brunch Mimosa Bar',
+      price: '$199',
+      save: 'Save $35',
+      serves: 'Sunday brunch for 8–10',
+      blurb: 'The hangover cure that doubles as the prettiest setup of the weekend.',
+      items: [
+        '2× Chandon Brut',
+        '2× Chandon Brut Rosé',
+        'Fresh OJ + grapefruit + cranberry',
+        'Strawberries, raspberries, mint',
+        'Glass dispenser + flutes',
+      ],
+      image: '/images/services/bach-parties/brunch-mimosa-bar.webp',
+    },
+  ],
+  customLine: "Want to customize? Call us — we'll build your perfect weekend.",
+
+  stepsHeadline: 'From order to first toast in three steps.',
+  steps: [
+    {
+      n: '1',
+      title: 'Pick your package',
+      body: 'Three signature bundles or build your own. We curate; you celebrate.',
+    },
+    {
+      n: '2',
+      title: 'Tell us when & where',
+      body: 'Hotel suite, Airbnb, brunch venue, lake dock — give us the spot and the time. 48-hour notice is best.',
+    },
+    {
+      n: '3',
+      title: 'Pop & celebrate',
+      body: "We text when we're 15 minutes out. Discreet, friendly, ice-cold delivery — you stay in the moment.",
+    },
+  ],
+
+  venuesEyebrow: 'EVERYWHERE THE GIRLS GO',
+  venuesHeadline: 'Hotel suite. Lake pontoon. Brunch table. We deliver.',
+  venues: [
+    { area: 'Downtown Hotel Suites', detail: 'Fairmont, JW Marriott, Line — discreet to your room' },
+    { area: 'Rainey & East Austin Airbnbs', detail: 'Front door, kitchen-counter setup' },
+    { area: 'Lake Travis Pontoons & Yachts', detail: 'Dockside loading, ice & coolers included' },
+    { area: 'Brunch Spots', detail: 'Bring-your-own-bubbly venues — we time it to brunch' },
+    { area: 'Spa & Pool Days', detail: 'Cabana drop-off at hotels with poolside service' },
+    { area: 'Wedding-Adjacent Houses', detail: 'Wimberley, Dripping Springs, Spicewood' },
+  ],
+  venuesImage: '/images/hero/bach-hero-rainey.webp',
+
+  reviewsEyebrow: '★★★★★ 5.0 ON GOOGLE',
+  reviewsHeadline: 'The bride remembers everything. We make sure it sparkles.',
+  reviews: [
+    {
+      quote:
+        "The mimosa bar setup was unreal — the bride literally cried. Worth every penny just to not have to do a Costco run on day one.",
+      author: 'Lauren M.',
+      detail: 'Maid of Honor, June 2025',
+    },
+    {
+      quote:
+        'Booked the Lake Day & Night package three days out. They had champagne on ice waiting at the dock when we boarded.',
+      author: 'Jess R.',
+      detail: 'Bridesmaid, Lake Travis weekend',
+    },
+    {
+      quote:
+        "Coordinated everything by text — sent the brunch package right when we were getting ready. So discreet, so smooth.",
+      author: 'Tay W.',
+      detail: 'Bach planner, Dallas',
+    },
+  ],
+
+  faqHeadline: 'The questions every MOH asks.',
+  faqs: [
+    {
+      q: 'How fast can you deliver in Austin?',
+      a:
+        '48-hour notice is our standard window for guaranteed pricing and cold delivery. Same-day is often possible — call us at ' +
+        PHONE_DISPLAY +
+        ' to check.',
+    },
+    {
+      q: 'Can you deliver to a hotel suite?',
+      a: "Yes — we coordinate with the front desk or text the room directly. Discreet, no fuss.",
+    },
+    {
+      q: 'What is the order minimum?',
+      a: 'Most areas are $100–$150 minimum. Lake Travis and far-out venues start at $250 to cover the drive.',
+    },
+    {
+      q: 'Do you set up mimosa bars?',
+      a: "We deliver everything pre-stocked, chilled, and ready to pour. Glassware and dispensers included if you order them.",
+    },
+    {
+      q: 'Are you actually licensed?',
+      a: "Yes. We're TABC-licensed, fully insured, and every driver is certified. We card on delivery — required by law.",
+    },
+    {
+      q: 'What if plans change?',
+      a: 'Bach weekends shift. Reschedule free up to 6 hours before delivery. After that, we work with you.',
+    },
+  ],
+
+  finalCtaHeadline: 'Lock it in.',
+  finalCtaHeadlineAccent: 'Then enjoy the weekend you actually planned.',
+  finalCtaSubhead:
+    "Most groups book 1–3 weeks out. Lake Travis weekends and Saturday brunches fill up fast.",
+  finalCtaImage: '/images/services/bach-parties/brunch-mimosa-bar.webp',
+
+  phoneDisplay: PHONE_DISPLAY,
+  phoneTel: 'tel:7373719700',
+  primaryCtaHref: '#builder',
+  ctaText: 'BUILD MY BACHELORETTE PACKAGE →',
+
+  quoteInbox: 'brian@premierpartycruises.com',
+
+  modal: {
+    title: 'Build Your Bachelorette Package',
+    ctaPrimary: 'BUILD MY BACHELORETTE PACKAGE →',
+    ctaPrimaryShort: 'BUILD MY PACKAGE',
+    steps: [
+      { key: 'basics', label: 'Weekend basics' },
+      { key: 'beer', label: 'Bubbly, rosé & seltzers' },
+      { key: 'liquor', label: 'Cocktails & spirits' },
+      { key: 'mixers', label: 'Mixers & extras' },
+      { key: 'review', label: 'Review' },
+    ],
+    beerStepBlurb:
+      'Champagne, rosé, hard seltzers — pick what your girls actually drink.',
+    liquorStepBlurb:
+      'Bottles for cocktails, plus pitcher kits if you want it Pinterest-perfect with zero work.',
+    mixersStepBlurb:
+      'Juices, garnishes, glassware, ice, and the little extras that make the photos look good.',
+    basicsHeadline: "Let's set up the weekend.",
+    basicsBlurb:
+      'Both optional. You can edit anytime — your per-guest price updates live.',
+    groupSizeLabel: 'Group size',
+    groupSizeUnit: 'guests',
+    defaultPeople: 8,
+    reviewHeadline: 'Review & lock it in.',
+    successQuoteHeadline: 'Quote on the way! 🥂',
+    successCheckoutHeadline: "We've got you, MOH.",
+    emailNotice:
+      "We'll never spam you. TABC-licensed alcohol retailer — must be 21+ at delivery.",
+  },
+};
