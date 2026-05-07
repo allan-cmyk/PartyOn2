@@ -4,6 +4,8 @@ import { bacheloretteConfig } from '@/components/landing/configs/bachelorette';
 import { getCuratedCatalog } from '@/lib/landing/getCuratedCatalog';
 import { getOccasionPackages } from '@/lib/landing/getOccasionPackages';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: bacheloretteConfig.metaTitle,
   description: bacheloretteConfig.metaDescription,

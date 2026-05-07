@@ -376,11 +376,16 @@ async function buildOccasionPackagesUncached(occasion: Occasion): Promise<Packag
     for (const it of [...r.alcohol, ...r.freebies]) allHandles.add(it.handle);
   }
 
-  const products = await prisma.product.findMany({
-    where: { handle: { in: [...allHandles] } },
-    select: { handle: true, title: true, basePrice: true },
-  });
-  const byHandle = Object.fromEntries(products.map((p) => [p.handle, p]));
+  let byHandle: Record<string, { handle: string; title: string; basePrice: { toString: () => string } }> = {};
+  try {
+    const products = await prisma.product.findMany({
+      where: { handle: { in: [...allHandles] } },
+      select: { handle: true, title: true, basePrice: true },
+    });
+    byHandle = Object.fromEntries(products.map((p) => [p.handle, p])) as typeof byHandle;
+  } catch (err) {
+    console.error('[getOccasionPackages] DB fetch failed:', err);
+  }
 
   return recipes.map((r) => {
     const lineItems: PackageLineItem[] = [];

@@ -4,6 +4,8 @@ import { corporateConfig } from '@/components/landing/configs/corporate';
 import { getCuratedCatalog } from '@/lib/landing/getCuratedCatalog';
 import { getOccasionPackages } from '@/lib/landing/getOccasionPackages';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: corporateConfig.metaTitle,
   description: corporateConfig.metaDescription,

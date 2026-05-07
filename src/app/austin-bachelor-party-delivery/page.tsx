@@ -4,6 +4,9 @@ import { bachelorConfig } from '@/components/landing/configs/bachelor';
 import { getCuratedCatalog } from '@/lib/landing/getCuratedCatalog';
 import { getOccasionPackages } from '@/lib/landing/getOccasionPackages';
 
+// Render at request time, not at build — avoids DB calls during prerender.
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: bachelorConfig.metaTitle,
   description: bachelorConfig.metaDescription,

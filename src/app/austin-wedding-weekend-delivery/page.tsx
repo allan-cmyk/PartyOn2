@@ -4,6 +4,8 @@ import { weddingConfig } from '@/components/landing/configs/wedding';
 import { getCuratedCatalog } from '@/lib/landing/getCuratedCatalog';
 import { getOccasionPackages } from '@/lib/landing/getOccasionPackages';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: weddingConfig.metaTitle,
   description: weddingConfig.metaDescription,

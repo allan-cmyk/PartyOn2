@@ -99,11 +99,22 @@ async function fetchBucket(
 }
 
 async function buildCatalogUncached() {
-  const [stepOne, stepTwo, stepThree] = await Promise.all([
-    Promise.all(STEP_ONE.map(fetchBucket)),
-    Promise.all(STEP_TWO.map(fetchBucket)),
-    Promise.all(STEP_THREE.map(fetchBucket)),
-  ]);
+  let stepOne, stepTwo, stepThree;
+  try {
+    [stepOne, stepTwo, stepThree] = await Promise.all([
+      Promise.all(STEP_ONE.map(fetchBucket)),
+      Promise.all(STEP_TWO.map(fetchBucket)),
+      Promise.all(STEP_THREE.map(fetchBucket)),
+    ]);
+  } catch (err) {
+    // If the DB is unreachable (build-time, network blip, etc.), serve an
+    // empty catalog rather than 500ing the whole landing page.
+    console.error('[getCuratedCatalog] DB fetch failed:', err);
+    const empty = { top: [], extras: [] };
+    stepOne = STEP_ONE.map(() => empty);
+    stepTwo = STEP_TWO.map(() => empty);
+    stepThree = STEP_THREE.map(() => empty);
+  }
 
   const stepOneCategories: BuilderCategory[] = STEP_ONE.map((b, i) => ({
     key: b.type.toLowerCase().replace(/\s+/g, '-'),
