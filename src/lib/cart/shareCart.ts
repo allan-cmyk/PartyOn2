@@ -42,15 +42,19 @@ function extractVariantId(gid: string): string {
 }
 
 /**
- * Reconstruct Shopify GID from numeric ID
+ * Reconstruct a variant identifier the cart API can resolve.
+ *
+ * Cart now stores local UUIDs (post-Shopify-cart migration) but legacy share
+ * URLs may contain numeric Shopify variant IDs. /api/v1/products/variant/[id]
+ * accepts both formats natively, so:
+ *   - full gid:// → pass through unchanged
+ *   - purely numeric → wrap as legacy Shopify GID (preserves old share links)
+ *   - anything else (UUID, etc.) → pass through unchanged
  */
 function reconstructGid(id: string): string {
-  // If already a full GID, return as-is
-  if (id.startsWith('gid://')) {
-    return id;
-  }
-  // Otherwise, reconstruct from numeric ID
-  return `gid://shopify/ProductVariant/${id}`;
+  if (id.startsWith('gid://')) return id;
+  if (/^\d+$/.test(id)) return `gid://shopify/ProductVariant/${id}`;
+  return id;
 }
 
 /**
