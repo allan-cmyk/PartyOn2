@@ -90,6 +90,37 @@ export default function HomePage() {
         TO RESTORE: git show HEAD~1:src/app/page.tsx and copy lines 85-131
       */}
 
+      {/* Group Order / Split-Pay callout */}
+      <section className="py-16 md:py-20 bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800">
+        <div className="max-w-6xl mx-auto px-8 md:px-12">
+          <ScrollRevealCSS duration={800} y={30}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+              <div className="md:col-span-2 text-center md:text-left">
+                <p className="text-gold text-sm tracking-[0.2em] uppercase mb-3">
+                  Split-pay group ordering
+                </p>
+                <h2 className="font-heading text-3xl md:text-4xl text-white mb-3 tracking-[0.05em] leading-tight">
+                  Planning with a group? Build one order. Everyone pays their share.
+                </h2>
+                <p className="text-white/70 text-base md:text-lg leading-relaxed">
+                  Built for bach weekends, lake days, Airbnbs, and corporate events — invite your group, let everyone add what they want, and check out separately.
+                </p>
+              </div>
+              <div className="flex flex-col items-center md:items-end gap-3">
+                <TrackedLink href="/group/create" section="group_order_strip" buttonText="START A GROUP ORDER">
+                  <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm font-semibold">
+                    START A GROUP ORDER
+                  </button>
+                </TrackedLink>
+                <a href="#how-it-works" className="text-white/70 hover:text-white text-sm tracking-[0.05em] underline underline-offset-4 decoration-white/30 hover:decoration-white transition-colors">
+                  How it works
+                </a>
+              </div>
+            </div>
+          </ScrollRevealCSS>
+        </div>
+      </section>
+
       {/* Why Austin Books Party On */}
       <section id="experience" className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-8 md:px-12">
@@ -200,14 +231,9 @@ export default function HomePage() {
                 Make your special day stress-free with coordinated bar service and setup.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
-                <TrackedLink href="/weddings" section="services" buttonText="EXPLORE PACKAGES">
+                <TrackedLink href="/weddings" section="services" buttonText="START WEDDING ORDER">
                   <button className="px-6 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm">
-                    EXPLORE PACKAGES
-                  </button>
-                </TrackedLink>
-                <TrackedLink href="/order" section="services" buttonText="PLAN MY WEDDING">
-                  <button className="px-6 py-3 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.1em] text-sm">
-                    PLAN MY WEDDING
+                    START WEDDING ORDER
                   </button>
                 </TrackedLink>
               </div>
@@ -226,14 +252,9 @@ export default function HomePage() {
                 Lake Travis essentials delivered dockside—drinks, ice, and coolers ready to go.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
-                <TrackedLink href="/boat-parties" section="services" buttonText="ORDER LAKE DAY ESSENTIALS">
+                <TrackedLink href="/boat-parties" section="services" buttonText="START LAKE DAY ORDER">
                   <button className="px-6 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm">
-                    ORDER LAKE DAY ESSENTIALS
-                  </button>
-                </TrackedLink>
-                <TrackedLink href="/order" section="services" buttonText="PLAN A YACHT BAR">
-                  <button className="px-6 py-3 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.1em] text-sm">
-                    PLAN A YACHT BAR
+                    START LAKE DAY ORDER
                   </button>
                 </TrackedLink>
               </div>
@@ -276,18 +297,68 @@ export default function HomePage() {
                 Professional office bars and team events with invoice billing available.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
-                <TrackedLink href="/corporate" section="services" buttonText="ORDER OFFICE BAR">
+                <TrackedLink href="/corporate" section="services" buttonText="START CORPORATE ORDER">
                   <button className="px-6 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm">
-                    ORDER OFFICE BAR
-                  </button>
-                </TrackedLink>
-                <TrackedLink href="/contact" section="services" buttonText="BOOK A CORPORATE CONSULT">
-                  <button className="px-6 py-3 border-2 border-brand-yellow text-gray-900 hover:bg-brand-yellow hover:text-gray-900 transition-all duration-300 tracking-[0.1em] text-sm">
-                    BOOK A CORPORATE CONSULT
+                    START CORPORATE ORDER
                   </button>
                 </TrackedLink>
               </div>
             </div>
+            </div>
+          </ScrollRevealCSS>
+
+          {/* More event types — compact cards */}
+          <ScrollRevealCSS duration={800} delay={150} y={30}>
+            <div className="mt-24 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+              {/* Bach Parties */}
+              <div className="group bg-gradient-to-br from-rose-50 to-gray-50 border border-gray-200 rounded-lg p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+                <svg className="w-12 h-12 text-brand-yellow mb-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+                <h3 className="font-heading text-2xl text-gray-900 mb-3 tracking-[0.1em]">
+                  Bach Parties
+                </h3>
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                  Multi-stop drinks for Rainey, Lake Travis, and Airbnbs — coordinated for the whole weekend.
+                </p>
+                <TrackedLink href="/bach-parties" section="services" buttonText="START WEEKEND ORDER">
+                  <button className="px-6 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm">
+                    START WEEKEND ORDER
+                  </button>
+                </TrackedLink>
+              </div>
+
+              {/* Airbnbs / House Parties */}
+              <div className="group bg-gradient-to-br from-blue-50 to-gray-50 border border-gray-200 rounded-lg p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+                <svg className="w-12 h-12 text-brand-yellow mb-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <h3 className="font-heading text-2xl text-gray-900 mb-3 tracking-[0.1em]">
+                  Airbnbs &amp; House Parties
+                </h3>
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                  Stock the fridge before guests arrive — alcohol, mixers, ice, and extras delivered to the door code.
+                </p>
+                <TrackedLink href="/order" section="services" buttonText="START HOUSE PARTY ORDER">
+                  <button className="px-6 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm">
+                    START HOUSE PARTY ORDER
+                  </button>
+                </TrackedLink>
+              </div>
+            </div>
+          </ScrollRevealCSS>
+
+          {/* Get Event Help anchor */}
+          <ScrollRevealCSS duration={800} delay={250} y={20}>
+            <div className="mt-12 text-center">
+              <TrackedLink href="/contact" section="services" buttonText="GET EVENT HELP">
+                <span className="inline-flex items-center gap-2 text-gray-700 hover:text-brand-blue text-base tracking-[0.05em] underline underline-offset-4 decoration-gray-300 hover:decoration-brand-blue transition-colors">
+                  Not sure which path? Get Event Help
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </span>
+              </TrackedLink>
             </div>
           </ScrollRevealCSS>
         </div>
@@ -400,7 +471,7 @@ export default function HomePage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-24 bg-gray-50">
+      <section id="how-it-works" className="py-24 bg-gray-50 scroll-mt-24">
         <div className="max-w-6xl mx-auto px-8">
           <ScrollRevealCSS duration={800} y={30}>
             <div className="text-center mb-16">
@@ -425,8 +496,8 @@ export default function HomePage() {
               },
               {
                 step: "3",
-                title: "We coordinate logistics",
-                description: "Venue/Airbnb/office/boat handoff arranged"
+                title: "Invite your group, split the bill",
+                description: "Everyone adds drinks; pay your share via split-pay group ordering"
               },
               {
                 step: "4",

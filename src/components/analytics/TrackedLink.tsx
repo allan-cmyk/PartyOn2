@@ -12,7 +12,7 @@ import { trackCTAClick } from '@/lib/analytics/ga4-events';
 interface TrackedLinkProps {
   href: string;
   children: ReactNode;
-  section: 'hero' | 'choose_path' | 'services' | 'footer_cta' | 'navigation';
+  section: 'hero' | 'choose_path' | 'services' | 'footer_cta' | 'navigation' | 'group_order_strip';
   buttonText: string;
   className?: string;
 }
