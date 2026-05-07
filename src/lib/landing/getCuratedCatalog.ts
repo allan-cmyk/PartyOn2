@@ -10,7 +10,6 @@
  * Used by: src/app/austin-*-party-delivery/page.tsx
  */
 
-import { unstable_cache } from 'next/cache';
 import { prisma } from '@/lib/database/client';
 import type { BuilderProduct, BuilderCategory } from '@/components/landing/types';
 
@@ -152,10 +151,6 @@ async function buildCatalogUncached() {
   return { stepOneCategories, stepTwoCategories, stepThreeCategories, productById };
 }
 
-export const getCuratedCatalog = unstable_cache(
-  buildCatalogUncached,
-  ['landing-curated-catalog-v1'],
-  { revalidate: 3600, tags: ['landing-catalog'] },
-);
+export const getCuratedCatalog = buildCatalogUncached;
 
 export type CuratedCatalog = Awaited<ReturnType<typeof buildCatalogUncached>>;

@@ -13,7 +13,6 @@
  * Used by: src/app/austin-*-party-delivery/page.tsx
  */
 
-import { unstable_cache } from 'next/cache';
 import { prisma } from '@/lib/database/client';
 import type { Package, PackageLineItem } from '@/components/landing/types';
 
@@ -425,8 +424,4 @@ function cleanTitle(t: string): string {
   return t.replace(/\s+/g, ' ').trim();
 }
 
-export const getOccasionPackages = unstable_cache(
-  buildOccasionPackagesUncached,
-  ['landing-occasion-packages-v1'],
-  { revalidate: 3600, tags: ['landing-packages'] },
-);
+export const getOccasionPackages = buildOccasionPackagesUncached;

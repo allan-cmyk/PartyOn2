@@ -7,7 +7,7 @@ import { useState, type ReactNode } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import PackageBuilderModal from './PackageBuilderModal';
-import type { LandingConfig, Catalog } from './types';
+import type { LandingConfig, Catalog, Package, ThemeColors } from './types';
 
 type Props = { config: LandingConfig; catalog: Catalog };
 
@@ -458,8 +458,6 @@ export type { ReactNode };
 
 // ----- Package card with itemized dropdown ---------------------------------
 
-import type { Package, ThemeColors } from './types';
-
 function PackageCard({
   pkg,
   theme: T,
@@ -544,7 +542,7 @@ function PackageCard({
               aria-expanded={open}
             >
               <span>
-                {open ? 'Hide' : 'See'} what's inside ({pkg.lineItems!.length} items)
+                {open ? 'Hide' : 'See'} what&apos;s inside ({pkg.lineItems!.length} items)
               </span>
               <span className="text-xs" style={{ color: T.blue }}>
                 {open ? '▲' : '▼'}
