@@ -239,6 +239,10 @@ export async function createGroupOrder(
     attempts++;
   }
 
+  const tabDeliveryDates = input.tabs
+    .map(tab => new Date(tab.deliveryDate ?? ''))
+    .filter(d => !isNaN(d.getTime()));
+
   const group = await prisma.groupOrderV2.create({
     data: {
       name: input.name,
@@ -247,7 +251,7 @@ export async function createGroupOrder(
       hostPhone: input.hostPhone || null,
       hostCustomerId: input.hostCustomerId || null,
       shareCode,
-      expiresAt: defaultExpiresAt(),
+      expiresAt: defaultExpiresAt(tabDeliveryDates),
       tabs: {
         create: input.tabs.map((tab, idx) => {
           const deliveryDate = new Date(tab.deliveryDate ?? '');
@@ -940,7 +944,7 @@ export async function createDashboardOrder(
       affiliateId: input.affiliateId || null,
       source: input.source || 'DIRECT',
       isLastMinute: input.isLastMinute ?? false,
-      expiresAt: defaultExpiresAt(),
+      expiresAt: defaultExpiresAt(deliveryDate),
       tabs: {
         create: {
           name: input.tabName || 'Location 1',
@@ -1007,7 +1011,7 @@ export async function createMultiTabDashboardOrder(
       partyType: input.partyType || null,
       affiliateId: input.affiliateId,
       source: input.source || 'PARTNER_PAGE',
-      expiresAt: defaultExpiresAt(),
+      expiresAt: defaultExpiresAt(deliveryDate),
       tabs: {
         create: input.tabs.map((tab, idx) => {
           const address = tab.deliveryAddress
