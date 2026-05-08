@@ -2510,3 +2510,18 @@ model SyncLog {
 
   @@map("sync_log")
 }
+
+/// Short-link record for /cart/shared URLs. Customer-facing share links
+/// resolve via /s/<slug> → 302 → /cart/shared?c=...&t=...
+model CartShareLink {
+  id        String   @id @default(uuid())
+  slug      String   @unique
+  cartData  String   @map("cart_data") @db.Text  // base64 'c' payload
+  token     String   // base36 't' timestamp
+  expiresAt DateTime @map("expires_at")
+  viewCount Int      @default(0) @map("view_count")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([expiresAt])
+  @@map("cart_share_links")
+}
