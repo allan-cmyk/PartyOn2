@@ -36,12 +36,28 @@ export function isSunday(date: Date): boolean {
 }
 
 /**
- * Default expiration: 30 days from now
+ * Default expiration window.
+ *
+ * Without a delivery date, falls back to 30 days from now. With a delivery date
+ * (or list of dates — e.g. multi-tab orders), extends to `bufferDays` past the
+ * latest delivery, with a floor of 30 days from now. This prevents long-lead
+ * bookings (e.g. boat cruises booked >30 days out) from auto-closing before
+ * the actual delivery date.
  */
-export function defaultExpiresAt(): Date {
-  const d = new Date();
-  d.setDate(d.getDate() + 30);
-  return d;
+export function defaultExpiresAt(deliveryDate?: Date | Date[], bufferDays = 7): Date {
+  const floor = new Date();
+  floor.setDate(floor.getDate() + 30);
+
+  if (!deliveryDate) return floor;
+
+  const dates = Array.isArray(deliveryDate) ? deliveryDate : [deliveryDate];
+  if (dates.length === 0) return floor;
+
+  const latest = dates.reduce((max, d) => (d > max ? d : max));
+  const fromDelivery = new Date(latest);
+  fromDelivery.setDate(fromDelivery.getDate() + bufferDays);
+
+  return fromDelivery > floor ? fromDelivery : floor;
 }
 
 /**
