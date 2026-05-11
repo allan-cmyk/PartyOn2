@@ -1,44 +1,29 @@
 ---
 name: seo-semrush-snapshot
-description: Cowork browser-automation skill that logs into SEMrush weekly, captures the 5 dashboards relevant to partyondelivery.com (Position Tracking, Organic Research, Backlink Analytics, Site Audit, Keyword Magic), and writes screenshots + scraped JSON to data/seo/semrush/<YYYY-MM-DD>/ for the SEO Director agent to consume.
+description: Cowork browser-automation skill that captures four SEMrush dashboards for partyondelivery.com (Position Tracking, Organic Research, Backlink Analytics, Site Audit) and writes screenshots + extracted KPI JSON to data/seo/semrush/<YYYY-MM-DD>/ for the SEO Director agent to consume.
 ---
 
 # seo-semrush-snapshot
 
-> **Status: Phase 0 stub.** This file documents the Phase 1 contract and surfaces the reconnaissance the operator must complete before implementation begins. There is no `script.ts` or `selectors.ts` yet — those land in Phase 1 after the reconnaissance below confirms the approach is viable.
+Weekly SEMrush data capture for the [[seo-director]] agent. Drives a Playwright-controlled Chromium against the live SEMrush UI, screenshots four dashboards, extracts KPI values from the rendered text, and writes structured JSON the SEO Director reads from disk.
 
-## Why this skill exists
+## How to run
 
-Party On Delivery has a paid SEMrush UI subscription but no API budget and no Ahrefs subscription. The SEO Director agent needs weekly position-tracking, organic-research, backlink, site-audit, and keyword-magic data to produce its Monday briefings. Until/unless the operator buys API access, the only path is **driving the SEMrush UI with a real browser** (Playwright) on a weekly schedule, screenshotting each dashboard, scraping the visible data tables, and writing structured JSON the SEO Director can read from disk.
+```bash
+# One-time, on the workstation that will run the snapshot:
+npm run seo:snapshot:init       # opens a real browser, you log into SEMrush manually,
+                                # profile saved to data/seo/.semrush-profile/
 
-The runner cannot live on Vercel — serverless functions don't ship browser binaries. Phase 1 chooses between **GitHub Actions** (cloud cron, requires SEMrush credentials in GH secrets) and **local cron** on a workstation.
+# Recurring (manual for now; Phase 1 PR 3 schedules it):
+npm run seo:snapshot            # headless run, writes data/seo/semrush/<today>/
+npm run seo:snapshot -- --headed   # show the browser (debugging)
+```
 
-## Phase 1 contract (what the skill will do)
-
-### Inputs
-
-- `SEMRUSH_EMAIL` — env var
-- `SEMRUSH_PASSWORD` — env var
-- (optional) `SEMRUSH_SESSION_COOKIE` — long-lived session token if 2FA forces interactive login
-
-### Behavior
-
-1. Launch headless Chromium via Playwright (`@playwright/test` v1.56.1, already in package.json).
-2. Authenticate. If `SEMRUSH_SESSION_COOKIE` is set, restore the session; else email/password login. On 2FA prompt, fail loudly with a `FAILED.md` and surface to the operator — do not attempt to bypass.
-3. Navigate to and capture each of the five dashboards listed below. For each:
-   - Wait for `networkidle` (per the `webapp-testing` skill convention).
-   - Take a full-page screenshot to `data/seo/semrush/<YYYY-MM-DD>/<dashboard>.png`.
-   - Scrape the visible data table(s) into structured JSON at `data/seo/semrush/<YYYY-MM-DD>/<dashboard>.json` matching the schema in "Output JSON schema" below.
-4. Respect SEMrush UI rate limits — sleep 3–5 seconds between dashboard navigations, longer between paginated table reads.
-5. On **any** failure (login broken, layout changed, captcha, rate-limit, missing element):
-   - Write `data/seo/semrush/<YYYY-MM-DD>/FAILED.md` with the error, the URL where it failed, and a screenshot of the failure point.
-   - Exit non-zero so the runner surfaces the failure.
-   - The SEO Director's Monday briefing flags any failed snapshot.
-
-### Output paths
+Output:
 
 ```
 data/seo/semrush/<YYYY-MM-DD>/
+├── manifest.json
 ├── position-tracking.png
 ├── position-tracking.json
 ├── organic-research.png
@@ -47,132 +32,93 @@ data/seo/semrush/<YYYY-MM-DD>/
 ├── backlink-analytics.json
 ├── site-audit.png
 ├── site-audit.json
-├── keyword-magic.png        # only if there are queued keywords to research
-├── keyword-magic.json
-└── FAILED.md                # only on failure
+└── FAILED.md            # only on failure; FAILED.png alongside it
 ```
 
-The whole `data/seo/semrush/` tree is gitignored in Phase 1. The SEO Director reads JSON files directly from disk; screenshots are operator-debugging artifacts.
+`manifest.json` summarizes per-dashboard success/failure so the eventual `/api/cron/seo-snapshot` reader can skip partial captures.
 
-## Dashboards to capture
+The whole `data/seo/` tree is gitignored.
 
-### 1. Position Tracking
-Per-keyword rank and week-over-week deltas for the keywords the operator has set up in the SEMrush project for `partyondelivery.com`. This is the SEO Director's single most important input — every position-derived recommendation depends on it.
+## Why a persistent profile instead of email/password env vars
 
-### 2. Organic Research
-Site-level summary: total organic traffic estimate, total ranking keywords, top organic pages, distribution across position buckets (top 3, 4–10, 11–20, 21–50). Used for trend monitoring and for spotting pages that lost rankings between snapshots.
+The Phase 0 reconnaissance (`Memory/SEO/Recon-2026-05-06-semrush.md`) found that the operator's Chrome already has a logged-in SEMrush session and a `npm run seo:snapshot:init` flow can capture that into a Playwright-managed profile with no credential handling. The profile lives in `data/seo/.semrush-profile/` (gitignored), so subsequent runs need no env vars and no 2FA juggling. If SEMrush expires the session, re-run `seo:snapshot:init`.
 
-### 3. Backlink Analytics
-New + lost referring domains since the last snapshot, anchor-text distribution, top referring pages. Feeds the Phase 3 link-building work.
+This is why the skill does not read `SEMRUSH_EMAIL` / `SEMRUSH_PASSWORD` env vars (despite the Phase 0 contract sketch mentioning them) — the persistent-profile path is simpler and safer.
 
-### 4. Site Audit
-Technical issue count and severity breakdown. Crawl errors, broken canonicals, missing schema, slow pages. Joined with the Vercel Web Vitals data already in the analytics-snapshot pipeline.
+## What gets captured (per dashboard)
 
-### 5. Keyword Magic Tool
-**Conditional capture.** Only run when the SEO Director has queued specific keywords for research (file at `data/seo/semrush/_queue/keyword-magic.txt`, one keyword per line). Outputs related-keywords + volume + difficulty data per queued keyword.
+URL patterns + extraction logic live in [`scripts/seo/semrush-dashboards.mjs`](../../../scripts/seo/semrush-dashboards.mjs). Each dashboard entry is a pure function from rendered body text to a typed JSON object, so the extractor is testable independently of Playwright.
 
-## Output JSON schema (sketch — finalize in Phase 1)
+### 1. Position Tracking (Landscape view)
+- URL: `https://www.semrush.com/tracking/landscape/<projectId>_<campaignId>.html?fid=<folderId>`
+- Captured fields: `visibility_pct`, `visibility_delta`, `top_url` (URL, keywords, avg position + change, est traffic + change)
 
-Each dashboard's JSON file is an array of rows that mirror the visible table, plus a small header block.
+### 2. Organic Research (Overview)
+- URL: `https://www.semrush.com/analytics/organic/overview/?db=us&q=<domain>&searchType=domain`
+- Captured KPIs (each as `{ value, delta, rawValue, rawDelta }`): `keywords`, `traffic`, `traffic_cost`, `branded_traffic`, `non_branded_traffic`
 
-```jsonc
-// position-tracking.json
-{
-  "captured_at": "2026-05-04T12:34:56Z",
-  "domain": "partyondelivery.com",
-  "rows": [
-    {
-      "keyword": "austin alcohol delivery",
-      "position": 14,
-      "previous_position": 18,
-      "url": "https://partyondelivery.com/",
-      "search_volume": 720,
-      "kd_pct": 38,
-      "tracked_since": "2026-04-15"
-    }
-  ]
-}
-```
+### 3. Backlink Analytics (Overview)
+- URL: `https://www.semrush.com/analytics/backlinks/overview/?q=<domain>&searchType=domain`
+- Captured KPIs: `referring_domains`, `backlinks`, `monthly_visits`, `organic_traffic`, `outbound_domains`, plus auto-detected `category`
 
-```jsonc
-// organic-research.json
-{
-  "captured_at": "...",
-  "domain": "partyondelivery.com",
-  "summary": {
-    "organic_traffic_estimate": 1240,
-    "total_ranking_keywords": 380,
-    "authority_score": 18,
-    "top_3_count": 4,
-    "top_10_count": 22,
-    "top_20_count": 71
-  },
-  "top_pages": [
-    { "url": "...", "traffic": 420, "keywords": 28 }
-  ]
-}
-```
+### 4. Site Audit (Overview)
+- URL: `https://www.semrush.com/siteaudit/campaign/<projectId>/review/overview/`
+- Captured fields: `site_health_pct`, `pages_crawled`, `pages_crawl_cap`, `status_mix` (healthy/broken/have_issues/redirects/blocked), `ai_search_health_pct`, `ai_search_health_delta`, `total_issues`
 
-```jsonc
-// backlink-analytics.json
-{
-  "captured_at": "...",
-  "domain": "partyondelivery.com",
-  "summary": { "referring_domains": 84, "new_since_last": 3, "lost_since_last": 1 },
-  "new_refdomains": [{ "domain": "...", "first_seen": "...", "anchor": "...", "page": "..." }],
-  "lost_refdomains": [{ "domain": "...", "last_seen": "...", "page": "..." }]
-}
-```
+**Deferred to a follow-up PR:** the Keyword Magic Tool (`scripts/topics.json`-driven on-demand queries, not scheduled).
 
-```jsonc
-// site-audit.json
-{
-  "captured_at": "...",
-  "domain": "partyondelivery.com",
-  "summary": { "errors": 4, "warnings": 31, "notices": 92 },
-  "issues": [
-    { "severity": "error", "issue": "Missing canonical", "count": 1, "examples": ["/blog/foo"] }
-  ]
-}
-```
+## Config (env vars; defaults baked in)
 
-The exact field names are tentative — the Phase 1 implementation pins them once the actual SEMrush DOM is inspected.
+Defaults match the partyondelivery.com main project, captured during Phase 0 recon. Override only when pointing at a different SEMrush project.
 
-## Phase 0 reconnaissance checklist
-
-Before Phase 1 implementation begins, the **operator must manually log into SEMrush in Chrome** and confirm each of these. The answers determine whether Playwright is viable, what runner placement is right, and how brittle the selectors will be.
-
-- [ ] **2FA status.** Is 2FA enabled on the SEMrush account? If yes, document which type (TOTP, email, SMS). 2FA forces a long-lived-session-cookie strategy or a one-time interactive setup.
-- [ ] **Cloudflare/Captcha gating on headless Playwright.** Use the `webapp-testing` skill (or the `mcp__Claude_in_Chrome__*` MCP tools) to navigate the SEMrush login page in a headless browser and confirm whether Cloudflare's bot detection trips. If it does, the runner must use a residential IP or persistent cookie.
-- [ ] **Stable selectors.** For each of the five dashboards, capture the DOM structure of the primary data table. Confirm whether it has `data-testid`, semantic class names, or only generated/hashed class names. Generated names mean Phase 1 selectors will need text-content matching or DOM traversal heuristics that break frequently.
-- [ ] **Direct-URL navigation.** Are dashboard URLs stable for direct navigation (e.g. `https://www.semrush.com/analytics/positions/?db=us&q=partyondelivery.com`) or does the UI route through stateful in-app navigation that doesn't survive cold loads?
-- [ ] **Pagination strategy.** For Position Tracking and Backlink Analytics, the visible table may be a partial view of all data. Document whether full data is reachable via "show all", URL params, or only by clicking through pages.
-- [ ] **SEMrush plan tier and quotas.** Confirm which plan the operator is on. The skill must respect any per-day query/export limits or get rate-limited mid-snapshot.
-- [ ] **Existing project setup.** SEMrush projects (Position Tracking, Site Audit) require keywords + domain configured in the UI. Confirm the `partyondelivery.com` project is set up and includes the keywords the operator wants tracked. If not, that's a one-time UI task before the skill works.
-
-## Runner placement (Phase 1 decision)
-
-| Option | Pros | Cons |
+| Var | Default | Notes |
 |---|---|---|
-| **GitHub Actions** | Cloud-resident, runs on schedule without operator's machine being on, secrets in GH Settings | SEMrush may flag GitHub IP ranges as bot traffic; harder to debug interactively |
-| **Local cron on a workstation** | Residential IP looks like normal user, easy to debug, matches the "Cowork session" framing in the source brief | Requires the workstation to be on at scheduled time; one fewer failure-resilience layer |
-| **Both (failover)** | Highest resilience | More setup; redundant snapshots if both succeed |
+| `SEMRUSH_DOMAIN` | `partyondelivery.com` | Used in Organic Research + Backlink Analytics URLs |
+| `SEMRUSH_PROJECT_ID` | `26954798` | The "POD" main project (not "POD AI") |
+| `SEMRUSH_FOLDER_ID` | `8850397` | SEMrush project-folder ID |
+| `SEMRUSH_POSITION_CAMPAIGN_ID` | `26954798_3575431` | Position Tracking campaign |
+| `SEMRUSH_DB` | `us` | SEMrush database. `au` / `ca` available |
 
-Phase 1 picks one based on the reconnaissance findings — specifically, whether SEMrush flags GitHub IPs.
+## Failure modes the skill catches
 
-## How the SEO Director consumes this output
+- **Session expired** — page redirects to `/login`. Script writes `FAILED.md` for that dashboard, screenshots the redirect, continues with the next dashboard. Operator re-runs `seo:snapshot:init`.
+- **Layout change** — KPI extractors return `null` for fields. Manifest shows fields extracted = 0 or partial. SEO Director's freshness gate ignores nulls; operator inspects the screenshot.
+- **Rate limit / Cloudflare challenge** — first request fails, cascade fails. `FAILED.md` includes the URL and screenshot. Recovery: wait, re-run.
+- **Per-dashboard timeout (60s nav, 20s networkidle)** — captured as a per-dashboard FAIL; other dashboards still run.
 
-The agent reads JSON files directly via `Read`/`Bash` (`cat data/seo/semrush/<latest-date>/<dashboard>.json`). It does **not** call this skill at runtime — the skill is a scheduled producer, the agent is a consumer. If the most recent snapshot is more than 14 days old, the agent's freshness gate kicks in and refuses competitive-keyword recommendations until a fresh snapshot lands.
+## Where this fits in the SEO Director pipeline
 
-## Out of scope for this skill
+```
+[workstation cron / GitHub Actions]
+            │
+            ▼
+[npm run seo:snapshot]  ──Playwright──▶ SEMrush UI
+            │
+            ▼
+data/seo/semrush/<date>/*.{png,json,FAILED.md}
+            │
+            ▼ (Phase 1 PR 3)
+[/api/cron/seo-snapshot] reads latest dir, writes SeoSnapshot DB row
+            │
+            ▼
+SEO Director agent reads SeoSnapshot + freshness gate
+```
+
+Runner placement (GitHub Actions vs. workstation cron) is decided in Phase 1 PR 3 once the operator has run the snapshot manually a few times and the failure modes are observed in practice.
+
+## Out of scope
 
 - Running on Vercel serverless (no browser binaries)
-- Real-time queries from the agent (the skill is weekly batch only)
-- Keyword research outside the queued list (the agent doesn't trigger ad-hoc Keyword Magic queries; it queues them in `_queue/keyword-magic.txt` for the next run)
-- Anything beyond the 5 listed dashboards — Phase 3 may extend (e.g. competitor-site analysis), not Phase 1
+- Real-time queries from the SEO Director agent (this skill is a producer; the agent is a consumer)
+- Keyword Magic on-demand queries (Phase 1 follow-up PR)
+- Backlink Audit toxicity scoring (requires one-time SEMrush campaign creation by the operator — outside Phase 1 scope)
+- Multi-domain support (the script captures one domain per run; running for additional domains needs a per-domain env file)
 
 ## See also
 
-- `.claude/skills/webapp-testing/SKILL.md` — closest existing skill pattern; review its server lifecycle and selector-discovery approach before implementing
+- `Memory/SEO/Recon-2026-05-06-semrush.md` — Phase 0 reconnaissance findings; URL patterns, selectors, plan tier, project ownership notes
+- `.claude/skills/webapp-testing/SKILL.md` — companion skill, Python Playwright for local app testing
 - `.claude/agents/seo-director.md` — the consumer of this skill's output
-- Vault: `Programs/SEO-Director.md` — full data-pipeline diagram
+- `scripts/seo/semrush-dashboards.mjs` — URL + extractor configs (pure, testable)
+- `scripts/seo/semrush-init.mjs` — one-time profile setup
+- `scripts/seo/semrush-snapshot.mjs` — main runner

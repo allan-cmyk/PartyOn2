@@ -61,3 +61,6 @@ obsidian-vault
 /weekly-summary.html
 /purchase-plan.html
 /order-list.html
+
+# SEO snapshot output (screenshots + scraped JSON + persistent SEMrush browser profile)
+/data/seo/

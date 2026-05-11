@@ -35,7 +35,9 @@
     "indexnow:submit": "node scripts/indexnow-submit.mjs",
     "indexnow:priority": "node scripts/indexnow-submit.mjs https://partyondelivery.com/ https://partyondelivery.com/products https://partyondelivery.com/about https://partyondelivery.com/services https://partyondelivery.com/weddings https://partyondelivery.com/boat-parties https://partyondelivery.com/bach-parties https://partyondelivery.com/corporate https://partyondelivery.com/blog",
     "extract-bundle": "tsx scripts/cocktail-bundle-image-extractor.ts",
-    "add-partner": "tsx scripts/add-partner.ts"
+    "add-partner": "tsx scripts/add-partner.ts",
+    "seo:snapshot:init": "node scripts/seo/semrush-init.mjs",
+    "seo:snapshot": "node scripts/seo/semrush-snapshot.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.66.0",
