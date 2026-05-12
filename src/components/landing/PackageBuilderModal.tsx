@@ -38,8 +38,14 @@ export default function PackageBuilderModal({ open, onClose, config, catalog }: 
   const [contactName, setContactName] = useState('');
   const [contactEmail, setContactEmail] = useState('');
   const [contactPhone, setContactPhone] = useState('');
+  const [deliveryAddress, setDeliveryAddress] = useState('');
+  const [deliveryCity, setDeliveryCity] = useState('Austin');
+  const [deliveryZip, setDeliveryZip] = useState('');
+  const [deliveryTime, setDeliveryTime] = useState('Afternoon (12pm–4pm)');
   const [submitMode, setSubmitMode] = useState<'quote' | 'checkout'>('quote');
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
     if (open) document.body.style.overflow = 'hidden';
@@ -97,40 +103,89 @@ export default function PackageBuilderModal({ open, onClose, config, catalog }: 
         })
       : '';
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Occasion is derived from the landing-page slug, e.g.
+  // "austin-bachelor-party-delivery" → "bachelor".
+  const occasion = useMemo(() => {
+    const slug = config.slug || '';
+    if (slug.includes('bachelorette')) return 'bachelorette';
+    if (slug.includes('bachelor')) return 'bachelor';
+    if (slug.includes('corporate')) return 'corporate';
+    if (slug.includes('wedding')) return 'wedding';
+    return 'bachelor';
+  }, [config.slug]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const subject = `${config.audienceTitleCase} Quote — ${contactName || 'Austin'} — ${people} ${M.groupSizeUnit}${
-      deliveryDate ? ` — ${formatDate(deliveryDate)}` : ''
-    }`;
-    const body = [
-      `${config.audienceTitleCase.toUpperCase()} PACKAGE QUOTE`,
-      '',
-      `Name: ${contactName}`,
-      `Email: ${contactEmail}`,
-      `Phone: ${contactPhone}`,
-      `Delivery date: ${deliveryDate ? formatDate(deliveryDate) : '(not set)'}`,
-      `${M.groupSizeLabel}: ${people}`,
-      ...(M.extraQuestion && extraSelection.length
-        ? [
-            `${M.extraQuestion.label} ${extraSelection
-              .map((v) => M.extraQuestion!.options.find((o) => o.value === v)?.label)
-              .filter(Boolean)
-              .join(', ')}`,
-          ]
-        : []),
-      `Mode: ${submitMode === 'checkout' ? 'Wants payment link' : 'Email quote'}`,
-      '',
-      '— ITEMS —',
-      ...lineItems.map(
-        (li) =>
-          `${li.qty}x ${li.product.name}${li.product.detail ? ` (${li.product.detail})` : ''} — $${li.lineTotal.toFixed(2)}`,
-      ),
-      '',
-      `TOTAL: $${total.toFixed(2)}`,
-      `PER ${M.groupSizeUnit.toUpperCase().slice(0, -1)}: $${perPerson.toFixed(2)}`,
-    ].join('\n');
-    window.location.href = `mailto:${config.quoteInbox}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    setSubmitted(true);
+    if (submitting) return;
+    setSubmitError(null);
+    setSubmitting(true);
+
+    // Pay-now requires a delivery address (Stripe checkout will demand it).
+    if (submitMode === 'checkout' && (!deliveryAddress || !deliveryZip)) {
+      setSubmitError('Please enter a delivery address and zip to continue to payment.');
+      setSubmitting(false);
+      return;
+    }
+
+    const items = lineItems
+      .map((li) => ({
+        // BuilderProduct.sku is the underlying Postgres product handle.
+        handle: li.product.sku || '',
+        qty: li.qty,
+      }))
+      .filter((i) => i.handle);
+
+    if (items.length === 0) {
+      setSubmitError('No items in your cart — pick a few products first.');
+      setSubmitting(false);
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/v1/landing/quote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode: submitMode === 'checkout' ? 'pay-now' : 'quote',
+          occasion,
+          customerName: contactName,
+          customerEmail: contactEmail,
+          customerPhone: contactPhone,
+          groupSize: people,
+          deliveryDate: deliveryDate
+            ? deliveryDate.toISOString().slice(0, 10)
+            : new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10),
+          deliveryTime,
+          deliveryAddress,
+          deliveryCity,
+          deliveryZip,
+          items,
+          deliveryNotes:
+            M.extraQuestion && extraSelection.length
+              ? `${M.extraQuestion.label} ${extraSelection
+                  .map((v) => M.extraQuestion!.options.find((o) => o.value === v)?.label)
+                  .filter(Boolean)
+                  .join(', ')}`
+              : undefined,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.error || 'Failed to send quote');
+      }
+
+      if (submitMode === 'checkout' && json.invoiceUrl) {
+        // Take them straight to the editable invoice + Stripe checkout.
+        window.location.href = json.invoiceUrl;
+        return;
+      }
+
+      setSubmitted(true);
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'Something went wrong. Try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const reset = () => {
@@ -283,6 +338,14 @@ export default function PackageBuilderModal({ open, onClose, config, catalog }: 
                   setName={setContactName}
                   setEmail={setContactEmail}
                   setPhone={setContactPhone}
+                  deliveryAddress={deliveryAddress}
+                  deliveryCity={deliveryCity}
+                  deliveryZip={deliveryZip}
+                  deliveryTime={deliveryTime}
+                  setDeliveryAddress={setDeliveryAddress}
+                  setDeliveryCity={setDeliveryCity}
+                  setDeliveryZip={setDeliveryZip}
+                  setDeliveryTime={setDeliveryTime}
                   deliveryDate={deliveryDate}
                   formatDate={formatDate}
                   people={people}
@@ -291,6 +354,8 @@ export default function PackageBuilderModal({ open, onClose, config, catalog }: 
                   perPerson={perPerson}
                   submitMode={submitMode}
                   setSubmitMode={setSubmitMode}
+                  submitting={submitting}
+                  submitError={submitError}
                   onSubmit={handleSubmit}
                   modal={M}
                   theme={T}
@@ -362,15 +427,10 @@ export default function PackageBuilderModal({ open, onClose, config, catalog }: 
                 {stepIndex === 0 ? 'Start Building →' : 'Next →'}
               </button>
             ) : (
-              <button
-                form="quote-form"
-                type="submit"
-                className="px-6 py-3 font-bold rounded-md tracking-wide transition-all hover:scale-[1.02] shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                style={{ background: T.primary, color: T.primaryText }}
-                disabled={lineItems.length === 0 || !contactEmail || !contactName || !contactPhone}
-              >
-                {submitMode === 'checkout' ? 'Get Payment Link →' : 'Send My Quote →'}
-              </button>
+              // Submit button now lives inside the form at the bottom of
+              // ReviewStep so it sits next to the delivery details. No
+              // duplicate footer CTA on the review step.
+              <span aria-hidden />
             )}
           </div>
         )}
@@ -876,6 +936,14 @@ function ReviewStep({
   setName,
   setEmail,
   setPhone,
+  deliveryAddress,
+  deliveryCity,
+  deliveryZip,
+  deliveryTime,
+  setDeliveryAddress,
+  setDeliveryCity,
+  setDeliveryZip,
+  setDeliveryTime,
   deliveryDate,
   formatDate,
   people,
@@ -884,6 +952,8 @@ function ReviewStep({
   perPerson,
   submitMode,
   setSubmitMode,
+  submitting,
+  submitError,
   onSubmit,
   modal,
   theme,
@@ -894,6 +964,14 @@ function ReviewStep({
   setName: (s: string) => void;
   setEmail: (s: string) => void;
   setPhone: (s: string) => void;
+  deliveryAddress: string;
+  deliveryCity: string;
+  deliveryZip: string;
+  deliveryTime: string;
+  setDeliveryAddress: (s: string) => void;
+  setDeliveryCity: (s: string) => void;
+  setDeliveryZip: (s: string) => void;
+  setDeliveryTime: (s: string) => void;
   deliveryDate: Date | null;
   formatDate: (d: Date | null) => string;
   people: number;
@@ -902,10 +980,13 @@ function ReviewStep({
   perPerson: number;
   submitMode: 'quote' | 'checkout';
   setSubmitMode: (m: 'quote' | 'checkout') => void;
+  submitting: boolean;
+  submitError: string | null;
   onSubmit: (e: React.FormEvent) => void;
   modal: LandingConfig['modal'];
   theme: LandingConfig['theme'];
 }) {
+  const addressRequired = submitMode === 'checkout';
   return (
     <div>
       <h2 className="font-heading text-2xl md:text-3xl font-bold mb-1 leading-tight" style={{ color: theme.navy }}>
@@ -976,9 +1057,11 @@ function ReviewStep({
           }}
         >
           <div className="font-bold text-sm mb-0.5" style={{ color: theme.navy }}>
-            📧 Email me the quote
+            📧 Send me this quote
           </div>
-          <div className="text-xs text-gray-600">Review and book later.</div>
+          <div className="text-xs text-gray-600">
+            Editable invoice in your inbox. Pay later.
+          </div>
         </button>
         <button
           type="button"
@@ -990,9 +1073,11 @@ function ReviewStep({
           }}
         >
           <div className="font-bold text-sm mb-0.5" style={{ color: theme.navy }}>
-            💳 Send payment link
+            💳 Pay now
           </div>
-          <div className="text-xs text-gray-600">Lock the date now.</div>
+          <div className="text-xs text-gray-600">
+            Lock your date with secure Stripe checkout.
+          </div>
         </button>
       </div>
 
@@ -1037,6 +1122,90 @@ function ReviewStep({
             placeholder="you@email.com"
           />
         </FormField>
+
+        {/* Delivery details — required for Pay Now; optional for Quote */}
+        <div
+          className="mt-3 pt-3 border-t"
+          style={{ borderColor: '#E5E7EB' }}
+        >
+          <div className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-2">
+            Delivery {addressRequired ? '(required)' : '(optional — you can fill this in later)'}
+          </div>
+          <FormField label="Street address" required={addressRequired} theme={theme}>
+            <input
+              required={addressRequired}
+              value={deliveryAddress}
+              onChange={(e) => setDeliveryAddress(e.target.value)}
+              className="w-full bg-white rounded-md px-3 py-2.5 text-sm focus:outline-none transition-colors"
+              style={{ border: '1.5px solid #E5E7EB' }}
+              onFocus={(e) => (e.target.style.borderColor = theme.blue)}
+              onBlur={(e) => (e.target.style.borderColor = '#E5E7EB')}
+              placeholder="123 Main St"
+            />
+          </FormField>
+          <div className="grid grid-cols-2 gap-2.5 mt-2.5">
+            <FormField label="City" theme={theme}>
+              <input
+                value={deliveryCity}
+                onChange={(e) => setDeliveryCity(e.target.value)}
+                className="w-full bg-white rounded-md px-3 py-2.5 text-sm focus:outline-none transition-colors"
+                style={{ border: '1.5px solid #E5E7EB' }}
+                onFocus={(e) => (e.target.style.borderColor = theme.blue)}
+                onBlur={(e) => (e.target.style.borderColor = '#E5E7EB')}
+                placeholder="Austin"
+              />
+            </FormField>
+            <FormField label="ZIP" required={addressRequired} theme={theme}>
+              <input
+                required={addressRequired}
+                value={deliveryZip}
+                onChange={(e) => setDeliveryZip(e.target.value)}
+                className="w-full bg-white rounded-md px-3 py-2.5 text-sm focus:outline-none transition-colors"
+                style={{ border: '1.5px solid #E5E7EB' }}
+                onFocus={(e) => (e.target.style.borderColor = theme.blue)}
+                onBlur={(e) => (e.target.style.borderColor = '#E5E7EB')}
+                placeholder="78701"
+              />
+            </FormField>
+          </div>
+          <div className="mt-2.5">
+            <FormField label="Delivery time window" theme={theme}>
+              <select
+                value={deliveryTime}
+                onChange={(e) => setDeliveryTime(e.target.value)}
+                className="w-full bg-white rounded-md px-3 py-2.5 text-sm focus:outline-none transition-colors"
+                style={{ border: '1.5px solid #E5E7EB' }}
+              >
+                <option>Morning (9am–12pm)</option>
+                <option>Afternoon (12pm–4pm)</option>
+                <option>Evening (4pm–8pm)</option>
+                <option>Whenever — surprise us</option>
+              </select>
+            </FormField>
+          </div>
+        </div>
+
+        {submitError && (
+          <div
+            className="mt-3 rounded-md p-3 text-sm"
+            style={{ background: '#FEE2E2', color: '#991B1B', border: '1px solid #FCA5A5' }}
+          >
+            {submitError}
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={submitting}
+          className="w-full mt-4 font-bold py-3.5 rounded-md tracking-wide transition-all disabled:opacity-60 disabled:cursor-wait"
+          style={{ background: theme.primary, color: theme.primaryText }}
+        >
+          {submitting
+            ? 'Working…'
+            : submitMode === 'checkout'
+              ? 'Continue to secure payment →'
+              : 'Send me this quote →'}
+        </button>
       </form>
 
       <p className="text-[11px] text-gray-500 mt-3 leading-snug">{modal.emailNotice}</p>
