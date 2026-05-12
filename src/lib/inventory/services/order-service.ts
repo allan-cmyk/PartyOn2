@@ -38,6 +38,8 @@ export interface OrderWithItems {
   customerPhone: string | null;
   customerName: string;
   items: OrderItemWithProduct[];
+  groupOrderV2Id?: string | null;
+  groupOrderV2?: { shareCode: string } | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -483,7 +485,7 @@ export async function createOrderFromCheckout(
           session.metadata?.utmCampaign
         ),
       },
-      include: { items: true },
+      include: { items: true, groupOrderV2: { select: { shareCode: true } } },
     });
 
     // Create order items
@@ -516,7 +518,7 @@ export async function createOrderFromCheckout(
     // Get the order with items
     const orderWithItems = await tx.order.findUnique({
       where: { id: newOrder.id },
-      include: { items: true },
+      include: { items: true, groupOrderV2: { select: { shareCode: true } } },
     });
 
     return orderWithItems;
@@ -622,7 +624,7 @@ export async function createFreeOrder(
         customerName,
         affiliateId: affiliateId || undefined,
       },
-      include: { items: true },
+      include: { items: true, groupOrderV2: { select: { shareCode: true } } },
     });
 
     for (const item of cart.items) {
@@ -653,7 +655,7 @@ export async function createFreeOrder(
 
     return await tx.order.findUnique({
       where: { id: newOrder.id },
-      include: { items: true },
+      include: { items: true, groupOrderV2: { select: { shareCode: true } } },
     });
   });
 
@@ -721,7 +723,7 @@ export async function getCustomerOrders(
   const [orders, total] = await Promise.all([
     prisma.order.findMany({
       where: { customerId },
-      include: { items: true },
+      include: { items: true, groupOrderV2: { select: { shareCode: true } } },
       orderBy: { createdAt: 'desc' },
       skip,
       take: pageSize,
@@ -865,7 +867,7 @@ export async function getOrders(options: {
   const [orders, total] = await Promise.all([
     prisma.order.findMany({
       where,
-      include: { items: true },
+      include: { items: true, groupOrderV2: { select: { shareCode: true } } },
       orderBy: { createdAt: 'desc' },
       skip,
       take: pageSize,
@@ -961,7 +963,7 @@ export async function createOrderFromDraftOrder(
         customerName,
         groupOrderId: draftOrder.groupOrderId,
       },
-      include: { items: true },
+      include: { items: true, groupOrderV2: { select: { shareCode: true } } },
     });
 
     // Create order items (handle custom items that may not have real product/variant IDs)
@@ -1041,7 +1043,7 @@ export async function createOrderFromDraftOrder(
     // Get the order with items
     const orderWithItems = await tx.order.findUnique({
       where: { id: newOrder.id },
-      include: { items: true },
+      include: { items: true, groupOrderV2: { select: { shareCode: true } } },
     });
 
     return orderWithItems;

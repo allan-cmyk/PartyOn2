@@ -539,7 +539,10 @@ export async function handleGroupV2PaymentCompleted(
         })),
       },
     },
-    include: { items: true },
+    include: {
+      items: true,
+      groupOrderV2: { select: { shareCode: true } },
+    },
   });
 
   // Link order to payment (acts as idempotency marker for retries)

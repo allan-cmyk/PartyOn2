@@ -1006,6 +1006,8 @@ export async function createMultiTabDashboardOrder(
     data: {
       name: input.dashboardTitle,
       hostName: input.hostName,
+      hostEmail: input.hostEmail || null,
+      hostPhone: input.hostPhone || null,
       shareCode,
       hostClaimToken,
       partyType: input.partyType || null,
