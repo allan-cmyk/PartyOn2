@@ -10,6 +10,7 @@ import { CartWithItems } from './cart-service';
 import type { DraftOrderWithTotal, DraftOrderItem } from '@/lib/draft-orders/types';
 import { snapshotItemCost, finalizeOrderMargin } from '@/lib/analytics/margin-service';
 import { classifySegment } from '@/lib/analytics/segment-classifier';
+import { unitsOffShelf } from './pick-inventory-service';
 
 /**
  * Order with all relations
@@ -198,6 +199,10 @@ async function fulfillVariantInventory(
  * Fulfill inventory for an entire order.
  * Decrements both inventoryQuantity and committedQuantity for each item,
  * floored at 0. Called when an order's fulfillmentStatus changes to DELIVERED.
+ *
+ * Subtracts units that were already moved off the shelf at pack time
+ * (via pick-inventory-service). Without this, packed-then-delivered orders
+ * would double-decrement.
  */
 export async function fulfillInventoryForOrder(orderId: string): Promise<void> {
   const order = await prisma.order.findUnique({
@@ -207,12 +212,14 @@ export async function fulfillInventoryForOrder(orderId: string): Promise<void> {
         include: {
           product: {
             select: {
+              title: true,
               isBundle: true,
               bundleComponents: {
                 select: {
                   componentProductId: true,
                   componentVariantId: true,
                   quantity: true,
+                  componentProduct: { select: { title: true } },
                 },
               },
             },
@@ -224,14 +231,30 @@ export async function fulfillInventoryForOrder(orderId: string): Promise<void> {
 
   if (!order) return;
 
+  const pickStateRows = await prisma.orderItemPickState.findMany({
+    where: { orderId },
+    select: { itemKey: true, packed: true, shortBy: true },
+  });
+  const pickStates = new Map(pickStateRows.map((r) => [r.itemKey, r]));
+
   await prisma.$transaction(async (tx: TransactionClient) => {
     for (const item of order.items) {
       const effectiveQty = item.quantity - item.refundedQuantity;
       if (effectiveQty <= 0) continue;
 
+      const parentKey = item.title || item.product.title;
+
       if (item.product.isBundle && item.product.bundleComponents.length > 0) {
         for (const component of item.product.bundleComponents) {
           const fulfillQty = component.quantity * effectiveQty;
+
+          const bcKey = `${parentKey}::${component.componentProduct.title}`;
+          const bcPick = pickStates.get(bcKey);
+          const alreadyPacked = bcPick
+            ? unitsOffShelf(bcPick, item.quantity * component.quantity)
+            : 0;
+          const remainingQty = Math.max(0, fulfillQty - alreadyPacked);
+          if (remainingQty <= 0) continue;
 
           let componentVariant;
           if (component.componentVariantId) {
@@ -247,17 +270,22 @@ export async function fulfillInventoryForOrder(orderId: string): Promise<void> {
           }
 
           if (componentVariant) {
-            await fulfillVariantInventory(tx, componentVariant, fulfillQty, order.orderNumber, orderId, true);
+            await fulfillVariantInventory(tx, componentVariant, remainingQty, order.orderNumber, orderId, true);
           }
         }
       } else {
+        const linePick = pickStates.get(parentKey);
+        const alreadyPacked = linePick ? unitsOffShelf(linePick, item.quantity) : 0;
+        const remainingQty = Math.max(0, effectiveQty - alreadyPacked);
+        if (remainingQty <= 0) continue;
+
         const variant = await tx.productVariant.findUnique({
           where: { id: item.variantId },
           select: { id: true, inventoryQuantity: true, committedQuantity: true, trackInventory: true },
         });
 
         if (variant) {
-          await fulfillVariantInventory(tx, variant, effectiveQty, order.orderNumber, orderId, false);
+          await fulfillVariantInventory(tx, variant, remainingQty, order.orderNumber, orderId, false);
         }
       }
     }
