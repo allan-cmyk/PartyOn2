@@ -37,13 +37,26 @@ type LineState = {
   drinksPerUnit: number;
 };
 
-const MIN_PEOPLE = 4;
-const MAX_PEOPLE = 200;
+// Slider ranges by occasion. Bachelor/bachelorette parties top out
+// reasonably small; corporate + weddings scale much higher. The "Other"
+// field below the slider lets a user type any number above these bounds.
+const PEOPLE_RANGE: Record<
+  'bachelor' | 'bachelorette' | 'corporate' | 'wedding',
+  { min: number; max: number }
+> = {
+  bachelor: { min: 4, max: 50 },
+  bachelorette: { min: 4, max: 50 },
+  corporate: { min: 4, max: 100 },
+  wedding: { min: 4, max: 100 },
+};
+const ABSOLUTE_MIN = 1;
+const ABSOLUTE_MAX = 500;
 
 export default function QuickBuyModal({ open, onClose, pkg, config, occasion }: Props) {
   const T = config.theme;
   const defaultPeople = pkg.defaultPeople ?? 10;
   const drinksPerPerson = pkg.drinksPerPerson ?? 12;
+  const { min: MIN_PEOPLE, max: MAX_PEOPLE } = PEOPLE_RANGE[occasion];
 
   const [people, setPeople] = useState(defaultPeople);
   const [lines, setLines] = useState<LineState[]>([]);
@@ -233,7 +246,7 @@ export default function QuickBuyModal({ open, onClose, pkg, config, occasion }: 
               type="range"
               min={MIN_PEOPLE}
               max={MAX_PEOPLE}
-              value={people}
+              value={Math.min(MAX_PEOPLE, Math.max(MIN_PEOPLE, people))}
               onChange={(e) => handlePeopleChange(parseInt(e.target.value, 10))}
               className="w-full"
               style={{ accentColor: T.primary }}
@@ -241,6 +254,39 @@ export default function QuickBuyModal({ open, onClose, pkg, config, occasion }: 
             <div className="flex justify-between text-[10px] text-gray-500 mt-1">
               <span>{MIN_PEOPLE}</span>
               <span>{MAX_PEOPLE}</span>
+            </div>
+
+            {/* Direct numeric entry — accepts any value within the absolute
+                bounds, even above the slider max. */}
+            <div className="mt-3 flex items-center gap-2">
+              <label
+                htmlFor="qb-people-other"
+                className="text-[11px] font-bold uppercase tracking-wider text-gray-600 whitespace-nowrap"
+              >
+                Or enter exact #:
+              </label>
+              <input
+                id="qb-people-other"
+                type="number"
+                min={ABSOLUTE_MIN}
+                max={ABSOLUTE_MAX}
+                value={people}
+                onChange={(e) => {
+                  const v = parseInt(e.target.value, 10);
+                  if (Number.isFinite(v)) {
+                    handlePeopleChange(Math.min(ABSOLUTE_MAX, Math.max(ABSOLUTE_MIN, v)));
+                  }
+                }}
+                className="w-24 bg-white rounded-md px-3 py-1.5 text-sm font-semibold border focus:outline-none transition-colors"
+                style={{ borderColor: '#E5E7EB', color: T.navy }}
+                onFocus={(e) => (e.target.style.borderColor = T.blue)}
+                onBlur={(e) => (e.target.style.borderColor = '#E5E7EB')}
+              />
+              {people > MAX_PEOPLE && (
+                <span className="text-[11px] text-gray-500">
+                  (above slider max — quantities still scale)
+                </span>
+              )}
             </div>
             <div className="mt-3 grid grid-cols-3 gap-2 text-center text-xs">
               <div className="rounded-md py-1.5" style={{ background: `${T.primary}22` }}>
