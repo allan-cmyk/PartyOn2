@@ -59,6 +59,9 @@ export default function PackageBuilderModal({
   // Upsell overlay — fires once when the user reaches the review step.
   const [upsellOpen, setUpsellOpen] = useState(false);
   const [upsellShown, setUpsellShown] = useState(false);
+  // ProductIds that were added via the upsell overlay (used to tag the API
+  // submission so we can track upsell revenue separately).
+  const [upsellAddedIds, setUpsellAddedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (open && stepIndex === 4 && !upsellShown && upsellProducts) {
@@ -88,6 +91,7 @@ export default function PackageBuilderModal({
     const match = all.find((bp) => bp.sku === p.handle);
     if (match) {
       setSelection((s) => ({ ...s, [match.id]: (s[match.id] ?? 0) + 1 }));
+      setUpsellAddedIds((s) => new Set(s).add(match.id));
     } else {
       // Not in any step's catalog — graft a synthetic entry so it counts
       // toward the total. The submit handler maps lineItems back to the
@@ -104,6 +108,7 @@ export default function PackageBuilderModal({
         sku: p.handle,
       };
       setSelection((s) => ({ ...s, [synthId]: (s[synthId] ?? 0) + 1 }));
+      setUpsellAddedIds((s) => new Set(s).add(synthId));
     }
   };
 
@@ -192,6 +197,7 @@ export default function PackageBuilderModal({
         // BuilderProduct.sku is the underlying Postgres product handle.
         handle: li.product.sku || '',
         qty: li.qty,
+        viaUpsell: upsellAddedIds.has(li.product.id),
       }))
       .filter((i) => i.handle);
 
@@ -227,6 +233,7 @@ export default function PackageBuilderModal({
                   .filter(Boolean)
                   .join(', ')}`
               : undefined,
+          upsellVariantId: upsellProducts?.variantId,
         }),
       });
       const json = await res.json();

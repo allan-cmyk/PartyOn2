@@ -31,6 +31,8 @@ export const dynamic = 'force-dynamic';
 const ItemSchema = z.object({
   handle: z.string().min(1),
   qty: z.number().int().positive(),
+  /** Set true when this line was added via the pre-checkout upsell overlay. */
+  viaUpsell: z.boolean().optional(),
 });
 
 const BodySchema = z.object({
@@ -47,6 +49,8 @@ const BodySchema = z.object({
   deliveryZip: z.string().optional().default(''),
   deliveryNotes: z.string().optional(),
   items: z.array(ItemSchema).min(1),
+  /** Upsell A/B variant shown to this customer. Persisted to the draft order. */
+  upsellVariantId: z.string().optional(),
 });
 
 export async function POST(request: NextRequest) {
@@ -98,6 +102,9 @@ export async function POST(request: NextRequest) {
           quantity: it.qty,
           price: Number(p.variants[0].price),
           imageUrl: p.images[0]?.url,
+          // Persist upsell attribution into the items JSON so admin/reporting
+          // can compute upsell revenue per draft order.
+          viaUpsell: it.viaUpsell === true,
         };
       })
       .filter((x): x is NonNullable<typeof x> => x !== null);
@@ -137,6 +144,19 @@ export async function POST(request: NextRequest) {
       createdBy: `landing:${body.occasion}`,
       adminNotes: `Auto-generated from /austin-${body.occasion}-* landing page. Group size: ${body.groupSize}.`,
     });
+
+    // Tag the draft order with the upsell A/B variant the customer saw — the
+    // service doesn't accept this field directly, so we patch it post-create.
+    if (body.upsellVariantId) {
+      try {
+        await prisma.draftOrder.update({
+          where: { id: draftOrder.id },
+          data: { upsellVariantId: body.upsellVariantId },
+        });
+      } catch (err) {
+        console.error('[landing/quote] failed to set upsellVariantId:', err);
+      }
+    }
 
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';
     const invoiceUrl = `${baseUrl}/invoice/${draftOrder.token}`;

@@ -11,6 +11,8 @@ interface DraftOrderItem {
   quantity: number;
   price: number;
   imageUrl?: string;
+  /** True if this line was added via the landing-page upsell overlay. */
+  viaUpsell?: boolean;
 }
 
 interface DraftOrder {
@@ -29,6 +31,8 @@ interface DraftOrder {
   createdAt: string;
   invoiceUrl?: string;
   emailStatus: string | null;
+  /** A/B variant the landing-page upsell overlay showed this customer. */
+  upsellVariantId?: string | null;
 }
 
 interface PaginationInfo {
@@ -360,6 +364,25 @@ export default function DraftOrdersTable(): ReactElement {
                     <div>
                       <p className="font-medium text-gray-900">{order.customerName}</p>
                       <p className="text-sm text-gray-500">{order.customerEmail}</p>
+                      {(order.items?.some((it) => it.viaUpsell) ||
+                        !!order.upsellVariantId) && (
+                        <span
+                          className="mt-1 inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full"
+                          style={{ background: '#EDE9FE', color: '#6D28D9' }}
+                          title={
+                            order.upsellVariantId
+                              ? `Upsell variant: ${order.upsellVariantId}`
+                              : 'Includes upsell items'
+                          }
+                        >
+                          ★ Upsell
+                          {order.upsellVariantId && (
+                            <span className="opacity-70 font-normal">
+                              · {order.upsellVariantId}
+                            </span>
+                          )}
+                        </span>
+                      )}
                     </div>
                   </td>
                   <td className="px-6 py-4 text-right">

@@ -1702,11 +1702,18 @@ model DraftOrder {
   // Amendment: if this draft order is an amendment invoice for an existing order
   amendmentForOrderId String? @map("amendment_for_order_id")
 
+  // Landing-page upsell A/B tracking. Records which arrangement of the
+  // pre-checkout upsell overlay was shown to this customer so we can
+  // measure which order converts best. Per-item upsell attribution lives
+  // in the items JSON (each item may carry { ..., viaUpsell: true }).
+  upsellVariantId String? @map("upsell_variant_id")
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@index([customerEmail])
   @@index([status])
+  @@index([upsellVariantId])
   @@index([createdAt])
   @@index([groupOrderId])
   @@index([amendmentForOrderId])

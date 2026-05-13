@@ -38,6 +38,8 @@ type LineState = {
   freebie: boolean;
   qty: number;
   drinksPerUnit: number;
+  /** Set true when added via the pre-checkout upsell overlay — flows to API for tracking. */
+  viaUpsell?: boolean;
 };
 
 // Slider ranges by occasion. Bachelor/bachelorette parties top out
@@ -127,7 +129,11 @@ export default function QuickBuyModal({
     setLines((prev) => {
       const existing = prev.findIndex((l) => l.handle === p.handle);
       if (existing >= 0) {
-        return prev.map((l, i) => (i === existing ? { ...l, qty: l.qty + 1 } : l));
+        // Already in the cart — bump qty AND mark as upsell so the
+        // attribution stays even if the package recipe also includes it.
+        return prev.map((l, i) =>
+          i === existing ? { ...l, qty: l.qty + 1, viaUpsell: true } : l,
+        );
       }
       return [
         ...prev,
@@ -138,6 +144,7 @@ export default function QuickBuyModal({
           freebie: false,
           qty: 1,
           drinksPerUnit: 0,
+          viaUpsell: true,
         },
       ];
     });
@@ -212,7 +219,11 @@ export default function QuickBuyModal({
     try {
       const items = [...paidLines, ...freeLines]
         .filter((l) => l.handle && l.qty > 0)
-        .map((l) => ({ handle: l.handle, qty: l.qty }));
+        .map((l) => ({
+          handle: l.handle,
+          qty: l.qty,
+          viaUpsell: l.viaUpsell === true,
+        }));
       if (items.length === 0) {
         setError('Pick at least one item.');
         setSubmitting(false);
@@ -235,6 +246,7 @@ export default function QuickBuyModal({
           deliveryZip: zip,
           items,
           deliveryNotes: `Quick-Buy from ${pkg.name} (${occasion} landing page)`,
+          upsellVariantId: upsellProducts?.variantId,
         }),
       });
       const json = await res.json();
