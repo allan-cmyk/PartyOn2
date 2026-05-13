@@ -104,7 +104,17 @@ export async function detectPickInventoryLag(now: Date = new Date()): Promise<Op
   return recs;
 }
 
-/** Signal #3: same variant shorted on ≥2 distinct orders in last 7 days. */
+/**
+ * Signal #3: same variant shorted on ≥2 distinct orders in last 7 days.
+ *
+ * Known gap: the SQL joins `order_items oi ON oi.title = pks.item_key`, but
+ * `OrderItemPickState.item_key` for bundle components is
+ * `${itemTitle}::${bundleComponentTitle}` (see pick-inventory-service.ts:9–11).
+ * Those rows won't match a line item directly and shorts on bundle components
+ * are dropped here. Acceptable for now — bundle components are a minority and
+ * their parent line still gets counted. Revisit when bundles drive enough
+ * shorts to matter.
+ */
 export async function detectRepeatedShorts(now: Date = new Date()): Promise<OperationsRecommendationInput[]> {
   const cutoff = new Date(now.getTime() - 7 * DAY_MS);
   const rows = await prisma.$queryRawUnsafe<Array<{ variant_id: string; title: string; orders: bigint; total_short: bigint }>>(

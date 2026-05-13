@@ -126,9 +126,16 @@ export async function markStatus(
 }
 
 /**
- * Append an action-log entry atomically. Reads existing array inside a
- * transaction, appends, writes back. Postgres JSONB lacks a built-in atomic
- * array-append; a small txn is the safe path.
+ * Append an action-log entry. Read-modify-write inside `$transaction`.
+ *
+ * Concurrency note: Postgres doesn't row-lock until the UPDATE statement, so
+ * two simultaneous appends on the same rec can both read the same baseline
+ * and the later UPDATE wins (lost-update). Acceptable here because the
+ * action log is driven by a single operator clicking inline buttons one at
+ * a time — concurrent appends on the same rec aren't a realistic workflow.
+ * If this assumption stops holding, swap the read-modify-write for an
+ * atomic `jsonb_set(action_log, '{<idx>}', $1, true)` via $executeRawUnsafe
+ * or a SELECT … FOR UPDATE inside the transaction.
  */
 export async function appendActionLog(
   id: string,
