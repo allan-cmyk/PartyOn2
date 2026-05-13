@@ -2495,6 +2495,58 @@ model RecommendationItem {
   @@map("recommendation_items")
 }
 
+/// Operations Director recommendation queue (Phase 1B). Parallel to
+/// RecommendationItem (Marketing/SEO) — see docs/OPERATIONS-DIRECTOR-AGENT-BUILDOUT.md
+/// §5a for why this is a separate model rather than a unified table.
+///
+/// dedupeKey = signalKind + ':' + targetEntityId — prevents an open detector
+/// from creating duplicate rows on repeat snapshot runs.
+model OperationsRecommendation {
+  id               String    @id @default(cuid())
+  signalKind       String    @map("signal_kind")
+  severity         String    // 'urgent' | 'high' | 'normal'
+  title            String
+  evidence         Json      // Evidence[]
+  targetEntityType String    @map("target_entity_type")
+  targetEntityId   String    @map("target_entity_id")
+  actionPayload    Json      @map("action_payload")
+  status           String    @default("open")
+  snoozeUntil      DateTime? @map("snooze_until")
+  dismissReason    String?   @map("dismiss_reason") @db.Text
+  actionLog        Json      @default("[]") @map("action_log")
+  source           String    @default("auto-snapshot")
+  shippedAt        DateTime? @map("shipped_at")
+  measuredAt       DateTime? @map("measured_at")
+  measurementResult Json?    @map("measurement_result")
+  dedupeKey        String    @unique @map("dedupe_key")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@index([severity, status])
+  @@index([signalKind, status])
+  @@map("operations_recommendations")
+}
+
+/// Daily ops snapshot — one row per cron run. Powers the dashboard trend
+/// charts and the Monday briefing. See docs/OPERATIONS-DIRECTOR-AGENT-BUILDOUT.md §12.
+model OperationsSnapshot {
+  id                          String   @id @default(cuid())
+  capturedAt                  DateTime @default(now()) @map("captured_at")
+  inventoryAccuracyPct        Float?   @map("inventory_accuracy_pct")
+  driftEventsTotal            Int      @map("drift_events_total")
+  driftEventsBySignal         Json     @map("drift_events_by_signal")
+  urgentShortagesCount        Int      @map("urgent_shortages_count")
+  costCoveragePct             Float    @map("cost_coverage_pct")
+  receivingLagP50Hours        Float?   @map("receiving_lag_p50_hours")
+  receivingLagP90Hours        Float?   @map("receiving_lag_p90_hours")
+  cycleCountsCompletedLast7d  Int      @map("cycle_counts_completed_last_7d")
+  paidOrders14dShortageCount  Int      @map("paid_orders_14d_shortage_count")
+
+  @@index([capturedAt])
+  @@map("operations_snapshots")
+}
+
 model SyncLog {
   id                Int       @id @default(autoincrement())
   startedAt         DateTime  @default(now()) @map("started_at")
