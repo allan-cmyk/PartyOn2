@@ -71,7 +71,7 @@ const BACHELOR: Recipe[] = [
     defaultPeople: 7,
     serves: 'Pre-game for 6–8',
     blurb: 'Everything you need before hitting 6th Street or Rainey.',
-    image: '/images/landing/bachelor-starter.jpg',
+    image: '/images/services/bach-parties/late-night-party-supplies.webp',
     alcohol: [
       { handle: 'titos-handmade-vodka-80-1lt', qty: 1 },
       { handle: 'jameson-irish-whiskey-1', qty: 1 },
@@ -92,7 +92,7 @@ const BACHELOR: Recipe[] = [
     defaultPeople: 11,
     serves: 'Boat party for 10–12',
     blurb: 'Built for sun, dock, and 8 hours on the water. Cold guaranteed.',
-    image: '/images/landing/bachelor-lake.jpg',
+    image: '/images/gallery/sunset-champagne-pontoon.webp',
     featured: true,
     alcohol: [
       { handle: 'titos-handmade-vodka-80-1-75lt', qty: 1 },
@@ -120,7 +120,7 @@ const BACHELOR: Recipe[] = [
     defaultPeople: 9,
     serves: 'Pre-game for 8–10',
     blurb: 'Pre-game heavy, walk to the bars, stumble back to the Airbnb.',
-    image: '/images/landing/bachelor-rainey.jpg',
+    image: '/images/hero/bach-hero-rainey.webp',
     alcohol: [
       { handle: 'titos-handmade-vodka-80-1lt', qty: 1 },
       { handle: 'espolon-tequila-blanco-80-1l', qty: 1 },
@@ -146,7 +146,7 @@ const BACHELORETTE: Recipe[] = [
     defaultPeople: 7,
     serves: 'Pre-game for 6–8',
     blurb: 'Bubbles, rosé, and seltzers — the warm-up before the big night.',
-    image: '/images/landing/bachelorette-pregame.jpg',
+    image: '/images/services/bach-parties/bachelorette-champagne-tower.webp',
     alcohol: [
       { handle: 'amor-di-amanti-prosecco-spumante-750-ml', qty: 2 },
       { handle: 'chateau-desclans-whispering-angel-rose-750ml', qty: 1 },
@@ -168,7 +168,7 @@ const BACHELORETTE: Recipe[] = [
     defaultPeople: 11,
     serves: 'Lake Travis party for 10–12',
     blurb: 'Champagne, rosé, vodka, and seltzers for a golden-hour cruise.',
-    image: '/images/landing/bachelorette-yacht.jpg',
+    image: '/images/hero/lake-travis-yacht-sunset.webp',
     featured: true,
     alcohol: [
       { handle: 'veuve-clicquot-champagne-brut-750ml', qty: 1 },
@@ -196,7 +196,7 @@ const BACHELORETTE: Recipe[] = [
     defaultPeople: 9,
     serves: 'Dinner party for 8–10',
     blurb: 'Curated wines, prosecco, and rosé for a stay-in girls night.',
-    image: '/images/landing/bachelorette-wine.jpg',
+    image: '/images/destinations/hill-country-winery.webp',
     alcohol: [
       { handle: 'amor-di-amanti-prosecco-spumante-750-ml', qty: 2 },
       { handle: 'la-marca-prosecco-extra-dry-750ml-1', qty: 1 },
@@ -224,7 +224,7 @@ const CORPORATE: Recipe[] = [
     defaultPeople: 17,
     serves: 'Office event for 15–20',
     blurb: 'Approachable selection of beer, wine, and a clean spirits bar.',
-    image: '/images/landing/corporate-happyhour.jpg',
+    image: '/images/corporate/networking-mixer.webp',
     alcohol: [
       { handle: 'modelo-especial-24pack-12oz-cans', qty: 1 },
       { handle: 'miller-lite-24-pack-12oz-can', qty: 1 },
@@ -250,7 +250,7 @@ const CORPORATE: Recipe[] = [
     defaultPeople: 40,
     serves: 'Team event for 30–50',
     blurb: 'Full bar setup — beer, wine, spirits, mixers, and bartender essentials.',
-    image: '/images/landing/corporate-mixer.jpg',
+    image: '/images/hero/corporate-hero-gala.webp',
     featured: true,
     alcohol: [
       { handle: 'modelo-especial-24pack-12oz-cans', qty: 2 },
@@ -281,7 +281,7 @@ const CORPORATE: Recipe[] = [
     defaultPeople: 10,
     serves: 'Premium dinner for 8–12',
     blurb: 'Veuve Clicquot, premium wines, and small-batch spirits — designed to impress.',
-    image: '/images/landing/corporate-client.jpg',
+    image: '/images/products/premium-spirits-boutique.webp',
     alcohol: [
       { handle: 'veuve-clicquot-champagne-brut-750ml', qty: 1 },
       { handle: 'chateau-desclans-whispering-angel-rose-750ml', qty: 1 },
@@ -309,7 +309,7 @@ const WEDDING: Recipe[] = [
     defaultPeople: 24,
     serves: 'Cocktail hour for 24 guests',
     blurb: 'Champagne welcome, signature wines, and a tight beer + spirits bar — 2 hours of service.',
-    image: '/images/landing/wedding-cocktail-hour.jpg',
+    image: '/images/wedding-services/cocktail-hour-service.webp',
     alcohol: [
       { handle: 'la-marca-prosecco-extra-dry-750ml-1', qty: 2 },
       { handle: 'chandon-california-brut-750ml', qty: 1 },
@@ -333,7 +333,7 @@ const WEDDING: Recipe[] = [
     defaultPeople: 60,
     serves: 'Reception for 50–75 guests',
     blurb: 'The classic open bar: 4 beers, 4 wines, full spirits + mixers. Built from real wedding orders.',
-    image: '/images/landing/wedding-standard.jpg',
+    image: '/images/wedding-services/reception-bar.webp',
     featured: true,
     alcohol: [
       // 4 beers
@@ -371,7 +371,7 @@ const WEDDING: Recipe[] = [
     defaultPeople: 100,
     serves: 'Reception for 100+ guests',
     blurb: 'Veuve toast, premium wines, top-shelf spirits — the upgrade tier.',
-    image: '/images/landing/wedding-premium.jpg',
+    image: '/images/hero/luxury-wedding-estate-1.webp',
     alcohol: [
       { handle: 'veuve-clicquot-champagne-brut-750ml', qty: 4 },
       { handle: 'la-marca-prosecco-extra-dry-750ml-1', qty: 4 },

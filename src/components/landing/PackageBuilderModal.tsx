@@ -367,32 +367,45 @@ export default function PackageBuilderModal({ open, onClose, config, catalog }: 
 
         {!submitted && (
           <div
-            className="flex-shrink-0 border-t flex items-center justify-between px-5 sm:px-7 py-3 gap-4"
-            style={{ background: '#FFFFFF', borderColor: '#E5E7EB' }}
+            className="flex-shrink-0 flex items-stretch justify-between gap-3 px-5 sm:px-7 py-3"
+            style={{
+              background: T.navy,
+              color: '#FFFFFF',
+              borderTop: `3px solid ${T.primary}`,
+            }}
           >
-            <div className="flex items-baseline gap-4 text-sm">
-              <div>
-                <span className="text-gray-500 mr-1.5">Total</span>
-                <span className="font-heading text-xl font-bold" style={{ color: T.navy }}>
-                  ${total.toFixed(2)}
-                </span>
+            <div className="flex-1 min-w-0">
+              <div
+                className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.18em]"
+                style={{ color: T.primary, opacity: 0.95 }}
+              >
+                Running total
               </div>
-              <div className="hidden sm:block">
-                <span className="text-gray-500 mr-1.5">
-                  Per {M.groupSizeUnit.replace(/s$/, '')} ({people})
-                </span>
-                <span className="font-heading text-lg font-bold" style={{ color: T.blue }}>
-                  ${perPerson.toFixed(2)}
-                </span>
+              <div
+                className="font-heading font-bold leading-none"
+                style={{ color: T.primary, fontSize: 'clamp(1.75rem, 5vw, 2.5rem)' }}
+              >
+                ${total.toFixed(2)}
+              </div>
+              {lineItems.length > 0 && (
+                <div className="text-[10px] mt-0.5 opacity-70">
+                  {lineItems.reduce((s, li) => s + li.qty, 0)} item
+                  {lineItems.reduce((s, li) => s + li.qty, 0) !== 1 ? 's' : ''} ·{' '}
+                  {lineItems.length} product{lineItems.length !== 1 ? 's' : ''}
+                </div>
+              )}
+            </div>
+            <div className="text-right flex-shrink-0 self-center pl-3 border-l border-white/15">
+              <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.18em] opacity-80">
+                Per {M.groupSizeUnit.replace(/s$/, '')} ({people})
+              </div>
+              <div
+                className="font-heading font-bold leading-none"
+                style={{ color: '#FFFFFF', fontSize: 'clamp(1.4rem, 4vw, 2rem)' }}
+              >
+                ${perPerson.toFixed(2)}
               </div>
             </div>
-            {lineItems.length > 0 && (
-              <div className="hidden sm:block text-xs text-gray-500">
-                {lineItems.reduce((s, li) => s + li.qty, 0)} item
-                {lineItems.reduce((s, li) => s + li.qty, 0) !== 1 ? 's' : ''} ·{' '}
-                {lineItems.length} product{lineItems.length !== 1 ? 's' : ''}
-              </div>
-            )}
           </div>
         )}
 
@@ -421,7 +434,7 @@ export default function PackageBuilderModal({ open, onClose, config, catalog }: 
             {!isLastStep ? (
               <button
                 onClick={next}
-                className="px-6 py-3 font-bold rounded-md tracking-wide transition-all hover:scale-[1.02] shadow-md"
+                className="px-5 py-2.5 text-sm font-bold rounded-md tracking-wide transition-all hover:scale-[1.02] shadow-md"
                 style={{ background: T.primary, color: T.primaryText }}
               >
                 {stepIndex === 0 ? 'Start Building →' : 'Next →'}
