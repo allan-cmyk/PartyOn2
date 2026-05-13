@@ -188,6 +188,9 @@ export const weddingConfig: LandingConfig = {
   primaryCtaHref: '#builder',
   ctaText: 'BUILD MY WEDDING WEEKEND →',
 
+  planningCallUrl: 'https://123.partyondelivery.com/planning-call',
+  secondaryCtaText: 'SCHEDULE A 10-MIN CALL →',
+
   quoteInbox: 'brian@premierpartycruises.com',
 
   modal: {

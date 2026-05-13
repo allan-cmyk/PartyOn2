@@ -171,6 +171,15 @@ export type LandingConfig = {
 
   // Quote inbox
   quoteInbox: string;
+
+  /**
+   * Optional URL for the "Schedule a 10-min call" secondary CTA shown next
+   * to the primary "Build your package" button. Points at the planning-call
+   * scheduler.
+   */
+  planningCallUrl?: string;
+  /** Text on the secondary CTA. Defaults to "SCHEDULE A 10-MIN CALL →". */
+  secondaryCtaText?: string;
 };
 
 // ---- Catalog (Package Builder Modal) ----

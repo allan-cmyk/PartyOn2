@@ -114,7 +114,7 @@ export default function LandingPageTemplate({ config, catalog }: Props) {
               {config.heroSubhead}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4">
               <button
                 type="button"
                 onClick={openBuilder}
@@ -123,29 +123,51 @@ export default function LandingPageTemplate({ config, catalog }: Props) {
               >
                 {config.ctaText}
               </button>
+              {config.planningCallUrl && (
+                <a
+                  href={config.planningCallUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center border-2 border-white text-white font-semibold text-base px-8 py-5 rounded-md hover:bg-white transition-colors"
+                  style={{ ['--hover-color' as string]: T.navy }}
+                >
+                  {config.secondaryCtaText ?? 'SCHEDULE A 10-MIN CALL →'}
+                </a>
+              )}
+            </div>
+
+            {/* Call/text-or-tap row */}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-white/90 mb-4">
               <a
                 href={config.phoneTel}
-                className="inline-flex items-center justify-center border-2 border-white text-white font-semibold text-base px-8 py-5 rounded-md hover:bg-white transition-colors"
-                style={{ ['--hover-color' as string]: T.navy }}
+                className="inline-flex items-center gap-1.5 font-semibold underline hover:text-white"
               >
-                Or call {config.phoneDisplay}
+                📞 Call {config.phoneDisplay}
+              </a>
+              <a
+                href={`sms:${config.phoneTel.replace('tel:', '')}`}
+                className="inline-flex items-center gap-1.5 font-semibold underline hover:text-white"
+              >
+                💬 Text us
               </a>
             </div>
 
-            <div className="flex flex-wrap gap-2 text-xs sm:text-sm font-semibold">
-              {config.heroTrustBadges.map((b) => (
-                <span
-                  key={b}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white"
-                  style={{
-                    background: 'rgba(255,255,255,0.12)',
-                    border: '1px solid rgba(255,255,255,0.25)',
-                  }}
-                >
-                  {b}
-                </span>
-              ))}
-            </div>
+            {config.heroTrustBadges.length > 0 && (
+              <div className="flex flex-wrap gap-2 text-xs sm:text-sm font-semibold">
+                {config.heroTrustBadges.map((b) => (
+                  <span
+                    key={b}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white"
+                    style={{
+                      background: 'rgba(255,255,255,0.12)',
+                      border: '1px solid rgba(255,255,255,0.25)',
+                    }}
+                  >
+                    {b}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -398,7 +420,7 @@ export default function LandingPageTemplate({ config, catalog }: Props) {
             >
               {config.finalCtaSubhead}
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center flex-wrap">
               <button
                 type="button"
                 onClick={openBuilder}
@@ -407,19 +429,28 @@ export default function LandingPageTemplate({ config, catalog }: Props) {
               >
                 {config.ctaText}
               </button>
+              {config.planningCallUrl && (
+                <a
+                  href={config.planningCallUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center border-2 border-white text-white font-semibold text-lg px-10 py-5 rounded-md hover:bg-white transition-colors"
+                >
+                  {config.secondaryCtaText ?? 'SCHEDULE A 10-MIN CALL →'}
+                </a>
+              )}
+            </div>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-white/90 font-semibold">
+              <a href={config.phoneTel} className="underline hover:text-white">
+                📞 Call {config.phoneDisplay}
+              </a>
               <a
-                href={config.phoneTel}
-                className="inline-flex items-center justify-center border-2 border-white text-white font-semibold text-lg px-10 py-5 rounded-md hover:bg-white transition-colors"
+                href={`sms:${config.phoneTel.replace('tel:', '')}`}
+                className="underline hover:text-white"
               >
-                Call {config.phoneDisplay}
+                💬 Text us
               </a>
             </div>
-            <p
-              className="text-sm opacity-80 mt-8 font-medium"
-              style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}
-            >
-              TABC-licensed • 1,000+ deliveries • 5.0★ Google rating
-            </p>
           </div>
         </div>
       </section>

@@ -7,7 +7,7 @@ export const corporateConfig: LandingConfig = {
   metaTitle:
     'Austin Corporate Event & Offsite Alcohol Delivery | Premium Spirits & Bar Setup | Party On Delivery',
   metaDescription:
-    'White-glove premium spirits, wine, and bar setups for Austin corporate offsites, client dinners, and team events. NET-30 invoicing, COI on file, single-point coordinator. TABC-licensed.',
+    'White-glove premium spirits, wine, and bar setups for Austin corporate offsites, client dinners, and team events. TABC-licensed. $1M insured. Invoices on request. Free returns.',
   ogImage: '/images/products/premium-spirits-boutique.webp',
 
   theme: {
@@ -27,19 +27,19 @@ export const corporateConfig: LandingConfig = {
   heroSubhead:
     "Top-shelf spirits, sommelier-curated wines, and full bar setups for offsites, client dinners, holiday parties, and SXSW activations. Invoiced. Insured. Discreetly delivered.",
   heroImage: '/images/products/premium-spirits-lifestyle.webp',
-  heroTrustBadges: ['✓ TABC-licensed', '✓ COI on file', '✓ NET-30 available'],
+  heroTrustBadges: [],
 
   trustStats: [
-    { stat: '500+', label: 'Corporate clients' },
-    { stat: 'NET-30', label: 'Invoicing available' },
-    { stat: '$2M', label: 'Liability coverage' },
-    { stat: 'TABC', label: 'Licensed & insured' },
+    { stat: 'TABC-licensed', label: 'Packaged-store license' },
+    { stat: '$1M insured', label: 'GL + liquor liability' },
+    { stat: 'Invoices', label: 'Available on request' },
+    { stat: 'Free returns', label: 'On unopened product' },
   ],
 
   painHeadline:
-    "Your event vendor shouldn't be your office manager's biggest stress.",
+    "Event vendors shouldn't be a project of their own.",
   painBody:
-    "Surprise corkage fees. Vendors that won't invoice. A junior staffer wheeling in cases of wine through the lobby. We deliver premium product on time, take care of the paperwork, and make whoever planned the event look like a hero.",
+    "Premium spirits, curated wines, and full bar setups — invoiced, insured, delivered on time. Your finance team approves, your event runs smooth, your name looks good.",
 
   packagesEyebrow: 'CURATED FOR AUSTIN OFFSITES & CORPORATE EVENTS',
   packagesHeadline: 'Curated bar service. White-glove delivery.',
@@ -100,18 +100,18 @@ export const corporateConfig: LandingConfig = {
   steps: [
     {
       n: '1',
-      title: 'Tell us the brief',
-      body: 'Headcount, venue, vibe, and any restrictions (corporate cards, NET-30, COI requirements). We respond within 4 business hours.',
+      title: 'Tell us the plan',
+      body: 'Headcount, venue, vibe, and any restrictions. We respond within 48 hours.',
     },
     {
       n: '2',
       title: 'Curated proposal',
-      body: 'You get an itemized quote with photos. Approve it, sign the W-9 if needed, and we lock the date.',
+      body: 'You get an itemized quote/invoice. Adjust items, approve, and your date is locked.',
     },
     {
       n: '3',
       title: 'White-glove delivery',
-      body: "We arrive on time, in branded vehicles, with COI on file. Discreet drop-off or full setup — your call.",
+      body: "We arrive on time, items cold, and coordinate with your venue so the whole event runs smooth.",
     },
   ],
 
@@ -153,28 +153,28 @@ export const corporateConfig: LandingConfig = {
   faqHeadline: 'The questions every event planner asks.',
   faqs: [
     {
-      q: 'Do you invoice or accept POs?',
-      a: 'Yes. NET-30 available for established clients with credit approval. Same-day invoicing for one-off events. We accept ACH, wire, and corporate cards.',
+      q: 'How do you handle payment and invoicing?',
+      a: 'We accept corporate cards (Visa/MC/Amex), ACH, and wire. We can send a paid invoice for your records. We do not offer NET-30 terms.',
     },
     {
       q: 'Can you provide a Certificate of Insurance?',
-      a: "Yes — $2M general liability + liquor liability. We can add your venue or company as additional insured. Same-day turnaround.",
+      a: "Yes — $1M general liability + liquor liability. Please note: we cannot add other venues or companies as additionally insured.",
     },
     {
       q: 'Do you set up bars or just deliver?',
-      a: "Both. Drop-off + delivery is included; on-site setup, ice management, and bartending coordination available as add-ons.",
+      a: 'Both. Drop-off + delivery is included; on-site setup, ice management, and bartending coordination are available as add-ons.',
     },
     {
       q: 'Lead time for corporate events?',
-      a: '48 hours for standard orders. For events over $5,000 or with custom branded items, plan 1–2 weeks. We move fast.',
+      a: '72 hours for standard orders. For events over $5,000 or with custom requirements, plan 1–2 weeks. We move fast when needed.',
     },
     {
-      q: 'Branded packaging or gifting?',
-      a: "Yes — we offer branded delivery bags, custom welcome kits, and curated client-gift bottles with your logo on the carrier.",
+      q: 'How are you licensed?',
+      a: 'TABC packaged-store license with $1M liquor liability and insurance. Every driver is TABC-certified. We card on delivery — required by law.',
     },
     {
-      q: 'Are you actually licensed?',
-      a: "TABC-licensed retailer with $2M liquor liability and full corporate insurance. We card on delivery — required by law.",
+      q: 'Do you accept returns?',
+      a: 'Yes — free returns on any unopened product. If your event ends with full bottles untouched, send them back.',
     },
   ],
 
@@ -188,6 +188,9 @@ export const corporateConfig: LandingConfig = {
   phoneTel: 'tel:7373719700',
   primaryCtaHref: '#builder',
   ctaText: 'REQUEST A CORPORATE QUOTE →',
+
+  planningCallUrl: 'https://123.partyondelivery.com/planning-call',
+  secondaryCtaText: 'SCHEDULE A 10-MIN CALL →',
 
   quoteInbox: 'brian@premierpartycruises.com',
 
@@ -218,6 +221,6 @@ export const corporateConfig: LandingConfig = {
     successQuoteHeadline: 'Quote request received.',
     successCheckoutHeadline: 'Quote request received.',
     emailNotice:
-      "Your information stays internal. NET-30 + COI available on request. TABC-licensed retailer.",
+      "Your information stays internal. COI available on request. TABC-licensed retailer with $1M liquor liability.",
   },
 };

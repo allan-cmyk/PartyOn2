@@ -7,7 +7,7 @@ export const bacheloretteConfig: LandingConfig = {
   metaTitle:
     'Austin Bachelorette Party Alcohol Delivery | Champagne, Cocktails & More | Party On Delivery',
   metaDescription:
-    "Champagne, rosé, cocktail kits and brunch mimosa bars delivered to your Austin Airbnb, hotel suite, or boat. TABC-licensed. The bride says yes — and we say cheers.",
+    "Champagne, rosé, cocktail kits and brunch mimosa bars delivered to your Austin Airbnb, hotel suite, or boat. Group ordering, split pay, locally owned. 500+ groups served.",
   ogImage: '/images/services/bach-parties/bachelorette-champagne-tower.webp',
 
   theme: {
@@ -27,18 +27,18 @@ export const bacheloretteConfig: LandingConfig = {
   heroSubhead:
     "Bubbly, rosé, cocktail pitcher kits, and brunch mimosa bars — delivered to your Airbnb, hotel suite, or Lake Travis pontoon. You handle the sashes. We handle the rest.",
   heroImage: '/images/services/bach-parties/bachelorette-champagne-tower.webp',
-  heroTrustBadges: ['✓ TABC-licensed', '✓ 800+ Austin bach groups', '★ 5.0 on Google'],
+  heroTrustBadges: [],
 
   trustStats: [
-    { stat: '800+', label: 'Austin bachelorette groups' },
-    { stat: '5.0★', label: 'Google rating' },
-    { stat: '30 sec', label: 'To order' },
-    { stat: 'TABC', label: 'Licensed & insured' },
+    { stat: 'Group ordering', label: 'Girls add to one shared cart' },
+    { stat: 'Split pay', label: 'Each pays her share' },
+    { stat: 'Cocktail kits', label: 'Mimosa bars, espresso martinis, ready to pour' },
+    { stat: '500+', label: 'Groups served' },
   ],
 
   painHeadline: "You're the maid of honor — not the liquor runner.",
   painBody:
-    "Splitting up the girls on day one for a Costco haul. Hauling champagne up four flights to a hotel suite. Realizing nobody brought ice for the mimosa bar. Skip all of it — we deliver everything cold, set up, and ready to pop.",
+    'Drop the link in the group chat. Everyone picks what they want, splits the tab, and we deliver the champagne, rosé, and cocktail kits cold. No four-flight hauls, no Costco run, no "who owes what" texts.',
 
   packagesEyebrow: 'CURATED FOR AUSTIN BACHELORETTE WEEKENDS',
   packagesHeadline: 'Pick a package. Pop the bottles.',
@@ -94,22 +94,22 @@ export const bacheloretteConfig: LandingConfig = {
   ],
   customLine: "Want to customize? Call us — we'll build your perfect weekend.",
 
-  stepsHeadline: 'From order to first toast in three steps.',
+  stepsHeadline: 'Three steps. No group-chat chaos.',
   steps: [
     {
       n: '1',
-      title: 'Pick your package',
-      body: 'Three signature bundles or build your own. We curate; you celebrate.',
+      title: 'Share the cart',
+      body: 'Group ordering — every girl picks her drinks, mimosa kits, and snacks in one shared list. No screenshots, no spreadsheets.',
     },
     {
       n: '2',
-      title: 'Tell us when & where',
-      body: 'Hotel suite, Airbnb, brunch venue, lake dock — give us the spot and the time. 48-hour notice is best.',
+      title: 'Split the bill',
+      body: 'Send the pay link to everyone. Each person pays her share — no Venmo chaser, no "who owes what" before brunch.',
     },
     {
       n: '3',
-      title: 'Pop & celebrate',
-      body: "We text when we're 15 minutes out. Discreet, friendly, ice-cold delivery — you stay in the moment.",
+      title: 'We deliver cold',
+      body: 'Hotel suite, Airbnb, brunch venue, lake dock — we text 15 minutes out and drop everything chilled and ready to pop.',
     },
   ],
 
@@ -184,6 +184,9 @@ export const bacheloretteConfig: LandingConfig = {
   finalCtaSubhead:
     "Most groups book 1–3 weeks out. Lake Travis weekends and Saturday brunches fill up fast.",
   finalCtaImage: '/images/services/bach-parties/brunch-mimosa-bar.webp',
+
+  planningCallUrl: 'https://123.partyondelivery.com/planning-call',
+  secondaryCtaText: 'SCHEDULE A 10-MIN CALL →',
 
   phoneDisplay: PHONE_DISPLAY,
   phoneTel: 'tel:7373719700',

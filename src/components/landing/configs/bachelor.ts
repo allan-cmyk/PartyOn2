@@ -7,7 +7,7 @@ export const bachelorConfig: LandingConfig = {
   metaTitle:
     'Austin Bachelor Party Alcohol Delivery | Stocked Cold, On Time | Party On Delivery',
   metaDescription:
-    'Beer, liquor, mixers and ice delivered cold to your Airbnb, hotel, party bus or Lake Travis dock. TABC-licensed, 1,000+ Austin bach groups served. Order in 30 seconds.',
+    'Beer, liquor, mixers and ice delivered cold to your Airbnb, hotel, party bus or Lake Travis dock. Group ordering, split pay, cocktail kits. 500+ Austin groups served.',
   ogImage: '/images/services/bach-parties/bachelor-party-epic.webp',
 
   theme: {
@@ -27,18 +27,19 @@ export const bachelorConfig: LandingConfig = {
   heroSubhead:
     "Beer, liquor, mixers and ice delivered cold to your Airbnb, hotel, party bus, or Lake Travis dock. Skip the store run. Order in 30 seconds — we'll handle the rest.",
   heroImage: '/images/services/bach-parties/bachelor-party-epic.webp',
-  heroTrustBadges: ['✓ TABC-licensed', '✓ 1,000+ Austin bach groups', '★ 5.0 on Google'],
+  // Hero badges removed — trustStats below handle this so the hero stays uncluttered.
+  heroTrustBadges: [],
 
   trustStats: [
-    { stat: '1,000+', label: 'Austin bach groups' },
-    { stat: '5.0★', label: 'Google rating' },
-    { stat: '30 sec', label: 'To order' },
-    { stat: 'TABC', label: 'Licensed & insured' },
+    { stat: 'Group ordering', label: 'Whole crew adds to one cart' },
+    { stat: 'Split pay', label: 'Each person pays their share' },
+    { stat: 'Cocktail kits', label: 'Pre-mixed for the boat' },
+    { stat: '500+', label: 'Groups served' },
   ],
 
   painHeadline: "You didn't fly to Austin to babysit a Costco run.",
   painBody:
-    "Splitting up the group on day one. Trying to fit a handle of tequila in a Lyft. Realizing the Airbnb is dry at 11pm. We've seen every bach trip mistake in Austin — and we built the fix.",
+    'Drop one link in the group chat — everyone adds what they want, splits the tab, and we deliver it cold. Cocktail kits for the boat. Ice already in the cooler. Done.',
 
   packagesEyebrow: 'CURATED FOR AUSTIN BACH GROUPS',
   packagesHeadline: "Pick a package. We'll do the rest.",
@@ -94,22 +95,22 @@ export const bachelorConfig: LandingConfig = {
   ],
   customLine: "Need something custom? Call us — we'll build it.",
 
-  stepsHeadline: 'From order to first pour in three steps.',
+  stepsHeadline: 'Three steps. No group-chat chaos.',
   steps: [
     {
       n: '1',
-      title: 'Pick your package',
-      body: 'Three plug-and-play bundles or build your own. No store runs, no rideshare with a trunk full of liquor.',
+      title: 'Share the cart',
+      body: 'Group ordering — the whole crew adds beer, seltzers, liquor, and cocktail kits to one shared list. No screenshots, no spreadsheets.',
     },
     {
       n: '2',
-      title: 'Tell us when & where',
-      body: 'Hotel, Airbnb, boat dock, party bus — give us the address and the arrival window. 48-hour notice is best.',
+      title: 'Split the bill',
+      body: 'Send the pay link to everyone. Each person pays their share — no Venmo chaser, no "who owes what" texts.',
     },
     {
       n: '3',
-      title: 'Pour & party',
-      body: "We text you when we're 15 minutes out. Cold delivery, friendly drop-off, ready to drink.",
+      title: 'We deliver cold',
+      body: 'Hotel, Airbnb, boat dock, party bus — we text 15 minutes out and drop it ice-cold, ready to pour.',
     },
   ],
 
@@ -189,6 +190,9 @@ export const bachelorConfig: LandingConfig = {
   phoneTel: 'tel:7373719700',
   primaryCtaHref: '#builder',
   ctaText: 'BUILD YOUR BACH PACKAGE →',
+
+  planningCallUrl: 'https://123.partyondelivery.com/planning-call',
+  secondaryCtaText: 'SCHEDULE A 10-MIN CALL →',
 
   quoteInbox: 'brian@premierpartycruises.com',
 
