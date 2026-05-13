@@ -15,6 +15,10 @@ export type PackageLineItem = {
   unitPrice: number;
   /** When true, this item is included free (counted toward "save" badge but not added to package price). */
   freebie?: boolean;
+  /** Underlying Postgres product handle — needed for Quick-Buy checkout. */
+  handle?: string;
+  /** Approx number of drinks this unit yields (used for slider scaling). */
+  drinksPerUnit?: number;
 };
 
 export type Package = {
@@ -34,6 +38,10 @@ export type Package = {
   freebiesValue?: number;
   image: string;
   featured?: boolean;
+  /** Headcount the recipe is balanced for (slider scales items off this). */
+  defaultPeople?: number;
+  /** Drinks per person target for this occasion (bachelor=20, wedding=8, etc.). */
+  drinksPerPerson?: number;
 };
 
 export type TrustStat = {

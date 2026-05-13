@@ -26,9 +26,40 @@ type Recipe = {
   blurb: string;
   image: string;
   featured?: boolean;
+  /** Headcount the recipe is built for — slider scales items off this. */
+  defaultPeople: number;
   alcohol: RecipeItem[];
   freebies: RecipeItem[];
 };
+
+/** Drinks per person target by occasion. */
+const DRINKS_PER_PERSON: Record<Occasion, number> = {
+  bachelor: 20,
+  bachelorette: 20,
+  corporate: 8,
+  wedding: 8,
+};
+
+/**
+ * Estimate drinks-per-unit from the product title. Used by the Quick-Buy
+ * slider so we can show a "≈ N drinks" indicator. Best-effort heuristic
+ * (the user can still adjust per-item qty).
+ */
+function estimateDrinksPerUnit(title: string): number {
+  const t = title.toLowerCase();
+  // Beer/seltzer/RTD packs: parse "N pack"
+  const packMatch = t.match(/(\d+)\s*pack/);
+  if (packMatch) return parseInt(packMatch[1], 10);
+  // Spirits by bottle size
+  if (t.includes('1.75l')) return 40; // ~40 1.5oz pours
+  if (t.includes('1l') || t.includes('1 l')) return 22;
+  if (t.includes('750ml')) return 17; // wine = ~5 5oz pours; spirit = ~17 1.5oz pours
+  if (t.includes('375ml')) return 8;
+  // Wine/champagne single bottle
+  if (t.includes('wine') || t.includes('prosecco') || t.includes('champagne') || t.includes('rosé') || t.includes('rose')) return 5;
+  // Mixers/supplies — 0 drinks but still count as "supplies"
+  return 0;
+}
 
 // ---- RECIPES ----------------------------------------------------------------
 
@@ -37,6 +68,7 @@ type Recipe = {
 const BACHELOR: Recipe[] = [
   {
     name: 'Austin Bach Starter',
+    defaultPeople: 7,
     serves: 'Pre-game for 6–8',
     blurb: 'Everything you need before hitting 6th Street or Rainey.',
     image: '/images/landing/bachelor-starter.jpg',
@@ -57,6 +89,7 @@ const BACHELOR: Recipe[] = [
   },
   {
     name: 'Lake Travis Pack',
+    defaultPeople: 11,
     serves: 'Boat party for 10–12',
     blurb: 'Built for sun, dock, and 8 hours on the water. Cold guaranteed.',
     image: '/images/landing/bachelor-lake.jpg',
@@ -84,6 +117,7 @@ const BACHELOR: Recipe[] = [
   },
   {
     name: 'Rainey Street Crawler',
+    defaultPeople: 9,
     serves: 'Pre-game for 8–10',
     blurb: 'Pre-game heavy, walk to the bars, stumble back to the Airbnb.',
     image: '/images/landing/bachelor-rainey.jpg',
@@ -109,6 +143,7 @@ const BACHELOR: Recipe[] = [
 const BACHELORETTE: Recipe[] = [
   {
     name: 'Bach Pre-Game',
+    defaultPeople: 7,
     serves: 'Pre-game for 6–8',
     blurb: 'Bubbles, rosé, and seltzers — the warm-up before the big night.',
     image: '/images/landing/bachelorette-pregame.jpg',
@@ -130,6 +165,7 @@ const BACHELORETTE: Recipe[] = [
   },
   {
     name: 'Sunset Yacht Pack',
+    defaultPeople: 11,
     serves: 'Lake Travis party for 10–12',
     blurb: 'Champagne, rosé, vodka, and seltzers for a golden-hour cruise.',
     image: '/images/landing/bachelorette-yacht.jpg',
@@ -157,6 +193,7 @@ const BACHELORETTE: Recipe[] = [
   },
   {
     name: 'Wine Night Pack',
+    defaultPeople: 9,
     serves: 'Dinner party for 8–10',
     blurb: 'Curated wines, prosecco, and rosé for a stay-in girls night.',
     image: '/images/landing/bachelorette-wine.jpg',
@@ -184,6 +221,7 @@ const BACHELORETTE: Recipe[] = [
 const CORPORATE: Recipe[] = [
   {
     name: 'Office Happy Hour',
+    defaultPeople: 17,
     serves: 'Office event for 15–20',
     blurb: 'Approachable selection of beer, wine, and a clean spirits bar.',
     image: '/images/landing/corporate-happyhour.jpg',
@@ -209,6 +247,7 @@ const CORPORATE: Recipe[] = [
   },
   {
     name: 'Quarterly Mixer',
+    defaultPeople: 40,
     serves: 'Team event for 30–50',
     blurb: 'Full bar setup — beer, wine, spirits, mixers, and bartender essentials.',
     image: '/images/landing/corporate-mixer.jpg',
@@ -239,6 +278,7 @@ const CORPORATE: Recipe[] = [
   },
   {
     name: 'Client Dinner',
+    defaultPeople: 10,
     serves: 'Premium dinner for 8–12',
     blurb: 'Veuve Clicquot, premium wines, and small-batch spirits — designed to impress.',
     image: '/images/landing/corporate-client.jpg',
@@ -266,6 +306,7 @@ const CORPORATE: Recipe[] = [
 const WEDDING: Recipe[] = [
   {
     name: 'Cocktail Hour',
+    defaultPeople: 24,
     serves: 'Cocktail hour for 24 guests',
     blurb: 'Champagne welcome, signature wines, and a tight beer + spirits bar — 2 hours of service.',
     image: '/images/landing/wedding-cocktail-hour.jpg',
@@ -289,6 +330,7 @@ const WEDDING: Recipe[] = [
   },
   {
     name: 'Standard Wedding Bar',
+    defaultPeople: 60,
     serves: 'Reception for 50–75 guests',
     blurb: 'The classic open bar: 4 beers, 4 wines, full spirits + mixers. Built from real wedding orders.',
     image: '/images/landing/wedding-standard.jpg',
@@ -326,6 +368,7 @@ const WEDDING: Recipe[] = [
   },
   {
     name: 'Premium Wedding Bar',
+    defaultPeople: 100,
     serves: 'Reception for 100+ guests',
     blurb: 'Veuve toast, premium wines, top-shelf spirits — the upgrade tier.',
     image: '/images/landing/wedding-premium.jpg',
@@ -395,14 +438,29 @@ async function buildOccasionPackagesUncached(occasion: Occasion): Promise<Packag
       const p = byHandle[a.handle];
       if (!p) continue; // gracefully skip missing products
       const unit = Number(p.basePrice);
-      lineItems.push({ name: cleanTitle(p.title), qty: a.qty, unitPrice: unit });
+      const cleanedTitle = cleanTitle(p.title);
+      lineItems.push({
+        name: cleanedTitle,
+        qty: a.qty,
+        unitPrice: unit,
+        handle: p.handle,
+        drinksPerUnit: estimateDrinksPerUnit(cleanedTitle),
+      });
       packagePrice += unit * a.qty;
     }
     for (const f of r.freebies) {
       const p = byHandle[f.handle];
       if (!p) continue;
       const unit = Number(p.basePrice);
-      lineItems.push({ name: cleanTitle(p.title), qty: f.qty, unitPrice: unit, freebie: true });
+      const cleanedTitle = cleanTitle(p.title);
+      lineItems.push({
+        name: cleanedTitle,
+        qty: f.qty,
+        unitPrice: unit,
+        freebie: true,
+        handle: p.handle,
+        drinksPerUnit: 0,
+      });
       freebiesValue += unit * f.qty;
     }
 
@@ -415,6 +473,8 @@ async function buildOccasionPackagesUncached(occasion: Occasion): Promise<Packag
       lineItems,
       packagePrice: Math.round(packagePrice),
       freebiesValue: Math.round(freebiesValue),
+      defaultPeople: r.defaultPeople,
+      drinksPerPerson: DRINKS_PER_PERSON[occasion],
     } satisfies Package;
   });
 }

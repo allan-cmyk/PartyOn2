@@ -1,0 +1,457 @@
+'use client';
+
+/**
+ * QUICK-BUY MODAL
+ *
+ * Opened from a landing-page package card via "BUY THIS NOW". Lets the
+ * customer:
+ *   1. Scale headcount with a slider (auto-rescales all item quantities
+ *      proportional to the recipe's defaultPeople)
+ *   2. Optionally fine-tune individual item quantities
+ *   3. Enter contact + delivery info
+ *   4. Submit → creates a real Draft Order via /api/v1/landing/quote
+ *      (pay-now mode) and redirects to /invoice/<token> for Stripe
+ *      checkout
+ *
+ * Goal: minimize fields. The customer should only fill in what's
+ * absolutely required to pay and schedule delivery.
+ */
+
+import { useEffect, useMemo, useState } from 'react';
+import type { LandingConfig, Package } from './types';
+
+type Props = {
+  open: boolean;
+  onClose: () => void;
+  pkg: Package;
+  config: LandingConfig;
+  occasion: 'bachelor' | 'bachelorette' | 'corporate' | 'wedding';
+};
+
+type LineState = {
+  handle: string;
+  name: string;
+  unitPrice: number;
+  freebie: boolean;
+  qty: number;
+  drinksPerUnit: number;
+};
+
+const MIN_PEOPLE = 4;
+const MAX_PEOPLE = 200;
+
+export default function QuickBuyModal({ open, onClose, pkg, config, occasion }: Props) {
+  const T = config.theme;
+  const defaultPeople = pkg.defaultPeople ?? 10;
+  const drinksPerPerson = pkg.drinksPerPerson ?? 12;
+
+  const [people, setPeople] = useState(defaultPeople);
+  const [lines, setLines] = useState<LineState[]>([]);
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('Austin');
+  const [zip, setZip] = useState('');
+  const [deliveryDate, setDeliveryDate] = useState('');
+  const [deliveryTime, setDeliveryTime] = useState('Afternoon (12pm–4pm)');
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Initialize / re-initialize line items whenever the package changes.
+  useEffect(() => {
+    if (!pkg.lineItems) return;
+    setLines(
+      pkg.lineItems.map((li) => ({
+        handle: li.handle || '',
+        name: li.name,
+        unitPrice: li.unitPrice,
+        freebie: !!li.freebie,
+        qty: li.qty,
+        drinksPerUnit: li.drinksPerUnit ?? 0,
+      })),
+    );
+    setPeople(defaultPeople);
+  }, [pkg, defaultPeople]);
+
+  // Lock body scroll while open
+  useEffect(() => {
+    if (open) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
+
+  // Rescale all line items proportional to the headcount delta.
+  const handlePeopleChange = (newPeople: number) => {
+    setPeople(newPeople);
+    if (!pkg.lineItems) return;
+    const scale = newPeople / defaultPeople;
+    setLines(
+      pkg.lineItems.map((li) => ({
+        handle: li.handle || '',
+        name: li.name,
+        unitPrice: li.unitPrice,
+        freebie: !!li.freebie,
+        qty: Math.max(li.freebie ? li.qty : 1, Math.ceil(li.qty * scale)),
+        drinksPerUnit: li.drinksPerUnit ?? 0,
+      })),
+    );
+  };
+
+  const setLineQty = (idx: number, qty: number) => {
+    setLines((prev) => prev.map((l, i) => (i === idx ? { ...l, qty: Math.max(0, qty) } : l)));
+  };
+
+  const paidLines = lines.filter((l) => !l.freebie && l.qty > 0);
+  const freeLines = lines.filter((l) => l.freebie && l.qty > 0);
+  const subtotal = paidLines.reduce((s, l) => s + l.qty * l.unitPrice, 0);
+  const freebiesValue = freeLines.reduce((s, l) => s + l.qty * l.unitPrice, 0);
+  const totalDrinks = useMemo(
+    () => lines.reduce((s, l) => s + l.qty * (l.drinksPerUnit || 0), 0),
+    [lines],
+  );
+  const targetDrinks = people * drinksPerPerson;
+  const perPerson = people > 0 ? subtotal / people : 0;
+
+  const canSubmit =
+    !submitting && name && email && phone && address && zip && deliveryDate && paidLines.length > 0;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (submitting) return;
+    setError(null);
+    setSubmitting(true);
+    try {
+      const items = [...paidLines, ...freeLines]
+        .filter((l) => l.handle && l.qty > 0)
+        .map((l) => ({ handle: l.handle, qty: l.qty }));
+      if (items.length === 0) {
+        setError('Pick at least one item.');
+        setSubmitting(false);
+        return;
+      }
+      const res = await fetch('/api/v1/landing/quote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode: 'pay-now',
+          occasion,
+          customerName: name,
+          customerEmail: email,
+          customerPhone: phone,
+          groupSize: people,
+          deliveryDate,
+          deliveryTime,
+          deliveryAddress: address,
+          deliveryCity: city,
+          deliveryZip: zip,
+          items,
+          deliveryNotes: `Quick-Buy from ${pkg.name} (${occasion} landing page)`,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.error || 'Could not create your order. Try again.');
+      }
+      if (json.invoiceUrl) {
+        window.location.href = json.invoiceUrl;
+        return;
+      }
+      throw new Error('No invoice URL returned.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong.');
+      setSubmitting(false);
+    }
+  };
+
+  if (!open) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4"
+      style={{ background: 'rgba(10,15,25,0.78)' }}
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        className="relative w-full max-w-3xl max-h-[94vh] rounded-2xl overflow-hidden flex flex-col shadow-2xl"
+        style={{ background: T.cream }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div
+          className="flex-shrink-0 px-5 sm:px-7 py-4 flex items-center justify-between"
+          style={{ background: T.navy, color: '#FFFFFF' }}
+        >
+          <div>
+            <p
+              className="text-[10px] font-bold tracking-[0.2em] mb-0.5"
+              style={{ color: T.primary }}
+            >
+              QUICK BUY
+            </p>
+            <h2 className="font-heading text-xl sm:text-2xl font-bold leading-tight">
+              {pkg.name}
+            </h2>
+          </div>
+          <button
+            onClick={onClose}
+            className="rounded-full w-9 h-9 flex items-center justify-center text-2xl leading-none hover:bg-white/10 transition-colors"
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+
+        {/* Scrollable body */}
+        <div className="flex-1 overflow-y-auto px-5 sm:px-7 py-5">
+          {/* People slider */}
+          <div className="mb-5 rounded-xl p-4 bg-white border border-gray-200">
+            <div className="flex items-baseline justify-between mb-2">
+              <label
+                htmlFor="qb-people"
+                className="font-heading font-bold text-base"
+                style={{ color: T.navy }}
+              >
+                Headcount
+              </label>
+              <div className="text-right">
+                <div className="font-heading font-bold text-3xl" style={{ color: T.blue }}>
+                  {people}
+                </div>
+                <div className="text-[10px] uppercase tracking-widest text-gray-500 -mt-1">
+                  people
+                </div>
+              </div>
+            </div>
+            <input
+              id="qb-people"
+              type="range"
+              min={MIN_PEOPLE}
+              max={MAX_PEOPLE}
+              value={people}
+              onChange={(e) => handlePeopleChange(parseInt(e.target.value, 10))}
+              className="w-full"
+              style={{ accentColor: T.primary }}
+            />
+            <div className="flex justify-between text-[10px] text-gray-500 mt-1">
+              <span>{MIN_PEOPLE}</span>
+              <span>{MAX_PEOPLE}</span>
+            </div>
+            <div className="mt-3 grid grid-cols-3 gap-2 text-center text-xs">
+              <div className="rounded-md py-1.5" style={{ background: `${T.primary}22` }}>
+                <div className="font-bold text-base" style={{ color: T.navy }}>
+                  {totalDrinks}
+                </div>
+                <div className="text-[10px] text-gray-600">total drinks</div>
+              </div>
+              <div className="rounded-md py-1.5 bg-gray-100">
+                <div className="font-bold text-base text-gray-700">{targetDrinks}</div>
+                <div className="text-[10px] text-gray-600">target ({drinksPerPerson}/person)</div>
+              </div>
+              <div
+                className="rounded-md py-1.5"
+                style={{
+                  background: totalDrinks >= targetDrinks ? '#10B98119' : '#FBBF2419',
+                  color: totalDrinks >= targetDrinks ? '#047857' : '#92400E',
+                }}
+              >
+                <div className="font-bold text-base">
+                  {totalDrinks >= targetDrinks ? '✓' : '⚠'}
+                </div>
+                <div className="text-[10px]">
+                  {totalDrinks >= targetDrinks ? 'covered' : 'add more'}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Line items with qty controls */}
+          <div className="mb-5 rounded-xl bg-white border border-gray-200 overflow-hidden">
+            <div
+              className="px-4 py-2 text-[10px] font-bold tracking-widest"
+              style={{ background: '#F9FAFB', color: T.navy }}
+            >
+              IN YOUR PACKAGE
+            </div>
+            <ul className="divide-y divide-gray-100">
+              {lines.map((l, i) => (
+                <li key={`${l.handle}-${i}`} className="flex items-center gap-3 px-4 py-2.5">
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold leading-tight" style={{ color: T.navy }}>
+                      {l.name}
+                    </div>
+                    <div className="text-[11px] text-gray-500 mt-0.5">
+                      {l.freebie ? (
+                        <span style={{ color: '#047857' }}>FREE · bundled supply</span>
+                      ) : (
+                        <>
+                          ${l.unitPrice.toFixed(2)} each
+                          {l.drinksPerUnit > 0 && (
+                            <span> · ≈{l.drinksPerUnit * l.qty} drinks</span>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <div
+                    className="flex items-center gap-1 rounded-full px-1.5 py-0.5"
+                    style={{ background: l.freebie ? '#F3F4F6' : T.primary }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setLineQty(i, l.qty - 1)}
+                      className="w-6 h-6 rounded-full bg-white/80 hover:bg-white text-base leading-none font-bold"
+                      style={{ color: l.freebie ? '#6B7280' : T.primaryText }}
+                      aria-label="Decrease"
+                    >
+                      −
+                    </button>
+                    <span
+                      className="w-6 text-center font-bold text-sm"
+                      style={{ color: l.freebie ? '#374151' : T.primaryText }}
+                    >
+                      {l.qty}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setLineQty(i, l.qty + 1)}
+                      className="w-6 h-6 rounded-full bg-white/80 hover:bg-white text-base leading-none font-bold"
+                      style={{ color: l.freebie ? '#6B7280' : T.primaryText }}
+                      aria-label="Increase"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div
+                    className="w-16 text-right text-sm font-bold whitespace-nowrap"
+                    style={{ color: l.freebie ? '#047857' : T.navy }}
+                  >
+                    {l.freebie ? 'FREE' : `$${(l.qty * l.unitPrice).toFixed(2)}`}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Totals */}
+          <div
+            className="mb-5 rounded-xl p-4 flex items-center justify-between text-white"
+            style={{ background: T.navy }}
+          >
+            <div>
+              <div className="text-[10px] tracking-widest font-bold opacity-70">PACKAGE TOTAL</div>
+              <div className="text-xs opacity-70 mt-0.5">
+                ${perPerson.toFixed(2)} per person · ${freebiesValue.toFixed(0)} in free supplies
+              </div>
+            </div>
+            <div className="font-heading text-3xl font-bold" style={{ color: T.primary }}>
+              ${subtotal.toFixed(2)}
+            </div>
+          </div>
+
+          {/* Contact + delivery form */}
+          <form onSubmit={handleSubmit} className="space-y-2.5">
+            <div className="text-[10px] font-bold tracking-widest text-gray-500">CONTACT</div>
+            <div className="grid grid-cols-2 gap-2.5">
+              <input
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Full name"
+                className="bg-white rounded-md px-3 py-2.5 text-sm border border-gray-200 focus:outline-none focus:border-blue-500"
+              />
+              <input
+                required
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Phone"
+                className="bg-white rounded-md px-3 py-2.5 text-sm border border-gray-200 focus:outline-none focus:border-blue-500"
+              />
+            </div>
+            <input
+              required
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              className="w-full bg-white rounded-md px-3 py-2.5 text-sm border border-gray-200 focus:outline-none focus:border-blue-500"
+            />
+
+            <div className="text-[10px] font-bold tracking-widest text-gray-500 pt-2">DELIVERY</div>
+            <input
+              required
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Street address"
+              className="w-full bg-white rounded-md px-3 py-2.5 text-sm border border-gray-200 focus:outline-none focus:border-blue-500"
+            />
+            <div className="grid grid-cols-2 gap-2.5">
+              <input
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="City"
+                className="bg-white rounded-md px-3 py-2.5 text-sm border border-gray-200 focus:outline-none focus:border-blue-500"
+              />
+              <input
+                required
+                value={zip}
+                onChange={(e) => setZip(e.target.value)}
+                placeholder="ZIP"
+                className="bg-white rounded-md px-3 py-2.5 text-sm border border-gray-200 focus:outline-none focus:border-blue-500"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-2.5">
+              <input
+                required
+                type="date"
+                value={deliveryDate}
+                onChange={(e) => setDeliveryDate(e.target.value)}
+                min={new Date(Date.now() + 86400000).toISOString().slice(0, 10)}
+                className="bg-white rounded-md px-3 py-2.5 text-sm border border-gray-200 focus:outline-none focus:border-blue-500"
+              />
+              <select
+                value={deliveryTime}
+                onChange={(e) => setDeliveryTime(e.target.value)}
+                className="bg-white rounded-md px-3 py-2.5 text-sm border border-gray-200 focus:outline-none focus:border-blue-500"
+              >
+                <option>Morning (9am–12pm)</option>
+                <option>Afternoon (12pm–4pm)</option>
+                <option>Evening (4pm–8pm)</option>
+                <option>Whenever — surprise us</option>
+              </select>
+            </div>
+
+            {error && (
+              <div
+                className="rounded-md p-3 text-sm"
+                style={{ background: '#FEE2E2', color: '#991B1B', border: '1px solid #FCA5A5' }}
+              >
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={!canSubmit}
+              className="w-full mt-2 font-bold py-3.5 rounded-md tracking-wide transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              style={{ background: T.primary, color: T.primaryText }}
+            >
+              {submitting
+                ? 'Setting up your order…'
+                : `Continue to payment — $${subtotal.toFixed(2)} →`}
+            </button>
+            <p className="text-[11px] text-gray-500 text-center">
+              Next step: secure Stripe checkout. No payment is captured until you confirm.
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}

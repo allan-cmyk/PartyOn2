@@ -7,18 +7,29 @@ import { useState, type ReactNode } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import PackageBuilderModal from './PackageBuilderModal';
+import QuickBuyModal from './QuickBuyModal';
 import type { LandingConfig, Catalog, Package, ThemeColors } from './types';
 
 type Props = { config: LandingConfig; catalog: Catalog };
 
 export default function LandingPageTemplate({ config, catalog }: Props) {
   const [builderOpen, setBuilderOpen] = useState(false);
+  const [quickBuyPkg, setQuickBuyPkg] = useState<Package | null>(null);
   const T = config.theme;
 
   const openBuilder = (e?: React.MouseEvent) => {
     e?.preventDefault();
     setBuilderOpen(true);
   };
+
+  // Derive occasion from slug for Quick-Buy submission.
+  const occasion: 'bachelor' | 'bachelorette' | 'corporate' | 'wedding' = (() => {
+    const s = config.slug || '';
+    if (s.includes('bachelorette')) return 'bachelorette';
+    if (s.includes('bachelor')) return 'bachelor';
+    if (s.includes('corporate')) return 'corporate';
+    return 'wedding';
+  })();
 
   return (
     <main className="bg-white text-gray-900">
@@ -197,6 +208,7 @@ export default function LandingPageTemplate({ config, catalog }: Props) {
                 pkg={pkg}
                 theme={T}
                 onCta={openBuilder}
+                onBuyNow={(p) => setQuickBuyPkg(p)}
               />
             ))}
           </div>
@@ -449,6 +461,15 @@ export default function LandingPageTemplate({ config, catalog }: Props) {
         config={config}
         catalog={catalog}
       />
+      {quickBuyPkg && (
+        <QuickBuyModal
+          open={true}
+          onClose={() => setQuickBuyPkg(null)}
+          pkg={quickBuyPkg}
+          config={config}
+          occasion={occasion}
+        />
+      )}
     </main>
   );
 }
@@ -462,10 +483,14 @@ function PackageCard({
   pkg,
   theme: T,
   onCta,
+  onBuyNow,
 }: {
   pkg: Package;
   theme: ThemeColors;
+  /** Opens the "Build my own" Package Builder modal. */
   onCta: () => void;
+  /** Opens the Quick-Buy modal pre-loaded with this package. */
+  onBuyNow: (pkg: Package) => void;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -617,17 +642,28 @@ function PackageCard({
           </ul>
         ) : null}
 
-        <button
-          type="button"
-          onClick={onCta}
-          className="block text-center font-bold py-4 px-6 rounded-md tracking-wide transition-colors w-full"
-          style={{
-            background: pkg.featured ? T.primary : T.navy,
-            color: pkg.featured ? T.primaryText : '#FFFFFF',
-          }}
-        >
-          BUILD MY PACKAGE
-        </button>
+        <div className="flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={() => onBuyNow(pkg)}
+            className="block text-center font-bold py-4 px-6 rounded-md tracking-wide transition-all w-full hover:scale-[1.01] shadow-md"
+            style={{ background: T.primary, color: T.primaryText }}
+          >
+            BUY THIS PACKAGE NOW →
+          </button>
+          <button
+            type="button"
+            onClick={onCta}
+            className="block text-center font-bold py-3 px-6 rounded-md tracking-wide transition-colors w-full"
+            style={{
+              background: '#FFFFFF',
+              color: T.navy,
+              border: `2px solid ${T.navy}`,
+            }}
+          >
+            Build my own
+          </button>
+        </div>
       </div>
     </div>
   );
