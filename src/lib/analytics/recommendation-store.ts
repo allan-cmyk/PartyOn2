@@ -10,10 +10,20 @@
 
 import { prisma } from '@/lib/database/client';
 import type { Prisma } from '@prisma/client';
+import type {
+  RecommendationStatus as SharedStatus,
+  RiskTier as SharedRiskTier,
+  EffortTier,
+} from '@/lib/recommendations/lifecycle';
 
 export type RecommendationSource = 'auto-snapshot' | 'director' | 'manual' | 'seo-director';
-export type RiskTier = 'autonomous' | 'recommend' | 'hard_stop';
-export type RecommendationStatus = 'open' | 'approved' | 'shipped' | 'rejected' | 'invalidated';
+export type RiskTier = SharedRiskTier;
+/**
+ * Marketing API surface — currently a strict subset of the shared lifecycle
+ * (no `snoozed`). Kept narrow so existing callers/validators behave exactly
+ * as before. Ops will widen to the shared union in a later phase.
+ */
+export type RecommendationStatus = Exclude<SharedStatus, 'snoozed'>;
 export type RecommendationDomain = 'marketing' | 'seo';
 
 export interface RecommendationInput {
@@ -25,7 +35,7 @@ export interface RecommendationInput {
   currentValue?: string;
   targetValue?: string;
   impactDollarsMonthly?: number;
-  effortTier?: 's' | 'm' | 'l';
+  effortTier?: EffortTier;
   riskTier?: RiskTier;
 }
 

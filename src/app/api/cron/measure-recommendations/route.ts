@@ -14,11 +14,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/database/client';
 import { mirrorRecommendation } from '@/lib/analytics/recommendation-mirror';
+import { measurementCutoff } from '@/lib/recommendations/measurement';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 120;
-
-const MEASUREMENT_WINDOW_DAYS = 14;
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const auth = request.headers.get('authorization');
@@ -26,7 +25,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const cutoff = new Date(Date.now() - MEASUREMENT_WINDOW_DAYS * 24 * 60 * 60 * 1000);
+  const cutoff = measurementCutoff();
 
   const due = await prisma.recommendationItem.findMany({
     where: {
