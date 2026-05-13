@@ -17,8 +17,10 @@
  * absolutely required to pay and schedule delivery.
  */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { LandingConfig, Package } from './types';
+import type { UpsellProducts, UpsellProduct } from '@/lib/landing/getUpsellProducts';
+import UpsellOverlay from './UpsellOverlay';
 
 type Props = {
   open: boolean;
@@ -26,6 +28,7 @@ type Props = {
   pkg: Package;
   config: LandingConfig;
   occasion: 'bachelor' | 'bachelorette' | 'corporate' | 'wedding';
+  upsellProducts?: UpsellProducts;
 };
 
 type LineState = {
@@ -52,7 +55,14 @@ const PEOPLE_RANGE: Record<
 const ABSOLUTE_MIN = 1;
 const ABSOLUTE_MAX = 500;
 
-export default function QuickBuyModal({ open, onClose, pkg, config, occasion }: Props) {
+export default function QuickBuyModal({
+  open,
+  onClose,
+  pkg,
+  config,
+  occasion,
+  upsellProducts,
+}: Props) {
   const T = config.theme;
   const defaultPeople = pkg.defaultPeople ?? 10;
   const drinksPerPerson = pkg.drinksPerPerson ?? 12;
@@ -75,6 +85,63 @@ export default function QuickBuyModal({ open, onClose, pkg, config, occasion }: 
   const [deliveryTime, setDeliveryTime] = useState('Afternoon (12pm–4pm)');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Upsell overlay — pops once when customer scrolls to the contact form.
+  const [upsellOpen, setUpsellOpen] = useState(false);
+  const [upsellShown, setUpsellShown] = useState(false);
+  const contactRef = useRef<HTMLDivElement | null>(null);
+
+  // Watch the contact section. When >=15% visible, fire the upsell once.
+  useEffect(() => {
+    if (!open || !upsellProducts || upsellShown) return;
+    if (!contactRef.current) return;
+    const el = contactRef.current;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting && e.intersectionRatio > 0.15) {
+            setUpsellOpen(true);
+            setUpsellShown(true);
+            io.disconnect();
+            return;
+          }
+        }
+      },
+      { threshold: [0.15, 0.5] },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [open, upsellProducts, upsellShown]);
+
+  // Reset upsell state when the modal re-opens with a different package.
+  useEffect(() => {
+    if (!open) {
+      setUpsellOpen(false);
+      setUpsellShown(false);
+    }
+  }, [open]);
+
+  // Add an upsell product into the cart as a new line (or bump qty if it's
+  // already in the package).
+  const handleUpsellAdd = (p: UpsellProduct) => {
+    setLines((prev) => {
+      const existing = prev.findIndex((l) => l.handle === p.handle);
+      if (existing >= 0) {
+        return prev.map((l, i) => (i === existing ? { ...l, qty: l.qty + 1 } : l));
+      }
+      return [
+        ...prev,
+        {
+          handle: p.handle,
+          name: p.name,
+          unitPrice: p.unitPrice,
+          freebie: false,
+          qty: 1,
+          drinksPerUnit: 0,
+        },
+      ];
+    });
+  };
 
   // Initialize / re-initialize line items whenever the package changes.
   useEffect(() => {
@@ -431,7 +498,9 @@ export default function QuickBuyModal({ open, onClose, pkg, config, occasion }: 
 
           {/* Contact + delivery form */}
           <form id="qb-form" onSubmit={handleSubmit} className="space-y-2.5">
-            <div className="text-[10px] font-bold tracking-widest text-gray-500">CONTACT</div>
+            <div ref={contactRef} className="text-[10px] font-bold tracking-widest text-gray-500">
+              CONTACT
+            </div>
             <div className="grid grid-cols-2 gap-2.5">
               <input
                 required
@@ -574,6 +643,16 @@ export default function QuickBuyModal({ open, onClose, pkg, config, occasion }: 
             {submitting ? 'Working…' : 'Pay now →'}
           </button>
         </div>
+
+        {upsellProducts && (
+          <UpsellOverlay
+            open={upsellOpen}
+            products={upsellProducts}
+            theme={T}
+            onAdd={handleUpsellAdd}
+            onClose={() => setUpsellOpen(false)}
+          />
+        )}
       </div>
     </div>
   );

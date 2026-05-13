@@ -13,17 +13,26 @@ import type {
   BuilderCategory,
   Catalog,
 } from './types';
+import type { UpsellProducts, UpsellProduct } from '@/lib/landing/getUpsellProducts';
+import UpsellOverlay from './UpsellOverlay';
 
 type Props = {
   open: boolean;
   onClose: () => void;
   config: LandingConfig;
   catalog: Catalog;
+  upsellProducts?: UpsellProducts;
 };
 
 const encodeImg = (src?: string) => (src ? encodeURI(src) : undefined);
 
-export default function PackageBuilderModal({ open, onClose, config, catalog }: Props) {
+export default function PackageBuilderModal({
+  open,
+  onClose,
+  config,
+  catalog,
+  upsellProducts,
+}: Props) {
   const T = config.theme;
   const M = config.modal;
   const STEPS = M.steps;
@@ -46,6 +55,57 @@ export default function PackageBuilderModal({ open, onClose, config, catalog }: 
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // Upsell overlay — fires once when the user reaches the review step.
+  const [upsellOpen, setUpsellOpen] = useState(false);
+  const [upsellShown, setUpsellShown] = useState(false);
+
+  useEffect(() => {
+    if (open && stepIndex === 4 && !upsellShown && upsellProducts) {
+      setUpsellOpen(true);
+      setUpsellShown(true);
+    }
+  }, [open, stepIndex, upsellShown, upsellProducts]);
+
+  useEffect(() => {
+    if (!open) {
+      setUpsellOpen(false);
+      setUpsellShown(false);
+    }
+  }, [open]);
+
+  // Adding an upsell product = bump it in the selection map (using the
+  // product's BuilderProduct id key the rest of the modal already speaks).
+  // We synthesize a placeholder id matching the convention used for items
+  // already in the catalog so quantity / pricing flows through.
+  const handleUpsellAdd = (p: UpsellProduct) => {
+    // Find the matching BuilderProduct in the catalog (by sku=handle).
+    const all = [
+      ...stepOneCategories,
+      ...stepTwoCategories,
+      ...stepThreeCategories,
+    ].flatMap((c) => [...c.products, ...(c.extras ?? [])]);
+    const match = all.find((bp) => bp.sku === p.handle);
+    if (match) {
+      setSelection((s) => ({ ...s, [match.id]: (s[match.id] ?? 0) + 1 }));
+    } else {
+      // Not in any step's catalog — graft a synthetic entry so it counts
+      // toward the total. The submit handler maps lineItems back to the
+      // server endpoint via product.sku, so handle is enough.
+      const synthId = `upsell-${p.handle}`;
+      productById[synthId] = {
+        id: synthId,
+        name: p.name,
+        detail: p.detail,
+        price: p.unitPrice,
+        emoji: '🥂',
+        accent: 'bg-amber-400',
+        image: p.image,
+        sku: p.handle,
+      };
+      setSelection((s) => ({ ...s, [synthId]: (s[synthId] ?? 0) + 1 }));
+    }
+  };
 
   useEffect(() => {
     if (open) document.body.style.overflow = 'hidden';
@@ -446,6 +506,16 @@ export default function PackageBuilderModal({ open, onClose, config, catalog }: 
               <span aria-hidden />
             )}
           </div>
+        )}
+
+        {upsellProducts && (
+          <UpsellOverlay
+            open={upsellOpen}
+            products={upsellProducts}
+            theme={T}
+            onAdd={handleUpsellAdd}
+            onClose={() => setUpsellOpen(false)}
+          />
         )}
       </div>
     </div>

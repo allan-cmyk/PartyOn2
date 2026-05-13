@@ -9,10 +9,15 @@ import Link from 'next/link';
 import PackageBuilderModal from './PackageBuilderModal';
 import QuickBuyModal from './QuickBuyModal';
 import type { LandingConfig, Catalog, Package, ThemeColors } from './types';
+import type { UpsellProducts } from '@/lib/landing/getUpsellProducts';
 
-type Props = { config: LandingConfig; catalog: Catalog };
+type Props = {
+  config: LandingConfig;
+  catalog: Catalog;
+  upsellProducts?: UpsellProducts;
+};
 
-export default function LandingPageTemplate({ config, catalog }: Props) {
+export default function LandingPageTemplate({ config, catalog, upsellProducts }: Props) {
   const [builderOpen, setBuilderOpen] = useState(false);
   const [quickBuyPkg, setQuickBuyPkg] = useState<Package | null>(null);
   const T = config.theme;
@@ -491,6 +496,7 @@ export default function LandingPageTemplate({ config, catalog }: Props) {
         onClose={() => setBuilderOpen(false)}
         config={config}
         catalog={catalog}
+        upsellProducts={upsellProducts}
       />
       {quickBuyPkg && (
         <QuickBuyModal
@@ -499,6 +505,7 @@ export default function LandingPageTemplate({ config, catalog }: Props) {
           pkg={quickBuyPkg}
           config={config}
           occasion={occasion}
+          upsellProducts={upsellProducts}
         />
       )}
     </main>

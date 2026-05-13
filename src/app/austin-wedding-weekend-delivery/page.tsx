@@ -3,6 +3,7 @@ import LandingPageTemplate from '@/components/landing/LandingPageTemplate';
 import { weddingConfig } from '@/components/landing/configs/wedding';
 import { getCuratedCatalog } from '@/lib/landing/getCuratedCatalog';
 import { getOccasionPackages } from '@/lib/landing/getOccasionPackages';
+import { getUpsellProducts } from '@/lib/landing/getUpsellProducts';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,10 +20,11 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const [catalog, packages] = await Promise.all([
+  const [catalog, packages, upsellProducts] = await Promise.all([
     getCuratedCatalog(),
     getOccasionPackages('wedding'),
+    getUpsellProducts(),
   ]);
   const config = { ...weddingConfig, packages };
-  return <LandingPageTemplate config={config} catalog={catalog} />;
+  return <LandingPageTemplate config={config} catalog={catalog} upsellProducts={upsellProducts} />;
 }
