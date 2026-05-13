@@ -384,24 +384,13 @@ export default function QuickBuyModal({ open, onClose, pkg, config, occasion }: 
             </ul>
           </div>
 
-          {/* Totals */}
-          <div
-            className="mb-5 rounded-xl p-4 flex items-center justify-between text-white"
-            style={{ background: T.navy }}
-          >
-            <div>
-              <div className="text-[10px] tracking-widest font-bold opacity-70">PACKAGE TOTAL</div>
-              <div className="text-xs opacity-70 mt-0.5">
-                ${perPerson.toFixed(2)} per person · ${freebiesValue.toFixed(0)} in free supplies
-              </div>
-            </div>
-            <div className="font-heading text-3xl font-bold" style={{ color: T.primary }}>
-              ${subtotal.toFixed(2)}
-            </div>
+          {/* In-flow summary (small) — full totals live in sticky bottom bar */}
+          <div className="mb-5 text-xs text-gray-500 text-center">
+            ${freebiesValue.toFixed(0)} in free supplies bundled in
           </div>
 
           {/* Contact + delivery form */}
-          <form onSubmit={handleSubmit} className="space-y-2.5">
+          <form id="qb-form" onSubmit={handleSubmit} className="space-y-2.5">
             <div className="text-[10px] font-bold tracking-widest text-gray-500">CONTACT</div>
             <div className="grid grid-cols-2 gap-2.5">
               <input
@@ -482,20 +471,68 @@ export default function QuickBuyModal({ open, onClose, pkg, config, occasion }: 
               </div>
             )}
 
-            <button
-              type="submit"
-              disabled={!canSubmit}
-              className="w-full mt-2 font-bold py-3.5 rounded-md tracking-wide transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-              style={{ background: T.primary, color: T.primaryText }}
-            >
-              {submitting
-                ? 'Setting up your order…'
-                : `Continue to payment — $${subtotal.toFixed(2)} →`}
-            </button>
-            <p className="text-[11px] text-gray-500 text-center">
+            <p className="text-[11px] text-gray-500 text-center pt-1">
               Next step: secure Stripe checkout. No payment is captured until you confirm.
             </p>
           </form>
+        </div>
+
+        {/* STICKY BOTTOM BAR — per-person total dominates; back/forward smaller */}
+        <div
+          className="flex-shrink-0 flex items-stretch gap-3 px-4 sm:px-5 py-3"
+          style={{
+            background: T.navy,
+            color: '#FFFFFF',
+            borderTop: `3px solid ${T.primary}`,
+          }}
+        >
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-xs sm:text-sm font-semibold px-3 rounded-md hover:bg-white/10 transition-colors"
+            style={{ color: '#FFFFFF', opacity: 0.85 }}
+            aria-label="Back to packages"
+          >
+            ← Back
+          </button>
+
+          <div className="flex-1 flex items-center justify-center gap-4 min-w-0">
+            <div className="text-center">
+              <div
+                className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.18em]"
+                style={{ color: T.primary, opacity: 0.9 }}
+              >
+                Per person
+              </div>
+              <div
+                className="font-heading font-bold leading-none"
+                style={{ color: T.primary, fontSize: 'clamp(1.75rem, 5.5vw, 2.5rem)' }}
+              >
+                ${perPerson.toFixed(2)}
+              </div>
+            </div>
+            <div className="text-center pl-3 border-l border-white/15">
+              <div className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.18em] opacity-75">
+                Total
+              </div>
+              <div
+                className="font-heading font-bold leading-none"
+                style={{ color: '#FFFFFF', fontSize: 'clamp(1.1rem, 3.5vw, 1.5rem)' }}
+              >
+                ${subtotal.toFixed(2)}
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            form="qb-form"
+            disabled={!canSubmit}
+            className="px-4 sm:px-5 py-2.5 text-sm sm:text-base font-bold rounded-md tracking-wide transition-all disabled:opacity-60 disabled:cursor-not-allowed shadow-md whitespace-nowrap"
+            style={{ background: T.primary, color: T.primaryText }}
+          >
+            {submitting ? 'Working…' : 'Pay now →'}
+          </button>
         </div>
       </div>
     </div>
