@@ -60,6 +60,10 @@ export default function QuickBuyModal({ open, onClose, pkg, config, occasion }: 
 
   const [people, setPeople] = useState(defaultPeople);
   const [lines, setLines] = useState<LineState[]>([]);
+  // Indices the customer has explicitly confirmed they want to drop. Lines
+  // stay visible at qty=0 so an accidental "-" doesn't lose the item — they
+  // have to click the inline "Remove?" affordance to actually delete it.
+  const [removed, setRemoved] = useState<Set<number>>(new Set());
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -86,6 +90,7 @@ export default function QuickBuyModal({ open, onClose, pkg, config, occasion }: 
       })),
     );
     setPeople(defaultPeople);
+    setRemoved(new Set());
   }, [pkg, defaultPeople]);
 
   // Lock body scroll while open
@@ -118,8 +123,8 @@ export default function QuickBuyModal({ open, onClose, pkg, config, occasion }: 
     setLines((prev) => prev.map((l, i) => (i === idx ? { ...l, qty: Math.max(0, qty) } : l)));
   };
 
-  const paidLines = lines.filter((l) => !l.freebie && l.qty > 0);
-  const freeLines = lines.filter((l) => l.freebie && l.qty > 0);
+  const paidLines = lines.filter((l, i) => !l.freebie && l.qty > 0 && !removed.has(i));
+  const freeLines = lines.filter((l, i) => l.freebie && l.qty > 0 && !removed.has(i));
   const subtotal = paidLines.reduce((s, l) => s + l.qty * l.unitPrice, 0);
   const freebiesValue = freeLines.reduce((s, l) => s + l.qty * l.unitPrice, 0);
   const totalDrinks = useMemo(
@@ -325,8 +330,15 @@ export default function QuickBuyModal({ open, onClose, pkg, config, occasion }: 
               IN YOUR PACKAGE
             </div>
             <ul className="divide-y divide-gray-100">
-              {lines.map((l, i) => (
-                <li key={`${l.handle}-${i}`} className="flex items-center gap-3 px-4 py-2.5">
+              {lines.map((l, i) => {
+                if (removed.has(i)) return null;
+                const showRemove = l.qty === 0;
+                return (
+                <li
+                  key={`${l.handle}-${i}`}
+                  className="flex items-center gap-3 px-4 py-2.5 transition-opacity"
+                  style={{ opacity: l.qty === 0 ? 0.55 : 1 }}
+                >
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-semibold leading-tight" style={{ color: T.navy }}>
                       {l.name}
@@ -337,13 +349,35 @@ export default function QuickBuyModal({ open, onClose, pkg, config, occasion }: 
                       ) : (
                         <>
                           ${l.unitPrice.toFixed(2)} each
-                          {l.drinksPerUnit > 0 && (
+                          {l.drinksPerUnit > 0 && l.qty > 0 && (
                             <span> · ≈{l.drinksPerUnit * l.qty} drinks</span>
                           )}
                         </>
                       )}
                     </div>
                   </div>
+
+                  {/* Inline "Remove?" affordance — only appears when qty=0.
+                      Sits flush against the stepper so the cursor barely has
+                      to move; one click drops the line. */}
+                  {showRemove && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setRemoved((s) => {
+                          const n = new Set(s);
+                          n.add(i);
+                          return n;
+                        })
+                      }
+                      className="text-[11px] font-semibold underline whitespace-nowrap px-1 py-0.5 rounded transition-colors hover:bg-red-50"
+                      style={{ color: '#B91C1C' }}
+                      aria-label={`Remove ${l.name} from package`}
+                    >
+                      Remove?
+                    </button>
+                  )}
+
                   <div
                     className="flex items-center gap-1 rounded-full px-1.5 py-0.5"
                     style={{ background: l.freebie ? '#F3F4F6' : T.primary }}
@@ -351,7 +385,8 @@ export default function QuickBuyModal({ open, onClose, pkg, config, occasion }: 
                     <button
                       type="button"
                       onClick={() => setLineQty(i, l.qty - 1)}
-                      className="w-6 h-6 rounded-full bg-white/80 hover:bg-white text-base leading-none font-bold"
+                      disabled={l.qty === 0}
+                      className="w-6 h-6 rounded-full bg-white/80 hover:bg-white text-base leading-none font-bold disabled:opacity-40 disabled:cursor-not-allowed"
                       style={{ color: l.freebie ? '#6B7280' : T.primaryText }}
                       aria-label="Decrease"
                     >
@@ -377,10 +412,15 @@ export default function QuickBuyModal({ open, onClose, pkg, config, occasion }: 
                     className="w-16 text-right text-sm font-bold whitespace-nowrap"
                     style={{ color: l.freebie ? '#047857' : T.navy }}
                   >
-                    {l.freebie ? 'FREE' : `$${(l.qty * l.unitPrice).toFixed(2)}`}
+                    {l.qty === 0
+                      ? '—'
+                      : l.freebie
+                        ? 'FREE'
+                        : `$${(l.qty * l.unitPrice).toFixed(2)}`}
                   </div>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           </div>
 

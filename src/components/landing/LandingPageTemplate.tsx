@@ -585,7 +585,41 @@ function PackageCard({
           </span>
           <span className="text-sm text-gray-500">{pkg.serves}</span>
         </div>
-        <p className="text-gray-600 mb-5 leading-relaxed">{pkg.blurb}</p>
+        <p className="text-gray-600 mb-4 leading-relaxed">{pkg.blurb}</p>
+
+        {/* 5-bullet teaser — top alcohol items + free supplies summary line.
+            Lets the customer see the value at a glance without expanding. */}
+        {isLive && pkg.lineItems && pkg.lineItems.length > 0 && (
+          <ul className="mb-4 space-y-1.5 text-sm text-gray-700">
+            {alcoholItems
+              .slice(0, freebieItems.length > 0 ? 4 : 5)
+              .map((it, i) => (
+                <li key={`teaser-${i}`} className="flex items-start gap-2">
+                  <span className="mt-0.5 font-bold" style={{ color: T.primary }}>
+                    ✓
+                  </span>
+                  <span>
+                    <strong>{it.qty}×</strong> {it.name}
+                  </span>
+                </li>
+              ))}
+            {freebieItems.length > 0 && (
+              <li className="flex items-start gap-2">
+                <span className="mt-0.5 font-bold" style={{ color: '#047857' }}>
+                  ★
+                </span>
+                <span style={{ color: '#047857' }}>
+                  <strong>Free supplies:</strong>{' '}
+                  {freebieItems
+                    .map((f) => f.name.split(' • ')[0].replace(/^\d+\s*/, ''))
+                    .slice(0, 4)
+                    .join(', ')}
+                  {freebieItems.length > 4 ? '…' : ''}
+                </span>
+              </li>
+            )}
+          </ul>
+        )}
 
         {/* Itemized dropdown */}
         {isLive ? (
