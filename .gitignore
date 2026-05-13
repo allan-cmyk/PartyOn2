@@ -1,0 +1,4 @@
+# Debug-only artifacts — never commit these to the data branch.
+*.png
+FAILED.md.bak
+.DS_Store
