@@ -132,7 +132,7 @@ export const corporateConfig: LandingConfig = {
   reviews: [
     {
       quote:
-        "Booked them for a board dinner with 36 hours notice. Premium wine, perfect timing, COI on file the same day. Now our default vendor for client events.",
+        "Booked them for a board dinner with 36 hours notice. Premium wine, perfect timing, paid invoice in our inbox same day. Now our default vendor for client events.",
       author: 'Patricia L.',
       detail: 'Chief of Staff, Austin SaaS company',
     },
@@ -154,7 +154,7 @@ export const corporateConfig: LandingConfig = {
   faqs: [
     {
       q: 'How do you handle payment and invoicing?',
-      a: 'We accept corporate cards (Visa/MC/Amex), ACH, and wire. We can send a paid invoice for your records. We do not offer NET-30 terms.',
+      a: 'We accept corporate cards (Visa/MC/Amex), ACH, and wire. We can send a paid invoice for your records.',
     },
     {
       q: 'Can you provide a Certificate of Insurance?',
