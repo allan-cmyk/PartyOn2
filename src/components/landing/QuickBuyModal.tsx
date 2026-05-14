@@ -21,6 +21,12 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { LandingConfig, Package } from './types';
 import type { UpsellProducts, UpsellProduct } from '@/lib/landing/getUpsellProducts';
 import UpsellOverlay from './UpsellOverlay';
+import {
+  getDeliveryWindows,
+  isSunday,
+  SUNDAY_CLOSED_NOTE,
+  DEFAULT_DELIVERY_WINDOW,
+} from '@/lib/landing/deliveryWindows';
 
 type Props = {
   open: boolean;
@@ -49,8 +55,8 @@ const PEOPLE_RANGE: Record<
   'bachelor' | 'bachelorette' | 'corporate' | 'wedding',
   { min: number; max: number }
 > = {
-  bachelor: { min: 4, max: 50 },
-  bachelorette: { min: 4, max: 50 },
+  bachelor: { min: 4, max: 30 },
+  bachelorette: { min: 4, max: 30 },
   corporate: { min: 4, max: 100 },
   wedding: { min: 4, max: 100 },
 };
@@ -84,7 +90,9 @@ export default function QuickBuyModal({
   const [city, setCity] = useState('Austin');
   const [zip, setZip] = useState('');
   const [deliveryDate, setDeliveryDate] = useState('');
-  const [deliveryTime, setDeliveryTime] = useState('Afternoon (12pm–4pm)');
+  const [deliveryTime, setDeliveryTime] = useState(DEFAULT_DELIVERY_WINDOW);
+  const deliveryWindows = useMemo(() => getDeliveryWindows(), []);
+  const sundaySelected = isSunday(deliveryDate);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -94,8 +102,15 @@ export default function QuickBuyModal({
   const contactRef = useRef<HTMLDivElement | null>(null);
 
   // Watch the contact section. When >=15% visible, fire the upsell once.
+  // Also suppress if the customer already saw the upsell earlier in this
+  // browser session (via sessionStorage) so re-opening the modal after
+  // dismissing doesn't keep popping it up.
   useEffect(() => {
     if (!open || !upsellProducts || upsellShown) return;
+    if (typeof window !== 'undefined' && sessionStorage.getItem('upsell-shown') === '1') {
+      setUpsellShown(true);
+      return;
+    }
     if (!contactRef.current) return;
     const el = contactRef.current;
     const io = new IntersectionObserver(
@@ -104,6 +119,9 @@ export default function QuickBuyModal({
           if (e.isIntersecting && e.intersectionRatio > 0.15) {
             setUpsellOpen(true);
             setUpsellShown(true);
+            try {
+              sessionStorage.setItem('upsell-shown', '1');
+            } catch {}
             io.disconnect();
             return;
           }
@@ -209,7 +227,15 @@ export default function QuickBuyModal({
   const perPerson = people > 0 ? subtotal / people : 0;
 
   const canSubmit =
-    !submitting && name && email && phone && address && zip && deliveryDate && paidLines.length > 0;
+    !submitting &&
+    name &&
+    email &&
+    phone &&
+    address &&
+    zip &&
+    deliveryDate &&
+    !sundaySelected &&
+    paidLines.length > 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -275,7 +301,7 @@ export default function QuickBuyModal({
       aria-modal="true"
     >
       <div
-        className="relative w-full max-w-3xl max-h-[94vh] rounded-2xl overflow-hidden flex flex-col shadow-2xl"
+        className="relative w-full max-w-4xl max-h-[96vh] rounded-2xl overflow-hidden flex flex-col shadow-2xl"
         style={{ background: T.cream }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -575,13 +601,27 @@ export default function QuickBuyModal({
                 value={deliveryTime}
                 onChange={(e) => setDeliveryTime(e.target.value)}
                 className="bg-white rounded-md px-3 py-2.5 text-sm border border-gray-200 focus:outline-none focus:border-blue-500"
+                disabled={sundaySelected}
               >
-                <option>Morning (9am–12pm)</option>
-                <option>Afternoon (12pm–4pm)</option>
-                <option>Evening (4pm–8pm)</option>
-                <option>Whenever — surprise us</option>
+                {deliveryWindows.map((w) => (
+                  <option key={w.value} value={w.value}>
+                    {w.label}
+                  </option>
+                ))}
               </select>
             </div>
+            {sundaySelected && (
+              <div
+                className="rounded-md p-2.5 text-[11px] leading-snug"
+                style={{
+                  background: '#FEF3C7',
+                  color: '#92400E',
+                  border: '1px solid #FCD34D',
+                }}
+              >
+                {SUNDAY_CLOSED_NOTE}
+              </div>
+            )}
 
             {error && (
               <div

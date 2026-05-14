@@ -53,10 +53,10 @@ export const UPSELL_VARIANTS: UpsellVariant[] = [
     addonHandles: [
       'solo-cups-18oz-50pcs',
       '120qt-cooler-rental',
-      'aperol-spritz-party-pitcher-kit-16-drinks',
+      'lake-travis-ranch-water-serves-16',
       'lady-bird-margarita-serves-16',
       'cucumber-crush-margarita-serves-16',
-      'perfect-paloma-cocktail-kit',
+      'pink-party-lemonade-serves-16',
     ],
     topSellerHandles: [
       'high-noon-vodka-soda-combo-3-each-grapefruit-9-pineapple-9-black-cherry-9-watermelon-9-355ml-12-pack',
@@ -73,8 +73,8 @@ export const UPSELL_VARIANTS: UpsellVariant[] = [
     addonHandles: [
       'lady-bird-margarita-serves-16',
       'cucumber-crush-margarita-serves-16',
-      'perfect-paloma-cocktail-kit',
-      'aperol-spritz-party-pitcher-kit-16-drinks',
+      'keep-austin-spicy-marg-serves-16',
+      'lake-travis-ranch-water-serves-16',
       '120qt-cooler-rental',
       'solo-cups-18oz-50pcs',
     ],
@@ -94,9 +94,9 @@ export const UPSELL_VARIANTS: UpsellVariant[] = [
       '120qt-cooler-rental',
       'lady-bird-margarita-serves-16',
       'solo-cups-18oz-50pcs',
-      'perfect-paloma-cocktail-kit',
+      'pink-party-lemonade-serves-16',
       'cucumber-crush-margarita-serves-16',
-      'aperol-spritz-party-pitcher-kit-16-drinks',
+      'cool-cucumber-splash-serves-16',
     ],
     topSellerHandles: [
       'modelo-especial-24pack-12oz-cans',

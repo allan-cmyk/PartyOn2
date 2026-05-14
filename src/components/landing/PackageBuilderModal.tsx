@@ -15,6 +15,12 @@ import type {
 } from './types';
 import type { UpsellProducts, UpsellProduct } from '@/lib/landing/getUpsellProducts';
 import UpsellOverlay from './UpsellOverlay';
+import {
+  getDeliveryWindows,
+  isSunday,
+  SUNDAY_CLOSED_NOTE,
+  DEFAULT_DELIVERY_WINDOW,
+} from '@/lib/landing/deliveryWindows';
 
 type Props = {
   open: boolean;
@@ -50,7 +56,7 @@ export default function PackageBuilderModal({
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [deliveryCity, setDeliveryCity] = useState('Austin');
   const [deliveryZip, setDeliveryZip] = useState('');
-  const [deliveryTime, setDeliveryTime] = useState('Afternoon (12pm–4pm)');
+  const [deliveryTime, setDeliveryTime] = useState(DEFAULT_DELIVERY_WINDOW);
   const [submitMode, setSubmitMode] = useState<'quote' | 'checkout'>('quote');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -65,8 +71,17 @@ export default function PackageBuilderModal({
 
   useEffect(() => {
     if (open && stepIndex === 4 && !upsellShown && upsellProducts) {
+      // Don't re-trigger if the customer already dismissed an upsell in
+      // this browser session.
+      if (typeof window !== 'undefined' && sessionStorage.getItem('upsell-shown') === '1') {
+        setUpsellShown(true);
+        return;
+      }
       setUpsellOpen(true);
       setUpsellShown(true);
+      try {
+        sessionStorage.setItem('upsell-shown', '1');
+      } catch {}
     }
   }, [open, stepIndex, upsellShown, upsellProducts]);
 
@@ -192,6 +207,13 @@ export default function PackageBuilderModal({
       return;
     }
 
+    // Sundays are closed. Block submit and recommend Saturday evening.
+    if (deliveryDate && isSunday(deliveryDate.toISOString().slice(0, 10))) {
+      setSubmitError(SUNDAY_CLOSED_NOTE);
+      setSubmitting(false);
+      return;
+    }
+
     const items = lineItems
       .map((li) => ({
         // BuilderProduct.sku is the underlying Postgres product handle.
@@ -289,10 +311,10 @@ export default function PackageBuilderModal({
       />
 
       <div
-        className="relative w-full max-w-3xl flex flex-col overflow-hidden rounded-2xl shadow-2xl"
+        className="relative w-full max-w-4xl flex flex-col overflow-hidden rounded-2xl shadow-2xl"
         style={{
-          maxHeight: '88vh',
-          minHeight: 'min(540px, 88vh)',
+          maxHeight: '96vh',
+          minHeight: 'min(540px, 96vh)',
           background: T.cream,
           border: `1px solid ${T.primary}33`,
         }}
@@ -417,11 +439,8 @@ export default function PackageBuilderModal({
                   formatDate={formatDate}
                   people={people}
                   lineItems={lineItems}
-                  total={total}
-                  perPerson={perPerson}
                   submitMode={submitMode}
                   setSubmitMode={setSubmitMode}
-                  submitting={submitting}
                   submitError={submitError}
                   onSubmit={handleSubmit}
                   modal={M}
@@ -433,84 +452,75 @@ export default function PackageBuilderModal({
         </div>
 
         {!submitted && (
+          // Single-row sticky footer: [Back] [Running total + Per person]
+          // [Next/Submit]. Totals dominate the eye, buttons smaller.
           <div
-            className="flex-shrink-0 flex items-stretch justify-between gap-3 px-5 sm:px-7 py-3"
+            className="flex-shrink-0 flex items-center justify-between gap-3 px-4 sm:px-6 py-2.5"
             style={{
               background: T.navy,
               color: '#FFFFFF',
               borderTop: `3px solid ${T.primary}`,
             }}
           >
-            <div className="flex-1 min-w-0">
-              <div
-                className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.18em]"
-                style={{ color: T.primary, opacity: 0.95 }}
-              >
-                Running total
-              </div>
-              <div
-                className="font-heading font-bold leading-none"
-                style={{ color: T.primary, fontSize: 'clamp(1.75rem, 5vw, 2.5rem)' }}
-              >
-                ${total.toFixed(2)}
-              </div>
-              {lineItems.length > 0 && (
-                <div className="text-[10px] mt-0.5 opacity-70">
-                  {lineItems.reduce((s, li) => s + li.qty, 0)} item
-                  {lineItems.reduce((s, li) => s + li.qty, 0) !== 1 ? 's' : ''} ·{' '}
-                  {lineItems.length} product{lineItems.length !== 1 ? 's' : ''}
-                </div>
-              )}
-            </div>
-            <div className="text-right flex-shrink-0 self-center pl-3 border-l border-white/15">
-              <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.18em] opacity-80">
-                Per {M.groupSizeUnit.replace(/s$/, '')} ({people})
-              </div>
-              <div
-                className="font-heading font-bold leading-none"
-                style={{ color: '#FFFFFF', fontSize: 'clamp(1.4rem, 4vw, 2rem)' }}
-              >
-                ${perPerson.toFixed(2)}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {!submitted && (
-          <div
-            className="flex-shrink-0 px-5 sm:px-7 py-3 flex items-center justify-between gap-3 border-t"
-            style={{ background: T.cream, borderColor: '#E5E7EB' }}
-          >
             <button
               onClick={prev}
               disabled={stepIndex === 0}
-              className="px-3 py-2.5 text-sm font-semibold text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-              style={{ color: stepIndex === 0 ? undefined : T.navy }}
+              className="px-3 py-2 text-xs sm:text-sm font-semibold rounded-md disabled:opacity-30 disabled:cursor-not-allowed transition-colors hover:bg-white/10 whitespace-nowrap"
+              style={{ color: '#FFFFFF' }}
             >
               ← Back
             </button>
-            <a
-              href={`tel:${config.phoneDisplay.replace(/\D/g, '')}`}
-              className="hidden sm:block text-xs text-gray-500"
-            >
-              Need help?{' '}
-              <span className="font-bold" style={{ color: T.blue }}>
-                {config.phoneDisplay}
-              </span>
-            </a>
+
+            <div className="flex items-center gap-3 sm:gap-4 flex-1 justify-center min-w-0">
+              <div className="text-center">
+                <div
+                  className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.18em]"
+                  style={{ color: T.primary, opacity: 0.95 }}
+                >
+                  Total
+                </div>
+                <div
+                  className="font-heading font-bold leading-none"
+                  style={{ color: T.primary, fontSize: 'clamp(1.4rem, 4.5vw, 2.1rem)' }}
+                >
+                  ${total.toFixed(2)}
+                </div>
+              </div>
+              <div className="text-center pl-3 border-l border-white/15">
+                <div className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.18em] opacity-75">
+                  Per {M.groupSizeUnit.replace(/s$/, '')} ({people})
+                </div>
+                <div
+                  className="font-heading font-bold leading-none"
+                  style={{ color: '#FFFFFF', fontSize: 'clamp(1.05rem, 3.5vw, 1.4rem)' }}
+                >
+                  ${perPerson.toFixed(2)}
+                </div>
+              </div>
+            </div>
+
             {!isLastStep ? (
               <button
                 onClick={next}
-                className="px-5 py-2.5 text-sm font-bold rounded-md tracking-wide transition-all hover:scale-[1.02] shadow-md"
+                className="px-4 py-2 text-xs sm:text-sm font-bold rounded-md tracking-wide transition-all hover:scale-[1.03] shadow-md whitespace-nowrap"
                 style={{ background: T.primary, color: T.primaryText }}
               >
-                {stepIndex === 0 ? 'Start Building →' : 'Next →'}
+                {stepIndex === 0 ? 'Start →' : 'Next →'}
               </button>
             ) : (
-              // Submit button now lives inside the form at the bottom of
-              // ReviewStep so it sits next to the delivery details. No
-              // duplicate footer CTA on the review step.
-              <span aria-hidden />
+              <button
+                type="submit"
+                form="quote-form"
+                disabled={submitting}
+                className="px-4 py-2 text-xs sm:text-sm font-bold rounded-md tracking-wide transition-all hover:scale-[1.03] shadow-md whitespace-nowrap disabled:opacity-60"
+                style={{ background: T.primary, color: T.primaryText }}
+              >
+                {submitting
+                  ? '…'
+                  : submitMode === 'checkout'
+                    ? 'Pay →'
+                    : 'Send →'}
+              </button>
             )}
           </div>
         )}
@@ -1038,11 +1048,8 @@ function ReviewStep({
   formatDate,
   people,
   lineItems,
-  total,
-  perPerson,
   submitMode,
   setSubmitMode,
-  submitting,
   submitError,
   onSubmit,
   modal,
@@ -1066,11 +1073,8 @@ function ReviewStep({
   formatDate: (d: Date | null) => string;
   people: number;
   lineItems: { product: BuilderProduct; qty: number; lineTotal: number }[];
-  total: number;
-  perPerson: number;
   submitMode: 'quote' | 'checkout';
   setSubmitMode: (m: 'quote' | 'checkout') => void;
-  submitting: boolean;
   submitError: string | null;
   onSubmit: (e: React.FormEvent) => void;
   modal: LandingConfig['modal'];
@@ -1079,49 +1083,60 @@ function ReviewStep({
   const addressRequired = submitMode === 'checkout';
   return (
     <div>
-      <h2 className="font-heading text-2xl md:text-3xl font-bold mb-1 leading-tight" style={{ color: theme.navy }}>
+      {/* Compact toggle at the top — Send me this quote / Pay now */}
+      <div className="grid grid-cols-2 gap-2 mb-3">
+        <button
+          type="button"
+          onClick={() => setSubmitMode('quote')}
+          className="px-3 py-2 rounded-md text-center transition-all text-sm font-bold"
+          style={{
+            background: submitMode === 'quote' ? theme.primary : '#FFFFFF',
+            color: submitMode === 'quote' ? theme.primaryText : theme.navy,
+            border: `2px solid ${submitMode === 'quote' ? theme.primary : '#E5E7EB'}`,
+            boxShadow: submitMode === 'quote' ? `0 2px 6px ${theme.primary}66` : 'none',
+          }}
+        >
+          📧 Send me this quote
+        </button>
+        <button
+          type="button"
+          onClick={() => setSubmitMode('checkout')}
+          className="px-3 py-2 rounded-md text-center transition-all text-sm font-bold"
+          style={{
+            background: submitMode === 'checkout' ? theme.primary : '#FFFFFF',
+            color: submitMode === 'checkout' ? theme.primaryText : theme.navy,
+            border: `2px solid ${submitMode === 'checkout' ? theme.primary : '#E5E7EB'}`,
+            boxShadow: submitMode === 'checkout' ? `0 2px 6px ${theme.primary}66` : 'none',
+          }}
+        >
+          💳 Pay now
+        </button>
+      </div>
+
+      <h2 className="font-heading text-xl font-bold mb-1 leading-tight" style={{ color: theme.navy }}>
         {modal.reviewHeadline}
       </h2>
-      <p className="text-sm text-gray-600 mb-5">
-        Double-check it, drop your contact info, and we&apos;ll handle the rest.
+      <p className="text-xs text-gray-600 mb-3">
+        {submitMode === 'quote'
+          ? "We'll email you an editable invoice you can pay anytime."
+          : "Lock your date with secure Stripe checkout."}
       </p>
 
-      <div className="grid sm:grid-cols-2 gap-3 mb-5">
-        <div className="rounded-lg p-4 bg-white" style={{ border: '1px solid #E5E7EB' }}>
-          <div className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-2">
-            Event
-          </div>
-          <div className="space-y-1.5 text-sm text-gray-800">
-            <div>
-              👥 <strong>{people}</strong> {modal.groupSizeUnit}
-            </div>
-            <div>
-              📅 <strong>{deliveryDate ? formatDate(deliveryDate) : '— date TBD —'}</strong>
-            </div>
-            <div>
-              📦 <strong>{lineItems.reduce((s, li) => s + li.qty, 0)}</strong> items
-            </div>
-          </div>
-        </div>
-        <div className="rounded-lg p-4 text-white" style={{ background: theme.navy }}>
-          <div className="text-[10px] uppercase tracking-widest font-bold mb-2" style={{ color: theme.primary }}>
-            Total
-          </div>
-          <div className="font-heading text-3xl font-bold" style={{ color: theme.primary }}>
-            ${total.toFixed(2)}
-          </div>
-          <div className="text-sm opacity-80 mt-0.5">
-            ${perPerson.toFixed(2)} per {modal.groupSizeUnit.replace(/s$/, '')}
-          </div>
-        </div>
+      {/* Compact event summary — totals live in the modal's sticky footer */}
+      <div className="rounded-md px-3 py-2 mb-3 flex items-center justify-between gap-3 flex-wrap text-sm" style={{ background: '#F9FAFB', border: '1px solid #E5E7EB' }}>
+        <span style={{ color: theme.navy }}>
+          👥 <strong>{people}</strong> {modal.groupSizeUnit} · 📅{' '}
+          <strong>{deliveryDate ? formatDate(deliveryDate) : 'TBD'}</strong> · 📦{' '}
+          <strong>{lineItems.reduce((s, li) => s + li.qty, 0)}</strong> items
+        </span>
       </div>
 
       {lineItems.length > 0 && (
-        <details className="mb-5 rounded-lg bg-white" style={{ border: '1px solid #E5E7EB' }}>
-          <summary className="cursor-pointer px-4 py-2.5 text-sm font-bold" style={{ color: theme.navy }}>
+        <details className="mb-3 rounded-md bg-white" style={{ border: '1px solid #E5E7EB' }}>
+          <summary className="cursor-pointer px-3 py-2 text-xs font-bold" style={{ color: theme.navy }}>
             View {lineItems.length} item{lineItems.length !== 1 ? 's' : ''} ↓
           </summary>
-          <ul className="px-4 pb-3 space-y-1.5 text-sm">
+          <ul className="px-3 pb-2 space-y-1 text-xs">
             {lineItems.map((li) => (
               <li key={li.product.id} className="flex justify-between gap-3">
                 <span className="text-gray-800">
@@ -1135,41 +1150,6 @@ function ReviewStep({
           </ul>
         </details>
       )}
-
-      <div className="grid grid-cols-2 gap-2 mb-4">
-        <button
-          type="button"
-          onClick={() => setSubmitMode('quote')}
-          className="p-3 rounded-lg text-left transition-all"
-          style={{
-            background: submitMode === 'quote' ? `${theme.primary}22` : '#FFFFFF',
-            border: `2px solid ${submitMode === 'quote' ? theme.primary : '#E5E7EB'}`,
-          }}
-        >
-          <div className="font-bold text-sm mb-0.5" style={{ color: theme.navy }}>
-            📧 Send me this quote
-          </div>
-          <div className="text-xs text-gray-600">
-            Editable invoice in your inbox. Pay later.
-          </div>
-        </button>
-        <button
-          type="button"
-          onClick={() => setSubmitMode('checkout')}
-          className="p-3 rounded-lg text-left transition-all"
-          style={{
-            background: submitMode === 'checkout' ? `${theme.primary}22` : '#FFFFFF',
-            border: `2px solid ${submitMode === 'checkout' ? theme.primary : '#E5E7EB'}`,
-          }}
-        >
-          <div className="font-bold text-sm mb-0.5" style={{ color: theme.navy }}>
-            💳 Pay now
-          </div>
-          <div className="text-xs text-gray-600">
-            Lock your date with secure Stripe checkout.
-          </div>
-        </button>
-      </div>
 
       <form id="quote-form" onSubmit={onSubmit} className="space-y-2.5">
         <div className="grid sm:grid-cols-2 gap-2.5">
@@ -1266,13 +1246,26 @@ function ReviewStep({
                 className="w-full bg-white rounded-md px-3 py-2.5 text-sm focus:outline-none transition-colors"
                 style={{ border: '1.5px solid #E5E7EB' }}
               >
-                <option>Morning (9am–12pm)</option>
-                <option>Afternoon (12pm–4pm)</option>
-                <option>Evening (4pm–8pm)</option>
-                <option>Whenever — surprise us</option>
+                {getDeliveryWindows().map((w) => (
+                  <option key={w.value} value={w.value}>
+                    {w.label}
+                  </option>
+                ))}
               </select>
             </FormField>
           </div>
+          {deliveryDate && isSunday(deliveryDate.toISOString().slice(0, 10)) && (
+            <div
+              className="mt-2.5 rounded-md p-2.5 text-[11px] leading-snug"
+              style={{
+                background: '#FEF3C7',
+                color: '#92400E',
+                border: '1px solid #FCD34D',
+              }}
+            >
+              {SUNDAY_CLOSED_NOTE}
+            </div>
+          )}
         </div>
 
         {submitError && (
@@ -1284,18 +1277,8 @@ function ReviewStep({
           </div>
         )}
 
-        <button
-          type="submit"
-          disabled={submitting}
-          className="w-full mt-4 font-bold py-3.5 rounded-md tracking-wide transition-all disabled:opacity-60 disabled:cursor-wait"
-          style={{ background: theme.primary, color: theme.primaryText }}
-        >
-          {submitting
-            ? 'Working…'
-            : submitMode === 'checkout'
-              ? 'Continue to secure payment →'
-              : 'Send me this quote →'}
-        </button>
+        {/* Submit lives in the sticky footer now — see PackageBuilderModal
+            shell. The form is wired via form="quote-form" attribute. */}
       </form>
 
       <p className="text-[11px] text-gray-500 mt-3 leading-snug">{modal.emailNotice}</p>

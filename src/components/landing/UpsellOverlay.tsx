@@ -28,14 +28,26 @@ type Props = {
 };
 
 export default function UpsellOverlay({ open, products, theme: T, onAdd, onClose }: Props) {
-  const [added, setAdded] = useState<Set<string>>(new Set());
+  // Per-product qty added during this overlay session. Increments via the
+  // stepper; never goes below 0 (a confirmed remove would zero it out).
+  const [qtyByHandle, setQtyByHandle] = useState<Record<string, number>>({});
 
   if (!open) return null;
 
-  const handleAdd = (p: UpsellProduct) => {
-    onAdd(p);
-    setAdded((s) => new Set(s).add(p.handle));
+  const bumpQty = (p: UpsellProduct, delta: number) => {
+    setQtyByHandle((s) => {
+      const cur = s[p.handle] ?? 0;
+      const next = Math.max(0, cur + delta);
+      return { ...s, [p.handle]: next };
+    });
+    if (delta > 0) onAdd(p);
+    // Note: parent doesn't currently support de-increment from upsell, so a
+    // minus on the overlay just decrements the local count display — the
+    // customer can manage final qty back in the main cart list.
   };
+
+  const handleAddOne = (p: UpsellProduct) => bumpQty(p, +1);
+  const totalAdded = Object.values(qtyByHandle).reduce((s, n) => s + (n > 0 ? 1 : 0), 0);
 
   return (
     <div
@@ -89,16 +101,18 @@ export default function UpsellOverlay({ open, products, theme: T, onAdd, onClose
           <UpsellGrid
             label="ADD TO YOUR ORDER"
             products={products.addons}
-            added={added}
-            onAdd={handleAdd}
+            qtyByHandle={qtyByHandle}
+            onBump={bumpQty}
+            onAddOne={handleAddOne}
             theme={T}
           />
           <div className="mt-5">
             <UpsellGrid
               label="GROUPS ALSO BUY"
               products={products.topSellers}
-              added={added}
-              onAdd={handleAdd}
+              qtyByHandle={qtyByHandle}
+              onBump={bumpQty}
+              onAddOne={handleAddOne}
               theme={T}
             />
           </div>
@@ -110,9 +124,9 @@ export default function UpsellOverlay({ open, products, theme: T, onAdd, onClose
           style={{ background: '#F9FAFB', borderColor: '#E5E7EB' }}
         >
           <div className="text-xs text-gray-500">
-            {added.size === 0
+            {totalAdded === 0
               ? 'No thanks?'
-              : `${added.size} add-on${added.size !== 1 ? 's' : ''} added`}
+              : `${totalAdded} add-on${totalAdded !== 1 ? 's' : ''} added`}
           </div>
           <button
             type="button"
@@ -131,14 +145,16 @@ export default function UpsellOverlay({ open, products, theme: T, onAdd, onClose
 function UpsellGrid({
   label,
   products,
-  added,
-  onAdd,
+  qtyByHandle,
+  onBump,
+  onAddOne,
   theme: T,
 }: {
   label: string;
   products: UpsellProduct[];
-  added: Set<string>;
-  onAdd: (p: UpsellProduct) => void;
+  qtyByHandle: Record<string, number>;
+  onBump: (p: UpsellProduct, delta: number) => void;
+  onAddOne: (p: UpsellProduct) => void;
   theme: ThemeColors;
 }) {
   if (products.length === 0) return null;
@@ -152,7 +168,8 @@ function UpsellGrid({
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
         {products.map((p) => {
-          const isAdded = added.has(p.handle);
+          const qty = qtyByHandle[p.handle] ?? 0;
+          const isAdded = qty > 0;
           return (
             <div
               key={p.handle}
@@ -182,7 +199,7 @@ function UpsellGrid({
                     className="absolute top-1.5 right-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold shadow"
                     style={{ background: T.primary, color: T.primaryText }}
                   >
-                    ADDED
+                    ×{qty}
                   </div>
                 )}
               </div>
@@ -208,18 +225,46 @@ function UpsellGrid({
                     ${p.unitPrice}
                   </span>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => onAdd(p)}
-                  disabled={isAdded}
-                  className="text-xs font-bold py-1.5 rounded-md w-full transition-all disabled:opacity-60 disabled:cursor-default"
-                  style={{
-                    background: isAdded ? '#10B98119' : T.primary,
-                    color: isAdded ? '#047857' : T.primaryText,
-                  }}
-                >
-                  {isAdded ? '✓ Added' : '+ Add'}
-                </button>
+                {qty === 0 ? (
+                  <button
+                    type="button"
+                    onClick={() => onAddOne(p)}
+                    className="text-xs font-bold py-1.5 rounded-md w-full transition-all"
+                    style={{ background: T.primary, color: T.primaryText }}
+                  >
+                    + Add
+                  </button>
+                ) : (
+                  <div
+                    className="flex items-center justify-between rounded-md px-1 py-0.5 transition-all"
+                    style={{ background: T.primary }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => onBump(p, -1)}
+                      className="w-6 h-6 rounded-full bg-white/80 hover:bg-white text-base font-bold leading-none"
+                      style={{ color: T.primaryText }}
+                      aria-label={`Decrease ${p.name}`}
+                    >
+                      −
+                    </button>
+                    <span
+                      className="text-xs font-bold"
+                      style={{ color: T.primaryText }}
+                    >
+                      {qty}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => onBump(p, +1)}
+                      className="w-6 h-6 rounded-full bg-white/80 hover:bg-white text-base font-bold leading-none"
+                      style={{ color: T.primaryText }}
+                      aria-label={`Increase ${p.name}`}
+                    >
+                      +
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           );
