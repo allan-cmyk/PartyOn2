@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import DraftOrdersTable from '@/components/ops/DraftOrdersTable';
 import UnpaidCartsTable from '@/components/ops/UnpaidCartsTable';
+import WeeklySummaryView from '@/components/ops/WeeklySummaryView';
 
 // --- In Stock / Packed / Short By state ---
 // Persisted server-side via /api/ops/orders/[id]/picks so checkbox state
@@ -1105,8 +1106,10 @@ function MobileOrderRow({ order, onFilterByGroup }: { order: Order; onFilterByGr
 export default function OrdersPage(): ReactElement {
   const searchParams = useSearchParams();
   const initialView = searchParams?.get('view');
-  const [view, setView] = useState<'orders' | 'invoices' | 'carts'>(
-    initialView === 'invoices' || initialView === 'carts' ? initialView : 'orders'
+  const [view, setView] = useState<'orders' | 'invoices' | 'carts' | 'weekly'>(
+    initialView === 'invoices' || initialView === 'carts' || initialView === 'weekly'
+      ? initialView
+      : 'orders'
   );
   const [data, setData] = useState<OrdersData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -1452,6 +1455,7 @@ export default function OrdersPage(): ReactElement {
           <button onClick={() => setView('orders')} className={`px-2.5 py-1 text-xs font-semibold rounded-md ${view === 'orders' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600'}`}>Orders</button>
           <button onClick={() => setView('invoices')} className={`px-2.5 py-1 text-xs font-semibold rounded-md ${view === 'invoices' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600'}`}>Invoices</button>
           <button onClick={() => setView('carts')} className={`px-2.5 py-1 text-xs font-semibold rounded-md ${view === 'carts' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-600'}`}>Carts</button>
+          <button onClick={() => setView('weekly')} className={`px-2.5 py-1 text-xs font-semibold rounded-md ${view === 'weekly' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600'}`}>Weekly</button>
         </div>
         {/* Compact mobile filter row */}
         <div className={`flex items-center gap-2 mt-1.5 overflow-x-auto pb-0.5 -mx-1 px-1 ${view !== 'orders' ? 'hidden' : ''}`}>
@@ -1573,6 +1577,19 @@ export default function OrdersPage(): ReactElement {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
           </svg>
           Unpaid Carts
+        </button>
+        <button
+          onClick={() => setView('weekly')}
+          className={`px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200 flex items-center gap-2 ${
+            view === 'weekly'
+              ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md shadow-blue-200'
+              : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300'
+          }`}
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          Weekly Checklist
         </button>
       </div>
 
@@ -2061,6 +2078,9 @@ export default function OrdersPage(): ReactElement {
       )}
       </>}
       </div>{/* end print:hidden */}
+
+      {/* Weekly Summary View — rendered outside print:hidden so it prints */}
+      {view === 'weekly' && <WeeklySummaryView />}
 
       {/* Print Pick Sheets (hidden on screen, shown on print) */}
       <div ref={printRef} className="hidden print:block">
