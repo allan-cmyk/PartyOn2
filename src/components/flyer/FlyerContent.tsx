@@ -126,10 +126,10 @@ const COCKTAIL_KITS = [
       '/images/products/fresh-victor-cocktails/Lady Bird Margarita/Gemini_Generated_Image_95mqfa95mqfa95mq.png',
   },
   {
-    name: 'Cool Cucumber Splash',
-    profile: 'Vodka · Cucumber · Soda',
+    name: 'Eastside Gin & Tonic',
+    profile: 'Gin · Cucumber · Tonic',
     image:
-      '/images/products/fresh-victor-cocktails/Cool Cucumber Splash/Gemini_Generated_Image_580hpd580hpd580h.png',
+      '/images/products/fresh-victor-cocktails/Eastside Gin and Tonic/Gemini_Generated_Image_jlrbq6jlrbq6jlrb.png',
   },
   {
     name: 'Barton Springs Mojito',
