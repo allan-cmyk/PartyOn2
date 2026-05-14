@@ -11,13 +11,15 @@
 import { prisma } from '@/lib/database/client';
 import type { Prisma } from '@prisma/client';
 
-export type RecommendationSource = 'auto-snapshot' | 'director' | 'manual';
+export type RecommendationSource = 'auto-snapshot' | 'director' | 'manual' | 'seo-director';
 export type RiskTier = 'autonomous' | 'recommend' | 'hard_stop';
 export type RecommendationStatus = 'open' | 'approved' | 'shipped' | 'rejected' | 'invalidated';
+export type RecommendationDomain = 'marketing' | 'seo';
 
 export interface RecommendationInput {
   title: string;
   body?: string;
+  domain?: RecommendationDomain;
   segment?: string | null;
   metric?: string;
   currentValue?: string;
@@ -45,10 +47,13 @@ export async function persistRecommendations(
   let skippedExisting = 0;
 
   for (const rec of recs) {
+    const domain: RecommendationDomain = rec.domain ?? (source === 'seo-director' ? 'seo' : 'marketing');
+
     const existing = await prisma.recommendationItem.findFirst({
       where: {
         title: rec.title,
         segment: rec.segment ?? null,
+        domain,
         status: { in: ['open', 'approved'] },
       },
       select: { id: true },
@@ -62,6 +67,7 @@ export async function persistRecommendations(
     await prisma.recommendationItem.create({
       data: {
         source,
+        domain,
         title: rec.title,
         body: rec.body ?? null,
         segment: rec.segment ?? null,
@@ -82,16 +88,21 @@ export async function persistRecommendations(
 export async function listRecommendations(opts?: {
   status?: RecommendationStatus | RecommendationStatus[];
   segment?: string;
+  domain?: RecommendationDomain | RecommendationDomain[];
   limit?: number;
 }) {
   const where: {
     status?: RecommendationStatus | { in: RecommendationStatus[] };
     segment?: string;
+    domain?: RecommendationDomain | { in: RecommendationDomain[] };
   } = {};
   if (opts?.status) {
     where.status = Array.isArray(opts.status) ? { in: opts.status } : opts.status;
   }
   if (opts?.segment) where.segment = opts.segment;
+  if (opts?.domain) {
+    where.domain = Array.isArray(opts.domain) ? { in: opts.domain } : opts.domain;
+  }
 
   return prisma.recommendationItem.findMany({
     where,

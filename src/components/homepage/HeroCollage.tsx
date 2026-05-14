@@ -4,14 +4,29 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { CELL_MEDIA as SCANNED_MEDIA, type CollageMedia } from '@/generated/hero-media-manifest';
 
-/** Pool all scanned images from every folder, then distribute across 3 cells */
+/**
+ * Interleave images across folders, then distribute across 3 cells so each
+ * cell opens with a different event category and rotates through varied
+ * imagery instead of clustering one folder up front.
+ */
 function buildThreeCells(): CollageMedia[][] {
-  const all = SCANNED_MEDIA.flat();
-  if (all.length === 0) return [[], [], []];
+  // Skip empty folders so they don't reserve slots in the interleave.
+  const folders = SCANNED_MEDIA.filter((f) => f.length > 0);
+  if (folders.length === 0) return [[], [], []];
 
-  // Shuffle deterministically by distributing round-robin
+  // Stripe across folders: round 0 takes folders[0][0], folders[1][0], ...,
+  // round 1 takes folders[0][1], folders[1][1], etc. Folders with fewer
+  // items just stop contributing once exhausted.
+  const interleaved: CollageMedia[] = [];
+  const maxLen = Math.max(...folders.map((f) => f.length));
+  for (let row = 0; row < maxLen; row++) {
+    for (const folder of folders) {
+      if (row < folder.length) interleaved.push(folder[row]);
+    }
+  }
+
   const cells: CollageMedia[][] = [[], [], []];
-  all.forEach((item, i) => cells[i % 3].push(item));
+  interleaved.forEach((item, i) => cells[i % 3].push(item));
   return cells;
 }
 

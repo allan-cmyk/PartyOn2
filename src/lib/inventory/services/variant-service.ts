@@ -55,7 +55,7 @@ export async function createVariant(
       option2Value: input.option2Value,
       option3Name: input.option3Name,
       option3Value: input.option3Value,
-      inventoryQuantity: input.inventoryQuantity ?? 0,
+      inventoryQuantity: Math.max(0, input.inventoryQuantity ?? 0),
       trackInventory: input.trackInventory ?? true,
       allowBackorder: input.allowBackorder ?? false,
       weight: input.weight,
@@ -89,7 +89,7 @@ export async function updateVariant(
   if (data.option3Name !== undefined) updateData.option3Name = data.option3Name;
   if (data.option3Value !== undefined) updateData.option3Value = data.option3Value;
   if (data.inventoryQuantity !== undefined) {
-    updateData.inventoryQuantity = data.inventoryQuantity;
+    updateData.inventoryQuantity = Math.max(0, data.inventoryQuantity);
   }
   if (data.trackInventory !== undefined) updateData.trackInventory = data.trackInventory;
   if (data.allowBackorder !== undefined) updateData.allowBackorder = data.allowBackorder;

@@ -40,7 +40,9 @@ if (!variant) {
 }
 
 const previousQuantity = variant.inventoryQuantity;
-const newQuantity = previousQuantity + quantity;
+const requestedNewQuantity = previousQuantity + quantity;
+const newQuantity = Math.max(0, requestedNewQuantity);
+const flooredBy = newQuantity - requestedNewQuantity; // > 0 when we clamped
 
 // Update ProductVariant.inventoryQuantity (physical stock only)
 await prisma.productVariant.update({
@@ -53,12 +55,16 @@ await prisma.inventoryMovement.create({
   data: {
     variantId: variant.id,
     type: quantity > 0 ? 'RECEIVED' : 'ADJUSTMENT',
-    quantity,
+    quantity: newQuantity - previousQuantity, // actual delta after flooring
     previousQuantity,
     newQuantity,
-    reason,
+    reason: flooredBy > 0 ? `${reason} (floored at 0; ${flooredBy} below)` : reason,
   },
 });
+
+if (flooredBy > 0) {
+  console.warn(`[adjust-inventory] Requested ${quantity} would have left inventory at ${requestedNewQuantity}; floored to 0.`);
+}
 
 const product = await prisma.product.findUnique({
   where: { id: productId },

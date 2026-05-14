@@ -142,6 +142,7 @@ interface OrderDetail {
   refunds: {
     totalRefunded: number;
     count: number;
+    stripeCapturedAmount: number | null;
   };
 }
 
@@ -2227,7 +2228,8 @@ export default function OrderDetailPage(): ReactElement {
                   )}
                   <button
                     onClick={() => {
-                      const maxRefundable = order.pricing.total - (order.refunds?.totalRefunded || 0);
+                      const captured = order.refunds?.stripeCapturedAmount ?? order.pricing.total;
+                      const maxRefundable = captured - (order.refunds?.totalRefunded || 0);
                       setRefundType('full');
                       setRefundAmount(Math.max(0, maxRefundable));
                       setRefundReason('Full refund');
@@ -2238,7 +2240,7 @@ export default function OrderDetailPage(): ReactElement {
                         : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
                     }`}
                   >
-                    Full Refund (${Math.max(0, order.pricing.total - (order.refunds?.totalRefunded || 0)).toFixed(2)})
+                    Full Refund (${Math.max(0, (order.refunds?.stripeCapturedAmount ?? order.pricing.total) - (order.refunds?.totalRefunded || 0)).toFixed(2)})
                   </button>
                   <button
                     onClick={() => {
@@ -2276,7 +2278,7 @@ export default function OrderDetailPage(): ReactElement {
                 </div>
                 {order.refunds && order.refunds.totalRefunded > 0 && (
                   <p className="text-xs text-gray-500 mt-1">
-                    Previously refunded: ${order.refunds.totalRefunded.toFixed(2)} | Max remaining: ${Math.max(0, order.pricing.total - order.refunds.totalRefunded).toFixed(2)}
+                    Previously refunded: ${order.refunds.totalRefunded.toFixed(2)} | Max remaining: ${Math.max(0, (order.refunds.stripeCapturedAmount ?? order.pricing.total) - order.refunds.totalRefunded).toFixed(2)}
                   </p>
                 )}
               </div>

@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/database/client';
 import { stripe } from '@/lib/stripe/client';
+import { getMaxRefundable } from '@/lib/stripe/refund-utils';
 import { createRefund, releaseCommittedInventory } from '@/lib/inventory/services/order-service';
 import { sendOrderCancellationEmail } from '@/lib/email/email-service';
 import { sendRefundProcessedEmail } from '@/lib/email/email-service';
@@ -96,12 +97,13 @@ export async function POST(
         );
       }
 
-      // Calculate refundable amount
+      // Refund whatever Stripe still has — not what order.total says,
+      // since order.total gets rewritten by OrderAmendment when items change.
       const totalPriorRefunds = order.refunds.reduce(
         (sum, r) => sum + Number(r.amount),
         0
       );
-      const refundAmount = Math.round((Number(order.total) - totalPriorRefunds) * 100) / 100;
+      const refundAmount = await getMaxRefundable(order.stripePaymentIntentId, totalPriorRefunds);
 
       if (refundAmount <= 0) {
         return NextResponse.json(

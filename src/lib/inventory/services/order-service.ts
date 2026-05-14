@@ -10,6 +10,7 @@ import { CartWithItems } from './cart-service';
 import type { DraftOrderWithTotal, DraftOrderItem } from '@/lib/draft-orders/types';
 import { snapshotItemCost, finalizeOrderMargin } from '@/lib/analytics/margin-service';
 import { classifySegment } from '@/lib/analytics/segment-classifier';
+import { unitsOffShelf } from './pick-inventory-service';
 
 /**
  * Order with all relations
@@ -155,9 +156,55 @@ export async function commitInventoryForOrderItem(
 }
 
 /**
+ * Fulfill a single variant's inventory: floor inventoryQuantity and
+ * committedQuantity at 0 (oversells become Available < 0 via committed,
+ * never inventory < 0), record the movement, and warn on oversells.
+ */
+async function fulfillVariantInventory(
+  tx: TransactionClient,
+  variant: { id: string; inventoryQuantity: number; committedQuantity: number; trackInventory: boolean },
+  qty: number,
+  orderNumber: number,
+  orderId: string,
+  isBundleComponent: boolean,
+): Promise<{ oversoldBy: number }> {
+  if (!variant.trackInventory) return { oversoldBy: 0 };
+  const newInventory = Math.max(0, variant.inventoryQuantity - qty);
+  const newCommitted = Math.max(0, variant.committedQuantity - qty);
+  const oversoldBy = qty - (variant.inventoryQuantity - newInventory);
+  await tx.productVariant.update({
+    where: { id: variant.id },
+    data: { inventoryQuantity: newInventory, committedQuantity: newCommitted },
+  });
+  const suffix = isBundleComponent ? ' (bundle component)' : '';
+  await tx.inventoryMovement.create({
+    data: {
+      variantId: variant.id,
+      type: 'FULFILLED',
+      quantity: -qty,
+      previousQuantity: variant.inventoryQuantity,
+      newQuantity: newInventory,
+      reason: oversoldBy > 0
+        ? `Order #${orderNumber} fulfilled${suffix} — OVERSOLD by ${oversoldBy}`
+        : `Order #${orderNumber} fulfilled${suffix}`,
+      referenceId: orderId,
+      referenceType: 'Order',
+    },
+  });
+  if (oversoldBy > 0) {
+    console.warn(`[Oversell] Order #${orderNumber} variant ${variant.id} oversold by ${oversoldBy} — inventory floored at 0`);
+  }
+  return { oversoldBy };
+}
+
+/**
  * Fulfill inventory for an entire order.
- * Decrements both inventoryQuantity and committedQuantity for each item.
- * Called when an order's fulfillmentStatus changes to DELIVERED.
+ * Decrements both inventoryQuantity and committedQuantity for each item,
+ * floored at 0. Called when an order's fulfillmentStatus changes to DELIVERED.
+ *
+ * Subtracts units that were already moved off the shelf at pack time
+ * (via pick-inventory-service). Without this, packed-then-delivered orders
+ * would double-decrement.
  */
 export async function fulfillInventoryForOrder(orderId: string): Promise<void> {
   const order = await prisma.order.findUnique({
@@ -167,12 +214,14 @@ export async function fulfillInventoryForOrder(orderId: string): Promise<void> {
         include: {
           product: {
             select: {
+              title: true,
               isBundle: true,
               bundleComponents: {
                 select: {
                   componentProductId: true,
                   componentVariantId: true,
                   quantity: true,
+                  componentProduct: { select: { title: true } },
                 },
               },
             },
@@ -184,14 +233,30 @@ export async function fulfillInventoryForOrder(orderId: string): Promise<void> {
 
   if (!order) return;
 
+  const pickStateRows = await prisma.orderItemPickState.findMany({
+    where: { orderId },
+    select: { itemKey: true, packed: true, shortBy: true },
+  });
+  const pickStates = new Map(pickStateRows.map((r) => [r.itemKey, r]));
+
   await prisma.$transaction(async (tx: TransactionClient) => {
     for (const item of order.items) {
       const effectiveQty = item.quantity - item.refundedQuantity;
       if (effectiveQty <= 0) continue;
 
+      const parentKey = item.title || item.product.title;
+
       if (item.product.isBundle && item.product.bundleComponents.length > 0) {
         for (const component of item.product.bundleComponents) {
           const fulfillQty = component.quantity * effectiveQty;
+
+          const bcKey = `${parentKey}::${component.componentProduct.title}`;
+          const bcPick = pickStates.get(bcKey);
+          const alreadyPacked = bcPick
+            ? unitsOffShelf(bcPick, item.quantity * component.quantity)
+            : 0;
+          const remainingQty = Math.max(0, fulfillQty - alreadyPacked);
+          if (remainingQty <= 0) continue;
 
           let componentVariant;
           if (component.componentVariantId) {
@@ -206,56 +271,23 @@ export async function fulfillInventoryForOrder(orderId: string): Promise<void> {
             });
           }
 
-          if (componentVariant && componentVariant.trackInventory) {
-            await tx.productVariant.update({
-              where: { id: componentVariant.id },
-              data: {
-                inventoryQuantity: { decrement: fulfillQty },
-                committedQuantity: { decrement: fulfillQty },
-              },
-            });
-
-            await tx.inventoryMovement.create({
-              data: {
-                variantId: componentVariant.id,
-                type: 'FULFILLED',
-                quantity: -fulfillQty,
-                previousQuantity: componentVariant.inventoryQuantity,
-                newQuantity: componentVariant.inventoryQuantity - fulfillQty,
-                reason: `Order #${order.orderNumber} fulfilled (bundle component)`,
-                referenceId: orderId,
-                referenceType: 'Order',
-              },
-            });
+          if (componentVariant) {
+            await fulfillVariantInventory(tx, componentVariant, remainingQty, order.orderNumber, orderId, true);
           }
         }
       } else {
+        const linePick = pickStates.get(parentKey);
+        const alreadyPacked = linePick ? unitsOffShelf(linePick, item.quantity) : 0;
+        const remainingQty = Math.max(0, effectiveQty - alreadyPacked);
+        if (remainingQty <= 0) continue;
+
         const variant = await tx.productVariant.findUnique({
           where: { id: item.variantId },
           select: { id: true, inventoryQuantity: true, committedQuantity: true, trackInventory: true },
         });
 
-        if (variant && variant.trackInventory) {
-          await tx.productVariant.update({
-            where: { id: variant.id },
-            data: {
-              inventoryQuantity: { decrement: effectiveQty },
-              committedQuantity: { decrement: effectiveQty },
-            },
-          });
-
-          await tx.inventoryMovement.create({
-            data: {
-              variantId: variant.id,
-              type: 'FULFILLED',
-              quantity: -effectiveQty,
-              previousQuantity: variant.inventoryQuantity,
-              newQuantity: variant.inventoryQuantity - effectiveQty,
-              reason: `Order #${order.orderNumber} fulfilled`,
-              referenceId: orderId,
-              referenceType: 'Order',
-            },
-          });
+        if (variant) {
+          await fulfillVariantInventory(tx, variant, remainingQty, order.orderNumber, orderId, false);
         }
       }
     }
@@ -314,9 +346,10 @@ export async function releaseCommittedInventory(orderId: string): Promise<void> 
           }
 
           if (componentVariant) {
+            const newCommitted = Math.max(0, componentVariant.committedQuantity - releaseQty);
             await tx.productVariant.update({
               where: { id: componentVariant.id },
-              data: { committedQuantity: { decrement: releaseQty } },
+              data: { committedQuantity: newCommitted },
             });
 
             await tx.inventoryMovement.create({
@@ -325,7 +358,7 @@ export async function releaseCommittedInventory(orderId: string): Promise<void> 
                 type: 'RETURN',
                 quantity: releaseQty,
                 previousQuantity: componentVariant.committedQuantity,
-                newQuantity: componentVariant.committedQuantity - releaseQty,
+                newQuantity: newCommitted,
                 reason: `Order #${order.orderNumber} cancelled (bundle component)`,
                 referenceId: orderId,
                 referenceType: 'Order',
@@ -340,9 +373,10 @@ export async function releaseCommittedInventory(orderId: string): Promise<void> 
         });
 
         if (variant) {
+          const newCommitted = Math.max(0, variant.committedQuantity - effectiveQty);
           await tx.productVariant.update({
             where: { id: variant.id },
-            data: { committedQuantity: { decrement: effectiveQty } },
+            data: { committedQuantity: newCommitted },
           });
 
           await tx.inventoryMovement.create({
@@ -351,7 +385,7 @@ export async function releaseCommittedInventory(orderId: string): Promise<void> 
               type: 'RETURN',
               quantity: effectiveQty,
               previousQuantity: variant.committedQuantity,
-              newQuantity: variant.committedQuantity - effectiveQty,
+              newQuantity: newCommitted,
               reason: `Order #${order.orderNumber} cancelled`,
               referenceId: orderId,
               referenceType: 'Order',
@@ -761,7 +795,13 @@ export async function updateFulfillmentStatus(
 }
 
 /**
- * Create a refund for an order
+ * Create a refund for an order.
+ *
+ * The financialStatus decision compares against the Stripe-captured amount
+ * when available. order.total alone gets rewritten by OrderAmendment when
+ * items are removed, so a refund for the removed items would otherwise look
+ * like a "full" refund (totalRefunded >= currentOrderTotal) even though
+ * the customer still has a net-positive paid order.
  */
 export async function createRefund(
   orderId: string,
@@ -786,16 +826,24 @@ export async function createRefund(
     },
   });
 
-  // Update order financial status based on total refunds
+  // Update order financial status based on total refunds vs originally captured.
   const totalRefunds = await prisma.refund.aggregate({
     where: { orderId },
     _sum: { amount: true },
   });
-
   const totalRefunded = Number(totalRefunds._sum.amount || 0);
-  const orderTotal = Number(order.total);
 
-  if (totalRefunded >= orderTotal) {
+  let originallyCharged = Number(order.total);
+  if (order.stripePaymentIntentId) {
+    const { getStripeCapturedAmount } = await import('@/lib/stripe/refund-utils');
+    try {
+      originallyCharged = await getStripeCapturedAmount(order.stripePaymentIntentId);
+    } catch {
+      // Fall back to order.total — better partial-refunded label than a hard fail.
+    }
+  }
+
+  if (totalRefunded >= originallyCharged - 0.005) {
     await prisma.order.update({
       where: { id: orderId },
       data: { financialStatus: 'REFUNDED' },

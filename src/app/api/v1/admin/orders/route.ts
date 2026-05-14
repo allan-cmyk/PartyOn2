@@ -19,6 +19,7 @@ interface OrderListParams {
   dateFrom?: string;
   dateTo?: string;
   customerId?: string;
+  reviewSent?: 'sent' | 'unsent';
   sortBy?: 'orderNumber' | 'createdAt' | 'total' | 'deliveryDate' | 'groupOrderV2Id';
   sortOrder?: 'asc' | 'desc';
   page?: number;
@@ -41,6 +42,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       dateFrom: searchParams.get('dateFrom') || undefined,
       dateTo: searchParams.get('dateTo') || undefined,
       customerId: searchParams.get('customerId') || undefined,
+      reviewSent: (searchParams.get('reviewSent') as 'sent' | 'unsent') || undefined,
       sortBy: (searchParams.get('sortBy') as OrderListParams['sortBy']) || 'createdAt',
       sortOrder: (searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc',
       page: parseInt(searchParams.get('page') || '1'),
@@ -64,6 +66,15 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     if (params.fulfillmentStatus) where.fulfillmentStatus = params.fulfillmentStatus;
     if (params.deliveryType) where.deliveryType = params.deliveryType;
     if (params.customerId) where.customerId = params.customerId;
+
+    // Review-request filter — "unsent" implies the order must already be DELIVERED
+    // (the only orders eligible to receive a review request).
+    if (params.reviewSent === 'unsent') {
+      where.reviewRequestSentAt = null;
+      where.fulfillmentStatus = FulfillmentStatus.DELIVERED;
+    } else if (params.reviewSent === 'sent') {
+      where.reviewRequestSentAt = { not: null };
+    }
 
     // Group order filtering
     if (params.groupType === 'regular') {

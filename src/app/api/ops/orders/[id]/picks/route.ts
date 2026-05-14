@@ -17,6 +17,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/database/client';
 import { requireOpsAuth } from '@/lib/auth/ops-session';
+import { applyPickInventoryTransition } from '@/lib/inventory/services/pick-inventory-service';
 
 const PutBodySchema = z.object({
   itemKey: z.string().min(1).max(500),
@@ -81,21 +82,42 @@ export async function PUT(
 
   const { itemKey, inStock, packed, shortBy } = parsed.data;
 
-  const row = await prisma.orderItemPickState.upsert({
-    where: { orderId_itemKey: { orderId, itemKey } },
-    create: {
-      orderId,
-      itemKey,
-      inStock: inStock ?? false,
-      packed: packed ?? false,
-      shortBy: shortBy ?? 0,
-    },
-    update: {
-      ...(inStock !== undefined ? { inStock } : {}),
-      ...(packed !== undefined ? { packed } : {}),
-      ...(shortBy !== undefined ? { shortBy } : {}),
-    },
-    select: { itemKey: true, inStock: true, packed: true, shortBy: true },
+  // Pack-state transitions move physical inventory. Read the prior row, upsert
+  // the new state, and apply any inventory delta in one transaction so the
+  // two stay in lockstep. Idempotent: a repeat PUT with the same payload
+  // computes a zero delta and skips the InventoryMovement.
+  const row = await prisma.$transaction(async (tx) => {
+    const existing = await tx.orderItemPickState.findUnique({
+      where: { orderId_itemKey: { orderId, itemKey } },
+      select: { packed: true, shortBy: true },
+    });
+
+    const prev = existing ?? { packed: false, shortBy: 0 };
+    const next = {
+      packed: packed ?? prev.packed,
+      shortBy: shortBy ?? prev.shortBy,
+    };
+
+    const upserted = await tx.orderItemPickState.upsert({
+      where: { orderId_itemKey: { orderId, itemKey } },
+      create: {
+        orderId,
+        itemKey,
+        inStock: inStock ?? false,
+        packed: packed ?? false,
+        shortBy: shortBy ?? 0,
+      },
+      update: {
+        ...(inStock !== undefined ? { inStock } : {}),
+        ...(packed !== undefined ? { packed } : {}),
+        ...(shortBy !== undefined ? { shortBy } : {}),
+      },
+      select: { itemKey: true, inStock: true, packed: true, shortBy: true },
+    });
+
+    await applyPickInventoryTransition(tx, { orderId, itemKey, prev, next });
+
+    return upserted;
   });
 
   return NextResponse.json({ ok: true, state: row });

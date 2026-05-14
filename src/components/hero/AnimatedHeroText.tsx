@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, type CSSProperties } from 'react';
+import styles from './AnimatedHeroText.module.css';
 
 interface AnimatedHeroTextProps {
   drinks: string[];
@@ -13,79 +13,61 @@ interface AnimatedHeroTextProps {
 export default function AnimatedHeroText({
   drinks,
   destinations,
-  drinkIntervalMs = 2400,
-  transitionMs = 400,
+  drinkIntervalMs = 3600,
+  transitionMs = 1200,
 }: AnimatedHeroTextProps) {
   const [drinkIndex, setDrinkIndex] = useState(0);
   const [destIndex, setDestIndex] = useState(0);
 
-  const rotateDrink = useCallback(() => {
-    setDrinkIndex((prev) => (prev + 1) % drinks.length);
-  }, [drinks.length]);
-
-  const rotateDest = useCallback(() => {
-    setDestIndex((prev) => (prev + 1) % destinations.length);
-  }, [destinations.length]);
+  useEffect(() => {
+    const i = setInterval(
+      () => setDrinkIndex((p) => (p + 1) % drinks.length),
+      drinkIntervalMs
+    );
+    return () => clearInterval(i);
+  }, [drinks.length, drinkIntervalMs]);
 
   useEffect(() => {
-    const interval = setInterval(rotateDrink, drinkIntervalMs);
-    return () => clearInterval(interval);
-  }, [rotateDrink, drinkIntervalMs]);
+    const i = setInterval(
+      () => setDestIndex((p) => (p + 1) % destinations.length),
+      drinkIntervalMs + 200
+    );
+    return () => clearInterval(i);
+  }, [destinations.length, drinkIntervalMs]);
 
-  useEffect(() => {
-    const interval = setInterval(rotateDest, drinkIntervalMs + 200);
-    return () => clearInterval(interval);
-  }, [rotateDest, drinkIntervalMs]);
-
-  // Find the longest word for the ghost sizer
   const longestDrink = drinks.reduce((a, b) => (a.length >= b.length ? a : b), '');
   const longestDest = destinations.reduce((a, b) => (a.length >= b.length ? a : b), '');
 
-  const ease = [0.25, 0.1, 0.25, 1] as const;
+  const slotStyle = { '--hero-word-duration': `${transitionMs}ms` } as CSSProperties;
 
   return (
     <h1 className="font-heading text-4xl sm:text-5xl md:text-7xl font-bold tracking-[0.02em] text-center lg:text-left leading-[1.15]">
-      {/* Line 1: "{DRINK}" rotating word */}
-      <span className="block"><span className="inline-block relative align-baseline">
-        {/* Ghost text — invisible, holds width of longest word */}
-        <span className="invisible" aria-hidden="true">{longestDrink}</span>
-        <AnimatePresence mode="wait">
-          <motion.span
-            key={drinks[drinkIndex]}
-            initial={{ x: '100%', opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: '-100%', opacity: 0 }}
-            transition={{ duration: transitionMs / 1000, ease }}
-            className="absolute inset-0 text-brand-yellow"
+      <span className="block">
+        <span className={styles.slot} style={slotStyle}>
+          <span className={styles.sizer} aria-hidden="true">{longestDrink}</span>
+          <span
+            key={`drink-${drinkIndex}`}
+            className={`${styles.word} ${styles.fromRight} text-brand-yellow`}
           >
             {drinks[drinkIndex]}
-          </motion.span>
-        </AnimatePresence>
-      </span></span>
+          </span>
+        </span>
+      </span>
 
-      {/* Line 2: "delivered cold" */}
       <span className="block text-white">delivered cold</span>
-
-      {/* Line 3: "& on time to your" */}
       <span className="block text-white">&amp; on time to your</span>
 
-      {/* Line 4: "{DESTINATION}" rotating word */}
-      <span className="block"><span className="inline-block relative align-baseline">
-        {/* Ghost text for destination width */}
-        <span className="invisible" aria-hidden="true">{longestDest}</span>
-        <AnimatePresence mode="wait">
-          <motion.span
-            key={destinations[destIndex]}
-            initial={{ x: '-100%', opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: '100%', opacity: 0 }}
-            transition={{ duration: transitionMs / 1000, ease }}
-            className="absolute inset-0 text-brand-yellow"
+      <span className="block">
+        <span className={styles.slot} style={slotStyle}>
+          <span className={styles.sizer} aria-hidden="true">{longestDest}</span>
+          <span
+            key={`dest-${destIndex}`}
+            className={`${styles.word} ${styles.fromLeft} text-brand-yellow`}
           >
             {destinations[destIndex]}
-          </motion.span>
-        </AnimatePresence>
-      </span></span>
+          </span>
+        </span>
+      </span>
     </h1>
   );
 }
