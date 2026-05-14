@@ -170,7 +170,7 @@ export type LandingConfig = {
   // CTAs / phone / email
   phoneDisplay: string;
   phoneTel: string;
-  primaryCtaHref: string;   // where the buttons link to (usually /bach-parties/products)
+  primaryCtaHref: string;   // where the buttons link to (e.g. '#builder' or '/order')
   ctaText: string;          // "BUILD YOUR BACH PACKAGE →"
 
   // Modal

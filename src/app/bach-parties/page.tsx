@@ -135,7 +135,7 @@ export default function BachPartiesPage() {
             Cold delivery with precise timing to your hotel, Airbnb, party bus, or boat—everything ready to pour.
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
-            <Link href="/bach-parties/products">
+            <Link href="/order">
               <button className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium">
                 ORDER NOW
               </button>
