@@ -7,8 +7,9 @@
   "project_id": "26954798",
   "extracted": {
     "site_health_pct": 80,
-    "pages_crawled": null,
-    "pages_crawl_cap": null,
+    "site_health_delta": 0,
+    "pages_crawled": 247,
+    "pages_crawl_cap": 1000,
     "status_mix": {
       "healthy": 3,
       "broken": 4,
@@ -17,8 +18,56 @@
       "blocked": 0
     },
     "ai_search_health_pct": 91,
-    "ai_search_health_delta": null,
-    "total_issues": null
+    "ai_search_health_delta": 0,
+    "errors": {
+      "value": 252,
+      "delta": -11,
+      "rawValue": "252",
+      "rawDelta": "-11"
+    },
+    "warnings": {
+      "value": 422,
+      "delta": 5,
+      "rawValue": "422",
+      "rawDelta": "+5"
+    },
+    "top_issues": [
+      {
+        "name": "Incorrect pages found in sitemap.xml",
+        "pages_affected": 135,
+        "tag": null
+      },
+      {
+        "name": "Broken internal images",
+        "pages_affected": 102,
+        "tag": null
+      },
+      {
+        "name": "4xx errors",
+        "pages_affected": 4,
+        "tag": null
+      },
+      {
+        "name": "Content not optimized",
+        "pages_affected": 30,
+        "tag": "AI Search"
+      },
+      {
+        "name": "Links with no anchor text",
+        "pages_affected": 10,
+        "tag": "AI Search"
+      }
+    ],
+    "thematic_reports": {
+      "robots_txt": "No changes",
+      "crawlability_pct": 92,
+      "https_pct": 98,
+      "international_seo": "International SEO is not implemented on this site.",
+      "core_web_vitals_pct": 0,
+      "site_performance_pct": 100,
+      "internal_linking_pct": 75,
+      "markup_pct": 99
+    }
   },
   "raw_body_text": "Skip to content\nInvite free users\nPricing\nEnterprise\nMore\nA\nSEO\nSite Performance\nCompetitive Analysis\nKeyword Research\nContent Ideas\nLink Building\nExtras\nOther\nHome\nSEO\nSite Audit\nHelp center\nSend feedback\nYou're viewing the results of the Site Audit campaign owned by brian@premierpartycruises.com.\nSite Audit:  \npartyondelivery.com\nRerun campaign\nLooker Studio\nPDF\nExport\nShare\npartyondelivery.com\nUpdated:\nTue, May 12, 2026\nMobile\nJS rendering:\nDisabled\nPages crawled:\n247/1,000\nOverview\nIssues\nCrawled Pages\nStatistics\nCompare Crawls\nProgress\nJS Impact\nCopilot\nai\n1\nSite Health\nPress \"Tab\" to enable graphical charts accessibility module.\n80%\nno changes\nYour site\n80%\nTop-10% websites\n92%\nCrawled Pages\n247\nno changes\nHealthy\n3\nBroken\n4\nHave issues\n228\nRedirects\n12\nBlocked\n0\nAI Search Health\nbeta\nPress \"Tab\" to enable graphical charts accessibility module.\n91%\nno changes\nWebsite is better optimized for AI search engines\nHow it works\n184 issues\nBlocked from AI Search\nPages crawled: 247\nChatGPT-User\nOAI-SearchBot\nGooglebot\nGoogle-Extended\nAll good\nAll good\nAll good\nAll good\nShow more\nHow to unblock pages\nErrors\n252\n-11\n0\n278\nPress \"Tab\" to enable graphical charts accessibility module.\nWarnings\n422\n+5\n0\n422\nPress \"Tab\" to enable graphical charts accessibility module.\nSortable\nIncorrect pages found in sitemap.xml\n135 pages\nHow to fix\nBroken internal images\n102 pages\nHow to fix\n4xx errors\n4 pages\nHow to fix\nContent not optimized\nAI Search\n30 pages\nHow to fix\nLinks with no anchor text\nAI Search\n10 pages\nHow to fix\nView all issues\nThematic Reports\nRobots.txt\nNo changes\nOpen file\nCrawlability\n92%\nView details\nHTTPS\n98%\nView details\nInternational SEO\nInternational SEO is not implemented on this site.\nCore Web Vitals\n0%\nView details\nSite Performance\n100%\nView details\nInternal Linking\n75%\nView details\nMarkup\n99%\nView details\nOutranking Competitors’ SEO\nDomain: \npartyondelivery.com\nKeyword\nCompetitor Weakness\nSortable\nrandom keyword\npoor readability\noutdated page\nlow word count\nanother keyword\nslow page\none more\noutdated page\nlow word count\nFind quick wins\nContact us\nAbout us\nBlog\nEnglish\nSee plans and pricing\nGet started with Semrush\nCookie settings\nLegal info\nPrivacy policy\nDo not sell my personal info\n© 2026 Semrush Holdings. All rights reserved."
 }

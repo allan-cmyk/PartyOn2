@@ -4,10 +4,28 @@
   "project_id": "26954798",
   "folder_id": "8850397",
   "results": [
-    { "id": "position-tracking",  "ok": true, "fields": 3 },
-    { "id": "organic-research",   "ok": true, "fields": 3 },
-    { "id": "backlink-analytics", "ok": true, "fields": 5 },
-    { "id": "site-audit",         "ok": true, "fields": 3 }
+    {
+      "id": "position-tracking",
+      "ok": true,
+      "fields": 20
+    },
+    {
+      "id": "organic-research",
+      "ok": true,
+      "fields": 6
+    },
+    {
+      "id": "backlink-analytics",
+      "ok": true,
+      "fields": 9
+    },
+    {
+      "id": "site-audit",
+      "ok": true,
+      "fields": 11
+    }
   ],
-  "success": true
+  "success": true,
+  "re_extracted_at": "2026-05-14T02:42:33.908Z",
+  "re_extracted_note": "Re-parsed from raw_body_text with patched runner.mjs (2026-05-13). Original capture unchanged."
 }
