@@ -8,6 +8,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import PackageBuilderModal from './PackageBuilderModal';
 import QuickBuyModal from './QuickBuyModal';
+import HeroSlideshow from './HeroSlideshow';
 import type { LandingConfig, Catalog, Package, ThemeColors } from './types';
 import type { UpsellProducts } from '@/lib/landing/getUpsellProducts';
 
@@ -68,14 +69,7 @@ export default function LandingPageTemplate({ config, catalog, upsellProducts }:
       {/* HERO */}
       <section className="relative min-h-[88vh] flex items-center overflow-hidden">
         <div className="absolute inset-0">
-          <Image
-            src={config.heroImage}
-            alt={`${config.audienceTitleCase} in Austin`}
-            fill
-            sizes="100vw"
-            className="object-cover"
-            priority
-          />
+          <HeroSlideshow />
           <div
             className="absolute inset-0"
             style={{
@@ -112,12 +106,31 @@ export default function LandingPageTemplate({ config, catalog, upsellProducts }:
               </span>
             </h1>
 
-            <p
-              className="text-lg sm:text-xl text-white mb-8 max-w-2xl leading-relaxed"
-              style={{ textShadow: '0 1px 6px rgba(0,0,0,0.6)' }}
-            >
-              {config.heroSubhead}
-            </p>
+            {config.heroBullets && config.heroBullets.length > 0 ? (
+              <ul
+                className="text-base sm:text-lg text-white mb-8 max-w-2xl space-y-1.5"
+                style={{ textShadow: '0 1px 6px rgba(0,0,0,0.6)' }}
+              >
+                {config.heroBullets.map((b) => (
+                  <li key={b} className="flex items-start gap-2 leading-snug">
+                    <span
+                      className="flex-shrink-0 font-bold"
+                      style={{ color: T.primary }}
+                    >
+                      ✓
+                    </span>
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p
+                className="text-lg sm:text-xl text-white mb-8 max-w-2xl leading-relaxed"
+                style={{ textShadow: '0 1px 6px rgba(0,0,0,0.6)' }}
+              >
+                {config.heroSubhead}
+              </p>
+            )}
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4">
               <button
@@ -133,8 +146,7 @@ export default function LandingPageTemplate({ config, catalog, upsellProducts }:
                   href={config.planningCallUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center border-2 border-white text-white font-semibold text-base px-8 py-5 rounded-md hover:bg-white transition-colors"
-                  style={{ ['--hover-color' as string]: T.navy }}
+                  className="inline-flex items-center justify-center border-2 border-white text-white font-semibold text-base px-8 py-5 rounded-md transition-transform hover:scale-[1.02] hover:bg-white/15"
                 >
                   {config.secondaryCtaText ?? 'SCHEDULE A 10-MIN CALL →'}
                 </a>
@@ -439,7 +451,7 @@ export default function LandingPageTemplate({ config, catalog, upsellProducts }:
                   href={config.planningCallUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center border-2 border-white text-white font-semibold text-lg px-10 py-5 rounded-md hover:bg-white transition-colors"
+                  className="inline-flex items-center justify-center border-2 border-white text-white font-semibold text-lg px-10 py-5 rounded-md transition-transform hover:scale-[1.02] hover:bg-white/15"
                 >
                   {config.secondaryCtaText ?? 'SCHEDULE A 10-MIN CALL →'}
                 </a>

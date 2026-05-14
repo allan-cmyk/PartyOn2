@@ -118,6 +118,11 @@ export type LandingConfig = {
   heroHeadline: string;
   heroHeadlineAccent: string; // 2nd line shown in primary color
   heroSubhead: React.ReactNode | string;
+  /**
+   * Optional abridged bullets shown in the hero in place of (or alongside)
+   * the longer subhead. 3–4 short punchy phrases work best.
+   */
+  heroBullets?: string[];
   heroImage: string;
   heroTrustBadges: string[];
 

@@ -26,6 +26,12 @@ export const bachelorConfig: LandingConfig = {
   heroHeadlineAccent: 'Before The Groom Lands.',
   heroSubhead:
     "Beer, liquor, mixers and ice delivered cold to your Airbnb, hotel, party bus, or Lake Travis dock. Skip the store run. Order in 30 seconds — we'll handle the rest.",
+  heroBullets: [
+    'Beer, liquor, seltzers & cocktail kits — delivered ice-cold',
+    'Group ordering & split pay — no Venmo chaser',
+    'Airbnb, hotel, boat dock, party bus — wherever you land',
+    'Order in 30 seconds. 48-hour notice = guaranteed pricing.',
+  ],
   heroImage: '/images/services/bach-parties/bachelor-party-epic.webp',
   // Hero badges removed — trustStats below handle this so the hero stays uncluttered.
   heroTrustBadges: [],

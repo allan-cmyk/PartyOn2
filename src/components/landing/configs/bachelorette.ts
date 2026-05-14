@@ -26,6 +26,12 @@ export const bacheloretteConfig: LandingConfig = {
   heroHeadlineAccent: 'Before The Bride Lands.',
   heroSubhead:
     "Bubbly, rosé, cocktail pitcher kits, and brunch mimosa bars — delivered to your Airbnb, hotel suite, or Lake Travis pontoon. You handle the sashes. We handle the rest.",
+  heroBullets: [
+    'Champagne, rosé, seltzers & ready-to-pour pitcher kits',
+    'Group ordering & split pay — every girl picks her own',
+    'Airbnb, hotel suite, brunch venue, pontoon — wherever',
+    'Locally owned. 500+ Austin groups served. 5.0★ on Google.',
+  ],
   heroImage: '/images/services/bach-parties/bachelorette-champagne-tower.webp',
   heroTrustBadges: [],
 

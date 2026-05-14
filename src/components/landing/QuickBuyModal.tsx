@@ -488,26 +488,32 @@ export default function QuickBuyModal({
                 return (
                 <li
                   key={`${l.handle}-${i}`}
-                  className="flex items-center gap-3 px-4 py-2.5 transition-opacity"
+                  // Two-row layout: title on top, controls + price below.
+                  // Keeps long product names from wrapping into 4+ lines on
+                  // mobile because the stepper + price column was squeezing
+                  // the title flex-1 to ~35% of the row.
+                  className="px-4 py-2.5 transition-opacity"
                   style={{ opacity: l.qty === 0 ? 0.55 : 1 }}
                 >
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold leading-tight" style={{ color: T.navy }}>
-                      {l.name}
-                    </div>
-                    <div className="text-[11px] text-gray-500 mt-0.5">
-                      {l.freebie ? (
-                        <span style={{ color: '#047857' }}>FREE · bundled supply</span>
-                      ) : (
-                        <>
-                          ${l.unitPrice.toFixed(2)} each
-                          {l.drinksPerUnit > 0 && l.qty > 0 && (
-                            <span> · ≈{l.drinksPerUnit * l.qty} drinks</span>
-                          )}
-                        </>
-                      )}
-                    </div>
+                  <div
+                    className="text-sm font-semibold leading-snug"
+                    style={{ color: T.navy }}
+                  >
+                    {l.name}
                   </div>
+                  <div className="text-[11px] text-gray-500 mt-0.5 mb-2">
+                    {l.freebie ? (
+                      <span style={{ color: '#047857' }}>FREE · bundled supply</span>
+                    ) : (
+                      <>
+                        ${l.unitPrice.toFixed(2)} each
+                        {l.drinksPerUnit > 0 && l.qty > 0 && (
+                          <span> · ≈{l.drinksPerUnit * l.qty} drinks</span>
+                        )}
+                      </>
+                    )}
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
 
                   {/* Inline "Remove?" affordance — only appears when qty=0.
                       Sits flush against the stepper so the cursor barely has
@@ -569,6 +575,7 @@ export default function QuickBuyModal({
                       : l.freebie
                         ? 'FREE'
                         : `$${(l.qty * l.unitPrice).toFixed(2)}`}
+                  </div>
                   </div>
                 </li>
                 );

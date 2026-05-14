@@ -546,7 +546,7 @@ export default function PackageBuilderModal({
               </div>
               <div className="text-center pl-3 border-l border-white/15">
                 <div className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.18em] opacity-75">
-                  Per {M.groupSizeUnit.replace(/s$/, '')} ({people})
+                  Per {M.groupSizeUnit === 'people' ? 'person' : M.groupSizeUnit.replace(/s$/, '')} ({people})
                 </div>
                 <div
                   className="font-heading font-bold leading-none"

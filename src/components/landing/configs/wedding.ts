@@ -26,6 +26,12 @@ export const weddingConfig: LandingConfig = {
   heroHeadlineAccent: 'Coordinated. Delivered. Done.',
   heroSubhead:
     "Welcome reception. Rehearsal dinner. Ceremony toasts. Reception bar. After-party. We coordinate every event of your wedding weekend, then deliver each one cold and on time.",
+  heroBullets: [
+    'Welcome reception → ceremony → reception → after-party',
+    'Premium champagne, curated wines, full bar setups',
+    'One coordinator handles every event of the weekend',
+    'TABC-licensed · $1M insured · trusted by Austin planners',
+  ],
   heroImage: '/images/services/bach-parties/bachelorette-champagne-tower.webp',
   heroTrustBadges: ['✓ TABC-licensed', '✓ Wedding planners trust us', '★ 5.0 on Google'],
 

@@ -26,6 +26,12 @@ export const corporateConfig: LandingConfig = {
   heroHeadlineAccent: 'Delivered To Your Boardroom.',
   heroSubhead:
     "Top-shelf spirits, sommelier-curated wines, and full bar setups for offsites, client dinners, holiday parties, and SXSW activations. Invoiced. Insured. Discreetly delivered.",
+  heroBullets: [
+    'Top-shelf spirits + sommelier-curated wines',
+    'TABC-licensed · $1M insured · free returns on unopened',
+    'Invoices on request · corporate cards / ACH / wire',
+    'White-glove delivery — coordinated with your venue',
+  ],
   heroImage: '/images/products/premium-spirits-lifestyle.webp',
   heroTrustBadges: [],
 
