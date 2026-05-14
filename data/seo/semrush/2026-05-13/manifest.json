@@ -1,0 +1,13 @@
+{
+  "captured_at": "2026-05-13T18:43:03Z",
+  "domain": "partyondelivery.com",
+  "project_id": "26954798",
+  "folder_id": "8850397",
+  "results": [
+    { "id": "position-tracking",  "ok": true, "fields": 3 },
+    { "id": "organic-research",   "ok": true, "fields": 3 },
+    { "id": "backlink-analytics", "ok": true, "fields": 5 },
+    { "id": "site-audit",         "ok": true, "fields": 3 }
+  ],
+  "success": true
+}
