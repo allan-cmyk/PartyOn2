@@ -98,36 +98,44 @@ const SERVICES: Service[] = [
   },
 ];
 
+// Actual cocktail visuals (Gemini-generated drink photography) — NOT the
+// raw Fresh Victor mixer bottles. One AI-generated cocktail image per kit.
 const COCKTAIL_KITS = [
   {
     name: 'Lake Travis Ranch Water',
     profile: 'Tequila · Lime · Soda',
-    image: '/images/products/fresh-victor-cocktails/Lake Travis Ranch Water/fresh-victor-mexican-lime-agave.png',
+    image:
+      '/images/products/fresh-victor-cocktails/Lake Travis Ranch Water/Gemini_Generated_Image_8hxllx8hxllx8hxl.png',
   },
   {
     name: 'Keep Austin Spicy Marg',
     profile: 'Jalapeño · Tequila · Lime',
-    image: '/images/products/fresh-victor-cocktails/fresh-victor-cucumber-lime.png',
+    image:
+      '/images/products/fresh-victor-cocktails/Keep Austin Spicy Marg/Gemini_Generated_Image_bm1s1dbm1s1dbm1s.png',
   },
   {
     name: 'Cucumber Crush Margarita',
     profile: 'Tequila · Cucumber · Mint',
-    image: '/images/products/fresh-victor-cocktails/fresh-victor-three-citrus-mint.png',
+    image:
+      '/images/products/fresh-victor-cocktails/Cucumber Crush Margarita/Gemini_Generated_Image_9t92hz9t92hz9t92.png',
   },
   {
     name: 'Lady Bird Margarita',
     profile: 'Tequila · Strawberry · Lime',
-    image: '/images/products/full-send-bar-ingredients/fresh-victor-strawberry-lemon.png',
+    image:
+      '/images/products/fresh-victor-cocktails/Lady Bird Margarita/Gemini_Generated_Image_95mqfa95mqfa95mq.png',
   },
   {
     name: 'Cool Cucumber Splash',
     profile: 'Vodka · Cucumber · Soda',
-    image: '/images/products/fresh-victor-cocktails/fresh-victor-cucumber-lime.png',
+    image:
+      '/images/products/fresh-victor-cocktails/Cool Cucumber Splash/Gemini_Generated_Image_580hpd580hpd580h.png',
   },
   {
     name: 'Barton Springs Mojito',
     profile: 'Rum · Mint · Lime',
-    image: '/images/products/fresh-victor-cocktails/Barton Springs Mojito/fresh-victor-three-citrus-mint.png',
+    image:
+      '/images/products/fresh-victor-cocktails/Barton Springs Mojito/Gemini_Generated_Image_4u61bg4u61bg4u61.png',
   },
 ];
 
@@ -200,14 +208,35 @@ export default function FlyerContent() {
             <br />
             <span style={{ color: GOLD }}>One party engine.</span>
           </h1>
+          <ul className="max-w-2xl space-y-2 mb-5 text-sm md:text-base">
+            <SubheadBullet
+              title="Alcohol delivery"
+              body="TABC-licensed. Ice-cold, on time, to your door."
+            />
+            <SubheadBullet
+              title="Party rentals"
+              body="Tubs, dispensers, glassware, barware — pickup included."
+            />
+            <SubheadBullet
+              title="Full bar setup"
+              body="Pro bartenders, custom menus, end-to-end service."
+            />
+            <SubheadBullet
+              title="Fresh Victor cocktail kits"
+              body="Pre-portioned signature cocktails, ready to pour."
+            />
+            <SubheadBullet
+              title="Concierge planning"
+              body="One contact, every vendor, day-of timeline included."
+            />
+          </ul>
           <p
-            className="max-w-2xl text-base md:text-xl opacity-90 leading-relaxed mb-6"
+            className="max-w-2xl text-sm md:text-base opacity-85 leading-relaxed mb-6"
             style={{ fontFamily: 'var(--font-fraunces), serif', fontStyle: 'italic' }}
           >
-            Alcohol delivery, party rentals, white-glove bar service, Fresh Victor
-            cocktail kits, and concierge event planning. We&apos;ve handled 500+ Austin
-            events — from Rainey-Street bachelorette weekends to 300-guest weddings on
-            the Hill Country. This is the playbook we use to pull them off.
+            500+ Austin events under our belt — from Rainey-Street bachelorette weekends
+            to 300-guest weddings on the Hill Country. This is the playbook we use to
+            pull them off.
           </p>
           <div className="flyer-no-print flex flex-wrap gap-3 mt-6">
             <button
@@ -317,10 +346,10 @@ export default function FlyerContent() {
           </div>
           <div className="relative min-h-[260px] md:min-h-full">
             <Image
-              src="/images/products/fresh-victor-cocktails/fresh-victor-three-citrus-mint.png"
-              alt="Fresh Victor"
+              src="/images/partners/vacation-rental-hero/signature-cocktail-bar-spread-austin.jpg"
+              alt="Signature cocktail bar setup — Austin"
               fill
-              className="object-contain p-6"
+              className="object-cover"
               sizes="(min-width:768px) 50vw, 100vw"
             />
           </div>
@@ -516,12 +545,17 @@ function KitCard({ kit }: { kit: { name: string; profile: string; image: string 
       className="rounded-xl bg-white overflow-hidden transition-shadow hover:shadow-lg"
       style={{ border: '1px solid #E5E7EB' }}
     >
-      <div className="relative bg-white flex items-center justify-center" style={{ aspectRatio: '4/3' }}>
+      {/* Full-bleed cocktail photo — these are actual drink visuals, not
+          bottle product shots, so object-cover frames them nicely. */}
+      <div
+        className="relative bg-gray-100"
+        style={{ aspectRatio: '4/3' }}
+      >
         <Image
-          src={kit.image}
+          src={encodeURI(kit.image)}
           alt={kit.name}
           fill
-          className="object-contain p-5"
+          className="object-cover"
           sizes="(min-width:768px) 25vw, 50vw"
         />
       </div>
@@ -535,6 +569,23 @@ function KitCard({ kit }: { kit: { name: string; profile: string; image: string 
         <div className="text-[11px] text-gray-500 mt-0.5 tracking-wide">{kit.profile}</div>
       </div>
     </div>
+  );
+}
+
+function SubheadBullet({ title, body }: { title: string; body: string }) {
+  return (
+    <li className="flex gap-2.5 items-start leading-snug">
+      <span
+        className="mt-1 flex-shrink-0 w-1.5 h-1.5 rounded-full"
+        style={{ background: GOLD }}
+      />
+      <span>
+        <strong className="font-bold" style={{ color: GOLD }}>
+          {title}
+        </strong>{' '}
+        <span className="opacity-90">— {body}</span>
+      </span>
+    </li>
   );
 }
 

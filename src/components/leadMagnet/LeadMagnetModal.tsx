@@ -78,6 +78,7 @@ export default function LeadMagnetModal({ magnet, open, onClose, modeBadge }: Pr
     if (!email || !firstName) return;
     setSubmitting(true);
 
+    // Fire lead-event (creates / promotes the Lead row to SUBMITTED).
     await sendLeadEvent({
       type: 'FORM_SUBMIT',
       widget: 'EMAIL_SIGNUP',
@@ -90,6 +91,28 @@ export default function LeadMagnetModal({ magnet, open, onClose, modeBadge }: Pr
       },
       page: typeof window !== 'undefined' ? window.location.pathname : undefined,
     });
+
+    // Send the actual welcome email via Resend. Failure is non-blocking —
+    // the Lead row is already saved, so we don't gate the success UI on it.
+    try {
+      await fetch('/api/v1/lead-magnet', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        credentials: 'same-origin',
+        keepalive: true,
+        body: JSON.stringify({
+          firstName,
+          email,
+          phone: phone || null,
+          magnetId: magnet.id,
+          magnetTitle: magnet.title,
+          rewardUrl: magnet.rewardUrl,
+          rewardCta: magnet.cta,
+        }),
+      });
+    } catch (err) {
+      console.warn('[lead-magnet] email request failed', err);
+    }
 
     setSubmitted(true);
     setSubmitting(false);
@@ -177,7 +200,8 @@ export default function LeadMagnetModal({ magnet, open, onClose, modeBadge }: Pr
                 You&apos;re in, {firstName}.
               </h3>
               <p className="text-sm text-gray-700">
-                Opening your copy of the playbook in a new tab now…
+                Opening your copy now and sending it to{' '}
+                <strong style={{ color: T.navy }}>{email}</strong>.
               </p>
             </div>
           ) : (
