@@ -72,7 +72,7 @@ export const bachelorConfig: LandingConfig = {
       price: '$499',
       save: 'Save $75',
       serves: 'Boat party for 10–12',
-      blurb: 'Built for sun, dock, and 8 hours on the water. Cold guaranteed.',
+      blurb: 'Built for sun, dock, and 8 hours on the water.',
       items: [
         "2× Tito's Vodka (750ml)",
         'Casamigos Blanco (750ml)',
@@ -107,16 +107,19 @@ export const bachelorConfig: LandingConfig = {
       n: '1',
       title: 'Share the cart',
       body: 'Group ordering — the whole crew adds beer, seltzers, liquor, and cocktail kits to one shared list. No screenshots, no spreadsheets.',
+      shortBody: 'Crew adds to one shared cart.',
     },
     {
       n: '2',
       title: 'Split the bill',
       body: 'Send the pay link to everyone. Each person pays their share — no Venmo chaser, no "who owes what" texts.',
+      shortBody: 'Everyone pays their share.',
     },
     {
       n: '3',
       title: 'We deliver cold',
       body: 'Hotel, Airbnb, boat dock, party bus — we text 15 minutes out and drop it ice-cold, ready to pour.',
+      shortBody: 'Ice-cold to your door.',
     },
   ],
 
@@ -137,21 +140,21 @@ export const bachelorConfig: LandingConfig = {
   reviews: [
     {
       quote:
-        "Showed up exactly when they said, ice cold, and our group didn't have to babysit a Costco run on day one. Worth every penny.",
-      author: 'Marcus T.',
-      detail: 'Best Man, Lake Travis bach weekend',
+        "Best service in Austin, hands down. We had a bachelor party for 15 guys and Party On Delivery handled everything. Drinks were ice cold and arrived right on time at our Airbnb on Rainey Street.",
+      author: 'Justin R.',
+      detail: '★★★★★ via Google',
     },
     {
       quote:
-        'Booked the Rainey Crawler the day before. They confirmed in 10 minutes and stocked the Airbnb before the bachelor even landed.',
-      author: 'Sarah K.',
-      detail: 'Maid of Honor, June 2025',
+        "Used these guys for a bachelor party on Lake Travis. They delivered straight to our boat slip at Emerald Point — everything cold, properly packed, and the driver was super friendly. Saved us a ton of time.",
+      author: 'Patrick M.',
+      detail: '★★★★★ via Google',
     },
     {
       quote:
-        "Driver coordinated with our party bus driver via text. Cold seltzers ready when we boarded. We'll use them again next year.",
-      author: 'Derek M.',
-      detail: 'Bach trip organizer, Houston',
+        "These guys saved our weekend. Plans changed last minute, they rolled with it, and the order was perfect. Couldn't recommend more for any group trip in Austin.",
+      author: 'Brandon S.',
+      detail: '★★★★★ via Google',
     },
   ],
 

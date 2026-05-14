@@ -53,6 +53,8 @@ export type Step = {
   n: string;
   title: string;
   body: string;
+  /** Optional compact body used on the mobile-friendly 3-column layout. */
+  shortBody?: string;
 };
 
 export type Venue = {

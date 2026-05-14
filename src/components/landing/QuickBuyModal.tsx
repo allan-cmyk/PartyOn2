@@ -74,7 +74,6 @@ export default function QuickBuyModal({
 }: Props) {
   const T = config.theme;
   const defaultPeople = pkg.defaultPeople ?? 10;
-  const drinksPerPerson = pkg.drinksPerPerson ?? 12;
   const { min: MIN_PEOPLE, max: MAX_PEOPLE } = PEOPLE_RANGE[occasion];
 
   const [people, setPeople] = useState(defaultPeople);
@@ -222,11 +221,6 @@ export default function QuickBuyModal({
   const freeLines = lines.filter((l, i) => l.freebie && l.qty > 0 && !removed.has(i));
   const subtotal = paidLines.reduce((s, l) => s + l.qty * l.unitPrice, 0);
   const freebiesValue = freeLines.reduce((s, l) => s + l.qty * l.unitPrice, 0);
-  const totalDrinks = useMemo(
-    () => lines.reduce((s, l) => s + l.qty * (l.drinksPerUnit || 0), 0),
-    [lines],
-  );
-  const targetDrinks = people * drinksPerPerson;
   const perPerson = people > 0 ? subtotal / people : 0;
 
   const canSubmit =
@@ -379,23 +373,51 @@ export default function QuickBuyModal({
             </div>
           ) : (
             <>
-              {/* People slider */}
-          <div className="mb-5 rounded-xl p-4 bg-white border border-gray-200">
-            <div className="flex items-baseline justify-between mb-2">
+              {/* Headcount block — slider + stepper, no drinks summary */}
+          <div className="mb-4 rounded-xl p-4 bg-white border border-gray-200">
+            <div className="flex items-center justify-between mb-2 gap-3">
               <label
                 htmlFor="qb-people"
-                className="font-heading font-bold text-base"
+                className="font-heading font-bold text-base flex-shrink-0"
                 style={{ color: T.navy }}
               >
                 Headcount
               </label>
-              <div className="text-right">
-                <div className="font-heading font-bold text-3xl" style={{ color: T.blue }}>
-                  {people}
+              {/* Big people count with −/+ steppers for fine-tuning */}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() =>
+                    handlePeopleChange(Math.max(ABSOLUTE_MIN, people - 1))
+                  }
+                  className="w-8 h-8 rounded-full text-lg font-bold leading-none transition-colors hover:bg-gray-100"
+                  style={{ color: T.navy, border: '1.5px solid #E5E7EB' }}
+                  aria-label="Decrease headcount"
+                >
+                  −
+                </button>
+                <div className="text-right min-w-[3rem]">
+                  <div
+                    className="font-heading font-bold text-3xl leading-none"
+                    style={{ color: T.blue }}
+                  >
+                    {people}
+                  </div>
+                  <div className="text-[10px] uppercase tracking-widest text-gray-500 -mt-0.5">
+                    people
+                  </div>
                 </div>
-                <div className="text-[10px] uppercase tracking-widest text-gray-500 -mt-1">
-                  people
-                </div>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handlePeopleChange(Math.min(ABSOLUTE_MAX, people + 1))
+                  }
+                  className="w-8 h-8 rounded-full text-lg font-bold leading-none transition-colors hover:bg-gray-100"
+                  style={{ color: T.navy, border: '1.5px solid #E5E7EB' }}
+                  aria-label="Increase headcount"
+                >
+                  +
+                </button>
               </div>
             </div>
             <input
@@ -411,65 +433,6 @@ export default function QuickBuyModal({
             <div className="flex justify-between text-[10px] text-gray-500 mt-1">
               <span>{MIN_PEOPLE}</span>
               <span>{MAX_PEOPLE}</span>
-            </div>
-
-            {/* Direct numeric entry — accepts any value within the absolute
-                bounds, even above the slider max. */}
-            <div className="mt-3 flex items-center gap-2">
-              <label
-                htmlFor="qb-people-other"
-                className="text-[11px] font-bold uppercase tracking-wider text-gray-600 whitespace-nowrap"
-              >
-                Or enter exact #:
-              </label>
-              <input
-                id="qb-people-other"
-                type="number"
-                min={ABSOLUTE_MIN}
-                max={ABSOLUTE_MAX}
-                value={people}
-                onChange={(e) => {
-                  const v = parseInt(e.target.value, 10);
-                  if (Number.isFinite(v)) {
-                    handlePeopleChange(Math.min(ABSOLUTE_MAX, Math.max(ABSOLUTE_MIN, v)));
-                  }
-                }}
-                className="w-24 bg-white rounded-md px-3 py-1.5 text-sm font-semibold border focus:outline-none transition-colors"
-                style={{ borderColor: '#E5E7EB', color: T.navy }}
-                onFocus={(e) => (e.target.style.borderColor = T.blue)}
-                onBlur={(e) => (e.target.style.borderColor = '#E5E7EB')}
-              />
-              {people > MAX_PEOPLE && (
-                <span className="text-[11px] text-gray-500">
-                  (above slider max — quantities still scale)
-                </span>
-              )}
-            </div>
-            <div className="mt-3 grid grid-cols-3 gap-2 text-center text-xs">
-              <div className="rounded-md py-1.5" style={{ background: `${T.primary}22` }}>
-                <div className="font-bold text-base" style={{ color: T.navy }}>
-                  {totalDrinks}
-                </div>
-                <div className="text-[10px] text-gray-600">total drinks</div>
-              </div>
-              <div className="rounded-md py-1.5 bg-gray-100">
-                <div className="font-bold text-base text-gray-700">{targetDrinks}</div>
-                <div className="text-[10px] text-gray-600">target ({drinksPerPerson}/person)</div>
-              </div>
-              <div
-                className="rounded-md py-1.5"
-                style={{
-                  background: totalDrinks >= targetDrinks ? '#10B98119' : '#FBBF2419',
-                  color: totalDrinks >= targetDrinks ? '#047857' : '#92400E',
-                }}
-              >
-                <div className="font-bold text-base">
-                  {totalDrinks >= targetDrinks ? '✓' : '⚠'}
-                </div>
-                <div className="text-[10px]">
-                  {totalDrinks >= targetDrinks ? 'covered' : 'add more'}
-                </div>
-              </div>
             </div>
           </div>
 
@@ -503,7 +466,7 @@ export default function QuickBuyModal({
                   </div>
                   <div className="text-[11px] text-gray-500 mt-0.5 mb-2">
                     {l.freebie ? (
-                      <span style={{ color: '#047857' }}>FREE · bundled supply</span>
+                      <span style={{ color: '#047857' }}>FREE · party bundle</span>
                     ) : (
                       <>
                         ${l.unitPrice.toFixed(2)} each
@@ -712,17 +675,20 @@ export default function QuickBuyModal({
             display: checkoutSecret ? 'none' : undefined,
           }}
         >
+          {/* Back: stacked label-over-arrow on the far left */}
           <button
             type="button"
             onClick={onClose}
-            className="text-xs sm:text-sm font-semibold px-3 rounded-md hover:bg-white/10 transition-colors"
+            className="flex flex-col items-center justify-center px-2 rounded-md hover:bg-white/10 transition-colors flex-shrink-0"
             style={{ color: '#FFFFFF', opacity: 0.85 }}
             aria-label="Back to packages"
           >
-            ← Back
+            <span className="text-[10px] sm:text-xs font-semibold leading-none">Back</span>
+            <span className="text-base leading-none mt-0.5">←</span>
           </button>
 
-          <div className="flex-1 flex items-center justify-center gap-4 min-w-0">
+          {/* Centered totals — Per Person and Total at SAME font size */}
+          <div className="flex-1 flex items-center justify-center gap-3 sm:gap-4 min-w-0">
             <div className="text-center">
               <div
                 className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.18em]"
@@ -732,7 +698,7 @@ export default function QuickBuyModal({
               </div>
               <div
                 className="font-heading font-bold leading-none"
-                style={{ color: T.primary, fontSize: 'clamp(1.75rem, 5.5vw, 2.5rem)' }}
+                style={{ color: T.primary, fontSize: 'clamp(1.25rem, 4vw, 1.6rem)' }}
               >
                 ${perPerson.toFixed(2)}
               </div>
@@ -743,7 +709,7 @@ export default function QuickBuyModal({
               </div>
               <div
                 className="font-heading font-bold leading-none"
-                style={{ color: '#FFFFFF', fontSize: 'clamp(1.1rem, 3.5vw, 1.5rem)' }}
+                style={{ color: '#FFFFFF', fontSize: 'clamp(1.25rem, 4vw, 1.6rem)' }}
               >
                 ${subtotal.toFixed(2)}
               </div>
@@ -754,10 +720,10 @@ export default function QuickBuyModal({
             type="submit"
             form="qb-form"
             disabled={!canSubmit}
-            className="px-4 sm:px-5 py-2.5 text-sm sm:text-base font-bold rounded-md tracking-wide transition-all disabled:opacity-60 disabled:cursor-not-allowed shadow-md whitespace-nowrap"
+            className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold rounded-md transition-all disabled:opacity-60 disabled:cursor-not-allowed shadow-md whitespace-nowrap flex-shrink-0"
             style={{ background: T.primary, color: T.primaryText }}
           >
-            {submitting ? 'Working…' : 'Pay now →'}
+            {submitting ? '…' : 'Pay now →'}
           </button>
         </div>
 

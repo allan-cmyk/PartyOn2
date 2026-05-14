@@ -106,16 +106,19 @@ export const bacheloretteConfig: LandingConfig = {
       n: '1',
       title: 'Share the cart',
       body: 'Group ordering — every girl picks her drinks, mimosa kits, and snacks in one shared list. No screenshots, no spreadsheets.',
+      shortBody: 'Everyone picks her drinks.',
     },
     {
       n: '2',
       title: 'Split the bill',
       body: 'Send the pay link to everyone. Each person pays her share — no Venmo chaser, no "who owes what" before brunch.',
+      shortBody: 'Each girl pays her share.',
     },
     {
       n: '3',
       title: 'We deliver cold',
       body: 'Hotel suite, Airbnb, brunch venue, lake dock — we text 15 minutes out and drop everything chilled and ready to pop.',
+      shortBody: 'Chilled drop, ready to pop.',
     },
   ],
 

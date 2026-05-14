@@ -108,16 +108,19 @@ export const corporateConfig: LandingConfig = {
       n: '1',
       title: 'Tell us the plan',
       body: 'Headcount, venue, vibe, and any restrictions. We respond within 48 hours.',
+      shortBody: 'Headcount + venue + vibe.',
     },
     {
       n: '2',
       title: 'Curated proposal',
       body: 'You get an itemized quote/invoice. Adjust items, approve, and your date is locked.',
+      shortBody: 'Itemized quote, locked.',
     },
     {
       n: '3',
       title: 'White-glove delivery',
       body: "We arrive on time, items cold, and coordinate with your venue so the whole event runs smooth.",
+      shortBody: 'On time. Cold. Coordinated.',
     },
   ],
 

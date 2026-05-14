@@ -761,22 +761,25 @@ function BasicsStep({
     );
   return (
     <div>
-      <h2 className="font-heading text-2xl md:text-3xl font-bold mb-2 leading-tight" style={{ color: theme.navy }}>
+      <h2 className="font-heading text-xl md:text-2xl font-bold mb-1 leading-tight" style={{ color: theme.navy }}>
         {modal.basicsHeadline}
       </h2>
-      <p className="text-sm text-gray-600 mb-5">{modal.basicsBlurb}</p>
+      <p className="text-xs text-gray-600 mb-3">{modal.basicsBlurb}</p>
 
-      <div className="grid sm:grid-cols-2 gap-5">
+      <div className="grid sm:grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: theme.navy }}>
-            {modal.groupSizeLabel}
-          </label>
-          <div className="rounded-lg border bg-white p-4" style={{ borderColor: '#E5E7EB' }}>
-            <div className="flex items-baseline justify-between mb-3">
-              <span className="text-sm text-gray-600">{modal.groupSizeUnit}</span>
-              <span className="font-heading text-3xl font-bold" style={{ color: theme.blue }}>
-                {people}
-              </span>
+          {/* Compact group-size row: label stacked on the left, slider + count on the right */}
+          <div className="rounded-lg border bg-white p-3 flex items-center gap-3" style={{ borderColor: '#E5E7EB' }}>
+            <div className="flex-shrink-0">
+              <div
+                className="text-[10px] font-bold uppercase tracking-wider leading-tight"
+                style={{ color: theme.navy }}
+              >
+                {modal.groupSizeLabel}
+              </div>
+              <div className="text-[10px] text-gray-500 leading-tight">
+                {modal.groupSizeUnit}
+              </div>
             </div>
             <input
               type="range"
@@ -784,14 +787,15 @@ function BasicsStep({
               max={modal.groupSizeUnit === 'attendees' || modal.groupSizeUnit === 'guests' ? 200 : 30}
               value={people}
               onChange={(e) => setPeople(parseInt(e.target.value, 10))}
-              className="w-full"
+              className="flex-1 min-w-0"
               style={{ accentColor: theme.blue }}
             />
-            <div className="flex justify-between text-[10px] text-gray-400 mt-1.5">
-              <span>2</span>
-              <span>{modal.groupSizeUnit === 'attendees' || modal.groupSizeUnit === 'guests' ? 100 : 15}</span>
-              <span>{modal.groupSizeUnit === 'attendees' || modal.groupSizeUnit === 'guests' ? 200 : 30}</span>
-            </div>
+            <span
+              className="font-heading text-2xl font-bold flex-shrink-0 min-w-[2rem] text-right"
+              style={{ color: theme.blue }}
+            >
+              {people}
+            </span>
           </div>
 
           {modal.extraQuestion && (

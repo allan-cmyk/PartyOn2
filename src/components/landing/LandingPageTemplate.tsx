@@ -146,7 +146,7 @@ export default function LandingPageTemplate({ config, catalog, upsellProducts }:
                   href={config.planningCallUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center border-2 border-white text-white font-semibold text-base px-8 py-5 rounded-md transition-transform hover:scale-[1.02] hover:bg-white/15"
+                  className="inline-flex items-center justify-center border-2 border-white text-white font-semibold text-sm sm:text-base px-4 sm:px-6 py-4 sm:py-5 rounded-md transition-transform hover:scale-[1.02] hover:bg-white/15 whitespace-nowrap"
                 >
                   {config.secondaryCtaText ?? 'SCHEDULE A 10-MIN CALL →'}
                 </a>
@@ -157,13 +157,13 @@ export default function LandingPageTemplate({ config, catalog, upsellProducts }:
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-white/90 mb-4">
               <a
                 href={config.phoneTel}
-                className="inline-flex items-center gap-1.5 font-semibold underline hover:text-white"
+                className="inline-flex items-center gap-1.5 font-semibold hover:text-white"
               >
                 📞 Call {config.phoneDisplay}
               </a>
               <a
                 href={`sms:${config.phoneTel.replace('tel:', '')}`}
-                className="inline-flex items-center gap-1.5 font-semibold underline hover:text-white"
+                className="inline-flex items-center gap-1.5 font-semibold hover:text-white"
               >
                 💬 Text us
               </a>
@@ -262,27 +262,35 @@ export default function LandingPageTemplate({ config, catalog, upsellProducts }:
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
-      <section className="py-20" style={{ background: T.cream }}>
+      {/* HOW IT WORKS — 3 columns at every breakpoint (compact on mobile) */}
+      <section className="py-12 md:py-20" style={{ background: T.cream }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-14">
-            <h2 className="font-heading text-4xl md:text-5xl font-bold mb-4" style={{ color: T.navy }}>
+          <div className="text-center mb-8 md:mb-14">
+            <h2
+              className="font-heading text-2xl sm:text-3xl md:text-5xl font-bold leading-tight"
+              style={{ color: T.navy }}
+            >
               {config.stepsHeadline}
             </h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 md:gap-8">
             {config.steps.map((s) => (
               <div key={s.n} className="text-center">
                 <div
-                  className="inline-flex items-center justify-center w-16 h-16 text-white font-heading font-bold text-3xl rounded-full mb-5"
+                  className="inline-flex items-center justify-center w-9 h-9 sm:w-12 sm:h-12 md:w-16 md:h-16 text-white font-heading font-bold text-base sm:text-xl md:text-3xl rounded-full mb-2 md:mb-5"
                   style={{ background: T.blue }}
                 >
                   {s.n}
                 </div>
-                <h3 className="font-heading text-2xl font-bold mb-3" style={{ color: T.navy }}>
+                <h3
+                  className="font-heading text-xs sm:text-base md:text-2xl font-bold mb-1 md:mb-3 leading-tight"
+                  style={{ color: T.navy }}
+                >
                   {s.title}
                 </h3>
-                <p className="text-gray-700 leading-relaxed">{s.body}</p>
+                <p className="text-[11px] sm:text-sm md:text-base text-gray-700 leading-snug md:leading-relaxed">
+                  {s.shortBody || s.body}
+                </p>
               </div>
             ))}
           </div>
@@ -451,19 +459,19 @@ export default function LandingPageTemplate({ config, catalog, upsellProducts }:
                   href={config.planningCallUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center border-2 border-white text-white font-semibold text-lg px-10 py-5 rounded-md transition-transform hover:scale-[1.02] hover:bg-white/15"
+                  className="inline-flex items-center justify-center border-2 border-white text-white font-semibold text-base sm:text-lg px-5 sm:px-8 py-4 sm:py-5 rounded-md transition-transform hover:scale-[1.02] hover:bg-white/15 whitespace-nowrap"
                 >
                   {config.secondaryCtaText ?? 'SCHEDULE A 10-MIN CALL →'}
                 </a>
               )}
             </div>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-white/90 font-semibold">
-              <a href={config.phoneTel} className="underline hover:text-white">
+              <a href={config.phoneTel} className="hover:text-white">
                 📞 Call {config.phoneDisplay}
               </a>
               <a
                 href={`sms:${config.phoneTel.replace('tel:', '')}`}
-                className="underline hover:text-white"
+                className="hover:text-white"
               >
                 💬 Text us
               </a>
@@ -480,24 +488,27 @@ export default function LandingPageTemplate({ config, catalog, upsellProducts }:
         </p>
       </footer>
 
-      {/* Sticky mobile CTA bar */}
-      <div
-        className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200 px-4 py-3 flex gap-3 shadow-2xl"
-      >
-        <a
-          href={config.phoneTel}
-          className="flex-1 inline-flex items-center justify-center border-2 font-bold py-3 rounded-md text-sm"
-          style={{ borderColor: T.navy, color: T.navy }}
-        >
-          Call
-        </a>
+      {/* Sticky mobile CTA bar — outlined "Build My Package" on the left,
+          solid "Checkout now" on the right. When the customer has already
+          opened the builder (active state below) the bar continues to show
+          the same two actions but the right button takes them straight to
+          the Pay-now flow in the modal. */}
+      <div className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200 px-4 py-3 flex gap-2.5 shadow-2xl">
         <button
           type="button"
           onClick={openBuilder}
-          className="flex-[2] inline-flex items-center justify-center font-bold py-3 rounded-md text-sm"
+          className="flex-1 inline-flex items-center justify-center border-2 font-bold py-3 rounded-md text-xs whitespace-nowrap"
+          style={{ borderColor: T.navy, color: T.navy }}
+        >
+          Build my package
+        </button>
+        <button
+          type="button"
+          onClick={openBuilder}
+          className="flex-1 inline-flex items-center justify-center font-bold py-3 rounded-md text-xs whitespace-nowrap"
           style={{ background: T.primary, color: T.primaryText }}
         >
-          {config.modal.ctaPrimaryShort} →
+          Checkout now →
         </button>
       </div>
       <div className="md:hidden h-16" aria-hidden />
@@ -606,29 +617,25 @@ function PackageCard({
         </div>
         <p className="text-gray-600 mb-4 leading-relaxed">{pkg.blurb}</p>
 
-        {/* 5-bullet teaser — top alcohol items + free supplies summary line.
-            Lets the customer see the value at a glance without expanding. */}
+        {/* Summary bullets — category roll-ups, not item names. The detailed
+            list lives in the "See what's inside" dropdown below. */}
         {isLive && pkg.lineItems && pkg.lineItems.length > 0 && (
           <ul className="mb-4 space-y-1.5 text-sm text-gray-700">
-            {alcoholItems
-              .slice(0, freebieItems.length > 0 ? 4 : 5)
-              .map((it, i) => (
-                <li key={`teaser-${i}`} className="flex items-start gap-2">
-                  <span className="mt-0.5 font-bold" style={{ color: T.primary }}>
-                    ✓
-                  </span>
-                  <span>
-                    <strong>{it.qty}×</strong> {it.name}
-                  </span>
-                </li>
-              ))}
+            {summarizeAlcohol(alcoholItems).map((line, i) => (
+              <li key={`sum-${i}`} className="flex items-start gap-2">
+                <span className="mt-0.5 font-bold" style={{ color: T.primary }}>
+                  ✓
+                </span>
+                <span>{line}</span>
+              </li>
+            ))}
             {freebieItems.length > 0 && (
               <li className="flex items-start gap-2">
                 <span className="mt-0.5 font-bold" style={{ color: '#047857' }}>
                   ★
                 </span>
                 <span style={{ color: '#047857' }}>
-                  <strong>Free supplies:</strong>{' '}
+                  <strong>Free party bundle:</strong>{' '}
                   {freebieItems
                     .map((f) => f.name.split(' • ')[0].replace(/^\d+\s*/, ''))
                     .slice(0, 4)
@@ -751,4 +758,80 @@ function PackageCard({
       </div>
     </div>
   );
+}
+
+// ----- summarizeAlcohol: roll line items up into category-level bullets ----
+
+import type { PackageLineItem } from './types';
+
+/**
+ * Reads the package's alcohol line items and returns 3–4 punchy summary
+ * bullets the customer can scan in a second, e.g. "5 beer + seltzer packs
+ * (108 cans)" / "3 premium spirit bottles" / "Wine & champagne for toasts".
+ *
+ * Heuristic-only — uses title patterns rather than productType so it works
+ * for any future recipe additions.
+ */
+function summarizeAlcohol(items: PackageLineItem[]): string[] {
+  const out: string[] = [];
+  type Bucket = { qty: number; cans: number; bottles: number };
+  const buckets: Record<string, Bucket> = {
+    beer: { qty: 0, cans: 0, bottles: 0 },
+    seltzer: { qty: 0, cans: 0, bottles: 0 },
+    spirits: { qty: 0, cans: 0, bottles: 0 },
+    wine: { qty: 0, cans: 0, bottles: 0 },
+    mixer: { qty: 0, cans: 0, bottles: 0 },
+  };
+
+  for (const it of items) {
+    const t = it.name.toLowerCase();
+    const packMatch = it.name.match(/(\d+)\s*pack/i);
+    const cans = packMatch ? parseInt(packMatch[1], 10) * it.qty : 0;
+    if (
+      /\b(beer|ipa|lager|hefe|pilsner|modelo|miller|coors|corona|michelob|lone star)\b/.test(t)
+    ) {
+      buckets.beer.qty += it.qty;
+      buckets.beer.cans += cans;
+    } else if (/\b(seltzer|high noon|white claw|truly|surfside)\b/.test(t)) {
+      buckets.seltzer.qty += it.qty;
+      buckets.seltzer.cans += cans;
+    } else if (
+      /\b(vodka|tequila|whiskey|whisky|bourbon|gin|rum|jameson|tito|espolon|casamigos|jack daniels|bulleit)\b/.test(t)
+    ) {
+      buckets.spirits.qty += it.qty;
+      buckets.spirits.bottles += it.qty;
+    } else if (
+      /\b(wine|champagne|prosecco|rosé|rose|sauv|cab|pinot|veuve|chandon|whispering angel|josh cellars|14 hands|bogle|oyster bay|dark horse)\b/.test(t)
+    ) {
+      buckets.wine.qty += it.qty;
+      buckets.wine.bottles += it.qty;
+    } else {
+      buckets.mixer.qty += it.qty;
+    }
+  }
+
+  if (buckets.beer.qty + buckets.seltzer.qty > 0) {
+    const totalPacks = buckets.beer.qty + buckets.seltzer.qty;
+    const totalCans = buckets.beer.cans + buckets.seltzer.cans;
+    const label = buckets.seltzer.qty > 0 && buckets.beer.qty > 0
+      ? 'beer + seltzer packs'
+      : buckets.seltzer.qty > 0
+        ? 'hard-seltzer packs'
+        : 'beer packs';
+    out.push(
+      totalCans > 0
+        ? `${totalPacks} ${label} (${totalCans} cans)`
+        : `${totalPacks} ${label}`,
+    );
+  }
+  if (buckets.spirits.qty > 0) {
+    out.push(`${buckets.spirits.qty} premium spirit bottle${buckets.spirits.qty !== 1 ? 's' : ''}`);
+  }
+  if (buckets.wine.qty > 0) {
+    out.push(`${buckets.wine.qty} bottle${buckets.wine.qty !== 1 ? 's' : ''} of wine + champagne`);
+  }
+  if (buckets.mixer.qty > 0) {
+    out.push('Mixers, juices, and chasers');
+  }
+  return out.slice(0, 4);
 }

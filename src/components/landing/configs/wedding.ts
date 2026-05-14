@@ -107,16 +107,19 @@ export const weddingConfig: LandingConfig = {
       n: '1',
       title: 'Tell us the weekend',
       body: 'Which events need stocking? Welcome, rehearsal, ceremony, reception, after-party, brunch — give us the timeline and we sequence the rest.',
+      shortBody: 'Share your timeline.',
     },
     {
       n: '2',
       title: 'Sommelier-curated proposal',
       body: 'Itemized quote with wine pairings, signature cocktails, and event-by-event delivery times. Approve and lock the date.',
+      shortBody: 'Curated quote, locked.',
     },
     {
       n: '3',
       title: 'Coordinated delivery',
       body: "Single point of contact for the whole weekend. We sync with your planner, coordinator, and venue. Cold and on time, every event.",
+      shortBody: 'On time, every event.',
     },
   ],
 
