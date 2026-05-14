@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import PlaybookClient from '@/app/landing-page-playbook/PlaybookClient';
 import UpsellTrackerView from '@/components/admin/UpsellTrackerView';
 import LeadsView from '@/components/admin/LeadsView';
+import EventsView from '@/components/admin/EventsView';
 import EnrichmentDocsView from '@/components/admin/EnrichmentDocsView';
 import BriansStuffTabs from './BriansStuffTabs';
 
@@ -30,9 +31,11 @@ export default async function Page({ searchParams }: { searchParams: SP }) {
       ? 'upsell'
       : params.tab === 'leads'
         ? 'leads'
-        : params.tab === 'docs'
-          ? 'docs'
-          : 'playbook';
+        : params.tab === 'events'
+          ? 'events'
+          : params.tab === 'docs'
+            ? 'docs'
+            : 'playbook';
 
   return (
     <BriansStuffTabs
@@ -40,6 +43,7 @@ export default async function Page({ searchParams }: { searchParams: SP }) {
       playbook={<PlaybookClient />}
       tracker={<UpsellTrackerView />}
       leads={<LeadsView />}
+      events={<EventsView />}
       docs={<EnrichmentDocsView />}
     />
   );
