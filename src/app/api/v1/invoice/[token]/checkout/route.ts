@@ -24,13 +24,15 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
     const { token } = await params;
 
-    // Parse optional discountCode from request body
+    // Parse optional fields from request body
     let discountCode: string | undefined;
+    let embedded = false;
     try {
       const body = await request.json();
       discountCode = body.discountCode;
+      embedded = body.embedded === true;
     } catch {
-      // No body or invalid JSON is fine -- no customer discount
+      // No body or invalid JSON is fine -- no customer discount, redirect mode
     }
 
     // Get draft order
@@ -125,8 +127,6 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       mode: 'payment',
       payment_method_types: ['card', 'link'],
       line_items: lineItems,
-      success_url: successUrl,
-      cancel_url: cancelUrl,
       customer_email: draftOrder.customerEmail,
       metadata: {
         draftOrderId: draftOrder.id,
@@ -142,6 +142,16 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       },
       billing_address_collection: 'required',
     };
+
+    // Embedded vs redirect mode. Embedded mode is used by the landing-page
+    // modals so the customer never leaves the popup.
+    if (embedded) {
+      sessionParams.ui_mode = 'embedded';
+      sessionParams.return_url = `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
+    } else {
+      sessionParams.success_url = successUrl;
+      sessionParams.cancel_url = cancelUrl;
+    }
 
     // Determine which discount to apply:
     // 1. Admin baked-in discount on the draft order
@@ -194,8 +204,10 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     return NextResponse.json({
       success: true,
-      checkoutUrl: session.url,
+      checkoutUrl: session.url, // null in embedded mode
       sessionId: session.id,
+      // Embedded checkout needs the client_secret to mount <EmbeddedCheckout>
+      clientSecret: embedded ? session.client_secret : undefined,
     });
   } catch (error) {
     console.error('[Invoice Checkout] Error:', error);

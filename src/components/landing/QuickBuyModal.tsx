@@ -21,6 +21,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { LandingConfig, Package } from './types';
 import type { UpsellProducts, UpsellProduct } from '@/lib/landing/getUpsellProducts';
 import UpsellOverlay from './UpsellOverlay';
+import EmbeddedCheckoutPanel from './EmbeddedCheckoutPanel';
 import {
   getDeliveryWindows,
   isSunday,
@@ -95,6 +96,8 @@ export default function QuickBuyModal({
   const sundaySelected = isSunday(deliveryDate);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // When set, swap the form view for the embedded Stripe Checkout panel.
+  const [checkoutSecret, setCheckoutSecret] = useState<string | null>(null);
 
   // Upsell overlay — pops once when customer scrolls to the contact form.
   const [upsellOpen, setUpsellOpen] = useState(false);
@@ -279,11 +282,23 @@ export default function QuickBuyModal({
       if (!res.ok || !json.success) {
         throw new Error(json.error || 'Could not create your order. Try again.');
       }
-      if (json.invoiceUrl) {
-        window.location.href = json.invoiceUrl;
-        return;
+      if (!json.token) {
+        throw new Error('No invoice token returned.');
       }
-      throw new Error('No invoice URL returned.');
+      // Open embedded Stripe Checkout in-place. The customer never leaves
+      // the popup. On payment success Stripe redirects them to
+      // /checkout/success.
+      const co = await fetch(`/api/v1/invoice/${json.token}/checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ embedded: true }),
+      });
+      const cj = await co.json();
+      if (!co.ok || !cj.success || !cj.clientSecret) {
+        throw new Error(cj.error || 'Could not start secure checkout.');
+      }
+      setCheckoutSecret(cj.clientSecret);
+      return;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong.');
       setSubmitting(false);
@@ -330,9 +345,41 @@ export default function QuickBuyModal({
           </button>
         </div>
 
-        {/* Scrollable body */}
+        {/* Scrollable body — swaps to embedded Stripe checkout once a session is created */}
         <div className="flex-1 overflow-y-auto px-5 sm:px-7 py-5">
-          {/* People slider */}
+          {checkoutSecret ? (
+            <div>
+              <div className="mb-3 text-center">
+                <p
+                  className="text-[10px] font-bold tracking-[0.22em] mb-1"
+                  style={{ color: T.primary }}
+                >
+                  SECURE CHECKOUT · STRIPE
+                </p>
+                <h3
+                  className="font-heading text-xl font-bold leading-tight"
+                  style={{ color: T.navy }}
+                >
+                  Almost there — confirm your payment.
+                </h3>
+              </div>
+              <EmbeddedCheckoutPanel
+                clientSecret={checkoutSecret}
+                onError={(err) => setError(err.message)}
+              />
+              <div className="mt-3 text-center">
+                <button
+                  type="button"
+                  onClick={() => setCheckoutSecret(null)}
+                  className="text-xs underline text-gray-500 hover:text-gray-700"
+                >
+                  ← Edit order details
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* People slider */}
           <div className="mb-5 rounded-xl p-4 bg-white border border-gray-200">
             <div className="flex items-baseline justify-between mb-2">
               <label
@@ -644,15 +691,18 @@ export default function QuickBuyModal({
               Next step: secure Stripe checkout. No payment is captured until you confirm.
             </p>
           </form>
+            </>
+          )}
         </div>
 
-        {/* STICKY BOTTOM BAR — per-person total dominates; back/forward smaller */}
+        {/* STICKY BOTTOM BAR — hidden during embedded checkout (Stripe has its own Pay button) */}
         <div
           className="flex-shrink-0 flex items-stretch gap-3 px-4 sm:px-5 py-3"
           style={{
             background: T.navy,
             color: '#FFFFFF',
             borderTop: `3px solid ${T.primary}`,
+            display: checkoutSecret ? 'none' : undefined,
           }}
         >
           <button

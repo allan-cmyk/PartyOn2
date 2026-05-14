@@ -15,6 +15,7 @@ import type {
 } from './types';
 import type { UpsellProducts, UpsellProduct } from '@/lib/landing/getUpsellProducts';
 import UpsellOverlay from './UpsellOverlay';
+import EmbeddedCheckoutPanel from './EmbeddedCheckoutPanel';
 import {
   getDeliveryWindows,
   isSunday,
@@ -67,6 +68,9 @@ export default function PackageBuilderModal({
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  // Embedded Stripe Checkout session client_secret. When set, modal body
+  // swaps to the inline checkout panel — no navigation.
+  const [checkoutSecret, setCheckoutSecret] = useState<string | null>(null);
 
   // Upsell overlay — fires once when the user reaches the review step.
   const [upsellOpen, setUpsellOpen] = useState(false);
@@ -277,9 +281,18 @@ export default function PackageBuilderModal({
         throw new Error(json.error || 'Failed to send quote');
       }
 
-      if (submitMode === 'checkout' && json.invoiceUrl) {
-        // Take them straight to the editable invoice + Stripe checkout.
-        window.location.href = json.invoiceUrl;
+      if (submitMode === 'checkout' && json.token) {
+        // Open embedded Stripe Checkout inside the modal — no navigation.
+        const co = await fetch(`/api/v1/invoice/${json.token}/checkout`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ embedded: true }),
+        });
+        const cj = await co.json();
+        if (!co.ok || !cj.success || !cj.clientSecret) {
+          throw new Error(cj.error || 'Could not start secure checkout.');
+        }
+        setCheckoutSecret(cj.clientSecret);
         return;
       }
 
@@ -385,6 +398,36 @@ export default function PackageBuilderModal({
               onReset={reset}
               onClose={onClose}
             />
+          ) : checkoutSecret ? (
+            <div>
+              <div className="mb-3 text-center">
+                <p
+                  className="text-[10px] font-bold tracking-[0.22em] mb-1"
+                  style={{ color: T.primary }}
+                >
+                  SECURE CHECKOUT · STRIPE
+                </p>
+                <h3
+                  className="font-heading text-xl font-bold leading-tight"
+                  style={{ color: T.navy }}
+                >
+                  Almost there — confirm your payment.
+                </h3>
+              </div>
+              <EmbeddedCheckoutPanel
+                clientSecret={checkoutSecret}
+                onError={(err) => setSubmitError(err.message)}
+              />
+              <div className="mt-3 text-center">
+                <button
+                  type="button"
+                  onClick={() => setCheckoutSecret(null)}
+                  className="text-xs underline text-gray-500 hover:text-gray-700"
+                >
+                  ← Edit order details
+                </button>
+              </div>
+            </div>
           ) : (
             <>
               {stepIndex === 0 && (
@@ -465,9 +508,10 @@ export default function PackageBuilderModal({
           )}
         </div>
 
-        {!submitted && (
+        {!submitted && !checkoutSecret && (
           // Single-row sticky footer: [Back] [Running total + Per person]
           // [Next/Submit]. Totals dominate the eye, buttons smaller.
+          // Hidden during embedded checkout — Stripe has its own Pay button.
           <div
             className="flex-shrink-0 flex items-center justify-between gap-3 px-4 sm:px-6 py-2.5"
             style={{
