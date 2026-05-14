@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Suspense } from 'react';
 import { Barlow_Condensed, Inter, Fraunces, Manrope } from 'next/font/google';
 import dynamic from 'next/dynamic';
 import "./globals.css";
@@ -22,13 +21,9 @@ const GroupOrderProvider = dynamic(
 );
 
 // Visitor pixel + returning-visitor bubble scaffold (Brian's Stuff → Leads).
-const VisitorPixel = dynamic(() => import('@/components/leads/VisitorPixel'), {
-  ssr: false,
-});
-const ReturningVisitorBubble = dynamic(
-  () => import('@/components/leads/ReturningVisitorBubble'),
-  { ssr: false },
-);
+// Imported as a regular client component — App Router doesn't allow
+// `dynamic({ ssr: false })` inside Server Components (this layout is one).
+import PixelMount from '@/components/leads/PixelMount';
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ['latin'],
@@ -136,10 +131,7 @@ export default function RootLayout({
           <CartProvider>
             <GroupOrderProvider>
               <AgeVerification />
-              <Suspense fallback={null}>
-                <VisitorPixel />
-              </Suspense>
-              <ReturningVisitorBubble />
+              <PixelMount />
               <ClientLayoutWrapper>
                 {children}
               </ClientLayoutWrapper>
