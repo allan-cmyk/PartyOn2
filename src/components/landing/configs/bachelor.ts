@@ -101,25 +101,39 @@ export const bachelorConfig: LandingConfig = {
   ],
   customLine: "Need something custom? Call us — we'll build it.",
 
-  stepsHeadline: 'Three steps. No group-chat chaos.',
+  stepsHeadline: 'One link. Everyone orders. We deliver it all together.',
   steps: [
     {
       n: '1',
-      title: 'Share the cart',
-      body: 'Group ordering — the whole crew adds beer, seltzers, liquor, and cocktail kits to one shared list. No screenshots, no spreadsheets.',
+      title: "Open your group's dashboard",
+      teaser: 'One link, the whole group inside.',
+      body:
+        "The trip organizer gets one shared link. Drop it in the group chat and that's it — no apps to download, no logins, no chasing guys for Venmo. Everyone who opens the link sees the same dashboard, the same cart, the same delivery details, in real time.",
       shortBody: 'Crew adds to one shared cart.',
     },
     {
       n: '2',
-      title: 'Split the bill',
-      body: 'Send the pay link to everyone. Each person pays their share — no Venmo chaser, no "who owes what" texts.',
-      shortBody: 'Everyone pays their share.',
+      title: "Everyone adds what they're drinking",
+      teaser: 'Each guy stocks his own pile.',
+      body:
+        'The Jameson guy adds his Jameson. The Truly drinkers grab their seltzers. Want cocktails at the Airbnb without anyone playing bartender? Toss in a pre-batched cocktail kit. Everyone sees who added what — no duplicates, no forgotten favorites.',
+      shortBody: 'Everyone picks their drinks.',
     },
     {
       n: '3',
-      title: 'We deliver cold',
-      body: 'Hotel, Airbnb, boat dock, party bus — we text 15 minutes out and drop it ice-cold, ready to pour.',
-      shortBody: 'Ice-cold to your door.',
+      title: 'Split it across the trip',
+      teaser: 'Multiple stops, one group order.',
+      body:
+        'Boat day Saturday on Lake Travis? Airbnb on Rainey Friday night? Set up a separate order for each stop, each with its own address, time, and deadline. Same group, same dashboard, different drop-offs — we keep them all coordinated so the cooler hits the dock the moment you do.',
+      shortBody: 'Multiple stops, one order.',
+    },
+    {
+      n: '4',
+      title: 'Each guy pays his share — we deliver it all together',
+      teaser: 'Split the bill, not the trip.',
+      body:
+        "When everyone's done adding, each guy checks out for just what he added — separate cards, separate receipts, no IOUs. We bundle the whole group's order behind the scenes and bring it cold to every stop, on time. One trip planned. Eight guys happy. Zero math.",
+      shortBody: 'Each guy pays. We deliver cold.',
     },
   ],
 

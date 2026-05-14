@@ -21,11 +21,22 @@ type Props = {
 export default function LandingPageTemplate({ config, catalog, upsellProducts }: Props) {
   const [builderOpen, setBuilderOpen] = useState(false);
   const [quickBuyPkg, setQuickBuyPkg] = useState<Package | null>(null);
+  // Accordion state for the HOW IT WORKS section — first step open by default.
+  const [openSteps, setOpenSteps] = useState<Set<number>>(new Set([0]));
   const T = config.theme;
 
   const openBuilder = (e?: React.MouseEvent) => {
     e?.preventDefault();
     setBuilderOpen(true);
+  };
+
+  const toggleStep = (i: number) => {
+    setOpenSteps((prev) => {
+      const next = new Set(prev);
+      if (next.has(i)) next.delete(i);
+      else next.add(i);
+      return next;
+    });
   };
 
   // Derive occasion from slug for Quick-Buy submission.
@@ -262,10 +273,10 @@ export default function LandingPageTemplate({ config, catalog, upsellProducts }:
         </div>
       </section>
 
-      {/* HOW IT WORKS — 3 columns at every breakpoint (compact on mobile) */}
+      {/* HOW IT WORKS — chevron accordion, one row per step */}
       <section className="py-12 md:py-20" style={{ background: T.cream }}>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-8 md:mb-14">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-8 md:mb-12">
             <h2
               className="font-heading text-2xl sm:text-3xl md:text-5xl font-bold leading-tight"
               style={{ color: T.navy }}
@@ -273,26 +284,92 @@ export default function LandingPageTemplate({ config, catalog, upsellProducts }:
               {config.stepsHeadline}
             </h2>
           </div>
-          <div className="grid grid-cols-3 gap-2 sm:gap-4 md:gap-8">
-            {config.steps.map((s) => (
-              <div key={s.n} className="text-center">
+          <div className="space-y-3 md:space-y-4">
+            {config.steps.map((s, i) => {
+              const isOpen = openSteps.has(i);
+              return (
                 <div
-                  className="inline-flex items-center justify-center w-9 h-9 sm:w-12 sm:h-12 md:w-16 md:h-16 text-white font-heading font-bold text-base sm:text-xl md:text-3xl rounded-full mb-2 md:mb-5"
-                  style={{ background: T.blue }}
+                  key={s.n}
+                  className="rounded-2xl bg-white border overflow-hidden transition-shadow"
+                  style={{
+                    borderColor: isOpen ? T.blue : '#E5E7EB',
+                    boxShadow: isOpen
+                      ? '0 10px 30px -12px rgba(11, 116, 184, 0.25)'
+                      : '0 1px 2px rgba(0,0,0,0.04)',
+                  }}
                 >
-                  {s.n}
+                  <button
+                    type="button"
+                    onClick={() => toggleStep(i)}
+                    aria-expanded={isOpen}
+                    aria-controls={`step-panel-${i}`}
+                    className="w-full flex items-center gap-4 sm:gap-5 p-4 sm:p-5 md:p-6 text-left"
+                  >
+                    <div
+                      className="flex-shrink-0 inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-white font-heading font-bold text-lg sm:text-2xl md:text-3xl rounded-full"
+                      style={{ background: T.blue }}
+                    >
+                      {s.n}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3
+                        className="font-heading text-base sm:text-xl md:text-2xl font-bold leading-tight"
+                        style={{ color: T.navy }}
+                      >
+                        {s.title}
+                      </h3>
+                      {s.teaser && (
+                        <p className="text-xs sm:text-sm md:text-base text-gray-600 mt-1 italic leading-snug">
+                          {s.teaser}
+                        </p>
+                      )}
+                    </div>
+                    <svg
+                      className="flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 transition-transform"
+                      style={{
+                        color: T.blue,
+                        transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                      }}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {isOpen && (
+                    <div
+                      id={`step-panel-${i}`}
+                      className="px-4 sm:px-5 md:px-6 pb-5 md:pb-6 pt-1"
+                    >
+                      <div className="pl-0 sm:pl-[3.5rem] md:pl-[4.5rem]">
+                        {s.image ? (
+                          <div className="grid md:grid-cols-[1fr_minmax(0,16rem)] gap-5 items-start">
+                            <p className="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
+                              {s.body}
+                            </p>
+                            <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-gray-100">
+                              <Image
+                                src={s.image}
+                                alt={s.title}
+                                fill
+                                sizes="(min-width: 768px) 16rem, 100vw"
+                                className="object-cover"
+                              />
+                            </div>
+                          </div>
+                        ) : (
+                          <p className="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
+                            {s.body}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <h3
-                  className="font-heading text-xs sm:text-base md:text-2xl font-bold mb-1 md:mb-3 leading-tight"
-                  style={{ color: T.navy }}
-                >
-                  {s.title}
-                </h3>
-                <p className="text-[11px] sm:text-sm md:text-base text-gray-700 leading-snug md:leading-relaxed">
-                  {s.shortBody || s.body}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

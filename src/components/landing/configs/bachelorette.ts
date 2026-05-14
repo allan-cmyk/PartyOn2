@@ -100,25 +100,39 @@ export const bacheloretteConfig: LandingConfig = {
   ],
   customLine: "Want to customize? Call us — we'll build your perfect weekend.",
 
-  stepsHeadline: 'Three steps. No group-chat chaos.',
+  stepsHeadline: 'One link. Everyone orders. We deliver it all together.',
   steps: [
     {
       n: '1',
-      title: 'Share the cart',
-      body: 'Group ordering — every girl picks her drinks, mimosa kits, and snacks in one shared list. No screenshots, no spreadsheets.',
+      title: "Open your group's shared dashboard",
+      teaser: 'One link, the whole bach party inside.',
+      body:
+        'The maid of honor gets one shared link. Drop it in the bach chat — no apps, no logins, no group Venmo, no spreadsheets. Everyone who opens it sees the same dashboard and the same delivery plan, updated live as people add.',
       shortBody: 'Everyone picks her drinks.',
     },
     {
       n: '2',
-      title: 'Split the bill',
-      body: 'Send the pay link to everyone. Each person pays her share — no Venmo chaser, no "who owes what" before brunch.',
-      shortBody: 'Each girl pays her share.',
+      title: 'Everyone picks what she loves',
+      teaser: 'No one gets stuck with the wrong wine.',
+      body:
+        'She wants the rosé. You want the espresso martini kit. The bride wants her tequila. Add pre-batched cocktail kits to keep the suite ready for every photo, and mocktail kits for the morning-after crew. Everyone sees who added what — no duplicates, no forgotten favorites.',
+      shortBody: 'Rosé, kits, mocktails — all in one list.',
     },
     {
       n: '3',
-      title: 'We deliver cold',
-      body: 'Hotel suite, Airbnb, brunch venue, lake dock — we text 15 minutes out and drop everything chilled and ready to pop.',
-      shortBody: 'Chilled drop, ready to pop.',
+      title: 'Send to every stop on the itinerary',
+      teaser: 'Pontoon, suite, brunch — one dashboard.',
+      body:
+        'Pontoon Saturday, hotel suite Friday, brunch Sunday? Build a separate order for each spot, each with its own address, time, and deadline. Same group, same dashboard, three perfectly timed drop-offs.',
+      shortBody: 'Multiple stops, one order.',
+    },
+    {
+      n: '4',
+      title: 'Each girl pays her own way — we deliver it together',
+      teaser: 'Split the bill, not the weekend.',
+      body:
+        "When everyone's done adding, each person checks out for just what she added — separate cards, separate receipts, no awkward Venmo requests. We bundle the whole group's order behind the scenes and bring it cold to every stop, right on time.",
+      shortBody: 'Each girl pays her share.',
     },
   ],
 
