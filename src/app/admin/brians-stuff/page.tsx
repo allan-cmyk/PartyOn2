@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import PlaybookClient from '@/app/landing-page-playbook/PlaybookClient';
 import UpsellTrackerView from '@/components/admin/UpsellTrackerView';
+import LeadsView from '@/components/admin/LeadsView';
+import EnrichmentDocsView from '@/components/admin/EnrichmentDocsView';
 import BriansStuffTabs from './BriansStuffTabs';
 
 export const metadata: Metadata = {
@@ -8,8 +10,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-// Renders the upsell tracker server-side so the DB query happens on the
-// initial page load, then hands both panels to the tabbed client shell.
+// Force-dynamic so the lead + upsell tracker queries always hit the DB.
 export const dynamic = 'force-dynamic';
 
 type SP = Promise<{ tab?: string }>;
@@ -19,16 +20,27 @@ type SP = Promise<{ tab?: string }>;
  * Tabs:
  *   1. Landing Page Playbook
  *   2. Upsell A/B Tracker
+ *   3. Leads — captured form input + visitor sessions
+ *   4. Enrichment Docs — IP-based vendor research
  */
 export default async function Page({ searchParams }: { searchParams: SP }) {
   const params = await searchParams;
-  const initialTab = params.tab === 'upsell' ? 'upsell' : 'playbook';
+  const initialTab =
+    params.tab === 'upsell'
+      ? 'upsell'
+      : params.tab === 'leads'
+        ? 'leads'
+        : params.tab === 'docs'
+          ? 'docs'
+          : 'playbook';
 
   return (
     <BriansStuffTabs
       initialTab={initialTab}
       playbook={<PlaybookClient />}
       tracker={<UpsellTrackerView />}
+      leads={<LeadsView />}
+      docs={<EnrichmentDocsView />}
     />
   );
 }

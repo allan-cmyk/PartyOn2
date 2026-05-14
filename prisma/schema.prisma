@@ -2586,3 +2586,180 @@ model CartShareLink {
   @@index([expiresAt])
   @@map("cart_share_links")
 }
+
+/// =========================================================================
+/// Lead capture & visitor tracking (Brian's Stuff → Leads tab)
+///
+/// Three loosely-coupled tables that power the lead-tracking system:
+///   - VisitorSession: one row per anonymous browser session (cookie-based)
+///   - Lead: one row per identifiable person (email/phone/name captured)
+///   - LeadEvent: one row per atomic interaction (field blur, page view,
+///     form submit). Stays attached to either a session or a lead.
+///
+/// A session may exist without a lead (visitor browsing but never typed
+/// anything identifiable). A lead is created the first time we capture any
+/// of: email, phone, or name. Subsequent events on the same session get
+/// attached to the lead. If they later identify on another session (same
+/// email re-typed) we link the sessions via Lead.sessionIds[].
+/// =========================================================================
+model VisitorSession {
+  id              String   @id @default(uuid())
+  /// Cookie value stored on the visitor's browser (`pod_vsid`). Used to
+  /// recognize returning visitors.
+  cookieId        String   @unique @map("cookie_id")
+  firstSeenAt     DateTime @default(now()) @map("first_seen_at")
+  lastSeenAt      DateTime @default(now()) @map("last_seen_at")
+  pageViewCount   Int      @default(0) @map("page_view_count")
+  eventCount      Int      @default(0) @map("event_count")
+  /// First landing page slug we saw the visitor on (e.g. "austin-bachelor-party-delivery").
+  landingPage     String?  @map("landing_page")
+  /// First referrer URL.
+  referrer        String?
+  /// First UTM params seen on this session.
+  utmSource       String?  @map("utm_source")
+  utmMedium       String?  @map("utm_medium")
+  utmCampaign     String?  @map("utm_campaign")
+  utmContent      String?  @map("utm_content")
+  utmTerm         String?  @map("utm_term")
+  /// Geo/firmographic enrichment (populated async from IP).
+  ipAddress       String?  @map("ip_address")
+  city            String?
+  region          String?
+  country         String?
+  postalCode      String?  @map("postal_code")
+  /// Inferred company info (Clearbit/RB2B/IPinfo-style).
+  enrichedCompany String?  @map("enriched_company")
+  enrichedIndustry String? @map("enriched_industry")
+  enrichedRole    String?  @map("enriched_role")
+  enrichedSize    String?  @map("enriched_size")
+  /// User-agent + device fingerprint.
+  userAgent       String?  @map("user_agent")
+  deviceType      String?  @map("device_type")
+  /// Free-form bag for extra fingerprint bits we add later.
+  metadata        Json?
+  /// Link to a Lead once they identify (denormalized for quick lookup).
+  leadId          String?  @map("lead_id")
+  lead            Lead?    @relation(fields: [leadId], references: [id])
+
+  events          LeadEvent[]
+
+  @@index([leadId])
+  @@index([firstSeenAt])
+  @@index([lastSeenAt])
+  @@map("visitor_sessions")
+}
+
+enum LeadStatus {
+  /// Anonymous session, no identifiable info yet.
+  ANONYMOUS
+  /// At least one of email/phone/name captured but no submitted order.
+  PARTIAL
+  /// Submitted a full form (quote, build-package, call booking, email signup).
+  SUBMITTED
+  /// Converted into a paid order or scheduled call.
+  CONVERTED
+  /// Marked dead / unsubscribed / bounced.
+  ARCHIVED
+}
+
+enum LeadSourceWidget {
+  QUICK_BUY
+  PACKAGE_BUILDER
+  A_LA_CARTE
+  CALL_BOOKING
+  EMAIL_SIGNUP
+  CONTACT_FORM
+  DRINK_CALCULATOR
+  OTHER
+}
+
+model Lead {
+  id              String          @id @default(uuid())
+  email           String?
+  phone           String?
+  firstName       String?         @map("first_name")
+  lastName        String?         @map("last_name")
+  status          LeadStatus      @default(PARTIAL)
+  /// Page slug or path where the lead was first captured.
+  sourcePage      String?         @map("source_page")
+  /// Which on-site widget captured the lead.
+  sourceWidget    LeadSourceWidget? @map("source_widget")
+  /// Latest known landing page (may differ from sourcePage on multi-visit).
+  lastPage        String?         @map("last_page")
+  /// Aggregate UTM (first-touch).
+  utmSource       String?         @map("utm_source")
+  utmMedium       String?         @map("utm_medium")
+  utmCampaign     String?         @map("utm_campaign")
+  utmContent      String?         @map("utm_content")
+  utmTerm         String?         @map("utm_term")
+  /// Most recent draft cart payload — used to resume "finish your order" flow.
+  resumeCart      Json?           @map("resume_cart")
+  /// Linked DraftOrder when they converted via invoice/checkout.
+  draftOrderId    String?         @map("draft_order_id")
+  /// Linked Order id when they paid.
+  orderId         String?         @map("order_id")
+  /// Free-form bag for extra context (e.g. group size, event date).
+  metadata        Json?
+  /// Internal sales notes.
+  notes           String?         @db.Text
+
+  events          LeadEvent[]
+  sessions        VisitorSession[]
+
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt      @map("updated_at")
+
+  @@index([email])
+  @@index([phone])
+  @@index([status])
+  @@index([createdAt])
+  @@index([draftOrderId])
+  @@map("leads")
+}
+
+enum LeadEventType {
+  /// Page navigation captured by the pixel.
+  PAGE_VIEW
+  /// Form field gained focus.
+  FIELD_FOCUS
+  /// Form field lost focus with a value (the "partial submit" signal).
+  FIELD_BLUR
+  /// Step completed in a multi-step modal (e.g. PackageBuilder step 2).
+  STEP_COMPLETE
+  /// Add-to-cart-style click.
+  CART_ADD
+  /// Full form submission.
+  FORM_SUBMIT
+  /// Checkout redirect / payment-now click.
+  CHECKOUT_START
+  /// Webhook-confirmed payment.
+  CONVERSION
+  /// Catch-all for ad-hoc instrumentation.
+  CUSTOM
+}
+
+model LeadEvent {
+  id          String          @id @default(uuid())
+  leadId      String?         @map("lead_id")
+  lead        Lead?           @relation(fields: [leadId], references: [id])
+  sessionId   String?         @map("session_id")
+  session     VisitorSession? @relation(fields: [sessionId], references: [id])
+  type        LeadEventType
+  /// Page slug / pathname where this event happened.
+  page        String?
+  /// Name of the widget that fired the event (matches Lead.sourceWidget enum).
+  widget      String?
+  /// For FIELD_* events: the field name (e.g. "email", "groupSize").
+  fieldName   String?         @map("field_name")
+  /// For FIELD_* events: the captured value. Truncated to 1000 chars upstream.
+  fieldValue  String?         @map("field_value") @db.Text
+  /// Free-form bag for richer payloads (step index, cart snapshot, etc.).
+  metadata    Json?
+  occurredAt  DateTime        @default(now()) @map("occurred_at")
+
+  @@index([leadId])
+  @@index([sessionId])
+  @@index([type])
+  @@index([occurredAt])
+  @@map("lead_events")
+}

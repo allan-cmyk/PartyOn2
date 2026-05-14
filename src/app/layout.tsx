@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from 'react';
 import { Barlow_Condensed, Inter, Fraunces, Manrope } from 'next/font/google';
 import dynamic from 'next/dynamic';
 import "./globals.css";
@@ -18,6 +19,15 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 const GroupOrderProvider = dynamic(
   () => import('@/contexts/GroupOrderContext').then(mod => mod.GroupOrderProvider),
   { ssr: true }
+);
+
+// Visitor pixel + returning-visitor bubble scaffold (Brian's Stuff → Leads).
+const VisitorPixel = dynamic(() => import('@/components/leads/VisitorPixel'), {
+  ssr: false,
+});
+const ReturningVisitorBubble = dynamic(
+  () => import('@/components/leads/ReturningVisitorBubble'),
+  { ssr: false },
 );
 
 const barlowCondensed = Barlow_Condensed({
@@ -126,6 +136,10 @@ export default function RootLayout({
           <CartProvider>
             <GroupOrderProvider>
               <AgeVerification />
+              <Suspense fallback={null}>
+                <VisitorPixel />
+              </Suspense>
+              <ReturningVisitorBubble />
               <ClientLayoutWrapper>
                 {children}
               </ClientLayoutWrapper>

@@ -4,8 +4,9 @@
 // Accepts a `config` prop (LandingConfig) so styling, copy, and steps
 // can be customized per event type without forking the component.
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
+import { useLeadCapture } from '@/lib/leads/client';
 import type {
   LandingConfig,
   BuilderProduct,
@@ -80,6 +81,55 @@ export default function PackageBuilderModal({
   // ProductIds that were added via the upsell overlay (used to tag the API
   // submission so we can track upsell revenue separately).
   const [upsellAddedIds, setUpsellAddedIds] = useState<Set<string>>(new Set());
+
+  // Lead capture — fires partial-submit beacons on contact-field debounce
+  // + step completions + final submit. Silent on failure.
+  const lead = useLeadCapture({ widget: 'PACKAGE_BUILDER', page: `/${config.slug}` });
+  const lastCaptureRef = useRef<{ name: string; email: string; phone: string }>({
+    name: '',
+    email: '',
+    phone: '',
+  });
+  // Debounced partial-submit: fire ~750ms after the customer stops typing
+  // in any of the three contact fields, so each field's value is recorded
+  // exactly once even if they tab around.
+  useEffect(() => {
+    if (!open) return;
+    const t = setTimeout(() => {
+      const prev = lastCaptureRef.current;
+      const identify = {
+        firstName: contactName || undefined,
+        email: contactEmail || undefined,
+        phone: contactPhone || undefined,
+      };
+      if (contactName && contactName !== prev.name) {
+        lead.onBlurField('name', contactName, identify);
+      }
+      if (contactEmail && contactEmail !== prev.email) {
+        lead.onBlurField('email', contactEmail, identify);
+      }
+      if (contactPhone && contactPhone !== prev.phone) {
+        lead.onBlurField('phone', contactPhone, identify);
+      }
+      lastCaptureRef.current = {
+        name: contactName,
+        email: contactEmail,
+        phone: contactPhone,
+      };
+    }, 750);
+    return () => clearTimeout(t);
+  }, [contactName, contactEmail, contactPhone, open, lead]);
+  // Fire STEP_COMPLETE every time we advance steps so we can see drop-off.
+  useEffect(() => {
+    if (!open) return;
+    lead.onStepComplete(`step_${stepIndex}_view`, {
+      stepKey: STEPS[stepIndex]?.key,
+      people,
+      itemCount: Object.values(selection).reduce((s, n) => s + (n || 0), 0),
+    });
+    // We only care about stepIndex changing; ignore lead/STEPS in deps.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stepIndex, open]);
 
   useEffect(() => {
     if (open && stepIndex === 4 && !upsellShown && upsellProducts) {
@@ -247,6 +297,25 @@ export default function PackageBuilderModal({
       setSubmitError('No items in your cart — pick a few products first.');
       setSubmitting(false);
       return;
+    }
+
+    // Fire lead-capture submit BEFORE the network call so we never lose
+    // a partial -> submitted state transition due to API errors.
+    const leadIdentify = {
+      firstName: contactName,
+      email: contactEmail,
+      phone: contactPhone,
+    };
+    const leadMeta = {
+      occasion,
+      groupSize: people,
+      mode: submitMode,
+      itemCount: items.length,
+    };
+    if (submitMode === 'checkout') {
+      lead.onCheckoutStart(leadIdentify, leadMeta, items);
+    } else {
+      lead.onFormSubmit(leadIdentify, leadMeta, items);
     }
 
     try {

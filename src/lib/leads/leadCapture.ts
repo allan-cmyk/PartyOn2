@@ -1,0 +1,248 @@
+/**
+ * Lead capture service.
+ *
+ * Server-side glue that the public lead-event API + checkout/quote flows
+ * call into to record visitor activity. Three concerns:
+ *
+ *   1. Find-or-create a VisitorSession by cookie id
+ *   2. Find-or-create a Lead from email / phone / name
+ *   3. Append LeadEvent rows for partial submits, page views, conversions
+ *
+ * Intentionally tolerant — never throws on missing fields. Returns the
+ * mutated rows so callers can decide whether to set a fresh cookie.
+ */
+import { prisma } from '@/lib/database/client';
+import type {
+  Lead,
+  LeadEventType,
+  LeadSourceWidget,
+  LeadStatus,
+  VisitorSession,
+} from '@prisma/client';
+
+export type IdentifyInput = {
+  email?: string | null;
+  phone?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+};
+
+export type LeadContext = {
+  sourcePage?: string | null;
+  sourceWidget?: LeadSourceWidget | null;
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
+  utmContent?: string | null;
+  utmTerm?: string | null;
+};
+
+const MAX_FIELD_VALUE_LEN = 1000;
+
+function normEmail(v?: string | null) {
+  if (!v) return null;
+  const trimmed = v.trim().toLowerCase();
+  return trimmed && trimmed.includes('@') ? trimmed : null;
+}
+
+function normPhone(v?: string | null) {
+  if (!v) return null;
+  const digits = v.replace(/[^\d+]/g, '');
+  return digits.length >= 7 ? digits : null;
+}
+
+function nonEmpty(v?: string | null) {
+  if (v == null) return null;
+  const t = String(v).trim();
+  return t.length === 0 ? null : t;
+}
+
+function truncate(v: string, n = MAX_FIELD_VALUE_LEN) {
+  return v.length > n ? v.slice(0, n) : v;
+}
+
+/**
+ * Find or create the visitor session row for this cookie id.
+ * Bumps lastSeenAt + eventCount on every call.
+ */
+export async function getOrCreateSession(opts: {
+  cookieId: string;
+  landingPage?: string | null;
+  referrer?: string | null;
+  ipAddress?: string | null;
+  userAgent?: string | null;
+  utm?: LeadContext;
+}): Promise<VisitorSession> {
+  const existing = await prisma.visitorSession.findUnique({
+    where: { cookieId: opts.cookieId },
+  });
+  if (existing) {
+    return prisma.visitorSession.update({
+      where: { id: existing.id },
+      data: {
+        lastSeenAt: new Date(),
+        eventCount: { increment: 1 },
+      },
+    });
+  }
+  return prisma.visitorSession.create({
+    data: {
+      cookieId: opts.cookieId,
+      landingPage: nonEmpty(opts.landingPage),
+      referrer: nonEmpty(opts.referrer),
+      ipAddress: nonEmpty(opts.ipAddress),
+      userAgent: nonEmpty(opts.userAgent),
+      utmSource: nonEmpty(opts.utm?.utmSource),
+      utmMedium: nonEmpty(opts.utm?.utmMedium),
+      utmCampaign: nonEmpty(opts.utm?.utmCampaign),
+      utmContent: nonEmpty(opts.utm?.utmContent),
+      utmTerm: nonEmpty(opts.utm?.utmTerm),
+      eventCount: 1,
+    },
+  });
+}
+
+/**
+ * Find an existing Lead by email or phone, or null. Used to dedupe before
+ * creating a new lead from a partial submit.
+ */
+export async function findLead(input: IdentifyInput): Promise<Lead | null> {
+  const email = normEmail(input.email);
+  const phone = normPhone(input.phone);
+  if (!email && !phone) return null;
+  return prisma.lead.findFirst({
+    where: {
+      OR: [
+        email ? { email } : undefined,
+        phone ? { phone } : undefined,
+      ].filter(Boolean) as Array<{ email: string } | { phone: string }>,
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+}
+
+/**
+ * Upsert a Lead from the given identification fields + context. Will:
+ *   - look up by email or phone
+ *   - update any newly-provided fields without overwriting existing ones
+ *   - link the session row to the lead
+ *
+ * Returns null if there's no identifying info to anchor a lead on.
+ */
+export async function upsertLead(
+  identify: IdentifyInput,
+  ctx: LeadContext,
+  session?: VisitorSession | null,
+): Promise<Lead | null> {
+  const email = normEmail(identify.email);
+  const phone = normPhone(identify.phone);
+  const firstName = nonEmpty(identify.firstName);
+  const lastName = nonEmpty(identify.lastName);
+  if (!email && !phone && !firstName && !lastName) return null;
+
+  // If we have email or phone, try to find an existing lead first.
+  let lead: Lead | null = null;
+  if (email || phone) {
+    lead = await findLead({ email, phone });
+  }
+
+  const status: LeadStatus = 'PARTIAL';
+
+  if (!lead) {
+    lead = await prisma.lead.create({
+      data: {
+        email,
+        phone,
+        firstName,
+        lastName,
+        status,
+        sourcePage: nonEmpty(ctx.sourcePage),
+        sourceWidget: ctx.sourceWidget ?? null,
+        lastPage: nonEmpty(ctx.sourcePage),
+        utmSource: nonEmpty(ctx.utmSource),
+        utmMedium: nonEmpty(ctx.utmMedium),
+        utmCampaign: nonEmpty(ctx.utmCampaign),
+        utmContent: nonEmpty(ctx.utmContent),
+        utmTerm: nonEmpty(ctx.utmTerm),
+      },
+    });
+  } else {
+    // Only fill in blanks — never blow away existing data.
+    lead = await prisma.lead.update({
+      where: { id: lead.id },
+      data: {
+        email: lead.email ?? email,
+        phone: lead.phone ?? phone,
+        firstName: lead.firstName ?? firstName,
+        lastName: lead.lastName ?? lastName,
+        lastPage: nonEmpty(ctx.sourcePage) ?? lead.lastPage,
+        sourceWidget: lead.sourceWidget ?? ctx.sourceWidget ?? null,
+      },
+    });
+  }
+
+  // Link session ↔ lead.
+  if (session && session.leadId !== lead.id) {
+    await prisma.visitorSession.update({
+      where: { id: session.id },
+      data: { leadId: lead.id },
+    });
+  }
+
+  return lead;
+}
+
+/**
+ * Record an atomic event. Always succeeds with at least a sessionId or
+ * leadId attached; if neither is provided this is a no-op.
+ */
+export async function recordEvent(opts: {
+  type: LeadEventType;
+  sessionId?: string | null;
+  leadId?: string | null;
+  page?: string | null;
+  widget?: string | null;
+  fieldName?: string | null;
+  fieldValue?: string | null;
+  metadata?: Record<string, unknown> | null;
+}) {
+  if (!opts.sessionId && !opts.leadId) return null;
+  return prisma.leadEvent.create({
+    data: {
+      type: opts.type,
+      sessionId: opts.sessionId ?? null,
+      leadId: opts.leadId ?? null,
+      page: nonEmpty(opts.page),
+      widget: nonEmpty(opts.widget),
+      fieldName: nonEmpty(opts.fieldName),
+      fieldValue: opts.fieldValue ? truncate(opts.fieldValue) : null,
+      metadata: (opts.metadata ?? null) as never,
+    },
+  });
+}
+
+/**
+ * Mark a lead as SUBMITTED (full form sent) or CONVERTED (paid).
+ * Stamps resume-cart payload if provided so AI chat can offer "finish your
+ * order" later.
+ */
+export async function markLeadStatus(
+  leadId: string,
+  status: LeadStatus,
+  extras?: {
+    resumeCart?: unknown;
+    draftOrderId?: string | null;
+    orderId?: string | null;
+  },
+) {
+  return prisma.lead.update({
+    where: { id: leadId },
+    data: {
+      status,
+      resumeCart:
+        extras?.resumeCart !== undefined ? (extras.resumeCart as never) : undefined,
+      draftOrderId: extras?.draftOrderId ?? undefined,
+      orderId: extras?.orderId ?? undefined,
+    },
+  });
+}

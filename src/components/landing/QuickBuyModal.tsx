@@ -18,6 +18,7 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useLeadCapture } from '@/lib/leads/client';
 import type { LandingConfig, Package } from './types';
 import type { UpsellProducts, UpsellProduct } from '@/lib/landing/getUpsellProducts';
 import UpsellOverlay from './UpsellOverlay';
@@ -74,6 +75,10 @@ export default function QuickBuyModal({
 }: Props) {
   const T = config.theme;
   const defaultPeople = pkg.defaultPeople ?? 10;
+
+  // Lead capture — fires partial-submit / checkout-start events to the
+  // /api/v1/landing/lead-event endpoint. Silent on failure.
+  const lead = useLeadCapture({ widget: 'QUICK_BUY', page: `/${config.slug}` });
   const { min: MIN_PEOPLE, max: MAX_PEOPLE } = PEOPLE_RANGE[occasion];
 
   const [people, setPeople] = useState(defaultPeople);
@@ -255,6 +260,18 @@ export default function QuickBuyModal({
         setSubmitting(false);
         return;
       }
+      // Fire lead-event before the network call so we capture the submit
+      // intent even if the quote API trips.
+      lead.onCheckoutStart(
+        { email, phone, firstName: name },
+        {
+          package: pkg.name,
+          occasion,
+          groupSize: people,
+          itemCount: items.length,
+        },
+        items,
+      );
       const res = await fetch('/api/v1/landing/quote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -591,6 +608,9 @@ export default function QuickBuyModal({
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                onBlur={(e) =>
+                  lead.onBlurField('name', e.target.value, { firstName: e.target.value })
+                }
                 placeholder="Full name"
                 className="bg-white rounded-md px-3 py-2.5 text-sm border border-gray-200 focus:outline-none focus:border-blue-500"
               />
@@ -599,6 +619,9 @@ export default function QuickBuyModal({
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
+                onBlur={(e) =>
+                  lead.onBlurField('phone', e.target.value, { phone: e.target.value })
+                }
                 placeholder="Phone"
                 className="bg-white rounded-md px-3 py-2.5 text-sm border border-gray-200 focus:outline-none focus:border-blue-500"
               />
@@ -608,6 +631,9 @@ export default function QuickBuyModal({
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onBlur={(e) =>
+                lead.onBlurField('email', e.target.value, { email: e.target.value })
+              }
               placeholder="Email"
               className="w-full bg-white rounded-md px-3 py-2.5 text-sm border border-gray-200 focus:outline-none focus:border-blue-500"
             />
