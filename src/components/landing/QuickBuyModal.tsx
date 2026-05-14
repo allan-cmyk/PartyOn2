@@ -97,6 +97,9 @@ export default function QuickBuyModal({
   const [error, setError] = useState<string | null>(null);
   // When set, swap the form view for the embedded Stripe Checkout panel.
   const [checkoutSecret, setCheckoutSecret] = useState<string | null>(null);
+  // URL we redirect to if Stripe.js can't load in-page (fallback to the
+  // /invoice/<token> page which has its own redirect-mode Stripe checkout).
+  const [invoiceFallbackUrl, setInvoiceFallbackUrl] = useState<string | null>(null);
 
   // Upsell overlay — pops once when customer scrolls to the contact form.
   const [upsellOpen, setUpsellOpen] = useState(false);
@@ -279,20 +282,38 @@ export default function QuickBuyModal({
       if (!json.token) {
         throw new Error('No invoice token returned.');
       }
-      // Open embedded Stripe Checkout in-place. The customer never leaves
-      // the popup. On payment success Stripe redirects them to
-      // /checkout/success.
-      const co = await fetch(`/api/v1/invoice/${json.token}/checkout`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ embedded: true }),
-      });
-      const cj = await co.json();
-      if (!co.ok || !cj.success || !cj.clientSecret) {
-        throw new Error(cj.error || 'Could not start secure checkout.');
+
+      // Try embedded Stripe Checkout first — keeps the customer in the
+      // popup. Only attempt if the publishable key is exposed at build time;
+      // otherwise the iframe would render "Failed to load Stripe.js".
+      const hasPublishableKey = !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+      if (hasPublishableKey) {
+        try {
+          const co = await fetch(`/api/v1/invoice/${json.token}/checkout`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ embedded: true }),
+          });
+          const cj = await co.json();
+          if (co.ok && cj.success && cj.clientSecret) {
+            setInvoiceFallbackUrl(json.invoiceUrl ?? null);
+            setCheckoutSecret(cj.clientSecret);
+            return;
+          }
+        } catch {
+          /* fall through to redirect flow */
+        }
       }
-      setCheckoutSecret(cj.clientSecret);
-      return;
+
+      // Fallback: redirect to the editable invoice page (where the
+      // existing redirect-mode Stripe checkout lives). Customer still
+      // completes their order — just on the dedicated invoice page
+      // instead of inside this modal.
+      if (json.invoiceUrl) {
+        window.location.href = json.invoiceUrl;
+        return;
+      }
+      throw new Error('Could not start checkout.');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong.');
       setSubmitting(false);
@@ -359,6 +380,7 @@ export default function QuickBuyModal({
               </div>
               <EmbeddedCheckoutPanel
                 clientSecret={checkoutSecret}
+                fallbackUrl={invoiceFallbackUrl ?? undefined}
                 onError={(err) => setError(err.message)}
               />
               <div className="mt-3 text-center">

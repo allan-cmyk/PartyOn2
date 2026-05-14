@@ -41,9 +41,21 @@ type Props = {
   clientSecret: string;
   /** Triggered if Stripe fails to mount. */
   onError?: (err: Error) => void;
+  /**
+   * Fallback URL to send the customer to if the embedded Stripe checkout
+   * can't be loaded (publishable key missing, network blocked, ad blocker
+   * killing js.stripe.com). The editable /invoice/<token> page has its
+   * own redirect-mode Stripe checkout — works even when Stripe.js can't
+   * load in-page.
+   */
+  fallbackUrl?: string;
 };
 
-export default function EmbeddedCheckoutPanel({ clientSecret, onError }: Props) {
+export default function EmbeddedCheckoutPanel({
+  clientSecret,
+  onError,
+  fallbackUrl,
+}: Props) {
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -53,7 +65,9 @@ export default function EmbeddedCheckoutPanel({ clientSecret, onError }: Props) 
       .then((s) => {
         if (cancelled) return;
         if (!s) {
-          setError('Stripe could not be loaded.');
+          setError(
+            "Couldn't load secure checkout in-page. Use the button below to finish on our secure invoice page.",
+          );
           onError?.(new Error('stripe-load-failed'));
           return;
         }
@@ -71,11 +85,22 @@ export default function EmbeddedCheckoutPanel({ clientSecret, onError }: Props) 
 
   if (error) {
     return (
-      <div
-        className="rounded-md p-4 text-sm"
-        style={{ background: '#FEE2E2', color: '#991B1B', border: '1px solid #FCA5A5' }}
-      >
-        {error}
+      <div className="space-y-3">
+        <div
+          className="rounded-md p-4 text-sm"
+          style={{ background: '#FEF3C7', color: '#92400E', border: '1px solid #FCD34D' }}
+        >
+          {error}
+        </div>
+        {fallbackUrl && (
+          <a
+            href={fallbackUrl}
+            className="block w-full text-center font-bold py-3.5 rounded-md tracking-wide transition-transform hover:scale-[1.01]"
+            style={{ background: '#0B74B8', color: '#FFFFFF' }}
+          >
+            Continue to secure checkout →
+          </a>
+        )}
       </div>
     );
   }

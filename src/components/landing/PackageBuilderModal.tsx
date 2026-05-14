@@ -71,6 +71,8 @@ export default function PackageBuilderModal({
   // Embedded Stripe Checkout session client_secret. When set, modal body
   // swaps to the inline checkout panel — no navigation.
   const [checkoutSecret, setCheckoutSecret] = useState<string | null>(null);
+  // Used as a hard fallback if Stripe.js can't load client-side.
+  const [invoiceFallbackUrl, setInvoiceFallbackUrl] = useState<string | null>(null);
 
   // Upsell overlay — fires once when the user reaches the review step.
   const [upsellOpen, setUpsellOpen] = useState(false);
@@ -282,18 +284,32 @@ export default function PackageBuilderModal({
       }
 
       if (submitMode === 'checkout' && json.token) {
-        // Open embedded Stripe Checkout inside the modal — no navigation.
-        const co = await fetch(`/api/v1/invoice/${json.token}/checkout`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ embedded: true }),
-        });
-        const cj = await co.json();
-        if (!co.ok || !cj.success || !cj.clientSecret) {
-          throw new Error(cj.error || 'Could not start secure checkout.');
+        // Try embedded checkout first, fall back to the redirect-mode
+        // invoice page if Stripe.js can't be loaded client-side (e.g.
+        // missing NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY in the build).
+        const hasPublishableKey = !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+        if (hasPublishableKey) {
+          try {
+            const co = await fetch(`/api/v1/invoice/${json.token}/checkout`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ embedded: true }),
+            });
+            const cj = await co.json();
+            if (co.ok && cj.success && cj.clientSecret) {
+              setInvoiceFallbackUrl(json.invoiceUrl ?? null);
+              setCheckoutSecret(cj.clientSecret);
+              return;
+            }
+          } catch {
+            /* fall through to redirect flow */
+          }
         }
-        setCheckoutSecret(cj.clientSecret);
-        return;
+        // Fallback — same behavior as before this embed work landed.
+        if (json.invoiceUrl) {
+          window.location.href = json.invoiceUrl;
+          return;
+        }
       }
 
       setSubmitted(true);
@@ -416,6 +432,7 @@ export default function PackageBuilderModal({
               </div>
               <EmbeddedCheckoutPanel
                 clientSecret={checkoutSecret}
+                fallbackUrl={invoiceFallbackUrl ?? undefined}
                 onError={(err) => setSubmitError(err.message)}
               />
               <div className="mt-3 text-center">
