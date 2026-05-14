@@ -185,7 +185,10 @@ function UpsellGrid({
               >
                 {p.image ? (
                   <Image
-                    src={encodeURI(p.image)}
+                    // Image URLs in the DB are already URL-encoded
+                    // (e.g. "Lady%20Bird%20Margarita"); re-encoding would
+                    // double-encode to "%2520" and break Next/Image.
+                    src={p.image}
                     alt={p.name}
                     fill
                     sizes="(min-width: 768px) 20vw, 45vw"

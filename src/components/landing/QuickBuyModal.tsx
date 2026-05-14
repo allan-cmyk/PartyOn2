@@ -535,7 +535,15 @@ export default function QuickBuyModal({
           </div>
 
           {/* Contact + delivery form */}
-          <form id="qb-form" onSubmit={handleSubmit} className="space-y-2.5">
+          <form
+            id="qb-form"
+            onSubmit={handleSubmit}
+            // Suppress the native HTML5 validation popover so it doesn't
+            // float over the upsell overlay or other parts of the modal.
+            // JS-side canSubmit + handleSubmit guards still enforce the rules.
+            noValidate
+            className="space-y-2.5"
+          >
             <div ref={contactRef} className="text-[10px] font-bold tracking-widest text-gray-500">
               CONTACT
             </div>

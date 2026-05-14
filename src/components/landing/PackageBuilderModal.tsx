@@ -30,7 +30,13 @@ type Props = {
   upsellProducts?: UpsellProducts;
 };
 
-const encodeImg = (src?: string) => (src ? encodeURI(src) : undefined);
+// Smart encode: if the DB already stored a URL-encoded path (e.g. "%20"
+// for spaces), don't re-encode — that double-encodes ("%2520") and Next/Image
+// returns 400. If it's a raw URL with literal spaces, encode it once.
+const encodeImg = (src?: string): string | undefined => {
+  if (!src) return undefined;
+  return /%[0-9A-Fa-f]{2}/.test(src) ? src : encodeURI(src);
+};
 
 export default function PackageBuilderModal({
   open,
@@ -199,6 +205,14 @@ export default function PackageBuilderModal({
     if (submitting) return;
     setSubmitError(null);
     setSubmitting(true);
+
+    // JS-side required-field validation (replaces native HTML5 popups,
+    // which we suppress with noValidate on the form).
+    if (!contactName || !contactEmail || !contactPhone) {
+      setSubmitError('Please add your name, email, and phone so we can confirm your order.');
+      setSubmitting(false);
+      return;
+    }
 
     // Pay-now requires a delivery address (Stripe checkout will demand it).
     if (submitMode === 'checkout' && (!deliveryAddress || !deliveryZip)) {
@@ -1151,7 +1165,15 @@ function ReviewStep({
         </details>
       )}
 
-      <form id="quote-form" onSubmit={onSubmit} className="space-y-2.5">
+      <form
+        id="quote-form"
+        onSubmit={onSubmit}
+        // Suppress native validation popovers — they collide with the
+        // upsell overlay. handleSubmit() in the parent validates
+        // required fields in JS and shows submitError instead.
+        noValidate
+        className="space-y-2.5"
+      >
         <div className="grid sm:grid-cols-2 gap-2.5">
           <FormField label="Your name" required theme={theme}>
             <input
