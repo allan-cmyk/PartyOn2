@@ -1325,6 +1325,9 @@ function ReviewStep({
         // upsell overlay. handleSubmit() in the parent validates
         // required fields in JS and shows submitError instead.
         noValidate
+        // Already calls useLeadCapture() — tell global watcher to skip.
+        data-lead-capture="manual"
+        data-lead-widget="PACKAGE_BUILDER"
         className="space-y-2.5"
       >
         <div className="grid sm:grid-cols-2 gap-2.5">

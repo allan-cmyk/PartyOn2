@@ -12,7 +12,7 @@
  * Built so every magnet in LEAD_MAGNETS shares this UI; per-magnet copy
  * comes from the config.
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { sendLeadEvent } from '@/lib/leads/client';
 import type { LeadMagnet } from '@/lib/leadMagnet/config';
@@ -31,6 +31,29 @@ export default function LeadMagnetModal({ magnet, open, onClose, modeBadge }: Pr
   const [phone, setPhone] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const lastBlurredRef = useRef<Record<string, string>>({});
+
+  // Fire a partial-submit lead-event whenever a contact field blurs with a
+  // value. Lets a lead show up in /admin/brians-stuff?tab=leads even if
+  // the user closes the modal without submitting.
+  const onFieldBlur = (field: 'firstName' | 'email' | 'phone', value: string) => {
+    const v = value.trim();
+    if (!v) return;
+    if (lastBlurredRef.current[field] === v) return;
+    lastBlurredRef.current[field] = v;
+    void sendLeadEvent({
+      type: 'FIELD_BLUR',
+      widget: 'EMAIL_SIGNUP',
+      fieldName: field,
+      fieldValue: v,
+      identify: { [field]: v },
+      metadata: {
+        leadMagnetId: magnet.id,
+        flow: 'lead-magnet-partial',
+      },
+      page: typeof window !== 'undefined' ? window.location.pathname : undefined,
+    });
+  };
 
   useEffect(() => {
     if (!open) {
@@ -174,11 +197,20 @@ export default function LeadMagnetModal({ magnet, open, onClose, modeBadge }: Pr
                 </h3>
               </div>
 
-              <form onSubmit={handleSubmit} noValidate className="space-y-2.5">
+              <form
+                onSubmit={handleSubmit}
+                noValidate
+                className="space-y-2.5"
+                // Tell the global form watcher this form self-instruments —
+                // prevents double-capture of the same field.
+                data-lead-capture="manual"
+                data-lead-widget="EMAIL_SIGNUP"
+              >
                 <Input
                   label="First name"
                   value={firstName}
                   onChange={setFirstName}
+                  onBlur={(v) => onFieldBlur('firstName', v)}
                   required
                   navy={T.navy}
                 />
@@ -187,6 +219,7 @@ export default function LeadMagnetModal({ magnet, open, onClose, modeBadge }: Pr
                   type="email"
                   value={email}
                   onChange={setEmail}
+                  onBlur={(v) => onFieldBlur('email', v)}
                   required
                   navy={T.navy}
                 />
@@ -196,6 +229,7 @@ export default function LeadMagnetModal({ magnet, open, onClose, modeBadge }: Pr
                     type="tel"
                     value={phone}
                     onChange={setPhone}
+                    onBlur={(v) => onFieldBlur('phone', v)}
                     navy={T.navy}
                   />
                 )}
@@ -226,6 +260,7 @@ function Input({
   label,
   value,
   onChange,
+  onBlur,
   required,
   type = 'text',
   navy,
@@ -233,6 +268,7 @@ function Input({
   label: string;
   value: string;
   onChange: (s: string) => void;
+  onBlur?: (s: string) => void;
   required?: boolean;
   type?: string;
   navy: string;
@@ -251,6 +287,7 @@ function Input({
         value={value}
         required={required}
         onChange={(e) => onChange(e.target.value)}
+        onBlur={(e) => onBlur?.(e.target.value)}
         className="w-full rounded-md px-3 py-2.5 text-sm border border-gray-200 focus:outline-none focus:border-blue-500"
         style={{ color: navy }}
       />

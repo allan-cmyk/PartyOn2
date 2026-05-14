@@ -257,6 +257,8 @@ export default function EventInvitePage({ event, catalog }: Props) {
             <form
               onSubmit={handleRsvp}
               noValidate
+              data-lead-capture="manual"
+              data-lead-widget="CONTACT_FORM"
               className="bg-white rounded-xl p-5 md:p-6 shadow-xl space-y-3"
               style={{ color: theme.navy }}
             >

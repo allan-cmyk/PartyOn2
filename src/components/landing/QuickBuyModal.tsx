@@ -594,6 +594,11 @@ export default function QuickBuyModal({
             // float over the upsell overlay or other parts of the modal.
             // JS-side canSubmit + handleSubmit guards still enforce the rules.
             noValidate
+            // This modal already calls useLeadCapture() for each field, so
+            // tell the global FormCaptureWatcher to skip — prevents double-
+            // capture of identical fields.
+            data-lead-capture="manual"
+            data-lead-widget="QUICK_BUY"
             className="space-y-2.5"
           >
             <div ref={contactRef} className="text-[10px] font-bold tracking-widest text-gray-500">

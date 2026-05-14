@@ -14,6 +14,7 @@
 import { Suspense } from 'react';
 import VisitorPixel from './VisitorPixel';
 import ReturningVisitorBubble from './ReturningVisitorBubble';
+import FormCaptureWatcher from './FormCaptureWatcher';
 import LeadMagnetController from '@/components/leadMagnet/LeadMagnetController';
 
 export default function PixelMount() {
@@ -25,6 +26,12 @@ export default function PixelMount() {
         <VisitorPixel />
       </Suspense>
       <ReturningVisitorBubble />
+      {/* Global form watcher — catches partial submissions from any form
+          on the site (newsletter, contact, partner intake, etc.) so they
+          land in /admin/brians-stuff?tab=leads automatically. */}
+      <Suspense fallback={null}>
+        <FormCaptureWatcher />
+      </Suspense>
       {/* Lead-magnet trigger controller — watches the current path and
           fires the matching magnet's triggers (time/scroll/exit-intent). */}
       <LeadMagnetController />
