@@ -3,6 +3,7 @@ import PlaybookClient from '@/app/landing-page-playbook/PlaybookClient';
 import UpsellTrackerView from '@/components/admin/UpsellTrackerView';
 import LeadsView from '@/components/admin/LeadsView';
 import EventsView from '@/components/admin/EventsView';
+import LeadMagnetView from '@/components/admin/LeadMagnetView';
 import EnrichmentDocsView from '@/components/admin/EnrichmentDocsView';
 import BriansStuffTabs from './BriansStuffTabs';
 
@@ -33,9 +34,11 @@ export default async function Page({ searchParams }: { searchParams: SP }) {
         ? 'leads'
         : params.tab === 'events'
           ? 'events'
-          : params.tab === 'docs'
-            ? 'docs'
-            : 'playbook';
+          : params.tab === 'magnets'
+            ? 'magnets'
+            : params.tab === 'docs'
+              ? 'docs'
+              : 'playbook';
 
   return (
     <BriansStuffTabs
@@ -44,6 +47,7 @@ export default async function Page({ searchParams }: { searchParams: SP }) {
       tracker={<UpsellTrackerView />}
       leads={<LeadsView />}
       events={<EventsView />}
+      magnets={<LeadMagnetView />}
       docs={<EnrichmentDocsView />}
     />
   );

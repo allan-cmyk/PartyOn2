@@ -18,13 +18,20 @@
 import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 
-type TabKey = 'playbook' | 'upsell' | 'leads' | 'events' | 'docs';
+type TabKey =
+  | 'playbook'
+  | 'upsell'
+  | 'leads'
+  | 'events'
+  | 'magnets'
+  | 'docs';
 
 export default function BriansStuffTabs({
   playbook,
   tracker,
   leads,
   events,
+  magnets,
   docs,
   initialTab = 'playbook',
 }: {
@@ -32,6 +39,7 @@ export default function BriansStuffTabs({
   tracker: ReactNode;
   leads: ReactNode;
   events: ReactNode;
+  magnets: ReactNode;
   docs: ReactNode;
   initialTab?: TabKey;
 }) {
@@ -60,6 +68,9 @@ export default function BriansStuffTabs({
           <TabButton active={tab === 'events'} onClick={() => setTab('events')}>
             🎉 Event Invites
           </TabButton>
+          <TabButton active={tab === 'magnets'} onClick={() => setTab('magnets')}>
+            🎁 Lead Magnets
+          </TabButton>
           <TabButton active={tab === 'docs'} onClick={() => setTab('docs')}>
             📚 Enrichment Docs
           </TabButton>
@@ -77,6 +88,9 @@ export default function BriansStuffTabs({
       </div>
       <div hidden={tab !== 'events'} className="px-6 md:px-10 py-8">
         {events}
+      </div>
+      <div hidden={tab !== 'magnets'} className="px-6 md:px-10 py-8">
+        {magnets}
       </div>
       <div hidden={tab !== 'docs'} className="px-6 md:px-10 py-8">
         {docs}

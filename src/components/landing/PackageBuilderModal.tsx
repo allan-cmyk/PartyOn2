@@ -131,20 +131,32 @@ export default function PackageBuilderModal({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stepIndex, open]);
 
+  // Trigger upsell as soon as the user scrolls the review step toward the
+  // contact/payment form. We attach an IntersectionObserver to the contact-
+  // section sentinel further down (see contactSentinelRef). Once it's seen,
+  // pop the upsell overlay immediately. We INTENTIONALLY don't read or
+  // write the previous sessionStorage 'upsell-shown' key — Brian wants this
+  // to fire every time a customer goes through the flow, not just once.
+  const contactSentinelRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    if (open && stepIndex === 4 && !upsellShown && upsellProducts) {
-      // Don't re-trigger if the customer already dismissed an upsell in
-      // this browser session.
-      if (typeof window !== 'undefined' && sessionStorage.getItem('upsell-shown') === '1') {
-        setUpsellShown(true);
-        return;
-      }
-      setUpsellOpen(true);
-      setUpsellShown(true);
-      try {
-        sessionStorage.setItem('upsell-shown', '1');
-      } catch {}
-    }
+    if (!open || stepIndex !== 4 || upsellShown || !upsellProducts) return;
+    const el = contactSentinelRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry?.isIntersecting) {
+          setUpsellOpen(true);
+          setUpsellShown(true);
+          io.disconnect();
+        }
+      },
+      // Fire slightly BEFORE the sentinel hits the viewport so it pops as
+      // the user is starting to scroll toward contact info.
+      { root: null, rootMargin: '0px 0px -25% 0px', threshold: 0.01 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
   }, [open, stepIndex, upsellShown, upsellProducts]);
 
   useEffect(() => {
@@ -564,6 +576,7 @@ export default function PackageBuilderModal({
               )}
               {stepIndex === 4 && (
                 <ReviewStep
+                  contactSentinelRef={contactSentinelRef}
                   name={contactName}
                   email={contactEmail}
                   phone={contactPhone}
@@ -1178,6 +1191,7 @@ function ProductCard({
 }
 
 function ReviewStep({
+  contactSentinelRef,
   name,
   email,
   phone,
@@ -1203,6 +1217,7 @@ function ReviewStep({
   modal,
   theme,
 }: {
+  contactSentinelRef?: React.RefObject<HTMLDivElement | null>;
   name: string;
   email: string;
   phone: string;
@@ -1298,6 +1313,10 @@ function ReviewStep({
           </ul>
         </details>
       )}
+
+      {/* Sentinel that the parent's IntersectionObserver watches — when
+          this scrolls into view (or near it), the upsell overlay pops. */}
+      <div ref={contactSentinelRef} aria-hidden className="h-px -my-2" />
 
       <form
         id="quote-form"

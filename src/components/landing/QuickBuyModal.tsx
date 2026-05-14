@@ -111,33 +111,29 @@ export default function QuickBuyModal({
   const [upsellShown, setUpsellShown] = useState(false);
   const contactRef = useRef<HTMLDivElement | null>(null);
 
-  // Watch the contact section. When >=15% visible, fire the upsell once.
-  // Also suppress if the customer already saw the upsell earlier in this
-  // browser session (via sessionStorage) so re-opening the modal after
-  // dismissing doesn't keep popping it up.
+  // Watch the contact section. Fire upsell as soon as the user starts
+  // scrolling toward it (sentinel ratio just barely intersects). We
+  // intentionally do NOT consult sessionStorage anymore — Brian wants the
+  // upsell to fire every time someone heads into the contact/payment
+  // section, not just once per browser. `upsellShown` still scopes it to
+  // once per modal open so it doesn't re-pop after the user closes it.
   useEffect(() => {
     if (!open || !upsellProducts || upsellShown) return;
-    if (typeof window !== 'undefined' && sessionStorage.getItem('upsell-shown') === '1') {
-      setUpsellShown(true);
-      return;
-    }
     if (!contactRef.current) return;
     const el = contactRef.current;
     const io = new IntersectionObserver(
       (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting && e.intersectionRatio > 0.15) {
-            setUpsellOpen(true);
-            setUpsellShown(true);
-            try {
-              sessionStorage.setItem('upsell-shown', '1');
-            } catch {}
-            io.disconnect();
-            return;
-          }
+        const entry = entries[0];
+        if (entry?.isIntersecting) {
+          setUpsellOpen(true);
+          setUpsellShown(true);
+          io.disconnect();
         }
       },
-      { threshold: [0.15, 0.5] },
+      // rootMargin pulls the trigger zone up by 25% of the modal body so
+      // the overlay appears the moment the customer starts scrolling
+      // toward contact info, not after they've already started typing.
+      { rootMargin: '0px 0px -25% 0px', threshold: 0.01 },
     );
     io.observe(el);
     return () => io.disconnect();

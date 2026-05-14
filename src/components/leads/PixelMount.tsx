@@ -14,6 +14,7 @@
 import { Suspense } from 'react';
 import VisitorPixel from './VisitorPixel';
 import ReturningVisitorBubble from './ReturningVisitorBubble';
+import LeadMagnetController from '@/components/leadMagnet/LeadMagnetController';
 
 export default function PixelMount() {
   return (
@@ -24,6 +25,9 @@ export default function PixelMount() {
         <VisitorPixel />
       </Suspense>
       <ReturningVisitorBubble />
+      {/* Lead-magnet trigger controller — watches the current path and
+          fires the matching magnet's triggers (time/scroll/exit-intent). */}
+      <LeadMagnetController />
     </>
   );
 }
