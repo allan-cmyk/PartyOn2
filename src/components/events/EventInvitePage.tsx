@@ -21,14 +21,19 @@ import Image from 'next/image';
 import { useLeadCapture } from '@/lib/leads/client';
 import type { EventInvite } from '@/lib/events/types';
 import { EVENT_THEMES } from '@/lib/events/theme';
-import OrderDrinksModal, { type DrinkOption } from './OrderDrinksModal';
+import type { DrinkOption } from './OrderDrinksModal';
+import EventDrinksMenuModal from './EventDrinksMenuModal';
+import type { CuratedCatalog } from '@/lib/landing/getCuratedCatalog';
 
 type Props = {
   event: EventInvite;
+  /** Kept for backward compat — used by the legacy compact modal. */
   drinkOptions: DrinkOption[];
+  /** Full a-la-carte catalog (same as bachelor landing page). */
+  catalog: CuratedCatalog;
 };
 
-export default function EventInvitePage({ event, drinkOptions }: Props) {
+export default function EventInvitePage({ event, catalog }: Props) {
   const theme = EVENT_THEMES[event.theme];
 
   // RSVP state
@@ -444,16 +449,18 @@ export default function EventInvitePage({ event, drinkOptions }: Props) {
         </div>
       </section>
 
-      {/* DRINK ORDER MODAL */}
-      <OrderDrinksModal
+      {/* DRINK ORDER MODAL — full a-la-carte step flow (mirrors bachelor
+          landing page Package Builder, minus contact + delivery forms since
+          we already have those from the RSVP + event). */}
+      <EventDrinksMenuModal
         open={showDrinks}
         onClose={() => setShowDrinks(false)}
         event={event}
         theme={theme}
+        catalog={catalog}
         guestName={`${firstName} ${lastName}`.trim()}
         guestEmail={email}
         guestPhone={phone}
-        options={drinkOptions}
       />
     </div>
   );

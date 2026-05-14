@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getDemoEvent } from '@/lib/events/demoEvents';
 import { getEventDrinkOptions } from '@/lib/events/getEventDrinkOptions';
+import { getCuratedCatalog } from '@/lib/landing/getCuratedCatalog';
 import EventInvitePage from '@/components/events/EventInvitePage';
 
 /**
@@ -38,6 +39,11 @@ export default async function Page({ params }: { params: Params }) {
   const { slug } = await params;
   const event = getDemoEvent(slug);
   if (!event) notFound();
-  const drinkOptions = await getEventDrinkOptions(event);
-  return <EventInvitePage event={event} drinkOptions={drinkOptions} />;
+  // Pull both the lightweight curated handles (for legacy quick menu) AND
+  // the full a-la-carte catalog (same data the bachelor landing page uses).
+  const [drinkOptions, catalog] = await Promise.all([
+    getEventDrinkOptions(event),
+    getCuratedCatalog(),
+  ]);
+  return <EventInvitePage event={event} drinkOptions={drinkOptions} catalog={catalog} />;
 }

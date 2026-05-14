@@ -19,7 +19,7 @@ export const DEMO_EVENTS: Record<string, EventInvite> = {
     endsAt: '2027-03-16T01:00:00-05:00',
     timezone: 'America/Chicago',
     venue: 'The Hill House',
-    address: '2200 Lake Travis Way, Austin, TX 78732',
+    address: '2002 East 7th Street, Austin, TX 78702',
     cityState: 'Austin, TX',
     tagline: 'One night. Lake views. Open bar (kind of).',
     description:
