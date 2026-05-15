@@ -53,15 +53,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Fetch dynamic data
   const products = await getProducts();
 
-  // Static pages (excluding /account pages blocked by robots.txt)
+  // Static pages (excluding /account pages blocked by robots.txt).
+  // Routes that intentionally canonicalize to another URL are not
+  // listed here — including a URL in the sitemap while its canonical
+  // points elsewhere is flagged as "Incorrect pages found in
+  // sitemap.xml" by site-audit tools and confuses Google:
+  //   - /plan-event       canonicalizes to /order
+  //   - /austin-partners  canonicalizes to /partners
+  //   - /blogs/news       has no page; canonical resolves to /
   const staticPages = [
     '',
     '/about',
     '/contact',
     '/order',
-    '/plan-event',
     '/blog',
-    '/blogs/news',
     '/weddings',
     '/boat-parties',
     '/bach-parties',
@@ -70,8 +75,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/terms',
     '/privacy',
     '/faqs',
-    '/partners',
-    '/austin-partners'
+    '/partners'
   ].map(route => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date('2026-03-27'),

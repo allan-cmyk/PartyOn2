@@ -991,27 +991,50 @@ interface BlogPostPageProps {
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params
-  const post = blogPosts.find(p => p.slug === slug)
+  const canonicalUrl = `${seoConfig.siteUrl}/blog/${slug}`
+  const jsonPost = blogPosts.find(p => p.slug === slug)
 
-  if (!post) {
-    return { title: 'Post Not Found' }
+  if (jsonPost) {
+    return {
+      title: jsonPost.seo?.title || jsonPost.title,
+      description: jsonPost.seo?.description || jsonPost.excerpt,
+      keywords: jsonPost.seo?.keywords || jsonPost.tags,
+      alternates: { canonical: canonicalUrl },
+      openGraph: {
+        title: jsonPost.seo?.title || jsonPost.title,
+        description: jsonPost.seo?.description || jsonPost.excerpt,
+        url: canonicalUrl,
+        type: 'article',
+        publishedTime: jsonPost.publishedAt || jsonPost.date,
+        authors: [jsonPost.author],
+        images: jsonPost.image?.url ? [{ url: jsonPost.image.url, alt: jsonPost.image.alt }] : [],
+      },
+    }
+  }
+
+  const mdxPost = getMDXPost(slug)
+  if (mdxPost) {
+    return {
+      title: mdxPost.title,
+      description: mdxPost.excerpt,
+      keywords: [mdxPost.category, ...mdxPost.keywords].filter(Boolean),
+      alternates: { canonical: canonicalUrl },
+      openGraph: {
+        title: mdxPost.title,
+        description: mdxPost.excerpt,
+        url: canonicalUrl,
+        type: 'article',
+        publishedTime: mdxPost.date,
+        authors: [mdxPost.author],
+        images: mdxPost.image ? [{ url: mdxPost.image, alt: mdxPost.title }] : [],
+      },
+    }
   }
 
   return {
-    title: post.seo?.title || post.title,
-    description: post.seo?.description || post.excerpt,
-    keywords: post.seo?.keywords || post.tags,
-    alternates: {
-      canonical: `${seoConfig.siteUrl}/blog/${slug}`,
-    },
-    openGraph: {
-      title: post.seo?.title || post.title,
-      description: post.seo?.description || post.excerpt,
-      type: 'article',
-      publishedTime: post.publishedAt || post.date,
-      authors: [post.author],
-      images: post.image?.url ? [{ url: post.image.url, alt: post.image.alt }] : [],
-    },
+    title: 'Post Not Found',
+    alternates: { canonical: canonicalUrl },
+    robots: { index: false, follow: false },
   }
 }
 
