@@ -273,9 +273,9 @@ export default function LandingPageTemplate({ config, catalog, upsellProducts }:
         </div>
       </section>
 
-      {/* HOW IT WORKS — chevron accordion, one row per step */}
+      {/* HOW IT WORKS — chevron accordion: stacked on mobile, 2-col grid on desktop */}
       <section className="py-12 md:py-20" style={{ background: T.cream }}>
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-8 md:mb-12">
             <h2
               className="font-heading text-2xl sm:text-3xl md:text-5xl font-bold leading-tight"
@@ -284,7 +284,7 @@ export default function LandingPageTemplate({ config, catalog, upsellProducts }:
               {config.stepsHeadline}
             </h2>
           </div>
-          <div className="space-y-3 md:space-y-4">
+          <div className="space-y-3 md:space-y-0 md:grid md:grid-cols-2 md:gap-5 md:items-start">
             {config.steps.map((s, i) => {
               const isOpen = openSteps.has(i);
               return (
