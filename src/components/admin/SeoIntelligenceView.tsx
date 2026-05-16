@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import RunScrapePanel from './RunScrapePanel';
 
 /**
  * Brian's Stuff → SEO Intelligence Module tab.
@@ -18,6 +19,10 @@ const BRIEF_URL = `${REPO_URL}/AGENT_BRIEF.md`;
 export default function SeoIntelligenceView() {
   return (
     <div className="max-w-4xl space-y-6">
+      {/* One-click scrape panel — sits above everything else so Allan
+          can run the capture without scrolling. */}
+      <RunScrapePanel />
+
       {/* Header */}
       <div className="rounded-md border border-emerald-300 bg-emerald-50 p-5">
         <h2 className="text-xl font-bold text-emerald-900 tracking-wide">
