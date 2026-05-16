@@ -207,7 +207,330 @@ export default function SeoIntelligenceView() {
           batch lands in <code>seo_projects</code> within 30 minutes.
         </div>
       </Section>
+
+      {/* ===================================================================
+          CHROME-EXTENSION SCRAPE BLUEPRINT — what the Claude in Chrome
+          extension will actually do on each SEMrush surface, and which
+          surfaces have known extraction friction.
+          =================================================================== */}
+      <Section title="Chrome-extension scrape blueprint — partyondelivery.com">
+        <p className="text-sm text-gray-700 mb-3">
+          The agent uses the Claude in Chrome extension to drive a real
+          logged-in SEMrush session for <code>partyondelivery.com</code>. Each
+          surface below is a separate scrape run with its own URL pattern,
+          DOM selectors, output JSON shape, and friction notes. The agent
+          starts with the user already signed in (no scripted login) — same
+          rule the existing <code>seo-semrush-snapshot</code> skill follows
+          when 2FA is in play.
+        </p>
+        <div className="space-y-3">
+          <ScrapeSurface
+            num="1"
+            tier="ready"
+            name="Position Tracking"
+            url="https://www.semrush.com/projects/{projectId}/tracking/positions/"
+            captures={[
+              'Per-keyword rank + WoW delta',
+              'Search volume + KD%',
+              'Landing URL + tracked-since date',
+              'Top competitors share-of-voice',
+            ]}
+            method="Standard data-grid → JSON row dump"
+            friction="Low — rows render server-side, easy to read DOM."
+          />
+          <ScrapeSurface
+            num="2"
+            tier="ready"
+            name="Keyword Gap Analysis"
+            url="https://www.semrush.com/analytics/keywordgap/?q=partyondelivery.com&q1={competitor1}&q2={competitor2}&q3={competitor3}"
+            captures={[
+              'Untapped + missing + weak keywords',
+              'Competitor overlap counts',
+              'Volume + KD% + intent per row',
+            ]}
+            method="Paginated grid — agent clicks through pages, dedupes rows."
+            friction="Medium — large keyword counts paginate. Agent caps at 500 rows per gap report by default."
+          />
+          <ScrapeSurface
+            num="3"
+            tier="ready"
+            name="Site Audit"
+            url="https://www.semrush.com/projects/{projectId}/siteaudit/campaign/"
+            captures={[
+              'Site Health score + total issue count',
+              'Errors / Warnings / Notices breakdown',
+              'Per-issue page samples',
+              'Crawled / blocked / healthy pages',
+            ]}
+            method="Top-line cards scraped directly; issue drill-downs need a second click per row."
+            friction="Medium — only the latest crawl is exposed; agent triggers a fresh re-crawl if last run is >7 days old."
+          />
+          <ScrapeSurface
+            num="4"
+            tier="ready"
+            name="Organic Research"
+            url="https://www.semrush.com/analytics/organic/overview/?q=partyondelivery.com"
+            captures={[
+              'Total organic traffic estimate',
+              'Total ranking keywords',
+              'Top organic pages + per-page traffic',
+              'Position-bucket distribution (top 3 / 4–10 / 11–20 / 21–50)',
+            ]}
+            method="Overview cards + Top Pages table"
+            friction="Low."
+          />
+          <ScrapeSurface
+            num="5"
+            tier="medium"
+            name="Backlink Analytics"
+            url="https://www.semrush.com/analytics/backlinks/overview/?q=partyondelivery.com"
+            captures={[
+              'New + lost referring domains',
+              'Anchor-text distribution',
+              'Top referring pages',
+              'Toxicity score',
+            ]}
+            method="Overview cards + Referring Domains tab"
+            friction="Medium — Backlink Audit (toxicity assignments) requires a project to be configured first. Agent falls back to overview if no project exists."
+          />
+          <ScrapeSurface
+            num="6"
+            tier="medium"
+            name="AI Toolkit · Brand Visibility (4 LLMs)"
+            url="https://www.semrush.com/ai-toolkit/projects/{projectId}/brand-visibility/"
+            captures={[
+              'Per-LLM presence rate: ChatGPT · Gemini · Perplexity · Claude / Copilot',
+              'Share-of-voice vs. competitors by LLM',
+              'Sentiment per LLM (positive / neutral / negative %)',
+              'Cited domains POD shows up alongside',
+            ]}
+            method="Per-LLM tabbed view. Agent iterates each tab, screenshots the chart, scrapes the data legend."
+            friction="HIGH — Most metrics render in canvas/SVG charts, not DOM tables. Agent grabs the chart-legend numbers + screenshots; full per-prompt breakdown lives in Prompt Tracking (next)."
+          />
+          <ScrapeSurface
+            num="7"
+            tier="medium"
+            name="AI Toolkit · Prompt Tracking"
+            url="https://www.semrush.com/ai-toolkit/projects/{projectId}/prompts/"
+            captures={[
+              'Each tracked prompt + how often POD is cited',
+              'Per-LLM response snapshot (the actual LLM text)',
+              'Citation rank (where POD appears in the AI answer)',
+              'Competitors mentioned in same response',
+            ]}
+            method="Prompt list table → click prompt → modal with per-LLM tabs (ChatGPT / Gemini / Perplexity / Copilot or Claude)."
+            friction="HIGH — Per-LLM response text loads async + is text-heavy. Agent reads the modal DOM per LLM tab and writes one JSON entry per (prompt × LLM) cell."
+          />
+          <ScrapeSurface
+            num="8"
+            tier="conditional"
+            name="Keyword Magic Tool"
+            url="https://www.semrush.com/analytics/keywordmagic/?q={seed_keyword}"
+            captures={[
+              'Related-keyword expansion',
+              'Volume / KD% / Intent / SERP features',
+              'Topic-cluster grouping',
+            ]}
+            method="Only runs when there are queued keywords in `data/seo/semrush/_queue/keyword-magic.txt`. One run per queued keyword."
+            friction="Low — but expensive in time, so it's queue-driven instead of every run."
+          />
+        </div>
+
+        <div className="mt-4 rounded-md bg-red-50 border border-red-200 p-3 text-xs text-red-900 leading-relaxed">
+          <strong>Heads up — friction items you should know about:</strong>
+          <ul className="list-disc pl-5 mt-1 space-y-1">
+            <li>
+              <strong>AI Toolkit tier gate:</strong> Brand Visibility +
+              Prompt Tracking sit inside SEMrush&apos;s AI Toolkit, which is a
+              separate paid add-on (not all Business plans include it). If
+              the POD account doesn&apos;t have it, those two surfaces 404 and
+              the agent skips them with a <code>FAILED.md</code>.
+            </li>
+            <li>
+              <strong>Canvas charts:</strong> AI Visibility share-of-voice
+              over time renders in <code>&lt;canvas&gt;</code> — the agent
+              can&apos;t read it as data, only screenshot it. Legend numbers
+              (current presence rate per LLM) are in the DOM and DO extract.
+            </li>
+            <li>
+              <strong>4th LLM identity:</strong> SEMrush labels the slots as
+              ChatGPT / Gemini / Perplexity / Copilot. Claude is{' '}
+              <strong>not currently a tracked LLM</strong> in SEMrush&apos;s AI
+              Toolkit (as of 2026 H1). If they ship a Claude tab, the agent
+              auto-picks it up because it iterates whatever tabs exist.
+            </li>
+            <li>
+              <strong>Project ID:</strong> Position Tracking, Site Audit, and
+              AI Toolkit URLs all need a SEMrush <code>projectId</code> for
+              partyondelivery.com. Agent will discover it from{' '}
+              <code>/projects/</code> on the first run and stash it in{' '}
+              <code>tenants/party-on-delivery.json</code>.
+            </li>
+            <li>
+              <strong>Rate limits:</strong> SEMrush throttles after ~30 fast
+              navigations. Agent sleeps 3–5s between surfaces and longer
+              between paginated table reads.
+            </li>
+            <li>
+              <strong>2FA / fresh login:</strong> Agent NEVER drives the
+              login form. It assumes you&apos;re already signed in. If the
+              session expired, it writes <code>FAILED.md</code> and asks you
+              to re-auth.
+            </li>
+          </ul>
+        </div>
+      </Section>
+
+      <Section title="Output paths">
+        <pre className="bg-gray-900 text-gray-100 text-xs rounded-md p-4 overflow-x-auto">
+{`data/seo/semrush/<YYYY-MM-DD>/
+├── position-tracking.{png,json}
+├── keyword-gap.{png,json}
+├── site-audit.{png,json}
+├── organic-research.{png,json}
+├── backlink-analytics.{png,json}
+├── ai-brand-visibility/
+│   ├── chatgpt.{png,json}
+│   ├── gemini.{png,json}
+│   ├── perplexity.{png,json}
+│   └── copilot.{png,json}
+├── ai-prompt-tracking.{json}        ← rows are (prompt × LLM) pairs
+├── keyword-magic/                   ← only when _queue/keyword-magic.txt is non-empty
+│   └── <slug-of-seed>.{png,json}
+└── FAILED.md                        ← only on failure (per-surface allowed)`}
+        </pre>
+        <p className="text-xs text-gray-600 mt-2">
+          The SEO Director sub-agent reads JSON files directly; screenshots
+          are operator-debugging artifacts. The directory is gitignored.
+        </p>
+      </Section>
+
+      <Section title="Ready-to-go checklist">
+        <ul className="space-y-2 text-sm text-gray-800">
+          <Check
+            ok
+            label="Chrome Claude extension installed + signed in"
+            detail="Verified — Browser 1 connected from this admin tab."
+          />
+          <Check
+            ok
+            label="SEMrush UI accessible from logged-in account"
+            detail="Verified — semrush.com/home/ resolves; no credentials needed in scripts."
+          />
+          <Check
+            ok
+            label="seo-semrush-snapshot Cowork skill stubbed"
+            detail=".claude/skills/seo-semrush-snapshot/SKILL.md defines the Phase 1 contract."
+          />
+          <Check
+            ok
+            label="Position Tracking · Keyword Gap · Site Audit · Organic · Backlinks · Keyword Magic"
+            detail="All ready — clean DOM tables, no canvas-only blockers."
+          />
+          <Check
+            warn
+            label="AI Toolkit (Brand Visibility + Prompt Tracking)"
+            detail="Plan-gated. Confirm POD's SEMrush subscription includes AI Toolkit before relying on outputs."
+          />
+          <Check
+            warn
+            label="SEMrush projectId for partyondelivery.com"
+            detail="Agent auto-discovers on first run and writes back into tenants/party-on-delivery.json."
+          />
+          <Check
+            warn
+            label="Cron host"
+            detail="Chrome-extension scrapes can't run on Vercel. Choose: (a) workstation cron (b) GitHub Actions with the SEMrush session restored from cookie."
+          />
+        </ul>
+      </Section>
     </div>
+  );
+}
+
+function ScrapeSurface({
+  num,
+  tier,
+  name,
+  url,
+  captures,
+  method,
+  friction,
+}: {
+  num: string;
+  tier: 'ready' | 'medium' | 'conditional';
+  name: string;
+  url: string;
+  captures: string[];
+  method: string;
+  friction: string;
+}) {
+  const tierStyle: Record<typeof tier, { bg: string; fg: string; label: string }> = {
+    ready: { bg: '#DCFCE7', fg: '#166534', label: 'READY' },
+    medium: { bg: '#FEF3C7', fg: '#92400E', label: 'MEDIUM' },
+    conditional: { bg: '#DBEAFE', fg: '#1E40AF', label: 'CONDITIONAL' },
+  };
+  const ts = tierStyle[tier];
+  return (
+    <div className="rounded-md border border-gray-200 bg-white p-3">
+      <div className="flex items-center gap-2 flex-wrap mb-1">
+        <span className="text-xs font-bold text-emerald-700">#{num}</span>
+        <h4 className="font-bold text-sm text-gray-900">{name}</h4>
+        <span
+          className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+          style={{ background: ts.bg, color: ts.fg }}
+        >
+          {ts.label}
+        </span>
+      </div>
+      <div className="text-[11px] font-mono text-gray-500 mb-2 break-all">{url}</div>
+      <div className="text-xs text-gray-800 mb-1">
+        <strong>Captures:</strong>
+        <ul className="list-disc pl-5 mt-0.5 space-y-0.5">
+          {captures.map((c) => (
+            <li key={c}>{c}</li>
+          ))}
+        </ul>
+      </div>
+      <div className="text-xs text-gray-700 mt-1">
+        <strong>Method:</strong> {method}
+      </div>
+      <div className="text-xs text-gray-700 mt-0.5">
+        <strong>Friction:</strong> {friction}
+      </div>
+    </div>
+  );
+}
+
+function Check({
+  ok,
+  warn,
+  label,
+  detail,
+}: {
+  ok?: boolean;
+  warn?: boolean;
+  label: string;
+  detail?: string;
+}) {
+  const palette = ok
+    ? { bg: '#DCFCE7', fg: '#166534', icon: '✓' }
+    : warn
+      ? { bg: '#FEF3C7', fg: '#92400E', icon: '!' }
+      : { bg: '#FEE2E2', fg: '#991B1B', icon: '✗' };
+  return (
+    <li className="flex items-start gap-2">
+      <span
+        className="inline-flex items-center justify-center w-5 h-5 rounded-full text-[11px] font-bold flex-shrink-0 mt-0.5"
+        style={{ background: palette.bg, color: palette.fg }}
+      >
+        {palette.icon}
+      </span>
+      <div className="min-w-0">
+        <div className="text-sm font-semibold text-gray-900">{label}</div>
+        {detail && <div className="text-xs text-gray-600">{detail}</div>}
+      </div>
+    </li>
   );
 }
 
