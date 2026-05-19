@@ -10,6 +10,7 @@
 import { prisma } from '@/lib/database/client';
 import type { Prisma } from '@prisma/client';
 import { appendActionLog } from '@/lib/operations/recommendation-store';
+import { mirrorOperationsRecommendation } from '@/lib/operations/recommendation-mirror';
 import { buildActionLogEntry } from './unified-list';
 import type { ActionLogEntry } from '@/lib/operations/types';
 import type { RecommendationStatus } from './lifecycle';
@@ -48,7 +49,18 @@ export async function applyStatusUpdate(
       data.dismissReason = null;
       data.snoozeUntil = null;
     }
-    await prisma.operationsRecommendation.update({ where: { id }, data });
+    const updated = await prisma.operationsRecommendation.update({ where: { id }, data });
+    // Mirror to GitHub so the next `sync:operations` picks up the change in
+    // the operator's vault. Fail-soft — never blocks the DB update.
+    void mirrorOperationsRecommendation(updated, {
+      date: new Date().toISOString().slice(0, 10),
+      fromStatus: currentStatus,
+      toStatus: update.status,
+      notes: update.dismissReason ?? update.notes,
+      actor: 'operator',
+    }).catch((err) => {
+      console.warn('[ops-rec-mirror] non-fatal:', err instanceof Error ? err.message : err);
+    });
     return;
   }
 

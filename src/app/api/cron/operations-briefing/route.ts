@@ -5,10 +5,13 @@
  * Marketing briefing so the operator gets both back-to-back without one
  * blocking the other.
  *
- * Stage A only in Phase 1D — deterministic email + payload. No LLM narrative
- * pass yet (defer to Phase 1E with the operations-director agent file). No
- * GitHub commit either — the /admin/operations dashboard is the persistent
- * archive surface.
+ * Stage A: deterministic email + payload + GitHub commit to
+ * docs/operations/weekly/YYYY-Www.md. The committed markdown is what the
+ * operator's Obsidian vault picks up via scripts/operations/sync-obsidian.mjs.
+ *
+ * No LLM narrative pass yet — leave Stage B for a follow-up once the
+ * operations-director agent has been used for a few weeks and the operator
+ * has a sense for what narrative would add over the deterministic content.
  *
  * See docs/OPERATIONS-DIRECTOR-AGENT-BUILDOUT.md §7 Phase 1D.
  */
@@ -16,7 +19,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/database/client';
 import { resend } from '@/lib/email/resend-client';
+import { putFileToRepo } from '@/lib/github/put-file';
 import { buildOperationsBriefingPayload } from '@/lib/operations/briefing-payload';
+import { renderBriefingMarkdown } from '@/lib/operations/briefing-markdown';
 import {
   renderOperationsBriefingEmail,
   renderOperationsBriefingText,
@@ -90,6 +95,15 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     }
   }
 
+  // Commit deterministic markdown to GitHub so the Obsidian vault picks it
+  // up on the next sync:operations run. Fails soft.
+  const markdown = renderBriefingMarkdown(payload);
+  const commit = await putFileToRepo({
+    path: `docs/operations/weekly/${week.label}.md`,
+    content: markdown,
+    message: `chore(operations): weekly briefing ${week.label}`,
+  }).catch((err) => ({ committed: false, error: err instanceof Error ? err.message : String(err) }));
+
   return NextResponse.json({
     ok: true,
     week: week.label,
@@ -99,7 +113,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       cycleCounts: payload.cycleCounts.length,
       danglingDrafts: payload.danglingDrafts.length,
     },
-    delivery: { email, recipient },
+    delivery: { email, recipient, commit },
     payload,
   });
 }
