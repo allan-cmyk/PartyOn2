@@ -197,6 +197,41 @@ export function trackEngagementTime(seconds: number): void {
 }
 
 /**
+ * Track clicks on the blog post topic-aware CTA (BlogTopicCTA component).
+ * Lets us measure CTR per topic so we know whether the topic→landing-page
+ * routing in src/data/blog-topic-routing.ts is actually paying off.
+ *
+ * @param topic - Topic label from blog-topic-routing (BACHELOR, WEDDING, etc.)
+ * @param slug - The blog post slug the click originated from
+ * @param href - The destination landing-page URL
+ */
+export function trackBlogCtaClick(
+  topic: string,
+  slug: string,
+  href: string
+): void {
+  if (!isGtagAvailable()) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[GA4 Dev] blog_cta_click:', { topic, slug, href });
+    }
+    return;
+  }
+
+  window.gtag?.('event', 'blog_cta_click', {
+    blog_topic: topic,
+    blog_slug: slug,
+    destination_url: href,
+    page_location: window.location.href,
+  });
+
+  trackPodEvent('blog_cta_click', {
+    blog_topic: topic,
+    blog_slug: slug,
+    destination_url: href,
+  });
+}
+
+/**
  * Track outbound link clicks
  * @param url - The external URL clicked
  * @param linkText - The text of the link

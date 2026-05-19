@@ -1,6 +1,6 @@
-import Link from 'next/link';
 import type { ReactElement } from 'react';
 import { getBlogCta } from '@/data/blog-topic-routing';
+import BlogTopicCTAButton from './BlogTopicCTAButton';
 
 interface BlogTopicCTAProps {
   slug: string;
@@ -12,6 +12,10 @@ interface BlogTopicCTAProps {
  * Looks up the post's slug in src/data/blog-topic-routing.ts to pick
  * the right heading, body, button text, and destination href.
  * Falls back to the GENERIC CTA pointing at /order for unmapped slugs.
+ *
+ * The button is rendered via a separate client component so this
+ * card stays server-rendered while still being able to fire a GA4
+ * blog_cta_click event on click (see ga4-events.ts:trackBlogCtaClick).
  */
 export default function BlogTopicCTA({ slug }: BlogTopicCTAProps): ReactElement {
   const cta = getBlogCta(slug);
@@ -23,9 +27,12 @@ export default function BlogTopicCTA({ slug }: BlogTopicCTAProps): ReactElement 
       <p className="text-base text-gray-700 mb-6 leading-relaxed">
         {cta.body}
       </p>
-      <Link href={cta.href} className="btn-primary inline-block">
-        {cta.buttonText} →
-      </Link>
+      <BlogTopicCTAButton
+        href={cta.href}
+        slug={slug}
+        topic={cta.topic}
+        label={`${cta.buttonText} →`}
+      />
     </section>
   );
 }
