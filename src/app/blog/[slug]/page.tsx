@@ -8,6 +8,7 @@ import ShareButtons from '@/components/blog/ShareButtons'
 import { notFound } from 'next/navigation'
 import { getMDXPost, getAllMDXPosts } from '@/lib/blog-mdx'
 import MDXContentRSC from '@/components/blog/MDXContentRSC'
+import BlogTopicCTA from '@/components/blog/BlogTopicCTA'
 import blogPostsData from '@/data/blog-posts/posts.json'
 import { seoConfig } from '@/lib/seo/config'
 import { generateArticleSchema } from '@/lib/seo/schemas'
@@ -1114,6 +1115,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="max-w-4xl mx-auto">
             <MDXContentRSC source={mdxPost.content} />
 
+            {/* Topic-aware CTA card (routes to landing page for the post's category) */}
+            <BlogTopicCTA slug={mdxPost.slug} />
+
             {/* Author Bio */}
             <div className="mt-16 pt-8 border-t border-gray-200">
               <div className="flex items-start gap-6">
@@ -1293,7 +1297,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               lineHeight: '1.75',
             }}
           />
-          
+
+          {/* Topic-aware CTA card (routes to landing page for the post's category) */}
+          <BlogTopicCTA slug={post.slug} />
+
           {/* Author Bio */}
           <div
             className="mt-16 pt-8 border-t border-gray-200"
