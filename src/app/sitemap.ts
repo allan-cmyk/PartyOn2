@@ -83,6 +83,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: route === '' ? 1 : route === '/order' ? 0.9 : 0.8
   }))
 
+  // /austin-*-delivery conversion-oriented landing pages (added 2026-05-06).
+  // Priority 0.9 to match /order — these are commercial-intent destinations.
+  const austinDeliveryLandingPages = [
+    '/austin-bachelor-party-delivery',
+    '/austin-bachelorette-party-delivery',
+    '/austin-corporate-event-delivery',
+    '/austin-wedding-weekend-delivery',
+  ].map(route => ({
+    url: `${baseUrl}${route}`,
+    lastModified: new Date('2026-05-06'),
+    changeFrequency: 'weekly' as const,
+    priority: 0.9
+  }))
+
   // Product pages (dynamic) - filter out test products
   const productPages = products
     .filter(product => !product.handle.includes('test'))
@@ -148,6 +162,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     ...staticPages,
+    ...austinDeliveryLandingPages,
     ...productPages,
     ...locationPages,
     ...jsonBlogPosts,
