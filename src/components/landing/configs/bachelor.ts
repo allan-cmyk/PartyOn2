@@ -154,20 +154,20 @@ export const bachelorConfig: LandingConfig = {
   reviews: [
     {
       quote:
-        "Best service in Austin, hands down. We had a bachelor party for 15 guys and Party On Delivery handled everything. Drinks were ice cold and arrived right on time at our Airbnb on Rainey Street.",
-      author: 'Justin R.',
+        "I would recommend this service to anyone who is going on a boat cruise! It was so nice to just show up to the boat and have all our cocktail ingredients and seltzers there. The recipes are on the pitcher and are easy for anyone to make! Prices are very reasonable, and anything you have left over you can take home!",
+      author: 'Perla Albiter',
       detail: '★★★★★ via Google',
     },
     {
       quote:
-        "Used these guys for a bachelor party on Lake Travis. They delivered straight to our boat slip at Emerald Point — everything cold, properly packed, and the driver was super friendly. Saved us a ton of time.",
-      author: 'Patrick M.',
+        "Party On Delivery was amazing to work with! They had ample availability for delivery time slots, were communicative throughout the whole process, and got us everything we needed right to our door. It's great that they have mixers, alcohol, hydration packets, and food — all in one spot. Can't recommend enough!",
+      author: 'Jodi Hiller',
       detail: '★★★★★ via Google',
     },
     {
       quote:
-        "These guys saved our weekend. Plans changed last minute, they rolled with it, and the order was perfect. Couldn't recommend more for any group trip in Austin.",
-      author: 'Brandon S.',
+        "Party on Delivery is a fantastic treasure! They truly made our UT tailgate happen — delivered all our liquor and kegs and brought tables and chairs for our guests. Communication was easy and they helped me decide on how much alcohol we would need. I highly recommend Party on Delivery to save you time and stress. Very reasonably priced too! You guys rock!",
+      author: 'Shannon Crim',
       detail: '★★★★★ via Google',
     },
   ],
