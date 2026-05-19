@@ -47,8 +47,15 @@ export function trackCTAClick(
   experimentId?: string,
   variantId?: string
 ): void {
+  // Always mirror to first-party event stream — sample-free, joinable in
+  // our own DB, and not blocked by ad blockers / missing GA4 config.
+  trackPodEvent(
+    'cta_click',
+    { button_text: buttonText, button_url: buttonUrl, section },
+    { experimentId, variantId }
+  );
+
   if (!isGtagAvailable()) {
-    // Log in development for debugging
     if (process.env.NODE_ENV === 'development') {
       console.log('[GA4 Dev] cta_click:', { buttonText, buttonUrl, section, experimentId, variantId });
     }
@@ -63,12 +70,6 @@ export function trackCTAClick(
     ...(experimentId && { experiment_id: experimentId }),
     ...(variantId && { variant_id: variantId }),
   });
-
-  trackPodEvent(
-    'cta_click',
-    { button_text: buttonText, button_url: buttonUrl, section },
-    { experimentId, variantId }
-  );
 }
 
 /**
@@ -76,6 +77,8 @@ export function trackCTAClick(
  * @param percentage - The scroll percentage reached
  */
 export function trackScrollDepth(percentage: 25 | 50 | 75 | 100): void {
+  trackPodEvent('scroll_depth', { percent_scrolled: percentage });
+
   if (!isGtagAvailable()) {
     if (process.env.NODE_ENV === 'development') {
       console.log('[GA4 Dev] scroll_depth:', { percentage });
@@ -87,8 +90,6 @@ export function trackScrollDepth(percentage: 25 | 50 | 75 | 100): void {
     percent_scrolled: percentage,
     page_location: window.location.href,
   });
-
-  trackPodEvent('scroll_depth', { percent_scrolled: percentage });
 }
 
 /**
@@ -96,6 +97,8 @@ export function trackScrollDepth(percentage: 25 | 50 | 75 | 100): void {
  * @param sectionName - The name of the section viewed
  */
 export function trackSectionView(sectionName: string): void {
+  trackPodEvent('section_view', { section_name: sectionName });
+
   if (!isGtagAvailable()) {
     if (process.env.NODE_ENV === 'development') {
       console.log('[GA4 Dev] section_view:', { sectionName });
@@ -107,8 +110,6 @@ export function trackSectionView(sectionName: string): void {
     section_name: sectionName,
     page_location: window.location.href,
   });
-
-  trackPodEvent('section_view', { section_name: sectionName });
 }
 
 /**
@@ -122,6 +123,12 @@ export function trackHeroVariant(
   variantId: string,
   elementId: string = 'hero'
 ): void {
+  trackPodEvent(
+    'experiment_exposure',
+    { element_id: elementId },
+    { experimentId, variantId }
+  );
+
   if (!isGtagAvailable()) {
     if (process.env.NODE_ENV === 'development') {
       console.log('[GA4 Dev] experiment_impression:', { experimentId, variantId, elementId });
@@ -135,12 +142,6 @@ export function trackHeroVariant(
     element_id: elementId,
     page_location: window.location.href,
   });
-
-  trackPodEvent(
-    'experiment_exposure',
-    { element_id: elementId },
-    { experimentId, variantId }
-  );
 }
 
 /**
@@ -156,6 +157,12 @@ export function trackExperimentConversion(
   conversionType: 'purchase' | 'signup' | 'lead' | 'checkout',
   value?: number
 ): void {
+  trackPodEvent(
+    'experiment_conversion',
+    { conversion_type: conversionType, value: value ?? null },
+    { experimentId, variantId }
+  );
+
   if (!isGtagAvailable()) {
     if (process.env.NODE_ENV === 'development') {
       console.log('[GA4 Dev] experiment_conversion:', { experimentId, variantId, conversionType, value });
@@ -170,12 +177,6 @@ export function trackExperimentConversion(
     ...(value !== undefined && { value }),
     page_location: window.location.href,
   });
-
-  trackPodEvent(
-    'experiment_conversion',
-    { conversion_type: conversionType, value: value ?? null },
-    { experimentId, variantId }
-  );
 }
 
 /**
@@ -210,6 +211,12 @@ export function trackBlogCtaClick(
   slug: string,
   href: string
 ): void {
+  trackPodEvent('blog_cta_click', {
+    blog_topic: topic,
+    blog_slug: slug,
+    destination_url: href,
+  });
+
   if (!isGtagAvailable()) {
     if (process.env.NODE_ENV === 'development') {
       console.log('[GA4 Dev] blog_cta_click:', { topic, slug, href });
@@ -222,12 +229,6 @@ export function trackBlogCtaClick(
     blog_slug: slug,
     destination_url: href,
     page_location: window.location.href,
-  });
-
-  trackPodEvent('blog_cta_click', {
-    blog_topic: topic,
-    blog_slug: slug,
-    destination_url: href,
   });
 }
 
