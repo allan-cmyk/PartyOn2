@@ -57,7 +57,7 @@ export default function NotFound() {
                 Boat Parties
               </Link>
               <span className="text-gray-400">•</span>
-              <Link href="/bach-parties" className="text-brand-yellow hover:text-yellow-600 transition-colors">
+              <Link href="/austin-bachelor-party-delivery" className="text-brand-yellow hover:text-yellow-600 transition-colors">
                 Bachelor/ette Parties
               </Link>
               <span className="text-gray-400">•</span>

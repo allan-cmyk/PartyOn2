@@ -274,7 +274,7 @@ export default function AccountPage() {
               <Link href="/corporate" className="inline-block px-6 py-2 bg-white text-brand-yellow hover:bg-yellow-50 transition-colors rounded">
                 CORPORATE
               </Link>
-              <Link href="/bach-parties" className="inline-block px-6 py-2 bg-white text-brand-yellow hover:bg-yellow-50 transition-colors rounded">
+              <Link href="/austin-bachelor-party-delivery" className="inline-block px-6 py-2 bg-white text-brand-yellow hover:bg-yellow-50 transition-colors rounded">
                 BACH PARTIES
               </Link>
             </div>
