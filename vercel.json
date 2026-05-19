@@ -49,6 +49,10 @@
       "schedule": "0 8 * * *"
     },
     {
+      "path": "/api/cron/operations-briefing",
+      "schedule": "30 13 * * 1"
+    },
+    {
       "path": "/api/cron/event-abandoned-rsvps",
       "schedule": "*/15 * * * *"
     }
