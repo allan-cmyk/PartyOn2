@@ -321,7 +321,7 @@ export default function HomePage() {
                 <p className="text-gray-600 mb-6 leading-relaxed">
                   Multi-stop drinks for Rainey, Lake Travis, and Airbnbs — coordinated for the whole weekend.
                 </p>
-                <TrackedLink href="/bach-parties" section="services" buttonText="START WEEKEND ORDER">
+                <TrackedLink href="/austin-bachelor-party-delivery" section="services" buttonText="START WEEKEND ORDER">
                   <button className="px-6 py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm">
                     START WEEKEND ORDER
                   </button>
@@ -599,7 +599,7 @@ export default function HomePage() {
                 Full-Service Event Coordination
               </h3>
               <p className="text-gray-700 leading-relaxed mb-6">
-                Planning a <Link href="/weddings" className="text-brand-yellow hover:text-yellow-600 underline">wedding at a Lake Travis vineyard</Link>? Hosting a <Link href="/corporate" className="text-brand-yellow hover:text-yellow-600 underline">corporate retreat in the Hill Country</Link>? Throwing a <Link href="/bach-parties" className="text-brand-yellow hover:text-yellow-600 underline">bachelor party on Rainey Street</Link>? Our team coordinates directly with your venue to ensure flawless delivery timing, proper temperature control, and professional setup. We handle the logistics so you can focus on enjoying your event. Optional TABC-certified bartender staffing is available through our vetted partner network for full-service experiences.
+                Planning a <Link href="/weddings" className="text-brand-yellow hover:text-yellow-600 underline">wedding at a Lake Travis vineyard</Link>? Hosting a <Link href="/corporate" className="text-brand-yellow hover:text-yellow-600 underline">corporate retreat in the Hill Country</Link>? Throwing a <Link href="/austin-bachelor-party-delivery" className="text-brand-yellow hover:text-yellow-600 underline">bachelor party on Rainey Street</Link>? Our team coordinates directly with your venue to ensure flawless delivery timing, proper temperature control, and professional setup. We handle the logistics so you can focus on enjoying your event. Optional TABC-certified bartender staffing is available through our vetted partner network for full-service experiences.
               </p>
 
               <h3 className="font-heading text-2xl text-gray-900 mt-8 mb-4 tracking-[0.08em]">

@@ -201,7 +201,14 @@ const nextConfig: NextConfig = {
       // Truncated partial URLs (only match if there's actual truncation, not the valid /products page)
       {
         source: '/bach-parties/products:suffix+',  // Changed from * to + (requires at least 1 char)
-        destination: '/bach-parties',
+        destination: '/austin-bachelor-party-delivery',
+        permanent: true,
+      },
+      // Old /bach-parties landing → new canonical bach landing.
+      // /bach-parties/packages/* sub-routes still resolve (exact-match redirect).
+      {
+        source: '/bach-parties',
+        destination: '/austin-bachelor-party-delivery',
         permanent: true,
       },
       {
