@@ -15,9 +15,13 @@ const prismaMock = vi.hoisted(() => ({
 }));
 
 const authMock = vi.hoisted(() => ({ requireOpsAuth: vi.fn() }));
+const reconcileMock = vi.hoisted(() => ({ reconcilePackForOrder: vi.fn() }));
 
 vi.mock('@/lib/database/client', () => ({ prisma: prismaMock }));
 vi.mock('@/lib/auth/ops-session', () => ({ requireOpsAuth: authMock.requireOpsAuth }));
+vi.mock('@/lib/operations/reconcile-pack', () => ({
+  reconcilePackForOrder: reconcileMock.reconcilePackForOrder,
+}));
 
 import { POST as executeHandler } from '../[id]/execute/route';
 import { POST as snoozeHandler } from '../[id]/snooze/route';
@@ -47,6 +51,7 @@ beforeEach(() => {
     cb(prismaMock)
   );
   authMock.requireOpsAuth.mockResolvedValue({ id: 'op_1', role: 'admin' });
+  reconcileMock.reconcilePackForOrder.mockReset();
 });
 
 describe('POST /api/admin/recommendations/[id]/execute', () => {
@@ -81,13 +86,17 @@ describe('POST /api/admin/recommendations/[id]/execute', () => {
     expect(updateCall).toBeDefined();
   });
 
-  it('apiCall returns 501 not_implemented and logs the attempt', async () => {
+  it('apiCall with an unwired path returns 501 not_implemented and logs the attempt', async () => {
     prismaMock.operationsRecommendation.findUnique
       .mockResolvedValueOnce({ status: 'open' })
       .mockResolvedValueOnce({
-        actionPayload: { kind: 'apiCall', label: 'Reconcile', params: {} },
+        actionPayload: {
+          kind: 'apiCall',
+          label: 'Apply note',
+          params: { path: '/api/v1/inventory/notes/abc/apply', body: {} },
+        },
       })
-      .mockResolvedValueOnce({ actionLog: [] }); // for appendActionLog read
+      .mockResolvedValueOnce({ actionLog: [] });
     prismaMock.recommendationItem.findUnique.mockResolvedValue(null);
     prismaMock.operationsRecommendation.update.mockResolvedValue({});
 
@@ -95,7 +104,68 @@ describe('POST /api/admin/recommendations/[id]/execute', () => {
     expect(res.status).toBe(501);
     const json = await res.json();
     expect(json.error).toBe('not_implemented');
-    expect(json.message).toContain('follow-up');
+    expect(json.message).toContain('not implemented');
+    expect(json.path).toBe('/api/v1/inventory/notes/abc/apply');
+  });
+
+  it('apiCall to reconcile-pack runs the mutation and bumps status open→approved→shipped', async () => {
+    prismaMock.operationsRecommendation.findUnique
+      .mockResolvedValueOnce({ status: 'open' }) // findRecommendationLocation
+      .mockResolvedValueOnce({
+        actionPayload: {
+          kind: 'apiCall',
+          label: 'Reconcile pick → inventory',
+          params: {
+            path: '/api/admin/operations/recommendations/reconcile-pack',
+            body: { orderId: 'ord_42' },
+          },
+        },
+      })
+      .mockResolvedValueOnce({ actionLog: [] }); // appendActionLog read
+    prismaMock.recommendationItem.findUnique.mockResolvedValue(null);
+    prismaMock.operationsRecommendation.update.mockResolvedValue({});
+    // applyStatusUpdate's open→approved guard re-reads the rec status; mock both reads
+    // for the two transitions.
+    prismaMock.operationsRecommendation.findUnique.mockResolvedValue({ status: 'open' });
+    reconcileMock.reconcilePackForOrder.mockResolvedValue({
+      orderId: 'ord_42',
+      packedLines: 3,
+      alreadyReconciled: 0,
+      reconciled: 3,
+      skipped: [],
+    });
+
+    const res = await executeHandler(makeRequest(), params('o1'));
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.ok).toBe(true);
+    expect(json.result.reconciled).toBe(3);
+    expect(reconcileMock.reconcilePackForOrder).toHaveBeenCalledWith('ord_42');
+
+    // Status got bumped open → approved → shipped via two update calls.
+    const statuses = prismaMock.operationsRecommendation.update.mock.calls
+      .map((c) => (c[0] as { data: { status?: string } }).data.status)
+      .filter((s) => s);
+    expect(statuses).toEqual(expect.arrayContaining(['approved', 'shipped']));
+  });
+
+  it('apiCall to reconcile-pack returns 400 when orderId is missing', async () => {
+    prismaMock.operationsRecommendation.findUnique
+      .mockResolvedValueOnce({ status: 'open' })
+      .mockResolvedValueOnce({
+        actionPayload: {
+          kind: 'apiCall',
+          params: { path: '/api/admin/operations/recommendations/reconcile-pack', body: {} },
+        },
+      })
+      .mockResolvedValueOnce({ actionLog: [] });
+    prismaMock.recommendationItem.findUnique.mockResolvedValue(null);
+
+    const res = await executeHandler(makeRequest(), params('o1'));
+    expect(res.status).toBe(400);
+    const json = await res.json();
+    expect(json.error).toBe('bad_request');
+    expect(reconcileMock.reconcilePackForOrder).not.toHaveBeenCalled();
   });
 
   it('rejects execution when status is not open/approved', async () => {
