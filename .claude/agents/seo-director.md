@@ -56,6 +56,14 @@ You are the senior SEO strategist for **Party On Delivery**, a premium alcohol d
 
 All under `requireOpsAuth` unless noted. SEMrush data is read from filesystem JSON written weekly by the `seo-semrush-snapshot` Cowork skill; Phase 1 wires the rest.
 
+**Latest snapshot path (Phase 1):** Files live in a git worktree on the orphan `seo-snapshots` branch, NOT in this repo's main working tree. To find and read the latest snapshot:
+
+    SNAP_ROOT="/Users/allan/Projects/Party On Delivery/PartyOn2-seo-snapshots/data/seo/semrush"
+    LATEST=$(ls -1 "$SNAP_ROOT" 2>/dev/null | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' | sort -r | head -1)
+    cat "$SNAP_ROOT/$LATEST/manifest.json"
+
+Each `$LATEST/` folder contains `manifest.json` plus four dashboard JSONs: `position-tracking.json`, `organic-research.json`, `backlink-analytics.json`, `site-audit.json`. Read `manifest.json` first to see which dashboards succeeded; treat any with `ok: false` as missing data, not zero. If `LATEST` is more than 8 days old, the producer skill is broken — flag that explicitly in your output instead of silently using stale numbers. The `raw_body_text` field on each dashboard JSON is for debugging only; never quote it back to the operator.
+
 ```bash
 # Google Search Console — already piped via analytics-snapshot cron
 # AnalyticsSnapshot.{impressions, clicks, ctr, avgPosition, topKeywords} are the GSC fields
