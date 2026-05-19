@@ -6,12 +6,12 @@
  *   navigate payloads — log the click, bump status open→approved, return 200.
  *                       The client handles the actual router.push.
  *
- *   apiCall payloads — scaffold only. The dispatcher recognizes each ops
- *                      mutation kind but returns 501 with a clear error
- *                      message. Phase 1C-b will wire each mutation through
- *                      its existing endpoint with proper idempotency tests.
+ *   apiCall payloads  — dispatch to a registered in-process mutation. The
+ *                       dispatcher is open for new kinds; today only the
+ *                       `reconcile-pack` path is wired. Other apiCall paths
+ *                       still return 501 with a clear message.
  *
- * See docs/OPERATIONS-DIRECTOR-AGENT-BUILDOUT.md §7 Phase 1C-c.
+ * See docs/OPERATIONS-DIRECTOR-AGENT-BUILDOUT.md §7 Phase 1C and 1C-b.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -23,31 +23,70 @@ import {
 } from '@/lib/recommendations/unified-list';
 import { applyStatusUpdate, logAction } from '@/lib/recommendations/mutation-helpers';
 import type { ActionPayload } from '@/lib/recommendations/card-types';
+import { reconcilePackForOrder } from '@/lib/operations/reconcile-pack';
 
 export const dynamic = 'force-dynamic';
 
 interface DispatchResult {
   status: number;
   body: Record<string, unknown>;
+  result: 'success' | 'error' | 'not_implemented';
+  errorMessage?: string;
 }
 
 /**
- * Direct-action dispatcher for apiCall payloads. Each `kind` lives in this
- * switch so adding a new ops mutation in Phase 1C-b is one case + one
- * implementation, nothing else. Today all kinds return 501.
+ * Direct-action dispatcher for apiCall payloads. Each path lives as one
+ * branch so adding a new ops mutation is one case + one helper, nothing
+ * else. The detector's `params.path` is the dispatch key — keeps the rec
+ * payload self-describing.
  */
-function dispatchApiCall(payload: ActionPayload): DispatchResult {
-  // TODO(phase 1C-b): wire each kind through its existing endpoint:
-  //   - reconcile-pack    → POST /api/ops/orders/[id]/picks reconciliation
-  //   - adjust-inventory  → POST /api/v1/inventory (operation=adjust)
-  //   - apply-note        → POST /api/v1/inventory/notes/[id]/apply
-  //   - apply-receiving   → POST /api/v1/inventory/receiving/[id]/apply
-  //   Each must be idempotent and write an InventoryMovement audit row.
+async function dispatchApiCall(payload: ActionPayload): Promise<DispatchResult> {
+  const path = typeof payload.params.path === 'string' ? payload.params.path : '';
+  const body = (payload.params.body && typeof payload.params.body === 'object'
+    ? payload.params.body
+    : {}) as Record<string, unknown>;
+
+  if (path === '/api/admin/operations/recommendations/reconcile-pack') {
+    const orderId = typeof body.orderId === 'string' ? body.orderId : null;
+    if (!orderId) {
+      return {
+        status: 400,
+        body: { error: 'bad_request', message: 'orderId required' },
+        result: 'error',
+        errorMessage: 'orderId required',
+      };
+    }
+    try {
+      const result = await reconcilePackForOrder(orderId);
+      return {
+        status: 200,
+        body: { ok: true, result },
+        result: 'success',
+      };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return {
+        status: 500,
+        body: { error: 'reconcile_failed', message },
+        result: 'error',
+        errorMessage: message,
+      };
+    }
+  }
+
+  // TODO(phase 1C-c+): the remaining ops mutation paths require operator
+  // input (counted N, parsed line confirmations) so they stay navigate-only:
+  //   - /api/v1/inventory  (operation=adjust)              needs counted N
+  //   - /api/v1/inventory/notes/[id]/apply                 needs parsed-row review
+  //   - /api/v1/inventory/receiving/[id]/apply             needs parsed-row review
+  // Surface them with a clear message rather than a silent 501.
   const message =
-    'Direct-action buttons coming in a follow-up — for now this rec deep-links you to the page where you can act.';
+    `Direct-action button for "${path}" not implemented — this rec deep-links you to the page where you can act.`;
   return {
     status: 501,
-    body: { error: 'not_implemented', kind: payload.kind, message },
+    body: { error: 'not_implemented', path, message },
+    result: 'not_implemented',
+    errorMessage: message,
   };
 }
 
@@ -92,12 +131,29 @@ export async function POST(
   }
 
   if (payload.kind === 'apiCall') {
-    const dispatch = dispatchApiCall(payload);
+    const dispatch = await dispatchApiCall(payload);
     await logAction(id, location.domain, {
       actionKind: payload.kind,
       actionLabel: label,
-      result: 'not_implemented',
+      result: dispatch.result,
+      errorMessage: dispatch.errorMessage,
     });
+    // On success bump status to shipped so the rec leaves the active queue.
+    // The lifecycle requires open → approved → shipped, so step through
+    // approved when starting from open. Best-effort — the mutation already
+    // landed in the DB; a status hiccup shouldn't fail the response.
+    if (dispatch.result === 'success') {
+      try {
+        if (location.status === 'open') {
+          await applyStatusUpdate(id, location.domain, 'open', { status: 'approved' });
+          await applyStatusUpdate(id, location.domain, 'approved', { status: 'shipped' });
+        } else if (location.status === 'approved') {
+          await applyStatusUpdate(id, location.domain, 'approved', { status: 'shipped' });
+        }
+      } catch (err) {
+        console.warn('[execute] status transition after success failed:', err);
+      }
+    }
     return NextResponse.json(dispatch.body, { status: dispatch.status });
   }
 
