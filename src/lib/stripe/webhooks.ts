@@ -556,8 +556,20 @@ export async function processWebhookEvent(event: Stripe.Event): Promise<void> {
 }
 
 /**
- * Handle amendment invoice payment
- * Updates the existing order instead of creating a new one
+ * Handle amendment invoice payment.
+ *
+ * IMPORTANT: do NOT mutate OrderItem rows or Order totals here. Those are already
+ * applied synchronously at amendment submission time by POST /api/v1/admin/orders/[id]/amend
+ * (see amend/route.ts). When this webhook used to re-apply the diff, every paid
+ * amendment ended up with item quantities and order totals doubled — the customer
+ * was charged correctly via Stripe, but the order rows reflected 2× the request,
+ * causing over-delivery. (Repaired on prod 2026-05-19; see
+ * scripts/ops/fix-doubled-amendment-orders.mjs.)
+ *
+ * This handler now ONLY:
+ *   1. Marks the DraftOrder as CONVERTED.
+ *   2. Marks the OrderAmendment as PAID.
+ *   3. Sends a confirmation email for the amendment items.
  */
 async function handleAmendmentInvoicePayment(
   draftOrderId: string,
@@ -569,63 +581,17 @@ async function handleAmendmentInvoicePayment(
 
   const existingOrder = await prisma.order.findUnique({
     where: { id: existingOrderId },
-    include: { items: true },
   });
 
   if (!existingOrder) {
     throw new Error(`[Stripe Webhook] Existing order not found for amendment: ${existingOrderId}`);
   }
 
-  // Add amendment items to existing order
   const amendmentItems = draftOrder.items;
-  for (const item of amendmentItems) {
-    // Check if this product+variant already exists on the order
-    const existingItem = existingOrder.items.find(
-      i => i.productId === item.productId && i.variantId === item.variantId
-    );
-
-    if (existingItem) {
-      // Increase quantity on existing item
-      const newQty = existingItem.quantity + item.quantity;
-      await prisma.orderItem.update({
-        where: { id: existingItem.id },
-        data: {
-          quantity: newQty,
-          totalPrice: new Prisma.Decimal(Number(existingItem.price) * newQty),
-        },
-      });
-    } else {
-      // Create new order item
-      await prisma.orderItem.create({
-        data: {
-          orderId: existingOrderId,
-          productId: item.productId,
-          variantId: item.variantId,
-          title: item.title,
-          variantTitle: item.variantTitle || null,
-          price: new Prisma.Decimal(item.price),
-          quantity: item.quantity,
-          totalPrice: new Prisma.Decimal(item.price * item.quantity),
-        },
-      });
-    }
-  }
-
-  // Update order totals (add amendment amounts)
   const amendmentSubtotal = Number(draftOrder.subtotal);
   const amendmentTax = Number(draftOrder.taxAmount);
   const amendmentDeliveryFee = Number(draftOrder.deliveryFee);
   const amendmentTotal = Number(draftOrder.total);
-
-  await prisma.order.update({
-    where: { id: existingOrderId },
-    data: {
-      subtotal: new Prisma.Decimal(Number(existingOrder.subtotal) + amendmentSubtotal),
-      taxAmount: new Prisma.Decimal(Number(existingOrder.taxAmount) + amendmentTax),
-      deliveryFee: new Prisma.Decimal(Number(existingOrder.deliveryFee) + amendmentDeliveryFee),
-      total: new Prisma.Decimal(Number(existingOrder.total) + amendmentTotal),
-    },
-  });
 
   // Mark draft order as converted
   await updateDraftOrderStatus(draftOrderId, 'CONVERTED', {
