@@ -153,21 +153,21 @@ export const bacheloretteConfig: LandingConfig = {
   reviews: [
     {
       quote:
-        "The mimosa bar setup was unreal — the bride literally cried. Worth every penny just to not have to do a Costco run on day one.",
-      author: 'Lauren M.',
-      detail: 'Maid of Honor, June 2025',
+        "Party On Delivery was amazing! Took one big part off of my plate for my sister's bachelorette weekend. I didn't have to worry about drinks at all. Highly recommend them for all needs. Ordering online in advance and having what we needed waiting for us was perfect! 10/10",
+      author: 'Qiana Valentine',
+      detail: '★★★★★ via Google',
     },
     {
       quote:
-        'Booked the Lake Day & Night package three days out. They had champagne on ice waiting at the dock when we boarded.',
-      author: 'Jess R.',
-      detail: 'Bridesmaid, Lake Travis weekend',
+        "Party On Delivery made our weekend absolutely effortless and so much fun! They brought all our alcohol right to our Airbnb! We added the Skinnyrita drink package and it even came with a dispenser so our group could keep the drinks flowing. If you want that luxury, full-service party vibe brought to you anywhere — this is the team to call!",
+      author: 'Austin Bach Babes',
+      detail: '★★★★★ via Google',
     },
     {
       quote:
-        "Coordinated everything by text — sent the brunch package right when we were getting ready. So discreet, so smooth.",
-      author: 'Tay W.',
-      detail: 'Bach planner, Dallas',
+        "I would recommend this service to anyone who is going on a boat cruise! It was so nice to just show up to the boat and have all our cocktail ingredients and seltzers there. The recipes are on the pitcher and are easy for anyone to make! Prices are very reasonable, and anything you have left over you can take home!",
+      author: 'Perla Albiter',
+      detail: '★★★★★ via Google',
     },
   ],
 

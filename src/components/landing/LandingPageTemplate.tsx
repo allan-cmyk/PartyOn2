@@ -273,7 +273,7 @@ export default function LandingPageTemplate({ config, catalog, upsellProducts }:
         </div>
       </section>
 
-      {/* HOW IT WORKS — chevron accordion: stacked on mobile, 2-col grid on desktop */}
+      {/* HOW IT WORKS — chevron accordion: stacked on mobile, staircase cascade on desktop */}
       <section className="py-12 md:py-20" style={{ background: T.cream }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-8 md:mb-12">
@@ -284,13 +284,23 @@ export default function LandingPageTemplate({ config, catalog, upsellProducts }:
               {config.stepsHeadline}
             </h2>
           </div>
-          <div className="space-y-3 md:space-y-0 md:grid md:grid-cols-2 md:gap-5 md:items-start">
+          <div className="space-y-3 md:space-y-4">
             {config.steps.map((s, i) => {
               const isOpen = openSteps.has(i);
+              // Desktop-only staircase: each step shifts further right.
+              // Literal Tailwind classes (not CSS-var) so JIT compiles clean.
+              const offsetClass =
+                i === 0
+                  ? 'md:ml-0'
+                  : i === 1
+                    ? 'md:ml-[9%]'
+                    : i === 2
+                      ? 'md:ml-[18%]'
+                      : 'md:ml-[27%]';
               return (
                 <div
                   key={s.n}
-                  className="rounded-2xl bg-white border overflow-hidden transition-shadow"
+                  className={`rounded-2xl bg-white border overflow-hidden transition-shadow md:w-[73%] ${offsetClass}`}
                   style={{
                     borderColor: isOpen ? T.blue : '#E5E7EB',
                     boxShadow: isOpen
