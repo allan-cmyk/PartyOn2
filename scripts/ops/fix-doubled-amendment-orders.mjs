@@ -10,11 +10,14 @@
  *
  * This script:
  *   1. Loads every PAID OrderAmendment.
- *   2. For each, reverses one application of the diff:
+ *   2. For each, checks whether the order is already in the correct post-fix state
+ *      (Order.total matches OrderAmendment.newTotal within $0.02). If yes, skips
+ *      — the script is safe to re-run any number of times.
+ *   3. Otherwise, reverses one application of the diff:
  *        - "added" items: subtract the added qty from current OrderItem (delete row if hits 0)
  *        - "modified" items: subtract (newQuantity - oldQuantity) from current
  *        - "removed" items: re-add them (the second apply over-deleted)
- *   3. Recomputes Order.subtotal / taxAmount / total from the resulting items.
+ *   4. Recomputes Order.subtotal / taxAmount / total from the resulting items.
  *
  * Run with DRY_RUN=1 first to see the planned changes without writing.
  *
@@ -47,6 +50,14 @@ async function main() {
     const changes = a.changes;
     console.log(`\n--- Order #${o.orderNumber} (${o.customerName}) — amendment ${a.id.slice(0, 8)} ---`);
     console.log('  amendment delta:', a.amountDelta.toString(), '| previous total:', a.previousTotal.toString(), '-> new total:', a.newTotal.toString());
+
+    // Idempotence guard: if Order.total already equals OrderAmendment.newTotal
+    // (within rounding tolerance), the fix has already been applied. Skip.
+    const totalGap = Number(o.total) - Number(a.newTotal);
+    if (Math.abs(totalGap) < 0.02) {
+      console.log('  SKIP: already correct (order.total matches amendment.newTotal).');
+      continue;
+    }
 
     const itemMap = new Map(o.items.map((i) => [`${i.productId}|${i.variantId}`, i]));
     const planned = []; // { kind, item?, deltaQty, reason }
