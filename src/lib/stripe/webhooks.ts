@@ -10,7 +10,6 @@ import { prisma } from '@/lib/database/client';
 import { createOrderFromCheckout, createRefund, getOrderByCheckoutSession, createOrderFromDraftOrder } from '@/lib/inventory/services/order-service';
 import { getCartById } from '@/lib/inventory/services/cart-service';
 import { getDraftOrderById, updateDraftOrderStatus, DraftOrderWithTotal } from '@/lib/draft-orders';
-import { Prisma } from '@prisma/client';
 import {
   sendOrderConfirmationEmail,
   sendPaymentFailedEmail,
