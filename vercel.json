@@ -47,6 +47,10 @@
     {
       "path": "/api/cron/measure-operations-recommendations",
       "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/cron/finance-stripe-sync",
+      "schedule": "15 7 * * *"
     }
   ]
 }
