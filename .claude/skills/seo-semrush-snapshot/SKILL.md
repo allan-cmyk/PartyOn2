@@ -1,7 +1,70 @@
 ---
 name: seo-semrush-snapshot
-description: Cowork browser-automation skill that logs into SEMrush weekly, captures the 5 dashboards relevant to partyondelivery.com (Position Tracking, Organic Research, Backlink Analytics, Site Audit, Keyword Magic), and writes screenshots + scraped JSON to data/seo/semrush/<YYYY-MM-DD>/ for the SEO Director agent to consume.
+description: Cowork browser-automation skill (now driven by the Claude in Chrome extension on a logged-in SEMrush session) that captures the 8 dashboards relevant to partyondelivery.com — Position Tracking, Keyword Gap Analysis, Site Audit, Organic Research, Backlink Analytics, AI Toolkit Brand Visibility (ChatGPT/Gemini/Perplexity/Copilot), AI Prompt Tracking, and Keyword Magic — writing screenshots + scraped JSON to data/seo/semrush/<YYYY-MM-DD>/ for the SEO Director agent to consume.
 ---
+
+## V2 mode — Claude in Chrome extension (preferred)
+
+The original Phase 1 contract below assumed Playwright. As of 2026-05 we run the same captures through the **Claude in Chrome extension** instead — the user is signed into SEMrush in their normal browser, so:
+
+- No env vars for SEMRUSH_EMAIL/PASSWORD/COOKIE
+- No 2FA detection branch (operator handles it interactively before kickoff)
+- Per-surface scrape blueprint lives in the admin UI at `/admin/brians-stuff?tab=seo` ("Chrome-extension scrape blueprint" section)
+
+### Parser pipeline (added 2026-05)
+
+The Chrome capture step is now strictly "drive the browser + dump raw text". Structured JSON is produced by a **separate deterministic parser**, not by the model. This eliminates the LLM-transcription brittleness that the content-integrity hook used to reject:
+
+- Capture: `/scrape-semrush-pod` writes one stub JSON per surface containing `raw_body_text` (the `document.body.innerText` from the dashboard).
+- Parse: `node scripts/seo/parse-semrush-snapshot.mjs data/seo/semrush/<date>/` runs deterministic regex extractors and fills in the `extracted` field on each stub. Parser source: `scripts/seo/parse-semrush-snapshot.mjs`.
+- Test: `node scripts/seo/parse-semrush-snapshot.mjs --test` diffs the parser output against the committed May 13 fixture in the sibling `PartyOn2-seo-snapshots` repo. Must pass before any parser changes ship.
+
+The parser owns the per-dashboard schema — do NOT duplicate schema definitions in this skill or the slash command. If you need to add a new captured field, add it to the parser's sub-parser for that dashboard, add a fixture for it, and update the test.
+
+### Eight surfaces (was five)
+
+| # | Surface | Tier | Notes |
+|---|---|---|---|
+| 1 | Position Tracking | ready | Per-keyword rank + WoW delta. |
+| 2 | **Keyword Gap Analysis** | ready | NEW — vs. 3 named competitors; agent picks top 3 by topical overlap. |
+| 3 | Site Audit | ready | Triggers a fresh crawl if last run > 7 days old. |
+| 4 | Organic Research | ready | Top pages + position buckets. |
+| 5 | Backlink Analytics | medium | Backlink Audit (toxicity) requires a project; falls back to overview. |
+| 6 | **AI Toolkit · Brand Visibility (4 LLMs)** | medium | NEW — ChatGPT / Gemini / Perplexity / Copilot. Canvas charts → screenshot + scrape legend numbers only. Claude NOT yet a tracked LLM in SEMrush as of 2026 H1. |
+| 7 | **AI Toolkit · Prompt Tracking** | medium | NEW — per-prompt × per-LLM response text, citation rank, competitors mentioned. Plan-gated (AI Toolkit add-on). |
+| 8 | Keyword Magic | conditional | Queue-driven via `_queue/keyword-magic.txt`. |
+
+### Output paths (V2)
+
+```
+data/seo/semrush/<YYYY-MM-DD>/
+├── position-tracking.{png,json}
+├── keyword-gap.{png,json}
+├── site-audit.{png,json}
+├── organic-research.{png,json}
+├── backlink-analytics.{png,json}
+├── ai-brand-visibility/
+│   ├── chatgpt.{png,json}
+│   ├── gemini.{png,json}
+│   ├── perplexity.{png,json}
+│   └── copilot.{png,json}
+├── ai-prompt-tracking.json   ← rows are (prompt × LLM) pairs
+├── keyword-magic/
+└── FAILED.md                 ← only on failure, per-surface allowed
+```
+
+### Known friction (read before kickoff)
+
+- **AI Toolkit tier gate.** Brand Visibility + Prompt Tracking require SEMrush's paid AI Toolkit add-on. Confirm POD's plan covers it. If not, both surfaces 404 and are skipped with a per-surface `FAILED.md`.
+- **Canvas charts.** AI Visibility share-of-voice over time is rendered to `<canvas>` — we capture screenshots + the DOM-readable legend numbers, not full series data.
+- **Project ID discovery.** Position Tracking / Site Audit / AI Toolkit URLs need a SEMrush `projectId`. Agent auto-discovers from `/projects/` on first run and writes it back into `tenants/party-on-delivery.json`.
+- **Rate limits.** Sleep 3–5s between surfaces, longer between paginated table reads.
+- **No scripted login.** Extension assumes you're already signed in. Expired session → `FAILED.md` + ask operator to re-auth.
+
+---
+
+## Original Phase 1 contract (Playwright path — kept for reference)
+
 
 # seo-semrush-snapshot
 
