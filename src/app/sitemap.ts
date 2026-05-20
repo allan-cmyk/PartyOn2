@@ -63,6 +63,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/blog',
     '/blogs/news',
     '/weddings',
+    '/wedding-drink-calculator',
     '/boat-parties',
     '/austin-bachelor-party-delivery',
     '/austin-bachelorette-party-delivery',
