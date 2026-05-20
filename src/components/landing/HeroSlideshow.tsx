@@ -62,13 +62,13 @@ const SLIDES: { src: string; alt: string; kind: 'cocktail' | 'party' }[] = [
     kind: 'cocktail',
   },
   {
-    src: '/images/hero/bach-hero-rainey.webp',
-    alt: 'Rainey Street nightlife',
+    src: '/images/boat-heroes/boat-party-epic-sunset.webp',
+    alt: 'Premier Party Cruises sunset boat party on Lake Travis',
     kind: 'party',
   },
 ];
 
-const INTERVAL_MS = 500;
+const INTERVAL_MS = 1500;
 
 export default function HeroSlideshow() {
   const [index, setIndex] = useState(0);

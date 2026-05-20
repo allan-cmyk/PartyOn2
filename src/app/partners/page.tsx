@@ -197,7 +197,7 @@ export default function AustinPartnersPage() {
                   Lake Travis boat rentals
                 </Link>{' '}
                 and double-decker party boats to unforgettable{' '}
-                <Link href="/bach-parties" className="text-brand-yellow hover:text-yellow-600">
+                <Link href="/austin-bachelor-party-delivery" className="text-brand-yellow hover:text-yellow-600">
                   bachelorette party services
                 </Link>{' '}
                 on South Congress, our curated directory features Austin&apos;s top-rated vendors.

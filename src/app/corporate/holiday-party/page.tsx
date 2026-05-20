@@ -975,7 +975,7 @@ export default function CorporateHolidayPartyPage() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/bach-parties" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">
+                  <Link href="/austin-bachelor-party-delivery" className="text-gray-600 hover:text-brand-yellow text-sm transition-colors">
                     Celebrations
                   </Link>
                 </li>

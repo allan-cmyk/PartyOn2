@@ -55,6 +55,10 @@ export type Step = {
   body: string;
   /** Optional compact body used on the mobile-friendly 3-column layout. */
   shortBody?: string;
+  /** Short tagline shown in the collapsed accordion header (italic, under the title). */
+  teaser?: string;
+  /** Optional supporting image shown alongside the expanded body. */
+  image?: string;
 };
 
 export type Venue = {

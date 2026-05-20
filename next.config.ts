@@ -205,10 +205,17 @@ const nextConfig: NextConfig = {
       // ALL blog URL truncation redirects REMOVED - they were blocking real blog posts
       // The :suffix* pattern matches ZERO or more chars, so it was catching exact URLs
 
-      // Truncated partial URLs (only match if there's actual truncation, not the valid /products page)
+      // Old /bach-parties URL space → new canonical bach landing.
+      // Catches /bach-parties, /bach-parties/packages/<tier>, /bach-parties/products/<sku>,
+      // and any other historical sub-routes that may still be indexed externally.
       {
-        source: '/bach-parties/products:suffix+',  // Changed from * to + (requires at least 1 char)
-        destination: '/bach-parties',
+        source: '/bach-parties',
+        destination: '/austin-bachelor-party-delivery',
+        permanent: true,
+      },
+      {
+        source: '/bach-parties/:path+',
+        destination: '/austin-bachelor-party-delivery',
         permanent: true,
       },
       {
