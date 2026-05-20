@@ -844,6 +844,12 @@ model Order {
   stripePaymentIntentId   String? @unique @map("stripe_payment_intent_id")
   stripeCheckoutSessionId String? @unique @map("stripe_checkout_session_id")
   stripeChargeId          String? @map("stripe_charge_id")
+  // Stripe net amounts — snapshotted from the BalanceTransaction at order
+  // creation (or backfilled by scripts/finance/backfill-stripe-history.ts).
+  // All in CENTS to match Stripe's API. null = not yet snapshotted.
+  stripeChargeAmountCents Int?     @map("stripe_charge_amount_cents")
+  stripeFeesCents         Int?     @map("stripe_fees_cents")
+  netReceivedCents        Int?     @map("net_received_cents")
 
   // Amounts
   subtotal       Decimal @db.Decimal(10, 2)
@@ -2693,6 +2699,79 @@ model PlaidTransaction {
   @@index([accountId, date])
   @@index([reconciledAt])
   @@map("plaid_transactions")
+}
+
+/// Stripe payouts to the bank (Phase 1A). Lets us reconcile Plaid bank
+/// deposits to Stripe payouts in Phase 2C. Populated by:
+///   - /api/webhooks/stripe (payout.* events)
+///   - /api/cron/finance-stripe-sync (catch-up sweep)
+///   - scripts/finance/backfill-stripe-history.ts (historical)
+model StripePayout {
+  id                String   @id @default(cuid())
+  stripePayoutId    String   @unique @map("stripe_payout_id")
+  amountCents       Int      @map("amount_cents")
+  currency          String   @default("usd")
+  status            String   // 'paid' | 'pending' | 'in_transit' | 'failed' | 'canceled'
+  arrivalDate       DateTime @map("arrival_date") @db.Date
+  method            String?  // 'standard' | 'instant'
+  destination       String?  // bank account fingerprint or last 4
+  description       String?  @db.Text
+  failureCode       String?  @map("failure_code")
+  failureMessage    String?  @map("failure_message") @db.Text
+  /// Set in Phase 2C when a matching PlaidTransaction is found.
+  matchedPlaidTxId  String?  @map("matched_plaid_tx_id")
+  matchedAt         DateTime? @map("matched_at")
+  /// Full Stripe object for audit / future fields.
+  rawPayload        Json     @map("raw_payload")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@index([arrivalDate])
+  @@index([status])
+  @@index([matchedPlaidTxId])
+  @@map("stripe_payouts")
+}
+
+/// Daily Stripe balance snapshot (Phase 1A). Populated by
+/// /api/cron/finance-stripe-sync. Lets the dashboard answer "how much
+/// is sitting in Stripe vs the bank?" without hammering the live API.
+model StripeBalance {
+  id                String   @id @default(cuid())
+  capturedAt        DateTime @default(now()) @map("captured_at")
+  availableCents    Int      @map("available_cents")
+  pendingCents      Int      @map("pending_cents")
+  instantAvailableCents Int? @map("instant_available_cents")
+  reservedCents     Int?     @map("reserved_cents")
+  currency          String   @default("usd")
+  rawPayload        Json     @map("raw_payload")
+
+  @@index([capturedAt])
+  @@map("stripe_balances")
+}
+
+/// Stripe disputes / chargebacks (Phase 1A). One row per dispute lifecycle;
+/// updated on every charge.dispute.* webhook event.
+model ChargeDispute {
+  id                  String   @id @default(cuid())
+  stripeDisputeId     String   @unique @map("stripe_dispute_id")
+  stripeChargeId      String   @map("stripe_charge_id")
+  stripePaymentIntentId String? @map("stripe_payment_intent_id")
+  amountCents         Int      @map("amount_cents")
+  currency            String   @default("usd")
+  reason              String?  // 'fraudulent' | 'product_not_received' | 'duplicate' | etc.
+  status              String   // 'warning_needs_response' | 'needs_response' | 'under_review' | 'won' | 'lost' | etc.
+  evidenceDueBy       DateTime? @map("evidence_due_by")
+  isChargeRefundable  Boolean  @default(false) @map("is_charge_refundable")
+  /// Order this dispute relates to (best-effort link via stripeChargeId).
+  orderId             String?  @map("order_id")
+  rawPayload          Json     @map("raw_payload")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@index([stripeChargeId])
+  @@index([orderId])
+  @@map("charge_disputes")
 }
 
 model SyncLog {
