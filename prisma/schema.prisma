@@ -2554,6 +2554,147 @@ model OperationsSnapshot {
   @@map("operations_snapshots")
 }
 
+/// Finance Director recommendation queue (Phase 0 scaffolding; populated in Phase 5).
+/// Mirrors OperationsRecommendation exactly so the shared lib at
+/// src/lib/recommendations/{lifecycle,measurement,card-types}.ts works unchanged.
+///
+/// dedupeKey = signalKind + ':' + targetEntityId.
+model FinanceRecommendation {
+  id                String    @id @default(cuid())
+  signalKind        String    @map("signal_kind")
+  severity          String    // 'urgent' | 'high' | 'normal'
+  title             String
+  evidence          Json
+  targetEntityType  String    @map("target_entity_type")
+  targetEntityId    String    @map("target_entity_id")
+  actionPayload     Json      @map("action_payload")
+  status            String    @default("open")
+  snoozeUntil       DateTime? @map("snooze_until")
+  dismissReason     String?   @map("dismiss_reason") @db.Text
+  actionLog         Json      @default("[]") @map("action_log")
+  source            String    @default("auto-snapshot")
+  shippedAt         DateTime? @map("shipped_at")
+  measuredAt        DateTime? @map("measured_at")
+  measurementResult Json?     @map("measurement_result")
+  dedupeKey         String    @unique @map("dedupe_key")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@index([severity, status])
+  @@index([signalKind, status])
+  @@map("finance_recommendations")
+}
+
+/// Daily finance snapshot — populated by /api/cron/finance-snapshot starting Phase 1C.
+/// Payload schema defined per-phase; Phase 0 ships the table empty.
+model FinanceSnapshot {
+  id           String   @id @default(cuid())
+  snapshotDate DateTime @map("snapshot_date") @db.Date
+  payload      Json
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([snapshotDate])
+  @@map("finance_snapshots")
+}
+
+/// Single-row holder for the active QuickBooks Online OAuth state. Refresh
+/// token rotates on each refresh; the row is updated in place. Operator-created
+/// via the /admin/finance/connect-quickbooks OAuth flow — never seeded by migration.
+model IntuitOAuthState {
+  id                  String    @id @default("singleton")
+  realmId             String    @map("realm_id")
+  accessToken         String    @map("access_token") @db.Text
+  refreshToken        String    @map("refresh_token") @db.Text
+  accessTokenExpires  DateTime  @map("access_token_expires")
+  refreshTokenExpires DateTime  @map("refresh_token_expires")
+  environment         String    @default("sandbox") // 'sandbox' | 'production'
+  lastRefreshedAt     DateTime? @map("last_refreshed_at")
+  lastError           String?   @map("last_error") @db.Text
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime  @updatedAt @map("updated_at")
+
+  @@map("intuit_oauth_state")
+}
+
+/// One row per linked Plaid Item (institution). Operator can re-link the same
+/// institution; existing row is upserted by item_id.
+model PlaidItem {
+  id              String   @id @default(cuid())
+  itemId          String   @unique @map("item_id")
+  accessToken     String   @map("access_token") @db.Text
+  institutionId   String?  @map("institution_id")
+  institutionName String?  @map("institution_name")
+  environment     String   @default("sandbox") // 'sandbox' | 'development' | 'production'
+  status          String   @default("active") // 'active' | 'login_required' | 'error' | 'removed'
+  lastSyncAt      DateTime? @map("last_sync_at")
+  lastError       String?  @map("last_error") @db.Text
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  accounts     PlaidAccount[]
+  transactions PlaidTransaction[]
+
+  @@map("plaid_items")
+}
+
+/// One row per account within a Plaid Item (checking, savings, credit card).
+model PlaidAccount {
+  id               String   @id @default(cuid())
+  plaidItemId      String   @map("plaid_item_id")
+  accountId        String   @unique @map("account_id")
+  name             String
+  officialName     String?  @map("official_name")
+  mask             String?
+  type             String   // 'depository' | 'credit' | 'loan' | 'investment'
+  subtype          String?
+  currentBalance   Decimal? @map("current_balance") @db.Decimal(15, 2)
+  availableBalance Decimal? @map("available_balance") @db.Decimal(15, 2)
+  isoCurrencyCode  String?  @default("USD") @map("iso_currency_code")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  item PlaidItem @relation(fields: [plaidItemId], references: [id], onDelete: Cascade)
+
+  @@index([plaidItemId])
+  @@map("plaid_accounts")
+}
+
+/// Bank transactions ingested via Plaid webhook + nightly sync.
+/// Phase 0 ships the table empty; Phase 2C populates and reconciles.
+model PlaidTransaction {
+  id                              String    @id @default(cuid())
+  plaidItemId                     String    @map("plaid_item_id")
+  accountId                       String    @map("account_id")
+  transactionId                   String    @unique @map("transaction_id")
+  date                            DateTime  @db.Date
+  authorizedDate                  DateTime? @map("authorized_date") @db.Date
+  amount                          Decimal   @db.Decimal(15, 2) // positive = outflow per Plaid convention
+  isoCurrencyCode                 String?   @default("USD") @map("iso_currency_code")
+  name                            String
+  merchantName                    String?   @map("merchant_name")
+  pending                         Boolean   @default(false)
+  paymentChannel                  String?   @map("payment_channel")
+  category                        String[]  @default([])
+  personalFinanceCategoryPrimary  String?   @map("pfc_primary")
+  personalFinanceCategoryDetailed String?   @map("pfc_detailed")
+  matchedStripePayoutId           String?   @map("matched_stripe_payout_id")
+  matchedReceivingInvoiceId       String?   @map("matched_receiving_invoice_id")
+  qbTransactionId                 String?   @map("qb_transaction_id")
+  qbCategoryAssigned              String?   @map("qb_category_assigned")
+  reconciledAt                    DateTime? @map("reconciled_at")
+  createdAt                       DateTime  @default(now()) @map("created_at")
+  updatedAt                       DateTime  @updatedAt @map("updated_at")
+
+  item PlaidItem @relation(fields: [plaidItemId], references: [id], onDelete: Cascade)
+
+  @@index([plaidItemId])
+  @@index([date])
+  @@index([accountId, date])
+  @@index([reconciledAt])
+  @@map("plaid_transactions")
+}
+
 model SyncLog {
   id                Int       @id @default(autoincrement())
   startedAt         DateTime  @default(now()) @map("started_at")
