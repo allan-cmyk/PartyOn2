@@ -182,6 +182,13 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
 
+      // Product slug rename: ping pong balls 10pcs → 6pcs (pack size changed)
+      {
+        source: '/products/ping-pong-balls-10pcs',
+        destination: '/products/ping-pong-balls-6pcs',
+        permanent: true,
+      },
+
       // Main ordering page redirects
       {
         source: '/products',
