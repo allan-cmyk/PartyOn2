@@ -10,23 +10,24 @@ import JoinOrderModal from '@/components/partners/JoinOrderModal';
 import InnCahootsHero from '@/components/partners/InnCahootsHero';
 import LazyVideo from '@/components/partners/LazyVideo';
 
+// Real Google reviews — see all 94+ at https://g.co/r/<placeholder>
 const TESTIMONIALS = [
   {
-    reviewer: 'Bachelorette Weekend Group',
-    text: 'Fridge was stocked when we checked in for our bachelorette weekend. Didn\'t have to make a single liquor store run.',
+    reviewer: 'Mary H.',
+    rating: 5,
+    text: 'Party on Delivery did a great job helping me plan drinks for my son\'s wedding reception, setting us up with a good bartender, delivering the drinks as ordered and refunding unopened cases afterwards. It was a pleasure working with Allan, who made the whole process so easy for me.',
   },
   {
-    reviewer: 'Corporate Offsite Team',
-    text: 'Ordered for our corporate offsite — had everything delivered to the suite before the team arrived. So easy.',
+    reviewer: 'Verified Google Review',
+    rating: 5,
+    text: 'I recently ordered from this business for our company party on Lake Travis, and they exceeded expectations! They delivered everything chilled and ready in a large cooler, making it super convenient. Communication was excellent, and they even provided items that weren\'t listed on their website. Everything arrived right on time, and the whole experience was seamless.',
   },
-  {
-    reviewer: 'Wedding Party',
-    text: 'We fridge-stocked our hotel rooms the night before the wedding. One less thing to worry about on the big day.',
-  },
-  {
-    reviewer: 'Girls\' Trip Crew',
-    text: 'Walked into our room and the fridge was full of rosé and seltzers. Best way to start a weekend on 6th Street.',
-  },
+  // TODO: paste 2 more real reviews from Google Business Profile here.
+  // {
+  //   reviewer: 'Firstname L.',
+  //   rating: 5,
+  //   text: 'Paste full review text here',
+  // },
 ];
 
 const FAQ_ITEMS = [
@@ -227,16 +228,26 @@ function InnCahootsPageContent(): ReactElement {
             <p className="text-gray-500 tracking-[0.1em] uppercase text-sm mb-3">
               Real Reviews
             </p>
-            <h2 className="font-heading text-3xl md:text-4xl text-gray-900 tracking-wide">
-              What Our Hotel Guests Say
+            <h2 className="font-heading text-3xl md:text-4xl text-gray-900 tracking-wide mb-4">
+              What Our Customers Say
             </h2>
+            <div className="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-full px-4 py-2 shadow-sm">
+              <div className="flex gap-0.5">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+              <span className="text-sm font-medium text-gray-900">4.9 · 94+ reviews on Google</span>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {TESTIMONIALS.map((review, idx) => (
               <div key={idx} className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                 <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
+                  {[...Array(review.rating)].map((_, i) => (
                     <svg key={i} className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
