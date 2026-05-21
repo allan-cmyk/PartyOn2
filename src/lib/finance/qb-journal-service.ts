@@ -30,12 +30,13 @@ import {
 const ONE_DAY_MS = 86_400_000;
 
 export type JournalStatus =
-  | 'PENDING_APPROVAL'
-  | 'APPROVED'
+  | 'PENDING_APPROVAL' // legacy — not used in current autonomous flow
+  | 'APPROVED'         // legacy
   | 'POSTED'
-  | 'REJECTED'
+  | 'REJECTED'         // legacy / manual
   | 'FAILED'
-  | 'SUPERSEDED';
+  | 'SUPERSEDED'
+  | 'REVERSED';        // operator-initiated rollback via /admin/finance/journals
 
 export interface JournalConfig {
   stripeClearingAccountId: string | null;
@@ -441,6 +442,143 @@ export async function approveAndPostJournal(
       },
     });
   }
+  return toSaved(updated);
+}
+
+/**
+ * Autonomous flow (updated 2026-05-21 per operator decision): the cron
+ * computes the draft AND immediately posts it to QB in one step. Persists
+ * either POSTED (happy path) or FAILED (QB error). No PENDING_APPROVAL
+ * state in this flow.
+ *
+ * Idempotency: if a POSTED entry already exists for the same entryDate
+ * we skip without posting (don't double-post the same day).
+ */
+export async function draftAndPostAutonomous(
+  draft: JournalDraft,
+  actor: string
+): Promise<{ saved: SavedJournalEntry; skipped?: 'already_posted' }> {
+  const entryDate = new Date(`${draft.entryDate}T00:00:00Z`);
+  const existing = await prisma.qbJournalEntry.findFirst({
+    where: { entryDate, status: { in: ['POSTED', 'APPROVED'] } },
+  });
+  if (existing) {
+    return { saved: toSaved(existing), skipped: 'already_posted' };
+  }
+
+  // Supersede any stale PENDING / FAILED for the same day so we don't
+  // accumulate duplicates in the UI.
+  await prisma.qbJournalEntry.updateMany({
+    where: { entryDate, status: { in: ['PENDING_APPROVAL', 'FAILED'] } },
+    data: { status: 'SUPERSEDED' },
+  });
+
+  // Persist a row first so we have an ID to attach the audit log to,
+  // even if the QB POST throws.
+  const row = await prisma.qbJournalEntry.create({
+    data: {
+      entryDate,
+      status: 'PENDING_APPROVAL', // transient — flipped to POSTED or FAILED below
+      sourcePayload: draft.source as unknown as object,
+      proposedPayload: draft.proposed as unknown as object,
+      lineSummary: draft.lineSummary as unknown as object,
+      actionLog: [
+        {
+          at: new Date().toISOString(),
+          actor,
+          from: '(none)',
+          to: 'DRAFTED',
+        },
+      ] as unknown as object,
+    },
+  });
+
+  try {
+    const result = await postJournalEntryToQb(draft.proposed);
+    const updated = await prisma.qbJournalEntry.update({
+      where: { id: row.id },
+      data: {
+        status: 'POSTED',
+        qbTransactionId: result.qbTransactionId,
+        postedAt: new Date(),
+        approvedBy: actor,
+        approvedAt: new Date(),
+        failureReason: null,
+        actionLog: appendLog(row.actionLog, {
+          at: new Date().toISOString(),
+          actor,
+          from: 'DRAFTED',
+          to: 'POSTED',
+          note: `QB JournalEntry ID ${result.qbTransactionId} (autonomous)`,
+        }) as unknown as object,
+      },
+    });
+    return { saved: toSaved(updated) };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    const updated = await prisma.qbJournalEntry.update({
+      where: { id: row.id },
+      data: {
+        status: 'FAILED',
+        failureReason: message,
+        actionLog: appendLog(row.actionLog, {
+          at: new Date().toISOString(),
+          actor,
+          from: 'DRAFTED',
+          to: 'FAILED',
+          note: message.slice(0, 240),
+        }) as unknown as object,
+      },
+    });
+    return { saved: toSaved(updated) };
+  }
+}
+
+/**
+ * Reverse a previously POSTED entry. Operator-initiated safety net.
+ * Writes a new JournalEntry to QB with debits + credits swapped, then
+ * marks the original REVERSED with a pointer to the reversing entry's
+ * QB id.
+ */
+export async function reverseJournal(
+  id: string,
+  actor: string,
+  reason: string
+): Promise<SavedJournalEntry> {
+  const row = await prisma.qbJournalEntry.findUnique({ where: { id } });
+  if (!row) throw new Error(`Journal entry ${id} not found`);
+  if (row.status !== 'POSTED') {
+    throw new Error(`Cannot reverse entry in status ${row.status} (must be POSTED)`);
+  }
+  if (!row.qbTransactionId) {
+    throw new Error(`Cannot reverse — entry has no QB transaction ID`);
+  }
+
+  const original = row.proposedPayload as unknown as QboJournalEntryPayload;
+  const reversePayload: QboJournalEntryPayload = {
+    txnDate: new Date().toISOString().slice(0, 10),
+    privateNote: `REVERSAL of QB JournalEntry ${row.qbTransactionId} (PartyOn id ${id}). Reason: ${reason}`,
+    lines: original.lines.map((l) => ({
+      ...l,
+      postingType: l.postingType === 'Debit' ? 'Credit' : 'Debit',
+      description: `Reversal: ${l.description ?? ''}`.trim(),
+    })),
+  };
+
+  const result = await postJournalEntryToQb(reversePayload);
+  const updated = await prisma.qbJournalEntry.update({
+    where: { id },
+    data: {
+      status: 'REVERSED',
+      actionLog: appendLog(row.actionLog, {
+        at: new Date().toISOString(),
+        actor,
+        from: 'POSTED',
+        to: 'REVERSED',
+        note: `Reversal posted as QB JournalEntry ${result.qbTransactionId}. Reason: ${reason}`,
+      }) as unknown as object,
+    },
+  });
   return toSaved(updated);
 }
 

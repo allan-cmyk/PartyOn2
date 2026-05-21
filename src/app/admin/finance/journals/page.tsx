@@ -9,7 +9,8 @@ type JournalStatus =
   | 'POSTED'
   | 'REJECTED'
   | 'FAILED'
-  | 'SUPERSEDED';
+  | 'SUPERSEDED'
+  | 'REVERSED';
 
 interface JournalLine {
   label: string;
@@ -72,14 +73,15 @@ function statusBadge(status: JournalStatus): string {
       return 'bg-red-100 text-red-800';
     case 'SUPERSEDED':
       return 'bg-gray-100 text-gray-500';
+    case 'REVERSED':
+      return 'bg-orange-100 text-orange-800';
   }
 }
 
 const STATUS_FILTERS: Array<JournalStatus | 'ALL'> = [
-  'PENDING_APPROVAL',
   'POSTED',
   'FAILED',
-  'REJECTED',
+  'REVERSED',
   'ALL',
 ];
 
@@ -87,7 +89,7 @@ export default function JournalsPage(): ReactElement {
   const [journals, setJournals] = useState<SavedJournalEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [statusFilter, setStatusFilter] = useState<JournalStatus | 'ALL'>('PENDING_APPROVAL');
+  const [statusFilter, setStatusFilter] = useState<JournalStatus | 'ALL'>('POSTED');
   const [busyId, setBusyId] = useState<string | null>(null);
 
   async function load(): Promise<void> {
@@ -113,8 +115,10 @@ export default function JournalsPage(): ReactElement {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statusFilter]);
 
-  async function approve(id: string): Promise<void> {
-    if (!confirm('Approve and post this journal entry to QuickBooks?')) return;
+  /** Manual retry for a FAILED entry. Calls the same approve endpoint
+   * (which re-posts the proposed payload). */
+  async function retry(id: string): Promise<void> {
+    if (!confirm('Retry posting this entry to QuickBooks?')) return;
     setBusyId(id);
     try {
       const res = await fetch(`/api/admin/finance/journals/${id}/approve`, {
@@ -124,18 +128,20 @@ export default function JournalsPage(): ReactElement {
       if (!body.success) setError(body.error);
       await load();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Approve failed');
+      setError(e instanceof Error ? e.message : 'Retry failed');
     } finally {
       setBusyId(null);
     }
   }
 
-  async function reject(id: string): Promise<void> {
-    const reason = prompt('Reject reason?');
+  async function reverse(id: string): Promise<void> {
+    const reason = prompt(
+      'Reverse this posted entry? A balanced mirror JournalEntry will be posted to QB.\n\nReason:'
+    );
     if (!reason || !reason.trim()) return;
     setBusyId(id);
     try {
-      const res = await fetch(`/api/admin/finance/journals/${id}/reject`, {
+      const res = await fetch(`/api/admin/finance/journals/${id}/reverse`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ reason }),
@@ -144,7 +150,7 @@ export default function JournalsPage(): ReactElement {
       if (!body.success) setError(body.error);
       await load();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Reject failed');
+      setError(e instanceof Error ? e.message : 'Reverse failed');
     } finally {
       setBusyId(null);
     }
@@ -156,8 +162,9 @@ export default function JournalsPage(): ReactElement {
         <div>
           <h1 className="text-2xl font-bold text-black">Sales journals → QuickBooks</h1>
           <p className="text-gray-600 text-sm">
-            Phase 2B of the Finance Director. Daily cron drafts one journal per
-            day; operator approval posts it to QB.
+            Phase 2B of the Finance Director. <strong>Autonomous</strong> — the
+            daily cron drafts + posts to QB at 08:00 UTC. Operator only sees
+            this page if something needs attention or to reverse an entry.
           </p>
         </div>
         <div className="flex gap-2 text-sm">
@@ -212,8 +219,8 @@ export default function JournalsPage(): ReactElement {
               key={j.id}
               j={j}
               busy={busyId === j.id}
-              onApprove={() => approve(j.id)}
-              onReject={() => reject(j.id)}
+              onRetry={() => retry(j.id)}
+              onReverse={() => reverse(j.id)}
             />
           ))}
         </div>
@@ -225,20 +232,18 @@ export default function JournalsPage(): ReactElement {
 function JournalCard({
   j,
   busy,
-  onApprove,
-  onReject,
+  onRetry,
+  onReverse,
 }: {
   j: SavedJournalEntry;
   busy: boolean;
-  onApprove: () => void;
-  onReject: () => void;
+  onRetry: () => void;
+  onReverse: () => void;
 }): ReactElement {
   const debits = j.lineSummary.filter((l) => l.postingType === 'Debit');
   const credits = j.lineSummary.filter((l) => l.postingType === 'Credit');
   const debitTotal = debits.reduce((s, l) => s + l.amountCents, 0);
   const creditTotal = credits.reduce((s, l) => s + l.amountCents, 0);
-  const canApprove = j.status === 'PENDING_APPROVAL' || j.status === 'FAILED';
-  const canReject = j.status === 'PENDING_APPROVAL' || j.status === 'FAILED';
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4 text-sm">
@@ -257,24 +262,25 @@ function JournalCard({
           )}
         </div>
         <div className="flex gap-2">
-          {canApprove && (
+          {j.status === 'FAILED' && (
             <button
               type="button"
-              onClick={onApprove}
+              onClick={onRetry}
               disabled={busy}
               className="px-3 py-1.5 bg-green-600 text-white text-xs rounded hover:bg-green-700 disabled:opacity-50"
             >
-              {busy ? 'Posting…' : 'Approve + post to QB'}
+              {busy ? 'Posting…' : 'Retry post to QB'}
             </button>
           )}
-          {canReject && (
+          {j.status === 'POSTED' && (
             <button
               type="button"
-              onClick={onReject}
+              onClick={onReverse}
               disabled={busy}
-              className="px-3 py-1.5 bg-white border border-gray-300 text-gray-800 text-xs rounded hover:bg-gray-50 disabled:opacity-50"
+              className="px-3 py-1.5 bg-white border border-orange-400 text-orange-700 text-xs rounded hover:bg-orange-50 disabled:opacity-50"
+              title="Posts a balanced mirror entry to QB"
             >
-              Reject
+              {busy ? 'Reversing…' : 'Reverse'}
             </button>
           )}
         </div>

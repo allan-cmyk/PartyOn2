@@ -1,19 +1,24 @@
 /**
  * GET /api/cron/finance-qb-post-sales
  *
- * Phase 2B — daily 08:00 UTC. Drafts a QB sales journal for yesterday but
- * does NOT post it. Operator must approve via /admin/finance/journals.
+ * Phase 2B — daily 08:00 UTC. **Autonomous**: drafts AND posts yesterday's
+ * sales journal to QuickBooks in one step. No operator approval click.
  *
- * Idempotent: if a PENDING_APPROVAL entry already exists for yesterday,
- * the new draft supersedes it (the prior is marked SUPERSEDED). POSTED /
- * REJECTED entries are not touched.
+ * Operator one-time setup:
+ *   1. Map QB account IDs at /admin/finance/journals/settings
+ *   2. Toggle `enabled` on
+ * After that, every day's journal lands in QB hands-free. Operator can
+ * still reverse a posted entry via /admin/finance/journals if needed.
+ *
+ * Idempotency: skips if a POSTED entry already exists for the target date.
+ * Failures persist as FAILED rows; the cron will retry the next day.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import {
   computeDailySalesJournal,
+  draftAndPostAutonomous,
   getJournalConfig,
-  persistDraft,
 } from '@/lib/finance/qb-journal-service';
 import { getStoredTokens } from '@/lib/finance/qb-client';
 
@@ -29,7 +34,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   const startedAt = Date.now();
   const errors: string[] = [];
-  let drafted: { id: string; entryDate: string } | null = null;
+  let posted: { id: string; entryDate: string; qbTransactionId: string | null; status: string } | null = null;
   let skipped: string | null = null;
 
   try {
@@ -76,15 +81,26 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     if (!draft) {
       skipped = `No paid orders on ${target} — nothing to journal`;
     } else {
-      const saved = await persistDraft(draft);
-      drafted = { id: saved.id, entryDate: saved.entryDate };
+      const result = await draftAndPostAutonomous(draft, 'cron-autonomous');
+      if (result.skipped === 'already_posted') {
+        skipped = `Already posted for ${target}`;
+      }
+      posted = {
+        id: result.saved.id,
+        entryDate: result.saved.entryDate,
+        qbTransactionId: result.saved.qbTransactionId,
+        status: result.saved.status,
+      };
+      if (result.saved.status === 'FAILED' && result.saved.failureReason) {
+        errors.push(`QB post failed: ${result.saved.failureReason}`);
+      }
     }
   } catch (err) {
     errors.push(err instanceof Error ? err.message : String(err));
   }
 
   const report = {
-    drafted,
+    posted,
     skipped,
     errors,
     durationMs: Date.now() - startedAt,

@@ -236,9 +236,9 @@ export default function JournalsSettingsPage(): ReactElement {
                 onChange={(e) => setField('enabled', e.target.checked)}
                 className="border border-gray-300 rounded"
               />
-              <span>Enable daily journal drafting</span>
+              <span>Enable daily auto-post to QuickBooks</span>
               <span className="text-gray-500 text-xs">
-                (cron silently skips when off)
+                (kill switch — cron silently skips when off)
               </span>
             </label>
             <button

@@ -89,7 +89,7 @@ Anything beyond "the next phase in sequence" is out of scope at any given moment
 | Accounting software | **QuickBooks Online** | Use Intuit Developer API. OAuth2 connection, sandbox first, then production. Can read AND write to QB. |
 | Bank feed | **Plaid (real-time API)** | Plaid Link in admin UI; subscribe to transaction webhooks; auto-match deposits → Stripe payouts and outflows → distributor invoice payments. |
 | Payroll | **Only contractor 1099s** | No W-2 payroll integration needed. Track contractor payouts (via Stripe Connect / ACH / outflow categorization) for year-end 1099-NEC prep. Threshold: $600/year per contractor per IRS rules. |
-| Autonomy ceiling | **Auto-categorize, recommend everything else** | Director can apply expense categories to bank transactions in QuickBooks without asking. Everything else (post journal entries, send payments, file taxes, mark distributor invoices paid) requires operator click. Mirrors the pattern of Marketing recommending + Ops giving inline action buttons. |
+| Autonomy ceiling | **Auto-categorize + auto-post sales journals; recommend everything else** | Director can (a) apply expense categories to Plaid transactions in QuickBooks and (b) post daily sales journals to QuickBooks without asking. Every autonomous write has a reverse-button safety net + a global kill switch. **Updated 2026-05-21** — original decision required operator-click on journals; operator rejected the daily-click friction and authorised the auto-post. Send-payments / file-taxes / mark-distributor-paid still require operator click. See saved memory `finance_autonomous_qb_sales_journals.md`. |
 
 ---
 
@@ -267,11 +267,15 @@ Originally scoped: add `invoice_total_cents` / `due_date` / `paid_at` / `paid_vi
 - Surface in `/admin/finance` dashboard as "OpEx by category"
 - Internal P&L becomes: revenue − COGS − OpEx (from QB) = net income
 
-### Phase 2B — QuickBooks: write sales journals (1 PR)
+### Phase 2B — QuickBooks: write sales journals (1 PR) — **autonomous**
 
-- Daily cron posts yesterday's sales summary to QB as a sales journal entry
-- Operator approval required per entry (autonomy decision #4)
-- Audit trail: every QB write logged with the source query + the resulting QB transaction ID
+- Daily cron drafts + POSTs yesterday's sales summary to QB as a journal entry in one step. **No operator approval click required** per updated decision 2026-05-21.
+- Operator one-time setup: map PartyOn concepts → QB account IDs at `/admin/finance/journals/settings`, toggle `enabled` on.
+- Safety nets:
+  - Global `enabled` kill switch on the config row — flip off and the cron silently skips.
+  - Per-entry "Reverse" action on POSTED entries — writes a balanced reverse JournalEntry to QB.
+  - `FAILED` rows on QB errors with the QB response stored verbatim; Phase 5 surfaces "QB sync error" recs.
+- Audit trail: every state transition appended to `action_log` JSON on the entry.
 
 ### Phase 2C — Plaid: auto-match + auto-categorize (1 PR)
 
