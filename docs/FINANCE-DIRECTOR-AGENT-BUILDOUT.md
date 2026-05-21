@@ -140,7 +140,7 @@ This list is exhaustive — these are the financial data sources Finance can pul
 | Stripe fees per charge | Can't compute true net revenue | Phase 1A |
 | Stripe payouts → bank | Can't reconcile bank deposits | Phase 1A |
 | Stripe disputes / chargebacks | Subscribed to webhook but no handler | Phase 1A |
-| AP on `ReceivingInvoice` (total, due date, paid status) | Can't tell which distributor invoices are unpaid | Phase 1B |
+| ~~AP on `ReceivingInvoice`~~ | **REMOVED** — distributor invoices live in QuickBooks; AP visibility comes from Phase 2A (QB read), not PartyOn-side modelling. | ~~Phase 1B~~ (cancelled) |
 | Operating expenses (rent, software, fuel, contractor pay) | Lives 100% in QB / Allan's head today | Phase 2 (QB sync) |
 | Tax remittance log | Can compute liability, can't prove what's been paid | Phase 4 |
 | Contractor 1099-NEC tracking | Need annual rollup ≥$600/contractor for IRS | Phase 3 |
@@ -244,11 +244,13 @@ This is genuinely multi-quarter work. Each phase is one or more PRs.
 
 **Why first:** Until Stripe net amounts are reconciliable, nothing else is trustworthy.
 
-### Phase 1B — AP on ReceivingInvoice (1 PR)
+### Phase 1B — AP on ReceivingInvoice **(CANCELLED 2026-05-20)**
 
-- `ALTER TABLE receiving_invoices ADD COLUMN invoice_total_cents BIGINT, due_date DATE, paid_at TIMESTAMP, paid_via TEXT`
-- Receiving UI gets fields for invoice total + due date at invoice-apply time
-- New "Outstanding AP" surface in `/admin/finance/ap` showing unpaid distributor invoices with aging
+Originally scoped: add `invoice_total_cents` / `due_date` / `paid_at` / `paid_via` to `receiving_invoices` + an `/admin/finance/ap` outstanding-AP dashboard.
+
+**Cancelled** by operator. Distributor invoices arrive electronically and live in QuickBooks already — PartyOn does not duplicate AP tracking. PR #83 was closed without merging. See saved memory `finance_no_internal_ap_tracking.md`. The Director gets AP visibility through Phase 2A (QB read), not PartyOn-side modelling.
+
+**New phase sequence:** 0 → 1A → **1C** → 2A → 2B → 2C → 3 → 4 → 5 → 6 (1B removed; total of 10 phases now, not 11).
 
 ### Phase 1C — Internal P&L (1 PR)
 
@@ -316,8 +318,8 @@ Heuristics the Finance Director surfaces as recommendations. These are starting 
 | # | Signal | Detection | Severity | Inline action |
 |---|---|---|---|---|
 | 1 | **Stripe payout failed to match a bank deposit** | StripePayout marked `paid` but no corresponding PlaidTransaction within 4 banking days | high | "Investigate" → opens Stripe payout + Plaid transaction comparison view |
-| 2 | **Distributor invoice past due** | `ReceivingInvoice.dueDate < today AND paidAt IS NULL` | high → urgent at >7d past due | "Mark paid" → opens AP page with invoice highlighted |
-| 3 | **Cash runway < 30 days** | (Bank balance + outstanding AR - committed AP) / avg daily burn < 30 | urgent | "Open cash dashboard" |
+| 2 | ~~Distributor invoice past due~~ | **REMOVED** — Phase 1B cancelled. AP lives in QuickBooks; if QB exposes a "past due AP" signal in Phase 2A, re-evaluate then. | — | — |
+| 3 | **Cash runway < 30 days** | (Bank balance from Plaid + outstanding AR from `DraftOrder`) / avg daily burn < 30. **No PartyOn-side AP component** — pull committed AP from QB once Phase 2A lands if needed. | urgent | "Open cash dashboard" |
 | 4 | **Gross margin trending down** | 30-day rolling gross margin % drops > 5pp from prior 30 days | high | "Open margin analysis" |
 | 5 | **Sales tax accrual exceeds remittance pace** | Cumulative taxAmount collected − cumulative tax remitted > one quarter's expected liability | high | "Open sales-tax dashboard" |
 | 6 | **Contractor approaching 1099 threshold** | Single contractor cumulative YTD payouts > $500 (early warning before $600 IRS threshold) | normal | "Review contractor totals" |

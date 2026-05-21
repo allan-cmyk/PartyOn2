@@ -51,6 +51,10 @@
     {
       "path": "/api/cron/finance-stripe-sync",
       "schedule": "15 7 * * *"
+    },
+    {
+      "path": "/api/cron/finance-snapshot",
+      "schedule": "45 7 * * *"
     }
   ]
 }
