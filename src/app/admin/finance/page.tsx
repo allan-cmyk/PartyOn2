@@ -115,6 +115,12 @@ export default function FinanceDashboardPage(): ReactElement {
         </div>
         <div className="flex gap-2 text-sm">
           <Link
+            href="/admin/finance/plaid"
+            className="px-3 py-1.5 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+          >
+            Plaid reconciliation
+          </Link>
+          <Link
             href="/admin/finance/journals"
             className="px-3 py-1.5 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
           >

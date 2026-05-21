@@ -2685,7 +2685,11 @@ model PlaidTransaction {
   personalFinanceCategoryPrimary  String?   @map("pfc_primary")
   personalFinanceCategoryDetailed String?   @map("pfc_detailed")
   matchedStripePayoutId           String?   @map("matched_stripe_payout_id")
+  /// Phase 1B cancelled — column kept for migration compatibility, never read.
   matchedReceivingInvoiceId       String?   @map("matched_receiving_invoice_id")
+  /// Phase 2C — links to QbExpense.qbTransactionId when we found a matching
+  /// QB Purchase/Bill for an outflow.
+  matchedQbExpenseId              String?   @map("matched_qb_expense_id")
   qbTransactionId                 String?   @map("qb_transaction_id")
   qbCategoryAssigned              String?   @map("qb_category_assigned")
   reconciledAt                    DateTime? @map("reconciled_at")
@@ -2699,6 +2703,21 @@ model PlaidTransaction {
   @@index([accountId, date])
   @@index([reconciledAt])
   @@map("plaid_transactions")
+}
+
+/// Per-Item Plaid /transactions/sync cursor (Phase 2C). Plaid's sync endpoint
+/// is incremental: each call returns "added/modified/removed" since the
+/// stored cursor + a new cursor to use next time. Stored per PlaidItem.
+model PlaidSyncCursor {
+  id           String   @id @default(cuid())
+  plaidItemId  String   @unique @map("plaid_item_id")
+  cursor       String?  @db.Text
+  lastSyncedAt DateTime? @map("last_synced_at")
+  lastError    String?  @map("last_error") @db.Text
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("plaid_sync_cursors")
 }
 
 /// QuickBooks Chart of Accounts cache (Phase 2A). Pulled from QB on each
