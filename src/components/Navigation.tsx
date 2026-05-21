@@ -134,6 +134,7 @@ export default function Navigation({
   const services = [
     { href: '/weddings', label: 'WEDDINGS' },
     { href: '/wedding-drink-calculator', label: 'WEDDING CALCULATOR' },
+    { href: '/austin-wedding-venue-boats', label: 'WEDDING VENUE BOATS' },
     { href: '/boat-parties', label: 'BOAT PARTIES' },
     { href: '/bach-parties', label: 'CELEBRATIONS' },
     { href: '/corporate', label: 'CORPORATE' },
