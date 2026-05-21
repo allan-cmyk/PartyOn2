@@ -59,6 +59,10 @@
     {
       "path": "/api/cron/finance-qb-pull",
       "schedule": "50 7 * * 1"
+    },
+    {
+      "path": "/api/cron/finance-qb-post-sales",
+      "schedule": "0 8 * * *"
     }
   ]
 }

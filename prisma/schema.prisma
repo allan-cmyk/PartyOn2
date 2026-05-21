@@ -2752,6 +2752,67 @@ model QbExpense {
   @@map("qb_expenses")
 }
 
+/// Per-day sales journal entries posted from PartyOn → QuickBooks (Phase 2B).
+/// Drafted by the daily cron, REQUIRE operator approval before posting
+/// (autonomy decision #4 — only qb-categorize bypasses operator click).
+model QbJournalEntry {
+  id                String   @id @default(cuid())
+  /// The PartyOn day this entry summarises (YYYY-MM-DD).
+  entryDate         DateTime @map("entry_date") @db.Date
+  status            String   @default("PENDING_APPROVAL")
+                              // 'PENDING_APPROVAL' | 'APPROVED' | 'POSTED' |
+                              // 'REJECTED' | 'FAILED' | 'SUPERSEDED'
+  /// Source data used to compute this entry (revenue, refunds, fees).
+  /// Snapshotted at draft time so the entry reflects the day even if a
+  /// later sync changes the numbers.
+  sourcePayload     Json     @map("source_payload")
+  /// The exact JournalEntry payload posted to QB on approval.
+  /// Re-drafts overwrite this until POSTED.
+  proposedPayload   Json     @map("proposed_payload")
+  /// Human-readable line list shown in the approval UI.
+  lineSummary       Json     @map("line_summary")
+  /// QB transaction ID returned on successful post.
+  qbTransactionId   String?  @map("qb_transaction_id")
+  postedAt          DateTime? @map("posted_at")
+  approvedBy        String?  @map("approved_by")
+  approvedAt        DateTime? @map("approved_at")
+  rejectedReason    String?  @map("rejected_reason") @db.Text
+  failureReason     String?  @map("failure_reason") @db.Text
+  /// Audit log of state transitions: [{at, actor, from, to, note?}]
+  actionLog         Json     @default("[]") @map("action_log")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@unique([entryDate, status], name: "qb_journal_entry_active_per_day")
+  @@index([status])
+  @@index([entryDate])
+  @@map("qb_journal_entries")
+}
+
+/// Operator-edited mapping from PartyOn revenue/expense concepts to QB
+/// account IDs (Phase 2B). Single-row pattern — operator picks from synced
+/// qb_accounts on /admin/finance/journals/settings. Stored in DB rather than
+/// env vars so the operator can update without a redeploy.
+model QbJournalConfig {
+  id                       String   @id @default("singleton")
+  /// QB account ID where net Stripe deposits land (typically a clearing /
+  /// undeposited-funds asset account).
+  stripeClearingAccountId  String?  @map("stripe_clearing_account_id")
+  stripeFeesAccountId      String?  @map("stripe_fees_account_id")
+  salesRevenueAccountId    String?  @map("sales_revenue_account_id")
+  salesTaxPayableAccountId String?  @map("sales_tax_payable_account_id")
+  deliveryRevenueAccountId String?  @map("delivery_revenue_account_id")
+  tipsPayableAccountId     String?  @map("tips_payable_account_id")
+  refundsAccountId         String?  @map("refunds_account_id")
+  discountsAccountId       String?  @map("discounts_account_id")
+  /// If false, the cron drafts entries but doesn't make them visible — used
+  /// while operator is still wiring up account IDs.
+  enabled                  Boolean  @default(false)
+  updatedAt                DateTime @updatedAt @map("updated_at")
+
+  @@map("qb_journal_config")
+}
+
 /// Stripe payouts to the bank (Phase 1A). Lets us reconcile Plaid bank
 /// deposits to Stripe payouts in Phase 2C. Populated by:
 ///   - /api/webhooks/stripe (payout.* events)
