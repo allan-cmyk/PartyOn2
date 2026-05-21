@@ -10,24 +10,29 @@ import JoinOrderModal from '@/components/partners/JoinOrderModal';
 import InnCahootsHero from '@/components/partners/InnCahootsHero';
 import LazyVideo from '@/components/partners/LazyVideo';
 
-// Real Google reviews — see all 94+ at https://g.co/r/<placeholder>
+// Real Google reviews pulled from GbpReview table (synced via Places API).
+// Selected for relevance to Inn Cahoots' BnB / lodging / event-venue use case.
 const TESTIMONIALS = [
+  {
+    reviewer: 'Austin Bach Babes',
+    rating: 5,
+    text: 'Party On Delivery made our weekend absolutely effortless and so much fun! They brought all our alcohol right to our Airbnb! No stress, no running around, just pure convenience! We added the Skinnyrita drink package and it even came with a dispenser so our group could keep the drinks flowing. If you want that luxury, full-service party vibe brought to you anywhere... pool, lake, backyard, you name it — this is the team to call!',
+  },
+  {
+    reviewer: 'Qiana Valentine',
+    rating: 5,
+    text: 'Party On Delivery was amazing! Took one big part off of my plate for my sister\'s bachelorette weekend. I didn\'t have to worry about drinks at all. Highly recommend them for all needs. Ordering online in advance and having what we needed waiting for us was perfect! 10/10',
+  },
   {
     reviewer: 'Mary H.',
     rating: 5,
     text: 'Party on Delivery did a great job helping me plan drinks for my son\'s wedding reception, setting us up with a good bartender, delivering the drinks as ordered and refunding unopened cases afterwards. It was a pleasure working with Allan, who made the whole process so easy for me.',
   },
   {
-    reviewer: 'Verified Google Review',
+    reviewer: 'Jodi Hiller',
     rating: 5,
-    text: 'I recently ordered from this business for our company party on Lake Travis, and they exceeded expectations! They delivered everything chilled and ready in a large cooler, making it super convenient. Communication was excellent, and they even provided items that weren\'t listed on their website. Everything arrived right on time, and the whole experience was seamless.',
+    text: 'Party On Delivery was amazing to work with! They had ample availability for delivery time slots, were communicative throughout the whole process, and got us everything we needed right to our door. It\'s great that they have mixers, alcohol, hydration packets, and food! All in one spot. Can\'t recommend enough!',
   },
-  // TODO: paste 2 more real reviews from Google Business Profile here.
-  // {
-  //   reviewer: 'Firstname L.',
-  //   rating: 5,
-  //   text: 'Paste full review text here',
-  // },
 ];
 
 const FAQ_ITEMS = [
