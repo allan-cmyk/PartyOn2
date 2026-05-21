@@ -260,3 +260,58 @@ export async function getCompanyInfo(): Promise<CompanyInfo> {
     realmId: tokens.realmId,
   };
 }
+
+// ---------------------------------------------------------------------------
+// QB Online query helpers (Phase 2A onward)
+// ---------------------------------------------------------------------------
+
+interface QbApiResponseJson {
+  QueryResponse?: {
+    Account?: unknown[];
+    Purchase?: unknown[];
+    Bill?: unknown[];
+    JournalEntry?: unknown[];
+    startPosition?: number;
+    maxResults?: number;
+    totalCount?: number;
+  };
+}
+
+/**
+ * Run a raw QB SQL-like query (the "QBO Query Language") and return the
+ * parsed QueryResponse. Pages by passing STARTPOSITION; callers paginate.
+ *
+ * Example:
+ *   await qboQuery("SELECT * FROM Account WHERE AccountType = 'Expense'")
+ *
+ * Handles token refresh automatically.
+ */
+export async function qboQuery(
+  query: string
+): Promise<QbApiResponseJson['QueryResponse']> {
+  const { accessToken, realmId } = await getValidAccessToken();
+  const tokens = await loadStoredTokens();
+  const client = new OAuthClient({
+    ...requireCreds(),
+    environment: getEnv(),
+    redirectUri: getRedirectUri(),
+    token: {
+      access_token: accessToken,
+      refresh_token: tokens.refreshToken,
+      realmId,
+      token_type: 'bearer',
+      expires_in: 3600,
+      x_refresh_token_expires_in: 8726400,
+    },
+  });
+  const baseUrl = client.getQBOEnvironmentURI();
+  const url = `${baseUrl}v3/company/${realmId}/query?minorversion=70&query=${encodeURIComponent(query)}`;
+  const response = await client.makeApiCall({
+    url,
+    method: 'GET',
+    headers: { Accept: 'application/json' },
+  });
+  const json = response.json as QbApiResponseJson;
+  return json?.QueryResponse ?? {};
+}
+

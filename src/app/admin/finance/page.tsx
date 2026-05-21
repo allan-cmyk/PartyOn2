@@ -30,6 +30,24 @@ interface PlSnapshotPayload {
   refundedTodayCount: number;
   commissionsCreatedTodayCount: number;
   commissionsCreatedTodayCents: number;
+  opex30dTotalCents: number | null;
+  opexDailyAvgCents: number | null;
+  netIncomeCents: number | null;
+}
+
+interface OpExBucket {
+  category: string;
+  label: string;
+  totalCents: number;
+  txnCount: number;
+}
+
+interface OpExSummary {
+  fromIso: string;
+  toIso: string;
+  totalCents: number;
+  txnCount: number;
+  byCategory: OpExBucket[];
 }
 
 interface StoredSnapshot {
@@ -54,6 +72,7 @@ function pct(n: number): string {
 
 export default function FinanceDashboardPage(): ReactElement {
   const [snapshots, setSnapshots] = useState<StoredSnapshot[]>([]);
+  const [opex, setOpex] = useState<OpExSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -61,16 +80,19 @@ export default function FinanceDashboardPage(): ReactElement {
     async function load(): Promise<void> {
       setLoading(true);
       try {
-        const res = await fetch('/api/admin/finance/snapshot?limit=30');
-        const body = (await res.json()) as ApiResponse<StoredSnapshot[]>;
-        if (body.success) {
-          setSnapshots(body.data);
-          setError(null);
-        } else {
-          setError(body.error);
-        }
+        const [snapRes, opexRes] = await Promise.all([
+          fetch('/api/admin/finance/snapshot?limit=30'),
+          fetch('/api/admin/finance/opex?days=30'),
+        ]);
+        const snapBody = (await snapRes.json()) as ApiResponse<StoredSnapshot[]>;
+        const opexBody = (await opexRes.json()) as ApiResponse<OpExSummary>;
+        if (snapBody.success) setSnapshots(snapBody.data);
+        else setError(snapBody.error);
+        if (opexBody.success) setOpex(opexBody.data);
+        // OpEx failure is non-fatal — show snapshot data even if QB isn't synced
+        setError((curr) => (snapBody.success ? null : curr));
       } catch (e) {
-        setError(e instanceof Error ? e.message : 'Failed to load snapshots');
+        setError(e instanceof Error ? e.message : 'Failed to load finance data');
       } finally {
         setLoading(false);
       }
@@ -155,14 +177,25 @@ export default function FinanceDashboardPage(): ReactElement {
               sub={`${pct(latest.payload.grossMarginPct)} margin · cost coverage ${pct(latest.payload.marginCoveragePct)}`}
             />
             <Kpi
-              label="Refunds"
-              value={formatCents(latest.payload.refundedAmountCents)}
-              sub={`${latest.payload.refundedTodayCount} refunds`}
-              alert={latest.payload.refundedAmountCents > 0}
+              label="Net income (est.)"
+              value={
+                latest.payload.netIncomeCents !== null
+                  ? formatCents(latest.payload.netIncomeCents)
+                  : 'QB not synced'
+              }
+              sub={
+                latest.payload.opexDailyAvgCents !== null
+                  ? `daily OpEx avg ${formatCents(latest.payload.opexDailyAvgCents)} (30d)`
+                  : 'connect QB to compute net income'
+              }
+              alert={
+                latest.payload.netIncomeCents !== null &&
+                latest.payload.netIncomeCents < 0
+              }
             />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
             <Card title="Revenue breakdown (window)">
               <Row label="Subtotal" value={formatCents(latest.payload.subtotalCents)} />
               <Row
@@ -197,6 +230,46 @@ export default function FinanceDashboardPage(): ReactElement {
                     : null
                 }
               />
+            </Card>
+
+            <Card title="OpEx by category (trailing 30d)">
+              {!opex || opex.byCategory.length === 0 ? (
+                <p className="text-gray-500 text-xs">
+                  No QuickBooks expense data yet. Connect QB at{' '}
+                  <Link className="text-blue-600 hover:underline" href="/admin/finance/connect-quickbooks">
+                    /admin/finance/connect-quickbooks
+                  </Link>{' '}
+                  and wait for the weekly cron (Monday 07:50 UTC), or trigger
+                  it manually with the bearer token.
+                </p>
+              ) : (
+                <>
+                  {opex.byCategory.slice(0, 8).map((b) => {
+                    const sharePct = opex.totalCents > 0 ? (b.totalCents / opex.totalCents) * 100 : 0;
+                    return (
+                      <div key={b.category}>
+                        <div className="flex justify-between items-baseline">
+                          <span className="text-gray-700 text-sm">{b.label}</span>
+                          <span className="tabular-nums text-sm">{formatCents(b.totalCents)}</span>
+                        </div>
+                        <div className="h-1 bg-gray-100 rounded mt-0.5">
+                          <div
+                            className="h-1 bg-blue-500 rounded"
+                            style={{ width: `${Math.min(100, sharePct)}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <Divider />
+                  <Row
+                    label="Total OpEx"
+                    value={formatCents(opex.totalCents)}
+                    sub={`${opex.txnCount} transactions`}
+                    bold
+                  />
+                </>
+              )}
             </Card>
 
             <Card title="Accruals (cumulative)">

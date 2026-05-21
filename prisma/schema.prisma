@@ -2701,6 +2701,57 @@ model PlaidTransaction {
   @@map("plaid_transactions")
 }
 
+/// QuickBooks Chart of Accounts cache (Phase 2A). Pulled from QB on each
+/// /api/cron/finance-qb-pull run so the dashboard can render category
+/// totals without re-querying QB. One row per QB account ID.
+model QbAccount {
+  id              String   @id @default(cuid())
+  qbAccountId     String   @unique @map("qb_account_id")
+  name            String
+  fullyQualifiedName String? @map("fully_qualified_name")
+  accountType     String?  @map("account_type") // 'Expense' | 'Income' | 'Asset' | etc.
+  accountSubType  String?  @map("account_sub_type")
+  currency        String   @default("USD")
+  active          Boolean  @default(true)
+  lastSyncedAt    DateTime @default(now()) @map("last_synced_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  expenses        QbExpense[]
+
+  @@index([accountType])
+  @@map("qb_accounts")
+}
+
+/// QuickBooks expense transactions cached in PartyOn (Phase 2A). Sourced from
+/// QB Purchase + Bill objects pulled by /api/cron/finance-qb-pull weekly.
+/// Upsert key = qbTransactionId so re-pulls are idempotent.
+model QbExpense {
+  id                String   @id @default(cuid())
+  qbTransactionId   String   @unique @map("qb_transaction_id")
+  txnType           String   @map("txn_type") // 'Purchase' | 'Bill' | 'JournalEntry'
+  txnDate           DateTime @map("txn_date") @db.Date
+  amountCents       Int      @map("amount_cents")
+  currency          String   @default("USD")
+  /// Free-text vendor name from QB (vendor lookups happen in Phase 3 for 1099s).
+  vendorName        String?  @map("vendor_name")
+  qbAccountId       String?  @map("qb_account_id")
+  /// PartyOn-side normalised category for dashboard grouping (e.g.
+  /// "Software", "Fuel", "Rent"). Derived from qb-account-map.ts.
+  categorySlug      String?  @map("category_slug")
+  memo              String?  @db.Text
+  rawPayload        Json     @map("raw_payload")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  account           QbAccount? @relation(fields: [qbAccountId], references: [qbAccountId])
+
+  @@index([txnDate])
+  @@index([categorySlug, txnDate])
+  @@index([qbAccountId])
+  @@map("qb_expenses")
+}
+
 /// Stripe payouts to the bank (Phase 1A). Lets us reconcile Plaid bank
 /// deposits to Stripe payouts in Phase 2C. Populated by:
 ///   - /api/webhooks/stripe (payout.* events)

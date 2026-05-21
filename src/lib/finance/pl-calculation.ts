@@ -81,6 +81,12 @@ export interface PlSnapshotPayload {
   refundedTodayCount: number;
   commissionsCreatedTodayCount: number;
   commissionsCreatedTodayCents: number;
+
+  // Phase 2A — OpEx from QuickBooks (trailing 30 days, averaged to day).
+  // Null when QB hasn't been synced yet. Net income = grossProfit − opexDailyAvg.
+  opex30dTotalCents: number | null;
+  opexDailyAvgCents: number | null;
+  netIncomeCents: number | null;
 }
 
 /**
@@ -216,6 +222,23 @@ export async function computeDailyPL(window: PlWindow): Promise<PlSnapshotPayloa
   const affiliateCommissionAccrualCents =
     commissionAccrual._sum.commissionAmountCents ?? 0;
 
+  // ---- OpEx (Phase 2A) --------------------------------------------------
+  // Pull trailing-30-day total + daily average from QbExpense. Null if
+  // no rows yet (QB not synced).
+  const opexFrom = new Date(to.getTime() - 30 * ONE_DAY_MS);
+  const opexAgg = await prisma.qbExpense.aggregate({
+    where: { txnDate: { gte: opexFrom, lt: to } },
+    _sum: { amountCents: true },
+    _count: { _all: true },
+  });
+  let opex30dTotalCents: number | null = null;
+  let opexDailyAvgCents: number | null = null;
+  let netIncomeCents: number | null = null;
+  if (opexAgg._count._all > 0) {
+    opex30dTotalCents = opexAgg._sum.amountCents ?? 0;
+    opexDailyAvgCents = Math.round(opex30dTotalCents / 30);
+  }
+
   // ---- Derived numbers --------------------------------------------------
   const netRevenueCents = Math.max(
     0,
@@ -224,6 +247,9 @@ export async function computeDailyPL(window: PlWindow): Promise<PlSnapshotPayloa
   const grossProfitCents = netRevenueCents - cogsCents;
   const grossMarginPct =
     netRevenueCents > 0 ? Math.round((grossProfitCents / netRevenueCents) * 10000) / 100 : 0;
+  if (opexDailyAvgCents !== null) {
+    netIncomeCents = grossProfitCents - opexDailyAvgCents;
+  }
 
   return {
     date: from.toISOString().slice(0, 10),
@@ -259,5 +285,9 @@ export async function computeDailyPL(window: PlWindow): Promise<PlSnapshotPayloa
     refundedTodayCount: refundCount,
     commissionsCreatedTodayCount: commissionsToday.length,
     commissionsCreatedTodayCents,
+
+    opex30dTotalCents,
+    opexDailyAvgCents,
+    netIncomeCents,
   };
 }
