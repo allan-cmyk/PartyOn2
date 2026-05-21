@@ -4,6 +4,8 @@ import { useState, useEffect, ReactElement } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import LinkPastOrderSection from '@/components/ops/LinkPastOrderSection';
+import AffiliateLeadsSection from '@/components/ops/AffiliateLeadsSection';
+import AffiliateIntegrationSection from '@/components/ops/AffiliateIntegrationSection';
 
 
 interface Commission {
@@ -46,6 +48,7 @@ interface AffiliateDetail {
   payoutMethod: string | null;
   payoutDetails: unknown;
   internalNotes: string | null;
+  webhookApiKey: string | null;
   createdAt: string;
   commissions: Commission[];
   payouts: Payout[];
@@ -433,6 +436,16 @@ export default function AffiliateDetailPage(): ReactElement {
 
       {/* Link Past Order */}
       <LinkPastOrderSection affiliateId={affiliate.id} onLinked={() => setRefreshTick((n) => n + 1)} />
+
+      {/* Partner Integration (webhook URL + API key, copyable) */}
+      <AffiliateIntegrationSection
+        affiliateCode={affiliate.code}
+        partnerSlug={affiliate.partnerSlug}
+        webhookApiKey={affiliate.webhookApiKey}
+      />
+
+      {/* Partner Leads */}
+      <AffiliateLeadsSection affiliateId={affiliate.id} />
 
       {/* Commissions */}
       <div className="mb-8">

@@ -2202,6 +2202,7 @@ model Affiliate {
   groupOrdersV2       GroupOrderV2[]
   dashboardTemplates  DashboardTemplate[]
   webhookLogs         AffiliateWebhookLog[]
+  leads               Lead[]
 
   @@index([code])
   @@map("affiliates")
@@ -2670,6 +2671,12 @@ enum LeadSourceWidget {
   EMAIL_SIGNUP
   CONTACT_FORM
   DRINK_CALCULATOR
+  /// Partner-platform webhook (e.g. FareHarbor checkbox on Centex booking form).
+  PARTNER_FAREHARBOR_WEBHOOK
+  /// CTA click in a partner's confirmation email → our landing page.
+  PARTNER_EMAIL_OPTIN
+  /// Direct visit to a /partners/<slug>/welcome landing page (organic, business card, etc.).
+  PARTNER_LANDING_PAGE
   OTHER
 }
 
@@ -2703,6 +2710,20 @@ model Lead {
   /// Internal sales notes.
   notes           String?         @db.Text
 
+  /// Affiliate / partner this lead is attributed to (set by partner webhooks
+  /// or by ref_code cookie on landing-page submissions). Drives partner ROI
+  /// reporting and partner-specific GHL pipeline routing.
+  affiliateId         String?     @map("affiliate_id")
+  affiliate           Affiliate?  @relation(fields: [affiliateId], references: [id], onDelete: SetNull)
+
+  /// External booking-platform identifier used to deduplicate partner webhook
+  /// deliveries (e.g. FareHarbor booking pk). Unique on (affiliateId, partnerBookingRef).
+  partnerBookingRef   String?     @map("partner_booking_ref")
+
+  /// Partner booking context (booking date, group size, vehicle type, etc.).
+  /// Shape varies by partner platform — see src/lib/partner-leads/normalizers.
+  partnerBookingMeta  Json?       @map("partner_booking_meta")
+
   events          LeadEvent[]
   sessions        VisitorSession[]
 
@@ -2714,6 +2735,8 @@ model Lead {
   @@index([status])
   @@index([createdAt])
   @@index([draftOrderId])
+  @@index([affiliateId])
+  @@index([partnerBookingRef])
   @@map("leads")
 }
 

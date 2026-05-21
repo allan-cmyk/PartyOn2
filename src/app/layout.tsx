@@ -25,6 +25,13 @@ const GroupOrderProvider = dynamic(
 // `dynamic({ ssr: false })` inside Server Components (this layout is one).
 import PixelMount from '@/components/leads/PixelMount';
 
+// Reads ?promo=<CODE> from any partner-lead SMS/email landing, stashes the
+// code in localStorage, and auto-applies it to the cart as soon as the
+// customer has at least one item. Must be mounted inside CartProvider.
+import PromoCodeAutoApply from '@/components/promo/PromoCodeAutoApply';
+// Small floating badge that confirms the stashed code will auto-apply.
+import PendingPromoBadge from '@/components/promo/PendingPromoBadge';
+
 const barlowCondensed = Barlow_Condensed({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
@@ -132,6 +139,8 @@ export default function RootLayout({
             <GroupOrderProvider>
               <AgeVerification />
               <PixelMount />
+              <PromoCodeAutoApply />
+              <PendingPromoBadge />
               <ClientLayoutWrapper>
                 {children}
               </ClientLayoutWrapper>

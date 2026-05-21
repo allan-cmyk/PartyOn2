@@ -175,6 +175,7 @@ export default function AdminLayout({ children }: AdminLayoutProps): ReactElemen
     { href: '/admin/experiments', label: 'Experiments' },
     { href: '/admin/promotions', label: 'Promotions' },
     { href: '/admin/affiliates', label: 'Affiliates' },
+    { href: '/admin/leads', label: 'Leads' },
     { href: '/admin/brians-stuff', label: "Brian's Stuff" },
     { href: '/admin/settings', label: 'Settings' },
   ];
