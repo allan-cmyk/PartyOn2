@@ -55,6 +55,10 @@
     {
       "path": "/api/cron/finance-snapshot",
       "schedule": "45 7 * * *"
+    },
+    {
+      "path": "/api/cron/finance-qb-pull",
+      "schedule": "50 7 * * 1"
     }
   ]
 }
