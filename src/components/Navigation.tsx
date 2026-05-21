@@ -133,6 +133,7 @@ export default function Navigation({
 
   const services = [
     { href: '/weddings', label: 'WEDDINGS' },
+    { href: '/wedding-drink-calculator', label: 'WEDDING CALCULATOR' },
     { href: '/boat-parties', label: 'BOAT PARTIES' },
     { href: '/bach-parties', label: 'CELEBRATIONS' },
     { href: '/corporate', label: 'CORPORATE' },
