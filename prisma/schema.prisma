@@ -2025,10 +2025,20 @@ model ReceivingInvoice {
   updatedAt         DateTime                @updatedAt @map("updated_at")
   appliedAt         DateTime?               @map("applied_at")
 
+  // Phase 1B (Finance Director) — Accounts Payable on distributor invoices.
+  // invoiceTotalCents is captured at invoice-apply time. Null = AP info not
+  // yet entered; rolled up nightly into outstanding AP dashboard.
+  invoiceTotalCents BigInt?                 @map("invoice_total_cents")
+  dueDate           DateTime?               @map("due_date") @db.Date
+  paidAt            DateTime?               @map("paid_at")
+  paidVia           String?                 @map("paid_via") // 'ach' | 'check' | 'card' | 'plaid_match' | 'other'
+
   lines ReceivingInvoiceLine[]
 
   @@index([status])
   @@index([createdAt])
+  @@index([dueDate])
+  @@index([paidAt])
   @@map("receiving_invoices")
 }
 

@@ -35,6 +35,11 @@ interface Invoice {
   invoiceDate: string | null;
   status: string;
   parseErrorMessage: string | null;
+  // Phase 1B Finance Director — AP fields
+  invoiceTotalCents: number | null;
+  dueDate: string | null;
+  paidAt: string | null;
+  paidVia: string | null;
   lines: Line[];
 }
 
@@ -182,6 +187,9 @@ export default function ReceivingReviewPage({ params }: { params: Promise<{ id: 
             Parse error: {invoice.parseErrorMessage}
           </div>
         )}
+
+        <ApFieldsStrip invoice={invoice} onUpdated={load} />
+
 
         <div className="grid md:grid-cols-[300px,1fr] gap-6">
           <div>
@@ -348,3 +356,147 @@ export default function ReceivingReviewPage({ params }: { params: Promise<{ id: 
     </div>
   );
 }
+
+/**
+ * Phase 1B (Finance Director) — inline AP-field editor on the receiving
+ * review page. Hits the new /api/admin/finance/ap/[id]/edit-ap endpoint.
+ * Doesn't block applying the invoice — these are optional but populating
+ * them is what makes /admin/finance/ap useful.
+ */
+function ApFieldsStrip({
+  invoice,
+  onUpdated,
+}: {
+  invoice: Invoice;
+  onUpdated: () => Promise<void>;
+}): ReactElement {
+  const [editing, setEditing] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [totalInput, setTotalInput] = useState(
+    invoice.invoiceTotalCents !== null
+      ? (invoice.invoiceTotalCents / 100).toFixed(2)
+      : ''
+  );
+  const [dueInput, setDueInput] = useState(
+    invoice.dueDate ? invoice.dueDate.slice(0, 10) : ''
+  );
+
+  async function save(): Promise<void> {
+    setBusy(true);
+    setError(null);
+    try {
+      const totalDollars = totalInput.trim() === '' ? null : Number(totalInput);
+      if (totalDollars !== null && !Number.isFinite(totalDollars)) {
+        setError('Total must be a number');
+        return;
+      }
+      const res = await fetch(`/api/admin/finance/ap/${invoice.id}/edit-ap`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          invoiceTotalCents:
+            totalDollars === null ? null : Math.round(totalDollars * 100),
+          dueDate: dueInput.trim() === '' ? null : dueInput,
+        }),
+      });
+      const body = (await res.json()) as
+        | { success: true }
+        | { success: false; error: string };
+      if (!body.success) {
+        setError(body.error);
+        return;
+      }
+      await onUpdated();
+      setEditing(false);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const totalDisplay =
+    invoice.invoiceTotalCents !== null
+      ? `$${(invoice.invoiceTotalCents / 100).toLocaleString('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`
+      : '—';
+  const paidLabel = invoice.paidAt
+    ? `paid ${new Date(invoice.paidAt).toLocaleDateString()}${invoice.paidVia ? ` (${invoice.paidVia})` : ''}`
+    : 'unpaid';
+
+  return (
+    <div className="mb-4 p-4 bg-white border border-gray-200 rounded-lg text-sm">
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="font-semibold text-gray-900">Accounts payable</h3>
+        {!editing ? (
+          <button
+            type="button"
+            onClick={() => setEditing(true)}
+            className="text-xs text-blue-600 hover:underline"
+          >
+            Edit
+          </button>
+        ) : null}
+      </div>
+      {error && <p className="text-red-700 text-xs mb-2">{error}</p>}
+      {editing ? (
+        <div className="flex flex-col md:flex-row gap-3">
+          <label className="flex flex-col text-xs text-gray-600">
+            Invoice total ($)
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              value={totalInput}
+              onChange={(e) => setTotalInput(e.target.value)}
+              className="mt-1 border border-gray-300 rounded px-2 py-1 text-sm w-32"
+              placeholder="0.00"
+            />
+          </label>
+          <label className="flex flex-col text-xs text-gray-600">
+            Due date
+            <input
+              type="date"
+              value={dueInput}
+              onChange={(e) => setDueInput(e.target.value)}
+              className="mt-1 border border-gray-300 rounded px-2 py-1 text-sm"
+            />
+          </label>
+          <div className="flex gap-2 self-end">
+            <button
+              type="button"
+              onClick={save}
+              disabled={busy}
+              className="px-3 py-1.5 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:opacity-50"
+            >
+              {busy ? 'Saving…' : 'Save'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setEditing(false)}
+              disabled={busy}
+              className="px-3 py-1.5 bg-gray-200 text-gray-800 rounded text-sm hover:bg-gray-300 disabled:opacity-50"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-wrap gap-x-6 gap-y-1 text-gray-700">
+          <span>
+            <span className="text-gray-500">Total:</span> {totalDisplay}
+          </span>
+          <span>
+            <span className="text-gray-500">Due:</span>{' '}
+            {invoice.dueDate ? invoice.dueDate.slice(0, 10) : '—'}
+          </span>
+          <span>
+            <span className="text-gray-500">Status:</span> {paidLabel}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
