@@ -62,16 +62,16 @@ _(not captured)_
 
 ```json
 {
-  "orders": 39,
-  "revenue": 22238.69,
+  "orders": 37,
+  "revenue": 18393.14,
   "segments": [
     {
       "margin": null,
-      "orders": 38,
-      "revenue": 22008.25,
+      "orders": 36,
+      "revenue": 18162.7,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 579.16,
+      "averageOrderValue": 504.52,
       "marginCoveragePct": 0
     },
     {
@@ -84,18 +84,18 @@ _(not captured)_
       "marginCoveragePct": 45
     }
   ],
-  "capturedAt": "2026-09-07T08:00:49.525Z",
+  "capturedAt": "2026-09-08T08:00:49.305Z",
   "affiliateRoi": [
     {
       "code": "POUR24",
       "margin": null,
-      "orders": 5,
+      "orders": 4,
       "roiPct": null,
-      "revenue": 9294.83,
+      "revenue": 5750.77,
       "netMargin": null,
       "affiliateId": "7bf14a40-b04f-4622-ba09-0662be41e37f",
       "businessName": "Pour Twenty Four",
-      "commissionPaid": 807.63,
+      "commissionPaid": 480.23,
       "marginCoveragePct": 0
     },
     {
@@ -149,13 +149,13 @@ _(not captured)_
     {
       "code": "SIPNSOCIAL",
       "margin": null,
-      "orders": 3,
+      "orders": 2,
       "roiPct": null,
-      "revenue": 844.65,
+      "revenue": 543.16,
       "netMargin": null,
       "affiliateId": "3d00911f-3b75-40ad-bc3c-c87f20cdaeaf",
       "businessName": "Sip & Social On Wheels",
-      "commissionPaid": 37.84,
+      "commissionPaid": 25.09,
       "marginCoveragePct": 0
     },
     {
@@ -195,15 +195,15 @@ _(not captured)_
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-09-07",
-  "averageOrderValue": 570.2228205128206,
+  "snapshotDate": "2026-09-08",
+  "averageOrderValue": 497.1118918918919,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-09-07 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-09-08 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
