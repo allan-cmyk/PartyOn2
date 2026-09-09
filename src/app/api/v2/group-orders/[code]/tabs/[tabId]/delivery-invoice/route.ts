@@ -10,6 +10,7 @@ import {
 } from '@/lib/group-orders-v2/service';
 import { createDeliveryInvoiceSession } from '@/lib/stripe/group-v2-payments';
 import { prisma } from '@/lib/database/client';
+import { isPickupAddress } from '@/lib/delivery/pickup';
 
 interface RouteParams {
   params: Promise<{ code: string; tabId: string }>;
@@ -49,6 +50,17 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     if (tab.deliveryFeeWaived) {
       return NextResponse.json(
         { success: false, error: 'Delivery fee has been waived' },
+        { status: 400 }
+      );
+    }
+
+    // In-store pickup orders have no delivery fee. Guarded here independently of
+    // deliveryFeeWaived: a stale pickup tab (priced from the store's own zip
+    // before the fee writers honored isPickup) would otherwise let the host be
+    // invoiced $25 for a delivery no driver will make.
+    if (isPickupAddress(tab.deliveryAddress)) {
+      return NextResponse.json(
+        { success: false, error: 'In-store pickup orders have no delivery fee' },
         { status: 400 }
       );
     }

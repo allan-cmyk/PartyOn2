@@ -14,6 +14,13 @@ const DeliveryAddressSchema = z.object({
   province: z.string().default('TX'),
   zip: z.string().min(5, 'Zip code is required').max(10),
   country: z.string().default('US'),
+  // In-store pickup marker. MUST be declared here: z.object strips unknown
+  // keys, and before this field existed the dashboard's pickup toggle was
+  // silently dropped at validation — the tab was stored as a "delivery" to the
+  // store's own address and priced from its zip (78752 → $25), which is the
+  // pickup-charged-a-delivery-fee bug customers reported. The fee writers in
+  // service.ts key off this flag (fee 0 + deliveryFeeWaived).
+  isPickup: z.boolean().optional(),
 });
 
 /** Date validation refinements (reusable) */

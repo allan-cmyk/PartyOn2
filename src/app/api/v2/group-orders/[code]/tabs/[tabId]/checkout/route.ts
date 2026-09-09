@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/database/client';
+import { isPickupAddress } from '@/lib/delivery/pickup';
 import {
   getGroupOrderByCode,
   getParticipantDraftItems,
@@ -168,7 +169,16 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const existingPaidInvoice = await prisma.groupDeliveryInvoice.findFirst({
       where: { subOrderId: tabId, status: 'PAID' },
     });
+    // In-store pickup is never charged a delivery fee (no driver is dispatched).
+    // The fee writers in group-orders-v2/service.ts (updateTab/createTab/
+    // createGroupOrder) own that invariant — a pickup tab is stored with
+    // deliveryFee=0 + deliveryFeeWaived=true — and createGroupV2CheckoutSession
+    // enforces it again via the isPickup input below. The check here just skips
+    // the fee bundling (and the affiliate-perk queries) for stale pickup tabs
+    // priced from the store's own zip (78752 → $25) before the writers were fixed.
+    const isPickup = isPickupAddress(tab.deliveryAddress);
     let shouldIncludeDeliveryFee =
+      !isPickup &&
       !tab.deliveryFeeWaived &&
       Number(tab.deliveryFee) > 0 &&
       !existingPaidInvoice;
@@ -226,6 +236,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       includeDeliveryFee: shouldIncludeDeliveryFee,
       deliveryFeeAmount: shouldIncludeDeliveryFee ? Number(tab.deliveryFee) : undefined,
       waiveDeliveryFee: affiliatePerkWaives,
+      isPickup,
       successUrl: `${appUrl}/dashboard/${code}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${appUrl}/dashboard/${code}`,
     });

@@ -8,16 +8,7 @@ import { useCartContext } from '@/contexts/CartContext';
 import { useCustomerContext } from '@/contexts/CustomerContext';
 import CustomerAuth from '@/components/CustomerAuth';
 import SmsConsentCheckbox from '@/components/consent/SmsConsentCheckbox';
-
-/** In-store pickup location — 7600 N. Lamar Blvd #A2, Austin TX 78752 */
-const STORE_PICKUP_ADDRESS = {
-  address1: '7600 N. Lamar Blvd',
-  address2: '#A2',
-  city: 'Austin',
-  province: 'TX',
-  zip: '78752',
-  country: 'US',
-} as const;
+import { STORE_PICKUP_ADDRESS } from '@/lib/delivery/pickup';
 
 export default function CheckoutPage() {
   const { cart, customCartData, loading: cartLoading, refetchCart, updateCartFromApiResponse } = useCartContext();

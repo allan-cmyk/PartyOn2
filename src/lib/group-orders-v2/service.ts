@@ -5,6 +5,7 @@
 
 import { prisma } from '@/lib/database/client';
 import { calculateDeliveryFee } from '@/lib/delivery/rates';
+import { isPickupAddress } from '@/lib/delivery/pickup';
 import { isLastMinuteDate } from '@/lib/lastMinute/dates';
 import { mirrorDashboardHostLead } from '@/lib/leads/dashboard-lead';
 import { assertVariantsPurchasable } from '@/lib/products/availability';
@@ -265,6 +266,8 @@ export async function createGroupOrder(
         create: input.tabs.map((tab, idx) => {
           const parsed = tab.deliveryDate ? new Date(tab.deliveryDate) : null;
           const deliveryDate = parsed && !isNaN(parsed.getTime()) ? parsed : null;
+          // Pickup tabs are born fee-free + waived (mirrors updateTab/createTab).
+          const isPickup = isPickupAddress(tab.deliveryAddress);
           const zip = tab.deliveryAddress?.zip ?? '';
           const feeResult = calculateDeliveryFee(zip, 0, false);
           return {
@@ -278,7 +281,8 @@ export async function createGroupOrder(
             deliveryPhone: tab.deliveryPhone || null,
             deliveryNotes: tab.deliveryNotes || null,
             orderDeadline: deliveryDate ? computeOrderDeadline(deliveryDate) : null,
-            deliveryFee: feeResult.originalFee,
+            deliveryFee: isPickup ? 0 : feeResult.originalFee,
+            deliveryFeeWaived: isPickup,
           };
         }),
       },
@@ -470,6 +474,10 @@ export async function createTab(
     deliveryDate.setUTCHours(12, 0, 0, 0);
   }
 
+  // In-store pickup tabs are born fee-free + waived (mirrors updateTab). Without
+  // this branch a pickup tab was priced from the store's own zip (78752 → the
+  // $25 Central Austin rate) and later charged or invoiced for it.
+  const isPickup = isPickupAddress(input.deliveryAddress);
   const zip = input.deliveryAddress?.zip || '';
   const feeResult = calculateDeliveryFee(zip, 0, false);
 
@@ -487,7 +495,8 @@ export async function createTab(
       deliveryPhone: input.deliveryPhone || null,
       deliveryNotes: input.deliveryNotes || null,
       orderDeadline: deliveryDate ? computeOrderDeadline(deliveryDate) : null,
-      deliveryFee: feeResult.originalFee,
+      deliveryFee: isPickup ? 0 : feeResult.originalFee,
+      deliveryFeeWaived: isPickup,
     },
     include: {
       draftItems: { include: { addedBy: true, variant: true } },
@@ -514,7 +523,7 @@ export async function updateTab(
   if (input.deliveryTime) data.deliveryTime = input.deliveryTime;
   if (input.deliveryAddress) {
     data.deliveryAddress = input.deliveryAddress as unknown as Record<string, string>;
-    if (input.deliveryAddress.isPickup) {
+    if (isPickupAddress(input.deliveryAddress)) {
       // In-store pickup — no driver, no fee
       data.deliveryFee = 0;
       data.deliveryFeeWaived = true;
@@ -1122,9 +1131,12 @@ export async function createDashboardOrder(
           deliveryTime: input.deliveryTime || (deliveryDate ? '12:00 PM - 2:00 PM' : 'TBD'),
           deliveryAddress: deliveryAddress as unknown as Record<string, string>,
           orderDeadline: deliveryDate ? computeOrderDeadline(deliveryDate) : null,
-          deliveryFee: deliveryAddress.zip
-            ? calculateDeliveryFee(deliveryAddress.zip, 0, false).originalFee
-            : 40,
+          deliveryFee: isPickupAddress(deliveryAddress)
+            ? 0
+            : deliveryAddress.zip
+              ? calculateDeliveryFee(deliveryAddress.zip, 0, false).originalFee
+              : 40,
+          deliveryFeeWaived: isPickupAddress(deliveryAddress),
           deliveryContextType: input.deliveryContextType || 'HOUSE',
         },
       },

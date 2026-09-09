@@ -6,6 +6,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/database/client';
+import { isPickupAddress } from '@/lib/delivery/pickup';
 import {
   getGroupOrderByCode,
   getParticipantById,
@@ -164,8 +165,14 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     // with a number and to gate the smsConsent record below.
     const cleanPhone = typeof phone === 'string' ? phone.trim().slice(0, 40) : '';
 
-    // Include delivery fee in checkout if not already paid/waived
-    let shouldIncludeDeliveryFee = !tab.deliveryFeeWaived
+    // Include delivery fee in checkout if not already paid/waived.
+    // In-store pickup is never charged a delivery fee — the fee writers in
+    // group-orders-v2/service.ts own that invariant (pickup tabs are stored
+    // fee-0 + waived) and createGroupV2CheckoutSession enforces it again via the
+    // isPickup input below; this check just skips bundling for stale pickup tabs.
+    const isPickup = isPickupAddress(tab.deliveryAddress);
+    let shouldIncludeDeliveryFee = !isPickup
+      && !tab.deliveryFeeWaived
       && Number(tab.deliveryFee) > 0
       && !(await prisma.groupDeliveryInvoice.findFirst({
         where: { subOrderId: tabId, status: 'PAID' },
@@ -221,6 +228,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       includeDeliveryFee: shouldIncludeDeliveryFee,
       deliveryFeeAmount: shouldIncludeDeliveryFee ? Number(tab.deliveryFee) : undefined,
       waiveDeliveryFee: affiliatePerkWaives,
+      isPickup,
       affiliateCode: group.affiliate?.code,
       successUrl: `${appUrl}/dashboard/${code}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${appUrl}/dashboard/${code}`,

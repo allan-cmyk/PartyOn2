@@ -285,6 +285,107 @@ describe('Checkout Session Creation', () => {
     expect(result).toBe(true);
     expect(mockSessionExpire).toHaveBeenCalledWith('cs_test_123');
   });
+
+  // ── Pickup delivery-fee guard ─────────────────────────────────────────
+  // Regression: in-store pickup carts must never be charged a delivery fee,
+  // even when the cart row carries a stale non-zero fee (the store's own
+  // pickup zip 78752 is in the $25 Central Austin zone — the exact amount
+  // customers reported being charged on pickup orders).
+
+  /** The delivery-fee line item Stripe was asked to charge, if any. */
+  const findDeliveryLine = () => {
+    const sessionArg = mockSessionCreate.mock.calls[0][0] as {
+      line_items: Array<{ price_data?: { unit_amount?: number; product_data?: { name?: string } } }>;
+    };
+    return sessionArg.line_items.find((li) =>
+      /Delivery/i.test(li.price_data?.product_data?.name ?? '')
+    );
+  };
+
+  const PICKUP_CART = {
+    ...mockCart,
+    deliveryAddress: {
+      address1: '7600 N. Lamar Blvd',
+      city: 'Austin',
+      zip: '78752',
+      isPickup: true,
+    },
+  };
+
+  it('charges the delivery fee line for a normal delivery cart', async () => {
+    const { createCheckoutSession } = await import('@/lib/stripe/checkout');
+
+    await createCheckoutSession({
+      cart: mockCart,
+      successUrl: 'https://example.com/success',
+      cancelUrl: 'https://example.com/cancel',
+    });
+
+    expect(findDeliveryLine()?.price_data?.unit_amount).toBe(2500);
+  });
+
+  it('charges NO delivery fee for a pickup cart with a stale $25 fee, and repairs the cart record', async () => {
+    const { createCheckoutSession } = await import('@/lib/stripe/checkout');
+
+    await createCheckoutSession({
+      cart: PICKUP_CART,
+      successUrl: 'https://example.com/success',
+      cancelUrl: 'https://example.com/cancel',
+    });
+
+    expect(findDeliveryLine()).toBeUndefined();
+
+    // The charged fee ($0) is written back onto the cart so the Order created
+    // by the webhook — which copies cart.deliveryFee/cart.total — records what
+    // Stripe actually collected, not the stale $25.
+    const updateData = mockCartUpdate.mock.calls[0][0].data as {
+      deliveryFee?: unknown;
+      total?: unknown;
+    };
+    expect(Number(updateData.deliveryFee)).toBe(0);
+    expect(Number(updateData.total)).toBeCloseTo(79.1 - 25, 2);
+  });
+
+  it('override precedence: overrideDeliveryFee=0 (affiliate free delivery) drops the fee line and repairs the cart', async () => {
+    const { createCheckoutSession } = await import('@/lib/stripe/checkout');
+
+    await createCheckoutSession({
+      cart: mockCart,
+      successUrl: 'https://example.com/success',
+      cancelUrl: 'https://example.com/cancel',
+      overrideDeliveryFee: 0,
+    });
+
+    expect(findDeliveryLine()).toBeUndefined();
+    const updateData = mockCartUpdate.mock.calls[0][0].data as { deliveryFee?: unknown };
+    expect(Number(updateData.deliveryFee)).toBe(0);
+  });
+
+  it('override precedence: a non-zero override is honored on a delivery cart', async () => {
+    const { createCheckoutSession } = await import('@/lib/stripe/checkout');
+
+    await createCheckoutSession({
+      cart: mockCart,
+      successUrl: 'https://example.com/success',
+      cancelUrl: 'https://example.com/cancel',
+      overrideDeliveryFee: 30,
+    });
+
+    expect(findDeliveryLine()?.price_data?.unit_amount).toBe(3000);
+  });
+
+  it('override precedence: pickup outranks even a non-zero override — pickup is never charged', async () => {
+    const { createCheckoutSession } = await import('@/lib/stripe/checkout');
+
+    await createCheckoutSession({
+      cart: PICKUP_CART,
+      successUrl: 'https://example.com/success',
+      cancelUrl: 'https://example.com/cancel',
+      overrideDeliveryFee: 30,
+    });
+
+    expect(findDeliveryLine()).toBeUndefined();
+  });
 });
 
 describe('Checkout Line Items', () => {

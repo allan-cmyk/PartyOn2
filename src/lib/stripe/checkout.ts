@@ -10,6 +10,7 @@ import { CartWithItems } from '@/lib/inventory/services/cart-service';
 import { prisma } from '@/lib/database/client'; // Used for getOrCreateStripeCustomer
 import { getTaxRateForZip, DEFAULT_TAX_RATE } from '@/lib/tax';
 import { assertVariantsPurchasable } from '@/lib/products/availability';
+import { isPickupAddress } from '@/lib/delivery/pickup';
 import { buildChargedLineItems, chargedLineItemToStripe } from './charge-snapshot';
 
 /**
@@ -126,8 +127,16 @@ export async function createCheckoutSession(
   const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] =
     chargedLineItems.map(chargedLineItemToStripe);
 
-  // Add delivery fee as a line item (use override if provided, e.g. $0 for affiliate referrals)
-  const deliveryFee = overrideDeliveryFee !== undefined ? overrideDeliveryFee : Number(cart.deliveryFee);
+  // Add delivery fee as a line item (use override if provided, e.g. $0 for affiliate referrals).
+  //
+  // Pickup outranks everything: an in-store pickup cart is NEVER charged a delivery
+  // fee. recalculateCart (cart-service.ts — the sole writer of Cart.deliveryFee)
+  // already zeroes it for pickup; this builder is the last step before the charge
+  // and enforces the same rule independently, because the store's own pickup zip
+  // (78752) sits in the $25 Central Austin zone — a stale non-zero fee on a pickup
+  // cart would otherwise be billed here (the bug customers reported at Stripe).
+  const isPickup = isPickupAddress(cart.deliveryAddress);
+  const deliveryFee = isPickup ? 0 : (overrideDeliveryFee ?? Number(cart.deliveryFee));
   if (deliveryFee > 0) {
     lineItems.push({
       price_data: {
@@ -273,9 +282,26 @@ export async function createCheckoutSession(
   // Persist the immutable charge snapshot on the cart. createOrderFromCheckout rebuilds
   // OrderItems from this (not a re-read of cart.items), closing the two-snapshot race where
   // items edited after checkout-creation diverged from what Stripe charged.
+  //
+  // If this builder charged a DIFFERENT delivery fee than the cart row holds
+  // (pickup guard fired on a stale fee, or an override waived it), write the
+  // charged fee back so the Order — which createOrderFromCheckout copies from
+  // cart.deliveryFee/cart.total — records what Stripe actually collected instead
+  // of a fee that was never charged (emails, GHL, and revenue read the Order).
+  const cartFeeDelta = Number(cart.deliveryFee) - deliveryFee;
   await prisma.cart.update({
     where: { id: cart.id },
-    data: { chargedLineItems: chargedLineItems as unknown as Prisma.InputJsonValue },
+    data: {
+      chargedLineItems: chargedLineItems as unknown as Prisma.InputJsonValue,
+      ...(cartFeeDelta !== 0
+        ? {
+            deliveryFee: new Prisma.Decimal(deliveryFee.toFixed(2)),
+            total: new Prisma.Decimal(
+              Math.max(0, Number(cart.total) - cartFeeDelta).toFixed(2)
+            ),
+          }
+        : {}),
+    },
   });
 
   // Note: We store session ID in Stripe metadata, not in cart

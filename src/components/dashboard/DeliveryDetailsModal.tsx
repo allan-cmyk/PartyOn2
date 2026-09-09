@@ -4,6 +4,7 @@ import { useState, type ReactElement, type FormEvent } from 'react';
 import { updateTabV2 } from '@/lib/group-orders-v2/api-client';
 import type { SubOrderFull } from '@/lib/group-orders-v2/types';
 import { getStrPartnerByCode, type StrProperty } from '@/lib/partners/str-partners';
+import { STORE_PICKUP_ADDRESS } from '@/lib/delivery/pickup';
 
 interface Props {
   shareCode: string;
@@ -21,16 +22,6 @@ interface Props {
 
 /** Sentinel value for the "my place isn't listed" dropdown option. */
 const STR_CUSTOM = '__custom__';
-
-/** In-store pickup location — 7600 N. Lamar Blvd #A2, Austin TX 78752 */
-const STORE_PICKUP_ADDRESS = {
-  address1: '7600 N. Lamar Blvd',
-  address2: '#A2',
-  city: 'Austin',
-  province: 'TX',
-  zip: '78752',
-  country: 'US',
-} as const;
 
 function generateTimeSlots(): string[] {
   const slots: string[] = [];

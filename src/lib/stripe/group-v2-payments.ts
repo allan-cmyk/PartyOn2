@@ -71,6 +71,11 @@ interface CreateCheckoutInput {
   affiliateCode?: string;
   /** When true, the delivery fee is being waived by an affiliate perk -- webhook will stamp deliveryFeeWaived */
   waiveDeliveryFee?: boolean;
+  /** In-store pickup: the builder NEVER bundles a delivery fee (regardless of
+   *  includeDeliveryFee/deliveryFeeAmount) and emits the waive metadata so the
+   *  webhook stamps subOrder.deliveryFeeWaived — closing the host-invoice path.
+   *  Owned here so no caller can reintroduce the pickup overcharge. */
+  isPickup?: boolean;
 }
 
 interface CreateDeliveryInvoiceInput {
@@ -193,13 +198,17 @@ export async function createGroupV2CheckoutSession(input: CreateCheckoutInput) {
     chargedLineItems.map(chargedLineItemToStripe);
 
   // Add delivery fee line item when bundled into this checkout.
-  // A FREE_SHIPPING discount code (e.g. BACHPLAN) overrides includeDeliveryFee
-  // and triggers the waive metadata path so the webhook stamps deliveryFeeWaived.
+  // A FREE_SHIPPING discount code (e.g. BACHPLAN) or in-store pickup overrides
+  // includeDeliveryFee and triggers the waive metadata path so the webhook
+  // stamps deliveryFeeWaived (which also closes the separate host-invoice path).
+  const isPickup = input.isPickup === true;
+  const waivedByAffiliateOrDiscount = Boolean(input.waiveDeliveryFee) || discountWaivesDelivery;
   const includeDeliveryFee = !discountWaivesDelivery
+    && !isPickup
     && input.includeDeliveryFee
     && input.deliveryFeeAmount
     && input.deliveryFeeAmount > 0;
-  const effectiveWaiveDeliveryFee = input.waiveDeliveryFee || discountWaivesDelivery;
+  const effectiveWaiveDeliveryFee = waivedByAffiliateOrDiscount || isPickup;
   const deliveryFeeAmount = includeDeliveryFee ? input.deliveryFeeAmount! : 0;
   if (includeDeliveryFee) {
     lineItems.push({
@@ -262,7 +271,16 @@ export async function createGroupV2CheckoutSession(input: CreateCheckoutInput) {
       ...(includeDeliveryFee
         ? { deliveryFee: String(deliveryFeeAmount) }
         : effectiveWaiveDeliveryFee
-          ? { deliveryFee: '0', deliveryFeeWaivedByAffiliate: 'true' }
+          ? {
+              deliveryFee: '0',
+              // Generic waive marker — the success webhook stamps
+              // subOrder.deliveryFeeWaived off this (pickup, affiliate, discount).
+              deliveryFeeWaived: 'true',
+              // Legacy key kept for the affiliate/discount cases (in-flight
+              // sessions and older tooling still read it); pickup is not
+              // an affiliate perk so it doesn't claim the label.
+              ...(waivedByAffiliateOrDiscount ? { deliveryFeeWaivedByAffiliate: 'true' } : {}),
+            }
           : {}),
       ...(input.affiliateCode ? { affiliateCode: input.affiliateCode } : {}),
       // A2P 10DLC: record express SMS opt-in only when a phone was provided.
@@ -718,10 +736,15 @@ export async function handleGroupV2PaymentCompleted(
     );
   }
 
-  // If delivery fee was bundled OR waived by an affiliate perk, mark the tab as waived
-  // so the separate host-invoice flow won't charge it later.
-  const waivedByAffiliate = session.metadata?.deliveryFeeWaivedByAffiliate === 'true';
-  if (bundledDeliveryFee > 0 || waivedByAffiliate) {
+  // If the delivery fee was bundled into this charge OR waived (in-store pickup,
+  // affiliate perk, or FREE_SHIPPING discount), mark the tab as waived so the
+  // separate host-invoice flow won't charge it later. The legacy
+  // deliveryFeeWaivedByAffiliate key is still honored for in-flight sessions
+  // created before the generic deliveryFeeWaived marker existed.
+  const feeWaived =
+    session.metadata?.deliveryFeeWaived === 'true' ||
+    session.metadata?.deliveryFeeWaivedByAffiliate === 'true';
+  if (bundledDeliveryFee > 0 || feeWaived) {
     await prisma.subOrder.update({
       where: { id: subOrderId },
       data: { deliveryFeeWaived: true },

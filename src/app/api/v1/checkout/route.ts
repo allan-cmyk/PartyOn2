@@ -15,6 +15,7 @@ import { getAffiliateByCode } from '@/lib/affiliates/affiliate-service';
 import { linkOrderToAffiliate } from '@/lib/affiliates/commission-engine';
 import { createOrderCalendarEvent } from '@/lib/calendar/google-calendar';
 import { ProductNotPurchasableError } from '@/lib/products/availability';
+import { isPickupAddress } from '@/lib/delivery/pickup';
 import { prisma } from '@/lib/database/client';
 
 const CART_ID_COOKIE = 'cart_id';
@@ -101,10 +102,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // Validate minimum order — waived for in-store pickup
-    const pickupFromAddress =
-      cart.deliveryAddress && typeof cart.deliveryAddress === 'object'
-        ? (cart.deliveryAddress as { isPickup?: boolean }).isPickup === true
-        : false;
+    const pickupFromAddress = isPickupAddress(cart.deliveryAddress);
     if (!pickupFromAddress) {
       const validation = validateCartMinimum(cart);
       if (!validation.valid) {
@@ -213,8 +211,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const { customerEmail, customerName, customerPhone, returnUrl, tipAmount: rawTip, attribution, smsConsent } = body;
     const tipAmount = typeof rawTip === 'number' && rawTip > 0 ? Math.round(rawTip * 100) / 100 : 0;
 
-    // Compute effective totals (affiliate free delivery applied in-memory only)
-    const effectiveDeliveryFee = affiliateFreeDelivery ? 0 : Number(cart.deliveryFee);
+    // Compute effective totals (affiliate free delivery applied in-memory only).
+    // Pickup also zeroes the fee HERE so the $0 free-order fork below and the
+    // Stripe builder (which independently enforces pickup) agree on one number —
+    // otherwise a stale cart fee could send a fully-discounted pickup cart down
+    // the Stripe branch as an uncreatable near-$0 session.
+    const waivesDeliveryFee = affiliateFreeDelivery || pickupFromAddress;
+    const effectiveDeliveryFee = waivesDeliveryFee ? 0 : Number(cart.deliveryFee);
     const effectiveTotal = Number(cart.subtotal) - Number(cart.discountAmount)
       + Number(cart.taxAmount) + effectiveDeliveryFee + tipAmount;
 
@@ -231,8 +234,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         customerName || 'Guest',
         customerPhone || null,
         affiliateCode,
-        affiliateFreeDelivery ? 0 : undefined,
-        affiliateFreeDelivery ? Math.max(effectiveTotal, 0) : undefined,
+        waivesDeliveryFee ? 0 : undefined,
+        waivesDeliveryFee ? Math.max(effectiveTotal, 0) : undefined,
         typeof smsConsent === 'boolean' ? smsConsent : undefined
       );
 
@@ -281,7 +284,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       customerEmail,
       stripeCustomerId,
       affiliateCode,
-      overrideDeliveryFee: affiliateFreeDelivery ? 0 : undefined,
+      overrideDeliveryFee: waivesDeliveryFee ? 0 : undefined,
       tipAmount: tipAmount > 0 ? tipAmount : undefined,
       attribution: attribution && typeof attribution === 'object' ? attribution : undefined,
       smsConsent: typeof smsConsent === 'boolean' ? smsConsent : undefined,
