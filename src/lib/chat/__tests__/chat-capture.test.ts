@@ -147,17 +147,18 @@ describe('parseContact', () => {
   });
 
   it('parses a "phone--name--email" paste without mangling the email or dropping the name', () => {
-    // Regression: real WAYNE_CHAT lead (leads.id 7802a299…, 2026-08-28) typed
+    // Regression: a real WAYNE_CHAT lead (leads.id 7802a299…, 2026-08-28) typed
     // phone + name + email jammed together with "--". The old email regex let
-    // "nicaj--" become part of the local-part (stored `nicaj--hello@…`) and the
-    // name was left NULL. Email must be clean and the name must split First/Last.
+    // the name + "--" become part of the local-part (stored `<last>--hello@…`)
+    // and the name was left NULL. Values below are synthetic — the bug is in the
+    // SHAPE, not the person. Email must be clean, name must split First/Last.
     const c = parseContact(
-      "5126224061--anthony nicaj--hello@happycookingatx.com We're looking for more information on coolers and ice...",
+      "5125550147--jordan castellano--hello@example.com We're looking for more information on coolers and ice...",
     );
-    expect(c.email).toBe('hello@happycookingatx.com');
-    expect(c.phone).toBe('5126224061');
-    expect(c.firstName).toBe('Anthony');
-    expect(c.lastName).toBe('Nicaj');
+    expect(c.email).toBe('hello@example.com');
+    expect(c.phone).toBe('5125550147');
+    expect(c.firstName).toBe('Jordan');
+    expect(c.lastName).toBe('Castellano');
     expect(hasContact(c)).toBe(true);
   });
 
@@ -172,11 +173,11 @@ describe('parseContact', () => {
   it('handles the paste in email-first order too (the "--" after the domain)', () => {
     // "-" is legal in a domain as well, so the boundary has to hold on both
     // sides of the "@", not just the local-part.
-    const c = parseContact('hello@happycookingatx.com--anthony nicaj--5126224061');
-    expect(c.email).toBe('hello@happycookingatx.com');
-    expect(c.phone).toBe('5126224061');
-    expect(c.firstName).toBe('Anthony');
-    expect(c.lastName).toBe('Nicaj');
+    const c = parseContact('hello@example.com--jordan castellano--5125550147');
+    expect(c.email).toBe('hello@example.com');
+    expect(c.phone).toBe('5125550147');
+    expect(c.firstName).toBe('Jordan');
+    expect(c.lastName).toBe('Castellano');
   });
 
   it('accepts accented names in the paste, but only Latin script', () => {
@@ -184,7 +185,7 @@ describe('parseContact', () => {
     expect(c.firstName).toBe('José');
     expect(c.lastName).toBe('García');
     // Cyrillic "А" (U+0410) renders exactly like Latin "A" on the board.
-    expect(parseContact('5125551234--Аnthony Nicaj--a@example.com').firstName).toBeUndefined();
+    expect(parseContact('5125551234--Аlex Castellano--a@example.com').firstName).toBeUndefined();
   });
 
   it('does NOT mint a name from prose "--" next to a phone number', () => {
@@ -192,7 +193,7 @@ describe('parseContact', () => {
     // pronoun phrases must all stay unnamed — a wrong name reaches the CRM.
     expect(parseContact('call me at 5125551234 -- no rush').firstName).toBeUndefined();
     expect(parseContact('5125551234 -- Best regards').firstName).toBeUndefined();
-    expect(parseContact('5126224061--austin--hello@x.com').firstName).toBeUndefined();
+    expect(parseContact('5125550147--austin--hello@x.com').firstName).toBeUndefined();
     expect(parseContact('5125551234 -- we are flexible').firstName).toBeUndefined();
   });
 
@@ -203,7 +204,7 @@ describe('parseContact', () => {
     const c = parseContact("we're doing a party -- big one -- Saturday\nmy number is 5125551234");
     expect(c.phone).toBe('5125551234');
     expect(c.firstName).toBeUndefined();
-    expect(parseContact('Yes\nAnthony--5126224061--hello@x.com').firstName).toBeUndefined();
+    expect(parseContact('Yes\nJordan--5125550147--hello@x.com').firstName).toBeUndefined();
     // A "--" aside beside a bare number on the SAME line is prose, not a paste.
     expect(parseContact('5125551234 -- big one').firstName).toBeUndefined();
     expect(parseContact('movie night--5125551234--see you then').firstName).toBeUndefined();
