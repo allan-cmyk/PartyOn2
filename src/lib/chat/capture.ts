@@ -3,10 +3,15 @@
  *
  * `persistChatTurn` runs after each `/api/chat` reply (via `after()`, so it never
  * blocks the response). It (1) upserts the ChatConversation transcript, (2) emails
- * Allan once when the conversation escalates (refund/complaint/legal/safety), and
+ * Allan once when the conversation escalates — a customer keyword
+ * (refund/complaint/legal/safety/order_issue) OR Wayne's own reply promising a
+ * human follow-up (`handoff`, so "I'm getting Allan" is never a fabrication) —
  * (3) creates a Lead — reusing the exact machinery the quiz uses (`upsertLead`,
  * `recordEvent`, `mirrorLeadToCrm`, which auto-flows the lead to the CRM + Lead
- * Flow board) — when the customer gives contact info.
+ * Flow board) — when the customer gives contact info, and (4) emails Allan when
+ * that lead capture happens without an escalation email on the same turn
+ * (operator ask 2026-09-08: chats that need addressing must reach him — he does
+ * not watch the text line or the board day-to-day).
  *
  * NEVER throws: a capture hiccup must not affect the customer's chat.
  */
@@ -16,9 +21,10 @@ import { upsertLead, findLead, recordEvent } from '@/lib/leads/leadCapture';
 import { enrollLeadIfEligible } from '@/lib/leads/pipeline';
 import { mirrorLeadToCrm, leadBoardUrl } from '@/lib/leads/crm-mirror';
 import type { AttributionInput } from '@/lib/leads/attribution-schema';
-import { detectEscalation } from './escalation-keywords';
+import { detectEscalation, detectAssistantHandoff } from './escalation-keywords';
 import { parseContact, hasContact } from './parse-contact';
-import { sendChatEscalationEmail } from './escalation-alert';
+import { sendChatEscalationEmail, sendChatLeadCapturedEmail } from './escalation-alert';
+import { sendChatEscalationSms } from './escalation-sms';
 
 export interface ChatMessage {
   role: string;
@@ -46,7 +52,13 @@ export async function persistChatTurn(input: ChatTurnInput): Promise<void> {
 
     const userMessages = messages.filter((m) => m.role === 'user');
     const lastUserMessage = userMessages[userMessages.length - 1]?.content ?? '';
-    const reason = detectEscalation(lastUserMessage);
+    const lastAssistantMessage =
+      [...messages].reverse().find((m) => m.role === 'assistant')?.content ?? '';
+    // Customer-side keywords first (the serious labels); if none, Wayne's own
+    // reply promising a human ("I'm pinging Allan right now") escalates as
+    // `handoff` — whenever Wayne says a human is coming, that must be true.
+    const reason =
+      detectEscalation(lastUserMessage) ?? detectAssistantHandoff(lastAssistantMessage);
     const contact = parseContact(userMessages.map((m) => m.content).join('\n'));
 
     // 1. Upsert the transcript (create on first turn, replace messages each turn).
@@ -128,20 +140,50 @@ export async function persistChatTurn(input: ChatTurnInput): Promise<void> {
         });
         // Fire-and-forget CRM mirror (never throws; inert until CORELINQ_INGEST_URL set).
         await mirrorLeadToCrm({ leadId: lead.id }, 'wayne-chat');
+
+        // Notify Allan the moment a chat leaves contact info — unless the
+        // escalation email below is about to go out this same turn (it already
+        // carries the contact + board link; two emails would be noise).
+        const escalationEmailDue = Boolean(reason && !convo.escalationNotifiedAt);
+        if (!escalationEmailDue) {
+          await sendChatLeadCapturedEmail({
+            conversationId,
+            transcript: messages,
+            leadUrl: leadBoardUrl(lead.id),
+            contact,
+            firstPage: input.firstPage ?? null,
+          });
+        }
       }
     }
 
-    // 3. Escalation email — at most once per conversation.
+    // 3. Escalation alert — at most once per conversation. SMS is the pager
+    // (operator ask 2026-09-08), email the durable record with the transcript.
+    // `handoff` (Wayne merely promised a follow-up) stays email-only so routine
+    // quote chats don't page Allan's cell. Stamp when EITHER channel got
+    // through — retrying the other on later turns would double-page; the one
+    // that failed is in the logs.
     if (reason && !convo.escalationNotifiedAt) {
-      const sent = await sendChatEscalationEmail({
+      const leadUrl = leadId ? leadBoardUrl(leadId) : null;
+      const emailSent = await sendChatEscalationEmail({
         conversationId,
         reason,
         lastUserMessage,
         transcript: messages,
-        leadUrl: leadId ? leadBoardUrl(leadId) : null,
+        leadUrl,
         contact,
       });
-      if (sent) {
+      const smsSent =
+        reason !== 'handoff'
+          ? await sendChatEscalationSms({
+              conversationId,
+              reason,
+              lastUserMessage,
+              contact,
+              leadUrl,
+            })
+          : false;
+      if (emailSent || smsSent) {
         await prisma.chatConversation.update({
           where: { id: convo.id },
           data: { escalationNotifiedAt: new Date() },

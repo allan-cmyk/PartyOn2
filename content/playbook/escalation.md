@@ -86,3 +86,32 @@ Both gaps raised at v1 were fixed in a partyon-crm PR the same day this mirror u
 
 NOTE: this mirror and the fork's `escalation-triggers.ts` must merge together — the
 ingest lint fails on either side alone.
+
+## Web-chat-only triggers — NOT part of the CRM mirror above
+
+Source of truth: `src/lib/chat/escalation-keywords.ts`
+(`ORDER_ISSUE_KEYWORDS`, `HANDOFF_PHRASES`). These exist because the web chat replies
+instantly with NO human in the loop (the CRM inbox drafts-and-holds, so a human always
+sees those threads); anything a human must act on has to email the operator directly.
+Added 2026-09-08 after two misses: customers reported orders charging a wrong fee, the
+bot promised it would be "corrected right away", no keyword fired, and nobody was
+notified.
+
+- `order_issue` — customer-side phrases signalling a problem with an existing order or
+  checkout ("wrong item", "still including the delivery fee", "forgot to add", "can't
+  check out"). Fires the operator email AND the operator SMS (below).
+- Operator SMS pager (2026-09-08): every customer-side escalation reason also texts
+  Allan's cell via the Twilio REST API (`src/lib/chat/escalation-sms.ts`; env
+  `TWILIO_ACCOUNT_SID` + `TWILIO_AUTH_TOKEN` + `TWILIO_FROM_NUMBER` +
+  `OPS_ALERT_PHONE`, inert until all four are set — GHL is abandoned, 2026-09-08).
+  `handoff` stays email-only so routine promised follow-ups don't page.
+- `handoff` — matched against the BOT'S OWN reply: whenever it tells a customer a human
+  will follow up ("I'm pinging Allan right now", "a human will pick this up"), the
+  operator email fires so the promise is always true. Customer-side reasons win when
+  both match.
+- Separately, the web chat also emails the operator whenever a conversation captures a
+  lead (contact info given) and no escalation email went out on that turn.
+
+Changing these lists is a normal web-repo edit (no CRM PR needed) — they are not
+ingested by the CRM. If the CRM ever gains equivalent inbox alerting, fold them into
+the shared taxonomy properly.

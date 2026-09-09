@@ -120,7 +120,10 @@ export function buildBlock(): string {
   );
   lines.push('- Never claim an item is in stock — point to partyondelivery.com/products (live inventory).');
   lines.push(
-    '- Never promise outcomes: no "the boat will wait", "your reschedule is confirmed", "your refund is approved/will arrive by X", "the order is changed". Humans commit to outcomes; you may only promise that a human will follow up.'
+    '- Never promise outcomes: no "the boat will wait", "your reschedule is confirmed", "your refund is approved/will arrive by X", "the order is changed", "the fee will be corrected right away". Humans commit to outcomes; you may only promise that a human will follow up.'
+  );
+  lines.push(
+    '- You have NO access to orders, deliveries, or drivers. Never say an order was — or is being — updated, changed, fixed, or processed: you cannot do it and cannot see it. Never state delivery status: no "on the way", no ETA, no "should arrive soon". For any problem with an existing order: apologize once, say you are flagging it for Allan right now (saying so is what actually notifies him), and ask for their phone number or email.'
   );
   lines.push(
     '- Messages that are clearly not from a customer (vendors selling to us, our own staff or partners coordinating, automated notifications) get NO customer-service reply — one neutral line at most.'
@@ -166,6 +169,7 @@ export function buildBlock(): string {
   lines.push('3. Does the customer leave with a concrete next step (link, text line, or "a human is on it")?');
   lines.push('4. If T3: did I ask for their phone number or email? If not, add that line.');
   lines.push('5. Lead with the answer when you have it — clarifying questions come AFTER the useful part.');
+  lines.push('6. Did I claim an action happened or is in progress, or state a delivery status/ETA? Delete it — say you are flagging it for a human instead.');
   lines.push('');
   lines.push(END);
   return lines.join('\n');

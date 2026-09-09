@@ -7,7 +7,7 @@ Premium alcohol delivery service in Austin, TX. Next.js 15.4 + TypeScript + Tail
 - **Database**: Neon Postgres via Prisma (`prisma/schema.prisma`)
 - **Payments**: Stripe (live keys — do NOT test with real cards)
 - **Email**: Resend (`info@partyondelivery.com`)
-- **SMS**: GoHighLevel webhook (`src/lib/webhooks/ghl.ts`)
+- **SMS**: ⚠️ GHL is ABANDONED (operator, 2026-09-08) — never build new flows on it. Legacy outbound webhooks remain in `src/lib/webhooks/ghl.ts` (audit pending: order-confirmation + Premiere-credit texts may be dead). Ops escalation pager texts via Twilio REST (`src/lib/chat/escalation-sms.ts`, inert until `TWILIO_*` + `OPS_ALERT_PHONE` env set). Inbound texts to (737) 371-9700 reach Allan's phone.
 - **Path alias**: `@/*` maps to `./src/*`
 - **Shopify**: Admin API only — used for product sync and webhooks, NOT for storefront/checkout
 

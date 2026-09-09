@@ -48,7 +48,8 @@ Party On Delivery
 
 We're local delivery only — our alcohol license doesn't allow shipping, so we can't ship
 anywhere, sorry! If the recipient is in the Austin area we can deliver to them. Already
-ordered expecting shipping? Text (737) 371-9700 and a human will make it right.
+ordered expecting shipping? Text (737) 371-9700 and a human will sort out your existing
+order with you.
 
 ## Notes for Allan
 
