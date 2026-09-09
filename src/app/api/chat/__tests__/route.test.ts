@@ -143,6 +143,15 @@ describe('POST /api/chat — body validation', () => {
     expect((await POST(request({ messages: [] }))).status).toBe(400);
   });
 
+  it('tolerates a null/absent mode instead of 400ing the whole chat', async () => {
+    // .default() only fills undefined, so a cached bundle sending an explicit
+    // null must not take the chat down over a cosmetic field.
+    expect((await POST(request({ ...WIDGET_BODY, mode: null }))).status).toBe(200);
+    const noMode: Record<string, unknown> = { ...WIDGET_BODY };
+    delete noMode.mode;
+    expect((await POST(request(noMode))).status).toBe(200);
+  });
+
   it('accepts the legacy caller that sends only messages + mode', async () => {
     // /ai-party-planner posts no conversationId — capture must stay off for it.
     const res = await POST(

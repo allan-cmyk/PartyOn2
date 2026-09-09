@@ -40,7 +40,9 @@ const chatMessageSchema = z.object({
  */
 const chatBodySchema = z.object({
   messages: z.array(chatMessageSchema).min(1).max(MAX_MESSAGES),
-  mode: z.string().trim().max(40).optional().default('normal'),
+  // nullish + transform, not .default(): .default() only fills `undefined`, so a
+  // client sending `mode: null` would 400 the entire chat over a cosmetic field.
+  mode: z.string().trim().max(40).nullish().transform((v) => v || 'normal'),
   conversationId: z.string().trim().max(200).nullish(),
   page: z.string().trim().max(500).nullish(),
   utmSource: z.string().trim().max(200).nullish(),
