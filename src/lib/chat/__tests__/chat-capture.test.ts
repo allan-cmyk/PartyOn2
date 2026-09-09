@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { detectEscalation } from '../escalation-keywords';
+import {
+  detectEscalation,
+  detectAssistantHandoff,
+  REASON_LABEL,
+  type EscalationReason,
+} from '../escalation-keywords';
 import { parseContact, hasContact } from '../parse-contact';
 
 describe('detectEscalation', () => {
@@ -36,8 +41,78 @@ describe('detectEscalation', () => {
     expect(detectEscalation('')).toBeNull();
   });
 
+  it('flags order problems (web-only order_issue) — the two real 2026-08 misses', () => {
+    // Verbatim customer messages that slipped through with NO notification and
+    // ended in a wrongly-charged order (operator report 2026-09-08).
+    expect(
+      detectEscalation("I was planning on picking up my order, but it's showing a delivery fee")
+    ).toBe('order_issue');
+    expect(
+      detectEscalation(
+        "trying to place an order for pick up but when I get to the stripe page to check out, it's still including the $25 delivery fee"
+      )
+    ).toBe('order_issue');
+    expect(detectEscalation('I forgot to add the dank shots! Can you add them?')).toBe(
+      'order_issue'
+    );
+    expect(detectEscalation('you sent the wrong item')).toBe('order_issue');
+  });
+
+  it('mirrored classes outrank order_issue when both match', () => {
+    expect(detectEscalation("cancel my order — it's still showing a delivery fee")).toBe('refund');
+  });
+
+  it('does NOT flag plain pricing/zone questions as order issues', () => {
+    expect(detectEscalation("what's the delivery fee for 78704?")).toBeNull();
+    expect(detectEscalation('do you deliver to Lakeway?')).toBeNull();
+    expect(detectEscalation('how much is delivery?')).toBeNull();
+  });
+
   it('does not trip safety on "a minor issue"', () => {
     expect(detectEscalation('just a minor issue with the ice, no big deal')).toBeNull();
+  });
+});
+
+describe('detectAssistantHandoff', () => {
+  it("fires when Wayne's reply promises a human follow-up", () => {
+    // Real phrasings from the playbook's chat renderings.
+    expect(
+      detectAssistantHandoff("I'm pinging Allan right now; leave your phone number")
+    ).toBe('handoff');
+    expect(
+      detectAssistantHandoff("I've flagged this for the team — drop your name and number")
+    ).toBe('handoff');
+    expect(
+      detectAssistantHandoff('Text (737) 371-9700 and a human will pick this up shortly.')
+    ).toBe('handoff');
+    expect(
+      detectAssistantHandoff("drop your number and he'll get back to you as soon as he can")
+    ).toBe('handoff');
+  });
+
+  it('stays quiet on ordinary helpful replies', () => {
+    expect(detectAssistantHandoff('Happy to help — what headcount are we planning for?')).toBeNull();
+    expect(
+      detectAssistantHandoff('Order at partyondelivery.com/order and the cooler is stocked before you board.')
+    ).toBeNull();
+    expect(detectAssistantHandoff('')).toBeNull();
+  });
+});
+
+describe('REASON_LABEL', () => {
+  it('has a human-readable label for every reason (email subjects depend on it)', () => {
+    const reasons: EscalationReason[] = [
+      'safety',
+      'legal',
+      'refund',
+      'complaint',
+      'order_issue',
+      'handoff',
+    ];
+    for (const r of reasons) {
+      expect(REASON_LABEL[r]).toBeTruthy();
+      expect(REASON_LABEL[r].length).toBeGreaterThan(4);
+    }
   });
 });
 

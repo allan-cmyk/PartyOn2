@@ -6,7 +6,7 @@
 import { prisma } from '@/lib/database/client';
 import { Prisma, Cart, CartItem } from '@prisma/client';
 import { calculateCartTax } from '@/lib/tax';
-import { calculateDeliveryFee } from '@/lib/delivery';
+import { calculateDeliveryFee, isPickupAddress } from '@/lib/delivery';
 
 // ==========================================
 // Types
@@ -457,12 +457,10 @@ async function recalculateCart(cartId: string): Promise<CartWithItems> {
 
   // Get zip code + pickup flag from delivery address if available
   let zipCode: string | undefined;
-  let isPickup = false;
   if (cart.deliveryAddress && typeof cart.deliveryAddress === 'object') {
-    const addr = cart.deliveryAddress as { zip?: string; isPickup?: boolean };
-    zipCode = addr.zip;
-    isPickup = addr.isPickup === true;
+    zipCode = (cart.deliveryAddress as { zip?: string }).zip;
   }
+  const isPickup = isPickupAddress(cart.deliveryAddress);
 
   // Calculate tax using configurable rates
   const discountAmount = parseFloat(cart.discountAmount.toString());

@@ -5,8 +5,10 @@
  * chat response, never throws. Sent at most once per conversation — the caller
  * gates on `ChatConversation.escalationNotifiedAt`.
  *
- * Email only (operator decision 2026-07-22): there is no SMS-to-operator
- * capability in the codebase, and this is the durable record with a board link.
+ * Originally email-only (operator decision 2026-07-22); superseded 2026-09-08
+ * when Allan asked for a text on escalation — `escalation-sms.ts` now pages his
+ * cell via Twilio for customer-side reasons (GHL is abandoned), and THIS email
+ * stays as the durable record with the transcript + board link.
  */
 import { EmailType } from '@prisma/client';
 import { sendEmail } from '@/lib/email/resend-client';
@@ -90,6 +92,74 @@ export async function sendChatEscalationEmail(input: ChatEscalationInput): Promi
     return result !== null;
   } catch (err) {
     console.error('[wayne-capture] escalation email failed:', err);
+    return false;
+  }
+}
+
+export interface ChatLeadCapturedInput {
+  conversationId: string;
+  transcript: Array<{ role: string; content: string }>;
+  leadUrl: string | null;
+  contact: ParsedContact;
+  firstPage: string | null;
+}
+
+/**
+ * Email Allan that a Wayne chat captured a lead (name/phone/email given).
+ * Added 2026-09-08 (operator ask: "is there even a way for it to notify me?")
+ * — before this, a captured lead landed silently on the board and the
+ * Wimberley cooler inquiry sat unseen for days. The caller skips this when an
+ * escalation email is going out on the same turn (that email already carries
+ * the contact + board link). Same never-throw / time-bounded discipline as
+ * the escalation alert.
+ */
+export async function sendChatLeadCapturedEmail(input: ChatLeadCapturedInput): Promise<boolean> {
+  try {
+    const { conversationId, transcript, leadUrl, contact, firstPage } = input;
+
+    const recent = transcript
+      .slice(-8)
+      .map(
+        (m) =>
+          `<p style="margin:4px 0"><b>${m.role === 'user' ? 'Customer' : 'Wayne'}:</b> ${escapeHtml(
+            String(m.content ?? '')
+          ).slice(0, MSG_MAX)}</p>`
+      )
+      .join('');
+
+    const contactLine =
+      [contact.firstName, contact.email, contact.phone].filter(Boolean).join(' · ') || 'unknown';
+
+    const html = `
+      <h2>Wayne chat captured a lead</h2>
+      <p><b>Customer:</b> ${escapeHtml(contactLine)}</p>
+      ${firstPage ? `<p><b>Started on:</b> ${escapeHtml(firstPage)}</p>` : ''}
+      ${
+        leadUrl
+          ? `<p><a href="${escapeHtml(leadUrl)}">Open the lead on the board →</a></p>`
+          : ''
+      }
+      <h3>Recent messages</h3>
+      ${recent}
+      <p style="color:#888;font-size:12px">Conversation ${escapeHtml(
+        conversationId
+      )}. Automated ops alert from the Wayne chat — sent whenever a chat visitor leaves contact info, so leads never sit unseen.</p>
+    `;
+
+    const result = await Promise.race([
+      sendEmail({
+        to: OPS_ALERT_EMAIL,
+        subject: `Wayne chat captured a lead — ${contactLine}`,
+        type: EmailType.WELCOME, // reuse — internal ops alert, no dedicated type (matches corelinq-alert)
+        html,
+        metadata: { kind: 'wayne-chat-lead-captured', conversationId },
+      }),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), SEND_TIMEOUT_MS)),
+    ]);
+
+    return result !== null;
+  } catch (err) {
+    console.error('[wayne-capture] lead-captured email failed:', err);
     return false;
   }
 }

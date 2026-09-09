@@ -2,6 +2,7 @@
 
 import { useState, useEffect, ReactElement } from 'react';
 import { createDeliveryInvoice, checkFreeShippingEligibility } from '@/lib/group-orders-v2/api-client';
+import { isPickupAddress } from '@/lib/delivery/pickup';
 import type { SubOrderFull } from '@/lib/group-orders-v2/types';
 
 interface Props {
@@ -19,12 +20,25 @@ export default function DeliveryFeeInvoice({
   const [error, setError] = useState('');
   const [freeShippingCode, setFreeShippingCode] = useState<string | null>(null);
 
+  // In-store pickup tabs never owe a delivery fee — even a stale one priced
+  // from the store's own zip. The API refuses these too; hiding the pay button
+  // keeps the host from ever seeing a fee to pay.
+  const isPickup = isPickupAddress(tab.deliveryAddress);
+
   useEffect(() => {
-    if (tab.deliveryFeeWaived || tab.deliveryInvoice?.status === 'PAID') return;
+    if (isPickup || tab.deliveryFeeWaived || tab.deliveryInvoice?.status === 'PAID') return;
     checkFreeShippingEligibility(shareCode, tab.id)
       .then((result) => setFreeShippingCode(result.freeShippingCode))
       .catch(() => {/* ignore - will fall back to normal pay flow */});
-  }, [shareCode, tab.id, tab.deliveryFeeWaived, tab.deliveryInvoice?.status]);
+  }, [shareCode, tab.id, isPickup, tab.deliveryFeeWaived, tab.deliveryInvoice?.status]);
+
+  if (isPickup) {
+    return (
+      <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-sm text-green-700">
+        In-store pickup — no delivery fee.
+      </div>
+    );
+  }
 
   if (tab.deliveryFeeWaived) {
     return (

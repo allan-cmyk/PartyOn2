@@ -4,3 +4,4 @@
  */
 
 export * from './rates';
+export * from './pickup';

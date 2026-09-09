@@ -1,8 +1,13 @@
 /**
- * Server-side delivery-date gate on both checkout routes (wrong-date fix
- * 2026-08-01): no Stripe session may be created for a tab without a
- * customer-confirmed delivery date. This is the unbypassable half of the fix —
- * the modal UI can be sidestepped, this cannot.
+ * Server-side behavior gates on both checkout routes:
+ * - Delivery-date gate (wrong-date fix 2026-08-01): no Stripe session may be
+ *   created for a tab without a customer-confirmed delivery date. This is the
+ *   unbypassable half of the fix — the modal UI can be sidestepped, this cannot.
+ * - Pickup delivery-fee guard: in-store pickup tabs never get the delivery fee
+ *   bundled, and the builder is told (isPickup) so the webhook stamps the tab
+ *   waived. (Write-boundary coverage lives in
+ *   src/lib/group-orders-v2/__tests__/pickup-fee-writers.test.ts.)
+ * - Body validation on the charge path.
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
@@ -230,6 +235,56 @@ for (const [label, post] of [
       const json = await res.json();
 
       expect(json.code).toBe('ORDER_CANCELLED');
+    });
+  });
+
+  describe(`POST ${label} pickup delivery-fee guard`, () => {
+    // In-store pickup carts must never be charged a delivery fee (no driver is
+    // dispatched). The store's own pickup zip (78752) is in the $25 Central
+    // Austin zone, so a stale non-zero fee on a pickup tab must not be bundled
+    // into the Stripe session — the exact overcharge customers reported.
+    const PICKUP_ADDRESS = {
+      address1: '7600 N. Lamar Blvd',
+      address2: '#A2',
+      city: 'Austin',
+      province: 'TX',
+      zip: '78752',
+      country: 'US',
+      isPickup: true,
+    };
+
+    it('does NOT bundle the delivery fee for a pickup tab, even with a stale non-zero fee', async () => {
+      serviceMock.getGroupOrderByCode.mockResolvedValue(
+        group({ deliveryAddress: PICKUP_ADDRESS, deliveryFee: 25, deliveryFeeWaived: false })
+      );
+
+      const res = await post(makeRequest(), PARAMS);
+
+      expect(res.status).toBe(200);
+      expect(paymentsMock.createGroupV2CheckoutSession).toHaveBeenCalledOnce();
+      const arg = paymentsMock.createGroupV2CheckoutSession.mock.calls[0][0];
+      expect(arg.includeDeliveryFee).toBe(false);
+      expect(arg.deliveryFeeAmount).toBeUndefined();
+      // The builder needs the flag too: it emits the waive metadata so the
+      // payment webhook stamps subOrder.deliveryFeeWaived, closing the
+      // separate host-invoice path for this tab.
+      expect(arg.isPickup).toBe(true);
+    });
+
+    it('still bundles the delivery fee for a normal delivery tab', async () => {
+      // Default group() address is a regular delivery address.
+      serviceMock.getGroupOrderByCode.mockResolvedValue(
+        group({ deliveryFee: 25, deliveryFeeWaived: false })
+      );
+
+      const res = await post(makeRequest(), PARAMS);
+
+      expect(res.status).toBe(200);
+      expect(paymentsMock.createGroupV2CheckoutSession).toHaveBeenCalledOnce();
+      const arg = paymentsMock.createGroupV2CheckoutSession.mock.calls[0][0];
+      expect(arg.includeDeliveryFee).toBe(true);
+      expect(arg.deliveryFeeAmount).toBe(25);
+      expect(arg.isPickup).toBe(false);
     });
   });
 
