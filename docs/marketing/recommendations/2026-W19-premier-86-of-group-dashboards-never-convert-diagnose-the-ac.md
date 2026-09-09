@@ -63,16 +63,25 @@ _(not captured)_
 ```json
 {
   "orders": 37,
-  "revenue": 18393.14,
+  "revenue": 18634.66,
   "segments": [
     {
       "margin": null,
-      "orders": 36,
-      "revenue": 18162.7,
+      "orders": 35,
+      "revenue": 17854.33,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 504.52,
+      "averageOrderValue": 510.12,
       "marginCoveragePct": 0
+    },
+    {
+      "margin": 59.99,
+      "orders": 1,
+      "revenue": 549.89,
+      "segment": "kegs",
+      "averageMarginPct": 10.9,
+      "averageOrderValue": 549.89,
+      "marginCoveragePct": 34.5
     },
     {
       "margin": 56.88,
@@ -84,7 +93,7 @@ _(not captured)_
       "marginCoveragePct": 45
     }
   ],
-  "capturedAt": "2026-09-08T08:00:49.305Z",
+  "capturedAt": "2026-09-09T08:00:49.524Z",
   "affiliateRoi": [
     {
       "code": "POUR24",
@@ -123,18 +132,6 @@ _(not captured)_
       "marginCoveragePct": 0
     },
     {
-      "code": "BIGTEXBOATRENTALS",
-      "margin": null,
-      "orders": 2,
-      "roiPct": null,
-      "revenue": 600.81,
-      "netMargin": null,
-      "affiliateId": "39489c4d-df1a-429e-ade3-13f493b496a4",
-      "businessName": "BigTex Boat Rentals",
-      "commissionPaid": 25.44,
-      "marginCoveragePct": 0
-    },
-    {
       "code": "LTYACHTRENTALS",
       "margin": null,
       "orders": 3,
@@ -156,6 +153,18 @@ _(not captured)_
       "affiliateId": "3d00911f-3b75-40ad-bc3c-c87f20cdaeaf",
       "businessName": "Sip & Social On Wheels",
       "commissionPaid": 25.09,
+      "marginCoveragePct": 0
+    },
+    {
+      "code": "BIGTEXBOATRENTALS",
+      "margin": null,
+      "orders": 1,
+      "roiPct": null,
+      "revenue": 292.44,
+      "netMargin": null,
+      "affiliateId": "39489c4d-df1a-429e-ade3-13f493b496a4",
+      "businessName": "BigTex Boat Rentals",
+      "commissionPaid": 13.05,
       "marginCoveragePct": 0
     },
     {
@@ -195,15 +204,15 @@ _(not captured)_
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-09-08",
-  "averageOrderValue": 497.1118918918919,
+  "snapshotDate": "2026-09-09",
+  "averageOrderValue": 503.6394594594594,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-09-08 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-09-09 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
