@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { persistChatTurn } from '@/lib/chat/capture'
 import { attributionSchema } from '@/lib/leads/attribution-schema'
 import { checkRateLimit } from '@/lib/security/rate-limit'
+import { clientIpFrom } from '@/lib/group-orders-v2/client-ip'
 
 /**
  * Transcript bounds. The widget resends the WHOLE conversation every turn and
@@ -14,6 +15,8 @@ import { checkRateLimit } from '@/lib/security/rate-limit'
  */
 const MAX_MESSAGES = 60
 const MAX_MESSAGE_CHARS = 4000
+/** Comfortably above a full 60 x 4000 transcript plus context fields. */
+const MAX_BODY_BYTES = 512 * 1024
 
 /**
  * Per-IP throttle. Well above human chat pace (a message every 4s, sustained)
@@ -91,13 +94,24 @@ export async function POST(request: NextRequest) {
   let mode = 'normal'
   try {
     // Throttle FIRST, on a header lookup: a flood must cost neither a JSON
-    // parse, nor an OpenRouter call, nor a DB write.
-    const ip =
-      request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-      request.headers.get('x-real-ip') ||
-      'unknown'
+    // parse, nor an OpenRouter call, nor a DB write. clientIpFrom prefers the
+    // platform-set headers over the client-suppliable x-forwarded-for — a
+    // hand-rolled "XFF first" version lets a caller rotate the header to mint a
+    // fresh bucket per request, which is the bug lead-capture-throttle.ts
+    // already had once (security review 2026-09-09).
+    const ip = clientIpFrom(request)
     if (!(await checkRateLimit('chat', ip, CHAT_RATE_LIMIT, CHAT_RATE_WINDOW_SECONDS))) {
       return NextResponse.json({ content: getFallbackResponse(mode) }, { status: 429 })
+    }
+
+    // Cheap size gate before the body is materialised. The Zod caps below bound
+    // `messages`, but only AFTER request.json() has walked the whole payload,
+    // and `attribution` stays deliberately unvalidated at this layer (a bad
+    // shape must drop attribution, not the chat) — so this is what stops a
+    // multi-megabyte body from being parsed at all. Content-Length can be absent
+    // or dishonest; the platform's own body cap is the backstop for that.
+    if (Number(request.headers.get('content-length') ?? 0) > MAX_BODY_BYTES) {
+      return NextResponse.json({ content: getFallbackResponse(mode) }, { status: 413 })
     }
 
     const parsed = chatBodySchema.safeParse(await request.json())

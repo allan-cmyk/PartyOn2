@@ -88,6 +88,42 @@ describe('POST /api/chat — throttle wiring', () => {
     );
   });
 
+  it('keys the throttle on the platform header, not a spoofable x-forwarded-for', async () => {
+    // A caller rotating x-forwarded-for must NOT mint a fresh bucket per
+    // request — that is the bug lead-capture-throttle.ts already had once.
+    const spoofed = new NextRequest('http://localhost/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-real-ip': '198.51.100.5',
+        'x-forwarded-for': '203.0.113.99',
+      },
+      body: JSON.stringify(WIDGET_BODY),
+    });
+
+    await POST(spoofed);
+
+    expect(rateLimitMock.checkRateLimit).toHaveBeenCalledWith('chat', '198.51.100.5', 15, 60);
+  });
+
+  it('rejects an oversized body on Content-Length before parsing it', async () => {
+    const big = new NextRequest('http://localhost/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-real-ip': '203.0.113.7',
+        'content-length': String(1024 * 1024),
+      },
+      body: JSON.stringify(WIDGET_BODY),
+    });
+
+    const res = await POST(big);
+
+    expect(res.status).toBe(413);
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(captureMock.persistChatTurn).not.toHaveBeenCalled();
+  });
+
   it('refuses a flooding IP with 429 before it spends anything', async () => {
     rateLimitMock.checkRateLimit.mockResolvedValue(false);
 
