@@ -79,7 +79,7 @@ export default function DrawerStageActions({
 
       {/* Log an off-board outreach attempt — records the touch, clears the
           reply flag, and moves NEW→CONTACTED (the actual call/text happens in
-          the phone / GHL; this is the bookkeeping). */}
+          the phone / CRM; this is the bookkeeping). */}
       <section className="mt-3 flex flex-wrap items-center gap-2 text-sm">
         <span className="text-gray-500 font-semibold">Log outreach</span>
         <button
