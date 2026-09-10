@@ -62,16 +62,16 @@ _(not captured)_
 
 ```json
 {
-  "orders": 37,
-  "revenue": 18634.66,
+  "orders": 38,
+  "revenue": 18656.72,
   "segments": [
     {
       "margin": null,
-      "orders": 35,
-      "revenue": 17854.33,
+      "orders": 36,
+      "revenue": 17876.39,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 510.12,
+      "averageOrderValue": 496.57,
       "marginCoveragePct": 0
     },
     {
@@ -93,7 +93,7 @@ _(not captured)_
       "marginCoveragePct": 45
     }
   ],
-  "capturedAt": "2026-09-09T08:00:49.524Z",
+  "capturedAt": "2026-09-10T08:00:49.489Z",
   "affiliateRoi": [
     {
       "code": "POUR24",
@@ -122,13 +122,13 @@ _(not captured)_
     {
       "code": "PREMIER",
       "margin": null,
-      "orders": 10,
+      "orders": 11,
       "roiPct": null,
-      "revenue": 2056.87,
+      "revenue": 2078.93,
       "netMargin": null,
       "affiliateId": "d21bac1a-3f99-489c-89fd-e1980c264a8d",
       "businessName": "Premier Party Cruises",
-      "commissionPaid": 120.59,
+      "commissionPaid": 122.22,
       "marginCoveragePct": 0
     },
     {
@@ -180,18 +180,6 @@ _(not captured)_
       "marginCoveragePct": 0
     },
     {
-      "code": "BACHBABES",
-      "margin": null,
-      "orders": 1,
-      "roiPct": null,
-      "revenue": 890.15,
-      "netMargin": null,
-      "affiliateId": "bd7084cd-db70-4759-ade1-128bab62f8b2",
-      "businessName": "Bach Babes",
-      "commissionPaid": 37.64,
-      "marginCoveragePct": 0
-    },
-    {
       "code": "MIMISPARTY",
       "margin": null,
       "orders": 1,
@@ -202,17 +190,29 @@ _(not captured)_
       "businessName": "Mimi's Party Palace",
       "commissionPaid": 20.69,
       "marginCoveragePct": 0
+    },
+    {
+      "code": "BACHBABES",
+      "margin": null,
+      "orders": 1,
+      "roiPct": null,
+      "revenue": 890.15,
+      "netMargin": null,
+      "affiliateId": "bd7084cd-db70-4759-ade1-128bab62f8b2",
+      "businessName": "Bach Babes",
+      "commissionPaid": 37.64,
+      "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-09-09",
-  "averageOrderValue": 503.6394594594594,
+  "snapshotDate": "2026-09-10",
+  "averageOrderValue": 490.9663157894737,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-09-09 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-09-10 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
