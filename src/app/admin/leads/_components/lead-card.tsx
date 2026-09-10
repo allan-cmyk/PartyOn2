@@ -61,7 +61,8 @@ const ACTION_STYLE: Record<'CALL' | 'TEXT' | 'EMAIL', string> = {
 
 /**
  * Next-best-action chip: the "what do I do now" answer. CALL dials via tel:,
- * TEXT deep-links to GHL (SMS lives there until the A2P number lands); EMAIL
+ * TEXT deep-links to the CoreLinq CRM (SMS lives there since the 2026-08-10
+ * cutover); EMAIL
  * just opens the drawer (the card's own click). REPLY is intentionally not
  * rendered here — the red "Reply needed" tag already carries that signal.
  */
@@ -92,12 +93,12 @@ function NextActionChip({
   if (action.kind === 'TEXT') {
     return (
       <a
-        href="https://app.gohighlevel.com"
+        href="https://crm.partyondelivery.com"
         target="_blank"
         rel="noreferrer"
         onClick={stop}
         onPointerDown={stop}
-        title="SMS lives in GHL until the CRM cutover"
+        title="SMS lives in the CoreLinq CRM"
         className={cls}
       >
         {inner}

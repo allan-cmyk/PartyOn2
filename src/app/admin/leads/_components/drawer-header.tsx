@@ -7,7 +7,7 @@ import type { LeadDetail } from './drawer-types';
 
 const TEMP_VARIANT = { hot: 'red', warm: 'amber', cold: 'gray' } as const;
 
-/** Drawer header: name, contact links, GHL escape hatch, temperature badge. */
+/** Drawer header: name, contact links, CRM escape hatch, temperature badge. */
 export default function DrawerHeader({
   lead,
   name,
@@ -34,13 +34,13 @@ export default function DrawerHeader({
             </a>
           )}
           <a
-            href="https://app.gohighlevel.com"
+            href="https://crm.partyondelivery.com"
             target="_blank"
             rel="noreferrer"
             className="text-gray-500 underline"
-            title="SMS lives in GHL until the CRM cutover"
+            title="SMS lives in the CoreLinq CRM"
           >
-            Open GHL
+            Open CRM
           </a>
         </div>
       </div>

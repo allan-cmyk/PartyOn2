@@ -69,7 +69,7 @@ export default function ReplyComposer({
   if (!leadEmail) {
     return (
       <p className="text-sm text-gray-400">
-        No email on this lead — text them via GHL instead.
+        No email on this lead — text them via the CRM instead.
       </p>
     );
   }
@@ -112,7 +112,7 @@ export default function ReplyComposer({
         setSentAt(new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }));
         onSent();
       } else if (payload?.error === 'recipient_suppressed') {
-        setError('This address unsubscribed — email is blocked. Use GHL/phone instead.');
+        setError('This address unsubscribed — email is blocked. Use the CRM/phone instead.');
       } else if (payload?.error === 'lead_has_no_email') {
         setError('No email on this lead.');
       } else {
