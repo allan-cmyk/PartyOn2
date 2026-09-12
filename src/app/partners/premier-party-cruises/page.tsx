@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Navigation from "@/components/Navigation";
 import Footer from '@/components/Footer';
 import Button from '@/components/Button';
-import HouseTabUpsell from '@/components/partners/HouseTabUpsell';
 import PremierHero from '@/components/partners/PremierHero';
 import PremierHeroStickyCTA from '@/components/partners/PremierHeroStickyCTA';
 import ScrollRevealCSS from '@/components/ui/ScrollRevealCSS';
@@ -191,10 +190,9 @@ function PremierPartyCruisesPageContent(): ReactElement {
         </div>
       </section>
 
-      {/* ============================================ */}
-      {/* SECTION 4: HOUSE TAB UPSELL                  */}
-      {/* ============================================ */}
-      <HouseTabUpsell />
+      {/* SECTION 4 (House Tab upsell) removed 2026-09-10: it promised a free
+          "Welcome to Austin Survival Package", which is retired now that the
+          storefront is drinks-only. */}
 
       {/* ============================================ */}
       {/* SECTION 4b: WEDDING VENUE PACKAGES           */}

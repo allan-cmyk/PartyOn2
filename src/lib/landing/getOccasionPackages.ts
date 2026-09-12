@@ -420,8 +420,11 @@ async function buildOccasionPackagesUncached(occasion: Occasion): Promise<Packag
 
   let byHandle: Record<string, { handle: string; title: string; basePrice: { toString: () => string } }> = {};
   try {
+    // ACTIVE only: an archived product must drop out of the package (both loops
+    // below skip missing handles) rather than be advertised — or counted in
+    // freebiesValue — as something the customer can't actually buy.
     const products = await prisma.product.findMany({
-      where: { handle: { in: [...allHandles] } },
+      where: { handle: { in: [...allHandles] }, status: 'ACTIVE' },
       select: { handle: true, title: true, basePrice: true },
     });
     byHandle = Object.fromEntries(products.map((p) => [p.handle, p])) as typeof byHandle;

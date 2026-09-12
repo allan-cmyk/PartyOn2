@@ -314,12 +314,6 @@ function CocktailCowboysPageContent(): ReactElement {
                 handle: 'espresso-martini',
               },
               {
-                name: 'Austin Survival Package',
-                tagline: 'Hangover kit for the crew',
-                image: '/images/products/welcome-to-austin-survival-package.png',
-                handle: 'party-starter-bundle',
-              },
-              {
                 name: 'Aperol Spritz Kit',
                 tagline: '16 drinks, zero effort',
                 image: 'https://cdn.shopify.com/s/files/1/0538/1767/1858/files/Gemini_Generated_Image_cmdz47cmdz47cmdz.png?v=1767930088',
