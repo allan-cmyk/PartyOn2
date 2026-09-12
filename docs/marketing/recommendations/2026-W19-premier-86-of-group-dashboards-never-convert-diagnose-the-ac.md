@@ -62,16 +62,16 @@ _(not captured)_
 
 ```json
 {
-  "orders": 44,
-  "revenue": 22158.41,
+  "orders": 46,
+  "revenue": 22662.22,
   "segments": [
     {
       "margin": null,
-      "orders": 41,
-      "revenue": 20021.86,
+      "orders": 43,
+      "revenue": 20525.67,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 488.34,
+      "averageOrderValue": 477.34,
       "marginCoveragePct": 0
     },
     {
@@ -93,7 +93,7 @@ _(not captured)_
       "marginCoveragePct": 34.5
     }
   ],
-  "capturedAt": "2026-09-11T08:00:49.306Z",
+  "capturedAt": "2026-09-12T08:00:49.419Z",
   "affiliateRoi": [
     {
       "code": "POUR24",
@@ -122,13 +122,13 @@ _(not captured)_
     {
       "code": "PREMIER",
       "margin": null,
-      "orders": 14,
+      "orders": 17,
       "roiPct": null,
-      "revenue": 2446.79,
+      "revenue": 3360.64,
       "netMargin": null,
       "affiliateId": "d21bac1a-3f99-489c-89fd-e1980c264a8d",
       "businessName": "Premier Party Cruises",
-      "commissionPaid": 149.41,
+      "commissionPaid": 210.91,
       "marginCoveragePct": 0
     },
     {
@@ -144,18 +144,6 @@ _(not captured)_
       "marginCoveragePct": 0
     },
     {
-      "code": "SIPNSOCIAL",
-      "margin": null,
-      "orders": 2,
-      "roiPct": null,
-      "revenue": 543.16,
-      "netMargin": null,
-      "affiliateId": "3d00911f-3b75-40ad-bc3c-c87f20cdaeaf",
-      "businessName": "Sip & Social On Wheels",
-      "commissionPaid": 25.09,
-      "marginCoveragePct": 0
-    },
-    {
       "code": "BIGTEXBOATRENTALS",
       "margin": null,
       "orders": 1,
@@ -165,6 +153,18 @@ _(not captured)_
       "affiliateId": "39489c4d-df1a-429e-ade3-13f493b496a4",
       "businessName": "BigTex Boat Rentals",
       "commissionPaid": 13.05,
+      "marginCoveragePct": 0
+    },
+    {
+      "code": "SIPNSOCIAL",
+      "margin": null,
+      "orders": 1,
+      "roiPct": null,
+      "revenue": 293.18,
+      "netMargin": null,
+      "affiliateId": "3d00911f-3b75-40ad-bc3c-c87f20cdaeaf",
+      "businessName": "Sip & Social On Wheels",
+      "commissionPaid": 13.54,
       "marginCoveragePct": 0
     },
     {
@@ -204,15 +204,15 @@ _(not captured)_
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-09-11",
-  "averageOrderValue": 503.6002272727273,
+  "snapshotDate": "2026-09-12",
+  "averageOrderValue": 492.6569565217391,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-09-11 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-09-12 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
