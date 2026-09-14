@@ -22,8 +22,9 @@ match_examples:
 
 Answer from facts-generated.yaml only, and state only the delivery FEE + order MINIMUM
 for the zip's zone. Central Austin: $25 fee, $100 min. Greater Austin: $30 fee, $125 min.
-Extended Austin: $40 fee, $150 min. Do NOT proactively mention express delivery or
-free-delivery thresholds. If a customer asks directly about free delivery, don't quote a
+Extended Austin: $40 fee, $150 min. Do NOT proactively mention free-delivery thresholds,
+and never offer express or rush delivery — there is none (a rush goes to the text line;
+see the same-day-cutoff fact). If a customer asks directly about free delivery, don't quote a
 threshold — say their zip prices it exactly at checkout. Zip decides the zone. Outlying
 cities (Round Rock, Pflugerville, Leander, Dripping Springs): verified policy is
 case-by-case — the bot neither confirms nor denies; route to text (737) 371-9700 and Allan
@@ -73,8 +74,10 @@ cities (Round Rock etc.): take a message — a human confirms case-by-case.
   line; you decide per order. Never advertised in those areas (footprint rule).
 - Lake Travis $250: verified 2026-07-07 as a real EVENT minimum (boats/ranches),
   distinct from the checkout zone minimum — bachelor-page copy stays.
-- 2026-07-07 (Wayne tuning): the bot now states ONLY base fee + minimum. Express rate
-  and free-delivery thresholds were removed from the generated facts + this card so the
-  bot never advertises them. Both numbers are still real in rates.ts (checkout still
-  charges express and still gives free delivery over the threshold) and still appear on
-  public site pages (FAQ, partner pages) — this change is bot-only.
+- 2026-07-07 (Wayne tuning): the bot now states ONLY base fee + minimum. The free-delivery
+  threshold was removed from the generated facts + this card so the bot never advertises
+  it. It is still real in rates.ts (checkout still gives free delivery over the threshold)
+  and still appears on public site pages (FAQ, partner pages) — this change is bot-only.
+- 2026-09-14: express delivery was removed from rates.ts entirely — the 24-hour minimum
+  lead time (#427) made it unsellable. A rush is operator-approved via a hand-created
+  invoice (same-day-cutoff fact).

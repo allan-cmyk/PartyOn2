@@ -490,7 +490,7 @@ async function recalculateCart(cartId: string): Promise<CartWithItems> {
     // Nothing else writes Cart.deliveryFee -- this function is its only writer
     // -- so there is no manually-set cart fee to preserve here. (Ops overrides
     // live on DraftOrder.deliveryFee, a different model entirely.)
-    const deliveryResult = calculateDeliveryFee(zipCode, subtotal, false);
+    const deliveryResult = calculateDeliveryFee(zipCode, subtotal);
     deliveryFee = deliveryResult.fee;
   }
 

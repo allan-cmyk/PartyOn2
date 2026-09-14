@@ -65,11 +65,7 @@ async function createLocalCheckout(
   const subtotal = allItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   // Calculate delivery fee based on zone
-  const deliveryResult = calculateDeliveryFee(
-    groupOrder.deliveryAddress.zip,
-    subtotal,
-    false // not express
-  );
+  const deliveryResult = calculateDeliveryFee(groupOrder.deliveryAddress.zip, subtotal);
   const deliveryFee = deliveryResult.fee;
 
   // Calculate totals

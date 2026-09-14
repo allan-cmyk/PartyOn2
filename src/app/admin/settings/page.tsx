@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { MINIMUM_LEAD_TIME_HOURS } from '@/lib/delivery/lead-time';
 
 interface DeliveryZone {
   id: string;
@@ -143,12 +144,8 @@ export default function SettingsPage() {
                     <span className="font-medium text-black ml-2">$100</span>
                   </div>
                   <div>
-                    <span className="text-gray-600">Express Delivery Fee:</span>
-                    <span className="font-medium text-black ml-2">$50</span>
-                  </div>
-                  <div>
-                    <span className="text-gray-600">Express Minimum Notice:</span>
-                    <span className="font-medium text-black ml-2">3 hours</span>
+                    <span className="text-gray-600">Minimum Lead Time:</span>
+                    <span className="font-medium text-black ml-2">{MINIMUM_LEAD_TIME_HOURS} hours</span>
                   </div>
                 </div>
               </div>

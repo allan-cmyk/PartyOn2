@@ -406,10 +406,8 @@ describe('Checkout Line Items', () => {
 
   it('should calculate delivery fee correctly', () => {
     const standardDeliveryFee = 25;
-    const expressDeliveryFee = 50;
 
     expect(Math.round(standardDeliveryFee * 100)).toBe(2500);
-    expect(Math.round(expressDeliveryFee * 100)).toBe(5000);
   });
 
   it('should calculate tax correctly', () => {

@@ -6,7 +6,6 @@ export default function Footer() {
 
   const footerLinks = {
     services: [
-      { label: 'Fast Delivery', href: '/fast-delivery' },
       { label: 'Wedding Bar Service', href: '/weddings' },
       { label: 'Wedding Drink Calculator', href: '/wedding-drink-calculator' },
       { label: 'Wedding Venue Boats', href: '/austin-wedding-venue-boats' },

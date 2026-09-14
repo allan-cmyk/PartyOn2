@@ -269,7 +269,7 @@ export async function createGroupOrder(
           // Pickup tabs are born fee-free + waived (mirrors updateTab/createTab).
           const isPickup = isPickupAddress(tab.deliveryAddress);
           const zip = tab.deliveryAddress?.zip ?? '';
-          const feeResult = calculateDeliveryFee(zip, 0, false);
+          const feeResult = calculateDeliveryFee(zip, 0);
           return {
             name: tab.name,
             position: idx,
@@ -479,7 +479,7 @@ export async function createTab(
   // $25 Central Austin rate) and later charged or invoiced for it.
   const isPickup = isPickupAddress(input.deliveryAddress);
   const zip = input.deliveryAddress?.zip || '';
-  const feeResult = calculateDeliveryFee(zip, 0, false);
+  const feeResult = calculateDeliveryFee(zip, 0);
 
   const tab = await prisma.subOrder.create({
     data: {
@@ -529,7 +529,7 @@ export async function updateTab(
       data.deliveryFeeWaived = true;
     } else {
       const zip = input.deliveryAddress.zip;
-      const feeResult = calculateDeliveryFee(zip, 0, false);
+      const feeResult = calculateDeliveryFee(zip, 0);
       data.deliveryFee = feeResult.originalFee;
       data.deliveryFeeWaived = false;
     }
@@ -1134,7 +1134,7 @@ export async function createDashboardOrder(
           deliveryFee: isPickupAddress(deliveryAddress)
             ? 0
             : deliveryAddress.zip
-              ? calculateDeliveryFee(deliveryAddress.zip, 0, false).originalFee
+              ? calculateDeliveryFee(deliveryAddress.zip, 0).originalFee
               : 40,
           deliveryFeeWaived: isPickupAddress(deliveryAddress),
           deliveryContextType: input.deliveryContextType || 'HOUSE',
@@ -1244,7 +1244,7 @@ export async function createMultiTabDashboardOrder(
             deliveryAddress: address as unknown as Record<string, string>,
             orderDeadline: computeOrderDeadline(deliveryDate),
             deliveryFee: address.zip
-              ? calculateDeliveryFee(address.zip, 0, false).originalFee
+              ? calculateDeliveryFee(address.zip, 0).originalFee
               : 40,
             deliveryContextType: tab.deliveryContextType || 'HOUSE',
           };

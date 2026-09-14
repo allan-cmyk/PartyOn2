@@ -14,21 +14,18 @@ Three delivery zones based on zip code, plus a catch-all for out-of-area orders.
 
 ### Central Austin
 - Base fee: $25
-- Express fee: $40
 - Minimum order: $100
 - Free delivery threshold: $250
 - Zip codes: 78701, 78702, 78703, 78704, 78705, 78751, 78752, 78756, 78757
 
 ### Greater Austin
 - Base fee: $30
-- Express fee: $50
 - Minimum order: $125
 - Free delivery threshold: $300
 - Zip codes: 78617, 78652, 78653, 78660, 78664, 78681, 78717, 78719, 78721, 78722, 78723, 78724, 78725, 78727, 78728, 78729, 78731, 78732, 78733, 78734, 78735, 78736, 78737, 78738, 78739, 78741, 78744, 78745, 78746, 78747, 78748, 78749, 78750, 78753, 78754, 78758, 78759
 
 ### Extended Austin
 - Base fee: $40
-- Express fee: $65
 - Minimum order: $150
 - Free delivery threshold: $400
 - Zip codes: 78613, 78620, 78626, 78628, 78633, 78641, 78642, 78665, 78669, 78676, 78726
@@ -38,9 +35,12 @@ Three delivery zones based on zip code, plus a catch-all for out-of-area orders.
 - No automatic fee calculation for out-of-area orders.
 
 ### Free Delivery Rules
-- Free delivery applies when subtotal >= zone threshold AND delivery is NOT express.
-- Express deliveries always pay the express fee regardless of subtotal.
+- Free delivery applies when subtotal >= zone threshold.
 - Active affiliate codes also grant free delivery.
+
+### Rush Orders
+- There is no express delivery tier or express fee.
+- Customer checkouts need at least 24 hours of notice before the delivery window. Anything sooner is operator-approved only, via a hand-created draft order/invoice (the operator can adjust its delivery fee).
 
 
 ## Sales Tax

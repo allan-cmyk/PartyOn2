@@ -32,11 +32,11 @@ const facts: GeneratedFact[] = [];
 for (const zone of DELIVERY_ZONES) {
   const slug = zone.name.toLowerCase().replace(/\s+/g, '-');
   // Operator decision 2026-07-07 (Wayne tuning): the customer-facing STATEMENT states
-  // only the base delivery fee + order minimum. The express rate and free-delivery
-  // threshold are intentionally omitted so the auto-reply bot doesn't proactively
-  // advertise them (express fee is not a firmly-decided customer-facing number, and
-  // Allan doesn't want free-over-threshold advertised to every visitor). The full
+  // only the base delivery fee + order minimum. The free-delivery threshold is
+  // intentionally omitted so the auto-reply bot doesn't proactively advertise it
+  // (Allan doesn't want free-over-threshold advertised to every visitor). The full
   // numbers are still preserved in `data` for any other consumer / checkout logic.
+  // There is no express rate: express delivery was removed 2026-09-14.
   facts.push({
     id: `delivery-zone-${slug}`,
     statement:
@@ -46,7 +46,6 @@ for (const zone of DELIVERY_ZONES) {
     source: 'src/lib/delivery/rates.ts (DELIVERY_ZONES)',
     data: {
       baseRate: zone.baseRate,
-      expressRate: zone.expressRate,
       minimumOrder: zone.minimumOrder,
       freeDeliveryThreshold: zone.freeDeliveryThreshold,
       zipCodes: zone.zipCodes,

@@ -1,6 +1,10 @@
 /**
  * Delivery Rate Engine
  * Calculates delivery fees based on zip code zones
+ *
+ * One delivery tier only. Express delivery was removed 2026-09-14: the 24-hour
+ * minimum lead time (lead-time.ts, order #527) made it unsellable, and a rush
+ * is operator-approved via a hand-created invoice instead.
  */
 
 /**
@@ -10,7 +14,6 @@ export interface DeliveryZone {
   name: string;
   description: string;
   baseRate: number;
-  expressRate: number;
   minimumOrder: number;
   freeDeliveryThreshold: number | null;
   zipCodes: string[];
@@ -22,7 +25,6 @@ export interface DeliveryZone {
 export interface DeliveryRateResult {
   zone: string;
   baseRate: number;
-  expressRate: number;
   minimumOrder: number;
   freeDeliveryThreshold: number | null;
   isEligible: boolean;
@@ -38,7 +40,6 @@ export interface CalculatedDeliveryFee {
   discountApplied: boolean;
   discountReason?: string;
   zone: string;
-  isExpress: boolean;
   minimumOrderMet: boolean;
 }
 
@@ -51,7 +52,6 @@ export const DELIVERY_ZONES: DeliveryZone[] = [
     name: 'Central Austin',
     description: 'Downtown, UT Campus, East Austin, South Congress',
     baseRate: 25,
-    expressRate: 40,
     minimumOrder: 100,
     freeDeliveryThreshold: 250,
     zipCodes: [
@@ -70,7 +70,6 @@ export const DELIVERY_ZONES: DeliveryZone[] = [
     name: 'Greater Austin',
     description: 'North Austin, South Austin, Round Rock',
     baseRate: 30,
-    expressRate: 50,
     minimumOrder: 125,
     freeDeliveryThreshold: 300,
     zipCodes: [
@@ -117,7 +116,6 @@ export const DELIVERY_ZONES: DeliveryZone[] = [
     name: 'Extended Austin',
     description: 'Cedar Park, Georgetown, Dripping Springs',
     baseRate: 40,
-    expressRate: 65,
     minimumOrder: 150,
     freeDeliveryThreshold: 400,
     zipCodes: [
@@ -142,7 +140,6 @@ export const DELIVERY_ZONES: DeliveryZone[] = [
 export const DEFAULT_RATE: DeliveryRateResult = {
   zone: 'Outside Service Area',
   baseRate: 0,
-  expressRate: 0,
   minimumOrder: 0,
   freeDeliveryThreshold: null,
   isEligible: false,
@@ -177,7 +174,6 @@ export function getDeliveryRate(zipCode: string): DeliveryRateResult {
   return {
     zone: zone.name,
     baseRate: zone.baseRate,
-    expressRate: zone.expressRate,
     minimumOrder: zone.minimumOrder,
     freeDeliveryThreshold: zone.freeDeliveryThreshold,
     isEligible: true,
@@ -192,12 +188,11 @@ export function isInDeliveryArea(zipCode: string): boolean {
 }
 
 /**
- * Calculate delivery fee based on order total, zip code, and delivery type
+ * Calculate delivery fee based on order subtotal and zip code
  */
 export function calculateDeliveryFee(
   zipCode: string,
-  orderSubtotal: number,
-  isExpress: boolean = false
+  orderSubtotal: number
 ): CalculatedDeliveryFee {
   const zone = getDeliveryZone(zipCode);
 
@@ -207,18 +202,16 @@ export function calculateDeliveryFee(
       originalFee: 0,
       discountApplied: false,
       zone: 'Outside Service Area',
-      isExpress,
       minimumOrderMet: false,
     };
   }
 
-  const baseRate = isExpress ? zone.expressRate : zone.baseRate;
+  const baseRate = zone.baseRate;
   const minimumOrderMet = orderSubtotal >= zone.minimumOrder;
 
   // Check if free delivery threshold is met
   const freeDeliveryMet = zone.freeDeliveryThreshold !== null &&
-                          orderSubtotal >= zone.freeDeliveryThreshold &&
-                          !isExpress; // Free delivery doesn't apply to express
+                          orderSubtotal >= zone.freeDeliveryThreshold;
 
   return {
     fee: freeDeliveryMet ? 0 : baseRate,
@@ -228,7 +221,6 @@ export function calculateDeliveryFee(
       ? `Free delivery for orders over $${zone.freeDeliveryThreshold}`
       : undefined,
     zone: zone.name,
-    isExpress,
     minimumOrderMet,
   };
 }
@@ -263,7 +255,6 @@ export function getDeliveryZonesSummary(): Array<{
   name: string;
   description: string;
   baseRate: number;
-  expressRate: number;
   minimumOrder: number;
   freeDeliveryThreshold: number | null;
   zipCodeCount: number;
@@ -272,7 +263,6 @@ export function getDeliveryZonesSummary(): Array<{
     name: zone.name,
     description: zone.description,
     baseRate: zone.baseRate,
-    expressRate: zone.expressRate,
     minimumOrder: zone.minimumOrder,
     freeDeliveryThreshold: zone.freeDeliveryThreshold,
     zipCodeCount: zone.zipCodes.length,

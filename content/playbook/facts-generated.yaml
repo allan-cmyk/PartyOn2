@@ -1,7 +1,7 @@
 # GENERATED FILE — DO NOT EDIT.
 # Regenerate with: npx tsx scripts/playbook/extract-code-facts.ts
 # Code-authoritative facts; site copy that disagrees with these values is stale.
-# generated_at: 2026-07-21T20:44:15.302Z
+# generated_at: 2026-09-14T12:48:51.634Z
 facts:
   - id: delivery-zone-central-austin
     statement: "Central Austin (Downtown, UT Campus, East Austin, South Congress): delivery fee $25, order minimum $100. 9 zip codes."
@@ -9,7 +9,6 @@ facts:
     source: "src/lib/delivery/rates.ts (DELIVERY_ZONES)"
     data:
       baseRate: 25
-      expressRate: 40
       minimumOrder: 100
       freeDeliveryThreshold: 250
       zipCodes: ["78701", "78702", "78703", "78704", "78705", "78751", "78752", "78756", "78757"]
@@ -19,7 +18,6 @@ facts:
     source: "src/lib/delivery/rates.ts (DELIVERY_ZONES)"
     data:
       baseRate: 30
-      expressRate: 50
       minimumOrder: 125
       freeDeliveryThreshold: 300
       zipCodes: ["78617", "78652", "78653", "78660", "78664", "78681", "78717", "78719", "78721", "78722", "78723", "78724", "78725", "78727", "78728", "78729", "78731", "78732", "78733", "78734", "78735", "78736", "78737", "78738", "78739", "78741", "78744", "78745", "78746", "78747", "78748", "78749", "78750", "78753", "78754", "78758", "78759"]
@@ -29,7 +27,6 @@ facts:
     source: "src/lib/delivery/rates.ts (DELIVERY_ZONES)"
     data:
       baseRate: 40
-      expressRate: 65
       minimumOrder: 150
       freeDeliveryThreshold: 400
       zipCodes: ["78613", "78620", "78626", "78628", "78633", "78641", "78642", "78665", "78669", "78676", "78726"]

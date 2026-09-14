@@ -408,10 +408,10 @@ export const LANDING_PAGES: LandingPageDef[] = [
     canonicalPath: '/corporate/products',
     aliasPaths: [],
   },
-  // NOTE: /fast-delivery is deliberately absent. The page exists at
-  // src/app/(main)/fast-delivery/ but next.config.ts's '/fast-deliver:suffix(.*)'
-  // rule 308s it to /delivery-areas, so it never serves and would always
-  // report zero. Add it here only if that redirect is narrowed.
+  // NOTE: /fast-delivery is deliberately absent. next.config.ts's
+  // '/fast-deliver:suffix(.*)' rule 308s it to /delivery-areas, and the page
+  // that used to sit behind it (an express-delivery pitch) was deleted
+  // 2026-09-14, so an entry here would always report zero.
   {
     key: 'ai-party-planner',
     displayName: 'AI Party Planner',

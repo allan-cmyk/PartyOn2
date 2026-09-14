@@ -119,10 +119,6 @@ export const AGENT_TOOLS: OpenRouterToolDefinition[] = [
             type: 'number',
             description: 'Order subtotal in dollars',
           },
-          is_express: {
-            type: 'boolean',
-            description: 'Whether this is express delivery (default false)',
-          },
         },
         required: ['zip_code', 'subtotal'],
       },
@@ -372,9 +368,8 @@ async function executeGetUpcomingOrders(args: Record<string, unknown>): Promise<
 async function executeCalculateDeliveryFee(args: Record<string, unknown>): Promise<string> {
   const zipCode = args.zip_code as string;
   const subtotal = args.subtotal as number;
-  const isExpress = (args.is_express as boolean) || false;
 
-  const result = calculateDeliveryFee(zipCode, subtotal, isExpress);
+  const result = calculateDeliveryFee(zipCode, subtotal);
   return JSON.stringify(result);
 }
 
