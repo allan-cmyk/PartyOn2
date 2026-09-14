@@ -257,7 +257,6 @@ export function useCustomCart() {
     };
     phone: string;
     instructions?: string;
-    isExpress?: boolean;
   }): Promise<Cart | null> => {
     setIsLoading(true);
     setError(null);

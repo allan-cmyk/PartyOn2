@@ -41,10 +41,9 @@ export default function PropertyManagementPartnerPage() {
     },
     {
       title: 'Concierge Service',
-      description: 'On-demand delivery for residents',
+      description: 'Scheduled delivery for residents',
       image: '/images/products/premium-spirits-lifestyle.webp',
       products: [
-        { id: '7', title: 'Express Delivery', price: 'Varies', description: '3-hour service' },
         { id: '8', title: 'Scheduled Delivery', price: 'Varies', description: '72-hour advance' },
         { id: '9', title: 'Event Planning', price: 'Custom', description: 'Full service support' }
       ]

@@ -24,7 +24,6 @@ export interface CheckoutMetadata {
   deliveryAddress?: string;
   deliveryPhone?: string;
   deliveryInstructions?: string;
-  isExpress?: string;
   discountCode?: string;
   affiliateCode?: string;
   tipAmount?: string;
@@ -142,10 +141,11 @@ export async function createCheckoutSession(
       price_data: {
         currency: 'usd',
         product_data: {
-          name: cart.deliveryDate ? 'Scheduled Delivery' : 'Express Delivery',
+          // Every delivery is scheduled — express delivery was removed 2026-09-14.
+          name: 'Scheduled Delivery',
           description: cart.deliveryDate
             ? `Delivery on ${cart.deliveryDate} at ${cart.deliveryTime || 'Scheduled time'}`
-            : '3-hour express delivery',
+            : 'Delivery fee',
         },
         unit_amount: Math.round(deliveryFee * 100),
       },

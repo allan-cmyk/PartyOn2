@@ -162,10 +162,6 @@ export default async function LocationDeliveryPage({ params }: { params: Promise
                   <span className="text-gray-600">Delivery Time</span>
                   <span className="text-gray-900 font-medium">72-hour advance notice</span>
                 </div>
-                <div className="flex justify-between py-3 border-b border-gray-200">
-                  <span className="text-gray-600">Express Available</span>
-                  <span className="text-gray-900 font-medium">3-hour delivery ($50+ orders)</span>
-                </div>
               </div>
             </div>
 
