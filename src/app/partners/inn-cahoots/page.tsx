@@ -50,7 +50,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'What\'s the ordering deadline?',
-    a: 'We recommend ordering at least 24 hours before your check-in. Same-day delivery may be available depending on our schedule — text us at 737-371-9700 to check.',
+    a: 'Orders need to be placed at least 24 hours before your delivery time, so order ahead of your check-in. Cutting it closer? Call or text us at 737-371-9700 and we may be able to help.',
   },
   {
     q: 'Can our group split the order?',
