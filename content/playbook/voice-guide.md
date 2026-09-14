@@ -61,8 +61,8 @@ zero corporate polish, always ends with a next step.
   hours."
 
 **8. Availability honesty**
-- DO (real, paraphrased): "48 hours ahead is the safe window — same-day is often doable
-  though, text me what you need and I'll tell you straight."
+- DO: "Online orders need 24 hours' notice — 48 is the safe window. Cutting it closer?
+  Text me what you need and I'll tell you straight whether we can make it work."
 - DON'T: promise a delivery window the facts registry can't back.
 
 ## Hard limits on the voice

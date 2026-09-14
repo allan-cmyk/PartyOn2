@@ -501,9 +501,11 @@ scheduled starting 48 hours before pickup. Boat photos and which-boat questions 
 Premier's — text Premier directly at 512-488-5892 (they run the boat side).
 
 ### cruise-order-deadline [T2] e.g. "Quick question, don't the drinks have to be ordered 48 hours in advance to guarantee delivery? Wouldn't it be too late for tomorrow's 11am boat?"
-48+ hours ahead guarantees it. Closer than that? Often still doable — text
-(737) 371-9700 with your boat date/time and someone will tell you straight away whether
-we can make it happen.
+Online orders need to be in at least 24 hours before your delivery window (48 hours ahead
+is the safest bet) — checkout won't take anything sooner. More than 24 hours out? Order
+now at partyondelivery.com/order or through your boat dashboard link. Less than 24 hours
+away? Text (737) 371-9700 with your boat date/time — the team decides case-by-case and
+can't promise it, but they'll tell you straight whether it's possible.
 
 ### cruise-weather-reschedule [T2] e.g. "It's supposed to storm Saturday, is the cruise still happening?"
 Weather calls happen close to boat time — that's Premier and the captain's call, and

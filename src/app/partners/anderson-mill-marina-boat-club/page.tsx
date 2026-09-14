@@ -55,7 +55,7 @@ const MARINA_FAQS = [
   },
   {
     question: "What's the ordering deadline?",
-    answer: 'We recommend placing your order at least 24 hours in advance. Same-day orders may be available depending on our delivery schedule.',
+    answer: 'Orders need to be placed at least 24 hours before your delivery time. Cutting it closer? Call or text us at (737) 371-9700 and we may be able to help.',
   },
   {
     question: 'ID requirements?',

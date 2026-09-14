@@ -276,7 +276,7 @@ function Slide2() {
       alt: 'Stocked fridge sorted by use case',
       eyebrow: 'Pre-Stocking',
       title: 'The fridge is ready.',
-      desc: 'Sorted by use case. Welcome cocktails chilled. Pool-day cans within reach. Same-day restock if guests run out.',
+      desc: 'Sorted by use case. Welcome cocktails chilled. Pool-day cans within reach. Need a restock? Book it 24 hours ahead.',
     },
     {
       img: '/email-assets/pod-finished-drink.jpg',
@@ -337,7 +337,7 @@ function Slide2() {
           <span className="text-brand-yellow">★</span> TABC LICENSED &nbsp;
           <span className="text-brand-yellow">★</span> 20+ COCKTAILS &nbsp;
           <span className="text-brand-yellow">★</span> LAKE DELIVERY &nbsp;
-          <span className="text-brand-yellow">★</span> SAME-DAY RESTOCK &nbsp;
+          <span className="text-brand-yellow">★</span> SCHEDULED RESTOCKS &nbsp;
           <span className="text-brand-yellow">★</span>
         </div>
       </div>
