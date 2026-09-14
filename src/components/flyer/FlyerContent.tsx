@@ -35,10 +35,10 @@ const SERVICES: Service[] = [
     eyebrow: '01 · ALCOHOL DELIVERY',
     title: 'Beer, liquor, mixers — at your door, ice-cold.',
     body:
-      'TABC-licensed alcohol delivery across the greater Austin area. Same-day windows, 48-hour guaranteed pricing, cold packs on every order. From a backyard six-pack to a 200-person open bar — we move the truck so you don\'t have to.',
+      'TABC-licensed alcohol delivery across the greater Austin area. Scheduled delivery windows (order 24+ hours ahead), 48-hour guaranteed pricing, cold packs on every order. From a backyard six-pack to a 200-person open bar — we move the truck so you don\'t have to.',
     bullets: [
       '500+ Austin parties delivered',
-      'Same-day & scheduled windows',
+      'Scheduled delivery windows',
       'Bottled, canned, draft, kegs',
     ],
     image: '/images/services/bach-parties/late-night-party-supplies.webp',

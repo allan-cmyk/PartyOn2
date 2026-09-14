@@ -70,7 +70,7 @@ const BOAT_FAQ_ITEMS = [
   },
   {
     q: "What's the ordering deadline?",
-    a: 'We recommend placing your order at least 24 hours before your boat trip. Same-day delivery is available for most items, but ordering ahead guarantees full selection.',
+    a: 'Orders need to be placed at least 24 hours before your boat trip, and ordering earlier guarantees full selection. Cutting it closer? Call or text us at (737) 371-9700 and we may be able to help.',
   },
   {
     q: 'What do you need from me?',

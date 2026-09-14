@@ -35,7 +35,7 @@ export const seoConfig = {
   pages: {
     home: {
       title: 'Alcohol Delivery Austin | Party On Delivery',
-      description: 'Beer, wine, liquor, kegs & party supplies delivered in Austin TX. Same-day delivery for weddings, lake parties & events. Order online now.',
+      description: 'Beer, wine, liquor, kegs & party supplies delivered in Austin TX. Scheduled delivery for weddings, lake parties & events. Order online now.',
       keywords: 'alcohol delivery austin, alcohol delivery near me, alcohol delivery service, beer delivery austin, liquor delivery austin, wedding bar austin, lake travis delivery',
     },
     products: {

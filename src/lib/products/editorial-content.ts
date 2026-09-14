@@ -42,7 +42,7 @@ const APEROL_SPRITZ: ProductEditorial = {
     <p>The spritz is a crowd-pleaser precisely because it photographs beautifully and goes down easy. It's the drink brides reach for at a <a href="/austin-bachelorette-party-delivery">bachelorette weekend</a> brunch or bridal shower, the low-lift <a href="/weddings">wedding cocktail-hour</a> pour that keeps a line moving, and the perfect thing to have batched and ready for a <a href="/boat-parties">Lake Travis boat day</a> when nobody wants to play bartender on the water. It's also a natural for a rooftop <a href="/blog/ultimate-guide-austin-birthday-parties">Austin birthday party</a> or a client-facing <a href="/austin-corporate-event-delivery">corporate event</a> where you want something that looks elevated but pours fast. Because it's low-ABV, guests can enjoy a few over a long afternoon without the day getting away from them.</p>
 
     <h3>How delivery works</h3>
-    <p>Party On Delivery is a TABC-licensed Austin alcohol delivery service. We bring the Aperol Spritz kit cold to your door, dock, hotel, Airbnb, or venue across the greater Austin area — same-day is often available, and booking 48 hours out locks guaranteed pricing for events. Order minimums run $100–$150 depending on your delivery zone (Lake Travis and far-out addresses start higher to cover the drive). Every order is carded at the door: valid ID, 21+, no exceptions. Planning a bigger crowd? One kit covers about 16 guests as a signature drink — scale to a kit per 15–16 people, or add beer and wine so there's something for everyone.</p>
+    <p>Party On Delivery is a TABC-licensed Austin alcohol delivery service. We bring the Aperol Spritz kit cold to your door, dock, hotel, Airbnb, or venue across the greater Austin area — orders need at least 24 hours of notice, and booking 48 hours out locks guaranteed pricing for events. Order minimums run $100–$150 depending on your delivery zone (Lake Travis and far-out addresses start higher to cover the drive). Every order is carded at the door: valid ID, 21+, no exceptions. Planning a bigger crowd? One kit covers about 16 guests as a signature drink — scale to a kit per 15–16 people, or add beer and wine so there's something for everyone.</p>
 
     <h3>More from Party On Delivery</h3>
     <p>Explore our other <a href="/cocktail-kits">party cocktail kits</a>, browse the <a href="/order">full delivery catalog</a>, or read our guide to <a href="/blog/signature-wedding-cocktails-texas-heat">signature wedding cocktails for the Texas heat</a> for ideas on rounding out the bar. Hosting a wedding weekend? See our full <a href="/weddings">Austin wedding bar service</a>.</p>
@@ -55,9 +55,9 @@ const APEROL_SPRITZ: ProductEditorial = {
         'The kit is batched to serve 16 Aperol Spritzes — enough for a group of about 16 to each have a signature drink, or a smaller group to enjoy a few rounds. For a party where the spritz is the main cocktail, plan on one kit per 15–16 guests.',
     },
     {
-      question: 'Can I get an Aperol Spritz kit delivered same-day in Austin?',
+      question: 'How far ahead should I order an Aperol Spritz kit in Austin?',
       answer:
-        'Yes. Same-day Aperol Spritz delivery is often available across the Austin area, and we recommend booking 48 hours out for events to lock guaranteed pricing. We deliver cold to homes, rooftops, Airbnbs, hotels, wedding venues, and Lake Travis boat docks.',
+        'Orders need at least 24 hours of notice, and we recommend booking 48 hours out for events to lock guaranteed pricing. We deliver cold to homes, rooftops, Airbnbs, hotels, wedding venues, and Lake Travis boat docks.',
     },
     {
       question: 'How do you make the Aperol Spritz from the kit?',
@@ -95,7 +95,7 @@ const KARBACH_LOVE_STREET: ProductEditorial = {
     <p>Love Street's whole appeal is that it's a universal crowd-pleaser — light enough for the wine drinker, characterful enough for the craft fan. That makes it the default case beer for a <a href="/boat-parties">Lake Travis boat day</a>, where cans and sessionable ABV are exactly what you want for eight hours in the sun (our <a href="/blog/essential-checklist-for-your-lake-travis-party-boat-day">Lake Travis party-boat checklist</a> has more on stocking the cooler). It's a natural for a <a href="/austin-bachelor-party-delivery">bachelor party</a> Airbnb fridge or a Rainey Street pregame, and it works beautifully on a <a href="/weddings">wedding reception bar</a> as the approachable local option next to a signature cocktail. Tailgates, cookouts, and birthday backyards? Same answer — grab the 18-pack.</p>
 
     <h3>How delivery works</h3>
-    <p>Party On Delivery is a TABC-licensed Austin alcohol delivery service, and we bring Love Street cold to your door, dock, hotel, or venue across the greater Austin area. Same-day delivery is often available; booking 48 hours ahead locks guaranteed pricing for events. Order minimums run $100–$150 depending on your zone (Lake Travis and far-out addresses start higher). We card every delivery — 21+ with valid ID. Not sure how much beer to get? A rough rule for an all-day event is one to two drinks per person per hour; an 18-pack covers a small crew for an afternoon, so scale up from there and add ice.</p>
+    <p>Party On Delivery is a TABC-licensed Austin alcohol delivery service, and we bring Love Street cold to your door, dock, hotel, or venue across the greater Austin area. Orders need at least 24 hours of notice; booking 48 hours ahead locks guaranteed pricing for events. Order minimums run $100–$150 depending on your zone (Lake Travis and far-out addresses start higher). We card every delivery — 21+ with valid ID. Not sure how much beer to get? A rough rule for an all-day event is one to two drinks per person per hour; an 18-pack covers a small crew for an afternoon, so scale up from there and add ice.</p>
 
     <h3>More from Party On Delivery</h3>
     <p>Browse more <a href="/products?filter=beer">Austin beer delivery</a> options, see the <a href="/order">full catalog</a>, or plan a bigger celebration with our <a href="/boat-parties">boat party</a> and <a href="/austin-bachelor-party-delivery">bachelor party</a> delivery packages.</p>
@@ -105,7 +105,7 @@ const KARBACH_LOVE_STREET: ProductEditorial = {
     {
       question: 'Can I get Karbach Love Street delivered in Austin?',
       answer:
-        'Yes. We deliver Karbach Love Street by the 18-pack, cold, throughout the greater Austin area — homes, Airbnbs, hotels, wedding venues, and Lake Travis boat docks. Same-day delivery is often available, with 48-hour notice recommended for events.',
+        'Yes. We deliver Karbach Love Street by the 18-pack, cold, throughout the greater Austin area — homes, Airbnbs, hotels, wedding venues, and Lake Travis boat docks. Orders need at least 24 hours of notice, with 48-hour notice recommended for events.',
     },
     {
       question: 'What style of beer is Love Street?',
@@ -148,7 +148,7 @@ const LA_MARCA_PROSECCO: ProductEditorial = {
     <p>Prosecco is the workhorse of celebrations, and La Marca is the crowd-favorite bottle. It's the natural choice for a <a href="/weddings">wedding toast</a> — approachable enough for every guest, elegant enough for the moment — and the essential base for a <a href="/austin-bachelorette-party-delivery">bachelorette</a> mimosa bar or bridal-shower brunch. Pour it at a milestone <a href="/blog/ultimate-guide-austin-birthday-parties">Austin birthday party</a>, ring in New Year's, or bring the bubbles to a <a href="/boat-parties">Lake Travis</a> sunset cruise. Its Extra Dry style — slightly off-dry — pairs beautifully with brunch spreads, fruit, and light apps, and it plays perfectly with orange juice, Aperol, or St-Germain when you want to build something fancier.</p>
 
     <h3>How delivery works</h3>
-    <p>Party On Delivery is a TABC-licensed Austin alcohol delivery service. We bring La Marca cold to your door, hotel, Airbnb, wedding venue, or Lake Travis dock across the greater Austin area — same-day is often available, and 48-hour notice locks guaranteed pricing for events. Order minimums run $100–$150 depending on your delivery zone (Lake Travis and far-out addresses start higher). We card every delivery — 21+, valid ID required. Planning quantities? A 750ml bottle pours about 5 flutes for a toast, or 3–4 generous mimosas; this 6-pack covers a toast for roughly 30 guests, so scale from there.</p>
+    <p>Party On Delivery is a TABC-licensed Austin alcohol delivery service. We bring La Marca cold to your door, hotel, Airbnb, wedding venue, or Lake Travis dock across the greater Austin area — orders need at least 24 hours of notice, and 48-hour notice locks guaranteed pricing for events. Order minimums run $100–$150 depending on your delivery zone (Lake Travis and far-out addresses start higher). We card every delivery — 21+, valid ID required. Planning quantities? A 750ml bottle pours about 5 flutes for a toast, or 3–4 generous mimosas; this 6-pack covers a toast for roughly 30 guests, so scale from there.</p>
 
     <h3>More from Party On Delivery</h3>
     <p>Explore more <a href="/products?filter=wine">Austin wine &amp; sparkling delivery</a>, browse the <a href="/order">full catalog</a>, or plan the whole bar with our <a href="/weddings">wedding</a> and <a href="/austin-bachelorette-party-delivery">bachelorette</a> delivery packages.</p>
@@ -158,7 +158,7 @@ const LA_MARCA_PROSECCO: ProductEditorial = {
     {
       question: 'Can I get La Marca Prosecco delivered in Austin?',
       answer:
-        'Yes. We deliver La Marca Prosecco by the 6-pack, chilled, throughout the greater Austin area — including wedding venues, hotels, Airbnbs, and Lake Travis docks. Same-day delivery is often available, and we recommend 48 hours notice for events.',
+        'Yes. We deliver La Marca Prosecco by the 6-pack, chilled, throughout the greater Austin area — including wedding venues, hotels, Airbnbs, and Lake Travis docks. Orders need at least 24 hours of notice, and we recommend 48 hours notice for events.',
     },
     {
       question: 'How many mimosas or toasts does the 6-pack make?',
@@ -201,7 +201,7 @@ const PINTHOUSE_ELECTRIC_JELLYFISH: ProductEditorial = {
     <p>Electric Jellyfish is the beer to bring when you want a local flex. It's a boat-day staple on <a href="/boat-parties">Lake Travis</a> (the 16oz cans are perfect for the cooler), the craft pick for a <a href="/austin-bachelor-party-delivery">bachelor party</a> Airbnb or brewery-crawl afternoon, and the beer plenty of couples specifically request for a <a href="/weddings">wedding reception bar</a> to showcase Austin's brewing scene. It's just as at home at a gameday watch party, a backyard cookout, or an <a href="/blog/ultimate-guide-austin-birthday-parties">Austin birthday</a>. The balanced, tropical profile pairs beautifully with barbecue, tacos, burgers, and spicy food — which is to say, with pretty much everything Austin eats.</p>
 
     <h3>How delivery works</h3>
-    <p>Party On Delivery is a TABC-licensed Austin alcohol delivery service, and we deliver Electric Jellyfish cold throughout the greater Austin area — homes, offices, hotels, Airbnbs, wedding venues, and Lake Travis boat docks. Same-day delivery is often available; booking 48 hours out locks guaranteed pricing for events. Order minimums run $100–$150 depending on your zone (Lake Travis and far-out addresses start higher to cover the drive). Every delivery is carded — 21+ with valid ID. For an all-day event, plan on one to two drinks per guest per hour and keep plenty of ice on hand; we're happy to help build a full package around it.</p>
+    <p>Party On Delivery is a TABC-licensed Austin alcohol delivery service, and we deliver Electric Jellyfish cold throughout the greater Austin area — homes, offices, hotels, Airbnbs, wedding venues, and Lake Travis boat docks. Orders need at least 24 hours of notice; booking 48 hours out locks guaranteed pricing for events. Order minimums run $100–$150 depending on your zone (Lake Travis and far-out addresses start higher to cover the drive). Every delivery is carded — 21+ with valid ID. For an all-day event, plan on one to two drinks per guest per hour and keep plenty of ice on hand; we're happy to help build a full package around it.</p>
 
     <h3>More from Party On Delivery</h3>
     <p>Discover more <a href="/products?filter=beer">Austin craft beer delivery</a>, browse the <a href="/order">full catalog</a>, or plan the whole event with our <a href="/boat-parties">boat party</a> and <a href="/weddings">wedding</a> delivery packages.</p>
@@ -211,7 +211,7 @@ const PINTHOUSE_ELECTRIC_JELLYFISH: ProductEditorial = {
     {
       question: 'Can I get Pinthouse Electric Jellyfish IPA delivered in Austin?',
       answer:
-        "Yes. We deliver Pinthouse Electric Jellyfish cold throughout the Austin area — Downtown, South and East Austin, Westlake, Cedar Park, Lake Travis, and beyond. Same-day delivery is often available, with 48-hour notice recommended for events. It's award-winning local craft beer brought straight to your door.",
+        "Yes. We deliver Pinthouse Electric Jellyfish cold throughout the Austin area — Downtown, South and East Austin, Westlake, Cedar Park, Lake Travis, and beyond. Orders need at least 24 hours of notice, with 48-hour notice recommended for events. It's award-winning local craft beer brought straight to your door.",
     },
     {
       question: 'What does Electric Jellyfish taste like?',

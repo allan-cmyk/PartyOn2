@@ -8,7 +8,7 @@ export default function SouthCongressPage() {
       <Hero
         title="South Congress (SoCo) Delivery"
         subtitle="Keep Austin Weird, Keep Austin Partying"
-        description="Fast delivery to Austin's most iconic neighborhood"
+        description="Scheduled delivery to Austin's most iconic neighborhood"
         backgroundImage="/images/hero/austin-skyline-golden-hour.webp"
         height="medium"
       />
@@ -31,8 +31,8 @@ export default function SouthCongressPage() {
                     <span className="text-brand-blue font-bold">🕰️</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">20-30 Minute Delivery</h3>
-                    <p className="text-sm text-gray-900/60">Quick service to SoCo and surrounding areas</p>
+                    <h3 className="font-semibold text-gray-900">Scheduled Delivery Windows</h3>
+                    <p className="text-sm text-gray-900/60">Order at least 24 hours ahead for SoCo and nearby</p>
                   </div>
                 </div>
                 
