@@ -203,6 +203,45 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
+      // 2026-09-14 — 123.partyondelivery.com was a GoHighLevel funnel domain
+      // (GHL decommissioned; account being cancelled). This host now points at
+      // Vercel and we serve the redirects ourselves, so every historic link
+      // (flyers, follow-up emails, CRM drip texts, lander CTAs) keeps working.
+      // The three call-booking paths temporarily land on /contact until the
+      // Google Calendar appointment schedules exist — swap destinations here
+      // (and flip permanent to true) when those booking links are live.
+      {
+        source: '/reviews',
+        has: [{ type: 'host', value: '123.partyondelivery.com' }],
+        destination: 'https://g.page/r/CWO9-KA4uBqaEAE/review',
+        permanent: true,
+      },
+      {
+        source: '/boat-call',
+        has: [{ type: 'host', value: '123.partyondelivery.com' }],
+        destination: 'https://partyondelivery.com/contact',
+        permanent: false,
+      },
+      {
+        source: '/planning-call',
+        has: [{ type: 'host', value: '123.partyondelivery.com' }],
+        destination: 'https://partyondelivery.com/contact',
+        permanent: false,
+      },
+      {
+        source: '/partnership-call',
+        has: [{ type: 'host', value: '123.partyondelivery.com' }],
+        destination: 'https://partyondelivery.com/contact',
+        permanent: false,
+      },
+      // Any other old funnel path on that host → homepage.
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: '123.partyondelivery.com' }],
+        destination: 'https://partyondelivery.com/',
+        permanent: false,
+      },
+
       // 2026-06-10 archived + orphaned product URL sweep — see
       // src/lib/seo/archived-product-redirects.ts and the rationale in
       // docs/seo/recommendations/product-page-editorial-sprint-2026-06.md
