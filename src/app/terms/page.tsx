@@ -55,7 +55,7 @@ export default function TermsPage() {
               <h2 className="font-heading text-2xl text-gray-900 mb-4 tracking-[0.1em]">3. Order Requirements</h2>
               <ul className="text-gray-600 space-y-2 list-disc pl-6">
                 <li>Minimum order value: $100-150 depending on delivery area</li>
-                <li>All orders require 72-hour advance notice</li>
+                <li>All orders require 24-hour advance notice</li>
                 <li>Orders must be placed by an individual 21 years or older</li>
                 <li>Delivery address must be within our service area</li>
                 <li>Someone 21+ must be present to receive delivery</li>

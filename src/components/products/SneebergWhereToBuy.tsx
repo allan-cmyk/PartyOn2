@@ -29,7 +29,7 @@ export default function SneebergWhereToBuy() {
     },
     {
       title: 'Fast Austin Delivery',
-      description: 'Same-day delivery available throughout the Austin metropolitan area'
+      description: 'Next-day delivery available throughout the Austin metropolitan area'
     },
     {
       title: 'Competitive Pricing',

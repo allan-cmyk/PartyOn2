@@ -12,6 +12,7 @@ import {
   setDeliveryInfo,
   hasDeliveryInfo,
 } from '@/lib/inventory/services/cart-service';
+import { LEAD_TIME_MESSAGE, meetsLeadTime } from '@/lib/delivery/lead-time';
 
 const CART_ID_COOKIE = 'cart_id';
 
@@ -102,25 +103,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Validate delivery date is in the future
+    // 24-hour minimum lead time (order #527) — same rule as /api/v1/cart and
+    // /api/v1/checkout. Replaces this route's old 72-hour/express rule, which
+    // contradicted the live storefront and had no express product behind it.
     const deliveryDate = new Date(body.date);
     deliveryDate.setUTCHours(12, 0, 0, 0);
-    const now = new Date();
-    if (deliveryDate < now) {
+    if (Number.isNaN(deliveryDate.getTime()) || !meetsLeadTime(deliveryDate, body.time)) {
       return NextResponse.json(
-        { success: false, error: 'Delivery date must be in the future' },
-        { status: 400 }
-      );
-    }
-
-    // Validate 72-hour advance booking (unless express)
-    const hoursUntilDelivery = (deliveryDate.getTime() - now.getTime()) / (1000 * 60 * 60);
-    if (hoursUntilDelivery < 72 && !body.isExpress) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Orders require 72-hour advance booking. Use express delivery for shorter notice.',
-        },
+        { success: false, error: LEAD_TIME_MESSAGE, code: 'DELIVERY_TOO_SOON' },
         { status: 400 }
       );
     }

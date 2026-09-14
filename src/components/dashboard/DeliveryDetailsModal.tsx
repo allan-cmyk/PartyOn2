@@ -5,6 +5,7 @@ import { updateTabV2 } from '@/lib/group-orders-v2/api-client';
 import type { SubOrderFull } from '@/lib/group-orders-v2/types';
 import { getStrPartnerByCode, type StrProperty } from '@/lib/partners/str-partners';
 import { STORE_PICKUP_ADDRESS } from '@/lib/delivery/pickup';
+import { MINIMUM_LEAD_TIME_HOURS, meetsLeadTime } from '@/lib/delivery/lead-time';
 
 interface Props {
   shareCode: string;
@@ -44,7 +45,10 @@ function generateTimeSlots(): string[] {
 const TIME_SLOTS = generateTimeSlots();
 
 function getMinDate(): string {
-  return new Date().toISOString().split('T')[0];
+  // Earliest date that can possibly hold a valid window under the 24-hour
+  // minimum lead time, as an Austin calendar day (not the server's UTC day).
+  const earliest = new Date(Date.now() + MINIMUM_LEAD_TIME_HOURS * 60 * 60 * 1000);
+  return earliest.toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
 }
 
 function isSunday(dateStr: string): boolean {
@@ -142,24 +146,15 @@ export default function DeliveryDetailsModal({
       return;
     }
 
-    // Ensure the slot is at least 4 hours from now (give the store time to prep)
-    const timeMatch = time.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)/i);
-    if (timeMatch) {
-      let hour = parseInt(timeMatch[1], 10);
-      const min = parseInt(timeMatch[2], 10);
-      const ampm = timeMatch[3].toUpperCase();
-      if (ampm === 'PM' && hour !== 12) hour += 12;
-      if (ampm === 'AM' && hour === 12) hour = 0;
-      const scheduled = new Date(`${date}T${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}:00`);
-      const fourHoursFromNow = new Date(Date.now() + 4 * 60 * 60 * 1000);
-      if (scheduled < fourHoursFromNow) {
-        setError(
-          isPickup
-            ? 'Pickup must be at least 4 hours from now.'
-            : 'Delivery must be at least 4 hours from now.'
-        );
-        return;
-      }
+    // 24-hour minimum lead time (order #527) — replaces the old 4-hour prep
+    // rule. Mirrors the server gate on the tab checkout routes.
+    if (!meetsLeadTime(date, time)) {
+      setError(
+        isPickup
+          ? `Pickup must be scheduled at least ${MINIMUM_LEAD_TIME_HOURS} hours from now. Call or text (737) 371-9700 if you need it sooner.`
+          : `Delivery must be scheduled at least ${MINIMUM_LEAD_TIME_HOURS} hours from now. Call or text (737) 371-9700 if you need it sooner.`
+      );
+      return;
     }
 
     // Address fields are only required for delivery

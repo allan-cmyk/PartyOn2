@@ -20,6 +20,10 @@ inline for the audit trail.
   design.** Bot never promises same-day and never invents a cutoff; it routes to text
   (737) 371-9700 to confirm before paying.
   → `hours-availability`, `cruise-order-deadline`, `quote-request` updated.
+  **SUPERSEDED 2026-09-13** (order #527): there IS now a hard cutoff — checkout
+  refuses any delivery window less than 24 hours out, on every customer-facing
+  surface. Rushes are operator-approved only (call/text → hand-created invoice).
+  → `lead-time-24h-minimum` + `same-day-cutoff` facts updated.
 
 - [x] **shipping-policy** — ANSWERED 2026-07-07: **Never ship — local delivery only**
   (TABC local-delivery license, no exceptions). Card upgraded to clean T1 "no, but we

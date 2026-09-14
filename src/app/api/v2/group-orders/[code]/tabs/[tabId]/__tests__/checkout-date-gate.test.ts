@@ -164,11 +164,27 @@ for (const [label, post] of [
       expect(paymentsMock.createGroupV2CheckoutSession).not.toHaveBeenCalled();
     });
 
-    // The trap the past-date gate must not fall into: deliveryDate is stored at
-    // noon UTC (7am CT), so an instant comparison would reject same-day orders
-    // for the rest of the day. Same-day is the highest-intent flow.
-    it("allows TODAY's date at any hour (same-day delivery must keep working)", async () => {
+    // Reversal of the old same-day allowance (operator decision 2026-09-13,
+    // order #527): a window less than 24 hours out must not take money on ANY
+    // customer-facing surface, dashboards included. Today is always inside
+    // 24 hours, so this case is deterministic at any run time; sub-24h
+    // boundary math is pinned in src/lib/delivery/__tests__/lead-time.test.ts.
+    it("refuses TODAY's date with DELIVERY_DATE_TOO_SOON (24-hour minimum)", async () => {
       serviceMock.getGroupOrderByCode.mockResolvedValue(group({ deliveryDate: TODAY_DATE }));
+
+      const res = await post(makeRequest(), PARAMS);
+      const json = await res.json();
+
+      expect(res.status).toBe(400);
+      expect(json.code).toBe('DELIVERY_DATE_TOO_SOON');
+      expect(json.error).toContain('(737) 371-9700');
+      expect(paymentsMock.createGroupV2CheckoutSession).not.toHaveBeenCalled();
+    });
+
+    // 'TBD' time on a far-future date must not trip the lead-time gate — the
+    // parser falls back to the earliest real window (10 AM CT).
+    it('allows a far-future date whose time is still TBD', async () => {
+      serviceMock.getGroupOrderByCode.mockResolvedValue(group({ deliveryTime: 'TBD' }));
 
       const res = await post(makeRequest(), PARAMS);
 

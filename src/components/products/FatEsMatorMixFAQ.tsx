@@ -12,7 +12,7 @@ export default function FatEsMatorMixFAQ() {
   const faqs = [
     {
       question: "How quickly can I get Fat E's Spicy Mator Mix delivered in Austin?",
-      answer: "We offer same-day delivery of Fat E's Spicy Mator Mix throughout Austin. Order online or by phone and we'll deliver to Downtown Austin, South Austin, East Austin, West Austin, Lake Travis, Round Rock, Cedar Park, and all surrounding areas. Perfect for last-minute brunch parties and events."
+      answer: "We offer next-day delivery of Fat E's Spicy Mator Mix throughout Austin. Order online or by phone and we'll deliver to Downtown Austin, South Austin, East Austin, West Austin, Lake Travis, Round Rock, Cedar Park, and all surrounding areas. Perfect for last-minute brunch parties and events."
     },
     {
       question: "What makes Fat E's Spicy Mator Mix special?",
@@ -82,7 +82,7 @@ export default function FatEsMatorMixFAQ() {
               READY TO ORDER FAT E&apos;S IN AUSTIN?
             </h3>
             <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-              Get Fat E&apos;s Spicy Mator Mix delivered throughout Austin for your brunch party, wedding bloody mary bar, or special event. Same-day delivery available.
+              Get Fat E&apos;s Spicy Mator Mix delivered throughout Austin for your brunch party, wedding bloody mary bar, or special event. Next-day delivery available.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link

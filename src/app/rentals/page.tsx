@@ -5,7 +5,7 @@ import { generateFAQSchema, generateServiceSchema } from '@/lib/seo/schemas';
 
 export const metadata: Metadata = {
   title: 'Event Rentals Austin | Chairs, Tables, Coolers & Party Equipment',
-  description: 'Rent event equipment in Austin. White folding chairs, cocktail tables, coolers, and party supplies delivered. Perfect for weddings, corporate events, and parties. Same-day delivery available.',
+  description: 'Rent event equipment in Austin. White folding chairs, cocktail tables, coolers, and party supplies delivered. Perfect for weddings, corporate events, and parties. Next-day delivery available.',
   keywords: 'event rentals austin, chair rentals austin, table rentals austin, party equipment rental, wedding rentals austin, event supplies austin',
   openGraph: {
     title: 'Event Rentals Austin | Party Equipment & Supplies',
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Event Rentals Austin | Party Equipment Delivery',
-    description: 'Event rental equipment delivered throughout Austin. Same-day delivery available.',
+    description: 'Event rental equipment delivered throughout Austin. Next-day delivery available.',
     images: ['/images/hero/lake-travis-sunset.webp'],
   },
   alternates: {
@@ -227,10 +227,10 @@ export default function RentalsHubPage() {
                 </div>
                 <div>
                   <h3 className="font-heading text-2xl text-gray-900 mb-3 tracking-[0.05em]">
-                    Same-Day Delivery
+                    Next-Day Delivery
                   </h3>
                   <p className="text-gray-600 leading-relaxed">
-                    Need rental equipment fast? We offer same-day delivery throughout Austin based on availability.
+                    Need rental equipment fast? Order at least 24 hours ahead and we deliver throughout Austin.
                     Perfect for last-minute events and emergencies.
                   </p>
                 </div>
@@ -305,7 +305,7 @@ export default function RentalsHubPage() {
               READY TO RENT EQUIPMENT?
             </h2>
             <p className="text-xl text-gray-300 mb-12">
-              Get a quote in minutes • Same-day delivery available • (737) 371-9700
+              Get a quote in minutes • Next-day delivery available • (737) 371-9700
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link href="/contact">

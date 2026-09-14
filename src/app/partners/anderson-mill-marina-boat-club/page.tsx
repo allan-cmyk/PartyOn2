@@ -71,7 +71,7 @@ const MARINA_FAQS = [
   },
   {
     question: 'Do you deliver on weekends?',
-    answer: 'Absolutely — weekends are our busiest time! We deliver seven days a week. Just place your order the day before and we\'ll have it ready.',
+    answer: 'Absolutely — weekends are our busiest time! Just place your order at least 24 hours before your delivery time and we\'ll have it ready.',
   },
   {
     question: 'Can I set up a recurring order?',

@@ -15,6 +15,7 @@ import { createGroupV2CheckoutSession, DiscountNotApplicableError } from '@/lib/
 import { ProductNotPurchasableError } from '@/lib/products/availability';
 import { CheckoutTabSchema } from '@/lib/group-orders-v2/validation';
 import { todayCT } from '@/lib/ops/cooler-grouping';
+import { MINIMUM_LEAD_TIME_HOURS, meetsLeadTime } from '@/lib/delivery/lead-time';
 
 interface RouteParams {
   params: Promise<{ code: string; tabId: string }>;
@@ -101,6 +102,22 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
           success: false,
           error: 'This delivery date has already passed. Please choose a new date before checking out.',
           code: 'DELIVERY_DATE_PAST',
+        },
+        { status: 400 }
+      );
+    }
+
+    // 24-hour minimum lead time (order #527 — a dashboard order placed the
+    // afternoon before a noon delivery, then cancelled the morning of).
+    // Applies to dashboards too, per operator decision 2026-09-13.
+    if (!meetsLeadTime(tab.deliveryDate, tab.deliveryTime)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            `Online ordering closes ${MINIMUM_LEAD_TIME_HOURS} hours before delivery, and this ` +
+            'delivery is less than 24 hours away. Call or text us at (737) 371-9700 and we may be able to help.',
+          code: 'DELIVERY_DATE_TOO_SOON',
         },
         { status: 400 }
       );

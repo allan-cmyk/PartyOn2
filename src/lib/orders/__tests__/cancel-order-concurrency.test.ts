@@ -245,7 +245,7 @@ describe('cancelOrder — concurrent cancels of the same order', () => {
     expect(successes(results)).toHaveLength(1);
     expect(failures(results)).toHaveLength(1);
     // No money moved, so the order must not be stamped REFUNDED.
-    expect(mockOrderUpdateMany.mock.calls[0][0].data).toEqual({ status: 'CANCELLED' });
+    expect(mockOrderUpdateMany.mock.calls[0][0].data).toEqual({ status: 'CANCELLED', cancelledAt: expect.any(Date) });
   });
 
   it('REGRESSION: a refunding cancel that loses to a non-refunding one still tells the customer', async () => {

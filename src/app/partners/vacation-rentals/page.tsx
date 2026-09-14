@@ -61,7 +61,7 @@ const FAQS = [
   },
   {
     q: 'How fast can you turn around an order?',
-    a: 'Same-day delivery on orders placed by 4pm. Restocks within hours during peak weekend hours. Pre-scheduled welcome deliveries timed to guest check-in.',
+    a: 'Next-day delivery on orders placed at least 24 hours ahead, and pre-scheduled welcome deliveries timed to guest check-in. Need a rush restock? Text us at 737-371-9700 and we\u2019ll try to help.',
   },
   {
     q: 'What if a guest cancels?',

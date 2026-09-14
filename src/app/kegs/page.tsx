@@ -293,7 +293,7 @@ export default function KegsPage() {
                 Do you deliver Miller Lite and Corona kegs same-day?
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                We keep Miller Lite and Corona kegs in stock, but still require 72-hour advance
+                We keep Miller Lite and Corona kegs in stock, but still require 24-hour advance
                 notice to ensure they&apos;re properly chilled for your event. For other brands,
                 we source them based on your request.
               </p>
