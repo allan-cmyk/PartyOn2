@@ -4,19 +4,19 @@ import Script from 'next/script';
 import { generateFAQSchema, generateBreadcrumbSchema, generateServiceSchema } from '@/lib/seo/schemas';
 
 export const metadata: Metadata = {
-  title: 'Chair Rentals Austin | White Folding Chairs - Same Day Delivery',
-  description: 'Rent white folding chairs in Austin with same-day delivery. Perfect for weddings, events & parties. Serving Downtown, Lake Travis & more. Professional setup available. Order online now.',
+  title: 'Chair Rentals Austin | White Folding Chairs - Next-Day Delivery',
+  description: 'Rent white folding chairs in Austin with next-day delivery. Perfect for weddings, events & parties. Serving Downtown, Lake Travis & more. Professional setup available. Order online now.',
   keywords: 'chair rentals austin, white folding chairs, event chair rental, wedding chair rental, chair rental near me, austin party chair rental',
   openGraph: {
     title: 'Chair Rentals Austin | White Folding Chairs',
-    description: 'Rent white folding chairs with same-day delivery in Austin. Professional setup available.',
+    description: 'Rent white folding chairs with next-day delivery in Austin. Professional setup available.',
     url: 'https://partyondelivery.com/rentals/chair-rentals-austin',
     type: 'website',
     images: ['/images/hero/lake-travis-yacht-sunset.webp'],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Chair Rentals Austin | Same-Day Delivery',
+    title: 'Chair Rentals Austin | Next-Day Delivery',
     description: 'White folding chairs delivered throughout Austin for weddings and events.',
     images: ['/images/hero/lake-travis-yacht-sunset.webp'],
   },
@@ -34,8 +34,8 @@ export default function ChairRentalsAustinPage() {
 
   const faqs = [
     {
-      question: 'Do you offer same-day chair delivery in Austin?',
-      answer: 'Yes! We offer same-day delivery for chair rentals throughout Austin based on availability. For guaranteed delivery at a specific time (such as for weddings or events), we recommend scheduling your order 72 hours in advance. We deliver to Downtown Austin, South Austin, Lake Travis, Round Rock, Cedar Park, and all surrounding areas.',
+      question: 'How fast can you deliver rental chairs in Austin?',
+      answer: 'We deliver chair rentals throughout Austin with just 24 hours\u2019 notice. For big events like weddings, we recommend booking a few days ahead so your preferred delivery window is available. We deliver to Downtown Austin, South Austin, Lake Travis, Cedar Park, and all surrounding areas.',
     },
     {
       question: 'How many white folding chairs do I need for my event?',
@@ -114,7 +114,7 @@ export default function ChairRentalsAustinPage() {
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl leading-relaxed">
               Premium white folding chairs delivered throughout Austin for weddings, corporate events,
-              and special occasions. Professional setup available. Same-day delivery based on availability.
+              and special occasions. Professional setup available. Next-day delivery available.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/contact">
@@ -219,7 +219,7 @@ export default function ChairRentalsAustinPage() {
                   Fast Austin Delivery
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Same-day delivery available throughout Austin. We deliver to Downtown, Lake Travis,
+                  Next-day delivery available throughout Austin. We deliver to Downtown, Lake Travis,
                   South Congress, and all surrounding areas. Setup service available.
                 </p>
               </div>
@@ -310,7 +310,7 @@ export default function ChairRentalsAustinPage() {
               BOOK CHAIR RENTALS TODAY
             </h2>
             <p className="text-xl text-gray-300 mb-12">
-              Get a quote in minutes • Same-day Austin delivery • Professional setup available
+              Get a quote in minutes • Next-day Austin delivery • Professional setup available
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link href="/contact">

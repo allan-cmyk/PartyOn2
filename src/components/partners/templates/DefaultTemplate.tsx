@@ -135,7 +135,7 @@ const DEFAULT_VALUE_TABLE = [
   { item: 'We will try to honor any custom item request, just ask!', value: 'On request' },
   { item: 'We coordinate delivery timing with your event schedule', value: 'Included' },
   { item: 'Bulk ice delivery -- as much as you need', value: 'Included' },
-  { item: 'Same-day delivery available', value: 'Peace of mind' },
+  { item: 'Next-day delivery available', value: 'Peace of mind' },
 ];
 
 const CATEGORY_VALUE_TABLES: Record<string, Array<{ item: string; value: string }>> = {
@@ -145,7 +145,7 @@ const CATEGORY_VALUE_TABLES: Record<string, Array<{ item: string; value: string 
     { item: 'We will try to honor any custom item request, just ask!', value: 'On request' },
     { item: 'We coordinate delivery timing with your event schedule', value: 'Included' },
     { item: 'Bulk ice delivery -- as much as you need', value: 'Included' },
-    { item: 'Same-day delivery available', value: 'Peace of mind' },
+    { item: 'Next-day delivery available', value: 'Peace of mind' },
   ],
 };
 

@@ -365,7 +365,7 @@ Source: ${formData.source}`,
     },
     {
       question: "What areas do you deliver to?",
-      answer: "We cover all of Austin and surrounding areas including Lake Travis, Lakeway, Dripping Springs, and Cedar Park. Same-day and scheduled deliveries available."
+      answer: "We cover all of Austin and surrounding areas including Lake Travis, Lakeway, Dripping Springs, and Cedar Park. Next-day and scheduled deliveries available."
     },
     {
       question: "Can my clients use their own custom drink lists?",
@@ -381,7 +381,7 @@ Source: ${formData.source}`,
     },
     {
       question: "How far in advance do orders need to be placed?",
-      answer: "We recommend 72 hours for large events, but we can often accommodate same-day and next-day orders depending on availability and location."
+      answer: "We recommend a few days' notice for large events, and next-day orders are no problem \u2014 just order at least 24 hours ahead. In a pinch, text us at 737-371-9700 and we\u2019ll see what we can do."
     }
   ];
 

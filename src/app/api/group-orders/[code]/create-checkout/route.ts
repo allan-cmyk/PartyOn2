@@ -7,6 +7,7 @@ import { sendEmail } from '@/lib/email';
 import { EmailType } from '@prisma/client';
 import { calculateDeliveryFee } from '@/lib/delivery';
 import type { GroupOrderWithParticipants } from '@/lib/group-orders/types';
+import { LEAD_TIME_MESSAGE, meetsLeadTime } from '@/lib/delivery/lead-time';
 
 /**
  * Create checkout for a group order using local Draft Order system
@@ -222,6 +223,16 @@ export async function POST(
     if (groupOrder.status !== 'locked') {
       return NextResponse.json(
         { error: 'Order must be locked before checkout' },
+        { status: 400 }
+      );
+    }
+
+    // 24-hour minimum lead time (order #527). This legacy path mints a
+    // customer-payable invoice, so it must not slip under the gate the main
+    // checkout and the v2 dashboards enforce.
+    if (!meetsLeadTime(groupOrder.deliveryDate, groupOrder.deliveryTime)) {
+      return NextResponse.json(
+        { error: LEAD_TIME_MESSAGE, code: 'DELIVERY_TOO_SOON' },
         { status: 400 }
       );
     }

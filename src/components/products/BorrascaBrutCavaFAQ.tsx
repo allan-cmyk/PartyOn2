@@ -12,7 +12,7 @@ export default function BorrascaBrutCavaFAQ() {
   const faqs = [
     {
       question: "Can I get Borrasca Brut Cava delivered in Austin?",
-      answer: "Yes! We deliver Borrasca Brut Cava throughout Austin with same-day delivery. Order online or by phone and we'll bring this elegant Spanish sparkling wine to Downtown Austin, South Austin, East Austin, West Austin, Lake Travis, Round Rock, Cedar Park, and all surrounding areas. Perfect for weddings, celebrations, and special occasions."
+      answer: "Yes! We deliver Borrasca Brut Cava throughout Austin with next-day delivery. Order online or by phone and we'll bring this elegant Spanish sparkling wine to Downtown Austin, South Austin, East Austin, West Austin, Lake Travis, Round Rock, Cedar Park, and all surrounding areas. Perfect for weddings, celebrations, and special occasions."
     },
     {
       question: "What is Cava and how is it different from Champagne?",

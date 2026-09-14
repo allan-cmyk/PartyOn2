@@ -250,7 +250,7 @@ export default async function CocktailKitsPage() {
                   Fast Austin Delivery
                 </h3>
                 <p className="text-gray-700">
-                  Delivered right to your door. Schedule delivery for any date, or order same-day for last-minute plans.
+                  Delivered right to your door. Schedule delivery for any date at least 24 hours out.
                 </p>
               </div>
             </LuxuryCard>

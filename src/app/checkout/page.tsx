@@ -1,5 +1,7 @@
 'use client';
 
+import { format } from 'date-fns';
+import { meetsLeadTime } from '@/lib/delivery/lead-time';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
@@ -74,13 +76,16 @@ export default function CheckoutPage() {
       const time = getAttr('delivery_time');
       const instructions = getAttr('delivery_instructions');
 
-      if (dateStr) {
+      // Only restore a date/time pair that still clears the 24-hour minimum —
+      // a cart parked overnight otherwise sails to the Pay button and dies on
+      // the server gate after the customer re-entered their card details.
+      if (dateStr && meetsLeadTime(dateStr, time)) {
         const parsedDate = new Date(dateStr);
         if (!isNaN(parsedDate.getTime())) {
           setDeliveryDate(parsedDate);
+          if (time) setDeliveryTime(time);
         }
       }
-      if (time) setDeliveryTime(time);
       if (instructions) setDeliveryInstructions(instructions);
     }
   }, [cart?.attributes, deliveryDate]);
@@ -266,7 +271,11 @@ export default function CheckoutPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           operation: 'delivery',
-          date: deliveryDate?.toISOString(),
+          // Local calendar day, NOT toISOString(): for a browser east of UTC,
+          // local midnight serializes as the PREVIOUS UTC day, which both
+          // stored the wrong delivery day and now trips the 24h gate a day
+          // early. format() keeps the day the customer actually picked.
+          date: deliveryDate ? format(deliveryDate, 'yyyy-MM-dd') : undefined,
           time: deliveryTime,
           address: addressPayload,
           phone: billingAddress.phone,

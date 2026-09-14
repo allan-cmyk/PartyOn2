@@ -17,7 +17,7 @@ export default function AustinAlcoholDeliveryPage() {
     },
     {
       question: 'Do you offer same-day delivery?',
-      answer: 'Yes! We offer same-day delivery throughout Austin. You can also schedule deliveries in advance for upcoming events.'
+      answer: 'All orders need at least 24 hours\u2019 notice \u2014 order today and we can deliver as soon as tomorrow. Scheduling ahead is how we make sure every delivery shows up fully stocked and on time for your event.'
     },
     {
       question: 'What is your delivery fee?',
@@ -119,7 +119,7 @@ export default function AustinAlcoholDeliveryPage() {
               WE DELIVER THROUGHOUT AUSTIN
             </h2>
             <p className="text-center text-gray-600 mb-16 max-w-2xl mx-auto scroll-reveal">
-              Same-day and scheduled delivery available to all Austin neighborhoods and surrounding areas
+              Next-day and scheduled delivery available to all Austin neighborhoods and surrounding areas
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -346,7 +346,7 @@ export default function AustinAlcoholDeliveryPage() {
                 {
                   number: '2',
                   title: 'Place Your Order',
-                  description: 'Order online, by phone, or by text. Schedule delivery or choose same-day service.'
+                  description: 'Order online, by phone, or by text \u2014 at least 24 hours before your delivery time.'
                 },
                 {
                   number: '3',
@@ -401,7 +401,7 @@ export default function AustinAlcoholDeliveryPage() {
               READY TO ORDER FOR YOUR AUSTIN EVENT?
             </h2>
             <p className="text-lg text-gray-600 mb-10 scroll-reveal">
-              Browse our selection and place your order today. Same-day and scheduled delivery available throughout Austin.
+              Browse our selection and place your order today. Next-day and scheduled delivery available throughout Austin.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center scroll-reveal">
               <Link

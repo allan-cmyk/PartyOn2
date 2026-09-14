@@ -44,7 +44,7 @@ export default function CoronaExtraKegFAQ() {
     },
     {
       question: "How quickly can I get a Corona keg delivered?",
-      answer: "We offer same-day delivery of Corona Extra kegs throughout Austin and Lake Travis based on availability. For weekend parties, lake events, or holiday celebrations, we recommend ordering in advance to guarantee delivery at your preferred time. We can coordinate delivery times for events and parties."
+      answer: "We deliver Corona Extra kegs throughout Austin and Lake Travis with just 24 hours\u2019 notice. For weekend parties, lake events, or holiday celebrations, we recommend ordering a few days in advance to guarantee delivery at your preferred time. We can coordinate delivery times for events and parties."
     },
     {
       question: "What's the best way to serve Corona from a keg?",

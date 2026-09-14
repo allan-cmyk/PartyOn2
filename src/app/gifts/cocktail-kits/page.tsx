@@ -332,7 +332,7 @@ export default async function CocktailKitsGiftPage() {
                   Gift-Ready Delivery
                 </h3>
                 <p className="text-gray-700">
-                  Delivered with gift card and bottle bag. Schedule delivery for any date, or send same-day.
+                  Delivered with gift card and bottle bag. Schedule delivery for any date at least 24 hours out.
                 </p>
               </div>
             </LuxuryCard>

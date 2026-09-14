@@ -22,6 +22,11 @@ import { prisma } from '@/lib/database/client';
 import { getMaxRefundable } from '@/lib/stripe/refund-utils';
 import { cancelOrderSafe, type CancelOrderResult } from '@/lib/orders/cancel-order';
 
+// Sequential Stripe refunds + emails + CRM fan-out for up to 50 orders can
+// legitimately run for minutes — without this, a big weather cancel dies on
+// the default serverless ceiling mid-loop with no report to the operator.
+export const maxDuration = 300;
+
 /**
  * Backstop against a runaway selection. A cooler is a couple dozen payers at
  * most; anything larger is a mis-click, and this is a money-out action.

@@ -1,5 +1,6 @@
 'use client';
 
+import { MINIMUM_LEAD_TIME_HOURS, meetsLeadTime } from '@/lib/delivery/lead-time';
 import { useState, ReactElement } from 'react';
 import Link from 'next/link';
 import { createGroupOrderV2 } from '@/lib/group-orders-v2/api-client';
@@ -11,10 +12,12 @@ interface TabFormData extends CreateTabInput {
   key: string;
 }
 
-// Get today's date in YYYY-MM-DD format for min date attribute
+// Earliest selectable date under the 24-hour minimum lead time (Austin day).
+// Guests pay their tabs later, and every checkout enforces the 24h rule —
+// letting a host create a group for tomorrow would set every guest up to fail.
 function getMinDate(): string {
-  const today = new Date();
-  return today.toISOString().split('T')[0];
+  const earliest = new Date(Date.now() + MINIMUM_LEAD_TIME_HOURS * 60 * 60 * 1000);
+  return earliest.toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
 }
 
 // Check if a date string (YYYY-MM-DD) falls on a Sunday
@@ -39,9 +42,14 @@ function validateDeliveryDate(dateStr: string): string | null {
   return null;
 }
 
-// Warn (but don't block) if delivery date is less than 72 hours away
+// Warn (but don't block) about the ordering cutoff while the date is still
+// outside it; the hard 24h floor itself is enforced by getMinDate above and
+// by every checkout route server-side.
 function getDateWarning(dateStr: string): string | null {
   if (!dateStr) return null;
+  if (!meetsLeadTime(dateStr, null)) {
+    return `Heads up: orders must be placed at least ${MINIMUM_LEAD_TIME_HOURS} hours before delivery, so have everyone pay their tab early.`;
+  }
   const selectedDate = new Date(dateStr + 'T12:00:00');
   const now = new Date();
   const hoursUntil = (selectedDate.getTime() - now.getTime()) / (1000 * 60 * 60);

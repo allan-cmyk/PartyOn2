@@ -16,6 +16,7 @@ import { linkOrderToAffiliate } from '@/lib/affiliates/commission-engine';
 import { createOrderCalendarEvent } from '@/lib/calendar/google-calendar';
 import { ProductNotPurchasableError } from '@/lib/products/availability';
 import { isPickupAddress } from '@/lib/delivery/pickup';
+import { LEAD_TIME_MESSAGE, meetsLeadTime } from '@/lib/delivery/lead-time';
 import { prisma } from '@/lib/database/client';
 
 const CART_ID_COOKIE = 'cart_id';
@@ -120,6 +121,16 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     if (!hasDeliveryInfo(cart)) {
       return NextResponse.json(
         { success: false, error: 'Delivery information is required' },
+        { status: 400 }
+      );
+    }
+
+    // 24-hour minimum lead time (order #527). Enforced here — the last stop
+    // before Stripe — so a cart whose date was set yesterday can't slip
+    // through, whatever the client showed.
+    if (!meetsLeadTime(cart.deliveryDate, cart.deliveryTime)) {
+      return NextResponse.json(
+        { success: false, error: LEAD_TIME_MESSAGE, code: 'DELIVERY_TOO_SOON' },
         { status: 400 }
       );
     }

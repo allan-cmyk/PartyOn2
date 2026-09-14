@@ -1,6 +1,7 @@
 /** Delivery utility functions */
 
 import { isInDeliveryArea, getMinimumOrder } from '@/lib/delivery/rates';
+import { MINIMUM_LEAD_TIME_HOURS } from '@/lib/delivery/lead-time';
 
 /**
  * Normalize a delivery date to noon UTC to prevent timezone display issues.
@@ -13,9 +14,10 @@ export function normalizeDeliveryDate(date: Date | string): Date {
 }
 
 export function getEarliestDeliveryDate(): Date {
-  // 48-hour standard ordering window (matches /faqs, terms, and landing copy).
+  // Derived from the enforced minimum (src/lib/delivery/lead-time.ts) so this
+  // legacy helper can never contradict what checkout actually accepts.
   const date = new Date();
-  date.setHours(date.getHours() + 48);
+  date.setHours(date.getHours() + MINIMUM_LEAD_TIME_HOURS);
   return date;
 }
 

@@ -162,6 +162,7 @@ describe('cancelOrder — interrupted-cancel recovery', () => {
     expect(mockOrderUpdateMany.mock.calls[0][0].data).toEqual({
       status: 'CANCELLED',
       financialStatus: 'REFUNDED',
+      cancelledAt: expect.any(Date),
     });
 
     // No new money moves — it adopts the refund that already happened.
@@ -279,7 +280,7 @@ describe('cancelOrder — interrupted-cancel recovery', () => {
     expect(result.ok).toBe(true);
     expect(orderStatus).toBe('CANCELLED');
     // No money status change, since this call moved no money.
-    expect(mockOrderUpdateMany.mock.calls[0][0].data).toEqual({ status: 'CANCELLED' });
+    expect(mockOrderUpdateMany.mock.calls[0][0].data).toEqual({ status: 'CANCELLED', cancelledAt: expect.any(Date) });
     expect(mockCancellationEmail).toHaveBeenCalledTimes(1);
     expect(mockRefundEmail).not.toHaveBeenCalled();
   });

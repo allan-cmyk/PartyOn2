@@ -208,9 +208,9 @@ export const bachelorConfig: LandingConfig = {
     {
       q: 'How fast can you deliver in Austin?',
       a:
-        '48-hour notice is our standard window for guaranteed pricing and cold delivery. Same-day is often possible — call us at ' +
+        'Order at least 24 hours ahead and you’re set — 48-hour notice locks guaranteed pricing and cold delivery. Need something sooner? Call us at ' +
         PHONE_DISPLAY +
-        ' to check.',
+        ' and we’ll see what we can do.',
     },
     {
       q: 'How does Lake Travis boat-dock delivery work?',

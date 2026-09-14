@@ -50,17 +50,17 @@ facts:
     sources: ["operator answer 2026-07-07 (open question sunday-hours)"]
     last_verified: 2026-07-07
 
-  - id: lead-time-48h
-    statement: "48-hour notice is the standard ordering window for guaranteed availability and cold delivery; same-day is often possible — call or text to check."
+  - id: lead-time-24h-minimum
+    statement: "Online orders require at least 24 hours' notice before the delivery window — checkout enforces this on every customer-facing surface. 48-hour notice is still recommended for guaranteed availability and cold delivery."
     status: verified
-    sources: ["src/components/landing/configs/bachelor.ts", "src/components/landing/PackageBuilderModal.tsx"]
-    last_verified: 2026-07-06
+    sources: ["src/lib/delivery/lead-time.ts (MINIMUM_LEAD_TIME_HOURS)", "operator decision 2026-09-13 (order #527)"]
+    last_verified: 2026-09-13
 
   - id: same-day-cutoff
-    statement: "There is no hard same-day cutoff — same-day delivery is handled case-by-case and is often possible. Customers should text (737) 371-9700 to confirm before paying; the bot never promises same-day."
+    statement: "Same-day and next-morning orders cannot be placed online — the 24-hour minimum applies. A genuine rush is operator-approved only: customers should call or text (737) 371-9700, and the team can hand-create an invoice if it's doable. The bot never promises same-day or sub-24-hour delivery."
     status: verified
-    sources: ["operator answer 2026-07-07 (open question same-day-cutoff)"]
-    last_verified: 2026-07-07
+    sources: ["operator decision 2026-09-13 (order #527; supersedes 2026-07-07 no-hard-cutoff answer)"]
+    last_verified: 2026-09-13
 
   - id: holiday-blackouts
     statement: "Closed Thanksgiving Day and Christmas Day. All other holidays run normal hours — holidays are big party days, so order ahead on busy weekends."

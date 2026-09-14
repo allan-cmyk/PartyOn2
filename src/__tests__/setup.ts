@@ -2,6 +2,12 @@ import '@testing-library/jest-dom';
 import { configure } from '@testing-library/react';
 import { vi, beforeEach } from 'vitest';
 
+// The webhook fan-outs (postToCoreLinq and the GHL legs) no-op when their URLs
+// are unset. Force-unset them so a CI env that happens to carry the real vars
+// can never make unit tests fire outbound requests or operator alert emails.
+delete process.env.CORELINQ_INGEST_URL;
+delete process.env.GHL_ORDER_WEBHOOK_URL;
+
 // Mock Next.js router
 vi.mock('next/navigation', () => ({
   useRouter: () => ({

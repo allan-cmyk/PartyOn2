@@ -73,7 +73,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (handle === 'miller-lite-keg') {
     return {
       title: 'Miller Lite Keg Austin | 1/2 Barrel (15.5 gal) | Party On Delivery',
-      description: 'Miller Lite keg delivery in Austin. 1/2 barrel serves 165 drinks. Perfect for parties, weddings, tailgates. Same-day Austin delivery available. Order now!',
+      description: 'Miller Lite keg delivery in Austin. 1/2 barrel serves 165 drinks. Perfect for parties, weddings, tailgates. Next-day Austin delivery available. Order now!',
       keywords: 'miller lite keg, miller lite keg austin, miller lite keg delivery, beer keg austin, half barrel keg, party keg delivery austin, wedding keg austin',
       robots,
       openGraph: {
@@ -145,7 +145,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (handle === 'modelo-ranch-water-6-pack') {
     return {
       title: 'Modelo Ranch Water 6-Pack | $10.99 | Austin Delivery',
-      description: 'Buy Modelo Ranch Water 6-pack 12oz cans in Austin. Crisp tequila-style ranch water with lime. Same-day delivery available. Order online.',
+      description: 'Buy Modelo Ranch Water 6-pack 12oz cans in Austin. Crisp tequila-style ranch water with lime. Next-day delivery available. Order online.',
       keywords: 'modelo ranch water, ranch water, modelo ranch water 6 pack, ranch water austin, tequila ranch water, modelo delivery austin',
       robots,
       openGraph: {
@@ -169,7 +169,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (handle === 'bud-light-24-can-suitcase-12oz') {
     return {
       title: 'Bud Light 24-Pack | $29.99 | Austin Beer Delivery',
-      description: 'Order a 24-pack of Bud Light 12oz cans delivered in Austin TX. Perfect for parties, tailgates & cookouts. Same-day delivery available.',
+      description: 'Order a 24-pack of Bud Light 12oz cans delivered in Austin TX. Perfect for parties, tailgates & cookouts. Next-day delivery available.',
       keywords: '24 pack bud light, bud light 24 pack, bud light delivery austin, bud light case, beer delivery austin, party beer austin',
       robots,
       openGraph: {
@@ -182,7 +182,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       twitter: {
         card: 'summary_large_image',
         title: 'Bud Light 24-Pack | Austin Beer Delivery',
-        description: '24-pack Bud Light delivered in Austin. Same-day delivery available.',
+        description: '24-pack Bud Light delivered in Austin. Next-day delivery available.',
         images: [image],
       },
       alternates: { canonical: `/products/${handle}` },
@@ -265,12 +265,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (isSchneebergProduct) {
     return {
       title: 'Pöschl Schneeberg Snuff Austin | Tobacco-Free | Fast Delivery',
-      description: 'Buy Pöschl Schneeberg Weiss tobacco-free herbal snuff in Austin. Refreshing peppermint nasal snuff, no tobacco or nicotine. Same-day delivery available. Order now!',
+      description: 'Buy Pöschl Schneeberg Weiss tobacco-free herbal snuff in Austin. Refreshing peppermint nasal snuff, no tobacco or nicotine. Next-day delivery available. Order now!',
       keywords: 'schneeberg snuff, schneeberg powder, poschl schneeberg, schneeberg austin, tobacco free snuff, nicotine free snuff, herbal snuff austin, peppermint snuff, bavarian nasal mint powder, schneeberg snuff where to buy, schneeberg weiss',
       robots,
       openGraph: {
         title: 'Pöschl Schneeberg Weiss - Tobacco-Free Herbal Snuff | Austin Delivery',
-        description: 'Premium tobacco-free, nicotine-free peppermint snuff delivered in Austin. Authentic Pöschl Schneeberg Weiss with same-day delivery.',
+        description: 'Premium tobacco-free, nicotine-free peppermint snuff delivered in Austin. Authentic Pöschl Schneeberg Weiss with next-day delivery.',
         type: 'website',
         url: `https://partyondelivery.com/products/${handle}`,
         images: [{ url: image, width: 1200, height: 1200, alt: 'Pöschl Schneeberg Weiss tobacco-free herbal snuff tin' }],

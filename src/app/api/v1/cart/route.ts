@@ -18,6 +18,7 @@ import {
   validateCartMinimum,
   cartToCheckoutData,
 } from '@/lib/inventory/services/cart-service';
+import { LEAD_TIME_MESSAGE, meetsLeadTime } from '@/lib/delivery/lead-time';
 const CART_SESSION_COOKIE = 'cart_session_id';
 const CART_ID_COOKIE = 'cart_id';
 
@@ -202,6 +203,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         if (!date || !time || !address || !phone) {
           return NextResponse.json(
             { success: false, error: 'Missing required fields: date, time, address, phone' },
+            { status: 400 }
+          );
+        }
+
+        // 24-hour minimum lead time (order #527) — refuse the slot at
+        // selection time so the customer hears it before entering payment.
+        if (!meetsLeadTime(date, time)) {
+          return NextResponse.json(
+            { success: false, error: LEAD_TIME_MESSAGE, code: 'DELIVERY_TOO_SOON' },
             { status: 400 }
           );
         }

@@ -23,6 +23,7 @@ import {
   isBefore,
   startOfDay,
 } from 'date-fns';
+import { meetsLeadTime } from '@/lib/delivery/lead-time';
 
 interface DeliveryDateTimePickerProps {
   /** Currently selected delivery date */
@@ -67,9 +68,21 @@ const TIME_SLOTS = [
 ];
 
 /**
+ * Get available time slots for a specific date.
+ * A slot is offered only when its window start (Austin time) is at least
+ * MINIMUM_LEAD_TIME_HOURS away — mirrors the server gates on /api/v1/cart
+ * and /api/v1/checkout, which enforce the same rule.
+ */
+function getAvailableTimeSlots(date: Date): string[] {
+  const dayStr = format(date, 'yyyy-MM-dd');
+  return TIME_SLOTS.filter((slot) => meetsLeadTime(dayStr, slot));
+}
+
+/**
  * Check if a date is available for delivery
- * - Must be in the future (or today with available time slots)
+ * - Cannot be in the past
  * - Cannot be Sunday
+ * - Must still have at least one time slot 24+ hours out
  */
 function isDateAvailable(date: Date): boolean {
   const today = startOfDay(new Date());
@@ -81,40 +94,11 @@ function isDateAvailable(date: Date): boolean {
   // Cannot be Sunday (0 = Sunday)
   if (date.getDay() === 0) return false;
 
-  return true;
-}
-
-/**
- * Get available time slots for a specific date
- * For today, filters out slots within 3 hours
- */
-function getAvailableTimeSlots(date: Date): string[] {
-  const today = startOfDay(new Date());
-  const selectedDay = startOfDay(date);
-
-  // If not today, return all time slots
-  if (!isSameDay(selectedDay, today)) {
-    return TIME_SLOTS;
-  }
-
-  // For today, filter out slots within 3 hours
-  const now = new Date();
-  const threeHoursFromNow = new Date(now.getTime() + 3 * 60 * 60 * 1000);
-
-  return TIME_SLOTS.filter((slot) => {
-    const startTime = slot.split(' - ')[0];
-    const [time, period] = startTime.split(' ');
-    const [hours, minutes] = time.split(':').map(Number);
-
-    let hour24 = hours;
-    if (period === 'PM' && hours !== 12) hour24 += 12;
-    if (period === 'AM' && hours === 12) hour24 = 0;
-
-    const slotDate = new Date();
-    slotDate.setHours(hour24, minutes, 0, 0);
-
-    return slotDate.getTime() >= threeHoursFromNow.getTime();
-  });
+  // 24-hour minimum lead time: grey out any date with no orderable window
+  // left (today always; tomorrow once its last window is inside 24h).
+  // .some short-circuits — this runs for all ~42 calendar cells per render.
+  const dayStr = format(date, 'yyyy-MM-dd');
+  return TIME_SLOTS.some((slot) => meetsLeadTime(dayStr, slot));
 }
 
 /**

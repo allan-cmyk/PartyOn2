@@ -4,7 +4,7 @@ import Script from 'next/script';
 import { generateFAQSchema, generateBreadcrumbSchema, generateServiceSchema } from '@/lib/seo/schemas';
 
 export const metadata: Metadata = {
-  title: 'Cocktail Table Rentals Austin | High-Top Tables - Same Day Delivery',
+  title: 'Cocktail Table Rentals Austin | High-Top Tables - Next-Day Delivery',
   description: 'Rent cocktail tables in Austin for weddings, corporate events & parties. High-top tables, banquet tables, specialty tables delivered. Professional setup available. Order online.',
   keywords: 'cocktail table rentals austin, high top table rental, banquet table rental austin, event table rental, wedding table rental austin',
   openGraph: {
@@ -50,8 +50,8 @@ export default function CocktailTableRentalsAustinPage() {
       answer: 'Yes! We deliver cocktail tables and banquet tables to outdoor venues throughout Austin including Zilker Park pavilions, Lady Bird Lake venues, private ranches, lakefront properties, and backyard events. Tables are stable on grass, concrete, and gravel surfaces. We also deliver to Lake Travis waterfront venues.',
     },
     {
-      question: 'Do you offer same-day table delivery in Austin?',
-      answer: 'Same-day delivery is available based on inventory and location. For weddings and large corporate events, we recommend booking 72 hours in advance to ensure availability. Rush delivery may be available for an additional fee to Downtown Austin, South Congress, and nearby areas.',
+      question: 'How fast can you deliver rental tables in Austin?',
+      answer: 'We deliver cocktail tables throughout Austin with just 24 hours\u2019 notice. For weddings and large corporate events, we recommend booking a few days in advance to ensure availability of your preferred delivery window.',
     },
   ];
 

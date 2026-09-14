@@ -11,7 +11,7 @@ export default function SneebergFAQ() {
   const faqs = [
     {
       question: 'Where can I buy Schneeberg snuff in Austin?',
-      answer: 'Party On Delivery offers fast, convenient delivery of Pöschl Schneeberg Weiss nasal snuff throughout Austin, Texas. Order online and receive same-day delivery to Downtown Austin, South Austin, East Austin, West Austin, Lake Travis, Round Rock, Cedar Park, Pflugerville, and all surrounding areas. We\'re Austin\'s premier source for Schneeberg powder and other herbal snuff products.'
+      answer: 'Party On Delivery offers fast, convenient delivery of Pöschl Schneeberg Weiss nasal snuff throughout Austin, Texas. Order online and receive next-day delivery to Downtown Austin, South Austin, East Austin, West Austin, Lake Travis, Round Rock, Cedar Park, Pflugerville, and all surrounding areas. We\'re Austin\'s premier source for Schneeberg powder and other herbal snuff products.'
     },
     {
       question: 'What is Schneeberg powder?',
@@ -35,7 +35,7 @@ export default function SneebergFAQ() {
     },
     {
       question: 'How quickly can I get Schneeberg delivered in Austin?',
-      answer: 'We offer same-day delivery of Schneeberg snuff throughout the Austin area. Order online or by phone, and we\'ll deliver to your location in Austin, typically within a few hours depending on your location and our delivery schedule.'
+      answer: 'We offer next-day delivery of Schneeberg snuff throughout the Austin area. Order online or by phone at least 24 hours ahead, and we\'ll deliver right to your location in Austin.'
     },
     {
       question: 'Is Schneeberg good for beginners?',

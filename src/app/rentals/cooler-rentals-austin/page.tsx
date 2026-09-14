@@ -5,7 +5,7 @@ import { generateFAQSchema, generateBreadcrumbSchema, generateServiceSchema } fr
 
 export const metadata: Metadata = {
   title: 'Cooler Rentals Austin | Ice Tubs & Large Coolers - Lake Travis Delivery',
-  description: 'Rent large coolers and ice tubs in Austin for Lake Travis boat parties, outdoor weddings & events. Keep drinks ice cold. Same-day delivery available. Perfect for Texas summer.',
+  description: 'Rent large coolers and ice tubs in Austin for Lake Travis boat parties, outdoor weddings & events. Keep drinks ice cold. Next-day delivery available. Perfect for Texas summer.',
   keywords: 'cooler rentals austin, ice tub rental, large cooler rental, lake travis cooler, boat party cooler, wedding cooler rental austin',
   openGraph: {
     title: 'Cooler Rentals Austin | Lake Travis Ice Tub Delivery',
@@ -51,7 +51,7 @@ export default function CoolerRentalsAustinPage() {
     },
     {
       question: 'What is the rental period for coolers in Austin?',
-      answer: 'Standard rental is 24 hours. Weekend rentals (Friday pickup, Monday return) are popular for Lake Travis boat parties and multi-day events. Extended rentals available for Austin weddings and corporate retreats. Same-day delivery available based on location and inventory.',
+      answer: 'Standard rental is 24 hours. Weekend rentals (Friday pickup, Monday return) are popular for Lake Travis boat parties and multi-day events. Extended rentals available for Austin weddings and corporate retreats. Order at least 24 hours ahead and we deliver anywhere in the Austin area.',
     },
   ];
 
@@ -313,7 +313,7 @@ export default function CoolerRentalsAustinPage() {
                   Flexible Rentals
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Daily, weekend, and extended rentals available. Same-day delivery
+                  Daily, weekend, and extended rentals available. Next-day delivery
                   to Austin and Lake Travis based on availability.
                 </p>
               </div>
