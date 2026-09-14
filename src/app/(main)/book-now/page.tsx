@@ -56,7 +56,7 @@ function BookNowContent() {
     try {
       const details =
         activeTab === 'delivery'
-          ? ['Fast delivery request (book-now)', formData.time && `Timing: ${formData.time}`, formData.location && `Address: ${formData.location}`]
+          ? ['Delivery request (book-now)', formData.time && `Timing: ${formData.time}`, formData.location && `Address: ${formData.location}`]
           : ['Event quote request (book-now)', formData.package && `Package: ${formData.package}`, formData.time && `Start time: ${formData.time}`, formData.location && `Venue: ${formData.location}`]
       const res = await fetch('/api/contact', {
         method: 'POST',
@@ -96,7 +96,7 @@ function BookNowContent() {
         <VideoHero
           title="Book Your Party On Experience"
           subtitle="Let's Make It Legendary"
-          description="Fast delivery or full-service events - we've got you covered"
+          description="Scheduled delivery or full-service events - we've got you covered"
           videoSrc="/videos/backgrounds/upscale-bachelorette.mp4"
           fallbackImage="/images/hero/neon-nights-hero.webp"
           height="medium"
@@ -118,7 +118,7 @@ function BookNowContent() {
                   : 'text-gray-900/60 hover:text-gray-900'
               }`}
             >
-              Fast Delivery
+              Delivery
             </button>
             <button
               onClick={() => setActiveTab('event')}
@@ -180,11 +180,10 @@ function BookNowContent() {
                         className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                         required
                       >
-                        <option value="">Select time</option>
-                        <option value="asap">ASAP (30 min)</option>
-                        <option value="1hour">Within 1 hour</option>
-                        <option value="2hours">Within 2 hours</option>
-                        <option value="scheduled">Schedule for later</option>
+                        <option value="">Select timing</option>
+                        <option value="tomorrow">Tomorrow (order 24+ hours ahead)</option>
+                        <option value="this-week">Later this week</option>
+                        <option value="scheduled">A specific future date</option>
                       </select>
                     </div>
                   </div>
@@ -192,7 +191,7 @@ function BookNowContent() {
                   <div className="mt-6 p-6 bg-yellow-50 rounded-lg">
                     <p className="font-sans text-sm text-gray-700 mb-4">
                       <strong>Next Step:</strong> After confirming delivery details, you&apos;ll be redirected 
-                      to browse our product catalog and complete your order.
+                      to browse our product catalog and complete your order. Orders need at least 24 hours of notice.
                     </p>
                     <p className="font-sans text-xs text-gray-500">
                       Powered by Shopify checkout for secure payment processing

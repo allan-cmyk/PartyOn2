@@ -81,14 +81,14 @@ const TOPIC_TO_CTA: Record<BlogTopic, BlogCta> = {
   BIRTHDAY: {
     topic: 'BIRTHDAY',
     heading: 'Planning an Austin birthday party?',
-    body: 'We deliver beer, wine, liquor, mixers, and ice straight to your party — order in minutes, delivered in hours.',
+    body: 'We deliver beer, wine, liquor, mixers, and ice straight to your party — order in minutes, delivered on your schedule.',
     buttonText: 'Start your order',
     href: '/order',
   },
   GENERIC: {
     topic: 'GENERIC',
     heading: 'Need alcohol delivery in Austin?',
-    body: 'Premium beer, wine, liquor, and party supplies delivered across Austin in hours, not days.',
+    body: 'Premium beer, wine, liquor, and party supplies delivered across Austin — just order 24 hours ahead.',
     buttonText: 'Order now',
     href: '/order',
   },

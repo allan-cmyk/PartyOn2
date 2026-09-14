@@ -107,8 +107,8 @@ const SERVICES = [
     ),
   },
   {
-    title: 'Same-day restock',
-    body: 'Guests ran out of tequila Saturday afternoon. We’re there before sunset. They tell their group. Their group tips your housekeeper.',
+    title: 'Easy restocks',
+    body: 'Guests running low before Saturday night? Text us a day ahead and we restock the fridge. They tell their group. Their group tips your housekeeper.',
     icon: (
       <svg className="w-10 h-10" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001a7.5 7.5 0 0 0-12.548-3.42M3 12a9 9 0 0 1 14.85-6.4M2.985 14.652H7.98m9.5 5.748a9 9 0 0 1-14.85-6.4" />
@@ -412,7 +412,7 @@ UTM Campaign: ${formData.utm_campaign || 'none'}`,
                 'FULL BAR SETUP',
                 '17 SIGNATURE COCKTAILS',
                 'BARTENDER COORDINATION',
-                'SAME-DAY RESTOCK',
+                'SCHEDULED RESTOCKS',
               ].map((label, i) => (
                 <span key={`${batch}-${i}`} className="flex items-center gap-12">
                   <span>★ {label}</span>
@@ -723,7 +723,7 @@ UTM Campaign: ${formData.utm_campaign || 'none'}`,
             <div className="grid md:grid-cols-2 gap-8">
               <div className="bg-white border border-gray-200 p-10 rounded-xl">
                 <div className="editorial text-xl md:text-2xl mb-6 text-gray-900 leading-relaxed">
-                  Stocked at check-in, restocked same-day on request. Your guests get hotel-grade
+                  Stocked at check-in, restocked with 24 hours of notice. Your guests get hotel-grade
                   bar service &mdash; and you never touch a bottle.
                 </div>
                 <div className="flex items-center gap-3 text-sm font-semibold text-brand-blue tracking-[0.08em] uppercase">

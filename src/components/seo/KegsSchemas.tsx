@@ -12,7 +12,7 @@ export default function KegsSchemas() {
   const faqs = [
     {
       question: "How quickly can I get a keg delivered in Austin?",
-      answer: "We require 72 hours advance notice for all keg deliveries to ensure availability and proper temperature. For guaranteed delivery at a specific time, book early. Same-day delivery may be available for in-stock kegs based on capacity."
+      answer: "Keg orders need at least 24 hours of notice, and we recommend 72 hours to ensure availability and proper temperature. For guaranteed delivery at a specific time, book early."
     },
     {
       question: "What's the difference between 1/2, 1/4, and 1/6 barrel kegs?",

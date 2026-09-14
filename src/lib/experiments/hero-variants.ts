@@ -84,7 +84,7 @@ export const heroVariantB: HeroVariantContent = {
     line2: 'Delivered to Your Door',
     rotatingWords: ['Drinks', 'Ice', 'Cocktails', 'Bar Supplies', 'Party Rentals', 'Beer', 'Seltzers'],
   },
-  tagline: 'Beer, spirits, ice, cups & more—Austin same-day delivery for any event.',
+  tagline: 'Beer, spirits, ice, cups & more—scheduled Austin delivery for any event.',
   trustBadges: 'Licensed • Insured • TABC-certified • 5.0★ on Google',
   images: [
     { src: '/images/hero/austin-skyline-hero.webp', alt: 'Austin Skyline' },

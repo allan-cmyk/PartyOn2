@@ -248,10 +248,10 @@ export function generatePartnerOnePagerEmail(data: PartnerOnePagerEmailData): st
                   </td>
                   <td valign="top">
                     <p style="margin:0 0 4px 0; font-family:'Barlow Condensed', Arial, sans-serif; font-size:18px; font-weight:700; color:#11181C; letter-spacing:-0.01em;" class="display-font">
-                      Boat &amp; lake delivery + same-day restock
+                      Boat &amp; lake delivery + easy restocks
                     </p>
                     <p style="margin:0; font-family: -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif; font-size:14px; line-height:20px; color:#5A6671;">
-                      Lake Travis, Lake Austin, Lake LBJ, Paradise Cove. Dock, slip, or front door &mdash; including same-day restock.
+                      Lake Travis, Lake Austin, Lake LBJ, Paradise Cove. Dock, slip, or front door &mdash; with restocks on 24 hours of notice.
                     </p>
                   </td>
                 </tr>
@@ -433,7 +433,7 @@ What POD handles:
   01. TABC-licensed delivery — beer, wine, spirits, mixers, ice. Direct to the property. ID checks at handoff.
   02. 20+ signature cocktails, pre-batched — Texas spirits + Fresh Victor mixers. Lady Bird Margarita, Barton Springs Mojito, Rainey Street Paloma, plus mocktails.
   03. Bartender coordination — vetted local bartenders, scheduled and supplied. Setup, service, breakdown.
-  04. Boat & lake delivery + same-day restock — Lake Travis, Lake Austin, Lake LBJ, Paradise Cove.
+  04. Boat & lake delivery + easy restocks (24 hours of notice) — Lake Travis, Lake Austin, Lake LBJ, Paradise Cove.
 
 The legal differentiator: We hold the TABC license. You hold zero liability.
 

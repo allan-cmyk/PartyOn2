@@ -92,7 +92,7 @@ export function eventQuizWelcomeEmail(input: EventQuizWelcomeInput): {
                 <table cellpadding="0" cellspacing="0" style="width:100%;margin:0 0 18px;font-size:14px;line-height:1.55;color:#374151;">
                   <tr>
                     <td style="padding:6px 0;width:24px;color:${GOLD};font-weight:700;">🚚</td>
-                    <td style="padding:6px 0;"><strong>Alcohol delivery</strong> — TABC-licensed, ice-cold, same-day windows across Austin.</td>
+                    <td style="padding:6px 0;"><strong>Alcohol delivery</strong> — TABC-licensed, ice-cold, scheduled delivery windows across Austin.</td>
                   </tr>
                   <tr>
                     <td style="padding:6px 0;color:${GOLD};font-weight:700;">🍹</td>
@@ -148,7 +148,7 @@ You're set up for: ${partyLabel}
 Start your drink order: ${url}
 
 Everything we do:
-  🚚 Alcohol delivery — TABC-licensed, ice-cold, same-day windows across Austin.
+  🚚 Alcohol delivery — TABC-licensed, ice-cold, scheduled delivery windows across Austin.
   🍹 Cocktail kits — built around Fresh Victor mixers. Premium spirits, pre-portioned.
   🎉 Party rentals + bar setup — tubs, dispensers, glassware, pro bartenders.
   ⛵ Premier Party Cruises — Lake Travis pontoons + party boats with crew.

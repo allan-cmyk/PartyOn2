@@ -41,8 +41,8 @@ export default function LakeTravisPage() {
                     <span className="text-brand-blue font-bold">⏰</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">35-45 Minute Delivery</h3>
-                    <p className="text-sm text-gray-900/60">Worth the wait for premium service</p>
+                    <h3 className="font-semibold text-gray-900">Scheduled Delivery Windows</h3>
+                    <p className="text-sm text-gray-900/60">Order at least 24 hours ahead</p>
                   </div>
                 </div>
               </div>

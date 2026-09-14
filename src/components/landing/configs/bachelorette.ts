@@ -203,9 +203,9 @@ export const bacheloretteConfig: LandingConfig = {
     {
       q: 'How fast can you deliver in Austin?',
       a:
-        '48-hour notice is our standard window for guaranteed pricing and cold delivery. Same-day is often possible — call us at ' +
+        'Orders need at least 24 hours of notice, and 48 hours is our standard window for guaranteed pricing and cold delivery. Need something sooner? Call us at ' +
         PHONE_DISPLAY +
-        ' to check.',
+        ' and we may be able to help.',
     },
     {
       q: 'Can you deliver to a hotel suite?',

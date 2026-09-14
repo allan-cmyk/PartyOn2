@@ -8,7 +8,7 @@ export default function DowntownAustinPage() {
       <Hero
         title="Downtown Austin Delivery"
         subtitle="From 6th Street to Rainey Street"
-        description="Fast delivery to Austin's entertainment heart"
+        description="Scheduled delivery to Austin's entertainment heart"
         backgroundImage="/images/hero/austin-skyline-hero.webp"
         height="medium"
       />
@@ -22,7 +22,7 @@ export default function DowntownAustinPage() {
               </h2>
               <p className="text-gray-900/70 mb-6">
                 Whether you&apos;re bar hopping on 6th Street, enjoying rooftop cocktails, or hosting a 
-                corporate event downtown, we deliver premium spirits in 20-30 minutes.
+                corporate event downtown, we deliver premium spirits on your schedule — just order 24 hours ahead.
               </p>
               
               <div className="space-y-4 mb-8">
@@ -31,8 +31,8 @@ export default function DowntownAustinPage() {
                     <span className="text-brand-blue font-bold">🚚</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">Average Delivery: 22 minutes</h3>
-                    <p className="text-sm text-gray-900/60">Fastest service in the city</p>
+                    <h3 className="font-semibold text-gray-900">Scheduled Delivery Windows</h3>
+                    <p className="text-sm text-gray-900/60">Order at least 24 hours ahead</p>
                   </div>
                 </div>
                 

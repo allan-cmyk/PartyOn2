@@ -9,7 +9,7 @@ import { seoConfig } from './config';
 const TITLE_MAX = 60;
 const DESCRIPTION_MAX = 155;
 
-const PRODUCT_TITLE_SUFFIX = 'Buy Online | Austin Same-Day Delivery';
+const PRODUCT_TITLE_SUFFIX = 'Buy Online | Austin Alcohol Delivery';
 const BLOG_TITLE_SUFFIX = 'Austin Event Bar & Delivery Blog';
 
 function clampTitle(input: string): string {
@@ -70,7 +70,7 @@ export function buildProductMetadata(input: ProductMetadataInput): Metadata {
 
   const rawDescription = input.metaDescription?.trim()
     || input.description?.trim()
-    || `Buy ${input.title} for same-day delivery in Austin. Premium alcohol delivery for weddings, parties, and events.`;
+    || `Buy ${input.title} with scheduled delivery across Austin. Premium alcohol delivery for weddings, parties, and events.`;
   const description = clampDescription(rawDescription);
 
   const ogImage = input.image?.url
