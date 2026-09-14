@@ -45,10 +45,16 @@ function generateTimeSlots(): string[] {
 const TIME_SLOTS = generateTimeSlots();
 
 function getMinDate(): string {
-  // Earliest date that can possibly hold a valid window under the 24-hour
-  // minimum lead time, as an Austin calendar day (not the server's UTC day).
+  // Earliest Austin calendar day that still has at least one selectable
+  // window under the 24-hour minimum. Checking the LAST slot start (8:30 PM)
+  // matters: late in the evening, "tomorrow" clears now+24h as a date but
+  // every one of its windows is already inside the cutoff — offering it
+  // would make each slot fail one by one with no explanation.
   const earliest = new Date(Date.now() + MINIMUM_LEAD_TIME_HOURS * 60 * 60 * 1000);
-  return earliest.toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
+  const day = earliest.toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
+  if (meetsLeadTime(day, TIME_SLOTS[TIME_SLOTS.length - 1])) return day;
+  const nextDay = new Date(earliest.getTime() + 24 * 60 * 60 * 1000);
+  return nextDay.toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
 }
 
 function isSunday(dateStr: string): boolean {
@@ -278,7 +284,7 @@ export default function DeliveryDetailsModal({
                 className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg text-base focus:border-brand-blue focus:ring-0 transition-all hover:border-gray-300"
               >
                 <option value="">Select a time window</option>
-                {TIME_SLOTS.map((slot) => (
+                {(date ? TIME_SLOTS.filter((slot) => meetsLeadTime(date, slot)) : TIME_SLOTS).map((slot) => (
                   <option key={slot} value={slot}>{slot}</option>
                 ))}
               </select>

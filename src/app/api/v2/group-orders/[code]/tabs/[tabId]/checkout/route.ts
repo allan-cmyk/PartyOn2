@@ -15,7 +15,7 @@ import { createGroupV2CheckoutSession, DiscountNotApplicableError } from '@/lib/
 import { ProductNotPurchasableError } from '@/lib/products/availability';
 import { CheckoutTabSchema } from '@/lib/group-orders-v2/validation';
 import { todayCT } from '@/lib/ops/cooler-grouping';
-import { MINIMUM_LEAD_TIME_HOURS, meetsLeadTime } from '@/lib/delivery/lead-time';
+import { DASHBOARD_LEAD_TIME_MESSAGE, meetsLeadTime } from '@/lib/delivery/lead-time';
 
 interface RouteParams {
   params: Promise<{ code: string; tabId: string }>;
@@ -114,9 +114,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json(
         {
           success: false,
-          error:
-            `Online ordering closes ${MINIMUM_LEAD_TIME_HOURS} hours before delivery, and this ` +
-            'delivery is less than 24 hours away. Call or text us at (737) 371-9700 and we may be able to help.',
+          error: DASHBOARD_LEAD_TIME_MESSAGE,
           code: 'DELIVERY_DATE_TOO_SOON',
         },
         { status: 400 }

@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireOpsAuth } from '@/lib/auth/ops-session';
 import { runAgent } from '@/lib/agent/engine';
 
 export async function POST(request: NextRequest) {
+  // Ops-only: this surface can mint payable draft-order invoices and adjust
+  // inventory. It renders inside /ops/agent, but the middleware only gates
+  // /api/v1/admin/** — every handler outside that prefix carries its own guard.
+  const auth = await requireOpsAuth();
+  if (auth instanceof NextResponse) return auth;
+
+
   try {
     const body = await request.json();
     const { conversationId, message } = body;

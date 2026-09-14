@@ -96,7 +96,9 @@ function isDateAvailable(date: Date): boolean {
 
   // 24-hour minimum lead time: grey out any date with no orderable window
   // left (today always; tomorrow once its last window is inside 24h).
-  return getAvailableTimeSlots(date).length > 0;
+  // .some short-circuits — this runs for all ~42 calendar cells per render.
+  const dayStr = format(date, 'yyyy-MM-dd');
+  return TIME_SLOTS.some((slot) => meetsLeadTime(dayStr, slot));
 }
 
 /**

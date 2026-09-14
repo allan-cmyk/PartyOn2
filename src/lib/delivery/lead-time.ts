@@ -39,6 +39,16 @@ export const LEAD_TIME_MESSAGE =
   'Please pick a later delivery window — or call or text us at (737) 371-9700 and we may be able to help.';
 
 /**
+ * Dashboard-flavored refusal copy: a cruise/dashboard guest cannot "pick a
+ * later window" (the event date is fixed), so this variant explains the
+ * cutoff instead. Shared by every group-order checkout route so the wording
+ * cannot drift between "pay my tab" and "pay all tabs".
+ */
+export const DASHBOARD_LEAD_TIME_MESSAGE =
+  `Online ordering closes ${MINIMUM_LEAD_TIME_HOURS} hours before delivery, and this ` +
+  `delivery is less than ${MINIMUM_LEAD_TIME_HOURS} hours away. Call or text us at (737) 371-9700 and we may be able to help.`;
+
+/**
  * Parse the starting time out of a delivery window label.
  * Accepts "12:00 PM - 2:00 PM", "12:00 PM – 2:00 PM", or a bare "10:30 AM".
  * Returns null when no time can be found.
@@ -79,18 +89,25 @@ function coerceToDayString(input: Date | string): string | null {
   return austinDateString(parsed);
 }
 
+/**
+ * Cached at module scope: constructing an Intl.DateTimeFormat is ~7x the cost
+ * of using one, and the checkout calendar calls meetsLeadTime for every
+ * day-cell × slot combination per render.
+ */
+const ZONE_WALL_CLOCK_FORMAT = new Intl.DateTimeFormat('en-CA', {
+  timeZone: TZ,
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false,
+});
+
 /** The instant's wall clock in `TZ`, expressed as a Date.UTC-style ms value. */
 function zoneWallClockMs(instant: Date): number {
-  const parts = new Intl.DateTimeFormat('en-CA', {
-    timeZone: TZ,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-  }).formatToParts(instant);
+  const parts = ZONE_WALL_CLOCK_FORMAT.formatToParts(instant);
   const get = (type: string): number =>
     Number(parts.find((p) => p.type === type)?.value ?? '0');
   // Some ICU builds render midnight as "24" with hour12: false.

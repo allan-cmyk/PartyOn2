@@ -7,6 +7,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { UpdateTabSchema } from '@/lib/group-orders-v2/validation';
+import { DASHBOARD_LEAD_TIME_MESSAGE, deliveryWindowStartUtc, meetsLeadTime } from '@/lib/delivery/lead-time';
 import {
   getGroupOrderByCode,
   updateTab,
@@ -73,6 +74,31 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
         { success: false, error: 'Validation failed', details: parsed.error.flatten() },
         { status: 400 }
       );
+    }
+
+    // 24-hour minimum lead time on the WRITE, not just the checkout gates:
+    // without this, a participant could pay against a compliant date and then
+    // move the tab to "in two hours" — recreating the #527 ops-blindside with
+    // no cancellation signal at all. One deliberate exception: a window that
+    // is ALREADY inside 24h may still be pushed LATER (that's the rescue that
+    // makes a stale dashboard orderable again); it may never be pulled sooner.
+    if (parsed.data.deliveryDate !== undefined || parsed.data.deliveryTime !== undefined) {
+      const nextDate = parsed.data.deliveryDate ?? existingTab.deliveryDate;
+      const nextTime = parsed.data.deliveryTime ?? existingTab.deliveryTime;
+      if (nextDate && !meetsLeadTime(nextDate, nextTime)) {
+        const currentStart = existingTab.deliveryDate
+          ? deliveryWindowStartUtc(existingTab.deliveryDate, existingTab.deliveryTime)
+          : null;
+        const nextStart = deliveryWindowStartUtc(nextDate, nextTime);
+        const pushesLater =
+          currentStart && nextStart && nextStart.getTime() > currentStart.getTime();
+        if (!pushesLater) {
+          return NextResponse.json(
+            { success: false, error: DASHBOARD_LEAD_TIME_MESSAGE, code: 'DELIVERY_DATE_TOO_SOON' },
+            { status: 400 }
+          );
+        }
+      }
     }
 
     const tab = await updateTab(tabId, parsed.data);

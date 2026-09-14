@@ -47,6 +47,11 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ success: false, error: 'Tab not found' }, { status: 404 });
     }
 
+    // Deliberately NOT gated on the 24-hour minimum lead time: this charge
+    // pays the fee for a delivery whose items were already paid for under the
+    // gate. Blocking it inside 24h would strand fee collection on the morning
+    // of a real delivery — same principle as LOCKED tabs staying payable.
+
     if (tab.deliveryFeeWaived) {
       return NextResponse.json(
         { success: false, error: 'Delivery fee has been waived' },

@@ -21,7 +21,7 @@ import {
 } from '@/lib/inventory/services/order-service';
 import { sendOrderCancellationEmail, sendRefundProcessedEmail } from '@/lib/email/email-service';
 import { generateOrderCancellationEmail } from '@/lib/email/templates/order-cancellation';
-import { buildOrderCancelledPayload, notifyOrderCancelled } from '@/lib/webhooks/ghl';
+import { buildOrderCancelledPayload, notifyOrderCancelled } from '@/lib/webhooks/order-cancelled';
 
 /** Why a cancel could not be performed. Routes map these onto HTTP statuses. */
 export type CancelFailureCode =
@@ -455,11 +455,12 @@ export async function cancelOrder(
 
   // Claim the cancel. financialStatus is keyed off refundResult rather than the
   // issueRefund flag so the order is only marked REFUNDED when money moved.
+  const cancelledAt = new Date();
   const claimed = await claimTerminal(
     orderId,
     refundResult
-      ? { status: 'CANCELLED', financialStatus: 'REFUNDED', cancelledAt: new Date() }
-      : { status: 'CANCELLED', cancelledAt: new Date() },
+      ? { status: 'CANCELLED', financialStatus: 'REFUNDED', cancelledAt }
+      : { status: 'CANCELLED', cancelledAt },
   );
 
   // Cancelling the order and refunding it are two different one-shot actions, so
@@ -516,11 +517,18 @@ export async function cancelOrder(
     // email went to a work address and the customer's SMS thread still ended
     // at "your order is confirmed"). Gated on the claim like the email — one
     // cancel, one text; the CRM additionally dedupes on the order number.
+    //
+    // NOT sent for an already-DELIVERED order: cancelling one is a post-hoc
+    // refund/dispute, and the template's load-bearing phrase — "will not be
+    // delivered" — would be false for goods already in the customer's hands.
+    // The refund-processed email still tells them about the money.
     // notifyOrderCancelled never throws, but stay defensive on a money path.
-    try {
-      await notifyOrderCancelled(buildOrderCancelledPayload(order, refundResult));
-    } catch (smsError) {
-      console.error('[cancelOrder] Failed to send cancellation SMS event:', smsError);
+    if (order.fulfillmentStatus !== 'DELIVERED') {
+      try {
+        await notifyOrderCancelled(buildOrderCancelledPayload(order, refundResult, cancelledAt));
+      } catch (smsError) {
+        console.error('[cancelOrder] Failed to send cancellation SMS event:', smsError);
+      }
     }
   }
 

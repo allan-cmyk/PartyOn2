@@ -14,8 +14,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const mockNotifyOrderCancelled = vi.fn().mockResolvedValue(undefined);
 
-vi.mock('@/lib/webhooks/ghl', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/lib/webhooks/ghl')>();
+vi.mock('@/lib/webhooks/order-cancelled', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/webhooks/order-cancelled')>();
   return {
     ...actual,
     notifyOrderCancelled: (...a: unknown[]) => mockNotifyOrderCancelled(...a),
@@ -78,7 +78,6 @@ function baseOrder() {
     customerName: 'Alex West',
     customerEmail: 'awest@example.com',
     customerPhone: '+15125550100',
-    deliveryPhone: '+15125550999',
     total: 780.2,
     fulfillmentStatus: 'PENDING',
     deliveryDate: new Date('2026-09-12T12:00:00.000Z'),
@@ -150,17 +149,17 @@ describe('cancelOrder — order.cancelled CRM event', () => {
 });
 
 describe('buildOrderCancelledPayload', () => {
-  it('falls back to deliveryPhone when the customer phone is missing', async () => {
-    const { buildOrderCancelledPayload } = await import('@/lib/webhooks/ghl');
+  it('never falls back to deliveryPhone — refund details go to the payer or no one', async () => {
+    const { buildOrderCancelledPayload } = await import('@/lib/webhooks/order-cancelled');
     const payload = buildOrderCancelledPayload(
       { ...baseOrder(), customerPhone: null },
       null,
     );
-    expect(payload.phone).toBe('+15125550999');
+    expect(payload.phone).toBe('');
   });
 
   it('formats the refund amount and tolerates a missing delivery date', async () => {
-    const { buildOrderCancelledPayload } = await import('@/lib/webhooks/ghl');
+    const { buildOrderCancelledPayload } = await import('@/lib/webhooks/order-cancelled');
     const payload = buildOrderCancelledPayload(
       { ...baseOrder(), deliveryDate: null, deliveryTime: null },
       { amount: 12.5 },
