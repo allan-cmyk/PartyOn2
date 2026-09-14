@@ -25,10 +25,11 @@ import type { JourneyEmailContext, JourneyKey, RenderedEmail } from './types';
 export const POSTAL_ADDRESS = '7600 N Lamar #A2, Austin, TX 78752';
 
 /**
- * Review page for the post-purchase ask (GHL-managed subdomain, same target
- * the planning-call links use). Confirmed by Allan 2026-07-06.
+ * Direct Google review link for the post-purchase ask. Was the GHL-hosted
+ * 123.partyondelivery.com/reviews redirect until 2026-09-14 (GHL cancelled);
+ * that subdomain now 301s here via next.config.ts, so old emails still work.
  */
-export const GOOGLE_REVIEW_URL = 'https://123.partyondelivery.com/reviews';
+export const GOOGLE_REVIEW_URL = 'https://g.page/r/CWO9-KA4uBqaEAE/review';
 
 const SIGNATURE = 'Allan\nParty On Delivery\n(737) 371-9700';
 
@@ -244,7 +245,7 @@ export const TOKEN_REFERENCE: Record<JourneyKey, Array<{ token: string; descript
   ],
   'post-purchase-review': [
     { token: 'firstName', description: 'Customer first name ("there" when unknown)' },
-    { token: 'reviewLink', description: 'The review page (123.partyondelivery.com/reviews)' },
+    { token: 'reviewLink', description: 'The Google review link (g.page)' },
   ],
   'partner-outreach': [
     { token: 'firstName', description: 'Contact first name ("there" when unknown)' },

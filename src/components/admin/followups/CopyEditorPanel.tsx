@@ -33,7 +33,7 @@ const PREVIEW_TOKENS: Record<string, string> = {
   deliveryDate: 'Saturday, July 18',
   invoiceLink: 'https://partyondelivery.com/invoice/sample',
   businessName: 'Sample Rentals LLC',
-  reviewLink: 'https://123.partyondelivery.com/reviews',
+  reviewLink: 'https://g.page/r/CWO9-KA4uBqaEAE/review',
 };
 
 export default function CopyEditorPanel(): ReactElement {
