@@ -14,8 +14,9 @@
  *
  * Both modes refuse a delivery window less than 24 hours out (ADR-0010).
  * These drafts are customer-created, so the operator-invoice exception doesn't
- * cover them: a pay-now draft is checked again when paid at /invoice/[token]
- * (canDraftOrderBePaid), until an invoice is sent for it.
+ * cover them: they are checked again when paid at /invoice/[token]
+ * (canDraftOrderBePaid), including a quote this route emails itself, until an
+ * operator sends one from ops.
  *
  * Items submitted by handle (the Postgres product handle, which is stored
  * on each BuilderProduct via .sku). We look up the actual product +

@@ -1,6 +1,6 @@
 /**
  * canDraftOrderBePaid holds self-serve drafts to the 24-hour minimum
- * (ADR-0010) until an invoice is sent for them. Invoice checkout, the item
+ * (ADR-0010) until an operator sends them from ops. Invoice checkout, the item
  * editor and the discount box all run this one check, so they can't disagree
  * about whether an invoice is still payable online.
  *
@@ -12,6 +12,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 vi.mock('@/lib/database/client', () => ({ prisma: {} }));
 
 import { canDraftOrderBePaid } from '../service';
+import { operatorSentCreatedBy } from '../provenance';
 import type { DraftOrderWithTotal } from '../types';
 import { DELIVERY_TOO_SOON_CODE, INVOICE_LEAD_TIME_MESSAGE } from '@/lib/delivery/lead-time';
 
@@ -40,7 +41,7 @@ afterEach(() => {
 });
 
 describe('canDraftOrderBePaid — 24-hour minimum for self-serve drafts', () => {
-  it('refuses an unsent Quick-Buy draft whose window is now inside 24 hours', () => {
+  it('refuses a Quick-Buy draft whose window is now inside 24 hours', () => {
     expect(canDraftOrderBePaid(draft())).toEqual(REFUSED);
   });
 
@@ -50,7 +51,7 @@ describe('canDraftOrderBePaid — 24-hour minimum for self-serve drafts', () => 
     ).toEqual(REFUSED);
   });
 
-  it('still takes payment for an unsent self-serve draft 24+ hours out', () => {
+  it('still takes payment for a self-serve draft 24+ hours out', () => {
     expect(canDraftOrderBePaid(draft({ deliveryTime: '4:00 PM - 5:00 PM' }))).toEqual({ canPay: true });
   });
 
@@ -63,23 +64,25 @@ describe('canDraftOrderBePaid — 24-hour minimum for self-serve drafts', () => 
     expect(canDraftOrderBePaid(draft({ deliveryTime: '4pm–5pm' }))).toEqual(REFUSED);
   });
 
-  it('lets a wedding quote be paid after its placeholder date, since its invoice was sent', () => {
+  it('holds a quote the landing flow emailed itself to the minimum too', () => {
+    // Anyone can have the public quote route email an invoice; that must not lift the rule.
+    expect(
+      canDraftOrderBePaid(
+        draft({ createdBy: 'landing:wedding', status: 'SENT', sentAt: new Date('2026-09-15T15:00:00.000Z') }),
+      ),
+    ).toEqual(REFUSED);
+  });
+
+  it('lets ops approve a rush by sending the draft from ops', () => {
     expect(
       canDraftOrderBePaid(
         draft({
-          createdBy: 'landing:wedding',
-          sentAt: new Date('2026-08-15T15:00:00.000Z'),
-          deliveryDate: new Date('2026-09-14T12:00:00.000Z'),
-          deliveryTime: 'Afternoon (12pm–4pm)',
+          createdBy: operatorSentCreatedBy('landing:bachelorette'),
+          status: 'SENT',
+          sentAt: new Date('2026-09-16T19:30:00.000Z'),
         }),
       ),
     ).toEqual({ canPay: true });
-  });
-
-  it('lets ops approve a rush by sending the invoice', () => {
-    expect(canDraftOrderBePaid(draft({ sentAt: new Date('2026-09-16T19:30:00.000Z') }))).toEqual({
-      canPay: true,
-    });
   });
 
   it.each([null, 'admin', 'ops-agent', 'ops-agent-cli'])(

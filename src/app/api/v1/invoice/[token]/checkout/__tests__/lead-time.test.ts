@@ -3,9 +3,9 @@
  * refuses, passes its code along, and opens no Stripe session for it.
  *
  * Runs the real canDraftOrderBePaid, which (ADR-0010) holds a self-serve draft
- * to the 24-hour minimum until an invoice is sent for it; operator invoices are
- * exempt. Clock pinned to Wed 2026-09-16 3:00 PM CDT (20:00Z): Thu noon is 21h
- * out, Thu 4 PM is 25h.
+ * to the 24-hour minimum until an operator sends it from ops; operator invoices
+ * are exempt. Clock pinned to Wed 2026-09-16 3:00 PM CDT (20:00Z): Thu noon is
+ * 21h out, Thu 4 PM is 25h.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { NextRequest } from 'next/server';
@@ -93,7 +93,7 @@ afterEach(() => {
 });
 
 describe('POST /api/v1/invoice/[token]/checkout — 24-hour minimum', () => {
-  it('refuses an unsent Quick-Buy draft inside 24 hours with the lead-time code, before Stripe', async () => {
+  it('refuses a Quick-Buy draft inside 24 hours with the lead-time code, before Stripe', async () => {
     draftMock.getDraftOrderByToken.mockResolvedValue(draft());
 
     const res = await POST(request(), PARAMS);
@@ -120,9 +120,25 @@ describe('POST /api/v1/invoice/[token]/checkout — 24-hour minimum', () => {
     expect(stripeMock.checkout.sessions.create).toHaveBeenCalledOnce();
   });
 
-  it('opens checkout inside 24 hours for an invoice that was sent (an operator-approved rush)', async () => {
+  it('refuses a quote the landing flow emailed itself, inside 24 hours', async () => {
     draftMock.getDraftOrderByToken.mockResolvedValue(
-      draft({ sentAt: new Date('2026-09-16T19:30:00.000Z') }),
+      draft({ status: 'SENT', sentAt: new Date('2026-09-15T15:00:00.000Z') }),
+    );
+
+    const res = await POST(request(), PARAMS);
+
+    expect(res.status).toBe(400);
+    expect((await res.json()).code).toBe(DELIVERY_TOO_SOON_CODE);
+    expect(stripeMock.checkout.sessions.create).not.toHaveBeenCalled();
+  });
+
+  it('opens checkout inside 24 hours for a draft an operator sent from ops', async () => {
+    draftMock.getDraftOrderByToken.mockResolvedValue(
+      draft({
+        status: 'SENT',
+        sentAt: new Date('2026-09-16T19:30:00.000Z'),
+        createdBy: 'ops-sent:landing:bachelorette',
+      }),
     );
 
     const res = await POST(request(), PARAMS);

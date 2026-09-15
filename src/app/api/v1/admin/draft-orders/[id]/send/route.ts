@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireOpsAuth } from '@/lib/auth/ops-session';
 import { getDraftOrderById, updateDraftOrderStatus } from '@/lib/draft-orders';
+import { operatorSentCreatedBy } from '@/lib/draft-orders/provenance';
 import { generateInvoiceEmail, generateInvoiceSubject, InvoiceTextOverrides } from '@/lib/email/templates/invoice';
 import { getInvoiceTextOverrides } from '@/lib/email/template-content';
 import { sendEmail } from '@/lib/email/resend-client';
@@ -104,8 +105,13 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    // Update draft order status to SENT
-    await updateDraftOrderStatus(id, 'SENT', { sentAt: new Date() });
+    // Update draft order status to SENT. An operator sending a customer-created
+    // draft approves it like an ops invoice (ADR-0010 exception a), so the
+    // 24-hour minimum stops applying when it is paid.
+    await updateDraftOrderStatus(id, 'SENT', {
+      sentAt: new Date(),
+      createdBy: operatorSentCreatedBy(draftOrder.createdBy),
+    });
 
     return NextResponse.json({
       success: true,

@@ -35,6 +35,17 @@ const CLASSIFIED: Record<string, Classification> = {
   'src/app/api/v1/full-moon/ticket/route.ts': { kind: 'event-ticket' },
 };
 
+/** Any import of the draft-order service module: alias, relative, or dynamic. */
+const DRAFT_ORDERS_MODULE = /['"`][^'"`]*\/draft-orders(?:\/(?:index|service))?['"`]/;
+
+/** Does this source create draft orders — through the service (however imported) or the table directly? */
+function createsDraftOrders(text: string): boolean {
+  const usesService = /\bcreateDraftOrder\b/.test(text) && DRAFT_ORDERS_MODULE.test(text);
+  const writesTable =
+    /\.draftOrder\.(?:create|createMany|upsert)\(/.test(text) || /INSERT\s+INTO\s+"?draft_orders\b/i.test(text);
+  return usesService || writesTable;
+}
+
 const ROOT = process.cwd();
 
 function sourceFiles(dir: string): string[] {
@@ -47,19 +58,24 @@ function sourceFiles(dir: string): string[] {
 
 const read = (file: string) => readFileSync(join(ROOT, file), 'utf8');
 
-/** Files that call the draft-order service's createDraftOrder, or write the table directly. */
 const creators = sourceFiles(join(ROOT, 'src'))
   .map((path) => relative(ROOT, path).split(sep).join('/'))
   .filter((file) => file !== 'src/lib/draft-orders/service.ts')
-  .filter((file) => {
-    const text = read(file);
-    const callsService =
-      /\bcreateDraftOrder\(/.test(text) && /from '@\/lib\/draft-orders(?:\/service)?'/.test(text);
-    return callsService || /\.draftOrder\.(?:create|createMany|upsert)\(/.test(text);
-  })
+  .filter((file) => createsDraftOrders(read(file)))
   .sort();
 
 describe('draft-order creators', () => {
+  it('recognizes every way of reaching the service or the table', () => {
+    expect(createsDraftOrders("import { createDraftOrder } from '@/lib/draft-orders';")).toBe(true);
+    expect(
+      createsDraftOrders("import { createDraftOrder as make } from '../../../lib/draft-orders/service';"),
+    ).toBe(true);
+    expect(createsDraftOrders("const { createDraftOrder } = await import('@/lib/draft-orders');")).toBe(true);
+    expect(createsDraftOrders('await tx.draftOrder.create({ data })')).toBe(true);
+    expect(createsDraftOrders('INSERT INTO "draft_orders" (id) VALUES ($1)')).toBe(true);
+    expect(createsDraftOrders("import { getDraftOrderById } from '@/lib/draft-orders';")).toBe(false);
+  });
+
   it('are all classified — a new one must require ops auth or check the minimum itself', () => {
     expect(creators).toEqual(Object.keys(CLASSIFIED).sort());
   });

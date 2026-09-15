@@ -8,7 +8,7 @@ import { Prisma, DraftOrderStatus } from '@prisma/client';
 import { CreateDraftOrderInput, UpdateDraftOrderInput, DraftOrderItem, DraftOrderWithTotal } from './types';
 import { calculateCartTax } from '@/lib/tax';
 import { DELIVERY_TOO_SOON_CODE, INVOICE_LEAD_TIME_MESSAGE, meetsLeadTime } from '@/lib/delivery/lead-time';
-import { mustMeetLeadTimeToPay } from './provenance';
+import { isSelfServeDeliveryDraft } from './provenance';
 
 /**
  * Create a new draft order
@@ -196,6 +196,7 @@ export async function updateDraftOrderStatus(
   status: DraftOrderStatus,
   additionalData?: Partial<{
     sentAt: Date;
+    createdBy: string | null;
     viewedAt: Date;
     paidAt: Date;
     convertedOrderId: string;
@@ -370,11 +371,12 @@ export function canDraftOrderBePaid(
   if (draftOrder.status === 'EXPIRED' || isDraftOrderExpired(draftOrder)) {
     return { canPay: false, reason: 'This invoice has expired' };
   }
-  // ADR-0010: a draft a customer minted through a public checkout, with no
-  // invoice sent for it, is held to the 24-hour minimum when paid. Checked
-  // here so invoice checkout, the item editor and the discount box agree.
+  // ADR-0010: a draft a customer minted through a public checkout is held to
+  // the 24-hour minimum when paid, until an operator sends it from ops.
+  // Checked here so invoice checkout, the item editor and the discount box
+  // agree.
   if (
-    mustMeetLeadTimeToPay(draftOrder) &&
+    isSelfServeDeliveryDraft(draftOrder) &&
     !meetsLeadTime(draftOrder.deliveryDate, draftOrder.deliveryTime, now)
   ) {
     return { canPay: false, reason: INVOICE_LEAD_TIME_MESSAGE, code: DELIVERY_TOO_SOON_CODE };

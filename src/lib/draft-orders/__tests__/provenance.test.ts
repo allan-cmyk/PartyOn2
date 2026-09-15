@@ -4,7 +4,7 @@ import {
   GROUP_ORDER_DRAFT_CREATED_BY,
   isSelfServeDeliveryDraft,
   landingDraftCreatedBy,
-  mustMeetLeadTimeToPay,
+  operatorSentCreatedBy,
 } from '../provenance';
 
 describe('isSelfServeDeliveryDraft', () => {
@@ -22,22 +22,24 @@ describe('isSelfServeDeliveryDraft', () => {
     'ops-agent-cli',
     FULL_MOON_TICKET_DRAFT_CREATED_BY,
     'xlanding:bachelor',
-  ])('does not flag operator invoices or event tickets (createdBy %s)', (createdBy) => {
+    'ops-sent:landing:bachelor',
+  ])('does not flag operator invoices, operator-sent drafts or event tickets (createdBy %s)', (createdBy) => {
     expect(isSelfServeDeliveryDraft({ createdBy })).toBe(false);
   });
 });
 
-describe('mustMeetLeadTimeToPay', () => {
-  const sentAt = new Date('2026-09-10T15:00:00.000Z');
-
-  it('holds a self-serve draft to the minimum until an invoice is sent for it', () => {
-    expect(mustMeetLeadTimeToPay({ createdBy: 'landing:bachelor', sentAt: null })).toBe(true);
-    expect(mustMeetLeadTimeToPay({ createdBy: GROUP_ORDER_DRAFT_CREATED_BY, sentAt: null })).toBe(true);
-    expect(mustMeetLeadTimeToPay({ createdBy: 'landing:wedding', sentAt })).toBe(false);
+describe('operatorSentCreatedBy', () => {
+  it('makes a self-serve draft an operator invoice, keeping where it came from', () => {
+    const sent = operatorSentCreatedBy(landingDraftCreatedBy('bachelorette'));
+    expect(sent).toBe('ops-sent:landing:bachelorette');
+    expect(isSelfServeDeliveryDraft({ createdBy: sent })).toBe(false);
+    expect(operatorSentCreatedBy(GROUP_ORDER_DRAFT_CREATED_BY)).toBe('ops-sent:group-order-system');
   });
 
-  it('never holds operator invoices to it', () => {
-    expect(mustMeetLeadTimeToPay({ createdBy: null, sentAt: null })).toBe(false);
-    expect(mustMeetLeadTimeToPay({ createdBy: 'ops-agent-cli', sentAt: null })).toBe(false);
+  it('leaves operator invoices, tickets and already-sent drafts unchanged', () => {
+    expect(operatorSentCreatedBy(null)).toBeNull();
+    expect(operatorSentCreatedBy('ops-agent-cli')).toBe('ops-agent-cli');
+    expect(operatorSentCreatedBy(FULL_MOON_TICKET_DRAFT_CREATED_BY)).toBe(FULL_MOON_TICKET_DRAFT_CREATED_BY);
+    expect(operatorSentCreatedBy('ops-sent:landing:bachelor')).toBe('ops-sent:landing:bachelor');
   });
 });

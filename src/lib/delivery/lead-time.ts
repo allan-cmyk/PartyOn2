@@ -8,7 +8,7 @@
  * group/boat dashboards, and landing-page Quick-Buy. Ops-created draft
  * orders/invoices are deliberately exempt: the operator hand-approving an
  * exception IS the escape hatch. A draft a customer minted through a public
- * checkout stays under the rule until an invoice is sent for it (see
+ * checkout stays under the rule until an operator sends it from ops (see
  * lib/draft-orders/provenance.ts).
  *
  * Timezone: all comparisons happen in America/Chicago wall-clock terms,
