@@ -62,8 +62,8 @@ function markShown(id: string) {
 
 /**
  * Has the visitor cleared the site-wide 21+ age gate? AgeVerification stamps
- * `age_verified` in localStorage on accept — this matches the truthy check
- * DeliveryWindowGate uses, so both entrance gates read the flag identically.
+ * `age_verified` in localStorage on accept — the same truthy check
+ * DashboardTour uses, so everything waiting on the gate reads it identically.
  * On a read error we return false: better to skip a non-essential marketing
  * popup than risk painting it over a still-open gate.
  */
@@ -128,18 +128,16 @@ export default function LeadMagnetController() {
     };
 
     // Automatic triggers (time-on-page, scroll depth) must NOT fire until the
-    // visitor has cleared the 21+ age gate. AgeVerification (z-100) and
-    // DeliveryWindowGate (z-210) are the required entrance gates; this modal
-    // renders at z-200, so firing on a timer while the age gate is still open
-    // would drop a marketing popup ON TOP of a legally-required gate — and
-    // before the visitor has made the gating choice. Poll for `age_verified`
-    // before wiring the triggers, mirroring how DeliveryWindowGate/DashboardTour
-    // wait on their prerequisite flag.
+    // visitor has cleared the 21+ age gate. AgeVerification (z-100) is the
+    // required entrance gate; this modal renders at z-200, so firing on a timer
+    // while the age gate is still open would drop a marketing popup ON TOP of a
+    // legally-required gate — and before the visitor has made the gating
+    // choice. Poll for `age_verified` before wiring the triggers, mirroring how
+    // DashboardTour waits on the same flag.
     //
     // Every page the current LEAD_MAGNETS target ('/', '/services/*', '/flyer',
     // the birthday blog post, '/products' + product handle pages) is age-gated,
-    // and the config excludes '/dashboard/*' and never lists '/order', so the
-    // delivery-window gate is never in play here. If you ever point a magnet at
+    // and the config excludes '/dashboard/*'. If you ever point a magnet at
     // an age-gate-EXEMPT page (see AGE_GATE_EXEMPT_PATHS), its automatic
     // triggers won't fire until `age_verified` exists — rely on a manual
     // trigger there. Keep this list in sync when adding magnets.

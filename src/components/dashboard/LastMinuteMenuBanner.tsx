@@ -1,24 +1,25 @@
 'use client';
 
 /**
- * Dashboard banner that explains the active menu mode + lets the
- * customer flip to the full menu (with a caveat about availability).
+ * Dashboard banner for the deep-stock menu — an ops-only switch
+ * (GroupOrderV2.isLastMinute, e.g. the boat dashboards ops restricted in
+ * June 2026). Nothing customer-facing turns it on since the last-minute
+ * ordering mode was retired (2026-09-15), so the copy stays neutral and makes
+ * no delivery-speed promise (ADR-0010).
  *
  * Two visual states:
  *
- *   - DEFAULT (last-minute filter on): friendly amber strip explaining
- *     they're seeing only deep-stock items + a "Show full menu →"
- *     button.
+ *   - DEFAULT (filter on): says the menu is limited to deep-stock items,
+ *     with a "Show full menu →" button.
  *
- *   - FULL-MENU OVERRIDE (filter off but isLastMinute still true):
- *     softer-tone note saying some items in the full menu may not be
- *     available in 24h, and we'll text them post-purchase if a
- *     substitution is needed. "Back to last-minute menu" button.
+ *   - FULL-MENU OVERRIDE (filter off, switch still on): says we'll confirm
+ *     stock and text if a substitution is needed, with a way back.
  *
- * Mounted by /dashboard/[code]/page.tsx — only when GroupOrderV2.isLastMinute
+ * Mounted by /dashboard/[code]/page.tsx only when GroupOrderV2.isLastMinute
  * is true. The toggle state lives on the dashboard page so it can flip
  * the `allowedProductIds` prop on ProductBrowse.
  */
+import type { ReactElement } from 'react';
 
 const NAVY = '#0A1F33';
 const GOLD = '#F2D34F';
@@ -29,9 +30,10 @@ type Props = {
   onToggle: () => void;
 };
 
-export default function LastMinuteMenuBanner({ showFullMenu, onToggle }: Props) {
+/** In-stock menu banner with a full-menu toggle (see file header). */
+export default function LastMinuteMenuBanner({ showFullMenu, onToggle }: Props): ReactElement {
   if (!showFullMenu) {
-    // Default — last-minute menu engaged.
+    // Default — deep-stock filter engaged.
     return (
       <div
         className="rounded-lg p-3 sm:p-4 mb-4 flex items-start sm:items-center gap-3 flex-wrap sm:flex-nowrap"
@@ -41,24 +43,20 @@ export default function LastMinuteMenuBanner({ showFullMenu, onToggle }: Props) 
           boxShadow: `0 2px 0 ${NAVY}1A`,
         }}
       >
-        <div className="text-2xl sm:text-3xl leading-none flex-shrink-0" aria-hidden>
-          ⚡
-        </div>
         <div className="flex-1 min-w-0">
           <div className="font-heading font-bold text-sm sm:text-base tracking-wide" style={{ color: NAVY }}>
-            You&apos;re viewing the last-minute menu
+            You&apos;re viewing our in-stock menu
           </div>
-          <div className="text-xs sm:text-sm mt-0.5" style={{ color: '#5A4A14' }}>
-            We&apos;ll confirm all these items are available for your
-            last-minute order. After the order is placed, please make
-            sure you provide an accurate phone number in case we need
-            to contact you.
+          <div className="text-sm mt-0.5" style={{ color: '#5A4A14' }}>
+            This order is set to the items we keep in deep stock. You can
+            still browse the full menu — we&apos;ll confirm availability
+            after you order.
           </div>
         </div>
         <button
           type="button"
           onClick={onToggle}
-          className="rounded-md px-3 py-2 text-xs sm:text-sm font-bold tracking-wide whitespace-nowrap transition-transform hover:scale-[1.02]"
+          className="rounded-lg px-3 py-2 text-sm font-bold tracking-wide whitespace-nowrap transition-transform hover:scale-[1.02]"
           style={{
             background: '#FFFFFF',
             color: NAVY,
@@ -72,7 +70,7 @@ export default function LastMinuteMenuBanner({ showFullMenu, onToggle }: Props) 
     );
   }
 
-  // Full-menu override — soft warning about availability.
+  // Full-menu override — soft note about availability.
   return (
     <div
       className="rounded-lg p-3 sm:p-4 mb-4 flex items-start sm:items-center gap-3 flex-wrap sm:flex-nowrap"
@@ -81,14 +79,11 @@ export default function LastMinuteMenuBanner({ showFullMenu, onToggle }: Props) 
         border: `1.5px solid #C8C8C8`,
       }}
     >
-      <div className="text-2xl sm:text-3xl leading-none flex-shrink-0" aria-hidden>
-        🔍
-      </div>
       <div className="flex-1 min-w-0">
         <div className="font-heading font-bold text-sm sm:text-base tracking-wide" style={{ color: NAVY }}>
-          Browsing the full menu — fast-delivery mode
+          Browsing the full menu
         </div>
-        <div className="text-xs sm:text-sm mt-0.5 text-gray-700">
+        <div className="text-sm mt-0.5 text-gray-700">
           Add anything you want. We&apos;ll confirm what&apos;s in stock and
           text you after purchase if a substitution is needed.
         </div>
@@ -96,7 +91,7 @@ export default function LastMinuteMenuBanner({ showFullMenu, onToggle }: Props) 
       <button
         type="button"
         onClick={onToggle}
-        className="rounded-md px-3 py-2 text-xs sm:text-sm font-bold tracking-wide whitespace-nowrap transition-transform hover:scale-[1.02]"
+        className="rounded-lg px-3 py-2 text-sm font-bold tracking-wide whitespace-nowrap transition-transform hover:scale-[1.02]"
         style={{
           background: GOLD,
           color: NAVY,
@@ -104,7 +99,7 @@ export default function LastMinuteMenuBanner({ showFullMenu, onToggle }: Props) 
           boxShadow: `0 2px 0 ${NAVY}`,
         }}
       >
-        ← Back to last-minute menu
+        ← Back to in-stock menu
       </button>
     </div>
   );

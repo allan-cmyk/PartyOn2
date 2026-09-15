@@ -5,7 +5,12 @@ import { updateTabV2 } from '@/lib/group-orders-v2/api-client';
 import type { SubOrderFull } from '@/lib/group-orders-v2/types';
 import { getStrPartnerByCode, type StrProperty } from '@/lib/partners/str-partners';
 import { STORE_PICKUP_ADDRESS } from '@/lib/delivery/pickup';
-import { MINIMUM_LEAD_TIME_HOURS, meetsLeadTime } from '@/lib/delivery/lead-time';
+import {
+  DASHBOARD_TIME_SLOTS as TIME_SLOTS,
+  MINIMUM_LEAD_TIME_HOURS,
+  earliestBookableDay,
+  meetsLeadTime,
+} from '@/lib/delivery/lead-time';
 
 interface Props {
   shareCode: string;
@@ -23,39 +28,6 @@ interface Props {
 
 /** Sentinel value for the "my place isn't listed" dropdown option. */
 const STR_CUSTOM = '__custom__';
-
-function generateTimeSlots(): string[] {
-  const slots: string[] = [];
-  for (let h = 10; h <= 20; h++) {
-    for (const m of [0, 30]) {
-      const hour = h % 12 || 12;
-      const ampm = h < 12 ? 'AM' : 'PM';
-      const nextH = m === 30 ? h + 1 : h;
-      const nextM = m === 30 ? 0 : 30;
-      const nextHour = nextH % 12 || 12;
-      const nextAmpm = nextH < 12 ? 'AM' : 'PM';
-      const start = `${hour}:${m.toString().padStart(2, '0')} ${ampm}`;
-      const end = `${nextHour}:${nextM.toString().padStart(2, '0')} ${nextAmpm}`;
-      slots.push(`${start} - ${end}`);
-    }
-  }
-  return slots;
-}
-
-const TIME_SLOTS = generateTimeSlots();
-
-function getMinDate(): string {
-  // Earliest Austin calendar day that still has at least one selectable
-  // window under the 24-hour minimum. Checking the LAST slot start (8:30 PM)
-  // matters: late in the evening, "tomorrow" clears now+24h as a date but
-  // every one of its windows is already inside the cutoff — offering it
-  // would make each slot fail one by one with no explanation.
-  const earliest = new Date(Date.now() + MINIMUM_LEAD_TIME_HOURS * 60 * 60 * 1000);
-  const day = earliest.toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
-  if (meetsLeadTime(day, TIME_SLOTS[TIME_SLOTS.length - 1])) return day;
-  const nextDay = new Date(earliest.getTime() + 24 * 60 * 60 * 1000);
-  return nextDay.toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
-}
 
 function isSunday(dateStr: string): boolean {
   if (!dateStr) return false;
@@ -269,7 +241,7 @@ export default function DeliveryDetailsModal({
               <input
                 type="date"
                 value={date}
-                min={getMinDate()}
+                min={earliestBookableDay()}
                 onChange={(e) => setDate(e.target.value)}
                 className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg text-base focus:border-brand-blue focus:ring-0 transition-all hover:border-gray-300"
               />

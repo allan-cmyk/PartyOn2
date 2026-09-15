@@ -35,6 +35,13 @@ vi.mock('@/lib/database/client', () => ({ prisma: prismaMock, kv: {}, isKVConfig
 const recMock = vi.hoisted(() => ({ recommendForChat: vi.fn() }));
 vi.mock('@/lib/chat/recommendation', () => recMock);
 
+const rushMock = vi.hoisted(() => ({
+  recordRushRequest: vi.fn(),
+  resolveRushRequest: vi.fn(),
+  RUSH_LEAD_TAG: 'rush',
+}));
+vi.mock('@/lib/leads/rush-request', () => rushMock);
+
 const sheetMock = vi.hoisted(() => ({ mirrorLeadToSheet: vi.fn() }));
 vi.mock('@/lib/premier/pod-leads-sheet', () => sheetMock);
 
@@ -43,12 +50,17 @@ vi.mock('@/lib/leads/crm-mirror', () => crmMock);
 
 import { POST } from '../submit/route';
 
+// Relative, never hard-coded: chat/submit refuses a day with no delivery
+// window 24+ hours out (ADR-0010), so a fixed date would start failing once
+// the calendar caught up with it.
+const A_MONTH_OUT = new Date(Date.now() + 30 * 86_400_000).toISOString().slice(0, 10);
+
 const VALID = {
   firstName: 'Codie',
   email: 'codie@example.com',
   partyType: 'hotel',
   headcount: 13,
-  deliveryDate: '2026-09-30',
+  deliveryDate: A_MONTH_OUT,
 };
 
 function request(body: unknown): NextRequest {

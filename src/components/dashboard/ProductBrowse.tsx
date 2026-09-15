@@ -18,7 +18,7 @@ interface Props {
   onItemChanged: () => void;
   recsSection?: ReactElement | null;
   affiliateCode?: string | null;
-  /** Whitelist of product IDs allowed in last-minute mode. Null = no restriction. */
+  /** Whitelist of product IDs allowed while ops' deep-stock menu switch is on. Null = no restriction. */
   allowedProductIds?: Set<string> | null;
 }
 

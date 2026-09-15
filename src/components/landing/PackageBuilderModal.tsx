@@ -13,8 +13,7 @@ import { getAttribution } from '@/lib/analytics/attribution';
 import { trackContactClick } from '@/lib/analytics/ga4-events';
 import { trackFunnelStep } from '@/lib/experiments/funnelTrack';
 import type { FunnelStep } from '@/lib/experiments/funnelSteps';
-import { isLastMinuteDate } from '@/lib/lastMinute/dates';
-import { useDeliveryWindow } from '@/lib/deliveryWindow/window';
+import { DELIVERY_TOO_SOON_CODE, RUSH_NOTE, earliestQuoteDay } from '@/lib/delivery/lead-time';
 import type {
   LandingConfig,
   BuilderProduct,
@@ -26,7 +25,6 @@ import type { UpsellProducts, UpsellProduct } from '@/lib/landing/getUpsellProdu
 import UpsellOverlay from './UpsellOverlay';
 import EmbeddedCheckoutPanel from './EmbeddedCheckoutPanel';
 import {
-  BoltIcon,
   CheckCircleIcon,
   UsersIcon,
   CalendarIcon,
@@ -43,19 +41,8 @@ type Props = {
   open: boolean;
   onClose: () => void;
   config: LandingConfig;
-  /**
-   * Already-resolved catalog — either the curated catalog or the
-   * last-minute catalog depending on `lastMinuteMode` controlled by
-   * the parent template.
-   */
+  /** Curated catalog for this landing page. */
   catalog: Catalog;
-  /** True when the parent has a last-minute catalog pre-fetched. */
-  hasLastMinuteCatalog?: boolean;
-  /** Parent's state — used to drive the banner + product pool. */
-  lastMinuteMode?: boolean;
-  /** Called when the chosen delivery date crosses the today/tomorrow
-   *  threshold so the parent can swap the catalog. */
-  onLastMinuteModeChange?: (next: boolean) => void;
   upsellProducts?: UpsellProducts;
 };
 
@@ -67,14 +54,22 @@ const encodeImg = (src?: string): string | undefined => {
   return /%[0-9A-Fa-f]{2}/.test(src) ? src : encodeURI(src);
 };
 
+/**
+ * The picked calendar day as YYYY-MM-DD, from the Date's local parts. The
+ * calendar builds local-midnight Dates, so toISOString() would shift the day
+ * back by one for any visitor east of UTC.
+ */
+function toDayString(d: Date): string {
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}-${month}-${day}`;
+}
+
 export default function PackageBuilderModal({
   open,
   onClose,
   config,
   catalog,
-  hasLastMinuteCatalog,
-  lastMinuteMode,
-  onLastMinuteModeChange,
   upsellProducts,
 }: Props) {
   const T = config.theme;
@@ -84,25 +79,12 @@ export default function PackageBuilderModal({
 
   const [stepIndex, setStepIndex] = useState(0);
   const [people, setPeople] = useState(M.defaultPeople);
-  // Pre-fill the date from the entrance-gate choice. If the visitor
-  // told us "Today or Tomorrow" up-front, default to today; otherwise
-  // leave the picker empty (user can still type or pick a date).
-  const { isLastMinute: gateIsLastMinute } = useDeliveryWindow();
-  const [deliveryDate, setDeliveryDate] = useState<Date | null>(() =>
-    gateIsLastMinute ? new Date() : null,
-  );
+  const [deliveryDate, setDeliveryDate] = useState<Date | null>(null);
+  // Refusal shown on the date step when the server says the picked day slipped
+  // inside the 24-hour minimum while the form was open.
+  const [dateRefusal, setDateRefusal] = useState<string | null>(null);
   const [selection, setSelection] = useState<Selection>({});
   const [extraSelection, setExtraSelection] = useState<string[]>([]);
-
-  // Whenever the customer picks a date OR the entrance-gate choice
-  // flips, decide whether to engage last-minute mode. The picked date
-  // wins; if it's null, we fall back to the gate's signal so the
-  // catalog narrows immediately even before they hit the basics step.
-  useEffect(() => {
-    if (!onLastMinuteModeChange || !hasLastMinuteCatalog) return;
-    const fromDate = isLastMinuteDate(deliveryDate);
-    onLastMinuteModeChange(fromDate || (deliveryDate === null && gateIsLastMinute));
-  }, [deliveryDate, gateIsLastMinute, hasLastMinuteCatalog, onLastMinuteModeChange]);
 
   const [contactName, setContactName] = useState('');
   const [contactEmail, setContactEmail] = useState('');
@@ -394,8 +376,17 @@ export default function PackageBuilderModal({
     // Address fields are optional from this surface — the dashboard
     // collects delivery address on its own checkout step.
 
+    // A delivery date is required: without one the dashboard would be created
+    // with a date the customer never chose. Send them back to the calendar.
+    if (!deliveryDate) {
+      setDateRefusal('Pick a delivery date to continue.');
+      setStepIndex(0);
+      setSubmitting(false);
+      return;
+    }
+
     // Sundays are closed. Block submit and recommend Saturday evening.
-    if (deliveryDate && isSunday(deliveryDate.toISOString().slice(0, 10))) {
+    if (isSunday(toDayString(deliveryDate))) {
       setSubmitError(SUNDAY_CLOSED_NOTE);
       setSubmitting(false);
       return;
@@ -452,9 +443,7 @@ export default function PackageBuilderModal({
       const [firstName, ...rest] = contactName.trim().split(/\s+/);
       const lastName = rest.join(' ') || null;
 
-      const deliveryDateIso = deliveryDate
-        ? deliveryDate.toISOString().slice(0, 10)
-        : new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10);
+      const deliveryDateIso = toDayString(deliveryDate);
 
       const res = await fetch('/api/v1/quote/start', {
         method: 'POST',
@@ -480,6 +469,14 @@ export default function PackageBuilderModal({
         }),
       });
       const json = await res.json();
+      if (json.code === DELIVERY_TOO_SOON_CODE) {
+        // The picked day slipped inside the 24-hour minimum while the form was
+        // open. Back to the date step, with the refusal shown by the calendar.
+        setDeliveryDate(null);
+        setDateRefusal(json.error || null);
+        setStepIndex(0);
+        return;
+      }
       if (!res.ok || !json.ok) {
         throw new Error(json.error || 'Failed to create your order. Try again.');
       }
@@ -528,6 +525,7 @@ export default function PackageBuilderModal({
     setContactEmail('');
     setContactPhone('');
     setDeliveryDate(null);
+    setDateRefusal(null);
     setPeople(M.defaultPeople);
     setExtraSelection([]);
     setAgeConfirmed(false);
@@ -603,22 +601,6 @@ export default function PackageBuilderModal({
               />
             ))}
           </div>
-          {/* Last-minute mode banner — pops the moment the customer picks
-              today/tomorrow as their delivery date. Tells them the menu
-              narrowed + why. */}
-          {lastMinuteMode && hasLastMinuteCatalog && (
-            <div
-              className="mt-3 rounded-md px-3 py-2 text-xs font-bold leading-snug flex items-start gap-1.5"
-              style={{ background: T.primary, color: T.primaryText }}
-            >
-              <BoltIcon className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
-              <span>
-                <span className="tracking-wider">LAST-MINUTE MENU ACTIVE</span> —
-                showing only deep-stock items we can deliver in 24h. Pick a date
-                further out to see the full catalog.
-              </span>
-            </div>
-          )}
         </div>
 
         <div className="flex-1 overflow-y-auto px-5 sm:px-7 py-5">
@@ -670,7 +652,11 @@ export default function PackageBuilderModal({
                   people={people}
                   setPeople={setPeople}
                   deliveryDate={deliveryDate}
-                  setDeliveryDate={setDeliveryDate}
+                  setDeliveryDate={(d) => {
+                    setDeliveryDate(d);
+                    setDateRefusal(null);
+                  }}
+                  dateRefusal={dateRefusal}
                   modal={M}
                   theme={T}
                   extraSelection={extraSelection}
@@ -868,7 +854,11 @@ function InlineCalendar({
 }) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const initial = value ?? today;
+  // Days before the first one with a delivery window 24+ hours out (plus an
+  // hour of slack for the rest of the form) are disabled (ADR-0010); with
+  // nothing picked, open on that day's month.
+  const minDay = earliestQuoteDay();
+  const initial = value ?? new Date(`${minDay}T00:00:00`);
   const [view, setView] = useState({
     year: initial.getFullYear(),
     month: initial.getMonth(),
@@ -900,10 +890,8 @@ function InlineCalendar({
     a.getMonth() === b.getMonth() &&
     a.getDate() === b.getDate();
 
-  const isPast = (day: number) => {
-    const d = new Date(view.year, view.month, day);
-    return d < today;
-  };
+  const isTooSoon = (day: number) =>
+    toDayString(new Date(view.year, view.month, day)) < minDay;
 
   return (
     <div
@@ -941,7 +929,7 @@ function InlineCalendar({
           if (d === null) return <div key={i} />;
           const dateObj = new Date(view.year, view.month, d);
           const selected = isSameDay(dateObj, value);
-          const past = isPast(d);
+          const past = isTooSoon(d);
           const isToday = isSameDay(dateObj, today);
           return (
             <button
@@ -997,6 +985,7 @@ function BasicsStep({
   setPeople,
   deliveryDate,
   setDeliveryDate,
+  dateRefusal,
   modal,
   theme,
   extraSelection,
@@ -1006,6 +995,8 @@ function BasicsStep({
   setPeople: (n: number) => void;
   deliveryDate: Date | null;
   setDeliveryDate: (d: Date | null) => void;
+  /** Server refusal for a day that slipped inside the 24-hour minimum. */
+  dateRefusal: string | null;
   modal: LandingConfig['modal'];
   theme: LandingConfig['theme'];
   extraSelection: string[];
@@ -1092,9 +1083,18 @@ function BasicsStep({
           <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: theme.navy }}>
             Delivery date
           </label>
+          {dateRefusal && (
+            <p
+              role="alert"
+              className="mb-2 rounded-md p-2.5 text-sm leading-snug"
+              style={{ background: '#FEE2E2', color: '#991B1B' }}
+            >
+              {dateRefusal}
+            </p>
+          )}
           <InlineCalendar value={deliveryDate} onChange={setDeliveryDate} theme={theme} />
-          <p className="text-xs text-gray-500 mt-2">
-            48-hour notice gets you guaranteed pricing &amp; cold delivery.
+          <p className="text-sm text-gray-700 mt-2">
+            48-hour notice gets you guaranteed pricing &amp; cold delivery. {RUSH_NOTE}
           </p>
         </div>
       </div>
@@ -1584,7 +1584,7 @@ function ReviewStep({
               </select>
             </FormField>
           </div>
-          {deliveryDate && isSunday(deliveryDate.toISOString().slice(0, 10)) && (
+          {deliveryDate && isSunday(toDayString(deliveryDate)) && (
             <div
               className="mt-2.5 rounded-md p-2.5 text-sm leading-snug"
               style={{

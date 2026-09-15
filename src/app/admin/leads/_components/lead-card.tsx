@@ -266,6 +266,8 @@ export default function LeadCard({
               <span className="truncate">{lead.affiliate.name}</span>
             </HqBadge>
           )}
+          {/* Tagged by src/lib/leads/rush-request.ts: asked online for a delivery inside 24h. */}
+          {lead.tags.includes('rush') && <HqBadge variant="amber">Rush</HqBadge>}
           {lead.tags.includes('partner-active') ? (
             <HqBadge variant="green">
               <PartnerIcon />

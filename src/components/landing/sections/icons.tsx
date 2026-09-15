@@ -60,7 +60,7 @@ export function ChevronDownIcon({ className = 'w-4 h-4' }: IconProps): ReactElem
   );
 }
 
-/** Lightning bolt — last-minute mode banner. */
+/** Lightning bolt. */
 export function BoltIcon({ className = 'w-4 h-4' }: IconProps): ReactElement {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">

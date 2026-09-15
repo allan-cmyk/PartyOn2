@@ -15,7 +15,7 @@ interface Props {
   isLocked?: boolean;
   onItemChanged: () => void;
   hiddenProductIds?: Set<string>;
-  /** If set, intersect displayed products with this whitelist (last-minute mode). */
+  /** If set, intersect displayed products with this whitelist (ops' deep-stock menu switch). */
   allowedProductIds?: Set<string> | null;
 }
 

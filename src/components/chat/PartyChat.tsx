@@ -19,9 +19,9 @@
  *
  * All submissions create a Lead via POST /api/v1/chat/submit (same
  * downstream behavior as the /event-quiz quiz endpoint — appears in
- * Brian's Stuff → Leads with metadata.chatQuiz). If the chosen date is
- * today or tomorrow, the destination landing page automatically loads
- * the last-minute catalog (handled by LandingPageTemplate already).
+ * Brian's Stuff → Leads with metadata.chatQuiz). The date picker starts at
+ * the first day with a delivery window 24+ hours out (ADR-0010); a date
+ * inside that minimum comes back refused with the call/text message.
  */
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
@@ -30,8 +30,12 @@ import {
   type PartyType,
 } from '@/lib/eventQuiz/routing';
 import { sendLeadEvent } from '@/lib/leads/client';
-import { useDeliveryWindow } from '@/lib/deliveryWindow/window';
 import { getAttribution } from '@/lib/analytics/attribution';
+import {
+  DELIVERY_TOO_SOON_CODE,
+  RUSH_NOTE,
+  earliestQuoteDay,
+} from '@/lib/delivery/lead-time';
 
 type RecommendedItem = {
   handle: string;
@@ -90,27 +94,15 @@ export default function PartyChat({ isOpen: controlledIsOpen, onClose }: PartyCh
   };
   const [step, setStep] = useState<Step>('party');
   const [partyType, setPartyType] = useState<PartyType | null>(null);
-  // Default delivery date depends on the entrance-gate choice:
-  //   • last-minute → today (deep-stock menu engages immediately)
-  //   • future / unset → 7 days out
-  // Picker enforces today as the minimum either way.
-  const { isLastMinute: gateIsLastMinute } = useDeliveryWindow();
-  const defaultDate = (() => {
+  // Default the event a week out. The picker's minimum is the first day that
+  // still has a delivery window 24+ hours away (ADR-0010), with an hour of
+  // slack for finishing the chat — the server refuses anything sooner.
+  const [deliveryDate, setDeliveryDate] = useState<string>(() => {
     const d = new Date();
-    if (!gateIsLastMinute) d.setDate(d.getDate() + 7);
+    d.setDate(d.getDate() + 7);
     return d.toISOString().slice(0, 10);
-  })();
-  const todayStr = new Date().toISOString().slice(0, 10);
-  const [deliveryDate, setDeliveryDate] = useState<string>(defaultDate);
-  // If the gate's choice changes while the chat is mid-flow, snap the
-  // date forward so the user sees consistent defaults.
-  useEffect(() => {
-    const next = new Date();
-    if (!gateIsLastMinute) next.setDate(next.getDate() + 7);
-    setDeliveryDate(next.toISOString().slice(0, 10));
-    // We intentionally only react to the gate flag — manual date
-    // edits shouldn't trigger a reset.
-  }, [gateIsLastMinute]);
+  });
+  const minDate = earliestQuoteDay();
   const [headcount, setHeadcount] = useState<number>(12);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -119,7 +111,9 @@ export default function PartyChat({ isOpen: controlledIsOpen, onClose }: PartyCh
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [recommendation, setRecommendation] = useState<Recommendation | null>(null);
-  const [isLastMinute, setIsLastMinute] = useState(false);
+  // True when the server refused the date as inside the 24-hour minimum —
+  // the error box then offers a way back to the date step.
+  const [dateRefused, setDateRefused] = useState(false);
   const [redirectTo, setRedirectTo] = useState<string | null>(null);
 
   // Reset everything when the user closes the panel without finishing.
@@ -149,6 +143,7 @@ export default function PartyChat({ isOpen: controlledIsOpen, onClose }: PartyCh
     e.preventDefault();
     if (!partyType || !firstName || !email) return;
     setError(null);
+    setDateRefused(false);
     setSubmitting(true);
     try {
       // First call: build the recommendation so we can show the user
@@ -172,10 +167,10 @@ export default function PartyChat({ isOpen: controlledIsOpen, onClose }: PartyCh
       });
       const recJson = await recRes.json();
       if (!recRes.ok || !recJson.ok) {
+        setDateRefused(recJson.code === DELIVERY_TOO_SOON_CODE);
         throw new Error(recJson.error || 'Could not save your info.');
       }
       setRecommendation(recJson.recommendation ?? null);
-      setIsLastMinute(!!recJson.isLastMinute);
       setRedirectTo(recJson.redirectTo ?? null);
       setStep('results');
     } catch (err) {
@@ -194,8 +189,10 @@ export default function PartyChat({ isOpen: controlledIsOpen, onClose }: PartyCh
    * hard-redirects to /dashboard/<shareCode>.
    */
   const [openingDashboard, setOpeningDashboard] = useState(false);
+  const [openError, setOpenError] = useState<string | null>(null);
   const openDashboard = async () => {
     if (!partyType || !firstName || !email) return;
+    setOpenError(null);
     setOpeningDashboard(true);
     try {
       const res = await fetch('/api/v1/quote/start', {
@@ -217,6 +214,13 @@ export default function PartyChat({ isOpen: controlledIsOpen, onClose }: PartyCh
         }),
       });
       const json = await res.json();
+      if (json.code === DELIVERY_TOO_SOON_CODE) {
+        // The date slipped inside the 24-hour minimum while the chat sat
+        // open. No dashboard was created — show the call/text message.
+        setOpenError(json.error ?? null);
+        setOpeningDashboard(false);
+        return;
+      }
       if (!json.ok || !json.shareCode) {
         // Fallback: just take them to the matching landing page.
         window.location.href = json.redirectTo ?? '/';
@@ -238,6 +242,14 @@ export default function PartyChat({ isOpen: controlledIsOpen, onClose }: PartyCh
       console.warn('[chat] quote/start failed', err);
       setOpeningDashboard(false);
     }
+  };
+
+  // Back to the date step after a refusal; the contact details stay filled in.
+  const changeDate = () => {
+    setError(null);
+    setDateRefused(false);
+    setOpenError(null);
+    setStep('date');
   };
 
   // FAB (closed state) — suppressed when a parent controls the panel (the
@@ -379,18 +391,17 @@ export default function PartyChat({ isOpen: controlledIsOpen, onClose }: PartyCh
               content={
                 <>
                   <div className="mb-3">
-                    Got it. When&apos;s the event? Today and tomorrow are
-                    fair game — we&apos;ll swap in our 24-hr menu so you only
-                    see what&apos;s deep in stock.
+                    Got it. When&apos;s the event?
                   </div>
                   <input
                     type="date"
                     value={deliveryDate}
-                    min={todayStr}
+                    min={minDate}
                     onChange={(e) => setDeliveryDate(e.target.value)}
                     className="w-full rounded-md border-2 px-3 py-2 text-sm font-bold"
                     style={{ borderColor: NAVY, color: NAVY }}
                   />
+                  <div className="mt-2 text-sm text-gray-700">{RUSH_NOTE}</div>
                   <div className="flex justify-end mt-2">
                     <button
                       onClick={() => setStep('headcount')}
@@ -510,10 +521,19 @@ export default function PartyChat({ isOpen: controlledIsOpen, onClose }: PartyCh
                   />
                   {error && (
                     <div
-                      className="rounded-md p-2 text-xs"
+                      className="rounded-md p-2 text-sm"
                       style={{ background: '#FEE2E2', color: '#991B1B' }}
                     >
                       {error}
+                      {dateRefused && (
+                        <button
+                          type="button"
+                          onClick={changeDate}
+                          className="block mt-1.5 font-bold underline"
+                        >
+                          Pick a different date
+                        </button>
+                      )}
                     </div>
                   )}
                   <button
@@ -539,12 +559,13 @@ export default function PartyChat({ isOpen: controlledIsOpen, onClose }: PartyCh
           <ResultsView
             firstName={firstName}
             recommendation={recommendation}
-            isLastMinute={isLastMinute}
             redirectTo={redirectTo ?? '/'}
             headcount={headcount}
             deliveryDate={deliveryDate}
             onOpenDashboard={openDashboard}
             opening={openingDashboard}
+            openError={openError}
+            onChangeDate={changeDate}
           />
         )}
 
@@ -580,29 +601,30 @@ export default function PartyChat({ isOpen: controlledIsOpen, onClose }: PartyCh
 }
 
 /**
- * Final view inside the chat — recommended order at the top, with a
- * "see full menu" CTA below that hands the customer off to the matching
- * landing page (where they can browse the catalog with the auto-engaged
- * last-minute mode if today/tomorrow).
+ * Final view inside the chat — recommended order at the top, with a CTA
+ * below that creates the customer's dashboard with these items pre-loaded.
  */
 function ResultsView({
   firstName,
   recommendation,
-  isLastMinute,
   headcount,
   deliveryDate,
   onOpenDashboard,
   opening,
+  openError,
+  onChangeDate,
 }: {
   firstName: string;
   recommendation: Recommendation;
-  isLastMinute: boolean;
   /** Kept for backwards compat; not used now that the CTA creates a dashboard. */
   redirectTo: string;
   headcount: number;
   deliveryDate: string;
   onOpenDashboard: () => void;
   opening: boolean;
+  /** Refusal message when quote/start turned the date away. */
+  openError: string | null;
+  onChangeDate: () => void;
 }) {
   return (
     <div className="space-y-3">
@@ -616,15 +638,6 @@ function ResultsView({
           </>
         }
       />
-      {isLastMinute && (
-        <div
-          className="rounded-md p-2 text-[11px] font-bold leading-snug"
-          style={{ background: GOLD, color: NAVY, border: `2px solid ${NAVY}` }}
-        >
-          ⚡ LAST-MINUTE MODE — the full menu below is filtered to
-          deep-stock items we can deliver in 24h.
-        </div>
-      )}
 
       {/* Recommendation card */}
       <div
@@ -706,6 +719,22 @@ function ResultsView({
           ? 'BUILDING YOUR ORDER…'
           : 'OPEN MY ORDER + ADD MORE ITEMS →'}
       </button>
+      {openError && (
+        <div
+          role="alert"
+          className="rounded-md p-2 text-sm"
+          style={{ background: '#FEE2E2', color: '#991B1B' }}
+        >
+          {openError}
+          <button
+            type="button"
+            onClick={onChangeDate}
+            className="block mt-1.5 font-bold underline"
+          >
+            Pick a different date
+          </button>
+        </div>
+      )}
       <p className="text-[10px] text-gray-500 text-center">
         These items will be in your cart. You can edit, add more from the full
         menu, or share with your group from the order page.

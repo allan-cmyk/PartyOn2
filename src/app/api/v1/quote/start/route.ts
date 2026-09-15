@@ -8,13 +8,17 @@
  * What it does:
  *   1. Creates a Lead row (same shape as the chat + quiz endpoints) so
  *      Brian's Stuff → Leads stays the source-of-truth funnel view
- *   2. Sends the welcome email
- *   3. Creates a GroupOrderV2 dashboard (universal order shell with
+ *   2. Holds the 24-hour minimum (ADR-0010): a day with no delivery window
+ *      24+ hours out is refused with DELIVERY_TOO_SOON. The lead is kept
+ *      (and flagged to the operator as a rush request), but no dashboard is
+ *      created — its own checkout would refuse payment
+ *   3. Sends the welcome email
+ *   4. Creates a GroupOrderV2 dashboard (universal order shell with
  *      tabs, sharing, split-pay, etc.) — same one used by
- *      /order/last-minute
- *   4. Pre-populates the host's first tab with the items from the
+ *      /order/last-minute — opening on a window that clears the minimum
+ *   5. Pre-populates the host's first tab with the items from the
  *      recommendation that came in on the request
- *   5. Returns { shareCode, hostParticipantId, redirectTo, ... } so
+ *   6. Returns { shareCode, hostParticipantId, redirectTo, ... } so
  *      the client can stash the participant id in localStorage and
  *      hard-redirect to /dashboard/<shareCode>
  *
@@ -34,7 +38,18 @@ import { attributionSchema, compactAttribution } from '@/lib/leads/attribution-s
 import { resolveAffiliateId } from '@/lib/leads/affiliate-resolve';
 import { targetUrlFor } from '@/lib/eventQuiz/routing';
 import { createDashboardOrder, addDraftItem } from '@/lib/group-orders-v2/service';
-import { isLastMinuteDate } from '@/lib/lastMinute/dates';
+import {
+  DELIVERY_TOO_SOON_CODE,
+  LEAD_TIME_MESSAGE,
+  isCalendarDay,
+  pickQuoteWindow,
+  todayInAustin,
+} from '@/lib/delivery/lead-time';
+import {
+  RUSH_LEAD_TAG,
+  recordRushRequest,
+  resolveRushRequest,
+} from '@/lib/leads/rush-request';
 import { mirrorLeadToSheet } from '@/lib/premier/pod-leads-sheet';
 import { mirrorLeadToCrm } from '@/lib/leads/crm-mirror';
 import { prisma } from '@/lib/database/client';
@@ -70,7 +85,7 @@ const schema = z.object({
     'hotel',
   ]),
   headcount: z.number().int().min(1).max(500),
-  deliveryDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  deliveryDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(isCalendarDay, 'Not a real calendar date'),
   /** Items to pre-load into the host's first tab. Caller (chat /
    *  package builder / event quiz) is responsible for building this
    *  list — typically the package recipe from the recommendation. */
@@ -80,6 +95,14 @@ const schema = z.object({
   /** First-touch UTM + ad click ids captured client-side. */
   attribution: attributionSchema,
 });
+
+type QuoteBody = z.infer<typeof schema>;
+
+/**
+ * Window a quote dashboard opens on when it clears the 24-hour minimum —
+ * createDashboardOrder's long-standing default for a dated tab.
+ */
+const DEFAULT_QUOTE_WINDOW = '12:00 PM - 2:00 PM';
 
 // Quiz party types → dashboard PartyType enum. Anything outside the
 // dashboard enum falls back to OTHER.
@@ -114,7 +137,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(LEAD_CAPTURE_THROTTLED, { status: 429 });
   }
 
-  let body: z.infer<typeof schema>;
+  let body: QuoteBody;
   try {
     body = schema.parse(await req.json());
   } catch (err) {
@@ -131,11 +154,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(LEAD_CAPTURE_THROTTLED, { status: 429 });
   }
 
-  // ─── Last-minute decision ──────────────────────────────────────────
-  const isLastMinute = isLastMinuteDate(body.deliveryDate);
+  // ─── 24-hour minimum (ADR-0010) ────────────────────────────────────
+  // Open on the usual midday window when it leaves a few hours to pay, else the
+  // first window that does, else the day's last window if it still clears the
+  // cutoff. Null = nothing that day is bookable; refused below, after the lead
+  // is saved so the request isn't lost.
+  const deliveryTime = pickQuoteWindow(body.deliveryDate, DEFAULT_QUOTE_WINDOW);
 
   // ─── Lead row + status promote ─────────────────────────────────────
   let leadId: string | null = null;
+  let hadRushTag = false;
   try {
     const lead = await upsertLead(
       {
@@ -164,6 +192,7 @@ export async function POST(req: NextRequest) {
     );
     if (lead) {
       leadId = lead.id;
+      hadRushTag = Array.isArray(lead.tags) && lead.tags.includes(RUSH_LEAD_TAG);
       // upsertLead returned the freshly-updated row, so prevMeta already
       // includes metadata.attribution — spreading it preserves the merge.
       const prevMeta = (lead.metadata as Record<string, unknown> | null) ?? {};
@@ -224,6 +253,31 @@ export async function POST(req: NextRequest) {
     console.error('[quote/start] lead upsert failed', err);
   }
 
+  // ─── Inside 24 hours: refuse, but keep the request ─────────────────
+  // No dashboard (its checkout would refuse payment) and no welcome email.
+  // A day that's already over is a stale page, not a rush, so only
+  // today-or-later requests are tagged and sent to the operator.
+  if (!deliveryTime) {
+    if (body.deliveryDate >= todayInAustin()) {
+      await recordRushRequest({
+        leadId,
+        source: body.source,
+        deliveryDate: body.deliveryDate,
+        partyType: body.partyType,
+        headcount: body.headcount,
+        firstName: body.firstName,
+        lastName: body.lastName,
+        email: body.email,
+        phone: body.phone,
+      });
+    }
+    await mirrorQuoteLead(body, leadId, 'Refused: inside the 24-hour minimum (no dashboard)');
+    return NextResponse.json(
+      { ok: false, code: DELIVERY_TOO_SOON_CODE, error: LEAD_TIME_MESSAGE },
+      { status: 422 },
+    );
+  }
+
   // ─── Create the dashboard ──────────────────────────────────────────
   let shareCode: string | null = null;
   let hostParticipantId: string | null = null;
@@ -238,7 +292,7 @@ export async function POST(req: NextRequest) {
       source: 'DIRECT',
       name: `${body.firstName}'s Order`,
       deliveryDate: body.deliveryDate,
-      isLastMinute,
+      deliveryTime,
       // Carry the lead's first-touch attribution onto the group so its Orders
       // attribute back to the landing page (extra click-id/capturedAt fields ignored).
       attribution: body.attribution ?? undefined,
@@ -293,6 +347,12 @@ export async function POST(req: NextRequest) {
     console.error('[quote/start] dashboard create failed', err);
   }
 
+  // This lead was flagged for a rush earlier and has now booked a day that
+  // clears the minimum: clear the board's rush flag.
+  if (shareCode && leadId && hadRushTag) {
+    await resolveRushRequest(leadId, { email: body.email, phone: body.phone });
+  }
+
   // ─── Welcome email — same template as the existing flows ───────────
   if (shareCode) {
     const dashboardUrl = `https://partyondelivery.com/dashboard/${shareCode}`;
@@ -300,7 +360,8 @@ export async function POST(req: NextRequest) {
       const tpl = eventQuizWelcomeEmail({
         firstName: body.firstName,
         partyType: body.partyType,
-        timing: isLastMinute ? 'today' : 'future',
+        // Every dashboard made here clears the 24-hour minimum (checked above).
+        timing: 'future',
         needs: [],
         resumeUrl: dashboardUrl,
       });
@@ -328,24 +389,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Mirror to the POD Leads Google Sheet + CoreLinq CRM. AWAITED — Vercel
-  // kills un-awaited promises when the response returns. Never throw.
-  await Promise.allSettled([
-    mirrorLeadToSheet({
-      source: `quote-start:${body.source}`,
-      firstName: body.firstName,
-      lastName: body.lastName ?? '',
-      email: body.email,
-      phone: body.phone ?? '',
-      arrivalDate: body.deliveryDate,
-      partyType: body.partyType,
-      headcount: body.headcount,
-      activities: body.recommendedItems.map((r) => r.handle).join(', '),
-      notes: shareCode ? `dashboard: ${shareCode}` : '',
-      leadUrl: leadId ? `https://partyondelivery.com/admin/leads?lead=${leadId}` : '',
-    }),
-    mirrorLeadToCrm({ leadId }, `quote-start:${body.source}`),
-  ]);
+  await mirrorQuoteLead(body, leadId, shareCode ? `dashboard: ${shareCode}` : '');
 
   // Always return a redirectTo. If the dashboard create failed we fall
   // back to the matching landing page so the user isn't stranded.
@@ -359,7 +403,34 @@ export async function POST(req: NextRequest) {
     shareCode,
     hostParticipantId,
     redirectTo,
-    isLastMinute,
     unresolvedHandles,
   });
+}
+
+/**
+ * Mirror a quote lead to the POD Leads Google Sheet + CoreLinq CRM. Callers
+ * AWAIT this — Vercel kills un-awaited promises when the response returns.
+ * Never throws.
+ */
+async function mirrorQuoteLead(
+  body: QuoteBody,
+  leadId: string | null,
+  notes: string,
+): Promise<void> {
+  await Promise.allSettled([
+    mirrorLeadToSheet({
+      source: `quote-start:${body.source}`,
+      firstName: body.firstName,
+      lastName: body.lastName ?? '',
+      email: body.email,
+      phone: body.phone ?? '',
+      arrivalDate: body.deliveryDate,
+      partyType: body.partyType,
+      headcount: body.headcount,
+      activities: body.recommendedItems.map((r) => r.handle).join(', '),
+      notes,
+      leadUrl: leadId ? `https://partyondelivery.com/admin/leads?lead=${leadId}` : '',
+    }),
+    mirrorLeadToCrm({ leadId }, `quote-start:${body.source}`),
+  ]);
 }
