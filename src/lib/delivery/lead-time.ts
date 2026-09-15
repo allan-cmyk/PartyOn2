@@ -4,9 +4,12 @@
  *
  * Business rule (operator decision 2026-09-13, after order #527): customers
  * may not place an order whose delivery window starts less than 24 hours
- * from now. Applies to every customer-facing checkout — storefront cart and
- * group/boat dashboards. Ops-created draft orders/invoices are deliberately
- * exempt: the operator hand-approving an exception IS the escape hatch.
+ * from now. Applies to every customer-facing checkout — storefront cart,
+ * group/boat dashboards, and landing-page Quick-Buy. Ops-created draft
+ * orders/invoices are deliberately exempt: the operator hand-approving an
+ * exception IS the escape hatch. A draft a customer minted through a public
+ * checkout stays under the rule until an operator sends it from ops (see
+ * lib/draft-orders/provenance.ts).
  *
  * Timezone: all comparisons happen in America/Chicago wall-clock terms,
  * matching todayCT()/austinDateString elsewhere. `deliveryDate` is stored as
@@ -49,6 +52,15 @@ export const DASHBOARD_LEAD_TIME_MESSAGE =
   `delivery is less than ${MINIMUM_LEAD_TIME_HOURS} hours away. Call or text us at (737) 371-9700 and we may be able to help.`;
 
 /**
+ * Invoice-flavored refusal copy for a self-serve draft paid too late. The
+ * invoice's date can't be changed from its page and may already be in the
+ * past, so this states only what is always true.
+ */
+export const INVOICE_LEAD_TIME_MESSAGE =
+  `Online ordering for this delivery has closed: orders need at least ${MINIMUM_LEAD_TIME_HOURS} hours' notice. ` +
+  'Call or text us at (737) 371-9700 and we may be able to help.';
+
+/**
  * Machine-readable refusal code — the same one the cart, checkout, and
  * group-order routes already return, so any client can branch on it.
  */
@@ -64,7 +76,7 @@ export const RUSH_NOTE =
   'Need it sooner? Call or text (737) 371-9700 and we may be able to help.';
 
 /**
- * Minutes of slack the self-serve date pickers (chat, package builder) add on
+ * Minutes of slack the self-serve date pickers (chat, package builder, Quick-Buy) add on
  * top of the 24-hour minimum, so a day can't slip inside the cutoff while the
  * customer is still filling in the rest of the form.
  */
@@ -272,7 +284,7 @@ export function earliestBookableDay(now: Date = new Date()): string {
 }
 
 /**
- * First day the self-serve pickers (chat, package builder) offer:
+ * First day the self-serve pickers (chat, package builder, Quick-Buy) offer:
  * earliestBookableDay with PICKER_MARGIN_MINUTES of slack, so the day is still
  * bookable when the customer submits the form.
  */

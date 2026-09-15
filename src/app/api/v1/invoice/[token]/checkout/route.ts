@@ -44,11 +44,13 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    // Check if can be paid
-    const { canPay, reason } = canDraftOrderBePaid(draftOrder);
+    // Check if can be paid: status, expiry, and (ADR-0010) the 24-hour minimum
+    // for a self-serve draft no invoice was sent for. The code lets a client
+    // tell a lead-time refusal apart.
+    const { canPay, reason, code } = canDraftOrderBePaid(draftOrder);
     if (!canPay) {
       return NextResponse.json(
-        { success: false, error: reason },
+        { success: false, error: reason, ...(code ? { code } : {}) },
         { status: 400 }
       );
     }

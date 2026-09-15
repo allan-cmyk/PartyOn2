@@ -22,6 +22,7 @@ import { DraftOrderStatus } from '@prisma/client';
 import { prisma } from '@/lib/database/client';
 import { stripe } from '@/lib/stripe/client';
 import { createDraftOrder, updateDraftOrderStatus } from '@/lib/draft-orders';
+import { FULL_MOON_TICKET_DRAFT_CREATED_BY } from '@/lib/draft-orders/provenance';
 import type { DraftOrderItem } from '@/lib/draft-orders/types';
 import { checkRateLimit } from '@/lib/security/rate-limit';
 import {
@@ -157,6 +158,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       subtotal: netSubtotal,
       taxAmount: includedTax,
       deliveryFee: 0,
+      // A ticket, not a delivery: named so the draft's origin is explicit
+      // instead of the blank createdBy an operator invoice carries.
+      createdBy: FULL_MOON_TICKET_DRAFT_CREATED_BY,
     });
 
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';

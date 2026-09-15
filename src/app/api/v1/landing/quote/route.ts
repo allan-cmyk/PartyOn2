@@ -1,7 +1,8 @@
 /**
  * Public Landing Page Quote / Invoice Endpoint
  *
- * Called by the Package Builder modal at the end of the wizard. Creates a
+ * Called by the landing-page Quick-Buy modal and the disco-cruise invite
+ * (pay-now), and by the wedding drink calculator (quote). Creates a
  * real Draft Order in Postgres (so the customer gets the same editable
  * invoice experience as admin-created quotes) and:
  *
@@ -10,6 +11,12 @@
  *   - mode=pay-now   → does NOT send email; returns `{ invoiceUrl, token }`
  *                      so the modal can redirect the customer straight to
  *                      the invoice page to enter delivery + pay
+ *
+ * Both modes refuse a delivery window less than 24 hours out (ADR-0010).
+ * These drafts are customer-created, so the operator-invoice exception doesn't
+ * cover them: they are checked again when paid at /invoice/[token]
+ * (canDraftOrderBePaid), including a quote this route emails itself, until an
+ * operator sends one from ops.
  *
  * Items submitted by handle (the Postgres product handle, which is stored
  * on each BuilderProduct via .sku). We look up the actual product +
@@ -21,6 +28,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/database/client';
 import { createDraftOrder, calculateDraftOrderAmounts } from '@/lib/draft-orders';
+import { landingDraftCreatedBy } from '@/lib/draft-orders/provenance';
+import {
+  DELIVERY_TOO_SOON_CODE,
+  LEAD_TIME_MESSAGE,
+  isCalendarDay,
+  meetsLeadTime,
+} from '@/lib/delivery/lead-time';
 import { generateInvoiceEmail, generateInvoiceSubject } from '@/lib/email/templates/invoice';
 import { getInvoiceTextOverrides } from '@/lib/email/template-content';
 import { sendEmail } from '@/lib/email/resend-client';
@@ -53,8 +67,13 @@ const BodySchema = z.object({
   customerEmail: z.string().email(),
   customerPhone: z.string().optional().default(''),
   groupSize: z.number().int().positive(),
-  deliveryDate: z.string().min(1), // ISO yyyy-mm-dd
-  deliveryTime: z.string().optional().default('Afternoon (12pm–4pm)'),
+  // A plain calendar day. A full ISO timestamp can name one day in its text
+  // and store another once normalized to noon UTC, and the lead-time check
+  // must judge the day the invoice will actually carry.
+  deliveryDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(isCalendarDay, 'Not a real calendar date'),
+  // Bounded: parsed by the lead-time check, and copied into Stripe metadata
+  // (500-character cap per value) at checkout.
+  deliveryTime: z.string().max(100).optional().default('Afternoon (12pm–4pm)'),
   deliveryAddress: z.string().optional().default(''),
   deliveryCity: z.string().optional().default('Austin'),
   deliveryZip: z.string().optional().default(''),
@@ -90,6 +109,18 @@ export async function POST(request: NextRequest) {
       );
     }
     const body = parsed.data;
+
+    // ADR-0010: no customer may set or pay for a delivery window less than 24
+    // hours out. Both modes mint a customer-payable invoice (quote mode emails
+    // it, pay-now opens checkout on it), and the operator-invoice exception
+    // does not cover drafts created here. Refused before any product lookup,
+    // draft, email or lead mirror.
+    if (!meetsLeadTime(body.deliveryDate, body.deliveryTime)) {
+      return NextResponse.json(
+        { success: false, error: LEAD_TIME_MESSAGE, code: DELIVERY_TOO_SOON_CODE },
+        { status: 400 },
+      );
+    }
 
     // Pay-now mode requires complete delivery details (Stripe will need a
     // shipping address). Quote mode is allowed without — customer can fill
@@ -142,7 +173,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Normalize the delivery date — accept either "yyyy-mm-dd" or ISO.
+    // Normalize the delivery date (a validated yyyy-mm-dd) to noon UTC.
     const deliveryDate = new Date(body.deliveryDate);
     deliveryDate.setUTCHours(12, 0, 0, 0);
 
@@ -167,7 +198,7 @@ export async function POST(request: NextRequest) {
       taxAmount: amounts.taxAmount,
       deliveryFee: amounts.deliveryFee,
       discountAmount: amounts.discountAmount,
-      createdBy: `landing:${body.occasion}`,
+      createdBy: landingDraftCreatedBy(body.occasion),
       adminNotes: [
         `Auto-generated from /austin-${body.occasion}-* landing page. Group size: ${body.groupSize}.`,
         attributionNoteLine(body.attribution),
