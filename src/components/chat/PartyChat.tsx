@@ -34,7 +34,7 @@ import { getAttribution } from '@/lib/analytics/attribution';
 import {
   DELIVERY_TOO_SOON_CODE,
   RUSH_NOTE,
-  earliestBookableDay,
+  earliestQuoteDay,
 } from '@/lib/delivery/lead-time';
 
 type RecommendedItem = {
@@ -95,14 +95,14 @@ export default function PartyChat({ isOpen: controlledIsOpen, onClose }: PartyCh
   const [step, setStep] = useState<Step>('party');
   const [partyType, setPartyType] = useState<PartyType | null>(null);
   // Default the event a week out. The picker's minimum is the first day that
-  // still has a delivery window 24+ hours away (ADR-0010) — the server
-  // refuses anything sooner, so the picker never offers it.
+  // still has a delivery window 24+ hours away (ADR-0010), with an hour of
+  // slack for finishing the chat — the server refuses anything sooner.
   const [deliveryDate, setDeliveryDate] = useState<string>(() => {
     const d = new Date();
     d.setDate(d.getDate() + 7);
     return d.toISOString().slice(0, 10);
   });
-  const minDate = earliestBookableDay();
+  const minDate = earliestQuoteDay();
   const [headcount, setHeadcount] = useState<number>(12);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -521,7 +521,7 @@ export default function PartyChat({ isOpen: controlledIsOpen, onClose }: PartyCh
                   />
                   {error && (
                     <div
-                      className="rounded-md p-2 text-xs"
+                      className="rounded-md p-2 text-sm"
                       style={{ background: '#FEE2E2', color: '#991B1B' }}
                     >
                       {error}

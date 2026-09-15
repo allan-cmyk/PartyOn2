@@ -10,20 +10,32 @@
  * /admin/leads and the operator gets an email, then decides whether to call
  * back and hand-build an ops invoice (the one escape hatch the ADR allows).
  *
+ * Email volume is bounded three ways: the calling routes' per-IP and per-email
+ * throttles, one email per lead per REALERT_AFTER_MS, and a global hourly cap
+ * (ALERT_EMAILS_PER_HOUR). Past the cap the lead is still tagged — only the
+ * email is skipped — so a scripted flood of fresh identities can't bury the
+ * operator's inbox or the Resend account customer emails depend on.
+ *
  * Never throws — bookkeeping or email trouble must not change what the
  * customer sees. Server-only (Prisma + Resend).
  */
 import { EmailType } from '@prisma/client';
 import { prisma } from '@/lib/database/client';
 import { sendEmail } from '@/lib/email/resend-client';
+import { checkRateLimit } from '@/lib/security/rate-limit';
+import { normalizeEmail } from './email-validation';
+import { sanitizeName } from './leadCapture';
+import { phoneLast10 } from './phone';
 
 /** Lead.tags value that marks a rush request on the Lead Flow board. */
 export const RUSH_LEAD_TAG = 'rush';
 
 const OPS_ALERT_EMAIL = process.env.OPS_ALERT_EMAIL || 'allan@partyondelivery.com';
 const SEND_TIMEOUT_MS = 3000;
-/** Another try for the same day inside this window re-stamps the lead but sends no second email. */
+/** A lead gets at most one rush email per this window; later tries re-stamp the lead only. */
 const REALERT_AFTER_MS = 6 * 60 * 60 * 1000;
+/** Rush emails allowed per hour across all leads, whatever identities the requests use. */
+const ALERT_EMAILS_PER_HOUR = 20;
 
 /** What the alert needs — every field already Zod-validated by the calling route. */
 export interface RushRequestInput {
@@ -39,6 +51,12 @@ export interface RushRequestInput {
   lastName?: string | null;
   email: string;
   phone?: string | null;
+}
+
+/** Contact details already stored on the matched Lead row. */
+export interface OnFileContact {
+  email: string | null;
+  phone: string | null;
 }
 
 type JsonObject = Record<string, unknown>;
@@ -72,27 +90,42 @@ function prettyDay(day: string): string {
 }
 
 /**
- * Tag the lead and stamp metadata.rushRequest. Returns true when the operator
- * was already emailed about this same day within REALERT_AFTER_MS.
+ * True when the submitted email or phone differs from what the matched Lead
+ * already has. upsertLead matches on email OR phone, so a request can pair a
+ * real customer's number with someone else's details.
+ */
+function contactMismatch(input: RushRequestInput, onFile?: OnFileContact | null): boolean {
+  if (!onFile) return false;
+  const emailOnFile = normalizeEmail(onFile.email);
+  const emailSent = normalizeEmail(input.email);
+  const phoneOnFile = phoneLast10(onFile.phone);
+  const phoneSent = phoneLast10(input.phone);
+  const emailDiffers = !!emailOnFile && !!emailSent && emailOnFile !== emailSent;
+  const phoneDiffers = !!phoneOnFile && !!phoneSent && phoneOnFile !== phoneSent;
+  return emailDiffers || phoneDiffers;
+}
+
+/**
+ * Tag the lead and stamp metadata.rushRequest. Reports whether the operator
+ * was already emailed about this lead within REALERT_AFTER_MS, plus the
+ * contact details on file for the alert's mismatch check.
  */
 async function stampRushLead(
   leadId: string,
   input: RushRequestInput,
   now: Date,
-): Promise<boolean> {
+): Promise<{ recentlyAlerted: boolean; onFile: OnFileContact } | null> {
   const lead = await prisma.lead.findUnique({
     where: { id: leadId },
-    select: { tags: true, metadata: true },
+    select: { tags: true, metadata: true, email: true, phone: true },
   });
-  if (!lead) return false;
+  if (!lead) return null;
 
   const meta = asObject(lead.metadata);
   const prev = asObject(meta.rushRequest);
   const prevAlertedAt = typeof prev.alertedAt === 'string' ? Date.parse(prev.alertedAt) : NaN;
   const recentlyAlerted =
-    prev.deliveryDate === input.deliveryDate &&
-    Number.isFinite(prevAlertedAt) &&
-    now.getTime() - prevAlertedAt < REALERT_AFTER_MS;
+    Number.isFinite(prevAlertedAt) && now.getTime() - prevAlertedAt < REALERT_AFTER_MS;
 
   await prisma.lead.update({
     where: { id: leadId },
@@ -110,7 +143,7 @@ async function stampRushLead(
       } as never,
     },
   });
-  return recentlyAlerted;
+  return { recentlyAlerted, onFile: { email: lead.email, phone: lead.phone } };
 }
 
 /** Record that the operator email went out, so a quick retry doesn't re-send. */
@@ -132,10 +165,19 @@ async function markAlerted(leadId: string, now: Date): Promise<void> {
   });
 }
 
-/** Build the operator email. Every customer-supplied value is escaped. */
-export function buildRushAlertEmail(input: RushRequestInput): { subject: string; html: string } {
-  const name = [input.firstName, input.lastName].filter(Boolean).join(' ') || '(no name)';
+/**
+ * Build the operator email. Names go through sanitizeName (invisible and
+ * control characters) and every customer-supplied value is HTML-escaped.
+ */
+export function buildRushAlertEmail(
+  input: RushRequestInput,
+  onFile?: OnFileContact | null,
+): { subject: string; html: string } {
+  const name =
+    [sanitizeName(input.firstName), sanitizeName(input.lastName)].filter(Boolean).join(' ') ||
+    '(no name)';
   const when = prettyDay(input.deliveryDate);
+  const mismatch = contactMismatch(input, onFile);
   const rows: Array<[string, string]> = [
     ['Customer', name],
     ['Email', input.email],
@@ -144,12 +186,18 @@ export function buildRushAlertEmail(input: RushRequestInput): { subject: string;
     ['Party', `${input.partyType}, ${input.headcount} people`],
     ['Came from', input.source],
   ];
+  if (mismatch) {
+    rows.push(['On file for this lead', [onFile?.email, onFile?.phone].filter(Boolean).join(' · ')]);
+  }
   const table = rows
     .map(
       ([label, value]) =>
         `<tr><td style="padding:4px 16px 4px 0;color:#555">${escapeHtml(label)}</td><td style="padding:4px 0"><b>${escapeHtml(value)}</b></td></tr>`,
     )
     .join('');
+  const warning = mismatch
+    ? '<p style="color:#b91c1c"><b>Check before calling:</b> the email or phone submitted does not match what this lead already has on file, so these contact details may not belong to whoever made the request.</p>'
+    : '';
   const leadLink = input.leadId
     ? `<p><a href="https://partyondelivery.com/admin/leads?lead=${encodeURIComponent(input.leadId)}">Open the lead on the board →</a></p>`
     : '<p style="color:#888">The lead row could not be saved — the contact details above are all there is.</p>';
@@ -157,25 +205,39 @@ export function buildRushAlertEmail(input: RushRequestInput): { subject: string;
   const html = `
     <h2>Rush request — delivery less than 24 hours away</h2>
     <p>A customer tried to order online for a delivery inside the 24-hour minimum. The website refused it and showed them (737) 371-9700. Call them back if you can take it (ops invoice), or let it go.</p>
+    ${warning}
     <table style="font-family:Arial,sans-serif;font-size:14px;border-collapse:collapse">${table}</table>
     ${leadLink}
-    <p style="color:#888;font-size:12px">Automated ops alert. The lead is tagged "rush" on /admin/leads. Another try for the same day within 6 hours won't send a second email.</p>
+    <p style="color:#888;font-size:12px">Automated ops alert. The lead is tagged "rush" on /admin/leads. More tries from the same lead within 6 hours won't send another email.</p>
   `;
   // Header values must stay on one line whatever the customer typed.
   const subject = `Rush request: ${name} wants delivery ${when}`.replace(/[\r\n]+/g, ' ');
   return { subject, html };
 }
 
+/** Global hourly cap on rush emails. A limiter error allows the send, like the route throttles. */
+async function withinAlertCap(): Promise<boolean> {
+  try {
+    return await checkRateLimit('rush-alert-email', 'global', ALERT_EMAILS_PER_HOUR, 60 * 60);
+  } catch (err) {
+    console.error('[rush-request] alert cap check failed:', err);
+    return true;
+  }
+}
+
 /** Email the operator. True only if the send completed inside the timeout. */
-async function sendRushAlertEmail(input: RushRequestInput): Promise<boolean> {
+async function sendRushAlertEmail(
+  input: RushRequestInput,
+  onFile?: OnFileContact | null,
+): Promise<boolean> {
   let timer: ReturnType<typeof setTimeout> | undefined;
   try {
-    const { subject, html } = buildRushAlertEmail(input);
+    const { subject, html } = buildRushAlertEmail(input, onFile);
     const result = await Promise.race([
       sendEmail({
         to: OPS_ALERT_EMAIL,
         subject,
-        type: EmailType.WELCOME, // reuse — internal ops alert, no dedicated type (matches the chat alerts)
+        type: EmailType.WELCOME, // reuse — internal ops alert, no dedicated type (matches the other ops alerts)
         html,
         metadata: {
           kind: 'rush-request',
@@ -198,29 +260,63 @@ async function sendRushAlertEmail(input: RushRequestInput): Promise<boolean> {
 }
 
 /**
- * Tag the lead `rush`, stamp what was asked for, and email the operator —
- * at most once per lead and day within REALERT_AFTER_MS. Never throws.
+ * Tag the lead `rush`, stamp what was asked for, and email the operator — at
+ * most once per lead within REALERT_AFTER_MS and within the global hourly cap.
+ * Never throws.
  */
 export async function recordRushRequest(
   input: RushRequestInput,
   now: Date = new Date(),
 ): Promise<void> {
-  let alreadyAlerted = false;
+  let stamp: Awaited<ReturnType<typeof stampRushLead>> = null;
   if (input.leadId) {
     try {
-      alreadyAlerted = await stampRushLead(input.leadId, input, now);
+      stamp = await stampRushLead(input.leadId, input, now);
     } catch (err) {
       console.error('[rush-request] lead stamp failed:', err);
     }
   }
-  if (alreadyAlerted) return;
+  if (stamp?.recentlyAlerted) return;
 
-  const sent = await sendRushAlertEmail(input);
+  if (!(await withinAlertCap())) {
+    console.warn('[rush-request] alert email skipped: hourly cap reached (lead still tagged)');
+    return;
+  }
+
+  const sent = await sendRushAlertEmail(input, stamp?.onFile);
   if (sent && input.leadId) {
     try {
       await markAlerted(input.leadId, now);
     } catch (err) {
       console.error('[rush-request] alert stamp failed:', err);
     }
+  }
+}
+
+/**
+ * Clear the rush flag once the same lead books a day that clears the 24-hour
+ * minimum — the rush need is gone, so the board badge shouldn't linger.
+ * No-op when the lead isn't tagged. Never throws.
+ */
+export async function resolveRushRequest(leadId: string, now: Date = new Date()): Promise<void> {
+  try {
+    const lead = await prisma.lead.findUnique({
+      where: { id: leadId },
+      select: { tags: true, metadata: true },
+    });
+    if (!lead || !lead.tags.includes(RUSH_LEAD_TAG)) return;
+    const meta = asObject(lead.metadata);
+    await prisma.lead.update({
+      where: { id: leadId },
+      data: {
+        tags: lead.tags.filter((tag) => tag !== RUSH_LEAD_TAG),
+        metadata: {
+          ...meta,
+          rushRequest: { ...asObject(meta.rushRequest), resolvedAt: now.toISOString() },
+        } as never,
+      },
+    });
+  } catch (err) {
+    console.error('[rush-request] resolve failed:', err);
   }
 }

@@ -13,7 +13,7 @@ import { getAttribution } from '@/lib/analytics/attribution';
 import { trackContactClick } from '@/lib/analytics/ga4-events';
 import { trackFunnelStep } from '@/lib/experiments/funnelTrack';
 import type { FunnelStep } from '@/lib/experiments/funnelSteps';
-import { RUSH_NOTE, earliestBookableDay } from '@/lib/delivery/lead-time';
+import { DELIVERY_TOO_SOON_CODE, RUSH_NOTE, earliestQuoteDay } from '@/lib/delivery/lead-time';
 import type {
   LandingConfig,
   BuilderProduct,
@@ -80,6 +80,9 @@ export default function PackageBuilderModal({
   const [stepIndex, setStepIndex] = useState(0);
   const [people, setPeople] = useState(M.defaultPeople);
   const [deliveryDate, setDeliveryDate] = useState<Date | null>(null);
+  // Refusal shown on the date step when the server says the picked day slipped
+  // inside the 24-hour minimum while the form was open.
+  const [dateRefusal, setDateRefusal] = useState<string | null>(null);
   const [selection, setSelection] = useState<Selection>({});
   const [extraSelection, setExtraSelection] = useState<string[]>([]);
 
@@ -459,6 +462,14 @@ export default function PackageBuilderModal({
         }),
       });
       const json = await res.json();
+      if (json.code === DELIVERY_TOO_SOON_CODE) {
+        // The picked day slipped inside the 24-hour minimum while the form was
+        // open. Back to the date step, with the refusal shown by the calendar.
+        setDeliveryDate(null);
+        setDateRefusal(json.error || null);
+        setStepIndex(0);
+        return;
+      }
       if (!res.ok || !json.ok) {
         throw new Error(json.error || 'Failed to create your order. Try again.');
       }
@@ -507,6 +518,7 @@ export default function PackageBuilderModal({
     setContactEmail('');
     setContactPhone('');
     setDeliveryDate(null);
+    setDateRefusal(null);
     setPeople(M.defaultPeople);
     setExtraSelection([]);
     setAgeConfirmed(false);
@@ -633,7 +645,11 @@ export default function PackageBuilderModal({
                   people={people}
                   setPeople={setPeople}
                   deliveryDate={deliveryDate}
-                  setDeliveryDate={setDeliveryDate}
+                  setDeliveryDate={(d) => {
+                    setDeliveryDate(d);
+                    setDateRefusal(null);
+                  }}
+                  dateRefusal={dateRefusal}
                   modal={M}
                   theme={T}
                   extraSelection={extraSelection}
@@ -831,9 +847,10 @@ function InlineCalendar({
 }) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  // Days before the first one with a delivery window 24+ hours out are
-  // disabled (ADR-0010); with nothing picked, open on that day's month.
-  const minDay = earliestBookableDay();
+  // Days before the first one with a delivery window 24+ hours out (plus an
+  // hour of slack for the rest of the form) are disabled (ADR-0010); with
+  // nothing picked, open on that day's month.
+  const minDay = earliestQuoteDay();
   const initial = value ?? new Date(`${minDay}T00:00:00`);
   const [view, setView] = useState({
     year: initial.getFullYear(),
@@ -961,6 +978,7 @@ function BasicsStep({
   setPeople,
   deliveryDate,
   setDeliveryDate,
+  dateRefusal,
   modal,
   theme,
   extraSelection,
@@ -970,6 +988,8 @@ function BasicsStep({
   setPeople: (n: number) => void;
   deliveryDate: Date | null;
   setDeliveryDate: (d: Date | null) => void;
+  /** Server refusal for a day that slipped inside the 24-hour minimum. */
+  dateRefusal: string | null;
   modal: LandingConfig['modal'];
   theme: LandingConfig['theme'];
   extraSelection: string[];
@@ -1056,6 +1076,15 @@ function BasicsStep({
           <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: theme.navy }}>
             Delivery date
           </label>
+          {dateRefusal && (
+            <p
+              role="alert"
+              className="mb-2 rounded-md p-2.5 text-sm leading-snug"
+              style={{ background: '#FEE2E2', color: '#991B1B' }}
+            >
+              {dateRefusal}
+            </p>
+          )}
           <InlineCalendar value={deliveryDate} onChange={setDeliveryDate} theme={theme} />
           <p className="text-sm text-gray-700 mt-2">
             48-hour notice gets you guaranteed pricing &amp; cold delivery. {RUSH_NOTE}

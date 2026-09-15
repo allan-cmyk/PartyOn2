@@ -179,7 +179,8 @@ export const CreateDashboardSchema = z.object({
   affiliateId: z.string().optional(),
   deliveryContextType: z.enum(['HOUSE', 'BOAT', 'VENUE', 'HOTEL', 'OTHER']).optional(),
   tabName: z.string().max(200).optional(),
-  isLastMinute: z.boolean().optional(),
+  // No isLastMinute here on purpose: the deep-stock menu is an ops-only switch
+  // (2026-09-15), and this schema backs a public, unauthenticated route.
   deliveryAddress: DeliveryAddressSchema.optional(),
   // Relaxed date check (no Sunday/past block) so preset boat events (which run
   // on Sundays) can pass a fixed delivery date through the dashboard flow.

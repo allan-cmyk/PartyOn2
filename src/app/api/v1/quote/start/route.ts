@@ -41,10 +41,15 @@ import { createDashboardOrder, addDraftItem } from '@/lib/group-orders-v2/servic
 import {
   DELIVERY_TOO_SOON_CODE,
   LEAD_TIME_MESSAGE,
-  firstBookableWindow,
+  isCalendarDay,
+  pickQuoteWindow,
   todayInAustin,
 } from '@/lib/delivery/lead-time';
-import { recordRushRequest } from '@/lib/leads/rush-request';
+import {
+  RUSH_LEAD_TAG,
+  recordRushRequest,
+  resolveRushRequest,
+} from '@/lib/leads/rush-request';
 import { mirrorLeadToSheet } from '@/lib/premier/pod-leads-sheet';
 import { mirrorLeadToCrm } from '@/lib/leads/crm-mirror';
 import { prisma } from '@/lib/database/client';
@@ -80,7 +85,7 @@ const schema = z.object({
     'hotel',
   ]),
   headcount: z.number().int().min(1).max(500),
-  deliveryDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  deliveryDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(isCalendarDay, 'Not a real calendar date'),
   /** Items to pre-load into the host's first tab. Caller (chat /
    *  package builder / event quiz) is responsible for building this
    *  list — typically the package recipe from the recommendation. */
@@ -150,13 +155,15 @@ export async function POST(req: NextRequest) {
   }
 
   // ─── 24-hour minimum (ADR-0010) ────────────────────────────────────
-  // Open on the usual midday window when it clears the cutoff, otherwise on
-  // the day's first window that does. Null = nothing on that day is
-  // bookable; refused below, after the lead is saved so the request isn't lost.
-  const deliveryTime = firstBookableWindow(body.deliveryDate, DEFAULT_QUOTE_WINDOW);
+  // Open on the usual midday window when it leaves a few hours to pay, else the
+  // first window that does, else the day's last window if it still clears the
+  // cutoff. Null = nothing that day is bookable; refused below, after the lead
+  // is saved so the request isn't lost.
+  const deliveryTime = pickQuoteWindow(body.deliveryDate, DEFAULT_QUOTE_WINDOW);
 
   // ─── Lead row + status promote ─────────────────────────────────────
   let leadId: string | null = null;
+  let hadRushTag = false;
   try {
     const lead = await upsertLead(
       {
@@ -185,6 +192,7 @@ export async function POST(req: NextRequest) {
     );
     if (lead) {
       leadId = lead.id;
+      hadRushTag = Array.isArray(lead.tags) && lead.tags.includes(RUSH_LEAD_TAG);
       // upsertLead returned the freshly-updated row, so prevMeta already
       // includes metadata.attribution — spreading it preserves the merge.
       const prevMeta = (lead.metadata as Record<string, unknown> | null) ?? {};
@@ -337,6 +345,12 @@ export async function POST(req: NextRequest) {
     }
   } catch (err) {
     console.error('[quote/start] dashboard create failed', err);
+  }
+
+  // This lead was flagged for a rush earlier and has now booked a day that
+  // clears the minimum: clear the board's rush flag.
+  if (shareCode && leadId && hadRushTag) {
+    await resolveRushRequest(leadId);
   }
 
   // ─── Welcome email — same template as the existing flows ───────────

@@ -23,6 +23,17 @@ function isAgeVerified(): boolean {
   }
 }
 
+/** Partner embeds: inside an iframe, or opened with ?embed=1 / ?embedded=1. */
+function isEmbedded(): boolean {
+  try {
+    if (window.self !== window.top) return true;
+  } catch {
+    return true; // cross-origin access throws, which itself proves an embed
+  }
+  const params = new URLSearchParams(window.location.search);
+  return params.get('embed') === '1' || params.get('embedded') === '1';
+}
+
 function buildSteps(): TourStep[] {
   return [
     {
@@ -73,6 +84,9 @@ export default function DashboardTour({
 
   useEffect(() => {
     if (!isHost || !hasPartyType || isRunning || startedRef.current) return;
+    // Partner embeds never showed the tour (the retired delivery-window gate
+    // never fired there, and the tour waited on it); keep it that way.
+    if (isEmbedded()) return;
 
     try {
       const raw = localStorage.getItem(

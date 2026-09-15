@@ -28,10 +28,15 @@ import { recommendForChat } from '@/lib/chat/recommendation';
 import {
   DELIVERY_TOO_SOON_CODE,
   LEAD_TIME_MESSAGE,
-  firstBookableWindow,
+  isCalendarDay,
+  pickQuoteWindow,
   todayInAustin,
 } from '@/lib/delivery/lead-time';
-import { recordRushRequest } from '@/lib/leads/rush-request';
+import {
+  RUSH_LEAD_TAG,
+  recordRushRequest,
+  resolveRushRequest,
+} from '@/lib/leads/rush-request';
 import { mirrorLeadToSheet } from '@/lib/premier/pod-leads-sheet';
 import { mirrorLeadToCrm } from '@/lib/leads/crm-mirror';
 import { prisma } from '@/lib/database/client';
@@ -62,7 +67,7 @@ const schema = z.object({
   headcount: z.number().int().min(1).max(500),
   /** ISO YYYY-MM-DD. A day with no delivery window 24+ hours out is
    *  refused after the lead is saved (ADR-0010). */
-  deliveryDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  deliveryDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(isCalendarDay, 'Not a real calendar date'),
   /** First-touch UTM + ad click ids captured client-side. Optional so
    *  older cached bundles never 400. Without this, chat leads could
    *  never be tied to an ad campaign (the founder's exact question). */
@@ -97,6 +102,7 @@ export async function POST(req: NextRequest) {
 
   // Lead upsert + status promote.
   let leadId: string | null = null;
+  let hadRushTag = false;
   try {
     const lead = await upsertLead(
       {
@@ -123,6 +129,7 @@ export async function POST(req: NextRequest) {
     );
     if (lead) {
       leadId = lead.id;
+      hadRushTag = Array.isArray(lead.tags) && lead.tags.includes(RUSH_LEAD_TAG);
       const prevMeta = (lead.metadata as Record<string, unknown> | null) ?? {};
       const prevAttribution =
         prevMeta.attribution &&
@@ -196,7 +203,7 @@ export async function POST(req: NextRequest) {
   // can't become an order. The lead is already saved above; flag a rush to
   // the operator (today or later — a past day is a stale page) and refuse,
   // rather than recommend an order the next step would turn away.
-  const tooSoon = firstBookableWindow(body.deliveryDate) === null;
+  const tooSoon = pickQuoteWindow(body.deliveryDate) === null;
   if (tooSoon && body.deliveryDate >= todayInAustin()) {
     await recordRushRequest({
       leadId,
@@ -209,6 +216,11 @@ export async function POST(req: NextRequest) {
       email: body.email,
       phone: body.phone,
     });
+  }
+
+  // A bookable day after an earlier rush refusal: clear the board's rush flag.
+  if (!tooSoon && leadId && hadRushTag) {
+    await resolveRushRequest(leadId);
   }
 
   // Build the recommendation — what should we suggest they order?

@@ -56,12 +56,26 @@ export const DELIVERY_TOO_SOON_CODE = 'DELIVERY_TOO_SOON';
 
 /**
  * Note shown beside customer-facing date pickers, whose minimum is
- * earliestBookableDay(). There is no online same-day option (ADR-0010), so a
+ * earliestQuoteDay(). There is no online same-day option (ADR-0010), so a
  * call or text is the only rush path this points at.
  */
 export const RUSH_NOTE =
   `Online orders need at least ${MINIMUM_LEAD_TIME_HOURS} hours' notice. ` +
   'Need it sooner? Call or text (737) 371-9700 and we may be able to help.';
+
+/**
+ * Minutes of slack the self-serve date pickers (chat, package builder) add on
+ * top of the 24-hour minimum, so a day can't slip inside the cutoff while the
+ * customer is still filling in the rest of the form.
+ */
+export const PICKER_MARGIN_MINUTES = 60;
+
+/**
+ * Hours of checkout time a self-serve quote dashboard should open with. Tab
+ * checkout re-checks the 24-hour minimum at pay time, so a window that clears
+ * it by minutes goes dead before the host — or their group — can pay.
+ */
+export const QUOTE_CHECKOUT_RUNWAY_HOURS = 3;
 
 /**
  * Parse the starting time out of a delivery window label.
@@ -81,6 +95,19 @@ export function parseWindowStart(
   return { hour, minute };
 }
 
+/**
+ * True when a YYYY-MM-DD string names a real calendar day. Date math silently
+ * rolls impossible parts forward ("2026-02-30" → Mar 2, "2026-13-01" → Jan 1
+ * 2027), which would let a malformed date slip past the lead-time checks.
+ */
+export function isCalendarDay(day: string): boolean {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(day);
+  if (!match) return false;
+  const [y, m, d] = [Number(match[1]), Number(match[2]), Number(match[3])];
+  const date = new Date(Date.UTC(y, m - 1, d));
+  return date.getUTCFullYear() === y && date.getUTCMonth() === m - 1 && date.getUTCDate() === d;
+}
+
 /** Date portion (YYYY-MM-DD) of an instant in Austin time. */
 function austinDateString(d: Date): string {
   return d.toLocaleDateString('en-CA', { timeZone: TZ });
@@ -91,6 +118,7 @@ function austinDateString(d: Date): string {
  * string) into its calendar day. ISO strings are trusted on their date
  * portion — the noon-UTC storage convention means the UTC date IS the
  * intended calendar day; Date instances go through Austin normalization.
+ * A date portion that isn't a real calendar day is unusable (null).
  */
 function coerceToDayString(input: Date | string): string | null {
   if (input instanceof Date) {
@@ -98,7 +126,7 @@ function coerceToDayString(input: Date | string): string | null {
     return austinDateString(input);
   }
   const dayMatch = /^(\d{4}-\d{2}-\d{2})/.exec(input);
-  if (dayMatch) return dayMatch[1];
+  if (dayMatch) return isCalendarDay(dayMatch[1]) ? dayMatch[1] : null;
   const parsed = new Date(input);
   if (Number.isNaN(parsed.getTime())) return null;
   return austinDateString(parsed);
@@ -224,8 +252,7 @@ function addCalendarDays(dayStr: string, days: number): string {
 
 /**
  * Earliest Austin calendar day (YYYY-MM-DD) that still has a dashboard window
- * at least MINIMUM_LEAD_TIME_HOURS away — the minimum every customer-facing
- * date picker offers.
+ * at least MINIMUM_LEAD_TIME_HOURS away — the dashboard date picker's minimum.
  *
  * The LAST window (8:30 PM) is what's checked: late in the evening, the day
  * that contains now+24h has no window left that clears the cutoff, and
@@ -238,21 +265,36 @@ export function earliestBookableDay(now: Date = new Date()): string {
 }
 
 /**
- * The delivery window a self-serve quote should open its dashboard with:
- * `preferred` when it clears the 24-hour minimum, otherwise the first
- * dashboard window on that day that does.
- *
- * Returns null when nothing on that day can be booked (inside the cutoff, in
- * the past, or an unreadable date). Callers must refuse those requests, never
- * turn them into a dashboard whose checkout would refuse payment.
+ * First day the self-serve pickers (chat, package builder) offer:
+ * earliestBookableDay with PICKER_MARGIN_MINUTES of slack, so the day is still
+ * bookable when the customer submits the form.
  */
-export function firstBookableWindow(
+export function earliestQuoteDay(now: Date = new Date()): string {
+  return earliestBookableDay(new Date(now.getTime() + PICKER_MARGIN_MINUTES * 60 * 1000));
+}
+
+/**
+ * The delivery window a self-serve quote dashboard opens with on `day`:
+ *   1. `preferred`, when it leaves QUOTE_CHECKOUT_RUNWAY_HOURS of checkout time
+ *   2. otherwise the first dashboard window that does
+ *   3. otherwise the day's last window, if it still clears the 24-hour minimum
+ *      (a short runway — the dashboard's LeadTimeNotice shows when it closes)
+ *
+ * Returns null when no window that day clears the minimum (inside the cutoff,
+ * in the past, or not a real date). Callers must refuse those requests rather
+ * than create a dashboard whose checkout would refuse payment.
+ */
+export function pickQuoteWindow(
   day: string,
   preferred?: string | null,
   now: Date = new Date(),
 ): string | null {
-  if (preferred && parseWindowStart(preferred) && meetsLeadTime(day, preferred, now)) {
+  const withRunway = new Date(now.getTime() + QUOTE_CHECKOUT_RUNWAY_HOURS * HOUR_MS);
+  if (preferred && parseWindowStart(preferred) && meetsLeadTime(day, preferred, withRunway)) {
     return preferred;
   }
-  return DASHBOARD_TIME_SLOTS.find((slot) => meetsLeadTime(day, slot, now)) ?? null;
+  const roomy = DASHBOARD_TIME_SLOTS.find((slot) => meetsLeadTime(day, slot, withRunway));
+  if (roomy) return roomy;
+  const lastSlot = DASHBOARD_TIME_SLOTS[DASHBOARD_TIME_SLOTS.length - 1];
+  return meetsLeadTime(day, lastSlot, now) ? lastSlot : null;
 }

@@ -35,7 +35,11 @@ vi.mock('@/lib/database/client', () => ({ prisma: prismaMock, kv: {}, isKVConfig
 const recMock = vi.hoisted(() => ({ recommendForChat: vi.fn() }));
 vi.mock('@/lib/chat/recommendation', () => recMock);
 
-const rushMock = vi.hoisted(() => ({ recordRushRequest: vi.fn() }));
+const rushMock = vi.hoisted(() => ({
+  recordRushRequest: vi.fn(),
+  resolveRushRequest: vi.fn(),
+  RUSH_LEAD_TAG: 'rush',
+}));
 vi.mock('@/lib/leads/rush-request', () => rushMock);
 
 const sheetMock = vi.hoisted(() => ({ mirrorLeadToSheet: vi.fn() }));

@@ -27,7 +27,11 @@ vi.mock('@/lib/database/client', () => ({ prisma: prismaMock }));
 const recMock = vi.hoisted(() => ({ recommendForChat: vi.fn() }));
 vi.mock('@/lib/chat/recommendation', () => recMock);
 
-const rushMock = vi.hoisted(() => ({ recordRushRequest: vi.fn() }));
+const rushMock = vi.hoisted(() => ({
+  recordRushRequest: vi.fn(),
+  resolveRushRequest: vi.fn(),
+  RUSH_LEAD_TAG: 'rush',
+}));
 vi.mock('@/lib/leads/rush-request', () => rushMock);
 
 const sheetMock = vi.hoisted(() => ({ mirrorLeadToSheet: vi.fn() }));
@@ -61,11 +65,12 @@ beforeEach(() => {
   vi.useFakeTimers({ now: NOW, toFake: ['Date'] });
   throttleMock.allowLeadCaptureIp.mockResolvedValue(true);
   throttleMock.allowLeadCaptureEmail.mockResolvedValue(true);
-  leadCaptureMock.upsertLead.mockResolvedValue({ id: 'lead-1', metadata: null });
+  leadCaptureMock.upsertLead.mockResolvedValue({ id: 'lead-1', metadata: null, tags: [] });
   leadCaptureMock.recordEvent.mockResolvedValue(undefined);
   prismaMock.lead.update.mockResolvedValue({ id: 'lead-1' });
   recMock.recommendForChat.mockResolvedValue({ items: [] });
   rushMock.recordRushRequest.mockResolvedValue(undefined);
+  rushMock.resolveRushRequest.mockResolvedValue(undefined);
   sheetMock.mirrorLeadToSheet.mockResolvedValue(undefined);
   crmMock.mirrorLeadToCrm.mockResolvedValue(undefined);
 });
@@ -102,6 +107,7 @@ describe('POST /api/v1/chat/submit — 24-hour minimum', () => {
     expect(body).not.toHaveProperty('isLastMinute');
     expect(recMock.recommendForChat).toHaveBeenCalledTimes(1);
     expect(rushMock.recordRushRequest).not.toHaveBeenCalled();
+    expect(rushMock.resolveRushRequest).not.toHaveBeenCalled();
   });
 
   it('refuses a stale past day without paging the operator', async () => {
@@ -109,5 +115,22 @@ describe('POST /api/v1/chat/submit — 24-hour minimum', () => {
 
     expect(res.status).toBe(422);
     expect(rushMock.recordRushRequest).not.toHaveBeenCalled();
+  });
+
+  it('rejects an impossible calendar date before writing a lead', async () => {
+    const res = await POST(request('2027-02-30'));
+
+    expect(res.status).toBe(400);
+    expect(leadCaptureMock.upsertLead).not.toHaveBeenCalled();
+    expect(rushMock.recordRushRequest).not.toHaveBeenCalled();
+  });
+
+  it('clears an earlier rush flag once the same lead picks a bookable day', async () => {
+    leadCaptureMock.upsertLead.mockResolvedValue({ id: 'lead-1', metadata: null, tags: ['rush'] });
+
+    const res = await POST(request('2026-09-23'));
+
+    expect(res.status).toBe(200);
+    expect(rushMock.resolveRushRequest).toHaveBeenCalledWith('lead-1');
   });
 });
