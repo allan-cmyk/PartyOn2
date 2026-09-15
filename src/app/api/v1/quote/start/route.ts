@@ -350,7 +350,7 @@ export async function POST(req: NextRequest) {
   // This lead was flagged for a rush earlier and has now booked a day that
   // clears the minimum: clear the board's rush flag.
   if (shareCode && leadId && hadRushTag) {
-    await resolveRushRequest(leadId);
+    await resolveRushRequest(leadId, { email: body.email, phone: body.phone });
   }
 
   // ─── Welcome email — same template as the existing flows ───────────

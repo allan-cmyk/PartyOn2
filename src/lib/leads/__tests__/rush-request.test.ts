@@ -76,7 +76,12 @@ describe('recordRushRequest', () => {
     expect(stamp.data.tags).toEqual(['vip', RUSH_LEAD_TAG]);
     expect(stamp.data.metadata).toMatchObject({
       unifiedQuote: { source: 'package-builder' },
-      rushRequest: { deliveryDate: '2026-09-16', source: 'package-builder', requestedAt: NOW.toISOString() },
+      rushRequest: {
+        deliveryDate: '2026-09-16',
+        source: 'package-builder',
+        requestedAt: NOW.toISOString(),
+        requestedBy: { email: 'sam@example.com', phone: '5125550100' },
+      },
     });
     expect(rateMock.checkRateLimit).toHaveBeenCalledWith('rush-alert-email', 'global', expect.any(Number), 3600);
     expect(emailMock.sendEmail).toHaveBeenCalledTimes(1);
@@ -192,29 +197,50 @@ describe('buildRushAlertEmail', () => {
 });
 
 describe('resolveRushRequest', () => {
-  it('removes the rush tag and stamps when it was resolved', async () => {
+  const RUSH_BY_SAM = {
+    deliveryDate: '2026-09-16',
+    alertedAt: new Date(NOW.getTime() - HOUR).toISOString(),
+    requestedBy: { email: 'sam@example.com', phone: '5125550100' },
+  };
+
+  it('clears the flag when the same customer books a bookable day, and forgets the old alert', async () => {
     prismaMock.lead.findUnique.mockResolvedValue({
       tags: ['vip', RUSH_LEAD_TAG],
-      metadata: { rushRequest: { deliveryDate: '2026-09-16' } },
+      metadata: { rushRequest: RUSH_BY_SAM },
     });
 
-    await resolveRushRequest('lead-1', NOW);
+    // Same person, formatted differently.
+    await resolveRushRequest('lead-1', { email: 'Sam@Example.com', phone: '(512) 555-0100' }, NOW);
 
     const data = prismaMock.lead.update.mock.calls[0][0].data;
     expect(data.tags).toEqual(['vip']);
     expect(data.metadata.rushRequest).toMatchObject({ deliveryDate: '2026-09-16', resolvedAt: NOW.toISOString() });
+    // A genuinely new rush from this lead later must still email.
+    expect(data.metadata.rushRequest).not.toHaveProperty('alertedAt');
+  });
+
+  it("leaves the flag alone when someone else's details matched the lead", async () => {
+    prismaMock.lead.findUnique.mockResolvedValue({
+      tags: [RUSH_LEAD_TAG],
+      metadata: { rushRequest: RUSH_BY_SAM },
+    });
+
+    // Sam's phone number, a stranger's email.
+    await resolveRushRequest('lead-1', { email: 'stranger@example.com', phone: '512-555-0100' }, NOW);
+
+    expect(prismaMock.lead.update).not.toHaveBeenCalled();
   });
 
   it('does nothing for a lead without the rush tag', async () => {
     prismaMock.lead.findUnique.mockResolvedValue({ tags: ['vip'], metadata: null });
-    await resolveRushRequest('lead-1', NOW);
+    await resolveRushRequest('lead-1', { email: 'sam@example.com' }, NOW);
     expect(prismaMock.lead.update).not.toHaveBeenCalled();
   });
 
   it('never throws', async () => {
     prismaMock.lead.findUnique.mockRejectedValue(new Error('db down'));
     const quiet = vi.spyOn(console, 'error').mockImplementation(() => {});
-    await expect(resolveRushRequest('lead-1', NOW)).resolves.toBeUndefined();
+    await expect(resolveRushRequest('lead-1', { email: 'sam@example.com' }, NOW)).resolves.toBeUndefined();
     quiet.mockRestore();
   });
 });

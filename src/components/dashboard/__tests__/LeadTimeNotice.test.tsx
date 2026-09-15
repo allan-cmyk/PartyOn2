@@ -66,7 +66,7 @@ describe('LeadTimeNotice', () => {
     );
     // Thu 8:30 PM delivery → online ordering closes Wed 8:30 PM (Austin).
     expect(
-      screen.getByText(/Online ordering for this delivery closes Wed 8:30\sPM — 24 hours before delivery\./),
+      screen.getByText(/Online ordering for this delivery closes Wed, 8:30\sPM CDT — 24 hours before delivery\./),
     ).toBeInTheDocument();
   });
 

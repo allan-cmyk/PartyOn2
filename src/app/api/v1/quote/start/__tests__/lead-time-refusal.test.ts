@@ -200,6 +200,9 @@ describe('POST /api/v1/quote/start — 24-hour minimum', () => {
     const res = await POST(request());
 
     expect(res.status).toBe(200);
-    expect(rushMock.resolveRushRequest).toHaveBeenCalledWith('lead-1');
+    expect(rushMock.resolveRushRequest).toHaveBeenCalledWith('lead-1', {
+      email: 'sam@example.com',
+      phone: '512-555-0100',
+    });
   });
 });

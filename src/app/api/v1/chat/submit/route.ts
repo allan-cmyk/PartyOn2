@@ -220,7 +220,7 @@ export async function POST(req: NextRequest) {
 
   // A bookable day after an earlier rush refusal: clear the board's rush flag.
   if (!tooSoon && leadId && hadRushTag) {
-    await resolveRushRequest(leadId);
+    await resolveRushRequest(leadId, { email: body.email, phone: body.phone });
   }
 
   // Build the recommendation — what should we suggest they order?

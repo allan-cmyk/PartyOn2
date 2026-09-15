@@ -5,7 +5,7 @@
  * checkout routes refuse payment inside 24 hours of the window (ADR-0010).
  *
  *   - CLOSING: the cutoff is within the next day → "Online ordering for this
- *     delivery closes Wed 8:30 PM — 24 hours before delivery."
+ *     delivery closes Wed, 8:30 PM CDT — 24 hours before delivery."
  *   - CLOSED: the window starts in under 24 hours → the dashboard refusal
  *     message with (737) 371-9700. A host on a tab with nothing paid yet also
  *     gets a shortcut to push the delivery later; the tab PATCH route allows
@@ -29,6 +29,8 @@ const CUTOFF_FORMAT = new Intl.DateTimeFormat('en-US', {
   hour: 'numeric',
   minute: '2-digit',
   timeZone: 'America/Chicago',
+  // Guests often aren't in Austin: "8:30 PM CDT", not a bare "8:30 PM".
+  timeZoneName: 'short',
 });
 
 type ScheduleFields = Pick<SubOrderFull, 'deliveryDate' | 'deliveryDateConfirmed' | 'deliveryTime'>;

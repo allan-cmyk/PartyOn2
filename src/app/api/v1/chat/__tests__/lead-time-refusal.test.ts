@@ -131,6 +131,9 @@ describe('POST /api/v1/chat/submit — 24-hour minimum', () => {
     const res = await POST(request('2026-09-23'));
 
     expect(res.status).toBe(200);
-    expect(rushMock.resolveRushRequest).toHaveBeenCalledWith('lead-1');
+    expect(rushMock.resolveRushRequest).toHaveBeenCalledWith('lead-1', {
+      email: 'codie@example.com',
+      phone: '512-555-0101',
+    });
   });
 });

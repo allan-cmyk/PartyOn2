@@ -78,6 +78,13 @@ export const PICKER_MARGIN_MINUTES = 60;
 export const QUOTE_CHECKOUT_RUNWAY_HOURS = 3;
 
 /**
+ * The least checkout time pickQuoteWindow's last-window fallback may leave;
+ * below it the quote is refused instead. Half of PICKER_MARGIN_MINUTES, so a
+ * day the pickers offered is only refused if the form took over half an hour.
+ */
+export const QUOTE_MIN_RUNWAY_MINUTES = 30;
+
+/**
  * Parse the starting time out of a delivery window label.
  * Accepts "12:00 PM - 2:00 PM", "12:00 PM – 2:00 PM", or a bare "10:30 AM".
  * Returns null when no time can be found.
@@ -277,12 +284,13 @@ export function earliestQuoteDay(now: Date = new Date()): string {
  * The delivery window a self-serve quote dashboard opens with on `day`:
  *   1. `preferred`, when it leaves QUOTE_CHECKOUT_RUNWAY_HOURS of checkout time
  *   2. otherwise the first dashboard window that does
- *   3. otherwise the day's last window, if it still clears the 24-hour minimum
- *      (a short runway — the dashboard's LeadTimeNotice shows when it closes)
+ *   3. otherwise the day's last window, if it still leaves
+ *      QUOTE_MIN_RUNWAY_MINUTES of checkout time (a short runway — the
+ *      dashboard's LeadTimeNotice shows when it closes)
  *
- * Returns null when no window that day clears the minimum (inside the cutoff,
- * in the past, or not a real date). Callers must refuse those requests rather
- * than create a dashboard whose checkout would refuse payment.
+ * Returns null when no window that day leaves even that much (inside or within
+ * minutes of the cutoff, in the past, or not a real date). Callers must refuse
+ * those requests rather than create a dashboard nobody could pay for.
  */
 export function pickQuoteWindow(
   day: string,
@@ -296,5 +304,6 @@ export function pickQuoteWindow(
   const roomy = DASHBOARD_TIME_SLOTS.find((slot) => meetsLeadTime(day, slot, withRunway));
   if (roomy) return roomy;
   const lastSlot = DASHBOARD_TIME_SLOTS[DASHBOARD_TIME_SLOTS.length - 1];
-  return meetsLeadTime(day, lastSlot, now) ? lastSlot : null;
+  const withMinimum = new Date(now.getTime() + QUOTE_MIN_RUNWAY_MINUTES * 60 * 1000);
+  return meetsLeadTime(day, lastSlot, withMinimum) ? lastSlot : null;
 }

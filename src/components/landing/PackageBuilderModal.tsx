@@ -376,8 +376,17 @@ export default function PackageBuilderModal({
     // Address fields are optional from this surface — the dashboard
     // collects delivery address on its own checkout step.
 
+    // A delivery date is required: without one the dashboard would be created
+    // with a date the customer never chose. Send them back to the calendar.
+    if (!deliveryDate) {
+      setDateRefusal('Pick a delivery date to continue.');
+      setStepIndex(0);
+      setSubmitting(false);
+      return;
+    }
+
     // Sundays are closed. Block submit and recommend Saturday evening.
-    if (deliveryDate && isSunday(toDayString(deliveryDate))) {
+    if (isSunday(toDayString(deliveryDate))) {
       setSubmitError(SUNDAY_CLOSED_NOTE);
       setSubmitting(false);
       return;
@@ -434,9 +443,7 @@ export default function PackageBuilderModal({
       const [firstName, ...rest] = contactName.trim().split(/\s+/);
       const lastName = rest.join(' ') || null;
 
-      const deliveryDateIso = deliveryDate
-        ? toDayString(deliveryDate)
-        : new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10);
+      const deliveryDateIso = toDayString(deliveryDate);
 
       const res = await fetch('/api/v1/quote/start', {
         method: 'POST',

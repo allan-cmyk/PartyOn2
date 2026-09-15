@@ -123,6 +123,13 @@ describe('pickQuoteWindow', () => {
     );
   });
 
+  it('refuses rather than open a last window with under 30 minutes to pay', () => {
+    // Wed 8:05 PM CDT: Thursday 8:30 PM still clears 24h, but only by 25 minutes.
+    expect(pickQuoteWindow('2026-09-17', null, new Date('2026-09-17T01:05:00.000Z'))).toBeNull();
+    // Wed 7:55 PM CDT: 35 minutes of checkout time is enough to open on it.
+    expect(pickQuoteWindow('2026-09-17', null, new Date('2026-09-17T00:55:00.000Z'))).toBe('8:30 PM - 9:00 PM');
+  });
+
   it('returns null when nothing that day clears 24h — refuse, never a dead dashboard', () => {
     expect(pickQuoteWindow('2026-09-16', '12:00 PM - 2:00 PM', WED_3PM)).toBeNull();
     expect(pickQuoteWindow('2026-09-17', null, new Date('2026-09-17T01:31:00.000Z'))).toBeNull();
@@ -138,7 +145,7 @@ describe('pickQuoteWindow', () => {
     expect(pickQuoteWindow('2026-09-23', 'afternoon-ish', WED_3PM)).toBe('10:00 AM - 10:30 AM');
   });
 
-  it('always finds a window on the day the dashboard picker offers', () => {
+  it('always finds a window on the day the chat and builder pickers offer', () => {
     for (const iso of [
       '2026-09-16T20:00:00.000Z',
       '2026-09-17T01:30:00.000Z',
@@ -147,7 +154,7 @@ describe('pickQuoteWindow', () => {
       '2027-03-13T05:30:00.000Z',
     ]) {
       const now = new Date(iso);
-      expect(pickQuoteWindow(earliestBookableDay(now), null, now)).not.toBeNull();
+      expect(pickQuoteWindow(earliestQuoteDay(now), null, now)).not.toBeNull();
     }
   });
 });

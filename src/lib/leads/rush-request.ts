@@ -137,6 +137,8 @@ async function stampRushLead(
           deliveryDate: input.deliveryDate,
           source: input.source,
           requestedAt: now.toISOString(),
+          // Who asked (normalized): only the same contact can later clear the flag.
+          requestedBy: { email: normalizeEmail(input.email), phone: phoneLast10(input.phone) },
           // Keep the original alert time so the quiet window doesn't slide.
           ...(recentlyAlerted ? { alertedAt: prev.alertedAt } : {}),
         },
@@ -294,11 +296,20 @@ export async function recordRushRequest(
 }
 
 /**
- * Clear the rush flag once the same lead books a day that clears the 24-hour
- * minimum — the rush need is gone, so the board badge shouldn't linger.
- * No-op when the lead isn't tagged. Never throws.
+ * Clear the rush flag once the same customer books a day that clears the
+ * 24-hour minimum — the rush need is gone, so the board badge shouldn't linger.
+ *
+ * Only the contact that made the rush request can clear it: upsertLead matches
+ * on email OR phone, so a request pairing this lead's phone with someone else's
+ * email must not wipe a real customer's flag. The old alert time is dropped so
+ * a genuinely new rush from this lead still emails. No-op when the lead isn't
+ * tagged. Never throws.
  */
-export async function resolveRushRequest(leadId: string, now: Date = new Date()): Promise<void> {
+export async function resolveRushRequest(
+  leadId: string,
+  contact: { email: string; phone?: string | null },
+  now: Date = new Date(),
+): Promise<void> {
   try {
     const lead = await prisma.lead.findUnique({
       where: { id: leadId },
@@ -306,14 +317,21 @@ export async function resolveRushRequest(leadId: string, now: Date = new Date())
     });
     if (!lead || !lead.tags.includes(RUSH_LEAD_TAG)) return;
     const meta = asObject(lead.metadata);
+    const rush = asObject(meta.rushRequest);
+    const requestedBy = asObject(rush.requestedBy);
+    const sameEmail =
+      typeof requestedBy.email !== 'string' || requestedBy.email === normalizeEmail(contact.email);
+    const samePhone =
+      typeof requestedBy.phone !== 'string' || requestedBy.phone === phoneLast10(contact.phone);
+    if (!sameEmail || !samePhone) return;
+
+    const resolved: JsonObject = { ...rush, resolvedAt: now.toISOString() };
+    delete resolved.alertedAt;
     await prisma.lead.update({
       where: { id: leadId },
       data: {
         tags: lead.tags.filter((tag) => tag !== RUSH_LEAD_TAG),
-        metadata: {
-          ...meta,
-          rushRequest: { ...asObject(meta.rushRequest), resolvedAt: now.toISOString() },
-        } as never,
+        metadata: { ...meta, rushRequest: resolved } as never,
       },
     });
   } catch (err) {
