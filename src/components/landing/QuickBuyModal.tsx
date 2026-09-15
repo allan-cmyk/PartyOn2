@@ -17,7 +17,7 @@
  * absolutely required to pay and schedule delivery.
  */
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLeadCapture } from '@/lib/leads/client';
 import { fireLeadConversionAndFlush } from '@/lib/leads/fireLeadConversion';
 import { getAttribution } from '@/lib/analytics/attribution';
@@ -27,11 +27,17 @@ import type { UpsellProducts, UpsellProduct } from '@/lib/landing/getUpsellProdu
 import UpsellOverlay from './UpsellOverlay';
 import EmbeddedCheckoutPanel from './EmbeddedCheckoutPanel';
 import {
-  getDeliveryWindows,
+  bookableWindows,
   isSunday,
   SUNDAY_CLOSED_NOTE,
   DEFAULT_DELIVERY_WINDOW,
 } from '@/lib/landing/deliveryWindows';
+import {
+  DELIVERY_TOO_SOON_CODE,
+  LEAD_TIME_MESSAGE,
+  RUSH_NOTE,
+  earliestQuoteDay,
+} from '@/lib/delivery/lead-time';
 
 type Props = {
   open: boolean;
@@ -99,8 +105,22 @@ export default function QuickBuyModal({
   const [zip, setZip] = useState('');
   const [deliveryDate, setDeliveryDate] = useState('');
   const [deliveryTime, setDeliveryTime] = useState(DEFAULT_DELIVERY_WINDOW);
-  const deliveryWindows = useMemo(() => getDeliveryWindows(), []);
+  // ADR-0010: only windows starting 24+ hours out are offered. Recomputed each
+  // render on purpose — the chosen window can age past the cutoff while the
+  // form is open, and Pay then stays blocked until a later one is picked.
+  const openWindows = bookableWindows(deliveryDate);
+  const timeTooSoon = !!deliveryDate && !openWindows.some((w) => w.value === deliveryTime);
   const sundaySelected = isSunday(deliveryDate);
+  // A new day keeps the chosen window if that day still offers it, otherwise
+  // moves to its first open one, so the select never shows one window while
+  // the order would carry another.
+  const handleDeliveryDateChange = (day: string) => {
+    setDeliveryDate(day);
+    const open = bookableWindows(day);
+    if (open.length > 0 && !open.some((w) => w.value === deliveryTime)) {
+      setDeliveryTime(open[0].value);
+    }
+  };
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   // Age compliance — UNCHECKED by default (A2P 10DLC: express consent must be
@@ -255,6 +275,7 @@ export default function QuickBuyModal({
     zip &&
     deliveryDate &&
     !sundaySelected &&
+    !timeTooSoon &&
     ageConfirmed &&
     paidLines.length > 0;
 
@@ -341,6 +362,7 @@ export default function QuickBuyModal({
       // otherwise the iframe would render "Failed to load Stripe.js".
       const hasPublishableKey = !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
       if (hasPublishableKey) {
+        let checkoutTooSoon = false;
         try {
           const co = await fetch(`/api/v1/invoice/${json.token}/checkout`, {
             method: 'POST',
@@ -353,9 +375,14 @@ export default function QuickBuyModal({
             setCheckoutSecret(cj.clientSecret);
             return;
           }
+          checkoutTooSoon = cj.code === DELIVERY_TOO_SOON_CODE;
         } catch {
           /* fall through to redirect flow */
         }
+        // The window crossed the 24-hour cutoff in the seconds between the
+        // quote and checkout: say so here rather than redirecting to an
+        // invoice whose Pay button would refuse the same way.
+        if (checkoutTooSoon) throw new Error(LEAD_TIME_MESSAGE);
       }
 
       // Fallback: redirect to the editable invoice page (where the
@@ -708,8 +735,10 @@ export default function QuickBuyModal({
                 required
                 type="date"
                 value={deliveryDate}
-                onChange={(e) => setDeliveryDate(e.target.value)}
-                min={new Date(Date.now() + 86400000).toISOString().slice(0, 10)}
+                onChange={(e) => handleDeliveryDateChange(e.target.value)}
+                // First day with a window 24+ hours out, plus an hour of slack
+                // for the rest of the form — the Package Builder's rule too.
+                min={earliestQuoteDay()}
                 className="bg-white rounded-md px-3 py-2.5 text-base border border-gray-200 focus:outline-none focus:border-blue-500"
               />
               <select
@@ -718,14 +747,21 @@ export default function QuickBuyModal({
                 className="bg-white rounded-md px-3 py-2.5 text-base border border-gray-200 focus:outline-none focus:border-blue-500"
                 disabled={sundaySelected}
               >
-                {deliveryWindows.map((w) => (
+                {/* A window that aged past the cutoff stays listed (disabled)
+                    so the select shows what the order would actually carry. */}
+                {timeTooSoon && (
+                  <option value={deliveryTime} disabled>
+                    {deliveryTime}
+                  </option>
+                )}
+                {openWindows.map((w) => (
                   <option key={w.value} value={w.value}>
                     {w.label}
                   </option>
                 ))}
               </select>
             </div>
-            {sundaySelected && (
+            {sundaySelected || timeTooSoon ? (
               <div
                 className="rounded-md p-2.5 text-sm leading-snug"
                 style={{
@@ -734,8 +770,10 @@ export default function QuickBuyModal({
                   border: '1px solid #FCD34D',
                 }}
               >
-                {SUNDAY_CLOSED_NOTE}
+                {sundaySelected ? SUNDAY_CLOSED_NOTE : LEAD_TIME_MESSAGE}
               </div>
+            ) : (
+              <p className="text-sm text-gray-500 leading-snug">{RUSH_NOTE}</p>
             )}
 
             {/* Age compliance — required. The landing pages skip the

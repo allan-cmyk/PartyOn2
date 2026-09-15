@@ -4,9 +4,11 @@
  *
  * Business rule (operator decision 2026-09-13, after order #527): customers
  * may not place an order whose delivery window starts less than 24 hours
- * from now. Applies to every customer-facing checkout — storefront cart and
- * group/boat dashboards. Ops-created draft orders/invoices are deliberately
- * exempt: the operator hand-approving an exception IS the escape hatch.
+ * from now. Applies to every customer-facing checkout — storefront cart,
+ * group/boat dashboards, and landing-page Quick-Buy invoices. Ops-created
+ * draft orders/invoices are deliberately exempt: the operator hand-approving
+ * an exception IS the escape hatch. Drafts a customer mints through a public
+ * flow are not ops-created (see isSelfServeDraftOrder in lib/draft-orders).
  *
  * Timezone: all comparisons happen in America/Chicago wall-clock terms,
  * matching todayCT()/austinDateString elsewhere. `deliveryDate` is stored as
@@ -42,7 +44,8 @@ export const LEAD_TIME_MESSAGE =
  * Dashboard-flavored refusal copy: a cruise/dashboard guest cannot "pick a
  * later window" (the event date is fixed), so this variant explains the
  * cutoff instead. Shared by every group-order checkout route so the wording
- * cannot drift between "pay my tab" and "pay all tabs".
+ * cannot drift between "pay my tab" and "pay all tabs", and by self-serve
+ * invoice checkout, where the invoice's date is just as fixed.
  */
 export const DASHBOARD_LEAD_TIME_MESSAGE =
   `Online ordering closes ${MINIMUM_LEAD_TIME_HOURS} hours before delivery, and this ` +
@@ -85,19 +88,29 @@ export const QUOTE_CHECKOUT_RUNWAY_HOURS = 3;
 export const QUOTE_MIN_RUNWAY_MINUTES = 30;
 
 /**
+ * A window label's first AM/PM time closes a range when a number and a dash
+ * (or "to") come right before it — "2-4 PM", "10 to 11am".
+ */
+const RANGE_END_BEFORE = /\d\s*(?:-|–|—|to)\s*$/i;
+
+/**
  * Parse the starting time out of a delivery window label.
- * Accepts "12:00 PM - 2:00 PM", "12:00 PM – 2:00 PM", or a bare "10:30 AM".
- * Returns null when no time can be found.
+ * Accepts "12:00 PM - 2:00 PM", "12:00 PM – 2:00 PM", a bare "10:30 AM", and
+ * the landing modals' on-the-hour labels ("4pm–5pm", "Afternoon (12pm–4pm)").
+ * The first time that carries AM/PM is the start. Returns null when there is
+ * none, or when that time is the END of a range whose start has no AM/PM
+ * ("2-4 PM") — an ambiguous start gets the caller's strict fallback instead.
  */
 export function parseWindowStart(
   deliveryTime: string | null | undefined,
 ): { hour: number; minute: number } | null {
   if (!deliveryTime) return null;
-  const match = /(\d{1,2}):(\d{2})\s*(AM|PM)/i.exec(deliveryTime);
+  const match = /(\d{1,2})(?::(\d{2}))?\s*(AM|PM)/i.exec(deliveryTime);
   if (!match) return null;
+  if (RANGE_END_BEFORE.test(deliveryTime.slice(0, match.index))) return null;
   let hour = Number(match[1]) % 12;
   if (match[3].toUpperCase() === 'PM') hour += 12;
-  const minute = Number(match[2]);
+  const minute = Number(match[2] ?? '0');
   if (hour > 23 || minute > 59) return null;
   return { hour, minute };
 }

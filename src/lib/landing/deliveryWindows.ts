@@ -8,7 +8,11 @@
  *   - Sunday is closed (Texas state law for our packaged-store license).
  *     The UI surfaces a note recommending Saturday-evening delivery for
  *     Sunday events.
+ *   - Only windows starting 24+ hours out can be booked (ADR-0010) — see
+ *     bookableWindows().
  */
+
+import { meetsLeadTime } from '@/lib/delivery/lead-time';
 
 export type DeliveryWindow = { value: string; label: string };
 
@@ -21,7 +25,7 @@ function fmt(hour: number, minute: number): string {
 
 /**
  * Build the list of 1-hour windows in 30-min increments from 10am to 9pm.
- * Returns 23 windows: 10:00–11:00, 10:30–11:30, … 8:00pm–9:00pm.
+ * Returns 21 windows: 10am–11am, 10:30am–11:30am, … 8pm–9pm.
  */
 export function getDeliveryWindows(): DeliveryWindow[] {
   const windows: DeliveryWindow[] = [];
@@ -38,6 +42,18 @@ export function getDeliveryWindows(): DeliveryWindow[] {
   return windows;
 }
 
+/**
+ * The windows still bookable on `day` (YYYY-MM-DD): those starting at least
+ * 24 hours after `now`, checked with the same meetsLeadTime the server gates
+ * on. With no day picked yet every window is listed; a past day, or one
+ * entirely inside the cutoff, has none.
+ */
+export function bookableWindows(day: string, now: Date = new Date()): DeliveryWindow[] {
+  const windows = getDeliveryWindows();
+  if (!day) return windows;
+  return windows.filter((w) => meetsLeadTime(day, w.value, now));
+}
+
 export function isSunday(isoDate: string): boolean {
   // Treat the ISO date as a calendar date in local time (no TZ surprises).
   if (!isoDate) return false;
@@ -48,4 +64,5 @@ export function isSunday(isoDate: string): boolean {
 export const SUNDAY_CLOSED_NOTE =
   '⚠️ Sundays are closed by TX state law. For Sunday events, schedule Saturday-evening delivery instead.';
 
-export const DEFAULT_DELIVERY_WINDOW: string = '12:00pm–1:00pm';
+/** Preselected window: noon to 1 PM — one of getDeliveryWindows()' own values. */
+export const DEFAULT_DELIVERY_WINDOW: string = '12pm–1pm';

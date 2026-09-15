@@ -194,7 +194,11 @@ export default function InvoicePage(): ReactElement {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h1 className="text-xl font-semibold text-gray-900 mb-2">Invoice Not Found</h1>
+          {/* A loaded invoice whose checkout was refused (e.g. the 24-hour
+              ordering cutoff) was found — keep "not found" for load failures. */}
+          <h1 className="text-xl font-semibold text-gray-900 mb-2">
+            {invoice ? 'Unable to continue' : 'Invoice Not Found'}
+          </h1>
           <p className="text-gray-600 mb-6">{error || 'This invoice may have expired or been cancelled.'}</p>
           <button
             onClick={() => router.push('/')}
