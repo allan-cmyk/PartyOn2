@@ -13,8 +13,9 @@
  *                      the invoice page to enter delivery + pay
  *
  * Both modes refuse a delivery window less than 24 hours out (ADR-0010).
- * These drafts are customer-created, so the operator-invoice exception never
- * covers them — not here, and not when they are paid at /invoice/[token].
+ * These drafts are customer-created, so the operator-invoice exception doesn't
+ * cover them: a pay-now draft is checked again when paid at /invoice/[token]
+ * (canDraftOrderBePaid), until an invoice is sent for it.
  *
  * Items submitted by handle (the Postgres product handle, which is stored
  * on each BuilderProduct via .sku). We look up the actual product +
@@ -25,11 +26,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/database/client';
-import {
-  createDraftOrder,
-  calculateDraftOrderAmounts,
-  landingDraftCreatedBy,
-} from '@/lib/draft-orders';
+import { createDraftOrder, calculateDraftOrderAmounts } from '@/lib/draft-orders';
+import { landingDraftCreatedBy } from '@/lib/draft-orders/provenance';
 import {
   DELIVERY_TOO_SOON_CODE,
   LEAD_TIME_MESSAGE,
@@ -111,15 +109,12 @@ export async function POST(request: NextRequest) {
     }
     const body = parsed.data;
 
-    // Stored the way createDraftOrder stores it: noon UTC on the calendar day.
-    const deliveryDate = new Date(`${body.deliveryDate}T12:00:00.000Z`);
-
     // ADR-0010: no customer may set or pay for a delivery window less than 24
     // hours out. Both modes mint a customer-payable invoice (quote mode emails
     // it, pay-now opens checkout on it), and the operator-invoice exception
-    // does not cover drafts created here. Judged on the stored day, before any
-    // product lookup, draft, email or lead mirror.
-    if (!meetsLeadTime(deliveryDate, body.deliveryTime)) {
+    // does not cover drafts created here. Refused before any product lookup,
+    // draft, email or lead mirror.
+    if (!meetsLeadTime(body.deliveryDate, body.deliveryTime)) {
       return NextResponse.json(
         { success: false, error: LEAD_TIME_MESSAGE, code: DELIVERY_TOO_SOON_CODE },
         { status: 400 },
@@ -176,6 +171,10 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
     }
+
+    // Normalize the delivery date (a validated yyyy-mm-dd) to noon UTC.
+    const deliveryDate = new Date(body.deliveryDate);
+    deliveryDate.setUTCHours(12, 0, 0, 0);
 
     // Compute subtotal + tax + delivery fee using the same helper the
     // admin invoice flow uses, so prices match exactly.

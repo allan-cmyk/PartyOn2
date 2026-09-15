@@ -6,13 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { stripe } from '@/lib/stripe/client';
-import {
-  getDraftOrderByToken,
-  updateDraftOrderStatus,
-  canDraftOrderBePaid,
-  isSelfServeDraftOrder,
-} from '@/lib/draft-orders';
-import { DASHBOARD_LEAD_TIME_MESSAGE, DELIVERY_TOO_SOON_CODE, meetsLeadTime } from '@/lib/delivery/lead-time';
+import { getDraftOrderByToken, updateDraftOrderStatus, canDraftOrderBePaid } from '@/lib/draft-orders';
 import { DraftOrderItem } from '@/lib/draft-orders/types';
 import { getTaxRateForZip, DEFAULT_TAX_RATE } from '@/lib/tax';
 import { DraftOrderStatus } from '@prisma/client';
@@ -50,26 +44,13 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    // Check if can be paid
-    const { canPay, reason } = canDraftOrderBePaid(draftOrder);
+    // Check if can be paid: status, expiry, and (ADR-0010) the 24-hour minimum
+    // for a self-serve draft no invoice was sent for. The code lets a client
+    // tell a lead-time refusal apart.
+    const { canPay, reason, code } = canDraftOrderBePaid(draftOrder);
     if (!canPay) {
       return NextResponse.json(
-        { success: false, error: reason },
-        { status: 400 }
-      );
-    }
-
-    // ADR-0010's operator-invoice exception covers invoices ops created and
-    // hand-approved, not drafts a customer minted through a public flow
-    // (landing-page Quick-Buy/quote, legacy group checkout). Those can sit
-    // unpaid and be opened later from their /invoice link, so the 24-hour
-    // minimum is re-checked here, where the money is taken.
-    if (
-      isSelfServeDraftOrder(draftOrder) &&
-      !meetsLeadTime(draftOrder.deliveryDate, draftOrder.deliveryTime)
-    ) {
-      return NextResponse.json(
-        { success: false, error: DASHBOARD_LEAD_TIME_MESSAGE, code: DELIVERY_TOO_SOON_CODE },
+        { success: false, error: reason, ...(code ? { code } : {}) },
         { status: 400 }
       );
     }

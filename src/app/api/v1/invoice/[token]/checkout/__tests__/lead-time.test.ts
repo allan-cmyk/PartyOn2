@@ -1,17 +1,16 @@
 /**
- * /api/v1/invoice/[token]/checkout — the 24-hour minimum at pay time for
- * drafts a customer minted (ADR-0010).
+ * /api/v1/invoice/[token]/checkout refuses whatever canDraftOrderBePaid
+ * refuses, passes its code along, and opens no Stripe session for it.
  *
- * Operator invoices stay exempt (exception a: ops hand-approved the rush). A
- * self-serve draft does not: a Quick-Buy draft created a week out can be
- * opened from its /invoice link the morning of delivery, so the check runs
- * here, before the Stripe session is created.
- *
- * Clock pinned to Wed 2026-09-16 3:00 PM CDT (20:00Z): Thu noon is 21h out,
- * Thu 4 PM is 25h.
+ * Runs the real canDraftOrderBePaid, which (ADR-0010) holds a self-serve draft
+ * to the 24-hour minimum until an invoice is sent for it; operator invoices are
+ * exempt. Clock pinned to Wed 2026-09-16 3:00 PM CDT (20:00Z): Thu noon is 21h
+ * out, Thu 4 PM is 25h.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { NextRequest } from 'next/server';
+
+vi.mock('@/lib/database/client', () => ({ prisma: {} }));
 
 const stripeMock = vi.hoisted(() => ({
   checkout: { sessions: { create: vi.fn() } },
@@ -22,12 +21,13 @@ vi.mock('@/lib/stripe/client', () => ({ stripe: stripeMock }));
 const draftMock = vi.hoisted(() => ({
   getDraftOrderByToken: vi.fn(),
   updateDraftOrderStatus: vi.fn(),
-  canDraftOrderBePaid: vi.fn(),
 }));
-vi.mock('@/lib/draft-orders', async () => ({
-  ...(await vi.importActual('@/lib/draft-orders/provenance')),
-  ...draftMock,
-}));
+vi.mock('@/lib/draft-orders', async () => {
+  const { canDraftOrderBePaid } = await vi.importActual<Record<string, unknown>>(
+    '@/lib/draft-orders/service',
+  );
+  return { canDraftOrderBePaid, ...draftMock };
+});
 
 vi.mock('@/lib/discounts/discount-engine', () => ({ validateDiscountCode: vi.fn() }));
 vi.mock('@/lib/tax', () => ({
@@ -36,7 +36,7 @@ vi.mock('@/lib/tax', () => ({
 }));
 
 import { POST } from '../route';
-import { DASHBOARD_LEAD_TIME_MESSAGE } from '@/lib/delivery/lead-time';
+import { DELIVERY_TOO_SOON_CODE, INVOICE_LEAD_TIME_MESSAGE } from '@/lib/delivery/lead-time';
 
 const NOW = new Date('2026-09-16T20:00:00.000Z');
 const PARAMS = { params: Promise.resolve({ token: 'tok-1' }) };
@@ -54,13 +54,16 @@ function draft(overrides: Record<string, unknown> = {}) {
     id: 'draft-1',
     token: 'tok-1',
     status: 'PENDING',
+    expiresAt: null,
+    sentAt: null,
+    createdBy: 'landing:bachelorette',
     customerEmail: 'sam@example.com',
     customerName: 'Sam Rivera',
     deliveryCity: 'Austin',
     deliveryState: 'TX',
     deliveryZip: '78701',
     deliveryDate: new Date('2026-09-17T12:00:00.000Z'), // tomorrow
-    deliveryTime: '12pm–1pm', // 21h out
+    deliveryTime: '12:00 PM - 1:00 PM', // 21h out
     items: [
       { productId: 'prod-1', variantId: 'var-1', title: "Tito's Handmade Vodka", quantity: 2, price: 29.99 },
     ],
@@ -70,7 +73,6 @@ function draft(overrides: Record<string, unknown> = {}) {
     discountAmount: 0,
     discountCode: null,
     affiliateCode: null,
-    createdBy: 'landing:bachelorette',
     ...overrides,
   };
 }
@@ -78,7 +80,6 @@ function draft(overrides: Record<string, unknown> = {}) {
 beforeEach(() => {
   vi.clearAllMocks();
   vi.useFakeTimers({ now: NOW, toFake: ['Date'] });
-  draftMock.canDraftOrderBePaid.mockReturnValue({ canPay: true });
   draftMock.updateDraftOrderStatus.mockResolvedValue({});
   stripeMock.checkout.sessions.create.mockResolvedValue({
     id: 'cs_test_1',
@@ -91,8 +92,8 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-describe('POST /api/v1/invoice/[token]/checkout — 24-hour minimum for self-serve drafts', () => {
-  it('refuses a Quick-Buy draft whose window is now inside 24 hours, before Stripe', async () => {
+describe('POST /api/v1/invoice/[token]/checkout — 24-hour minimum', () => {
+  it('refuses an unsent Quick-Buy draft inside 24 hours with the lead-time code, before Stripe', async () => {
     draftMock.getDraftOrderByToken.mockResolvedValue(draft());
 
     const res = await POST(request(), PARAMS);
@@ -101,25 +102,15 @@ describe('POST /api/v1/invoice/[token]/checkout — 24-hour minimum for self-ser
     expect(res.status).toBe(400);
     expect(body).toEqual({
       success: false,
-      error: DASHBOARD_LEAD_TIME_MESSAGE,
-      code: 'DELIVERY_TOO_SOON',
+      error: INVOICE_LEAD_TIME_MESSAGE,
+      code: DELIVERY_TOO_SOON_CODE,
     });
     expect(stripeMock.checkout.sessions.create).not.toHaveBeenCalled();
     expect(draftMock.updateDraftOrderStatus).not.toHaveBeenCalled();
   });
 
-  it('refuses a legacy group-checkout invoice the same way', async () => {
-    draftMock.getDraftOrderByToken.mockResolvedValue(draft({ createdBy: 'group-order-system' }));
-
-    const res = await POST(request(), PARAMS);
-
-    expect(res.status).toBe(400);
-    expect((await res.json()).code).toBe('DELIVERY_TOO_SOON');
-    expect(stripeMock.checkout.sessions.create).not.toHaveBeenCalled();
-  });
-
-  it('opens checkout for a self-serve draft still 24+ hours out', async () => {
-    draftMock.getDraftOrderByToken.mockResolvedValue(draft({ deliveryTime: '4pm–5pm' })); // 25h
+  it('opens checkout once the window is 24+ hours out', async () => {
+    draftMock.getDraftOrderByToken.mockResolvedValue(draft({ deliveryTime: '4:00 PM - 5:00 PM' }));
 
     const res = await POST(request(), PARAMS);
     const body = await res.json();
@@ -129,24 +120,28 @@ describe('POST /api/v1/invoice/[token]/checkout — 24-hour minimum for self-ser
     expect(stripeMock.checkout.sessions.create).toHaveBeenCalledOnce();
   });
 
-  it.each([null, 'ops-agent', 'admin'])(
-    'keeps operator invoices exempt inside 24 hours (createdBy %s)',
-    async (createdBy) => {
-      draftMock.getDraftOrderByToken.mockResolvedValue(draft({ createdBy }));
+  it('opens checkout inside 24 hours for an invoice that was sent (an operator-approved rush)', async () => {
+    draftMock.getDraftOrderByToken.mockResolvedValue(
+      draft({ sentAt: new Date('2026-09-16T19:30:00.000Z') }),
+    );
 
-      const res = await POST(request(), PARAMS);
+    const res = await POST(request(), PARAMS);
 
-      expect(res.status).toBe(200);
-      expect(stripeMock.checkout.sessions.create).toHaveBeenCalledOnce();
-    },
-  );
+    expect(res.status).toBe(200);
+    expect(stripeMock.checkout.sessions.create).toHaveBeenCalledOnce();
+  });
 
-  it('lets the paid / cancelled / expired refusals answer first', async () => {
-    draftMock.getDraftOrderByToken.mockResolvedValue(draft());
-    draftMock.canDraftOrderBePaid.mockReturnValue({
-      canPay: false,
-      reason: 'This invoice has already been paid',
-    });
+  it('opens checkout inside 24 hours for an operator invoice', async () => {
+    draftMock.getDraftOrderByToken.mockResolvedValue(draft({ createdBy: null }));
+
+    const res = await POST(request(), PARAMS);
+
+    expect(res.status).toBe(200);
+    expect(stripeMock.checkout.sessions.create).toHaveBeenCalledOnce();
+  });
+
+  it('keeps status refusals free of a lead-time code', async () => {
+    draftMock.getDraftOrderByToken.mockResolvedValue(draft({ status: 'PAID' }));
 
     const res = await POST(request(), PARAMS);
 

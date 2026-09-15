@@ -1,21 +1,27 @@
 /**
- * Draft-order provenance — who minted an invoice decides whether ADR-0010's
- * operator exception applies to it.
+ * Draft-order provenance: which drafts a customer minted through a public
+ * delivery checkout, and so stay under ADR-0010's 24-hour minimum when paid.
  *
- * Invoices an operator created (and so hand-approved) stay payable at
- * /invoice/[token] even inside 24 hours: that is the sanctioned rush path.
- * Drafts a customer minted through a public, self-serve flow are not covered —
- * they sit unpaid behind the same /invoice link, so paying them must still
- * clear the 24-hour minimum.
+ * Operator invoices are exempt, including when paid at /invoice/[token]: an
+ * operator hand-approving a rush IS the escape hatch. A self-serve draft is
+ * held to the rule until an invoice is sent for it. Sending it (an operator's
+ * Send, or the landing quote flow's own email, whose date is a placeholder
+ * the wedding calculator never asks for) makes it an invoice like any other.
+ *
+ * Every file that creates draft orders is classified in
+ * __tests__/draft-creators.test.ts, so a new public flow can't slip into the
+ * operator exemption unnoticed.
  *
  * Client-safe: no server imports.
  */
 
-/** createdBy prefix stamped by the public landing-page quote route: `landing:<occasion>`. */
-export const LANDING_DRAFT_CREATED_BY_PREFIX = 'landing:';
+const LANDING_DRAFT_CREATED_BY_PREFIX = 'landing:';
 
 /** createdBy stamped by the legacy v1 group checkout on the host's invoice. */
 export const GROUP_ORDER_DRAFT_CREATED_BY = 'group-order-system';
+
+/** createdBy stamped by the Full Moon ticket route: an event ticket, not a delivery. */
+export const FULL_MOON_TICKET_DRAFT_CREATED_BY = 'full-moon-ticket';
 
 /** createdBy for a draft minted by the public landing-page quote route. */
 export function landingDraftCreatedBy(occasion: string): string {
@@ -23,14 +29,25 @@ export function landingDraftCreatedBy(occasion: string): string {
 }
 
 /**
- * True when a customer created this draft through a public flow (landing-page
- * Quick-Buy / quote, legacy group checkout) rather than an operator. Ops,
- * ops-agent and amendment invoices return false and keep the exception.
+ * True when a customer created this draft through a public delivery checkout
+ * (landing-page Quick-Buy / quote, legacy group checkout). Operator, ops-agent
+ * and amendment invoices, and event tickets, return false.
  */
-export function isSelfServeDraftOrder(draft: { createdBy: string | null }): boolean {
+export function isSelfServeDeliveryDraft(draft: { createdBy: string | null }): boolean {
   const createdBy = draft.createdBy ?? '';
   return (
     createdBy.startsWith(LANDING_DRAFT_CREATED_BY_PREFIX) ||
     createdBy === GROUP_ORDER_DRAFT_CREATED_BY
   );
+}
+
+/**
+ * Whether paying this draft must still clear the 24-hour minimum: a
+ * self-serve delivery draft that no invoice was ever sent for.
+ */
+export function mustMeetLeadTimeToPay(draft: {
+  createdBy: string | null;
+  sentAt: Date | null;
+}): boolean {
+  return isSelfServeDeliveryDraft(draft) && draft.sentAt == null;
 }

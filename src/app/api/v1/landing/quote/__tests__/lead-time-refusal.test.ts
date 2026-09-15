@@ -3,12 +3,8 @@
  * anything.
  *
  * The gap this closes: Quick-Buy (and the other landing callers) minted a
- * customer-payable DraftOrder for any date, and paying an invoice skips the
- * lead-time check that exists for operator invoices — so a self-serve order
- * could land inside 24 hours. Both modes are gated (quote mode emails a
- * payable invoice too), the check reads the landing modals' on-the-hour
- * labels ("4pm–5pm") instead of falling back to 10 AM, and it judges the day
- * that will be stored.
+ * customer-payable DraftOrder for any date. Both modes are gated (quote mode
+ * emails a payable invoice too), and a refused request touches nothing.
  *
  * Clock pinned to Wed 2026-09-16 3:00 PM CDT (20:00Z), matching the other
  * lead-time route tests: Thu noon is 21h out, Thu 3:00 PM exactly 24h.
@@ -26,10 +22,7 @@ const draftMock = vi.hoisted(() => ({
   createDraftOrder: vi.fn(),
   calculateDraftOrderAmounts: vi.fn(),
 }));
-vi.mock('@/lib/draft-orders', async () => ({
-  ...(await vi.importActual('@/lib/draft-orders/provenance')),
-  ...draftMock,
-}));
+vi.mock('@/lib/draft-orders', () => draftMock);
 
 const emailMock = vi.hoisted(() => ({ sendEmail: vi.fn() }));
 vi.mock('@/lib/email/resend-client', () => emailMock);
@@ -73,7 +66,7 @@ function request(overrides: Record<string, unknown> = {}): NextRequest {
       customerPhone: '512-555-0100',
       groupSize: 12,
       deliveryDate: '2026-09-23', // a week out
-      deliveryTime: '12pm–1pm',
+      deliveryTime: '12:00 PM - 1:00 PM',
       deliveryAddress: '100 Congress Ave',
       deliveryCity: 'Austin',
       deliveryZip: '78701',
@@ -143,7 +136,7 @@ describe('POST /api/v1/landing/quote — 24-hour minimum', () => {
     expect(draftMock.createDraftOrder).toHaveBeenCalledOnce();
     expect(draftMock.createDraftOrder.mock.calls[0][0]).toMatchObject({
       deliveryDate: new Date('2026-09-23T12:00:00.000Z'),
-      deliveryTime: '12pm–1pm',
+      deliveryTime: '12:00 PM - 1:00 PM',
       createdBy: 'landing:bachelorette',
     });
   });
@@ -158,7 +151,8 @@ describe('POST /api/v1/landing/quote — 24-hour minimum', () => {
   });
 
   it('refuses quote mode too — it emails a payable invoice', async () => {
-    // No window sent: the route default "Afternoon (12pm–4pm)" starts at noon, 21h out.
+    // No window sent: the route default "Afternoon (12pm–4pm)" has no clock
+    // time the gate reads, so it counts as 10 AM — 19h out.
     const res = await POST(
       request({ mode: 'quote', deliveryDate: '2026-09-17', deliveryTime: undefined }),
     );
@@ -169,25 +163,34 @@ describe('POST /api/v1/landing/quote — 24-hour minimum', () => {
     expectNothingTouched();
   });
 
-  it("reads an on-the-hour window's real start: tomorrow 4pm is 25h out and goes through", async () => {
-    // Read as the 10 AM fallback (19h), this compliant order would be refused.
-    const res = await POST(request({ deliveryDate: '2026-09-17', deliveryTime: '4pm–5pm' }));
+  it('judges a Quick-Buy window by its start: tomorrow 4 PM is 25h out and goes through', async () => {
+    const res = await POST(request({ deliveryDate: '2026-09-17', deliveryTime: '4:00 PM - 5:00 PM' }));
 
     expect(res.status).toBe(200);
     expect(draftMock.createDraftOrder.mock.calls[0][0]).toMatchObject({
       deliveryDate: new Date('2026-09-17T12:00:00.000Z'),
-      deliveryTime: '4pm–5pm',
+      deliveryTime: '4:00 PM - 5:00 PM',
     });
   });
 
   it('holds the boundary: exactly 24h passes, the window 30 minutes sooner does not', async () => {
-    const exact = await POST(request({ deliveryDate: '2026-09-17', deliveryTime: '3pm–4pm' }));
+    const exact = await POST(request({ deliveryDate: '2026-09-17', deliveryTime: '3:00 PM - 4:00 PM' }));
     expect(exact.status).toBe(200);
 
-    const sooner = await POST(request({ deliveryDate: '2026-09-17', deliveryTime: '2:30pm–3:30pm' }));
+    const sooner = await POST(
+      request({ deliveryDate: '2026-09-17', deliveryTime: '2:30 PM - 3:30 PM' }),
+    );
     expect(sooner.status).toBe(400);
     expect((await sooner.json()).code).toBe('DELIVERY_TOO_SOON');
     expect(draftMock.createDraftOrder).toHaveBeenCalledOnce();
+  });
+
+  it('reads a short label from a page loaded before this change by the strict 10 AM fallback', async () => {
+    // Thu 4pm is really 25h out, but '4pm–5pm' is not a format the gate parses: it fails closed.
+    const res = await POST(request({ deliveryDate: '2026-09-17', deliveryTime: '4pm–5pm' }));
+
+    expect(res.status).toBe(400);
+    expectNothingTouched();
   });
 
   it('still emails the invoice for a quote two days out', async () => {
@@ -200,7 +203,7 @@ describe('POST /api/v1/landing/quote — 24-hour minimum', () => {
   });
 
   it('refuses today and past days', async () => {
-    const today = await POST(request({ deliveryDate: '2026-09-16', deliveryTime: '8pm–9pm' }));
+    const today = await POST(request({ deliveryDate: '2026-09-16', deliveryTime: '8:00 PM - 9:00 PM' }));
     expect(today.status).toBe(400);
 
     const past = await POST(request({ deliveryDate: '2026-07-03', deliveryTime: '12:00 PM' }));

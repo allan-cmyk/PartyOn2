@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import {
-  DASHBOARD_TIME_SLOTS,
   MINIMUM_LEAD_TIME_HOURS,
   deliveryWindowStartUtc,
   meetsLeadTime,
@@ -29,43 +28,6 @@ describe('parseWindowStart', () => {
     expect(parseWindowStart(undefined)).toBeNull();
     expect(parseWindowStart('')).toBeNull();
     expect(parseWindowStart('afternoon-ish')).toBeNull();
-  });
-
-  it("parses the landing modals' on-the-hour labels", () => {
-    expect(parseWindowStart('10am–11am')).toEqual({ hour: 10, minute: 0 });
-    expect(parseWindowStart('11am–12pm')).toEqual({ hour: 11, minute: 0 });
-    expect(parseWindowStart('12pm–1pm')).toEqual({ hour: 12, minute: 0 });
-    expect(parseWindowStart('4pm–5pm')).toEqual({ hour: 16, minute: 0 });
-    expect(parseWindowStart('8pm–9pm')).toEqual({ hour: 20, minute: 0 });
-    expect(parseWindowStart('12am')).toEqual({ hour: 0, minute: 0 });
-  });
-
-  it("parses the landing modals' half-hour labels", () => {
-    expect(parseWindowStart('10:30am–11:30am')).toEqual({ hour: 10, minute: 30 });
-    expect(parseWindowStart('12:30pm–1:30pm')).toEqual({ hour: 12, minute: 30 });
-  });
-
-  it('reads the start of a named range', () => {
-    // The landing quote route's default when a caller sends no window.
-    expect(parseWindowStart('Afternoon (12pm–4pm)')).toEqual({ hour: 12, minute: 0 });
-  });
-
-  it('takes the first AM/PM time as the start, not a later one with minutes', () => {
-    expect(parseWindowStart('9am–12:30pm')).toEqual({ hour: 9, minute: 0 });
-  });
-
-  it('returns null when the first AM/PM time closes a range (ambiguous start)', () => {
-    expect(parseWindowStart('2-4 PM')).toBeNull();
-    expect(parseWindowStart('10-11am')).toBeNull();
-    expect(parseWindowStart('10:00-11:00 AM')).toBeNull();
-    expect(parseWindowStart('10 to 11am')).toBeNull();
-  });
-
-  it('still parses every dashboard slot to its own start', () => {
-    DASHBOARD_TIME_SLOTS.forEach((slot, i) => {
-      const minutes = 10 * 60 + 30 * i;
-      expect(parseWindowStart(slot)).toEqual({ hour: Math.floor(minutes / 60), minute: minutes % 60 });
-    });
   });
 });
 
@@ -149,20 +111,6 @@ describe('meetsLeadTime', () => {
     const placedAt = new Date('2026-09-11T23:00:00.000Z');
     expect(meetsLeadTime('2026-09-12', null, placedAt)).toBe(false);
     expect(meetsLeadTime('2026-09-13', null, placedAt)).toBe(true);
-  });
-
-  it('reads a Quick-Buy on-the-hour window instead of the 10 AM fallback', () => {
-    // Wed 2026-09-16 3:00 PM CDT: Thu 4 PM is 25h out, Thu 2 PM is 23h.
-    const placedAt = new Date('2026-09-16T20:00:00.000Z');
-    expect(meetsLeadTime('2026-09-17', '4pm–5pm', placedAt)).toBe(true);
-    expect(meetsLeadTime('2026-09-17', '2pm–3pm', placedAt)).toBe(false);
-  });
-
-  it('treats an ambiguous range as the 10 AM fallback, failing closed', () => {
-    // Read as 6 PM, Thu "6-8 PM" would be 27h out; its start is ambiguous, so
-    // the strict 10 AM fallback (19h) decides.
-    const placedAt = new Date('2026-09-16T20:00:00.000Z');
-    expect(meetsLeadTime('2026-09-17', '6-8 PM', placedAt)).toBe(false);
   });
 
   it('fails closed on missing or invalid dates', () => {

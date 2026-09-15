@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/group-orders/database';
-import {
-  createDraftOrder,
-  calculateDraftOrderAmounts,
-  GROUP_ORDER_DRAFT_CREATED_BY,
-} from '@/lib/draft-orders';
+import { createDraftOrder, calculateDraftOrderAmounts } from '@/lib/draft-orders';
+import { GROUP_ORDER_DRAFT_CREATED_BY } from '@/lib/draft-orders/provenance';
 import type { DraftOrderItem } from '@/lib/draft-orders/types';
 import { getCartById } from '@/lib/inventory/services/cart-service';
 import { sendEmail } from '@/lib/email';
