@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import LandingPageTemplate from '@/components/landing/LandingPageTemplate';
 import { bachelorConfig } from '@/components/landing/configs/bachelor';
 import { getCuratedCatalog } from '@/lib/landing/getCuratedCatalog';
-import { getLastMinuteCatalog } from '@/lib/landing/getLastMinuteCatalog';
 import { getOccasionPackages } from '@/lib/landing/getOccasionPackages';
 import { getUpsellProducts } from '@/lib/landing/getUpsellProducts';
 import EventQuizModal from '@/components/quiz/EventQuizModal';
@@ -11,12 +10,11 @@ import EventQuizModal from '@/components/quiz/EventQuizModal';
  * /event-quiz — paid-ad funnel router.
  *
  * Renders the bachelor landing page as a visual backdrop, with a
- * 4-step modal questionnaire on top that can't be dismissed. The
+ * 3-step modal questionnaire on top that can't be dismissed. The
  * quiz collects:
  *   1. Party type (bachelor / bachelorette / corporate / wedding / etc.)
- *   2. Delivery timing (today / tomorrow / future)
- *   3. Needs (multi-select — drinks, transport, boat, tour, rentals)
- *   4. Contact info (name, email, phone)
+ *   2. Needs (multi-select — drinks, transport, boat, tour, rentals)
+ *   3. Contact info (name, email, phone)
  *
  * On submit: API creates a Lead, sends the welcome email, redirects
  * the visitor to their personalized landing page with ?welcome=1 so
@@ -35,9 +33,8 @@ export const metadata: Metadata = {
 };
 
 export default async function EventQuizPage() {
-  const [catalog, lastMinuteCatalog, packages, upsellProducts] = await Promise.all([
+  const [catalog, packages, upsellProducts] = await Promise.all([
     getCuratedCatalog(),
-    getLastMinuteCatalog(),
     getOccasionPackages('bachelor'),
     getUpsellProducts(),
   ]);
@@ -47,7 +44,6 @@ export default async function EventQuizPage() {
       <LandingPageTemplate
         config={config}
         catalog={catalog}
-        lastMinuteCatalog={lastMinuteCatalog}
         upsellProducts={upsellProducts}
       />
       <EventQuizModal />

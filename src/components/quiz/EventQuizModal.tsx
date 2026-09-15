@@ -12,9 +12,7 @@
  *   3. Contact info — name, email, phone
  *
  * No delivery-timing step. Delivery date is collected on the destination
- * landing page (PackageBuilderModal + QuickBuyModal), and the catalog
- * there auto-switches to the last-minute menu when the date is today
- * or tomorrow.
+ * landing page (PackageBuilderModal + QuickBuyModal).
  *
  * Style notes (matches landing-page theme):
  *   - Order Drinks Now → big yellow button, black font, dark border

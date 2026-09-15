@@ -1,8 +1,8 @@
 /**
- * /order/last-minute - Creates a GroupOrderV2 flagged isLastMinute and redirects
- * to /dashboard/[code]. The dashboard filters products to the "last-minute"
- * Shopify collection so customers can only pick from deep-stock items we can
- * guarantee for 48-72 hour delivery.
+ * /order/last-minute — legacy "start a fresh order" entry (email links and
+ * partner pages still point here). Creates a dateless GroupOrderV2 and
+ * redirects to /dashboard/[code], where the customer picks a delivery date
+ * held to the same 24-hour minimum as every other order (ADR-0010).
  */
 
 'use client';
@@ -40,7 +40,7 @@ export default function LastMinuteOrderRedirectPage(): ReactElement {
         <div className="text-center">
           <img src="/images/pod-logo-2025.svg" alt="Party On" className="h-40 w-auto mx-auto mb-8" />
           <div className="w-8 h-8 border-3 border-gray-900 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-lg font-semibold text-gray-900">Preparing your last-minute order</p>
+          <p className="text-lg font-semibold text-gray-900">Preparing your order</p>
         </div>
       </div>
     }>
@@ -114,11 +114,9 @@ function LastMinuteRedirectInner(): ReactElement {
 
         const premierAddress = affiliateCode ? getAffiliateDefaultAddress(affiliateCode) : null;
 
-        // NOTE: we no longer pre-set isLastMinute=true. The dashboard's
-        // delivery-window gate (Today/Tomorrow vs Future) now fires on
-        // first dashboard view and lets the customer pick. This URL
-        // becomes a generic "start a fresh order" entry that still spins
-        // up the GroupOrderV2 but defers the menu decision to the gate.
+        // NOTE: this entry never sets isLastMinute. The deep-stock menu is an
+        // ops-only switch since the customer-facing last-minute mode was
+        // retired (2026-09-15); the customer picks the date on the dashboard.
         const group = await createDashboardOrderV2({
           hostName: nameParam || 'Party Host',
           partyType,
@@ -189,7 +187,7 @@ function LastMinuteRedirectInner(): ReactElement {
           className="h-40 w-auto mx-auto mb-8"
         />
         <div className="w-8 h-8 border-3 border-gray-900 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-lg font-semibold text-gray-900">Preparing your last-minute order</p>
+        <p className="text-lg font-semibold text-gray-900">Preparing your order</p>
       </div>
     </div>
   );

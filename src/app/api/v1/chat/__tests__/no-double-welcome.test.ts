@@ -41,12 +41,17 @@ vi.mock('@/lib/leads/crm-mirror', () => crmMock);
 
 import { POST } from '../submit/route';
 
+// Relative, never hard-coded: chat/submit refuses a day with no delivery
+// window 24+ hours out (ADR-0010), so a fixed date would start failing once
+// the calendar caught up with it.
+const A_MONTH_OUT = new Date(Date.now() + 30 * 86_400_000).toISOString().slice(0, 10);
+
 const VALID = {
   firstName: 'Codie',
   email: 'codie@example.com',
   partyType: 'hotel',
   headcount: 13,
-  deliveryDate: '2026-09-30',
+  deliveryDate: A_MONTH_OUT,
 };
 
 function request(body: unknown): NextRequest {

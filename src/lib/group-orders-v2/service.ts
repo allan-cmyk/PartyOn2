@@ -6,7 +6,6 @@
 import { prisma } from '@/lib/database/client';
 import { calculateDeliveryFee } from '@/lib/delivery/rates';
 import { isPickupAddress } from '@/lib/delivery/pickup';
-import { isLastMinuteDate } from '@/lib/lastMinute/dates';
 import { mirrorDashboardHostLead } from '@/lib/leads/dashboard-lead';
 import { assertVariantsPurchasable } from '@/lib/products/availability';
 import {
@@ -558,35 +557,12 @@ export async function updateTab(
     },
   });
 
-  // ─── Bubble the date change up to the parent GroupOrderV2 ──────────
-  // If any tab on the order has a today/tomorrow delivery date, the
-  // group is flagged as last-minute so the dashboard's catalog
-  // restricts to the deep-stock pool. Recomputed after every tab edit
-  // so a date change inside the dashboard correctly flips the menu.
-  if (input.deliveryDate) {
-    await recomputeGroupLastMinute(tab.groupOrderId);
-  }
+  // A date edit deliberately leaves GroupOrderV2.isLastMinute alone: the
+  // deep-stock menu is an ops-only switch since the customer-facing
+  // last-minute mode was retired (2026-09-15). Recomputing it from tab dates
+  // here used to wipe ops' menu restrictions whenever a customer moved a date.
 
   return serializeTab(tab);
-}
-
-/**
- * Recompute `GroupOrderV2.isLastMinute` based on the current set of
- * SubOrder delivery dates. Set true if ANY tab is today/tomorrow.
- *
- * Idempotent — safe to call from anywhere that mutates a tab's date,
- * or as a backfill if the flag drifts.
- */
-export async function recomputeGroupLastMinute(groupId: string): Promise<void> {
-  const tabs = await prisma.subOrder.findMany({
-    where: { groupOrderId: groupId },
-    select: { deliveryDate: true },
-  });
-  const nextFlag = tabs.some((t) => isLastMinuteDate(t.deliveryDate));
-  await prisma.groupOrderV2.update({
-    where: { id: groupId },
-    data: { isLastMinute: nextFlag },
-  });
 }
 
 /** Thrown when a destructive action would take money records with it. */

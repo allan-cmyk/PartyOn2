@@ -3,12 +3,24 @@
 import { useEffect, useRef } from 'react';
 import type { TourStep } from './OnboardingTourProvider';
 import useTour from './useTour';
-import { loadDeliveryWindow } from '@/lib/deliveryWindow/window';
 
 interface Props {
   isHost: boolean;
   hasPartyType: boolean;
   shareCode: string;
+}
+
+/**
+ * Has the visitor answered the site-wide 21+ age gate? AgeVerification
+ * stamps `age_verified` in localStorage on accept (and for partner embeds).
+ * A read error counts as "not yet", matching LeadMagnetController.
+ */
+function isAgeVerified(): boolean {
+  try {
+    return !!localStorage.getItem('age_verified');
+  } catch {
+    return false;
+  }
 }
 
 function buildSteps(): TourStep[] {
@@ -83,17 +95,15 @@ export default function DashboardTour({
       }, 500);
     };
 
-    // Don't start the tour until the "When is your delivery?" gate
-    // (DeliveryWindowGate) has been answered. That gate fires on first
-    // /dashboard view and its choice persists via loadDeliveryWindow(); the
-    // tour renders above it (z-9999 vs z-210), so starting sooner drops the
-    // tour spotlight on top of a required modal. Poll until it's answered,
-    // then begin -- mirrors how the gate itself waits for the age gate.
-    if (loadDeliveryWindow() !== null) {
+    // Don't start the tour until the 21+ age gate has been answered.
+    // /dashboard is not age-gate exempt, and the tour renders above every
+    // modal (z-9999), so starting sooner drops the tour spotlight on top of
+    // a legally required gate. Poll until it's answered, then begin.
+    if (isAgeVerified()) {
       begin();
     } else {
       poll = setInterval(() => {
-        if (loadDeliveryWindow() !== null) {
+        if (isAgeVerified()) {
           if (poll) clearInterval(poll);
           begin();
         }

@@ -11,6 +11,9 @@
  *   2. Returns a personalized drink-order recommendation in the JSON
  *      response so the chat panel can render it inline without a
  *      redirect — caller decides whether to navigate away or stay
+ *   3. Holds the 24-hour minimum (ADR-0010): a day with no delivery window
+ *      24+ hours out is refused with DELIVERY_TOO_SOON after the lead is
+ *      saved, so the chat never recommends an order its next step refuses
  *
  * The Lead row is stamped with metadata.chatQuiz (sibling to
  * metadata.eventQuiz from the quiz flow) so Brian's Stuff → Leads can
@@ -22,7 +25,13 @@ import { upsertLead, recordEvent } from '@/lib/leads/leadCapture';
 import { attributionSchema, compactAttribution } from '@/lib/leads/attribution-schema';
 import { targetUrlFor } from '@/lib/eventQuiz/routing';
 import { recommendForChat } from '@/lib/chat/recommendation';
-import { isLastMinuteDate } from '@/lib/lastMinute/dates';
+import {
+  DELIVERY_TOO_SOON_CODE,
+  LEAD_TIME_MESSAGE,
+  firstBookableWindow,
+  todayInAustin,
+} from '@/lib/delivery/lead-time';
+import { recordRushRequest } from '@/lib/leads/rush-request';
 import { mirrorLeadToSheet } from '@/lib/premier/pod-leads-sheet';
 import { mirrorLeadToCrm } from '@/lib/leads/crm-mirror';
 import { prisma } from '@/lib/database/client';
@@ -51,8 +60,8 @@ const schema = z.object({
     'hotel',
   ]),
   headcount: z.number().int().min(1).max(500),
-  /** ISO YYYY-MM-DD. Drives whether the destination landing page is
-   *  served the last-minute menu when the user lands there. */
+  /** ISO YYYY-MM-DD. A day with no delivery window 24+ hours out is
+   *  refused after the lead is saved (ADR-0010). */
   deliveryDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   /** First-touch UTM + ad click ids captured client-side. Optional so
    *  older cached bundles never 400. Without this, chat leads could
@@ -183,20 +192,37 @@ export async function POST(req: NextRequest) {
   // what the work queue is for. If that trade stops being right, enqueue a
   // flag-gated journey here rather than restoring a second instant send.
 
-  // Build the recommendation — what should we suggest they order?
-  let recommendation = null;
-  try {
-    recommendation = await recommendForChat({
+  // 24-hour minimum (ADR-0010): nothing bookable on that day means the chat
+  // can't become an order. The lead is already saved above; flag a rush to
+  // the operator (today or later — a past day is a stale page) and refuse,
+  // rather than recommend an order the next step would turn away.
+  const tooSoon = firstBookableWindow(body.deliveryDate) === null;
+  if (tooSoon && body.deliveryDate >= todayInAustin()) {
+    await recordRushRequest({
+      leadId,
+      source: 'chat',
+      deliveryDate: body.deliveryDate,
       partyType: body.partyType,
       headcount: body.headcount,
+      firstName: body.firstName,
+      lastName: body.lastName,
+      email: body.email,
+      phone: body.phone,
     });
-  } catch (err) {
-    console.error('[chat/submit] recommendation failed', err);
   }
 
-  // Flag whether the destination landing page should auto-engage
-  // last-minute mode (delivery date is today or tomorrow in Austin TZ).
-  const isLastMinute = isLastMinuteDate(body.deliveryDate);
+  // Build the recommendation — what should we suggest they order?
+  let recommendation = null;
+  if (!tooSoon) {
+    try {
+      recommendation = await recommendForChat({
+        partyType: body.partyType,
+        headcount: body.headcount,
+      });
+    } catch (err) {
+      console.error('[chat/submit] recommendation failed', err);
+    }
+  }
 
   // Mirror to the POD Leads Google Sheet + CoreLinq CRM. AWAITED — Vercel
   // kills un-awaited promises when the response returns. Never throw.
@@ -210,16 +236,23 @@ export async function POST(req: NextRequest) {
       arrivalDate: body.deliveryDate,
       partyType: body.partyType,
       headcount: body.headcount,
+      ...(tooSoon ? { notes: 'Refused: inside the 24-hour minimum' } : {}),
       leadUrl: leadId ? `https://partyondelivery.com/admin/leads?lead=${leadId}` : '',
     }),
     mirrorLeadToCrm({ leadId }, 'party-chat'),
   ]);
+
+  if (tooSoon) {
+    return NextResponse.json(
+      { ok: false, code: DELIVERY_TOO_SOON_CODE, error: LEAD_TIME_MESSAGE },
+      { status: 422 },
+    );
+  }
 
   return NextResponse.json({
     ok: true,
     leadId,
     redirectTo: resumePath,
     recommendation,
-    isLastMinute,
   });
 }

@@ -18,7 +18,6 @@ import LandingPageTemplate from '@/components/landing/LandingPageTemplate';
 import AIPartyChatBar from '@/components/landing/AIPartyChatBar';
 import { bachelorConfig } from '@/components/landing/configs/bachelor';
 import { getCuratedCatalog } from '@/lib/landing/getCuratedCatalog';
-import { getLastMinuteCatalog } from '@/lib/landing/getLastMinuteCatalog';
 import { getOccasionPackages } from '@/lib/landing/getOccasionPackages';
 import { getUpsellProducts } from '@/lib/landing/getUpsellProducts';
 
@@ -33,9 +32,8 @@ export const metadata: Metadata = {
 };
 
 export default async function AustinBachelorPartyDeliveryAITestPage() {
-  const [catalog, lastMinuteCatalog, packages, upsellProducts] = await Promise.all([
+  const [catalog, packages, upsellProducts] = await Promise.all([
     getCuratedCatalog(),
-    getLastMinuteCatalog(),
     getOccasionPackages('bachelor'),
     getUpsellProducts(),
   ]);
@@ -44,7 +42,6 @@ export default async function AustinBachelorPartyDeliveryAITestPage() {
     <LandingPageTemplate
       config={config}
       catalog={catalog}
-      lastMinuteCatalog={lastMinuteCatalog}
       upsellProducts={upsellProducts}
       aiChatSlot={<AIPartyChatBar />}
     />

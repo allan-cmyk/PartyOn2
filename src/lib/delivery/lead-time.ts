@@ -49,6 +49,21 @@ export const DASHBOARD_LEAD_TIME_MESSAGE =
   `delivery is less than ${MINIMUM_LEAD_TIME_HOURS} hours away. Call or text us at (737) 371-9700 and we may be able to help.`;
 
 /**
+ * Machine-readable refusal code — the same one the cart, checkout, and
+ * group-order routes already return, so any client can branch on it.
+ */
+export const DELIVERY_TOO_SOON_CODE = 'DELIVERY_TOO_SOON';
+
+/**
+ * Note shown beside customer-facing date pickers, whose minimum is
+ * earliestBookableDay(). There is no online same-day option (ADR-0010), so a
+ * call or text is the only rush path this points at.
+ */
+export const RUSH_NOTE =
+  `Online orders need at least ${MINIMUM_LEAD_TIME_HOURS} hours' notice. ` +
+  'Need it sooner? Call or text (737) 371-9700 and we may be able to help.';
+
+/**
  * Parse the starting time out of a delivery window label.
  * Accepts "12:00 PM - 2:00 PM", "12:00 PM – 2:00 PM", or a bare "10:30 AM".
  * Returns null when no time can be found.
@@ -162,4 +177,82 @@ export function meetsLeadTime(
   const start = deliveryWindowStartUtc(deliveryDate, deliveryTime);
   if (!start) return false;
   return start.getTime() - now.getTime() >= MINIMUM_LEAD_TIME_HOURS * 60 * 60 * 1000;
+}
+
+const HOUR_MS = 60 * 60 * 1000;
+
+/**
+ * Build the dashboard's delivery windows: 30-minute slots from 10:00 AM to
+ * 9:00 PM CT, labeled "10:00 AM - 10:30 AM" (the format parseWindowStart and
+ * the tab routes read).
+ */
+function buildDashboardTimeSlots(): string[] {
+  const slots: string[] = [];
+  for (let h = 10; h <= 20; h++) {
+    for (const m of [0, 30]) {
+      const hour = h % 12 || 12;
+      const ampm = h < 12 ? 'AM' : 'PM';
+      const nextH = m === 30 ? h + 1 : h;
+      const nextM = m === 30 ? 0 : 30;
+      const nextHour = nextH % 12 || 12;
+      const nextAmpm = nextH < 12 ? 'AM' : 'PM';
+      const start = `${hour}:${m.toString().padStart(2, '0')} ${ampm}`;
+      const end = `${nextHour}:${nextM.toString().padStart(2, '0')} ${nextAmpm}`;
+      slots.push(`${start} - ${end}`);
+    }
+  }
+  return slots;
+}
+
+/**
+ * Delivery windows a customer can pick on a dashboard tab. Shared by the
+ * dashboard's delivery-details picker and the quote flow's opening window, so
+ * both agree on what "a bookable window" is.
+ */
+export const DASHBOARD_TIME_SLOTS: readonly string[] = buildDashboardTimeSlots();
+
+/** Today's calendar day (YYYY-MM-DD) in Austin. */
+export function todayInAustin(now: Date = new Date()): string {
+  return austinDateString(now);
+}
+
+/** Calendar arithmetic on a YYYY-MM-DD day — DST-proof, unlike adding 24 hours. */
+function addCalendarDays(dayStr: string, days: number): string {
+  const [y, m, d] = dayStr.split('-').map(Number);
+  return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
+}
+
+/**
+ * Earliest Austin calendar day (YYYY-MM-DD) that still has a dashboard window
+ * at least MINIMUM_LEAD_TIME_HOURS away — the minimum every customer-facing
+ * date picker offers.
+ *
+ * The LAST window (8:30 PM) is what's checked: late in the evening, the day
+ * that contains now+24h has no window left that clears the cutoff, and
+ * offering it would make every slot fail one by one with no explanation.
+ */
+export function earliestBookableDay(now: Date = new Date()): string {
+  const day = austinDateString(new Date(now.getTime() + MINIMUM_LEAD_TIME_HOURS * HOUR_MS));
+  const lastSlot = DASHBOARD_TIME_SLOTS[DASHBOARD_TIME_SLOTS.length - 1];
+  return meetsLeadTime(day, lastSlot, now) ? day : addCalendarDays(day, 1);
+}
+
+/**
+ * The delivery window a self-serve quote should open its dashboard with:
+ * `preferred` when it clears the 24-hour minimum, otherwise the first
+ * dashboard window on that day that does.
+ *
+ * Returns null when nothing on that day can be booked (inside the cutoff, in
+ * the past, or an unreadable date). Callers must refuse those requests, never
+ * turn them into a dashboard whose checkout would refuse payment.
+ */
+export function firstBookableWindow(
+  day: string,
+  preferred?: string | null,
+  now: Date = new Date(),
+): string | null {
+  if (preferred && parseWindowStart(preferred) && meetsLeadTime(day, preferred, now)) {
+    return preferred;
+  }
+  return DASHBOARD_TIME_SLOTS.find((slot) => meetsLeadTime(day, slot, now)) ?? null;
 }
