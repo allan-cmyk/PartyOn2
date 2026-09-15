@@ -207,9 +207,12 @@ const nextConfig: NextConfig = {
       // (GHL decommissioned; account being cancelled). This host now points at
       // Vercel and we serve the redirects ourselves, so every historic link
       // (flyers, follow-up emails, CRM drip texts, lander CTAs) keeps working.
-      // The three call-booking paths temporarily land on /contact until the
-      // Google Calendar appointment schedules exist — swap destinations here
-      // (and flip permanent to true) when those booking links are live.
+      // 2026-09-15 — the three call-booking paths now 301 to Allan's Google
+      // Calendar appointment schedules (allan@partyondelivery.com; Boat Call
+      // 10 min / Party Consultation 15 min / Partnership Call 30 min). Editing
+      // a schedule's settings in Google Calendar never changes its URL; only
+      // deleting and recreating one would, so update the destination here if
+      // a schedule is ever recreated.
       {
         source: '/reviews',
         has: [{ type: 'host', value: '123.partyondelivery.com' }],
@@ -219,20 +222,23 @@ const nextConfig: NextConfig = {
       {
         source: '/boat-call',
         has: [{ type: 'host', value: '123.partyondelivery.com' }],
-        destination: 'https://partyondelivery.com/contact',
-        permanent: false,
+        destination:
+          'https://calendar.google.com/calendar/appointments/schedules/AcZssZ0A5IpzCavw3gYFKYBSqqdRr1DyaiX4ietgCDLgg20EKhpPu7gdrsrJM5P5zlC8Z6-9JQq5g-Fb',
+        permanent: true,
       },
       {
         source: '/planning-call',
         has: [{ type: 'host', value: '123.partyondelivery.com' }],
-        destination: 'https://partyondelivery.com/contact',
-        permanent: false,
+        destination:
+          'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1LJme7vhebZTdmWQ0dvKFd7CUquhr8bmXkgH7KMRDuKeY8PDETRMJx4utUhg6zBIt0SguTVRrW',
+        permanent: true,
       },
       {
         source: '/partnership-call',
         has: [{ type: 'host', value: '123.partyondelivery.com' }],
-        destination: 'https://partyondelivery.com/contact',
-        permanent: false,
+        destination:
+          'https://calendar.google.com/calendar/appointments/schedules/AcZssZ0pjDaVscvHzyhes4RkjsBbx6fn5EjFmCzJypDCBU_qRv2vgC4uuYuLcRdDzap9zeGhAbldL8iE',
+        permanent: true,
       },
       // Any other old funnel path on that host → homepage.
       {
