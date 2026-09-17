@@ -62,16 +62,16 @@ _(not captured)_
 
 ```json
 {
-  "orders": 53,
-  "revenue": 23310.98,
+  "orders": 56,
+  "revenue": 26564.58,
   "segments": [
     {
       "margin": null,
-      "orders": 51,
-      "revenue": 21404.87,
+      "orders": 54,
+      "revenue": 24658.47,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 419.7,
+      "averageOrderValue": 456.64,
       "marginCoveragePct": 0
     },
     {
@@ -93,42 +93,42 @@ _(not captured)_
       "marginCoveragePct": 34.5
     }
   ],
-  "capturedAt": "2026-09-16T08:00:49.642Z",
+  "capturedAt": "2026-09-17T08:00:49.300Z",
   "affiliateRoi": [
     {
       "code": "POUR24",
       "margin": null,
-      "orders": 5,
+      "orders": 6,
       "roiPct": null,
-      "revenue": 6937.82,
+      "revenue": 8468.37,
       "netMargin": null,
       "affiliateId": "7bf14a40-b04f-4622-ba09-0662be41e37f",
       "businessName": "Pour Twenty Four",
-      "commissionPaid": 589.89,
+      "commissionPaid": 725.04,
       "marginCoveragePct": 0
     },
     {
       "code": "DTRbartending",
       "margin": null,
-      "orders": 3,
+      "orders": 4,
       "roiPct": null,
-      "revenue": 4313.05,
+      "revenue": 5926.42,
       "netMargin": null,
       "affiliateId": "f029d561-1c6f-45ba-9cac-7135eac17ce2",
       "businessName": "DTR Bartending",
-      "commissionPaid": 311.36,
+      "commissionPaid": 430.59,
       "marginCoveragePct": 0
     },
     {
       "code": "PREMIER",
       "margin": null,
-      "orders": 23,
+      "orders": 24,
       "roiPct": null,
-      "revenue": 3528.63,
+      "revenue": 3638.31,
       "netMargin": null,
       "affiliateId": "d21bac1a-3f99-489c-89fd-e1980c264a8d",
       "businessName": "Premier Party Cruises",
-      "commissionPaid": 224.45,
+      "commissionPaid": 220.29,
       "marginCoveragePct": 0
     },
     {
@@ -204,15 +204,15 @@ _(not captured)_
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-09-16",
-  "averageOrderValue": 439.8298113207547,
+  "snapshotDate": "2026-09-17",
+  "averageOrderValue": 474.3675,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-09-16 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-09-17 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
