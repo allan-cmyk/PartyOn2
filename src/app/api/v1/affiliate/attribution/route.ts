@@ -7,7 +7,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { getAffiliateByCode } from '@/lib/affiliates/affiliate-service';
+import { resolveAffiliateByRef } from '@/lib/affiliates/affiliate-service';
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
@@ -15,19 +15,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const refCode = cookieStore.get('ref_code')?.value;
     const queryCode = request.nextUrl.searchParams.get('code');
 
-    // Explicit beats inferred: an explicit ?code= (a real Affiliate.code from
-    // /order?ref= or the partner-page StrStartOrderButton) must win over the
-    // middleware's path-derived cookie, which holds an UPPERCASED SLUG
-    // ("FIVE-STAR") that getAffiliateByCode can't resolve when it differs
-    // from the code ("FIVESTAR"). Cookie-first shadowed the valid code and
-    // silently dropped attribution (code review 2026-07-08).
+    // Explicit beats inferred: an explicit ?code= (from /order?ref= or the
+    // partner-page StrStartOrderButton) wins over the middleware's cookie.
+    // Both forms — Affiliate.code and the cookie's UPPERCASED SLUG variant
+    // ("FIVE-STAR" for code "FIVESTAR") — resolve via resolveAffiliateByRef;
+    // code-only lookup silently dropped slug-form attribution until 2026-09.
     const code = queryCode || refCode;
 
     if (!code) {
       return NextResponse.json({ success: true, data: { active: false } });
     }
 
-    const affiliate = await getAffiliateByCode(code);
+    const affiliate = await resolveAffiliateByRef(code);
 
     if (!affiliate || affiliate.status !== 'ACTIVE') {
       return NextResponse.json({ success: true, data: { active: false } });

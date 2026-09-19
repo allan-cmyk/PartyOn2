@@ -64,6 +64,26 @@ export async function middleware(request: NextRequest) {
 }
 
 /**
+ * /partners/<slug> pages that are NOT affiliates: generic category landers and
+ * sales pages with no Affiliate row. Setting a cookie for these would not just
+ * be junk downstream lookups discard — a visit would OVERWRITE a real partner's
+ * 30-day attribution cookie (last-touch) with a value that resolves to nothing.
+ *
+ * If one of these ever gets a real Affiliate row (code or partnerSlug), remove
+ * it from this list so path visits attribute again.
+ */
+const NON_AFFILIATE_PARTNER_PAGES = new Set([
+  'pitch',
+  'anderson-mill-marina-boat-club',
+  'austin-wedding-dj',
+  'boat-babes',
+  'hotels-resorts',
+  'mobile-bartenders',
+  'property-management',
+  'vacation-rentals',
+]);
+
+/**
  * Resolve the ref_code cookie value from a request URL.
  *
  * Precedence (last-touch wins, but explicit ?ref= beats path inference):
@@ -73,11 +93,9 @@ export async function middleware(request: NextRequest) {
  * Returns null when neither applies (so callers leave any existing cookie alone).
  *
  * The cookie value may be either an Affiliate.code (from ?ref=) or a partnerSlug
- * (from /partners/<slug>). linkOrderToAffiliate at checkout matches either form.
- *
- * Excluded paths: /partners/pitch is the prospective-partner sales page, not an
- * affiliate. Treating it as one would set a junk cookie that downstream lookups
- * would just discard, but we'd rather not pollute the cookie at all.
+ * (from /partners/<slug>). Server-side readers must resolve BOTH forms via
+ * resolveAffiliateByRef / linkOrderToAffiliate — a code-only lookup cannot see
+ * the slug form.
  */
 export function resolveRefCookieValue(url: URL | { searchParams: URLSearchParams; pathname: string }): string | null {
   const refParam = url.searchParams.get('ref');
@@ -86,7 +104,7 @@ export function resolveRefCookieValue(url: URL | { searchParams: URLSearchParams
   const partnerMatch = url.pathname.match(/^\/partners\/([^/]+)/i);
   if (partnerMatch) {
     const slug = partnerMatch[1].toLowerCase();
-    if (slug === 'pitch') return null;
+    if (NON_AFFILIATE_PARTNER_PAGES.has(slug)) return null;
     return slug.toUpperCase();
   }
 

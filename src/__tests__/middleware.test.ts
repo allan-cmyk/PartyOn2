@@ -31,7 +31,7 @@ describe('resolveRefCookieValue', () => {
     });
 
     it('lowercases the slug before re-uppercasing it (canonical form)', () => {
-      expect(resolveRefCookieValue(urlOf('/partners/Mobile-Bartenders'))).toBe('MOBILE-BARTENDERS');
+      expect(resolveRefCookieValue(urlOf('/partners/Cocktail-Cowboys'))).toBe('COCKTAIL-COWBOYS');
     });
   });
 
@@ -50,6 +50,24 @@ describe('resolveRefCookieValue', () => {
     it('returns null for /partners/pitch (sales page, not an affiliate)', () => {
       expect(resolveRefCookieValue(urlOf('/partners/pitch'))).toBeNull();
       expect(resolveRefCookieValue(urlOf('/partners/pitch/anything'))).toBeNull();
+    });
+
+    it('returns null for generic category landers with no Affiliate row (would overwrite real attribution)', () => {
+      for (const slug of [
+        'anderson-mill-marina-boat-club',
+        'austin-wedding-dj',
+        'boat-babes',
+        'hotels-resorts',
+        'mobile-bartenders',
+        'property-management',
+        'vacation-rentals',
+      ]) {
+        expect(resolveRefCookieValue(urlOf(`/partners/${slug}`))).toBeNull();
+      }
+    });
+
+    it('still honors an explicit ?ref= on an excluded page', () => {
+      expect(resolveRefCookieValue(urlOf('/partners/vacation-rentals?ref=COWBOYS'))).toBe('COWBOYS');
     });
 
     it('returns null for unrelated paths', () => {

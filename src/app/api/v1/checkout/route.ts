@@ -11,7 +11,7 @@ import { createCheckoutSession, getCheckoutSession, getOrCreateStripeCustomer } 
 import { getCartById, validateCartMinimum, hasDeliveryInfo } from '@/lib/inventory/services/cart-service';
 import { createFreeOrder } from '@/lib/inventory/services/order-service';
 import { notifyNewOrder, buildGhlPayload } from '@/lib/webhooks/ghl';
-import { getAffiliateByCode } from '@/lib/affiliates/affiliate-service';
+import { resolveAffiliateByRef } from '@/lib/affiliates/affiliate-service';
 import { linkOrderToAffiliate } from '@/lib/affiliates/commission-engine';
 import { createOrderCalendarEvent } from '@/lib/calendar/google-calendar';
 import { ProductNotPurchasableError } from '@/lib/products/availability';
@@ -206,7 +206,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const refCode = cookieStore.get('ref_code')?.value;
     if (refCode) {
       try {
-        const affiliate = await getAffiliateByCode(refCode);
+        // Cookie may hold a code OR an uppercased partner slug — resolve both.
+        const affiliate = await resolveAffiliateByRef(refCode);
         if (affiliate && affiliate.status === 'ACTIVE') {
           affiliateCode = affiliate.code;
           affiliateFreeDelivery = affiliate.customerPerk === 'Free Delivery';

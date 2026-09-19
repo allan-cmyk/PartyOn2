@@ -40,6 +40,26 @@ export function getPartnerSlug(affiliate: { partnerSlug?: string | null; code: s
 }
 
 /**
+ * Resolve a `ref_code` cookie value (or any user-supplied ref) to an affiliate.
+ *
+ * The middleware writes the cookie in two forms: an Affiliate.code from
+ * `?ref=<code>`, or an UPPERCASED partnerSlug from a `/partners/<slug>` visit
+ * ("COCKTAIL-COWBOYS" for code "COWBOYS"). Same matcher as
+ * linkOrderToAffiliate, so attribution, perks, and commissions agree on what
+ * resolves. Code-only lookups (getAffiliateByCode) cannot see the slug form.
+ */
+export async function resolveAffiliateByRef(ref: string) {
+  return prisma.affiliate.findFirst({
+    where: {
+      OR: [
+        { code: { equals: ref, mode: 'insensitive' } },
+        { partnerSlug: ref.toLowerCase() },
+      ],
+    },
+  });
+}
+
+/**
  * Get affiliate by ID with relations
  */
 export async function getAffiliateById(id: string) {
