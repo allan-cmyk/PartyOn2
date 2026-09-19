@@ -26,7 +26,9 @@ import { austinWeddingDj } from '@/lib/partners/landing-pages';
  *   - [COUPLE_1/2]      — author name for each testimonial
  *   - [VENUE_1/2]       — venue name from each wedding
  *   - [MONTH_YEAR_1/2]  — when each wedding happened
- *   - WEDDING_DJ ref code — replace once the affiliate record exists in /admin/affiliates
+ *   - WEDDING_DJ ref code — replace once the affiliate record exists in /admin/affiliates,
+ *     and remove 'austin-wedding-dj' from NON_AFFILIATE_PARTNER_PAGES in src/middleware.ts
+ *     so page visits attribute again
  */
 
 const REF_CODE = 'WEDDING_DJ';

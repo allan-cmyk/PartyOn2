@@ -15,18 +15,19 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const refCode = cookieStore.get('ref_code')?.value;
     const queryCode = request.nextUrl.searchParams.get('code');
 
-    // Explicit beats inferred: an explicit ?code= (from /order?ref= or the
-    // partner-page StrStartOrderButton) wins over the middleware's cookie.
-    // Both forms — Affiliate.code and the cookie's UPPERCASED SLUG variant
-    // ("FIVE-STAR" for code "FIVESTAR") — resolve via resolveAffiliateByRef;
-    // code-only lookup silently dropped slug-form attribution until 2026-09.
-    const code = queryCode || refCode;
-
-    if (!code) {
-      return NextResponse.json({ success: true, data: { active: false } });
+    // Explicit beats inferred WHEN IT RESOLVES: an explicit ?code= (from
+    // /order?ref= or the partner-page StrStartOrderButton) expresses fresher
+    // intent than a 30-day cookie, so it wins. But junk explicit input (a
+    // typo'd ?ref=) must not erase a valid cookie attribution, so on a miss
+    // we fall back to the cookie. Both forms — Affiliate.code and the
+    // cookie's UPPERCASED SLUG variant ("FIVE-STAR" for code "FIVESTAR") —
+    // resolve via resolveAffiliateByRef; a code-only lookup silently dropped
+    // slug-form attribution until 2026-09 (and cookie-first shadowed valid
+    // explicit codes before the 2026-07-08 review — keep this order).
+    let affiliate = queryCode ? await resolveAffiliateByRef(queryCode) : null;
+    if ((!affiliate || affiliate.status !== 'ACTIVE') && refCode && refCode !== queryCode) {
+      affiliate = await resolveAffiliateByRef(refCode);
     }
-
-    const affiliate = await resolveAffiliateByRef(code);
 
     if (!affiliate || affiliate.status !== 'ACTIVE') {
       return NextResponse.json({ success: true, data: { active: false } });

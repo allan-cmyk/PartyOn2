@@ -11,6 +11,7 @@ import type { DraftOrderWithTotal, DraftOrderItem } from '@/lib/draft-orders/typ
 import { snapshotItemCost, finalizeOrderMargin } from '@/lib/analytics/margin-service';
 import { classifySegment } from '@/lib/analytics/segment-classifier';
 import { sanitizeName } from '@/lib/leads/leadCapture';
+import { getAffiliateByCode } from '@/lib/affiliates/affiliate-service';
 import { resolveOrderSmsConsent } from '@/lib/consent/order-sms-consent';
 import { unitsOffShelf } from './pick-inventory-service';
 import {
@@ -672,9 +673,8 @@ export async function createFreeOrder(
   // Look up affiliate ID if code provided
   let affiliateId: string | undefined;
   if (affiliateCode) {
-    const affiliate = await prisma.affiliate.findUnique({
-      where: { code: affiliateCode.toUpperCase() },
-    });
+    // Case-insensitive: stored codes can be mixed case (e.g. DTRbartending).
+    const affiliate = await getAffiliateByCode(affiliateCode);
     if (affiliate && affiliate.status === 'ACTIVE') {
       affiliateId = affiliate.id;
     }

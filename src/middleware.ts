@@ -93,9 +93,11 @@ const NON_AFFILIATE_PARTNER_PAGES = new Set([
  * Returns null when neither applies (so callers leave any existing cookie alone).
  *
  * The cookie value may be either an Affiliate.code (from ?ref=) or a partnerSlug
- * (from /partners/<slug>). Server-side readers must resolve BOTH forms via
- * resolveAffiliateByRef / linkOrderToAffiliate — a code-only lookup cannot see
- * the slug form.
+ * (from /partners/<slug>). Server-side readers must resolve BOTH forms —
+ * resolveAffiliateByRef / linkOrderToAffiliate (orders, perks) and
+ * resolveAffiliateId (leads) all do; a code-only lookup cannot see the slug
+ * form. (Those resolvers import Prisma, so they can never be called from this
+ * edge middleware itself.)
  */
 export function resolveRefCookieValue(url: URL | { searchParams: URLSearchParams; pathname: string }): string | null {
   const refParam = url.searchParams.get('ref');
@@ -103,7 +105,15 @@ export function resolveRefCookieValue(url: URL | { searchParams: URLSearchParams
 
   const partnerMatch = url.pathname.match(/^\/partners\/([^/]+)/i);
   if (partnerMatch) {
-    const slug = partnerMatch[1].toLowerCase();
+    // Decode first: /partners/vacation%2Drentals must not slip past the
+    // exclusion list and clobber a real attribution cookie.
+    let raw = partnerMatch[1];
+    try {
+      raw = decodeURIComponent(raw);
+    } catch {
+      // Malformed escapes: keep the raw segment.
+    }
+    const slug = raw.toLowerCase();
     if (NON_AFFILIATE_PARTNER_PAGES.has(slug)) return null;
     return slug.toUpperCase();
   }

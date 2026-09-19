@@ -8,9 +8,19 @@ import { AffiliateStatus, ApplicationStatus, AffiliateCategory } from '@prisma/c
 import crypto from 'crypto';
 
 /**
+ * Characters a real referral code or partner slug can contain. Anything else
+ * is rejected before it reaches a query: Prisma's `mode: 'insensitive'`
+ * compiles to ILIKE on Postgres WITHOUT escaping, so `%` and `_` in user
+ * input act as wildcards (`?ref=%` matched an arbitrary affiliate in prod,
+ * verified 2026-09-19).
+ */
+const VALID_REF = /^[A-Za-z0-9-]{1,64}$/;
+
+/**
  * Get an active affiliate by referral code
  */
 export async function getAffiliateByCode(code: string) {
+  if (!VALID_REF.test(code)) return null;
   return prisma.affiliate.findFirst({
     where: { code: { equals: code, mode: 'insensitive' } },
   });
@@ -44,18 +54,42 @@ export function getPartnerSlug(affiliate: { partnerSlug?: string | null; code: s
  *
  * The middleware writes the cookie in two forms: an Affiliate.code from
  * `?ref=<code>`, or an UPPERCASED partnerSlug from a `/partners/<slug>` visit
- * ("COCKTAIL-COWBOYS" for code "COWBOYS"). Same matcher as
- * linkOrderToAffiliate, so attribution, perks, and commissions agree on what
- * resolves. Code-only lookups (getAffiliateByCode) cannot see the slug form.
+ * ("COCKTAIL-COWBOYS" for code "COWBOYS"). linkOrderToAffiliate delegates
+ * here, so attribution, perks, and commissions agree on what resolves.
+ * Code-only lookups (getAffiliateByCode) cannot see the slug form.
+ *
+ * Deterministic precedence: a code match wins over a partnerSlug match, so a
+ * pathological collision (one affiliate's code equals another's slug) cannot
+ * flip winners between queries. Callers own the ACTIVE-status check.
+ *
+ * Selects only the fields attribution needs — never secrets like
+ * passwordHash, payoutDetails, or the callback/webhook API keys.
  */
 export async function resolveAffiliateByRef(ref: string) {
-  return prisma.affiliate.findFirst({
-    where: {
-      OR: [
-        { code: { equals: ref, mode: 'insensitive' } },
-        { partnerSlug: ref.toLowerCase() },
-      ],
-    },
+  const trimmed = ref?.trim();
+  if (!trimmed || !VALID_REF.test(trimmed)) return null;
+
+  const select = {
+    id: true,
+    code: true,
+    partnerSlug: true,
+    status: true,
+    businessName: true,
+    contactName: true,
+    email: true,
+    customerPerk: true,
+    commissionRateOverride: true,
+  } as const;
+
+  const byCode = await prisma.affiliate.findFirst({
+    where: { code: { equals: trimmed, mode: 'insensitive' } },
+    select,
+  });
+  if (byCode) return byCode;
+
+  return prisma.affiliate.findUnique({
+    where: { partnerSlug: trimmed.toLowerCase() },
+    select,
   });
 }
 

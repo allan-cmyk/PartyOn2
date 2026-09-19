@@ -105,9 +105,12 @@ export default function CheckoutPage() {
     fetch('/api/v1/affiliate/attribution', { credentials: 'include' })
       .then(res => res.json())
       .then(data => {
-        if (data.success && data.data?.active) {
+        // Show exactly the perk the server will honor — a fallback label
+        // here could promise free delivery the server then charges for.
+        const perk = typeof data.data?.customerPerk === 'string' ? data.data.customerPerk.trim() : '';
+        if (data.success && data.data?.active && perk) {
           setAffiliatePartner(data.data.partnerName);
-          setAffiliatePerk(data.data.customerPerk || 'Free Delivery');
+          setAffiliatePerk(perk);
         }
       })
       .catch(() => { /* ignore */ });

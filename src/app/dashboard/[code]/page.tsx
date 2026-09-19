@@ -201,7 +201,9 @@ export default function DashboardPage(): ReactElement {
     fetch('/api/v1/affiliate/attribution')
       .then((res) => res.json())
       .then((json) => {
-        if (json.success && json.data?.active) {
+        // Only claim the perk the server will honor — customerPerk is free
+        // text and not every partner's perk is free delivery.
+        if (json.success && json.data?.active && json.data.customerPerk === 'Free Delivery') {
           const promo: AppliedPromo = {
             type: 'affiliate',
             code: json.data.affiliateId,
