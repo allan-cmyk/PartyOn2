@@ -6,6 +6,22 @@
 import { prisma } from '@/lib/database/client';
 import { AffiliateStatus, ApplicationStatus, AffiliateCategory } from '@prisma/client';
 import crypto from 'crypto';
+import { NON_AFFILIATE_PARTNER_PAGES } from '@/lib/affiliates/non-affiliate-pages';
+
+/**
+ * A partnerSlug that matches a static non-affiliate /partners page would never
+ * receive path attribution (the middleware refuses to set the cookie for those
+ * slugs), so refuse it at write time instead of shipping a silently dead code.
+ */
+function assertSlugNotReserved(partnerSlug: string | null | undefined): void {
+  if (partnerSlug && NON_AFFILIATE_PARTNER_PAGES.has(partnerSlug.toLowerCase())) {
+    throw new Error(
+      `Partner slug "${partnerSlug}" is reserved by a static page — remove it from ` +
+      `NON_AFFILIATE_PARTNER_PAGES (src/lib/affiliates/non-affiliate-pages.ts) first, ` +
+      `or pick a different slug`
+    );
+  }
+}
 
 /**
  * Characters a real referral code or partner slug can contain. Anything else
@@ -30,6 +46,7 @@ export async function getAffiliateByCode(code: string) {
  * Get affiliate by partner page slug (tries partnerSlug first, falls back to code)
  */
 export async function getAffiliateBySlug(slug: string) {
+  if (!VALID_REF.test(slug)) return null;
   const lower = slug.toLowerCase();
   // Try partnerSlug first
   const bySlug = await prisma.affiliate.findUnique({
@@ -165,7 +182,12 @@ export async function createAffiliate(data: {
   partnerSlug?: string;
   status?: AffiliateStatus;
 }) {
-  const code = data.code || generateReferralCode(data.businessName);
+  // Normalize a supplied code the same way updateAffiliateCode does: codes
+  // are strictly alphanumeric (VALID_REF rejects anything else at read time,
+  // so an underscore or space here would ship a code that never resolves).
+  const supplied = data.code ? data.code.toUpperCase().replace(/[^A-Z0-9]/g, '') : '';
+  const code = supplied || generateReferralCode(data.businessName);
+  assertSlugNotReserved(data.partnerSlug);
 
   // Check code uniqueness, regenerate if needed
   const existing = await prisma.affiliate.findUnique({ where: { code } });
@@ -226,6 +248,9 @@ export async function updateAffiliate(id: string, data: Record<string, unknown>)
   const filtered: Record<string, unknown> = {};
   for (const key of allowed) {
     if (key in data) filtered[key] = data[key];
+  }
+  if ('partnerSlug' in filtered && typeof filtered.partnerSlug === 'string') {
+    assertSlugNotReserved(filtered.partnerSlug);
   }
   return prisma.affiliate.update({
     where: { id },

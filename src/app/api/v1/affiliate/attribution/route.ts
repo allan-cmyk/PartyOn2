@@ -17,13 +17,17 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     // Explicit beats inferred WHEN IT RESOLVES: an explicit ?code= (from
     // /order?ref= or the partner-page StrStartOrderButton) expresses fresher
-    // intent than a 30-day cookie, so it wins. But junk explicit input (a
-    // typo'd ?ref=) must not erase a valid cookie attribution, so on a miss
-    // we fall back to the cookie. Both forms — Affiliate.code and the
-    // cookie's UPPERCASED SLUG variant ("FIVE-STAR" for code "FIVESTAR") —
-    // resolve via resolveAffiliateByRef; a code-only lookup silently dropped
-    // slug-form attribution until 2026-09 (and cookie-first shadowed valid
-    // explicit codes before the 2026-07-08 review — keep this order).
+    // intent than a 30-day cookie, so it wins. On a miss we fall back to the
+    // cookie — this matters for API callers passing a stale/placeholder
+    // ?code= while a valid cookie exists. (A document navigation with a
+    // WELL-FORMED junk ?ref= will have already overwritten the cookie in
+    // middleware before this runs — that clobber can't be detected without a
+    // DB at the edge; malformed refs are no longer written at all.) Both
+    // forms — Affiliate.code and the cookie's UPPERCASED SLUG variant
+    // ("FIVE-STAR" for code "FIVESTAR") — resolve via resolveAffiliateByRef;
+    // a code-only lookup silently dropped slug-form attribution until
+    // 2026-09 (and cookie-first shadowed valid explicit codes before the
+    // 2026-07-08 review — keep this order).
     let affiliate = queryCode ? await resolveAffiliateByRef(queryCode) : null;
     if ((!affiliate || affiliate.status !== 'ACTIVE') && refCode && refCode !== queryCode) {
       affiliate = await resolveAffiliateByRef(refCode);

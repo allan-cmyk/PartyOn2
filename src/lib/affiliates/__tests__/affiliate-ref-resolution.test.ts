@@ -68,7 +68,7 @@ vi.mock('@/lib/database/client', () => ({
   },
 }));
 
-import { resolveAffiliateByRef } from '@/lib/affiliates/affiliate-service';
+import { resolveAffiliateByRef, getAffiliateBySlug } from '@/lib/affiliates/affiliate-service';
 
 beforeEach(() => {
   findFirst.mockClear();
@@ -126,6 +126,20 @@ describe('resolveAffiliateByRef — wildcard/charset guard (ILIKE injection)', (
       expect(findUnique).not.toHaveBeenCalled();
     }
   );
+});
+
+describe('getAffiliateBySlug — same wildcard guard (public partner page + lead stamping)', () => {
+  it('resolves a real slug', async () => {
+    expect((await getAffiliateBySlug('five-star'))?.id).toBe('aff-fivestar');
+  });
+
+  it.each(['%', '_______', 'ev%il', ''])('never queries for %j', async (slug) => {
+    // /partners/%25 previously fell through to the ILIKE code arm and could
+    // render an arbitrary partner's page (contact info included).
+    expect(await getAffiliateBySlug(slug)).toBeNull();
+    expect(findFirst).not.toHaveBeenCalled();
+    expect(findUnique).not.toHaveBeenCalled();
+  });
 });
 
 describe('resolveAffiliateByRef — status and projection', () => {

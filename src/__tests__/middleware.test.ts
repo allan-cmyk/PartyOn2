@@ -72,9 +72,26 @@ describe('resolveRefCookieValue', () => {
       }
     });
 
-    it('cannot be bypassed with percent-encoding', () => {
+    it('cannot be bypassed with percent-encoding (single or double)', () => {
       expect(resolveRefCookieValue(urlOf('/partners/vacation%2Drentals'))).toBeNull();
       expect(resolveRefCookieValue(urlOf('/partners/Vacation%2DRentals/order'))).toBeNull();
+      // Double-encoded decodes once to 'vacation%2drentals' — not a valid
+      // ref shape, so no cookie is written at all.
+      expect(resolveRefCookieValue(urlOf('/partners/vacation%252Drentals'))).toBeNull();
+    });
+
+    it('never writes a cookie value that could not be a real code or slug', () => {
+      // '%' and '_' are ILIKE wildcards; emoji/junk can never resolve. A junk
+      // cookie's only possible effect is clobbering a valid attribution.
+      expect(resolveRefCookieValue(urlOf('/?ref=%25'))).toBeNull();
+      expect(resolveRefCookieValue(urlOf('/?ref=_______'))).toBeNull();
+      expect(resolveRefCookieValue(urlOf('/?ref=COWBOYS%25'))).toBeNull();
+      expect(resolveRefCookieValue(urlOf('/?ref=' + 'A'.repeat(65)))).toBeNull();
+      expect(resolveRefCookieValue(urlOf('/partners/%F0%9F%92%A5'))).toBeNull();
+    });
+
+    it('a malformed ?ref= does not mask path attribution', () => {
+      expect(resolveRefCookieValue(urlOf('/partners/five-star?ref=%25'))).toBe('FIVE-STAR');
     });
 
     it('still honors an explicit ?ref= on an excluded page', () => {

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { OPS_SESSION_COOKIE, verifyOpsSessionToken } from '@/lib/auth/ops-token';
+import { NON_AFFILIATE_PARTNER_PAGES } from '@/lib/affiliates/non-affiliate-pages';
 
 /**
  * Middleware:
@@ -64,24 +65,15 @@ export async function middleware(request: NextRequest) {
 }
 
 /**
- * /partners/<slug> pages that are NOT affiliates: generic category landers and
- * sales pages with no Affiliate row. Setting a cookie for these would not just
- * be junk downstream lookups discard — a visit would OVERWRITE a real partner's
- * 30-day attribution cookie (last-touch) with a value that resolves to nothing.
- *
- * If one of these ever gets a real Affiliate row (code or partnerSlug), remove
- * it from this list so path visits attribute again.
+ * Only a value that could be a real Affiliate.code or partnerSlug is worth
+ * writing to the cookie. Anything else (wildcards, stray encodings, emoji)
+ * can never resolve — writing it could only clobber a prior valid
+ * attribution — and `%`/`_` act as wildcards in the DB's case-insensitive
+ * lookups. Keep in sync with VALID_REF in
+ * src/lib/affiliates/affiliate-service.ts (not imported: that module pulls
+ * in Prisma, which cannot load in this edge middleware).
  */
-const NON_AFFILIATE_PARTNER_PAGES = new Set([
-  'pitch',
-  'anderson-mill-marina-boat-club',
-  'austin-wedding-dj',
-  'boat-babes',
-  'hotels-resorts',
-  'mobile-bartenders',
-  'property-management',
-  'vacation-rentals',
-]);
+const VALID_REF_COOKIE = /^[A-Za-z0-9-]{1,64}$/;
 
 /**
  * Resolve the ref_code cookie value from a request URL.
@@ -101,7 +93,9 @@ const NON_AFFILIATE_PARTNER_PAGES = new Set([
  */
 export function resolveRefCookieValue(url: URL | { searchParams: URLSearchParams; pathname: string }): string | null {
   const refParam = url.searchParams.get('ref');
-  if (refParam) return refParam.toUpperCase();
+  if (refParam && VALID_REF_COOKIE.test(refParam)) return refParam.toUpperCase();
+  // A malformed ?ref= is ignored (it could never resolve; writing it would
+  // only clobber a valid cookie) — path inference below may still apply.
 
   const partnerMatch = url.pathname.match(/^\/partners\/([^/]+)/i);
   if (partnerMatch) {
@@ -114,6 +108,7 @@ export function resolveRefCookieValue(url: URL | { searchParams: URLSearchParams
       // Malformed escapes: keep the raw segment.
     }
     const slug = raw.toLowerCase();
+    if (!VALID_REF_COOKIE.test(slug)) return null;
     if (NON_AFFILIATE_PARTNER_PAGES.has(slug)) return null;
     return slug.toUpperCase();
   }
