@@ -26,10 +26,15 @@ import { austinWeddingDj } from '@/lib/partners/landing-pages';
  *   - [COUPLE_1/2]      — author name for each testimonial
  *   - [VENUE_1/2]       — venue name from each wedding
  *   - [MONTH_YEAR_1/2]  — when each wedding happened
- *   - WEDDING_DJ ref code — replace once the affiliate record exists in /admin/affiliates
+ *   - WEDDINGDJ ref code — replace once the affiliate record exists in /admin/affiliates
+ *     (create it with that exact alphanumeric code),
+ *     and remove 'austin-wedding-dj' from NON_AFFILIATE_PARTNER_PAGES in src/middleware.ts
+ *     so page visits attribute again
  */
 
-const REF_CODE = 'WEDDING_DJ';
+// Alphanumeric on purpose: '_' is an ILIKE wildcard, so ref lookups reject it
+// (VALID_REF in affiliate-service.ts) — a WEDDING_DJ code could never resolve.
+const REF_CODE = 'WEDDINGDJ';
 // TODO(dj-assets): replace with the real DJ photo path when delivered
 const HERO_IMAGE = austinWeddingDj.heroImageUrl ?? '/images/partners/austin-wedding-dj-hero.webp';
 

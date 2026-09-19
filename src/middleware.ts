@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { OPS_SESSION_COOKIE, verifyOpsSessionToken } from '@/lib/auth/ops-token';
+import { NON_AFFILIATE_PARTNER_PAGES } from '@/lib/affiliates/non-affiliate-pages';
 
 /**
  * Middleware:
@@ -64,6 +65,17 @@ export async function middleware(request: NextRequest) {
 }
 
 /**
+ * Only a value that could be a real Affiliate.code or partnerSlug is worth
+ * writing to the cookie. Anything else (wildcards, stray encodings, emoji)
+ * can never resolve — writing it could only clobber a prior valid
+ * attribution — and `%`/`_` act as wildcards in the DB's case-insensitive
+ * lookups. Keep in sync with VALID_REF in
+ * src/lib/affiliates/affiliate-service.ts (not imported: that module pulls
+ * in Prisma, which cannot load in this edge middleware).
+ */
+const VALID_REF_COOKIE = /^[A-Za-z0-9-]{1,64}$/;
+
+/**
  * Resolve the ref_code cookie value from a request URL.
  *
  * Precedence (last-touch wins, but explicit ?ref= beats path inference):
@@ -73,20 +85,31 @@ export async function middleware(request: NextRequest) {
  * Returns null when neither applies (so callers leave any existing cookie alone).
  *
  * The cookie value may be either an Affiliate.code (from ?ref=) or a partnerSlug
- * (from /partners/<slug>). linkOrderToAffiliate at checkout matches either form.
- *
- * Excluded paths: /partners/pitch is the prospective-partner sales page, not an
- * affiliate. Treating it as one would set a junk cookie that downstream lookups
- * would just discard, but we'd rather not pollute the cookie at all.
+ * (from /partners/<slug>). Server-side readers must resolve BOTH forms —
+ * resolveAffiliateByRef / linkOrderToAffiliate (orders, perks) and
+ * resolveAffiliateId (leads) all do; a code-only lookup cannot see the slug
+ * form. (Those resolvers import Prisma, so they can never be called from this
+ * edge middleware itself.)
  */
 export function resolveRefCookieValue(url: URL | { searchParams: URLSearchParams; pathname: string }): string | null {
   const refParam = url.searchParams.get('ref');
-  if (refParam) return refParam.toUpperCase();
+  if (refParam && VALID_REF_COOKIE.test(refParam)) return refParam.toUpperCase();
+  // A malformed ?ref= is ignored (it could never resolve; writing it would
+  // only clobber a valid cookie) — path inference below may still apply.
 
   const partnerMatch = url.pathname.match(/^\/partners\/([^/]+)/i);
   if (partnerMatch) {
-    const slug = partnerMatch[1].toLowerCase();
-    if (slug === 'pitch') return null;
+    // Decode first: /partners/vacation%2Drentals must not slip past the
+    // exclusion list and clobber a real attribution cookie.
+    let raw = partnerMatch[1];
+    try {
+      raw = decodeURIComponent(raw);
+    } catch {
+      // Malformed escapes: keep the raw segment.
+    }
+    const slug = raw.toLowerCase();
+    if (!VALID_REF_COOKIE.test(slug)) return null;
+    if (NON_AFFILIATE_PARTNER_PAGES.has(slug)) return null;
     return slug.toUpperCase();
   }
 

@@ -15,7 +15,7 @@ import { resolveOrderSmsConsent } from '@/lib/consent/order-sms-consent';
 import { sendOrderConfirmationEmail } from '@/lib/email';
 import { recordDiscountUsage, validateDiscountCode } from '@/lib/discounts/discount-engine';
 import { linkOrderToAffiliate } from '@/lib/affiliates/commission-engine';
-import { getAffiliateByCode } from '@/lib/affiliates/affiliate-service';
+import { resolveAffiliateByRef } from '@/lib/affiliates/affiliate-service';
 import { createOrderCalendarEvent } from '@/lib/calendar/google-calendar';
 import { commitInventoryForOrderItem } from '@/lib/inventory/services/order-service';
 import { snapshotItemCost } from '@/lib/analytics/margin-service';
@@ -804,7 +804,7 @@ export async function handleGroupV2PaymentCompleted(
     try {
       const linked = await linkOrderToAffiliate(order, resolvedAffiliateCode);
       if (linked) {
-        const affiliate = await getAffiliateByCode(resolvedAffiliateCode);
+        const affiliate = await resolveAffiliateByRef(resolvedAffiliateCode);
         if (affiliate?.email) affiliateEmail = affiliate.email;
         console.log('[Group V2 Payment] Linked to affiliate:', resolvedAffiliateCode);
       }

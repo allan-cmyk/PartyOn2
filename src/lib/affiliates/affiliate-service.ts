@@ -6,11 +6,37 @@
 import { prisma } from '@/lib/database/client';
 import { AffiliateStatus, ApplicationStatus, AffiliateCategory } from '@prisma/client';
 import crypto from 'crypto';
+import { NON_AFFILIATE_PARTNER_PAGES } from '@/lib/affiliates/non-affiliate-pages';
+
+/**
+ * A partnerSlug that matches a static non-affiliate /partners page would never
+ * receive path attribution (the middleware refuses to set the cookie for those
+ * slugs), so refuse it at write time instead of shipping a silently dead code.
+ */
+function assertSlugNotReserved(partnerSlug: string | null | undefined): void {
+  if (partnerSlug && NON_AFFILIATE_PARTNER_PAGES.has(partnerSlug.toLowerCase())) {
+    throw new Error(
+      `Partner slug "${partnerSlug}" is reserved by a static page — remove it from ` +
+      `NON_AFFILIATE_PARTNER_PAGES (src/lib/affiliates/non-affiliate-pages.ts) first, ` +
+      `or pick a different slug`
+    );
+  }
+}
+
+/**
+ * Characters a real referral code or partner slug can contain. Anything else
+ * is rejected before it reaches a query: Prisma's `mode: 'insensitive'`
+ * compiles to ILIKE on Postgres WITHOUT escaping, so `%` and `_` in user
+ * input act as wildcards (`?ref=%` matched an arbitrary affiliate in prod,
+ * verified 2026-09-19).
+ */
+const VALID_REF = /^[A-Za-z0-9-]{1,64}$/;
 
 /**
  * Get an active affiliate by referral code
  */
 export async function getAffiliateByCode(code: string) {
+  if (!VALID_REF.test(code)) return null;
   return prisma.affiliate.findFirst({
     where: { code: { equals: code, mode: 'insensitive' } },
   });
@@ -20,6 +46,7 @@ export async function getAffiliateByCode(code: string) {
  * Get affiliate by partner page slug (tries partnerSlug first, falls back to code)
  */
 export async function getAffiliateBySlug(slug: string) {
+  if (!VALID_REF.test(slug)) return null;
   const lower = slug.toLowerCase();
   // Try partnerSlug first
   const bySlug = await prisma.affiliate.findUnique({
@@ -37,6 +64,50 @@ export async function getAffiliateBySlug(slug: string) {
  */
 export function getPartnerSlug(affiliate: { partnerSlug?: string | null; code: string }): string {
   return affiliate.partnerSlug ?? affiliate.code.toLowerCase();
+}
+
+/**
+ * Resolve a `ref_code` cookie value (or any user-supplied ref) to an affiliate.
+ *
+ * The middleware writes the cookie in two forms: an Affiliate.code from
+ * `?ref=<code>`, or an UPPERCASED partnerSlug from a `/partners/<slug>` visit
+ * ("COCKTAIL-COWBOYS" for code "COWBOYS"). linkOrderToAffiliate delegates
+ * here, so attribution, perks, and commissions agree on what resolves.
+ * Code-only lookups (getAffiliateByCode) cannot see the slug form.
+ *
+ * Deterministic precedence: a code match wins over a partnerSlug match, so a
+ * pathological collision (one affiliate's code equals another's slug) cannot
+ * flip winners between queries. Callers own the ACTIVE-status check.
+ *
+ * Selects only the fields attribution needs — never secrets like
+ * passwordHash, payoutDetails, or the callback/webhook API keys.
+ */
+export async function resolveAffiliateByRef(ref: string) {
+  const trimmed = ref?.trim();
+  if (!trimmed || !VALID_REF.test(trimmed)) return null;
+
+  const select = {
+    id: true,
+    code: true,
+    partnerSlug: true,
+    status: true,
+    businessName: true,
+    contactName: true,
+    email: true,
+    customerPerk: true,
+    commissionRateOverride: true,
+  } as const;
+
+  const byCode = await prisma.affiliate.findFirst({
+    where: { code: { equals: trimmed, mode: 'insensitive' } },
+    select,
+  });
+  if (byCode) return byCode;
+
+  return prisma.affiliate.findUnique({
+    where: { partnerSlug: trimmed.toLowerCase() },
+    select,
+  });
 }
 
 /**
@@ -111,7 +182,12 @@ export async function createAffiliate(data: {
   partnerSlug?: string;
   status?: AffiliateStatus;
 }) {
-  const code = data.code || generateReferralCode(data.businessName);
+  // Normalize a supplied code the same way updateAffiliateCode does: codes
+  // are strictly alphanumeric (VALID_REF rejects anything else at read time,
+  // so an underscore or space here would ship a code that never resolves).
+  const supplied = data.code ? data.code.toUpperCase().replace(/[^A-Z0-9]/g, '') : '';
+  const code = supplied || generateReferralCode(data.businessName);
+  assertSlugNotReserved(data.partnerSlug);
 
   // Check code uniqueness, regenerate if needed
   const existing = await prisma.affiliate.findUnique({ where: { code } });
@@ -172,6 +248,9 @@ export async function updateAffiliate(id: string, data: Record<string, unknown>)
   const filtered: Record<string, unknown> = {};
   for (const key of allowed) {
     if (key in data) filtered[key] = data[key];
+  }
+  if ('partnerSlug' in filtered && typeof filtered.partnerSlug === 'string') {
+    assertSlugNotReserved(filtered.partnerSlug);
   }
   return prisma.affiliate.update({
     where: { id },

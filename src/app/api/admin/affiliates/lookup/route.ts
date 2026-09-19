@@ -4,7 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getAffiliateByCode } from '@/lib/affiliates/affiliate-service';
+import { resolveAffiliateByRef } from '@/lib/affiliates/affiliate-service';
 import { requireOpsAuth } from '@/lib/auth/ops-session';
 
 export async function GET(request: NextRequest) {
@@ -20,7 +20,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const affiliate = await getAffiliateByCode(code);
+    // Operators paste both forms (COWBOYS and cocktail-cowboys) — resolve either.
+    const affiliate = await resolveAffiliateByRef(code);
     if (!affiliate) {
       return NextResponse.json(
         { success: false, error: 'Affiliate not found' },

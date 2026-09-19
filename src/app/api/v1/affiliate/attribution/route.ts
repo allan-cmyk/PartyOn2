@@ -7,7 +7,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { getAffiliateByCode } from '@/lib/affiliates/affiliate-service';
+import { resolveAffiliateByRef } from '@/lib/affiliates/affiliate-service';
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
@@ -15,19 +15,23 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const refCode = cookieStore.get('ref_code')?.value;
     const queryCode = request.nextUrl.searchParams.get('code');
 
-    // Explicit beats inferred: an explicit ?code= (a real Affiliate.code from
-    // /order?ref= or the partner-page StrStartOrderButton) must win over the
-    // middleware's path-derived cookie, which holds an UPPERCASED SLUG
-    // ("FIVE-STAR") that getAffiliateByCode can't resolve when it differs
-    // from the code ("FIVESTAR"). Cookie-first shadowed the valid code and
-    // silently dropped attribution (code review 2026-07-08).
-    const code = queryCode || refCode;
-
-    if (!code) {
-      return NextResponse.json({ success: true, data: { active: false } });
+    // Explicit beats inferred WHEN IT RESOLVES: an explicit ?code= (from
+    // /order?ref= or the partner-page StrStartOrderButton) expresses fresher
+    // intent than a 30-day cookie, so it wins. On a miss we fall back to the
+    // cookie — this matters for API callers passing a stale/placeholder
+    // ?code= while a valid cookie exists. (A document navigation with a
+    // WELL-FORMED junk ?ref= will have already overwritten the cookie in
+    // middleware before this runs — that clobber can't be detected without a
+    // DB at the edge; malformed refs are no longer written at all.) Both
+    // forms — Affiliate.code and the cookie's UPPERCASED SLUG variant
+    // ("FIVE-STAR" for code "FIVESTAR") — resolve via resolveAffiliateByRef;
+    // a code-only lookup silently dropped slug-form attribution until
+    // 2026-09 (and cookie-first shadowed valid explicit codes before the
+    // 2026-07-08 review — keep this order).
+    let affiliate = queryCode ? await resolveAffiliateByRef(queryCode) : null;
+    if ((!affiliate || affiliate.status !== 'ACTIVE') && refCode && refCode !== queryCode) {
+      affiliate = await resolveAffiliateByRef(refCode);
     }
-
-    const affiliate = await getAffiliateByCode(code);
 
     if (!affiliate || affiliate.status !== 'ACTIVE') {
       return NextResponse.json({ success: true, data: { active: false } });

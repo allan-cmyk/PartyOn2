@@ -27,7 +27,7 @@ import {
   handleGroupV2DeliveryPayment,
 } from './group-v2-payments';
 import { linkOrderToAffiliate, voidCommissionForOrder } from '@/lib/affiliates/commission-engine';
-import { getAffiliateByCode } from '@/lib/affiliates/affiliate-service';
+import { resolveAffiliateByRef } from '@/lib/affiliates/affiliate-service';
 import { createOrderCalendarEvent } from '@/lib/calendar/google-calendar';
 import {
   snapshotOrderStripeFees,
@@ -228,7 +228,9 @@ async function handleCheckoutSessionCompleted(
     }
 
     if (attributedCode) {
-      const affiliate = await getAffiliateByCode(attributedCode);
+      // attributedCode may have matched via partnerSlug (discount/draft
+      // fallback) — resolve the same way so the partner email isn't skipped.
+      const affiliate = await resolveAffiliateByRef(attributedCode);
       if (affiliate?.email) affiliateEmail = affiliate.email;
     }
 

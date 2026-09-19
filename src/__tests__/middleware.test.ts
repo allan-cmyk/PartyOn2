@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest';
+import fs from 'fs';
+import path from 'path';
 import { resolveRefCookieValue } from '@/middleware';
 
 function urlOf(input: string): URL {
@@ -31,7 +33,7 @@ describe('resolveRefCookieValue', () => {
     });
 
     it('lowercases the slug before re-uppercasing it (canonical form)', () => {
-      expect(resolveRefCookieValue(urlOf('/partners/Mobile-Bartenders'))).toBe('MOBILE-BARTENDERS');
+      expect(resolveRefCookieValue(urlOf('/partners/Cocktail-Cowboys'))).toBe('COCKTAIL-COWBOYS');
     });
   });
 
@@ -52,6 +54,50 @@ describe('resolveRefCookieValue', () => {
       expect(resolveRefCookieValue(urlOf('/partners/pitch/anything'))).toBeNull();
     });
 
+    it('returns null for generic category landers with no Affiliate row (would overwrite real attribution)', () => {
+      for (const slug of [
+        'anderson-mill-marina-boat-club',
+        'austin-wedding-dj',
+        'boat-babes',
+        'hotels-resorts',
+        'mobile-bartenders',
+        'property-management',
+        'vacation-rentals',
+      ]) {
+        expect(resolveRefCookieValue(urlOf(`/partners/${slug}`))).toBeNull();
+        // Excluded regardless of the case the URL was typed in…
+        expect(resolveRefCookieValue(urlOf(`/partners/${slug.toUpperCase()}`))).toBeNull();
+        // …and on sub-paths.
+        expect(resolveRefCookieValue(urlOf(`/partners/${slug}/order`))).toBeNull();
+      }
+    });
+
+    it('cannot be bypassed with percent-encoding (single or double)', () => {
+      expect(resolveRefCookieValue(urlOf('/partners/vacation%2Drentals'))).toBeNull();
+      expect(resolveRefCookieValue(urlOf('/partners/Vacation%2DRentals/order'))).toBeNull();
+      // Double-encoded decodes once to 'vacation%2drentals' — not a valid
+      // ref shape, so no cookie is written at all.
+      expect(resolveRefCookieValue(urlOf('/partners/vacation%252Drentals'))).toBeNull();
+    });
+
+    it('never writes a cookie value that could not be a real code or slug', () => {
+      // '%' and '_' are ILIKE wildcards; emoji/junk can never resolve. A junk
+      // cookie's only possible effect is clobbering a valid attribution.
+      expect(resolveRefCookieValue(urlOf('/?ref=%25'))).toBeNull();
+      expect(resolveRefCookieValue(urlOf('/?ref=_______'))).toBeNull();
+      expect(resolveRefCookieValue(urlOf('/?ref=COWBOYS%25'))).toBeNull();
+      expect(resolveRefCookieValue(urlOf('/?ref=' + 'A'.repeat(65)))).toBeNull();
+      expect(resolveRefCookieValue(urlOf('/partners/%F0%9F%92%A5'))).toBeNull();
+    });
+
+    it('a malformed ?ref= does not mask path attribution', () => {
+      expect(resolveRefCookieValue(urlOf('/partners/five-star?ref=%25'))).toBe('FIVE-STAR');
+    });
+
+    it('still honors an explicit ?ref= on an excluded page', () => {
+      expect(resolveRefCookieValue(urlOf('/partners/vacation-rentals?ref=COWBOYS'))).toBe('COWBOYS');
+    });
+
     it('returns null for unrelated paths', () => {
       expect(resolveRefCookieValue(urlOf('/'))).toBeNull();
       expect(resolveRefCookieValue(urlOf('/products'))).toBeNull();
@@ -60,6 +106,43 @@ describe('resolveRefCookieValue', () => {
 
     it('returns null when ?ref= is empty string', () => {
       expect(resolveRefCookieValue(urlOf('/?ref='))).toBeNull();
+    });
+  });
+
+  describe('static partner page coverage (drift guard)', () => {
+    // Static pages under src/app/partners/ shadow the dynamic [slug] route.
+    // Each one must be EITHER backed by a real Affiliate row (its slug
+    // attributes via the path cookie) OR listed in middleware.ts's
+    // NON_AFFILIATE_PARTNER_PAGES (so it can't clobber a real partner's
+    // cookie with an unresolvable value). A new static lander that is in
+    // neither list silently destroys attribution — this test makes that a
+    // build failure instead.
+    const AFFILIATE_BACKED = [
+      'cocktail-cowboys', // COWBOYS
+      'connected-austin', // CONNECTED
+      'inn-cahoots', // MISCHIEF
+      'lake-travis-yacht-rentals', // LTYACHTRENTALS
+      // PREMIER's partnerSlug is not set in the DB yet (its CTAs carry
+      // ?ref=PREMIER, so the funnel attributes regardless). Listed here as
+      // intentionally path-cookied; see the 2026-09-19 affiliate audit.
+      'premier-party-cruises',
+    ];
+
+    it('every static /partners page is affiliate-backed or excluded', () => {
+      const partnersDir = path.join(process.cwd(), 'src/app/partners');
+      const staticSlugs = fs
+        .readdirSync(partnersDir, { withFileTypes: true })
+        .filter((e) => e.isDirectory() && e.name !== '[slug]')
+        .map((e) => e.name);
+
+      expect(staticSlugs.length).toBeGreaterThan(0);
+      for (const slug of staticSlugs) {
+        const excluded = resolveRefCookieValue(urlOf(`/partners/${slug}`)) === null;
+        expect(
+          excluded || AFFILIATE_BACKED.includes(slug),
+          `New static partner page "${slug}": add it to AFFILIATE_BACKED here if it has an Affiliate row, or to NON_AFFILIATE_PARTNER_PAGES in src/middleware.ts if not`
+        ).toBe(true);
+      }
     });
   });
 });

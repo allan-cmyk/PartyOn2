@@ -192,7 +192,7 @@ function OrderRedirectInner(): ReactElement {
 
       if (ref) {
         try {
-          const attrRes = await fetch(`/api/v1/affiliate/attribution?code=${ref}`);
+          const attrRes = await fetch(`/api/v1/affiliate/attribution?code=${encodeURIComponent(ref)}`);
           if (attrRes.ok) {
             const attrJson = await attrRes.json();
             if (attrJson.data?.affiliateId) {

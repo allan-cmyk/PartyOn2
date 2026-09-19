@@ -85,6 +85,7 @@ vi.mock('@/lib/affiliates/commission-engine', () => ({
 }));
 vi.mock('@/lib/affiliates/affiliate-service', () => ({
   getAffiliateByCode: vi.fn().mockResolvedValue(null),
+  resolveAffiliateByRef: vi.fn().mockResolvedValue(null),
 }));
 // NOTE: the SUT imports `stripe` from '@/lib/stripe/client' (a lazy Proxy that
 // throws without STRIPE_SECRET_KEY). Mock that exact module id — a relative

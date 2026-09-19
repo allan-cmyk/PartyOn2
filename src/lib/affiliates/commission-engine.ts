@@ -6,6 +6,7 @@
 
 import { prisma } from '@/lib/database/client';
 import { CommissionStatus } from '@prisma/client';
+import { resolveAffiliateByRef } from '@/lib/affiliates/affiliate-service';
 
 /**
  * Progressive commission tiers (in cents)
@@ -201,14 +202,8 @@ export async function linkOrderToAffiliate(
   // Match by Affiliate.code (from ?ref=<code>) OR by Affiliate.partnerSlug
   // (from /partners/<slug> visits — middleware uppercases the slug into ref_code).
   // Per ADR M0001: partner-page visits without an explicit ?ref= now attribute too.
-  const affiliate = await prisma.affiliate.findFirst({
-    where: {
-      OR: [
-        { code: { equals: affiliateCode, mode: 'insensitive' } },
-        { partnerSlug: affiliateCode.toLowerCase() },
-      ],
-    },
-  });
+  // Shared resolver so checkout perks and webhook commissions can never drift.
+  const affiliate = await resolveAffiliateByRef(affiliateCode);
 
   if (!affiliate || affiliate.status !== 'ACTIVE') {
     console.log('[Affiliate] Invalid or inactive code:', affiliateCode);
