@@ -63,15 +63,15 @@ _(not captured)_
 ```json
 {
   "orders": 53,
-  "revenue": 25246.62,
+  "revenue": 25897.39,
   "segments": [
     {
       "margin": null,
       "orders": 51,
-      "revenue": 23340.51,
+      "revenue": 23991.28,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 457.66,
+      "averageOrderValue": 470.42,
       "marginCoveragePct": 0
     },
     {
@@ -93,7 +93,7 @@ _(not captured)_
       "marginCoveragePct": 34.5
     }
   ],
-  "capturedAt": "2026-09-19T08:00:49.408Z",
+  "capturedAt": "2026-09-20T08:00:49.536Z",
   "affiliateRoi": [
     {
       "code": "POUR24",
@@ -146,25 +146,25 @@ _(not captured)_
     {
       "code": "SIPNSOCIAL",
       "margin": null,
-      "orders": 1,
+      "orders": 2,
       "roiPct": null,
-      "revenue": 293.18,
+      "revenue": 789.01,
       "netMargin": null,
       "affiliateId": "3d00911f-3b75-40ad-bc3c-c87f20cdaeaf",
       "businessName": "Sip & Social On Wheels",
-      "commissionPaid": 13.54,
+      "commissionPaid": 35.43,
       "marginCoveragePct": 0
     },
     {
       "code": "LTYACHTRENTALS",
       "margin": null,
-      "orders": 2,
+      "orders": 3,
       "roiPct": null,
-      "revenue": 656.36,
+      "revenue": 994.3,
       "netMargin": null,
       "affiliateId": "e09b3a40-26cb-4c70-9b2a-6ea311c7a62e",
       "businessName": "Lake Travis Yacht Rentals",
-      "commissionPaid": 27.64,
+      "commissionPaid": 41.93,
       "marginCoveragePct": 0
     },
     {
@@ -204,15 +204,15 @@ _(not captured)_
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-09-19",
-  "averageOrderValue": 476.3513207547171,
+  "snapshotDate": "2026-09-20",
+  "averageOrderValue": 488.63,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-09-19 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-09-20 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
