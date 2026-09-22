@@ -481,13 +481,13 @@ export default function OrderPathwaysView() {
               verdict="Same Resend template, same params."
             />
             <ConvergenceRow
-              dimension="Internal order notification (GHL)"
+              dimension="Internal order notification (CoreLinq)"
               groupPath="notifyNewOrder(buildGhlPayload(order, 'group_v2')) @ 632"
               draftPath="notifyNewOrder(buildGhlPayload(order, 'draft')) @ webhooks.ts:258"
-              verdict="Same webhooks/ghl.ts handler, identical payload shape."
+              verdict="Same webhooks/ghl.ts handler (legacy-named; fans out to CoreLinq), identical payload shape."
             />
             <ConvergenceRow
-              dimension="GoHighLevel SMS webhook"
+              dimension="CoreLinq SMS webhook"
               groupPath="fires from notifyNewOrder()"
               draftPath="fires from notifyNewOrder()"
               verdict="Single fire-and-forget POST. Same idempotency guarantees."
