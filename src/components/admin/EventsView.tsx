@@ -270,7 +270,7 @@ export default function EventsView() {
             detail="Will replace this mockup section once invitee UX is signed off"
           />
           <Status label="DB persistence (events, rsvps, orders)" state="todo" detail="New Prisma models when ready" />
-          <Status label="SMS invite blast" state="todo" detail="Hooks into existing GoHighLevel webhook" />
+          <Status label="SMS invite blast" state="todo" detail="Hooks into the existing CoreLinq SMS webhook" />
           <Status label="Per-RSVP separate Stripe checkout" state="todo" detail="Reuses existing draft-order infra" />
           <Status label="Facebook friend import" state="exploring" detail="Requires FB Graph API + user OAuth" />
         </div>
