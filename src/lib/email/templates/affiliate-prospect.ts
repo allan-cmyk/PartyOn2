@@ -143,7 +143,7 @@ export function generateAffiliateProspectEmail(data: AffiliateProspectEmailData)
               <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 16px;">
                 <tr>
                   <td align="center">
-                    <a href="https://api.leadgenjay.com/widget/bookings/pod-partnerships" style="display: inline-block; background-color: #D4AF37; color: #1a1a1a; text-decoration: none; padding: 16px 48px; font-size: 16px; font-weight: 600; border-radius: 8px; letter-spacing: 0.05em;">
+                    <a href="https://123.partyondelivery.com/partnership-call" style="display: inline-block; background-color: #D4AF37; color: #1a1a1a; text-decoration: none; padding: 16px 48px; font-size: 16px; font-weight: 600; border-radius: 8px; letter-spacing: 0.05em;">
                       SCHEDULE A CALL
                     </a>
                   </td>
@@ -222,7 +222,7 @@ export function generateAffiliateProspectText(data: AffiliateProspectEmailData):
     '- We deliver directly to their door, boat, venue, or event -- wherever they need it',
     '- You earn commission automatically -- no invoicing, no follow-up needed',
     '',
-    'Schedule a call: https://api.leadgenjay.com/widget/bookings/pod-partnerships',
+    'Schedule a call: https://123.partyondelivery.com/partnership-call',
     '',
     'Learn more: https://partyondelivery.com/partners',
     '',
