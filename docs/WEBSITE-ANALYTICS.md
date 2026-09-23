@@ -1,6 +1,6 @@
 # Website Analytics Snapshot
 
-_Generated: 2026-09-22 — regenerated nightly by `/api/cron/analytics-snapshot`_
+_Generated: 2026-09-23 — regenerated nightly by `/api/cron/analytics-snapshot`_
 
 ## Open recommendations
 | Status | Risk | Effort | Impact $/mo | Segment | Title |
@@ -34,10 +34,10 @@ _Generated: 2026-09-22 — regenerated nightly by `/api/cron/analytics-snapshot`
 _Update status via `POST /api/admin/analytics/recommendations` with `{ id, status, notes? }`._
 
 ## Traffic (last 30 days)
-- Sessions: **2,626** (▼ 31%)  •  Users: **1,945** (▼ 33%)  •  Pageviews: **4,093**
+- Sessions: **2,611** (▼ 31%)  •  Users: **1,924** (▼ 33%)  •  Pageviews: **4,101**
 
 ## SEO (Search Console, 30d)
-- Impressions: **38,039** (▲ 26%)  •  Clicks: **554** (▲ 10%)  •  CTR: 1.46%  •  Avg position: 16.3
+- Impressions: **37,971** (▲ 25%)  •  Clicks: **538** (▲ 5%)  •  CTR: 1.42%  •  Avg position: 16.1
 
 ## Revenue by internal channel (30d, vs prior 30d)
 | Channel | Orders | Revenue | AOV | Margin % | Cost coverage | Rev WoW |
@@ -57,7 +57,7 @@ _Update status via `POST /api/admin/analytics/recommendations` with `{ id, statu
 ## Repeat purchase rate by segment (30d)
 | Segment | Orders | Repeat orders | Repeat rate |
 |---|---:|---:|---:|
-| general | 50 | 10 | 20% |
+| general | 51 | 10 | 19.6% |
 | kegs | 1 | 0 | 0% |
 | unknown | 1 | 0 | 0% |
 
@@ -65,7 +65,7 @@ _Update status via `POST /api/admin/analytics/recommendations` with `{ id, statu
 | Entry segment | Customers | Total revenue | Avg LTV |
 |---|---:|---:|---:|
 | kegs | 1 | $549.89 | $549.89 |
-| general | 261 | $110,559.22 | $423.6 |
+| general | 262 | $110,737.98 | $422.66 |
 | unknown | 163 | $55,713.63 | $341.8 |
 
 ## Landing page → orders (30d, our DB, vs prior 30d)
@@ -84,35 +84,35 @@ _Update status via `POST /api/admin/analytics/recommendations` with `{ id, statu
 ## GA4 revenue by channel (30d, vs prior 30d)
 | Channel | Sessions | Transactions | Revenue | Conv rate | Rev WoW |
 |---|---:|---:|---:|---:|---:|
-| Direct | 1469 | 1 | $1,356.22 | 0.07% | ▲ 362% |
+| Direct | 1486 | 1 | $1,356.22 | 0.07% | ▲ 362% |
 | AI Assistant | 35 | 1 | $549.89 | 2.86% | 🆕 |
-| Organic Shopping | 131 | 1 | $125 | 0.76% | 🆕 |
-| Organic Search | 691 | 0 | $0 | 0.00% | ▼ 100% |
-| Paid Search | 148 | 0 | $0 | 0.00% | — |
-| Referral | 90 | 0 | $0 | 0.00% | — |
+| Organic Shopping | 129 | 1 | $125 | 0.78% | 🆕 |
+| Organic Search | 681 | 0 | $0 | 0.00% | ▼ 100% |
+| Paid Search | 128 | 0 | $0 | 0.00% | — |
+| Referral | 94 | 0 | $0 | 0.00% | — |
 | Unassigned | 33 | 0 | $0 | 0.00% | — |
 | Organic Social | 17 | 0 | $0 | 0.00% | — |
-| Cross-network | 10 | 0 | $0 | 0.00% | — |
+| Cross-network | 7 | 0 | $0 | 0.00% | — |
 | Email | 2 | 0 | $0 | 0.00% | — |
 
 ## Conversion by landing page (GA4, 30d, vs prior 30d)
 | Path | Sessions | Transactions | Conv rate | Conv WoW |
 |---|---:|---:|---:|---:|
-| / | 490 | 0 | 0.00% | — |
-| /blog/15-unique-birthday-party-ideas-in-austin-for-adults | 350 | 0 | 0.00% | — |
-| (not set) | 128 | 0 | 0.00% | — |
-| /austin-bachelor-concierge | 117 | 0 | 0.00% | — |
+| / | 494 | 0 | 0.00% | — |
+| /blog/15-unique-birthday-party-ideas-in-austin-for-adults | 340 | 0 | 0.00% | — |
+| (not set) | 126 | 0 | 0.00% | — |
 | /dashboard/HKN8X3 | 113 | 0 | 0.00% | — |
-| /partners/lake-travis-yacht-rentals | 78 | 0 | 0.00% | — |
-| /dashboard/T4Q9S8 | 77 | 0 | 0.00% | — |
-| /blog/longhorn-themed-cocktail-and-mocktail-recipes | 61 | 0 | 0.00% | — |
-| /order | 37 | 1 | 2.70% | — |
-| /austin-bachelorette-party-delivery | 28 | 0 | 0.00% | — |
-| /partners/big-tex-boats | 27 | 0 | 0.00% | — |
+| /austin-bachelor-concierge | 99 | 0 | 0.00% | — |
+| /partners/lake-travis-yacht-rentals | 79 | 0 | 0.00% | — |
+| /dashboard/T4Q9S8 | 66 | 0 | 0.00% | — |
+| /blog/longhorn-themed-cocktail-and-mocktail-recipes | 62 | 0 | 0.00% | — |
+| /order | 37 | 1 | 2.70% | ▼ 5% |
+| /ops/orders | 29 | 0 | 0.00% | — |
 | /rentals/cooler-rentals-austin | 27 | 0 | 0.00% | — |
+| /austin-bachelorette-party-delivery | 26 | 0 | 0.00% | — |
 | /contact | 26 | 0 | 0.00% | — |
-| /ops/orders | 26 | 0 | 0.00% | — |
-| /dashboard/N6N86N | 24 | 0 | 0.00% | — |
+| /partners/big-tex-boats | 26 | 0 | 0.00% | — |
+| /dashboard/4SGD8N | 24 | 0 | 0.00% | — |
 
 ## Checkout funnel (30d)
 | Step | Users | Drop-off |
@@ -163,50 +163,50 @@ _Vercel Analytics not configured — set VERCEL_ANALYTICS_TOKEN_
 ## Per-page engagement (our tracker, 30d)
 | Path | Sessions | Pageviews | Bounce | Avg scroll | CTA clicks | CTA rate |
 |---|---:|---:|---:|---:|---:|---:|
-| / | 963 | 1070 | 78% | 5.6% | 109 | 11.3% |
-| /products | 681 | 682 | 100% | 0% | 0 | 0.0% |
-| /order | 561 | 593 | 55% | 0% | 197 | 35.1% |
-| /blog/15-unique-birthday-party-ideas-in-austin-for-adults | 425 | 459 | 98% | 0% | 2 | 0.5% |
+| / | 974 | 1088 | 77% | 5.5% | 116 | 11.9% |
+| /products | 680 | 681 | 100% | 0% | 0 | 0.0% |
+| /order | 565 | 598 | 54% | 0% | 201 | 35.6% |
+| /blog/15-unique-birthday-party-ideas-in-austin-for-adults | 416 | 450 | 98% | 0% | 3 | 0.7% |
 | /dashboard/HKN8X3 | 160 | 223 | 88% | 0% | 0 | 0.0% |
-| /austin-bachelor-concierge | 150 | 157 | 99% | 0% | 17 | 11.3% |
-| /cocktail-kits | 129 | 131 | 91% | 0% | 20 | 15.5% |
-| /partners/lake-travis-yacht-rentals | 102 | 116 | 49% | 0% | 0 | 0.0% |
-| /contact | 99 | 111 | 58% | 0% | 0 | 0.0% |
-| /dashboard/T4Q9S8 | 81 | 91 | 93% | 0% | 0 | 0.0% |
+| /austin-bachelor-concierge | 128 | 135 | 98% | 0% | 9 | 7.0% |
+| /cocktail-kits | 127 | 129 | 91% | 0% | 16 | 12.6% |
+| /partners/lake-travis-yacht-rentals | 106 | 120 | 48% | 0% | 0 | 0.0% |
+| /contact | 99 | 110 | 59% | 0% | 0 | 0.0% |
 | /dashboard/WCE7MH | 76 | 81 | 95% | 0% | 0 | 0.0% |
-| /blog/longhorn-themed-cocktail-and-mocktail-recipes | 72 | 81 | 99% | 0% | 0 | 0.0% |
-| /austin-bachelorette-party-delivery | 59 | 62 | 83% | 0% | 12 | 20.3% |
+| /blog/longhorn-themed-cocktail-and-mocktail-recipes | 73 | 82 | 100% | 0% | 0 | 0.0% |
+| /dashboard/T4Q9S8 | 71 | 81 | 93% | 0% | 0 | 0.0% |
+| /austin-bachelorette-party-delivery | 56 | 59 | 82% | 0% | 10 | 17.9% |
+| /kegs | 53 | 57 | 66% | 0% | 0 | 0.0% |
 | /terms | 52 | 52 | 96% | 0% | 0 | 0.0% |
-| /kegs | 49 | 53 | 65% | 0% | 0 | 0.0% |
-| /ops/orders | 46 | 87 | 28% | 0% | 0 | 0.0% |
-| /rentals/cooler-rentals-austin | 43 | 56 | 70% | 0% | 0 | 0.0% |
+| /ops/orders | 47 | 91 | 28% | 0% | 0 | 0.0% |
+| /rentals/cooler-rentals-austin | 42 | 55 | 71% | 0% | 0 | 0.0% |
 | /faqs | 38 | 38 | 95% | 0% | 0 | 0.0% |
-| /blog | 36 | 36 | 100% | 0% | 0 | 0.0% |
-| /austin-bachelor-party-delivery | 35 | 35 | 80% | 0% | 5 | 14.3% |
+| /blog | 35 | 35 | 100% | 0% | 0 | 0.0% |
+| /boat-parties | 35 | 44 | 51% | 0% | 12 | 34.3% |
 
 ## Top search queries (GSC, 30d)
 | Query | Clicks | Impressions | Avg position |
 |---|---:|---:|---:|
-| party on delivery | 19 | 51 | 2.7 |
-| birthday ideas austin | 14 | 131 | 5.9 |
-| birthday places in austin for adults | 12 | 68 | 2.7 |
-| austin birthday ideas | 9 | 74 | 1.9 |
-| unique birthday places in austin for adults | 5 | 64 | 2.7 |
-| birthday activities austin | 4 | 30 | 3.1 |
-| birthday in austin | 3 | 21 | 5.0 |
-| fun birthday ideas in austin | 3 | 29 | 3.1 |
-| things to do on your birthday in austin | 3 | 13 | 5.6 |
-| adult birthday party ideas austin | 2 | 34 | 2.6 |
-| alcohol delivery in austin tx | 2 | 27 | 15.7 |
+| party on delivery | 19 | 50 | 2.7 |
+| birthday ideas austin | 14 | 125 | 5.7 |
+| birthday places in austin for adults | 10 | 65 | 2.5 |
+| austin birthday ideas | 8 | 74 | 1.9 |
+| unique birthday places in austin for adults | 5 | 65 | 2.7 |
+| birthday activities austin | 3 | 32 | 2.8 |
+| fun birthday ideas in austin | 3 | 29 | 2.9 |
+| things to do on your birthday in austin | 3 | 12 | 5.7 |
+| adult birthday party ideas austin | 2 | 33 | 2.6 |
+| alcohol delivery in austin tx | 2 | 27 | 16.0 |
 | birthday activities in austin | 2 | 6 | 2.8 |
-| birthday celebration ideas | 2 | 9 | 6.0 |
 | birthday ideas | 2 | 76 | 7.3 |
-| birthday ideas in austin | 2 | 10 | 2.1 |
-| birthday things to do in austin | 2 | 39 | 3.1 |
-| live oak hefeweizen | 2 | 20 | 8.4 |
-| things to do in austin for birthday | 2 | 42 | 5.1 |
-| things to do in austin for birthday adults | 2 | 9 | 1.7 |
-| 24 pack corona cans | 1 | 1 | 1.0 |
+| birthday ideas in austin | 2 | 10 | 2.2 |
+| birthday in austin | 2 | 20 | 4.1 |
+| birthday things to do in austin | 2 | 40 | 3.2 |
+| live oak hefeweizen | 2 | 22 | 8.0 |
+| things to do in austin for birthday | 2 | 40 | 4.8 |
+| things to do in austin for birthday adults | 2 | 9 | 2.3 |
+| activities for birthday adults | 1 | 1 | 3.0 |
+| adult birthday party | 1 | 39 | 11.1 |
 
 ---
 
