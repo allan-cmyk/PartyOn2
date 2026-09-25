@@ -62,26 +62,26 @@ _(not captured)_
 
 ```json
 {
-  "orders": 54,
-  "revenue": 27039.28,
+  "orders": 52,
+  "revenue": 25166.13,
   "segments": [
     {
       "margin": null,
-      "orders": 51,
-      "revenue": 23979.76,
+      "orders": 48,
+      "revenue": 21964.9,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 470.19,
+      "averageOrderValue": 457.6,
       "marginCoveragePct": 0
     },
     {
-      "margin": 481.52,
-      "orders": 2,
-      "revenue": 2509.63,
+      "margin": 491.21,
+      "orders": 3,
+      "revenue": 2651.34,
       "segment": "unknown",
-      "averageMarginPct": 19.2,
-      "averageOrderValue": 1254.82,
-      "marginCoveragePct": 65.8
+      "averageMarginPct": 18.5,
+      "averageOrderValue": 883.78,
+      "marginCoveragePct": 63.7
     },
     {
       "margin": 59.99,
@@ -93,7 +93,7 @@ _(not captured)_
       "marginCoveragePct": 34.5
     }
   ],
-  "capturedAt": "2026-09-24T08:00:50.381Z",
+  "capturedAt": "2026-09-25T08:00:49.696Z",
   "affiliateRoi": [
     {
       "code": "KICKSTANDMOBILE",
@@ -108,27 +108,27 @@ _(not captured)_
       "marginCoveragePct": 53.1
     },
     {
+      "code": "DTRbartending",
+      "margin": 9.69,
+      "orders": 5,
+      "roiPct": -97.8,
+      "revenue": 6068.13,
+      "netMargin": -431.37,
+      "affiliateId": "f029d561-1c6f-45ba-9cac-7135eac17ce2",
+      "businessName": "DTR Bartending",
+      "commissionPaid": 441.06,
+      "marginCoveragePct": 0.6
+    },
+    {
       "code": "POUR24",
       "margin": null,
-      "orders": 6,
+      "orders": 5,
       "roiPct": null,
-      "revenue": 8468.37,
+      "revenue": 6758.85,
       "netMargin": null,
       "affiliateId": "7bf14a40-b04f-4622-ba09-0662be41e37f",
       "businessName": "Pour Twenty Four",
-      "commissionPaid": 725.04,
-      "marginCoveragePct": 0
-    },
-    {
-      "code": "DTRbartending",
-      "margin": null,
-      "orders": 4,
-      "roiPct": null,
-      "revenue": 5926.42,
-      "netMargin": null,
-      "affiliateId": "f029d561-1c6f-45ba-9cac-7135eac17ce2",
-      "businessName": "DTR Bartending",
-      "commissionPaid": 430.59,
+      "commissionPaid": 604.07,
       "marginCoveragePct": 0
     },
     {
@@ -144,39 +144,27 @@ _(not captured)_
       "marginCoveragePct": 0
     },
     {
-      "code": "BIGTEXBOATRENTALS",
-      "margin": null,
-      "orders": 2,
-      "roiPct": null,
-      "revenue": 832.91,
-      "netMargin": null,
-      "affiliateId": "39489c4d-df1a-429e-ade3-13f493b496a4",
-      "businessName": "BigTex Boat Rentals",
-      "commissionPaid": 37.09,
-      "marginCoveragePct": 0
-    },
-    {
-      "code": "SIPNSOCIAL",
-      "margin": null,
-      "orders": 2,
-      "roiPct": null,
-      "revenue": 789.01,
-      "netMargin": null,
-      "affiliateId": "3d00911f-3b75-40ad-bc3c-c87f20cdaeaf",
-      "businessName": "Sip & Social On Wheels",
-      "commissionPaid": 35.43,
-      "marginCoveragePct": 0
-    },
-    {
       "code": "LTYACHTRENTALS",
       "margin": null,
       "orders": 5,
       "roiPct": null,
-      "revenue": 1213.1,
+      "revenue": 1493.38,
       "netMargin": null,
       "affiliateId": "e09b3a40-26cb-4c70-9b2a-6ea311c7a62e",
       "businessName": "Lake Travis Yacht Rentals",
-      "commissionPaid": 51.67,
+      "commissionPaid": 63.37,
+      "marginCoveragePct": 0
+    },
+    {
+      "code": "BIGTEXBOATRENTALS",
+      "margin": null,
+      "orders": 1,
+      "roiPct": null,
+      "revenue": 540.47,
+      "netMargin": null,
+      "affiliateId": "39489c4d-df1a-429e-ade3-13f493b496a4",
+      "businessName": "BigTex Boat Rentals",
+      "commissionPaid": 24.04,
       "marginCoveragePct": 0
     },
     {
@@ -214,17 +202,29 @@ _(not captured)_
       "businessName": "Bach Babes",
       "commissionPaid": 37.64,
       "marginCoveragePct": 0
+    },
+    {
+      "code": "SIPNSOCIAL",
+      "margin": null,
+      "orders": 1,
+      "roiPct": null,
+      "revenue": 495.83,
+      "netMargin": null,
+      "affiliateId": "3d00911f-3b75-40ad-bc3c-c87f20cdaeaf",
+      "businessName": "Sip & Social On Wheels",
+      "commissionPaid": 21.89,
+      "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-09-24",
-  "averageOrderValue": 500.7274074074074,
+  "snapshotDate": "2026-09-25",
+  "averageOrderValue": 483.9640384615385,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-09-24 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-09-25 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
