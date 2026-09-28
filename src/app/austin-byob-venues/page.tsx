@@ -306,7 +306,7 @@ export default function AustinBYOBVenuesPage() {
                 <li><strong>Save Money:</strong> Avoid expensive venue bar packages and corkage fees</li>
                 <li><strong>Full Control:</strong> Choose exactly what you want to serve your guests</li>
                 <li><strong>Better Selection:</strong> Offer craft beers, premium wines, or signature cocktails</li>
-                <li><strong>No Waste:</strong> Return unopened bottles for a refund with Party On Delivery</li>
+                <li><strong>Less Waste:</strong> 100% refund on up to 25% of your order — return unopened items to our store</li>
               </ul>
               <p>
                 Need help calculating how much alcohol you need? Use our{' '}

@@ -1,13 +1,12 @@
 /**
- * Go High Level (GHL) Webhook — Premiere Credit SMS.
+ * Premiere Credit SMS — posts the `premiere.credit.issued` event to the
+ * CoreLinq CRM via the shared postToCoreLinq helper; the CRM texts the code +
+ * expiry from (737) 371-9700. Lives in its own file because
+ * src/lib/webhooks/ghl.ts is already near the 500-line limit. (File and
+ * type names are legacy from GoHighLevel, which was cancelled 2026-09-22.)
  *
- * Fires the inbound webhook that drives the "Premiere Credit — SMS" GHL
- * workflow (upsert contact → tag → send SMS with the code + expiry). Lives in
- * its own file because src/lib/webhooks/ghl.ts is already near the 500-line
- * limit. Mirrors every event to CoreLinq via the shared postToCoreLinq helper.
- *
- * Fire-and-forget: logs errors, never throws. No-ops silently when
- * GHL_PREMIERE_CREDIT_WEBHOOK_URL is not set — inert until the workflow exists.
+ * The GHL leg below is dead: it no-ops when GHL_PREMIERE_CREDIT_WEBHOOK_URL
+ * is unset, which it should stay. Fire-and-forget: logs errors, never throws.
  */
 
 import { postToCoreLinq } from './ghl';
@@ -31,9 +30,8 @@ export interface GhlPremiereCreditPayload {
 }
 
 /**
- * POST a Premiere credit to the GHL webhook so the receiving workflow can
- * upsert the contact and text them the code. The CoreLinq mirror still fires
- * even when the GHL URL is unset.
+ * POST a Premiere credit to the CoreLinq CRM, which texts the customer the
+ * code. The legacy GHL leg only fires if its URL is set (it should not be).
  */
 export async function notifyPremiereCreditIssued(
   payload: GhlPremiereCreditPayload,

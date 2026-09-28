@@ -22,6 +22,8 @@ const TOTAL_SLIDES = 5;
 // (yellow on dark slides, blue on cream slides).
 const DARK_SLIDES = new Set([0, 4]);
 
+// Legacy name — Calendly is not used. The default 308-redirects to the Google
+// Calendar "Partnership Call" schedule (30-min Google Meet).
 const CALENDLY_URL =
   process.env.NEXT_PUBLIC_PARTNER_CALENDLY_URL ||
   'https://123.partyondelivery.com/partnership-call';

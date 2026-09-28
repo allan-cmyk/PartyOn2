@@ -55,7 +55,7 @@ End-to-end funnels traced with route + file references. For the full route inven
 5. `/api/webhooks/stripe` (`src/app/api/webhooks/stripe/route.ts`) verifies signature, idempotently persists via `WebhookEvent`, materializes `Order` + `OrderItem` (via `src/lib/inventory/services/order-service.ts`), decrements inventory, and enqueues Resend emails (order confirmation template under `src/lib/email/templates/`).
 6. If `ref_code` cookie is set, commission row is written (`AffiliateCommission`) pending monthly payout.
 
-**Success**: `Order.status = CONFIRMED`, confirmation email delivered, GHL SMS webhook fires (`src/lib/webhooks/ghl.ts`).
+**Success**: `Order.status = CONFIRMED`, confirmation email delivered, `order.created` event posted to the CoreLinq CRM, which texts the confirmation (`postToCoreLinq` in the legacy-named `src/lib/webhooks/ghl.ts`).
 **Failure / edge**:
 - Payment declined → user stays on Stripe; no `Order` row.
 - Webhook lost → `/api/cron/reconcile-orders` (every 15 min) compares Stripe sessions to `Order` rows and reconciles.
@@ -101,7 +101,7 @@ End-to-end funnels traced with route + file references. For the full route inven
 ## Journey F — Post-purchase
 
 1. Confirmation email from Resend (`src/lib/email/templates/`); events logged in `EmailLog` via `/api/webhooks/resend`.
-2. SMS via GoHighLevel webhook (`src/lib/webhooks/ghl.ts`).
+2. SMS via the CoreLinq CRM, fed by `postToCoreLinq` in `src/lib/webhooks/ghl.ts` (legacy file name; GoHighLevel was cancelled 2026-09-22).
 3. Customer can track order at `/account/orders` or look up by number at `/api/orders/[orderNumber]`.
 4. Boat-schedule customers can see their match at `/premier-boat-schedule` or via `/api/public/boat-schedule/order/[orderNumber]`.
 5. Delivery confirmation — ops marks `Fulfillment.status = DELIVERED` from `/ops/orders/[id]`.

@@ -126,6 +126,12 @@ Total time: ~60 seconds.
 | Workflow exits non-zero | (GitHub default) | GH email to repo owners |
 | Workflow fails to start (YAML error) | (GitHub default) | GH email to repo owners |
 
+> **PartyOn note (2026-09):** the "GHL webhook" rows post to the
+> `GHL_DASHBOARD_WEBHOOK_URL` secret (`scripts/seo/lib/notify.ts`). GoHighLevel
+> was cancelled 2026-09-22, so unless that secret has been re-pointed, that leg
+> no longer reaches anyone — only the GitHub emails do until `notify.ts` is
+> pointed at a live channel.
+
 ### What the webhook payload looks like
 
 ```json

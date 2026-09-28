@@ -27,7 +27,8 @@ export const POSTAL_ADDRESS = '7600 N Lamar #A2, Austin, TX 78752';
 /**
  * Direct Google review link for the post-purchase ask. Was the GHL-hosted
  * 123.partyondelivery.com/reviews redirect until 2026-09-14 (GHL cancelled);
- * that subdomain now 301s here via next.config.ts, so old emails still work.
+ * that subdomain now 308s (permanent redirect) here via next.config.ts, so
+ * old emails still work.
  */
 export const GOOGLE_REVIEW_URL = 'https://g.page/r/CWO9-KA4uBqaEAE/review';
 
@@ -365,7 +366,7 @@ export function buildTokens(
       tokens.resumeLink = ctx.link(str(ctx.payload, 'resumePath') ?? '/order');
       break;
     case 'post-purchase-review':
-      // External subdomain (GHL-managed) — used verbatim, no UTM appending.
+      // External Google review link — used verbatim, no UTM appending.
       tokens.reviewLink = GOOGLE_REVIEW_URL;
       break;
     case 'partner-outreach': {

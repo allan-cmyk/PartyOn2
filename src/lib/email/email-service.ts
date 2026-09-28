@@ -394,7 +394,8 @@ Submitted: ${data.submittedAt || new Date().toISOString()}
  * up via /partners/vacation-rentals (or scanned a QR on a Premier boat).
  *
  * Loads the PDF attachment from `public/email-assets/pod-partner-onepager.pdf`,
- * interpolates the Calendly URL into the HTML template, and tags the send
+ * interpolates the Partnership Call booking URL into the HTML template (the
+ * `calendly` names are legacy — it's a Google Calendar schedule), and tags the send
  * for campaign attribution.
  */
 export interface PartnerOnePagerEmailOptions {
@@ -408,9 +409,11 @@ export interface PartnerOnePagerEmailOptions {
   signupQrId?: string;
 }
 
-// Default partner Calendly URL — appears in the email body, so it's not
-// a secret. Hardcoded fallback so the send can never silently fail just
-// because the env var is missing.
+// Default partner booking URL (legacy `CALENDLY` name — Calendly is not used):
+// 123.partyondelivery.com/partnership-call 308-redirects to the Google Calendar
+// "Partnership Call" schedule (30-min Google Meet). Appears in the email body,
+// so it's not a secret. Hardcoded fallback so the send can never silently fail
+// just because the env var is missing.
 const DEFAULT_PARTNER_CALENDLY_URL = 'https://123.partyondelivery.com/partnership-call';
 
 export async function sendPartnerOnePagerEmail(
