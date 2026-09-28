@@ -3,6 +3,7 @@
 import { ReactElement, useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { WebsiteInsights } from '@/lib/analytics/vercel-events';
+import BookingLinkClicksPanel from '../components/BookingLinkClicksPanel';
 
 const WINDOWS: { days: number; label: string }[] = [
   { days: 7, label: '7D' },
@@ -178,6 +179,8 @@ export default function ServerTrafficPage(): ReactElement {
           </div>
         )}
       </div>
+
+      <BookingLinkClicksPanel />
     </div>
   );
 }
