@@ -4,7 +4,7 @@
  * Outbound email sent to property managers / vacation rental partners after
  * they sign up via /partners/vacation-rentals (or scan a QR code on a
  * Premier Party Cruises boat). Comes with the partner one-pager PDF as an
- * attachment and a CTA to schedule a 15-min call.
+ * attachment and a CTA to schedule a 30-min Google Meet call.
  *
  * The HTML is verbatim from the designed-and-tested template at
  * `tmp-pod-partner-email.html`; placeholders for the Calendly URL and
@@ -121,7 +121,7 @@ export function generatePartnerOnePagerEmail(data: PartnerOnePagerEmailData): st
             <td align="center" bgcolor="#0B74B8" style="background-color:#0B74B8; border-radius:0;">
               <a href="${calendlyUrl}" target="_blank"
                  style="display:inline-block; padding:16px 32px; font-family:'Barlow Condensed', Arial, sans-serif; font-size:15px; font-weight:700; color:#FFFFFF; text-decoration:none; letter-spacing:0.08em; text-transform:uppercase;">
-                Schedule a 15-min meeting &rarr;
+                Schedule a 30-min meeting &rarr;
               </a>
             </td>
           </tr>
@@ -358,14 +358,14 @@ export function generatePartnerOnePagerEmail(data: PartnerOnePagerEmailData): st
           Let's talk.
         </h2>
         <p style="margin:0 0 24px 0; font-family: -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif; font-size:15px; line-height:22px; color:#5A6671;">
-          15 minutes. We'll walk through your portfolio, show you the partner dashboard, and outline what a partnership looks like for your properties.
+          30 minutes on Google Meet. We'll walk through your portfolio, show you the partner dashboard, and outline what a partnership looks like for your properties.
         </p>
         <table role="presentation" border="0" cellpadding="0" cellspacing="0">
           <tr>
             <td align="center" bgcolor="#0B74B8" style="background-color:#0B74B8;">
               <a href="${calendlyUrl}" target="_blank"
                  style="display:inline-block; padding:16px 32px; font-family:'Barlow Condensed', Arial, sans-serif; font-size:15px; font-weight:700; color:#FFFFFF; text-decoration:none; letter-spacing:0.08em; text-transform:uppercase;">
-                Schedule a 15-min meeting &rarr;
+                Schedule a 30-min meeting &rarr;
               </a>
             </td>
           </tr>
@@ -423,7 +423,7 @@ The bar program your luxury rentals have been missing.
 
 TABC-licensed alcohol delivery, pre-batched craft cocktails, bartender coordination, and full bar setup — all from one Austin-owned partner.
 
-Schedule a 15-min meeting:
+Schedule a 30-min Google Meet call:
 ${calendlyUrl}
 
 How partnership works:

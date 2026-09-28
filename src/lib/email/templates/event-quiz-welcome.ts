@@ -115,10 +115,10 @@ export function eventQuizWelcomeEmail(input: EventQuizWelcomeInput): {
                 ${needsBlockHtml}
 
                 <p style="margin:18px 0 14px;font-size:14px;line-height:1.6;color:#374151;">
-                  Want to talk through it? Reply to this email or book a 10-min planning call:
+                  Want to talk through it? Reply to this email or book a 15-min planning call:
                 </p>
                 <ul style="margin:0 0 16px;padding-left:18px;color:#374151;font-size:14px;line-height:1.6;">
-                  <li><a href="https://123.partyondelivery.com/planning-call" style="color:${NAVY};font-weight:700;">Book a 10-min planning call →</a></li>
+                  <li><a href="https://123.partyondelivery.com/planning-call" style="color:${NAVY};font-weight:700;">Book a 15-min planning call →</a></li>
                   <li><a href="tel:7373719700" style="color:${NAVY};font-weight:700;">(737) 371-9700</a></li>
                 </ul>
 
@@ -155,7 +155,7 @@ Everything we do:
   📋 Concierge planning — one contact for venue, drinks, rentals, day-of timeline.
 
 ${needsBlockText}Want to talk through it?
-  • Book a 10-min planning call: https://123.partyondelivery.com/planning-call
+  • Book a 15-min planning call: https://123.partyondelivery.com/planning-call
   • Call (737) 371-9700
   • Reply to this email
 

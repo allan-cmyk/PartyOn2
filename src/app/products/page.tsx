@@ -605,11 +605,14 @@ function ProductsContent() {
               <p className="text-lg text-gray-800 mb-4">
                 <strong>Need help planning your bar?</strong> Our beverage experts provide complimentary consultations for all events.
               </p>
-              <Link href="/contact">
-                <button className="px-8 py-3 rounded-lg bg-brand-yellow text-gray-900 hover:bg-yellow-400 active:bg-yellow-500 transition-colors tracking-[0.08em] text-sm font-semibold">
-                  SCHEDULE A CONSULTATION
-                </button>
-              </Link>
+              <a
+                href="https://123.partyondelivery.com/planning-call"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block px-8 py-3 rounded-lg bg-brand-yellow text-gray-900 hover:bg-yellow-400 active:bg-yellow-500 transition-colors tracking-[0.08em] text-sm font-semibold"
+              >
+                SCHEDULE A CONSULTATION
+              </a>
             </div>
           </div>
         </div>

@@ -187,14 +187,15 @@ export default function BoatPartiesPage() {
                 {hero.content?.ctaText ?? 'ORDER NOW'}
               </button>
             </Link>
-            <Link href="/contact">
-              <button
-                onClick={() => trackCTAClick('SCHEDULE 15-MIN PLANNING CALL', '/contact', 'hero')}
-                className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium"
-              >
-                SCHEDULE 15-MIN PLANNING CALL
-              </button>
-            </Link>
+            <a
+              href="https://123.partyondelivery.com/boat-call"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackCTAClick('SCHEDULE A 10-MIN BOAT CALL', 'https://123.partyondelivery.com/boat-call', 'hero')}
+              className="self-center md:self-auto inline-block px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium"
+            >
+              SCHEDULE A 10-MIN BOAT CALL
+            </a>
           </div>
           <p className="text-sm text-gray-300 mt-4 tracking-[0.05em]">
             TABC-certified • Marine-safety trained • Insured & licensed
@@ -269,14 +270,15 @@ export default function BoatPartiesPage() {
                   Perfect for yacht charters and premium events
                 </li>
               </ul>
-              <Link href="/contact">
-                <button
-                  onClick={() => trackCTAClick('SCHEDULE A CONSULTATION', '/contact', 'packages')}
-                  className="w-full py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium"
-                >
-                  SCHEDULE A CONSULTATION
-                </button>
-              </Link>
+              <a
+                href="https://123.partyondelivery.com/boat-call"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackCTAClick('SCHEDULE A BOAT CALL', 'https://123.partyondelivery.com/boat-call', 'packages')}
+                className="block w-full text-center py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium"
+              >
+                SCHEDULE A BOAT CALL
+              </a>
             </ScrollRevealCSS>
           </div>
 

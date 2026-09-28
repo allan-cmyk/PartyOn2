@@ -38,14 +38,22 @@ interface DeliveryAddress {
   zip?: string;
 }
 
+/** Parsed delivery window. `exact` is false when the time was guessed. */
+export interface DeliveryWindow {
+  start: string;
+  end: string;
+  exact: boolean;
+}
+
 /**
  * Parse delivery time string like "10:00 AM - 11:00 AM" into start/end ISO strings
- * for a given delivery date.
+ * for a given delivery date. Text-only times ("Afternoon") and unreadable
+ * strings fall back to a broad guessed window with `exact: false`.
  */
-function parseDeliveryTime(
+export function parseDeliveryTime(
   deliveryDate: Date,
   deliveryTime: string
-): { start: string; end: string } {
+): DeliveryWindow {
   // deliveryTime examples: "10:00 AM - 11:00 AM", "2:00 PM - 3:00 PM", "Morning", "Afternoon"
   const dateStr = deliveryDate.toISOString().split('T')[0]; // YYYY-MM-DD
 
@@ -62,6 +70,7 @@ function parseDeliveryTime(
     return {
       start: `${dateStr}T${pad(startHour)}:${startMin}:00`,
       end: `${dateStr}T${pad(endHour)}:${endMin}:00`,
+      exact: true,
     };
   }
 
@@ -75,23 +84,24 @@ function parseDeliveryTime(
     return {
       start: `${dateStr}T${pad(startHour)}:${startMin}:00`,
       end: `${dateStr}T${pad(endHour)}:${startMin}:00`,
+      exact: true,
     };
   }
 
   // Fallback for text-based times
   const lowerTime = deliveryTime.toLowerCase();
   if (lowerTime.includes('morning')) {
-    return { start: `${dateStr}T09:00:00`, end: `${dateStr}T12:00:00` };
+    return { start: `${dateStr}T09:00:00`, end: `${dateStr}T12:00:00`, exact: false };
   }
   if (lowerTime.includes('afternoon')) {
-    return { start: `${dateStr}T12:00:00`, end: `${dateStr}T17:00:00` };
+    return { start: `${dateStr}T12:00:00`, end: `${dateStr}T17:00:00`, exact: false };
   }
   if (lowerTime.includes('evening')) {
-    return { start: `${dateStr}T17:00:00`, end: `${dateStr}T21:00:00` };
+    return { start: `${dateStr}T17:00:00`, end: `${dateStr}T21:00:00`, exact: false };
   }
 
   // Default: all-day style 9-5
-  return { start: `${dateStr}T09:00:00`, end: `${dateStr}T17:00:00` };
+  return { start: `${dateStr}T09:00:00`, end: `${dateStr}T17:00:00`, exact: false };
 }
 
 function convertTo24(hour: number, period: string): number {
@@ -137,7 +147,7 @@ export async function createOrderCalendarEvent(order: OrderWithItems): Promise<v
     const { calendar, calendarId } = client;
     const addr = (order.deliveryAddress || {}) as DeliveryAddress;
     const location = formatAddress(addr);
-    const { start, end } = parseDeliveryTime(order.deliveryDate, order.deliveryTime);
+    const { start, end, exact } = parseDeliveryTime(order.deliveryDate, order.deliveryTime);
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://partyondelivery.com';
 
     // Build items list
@@ -177,6 +187,10 @@ export async function createOrderCalendarEvent(order: OrderWithItems): Promise<v
           dateTime: end,
           timeZone: 'America/Chicago',
         },
+        // This calendar blocks call-booking slots on Allan's appointment
+        // schedules. A guessed window (e.g. "Afternoon" → 12–5) must not block
+        // a whole afternoon, so it is shown as Free; exact windows are Busy.
+        transparency: exact ? 'opaque' : 'transparent',
       },
     });
 

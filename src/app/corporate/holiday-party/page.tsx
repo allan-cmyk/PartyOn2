@@ -68,7 +68,7 @@ export default function CorporateHolidayPartyPage() {
     }
   };
 
-  const handleScheduleCall = () => {
+  const scrollToInquiryForm = () => {
     const formElement = document.getElementById('inquiry-form');
     if (formElement) {
       formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -312,7 +312,7 @@ export default function CorporateHolidayPartyPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-2">
             <button
-              onClick={handleScheduleCall}
+              onClick={scrollToInquiryForm}
               className="px-8 py-4 bg-brand-yellow text-black hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm font-medium"
             >
               GET YOUR FREE QUOTE
@@ -642,7 +642,7 @@ export default function CorporateHolidayPartyPage() {
 
           <CorporateEventCalculatorLanding
             onAddToQuote={handleCalculatorAddToQuote}
-            onScheduleCall={handleScheduleCall}
+            scheduleCallUrl="https://123.partyondelivery.com/planning-call"
           />
         </div>
       </section>
@@ -931,7 +931,7 @@ export default function CorporateHolidayPartyPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
-                onClick={handleScheduleCall}
+                onClick={scrollToInquiryForm}
                 className="px-8 py-4 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.1em] text-sm font-medium"
               >
                 GET YOUR FREE QUOTE

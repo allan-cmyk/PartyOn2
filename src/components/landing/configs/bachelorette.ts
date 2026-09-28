@@ -272,7 +272,7 @@ export const bacheloretteConfig: LandingConfig = {
   finalCtaImage: '/images/services/bach-parties/brunch-mimosa-bar.webp',
 
   planningCallUrl: 'https://123.partyondelivery.com/planning-call',
-  secondaryCtaText: 'SCHEDULE A 10-MIN CALL →',
+  secondaryCtaText: 'SCHEDULE A 15-MIN CALL →',
 
   phoneDisplay: PHONE_DISPLAY,
   phoneTel: 'tel:7373719700',

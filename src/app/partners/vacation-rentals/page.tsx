@@ -310,9 +310,6 @@ UTM Campaign: ${formData.utm_campaign || 'none'}`,
     }
   };
 
-  const scrollToForm = () => {
-    document.getElementById('partner-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
   const scrollToServices = () => {
     document.getElementById('services')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
@@ -345,7 +342,7 @@ UTM Campaign: ${formData.utm_campaign || 'none'}`,
               </h2>
               <p className="text-base md:text-lg text-cream/80 max-w-2xl mx-auto">
                 Drop your details. We&apos;ll email the partner one-pager (PDF), the full cocktail menu,
-                and a link to book a 15-minute walkthrough.
+                and a link to book a 30-minute Google Meet walkthrough.
               </p>
             </div>
             <VacationRentalLeadCapture source="vacation-rental-onepager" />
@@ -377,7 +374,14 @@ UTM Campaign: ${formData.utm_campaign || 'none'}`,
                   Built for Austin&apos;s premium short-term rentals — turnkey for your guests, hands-off for your team.
                 </p>
                 <div className="flex flex-wrap gap-4 mb-10">
-                  <button onClick={scrollToForm} className="btn-primary">Book a 15-min intro call</button>
+                  <a
+                    href="https://123.partyondelivery.com/partnership-call"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-primary"
+                  >
+                    Book a 30-min intro call
+                  </a>
                   <button onClick={scrollToServices} className="bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-cream font-heading font-bold tracking-[0.08em] uppercase px-7 py-4 rounded-lg transition-colors">
                     See what we handle
                   </button>
@@ -781,8 +785,8 @@ UTM Campaign: ${formData.utm_campaign || 'none'}`,
                 Add POD to your <span className="text-brand-yellow">portfolio.</span>
               </h2>
               <p className="text-lg md:text-xl max-w-2xl mx-auto text-cream/75 leading-relaxed">
-                15 minutes. We&apos;ll walk through your portfolio, show you the partner dashboard, and outline what a
-                partnership looks like.
+                30 minutes on Google Meet. We&apos;ll walk through your portfolio, show you the partner dashboard, and
+                outline what a partnership looks like.
               </p>
             </div>
 

@@ -407,7 +407,7 @@ export default function FlyerContent() {
             className="inline-block px-3 py-1 rounded-full text-[10px] font-bold tracking-widest mb-4"
             style={{ background: GOLD, color: NAVY }}
           >
-            BOOK A 10-MIN PLANNING CALL
+            BOOK A 15-MIN PLANNING CALL
           </div>
           <h2
             className="font-heading font-bold leading-tight tracking-wide mb-3"
@@ -430,7 +430,7 @@ export default function FlyerContent() {
               className="px-7 py-4 rounded-md font-bold text-sm tracking-widest transition-transform hover:scale-[1.02]"
               style={{ background: GOLD, color: NAVY }}
             >
-              SCHEDULE A 10-MIN CALL →
+              SCHEDULE A 15-MIN CALL →
             </a>
             <a
               href="tel:7373719700"
