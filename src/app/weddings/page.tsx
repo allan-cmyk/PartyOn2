@@ -331,7 +331,7 @@ export default function WeddingsPage() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackCTAClick('SCHEDULE 15-MIN PLANNING CALL', 'https://123.partyondelivery.com/planning-call', 'hero')}
-              className="inline-block px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium"
+              className="self-center md:self-auto inline-block px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium"
             >
               SCHEDULE 15-MIN PLANNING CALL
             </a>
@@ -918,7 +918,7 @@ export default function WeddingsPage() {
                     href="https://123.partyondelivery.com/planning-call"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-block px-4 py-2 border border-brand-yellow text-brand-yellow text-xs tracking-[0.1em] font-medium"
+                    className="inline-block px-4 py-2 border border-brand-blue text-brand-blue text-xs tracking-[0.1em] font-medium"
                   >
                     SCHEDULE CALL
                   </a>

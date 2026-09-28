@@ -192,7 +192,7 @@ export default function BoatPartiesPage() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackCTAClick('SCHEDULE A 10-MIN BOAT CALL', 'https://123.partyondelivery.com/boat-call', 'hero')}
-              className="inline-block px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium"
+              className="self-center md:self-auto inline-block px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium"
             >
               SCHEDULE A 10-MIN BOAT CALL
             </a>

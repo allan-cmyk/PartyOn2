@@ -100,9 +100,10 @@ export const INFO_HOST_REDIRECTS: HostRedirect[] = onHost(INFO_HOST, [
  * Main-domain dead links that went out to customers:
  * - /review — the CRM review-request text linked it (404) until 2026-09-28.
  * - /cart — the Instagram bio links it; there is no /cart page (the cart is a
- *   drawer), so send shoppers to the storefront. Temporary on purpose.
+ *   drawer), so send shoppers to the storefront. /order, not /products:
+ *   /products itself 307s to /order. Temporary on purpose.
  */
 export const DEAD_LINK_REDIRECTS: HostRedirect[] = [
   { source: '/review', destination: GOOGLE_REVIEW_FORM_URL, permanent: true },
-  { source: '/cart', destination: '/products', permanent: false },
+  { source: '/cart', destination: '/order', permanent: false },
 ];

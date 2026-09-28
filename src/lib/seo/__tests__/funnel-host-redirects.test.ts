@@ -42,9 +42,11 @@ type AnyRedirect = Redirect;
 
 function resolve(rules: AnyRedirect[], host: string, path: string): Resolved | null {
   for (const rule of rules) {
-    // Only host conditions are modelled; any other condition can't match here.
+    // Only host conditions are modelled; any other `has` condition can't match
+    // here. Test paths carry no query string, so a `missing` query condition is
+    // always satisfied (e.g. /products → /order unless ?search=).
     if (rule.has?.some((h) => h.type !== 'host' || h.value !== host)) continue;
-    if (rule.missing?.length) continue;
+    if (rule.missing?.some((m) => m.type !== 'query')) continue;
     const built = buildCustomRoute('redirect', rule, ['/_next']) as {
       regex: string;
       statusCode: number;
@@ -130,7 +132,7 @@ describe('next.config.ts redirects()', () => {
   it('routes main-domain /review and /cart, and never lets them leak onto the funnel hosts', async () => {
     const all = await nextConfig.redirects!();
     expect(resolve(all, 'partyondelivery.com', '/review')).toEqual({ destination: REVIEW, status: 308 });
-    expect(resolve(all, 'partyondelivery.com', '/cart')).toEqual({ destination: '/products', status: 307 });
+    expect(resolve(all, 'partyondelivery.com', '/cart')).toEqual({ destination: '/order', status: 307 });
     expect(resolve(all, 'partyondelivery.com', '/cart/shared/abc')).toBeNull();
     expect(resolve(all, 'partyondelivery.com', '/reviews')).toBeNull();
     expect(resolve(all, 'partyondelivery.com', '/boat-call')).toBeNull();
