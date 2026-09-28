@@ -19,12 +19,12 @@ match_examples:
 ## Answer (canonical)
 
 Thank them, confirm it's logged (flag for manifest sync), and remind that every guest
-must e-sign the waiver before arrival: premieratx.co/private-waiver. Headcount changes
-that affect the BOOKING price are Premier's; drink orders can always be topped up.
+must e-sign the waiver before arrival at premieratx.co/private-waiver — headcount
+changes that affect the BOOKING price are Premier's; drink orders can always be topped up.
 
 ## SMS
 
-Got it {{first_name}}, thanks for the heads up — noted! Just make sure they sign the waiver before arrival: premieratx.co/private-waiver. Want to add drinks for the extra headcount? Reply here and we'll top up your order.
+Got it {{first_name}}, thanks for the heads up — noted! Just make sure they sign the waiver at premieratx.co/private-waiver before arrival. Want to add drinks for the extra headcount? Reply here and we'll top up your order.
 
 ## Email
 
@@ -40,8 +40,8 @@ Party On Delivery
 
 ## Chat
 
-Thanks for the heads up! Make sure the new guest signs the waiver before arrival
-(premieratx.co/private-waiver). Booking-level changes go through Premier; if you want
+Thanks for the heads up! Make sure the new guest signs the waiver at
+premieratx.co/private-waiver before arrival. Booking-level changes go through Premier; if you want
 more drinks for the bigger group, we've got you — text (737) 371-9700.
 
 ## Voice

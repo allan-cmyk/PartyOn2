@@ -26,7 +26,11 @@ dashboard exists for their group (lookup_order), share {{dashboard_url}}; otherw
 partyondelivery.com/order (the order-immediately page — operator call, 2026-07-07).
 Key facts: drink delivery is included with a Premier booking — we
 stock the cooler on the boat before boarding; order 48+ hours ahead to guarantee it;
-delivery address for boat orders is the marina (13993 FM 2769, Leander).
+delivery address for boat orders is the marina (13993 FM 2769, Leander). Groups who want
+help deciding what (and how much) to order can book a 10-minute Boat Call phone call at
+123.partyondelivery.com/boat-call (verified 2026-09-28; slots every day 10 AM–12 PM and
+1–4 PM Central, at least 4 hours ahead) — an extra option in email/chat, never a
+replacement for the order link.
 
 ## SMS
 
@@ -44,14 +48,20 @@ board.
 Order 48+ hours ahead to guarantee delivery. If your group wants to split the bill,
 everyone can add their own drinks to one shared cart and pay separately.
 
+Want help figuring out what to get? Book a quick 10-minute Boat Call any day between
+10 AM–12 PM or 1–4 PM Central here:
+123.partyondelivery.com/boat-call
+
 Party On Delivery
 
 ## Chat
 
 Y'all are in for a good one! Order your drinks at partyondelivery.com/order
 and we'll have the cooler stocked on the boat before you board — order 48+ hours ahead to
-guarantee it. Everyone in your group can add to one shared cart and pay separately. For
-anything day-of, texting (737) 371-9700 is fastest. (Even if the message is just a
+guarantee it. Everyone in your group can add to one shared cart and pay separately. Want
+help figuring out what to get? Book a 10-minute Boat Call at
+123.partyondelivery.com/boat-call (slots every day 10 AM–12 PM and 1–4 PM Central, at
+least 4 hours ahead). For anything day-of, texting (737) 371-9700 is fastest. (Even if the message is just a
 booking name or date with no question, lead with this how-to-order answer — that's what
 cruise customers are here for; don't punt to the text line alone. Same for "where do I
 see the food/drinks available" asks from cruise customers: partyondelivery.com/order is
@@ -60,7 +70,8 @@ the answer, with the 48-hour note.)
 ## Voice
 
 Explain: drinks are ordered online at the boat parties page, cooler is stocked before
-boarding, 48-hour lead time. Offer to text the link to the caller's number.
+boarding, 48-hour lead time. Offer to text the link to the caller's number (plus the
+boat-call booking link if they want help choosing drinks).
 
 ## Notes for Allan
 
@@ -69,3 +80,5 @@ boarding, 48-hour lead time. Offer to text the link to the caller's number.
   tool is live it should prefer the group's own {{dashboard_url}}.
 - PREMIER25 is retired (verified 2026-07-07): guests get per-customer credit codes by
   text/email — the bot never quotes any code; missing-code asks escalate for a re-send.
+- 2026-09-28: email + chat offer the self-serve 10-min Boat Call (boat-call booking link)
+  for "what should we get?" help. The SMS keeps one link (the order page) on purpose.

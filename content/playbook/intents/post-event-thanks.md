@@ -21,13 +21,14 @@ match_examples:
 ## Answer (canonical)
 
 Warm, short, personal — then (if they haven't already reviewed) the review ask in
-Allan's real wording: honest, no survey-speak, link to 123.partyondelivery.com/reviews.
-If they already reviewed: pure gratitude, no ask. If feedback includes a minor issue:
-thank them for it specifically and flag internally (don't promise fixes).
+Allan's real wording: honest, no survey-speak, link to 123.partyondelivery.com/reviews
+(never put punctuation right after the link). If they already reviewed: pure gratitude,
+no ask. If feedback includes a minor issue: thank them for it specifically and flag
+internally (don't promise fixes).
 
 ## SMS
 
-{{first_name}} that makes our day — thank you!! If you have 60 seconds, a quick review helps us a ton as a growing business: 123.partyondelivery.com/reviews. Party on! 🎉
+{{first_name}} that makes our day — thank you, party on!! 🎉 If you have 60 seconds, a quick review helps us a ton as a growing business: 123.partyondelivery.com/reviews
 
 ## Email
 
@@ -54,3 +55,6 @@ as a growing business: 123.partyondelivery.com/reviews 🎉
 - The review ask wording is your real template, lightly compressed.
 - "Ran out of ice"-type notes inside thanks get flagged — that exact feedback is why
   cruise-whats-allowed suggests extra ice.
+- 2026-09-28: the SMS used to end "…/reviews. Party on!" — some phones fold that
+  period into the link, and the 123 subdomain sends "/reviews." to the homepage. The
+  link now ends the message; never put punctuation right after a link.

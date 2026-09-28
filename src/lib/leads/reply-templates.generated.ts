@@ -10,7 +10,7 @@ export const REPLY_TEMPLATES: readonly ReplyTemplate[] = [
     "id": "quote-request",
     "label": "Quote",
     "subject": "Your Party On Delivery quote",
-    "body": "Hi {{first_name}},\n\nHappy to price that out! Easiest way: I've put together a sample cart sized for your group — open it, edit anything, and it prices live: {{cart_url}}\n\nDelivery fee and order minimum depend on your delivery zip (checkout shows both exactly). Reply with your event date and headcount if it changes and I'll re-cut it for you personally.",
+    "body": "Hi {{first_name}},\n\nHappy to price that out! Easiest way: I've put together a sample cart sized for your group — open it, edit anything, and it prices live: {{cart_url}}\n\nDelivery fee and order minimum depend on your delivery zip (checkout shows both exactly). Reply with your event date and headcount if it changes and I'll re-cut it for you personally.\n\nRather talk it through? You can book a 15-minute phone call any day between 10 AM–12 PM or 1–4 PM Central here: 123.partyondelivery.com/planning-call",
     "tokens": [
       "first_name",
       "cart_url"
@@ -20,7 +20,7 @@ export const REPLY_TEMPLATES: readonly ReplyTemplate[] = [
     "id": "corporate-event-inquiry",
     "label": "Corporate",
     "subject": "Your corporate event with Party On Delivery",
-    "body": "Hi {{first_name}},\n\nWe handle corporate events end-to-end: premium spirits and curated wine, full bar setups and TABC-certified bartenders if you want them, and an itemized quote/invoice your finance team can approve before anything's locked. Invoices can be paid by corporate card, ACH, or wire.\n\nReply with your date, headcount, venue, and rough budget per person, and I'll put together a proposal for you.",
+    "body": "Hi {{first_name}},\n\nWe handle corporate events end-to-end: premium spirits and curated wine, full bar setups and TABC-certified bartenders if you want them, and an itemized quote/invoice your finance team can approve before anything's locked. Invoices can be paid by corporate card, ACH, or wire.\n\nReply with your date, headcount, venue, and rough budget per person, and I'll put together a proposal for you. Rather talk it through first? Grab a 15-minute call on my calendar here: 123.partyondelivery.com/planning-call",
     "tokens": [
       "first_name"
     ]
@@ -29,7 +29,7 @@ export const REPLY_TEMPLATES: readonly ReplyTemplate[] = [
     "id": "bartender-services",
     "label": "Bartenders",
     "subject": "Bartender services for your event",
-    "body": "Hi {{first_name}},\n\nYes! We provide TABC-certified, insured bartenders for weddings, corporate events, and private parties — plus custom cocktail menus and complete bar setups (glassware, ice, garnishes, mixers, tools). Packages start at $600, and the exact quote depends on your event.\n\nReply with your date, headcount, venue, and how many hours of service you need, and I'll put pricing together for you personally.",
+    "body": "Hi {{first_name}},\n\nYes! We provide TABC-certified, insured bartenders for weddings, corporate events, and private parties — plus custom cocktail menus and complete bar setups (glassware, ice, garnishes, mixers, tools). Packages start at $600, and the exact quote depends on your event.\n\nReply with your date, headcount, venue, and how many hours of service you need, and I'll put pricing together for you personally. Rather talk it through? Grab a 15-minute call on my calendar here: 123.partyondelivery.com/planning-call",
     "tokens": [
       "first_name"
     ]
@@ -38,7 +38,7 @@ export const REPLY_TEMPLATES: readonly ReplyTemplate[] = [
     "id": "partner-affiliate-inquiry",
     "label": "Partner",
     "subject": "Partnering with Party On Delivery",
-    "body": "Hi {{first_name}},\n\nGreat to hear from you — I handle partnerships personally and I'd love to explore how we can work together. I'll follow up shortly with next steps. Appreciate you thinking of us!",
+    "body": "Hi {{first_name}},\n\nGreat to hear from you — I handle partnerships personally and I'd love to explore how we can work together. I'll follow up shortly with next steps. Appreciate you thinking of us!\n\nIf it's easier, grab a 30-minute Google Meet on my calendar at a time that works for you: 123.partyondelivery.com/partnership-call",
     "tokens": [
       "first_name"
     ]
@@ -47,7 +47,7 @@ export const REPLY_TEMPLATES: readonly ReplyTemplate[] = [
     "id": "callback-request",
     "label": "Callback",
     "subject": "Your Party On Delivery callback",
-    "body": "Hi {{first_name}},\n\nAbsolutely — got your message and I'll give you a call. If it's about an event happening today, reply \"TODAY\" and I'll bump you to the top. Otherwise I'll reach out during delivery hours (10 AM – 9 PM Mon–Sat).",
+    "body": "Hi {{first_name}},\n\nAbsolutely — got your message and I'll give you a call. If it's about an event happening today, reply \"TODAY\" and I'll bump you to the top. Otherwise I'll reach out during delivery hours (10 AM – 9 PM Mon–Sat).\n\nIf it's easier, grab a 15-minute call on my calendar at a time that works for you: 123.partyondelivery.com/planning-call",
     "tokens": [
       "first_name"
     ]

@@ -37,6 +37,35 @@ facts:
     sources: ["src/lib/followups/copy.ts POSTAL_ADDRESS (PR #193)", "operator confirmed 2026-07-07"]
     last_verified: 2026-07-07
 
+  # ---- self-serve call booking ----
+  # The three 123.partyondelivery.com booking paths 301 to Google Calendar appointment
+  # schedules (next.config.ts). Never put punctuation directly after these links — some
+  # phones fold a trailing "." into the URL and the subdomain's catch-all sends it to the
+  # homepage. Follow a link with a space or a line break only (see channels.md).
+  - id: booking-boat-call
+    statement: "Customers can book a 10-minute Boat Call (phone call) at 123.partyondelivery.com/boat-call for Lake Travis boat/cruise drink questions."
+    status: verified
+    sources: ["next.config.ts 123.partyondelivery.com /boat-call redirect (2026-09-15)", "operator-supplied, verified live 2026-09-28"]
+    last_verified: 2026-09-28
+
+  - id: booking-planning-call
+    statement: "Customers can book a 15-minute Party Consultation (phone call) at 123.partyondelivery.com/planning-call for event planning — weddings, corporate events, bachelor/bachelorette parties, and general quotes."
+    status: verified
+    sources: ["next.config.ts 123.partyondelivery.com /planning-call redirect (2026-09-15)", "operator-supplied, verified live 2026-09-28"]
+    last_verified: 2026-09-28
+
+  - id: booking-partnership-call
+    statement: "Partners, affiliates, venues, and vacation-rental hosts can book a 30-minute Partnership Call (Google Meet video call) at 123.partyondelivery.com/partnership-call to talk about working together."
+    status: verified
+    sources: ["next.config.ts 123.partyondelivery.com /partnership-call redirect (2026-09-15)", "operator-supplied, verified live 2026-09-28"]
+    last_verified: 2026-09-28
+
+  - id: booking-call-availability
+    statement: "All three bookable calls (Boat Call, Party Consultation, Partnership Call) have slots every day, weekends included, 10 AM–12 PM and 1–4 PM Central, and must be booked at least 4 hours ahead; the booking form asks for a phone number. These are call slots, not delivery hours — for anything sooner than 4 hours out, text (737) 371-9700."
+    status: verified
+    sources: ["operator-supplied, verified live 2026-09-28 (Google Calendar appointment schedules)"]
+    last_verified: 2026-09-28
+
   # ---- hours & lead time ----
   - id: hours-mon-sat
     statement: "Delivery hours are 10 AM – 9 PM Monday through Saturday. Early-morning or late-night deliveries can be arranged with advance notice."
@@ -181,7 +210,7 @@ facts:
     last_verified: 2026-09-01
 
   - id: order-immediately-link
-    statement: "The page for placing a NEW order right away is partyondelivery.com/order. Changes or additions to an EXISTING order, and custom quotes, go to the text line (737) 371-9700 — never the website."
+    statement: "partyondelivery.com/order is the page for placing a NEW order right away. Changes or additions to an EXISTING order, and custom quotes, go to the text line (737) 371-9700 — never the website."
     status: verified
     sources: ["operator answer 2026-07-07 (red-pen round)"]
     last_verified: 2026-07-07
@@ -241,16 +270,16 @@ facts:
     last_verified: 2026-07-07
 
   - id: premier-waiver-link
-    statement: "Every Premier cruise guest must e-sign the waiver before arrival — Premier sends it out by text/email; the link is premieratx.co/private-waiver."
+    statement: "Every Premier cruise guest must e-sign the waiver before arrival — Premier sends it out by text/email; premieratx.co/private-waiver is the signing link."
     status: verified
     sources: ["Allan's outbound GHL texts", "Premier drip copy", "operator confirmed 2026-07-07"]
     last_verified: 2026-07-07
 
   - id: review-link
-    statement: "The review-request link is 123.partyondelivery.com/reviews."
+    statement: "The review-request link is 123.partyondelivery.com/reviews (it forwards to our Google review page)."
     status: verified
-    sources: ["Allan's outbound review-request texts (dozens in corpus)"]
-    last_verified: 2026-07-06
+    sources: ["Allan's outbound review-request texts (dozens in corpus)", "next.config.ts 123.partyondelivery.com /reviews redirect (2026-09-14)"]
+    last_verified: 2026-09-28
 
   - id: cruise-operations-premier-owned
     statement: "Premier Party Cruises owns: boat photos, which-boat/fleet questions, boat amenity specifics (glass rules, what's provided), gate-code delivery, and go/no-go weather calls — redirect those to Premier's site or the booking confirmation. POD answers directly: arrival time, parking, waivers, music setup, group transport (Fetii), and what happens to drinks on a weather reschedule."
