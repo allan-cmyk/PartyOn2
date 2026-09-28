@@ -25,7 +25,7 @@ tags: [partyondelivery, codebase, architecture, stack, env]
 | Password hashing | `bcryptjs` | 3.0.3 |
 | Payments | `stripe`, `@stripe/stripe-js`, `@stripe/react-stripe-js` (embedded checkout on landing pages) | 20.2.0 / 9.5.0 / 6.3.0 |
 | Email | `resend`, `@react-email/components` | 6.9.2 / 1.0.4 |
-| SMS / webhook relay | GoHighLevel via `src/lib/webhooks/ghl.ts`; Zapier inbound | n/a (webhook URL only) |
+| SMS / CRM event relay | CoreLinq CRM (self-hosted fork) via `postToCoreLinq` in `src/lib/webhooks/ghl.ts` (legacy file name — GoHighLevel was cancelled 2026-09-22); Zapier inbound | n/a (webhook URL only) |
 | Analytics | `@vercel/analytics`, `@vercel/speed-insights`, `@google-analytics/data` (GA4 Data API), Meta Pixel, Microsoft Clarity (`@microsoft/clarity`) | 1.5.0 / 1.2.0 / 5.2.1 / 1.0.2 |
 | Finance integrations | `plaid`, `react-plaid-link` (bank accounts), `intuit-oauth` (QuickBooks Online) | 42.2.0 / 4.1.1 / 4.2.3 |
 | Server traffic / bot detection | Vercel Log Drain (see `api/webhooks/vercel-drain`) | n/a |
@@ -245,13 +245,14 @@ Grouped to match the section headers in `.env.example` at repo root. This list i
 | `RESEND_FROM_EMAIL` | Default from-address (e.g. `orders@partyondelivery.com`). |
 | `RESEND_WEBHOOK_SECRET` | Signing secret for `/api/webhooks/resend` events. |
 
-### SMS / CRM (GoHighLevel)
+### SMS / CRM (CoreLinq)
+The CoreLinq CRM (self-hosted fork, `partyon-crm` repo) owns (737) 371-9700 and sends every customer SMS. Store events (order created/cancelled, review request, dashboard created/shared, Premiere credit issued, leads, newsletter sign-ups) are POSTed to it by `postToCoreLinq` in `src/lib/webhooks/ghl.ts` — the file and function names are legacy; the code was not renamed.
+
 | Variable | Purpose |
 |---|---|
-| `GHL_ORDER_WEBHOOK_URL` | Order confirmation SMS. |
-| `GHL_REVIEW_WEBHOOK_URL` | Post-delivery review request. |
-| `GHL_DASHBOARD_WEBHOOK_URL` | Dashboard-share SMS. |
-| `GHL_WEBHOOK_URL` | Used by `/api/v2/group-orders/[code]/send-link`. |
+| `CORELINQ_INGEST_URL` | CRM ingest URL (includes its token). Unset = no events reach the CRM, so no SMS. |
+| `CRM_API_KEY` | Bearer key for the read-only `GET /api/v1/crm/lookup` route the CRM calls. |
+| `GHL_ORDER_WEBHOOK_URL`, `GHL_REVIEW_WEBHOOK_URL`, `GHL_DASHBOARD_WEBHOOK_URL`, `GHL_WEBHOOK_URL`, `GHL_NEWSLETTER_WEBHOOK_URL`, `GHL_CONCIERGE_LEAD_WEBHOOK_URL`, `GHL_PREMIERE_CREDIT_WEBHOOK_URL` | Legacy GoHighLevel legs. GHL was cancelled 2026-09-22 — leave unset; each GHL leg no-ops when its URL is missing. |
 
 ### Meta Pixel
 | Variable | Purpose |

@@ -12,7 +12,7 @@ import { attributionSchema, compactAttribution } from '@/lib/leads/attribution-s
 import { verticalForBusinessType } from '@/lib/leads/partner-tags'
 
 // Sources that trigger an automated outbound email with the partner one-pager
-// PDF + Calendly CTA (in addition to the existing ops notification).
+// PDF + Partnership Call booking CTA (in addition to the existing ops notification).
 const ONEPAGER_SOURCES = new Set(['vacation-rental-onepager'])
 // Skip the outbound if we already sent it to this email in the last 24h.
 const ONEPAGER_DEDUPE_WINDOW_MS = 24 * 60 * 60 * 1000
@@ -382,7 +382,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Outbound: send the partner one-pager email (PDF + Calendly CTA) for
+    // Outbound: send the partner one-pager email (PDF + booking-call CTA) for
     // QR-landing / signup variants. 24h dedupe by email so re-scans don't
     // spam the partner.
     if (inquiry.source && ONEPAGER_SOURCES.has(inquiry.source) && dbResult?.id) {

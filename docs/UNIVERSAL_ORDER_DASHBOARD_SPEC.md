@@ -334,7 +334,7 @@ Always visible in the dashboard header. Clicking it opens the share modal.
 
 - The shareable link is shown IMMEDIATELY -- no gating behind contact info
 - Email/phone entry is optional, positioned as "send it to yourself"
-- Clicking "Send Me This Link" sends the dashboard URL via email (Resend) and/or SMS (GHL webhook)
+- Clicking "Send Me This Link" sends the dashboard URL via email (Resend) and/or SMS (CoreLinq CRM, via a `dashboard.share` event from `postToCoreLinq`; originally a GHL webhook — GHL cancelled 2026-09-22)
 - Contact info is saved on the participant's `GroupParticipantV2` record (`guestEmail`, `guestPhone`)
 
 ### Lead Capture for Partners
@@ -626,7 +626,7 @@ Most group-v2 API routes (`/api/v2/group-orders/...`) are reused as-is. New/modi
 - "Shared Orders" section in affiliate dashboard
 
 **Backend:**
-- Share endpoint (send link via Resend email + GHL SMS webhook)
+- Share endpoint (send link via Resend email + CoreLinq CRM SMS)
 - Save contact info on participant record
 - Affiliate dashboard API: query GroupOrderV2 where affiliateId matches
 - Ensure `affiliateId` propagates from GroupOrderV2 to Order on checkout

@@ -1,8 +1,8 @@
 /**
- * Go High Level (GHL) Webhook — New Order Notifications
- *
- * Fire-and-forget: logs errors, never throws.
- * No-ops silently when GHL_ORDER_WEBHOOK_URL is not set.
+ * Store-event webhooks. Every sender below posts to the CoreLinq CRM via
+ * postToCoreLinq; the CRM sends all customer SMS. File/type names are legacy
+ * from GoHighLevel (cancelled 2026-09-22) — each GHL leg no-ops while its
+ * GHL_* URL is unset, which it should stay. Fire-and-forget: never throws.
  */
 
 import { alertCoreLinqIngestFailure } from './corelinq-alert';

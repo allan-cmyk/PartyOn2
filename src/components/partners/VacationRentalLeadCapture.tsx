@@ -8,7 +8,7 @@ interface VacationRentalLeadCaptureProps {
   /**
    * Source slug forwarded to /api/partners/inquiry. The default
    * 'vacation-rental-onepager' triggers the partner one-pager email
-   * (PDF + Calendly CTA).
+   * (PDF + Partnership Call booking CTA).
    */
   source?: string;
 }

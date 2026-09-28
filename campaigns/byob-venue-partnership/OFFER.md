@@ -170,12 +170,12 @@ Spring wedding season begins in March. Partners who sign up by mid-February will
 
 ## Next Steps
 
-1. **Schedule a 15-minute call** to discuss which tier makes sense for your venue
+1. **Schedule a 30-minute call** to discuss which tier makes sense for your venue
 2. **We'll create your listing** and custom landing page (if applicable)
 3. **You add our link** to your website
 4. **Start earning** commission on orders
 
-**Book a Call:** [Calendly Link TBD]
+**Book a Call:** https://123.partyondelivery.com/partnership-call (30-min Google Meet)
 **Email:** info@partyondelivery.com
 **Phone:** 737.371.9700
 

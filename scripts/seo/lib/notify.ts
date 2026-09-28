@@ -4,9 +4,11 @@
  * Fires a webhook on success + failure so Brian/Allan know the scrape
  * landed (or didn't) without having to babysit the GitHub Actions UI.
  *
- * Uses the existing GHL_DASHBOARD_WEBHOOK_URL the rest of the app
- * already uses for ops alerts — payload structure mirrors POD's
- * existing webhook events (event + first_name + email + body).
+ * Posts to GHL_DASHBOARD_WEBHOOK_URL — payload structure mirrors POD's
+ * webhook events (event + first_name + email + body). GoHighLevel was
+ * cancelled 2026-09-22, so unless that secret has been re-pointed this
+ * webhook no longer reaches anyone; point it at a live channel before
+ * relying on these alerts.
  */
 import type { SurfaceKey } from './types';
 

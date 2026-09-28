@@ -132,7 +132,9 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       }
     }
 
-    // Trigger GHL SMS if phone provided (+ CoreLinq fan-out during migration)
+    // Text the link if a phone was provided: the CoreLinq CRM sends it from the
+    // dashboard.share event below. The GHL leg is legacy (GHL cancelled
+    // 2026-09-22) and no-ops while GHL_WEBHOOK_URL is unset.
     if (hostPhone) {
       const smsMessage = `Here's your Party On Delivery dashboard link: ${dashboardUrl}`;
       try {

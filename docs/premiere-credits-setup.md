@@ -11,7 +11,7 @@ in `/admin/premiere-credits` before anything is sent.
 - **Cron:** `GET /api/cron/premiere-credits` — every 15 min (`vercel.json`), `CRON_SECRET` bearer, **fails closed**
 - **Sheet reader:** `src/lib/premiere-credits/sheet.ts` — reuses the existing Premier service account, **read-only** (`spreadsheets.readonly`)
 - **Codes:** created in the `discounts` table (`FIXED_AMOUNT`, single-use, +60-day expiry); one `premiere_credit_grants` row tracks each grant
-- **Delivery:** Resend email (`src/lib/email/templates/premiere-credit.ts`) + GHL SMS (`src/lib/webhooks/ghl-premiere-credit.ts`)
+- **Delivery:** Resend email (`src/lib/email/templates/premiere-credit.ts`) + SMS sent by the CoreLinq CRM from (737) 371-9700. `notifyPremiereCreditIssued` (`src/lib/webhooks/ghl-premiere-credit.ts` — legacy file name) posts a `premiere.credit.issued` event through `postToCoreLinq`, and the CRM texts the code. GoHighLevel is decommissioned (cancelled 2026-09-22).
 - **Admin:** `/admin/premiere-credits` — approve held codes, resend, add missing contact, and the redeemed-in-period **invoice view**
 
 The code ships **inert**. Both feature flags are off by default, so the cron
@@ -53,28 +53,29 @@ Also mirror these into `.env.local` for local testing. See `.env.example`
 | `PREMIERE_CREDITS_SHEET_ID` | `1e-_SfGeWpukkFv_qElHhhd9djeIzjVakNkjGT8i44MM` (the Masterlist file id) |
 | `PREMIERE_CREDITS_SHEET_TAB` | `POD Credits` |
 | `PREMIERE_PARTNER_NOTIFY_EMAIL` | where the per-tick "codes issued" summary goes. Comma-separate for more than one recipient — first = To, rest = Cc — e.g. `grey@premierpartycruises.com,va@premierpartycruises.com` |
-| `GHL_PREMIERE_CREDIT_WEBHOOK_URL` | the inbound-webhook URL from step 3. **Leave blank** until the GHL workflow exists — SMS is a no-op without it, email still sends |
+| `CORELINQ_INGEST_URL` | already set (the shared CRM ingest URL every store event uses). Without it no event reaches the CRM, so no credit text — the email still sends |
+| `GHL_PREMIERE_CREDIT_WEBHOOK_URL` | legacy — **leave unset**. It fed the old GoHighLevel workflow; GHL is decommissioned and the GHL leg no-ops without it |
 | `PREMIER_SHEET_SERVICE_ACCOUNT_EMAIL` | already set (shared with the sheet in step 1) |
 | `PREMIER_SHEET_SERVICE_ACCOUNT_KEY` | already set |
 | `CRON_SECRET` | already set (shared with the other crons) |
 | `RESEND_API_KEY` | already set (customer + summary + alert emails) |
 | `OPS_ALERT_EMAIL` | optional; the held/needs-contact/failure alert recipient, defaults to `allan@partyondelivery.com` |
 
-### 3. Build the GHL "Premiere Credit — SMS" workflow (for SMS delivery)
-The app POSTs a JSON payload to a GHL **inbound webhook**; a workflow turns it
-into a text. In GoHighLevel:
+### 3. SMS delivery — the CoreLinq CRM (nothing to build)
+The credit text is sent by the CoreLinq CRM (self-hosted fork, `partyon-crm`
+repo), not by this app and not by GoHighLevel. The app POSTs a
+`premiere.credit.issued` JSON event to `CORELINQ_INGEST_URL`; the CRM's ingest
+route accepts it and its event handler texts the customer from (737) 371-9700
+using the `partyon-premiere-credit` SMS template (editable in the CRM; a code
+fallback lives in the CRM's `apps/web/lib/inngest/functions/partyon-event.ts`).
+The CRM texts each credit code only once (it de-duplicates on the code), so an
+admin **Resend** re-sends the email but does not produce a second text. To
+change the wording, edit the template in the CRM — nothing in this repo holds
+the SMS copy.
 
-1. **Automation → Workflows → Create → Start from scratch.**
-2. Trigger: **Inbound Webhook.** Save, then copy its URL → that's
-   `GHL_PREMIERE_CREDIT_WEBHOOK_URL` (step 2).
-3. Action **Upsert Contact** from the payload fields: `first_name`, `last_name`,
-   `email`, `phone`.
-4. Action **Add Tag** → `premiere-credit`.
-5. Action **Send SMS**, using the payload's merge fields — for example:
-   > Party On Delivery: your ${{credit_amount}} credit from Premiere Party
-   > Cruises is ready! Code **{{credit_code}}** at {{redeem_url}} — **EXPIRES
-   > {{expires_on}}**, one-time use.
-6. Publish. Send yourself a test first (point the contact at your own phone).
+To confirm a text actually went out, check the CRM's `sms_messages` records.
+The grant's `smsSentAt` only proves the POST didn't throw, not that a text was
+delivered.
 
 Available payload fields: `credit_code`, `credit_amount` (e.g. `336.21`),
 `expires_on` (e.g. `September 20, 2026`), `redeem_url`, plus the contact fields
@@ -84,8 +85,8 @@ delivery address at checkout. (It deliberately does NOT link to a per-customer
 group dashboard: those match only on an unverified email, are unauthenticated,
 and take the delivery address from the dashboard — so a wrong dashboard could
 ship a credited order to the wrong address. Security review, 2026-07.)
-Until the workflow exists, leave `GHL_PREMIERE_CREDIT_WEBHOOK_URL` unset and
-customers still get the full email — only the text is skipped.
+If the CRM is unreachable, customers still get the full email — only the text
+is skipped.
 
 ### 4. Turn it on — feature flags (`/admin/features`)
 Two flags gate everything; both are off until you create/enable them:
@@ -97,7 +98,7 @@ Two flags gate everything; both are off until you create/enable them:
   send by hand (manual **Approve & Send** / **Resend** still work regardless).
 
 **Recommended rollout order:**
-1. Finish steps 1–3.
+1. Finish steps 1–2 (step 3 needs no setup).
 2. Enable **`premiere_credits_master`** only. Wait one tick (~15 min) or curl the
    cron (below). It mints the current backlog (today: 5 ready + Sarah LeBlanc
    $336.21 **held**) and sends nothing.

@@ -103,7 +103,7 @@ Every `page.tsx` and `route.ts` discovered under `src/app/`. Paths are literal f
 | `/order/last-minute` | `src/app/order/last-minute/page.tsx` | Curated last-minute products. | — | No | Added in recent commits. |
 | `/partners` | `src/app/partners/page.tsx` | Partner program overview. | — | No | |
 | `/partners/[slug]` | `src/app/partners/[slug]/page.tsx` | Generic partner landing. | `slug` | No | iframe-embeddable. |
-| `/partners/pitch` | `src/app/partners/pitch/page.tsx` | 5-slide horizontal pitch deck for partner program. Mobile vertical-scroll fallback. | — | No | One-off; CTA → Calendly. |
+| `/partners/pitch` | `src/app/partners/pitch/page.tsx` | 5-slide horizontal pitch deck for partner program. Mobile vertical-scroll fallback. | — | No | One-off; CTA → `https://123.partyondelivery.com/partnership-call` (308 → Google Calendar "Partnership Call", 30-min Google Meet; overridable via the legacy-named `NEXT_PUBLIC_PARTNER_CALENDLY_URL`). |
 | `/partners/anderson-mill-marina-boat-club` | ... | Named partner. | — | No | |
 | `/partners/boat-babes` | ... | Named partner. | — | No | |
 | `/partners/cocktail-cowboys` | ... | Named partner. | — | No | |

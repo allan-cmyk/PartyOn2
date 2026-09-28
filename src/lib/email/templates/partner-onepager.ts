@@ -7,12 +7,14 @@
  * attachment and a CTA to schedule a 15-min call.
  *
  * The HTML is verbatim from the designed-and-tested template at
- * `tmp-pod-partner-email.html`; placeholders for the Calendly URL and
- * unsubscribe link are interpolated below.
+ * `tmp-pod-partner-email.html`; placeholders for the booking URL and
+ * unsubscribe link are interpolated below. (`calendlyUrl` is a legacy name —
+ * the link is 123.partyondelivery.com/partnership-call, a Google Calendar
+ * schedule, not Calendly.)
  */
 
 export interface PartnerOnePagerEmailData {
-  /** Partner's Calendly / scheduling URL */
+  /** Partnership Call booking URL (legacy `calendly` name) */
   calendlyUrl: string;
   /** URL the email's unsubscribe link points at — typically a mailto: */
   unsubscribeUrl: string;

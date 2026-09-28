@@ -259,7 +259,7 @@ These are **parallel namespaces, not a migration** — neither supersedes the ot
 | Stripe | out + webhooks in | Live keys. Test cards forbidden. |
 | Shopify Admin API | pull (catalog sync) + webhooks in | Admin-only; NO Storefront/checkout per CLAUDE.md. |
 | Resend | out + webhooks in | Transactional email + template webhooks. |
-| GoHighLevel (GHL) | out webhook | SMS dispatch (`src/lib/webhooks/ghl.ts`). |
+| CoreLinq CRM | out webhook | All customer SMS — store events posted by `postToCoreLinq` in `src/lib/webhooks/ghl.ts` (legacy name; GoHighLevel was cancelled 2026-09-22). |
 | Zapier | out webhook | Partner inquiry + corporate leads. |
 | Vercel Log Drain | in | `/api/webhooks/vercel-drain`, signature verified with `VERCEL_DRAIN_SECRET`. |
 | Google (GA4 + GSC) | pull | GA4 Data API via `@google-analytics/data`; GSC via `googleapis`. |

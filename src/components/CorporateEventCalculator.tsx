@@ -521,7 +521,7 @@ export default function CorporateEventCalculator() {
           <div className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
             <p className="text-sm text-blue-900 font-medium mb-2">Party On Delivery Advantage:</p>
             <p className="text-xs text-blue-800 leading-relaxed">
-              Order with confidence! We offer 100% buyback on unopened bottles, so you never have to worry about over-ordering.
+              Order with confidence! We offer a 100% refund on up to 25% of your order — return unopened items to our store, same day, no restocking fee.
             </p>
           </div>
 
