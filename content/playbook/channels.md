@@ -19,6 +19,10 @@ rules govern how each channel renders and what it may never do.
   renderings are used by humans as canned replies only.
 - Links: bare domain links (partyondelivery.com/…), no link shorteners — carriers filter
   them (SHAFT hygiene).
+- **Nothing but a space or line break after a link.** Some phones fold trailing
+  punctuation (`. , ) ; : !`) into the URL — a period right after the reviews link opened
+  the homepage, not the review page. End the sentence before the link, or put the link
+  last.
 
 ## Email (info@ AI inbox)
 
@@ -30,6 +34,8 @@ rules govern how each channel renders and what it may never do.
 - **Confidence line**: the AI inbox pipeline parses a trailing `CONFIDENCE: <0..1>` line
   from the model output; each card's `confidence_instruction` steers it (T3 cards force
   low confidence → draft-and-hold; T4 relies on the keyword engine as well).
+- **Links**: same rule as SMS — never punctuation directly after a link; give it its own
+  line or follow it with a space.
 - **Footer**: any email that is not a direct 1:1 reply (digests, bulk) needs the CAN-SPAM
   block — physical address + unsubscribe (see compliance.md; address is still an open
   question and BLOCKS bulk email).
@@ -66,3 +72,8 @@ rules govern how each channel renders and what it may never do.
 3. Every reply leaves a next step (link, number, or "here's what happens next").
 4. If the customer is angry, skip cleverness — short ack + fast human.
 5. When unsure which intent applies → unknown-low-confidence card (T3), never a guess.
+6. Self-serve call booking (facts `booking-*`): Boat Call (10 min, phone) for cruise drink
+   questions, Party Consultation (15 min, phone) for event planning/quotes, Partnership
+   Call (30 min, Google Meet) for partners. Offer the link where a card says to — as an
+   option next to the human follow-up, never instead of it. Slots start 4+ hours out, so
+   anything happening today stays on the text line.

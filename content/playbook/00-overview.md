@@ -106,6 +106,13 @@ Excluded from cards (corpus noise, no reply behavior needed): `short-ack` (70),
 
 ## Changelog
 
+- **2026-09-28 v1.2** — self-serve call booking: new verified facts `booking-*` (Boat
+  Call 10 min / Party Consultation 15 min / Partnership Call 30 min Google Meet; slots
+  daily 10–12 + 1–4 Central, 4+ hours ahead). Offered in callback-request,
+  partner-affiliate-inquiry, corporate-event-inquiry (all channels) and quote-request,
+  bartender-services, cruise-drink-setup (email + chat). Link-punctuation rule added to
+  channels.md; post-event-thanks SMS no longer puts a period after the reviews link, and
+  the same fix applies to the waiver link in cruise-waiver-fix + cruise-guest-update.
 - **2026-07-07 v1.1** — operator review round: all 18 open questions answered and
   applied. Highlights: hours fully verified (closed Sundays; Thanksgiving + Christmas
   only blackouts), shipping = never (card T3→T1), reschedule≠cancel reconciled (free

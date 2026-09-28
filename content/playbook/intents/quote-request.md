@@ -24,6 +24,11 @@ sized to their group ("~$25/pp for 10 guys: <shared-cart link>") and invite them
 The draft gathers/echoes: headcount, date/time, address area; cites verified delivery
 facts (zone fee, minimum); proposes the cart. A human approves before it sends.
 "Checking in on my quote" asks: ack + flag urgent-standard so the quote doesn't go stale.
+For bigger events (weddings, corporate, bach weekends) or anyone who'd rather talk than
+text, email and chat also offer the 15-minute Party Consultation phone call at
+123.partyondelivery.com/planning-call as an extra option — the sample cart stays the
+main path. (Verified 2026-09-28; slots every day 10 AM–12 PM and 1–4 PM Central, at
+least 4 hours ahead.)
 
 ## SMS
 
@@ -40,6 +45,10 @@ Delivery fee and order minimum depend on your delivery zip (checkout shows both
 exactly). Reply with your event date and headcount if it changes and I'll re-cut it for
 you personally.
 
+Rather talk it through? You can book a 15-minute phone call any day between
+10 AM–12 PM or 1–4 PM Central here:
+123.partyondelivery.com/planning-call
+
 Allan
 Party On Delivery
 
@@ -47,7 +56,9 @@ Party On Delivery
 
 Happy to price that out! The fastest way is a sample cart sized for your group — text
 your headcount, date, and delivery zip to (737) 371-9700 and we'll send one you can edit
-(it prices live, including delivery for your zip).
+(it prices live, including delivery for your zip). Planning something bigger, like a
+wedding or a bach weekend, and rather talk it through? Book a 15-minute phone call at
+123.partyondelivery.com/planning-call (slots every day 10 AM–12 PM and 1–4 PM Central).
 
 ## Voice
 
@@ -59,3 +70,6 @@ Take headcount, date, zip, budget-per-person; promise a texted sample-cart link.
   bot can't mint carts yet, which is why this stays T3.
 - The "reply with your event date and headcount and I'll price it out for you
   personally" line is lifted from your follow-ups copy.
+- 2026-09-28: email + chat now offer the self-serve 15-min Party Consultation
+  (planning-call booking link) as an extra option. Left out of the SMS on purpose — it's
+  already near the 320-char cap and the sample cart is the next step there.
