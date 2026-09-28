@@ -1,5 +1,10 @@
 import type { NextConfig } from "next";
 import { ARCHIVED_PRODUCT_REDIRECTS } from "./src/lib/seo/archived-product-redirects";
+import {
+  DEAD_LINK_REDIRECTS,
+  FUNNEL_HOST_REDIRECTS,
+  INFO_HOST_REDIRECTS,
+} from "./src/lib/seo/funnel-host-redirects";
 
 const nextConfig: NextConfig = {
   images: {
@@ -203,50 +208,14 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
-      // 2026-09-14 — 123.partyondelivery.com was a GoHighLevel funnel domain
-      // (GHL decommissioned; account being cancelled). This host now points at
-      // Vercel and we serve the redirects ourselves, so every historic link
-      // (flyers, follow-up emails, CRM drip texts, lander CTAs) keeps working.
-      // 2026-09-15 — the three call-booking paths now 301 to Allan's Google
-      // Calendar appointment schedules (allan@partyondelivery.com; Boat Call
-      // 10 min / Party Consultation 15 min / Partnership Call 30 min). Editing
-      // a schedule's settings in Google Calendar never changes its URL; only
-      // deleting and recreating one would, so update the destination here if
-      // a schedule is ever recreated.
-      {
-        source: '/reviews',
-        has: [{ type: 'host', value: '123.partyondelivery.com' }],
-        destination: 'https://g.page/r/CWO9-KA4uBqaEAE/review',
-        permanent: true,
-      },
-      {
-        source: '/boat-call',
-        has: [{ type: 'host', value: '123.partyondelivery.com' }],
-        destination:
-          'https://calendar.google.com/calendar/appointments/schedules/AcZssZ0A5IpzCavw3gYFKYBSqqdRr1DyaiX4ietgCDLgg20EKhpPu7gdrsrJM5P5zlC8Z6-9JQq5g-Fb',
-        permanent: true,
-      },
-      {
-        source: '/planning-call',
-        has: [{ type: 'host', value: '123.partyondelivery.com' }],
-        destination:
-          'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1LJme7vhebZTdmWQ0dvKFd7CUquhr8bmXkgH7KMRDuKeY8PDETRMJx4utUhg6zBIt0SguTVRrW',
-        permanent: true,
-      },
-      {
-        source: '/partnership-call',
-        has: [{ type: 'host', value: '123.partyondelivery.com' }],
-        destination:
-          'https://calendar.google.com/calendar/appointments/schedules/AcZssZ0pjDaVscvHzyhes4RkjsBbx6fn5EjFmCzJypDCBU_qRv2vgC4uuYuLcRdDzap9zeGhAbldL8iE',
-        permanent: true,
-      },
-      // Any other old funnel path on that host → homepage.
-      {
-        source: '/:path*',
-        has: [{ type: 'host', value: '123.partyondelivery.com' }],
-        destination: 'https://partyondelivery.com/',
-        permanent: false,
-      },
+      // Retired GHL funnel hosts (123. and info.partyondelivery.com) and two
+      // dead main-domain links. Host-scoped rules MUST come first. Rationale,
+      // booking-page URLs and history: src/lib/seo/funnel-host-redirects.ts
+      // (pinned by its test). The call paths are permanent 308s; GHL was
+      // cancelled 2026-09-22.
+      ...FUNNEL_HOST_REDIRECTS,
+      ...INFO_HOST_REDIRECTS,
+      ...DEAD_LINK_REDIRECTS,
 
       // 2026-06-10 archived + orphaned product URL sweep — see
       // src/lib/seo/archived-product-redirects.ts and the rationale in

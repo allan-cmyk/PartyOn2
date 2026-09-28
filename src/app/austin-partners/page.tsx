@@ -91,7 +91,7 @@ export default function PartnersPage() {
       });
     } catch (error) {
       console.error('Form submission error:', error);
-      setErrorMessage('Something went wrong. Please try again or call us at (512) 555-0100.');
+      setErrorMessage('Something went wrong. Please try again or call us at (737) 371-9700.');
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);

@@ -88,7 +88,7 @@ export default function HotelsResortsPartnerPage() {
       })
     } catch (error) {
       console.error('Submit error:', error)
-      setSubmitMessage('An error occurred. Please try again or call us at (512) 555-0100.')
+      setSubmitMessage('An error occurred. Please try again or call us at (737) 371-9700.')
     } finally {
       setIsSubmitting(false)
     }
@@ -898,12 +898,14 @@ export default function HotelsResortsPartnerPage() {
               >
                 {isSubmitting ? 'SUBMITTING...' : 'SUBMIT PARTNERSHIP INQUIRY'}
               </button>
-              <button
-                type="button"
-                className="px-8 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors tracking-[0.1em]"
+              <a
+                href="https://123.partyondelivery.com/partnership-call"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-8 py-3 text-center rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors tracking-[0.1em]"
               >
                 SCHEDULE A CALL
-              </button>
+              </a>
             </div>
           </form>
           
@@ -916,11 +918,11 @@ export default function HotelsResortsPartnerPage() {
           <div className="text-center mt-8">
             <p className="text-sm text-gray-600">
               Or contact our hospitality team directly at{' '}
-              <a href="tel:512-555-0100" className="text-brand-yellow hover:text-yellow-600">
-                (512) 555-0100
+              <a href="tel:+17373719700" className="text-brand-blue hover:underline">
+                (737) 371-9700
               </a>
               {' '}or{' '}
-              <a href="mailto:info@partyondelivery.com" className="text-brand-yellow hover:text-yellow-600">
+              <a href="mailto:info@partyondelivery.com" className="text-brand-blue hover:underline">
                 info@partyondelivery.com
               </a>
             </p>

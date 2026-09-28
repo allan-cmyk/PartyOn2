@@ -208,7 +208,7 @@ export const weddingConfig: LandingConfig = {
   ctaText: 'BUILD MY WEDDING WEEKEND →',
 
   planningCallUrl: 'https://123.partyondelivery.com/planning-call',
-  secondaryCtaText: 'SCHEDULE A 10-MIN CALL →',
+  secondaryCtaText: 'SCHEDULE A 15-MIN CALL →',
 
   quoteInbox: 'info@partyondelivery.com',
 

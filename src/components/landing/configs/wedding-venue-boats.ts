@@ -226,7 +226,7 @@ export const weddingVenueBoatsConfig: LandingConfig = {
   ctaText: 'PLAN MY LAKE WEDDING →',
 
   planningCallUrl: 'https://123.partyondelivery.com/planning-call',
-  secondaryCtaText: 'SCHEDULE A 10-MIN CALL →',
+  secondaryCtaText: 'SCHEDULE A 15-MIN CALL →',
 
   quoteInbox: 'brian@premierpartycruises.com',
 

@@ -106,7 +106,7 @@ export default function VacationRentalLeadCapture({
           Check your inbox — the one-pager is on the way.
         </div>
         <p className="text-sm mt-2 text-navy/80">
-          We&apos;ll also follow up to schedule a 15-min call.
+          We&apos;ll also follow up to schedule a 30-min Google Meet call.
         </p>
       </div>
     );
@@ -186,7 +186,7 @@ export default function VacationRentalLeadCapture({
       )}
 
       <p className="mt-4 text-xs text-cream/60 text-center tracking-wide">
-        We&apos;ll email the partner one-pager (PDF) and a link to schedule a 15-min call. No spam.
+        We&apos;ll email the partner one-pager (PDF) and a link to schedule a 30-min Google Meet call. No spam.
       </p>
     </form>
   );

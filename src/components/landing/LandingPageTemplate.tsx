@@ -441,7 +441,7 @@ export default function LandingPageTemplate({
                   }
                   className="inline-flex items-center justify-center border-2 border-white text-white font-semibold text-sm sm:text-base px-4 sm:px-6 py-4 sm:py-5 rounded-lg tracking-[0.08em] transition-transform hover:scale-[1.02] hover:bg-white/15 whitespace-nowrap"
                 >
-                  {config.secondaryCtaText ?? 'SCHEDULE A 10-MIN CALL →'}
+                  {config.secondaryCtaText ?? 'SCHEDULE A 15-MIN CALL →'}
                 </a>
               )}
             </div>
@@ -973,7 +973,7 @@ export default function LandingPageTemplate({
                   }
                   className="inline-flex items-center justify-center border-2 border-white text-white font-semibold text-base sm:text-lg px-5 sm:px-8 py-4 sm:py-5 rounded-lg tracking-[0.08em] transition-transform hover:scale-[1.02] hover:bg-white/15 whitespace-nowrap"
                 >
-                  {config.secondaryCtaText ?? 'SCHEDULE A 10-MIN CALL →'}
+                  {config.secondaryCtaText ?? 'SCHEDULE A 15-MIN CALL →'}
                 </a>
               )}
             </div>

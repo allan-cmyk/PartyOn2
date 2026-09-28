@@ -17,12 +17,13 @@ interface CalculatorResults {
 
 interface CorporateEventCalculatorLandingProps {
   onAddToQuote?: (results: string) => void;
-  onScheduleCall?: () => void;
+  /** Booking page the "Schedule a Call" button opens (new tab). */
+  scheduleCallUrl: string;
 }
 
 export default function CorporateEventCalculatorLanding({
   onAddToQuote,
-  onScheduleCall
+  scheduleCallUrl
 }: CorporateEventCalculatorLandingProps) {
   const [guests, setGuests] = useState<number>(100);
   const [hours, setHours] = useState<number>(3);
@@ -372,12 +373,14 @@ Total estimated drinks: ${results.totalDrinks}`;
           >
             Add to Quote Request
           </button>
-          <button
-            onClick={onScheduleCall}
-            className="flex-1 bg-white text-brand-yellow px-6 py-3 rounded-md border-2 border-yellow-500 hover:bg-yellow-50 transition-colors font-medium tracking-[0.05em]"
+          <a
+            href={scheduleCallUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 text-center bg-white text-gray-900 px-6 py-3 rounded-md border-2 border-yellow-500 hover:bg-yellow-50 transition-colors font-medium tracking-[0.05em]"
           >
             Schedule a Call
-          </button>
+          </a>
         </div>
       </motion.div>
 

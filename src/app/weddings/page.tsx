@@ -326,14 +326,15 @@ export default function WeddingsPage() {
                 {hero.content?.ctaText ?? 'ORDER NOW'}
               </button>
             </Link>
-            <Link href="/contact">
-              <button
-                onClick={() => trackCTAClick('SCHEDULE 15-MIN PLANNING CALL', '/contact', 'hero')}
-                className="px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium"
-              >
-                SCHEDULE 15-MIN PLANNING CALL
-              </button>
-            </Link>
+            <a
+              href="https://123.partyondelivery.com/planning-call"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackCTAClick('SCHEDULE 15-MIN PLANNING CALL', 'https://123.partyondelivery.com/planning-call', 'hero')}
+              className="inline-block px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-[0.08em] text-sm font-medium"
+            >
+              SCHEDULE 15-MIN PLANNING CALL
+            </a>
           </div>
           <p className="text-sm text-gray-300 mt-4 tracking-[0.05em]">
             Licensed & insured • 72-hour notice recommended • 500+ Austin weddings served
@@ -428,14 +429,15 @@ export default function WeddingsPage() {
                   Ask about other options including bartenders, transportation, and rental items
                 </li>
               </ul>
-              <Link href="/contact">
-                <button
-                  onClick={() => trackCTAClick('SCHEDULE A CONSULTATION', '/contact', 'packages')}
-                  className="w-full py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium"
-                >
-                  SCHEDULE A CONSULTATION
-                </button>
-              </Link>
+              <a
+                href="https://123.partyondelivery.com/planning-call"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackCTAClick('SCHEDULE A CONSULTATION', 'https://123.partyondelivery.com/planning-call', 'packages')}
+                className="block w-full text-center py-3 bg-brand-yellow text-gray-900 hover:bg-yellow-600 transition-colors tracking-[0.08em] text-sm font-medium"
+              >
+                SCHEDULE A CONSULTATION
+              </a>
             </ScrollRevealCSS>
           </div>
 
@@ -912,11 +914,14 @@ export default function WeddingsPage() {
                       ORDER NOW
                     </button>
                   </Link>
-                  <Link href="/contact">
-                    <button className="px-4 py-2 border border-brand-yellow text-brand-yellow text-xs tracking-[0.1em] font-medium">
-                      SCHEDULE CALL
-                    </button>
-                  </Link>
+                  <a
+                    href="https://123.partyondelivery.com/planning-call"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block px-4 py-2 border border-brand-yellow text-brand-yellow text-xs tracking-[0.1em] font-medium"
+                  >
+                    SCHEDULE CALL
+                  </a>
                 </div>
               </div>
             </div>

@@ -277,12 +277,12 @@ export type LandingConfig = {
   quoteInbox: string;
 
   /**
-   * Optional URL for the "Schedule a 10-min call" secondary CTA shown next
+   * Optional URL for the "Schedule a 15-min call" secondary CTA shown next
    * to the primary "Build your package" button. Points at the planning-call
    * scheduler.
    */
   planningCallUrl?: string;
-  /** Text on the secondary CTA. Defaults to "SCHEDULE A 10-MIN CALL →". */
+  /** Text on the secondary CTA. Defaults to "SCHEDULE A 15-MIN CALL →". */
   secondaryCtaText?: string;
 };
 
