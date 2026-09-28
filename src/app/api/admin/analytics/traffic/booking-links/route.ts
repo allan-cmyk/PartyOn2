@@ -8,8 +8,9 @@ export const dynamic = 'force-dynamic';
  * GET /api/admin/analytics/traffic/booking-links
  *
  * Redirect "clicks" on the 123.partyondelivery.com short links (/boat-call,
- * /planning-call, /partnership-call, /reviews, /free-quote and typo variants)
- * for the last 30 days, per link and per day, split human vs bot. See
+ * /planning-call, /partnership-call, /reviews, /free-quote,
+ * /general-info-page-page and trailing-period variants) for the last 30 days,
+ * per link and per day, split human vs bot. See
  * `src/lib/analytics/booking-link-clicks.ts` for how rows are attributed to that
  * host without a host column.
  *

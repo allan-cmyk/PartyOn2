@@ -1,11 +1,12 @@
 /**
  * Tests for the booking-link click report.
  *
- * `vercel_events` has no host column, so the report relies on the rule that
- * these exact paths only ever answer 307/308 on 123.partyondelivery.com. The
- * cases that would break that rule — main-domain trailing-slash normalisation
- * of `/reviews/`, the real `/reviews` page's 200s, the www 301 — are pinned
- * here, along with the human/bot split, which must match the page-view
+ * `vercel_events` has no host column, so the report counts a row only when its
+ * path is a tracked 123-host link AND its status is exactly what that link's
+ * own rule answers with (derived from FUNNEL_HOST_REDIRECTS). The cases that
+ * would otherwise leak in — main-domain `/reviews/` trailing-slash 308s, the
+ * real `/reviews` page's 200s, the www 301, the info-host 307 catch-all — are
+ * pinned here, along with the human/bot split, which must match the page-view
  * classifier exactly.
  */
 
@@ -23,8 +24,9 @@ import {
   BOOKING_LINK_ROW_CAP,
   aggregateBookingLinkClicks,
   buildBookingLinkWhere,
+  funnelHostStatusByPath,
   getBookingLinkClicks,
-  isBookingLinkClick,
+  matchBookingLinkClick,
   isBotRequest,
   type BookingLinkEventRow,
 } from '../booking-link-clicks';
@@ -60,17 +62,58 @@ function linkFor(report: ReturnType<typeof aggregateBookingLinkClicks>, path: st
   return link;
 }
 
+describe('BOOKING_LINKS', () => {
+  it('takes every expected status from the live 123-host rules (permanent ? 308 : 307)', () => {
+    // If a rule is removed or flips permanent/temporary in funnel-host-redirects.ts,
+    // this fails instead of the report silently counting the wrong status.
+    expect(BOOKING_LINKS.map((l) => [l.path, l.expectedStatus])).toEqual([
+      ['/boat-call', 308],
+      ['/planning-call', 308],
+      ['/partnership-call', 308],
+      ['/reviews', 308],
+      ['/free-quote', 307],
+      ['/general-info-page-page', 307],
+      ['/reviews.', 308],
+      ['/boat-call.', 308],
+    ]);
+  });
+
+  it('contains no ILIKE wildcard or escape characters, and is lowercase', () => {
+    // The query matches with mode: 'insensitive', which can compile to ILIKE.
+    for (const { path } of BOOKING_LINKS) {
+      expect(path).not.toMatch(/[%_\\]/);
+      expect(path).toBe(path.toLowerCase());
+    }
+  });
+});
+
+describe('funnelHostStatusByPath', () => {
+  it('maps literal sources on the 123 host only, skipping patterns and other hosts', () => {
+    const map = funnelHostStatusByPath([
+      { source: '/a', has: [{ type: 'host', value: '123.partyondelivery.com' }], destination: 'x', permanent: true },
+      { source: '/B', has: [{ type: 'host', value: '123.partyondelivery.com' }], destination: 'x', permanent: false },
+      { source: '/c', has: [{ type: 'host', value: 'info.partyondelivery.com' }], destination: 'x', permanent: true },
+      { source: '/d', destination: 'x', permanent: true },
+      { source: '/:path*', has: [{ type: 'host', value: '123.partyondelivery.com' }], destination: 'x', permanent: false },
+    ]);
+    expect([...map]).toEqual([
+      ['/a', 308],
+      ['/b', 307],
+    ]);
+  });
+});
+
 describe('aggregateBookingLinkClicks', () => {
-  it('counts 307 and 308 redirects per link, split human vs bot', () => {
+  it('counts each link at its own redirect status, split human vs bot', () => {
     const report = aggregateBookingLinkClicks(
       [
         row({ path: '/boat-call', userAgent: IPHONE }),
         row({ path: '/boat-call', userAgent: CHROME }),
         row({ path: '/boat-call', userAgent: GOOGLEBOT }),
         row({ path: '/reviews', userAgent: IPHONE }),
-        // /free-quote still falls through to the 307 homepage catch-all.
+        row({ path: '/reviews.', userAgent: IPHONE }),
         row({ path: '/free-quote', statusCode: 307, userAgent: CHROME }),
-        row({ path: '/reviews.', statusCode: 307, userAgent: IPHONE }),
+        row({ path: '/general-info-page-page', statusCode: 307, userAgent: IPHONE }),
       ],
       30,
       NOW
@@ -78,16 +121,36 @@ describe('aggregateBookingLinkClicks', () => {
 
     expect(linkFor(report, '/boat-call')).toMatchObject({ human: 2, bot: 1, total: 3 });
     expect(linkFor(report, '/reviews')).toMatchObject({ human: 1, bot: 0, total: 1 });
-    expect(linkFor(report, '/free-quote')).toMatchObject({ human: 1, bot: 0, total: 1 });
     expect(linkFor(report, '/reviews.')).toMatchObject({ human: 1, bot: 0, total: 1 });
-    expect(report.totals).toEqual({ human: 5, bot: 1, total: 6 });
+    expect(linkFor(report, '/free-quote')).toMatchObject({ human: 1, bot: 0, total: 1 });
+    expect(linkFor(report, '/general-info-page-page')).toMatchObject({ human: 1, total: 1 });
+    expect(report.totals).toEqual({ human: 6, bot: 1, total: 7 });
+  });
+
+  it('does NOT count a status other than the link’s own rule — e.g. the info-host 307 catch-all', () => {
+    // info.partyondelivery.com/:path* 307s everything to the homepage; a /reviews
+    // or /boat-call hit there must not pass as a 123-host click.
+    const report = aggregateBookingLinkClicks(
+      [
+        row({ path: '/reviews', statusCode: 307 }),
+        row({ path: '/boat-call', statusCode: 307 }),
+        row({ path: '/free-quote', statusCode: 308 }),
+      ],
+      30,
+      NOW
+    );
+    expect(report.totals.total).toBe(0);
   });
 
   it('does NOT count the main-domain trailing-slash 308 of /reviews/', () => {
     // Next.js answers /reviews/ with a 308 to /reviews on every host. Ingest
     // stores the requested path, so it lands as "/reviews/" — never "/reviews".
     const report = aggregateBookingLinkClicks(
-      [row({ path: '/reviews/', statusCode: 308 }), row({ path: '/boat-call/', statusCode: 308 })],
+      [
+        row({ path: '/reviews/', statusCode: 308 }),
+        row({ path: '/Reviews/', statusCode: 308 }),
+        row({ path: '/boat-call/', statusCode: 308 }),
+      ],
       30,
       NOW
     );
@@ -95,7 +158,7 @@ describe('aggregateBookingLinkClicks', () => {
     expect(linkFor(report, '/reviews').total).toBe(0);
   });
 
-  it('ignores the real /reviews page views and the www 301', () => {
+  it('ignores the real /reviews page views, the www 301 and 404s', () => {
     const report = aggregateBookingLinkClicks(
       [
         row({ path: '/reviews', statusCode: 200 }),
@@ -109,12 +172,24 @@ describe('aggregateBookingLinkClicks', () => {
     expect(report.totals.total).toBe(0);
   });
 
+  it('matches case-insensitively, like Next.js redirect sources — /Reviews is a real click', () => {
+    const report = aggregateBookingLinkClicks(
+      [row({ path: '/Reviews' }), row({ path: '/BOAT-CALL' }), row({ path: '/Free-Quote', statusCode: 307 })],
+      30,
+      NOW
+    );
+    expect(linkFor(report, '/reviews').total).toBe(1);
+    expect(linkFor(report, '/boat-call').total).toBe(1);
+    expect(linkFor(report, '/free-quote').total).toBe(1);
+  });
+
   it('ignores other paths, HEAD requests and near-miss spellings', () => {
     const report = aggregateBookingLinkClicks(
       [
         row({ path: '/' }),
-        row({ path: '/general-info-page-page', statusCode: 307 }),
-        row({ path: '/Reviews' }),
+        row({ path: '/holiday-cocktails', statusCode: 307 }),
+        // Main-domain dead-link rule (singular) — a different path.
+        row({ path: '/review' }),
         row({ path: '/reviews-page' }),
         row({ path: '/boat-call', method: 'HEAD' }),
         row({ path: null }),
@@ -191,21 +266,33 @@ describe('aggregateBookingLinkClicks', () => {
 });
 
 describe('buildBookingLinkWhere', () => {
-  it('matches paths exactly — a prefix match would count main-domain /reviews/', () => {
+  it('groups paths by expected status with an exact, case-insensitive match', () => {
     const since = new Date('2026-08-28T00:00:00Z');
     const where = buildBookingLinkWhere(since);
 
     expect(where.timestamp).toEqual({ gte: since });
-    expect(where.path).toEqual({ in: BOOKING_LINKS.map((l) => l.path) });
-    expect(where.statusCode).toEqual({ in: [307, 308] });
-    expect(where.OR).toEqual([{ method: 'GET' }, { method: null }]);
+    expect(where.AND).toEqual([
+      {
+        OR: [
+          {
+            statusCode: 308,
+            path: {
+              in: ['/boat-call', '/planning-call', '/partnership-call', '/reviews', '/reviews.', '/boat-call.'],
+              mode: 'insensitive',
+            },
+          },
+          { statusCode: 307, path: { in: ['/free-quote', '/general-info-page-page'], mode: 'insensitive' } },
+        ],
+      },
+      { OR: [{ method: 'GET' }, { method: null }] },
+    ]);
   });
 });
 
-describe('isBookingLinkClick / isBotRequest', () => {
+describe('matchBookingLinkClick / isBotRequest', () => {
   it('agree with the query filter and the SQL bot condition', () => {
-    expect(isBookingLinkClick(row({}))).toBe(true);
-    expect(isBookingLinkClick(row({ statusCode: 302 }))).toBe(false);
+    expect(matchBookingLinkClick(row({}))?.path).toBe('/boat-call');
+    expect(matchBookingLinkClick(row({ statusCode: 302 }))).toBeNull();
     expect(isBotRequest({ userAgent: IPHONE, isDatacenter: null })).toBe(false);
     expect(isBotRequest({ userAgent: 'curl/8.4.0', isDatacenter: false })).toBe(true);
   });
@@ -216,13 +303,13 @@ describe('getBookingLinkClicks', () => {
     findManyMock.mockReset();
   });
 
-  it('reads with the exact-match filter, newest first, capped', async () => {
+  it('reads with the per-status filter, newest first, capped', async () => {
     findManyMock.mockResolvedValue([row({ timestamp: new Date() })]);
 
     const report = await getBookingLinkClicks(30);
 
     const args = findManyMock.mock.calls[0][0];
-    expect(args.where.path).toEqual({ in: BOOKING_LINKS.map((l) => l.path) });
+    expect(args.where.AND).toEqual(buildBookingLinkWhere(new Date(0)).AND);
     expect(args.orderBy).toEqual({ timestamp: 'desc' });
     expect(args.take).toBe(BOOKING_LINK_ROW_CAP);
     expect(report.totals.total).toBe(1);

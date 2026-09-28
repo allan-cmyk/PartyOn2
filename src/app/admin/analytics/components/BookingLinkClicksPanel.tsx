@@ -77,10 +77,48 @@ function LinkRow({ link }: { link: BookingLinkPathReport }): ReactElement {
   );
 }
 
+/** The loaded report: header row, one row per link, totals and the caveats. */
+function ClickTable({ data }: { data: BookingLinkClickReport }): ReactElement {
+  return (
+    <>
+      {data.truncated && (
+        <p className="text-sm text-gray-700 bg-amber-50 border border-amber-200 rounded-md p-2 mb-3">
+          Row limit reached — the oldest days may be undercounted.
+        </p>
+      )}
+      <div className={`${ROW_GRID} pb-2 text-sm font-medium text-gray-500 border-b border-gray-200`}>
+        <span />
+        <span>Link</span>
+        <span className="text-right">Human</span>
+        <span className="text-right">Bot</span>
+        <span className="text-right">Total</span>
+      </div>
+      {data.links.map((link) => (
+        <LinkRow key={link.path} link={link} />
+      ))}
+      <div className={`${ROW_GRID} pt-2 text-sm font-semibold text-gray-900`}>
+        <span />
+        <span>All links</span>
+        <span className="text-right">{data.totals.human}</span>
+        <span className="text-right">{data.totals.bot}</span>
+        <span className="text-right">{data.totals.total}</span>
+      </div>
+      <p className="text-sm text-gray-500 mt-3">
+        Counts redirects the short links answered. A browser that already followed a
+        permanent redirect can reuse it from its own cache without asking us again, so
+        repeat clicks from the same phone may be missing. Human vs bot uses the same test
+        as page views above; some bots pass as human, so treat the human column as an
+        upper bound.
+      </p>
+    </>
+  );
+}
+
 /**
  * Clicks on the 123.partyondelivery.com short links (call bookings, review
- * form, free quote), counted from the redirect responses in the Vercel log
- * drain. Fixed 30-day window, independent of the page's window selector.
+ * form, free quote, old GHL info page), counted from the redirect responses in
+ * the Vercel log drain. Fixed 30-day window, independent of the page's window
+ * selector.
  */
 export default function BookingLinkClicksPanel(): ReactElement {
   const [data, setData] = useState<BookingLinkClickReport | null>(null);
@@ -116,37 +154,7 @@ export default function BookingLinkClicksPanel(): ReactElement {
       ) : !data ? (
         <div className="h-40 bg-gray-100 rounded animate-pulse" />
       ) : (
-        <>
-          {data.truncated && (
-            <p className="text-sm text-gray-700 bg-amber-50 border border-amber-200 rounded-md p-2 mb-3">
-              Row limit reached — the oldest days may be undercounted.
-            </p>
-          )}
-          <div className={`${ROW_GRID} pb-2 text-sm font-medium text-gray-500 border-b border-gray-200`}>
-            <span />
-            <span>Link</span>
-            <span className="text-right">Human</span>
-            <span className="text-right">Bot</span>
-            <span className="text-right">Total</span>
-          </div>
-          {data.links.map((link) => (
-            <LinkRow key={link.path} link={link} />
-          ))}
-          <div className={`${ROW_GRID} pt-2 text-sm font-semibold text-gray-900`}>
-            <span />
-            <span>All links</span>
-            <span className="text-right">{data.totals.human}</span>
-            <span className="text-right">{data.totals.bot}</span>
-            <span className="text-right">{data.totals.total}</span>
-          </div>
-          <p className="text-sm text-gray-500 mt-3">
-            Counts redirects the short links answered. A browser that already followed a
-            permanent redirect can reuse it from its own cache without asking us again, so
-            repeat clicks from the same phone may be missing. Human vs bot uses the same test
-            as page views above; some bots pass as human, so treat the human column as an
-            upper bound.
-          </p>
-        </>
+        <ClickTable data={data} />
       )}
     </div>
   );
