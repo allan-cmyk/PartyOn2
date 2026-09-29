@@ -62,26 +62,26 @@ _(not captured)_
 
 ```json
 {
-  "orders": 48,
-  "revenue": 24476.94,
+  "orders": 49,
+  "revenue": 25200.92,
   "segments": [
     {
       "margin": null,
       "orders": 44,
-      "revenue": 21275.71,
+      "revenue": 21896.85,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 483.54,
+      "averageOrderValue": 497.66,
       "marginCoveragePct": 0
     },
     {
       "margin": 491.21,
-      "orders": 3,
-      "revenue": 2651.34,
+      "orders": 4,
+      "revenue": 2754.18,
       "segment": "unknown",
-      "averageMarginPct": 18.5,
-      "averageOrderValue": 883.78,
-      "marginCoveragePct": 63.7
+      "averageMarginPct": 17.8,
+      "averageOrderValue": 688.55,
+      "marginCoveragePct": 61.3
     },
     {
       "margin": 59.99,
@@ -93,7 +93,7 @@ _(not captured)_
       "marginCoveragePct": 34.5
     }
   ],
-  "capturedAt": "2026-09-28T08:00:49.851Z",
+  "capturedAt": "2026-09-29T08:00:49.414Z",
   "affiliateRoi": [
     {
       "code": "KICKSTANDMOBILE",
@@ -110,13 +110,13 @@ _(not captured)_
     {
       "code": "DTRbartending",
       "margin": 9.69,
-      "orders": 5,
-      "roiPct": -97.8,
-      "revenue": 6068.13,
-      "netMargin": -431.37,
+      "orders": 6,
+      "roiPct": -98.1,
+      "revenue": 6840.59,
+      "netMargin": -488.46,
       "affiliateId": "f029d561-1c6f-45ba-9cac-7135eac17ce2",
       "businessName": "DTR Bartending",
-      "commissionPaid": 441.06,
+      "commissionPaid": 498.15,
       "marginCoveragePct": 0.6
     },
     {
@@ -132,18 +132,6 @@ _(not captured)_
       "marginCoveragePct": 0
     },
     {
-      "code": "PREMIER",
-      "margin": null,
-      "orders": 22,
-      "roiPct": null,
-      "revenue": 3080.13,
-      "netMargin": null,
-      "affiliateId": "d21bac1a-3f99-489c-89fd-e1980c264a8d",
-      "businessName": "Premier Party Cruises",
-      "commissionPaid": 181.11,
-      "marginCoveragePct": 0
-    },
-    {
       "code": "LTYACHTRENTALS",
       "margin": null,
       "orders": 5,
@@ -156,6 +144,18 @@ _(not captured)_
       "marginCoveragePct": 0
     },
     {
+      "code": "PREMIER",
+      "margin": null,
+      "orders": 22,
+      "roiPct": null,
+      "revenue": 3080.13,
+      "netMargin": null,
+      "affiliateId": "d21bac1a-3f99-489c-89fd-e1980c264a8d",
+      "businessName": "Premier Party Cruises",
+      "commissionPaid": 181.11,
+      "marginCoveragePct": 0
+    },
+    {
       "code": "BIGTEXBOATRENTALS",
       "margin": null,
       "orders": 1,
@@ -165,18 +165,6 @@ _(not captured)_
       "affiliateId": "39489c4d-df1a-429e-ade3-13f493b496a4",
       "businessName": "BigTex Boat Rentals",
       "commissionPaid": 24.04,
-      "marginCoveragePct": 0
-    },
-    {
-      "code": "MISCHIEF",
-      "margin": null,
-      "orders": 1,
-      "roiPct": null,
-      "revenue": 151.32,
-      "netMargin": null,
-      "affiliateId": "06ae94b1-5ad7-49f4-9c0f-bff252a6716c",
-      "businessName": "Inn Cahoots",
-      "commissionPaid": 0,
       "marginCoveragePct": 0
     },
     {
@@ -216,15 +204,15 @@ _(not captured)_
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-09-28",
-  "averageOrderValue": 509.93625,
+  "snapshotDate": "2026-09-29",
+  "averageOrderValue": 514.3044897959184,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-09-28 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-09-29 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
