@@ -4,8 +4,15 @@
 //
 // Safe to re-run: creates are idempotent (skips if already exists), deletes
 // check for existence first.
+//
+// Single-affiliate mode: `--only=<AFFILIATE_CODE>` skips the legacy delete and
+// type-fix steps and only creates that one affiliate's FREE_SHIPPING discount
+// (e.g. finishing a DRAFT affiliate that predates create-affiliate.mjs).
 import { PrismaClient } from '@prisma/client';
 const p = new PrismaClient();
+
+const onlyArg = process.argv.find((a) => a.startsWith('--only='));
+const ONLY = onlyArg ? onlyArg.split('=')[1] : null;
 
 const DELETE_CODES = ['BACHPLAN5', 'BACHBABES24', 'MIMISPARTYPALACE'];
 
@@ -35,7 +42,7 @@ const UPDATE_TO_FREE_SHIPPING = ['BIGTEXBOATRENTALS'];
 const SKIPPED = ['BRIAN!!!!', 'PREMIERTES4C02', 'TESTBARBEC2', 'PREMIER'];
 
 console.log('\n=== STEP 1: DELETE LEGACY DISCOUNTS ===\n');
-for (const code of DELETE_CODES) {
+for (const code of ONLY ? [] : DELETE_CODES) {
   const existing = await p.discount.findUnique({ where: { code } });
   if (!existing) {
     console.log(`  SKIP   ${code} (already gone)`);
@@ -50,7 +57,7 @@ for (const code of DELETE_CODES) {
 }
 
 console.log('\n=== STEP 2: UPDATE WRONG-TYPE DISCOUNTS ===\n');
-for (const code of UPDATE_TO_FREE_SHIPPING) {
+for (const code of ONLY ? [] : UPDATE_TO_FREE_SHIPPING) {
   const existing = await p.discount.findUnique({ where: { code } });
   if (!existing) {
     console.log(`  SKIP   ${code} (not found)`);
@@ -68,7 +75,9 @@ for (const code of UPDATE_TO_FREE_SHIPPING) {
 }
 
 console.log('\n=== STEP 3: CREATE MISSING DISCOUNTS ===\n');
-for (const { affiliateCode, discountCode } of CREATE_FOR) {
+// Discount codes are stored uppercase (validate-discount uppercases lookups).
+const createList = ONLY ? [{ affiliateCode: ONLY, discountCode: ONLY.toUpperCase() }] : CREATE_FOR;
+for (const { affiliateCode, discountCode } of createList) {
   const aff = await p.affiliate.findUnique({ where: { code: affiliateCode } });
   if (!aff) {
     console.log(`  SKIP   ${discountCode} (affiliate ${affiliateCode} not found)`);
