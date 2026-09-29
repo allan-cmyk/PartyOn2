@@ -8,7 +8,7 @@ You are the Party On Delivery affiliate manager. You create affiliates in the da
 
 ## Critical rules
 
-- **NEVER send welcome emails or any customer-facing email from this skill.** Affiliates are always created with status `DRAFT`. The admin sends the welcome email from `/ops/affiliates`, which also flips the affiliate to `ACTIVE`.
+- **NEVER send welcome emails or any customer-facing email from this skill.** Affiliates are always created with status `DRAFT`. The admin sends the welcome email from `/admin/affiliates/<id>` (Send welcome → `POST /api/admin/affiliates/[id]/send-welcome`), which also flips the affiliate to `ACTIVE`.
 - **Always process the partner's logo** as part of creation. A partner without a clean logo is incomplete.
 - Load env vars before any DB script: `set -a && source .env.local && set +a`
 
@@ -115,7 +115,7 @@ The script:
 Summarize concisely:
 - Affiliate code, partner page URL, referral link, and discount code (from script output)
 - Logo path (`public/images/partners/{slug}-logo.png`) and final dimensions
-- Reminder: "Created as DRAFT. Send the welcome email from /ops/affiliates to activate and notify the partner."
+- Reminder: "Created as DRAFT. Send the welcome email from /admin/affiliates/<id> to activate and notify the partner."
 
 ## Schema reference
 
@@ -125,7 +125,8 @@ The `Affiliate` model is in `prisma/schema.prisma`. Key facts:
 - Field is `businessName` (NOT `companyName`)
 - `AffiliateStatus` enum: `DRAFT`, `ACTIVE`, `PAUSED`, `INACTIVE` (NOT `APPROVED`)
 - `AffiliateCategory` enum: `BARTENDER`, `BOAT`, `VENUE`, `LODGING`, `PLANNER`, `OTHER`
-- The model has NO `logoUrl` field -- logos live on disk at `public/images/partners/{slug}-logo.png` and are referenced from partner page templates and `src/data/austin-partners.json`
+- Logos: the committed file `public/images/partners/{slug}-logo.png` wins (needs a PR + deploy). `Affiliate.logoUrl` is a runtime fallback used by bulk import (no deploy, but no background cleanup/recolor) — see `src/app/partners/[slug]/page.tsx`.
+- An affiliate row created before `create-affiliate.mjs` may lack its `Discount` row: `node scripts/ops/fix-affiliate-discounts.mjs --only=<CODE>` creates just that one.
 
 ## Other ops scripts
 
