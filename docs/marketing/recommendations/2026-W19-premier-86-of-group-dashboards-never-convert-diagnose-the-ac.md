@@ -62,16 +62,16 @@ _(not captured)_
 
 ```json
 {
-  "orders": 52,
-  "revenue": 24426.6,
+  "orders": 50,
+  "revenue": 23027.73,
   "segments": [
     {
       "margin": null,
-      "orders": 47,
-      "revenue": 21122.53,
+      "orders": 45,
+      "revenue": 19723.66,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 449.42,
+      "averageOrderValue": 438.3,
       "marginCoveragePct": 0
     },
     {
@@ -93,7 +93,7 @@ _(not captured)_
       "marginCoveragePct": 34.5
     }
   ],
-  "capturedAt": "2026-09-30T08:00:49.963Z",
+  "capturedAt": "2026-10-01T08:00:49.623Z",
   "affiliateRoi": [
     {
       "code": "KICKSTANDMOBILE",
@@ -168,30 +168,6 @@ _(not captured)_
       "marginCoveragePct": 0
     },
     {
-      "code": "MIMISPARTY",
-      "margin": null,
-      "orders": 1,
-      "roiPct": null,
-      "revenue": 508.72,
-      "netMargin": null,
-      "affiliateId": "89a385b8-e4c1-450b-976d-15255bc6517a",
-      "businessName": "Mimi's Party Palace",
-      "commissionPaid": 20.69,
-      "marginCoveragePct": 0
-    },
-    {
-      "code": "BACHBABES",
-      "margin": null,
-      "orders": 1,
-      "roiPct": null,
-      "revenue": 890.15,
-      "netMargin": null,
-      "affiliateId": "bd7084cd-db70-4759-ade1-128bab62f8b2",
-      "businessName": "Bach Babes",
-      "commissionPaid": 37.64,
-      "marginCoveragePct": 0
-    },
-    {
       "code": "SIPNSOCIAL",
       "margin": null,
       "orders": 1,
@@ -204,15 +180,15 @@ _(not captured)_
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-09-30",
-  "averageOrderValue": 469.7423076923077,
+  "snapshotDate": "2026-10-01",
+  "averageOrderValue": 460.5546000000001,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-09-30 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-10-01 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
