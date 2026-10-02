@@ -62,16 +62,16 @@ _(not captured)_
 
 ```json
 {
-  "orders": 50,
-  "revenue": 23027.73,
+  "orders": 51,
+  "revenue": 22371.43,
   "segments": [
     {
       "margin": null,
-      "orders": 45,
-      "revenue": 19723.66,
+      "orders": 46,
+      "revenue": 19067.36,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 438.3,
+      "averageOrderValue": 414.51,
       "marginCoveragePct": 0
     },
     {
@@ -93,7 +93,7 @@ _(not captured)_
       "marginCoveragePct": 34.5
     }
   ],
-  "capturedAt": "2026-10-01T08:00:49.623Z",
+  "capturedAt": "2026-10-02T08:00:49.308Z",
   "affiliateRoi": [
     {
       "code": "KICKSTANDMOBILE",
@@ -122,13 +122,13 @@ _(not captured)_
     {
       "code": "POUR24",
       "margin": null,
-      "orders": 4,
+      "orders": 3,
       "roiPct": null,
-      "revenue": 6475.32,
+      "revenue": 4674.97,
       "netMargin": null,
       "affiliateId": "7bf14a40-b04f-4622-ba09-0662be41e37f",
       "businessName": "Pour Twenty Four",
-      "commissionPaid": 577.88,
+      "commissionPaid": 425.63,
       "marginCoveragePct": 0
     },
     {
@@ -146,13 +146,13 @@ _(not captured)_
     {
       "code": "PREMIER",
       "margin": null,
-      "orders": 23,
+      "orders": 24,
       "roiPct": null,
-      "revenue": 3546.64,
+      "revenue": 4175.52,
       "netMargin": null,
       "affiliateId": "d21bac1a-3f99-489c-89fd-e1980c264a8d",
       "businessName": "Premier Party Cruises",
-      "commissionPaid": 181.11,
+      "commissionPaid": 223.66,
       "marginCoveragePct": 0
     },
     {
@@ -180,15 +180,15 @@ _(not captured)_
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-10-01",
-  "averageOrderValue": 460.5546000000001,
+  "snapshotDate": "2026-10-02",
+  "averageOrderValue": 438.6554901960785,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-10-01 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-10-02 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
