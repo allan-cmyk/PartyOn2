@@ -93,7 +93,7 @@ _(not captured)_
       "marginCoveragePct": 61.2
     }
   ],
-  "capturedAt": "2026-10-03T08:00:49.649Z",
+  "capturedAt": "2026-10-04T08:00:49.779Z",
   "affiliateRoi": [
     {
       "code": "KICKSTANDMOBILE",
@@ -180,7 +180,7 @@ _(not captured)_
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-10-03",
+  "snapshotDate": "2026-10-04",
   "averageOrderValue": 424.7423529411764,
   "marginCoveragePct": null
 }
@@ -188,7 +188,7 @@ _(not captured)_
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-10-03 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-10-04 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
