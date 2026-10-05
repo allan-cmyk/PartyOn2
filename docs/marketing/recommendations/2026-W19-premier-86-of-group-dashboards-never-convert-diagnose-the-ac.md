@@ -62,16 +62,16 @@ _(not captured)_
 
 ```json
 {
-  "orders": 51,
-  "revenue": 21661.86,
+  "orders": 52,
+  "revenue": 21720.73,
   "segments": [
     {
       "margin": null,
-      "orders": 45,
-      "revenue": 17978.94,
+      "orders": 46,
+      "revenue": 18037.81,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 399.53,
+      "averageOrderValue": 392.13,
       "marginCoveragePct": 0
     },
     {
@@ -93,7 +93,7 @@ _(not captured)_
       "marginCoveragePct": 61.2
     }
   ],
-  "capturedAt": "2026-10-04T08:00:49.779Z",
+  "capturedAt": "2026-10-05T08:00:49.341Z",
   "affiliateRoi": [
     {
       "code": "KICKSTANDMOBILE",
@@ -180,15 +180,15 @@ _(not captured)_
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-10-04",
-  "averageOrderValue": 424.7423529411764,
+  "snapshotDate": "2026-10-05",
+  "averageOrderValue": 417.7063461538461,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-10-04 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-10-05 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
