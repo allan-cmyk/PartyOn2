@@ -62,16 +62,16 @@ _(not captured)_
 
 ```json
 {
-  "orders": 52,
-  "revenue": 21720.73,
+  "orders": 54,
+  "revenue": 19905.21,
   "segments": [
     {
       "margin": null,
-      "orders": 46,
-      "revenue": 18037.81,
+      "orders": 48,
+      "revenue": 16222.29,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 392.13,
+      "averageOrderValue": 337.96,
       "marginCoveragePct": 0
     },
     {
@@ -93,7 +93,7 @@ _(not captured)_
       "marginCoveragePct": 61.2
     }
   ],
-  "capturedAt": "2026-10-05T08:00:49.341Z",
+  "capturedAt": "2026-10-06T08:00:49.285Z",
   "affiliateRoi": [
     {
       "code": "KICKSTANDMOBILE",
@@ -110,26 +110,14 @@ _(not captured)_
     {
       "code": "DTRbartending",
       "margin": 9.69,
-      "orders": 5,
-      "roiPct": -97.6,
-      "revenue": 5453.63,
-      "netMargin": -385.96,
+      "orders": 4,
+      "roiPct": -96.7,
+      "revenue": 4042.65,
+      "netMargin": -281.68,
       "affiliateId": "f029d561-1c6f-45ba-9cac-7135eac17ce2",
       "businessName": "DTR Bartending",
-      "commissionPaid": 395.65,
-      "marginCoveragePct": 0.7
-    },
-    {
-      "code": "POUR24",
-      "margin": null,
-      "orders": 3,
-      "roiPct": null,
-      "revenue": 4674.97,
-      "netMargin": null,
-      "affiliateId": "7bf14a40-b04f-4622-ba09-0662be41e37f",
-      "businessName": "Pour Twenty Four",
-      "commissionPaid": 425.63,
-      "marginCoveragePct": 0
+      "commissionPaid": 291.37,
+      "marginCoveragePct": 0.9
     },
     {
       "code": "LTYACHTRENTALS",
@@ -156,6 +144,18 @@ _(not captured)_
       "marginCoveragePct": 0
     },
     {
+      "code": "POUR24",
+      "margin": null,
+      "orders": 2,
+      "roiPct": null,
+      "revenue": 2717.6,
+      "netMargin": null,
+      "affiliateId": "7bf14a40-b04f-4622-ba09-0662be41e37f",
+      "businessName": "Pour Twenty Four",
+      "commissionPaid": 244.81,
+      "marginCoveragePct": 0
+    },
+    {
       "code": "BIGTEXBOATRENTALS",
       "margin": null,
       "orders": 1,
@@ -178,17 +178,29 @@ _(not captured)_
       "businessName": "Sip & Social On Wheels",
       "commissionPaid": 21.89,
       "marginCoveragePct": 0
+    },
+    {
+      "code": "BACHBABES",
+      "margin": null,
+      "orders": 1,
+      "roiPct": null,
+      "revenue": 560.44,
+      "netMargin": null,
+      "affiliateId": "bd7084cd-db70-4759-ade1-128bab62f8b2",
+      "businessName": "Bach Babes",
+      "commissionPaid": 25.89,
+      "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-10-05",
-  "averageOrderValue": 417.7063461538461,
+  "snapshotDate": "2026-10-06",
+  "averageOrderValue": 368.615,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-10-05 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-10-06 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
