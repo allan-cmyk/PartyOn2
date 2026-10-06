@@ -1,6 +1,6 @@
 # Website Analytics Snapshot
 
-_Generated: 2026-10-05 — regenerated nightly by `/api/cron/analytics-snapshot`_
+_Generated: 2026-10-06 — regenerated nightly by `/api/cron/analytics-snapshot`_
 
 ## Open recommendations
 | Status | Risk | Effort | Impact $/mo | Segment | Title |
@@ -34,30 +34,30 @@ _Generated: 2026-10-05 — regenerated nightly by `/api/cron/analytics-snapshot`
 _Update status via `POST /api/admin/analytics/recommendations` with `{ id, status, notes? }`._
 
 ## Traffic (last 30 days)
-- Sessions: **2,257** (▼ 32%)  •  Users: **1,659** (▼ 36%)  •  Pageviews: **3,524**
+- Sessions: **2,238** (▼ 32%)  •  Users: **1,661** (▼ 35%)  •  Pageviews: **3,505**
 
 ## SEO (Search Console, 30d)
-- Impressions: **36,560** (▲ 9%)  •  Clicks: **546** (▲ 2%)  •  CTR: 1.49%  •  Avg position: 14.1
+- Impressions: **36,502** (▲ 7%)  •  Clicks: **547** (▲ 1%)  •  CTR: 1.5%  •  Avg position: 14
 
 ## Revenue by internal channel (30d, vs prior 30d)
 | Channel | Orders | Revenue | AOV | Margin % | Cost coverage | Rev WoW |
 |---|---:|---:|---:|---:|---:|---:|
-| affiliate | 40 | $16,840.98 | $421.02 | 1.2% | 4% | ▲ 10% |
-| group | 8 | $2,491.95 | $311.49 | —% | 0% | ▲ 7% |
-| direct | 3 | $1,837.91 | $612.64 | 22.1% | 77% | ▲ 180% |
+| affiliate | 39 | $14,033.07 | $359.82 | 1.5% | 5% | ▼ 24% |
+| group | 11 | $3,484.34 | $316.76 | —% | 0% | ▲ 59% |
+| direct | 3 | $1,837.91 | $612.64 | 22.1% | 77% | ▲ 268% |
 | utm_chatgpt.com | 1 | $549.89 | $549.89 | 10.9% | 35% | — |
 
 ## Revenue & margin by customer segment (30d, vs prior 30d)
 | Segment | Orders | Revenue | AOV | Margin % | Cost coverage | Rev WoW |
 |---|---:|---:|---:|---:|---:|---:|
-| general | 46 | $18,037.81 | $392.13 | —% | 0% | — |
-| unknown | 4 | $2,754.18 | $688.55 | 17.8% | 61% | ▲ 609% |
+| general | 48 | $16,222.29 | $337.96 | —% | 0% | ▼ 23% |
+| unknown | 4 | $2,754.18 | $688.55 | 17.8% | 61% | ▲ 1095% |
 | kegs | 2 | $928.74 | $464.37 | 19.4% | 61% | — |
 
 ## Repeat purchase rate by segment (30d)
 | Segment | Orders | Repeat orders | Repeat rate |
 |---|---:|---:|---:|
-| general | 46 | 7 | 15.2% |
+| general | 48 | 8 | 16.7% |
 | unknown | 4 | 1 | 25% |
 | kegs | 2 | 0 | 0% |
 
@@ -65,52 +65,53 @@ _Update status via `POST /api/admin/analytics/recommendations` with `{ id, statu
 | Entry segment | Customers | Total revenue | Avg LTV |
 |---|---:|---:|---:|
 | kegs | 2 | $928.74 | $464.37 |
-| general | 273 | $114,036.18 | $417.71 |
+| general | 276 | $115,589.01 | $418.8 |
 | unknown | 165 | $57,111.59 | $346.13 |
 
 ## Landing page → orders (30d, our DB, vs prior 30d)
 | Landing page | Orders | Revenue | AOV | Rev WoW |
 |---|---:|---:|---:|---:|
-| / | 3 | $1,583.51 | $527.84 | ▼ 41% |
-| /partners/lake-travis-yacht-rentals | 6 | $1,258.19 | $209.7 | ▼ 27% |
+| / | 4 | $1,932.74 | $483.19 | ▼ 28% |
+| /partners/lake-travis-yacht-rentals | 6 | $1,258.19 | $209.7 | ▼ 22% |
 | /kegs | 2 | $928.74 | $464.37 | — |
+| /dashboard/ZMCFJN | 3 | $724.76 | $241.59 | — |
+| /partners/bach-babes | 1 | $560.44 | $560.44 | ▼ 45% |
 | /partners/big-tex-boats | 1 | $540.47 | $540.47 | ▲ 85% |
 | /order | 1 | $515.17 | $515.17 | ▲ 92% |
 | /partners/sip-social | 1 | $495.83 | $495.83 | ▼ 41% |
 | /contact | 1 | $130.46 | $130.46 | — |
-| /dashboard/ZMCFJN | 1 | $81.6 | $81.6 | — |
 
 ## GA4 revenue by channel (30d, vs prior 30d)
 | Channel | Sessions | Transactions | Revenue | Conv rate | Rev WoW |
 |---|---:|---:|---:|---:|---:|
-| Direct | 1231 | 4 | $3,047.69 | 0.32% | ▲ 939% |
+| Direct | 1211 | 4 | $3,047.69 | 0.33% | ▲ 939% |
 | AI Assistant | 24 | 1 | $549.89 | 4.17% | 🆕 |
-| Organic Shopping | 137 | 1 | $125 | 0.73% | 🆕 |
+| Organic Shopping | 138 | 1 | $125 | 0.72% | 🆕 |
 | Email | 6 | 1 | $102.84 | 16.67% | — |
-| Organic Search | 677 | 0 | $0 | 0.00% | — |
-| Referral | 89 | 0 | $0 | 0.00% | — |
-| Unassigned | 37 | 0 | $0 | 0.00% | — |
-| Organic Social | 36 | 0 | $0 | 0.00% | — |
-| Cross-network | 12 | 0 | $0 | 0.00% | — |
-| Paid Search | 9 | 0 | $0 | 0.00% | — |
+| Organic Search | 684 | 0 | $0 | 0.00% | — |
+| Referral | 87 | 0 | $0 | 0.00% | — |
+| Unassigned | 39 | 0 | $0 | 0.00% | — |
+| Organic Social | 38 | 0 | $0 | 0.00% | — |
+| Paid Search | 8 | 0 | $0 | 0.00% | — |
+| Cross-network | 5 | 0 | $0 | 0.00% | — |
 
 ## Conversion by landing page (GA4, 30d, vs prior 30d)
 | Path | Sessions | Transactions | Conv rate | Conv WoW |
 |---|---:|---:|---:|---:|
-| / | 420 | 0 | 0.00% | — |
-| /blog/15-unique-birthday-party-ideas-in-austin-for-adults | 328 | 0 | 0.00% | — |
-| (not set) | 118 | 0 | 0.00% | — |
-| /dashboard/HKN8X3 | 118 | 0 | 0.00% | — |
-| /blog/longhorn-themed-cocktail-and-mocktail-recipes | 64 | 0 | 0.00% | — |
-| /partners/lake-travis-yacht-rentals | 54 | 0 | 0.00% | — |
-| /order | 32 | 1 | 3.13% | ▼ 12% |
+| / | 425 | 0 | 0.00% | — |
+| /blog/15-unique-birthday-party-ideas-in-austin-for-adults | 327 | 0 | 0.00% | — |
+| (not set) | 113 | 0 | 0.00% | — |
+| /dashboard/HKN8X3 | 92 | 0 | 0.00% | — |
+| /blog/longhorn-themed-cocktail-and-mocktail-recipes | 55 | 0 | 0.00% | — |
+| /partners/lake-travis-yacht-rentals | 50 | 0 | 0.00% | — |
+| /dashboard/Z8Q23C | 38 | 0 | 0.00% | — |
+| /order | 32 | 1 | 3.13% | ▼ 9% |
 | /dashboard/4SGD8N | 30 | 0 | 0.00% | — |
 | /rentals/cooler-rentals-austin | 30 | 0 | 0.00% | — |
-| /dashboard/4G5Q4G | 26 | 0 | 0.00% | — |
-| /dashboard/Z8Q23C | 26 | 0 | 0.00% | — |
-| /ops/orders | 25 | 0 | 0.00% | — |
-| /kegs | 24 | 1 | 4.17% | — |
-| /contact | 23 | 0 | 0.00% | — |
+| /dashboard/4G5Q4G | 27 | 0 | 0.00% | — |
+| /kegs | 23 | 1 | 4.35% | 🆕 |
+| /contact | 22 | 0 | 0.00% | — |
+| /ops/orders | 22 | 0 | 0.00% | — |
 | /ops/today | 19 | 0 | 0.00% | — |
 
 ## Checkout funnel (30d)
@@ -125,12 +126,13 @@ _Update status via `POST /api/admin/analytics/recommendations` with `{ id, statu
 | Affiliate | Orders | Revenue | Margin | Commission | Net margin | ROI | Cost coverage |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | Kickstand Mobile (KICKSTANDMOBILE) | 1 | $1,153.41 | $196.17 | $53.28 | $142.89 | 268.2% | 53% |
-| DTR Bartending (DTRbartending) | 5 | $5,453.63 | $9.69 | $395.65 | $-385.96 | -97.6% | 1% |
-| Pour Twenty Four (POUR24) | 3 | $4,674.97 | — | $425.63 | — | — | 0% |
+| DTR Bartending (DTRbartending) | 4 | $4,042.65 | $9.69 | $291.37 | $-281.68 | -96.7% | 1% |
 | Lake Travis Yacht Rentals (LTYACHTRENTALS) | 6 | $1,258.19 | — | $39.72 | — | — | 0% |
 | Premier Party Cruises (PREMIER) | 23 | $3,264.48 | — | $183.68 | — | — | 0% |
+| Pour Twenty Four (POUR24) | 2 | $2,717.6 | — | $244.81 | — | — | 0% |
 | BigTex Boat Rentals (BIGTEXBOATRENTALS) | 1 | $540.47 | — | $24.04 | — | — | 0% |
 | Sip & Social On Wheels (SIPNSOCIAL) | 1 | $495.83 | — | $21.89 | — | — | 0% |
+| Bach Babes (BACHBABES) | 1 | $560.44 | — | $25.89 | — | — | 0% |
 
 **⚠️ Possibly negative-ROI partners (low cost coverage — verify before acting):**
 - DTR Bartending (DTRbartending): cost coverage 1% — populate variant costs (Receive Shipment) before evaluating.
@@ -138,21 +140,21 @@ _Update status via `POST /api/admin/analytics/recommendations` with `{ id, statu
 ## Top product margins (30d, vs prior 30d)
 | Product | Units | Revenue | Margin | Margin % | Cost coverage | Units WoW |
 |---|---:|---:|---:|---:|---:|---:|
-| High Noon Variety Pack • 12 Pack 12oz Can | 31 | $991.69 | $270.94 | 27.3% | 100% | ▲ 82% |
-| Miller Lite • 24 Pack 12oz Can | 24 | $839.76 | $240.96 | 28.7% | 100% | ▲ 200% |
-| Maker's Mark Bourbon • 1.75L Bottle | 13 | $805.87 | $0 | 0% | 0% | — |
-| Michelob Ultra • 24 Pack 12oz Can | 23 | $804.77 | $222.87 | 27.7% | 100% | ▲ 64% |
-| Lunazul Blanco Tequila • 1.75L Bottle | 15 | $749.85 | $277.35 | 37% | 100% | — |
-| Modelo Especial • 24 Pack 12oz Can | 20 | $719.8 | $197.8 | 27.5% | 100% | ▲ 33% |
-| Chateau St. Michelle Sauvignon Blanc • 750ml Bottle | 50 | $599.5 | $149.5 | 24.9% | 100% | — |
-| Dark Horse Pinot Grigio • 750ml Bottle | 49 | $587.51 | $0 | 0% | 0% | ▲ 69% |
-| 14 Hands Cabernet Sauvignon • 750ml Bottle | 39 | $545.61 | $0 | 0% | 0% | ▲ 86% |
+| High Noon Variety Pack • 12 Pack 12oz Can | 43 | $1,375.57 | $375.82 | 27.3% | 100% | ▲ 153% |
+| Miller Lite • 24 Pack 12oz Can | 24 | $839.76 | $240.96 | 28.7% | 100% | ▲ 118% |
+| Modelo Especial • 24 Pack 12oz Can | 19 | $683.81 | $187.91 | 27.5% | 100% | ▲ 6% |
+| Maker's Mark Bourbon • 1.75L Bottle | 10 | $619.9 | $0 | 0% | 0% | — |
+| Michelob Ultra • 24 Pack 12oz Can | 17 | $594.83 | $164.73 | 27.7% | 100% | ▼ 23% |
+| Austin Beerworks Variety Pack • 12 Pack 12oz Can | 23 | $528.77 | $201.02 | 38% | 100% | — |
 | Miller Lite Keg • 1/2 Barrel | 3 | $524.97 | $179.97 | 34.3% | 100% | — |
-| Austin Beerworks Variety Pack • 12 Pack 12oz Can | 22 | $505.78 | $192.28 | 38% | 100% | — |
+| Surfside Starter Variety Pack • 8 Pack 12oz Can | 21 | $524.79 | $0 | 0% | 0% | ▲ 50% |
 | Amor Di Amanti Prosecco Spumante • 750ml Bottle | 42 | $503.58 | $0 | 0% | 0% | — |
-| Tito's Handmade Vodka • 1.75L Bottle | 12 | $491.88 | $147.84 | 30.1% | 100% | ▼ 8% |
-| Surfside Starter Variety Pack • 8 Pack 12oz Can | 19 | $474.81 | $0 | 0% | 0% | ▲ 36% |
+| Chateau St. Michelle Sauvignon Blanc • 750ml Bottle | 38 | $455.62 | $113.62 | 24.9% | 100% | — |
 | La Marca Prosecco Extra Dry • 750ml Bottle | 24 | $431.76 | $0 | 0% | 0% | — |
+| Dark Horse Pinot Grigio • 750ml Bottle | 35 | $419.65 | $0 | 0% | 0% | ▼ 19% |
+| Still Austin Straight Bourbon • 750ml Bottle | 8 | $399.92 | $113.6 | 28.4% | 100% | — |
+| Espolon Tequila Blanco • 750ml Bottle | 11 | $395.89 | $131.89 | 33.3% | 100% | — |
+| Tito's Handmade Vodka • 1.75L Bottle | 9 | $368.91 | $110.88 | 30.1% | 100% | ▼ 40% |
 
 ## Google Business Profile (30d)
 - Reviews: **0**  •  Avg rating: **0**  •  5-star: 0%  •  1-star: 0%
@@ -163,49 +165,49 @@ _Vercel Analytics not configured — set VERCEL_ANALYTICS_TOKEN_
 ## Per-page engagement (our tracker, 30d)
 | Path | Sessions | Pageviews | Bounce | Avg scroll | CTA clicks | CTA rate |
 |---|---:|---:|---:|---:|---:|---:|
-| /products | 1357 | 1358 | 100% | 0% | 0 | 0.0% |
-| /order | 683 | 707 | 70% | 0% | 155 | 22.7% |
-| / | 650 | 734 | 70% | 7% | 102 | 15.7% |
-| /blog/15-unique-birthday-party-ideas-in-austin-for-adults | 406 | 431 | 99% | 0% | 1 | 0.2% |
-| /cocktail-kits | 229 | 231 | 98% | 0% | 9 | 3.9% |
-| /dashboard/HKN8X3 | 166 | 229 | 89% | 0% | 0 | 0.0% |
-| /contact | 91 | 98 | 63% | 0% | 0 | 0.0% |
-| /partners/lake-travis-yacht-rentals | 82 | 94 | 45% | 0% | 0 | 0.0% |
-| /blog/longhorn-themed-cocktail-and-mocktail-recipes | 77 | 86 | 100% | 0% | 0 | 0.0% |
-| /dashboard/WCE7MH | 64 | 66 | 94% | 0% | 0 | 0.0% |
-| /kegs | 57 | 63 | 72% | 0% | 0 | 0.0% |
-| /dashboard/Z8Q23C | 52 | 67 | 92% | 0% | 0 | 0.0% |
+| /products | 1479 | 1480 | 100% | 0% | 0 | 0.0% |
+| /order | 708 | 733 | 71% | 0% | 156 | 22.0% |
+| / | 650 | 736 | 70% | 7% | 103 | 15.8% |
+| /blog/15-unique-birthday-party-ideas-in-austin-for-adults | 410 | 435 | 99% | 0% | 1 | 0.2% |
+| /cocktail-kits | 259 | 261 | 98% | 0% | 9 | 3.5% |
+| /dashboard/HKN8X3 | 135 | 181 | 86% | 0% | 0 | 0.0% |
+| /contact | 91 | 98 | 62% | 0% | 0 | 0.0% |
+| /partners/lake-travis-yacht-rentals | 76 | 86 | 42% | 0% | 0 | 0.0% |
+| /dashboard/Z8Q23C | 68 | 86 | 91% | 0% | 0 | 0.0% |
+| /blog/longhorn-themed-cocktail-and-mocktail-recipes | 62 | 70 | 100% | 0% | 0 | 0.0% |
+| /dashboard/WCE7MH | 59 | 61 | 93% | 0% | 0 | 0.0% |
+| /kegs | 55 | 61 | 73% | 0% | 0 | 0.0% |
 | /terms | 49 | 49 | 96% | 0% | 0 | 0.0% |
-| /rentals/cooler-rentals-austin | 43 | 48 | 77% | 0% | 0 | 0.0% |
+| /dashboard/4G5Q4G | 44 | 49 | 98% | 0% | 0 | 0.0% |
 | /dashboard/4SGD8N | 43 | 51 | 95% | 0% | 0 | 0.0% |
+| /rentals/cooler-rentals-austin | 43 | 48 | 74% | 0% | 0 | 0.0% |
 | /faqs | 42 | 42 | 98% | 0% | 0 | 0.0% |
-| /dashboard/4G5Q4G | 42 | 47 | 98% | 0% | 0 | 0.0% |
-| /ops/orders | 41 | 93 | 22% | 0% | 0 | 0.0% |
+| /ops/orders | 39 | 91 | 15% | 0% | 0 | 0.0% |
 | /blog | 37 | 37 | 100% | 0% | 0 | 0.0% |
-| /products/poschl-weiss-tobacco-nicotine-free-herbalsnuff | 36 | 36 | 100% | 0% | 0 | 0.0% |
+| /boat-parties | 33 | 39 | 58% | 0% | 9 | 27.3% |
 
 ## Top search queries (GSC, 30d)
 | Query | Clicks | Impressions | Avg position |
 |---|---:|---:|---:|
-| party on delivery | 14 | 43 | 1.1 |
-| birthday ideas austin | 12 | 118 | 5.3 |
-| birthday places in austin for adults | 10 | 68 | 2.4 |
-| austin birthday ideas | 5 | 52 | 2.1 |
-| birthday ideas in austin | 5 | 23 | 2.7 |
+| party on delivery | 14 | 43 | 1.0 |
+| birthday ideas austin | 12 | 117 | 5.3 |
+| birthday places in austin for adults | 10 | 67 | 2.4 |
+| austin birthday ideas | 5 | 48 | 2.2 |
+| birthday ideas in austin | 5 | 22 | 2.8 |
 | unique birthday places in austin for adults | 4 | 55 | 2.7 |
-| adult birthday party ideas | 3 | 158 | 12.8 |
+| adult birthday party ideas | 3 | 157 | 13.1 |
 | birthday in austin | 3 | 19 | 2.5 |
 | fun birthday ideas in austin | 3 | 17 | 2.9 |
-| austin chair rental | 2 | 7 | 15.7 |
-| birthday activities austin | 2 | 29 | 2.7 |
-| birthday activities for adults | 2 | 55 | 10.9 |
-| birthday ideas | 2 | 50 | 7.1 |
-| birthday things to do in austin | 2 | 37 | 3.3 |
-| things to do in austin for birthday | 2 | 31 | 4.4 |
+| austin chair rental | 2 | 6 | 15.3 |
+| birthday activities austin | 2 | 27 | 2.4 |
+| birthday activities for adults | 2 | 52 | 10.7 |
+| birthday ideas | 2 | 46 | 6.9 |
+| birthday things to do in austin | 2 | 39 | 3.3 |
+| things to do in austin for birthday | 2 | 33 | 4.4 |
 | things to do on your birthday in austin | 2 | 10 | 2.6 |
 | 21st birthday supplies | 1 | 1 | 1.0 |
 | activities for birthday adults | 1 | 1 | 3.0 |
-| adult birthday ideas | 1 | 64 | 15.3 |
+| adult birthday ideas | 1 | 63 | 15.3 |
 | adult birthday party | 1 | 30 | 10.1 |
 
 ---
