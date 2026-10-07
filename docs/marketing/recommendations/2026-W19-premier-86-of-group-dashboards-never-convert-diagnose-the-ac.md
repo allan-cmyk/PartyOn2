@@ -62,16 +62,16 @@ _(not captured)_
 
 ```json
 {
-  "orders": 54,
-  "revenue": 19905.21,
+  "orders": 53,
+  "revenue": 18390.1,
   "segments": [
     {
       "margin": null,
-      "orders": 48,
-      "revenue": 16222.29,
+      "orders": 47,
+      "revenue": 14707.18,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 337.96,
+      "averageOrderValue": 312.92,
       "marginCoveragePct": 0
     },
     {
@@ -93,7 +93,7 @@ _(not captured)_
       "marginCoveragePct": 61.2
     }
   ],
-  "capturedAt": "2026-10-06T08:00:49.285Z",
+  "capturedAt": "2026-10-07T08:00:49.560Z",
   "affiliateRoi": [
     {
       "code": "KICKSTANDMOBILE",
@@ -110,14 +110,14 @@ _(not captured)_
     {
       "code": "DTRbartending",
       "margin": 9.69,
-      "orders": 4,
-      "roiPct": -96.7,
-      "revenue": 4042.65,
-      "netMargin": -281.68,
+      "orders": 3,
+      "roiPct": -94.8,
+      "revenue": 2527.54,
+      "netMargin": -177.1,
       "affiliateId": "f029d561-1c6f-45ba-9cac-7135eac17ce2",
       "businessName": "DTR Bartending",
-      "commissionPaid": 291.37,
-      "marginCoveragePct": 0.9
+      "commissionPaid": 186.79,
+      "marginCoveragePct": 1.5
     },
     {
       "code": "LTYACHTRENTALS",
@@ -192,15 +192,15 @@ _(not captured)_
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-10-06",
-  "averageOrderValue": 368.615,
+  "snapshotDate": "2026-10-07",
+  "averageOrderValue": 346.9830188679245,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-10-06 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-10-07 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
