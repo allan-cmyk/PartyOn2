@@ -62,8 +62,8 @@ _(not captured)_
 
 ```json
 {
-  "orders": 53,
-  "revenue": 18390.1,
+  "orders": 54,
+  "revenue": 18974.33,
   "segments": [
     {
       "margin": null,
@@ -75,13 +75,13 @@ _(not captured)_
       "marginCoveragePct": 0
     },
     {
-      "margin": 491.21,
-      "orders": 4,
-      "revenue": 2754.18,
+      "margin": 583.51,
+      "orders": 5,
+      "revenue": 3338.41,
       "segment": "unknown",
-      "averageMarginPct": 17.8,
-      "averageOrderValue": 688.55,
-      "marginCoveragePct": 61.3
+      "averageMarginPct": 17.5,
+      "averageOrderValue": 667.68,
+      "marginCoveragePct": 59.7
     },
     {
       "margin": 179.97,
@@ -93,7 +93,7 @@ _(not captured)_
       "marginCoveragePct": 61.2
     }
   ],
-  "capturedAt": "2026-10-07T08:00:49.560Z",
+  "capturedAt": "2026-10-08T08:00:49.715Z",
   "affiliateRoi": [
     {
       "code": "KICKSTANDMOBILE",
@@ -106,6 +106,18 @@ _(not captured)_
       "businessName": "Kickstand Mobile",
       "commissionPaid": 53.28,
       "marginCoveragePct": 53.1
+    },
+    {
+      "code": "MIMISPARTY",
+      "margin": 92.3,
+      "orders": 1,
+      "roiPct": 242,
+      "revenue": 584.23,
+      "netMargin": 65.31,
+      "affiliateId": "89a385b8-e4c1-450b-976d-15255bc6517a",
+      "businessName": "Mimi's Party Palace",
+      "commissionPaid": 26.99,
+      "marginCoveragePct": 51.9
     },
     {
       "code": "DTRbartending",
@@ -192,15 +204,15 @@ _(not captured)_
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-10-07",
-  "averageOrderValue": 346.9830188679245,
+  "snapshotDate": "2026-10-08",
+  "averageOrderValue": 351.3764814814814,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-10-07 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-10-08 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
