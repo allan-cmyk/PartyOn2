@@ -18,6 +18,7 @@ You have CLI scripts that query the production database. Load env vars before ea
 | Create draft order | `set -a && source .env.local && set +a && node scripts/ops/create-draft-order.mjs '<json>'` |
 | Aggregated order list | `set -a && source .env.local && set +a && node scripts/ops/order-list.mjs <start-date> [end-date] [--html]` |
 | Delivery schedule (printable) | `set -a && source .env.local && set +a && node scripts/ops/delivery-schedule.mjs <start-date> <end-date> [output.html]` |
+| Size + price an event/party order (drink planner) | `set -a && source .env.local && set +a && npx tsx scripts/ops/drink-plan.ts --guests N --hours 2-6\|multi-day --event TYPE --categories beer,wine [--no-ice] [--keep-seltzers] [--json]` |
 
 > **Inventory management** (check stock, adjust, low-stock alerts) has moved to the `/inventory` skill.
 
@@ -91,6 +92,22 @@ When the operator pastes a customer message:
 5. Ask "Should I create this draft order?" -- ALWAYS confirm before running `create-draft-order.mjs`
 6. After creation, report the draft order ID so they can find it in /ops/orders
 
+## Workflow: Event / Party Quote (customer asks you to recommend quantities)
+
+When the customer gives a headcount and asks "what should we get" (e.g. "130 guests, 3-hour bar, beer and wine only, please recommend a variety with pricing"), **run `drink-plan.ts`. Do not work out quantities yourself, use a per-hour rate table, or swap in other brands.** It runs the same drink planner engine as the website, Wayne's chat and dashboard recommendations (`src/lib/drinkPlannerLogic.ts`):
+
+- Corporate / wedding / house party / other: `guests × (hours + 1)` drinks (heavier first hour). Default categories: beer + wine + spirits.
+- Boat day / bachelor / bachelorette / weekend trip: `guests × hours × 2`. Default categories: beer + seltzers + cocktail kits.
+- House brands and splits come from the engine: Miller Lite + Modelo cans + Austin Beerworks Variety for beer, Dark Horse Pinot Grigio + 14 Hands Cab for wine, and so on. Ice is 1 bag per 10 guests (`--no-ice` if a bar partner brings it).
+- The engine always adds a small seltzer share on the event track. The script drops it unless seltzers were requested (`--keep-seltzers` keeps it).
+
+Steps:
+1. Map the request: `--event` (corporate, wedding, house-party, other, boat-day, bachelor, bachelorette, weekend-trip), `--hours` (2-6 or multi-day; round odd lengths to the nearest whole hour and say so), `--categories` (beer, seltzers, wine, spirits, cocktail-kits). Champagne/sparkling has no planner rule; add it by hand if asked.
+2. Run it and present the lines, live prices, subtotal and tax. Read the WARNINGS block: an AMBIGUOUS or NOT IN CATALOG line needs a human pick before you create anything.
+3. The operator may trim or swap lines (e.g. "drop each wine to 12"). Apply exactly that and keep everything else as the planner produced it.
+4. On approval, pass the printed `items` JSON (edited for any trims) to `create-draft-order.mjs`. Same confirmation rule as every draft.
+5. If a bartender/event partner referred the order, check for an ACTIVE `Affiliate` (by business name) and set `affiliateId` + `affiliateCode` on the draft after creation. The invoice checkout reads `affiliateCode` for attribution, and `create-draft-order.mjs` does not set it.
+
 ## Workflow: Order List (Pick List for a Weekend)
 
 When the operator asks for an "order list," "pick list," "shopping list," or "what we need to order" for a date or date range:
@@ -108,7 +125,7 @@ Example: `node scripts/ops/order-list.mjs 2026-04-10 2026-04-11`
 - NEVER call any send/email API endpoints
 - Be concise -- present info in tables when possible
 - If info is missing (no address, no date), ask for it
-- Use the drink formula for party recommendations: ceil(guests x hours x drinksPerHour)
+- For party/event quantities, use `drink-plan.ts` (see Event / Party Quote above). Never use a hand-rolled per-hour formula.
 - For inventory adjustments, low stock, or purchase planning, hand off to `/inventory`
 - For adding new catalog products from retailer URLs, hand off to `/products`
 
