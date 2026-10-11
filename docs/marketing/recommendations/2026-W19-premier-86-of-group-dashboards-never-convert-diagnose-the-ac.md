@@ -62,26 +62,26 @@ _(not captured)_
 
 ```json
 {
-  "orders": 59,
-  "revenue": 22501.46,
+  "orders": 54,
+  "revenue": 18470.15,
   "segments": [
     {
       "margin": null,
-      "orders": 53,
-      "revenue": 18784.2,
+      "orders": 49,
+      "revenue": 16109.11,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 354.42,
+      "averageOrderValue": 328.76,
       "marginCoveragePct": 0
     },
     {
-      "margin": 583.51,
-      "orders": 5,
-      "revenue": 3338.41,
+      "margin": 298.16,
+      "orders": 4,
+      "revenue": 1982.19,
       "segment": "unknown",
-      "averageMarginPct": 17.5,
-      "averageOrderValue": 667.68,
-      "marginCoveragePct": 59.7
+      "averageMarginPct": 15,
+      "averageOrderValue": 495.55,
+      "marginCoveragePct": 48.1
     },
     {
       "margin": 119.98,
@@ -93,7 +93,7 @@ _(not captured)_
       "marginCoveragePct": 100
     }
   ],
-  "capturedAt": "2026-10-10T08:00:49.592Z",
+  "capturedAt": "2026-10-11T08:00:49.457Z",
   "affiliateRoi": [
     {
       "code": "KICKSTANDMOBILE",
@@ -134,49 +134,49 @@ _(not captured)_
     {
       "code": "LTYACHTRENTALS",
       "margin": null,
-      "orders": 6,
+      "orders": 5,
       "roiPct": null,
-      "revenue": 1258.19,
+      "revenue": 860.81,
       "netMargin": null,
       "affiliateId": "e09b3a40-26cb-4c70-9b2a-6ea311c7a62e",
       "businessName": "Lake Travis Yacht Rentals",
-      "commissionPaid": 39.72,
+      "commissionPaid": 22.18,
       "marginCoveragePct": 0
     },
     {
       "code": "PREMIER",
       "margin": null,
-      "orders": 24,
+      "orders": 21,
       "roiPct": null,
-      "revenue": 3442.67,
+      "revenue": 3074.81,
       "netMargin": null,
       "affiliateId": "d21bac1a-3f99-489c-89fd-e1980c264a8d",
       "businessName": "Premier Party Cruises",
-      "commissionPaid": 196.85,
+      "commissionPaid": 169.66,
       "marginCoveragePct": 0
     },
     {
       "code": "POUR24",
       "margin": null,
-      "orders": 2,
+      "orders": 1,
       "roiPct": null,
-      "revenue": 2717.6,
+      "revenue": 1530.55,
       "netMargin": null,
       "affiliateId": "7bf14a40-b04f-4622-ba09-0662be41e37f",
       "businessName": "Pour Twenty Four",
-      "commissionPaid": 244.81,
+      "commissionPaid": 135.15,
       "marginCoveragePct": 0
     },
     {
       "code": "BIGTEXBOATRENTALS",
       "margin": null,
-      "orders": 2,
+      "orders": 3,
       "roiPct": null,
-      "revenue": 1143.03,
+      "revenue": 1262.44,
       "netMargin": null,
       "affiliateId": "39489c4d-df1a-429e-ade3-13f493b496a4",
       "businessName": "BigTex Boat Rentals",
-      "commissionPaid": 51.18,
+      "commissionPaid": 56.23,
       "marginCoveragePct": 0
     },
     {
@@ -204,15 +204,15 @@ _(not captured)_
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-10-10",
-  "averageOrderValue": 381.3806779661017,
+  "snapshotDate": "2026-10-11",
+  "averageOrderValue": 342.0398148148147,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-10-10 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-10-11 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
