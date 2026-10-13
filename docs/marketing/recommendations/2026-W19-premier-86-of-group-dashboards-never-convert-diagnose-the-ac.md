@@ -62,16 +62,16 @@ _(not captured)_
 
 ```json
 {
-  "orders": 51,
-  "revenue": 18206.04,
+  "orders": 50,
+  "revenue": 18223.45,
   "segments": [
     {
       "margin": null,
-      "orders": 46,
-      "revenue": 15845,
+      "orders": 45,
+      "revenue": 15862.41,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 344.46,
+      "averageOrderValue": 352.5,
       "marginCoveragePct": 0
     },
     {
@@ -93,7 +93,7 @@ _(not captured)_
       "marginCoveragePct": 100
     }
   ],
-  "capturedAt": "2026-10-12T08:00:49.451Z",
+  "capturedAt": "2026-10-13T08:00:49.515Z",
   "affiliateRoi": [
     {
       "code": "KICKSTANDMOBILE",
@@ -122,14 +122,14 @@ _(not captured)_
     {
       "code": "DTRbartending",
       "margin": 9.69,
-      "orders": 4,
-      "roiPct": -97.3,
-      "revenue": 4837.82,
-      "netMargin": -347.84,
+      "orders": 5,
+      "roiPct": -97.6,
+      "revenue": 5456.91,
+      "netMargin": -391.57,
       "affiliateId": "f029d561-1c6f-45ba-9cac-7135eac17ce2",
       "businessName": "DTR Bartending",
-      "commissionPaid": 357.53,
-      "marginCoveragePct": 0.8
+      "commissionPaid": 401.26,
+      "marginCoveragePct": 0.7
     },
     {
       "code": "LTYACHTRENTALS",
@@ -146,13 +146,13 @@ _(not captured)_
     {
       "code": "PREMIER",
       "margin": null,
-      "orders": 19,
+      "orders": 18,
       "roiPct": null,
-      "revenue": 2941.16,
+      "revenue": 2878.42,
       "netMargin": null,
       "affiliateId": "d21bac1a-3f99-489c-89fd-e1980c264a8d",
       "businessName": "Premier Party Cruises",
-      "commissionPaid": 160.94,
+      "commissionPaid": 156.3,
       "marginCoveragePct": 0
     },
     {
@@ -204,15 +204,15 @@ _(not captured)_
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-10-12",
-  "averageOrderValue": 356.9811764705882,
+  "snapshotDate": "2026-10-13",
+  "averageOrderValue": 364.4689999999999,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-10-12 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-10-13 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
