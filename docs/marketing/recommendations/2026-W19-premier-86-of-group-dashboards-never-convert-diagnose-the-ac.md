@@ -62,16 +62,16 @@ _(not captured)_
 
 ```json
 {
-  "orders": 50,
-  "revenue": 18223.45,
+  "orders": 58,
+  "revenue": 20852.75,
   "segments": [
     {
       "margin": null,
-      "orders": 45,
-      "revenue": 15862.41,
+      "orders": 53,
+      "revenue": 18491.71,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 352.5,
+      "averageOrderValue": 348.9,
       "marginCoveragePct": 0
     },
     {
@@ -93,7 +93,7 @@ _(not captured)_
       "marginCoveragePct": 100
     }
   ],
-  "capturedAt": "2026-10-13T08:00:49.515Z",
+  "capturedAt": "2026-10-14T08:00:49.999Z",
   "affiliateRoi": [
     {
       "code": "KICKSTANDMOBILE",
@@ -132,27 +132,15 @@ _(not captured)_
       "marginCoveragePct": 0.7
     },
     {
-      "code": "LTYACHTRENTALS",
-      "margin": null,
-      "orders": 5,
-      "roiPct": null,
-      "revenue": 860.81,
-      "netMargin": null,
-      "affiliateId": "e09b3a40-26cb-4c70-9b2a-6ea311c7a62e",
-      "businessName": "Lake Travis Yacht Rentals",
-      "commissionPaid": 22.18,
-      "marginCoveragePct": 0
-    },
-    {
       "code": "PREMIER",
       "margin": null,
-      "orders": 18,
+      "orders": 17,
       "roiPct": null,
-      "revenue": 2878.42,
+      "revenue": 2804.84,
       "netMargin": null,
       "affiliateId": "d21bac1a-3f99-489c-89fd-e1980c264a8d",
       "businessName": "Premier Party Cruises",
-      "commissionPaid": 156.3,
+      "commissionPaid": 150.86,
       "marginCoveragePct": 0
     },
     {
@@ -165,6 +153,18 @@ _(not captured)_
       "affiliateId": "7bf14a40-b04f-4622-ba09-0662be41e37f",
       "businessName": "Pour Twenty Four",
       "commissionPaid": 135.15,
+      "marginCoveragePct": 0
+    },
+    {
+      "code": "LTYACHTRENTALS",
+      "margin": null,
+      "orders": 5,
+      "roiPct": null,
+      "revenue": 860.81,
+      "netMargin": null,
+      "affiliateId": "e09b3a40-26cb-4c70-9b2a-6ea311c7a62e",
+      "businessName": "Lake Travis Yacht Rentals",
+      "commissionPaid": 22.18,
       "marginCoveragePct": 0
     },
     {
@@ -202,17 +202,29 @@ _(not captured)_
       "businessName": "Bach Babes",
       "commissionPaid": 25.89,
       "marginCoveragePct": 0
+    },
+    {
+      "code": "SBATX",
+      "margin": null,
+      "orders": 1,
+      "roiPct": null,
+      "revenue": 1958.57,
+      "netMargin": null,
+      "affiliateId": "4beb38f6-a345-441a-9da5-c1ca51629455",
+      "businessName": "Social Butterfly ATX",
+      "commissionPaid": 90.47,
+      "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-10-13",
-  "averageOrderValue": 364.4689999999999,
+  "snapshotDate": "2026-10-14",
+  "averageOrderValue": 359.5301724137931,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-10-13 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-10-14 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
