@@ -62,16 +62,16 @@ _(not captured)_
 
 ```json
 {
-  "orders": 58,
-  "revenue": 20852.75,
+  "orders": 57,
+  "revenue": 20256.12,
   "segments": [
     {
       "margin": null,
-      "orders": 53,
-      "revenue": 18491.71,
+      "orders": 51,
+      "revenue": 17717.56,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 348.9,
+      "averageOrderValue": 347.4,
       "marginCoveragePct": 0
     },
     {
@@ -85,15 +85,15 @@ _(not captured)_
     },
     {
       "margin": 119.98,
-      "orders": 1,
-      "revenue": 378.85,
+      "orders": 2,
+      "revenue": 556.37,
       "segment": "kegs",
-      "averageMarginPct": 31.7,
-      "averageOrderValue": 378.85,
-      "marginCoveragePct": 100
+      "averageMarginPct": 21.6,
+      "averageOrderValue": 278.19,
+      "marginCoveragePct": 68.1
     }
   ],
-  "capturedAt": "2026-10-14T08:00:49.999Z",
+  "capturedAt": "2026-10-15T08:00:49.346Z",
   "affiliateRoi": [
     {
       "code": "KICKSTANDMOBILE",
@@ -134,13 +134,13 @@ _(not captured)_
     {
       "code": "PREMIER",
       "margin": null,
-      "orders": 17,
+      "orders": 13,
       "roiPct": null,
-      "revenue": 2804.84,
+      "revenue": 2326.97,
       "netMargin": null,
       "affiliateId": "d21bac1a-3f99-489c-89fd-e1980c264a8d",
       "businessName": "Premier Party Cruises",
-      "commissionPaid": 150.86,
+      "commissionPaid": 114.92,
       "marginCoveragePct": 0
     },
     {
@@ -168,18 +168,6 @@ _(not captured)_
       "marginCoveragePct": 0
     },
     {
-      "code": "BIGTEXBOATRENTALS",
-      "margin": null,
-      "orders": 3,
-      "roiPct": null,
-      "revenue": 1262.44,
-      "netMargin": null,
-      "affiliateId": "39489c4d-df1a-429e-ade3-13f493b496a4",
-      "businessName": "BigTex Boat Rentals",
-      "commissionPaid": 56.23,
-      "marginCoveragePct": 0
-    },
-    {
       "code": "SIPNSOCIAL",
       "margin": null,
       "orders": 2,
@@ -189,6 +177,18 @@ _(not captured)_
       "affiliateId": "3d00911f-3b75-40ad-bc3c-c87f20cdaeaf",
       "businessName": "Sip & Social On Wheels",
       "commissionPaid": 62.43,
+      "marginCoveragePct": 0
+    },
+    {
+      "code": "BIGTEXBOATRENTALS",
+      "margin": null,
+      "orders": 2,
+      "roiPct": null,
+      "revenue": 721.97,
+      "netMargin": null,
+      "affiliateId": "39489c4d-df1a-429e-ade3-13f493b496a4",
+      "businessName": "BigTex Boat Rentals",
+      "commissionPaid": 32.19,
       "marginCoveragePct": 0
     },
     {
@@ -216,15 +216,15 @@ _(not captured)_
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-10-14",
-  "averageOrderValue": 359.5301724137931,
+  "snapshotDate": "2026-10-15",
+  "averageOrderValue": 355.3705263157894,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-10-14 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-10-15 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
