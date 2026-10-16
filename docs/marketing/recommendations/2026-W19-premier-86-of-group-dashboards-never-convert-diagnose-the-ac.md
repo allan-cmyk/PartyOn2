@@ -62,16 +62,16 @@ _(not captured)_
 
 ```json
 {
-  "orders": 57,
-  "revenue": 20256.12,
+  "orders": 53,
+  "revenue": 20469.08,
   "segments": [
     {
       "margin": null,
-      "orders": 51,
-      "revenue": 17717.56,
+      "orders": 48,
+      "revenue": 18108.04,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 347.4,
+      "averageOrderValue": 377.25,
       "marginCoveragePct": 0
     },
     {
@@ -85,15 +85,15 @@ _(not captured)_
     },
     {
       "margin": 119.98,
-      "orders": 2,
-      "revenue": 556.37,
+      "orders": 1,
+      "revenue": 378.85,
       "segment": "kegs",
-      "averageMarginPct": 21.6,
-      "averageOrderValue": 278.19,
-      "marginCoveragePct": 68.1
+      "averageMarginPct": 31.7,
+      "averageOrderValue": 378.85,
+      "marginCoveragePct": 100
     }
   ],
-  "capturedAt": "2026-10-15T08:00:49.346Z",
+  "capturedAt": "2026-10-16T08:00:49.448Z",
   "affiliateRoi": [
     {
       "code": "KICKSTANDMOBILE",
@@ -122,26 +122,14 @@ _(not captured)_
     {
       "code": "DTRbartending",
       "margin": 9.69,
-      "orders": 5,
-      "roiPct": -97.6,
-      "revenue": 5456.91,
-      "netMargin": -391.57,
+      "orders": 6,
+      "roiPct": -97.9,
+      "revenue": 6147.16,
+      "netMargin": -442.58,
       "affiliateId": "f029d561-1c6f-45ba-9cac-7135eac17ce2",
       "businessName": "DTR Bartending",
-      "commissionPaid": 401.26,
-      "marginCoveragePct": 0.7
-    },
-    {
-      "code": "PREMIER",
-      "margin": null,
-      "orders": 13,
-      "roiPct": null,
-      "revenue": 2326.97,
-      "netMargin": null,
-      "affiliateId": "d21bac1a-3f99-489c-89fd-e1980c264a8d",
-      "businessName": "Premier Party Cruises",
-      "commissionPaid": 114.92,
-      "marginCoveragePct": 0
+      "commissionPaid": 452.27,
+      "marginCoveragePct": 0.6
     },
     {
       "code": "POUR24",
@@ -153,6 +141,18 @@ _(not captured)_
       "affiliateId": "7bf14a40-b04f-4622-ba09-0662be41e37f",
       "businessName": "Pour Twenty Four",
       "commissionPaid": 135.15,
+      "marginCoveragePct": 0
+    },
+    {
+      "code": "PREMIER",
+      "margin": null,
+      "orders": 9,
+      "roiPct": null,
+      "revenue": 1864.95,
+      "netMargin": null,
+      "affiliateId": "d21bac1a-3f99-489c-89fd-e1980c264a8d",
+      "businessName": "Premier Party Cruises",
+      "commissionPaid": 95.66,
       "marginCoveragePct": 0
     },
     {
@@ -216,15 +216,15 @@ _(not captured)_
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-10-15",
-  "averageOrderValue": 355.3705263157894,
+  "snapshotDate": "2026-10-16",
+  "averageOrderValue": 386.2090566037735,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-10-15 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-10-16 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
