@@ -27,6 +27,7 @@ import JoinOverlay from '@/components/dashboard/JoinOverlay';
 import type { RecommendationResult } from '@/components/dashboard/GetRecsModal';
 import { claimHostV2, addDraftItemV2, removeDraftItemV2 } from '@/lib/group-orders-v2/api-client';
 import type { AppliedPromo } from '@/lib/group-orders-v2/types';
+import { planPartnerPromo, partnerCodeRejection } from '@/lib/group-orders-v2/partner-promo';
 import PromoCodeInput from '@/components/dashboard/PromoCodeInput';
 import PremierPerksBanner from '@/components/dashboard/PremierPerksBanner';
 import { OnboardingTourProvider, DashboardTour } from '@/components/dashboard/tour';
@@ -189,63 +190,26 @@ export default function DashboardPage(): ReactElement {
     return () => clearInterval(interval);
   }, [code]);
 
-  // Auto-load affiliate from cookie (with confetti on first apply)
+  // Partner banner: only ever the dashboard's OWN partner, because that's the
+  // only partner checkout honors (see partner-promo.ts). Applies it once the
+  // visitor has joined, and corrects a promo restored from localStorage that
+  // names a different partner — or any partner, on a dashboard that has none.
+  // The visitor's ref_code cookie is deliberately not read here: /order
+  // already used it to stamp the dashboard's partner at creation.
   useEffect(() => {
-    if (!code || !participantId) return;
+    if (!code || !groupOrder) return;
     // Skip auto-attribution for private custom-themed dashboards (e.g. Ashley's birthday)
     if (getCustomDashboardTheme(code)) return;
-    // Skip if promo already applied
-    const stored = localStorage.getItem(`${PROMO_KEY_PREFIX}${code}`);
-    if (stored) return;
+    const plan = planPartnerPromo(appliedPromo, groupOrder.affiliate, !!participantId);
+    if (!plan) return;
 
-    fetch('/api/v1/affiliate/attribution')
-      .then((res) => res.json())
-      .then((json) => {
-        // Only claim the perk the server will honor — customerPerk is free
-        // text and not every partner's perk is free delivery.
-        if (json.success && json.data?.active && json.data.customerPerk === 'Free Delivery') {
-          const promo: AppliedPromo = {
-            type: 'affiliate',
-            code: json.data.affiliateId,
-            label: `Free Delivery (via ${json.data.partnerName})`,
-            discountAmount: 0,
-            freeDelivery: true,
-            affiliateId: json.data.affiliateId,
-          };
-          setAppliedPromo(promo);
-          localStorage.setItem(`${PROMO_KEY_PREFIX}${code}`, JSON.stringify(promo));
-          fireConfetti();
-        }
-      })
-      .catch(() => {
-        // Silent fail
-      });
-  }, [code, participantId]);
-
-  // Fallback: auto-apply affiliate promo from groupOrder data (no cookie needed)
-  useEffect(() => {
-    if (!code || !participantId || !groupOrder) return;
-    // Skip auto-attribution for private custom-themed dashboards (e.g. Ashley's birthday)
-    if (getCustomDashboardTheme(code)) return;
-    // Skip if promo already applied
-    const stored = localStorage.getItem(`${PROMO_KEY_PREFIX}${code}`);
-    if (stored) return;
-    // Skip if already set in state (e.g. by cookie effect above)
-    if (appliedPromo) return;
-
-    if (groupOrder.affiliate) {
-      const promo: AppliedPromo = {
-        type: 'affiliate',
-        code: groupOrder.affiliate.code,
-        label: `Free Delivery (via ${groupOrder.affiliate.businessName})`,
-        discountAmount: 0,
-        freeDelivery: true,
-        affiliateId: groupOrder.affiliate.id,
-      };
-      setAppliedPromo(promo);
-      localStorage.setItem(`${PROMO_KEY_PREFIX}${code}`, JSON.stringify(promo));
-      fireConfetti();
+    setAppliedPromo(plan.promo);
+    if (plan.promo) {
+      localStorage.setItem(`${PROMO_KEY_PREFIX}${code}`, JSON.stringify(plan.promo));
+    } else {
+      localStorage.removeItem(`${PROMO_KEY_PREFIX}${code}`);
     }
+    if (plan.celebrate) fireConfetti();
   }, [code, participantId, groupOrder, appliedPromo]);
 
   // Detect whether user is a known participant or needs to join
@@ -301,6 +265,10 @@ export default function DashboardPage(): ReactElement {
   }, [groupOrder?.id, participantId]);
 
   const handlePromoApply = useCallback(async (promo: AppliedPromo) => {
+    // Thrown message is shown under the promo box by PromoCodeInput.
+    const rejection = partnerCodeRejection(promo, groupOrder?.affiliate);
+    if (rejection) throw new Error(rejection);
+
     setAppliedPromo(promo);
     localStorage.setItem(`${PROMO_KEY_PREFIX}${code}`, JSON.stringify(promo));
     fireConfetti();

@@ -7,7 +7,8 @@ import { validatePromoCode } from '@/lib/group-orders-v2/api-client';
 interface Props {
   appliedPromo: AppliedPromo | null;
   subtotal: number;
-  onApply: (promo: AppliedPromo) => void;
+  /** May reject; the error message is shown under the input. */
+  onApply: (promo: AppliedPromo) => void | Promise<void>;
   onRemove: () => void;
 }
 
@@ -30,7 +31,7 @@ export default function PromoCodeInput({
 
     try {
       const promo = await validatePromoCode(trimmed, subtotal);
-      onApply(promo);
+      await onApply(promo);
       setCode('');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Invalid code');
