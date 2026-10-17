@@ -55,24 +55,27 @@ const EVERYTHING_ELSE_KITS_SPLIT: Record<string, number> = {
 // DB titles use bullet separator: "Miller Lite \u2022 24 Pack 12oz Can"
 // Search terms must match text on ONE side of the bullet, not span across it.
 // For multi-variant products, we also store the preferred variant title to disambiguate.
+// The hint must be specific enough to leave ONE title: several catalog products share a
+// search term (Modelo 24pk cans vs bottles, Dark Horse 750ml vs 375ml can, Dripping
+// Springs Gin 750ml vs 1.75L), and without a tight hint the pick depends on DB row order.
 export const SEARCH_OVERRIDES: Record<string, { search: string; variantHint?: string }> = {
   // Beer
   'Miller Lite 24pk': { search: 'Miller Lite', variantHint: '24 Pack' },
-  'Modelo Especial 24pk': { search: 'Modelo Especial', variantHint: '24 Pack' },
+  'Modelo Especial 24pk': { search: 'Modelo Especial', variantHint: '24 Pack 12oz Can' },
   'Austin Beerworks Variety 12pk': { search: 'Austin Beerworks Variety' },
   // Seltzers
   'High Noon Variety 12pk': { search: 'High Noon Variety Pack', variantHint: '12 Pack' },
   'White Claw Variety 24pk': { search: 'White Claw Variety', variantHint: '24 Pack' },
   'Surfside Starter Pack': { search: 'Surfside Starter' },
   // Wine
-  'Dark Horse Pinot Grigio': { search: 'Dark Horse Pinot Grigio' },
+  'Dark Horse Pinot Grigio': { search: 'Dark Horse Pinot Grigio', variantHint: '750ml' },
   '14 Hands Cabernet Sauvignon': { search: '14 Hands Cabernet' },
   // Spirits
   'Espolon Tequila Blanco': { search: 'Espolon Tequila Blanco', variantHint: '750ml' },
   "Tito's Handmade Vodka 1L": { search: "Tito's Handmade Vodka", variantHint: '1L' },
   'Still Austin Bourbon': { search: 'Still Austin Straight Bourbon' },
   'Island Getaway White Rum': { search: 'Island Getaway White Rum' },
-  'Dripping Springs Artisan Gin': { search: 'Dripping Springs Artisan Gin' },
+  'Dripping Springs Artisan Gin': { search: 'Dripping Springs Artisan Gin', variantHint: '750ml' },
   // Cocktail kits
   'Lady Bird Margarita': { search: 'Lady Bird Margarita' },
   'Barton Springs Mojito': { search: 'Barton Springs Mojito' },

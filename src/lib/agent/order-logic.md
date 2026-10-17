@@ -106,49 +106,35 @@ Delivery fee is invoiced separately to the host via a DeliveryInvoice, not inclu
 
 ## Drink Recommendations
 
-### Drinks Per Person Per Hour
+The website drink planner engine (src/lib/drinkPlannerLogic.ts) is the single source of truth for party quantities. It also powers Wayne's chat, the dashboard recommendations and the ops drink-plan script (scripts/ops/drink-plan.ts). These rules describe it; if they ever disagree with that file, the file wins.
 
-Base rates by event type and vibe level (light / social / party):
+### Total Drinks
+- Boat day, bachelor, bachelorette, weekend trip: totalDrinks = ceil(guests * hours * 2)
+- Everyone else (corporate, wedding, house party, other): totalDrinks = ceil(guests * (hours + 1)) -- the +1 covers the heavier first hour
+- Durations: 2h to 6h are literal hours; multi-day = 16 hours
 
-| Event Type    | Light | Social | Party |
-|---------------|-------|--------|-------|
-| Bachelor      | 1.5   | 2.0    | 2.5   |
-| Bachelorette  | 1.25  | 1.75   | 2.0   |
-| House Party   | 1.25  | 1.75   | 2.25  |
-| Corporate     | 1.0   | 1.5    | 1.75  |
-| Wedding       | 1.0   | 1.5    | 2.0   |
-| Boat Day      | 1.5   | 2.0    | 2.5   |
-| Weekend Trip  | 1.25  | 1.75   | 2.25  |
-| Other         | 1.25  | 1.75   | 2.0   |
+### Category Split
+- Boat/bach track: an equal split across the selected categories (default: beer, seltzers, cocktail kits).
+- Event track (default: beer, wine, spirits). Base weights: spirits 50%, beer 30%, wine 15%, seltzers 5%. With cocktail kits selected: cocktail kits 35%, spirits 15%, beer 30%, wine 15%, seltzers 5%.
+- The weights are rescaled over the selected categories so they add to 100%. Seltzers are always added on the event track.
+- If only one category is selected on the event track, it gets 70% and the other 30% is split across complementary categories.
+- Example: 130 guests, 3 hours, beer + wine = 520 drinks -> 6 Miller Lite 24pk, 6 Modelo Especial 24pk cans, 6 Austin Beerworks Variety 12pk, 16 Dark Horse Pinot Grigio, 16 14 Hands Cabernet Sauvignon, plus a small seltzer share and 13 bags of ice. Drop the seltzers if the customer asked for beer and wine only.
 
-### Duration Options
-- 2h, 3h, 4h, 5h, 6h = literal hours
-- multi-day = 16 hours
-
-### Formula
-```
-totalDrinks = ceil(guests * hours * rate)
-```
-
-### Adjustments
-- If cocktail kits AND wine/champagne selected: multiply by 0.65
-- If cocktail kits only: multiply by 0.75
-- If wine/champagne only: multiply by 0.85
-- Premium tier: multiply quantities by 1.25
+### Product Mix and Servings
+- Beer: Miller Lite 24pk 40%, Modelo Especial 24pk cans 40%, Austin Beerworks Variety 12pk 20% (1 can = 1 serving)
+- Seltzers: High Noon Variety 12pk 40%, White Claw Variety 24pk 30%, Surfside Starter Pack 30%
+- Wine: Dark Horse Pinot Grigio 50%, 14 Hands Cabernet Sauvignon 50% (750ml bottle = 5 glasses)
+- Spirits: Espolon Tequila Blanco 40%, Tito's 1L 30%, Still Austin Bourbon 10%, Island Getaway White Rum 10%, Dripping Springs Artisan Gin 10% (750ml = 17 drinks, 1L = 22)
+- Cocktail kits: Lady Bird Margarita, Barton Springs Mojito, Eastside Gin & Tonic, split evenly (16 drinks per kit, at least 1 of each)
+- Every product quantity is rounded UP to whole units.
+- Use these house brands. Only swap brands when the customer asks for something specific.
 
 ### Ice
-- 1 bag per 4 guests (rounded up), multiplied by premium factor if applicable.
+- 1 bag per 10 guests (rounded up), always. Leave it off if a bar partner is bringing ice.
 
-### Guest Count Ranges
+### Guest Count Ranges (website planner)
 - Boat Day / Weekend Trip: 5 to 50 guests
 - All other events: 5 to 200 guests
-
-### Default Cocktail Kits by Event Type
-- Bachelor / Boat Day: Austin Rita, Old-Fashioned
-- Bachelorette: Aperol Spritz, Espresso Martini
-- Wedding: Austin Rita, Aperol Spritz
-- Corporate: Old-Fashioned, Austin Rita
-- All others: Austin Rita, Tito's Lemonade
 
 
 ## Party Type to Product Categories
