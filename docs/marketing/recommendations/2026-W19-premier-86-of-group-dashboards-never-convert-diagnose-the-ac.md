@@ -63,15 +63,15 @@ _(not captured)_
 ```json
 {
   "orders": 53,
-  "revenue": 20469.08,
+  "revenue": 19704.64,
   "segments": [
     {
       "margin": null,
       "orders": 48,
-      "revenue": 18108.04,
+      "revenue": 17198.36,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 377.25,
+      "averageOrderValue": 358.3,
       "marginCoveragePct": 0
     },
     {
@@ -86,14 +86,14 @@ _(not captured)_
     {
       "margin": 119.98,
       "orders": 1,
-      "revenue": 378.85,
+      "revenue": 524.09,
       "segment": "kegs",
-      "averageMarginPct": 31.7,
-      "averageOrderValue": 378.85,
+      "averageMarginPct": 22.9,
+      "averageOrderValue": 524.09,
       "marginCoveragePct": 100
     }
   ],
-  "capturedAt": "2026-10-16T08:00:49.448Z",
+  "capturedAt": "2026-10-17T08:00:49.620Z",
   "affiliateRoi": [
     {
       "code": "KICKSTANDMOBILE",
@@ -122,37 +122,25 @@ _(not captured)_
     {
       "code": "DTRbartending",
       "margin": 9.69,
-      "orders": 6,
-      "roiPct": -97.9,
-      "revenue": 6147.16,
-      "netMargin": -442.58,
+      "orders": 5,
+      "roiPct": -97.1,
+      "revenue": 4533.79,
+      "netMargin": -323.35,
       "affiliateId": "f029d561-1c6f-45ba-9cac-7135eac17ce2",
       "businessName": "DTR Bartending",
-      "commissionPaid": 452.27,
-      "marginCoveragePct": 0.6
-    },
-    {
-      "code": "POUR24",
-      "margin": null,
-      "orders": 1,
-      "roiPct": null,
-      "revenue": 1530.55,
-      "netMargin": null,
-      "affiliateId": "7bf14a40-b04f-4622-ba09-0662be41e37f",
-      "businessName": "Pour Twenty Four",
-      "commissionPaid": 135.15,
-      "marginCoveragePct": 0
+      "commissionPaid": 333.04,
+      "marginCoveragePct": 0.8
     },
     {
       "code": "PREMIER",
       "margin": null,
-      "orders": 9,
+      "orders": 8,
       "roiPct": null,
-      "revenue": 1864.95,
+      "revenue": 1744.45,
       "netMargin": null,
       "affiliateId": "d21bac1a-3f99-489c-89fd-e1980c264a8d",
       "businessName": "Premier Party Cruises",
-      "commissionPaid": 95.66,
+      "commissionPaid": 88.14,
       "marginCoveragePct": 0
     },
     {
@@ -206,25 +194,37 @@ _(not captured)_
     {
       "code": "SBATX",
       "margin": null,
-      "orders": 1,
+      "orders": 2,
       "roiPct": null,
-      "revenue": 1958.57,
+      "revenue": 3462.65,
       "netMargin": null,
       "affiliateId": "4beb38f6-a345-441a-9da5-c1ca51629455",
       "businessName": "Social Butterfly ATX",
-      "commissionPaid": 90.47,
+      "commissionPaid": 159.94,
+      "marginCoveragePct": 0
+    },
+    {
+      "code": "POUR24",
+      "margin": null,
+      "orders": 1,
+      "roiPct": null,
+      "revenue": 296.52,
+      "netMargin": null,
+      "affiliateId": "7bf14a40-b04f-4622-ba09-0662be41e37f",
+      "businessName": "Pour Twenty Four",
+      "commissionPaid": 27.39,
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-10-16",
-  "averageOrderValue": 386.2090566037735,
+  "snapshotDate": "2026-10-17",
+  "averageOrderValue": 371.7856603773585,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-10-16 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-10-17 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
