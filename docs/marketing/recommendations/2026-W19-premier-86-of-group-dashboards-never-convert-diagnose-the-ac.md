@@ -62,16 +62,16 @@ _(not captured)_
 
 ```json
 {
-  "orders": 53,
-  "revenue": 19704.64,
+  "orders": 55,
+  "revenue": 22836.66,
   "segments": [
     {
       "margin": null,
-      "orders": 48,
-      "revenue": 17198.36,
+      "orders": 50,
+      "revenue": 20330.38,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 358.3,
+      "averageOrderValue": 406.61,
       "marginCoveragePct": 0
     },
     {
@@ -93,7 +93,7 @@ _(not captured)_
       "marginCoveragePct": 100
     }
   ],
-  "capturedAt": "2026-10-17T08:00:49.620Z",
+  "capturedAt": "2026-10-18T08:00:49.999Z",
   "affiliateRoi": [
     {
       "code": "KICKSTANDMOBILE",
@@ -194,37 +194,37 @@ _(not captured)_
     {
       "code": "SBATX",
       "margin": null,
-      "orders": 2,
+      "orders": 3,
       "roiPct": null,
-      "revenue": 3462.65,
+      "revenue": 5865.28,
       "netMargin": null,
       "affiliateId": "4beb38f6-a345-441a-9da5-c1ca51629455",
       "businessName": "Social Butterfly ATX",
-      "commissionPaid": 159.94,
+      "commissionPaid": 270.91,
       "marginCoveragePct": 0
     },
     {
       "code": "POUR24",
       "margin": null,
-      "orders": 1,
+      "orders": 2,
       "roiPct": null,
-      "revenue": 296.52,
+      "revenue": 1025.91,
       "netMargin": null,
       "affiliateId": "7bf14a40-b04f-4622-ba09-0662be41e37f",
       "businessName": "Pour Twenty Four",
-      "commissionPaid": 27.39,
+      "commissionPaid": 94.77,
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-10-17",
-  "averageOrderValue": 371.7856603773585,
+  "snapshotDate": "2026-10-18",
+  "averageOrderValue": 415.212,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-10-17 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-10-18 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
