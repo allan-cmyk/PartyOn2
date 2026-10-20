@@ -62,16 +62,16 @@ _(not captured)_
 
 ```json
 {
-  "orders": 55,
-  "revenue": 23347.22,
+  "orders": 56,
+  "revenue": 26872.11,
   "segments": [
     {
       "margin": null,
-      "orders": 50,
-      "revenue": 20840.94,
+      "orders": 51,
+      "revenue": 24365.83,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 416.82,
+      "averageOrderValue": 477.76,
       "marginCoveragePct": 0
     },
     {
@@ -93,7 +93,7 @@ _(not captured)_
       "marginCoveragePct": 100
     }
   ],
-  "capturedAt": "2026-10-19T08:00:49.401Z",
+  "capturedAt": "2026-10-20T08:00:49.240Z",
   "affiliateRoi": [
     {
       "code": "KICKSTANDMOBILE",
@@ -146,25 +146,13 @@ _(not captured)_
     {
       "code": "LTYACHTRENTALS",
       "margin": null,
-      "orders": 5,
+      "orders": 4,
       "roiPct": null,
-      "revenue": 860.81,
+      "revenue": 522.87,
       "netMargin": null,
       "affiliateId": "e09b3a40-26cb-4c70-9b2a-6ea311c7a62e",
       "businessName": "Lake Travis Yacht Rentals",
-      "commissionPaid": 22.18,
-      "marginCoveragePct": 0
-    },
-    {
-      "code": "SIPNSOCIAL",
-      "margin": null,
-      "orders": 2,
-      "roiPct": null,
-      "revenue": 1373.5,
-      "netMargin": null,
-      "affiliateId": "3d00911f-3b75-40ad-bc3c-c87f20cdaeaf",
-      "businessName": "Sip & Social On Wheels",
-      "commissionPaid": 62.43,
+      "commissionPaid": 7.89,
       "marginCoveragePct": 0
     },
     {
@@ -192,6 +180,18 @@ _(not captured)_
       "marginCoveragePct": 0
     },
     {
+      "code": "SIPNSOCIAL",
+      "margin": null,
+      "orders": 2,
+      "roiPct": null,
+      "revenue": 1195.69,
+      "netMargin": null,
+      "affiliateId": "3d00911f-3b75-40ad-bc3c-c87f20cdaeaf",
+      "businessName": "Sip & Social On Wheels",
+      "commissionPaid": 53.99,
+      "marginCoveragePct": 0
+    },
+    {
       "code": "SBATX",
       "margin": null,
       "orders": 3,
@@ -206,25 +206,25 @@ _(not captured)_
     {
       "code": "POUR24",
       "margin": null,
-      "orders": 2,
+      "orders": 3,
       "roiPct": null,
-      "revenue": 1025.91,
+      "revenue": 3757.19,
       "netMargin": null,
       "affiliateId": "7bf14a40-b04f-4622-ba09-0662be41e37f",
       "businessName": "Pour Twenty Four",
-      "commissionPaid": 94.77,
+      "commissionPaid": 347.08,
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-10-19",
-  "averageOrderValue": 424.4949090909091,
+  "snapshotDate": "2026-10-20",
+  "averageOrderValue": 479.8591071428572,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-10-19 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-10-20 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
