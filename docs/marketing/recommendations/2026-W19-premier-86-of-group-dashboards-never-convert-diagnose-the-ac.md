@@ -62,16 +62,16 @@ _(not captured)_
 
 ```json
 {
-  "orders": 56,
-  "revenue": 26872.11,
+  "orders": 57,
+  "revenue": 27587.48,
   "segments": [
     {
       "margin": null,
-      "orders": 51,
-      "revenue": 24365.83,
+      "orders": 52,
+      "revenue": 25081.2,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 477.76,
+      "averageOrderValue": 482.33,
       "marginCoveragePct": 0
     },
     {
@@ -93,7 +93,7 @@ _(not captured)_
       "marginCoveragePct": 100
     }
   ],
-  "capturedAt": "2026-10-20T08:00:49.240Z",
+  "capturedAt": "2026-10-21T08:00:49.624Z",
   "affiliateRoi": [
     {
       "code": "KICKSTANDMOBILE",
@@ -214,17 +214,29 @@ _(not captured)_
       "businessName": "Pour Twenty Four",
       "commissionPaid": 347.08,
       "marginCoveragePct": 0
+    },
+    {
+      "code": "TAPTRUCK",
+      "margin": null,
+      "orders": 1,
+      "roiPct": null,
+      "revenue": 715.37,
+      "netMargin": null,
+      "affiliateId": "5e354ea5-e439-4e70-91a4-b32542a3e716",
+      "businessName": "Tap Truck Austin",
+      "commissionPaid": 48.4,
+      "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-10-20",
-  "averageOrderValue": 479.8591071428572,
+  "snapshotDate": "2026-10-21",
+  "averageOrderValue": 483.9908771929825,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-10-20 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-10-21 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
