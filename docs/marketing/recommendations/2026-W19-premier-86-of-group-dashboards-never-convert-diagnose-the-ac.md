@@ -62,16 +62,16 @@ _(not captured)_
 
 ```json
 {
-  "orders": 57,
-  "revenue": 27587.48,
+  "orders": 58,
+  "revenue": 28220.54,
   "segments": [
     {
       "margin": null,
-      "orders": 52,
-      "revenue": 25081.2,
+      "orders": 53,
+      "revenue": 25714.26,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 482.33,
+      "averageOrderValue": 485.17,
       "marginCoveragePct": 0
     },
     {
@@ -93,7 +93,7 @@ _(not captured)_
       "marginCoveragePct": 100
     }
   ],
-  "capturedAt": "2026-10-21T08:00:49.624Z",
+  "capturedAt": "2026-10-22T08:00:49.569Z",
   "affiliateRoi": [
     {
       "code": "KICKSTANDMOBILE",
@@ -146,9 +146,9 @@ _(not captured)_
     {
       "code": "LTYACHTRENTALS",
       "margin": null,
-      "orders": 4,
+      "orders": 3,
       "roiPct": null,
-      "revenue": 522.87,
+      "revenue": 482.83,
       "netMargin": null,
       "affiliateId": "e09b3a40-26cb-4c70-9b2a-6ea311c7a62e",
       "businessName": "Lake Travis Yacht Rentals",
@@ -194,25 +194,25 @@ _(not captured)_
     {
       "code": "SBATX",
       "margin": null,
-      "orders": 3,
+      "orders": 4,
       "roiPct": null,
-      "revenue": 5865.28,
+      "revenue": 6263.53,
       "netMargin": null,
       "affiliateId": "4beb38f6-a345-441a-9da5-c1ca51629455",
       "businessName": "Social Butterfly ATX",
-      "commissionPaid": 270.91,
+      "commissionPaid": 289.31,
       "marginCoveragePct": 0
     },
     {
       "code": "POUR24",
       "margin": null,
-      "orders": 3,
+      "orders": 4,
       "roiPct": null,
-      "revenue": 3757.19,
+      "revenue": 4032.04,
       "netMargin": null,
       "affiliateId": "7bf14a40-b04f-4622-ba09-0662be41e37f",
       "businessName": "Pour Twenty Four",
-      "commissionPaid": 347.08,
+      "commissionPaid": 372.47,
       "marginCoveragePct": 0
     },
     {
@@ -228,15 +228,15 @@ _(not captured)_
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-10-21",
-  "averageOrderValue": 483.9908771929825,
+  "snapshotDate": "2026-10-22",
+  "averageOrderValue": 486.5610344827587,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-10-21 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-10-22 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
