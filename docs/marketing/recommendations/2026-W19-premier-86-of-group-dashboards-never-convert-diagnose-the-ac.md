@@ -62,26 +62,26 @@ _(not captured)_
 
 ```json
 {
-  "orders": 57,
-  "revenue": 28101.13,
+  "orders": 54,
+  "revenue": 26489.92,
   "segments": [
     {
       "margin": null,
-      "orders": 52,
-      "revenue": 25594.85,
+      "orders": 50,
+      "revenue": 25137.05,
       "segment": "general",
       "averageMarginPct": null,
-      "averageOrderValue": 492.21,
+      "averageOrderValue": 502.74,
       "marginCoveragePct": 0
     },
     {
-      "margin": 298.16,
-      "orders": 4,
-      "revenue": 1982.19,
+      "margin": 101.99,
+      "orders": 3,
+      "revenue": 828.78,
       "segment": "unknown",
-      "averageMarginPct": 15,
-      "averageOrderValue": 495.55,
-      "marginCoveragePct": 48.1
+      "averageMarginPct": 12.3,
+      "averageOrderValue": 276.26,
+      "marginCoveragePct": 41.1
     },
     {
       "margin": 119.98,
@@ -93,20 +93,8 @@ _(not captured)_
       "marginCoveragePct": 100
     }
   ],
-  "capturedAt": "2026-10-23T08:00:49.933Z",
+  "capturedAt": "2026-10-24T08:00:49.332Z",
   "affiliateRoi": [
-    {
-      "code": "KICKSTANDMOBILE",
-      "margin": 196.17,
-      "orders": 1,
-      "roiPct": 268.2,
-      "revenue": 1153.41,
-      "netMargin": 142.89,
-      "affiliateId": "b4dcc7fb-4de6-4dd8-8b65-5ac6131a2a18",
-      "businessName": "Kickstand Mobile",
-      "commissionPaid": 53.28,
-      "marginCoveragePct": 53.1
-    },
     {
       "code": "MIMISPARTY",
       "margin": 92.3,
@@ -134,25 +122,25 @@ _(not captured)_
     {
       "code": "PREMIER",
       "margin": null,
-      "orders": 7,
+      "orders": 6,
       "roiPct": null,
-      "revenue": 1744.45,
+      "revenue": 1465.41,
       "netMargin": null,
       "affiliateId": "d21bac1a-3f99-489c-89fd-e1980c264a8d",
       "businessName": "Premier Party Cruises",
-      "commissionPaid": 88.14,
+      "commissionPaid": 69.27,
       "marginCoveragePct": 0
     },
     {
       "code": "LTYACHTRENTALS",
       "margin": null,
-      "orders": 3,
+      "orders": 2,
       "roiPct": null,
-      "revenue": 482.83,
+      "revenue": 304.07,
       "netMargin": null,
       "affiliateId": "e09b3a40-26cb-4c70-9b2a-6ea311c7a62e",
       "businessName": "Lake Travis Yacht Rentals",
-      "commissionPaid": 7.89,
+      "commissionPaid": 0,
       "marginCoveragePct": 0
     },
     {
@@ -228,15 +216,15 @@ _(not captured)_
       "marginCoveragePct": 0
     }
   ],
-  "snapshotDate": "2026-10-23",
-  "averageOrderValue": 493.0022807017544,
+  "snapshotDate": "2026-10-24",
+  "averageOrderValue": 490.5540740740741,
   "marginCoveragePct": null
 }
 ```
 ## Updates
 
 - 2026-05-05 — Created with status `executed` from source `director`.
-- 2026-10-23 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
+- 2026-10-24 — Status shipped → shipped (cron:measure-recommendations). Notes: Auto-captured 14-day measurement
 
 ---
 _Mirror file. Edited automatically by the triage queue when status changes. Source of truth is the database (id: `4fe8e34e-83cb-4ee7-9576-4a60386400dc`). Slug: `premier-86-of-group-dashboards-never-convert-diagnose-the-ac`._
